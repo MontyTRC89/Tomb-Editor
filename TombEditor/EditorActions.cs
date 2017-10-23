@@ -26,14 +26,15 @@ namespace TombEditor
 
         public static bool ContinueOnFileDrop(IWin32Window owner, string description)
         {
-            if (!_editor.UnsavedChanges)
+            if (!_editor.HasUnsavedChanges)
                 return true;
 
             switch (DarkMessageBox.Show(owner,
                 "Your unsaved changes will be lost. Do you want to save?",
                 description,
                 MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question))
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2))
             {
                 case DialogResult.No:
                     return true;
@@ -1976,8 +1977,6 @@ namespace TombEditor
 
         public static bool SaveLevel(IWin32Window owner, bool askForPath)
         {
-            string newLevelFilePath;
-
             // Show save dialog if necessary
             if (askForPath || string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -1991,18 +1990,15 @@ namespace TombEditor
                     if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                         return false;
 
-                    newLevelFilePath = saveFileDialog.FileName;
+                    _editor.Level.Settings.LevelFilePath = saveFileDialog.FileName;
+                    _editor.LevelFileNameChange();
                 }
-            else
-                newLevelFilePath = _editor.Level.Settings.LevelFilePath;
 
             // Save level
             try
             {
-                Prj2Writer.SaveToPrj2(newLevelFilePath, _editor.Level);
-                _editor.UnsavedChanges = false;
-                _editor.Level.Settings.LevelFilePath = newLevelFilePath;
-                _editor.LevelFileNameChange();
+                Prj2Writer.SaveToPrj2(_editor.Level.Settings.LevelFilePath, _editor.Level);
+                _editor.HasUnsavedChanges = false;
                 return true;
             }
             catch (Exception exc)
@@ -2105,7 +2101,6 @@ namespace TombEditor
                 logger.Error(exc, "Unable to open \"" + _fileName + "\"");
                 DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
             }
-            _editor.UnsavedChanges = false;
             _editor.Level = newLevel;
         }
 
@@ -2135,7 +2130,6 @@ namespace TombEditor
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
-                    _editor.UnsavedChanges = true;
                     _editor.Level = newLevel;
                     newLevel = null;
                 }

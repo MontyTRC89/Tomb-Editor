@@ -183,25 +183,18 @@ namespace TombEditor
                 }
             }
 
-            // Update application title and save button
-            if (obj is Editor.LevelFileNameChangedEvent)
+            // Update application title bar
+            if ((obj is Editor.LevelFileNameChangedEvent) || (obj is Editor.HasUnsavedChangesChangedEvent))
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     Utils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
 
-                Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
-                saveLevelToolStripMenuItem.Enabled = false;
+                Text = "Tomb Editor " + Application.ProductVersion + " - " + LevelName + (_editor.HasUnsavedChanges ? "*" : "");
             }
 
-            if (obj is Editor.LevelNeedsToBeSavedEvent)
-            {
-                if (_editor.UnsavedChanges)
-                {
-                    if(!Text.EndsWith("*"))
-                        Text = Text + "*";
-                    saveLevelToolStripMenuItem.Enabled = true;
-                }
-            }
+            // Update save button
+            if (obj is Editor.HasUnsavedChangesChangedEvent)
+                saveLevelToolStripMenuItem.Enabled = _editor.HasUnsavedChanges;
 
             // Reload window layout if the configuration changed
             if (obj is Editor.ConfigurationChangedEvent)
@@ -212,20 +205,6 @@ namespace TombEditor
                     (@event.Current.Window_Size != @event.Previous.Window_Size) ||
                     (@event.Current.Window_Layout != @event.Previous.Window_Layout))
                     LoadWindowLayout(_editor.Configuration);
-            }
-
-            // Update on changes to the project
-            if (((obj is IEditorObjectChangedEvent) && !(obj is Editor.SelectedObjectChangedEvent)) ||
-                (obj is IEditorRoomChangedEvent) ||
-                (obj is Editor.LoadedWadsChangedEvent) ||
-                (obj is Editor.LoadedTexturesChangedEvent) ||
-                (obj is Editor.LoadedImportedGeometriesChangedEvent))
-            {
-                if (!_editor.UnsavedChanges)
-                {
-                    _editor.UnsavedChanges = true;
-                    _editor.LevelNeedsToBeSaved();
-                }
             }
         }
 
