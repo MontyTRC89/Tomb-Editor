@@ -298,12 +298,12 @@ namespace TombLib.Wad.Tr4Wad
                                 var sound = new WadSample(oldWad.Sounds[j], reader.ReadBytes((int)reader.BaseStream.Length));
                                 if (wad.Samples.ContainsKey(sound.Hash))
                                 {
-                                    newInfo.WaveSounds.Add(wad.Samples[sound.Hash]);
+                                    newInfo.Samples.Add(wad.Samples[sound.Hash]);
                                 }
                                 else
                                 {
                                     wad.Samples.Add(sound.Hash, sound);
-                                    newInfo.WaveSounds.Add(sound);
+                                    newInfo.Samples.Add(sound);
                                 }
                             }
                             goto FoundSound;

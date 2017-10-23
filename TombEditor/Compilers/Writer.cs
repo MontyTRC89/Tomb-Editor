@@ -197,7 +197,7 @@ namespace TombEditor.Compilers
                         soundInfo.Pitch = wadInfo.Pitch;
                         soundInfo.Chance = wadInfo.Chance;
 
-                        ushort characteristics = (ushort)(wadInfo.WaveSounds.Count << 2);
+                        ushort characteristics = (ushort)(wadInfo.Samples.Count << 2);
                         if (wadInfo.FlagN) characteristics |= 0x1000;
                         if (wadInfo.RandomizePitch) characteristics |= 0x2000;
                         if (wadInfo.RandomizeGain) characteristics |= 0x4000;
@@ -207,7 +207,7 @@ namespace TombEditor.Compilers
 
                         writer.WriteBlock<tr_sound_details>(soundInfo);
 
-                        lastSample += (short)wadInfo.WaveSounds.Count;
+                        lastSample += (short)wadInfo.Samples.Count;
                     }
 
                     int numSampleIndices = lastSample;

@@ -371,7 +371,7 @@ namespace TombLib.Wad
                         LEB128.Write(chunkIO.Raw, (ushort)s.Loop);
 
                         chunkIO.WriteChunkString(Wad2Chunks.SoundName, s.Name);
-                        foreach (var wav in s.WaveSounds)
+                        foreach (var wav in s.Samples)
                             chunkIO.WriteChunkInt(Wad2Chunks.SoundSample, _wavesTable.IndexOf(wav));
                     });
                 }
