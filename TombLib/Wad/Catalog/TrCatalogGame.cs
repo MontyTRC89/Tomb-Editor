@@ -13,6 +13,7 @@ namespace TombLib.Wad.Catalog
         internal Dictionary<int, TrCatalogItem> Sprites { get; private set; }
         internal Dictionary<int, TrCatalogItem> StaticMeshes { get; private set; }
         internal Dictionary<int, TrCatalogItemSound> Sounds { get; private set; }
+        internal int SoundMapSize { get; set; }
 
         public TrCatalogGame(TombRaiderVersion version)
         {

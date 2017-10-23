@@ -79,6 +79,20 @@ namespace TombLib.Wad.Catalog
             return result;
         }
 
+        public static int GetSoundMapSize(TombRaiderVersion version)
+        {
+            return Games[version].SoundMapSize;
+        }
+
+        public static string GetVersionString(TombRaiderVersion version)
+        {
+            if (version == TombRaiderVersion.TR1) return "Tomb Raider I";
+            if (version == TombRaiderVersion.TR2) return "Tomb Raider II";
+            if (version == TombRaiderVersion.TR3) return "Tomb Raider III";
+            if (version == TombRaiderVersion.TR4) return "Tomb Raider The Last Revelation";
+            return "Tomb Raider Chronicles";
+        }
+
         public static void LoadCatalog(string fileName)
         {
             var document = new XmlDocument();
@@ -134,6 +148,23 @@ namespace TombLib.Wad.Catalog
                 foreach (XmlNode node in gameNode.ChildNodes)
                 {
                     if (node.Name != "sounds") continue;
+
+                    // Size of the soundmap
+                    var soundMapSize = 0;
+                    if (node.Attributes["max"] == null)
+                    {
+                        if (version == TombRaiderVersion.TR1) soundMapSize = 256;
+                        else if (version == TombRaiderVersion.TR2) soundMapSize = 370;
+                        else if (version == TombRaiderVersion.TR3) soundMapSize = 370;
+                        else if (version == TombRaiderVersion.TR4) soundMapSize = 370;
+                        else if (version == TombRaiderVersion.TR5) soundMapSize = 450;
+                    }
+                    else
+                    {
+                        soundMapSize = Int32.Parse(node.Attributes["max"].Value);
+                    }
+
+                    game.SoundMapSize = soundMapSize;
 
                     // Parse sounds
                     foreach (XmlNode soundNode in node.ChildNodes)

@@ -68,12 +68,12 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.butOpenDestWad2 = new System.Windows.Forms.ToolStripButton();
             this.butOpenSourceWad = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.butSave = new System.Windows.Forms.ToolStripButton();
             this.butSaveAs = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butSoundEditor = new System.Windows.Forms.ToolStripButton();
             this.butSpriteEditor = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.treeDestWad = new DarkUI.Controls.DarkTreeView();
@@ -88,6 +88,8 @@
             this.butDeleteObject = new DarkUI.Controls.DarkButton();
             this.butAddObjectToDifferentSlot = new DarkUI.Controls.DarkButton();
             this.butAddObject = new DarkUI.Controls.DarkButton();
+            this.labelType = new DarkUI.Controls.DarkLabel();
+            this.butChangeSlot = new DarkUI.Controls.DarkButton();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -493,6 +495,14 @@
             this.butOpenSourceWad.Text = "Open source WAD/Wad2";
             this.butOpenSourceWad.Click += new System.EventHandler(this.butOpenSourceWad_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            // 
             // butSave
             // 
             this.butSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -549,14 +559,6 @@
             this.butSpriteEditor.Text = "Sprite editor";
             this.butSpriteEditor.Click += new System.EventHandler(this.butSpriteEditor_Click);
             // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
-            // 
             // darkLabel1
             // 
             this.darkLabel1.AutoSize = true;
@@ -581,10 +583,10 @@
             // 
             // treeDestWad
             // 
-            this.treeDestWad.Location = new System.Drawing.Point(15, 89);
+            this.treeDestWad.Location = new System.Drawing.Point(15, 107);
             this.treeDestWad.MaxDragChange = 20;
             this.treeDestWad.Name = "treeDestWad";
-            this.treeDestWad.Size = new System.Drawing.Size(279, 408);
+            this.treeDestWad.Size = new System.Drawing.Size(280, 390);
             this.treeDestWad.TabIndex = 7;
             this.treeDestWad.Text = "darkTreeView1";
             this.treeDestWad.DoubleClick += new System.EventHandler(this.treeDestWad_DoubleClick);
@@ -592,10 +594,10 @@
             // 
             // treeSourceWad
             // 
-            this.treeSourceWad.Location = new System.Drawing.Point(716, 89);
+            this.treeSourceWad.Location = new System.Drawing.Point(716, 107);
             this.treeSourceWad.MaxDragChange = 20;
             this.treeSourceWad.Name = "treeSourceWad";
-            this.treeSourceWad.Size = new System.Drawing.Size(279, 408);
+            this.treeSourceWad.Size = new System.Drawing.Size(279, 390);
             this.treeSourceWad.TabIndex = 8;
             this.treeSourceWad.Text = "darkTreeView1";
             this.treeSourceWad.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeSourceWad_MouseClick);
@@ -605,9 +607,9 @@
             this.panel3D.Camera = null;
             this.panel3D.CurrentObject = null;
             this.panel3D.CurrentWad = null;
-            this.panel3D.Location = new System.Drawing.Point(301, 89);
+            this.panel3D.Location = new System.Drawing.Point(301, 107);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(409, 437);
+            this.panel3D.Size = new System.Drawing.Size(409, 419);
             this.panel3D.TabIndex = 9;
             // 
             // saveFileDialogWad2
@@ -658,7 +660,7 @@
             // 
             // butDeleteObject
             // 
-            this.butDeleteObject.Location = new System.Drawing.Point(15, 503);
+            this.butDeleteObject.Location = new System.Drawing.Point(129, 503);
             this.butDeleteObject.Name = "butDeleteObject";
             this.butDeleteObject.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteObject.Size = new System.Drawing.Size(108, 23);
@@ -689,11 +691,34 @@
             this.butAddObject.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddObject.Click += new System.EventHandler(this.butAddObject_Click);
             // 
+            // labelType
+            // 
+            this.labelType.AutoSize = true;
+            this.labelType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelType.Location = new System.Drawing.Point(713, 80);
+            this.labelType.Name = "labelType";
+            this.labelType.Size = new System.Drawing.Size(19, 13);
+            this.labelType.TabIndex = 18;
+            this.labelType.Text = "---";
+            // 
+            // butChangeSlot
+            // 
+            this.butChangeSlot.Location = new System.Drawing.Point(15, 503);
+            this.butChangeSlot.Name = "butChangeSlot";
+            this.butChangeSlot.Padding = new System.Windows.Forms.Padding(5);
+            this.butChangeSlot.Size = new System.Drawing.Size(108, 23);
+            this.butChangeSlot.TabIndex = 19;
+            this.butChangeSlot.Text = "Change slot";
+            this.butChangeSlot.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butChangeSlot.Click += new System.EventHandler(this.butChangeSlot_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 725);
+            this.Controls.Add(this.butChangeSlot);
+            this.Controls.Add(this.labelType);
             this.Controls.Add(this.butRenameSound);
             this.Controls.Add(this.treeSounds);
             this.Controls.Add(this.butPlaySound);
@@ -786,6 +811,8 @@
         private System.Windows.Forms.ToolStripButton butNewWad2;
         private System.Windows.Forms.ToolStripButton butNewWad2ForLevel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private DarkUI.Controls.DarkLabel labelType;
+        private DarkUI.Controls.DarkButton butChangeSlot;
     }
 }
 
