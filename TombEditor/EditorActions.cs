@@ -1977,36 +1977,43 @@ namespace TombEditor
 
         public static bool SaveLevel(IWin32Window owner, bool askForPath)
         {
+            string filePath = _editor.Level.Settings.LevelFilePath;
+
             // Show save dialog if necessary
-            if (askForPath || string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
+            if (askForPath || string.IsNullOrEmpty(filePath))
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
                     saveFileDialog.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
-                    if (!string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
+                    if (!string.IsNullOrEmpty(filePath))
                     {
-                        saveFileDialog.InitialDirectory = Path.GetDirectoryName(_editor.Level.Settings.LevelFilePath);
-                        saveFileDialog.FileName = Path.GetFileName(_editor.Level.Settings.LevelFilePath);
+                        saveFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
+                        saveFileDialog.FileName = Path.GetFileName(filePath);
                     }
                     if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                         return false;
-
-                    _editor.Level.Settings.LevelFilePath = saveFileDialog.FileName;
-                    _editor.LevelFileNameChange();
+                    filePath = saveFileDialog.FileName;
                 }
 
             // Save level
             try
             {
-                Prj2Writer.SaveToPrj2(_editor.Level.Settings.LevelFilePath, _editor.Level);
-                _editor.HasUnsavedChanges = false;
-                return true;
+                Prj2Writer.SaveToPrj2(filePath, _editor.Level);
             }
             catch (Exception exc)
             {
-                logger.Error(exc, "Unable to save to \"" + _editor.Level.Settings.LevelFilePath + "\".");
-                DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
+                logger.Error(exc, "Unable to save to \"" + filePath + "\".");
+                DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
                 return false;
             }
+
+            // Update state
+            _editor.HasUnsavedChanges = false;
+            if (_editor.Level.Settings.LevelFilePath != filePath)
+            {
+                _editor.Level.Settings.LevelFilePath = filePath;
+                _editor.LevelFileNameChange();
+            }
+            return true;
         }
 
         /*public static void ExportCurrentRoom(IWin32Window owner)
