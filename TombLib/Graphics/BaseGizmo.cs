@@ -62,8 +62,7 @@ namespace TombLib.Graphics
         private static readonly Color4 _zAxisColor = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
         private static readonly Color4 _centerColor = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
         private static readonly Color4 _hoveredAddition = new Color4(0.6f, 0.6f, 0.6f, 1.0f);
-        private static readonly float _hoveredAdditionGreensCorrection = 1.35f;
-        private static readonly float _arrowHeadOffsetMultiplier = 1.21f;
+        private static readonly float _arrowHeadOffsetMultiplier = 1.15f;
 
         private GizmoMode _mode;
         private float _scaleBase;
@@ -410,7 +409,7 @@ namespace TombLib.Graphics
                         RotateMatrixY *
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.RotateY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.RotateY ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
                 }
@@ -466,7 +465,7 @@ namespace TombLib.Graphics
                         Matrix.Scaling(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
@@ -500,7 +499,7 @@ namespace TombLib.Graphics
                     var model = Matrix.Scaling(ScaleCubeSize) *
                         Matrix.Translation(Position + Vector3.UnitY * Size / 2.0f);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
                 }
@@ -539,7 +538,7 @@ namespace TombLib.Graphics
                         Matrix.Scaling(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
@@ -575,7 +574,7 @@ namespace TombLib.Graphics
                         Matrix.Scaling(TranslationConeSize) *
                         Matrix.Translation(Position + (Vector3.UnitY + new Vector3(0, 0.1f, 0)) * (Size * _arrowHeadOffsetMultiplier));
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
