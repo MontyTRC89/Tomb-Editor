@@ -101,7 +101,7 @@ namespace WadTool
             wave.Play();
         }
 
-        private void tbSearch_KeyDown(object sender, KeyEventArgs e)
+        private void tbSearch_KeyUp(object sender, KeyEventArgs e)
         {
             ReloadWaves();
         }

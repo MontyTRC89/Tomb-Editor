@@ -494,7 +494,7 @@ namespace WadTool
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
-            var objectId = form.ObjectId;
+            var objectId = (uint)form.ObjectId;
             var objectName = form.ObjectName;
 
             // Check if object could be overwritten

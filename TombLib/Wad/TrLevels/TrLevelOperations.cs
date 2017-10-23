@@ -453,11 +453,11 @@ namespace TombLib.Wad.TrLevels
         public static WadMoveable ConvertTrLevelMoveableToWadMoveable(Wad2 wad, TrLevel oldLevel, int moveableIndex,
                                                                       Dictionary<int, WadTexture> textures)
         {
-            WadMoveable moveable = new WadMoveable();
+            WadMoveable moveable = new WadMoveable(wad);
             var m = oldLevel.Moveables[moveableIndex];
 
             moveable.ObjectID = m.ObjectID;
-            moveable.Name = TrCatalog.GetMoveableName(GetTrVersion(oldLevel.Version), m.ObjectID);
+            //moveable.Name = TrCatalog.GetMoveableName(GetTrVersion(oldLevel.Version), m.ObjectID);
 
             // First I build a list of meshes for this moveable
             var meshes = new List<tr_mesh>();
@@ -814,10 +814,10 @@ namespace TombLib.Wad.TrLevels
         public static WadStatic ConvertTrLevelStaticMeshToWadStatic(Wad2 wad, TrLevel oldLevel, int staticIndex,
                                                                 Dictionary<int, WadTexture> textures)
         {
-            var staticMesh = new WadStatic();
+            var staticMesh = new WadStatic(wad);
             var oldStaticMesh = oldLevel.StaticMeshes[staticIndex];
 
-            staticMesh.Name = TrCatalog.GetStaticName(GetTrVersion(oldLevel.Version), oldStaticMesh.ObjectID);
+            //staticMesh.Name = TrCatalog.GetStaticName(GetTrVersion(oldLevel.Version), oldStaticMesh.ObjectID);
 
             // First setup collisional and visibility bounding boxes
             staticMesh.CollisionBox = new BoundingBox(new Vector3(oldStaticMesh.CollisionBox.X1,
