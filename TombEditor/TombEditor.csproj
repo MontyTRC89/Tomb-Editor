@@ -143,6 +143,7 @@
     <Compile Include="Controls\ImportedGeometryManager.designer.cs">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OpenFolderDialog.cs" />
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
