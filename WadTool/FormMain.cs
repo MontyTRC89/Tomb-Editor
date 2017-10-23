@@ -120,7 +120,7 @@ namespace WadTool
 
                     int i = 0;
 
-                    foreach (var wave in sound.WaveSounds)
+                    foreach (var wave in sound.Samples)
                     {
                         var nodeWave = new DarkUI.Controls.DarkTreeNode("Sample " + i);
                         nodeWave.Tag = wave;
@@ -529,10 +529,10 @@ namespace WadTool
             if (treeSounds.SelectedNodes.Count == 0)
                 return;
             var node = treeSounds.SelectedNodes[0];
-            if (node.Tag == null || node.Tag.GetType() != typeof(WadSound))
+            if (node.Tag == null || node.Tag.GetType() != typeof(WadSample))
                 return;
 
-            var currentSound = (WadSound)node.Tag;
+            var currentSound = (WadSample)node.Tag;
 
             currentSound.Play();
         }
@@ -761,6 +761,89 @@ namespace WadTool
                     }
                 }
             }
+        }
+
+        private void debugAction8ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wad = _tool.SourceWad;
+            wad.Textures.Clear();
+            wad.Moveables.Clear();
+            wad.Statics.Clear();
+            wad.Meshes.Clear();
+
+            var newSounds = new Dictionary<ushort, WadSoundInfo>();
+
+            foreach(var info in wad.SoundInfo)
+            {
+                if (TrCatalog.IsSoundMandatory(wad.Version, info.Key))
+                {
+                    newSounds.Add(info.Key, info.Value);
+                }
+            }
+
+            wad.SoundInfo.Clear();
+            wad.Samples.Clear();
+
+            foreach (var info in newSounds)
+            {
+                wad.SoundInfo.Add(info.Key, info.Value);
+
+                foreach (var sample in info.Value.Samples)
+                {
+                    if (!wad.Samples.ContainsKey(sample.Hash)) wad.Samples.Add(sample.Hash, sample);
+                }
+            }
+
+            Wad2.SaveToFile(wad, "E:\\BaseWad.wad2");
+        }
+
+        private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sounds = TrCatalog.GetAllSounds(TombRaiderVersion.TR4);
+            int numMandatory = 0;
+            foreach (var sound in sounds)
+            {
+                if (TrCatalog.IsSoundMandatory(TombRaiderVersion.TR4, (uint)sound.Key)) numMandatory++;
+            }
+        }
+
+        private void newEmptyWad2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butNewWad2_Click(null, null);
+        }
+
+        private void newEmptyWad2WithSystemSoundsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butNewWad2ForLevel_Click(null, null);
+        }
+
+        private void butNewWad2_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
+            var wad = new Wad2(TombRaiderVersion.TR4);
+            wad.GraphicsDevice = _tool.Device;
+            wad.PrepareDataForDirectX();
+            _tool.DestinationWad = wad;
+
+            UpdateDestinationWad2UI();
+        }
+
+        private void butNewWad2ForLevel_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
+            var wad = Wad2.LoadFromFile("Editor\\BaseWad2\\BaseTR4.wad2");
+            if (wad == null)
+            {
+                DarkMessageBox.Show(this,
+                                    "There was an error while creating the new Wad2",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            wad.GraphicsDevice = _tool.Device;
+            wad.PrepareDataForDirectX();
+            _tool.DestinationWad = wad;
+
+            UpdateDestinationWad2UI();
         }
     }
 }

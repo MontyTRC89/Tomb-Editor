@@ -94,7 +94,7 @@ namespace TombEditor.Compilers
             for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
             {
                 var soundInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
-                numSamples += (uint)soundInfo.WaveSounds.Count;
+                numSamples += (uint)soundInfo.Samples.Count;
             }
 
             var stream = new MemoryStream();
@@ -108,7 +108,7 @@ namespace TombEditor.Compilers
 
                     var soundInfo = _level.Wad.SoundInfo[(ushort)i];
 
-                    foreach (var sound in soundInfo.WaveSounds)
+                    foreach (var sound in soundInfo.Samples)
                     {
                         writer.Write(sound.WaveData.GetLength(0));
                         writer.Write(sound.WaveData.GetLength(0));

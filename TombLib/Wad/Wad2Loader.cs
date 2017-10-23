@@ -26,7 +26,7 @@ namespace TombLib.Wad
 
         private static Wad2 LoadWad2(ChunkReader chunkIO)
         {
-            var wad = new Wad2();
+            var wad = new Wad2((TombRaiderVersion)LEB128.ReadUInt(chunkIO.Raw));
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -147,10 +147,10 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                var sample = new WadSound(name, data);
+                var sample = new WadSample(name, data);
                 sample.UpdateHash();
 
-                wad.WaveSounds.Add(sample.Hash, sample);
+                wad.Samples.Add(sample.Hash, sample);
 
                 return true;
             });
@@ -580,7 +580,7 @@ namespace TombLib.Wad
                     }
                     else if (id2 == Wad2Chunks.SoundSample)
                     {
-                        s.WaveSounds.Add(wad.WaveSounds.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
+                        s.Samples.Add(wad.Samples.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
                     }
                     else
                     {

@@ -380,6 +380,9 @@
     <EmbeddedResource Include="ToolWindows\SectorOptions.resx">
       <DependentUpon>SectorOptions.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Editor\BaseWad2\BaseTR4.wad2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Editor\Misc\font.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
