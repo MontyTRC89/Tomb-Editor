@@ -796,7 +796,7 @@ namespace TombEditor.Controls
                         Camera.MoveCameraPlane(new Vector3(relativeDeltaX, relativeDeltaY, 0) *
                             _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
                     else if (ModifierKeys.HasFlag(Keys.Control))
-                        Camera.Zoom(relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
+                        Camera.Zoom((_editor.Configuration.Rendering3D_InvertMouseZoom ? relativeDeltaY : -relativeDeltaY) * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                     else
                         Camera.Rotate(
                             relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
