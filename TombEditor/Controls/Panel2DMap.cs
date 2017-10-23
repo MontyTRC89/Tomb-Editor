@@ -162,8 +162,7 @@ namespace TombEditor.Controls
                         {
                             // Add depth probe under mouse pointer
                             _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.Count;
-                            _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar));
-                            _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value].Position = clickPos;
+                            _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar) { Position = clickPos });
                         }
                         Invalidate();
                     }
@@ -203,8 +202,7 @@ namespace TombEditor.Controls
                 case MouseButtons.XButton2:
                     // Add depth probe under mouse pointer
                     _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.Count;
-                    _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar));
-                    _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value].Position = clickPos;
+                    _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar) { Position = clickPos });
                     break;
             }
         }
@@ -229,9 +227,7 @@ namespace TombEditor.Controls
                         else
                         {
                             // Add depth probe under mouse pointer
-                            currentProbeIndex = _depthBar.DepthProbes.Count;
-                            _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar));
-                            _depthBar.DepthProbes[currentProbeIndex.Value].Position = clickPos;
+                            _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar) { Position = clickPos });
                         }
                         Invalidate();
                     }
