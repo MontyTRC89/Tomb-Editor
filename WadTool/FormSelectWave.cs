@@ -55,7 +55,7 @@ namespace WadTool
         {
             if (openFileDialogWave.ShowDialog() == DialogResult.Cancel) return;
 
-            // Create the new WAVE
+            // Create the new sample
             WadSample sound;
 
             using (var reader = new BinaryReader(File.OpenRead(openFileDialogWave.FileName)))
@@ -67,7 +67,7 @@ namespace WadTool
             // Check if the sound exists
             if (_tool.DestinationWad.Samples.ContainsKey(sound.Hash))
             {
-                DarkMessageBox.Show(this, "The selected wave already exists in this Wad2", "Information", MessageBoxIcon.Information);
+                DarkMessageBox.Show(this, "The selected sample already exists in this Wad2", "Information", MessageBoxIcon.Information);
                 return;
             }
             else
