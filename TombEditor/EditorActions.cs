@@ -1998,7 +1998,6 @@ namespace TombEditor
             {
                 Prj2Writer.SaveToPrj2(_editor.Level.Settings.LevelFilePath, _editor.Level);
                 _editor.UnsavedChanges = false;
-                _editor.LevelFileNameChange();
             }
             catch (Exception exc)
             {
