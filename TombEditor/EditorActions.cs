@@ -38,8 +38,7 @@ namespace TombEditor
                 case DialogResult.No:
                     return true;
                 case DialogResult.Yes:
-                    SaveLevel(owner, false); // TODO: This should be made to handle errors os saving
-                    return true;
+                    return SaveLevel(owner, false);
                 default:
                     return false;
             }
@@ -1975,7 +1974,7 @@ namespace TombEditor
             _editor.ObjectChange(portal);
         }
 
-        public static void SaveLevel(IWin32Window owner, bool askForPath)
+        public static bool SaveLevel(IWin32Window owner, bool askForPath)
         {
             string newLevelFilePath;
 
@@ -1990,7 +1989,7 @@ namespace TombEditor
                         saveFileDialog.FileName = Path.GetFileName(_editor.Level.Settings.LevelFilePath);
                     }
                     if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                        return false;
 
                     newLevelFilePath = saveFileDialog.FileName;
                 }
@@ -2004,11 +2003,13 @@ namespace TombEditor
                 _editor.UnsavedChanges = false;
                 _editor.Level.Settings.LevelFilePath = newLevelFilePath;
                 _editor.LevelFileNameChange();
+                return true;
             }
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to save to \"" + _editor.Level.Settings.LevelFilePath + "\".");
                 DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
+                return false;
             }
         }
 
