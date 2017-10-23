@@ -1977,6 +1977,8 @@ namespace TombEditor
 
         public static void SaveLevel(IWin32Window owner, bool askForPath)
         {
+            string newLevelFilePath;
+
             // Show save dialog if necessary
             if (askForPath || string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
@@ -1990,19 +1992,24 @@ namespace TombEditor
                     if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                         return;
 
-                    // Save level
-                    try
-                    {
-                        _editor.UnsavedChanges = false;
-                        Prj2Writer.SaveToPrj2(saveFileDialog.FileName, _editor.Level);
-                        _editor.Level.Settings.LevelFilePath = saveFileDialog.FileName;
-                    }
-                    catch (Exception exc)
-                    {
-                        logger.Error(exc, "Unable to save to \"" + saveFileDialog.FileName + "\".");
-                        DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
-                    }
+                    newLevelFilePath = saveFileDialog.FileName;
                 }
+            else
+                newLevelFilePath = _editor.Level.Settings.LevelFilePath;
+
+            // Save level
+            try
+            {
+                Prj2Writer.SaveToPrj2(newLevelFilePath, _editor.Level);
+                _editor.UnsavedChanges = false;
+                _editor.Level.Settings.LevelFilePath = newLevelFilePath;
+                _editor.LevelFileNameChange();
+            }
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Unable to save to \"" + _editor.Level.Settings.LevelFilePath + "\".");
+                DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
+            }
         }
 
         /*public static void ExportCurrentRoom(IWin32Window owner)
