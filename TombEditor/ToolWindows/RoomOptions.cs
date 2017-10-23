@@ -91,7 +91,6 @@ namespace TombEditor.ToolWindows
             }
         }
 
-
         private void comboRoom_SelectedIndexChanged(object sender, EventArgs e)
         {
             Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
@@ -146,112 +145,154 @@ namespace TombEditor.ToolWindows
 
         private void cbFlagDamage_CheckedChanged(object sender, EventArgs e)
         {
+            if (_editor.SelectedRoom.FlagDamage == cbFlagDamage.Checked)
+                return;
+
             _editor.SelectedRoom.FlagDamage = cbFlagDamage.Checked;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void cbFlagCold_CheckedChanged(object sender, EventArgs e)
         {
+            if (_editor.SelectedRoom.FlagCold == cbFlagCold.Checked)
+                return;
+
             _editor.SelectedRoom.FlagCold = cbFlagCold.Checked;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void cbFlagOutside_CheckedChanged(object sender, EventArgs e)
         {
+            if (_editor.SelectedRoom.FlagOutside == cbFlagOutside.Checked)
+                return;
+
             _editor.SelectedRoom.FlagOutside = cbFlagOutside.Checked;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void cbHorizon_CheckedChanged(object sender, EventArgs e)
         {
+            if (_editor.SelectedRoom.FlagHorizon == cbHorizon.Checked)
+                return;
+
             _editor.SelectedRoom.FlagHorizon = cbHorizon.Checked;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void cbNoPathfinding_CheckedChanged(object sender, EventArgs e)
         {
+            if (_editor.SelectedRoom.FlagExcludeFromPathFinding == cbNoPathfinding.Checked)
+                return;
+
             _editor.SelectedRoom.FlagExcludeFromPathFinding = cbNoPathfinding.Checked;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void comboReverberation_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_editor.SelectedRoom.Reverberation == (Reverberation)(comboReverberation.SelectedIndex))
+                return;
+
             _editor.SelectedRoom.Reverberation = (Reverberation)(comboReverberation.SelectedIndex);
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            bool flagRain = false;
+            bool flagSnow = false;
+            bool flagQuicksand = false;
+            byte waterLevel = 0;
+
             switch (comboRoomType.SelectedIndex)
             {
                 case 0:
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 0;
+                    flagRain = false;
+                    flagSnow = false;
+                    flagQuicksand = false;
+                    waterLevel = 0;
                     break;
 
                 case 1:
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 1;
+                    flagRain = false;
+                    flagSnow = false;
+                    flagQuicksand = false;
+                    waterLevel = 1;
                     break;
 
                 case 2:
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 2;
+                    flagRain = false;
+                    flagSnow = false;
+                    flagQuicksand = false;
+                    waterLevel = 2;
                     break;
 
                 case 3:
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 3;
+                    flagRain = false;
+                    flagSnow = false;
+                    flagQuicksand = false;
+                    waterLevel = 3;
                     break;
 
                 case 4:
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 4;
+                    flagRain = false;
+                    flagSnow = false;
+                    flagQuicksand = false;
+                    waterLevel = 4;
                     break;
 
                 case 5:
-                    _editor.SelectedRoom.FlagRain = true;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 0;
+                    flagRain = true;
+                    flagSnow = false;
+                    flagQuicksand = false;
+                    waterLevel = 0;
                     break;
 
                 case 6:
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = true;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 0;
+                    flagRain = false;
+                    flagSnow = true;
+                    flagQuicksand = false;
+                    waterLevel = 0;
                     break;
 
                 case 7:
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = true;
-                    _editor.SelectedRoom.WaterLevel = 0;
+                    flagRain = false;
+                    flagSnow = false;
+                    flagQuicksand = true;
+                    waterLevel = 0;
                     break;
             }
+
+            if ((_editor.SelectedRoom.FlagRain == flagRain) &&
+                (_editor.SelectedRoom.FlagSnow == flagSnow) &&
+                (_editor.SelectedRoom.FlagQuickSand == flagQuicksand) &&
+                (_editor.SelectedRoom.WaterLevel == waterLevel))
+                return;
+
+            _editor.SelectedRoom.FlagRain = flagRain;
+            _editor.SelectedRoom.FlagSnow = flagSnow;
+            _editor.SelectedRoom.FlagQuickSand = flagQuicksand;
+            _editor.SelectedRoom.WaterLevel = waterLevel;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void comboReflection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _editor.SelectedRoom.ReflectionLevel = unchecked((byte)comboReflection.SelectedIndex);
+            byte reflectionLevel = unchecked((byte)comboReflection.SelectedIndex);
+            if (_editor.SelectedRoom.ReflectionLevel == reflectionLevel)
+                return;
+
+            _editor.SelectedRoom.ReflectionLevel = reflectionLevel;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void comboMist_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _editor.SelectedRoom.MistLevel = unchecked((byte)comboMist.SelectedIndex);
+            byte mistLevel = unchecked((byte)comboMist.SelectedIndex);
+            if (_editor.SelectedRoom.MistLevel == mistLevel)
+                return;
+
+            _editor.SelectedRoom.MistLevel = mistLevel;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -323,6 +364,9 @@ namespace TombEditor.ToolWindows
 
         private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)
         {
+            if (_editor.SelectedRoom.FlagNoLensflare == cbNoLensflare.Checked)
+                return;
+
             _editor.SelectedRoom.FlagNoLensflare = cbNoLensflare.Checked;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
