@@ -926,5 +926,40 @@ namespace TombLib.Wad
 
             return Meshes[newMesh.Hash];
         }
+
+        public static BoundingBox CalculateBoundingBox(WadMesh mesh, Matrix transform)
+        {
+            float xMin = float.MaxValue;
+            float yMin = float.MaxValue;
+            float zMin = float.MaxValue;
+            float xMax = float.MinValue;
+            float yMax = float.MinValue;
+            float zMax = float.MinValue;
+
+            // Add positions
+            foreach (var oldVertex in mesh.VerticesPositions)
+            {
+                var transformedVertex = Vector3.Transform(oldVertex, transform);
+                
+                if (transformedVertex.X < xMin)
+                    xMin = transformedVertex.X;
+                if (transformedVertex.Y < yMin)
+                    yMin = transformedVertex.Y;
+                if (transformedVertex.Z < zMin)
+                    zMin = transformedVertex.Z;
+
+                if (transformedVertex.X > xMax)
+                    xMax = transformedVertex.X;
+                if (transformedVertex.Y > yMax)
+                    yMax = transformedVertex.Y;
+                if (transformedVertex.Z > zMax)
+                    zMax = transformedVertex.Z;
+            }
+
+            Vector3 minVertex = new Vector3(xMin, yMin, zMin);
+            Vector3 maxVertex = new Vector3(xMax, yMax, zMax);
+
+            return new BoundingBox(minVertex, maxVertex);
+        }
     }
 }
