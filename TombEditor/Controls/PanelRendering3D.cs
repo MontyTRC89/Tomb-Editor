@@ -1310,10 +1310,7 @@ namespace TombEditor.Controls
                 // Object position
                 message += "\n" + GetObjectPositionString(light.Room, light);
 
-                Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                    _device.Viewport.MinDepth,
-                    _device.Viewport.MaxDepth, light.ObjectMatrix * viewProjection);
-                _debug.AddString(message, screenPos);
+                DrawDebugString(message, light.ObjectMatrix * viewProjection);
 
                 // Add the line height of the object
                 AddObjectHeightLine(viewProjection, light.Room, light.Position);
@@ -1349,13 +1346,8 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                                                        Height, _device.Viewport.MinDepth,
-                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1385,13 +1377,8 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                                                        Height, _device.Viewport.MinDepth,
-                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1422,13 +1409,8 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                                                        Height, _device.Viewport.MinDepth,
-                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1461,13 +1443,8 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                                                        Height, _device.Viewport.MinDepth,
-                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1535,10 +1512,7 @@ namespace TombEditor.Controls
                         string message = instance.ToString();
                         message += "\nUnavailable " + instance.ItemType.ToString();
 
-                        Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                            _device.Viewport.MinDepth,
-                            _device.Viewport.MaxDepth, instance.RotationPositionMatrix * viewProjection);
-                        _debug.AddString(message, screenPos);
+                        DrawDebugString(message, instance.RotationPositionMatrix * viewProjection);
 
                         // Add the line height of the object
                         AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1563,11 +1537,8 @@ namespace TombEditor.Controls
                     {
                         color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
                         _device.SetRasterizerState(_rasterizerWireframe);
-
-                        Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                            _device.Viewport.MinDepth,
-                            _device.Viewport.MaxDepth, instance.RotationPositionMatrix * viewProjection);
-                        _debug.AddString(instance.ToString(), screenPos);
+                        
+                        DrawDebugString(instance.ToString(), instance.RotationPositionMatrix * viewProjection);
 
                         // Add the line height of the object
                         AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1663,10 +1634,6 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, -10, 40, Width,
-                        Height, _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString();
 
                     // Object position
@@ -1678,8 +1645,7 @@ namespace TombEditor.Controls
                         message += "\nOCB: " + instance.Ocb;
 
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1758,16 +1724,9 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, -10, 40, Width,
-                        Height, _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
-                    string message = instance.ToString();
-
                     // Object position
-                    message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(instance.ToString() + "\n" +
+                        GetObjectPositionString(_editor.SelectedRoom, instance), instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, instance.Position);
@@ -1829,10 +1788,6 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, -10, 40, Width,
-                        Height, _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     string message = _editor.Level.Wad.Statics[instance.WadObjectId].ToString();
 
                     // Object position
@@ -1840,8 +1795,7 @@ namespace TombEditor.Controls
                     message += "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2);
 
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, instance.Position);
@@ -1898,6 +1852,14 @@ namespace TombEditor.Controls
                 _debug.NumVerticesObjects += mesh.NumIndices;
                 _debug.NumTrianglesObjects += mesh.NumIndices / 3;
             }
+        }
+
+        public void DrawDebugString(string message, Matrix transformation, Vector3 offset = new Vector3())
+        {
+            Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, ClientSize.Width, ClientSize.Height,
+                _device.Viewport.MinDepth, _device.Viewport.MaxDepth, transformation);
+            screenPos += offset; // Offset text a little bit
+            _debug.AddString(message, screenPos);
         }
 
         private Ray ConvertMouseToRay(Vector2 mousePosition)
