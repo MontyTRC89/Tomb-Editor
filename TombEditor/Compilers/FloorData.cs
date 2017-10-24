@@ -428,7 +428,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray1 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
                                             pl1.Intersects(ref ray1, out distance1);
-                                            distance1 = 32768 - distance1;
+                                            distance1 = 32768 - (float)Math.Round(distance1);
                                             distance1 /= 256;
 
                                             //int maxTriangle1 = Math.Max(Math.Max(h01, h00), h10);
@@ -443,7 +443,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray2 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
                                             pl2.Intersects(ref ray2, out distance2);
-                                            distance2 = 32768 - distance2;
+                                            distance2 = 32768 - (float)Math.Round(distance2);
                                             distance2 /= 256;
 
                                             //int maxTriangle2 = Math.Max(Math.Max(h11, h10), h01);
@@ -463,7 +463,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
                                             p.Intersects(ref ray, out distance);
-                                            distance = 32768 - distance;
+                                            distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
                                             var maxTriangle = Math.Max(Math.Max(h01, h11), h10);
@@ -492,7 +492,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
                                             p.Intersects(ref ray, out distance);
-                                            distance = 32768 - distance;
+                                            distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
                                             var maxTriangle = Math.Max(Math.Max(h01, h00), h10);
@@ -544,7 +544,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray1 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
                                             pl1.Intersects(ref ray1, out distance1);
-                                            distance1 = 32768 - distance1;
+                                            distance1 = 32768 - (float)Math.Round(distance1);
                                             distance1 /= 256;
 
                                             t2 = (int)(maxHeight - distance1) & 0x1f;
@@ -556,7 +556,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray2 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
                                             pl2.Intersects(ref ray2, out distance2);
-                                            distance2 = 32768 - distance2;
+                                            distance2 = 32768 - (float)Math.Round(distance2);
                                             distance2 /= 256;
 
                                             t1 = (int)(maxHeight - distance2) & 0x1f;
@@ -571,7 +571,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
                                             p.Intersects(ref ray, out distance);
-                                            distance = 32768 - distance;
+                                            distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
                                             var maxTriangle = Math.Max(Math.Max(h01, h11), h00);
@@ -597,7 +597,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
                                             p.Intersects(ref ray, out distance);
-                                            distance = 32768 - distance;
+                                            distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
                                             var maxTriangle = Math.Max(Math.Max(h11, h00), h10);
@@ -822,7 +822,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray1 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
                                             pl1.Intersects(ref ray1, out distance1);
-                                            distance1 = 32768 - distance1;
+                                            distance1 = 32768 - (float)Math.Round(distance1);
                                             distance1 /= 256;
 
                                             t2 = (int)(-maxHeight + distance1) & 0x1f;
@@ -834,7 +834,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray2 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
                                             pl2.Intersects(ref ray2, out distance2);
-                                            distance2 = 32768 - distance2;
+                                            distance2 = 32768 - (float)Math.Round(distance2);
                                             distance2 /= 256;
 
                                             t1 = (int)(-maxHeight + distance2) & 0x1f;
@@ -849,7 +849,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
                                             p.Intersects(ref ray, out distance);
-                                            distance = 32768 - distance;
+                                            distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
                                             var maxTriangle = Math.Max(Math.Max(h01, h11), h10);
@@ -875,7 +875,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
                                             p.Intersects(ref ray, out distance);
-                                            distance = 32768 - distance;
+                                            distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
                                             var maxTriangle = Math.Max(Math.Max(h01, h00), h10);
@@ -927,7 +927,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray1 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
                                             pl1.Intersects(ref ray1, out distance1);
-                                            distance1 = 32768 - distance1;
+                                            distance1 = 32768 - (float)Math.Round(distance1);
                                             distance1 /= 256;
 
                                             t2 = (int)(-maxHeight + distance1) & 0x1f;
@@ -939,7 +939,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray2 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
                                             pl2.Intersects(ref ray2, out distance2);
-                                            distance2 = 32768 - distance2;
+                                            distance2 = 32768 - (float)Math.Round(distance2);
                                             distance2 /= 256;
 
                                             t1 = (int)(-maxHeight + distance2) & 0x1f;
@@ -954,7 +954,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
                                             p.Intersects(ref ray, out distance);
-                                            distance = 32768 - distance;
+                                            distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
                                             var maxTriangle = Math.Max(Math.Max(h01, h11), h00);
@@ -980,7 +980,7 @@ namespace TombEditor.Compilers
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
                                             p.Intersects(ref ray, out distance);
-                                            distance = 32768 - distance;
+                                            distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
                                             var maxTriangle = Math.Max(Math.Max(h11, h00), h10);
