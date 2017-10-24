@@ -15,7 +15,7 @@ namespace WadTool
     public partial class FormSelectSlot : DarkUI.Forms.DarkForm
     {
         public bool IsMoveable { get; set; }
-        public uint ObjectId { get; set; }
+        public int ObjectId { get; set; }
         public string ObjectName { get; set; }
 
         private WadToolClass _tool = WadToolClass.Instance;
@@ -27,25 +27,43 @@ namespace WadTool
 
         private void FormSelectSlot_Load(object sender, EventArgs e)
         {
+            ReloadSlots();
+        }
+
+        private void ReloadSlots()
+        {
+            treeSlots.Nodes.Clear();
+            treeSlots.Invalidate();
+
             if (IsMoveable)
             {
-                foreach (var moveable in TrCatalog.GetAllMoveables(_tool.DestinationWad.Version))
+                var moveables = TrCatalog.GetAllMoveables(_tool.DestinationWad.Version);
+                var nodes = new List<DarkUI.Controls.DarkTreeNode>();
+                foreach (var moveable in moveables)
                 {
+                    if (tbSearch.Text != "" && !moveable.Value.ToString().ToLower().Contains(tbSearch.Text.ToLower())) continue;
+
                     var nodeMoveable = new DarkUI.Controls.DarkTreeNode(moveable.Value.ToString());
                     nodeMoveable.Tag = moveable.Key;
 
-                    treeSlots.Nodes.Add(nodeMoveable);
+                    nodes.Add(nodeMoveable);
                 }
+                treeSlots.Nodes.AddRange(nodes);
             }
             else
             {
-                foreach (var staticMesh in TrCatalog.GetAllStaticMeshes(_tool.DestinationWad.Version))
+                var staticMeshes = TrCatalog.GetAllStaticMeshes(_tool.DestinationWad.Version);
+                var nodes = new List<DarkUI.Controls.DarkTreeNode>();
+                foreach (var staticMesh in staticMeshes)
                 {
+                    if (tbSearch.Text != "" && !staticMesh.Value.ToString().ToLower().Contains(tbSearch.Text.ToLower())) continue;
+
                     var nodeStatic = new DarkUI.Controls.DarkTreeNode(staticMesh.Value.ToString());
                     nodeStatic.Tag = staticMesh.Key;
 
-                    treeSlots.Nodes.Add(nodeStatic);
+                    nodes.Add(nodeStatic);
                 }
+                treeSlots.Nodes.AddRange(nodes);
             }
         }
 
@@ -63,11 +81,16 @@ namespace WadTool
 
             if (node.Tag == null) return;
 
-            ObjectId = (uint)node.Tag;  
+            ObjectId = (int)node.Tag;  
             ObjectName = node.Text;
 
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void tbSearch_KeyUp(object sender, KeyEventArgs e)
+        {
+            ReloadSlots();
         }
     }
 }

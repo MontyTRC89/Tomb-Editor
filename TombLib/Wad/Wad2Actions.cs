@@ -349,7 +349,7 @@ namespace TombLib.Wad
             if (isMoveable)
             {
                 var moveable = (WadMoveable)obj;
-                newObject = new WadMoveable();
+                newObject = new WadMoveable(this);
                 var newMoveable = (WadMoveable)newObject;
 
                 // Add meshes
@@ -363,7 +363,7 @@ namespace TombLib.Wad
 
                 newMoveable.ObjectID = destination;
                 newMoveable.Offset = new Vector3(moveable.Offset.X, moveable.Offset.Y, moveable.Offset.Z);
-                newMoveable.Name = moveable.Name;
+                //newMoveable.Name = moveable.Name;
 
                 // Add mesh trees
                 foreach (var link in moveable.Links)
@@ -378,7 +378,7 @@ namespace TombLib.Wad
             else
             {
                 var staticMesh = (WadStatic)obj;
-                newObject = new WadStatic();
+                newObject = new WadStatic(this);
                 var newStaticMesh = (WadStatic)newObject;
 
                 // Add mesh
@@ -387,7 +387,7 @@ namespace TombLib.Wad
 
                 newStaticMesh.Mesh = Meshes[meshesToAdd[0].Hash];
                 newStaticMesh.ObjectID = destination;
-                newStaticMesh.Name = staticMesh.Name;
+                //newStaticMesh.Name = staticMesh.Name;
 
                 newStaticMesh.CollisionBox = new BoundingBox(new Vector3(staticMesh.CollisionBox.Minimum.X,
                                                                          staticMesh.CollisionBox.Minimum.Y,
@@ -788,7 +788,7 @@ namespace TombLib.Wad
 
             var mesh = ImportWadMeshFromExternalModel(fileName, scale);
 
-            var staticMesh = new WadStatic();
+            var staticMesh = new WadStatic(this);
 
             staticMesh.ObjectID = objectId;
             staticMesh.Mesh = mesh;

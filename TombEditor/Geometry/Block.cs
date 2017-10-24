@@ -379,6 +379,8 @@ namespace TombEditor.Geometry
 
         public bool FloorIsQuad => IsQuad(QAFaces[FaceXnZp], QAFaces[FaceXpZp], QAFaces[FaceXpZn], QAFaces[FaceXnZn]);
         public bool CeilingIsQuad => IsQuad(WSFaces[FaceXnZp], WSFaces[FaceXpZp], WSFaces[FaceXpZn], WSFaces[FaceXnZn]);
+        public bool FloorHasSlope => FloorDiagonalSplit == DiagonalSplit.None && FloorMax - FloorMin > 2;
+        public bool CeilingHasSlope => CeilingDiagonalSplit == DiagonalSplit.None && CeilingMax - CeilingMin > 2;
         public int FloorIfQuadSlopeX => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXnZp] : 0;
         public int FloorIfQuadSlopeZ => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXpZn] : 0;
         public int CeilingIfQuadSlopeX => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXnZp] : 0;

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -36,7 +37,8 @@ namespace WadTool
 
         private void UpdateStatistics()
         {
-            string message = "Sound Infos: " + _tool.DestinationWad.SoundInfo.Count + "    " + 
+            string message = "Sound Infos: " + _tool.DestinationWad.SoundInfo.Count + " of " + 
+                             TrCatalog.GetSoundMapSize(_tool.DestinationWad.Version) + "    " + 
                              "Embedded WAV samples: " + _tool.DestinationWad.Samples.Count;
             labelStatus.Text = message;
         }

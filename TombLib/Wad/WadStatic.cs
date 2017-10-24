@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using SharpDX;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -19,9 +20,15 @@ namespace TombLib.Wad
         private short _flags;
         private WadMesh _mesh;
 
+        public WadStatic(Wad2 wad)
+            : base(wad)
+        {
+
+        }
+
         public override string ToString()
         {
-            return "(" + ObjectID + ") " + Name; // ObjectNames.GetStaticName(ObjectID);
+            return "(" + ObjectID + ") " + TrCatalog.GetStaticName(Wad.Version, ObjectID);
         }
     }
 }

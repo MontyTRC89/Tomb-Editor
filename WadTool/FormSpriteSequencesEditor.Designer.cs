@@ -37,14 +37,12 @@
             // 
             // darkStatusStrip1
             // 
-            this.darkStatusStrip1.AutoSize = false;
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Location = new System.Drawing.Point(0, 142);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(410, 24);
-            this.darkStatusStrip1.SizingGrip = false;
+            this.darkStatusStrip1.Size = new System.Drawing.Size(408, 24);
             this.darkStatusStrip1.TabIndex = 0;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -97,7 +95,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(410, 166);
+            this.ClientSize = new System.Drawing.Size(408, 166);
             this.Controls.Add(this.butEditSequence);
             this.Controls.Add(this.butAddNewSequence);
             this.Controls.Add(this.butDeleteSequence);

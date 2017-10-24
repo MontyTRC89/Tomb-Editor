@@ -606,7 +606,7 @@
             <sprite id="238" name="Pottery 5" icon="Tool" type="list" />
             <sprite id="239" name="Pottery 6" icon="Tool" type="list" />
         </sprites>
-        <sounds name="Sounds" icon="Sounds">
+        <sounds name="Sounds" icon="Sounds" max="256">
             <sound id="0" name="Lara footstep" />
             <sound id="1" name="Lara grunt" />
             <sound id="2" name="Lara no" />
@@ -1651,7 +1651,7 @@
             <sprite id="290" name="Cellar artifact 2 (rounded statue)" icon="Tool" type="list" />
             <sprite id="291" name="Cellar artifact 3 (flattened statue)" icon="Tool" type="list" />
         </sprites>
-        <sounds name="Sounds" icon="Sounds">
+        <sounds name="Sounds" icon="Sounds" max="370">
             <sound id="0" name="Lara footstep" />
             <sound id="1" name="Lara grunt" />
             <sound id="2" name="Lara no" />
@@ -3137,7 +3137,7 @@
             <sprite id="356" name="Standard symbols" icon="LetterA" type="list" zoom="1.3712" />
             <sprite id="362" name="Assault-course numerals and punctuation" icon="LetterA" type="list" zoom="1.3712" />
         </sprites>
-        <sounds name="Sounds" icon="Sounds">
+        <sounds name="Sounds" icon="Sounds" max="370">
             <sound id="0" name="Lara footstep" />
             <sound id="1" name="Lara grunt" />
             <sound id="2" name="Lara no" />
@@ -4083,7 +4083,7 @@
             <sprite id="464" name="Misc sprites" icon="Tool" type="list" />
             <sprite id="494" name="NG custom sprites" icon="Tool" type="list" />
         </sprites>
-        <sounds name="Sounds" icon="Sounds">
+        <sounds name="Sounds" icon="Sounds" max="370">
             <sound id="0" name="Lara feet" mandatory="true" />
             <sound id="1" name="Lara climb2" mandatory="true" />
             <sound id="2" name="Lara no" mandatory="true" />
@@ -4938,7 +4938,7 @@
             <sprite id="458" name="Default sprites" icon="Tool" type="list" />
             <sprite id="459" name="Misc sprites" icon="Tool" type="list" />
         </sprites>
-        <sounds name="Sounds" icon="Sounds">
+        <sounds name="Sounds" icon="Sounds" max="450">
             <sound id="0" name="Lara feet" />
             <sound id="1" name="Lara climb2" />
             <sound id="2" name="Lara no" />
