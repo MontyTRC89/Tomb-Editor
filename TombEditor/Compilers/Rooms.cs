@@ -167,19 +167,42 @@ namespace TombEditor.Compilers
                             if (texture.TextureIsInvisble)
                                 continue;
 
-                            for (int i = range.Start; i < (range.Start + range.Count); i += 3)
+                            int rangeEnd = range.Start + range.Count;
+                            for (int i = range.Start; i < rangeEnd; i += 3)
                             {
                                 ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
                                 ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
-                                ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
                                 texture.TexCoord0 = editorRoomVertices[i].UV;
                                 texture.TexCoord1 = editorRoomVertices[i + 1].UV;
-                                texture.TexCoord2 = editorRoomVertices[i + 2].UV;
 
-                                Util.ObjectTextureManager.Result result;
-                                lock (_objectTextureManager)
-                                    result = _objectTextureManager.AddTexture(texture, true, true, false);
-                                roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
+                                // Check if 2 triangles can be combined to a quad
+                                if (((i + 6) <= rangeEnd) &&
+                                    editorRoomVertices[i + 1].Equals(editorRoomVertices[i + 5]) &&
+                                    editorRoomVertices[i + 2].Equals(editorRoomVertices[i + 4]))
+                                {
+                                    ushort vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
+                                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 3].Position, editorRoomVertices[i + 3].FaceColor);
+                                    texture.TexCoord3 = editorRoomVertices[i + 2].UV;
+                                    texture.TexCoord2 = editorRoomVertices[i + 3].UV;
+
+                                    Util.ObjectTextureManager.Result result;
+                                    lock (_objectTextureManager)
+                                        result = _objectTextureManager.AddTexture(texture, false, true);
+
+                                    roomQuads.Add(result.CreateFace4(vertex0Index, vertex1Index, vertex2Index, vertex3Index, 0));
+                                    i += 3;
+                                }
+                                else
+                                {
+                                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
+                                    texture.TexCoord2 = editorRoomVertices[i + 2].UV;
+
+                                    Util.ObjectTextureManager.Result result;
+                                    lock (_objectTextureManager)
+                                        result = _objectTextureManager.AddTexture(texture, true, true);
+
+                                    roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
+                                }
                             }
                         }
 
