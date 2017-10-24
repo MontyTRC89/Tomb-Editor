@@ -409,7 +409,8 @@ namespace TombEditor.Geometry
                 }
             }
 
-            if (slopeDirections[0] != EditorArrowType.EntireFace && slopeDirections[1] != EditorArrowType.EntireFace)
+            if (slopeDirections[0] != EditorArrowType.EntireFace && slopeDirections[1] != EditorArrowType.EntireFace &&
+                slopeDirections[0] != slopeDirections[1])
             {
                 var diff = tri[0].Normal - tri[1].Normal;
                 if (Math.Atan2(diff.X, diff.Z) < 0)
