@@ -651,9 +651,8 @@ namespace WadTool
 
             var staticMesh = (WadStatic)node.Tag;
 
-            using (var form = new FormStaticMeshEditor())
+            using (var form = new FormStaticMeshEditor(staticMesh))
             {
-                form.StaticMesh = staticMesh;
                 if (form.ShowDialog() == DialogResult.Cancel) return;
 
                 UpdateDestinationWad2UI();

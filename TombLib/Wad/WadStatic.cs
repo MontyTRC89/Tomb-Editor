@@ -30,5 +30,16 @@ namespace TombLib.Wad
         {
             return "(" + ObjectID + ") " + TrCatalog.GetStaticName(Wad.Version, ObjectID);
         }
+
+        public WadStatic Clone()
+        {
+            var staticMesh = new WadStatic(Wad);
+            staticMesh.VisibilityBox = new BoundingBox(VisibilityBox.Minimum, VisibilityBox.Maximum);
+            staticMesh.CollisionBox = new BoundingBox(CollisionBox.Minimum, CollisionBox.Maximum);
+            staticMesh.Flags = Flags;
+            staticMesh.Mesh = Mesh;
+            staticMesh.ObjectID = ObjectID;
+            return staticMesh;
+        }
     }
 }

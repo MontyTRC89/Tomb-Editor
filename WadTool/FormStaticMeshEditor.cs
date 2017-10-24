@@ -15,14 +15,16 @@ namespace WadTool
 {
     public partial class FormStaticMeshEditor : DarkUI.Forms.DarkForm
     {
-        public WadStatic StaticMesh { get; set; }
+        public WadStatic StaticMesh { get; private set; }
 
         private WadToolClass _tool;
 
-        public FormStaticMeshEditor()
+        public FormStaticMeshEditor(WadStatic staticMesh)
         {
             InitializeComponent();
+
             _tool = WadToolClass.Instance;
+            StaticMesh = staticMesh.Clone();
             panelRendering.InitializePanel(_tool.Device);
         }
 
@@ -53,7 +55,7 @@ namespace WadTool
                 _tool.DestinationWad.DirectXStatics[StaticMesh.ObjectID].Dispose();
                 _tool.DestinationWad.DirectXStatics.Remove(StaticMesh.ObjectID);
                 _tool.DestinationWad.DirectXStatics.Add(StaticMesh.ObjectID, StaticModel.FromWad2(_tool.Device, 
-                                                                                                  _tool.DestinationWad, 
+                                                                                                  _tool.DestinationWad,
                                                                                                   StaticMesh, 
                                                                                                   _tool.DestinationWad.PackedTextures));
                 StaticMesh.Mesh.UpdateHash();
@@ -61,6 +63,52 @@ namespace WadTool
                 DialogResult = DialogResult.OK;
                 Close();
             }
+        }
+
+        private void butCalculateVisibilityBox_Click(object sender, EventArgs e)
+        {
+            StaticMesh.VisibilityBox = Wad2.CalculateBoundingBox(StaticMesh.Mesh, panelRendering.GizmoTransform);
+
+            tbVisibilityBoxMinX.Text = StaticMesh.VisibilityBox.Minimum.X.ToString();
+            tbVisibilityBoxMinY.Text = StaticMesh.VisibilityBox.Minimum.Y.ToString();
+            tbVisibilityBoxMinZ.Text = StaticMesh.VisibilityBox.Minimum.Z.ToString();
+            tbVisibilityBoxMaxX.Text = StaticMesh.VisibilityBox.Maximum.X.ToString();
+            tbVisibilityBoxMaxY.Text = StaticMesh.VisibilityBox.Maximum.Y.ToString();
+            tbVisibilityBoxMaxZ.Text = StaticMesh.VisibilityBox.Maximum.Z.ToString();
+
+            panelRendering.Invalidate();
+        }
+
+        private void butCalculateCollisionBox_Click(object sender, EventArgs e)
+        {
+            StaticMesh.CollisionBox = Wad2.CalculateBoundingBox(StaticMesh.Mesh, panelRendering.GizmoTransform);
+
+            tbCollisionBoxMinX.Text = StaticMesh.CollisionBox.Minimum.X.ToString();
+            tbCollisionBoxMinY.Text = StaticMesh.CollisionBox.Minimum.Y.ToString();
+            tbCollisionBoxMinZ.Text = StaticMesh.CollisionBox.Minimum.Z.ToString();
+            tbCollisionBoxMaxX.Text = StaticMesh.CollisionBox.Maximum.X.ToString();
+            tbCollisionBoxMaxY.Text = StaticMesh.CollisionBox.Maximum.Y.ToString();
+            tbCollisionBoxMaxZ.Text = StaticMesh.CollisionBox.Maximum.Z.ToString();
+
+            panelRendering.Invalidate();
+        }
+
+        private void cbVisibilityBox_CheckedChanged(object sender, EventArgs e)
+        {
+            panelRendering.DrawVisibilityBox = cbVisibilityBox.Checked;
+            panelRendering.Invalidate();
+        }
+
+        private void cbCollisionBox_CheckedChanged(object sender, EventArgs e)
+        {
+            panelRendering.DrawCollisionBox = cbCollisionBox.Checked;
+            panelRendering.Invalidate();
+        }
+
+        private void cbDrawGrid_CheckedChanged(object sender, EventArgs e)
+        {
+            panelRendering.DrawGrid = cbDrawGrid.Checked;
+            panelRendering.Invalidate();
         }
     }
 }
