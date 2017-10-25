@@ -1,4 +1,5 @@
 ﻿using DarkUI.Forms;
+using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,6 +22,7 @@ namespace WadTool
     public partial class FormMain : DarkForm
     {
         private WadToolClass _tool;
+        private WadObject _selectedObject;
 
         // TODO ask the user for the paths
         private readonly static List<string> wadSoundPaths =
@@ -65,11 +67,14 @@ namespace WadTool
                 return;
 
             panel3D.CurrentWad = _tool.SourceWad;
+            panel3D.Animation = -1;
+            panel3D.KeyFrame = 0;
 
             if (node.Tag.GetType() == typeof(WadMoveable))
             {
                 var moveable = (WadMoveable)node.Tag;
                 panel3D.CurrentObject = _tool.SourceWad.DirectXMoveables[moveable.ObjectID];
+                if (moveable.Animations.Count != 0) panel3D.Animation = 0;
             }
             else if (node.Tag.GetType() == typeof(WadStatic))
             {
@@ -104,14 +109,20 @@ namespace WadTool
                  node.Tag.GetType() != typeof(WadSprite)))
                 return;
 
+            if (node.Tag.GetType() != typeof(WadSprite)) _selectedObject = (WadObject)node.Tag;
+            panel3D.Animation = -1;
+            panel3D.KeyFrame = 0;
+
             // Load sounds
             treeSounds.Nodes.Clear();
+            treeAnimations.Nodes.Clear();
 
             if (isMoveable)
             {
                 var moveable = (WadMoveable)node.Tag;
                 var sounds = moveable.GetSounds(_tool.DestinationWad);
 
+                // Load sounds in UI
                 foreach (var sound in sounds)
                 {
                     var nodeSound = new DarkUI.Controls.DarkTreeNode(sound.Name);
@@ -129,6 +140,26 @@ namespace WadTool
                         i++;
                     }
                 }
+
+                // Load animations in UI
+                var animationsNodes = new List<DarkUI.Controls.DarkTreeNode>();
+                for (int i = 0; i < moveable.Animations.Count; i++)
+                {
+                    var nodeAnimation = new DarkUI.Controls.DarkTreeNode(moveable.Animations[i].Name);
+                    nodeAnimation.Tag = i;
+                    animationsNodes.Add(nodeAnimation);
+                }               
+                treeAnimations.Nodes.AddRange(animationsNodes);
+
+                groupSelectedMoveable.Enabled = true;
+                groupSelectedMoveable.Text = "Selected moveable: " + moveable.ToString();
+
+                if (moveable.Animations.Count != 0) panel3D.Animation = 0;
+            }
+            else
+            {
+                groupSelectedMoveable.Enabled = false;
+                groupSelectedMoveable.Text = "Selected moveable: ";
             }
 
             panel3D.CurrentWad = _tool.DestinationWad;
@@ -887,6 +918,34 @@ namespace WadTool
             currentObject.ObjectID = objectId;
 
             UpdateDestinationWad2UI();*/
+        }
+
+        private void lstAnimations_Click(object sender, EventArgs e)
+        {
+            // Get selected animation
+            if (treeAnimations.SelectedNodes.Count == 0) return;
+            var node = treeAnimations.SelectedNodes[0];
+            var animationIndex = (int)node.Tag;
+
+            // Reset scrollbar
+            scrollbarAnimations.Value = 0;
+            scrollbarAnimations.Maximum = (_selectedObject as WadMoveable).Animations[animationIndex].KeyFrames.Count - 1;
+
+            // Reset panel 3D
+            panel3D.Animation = animationIndex;
+            panel3D.KeyFrame = 0;
+            panel3D.Invalidate();
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void scrollbarAnimations_ValueChanged(object sender, DarkUI.Controls.ScrollValueEventArgs e)
+        {
+            panel3D.KeyFrame = scrollbarAnimations.Value;
+            panel3D.Invalidate();
         }
     }
 }

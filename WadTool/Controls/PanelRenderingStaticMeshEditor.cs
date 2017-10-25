@@ -20,6 +20,7 @@ namespace WadTool.Controls
         public bool DrawVisibilityBox { get; set; }
         public bool DrawCollisionBox { get; set; }
         public bool DrawGrid { get; set; }
+        public bool DrawGizmo { get; set; }
 
         public Matrix GizmoTransform
         {
@@ -244,8 +245,11 @@ namespace WadTool.Controls
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
-            // Draw the gizmo
-            _gizmo.Draw(viewProjection);
+            if (DrawGizmo)
+            {
+                // Draw the gizmo
+                _gizmo.Draw(viewProjection);
+            }
 
             // Draw debug strings
             _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
@@ -297,10 +301,13 @@ namespace WadTool.Controls
 
             if (e.Button == MouseButtons.Left)
             {
-                var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
-                if (result != null)
-                    _gizmo.ActivateGizmo(result);
-                return;
+                if (DrawGizmo)
+                {
+                    var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
+                    if (result != null)
+                        _gizmo.ActivateGizmo(result);
+                    return;
+                }
             }
 
             _lastX = e.X;
