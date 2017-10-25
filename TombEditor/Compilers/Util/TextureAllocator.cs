@@ -169,7 +169,7 @@ namespace TombEditor.Compilers.Util
 
                 if (resultingTextures.Count >= 65535)
                     throw new NotSupportedException("More then 65536 textures are not supported. That is A LOT (exactly 16GB of texture data), so its probably some other bug if you see this message.");
-                var packer = new RectPackerSimpleStack(OutputTextureWidth, OutputTextureHeight);
+                var packer = new TreePacker(OutputTextureWidth, OutputTextureHeight);
                 usedTexturePackInfo = new Result { OutputTextureID = (ushort)resultingTextures.Count, Pos = packer.TryAdd(usedTexture.Width, usedTexture.Height).Value };
                 resultingTextures.Add(ImageC.CreateNew(OutputTextureWidth, OutputTextureHeight));
                 resultingTexturesPacker.Add(packer);

@@ -86,7 +86,7 @@ namespace TombLib.Wad
 
             PackedTextures.Sort(new ComparerWadTextures());
 
-            RectPackerSimpleStack packer = new RectPackerSimpleStack(TextureAtlasSize, TextureAtlasSize);
+            var packer = new TreePacker(TextureAtlasSize, TextureAtlasSize);
 
             foreach (var texture in PackedTextures)
             {
