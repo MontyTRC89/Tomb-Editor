@@ -312,6 +312,12 @@ namespace TombEditor.Controls
             _movementTimer.Stop();
         }
 
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            _movementTimer.Stop();
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             if ((_editor == null) || (_editor.Level == null))
