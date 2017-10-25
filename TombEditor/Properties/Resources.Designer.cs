@@ -233,29 +233,9 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap diag_step_ceil_16 {
+        internal static System.Drawing.Bitmap DiagonalWall2_16 {
             get {
-                object obj = ResourceManager.GetObject("diag_step_ceil_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap diag_step_fl_16 {
-            get {
-                object obj = ResourceManager.GetObject("diag_step_fl_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap diag_wall_16 {
-            get {
-                object obj = ResourceManager.GetObject("diag_wall_16", resourceCulture);
+                object obj = ResourceManager.GetObject("DiagonalWall2_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -266,16 +246,6 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap door_opened_16 {
             get {
                 object obj = ResourceManager.GetObject("door_opened_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap DoubleSided_16 {
-            get {
-                object obj = ResourceManager.GetObject("DoubleSided_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -363,16 +333,6 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap invisible_16 {
-            get {
-                object obj = ResourceManager.GetObject("invisible_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap light_on_16 {
             get {
                 object obj = ResourceManager.GetObject("light_on_16", resourceCulture);
@@ -453,16 +413,6 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap rectangle_filled_16 {
-            get {
-                object obj = ResourceManager.GetObject("rectangle_filled_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap redo_16 {
             get {
                 object obj = ResourceManager.GetObject("redo_16", resourceCulture);
@@ -533,16 +483,6 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap SemiTransparent_16 {
-            get {
-                object obj = ResourceManager.GetObject("SemiTransparent_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap settings_16 {
             get {
                 object obj = ResourceManager.GetObject("settings_16", resourceCulture);
@@ -603,6 +543,26 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap StepCeiling_16 {
+            get {
+                object obj = ResourceManager.GetObject("StepCeiling_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap StepFloor_1_16 {
+            get {
+                object obj = ResourceManager.GetObject("StepFloor_1_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap stones_16 {
             get {
                 object obj = ResourceManager.GetObject("stones_16", resourceCulture);
@@ -623,9 +583,9 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap TextureCeiling_16 {
+        internal static System.Drawing.Bitmap TextureCeiling2_16 {
             get {
-                object obj = ResourceManager.GetObject("TextureCeiling_16", resourceCulture);
+                object obj = ResourceManager.GetObject("TextureCeiling2_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -633,9 +593,19 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap TextureFloor_16 {
+        internal static System.Drawing.Bitmap TextureDoubleSided_1_16 {
             get {
-                object obj = ResourceManager.GetObject("TextureFloor_16", resourceCulture);
+                object obj = ResourceManager.GetObject("TextureDoubleSided_1_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TextureFloor2_16 {
+            get {
+                object obj = ResourceManager.GetObject("TextureFloor2_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -653,9 +623,9 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap TextureWalls_16 {
+        internal static System.Drawing.Bitmap TextureNoTexture_1_16 {
             get {
-                object obj = ResourceManager.GetObject("TextureWalls_16", resourceCulture);
+                object obj = ResourceManager.GetObject("TextureNoTexture_1_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -663,9 +633,9 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ToggleOpacity1_16 {
+        internal static System.Drawing.Bitmap TextureSolid_16 {
             get {
-                object obj = ResourceManager.GetObject("ToggleOpacity1_16", resourceCulture);
+                object obj = ResourceManager.GetObject("TextureSolid_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -673,9 +643,39 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ToggleOpacity2_16 {
+        internal static System.Drawing.Bitmap TextureToggleOpacity_16 {
             get {
-                object obj = ResourceManager.GetObject("ToggleOpacity2_16", resourceCulture);
+                object obj = ResourceManager.GetObject("TextureToggleOpacity_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TextureToggleOpacity2_16 {
+            get {
+                object obj = ResourceManager.GetObject("TextureToggleOpacity2_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TextureTransparent_1_16 {
+            get {
+                object obj = ResourceManager.GetObject("TextureTransparent_1_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TextureWalls2_16 {
+            get {
+                object obj = ResourceManager.GetObject("TextureWalls2_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

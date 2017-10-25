@@ -157,20 +157,8 @@
   <data name="crop_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\crop-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="diag_step_ceil_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\diag-step-ceil-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="diag_step_fl_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\diag-step-fl-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="diag_wall_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\diag-wall-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="door_opened_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\door_opened-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="DoubleSided_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DoubleSided-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="earth_element_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\earth_element-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -192,9 +180,6 @@
   </data>
   <data name="import_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\import-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="invisible_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\invisible-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="LightPoint_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LightPoint-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -220,9 +205,6 @@
   <data name="plus_math_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\plus_math-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="rectangle_filled_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\rectangle_filled-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="redo_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\redo-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -243,9 +225,6 @@
   </data>
   <data name="search_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\search-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SemiTransparent_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SemiTransparent-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="settings_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\settings-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -271,23 +250,8 @@
   <data name="sun_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sun-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TextureCeiling_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TextureCeiling-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TextureFloor_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TextureFloor-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="TextureMode_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\TextureMode-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TextureWalls_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TextureWalls-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ToggleOpacity1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ToggleOpacity1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ToggleOpacity2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ToggleOpacity2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="tornado_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\tornado-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -318,5 +282,41 @@
   </data>
   <data name="IllegalSlope1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\IllegalSlope1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DiagonalWall2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DiagonalWall2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StepCeiling_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StepCeiling-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="StepFloor_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StepFloor_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextureCeiling2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TextureCeiling2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextureDoubleSided_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TextureDoubleSided_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextureFloor2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TextureFloor2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextureNoTexture_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TextureNoTexture_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextureSolid_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TextureSolid-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextureToggleOpacity2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TextureToggleOpacity2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextureToggleOpacity_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TextureToggleOpacity-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextureTransparent_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TextureTransparent_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TextureWalls2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TextureWalls2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

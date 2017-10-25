@@ -1234,7 +1234,7 @@
             // 
             this.textureFloorToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.textureFloorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.textureFloorToolStripMenuItem.Image = global::TombEditor.Properties.Resources.TextureFloor_16;
+            this.textureFloorToolStripMenuItem.Image = global::TombEditor.Properties.Resources.TextureFloor2_16;
             this.textureFloorToolStripMenuItem.Name = "textureFloorToolStripMenuItem";
             this.textureFloorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.T)));
@@ -1246,7 +1246,7 @@
             // 
             this.textureWallsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.textureWallsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.textureWallsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.TextureWalls_16;
+            this.textureWallsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.TextureWalls2_16;
             this.textureWallsToolStripMenuItem.Name = "textureWallsToolStripMenuItem";
             this.textureWallsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.U)));
@@ -1258,7 +1258,7 @@
             // 
             this.textureCeilingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.textureCeilingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.textureCeilingToolStripMenuItem.Image = global::TombEditor.Properties.Resources.TextureCeiling_16;
+            this.textureCeilingToolStripMenuItem.Image = global::TombEditor.Properties.Resources.TextureCeiling2_16;
             this.textureCeilingToolStripMenuItem.Name = "textureCeilingToolStripMenuItem";
             this.textureCeilingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.V)));
