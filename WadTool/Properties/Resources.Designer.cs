@@ -473,6 +473,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap trash_161 {
+            get {
+                object obj = ResourceManager.GetObject("trash-161", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap volume_up_16 {
             get {
                 object obj = ResourceManager.GetObject("volume_up-16", resourceCulture);
