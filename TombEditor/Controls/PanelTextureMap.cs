@@ -507,6 +507,12 @@ namespace TombEditor.Controls
             _movementTimer.Stop();
         }
 
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            _movementTimer.Stop();
+        }
+
         protected override void OnResize(EventArgs eventargs)
         {
             base.OnResize(eventargs);
