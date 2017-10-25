@@ -16,6 +16,8 @@ namespace WadTool.Controls
         public Wad2 CurrentWad { get; set; }
         public IRenderableObject CurrentObject { get; set; }
         public ArcBallCamera Camera { get; set; }
+        public int Animation { get; set; }
+        public int KeyFrame { get; set; }
 
         private GraphicsDevice _device;
         private SwapChainGraphicsPresenter _presenter;
@@ -143,6 +145,10 @@ namespace WadTool.Controls
 
                     mioEffect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
                     mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+
+                    // Build animation transforms
+                    if (model.Animations.Count != 0)  
+                        model.BuildAnimationPose(model.Animations[Animation].KeyFrames[KeyFrame]);
 
                     for (int i = 0; i < model.Meshes.Count; i++)
                     {

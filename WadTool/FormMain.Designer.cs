@@ -90,15 +90,23 @@
             this.butAddObject = new DarkUI.Controls.DarkButton();
             this.labelType = new DarkUI.Controls.DarkLabel();
             this.butChangeSlot = new DarkUI.Controls.DarkButton();
+            this.scrollbarAnimations = new DarkUI.Controls.DarkScrollBar();
+            this.groupSelectedMoveable = new DarkUI.Controls.DarkGroupBox();
+            this.darkLabel4 = new DarkUI.Controls.DarkLabel();
+            this.darkButton1 = new DarkUI.Controls.DarkButton();
+            this.treeAnimations = new DarkUI.Controls.DarkTreeView();
+            this.darkButton2 = new DarkUI.Controls.DarkButton();
+            this.butEditItem = new DarkUI.Controls.DarkButton();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
+            this.groupSelectedMoveable.SuspendLayout();
             this.SuspendLayout();
             // 
             // darkStatusStrip1
             // 
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 701);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 722);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
             this.darkStatusStrip1.Size = new System.Drawing.Size(1008, 24);
@@ -586,7 +594,7 @@
             this.treeDestWad.Location = new System.Drawing.Point(15, 107);
             this.treeDestWad.MaxDragChange = 20;
             this.treeDestWad.Name = "treeDestWad";
-            this.treeDestWad.Size = new System.Drawing.Size(280, 390);
+            this.treeDestWad.Size = new System.Drawing.Size(280, 361);
             this.treeDestWad.TabIndex = 7;
             this.treeDestWad.Text = "darkTreeView1";
             this.treeDestWad.DoubleClick += new System.EventHandler(this.treeDestWad_DoubleClick);
@@ -597,19 +605,21 @@
             this.treeSourceWad.Location = new System.Drawing.Point(716, 107);
             this.treeSourceWad.MaxDragChange = 20;
             this.treeSourceWad.Name = "treeSourceWad";
-            this.treeSourceWad.Size = new System.Drawing.Size(279, 390);
+            this.treeSourceWad.Size = new System.Drawing.Size(279, 361);
             this.treeSourceWad.TabIndex = 8;
             this.treeSourceWad.Text = "darkTreeView1";
             this.treeSourceWad.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeSourceWad_MouseClick);
             // 
             // panel3D
             // 
+            this.panel3D.Animation = 0;
             this.panel3D.Camera = null;
             this.panel3D.CurrentObject = null;
             this.panel3D.CurrentWad = null;
-            this.panel3D.Location = new System.Drawing.Point(301, 107);
+            this.panel3D.KeyFrame = 0;
+            this.panel3D.Location = new System.Drawing.Point(301, 59);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(409, 419);
+            this.panel3D.Size = new System.Drawing.Size(409, 409);
             this.panel3D.TabIndex = 9;
             // 
             // saveFileDialogWad2
@@ -622,7 +632,7 @@
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(12, 545);
+            this.darkLabel3.Location = new System.Drawing.Point(6, 28);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(46, 13);
             this.darkLabel3.TabIndex = 13;
@@ -630,26 +640,28 @@
             // 
             // treeSounds
             // 
-            this.treeSounds.Location = new System.Drawing.Point(12, 562);
+            this.treeSounds.Location = new System.Drawing.Point(6, 44);
             this.treeSounds.MaxDragChange = 20;
             this.treeSounds.Name = "treeSounds";
-            this.treeSounds.Size = new System.Drawing.Size(222, 136);
+            this.treeSounds.Size = new System.Drawing.Size(192, 137);
             this.treeSounds.TabIndex = 16;
             this.treeSounds.Text = "darkTreeView1";
             // 
             // butRenameSound
             // 
-            this.butRenameSound.Location = new System.Drawing.Point(240, 591);
+            this.butRenameSound.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butRenameSound.Location = new System.Drawing.Point(91, 187);
             this.butRenameSound.Name = "butRenameSound";
             this.butRenameSound.Padding = new System.Windows.Forms.Padding(5);
-            this.butRenameSound.Size = new System.Drawing.Size(76, 23);
+            this.butRenameSound.Size = new System.Drawing.Size(107, 23);
             this.butRenameSound.TabIndex = 17;
             this.butRenameSound.Text = "Rename";
             this.butRenameSound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             // 
             // butPlaySound
             // 
-            this.butPlaySound.Location = new System.Drawing.Point(240, 562);
+            this.butPlaySound.Image = global::WadTool.Properties.Resources.play_16;
+            this.butPlaySound.Location = new System.Drawing.Point(9, 187);
             this.butPlaySound.Name = "butPlaySound";
             this.butPlaySound.Padding = new System.Windows.Forms.Padding(5);
             this.butPlaySound.Size = new System.Drawing.Size(76, 23);
@@ -660,10 +672,11 @@
             // 
             // butDeleteObject
             // 
-            this.butDeleteObject.Location = new System.Drawing.Point(129, 503);
+            this.butDeleteObject.Image = global::WadTool.Properties.Resources.trash_161;
+            this.butDeleteObject.Location = new System.Drawing.Point(192, 474);
             this.butDeleteObject.Name = "butDeleteObject";
             this.butDeleteObject.Padding = new System.Windows.Forms.Padding(5);
-            this.butDeleteObject.Size = new System.Drawing.Size(108, 23);
+            this.butDeleteObject.Size = new System.Drawing.Size(103, 23);
             this.butDeleteObject.TabIndex = 12;
             this.butDeleteObject.Text = "Delete object";
             this.butDeleteObject.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -671,7 +684,8 @@
             // 
             // butAddObjectToDifferentSlot
             // 
-            this.butAddObjectToDifferentSlot.Location = new System.Drawing.Point(823, 503);
+            this.butAddObjectToDifferentSlot.Image = global::WadTool.Properties.Resources.angle_left_16;
+            this.butAddObjectToDifferentSlot.Location = new System.Drawing.Point(823, 474);
             this.butAddObjectToDifferentSlot.Name = "butAddObjectToDifferentSlot";
             this.butAddObjectToDifferentSlot.Padding = new System.Windows.Forms.Padding(5);
             this.butAddObjectToDifferentSlot.Size = new System.Drawing.Size(172, 23);
@@ -682,7 +696,8 @@
             // 
             // butAddObject
             // 
-            this.butAddObject.Location = new System.Drawing.Point(716, 503);
+            this.butAddObject.Image = global::WadTool.Properties.Resources.angle_left_16;
+            this.butAddObject.Location = new System.Drawing.Point(716, 474);
             this.butAddObject.Name = "butAddObject";
             this.butAddObject.Padding = new System.Windows.Forms.Padding(5);
             this.butAddObject.Size = new System.Drawing.Size(101, 23);
@@ -703,26 +718,110 @@
             // 
             // butChangeSlot
             // 
-            this.butChangeSlot.Location = new System.Drawing.Point(15, 503);
+            this.butChangeSlot.Image = global::WadTool.Properties.Resources.copy_16;
+            this.butChangeSlot.Location = new System.Drawing.Point(93, 474);
             this.butChangeSlot.Name = "butChangeSlot";
             this.butChangeSlot.Padding = new System.Windows.Forms.Padding(5);
-            this.butChangeSlot.Size = new System.Drawing.Size(108, 23);
+            this.butChangeSlot.Size = new System.Drawing.Size(93, 23);
             this.butChangeSlot.TabIndex = 19;
             this.butChangeSlot.Text = "Change slot";
             this.butChangeSlot.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butChangeSlot.Click += new System.EventHandler(this.butChangeSlot_Click);
             // 
+            // scrollbarAnimations
+            // 
+            this.scrollbarAnimations.Location = new System.Drawing.Point(301, 474);
+            this.scrollbarAnimations.Name = "scrollbarAnimations";
+            this.scrollbarAnimations.ScrollOrientation = DarkUI.Controls.DarkScrollOrientation.Horizontal;
+            this.scrollbarAnimations.Size = new System.Drawing.Size(409, 23);
+            this.scrollbarAnimations.TabIndex = 20;
+            this.scrollbarAnimations.Text = "darkScrollBar1";
+            this.scrollbarAnimations.ValueChanged += new System.EventHandler<DarkUI.Controls.ScrollValueEventArgs>(this.scrollbarAnimations_ValueChanged);
+            // 
+            // groupSelectedMoveable
+            // 
+            this.groupSelectedMoveable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.groupSelectedMoveable.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(81)))), ((int)(((byte)(81)))));
+            this.groupSelectedMoveable.Controls.Add(this.darkLabel4);
+            this.groupSelectedMoveable.Controls.Add(this.darkButton1);
+            this.groupSelectedMoveable.Controls.Add(this.treeAnimations);
+            this.groupSelectedMoveable.Controls.Add(this.darkButton2);
+            this.groupSelectedMoveable.Controls.Add(this.darkLabel3);
+            this.groupSelectedMoveable.Controls.Add(this.butPlaySound);
+            this.groupSelectedMoveable.Controls.Add(this.treeSounds);
+            this.groupSelectedMoveable.Controls.Add(this.butRenameSound);
+            this.groupSelectedMoveable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.groupSelectedMoveable.Location = new System.Drawing.Point(15, 503);
+            this.groupSelectedMoveable.Name = "groupSelectedMoveable";
+            this.groupSelectedMoveable.Size = new System.Drawing.Size(560, 216);
+            this.groupSelectedMoveable.TabIndex = 21;
+            this.groupSelectedMoveable.TabStop = false;
+            this.groupSelectedMoveable.Text = "Selected moveable:";
+            // 
+            // darkLabel4
+            // 
+            this.darkLabel4.AutoSize = true;
+            this.darkLabel4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel4.Location = new System.Drawing.Point(212, 28);
+            this.darkLabel4.Name = "darkLabel4";
+            this.darkLabel4.Size = new System.Drawing.Size(67, 13);
+            this.darkLabel4.TabIndex = 18;
+            this.darkLabel4.Text = "Animations";
+            // 
+            // darkButton1
+            // 
+            this.darkButton1.Image = global::WadTool.Properties.Resources.play_16;
+            this.darkButton1.Location = new System.Drawing.Point(215, 187);
+            this.darkButton1.Name = "darkButton1";
+            this.darkButton1.Padding = new System.Windows.Forms.Padding(5);
+            this.darkButton1.Size = new System.Drawing.Size(76, 23);
+            this.darkButton1.TabIndex = 19;
+            this.darkButton1.Text = "Play";
+            this.darkButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            // 
+            // treeAnimations
+            // 
+            this.treeAnimations.Location = new System.Drawing.Point(215, 44);
+            this.treeAnimations.MaxDragChange = 20;
+            this.treeAnimations.Name = "treeAnimations";
+            this.treeAnimations.Size = new System.Drawing.Size(189, 137);
+            this.treeAnimations.TabIndex = 20;
+            this.treeAnimations.Text = "darkTreeView1";
+            this.treeAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
+            // 
+            // darkButton2
+            // 
+            this.darkButton2.Image = global::WadTool.Properties.Resources.edit_16;
+            this.darkButton2.Location = new System.Drawing.Point(297, 187);
+            this.darkButton2.Name = "darkButton2";
+            this.darkButton2.Padding = new System.Windows.Forms.Padding(5);
+            this.darkButton2.Size = new System.Drawing.Size(107, 23);
+            this.darkButton2.TabIndex = 21;
+            this.darkButton2.Text = "Rename";
+            this.darkButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            // 
+            // butEditItem
+            // 
+            this.butEditItem.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butEditItem.Location = new System.Drawing.Point(15, 474);
+            this.butEditItem.Name = "butEditItem";
+            this.butEditItem.Padding = new System.Windows.Forms.Padding(5);
+            this.butEditItem.Size = new System.Drawing.Size(72, 23);
+            this.butEditItem.TabIndex = 22;
+            this.butEditItem.Text = "Edit";
+            this.butEditItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 725);
+            this.ClientSize = new System.Drawing.Size(1008, 746);
+            this.Controls.Add(this.butEditItem);
+            this.Controls.Add(this.groupSelectedMoveable);
+            this.Controls.Add(this.scrollbarAnimations);
             this.Controls.Add(this.butChangeSlot);
             this.Controls.Add(this.labelType);
-            this.Controls.Add(this.butRenameSound);
-            this.Controls.Add(this.treeSounds);
-            this.Controls.Add(this.butPlaySound);
-            this.Controls.Add(this.darkLabel3);
             this.Controls.Add(this.butDeleteObject);
             this.Controls.Add(this.butAddObjectToDifferentSlot);
             this.Controls.Add(this.butAddObject);
@@ -742,10 +841,13 @@
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Wad Tool";
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.darkMenuStrip1.ResumeLayout(false);
             this.darkMenuStrip1.PerformLayout();
             this.darkToolStrip1.ResumeLayout(false);
             this.darkToolStrip1.PerformLayout();
+            this.groupSelectedMoveable.ResumeLayout(false);
+            this.groupSelectedMoveable.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -813,6 +915,13 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private DarkUI.Controls.DarkLabel labelType;
         private DarkUI.Controls.DarkButton butChangeSlot;
+        private DarkUI.Controls.DarkScrollBar scrollbarAnimations;
+        private DarkUI.Controls.DarkGroupBox groupSelectedMoveable;
+        private DarkUI.Controls.DarkLabel darkLabel4;
+        private DarkUI.Controls.DarkButton darkButton1;
+        private DarkUI.Controls.DarkTreeView treeAnimations;
+        private DarkUI.Controls.DarkButton darkButton2;
+        private DarkUI.Controls.DarkButton butEditItem;
     }
 }
 

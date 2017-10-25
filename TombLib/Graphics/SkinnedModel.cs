@@ -57,7 +57,7 @@ namespace TombLib.Graphics
         public void BuildAnimationPose(KeyFrame frame)
         {
             var globalScale = Matrix.Translation(Offset) * frame.Translations[0];
-            AnimationTransforms[0] = frame.Rotations[0] * globalScale;//*Transforms[0];
+            AnimationTransforms[0] = frame.Rotations[0] * globalScale;
 
             foreach (var node in this.Root.Children)
             {
@@ -67,7 +67,7 @@ namespace TombLib.Graphics
 
         private void BuildAnimationPose(Bone node, Matrix parentTransform, int level, KeyFrame frame)
         {
-            AnimationTransforms[node.Index] = (frame.Rotations[node.Index] * node.Transform) * parentTransform;// *Transforms[node.Index];
+            AnimationTransforms[node.Index] = (frame.Rotations[node.Index] * node.Transform) * parentTransform;
 
             foreach (Bone child in node.Children)
             {

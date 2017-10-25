@@ -178,7 +178,7 @@ namespace TombEditor.Compilers
 
                                 Util.ObjectTextureManager.Result result;
                                 lock (_objectTextureManager)
-                                    result = _objectTextureManager.AddTexture(texture, true, true);
+                                    result = _objectTextureManager.AddTexture(texture, true, true, false);
                                 roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
                             }
                         }
@@ -238,7 +238,7 @@ namespace TombEditor.Compilers
 
                             Util.ObjectTextureManager.Result result;
                             lock (_objectTextureManager)
-                                result = _objectTextureManager.AddTexture(texture, true, true);
+                                result = _objectTextureManager.AddTexture(texture, true, true, false);
                             roomTriangles.Add(result.CreateFace3(index0, index1, index2, 0));
                         }
 

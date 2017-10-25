@@ -146,6 +146,7 @@
     <Compile Include="Utils\ConservativeRasterizer.cs" />
     <Compile Include="Utils\RectPacker.cs" />
     <Compile Include="Utils\Texture.cs" />
+    <Compile Include="Utils\TreePacker.cs" />
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
     <Compile Include="Wad\Catalog\TrCatalogGame.cs" />

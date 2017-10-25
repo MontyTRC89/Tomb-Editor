@@ -33,6 +33,7 @@ namespace TombEditor.Controls
         private int? _selectedTexCoordIndex;
         private Vector2? _viewMoveMouseTexCoord;
         private Point _lastMousePosition;
+        private MovementTimer _movementTimer;
 
         private static readonly Pen textureSelectionPen = new Pen(Brushes.Yellow, 2.0f) { LineJoin = LineJoin.Round };
         private static readonly Pen textureSelectionPenTriangle = new Pen(Brushes.Red, 2.0f) { LineJoin = LineJoin.Round };
@@ -70,6 +71,8 @@ namespace TombEditor.Controls
             Controls.Add(_vScrollBar);
             Controls.Add(_hScrollBar);
 
+            _movementTimer = new MovementTimer(MoveTimerTick);
+
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
                 _editor = Editor.Instance;
@@ -84,6 +87,7 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised -= EditorEventRaised;
                 _hScrollBar.Dispose();
                 _vScrollBar.Dispose();
+                _movementTimer.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -224,6 +228,37 @@ namespace TombEditor.Controls
             selectedTexture.TexCoord3 = texCoordEndQuantized;
             selectedTexture.Texture = VisibleTexture;
             SelectedTexture = selectedTexture;
+        }
+
+        private void MoveTimerTick(object sender, EventArgs e)
+        {
+            switch (_movementTimer.MoveDirection)
+            {
+                case Keys.Down:
+                    ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+                case Keys.Up:
+                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+                case Keys.Left:
+                    ViewPosition += new Vector2(-_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier, 0.0f);
+                    Invalidate();
+                    break;
+                case Keys.Right:
+                    ViewPosition += new Vector2(_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier, 0.0f);
+                    Invalidate();
+                    break;
+                case Keys.PageDown:
+                    ViewScale *= (float)Math.Exp(-_editor.Configuration.TextureMap_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+                case Keys.PageUp:
+                    ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -463,33 +498,13 @@ namespace TombEditor.Controls
             base.OnPreviewKeyDown(e);
 
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
-                switch (e.KeyCode)
-                {
-                    case Keys.Down:
-                        ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
-                        Invalidate();
-                        break;
-                    case Keys.Up:
-                        ViewPosition += new Vector2(0.0f, -_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
-                        Invalidate();
-                        break;
-                    case Keys.Left:
-                        ViewPosition += new Vector2(-_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
-                        Invalidate();
-                        break;
-                    case Keys.Right:
-                        ViewPosition += new Vector2(_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
-                        Invalidate();
-                        break;
-                    case Keys.PageDown:
-                        ViewScale *= (float)Math.Exp(-_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
-                        Invalidate();
-                        break;
-                    case Keys.PageUp:
-                        ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
-                        Invalidate();
-                        break;
-                }
+                _movementTimer.Engage(e.KeyCode);
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            _movementTimer.Stop();
         }
 
         protected override void OnResize(EventArgs eventargs)
