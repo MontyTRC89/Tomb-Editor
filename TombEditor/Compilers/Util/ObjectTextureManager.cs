@@ -251,13 +251,17 @@ namespace TombEditor.Compilers.Util
             public ushort TexCoord2Y;
             public ushort TexCoord3X;
             public ushort TexCoord3Y;
+            public bool MustBeInFirstPage;
 
-            public SavedObjectTexture(ushort textureID, TextureArea texture, TextureAllocator.TextureView view, bool isTriangular, bool isUsedInRoomMesh, bool canRotate, out byte firstTexCoordToEmit)
+            public SavedObjectTexture(ushort textureID, TextureArea texture, TextureAllocator.TextureView view, 
+                                      bool isTriangular, bool isUsedInRoomMesh, bool canRotate,
+                                      bool mustBeInFirstPage, out byte firstTexCoordToEmit)
 			{
 				TextureID = textureID;
                 IsTriangularAndPadding = isTriangular ? (ushort)1 : (ushort)0;
                 BlendMode = (ushort)(texture.BlendMode);
                 NewFlags = GetNewFlag(texture, isTriangular, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit);
+                MustBeInFirstPage = mustBeInFirstPage;
 
                 // C# sucks!!!!!
                 TexCoord0X = TexCoord0Y = 0;
@@ -392,7 +396,7 @@ namespace TombEditor.Compilers.Util
 		}
 
 
-        public Result AddTexture(TextureArea texture, bool isTriangle, bool IsUsedInRoomMesh)
+        public Result AddTexture(TextureArea texture, bool isTriangle, bool IsUsedInRoomMesh, bool mustBeInFirstPage)
 		{
             /*if (Texture.IsAnimation())
 			{
@@ -419,10 +423,11 @@ namespace TombEditor.Compilers.Util
             }*/
 
             // Add object textures
-            int textureID = _textureAllocator.GetOrAllocateTextureID(ref texture, isTriangle);
+            int textureID = _textureAllocator.GetOrAllocateTextureID(ref texture, isTriangle, mustBeInFirstPage);
             byte firstTexCoordToEmit;
             ushort objTexIndex = AddOrGetObjectTexture(new SavedObjectTexture((ushort)textureID, texture, 
-                _textureAllocator.GetTextureFromID(textureID), isTriangle, IsUsedInRoomMesh, true, out firstTexCoordToEmit));
+                _textureAllocator.GetTextureFromID(textureID), isTriangle, IsUsedInRoomMesh, true, mustBeInFirstPage,
+                out firstTexCoordToEmit));
             objTexIndex |= (ushort)(texture.DoubleSided ? 0x8000 : 0);
             return new Result { ObjectTextureIndex = objTexIndex, FirstVertexIndexToEmit = firstTexCoordToEmit };
         }

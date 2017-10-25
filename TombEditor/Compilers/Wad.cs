@@ -16,6 +16,20 @@ namespace TombEditor.Compilers
 
         private void ConvertWadMeshes(Wad2 wad)
         {
+            // Build a list of meshes used by waterfalls
+            var waterfallMeshes = new List<WadMesh>();
+            foreach (var moveable in wad.Moveables)
+            {
+                var mov = moveable.Value;
+                if ((wad.Version == TombRaiderVersion.TR4 && mov.ObjectID >= 423 && mov.ObjectID <= 425) ||
+                    (wad.Version == TombRaiderVersion.TR5 && mov.ObjectID >= 410 && mov.ObjectID <= 415))
+                {
+                    foreach (var mesh in mov.Meshes)
+                        if (!waterfallMeshes.Contains(mesh))
+                            waterfallMeshes.Add(mesh);
+                }
+            }
+
             ReportProgress(11, "Converting WAD meshes to TR4 format");
             ReportProgress(11, "    Number of meshes: " + wad.Meshes.Count);
 
@@ -116,7 +130,7 @@ namespace TombEditor.Compilers
                         face.Vertices[2] = (ushort)poly.Indices[2];
                         face.Vertices[3] = (ushort)poly.Indices[3];
 
-                        var result = _objectTextureManager.AddTexture(poly.Texture, false, false);
+                        var result = _objectTextureManager.AddTexture(poly.Texture, false, false, waterfallMeshes.Contains(oldMesh));
                         face.Texture = result.ObjectTextureIndex;
 
                         face.LightingEffect = (poly.Texture.BlendMode == TombLib.Utils.BlendMode.Additive) ? (ushort)1 : (ushort)0;
@@ -136,7 +150,7 @@ namespace TombEditor.Compilers
                         face.Vertices[1] = (ushort)poly.Indices[1];
                         face.Vertices[2] = (ushort)poly.Indices[2];
 
-                        var result = _objectTextureManager.AddTexture(poly.Texture, true, false);
+                        var result = _objectTextureManager.AddTexture(poly.Texture, true, false, waterfallMeshes.Contains(oldMesh));
                         face.Texture = result.ObjectTextureIndex;
 
                         face.LightingEffect = (poly.Texture.BlendMode == TombLib.Utils.BlendMode.Additive) ? (ushort)1 : (ushort)0;
