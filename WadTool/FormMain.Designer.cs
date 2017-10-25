@@ -782,10 +782,10 @@
             // 
             // treeAnimations
             // 
-            this.treeAnimations.Location = new System.Drawing.Point(212, 44);
+            this.treeAnimations.Location = new System.Drawing.Point(215, 44);
             this.treeAnimations.MaxDragChange = 20;
             this.treeAnimations.Name = "treeAnimations";
-            this.treeAnimations.Size = new System.Drawing.Size(192, 137);
+            this.treeAnimations.Size = new System.Drawing.Size(189, 137);
             this.treeAnimations.TabIndex = 20;
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
