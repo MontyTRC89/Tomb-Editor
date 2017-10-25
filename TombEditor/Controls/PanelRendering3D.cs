@@ -143,6 +143,7 @@ namespace TombEditor.Controls
         private const float _littleCubeRadius = 128.0f;
         private const float _littleSphereRadius = 128.0f;
         private System.Drawing.Point _lastMousePosition;
+        private MovementTimer _movementTimer;
         private bool _doSectorSelection = false;
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
         private Buffer<EditorVertex> _skyVertexBuffer;
@@ -202,6 +203,7 @@ namespace TombEditor.Controls
             _linesCube?.Dispose();
             _littleCube?.Dispose();
             _littleSphere?.Dispose();
+            _movementTimer?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -359,6 +361,7 @@ namespace TombEditor.Controls
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
             _gizmo = new Gizmo(deviceManager.Device, deviceManager.Effects["Solid"]);
+            _movementTimer = new MovementTimer(MoveTimerTick);
 
             ResetCamera();
 
@@ -495,38 +498,13 @@ namespace TombEditor.Controls
             base.OnPreviewKeyDown(e);
 
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
-                switch (e.KeyCode)
-                {
-                    case Keys.Up:
-                        Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
-                        Invalidate();
-                        break;
+                _movementTimer.Engage(e.KeyCode);
+        }
 
-                    case Keys.Down:
-                        Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
-                        Invalidate();
-                        break;
-
-                    case Keys.Left:
-                        Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
-                        Invalidate();
-                        break;
-
-                    case Keys.Right:
-                        Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
-                        Invalidate();
-                        break;
-
-                    case Keys.PageUp:
-                        Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
-                        Invalidate();
-                        break;
-
-                    case Keys.PageDown:
-                        Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
-                        Invalidate();
-                        break;
-                }
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            _movementTimer.Stop();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -889,6 +867,42 @@ namespace TombEditor.Controls
                     }
                 }
             }
+        }
+        private void MoveTimerTick(object sender, EventArgs e)
+        {
+            switch(_movementTimer.MoveDirection)
+            {
+                case Keys.Up:
+                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+
+                case Keys.Down:
+                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+
+                case Keys.Left:
+                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier, 0);
+                    Invalidate();
+                    break;
+
+                case Keys.Right:
+                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier, 0);
+                    Invalidate();
+                    break;
+
+                case Keys.PageUp:
+                    Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+
+                case Keys.PageDown:
+                    Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+            }
+                
         }
 
         private static float TransformRayDistance(ref Ray sourceRay, ref Matrix transform, ref Ray destinationRay, float sourceDistance)
