@@ -7,6 +7,8 @@ using TombLib.Utils;
 using TombLib.Graphics;
 using SharpDX.Toolkit.Graphics;
 using System.Drawing;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace TombLib.Wad
 {
@@ -86,7 +88,7 @@ namespace TombLib.Wad
 
             PackedTextures.Sort(new ComparerWadTextures());
 
-            var packer = new TreePacker(TextureAtlasSize, TextureAtlasSize);
+            var packer = new RectPackerSimpleStack(TextureAtlasSize, TextureAtlasSize);
 
             foreach (var texture in PackedTextures)
             {
@@ -102,15 +104,7 @@ namespace TombLib.Wad
             {
                 int startX = (int)texture.PositionInPackedTexture.X;
                 int startY = (int)texture.PositionInPackedTexture.Y;
-
-                for (int y = 0; y < texture.Height; y++)
-                {
-                    for (int x = 0; x < texture.Width; x++)
-                    {
-                        var color = texture.Image.GetPixel(x, y);
-                        tempBitmap.SetPixel(startX + x, startY + y, color);
-                    }
-                }
+                tempBitmap.CopyFrom(startX, startY, texture.Image);
             }
 
             // Create the DirectX texture atlas
@@ -123,20 +117,29 @@ namespace TombLib.Wad
 
             // Rebuild the texture atlas and covert it to a DirectX texture
             RebuildTextureAtlas();
-            
+
+            var tempMoveables = new ConcurrentDictionary<uint, SkinnedModel>();
+            var tempStatics = new ConcurrentDictionary<uint, StaticModel>();
+
             // Create movable models
-            for (int i = 0; i < Moveables.Count; i++)
-            {
-                WadMoveable mov = Moveables.ElementAt(i).Value;
-                DirectXMoveables.Add(mov.ObjectID, SkinnedModel.FromWad2(GraphicsDevice, this, mov, PackedTextures));
-            }
+            Parallel.For(0, Moveables.Count, i =>
+              {
+                  var mov = Moveables.ElementAt(i).Value;
+                  tempMoveables.TryAdd(mov.ObjectID, SkinnedModel.FromWad2(GraphicsDevice, this, mov, PackedTextures));
+              });
 
             // Create static meshes
-            for (int i = 0; i < Statics.Count; i++)
-            {
-                WadStatic staticMesh = Statics.ElementAt(i).Value;
-                DirectXStatics.Add(staticMesh.ObjectID, StaticModel.FromWad2(GraphicsDevice, this, staticMesh, PackedTextures));
-            }
+            Parallel.For(0, Statics.Count, i =>
+              {
+                  var staticMesh = Statics.ElementAt(i).Value;
+                  tempStatics.TryAdd(staticMesh.ObjectID, StaticModel.FromWad2(GraphicsDevice, this, staticMesh, PackedTextures));
+              });
+
+            foreach (var mov in tempMoveables)
+                DirectXMoveables.Add(mov.Key, mov.Value);
+
+            foreach (var stat in tempStatics)
+                DirectXStatics.Add(stat.Key, stat.Value);
 
             // Prepare sprites
             for (int i = 0; i < SpriteTextures.Count; i++)
