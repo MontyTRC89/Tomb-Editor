@@ -54,6 +54,7 @@ namespace TombEditor.Controls
         private static readonly Pen _gridPenThin = new Pen(Color.LightGray, 1);
         private static readonly Pen _gridPenThick = new Pen(Color.LightGray, 3);
         private const float _probeRadius = 18;
+        private const float _viewMargin = 10;
 
         public Panel2DMap()
         {
@@ -117,6 +118,13 @@ namespace TombEditor.Controls
             ViewPosition = -worldPoint;
             ViewPosition = -FromVisualCoord(visualPoint);
             Invalidate();
+        }
+
+        private void LimitPosition()
+        {
+            Vector2 minimum = new Vector2(-_viewMargin / ViewScale);
+            Vector2 maximum = new Vector2(Level.MaxSectorCoord) + new Vector2(_viewMargin / ViewScale);
+            ViewPosition = Vector2.Min(maximum, Vector2.Max(minimum, ViewPosition));
         }
 
         private int? FindClosestProbe(Vector2 clickPos)
@@ -248,6 +256,7 @@ namespace TombEditor.Controls
                             else
                             { // Movement
                                 MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
+                                LimitPosition();
                             }
                         break;
 
@@ -434,6 +443,7 @@ namespace TombEditor.Controls
                     Invalidate();
                     break;
             }
+            LimitPosition();
         }
 
         private void DrawRoom(PaintEventArgs e, Room room, float currentRangeMin, float currentRangeMax, bool drawFilled, bool drawOutline)
