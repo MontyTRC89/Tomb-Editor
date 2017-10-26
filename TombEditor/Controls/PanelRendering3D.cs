@@ -834,6 +834,12 @@ namespace TombEditor.Controls
             Invalidate();
         }
 
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            _movementTimer.Stop();
+        }
+
         protected override void OnDragEnter(DragEventArgs e)
         {
             base.OnDragEnter(e);

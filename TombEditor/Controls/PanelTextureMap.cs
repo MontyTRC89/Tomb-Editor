@@ -161,8 +161,8 @@ namespace TombEditor.Controls
         private void LimitPosition()
         {
             bool hasTexture = VisibleTexture?.IsAvailable ?? false;
-            Vector2 minimum = new Vector2(-viewMargin);
-            Vector2 maximum = (hasTexture ? VisibleTexture.Image.Size : new Vector2(1)) + new Vector2(viewMargin);
+            Vector2 minimum = new Vector2(-viewMargin / ViewScale);
+            Vector2 maximum = (hasTexture ? VisibleTexture.Image.Size : new Vector2(1)) + new Vector2(viewMargin / ViewScale);
             ViewPosition = Vector2.Min(maximum, Vector2.Max(minimum, ViewPosition));
         }
 
@@ -259,6 +259,7 @@ namespace TombEditor.Controls
                     Invalidate();
                     break;
             }
+            LimitPosition();
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -504,6 +505,12 @@ namespace TombEditor.Controls
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
+            _movementTimer.Stop();
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
             _movementTimer.Stop();
         }
 

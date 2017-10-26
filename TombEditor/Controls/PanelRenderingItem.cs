@@ -208,7 +208,7 @@ namespace TombEditor.Controls
             if (_editor?.Level?.Wad == null)
             {
                 string notifyMessage;
-                if (string.IsNullOrEmpty(_editor.Level.Settings.WadFilePath))
+                if (string.IsNullOrEmpty(_editor?.Level?.Settings?.WadFilePath))
                     notifyMessage = "Click here to load a new WAD file.";
                 else
                 {
