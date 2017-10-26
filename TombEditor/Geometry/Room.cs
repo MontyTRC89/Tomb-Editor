@@ -569,8 +569,8 @@ namespace TombEditor.Geometry
                         lookupBlock.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] > lowestPassableStep)
                         slopeIsIllegal = true;
                     else if (heightsToCheck[0] != heightsToCheck[1]) // Only look for opposite slope cases in case there's no diagonal step in lookup block.
-                        if (lookupBlock.QAFaces[heightsToCheck[0]] > sector.QAFaces[heightsToCompare[0]] && lookupBlock.QAFaces[heightsToCheck[2]] - lookupBlock.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight ||
-                            lookupBlock.QAFaces[heightsToCheck[1]] > sector.QAFaces[heightsToCompare[1]] && lookupBlock.QAFaces[heightsToCheck[3]] - lookupBlock.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight)
+                        if (lookupBlock.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] <= lowestPassableStep && lookupBlock.QAFaces[heightsToCheck[2]] - lookupBlock.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight ||
+                            lookupBlock.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] <= lowestPassableStep && lookupBlock.QAFaces[heightsToCheck[3]] - lookupBlock.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight)
                             slopeIsIllegal = true;
                 }
 
