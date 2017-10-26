@@ -152,6 +152,12 @@ namespace TombEditor.Controls
         // Gizmo
         private Gizmo _gizmo;
 
+        // Geometry painter
+
+        public bool _geometryPainterMode = false;
+        private bool _geometryPainterEngaged = false;
+        private bool[,] _geometryPainterGrid;
+
         // Rooms to draw
         private List<Room> _roomsToDraw;
 
@@ -620,6 +626,16 @@ namespace TombEditor.Controls
                                 if (newPicking is PickingResultBlock)
                                 {
                                     DrawingPoint pos = ((PickingResultBlock)newPicking).Pos;
+
+                                    if (_geometryPainterMode)
+                                    {
+                                        _geometryPainterGrid = new bool[_editor.SelectedRoom.NumXSectors, _editor.SelectedRoom.NumZSectors];
+                                        _geometryPainterEngaged = true;
+                                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, 0, 1, true);
+                                        _geometryPainterGrid[pos.X, pos.Y] = true;
+                                        return;
+                                    }
+
                                     bool belongsToFloor = ((PickingResultBlock)newPicking).BelongsToFloor;
 
                                     // Split the faces
@@ -756,6 +772,24 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Left:
+                    if (_editor.Mode == EditorMode.Geometry && _geometryPainterMode && _geometryPainterEngaged)
+                    {
+                        PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
+
+                        if (newPicking is PickingResultBlock)
+                        {
+                            DrawingPoint pos = ((PickingResultBlock)newPicking).Pos;
+
+                            if(_geometryPainterGrid[pos.X, pos.Y] == false)
+                            {
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, 0, 1, true);
+                                _geometryPainterGrid[pos.X, pos.Y] = true;
+                            }
+                        }
+                        return;
+                    }
+
+
                     if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
                     { // Process gizmo
                     }
@@ -789,6 +823,12 @@ namespace TombEditor.Controls
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+
+            if(_geometryPainterEngaged)
+            {
+                _geometryPainterEngaged = false;
+                _geometryPainterGrid = null;
+            }
 
             _doSectorSelection = false;
             if (_gizmo.MouseUp())

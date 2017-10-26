@@ -287,5 +287,11 @@ namespace TombEditor.ToolWindows
             butDrawIllegalSlopes.Checked = panel3D.DrawIllegalSlopes;
             panel3D.Invalidate();
         }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            panel3D._geometryPainterMode = !panel3D._geometryPainterMode;
+            toolStripButton1.Checked = panel3D._geometryPainterMode;
+        }
     }
 }
