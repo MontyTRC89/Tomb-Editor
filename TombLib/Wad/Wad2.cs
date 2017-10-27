@@ -36,6 +36,7 @@ namespace TombLib.Wad
         public List<WadSpriteSequence> SpriteSequences { get; private set; }
         public Dictionary<Hash, WadSprite> SpriteTextures { get; private set; }
         public string FileName { get; set; }
+        public int SoundMapSize { get; set; }
 
         // Data for rendering
         public GraphicsDevice GraphicsDevice { get; set; }

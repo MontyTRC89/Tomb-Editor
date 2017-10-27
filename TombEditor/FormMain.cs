@@ -969,11 +969,11 @@ namespace TombEditor
         {
             //level.Load("");
 
-            var level = new TombRaider3Level("e:\\tomb3\\data\\crash.tr2");
+            var level = new TombRaider4Level("e:\\trle\\data\\city130.tr4");
             level.Load("crash");
 
-            level = new TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
-            level.Load("jungle");
+            //level = new TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
+            //level.Load("jungle");
         }
 
         private void debugAction2ToolStripMenuItem_Click(object sender, EventArgs e)

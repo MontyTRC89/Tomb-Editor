@@ -797,7 +797,7 @@ namespace TombLib.Wad.TrLevels
             return moveable;
         }
 
-        private static TombRaiderVersion GetTrVersion(TrVersion version)
+        internal static TombRaiderVersion GetTrVersion(TrVersion version)
         {
             if (version == TrVersion.TR1)
                 return TombRaiderVersion.TR1;

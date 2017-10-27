@@ -20,6 +20,7 @@ namespace TombLib.Wad.Tr4Wad
         private static Wad2 _wad;
         private static List<string> _soundPaths;
         private static Dictionary<int, WadTexture> _convertedTextures;
+        private static List<WadMesh> _meshes;
 
         internal static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture()
         {
@@ -45,7 +46,7 @@ namespace TombLib.Wad.Tr4Wad
                           var g = _oldWad.TexturePages[baseIndex + 1];
                           var b = _oldWad.TexturePages[baseIndex + 2];
                           var a = (byte)255;
-
+                          
                           //var color = new ColorC(r, g, b, a);
                           textureData.SetPixel(x, y, r, g, b, a);
                       }
@@ -165,7 +166,8 @@ namespace TombLib.Wad.Tr4Wad
         private static void TaskMoveablesAndStatics()
         {
             // Then convert moveables and static meshes
-            // Meshes will be converted inside each model
+            ConvertTr4Meshes();
+
             for (int i = 0; i < _oldWad.Moveables.Count; i++)
             {
                 ConvertTr4MoveableToWadMoveable(i);
@@ -278,6 +280,8 @@ namespace TombLib.Wad.Tr4Wad
 
         internal static void ConvertTr4Sounds()
         {
+            _wad.SoundMapSize = TrCatalog.GetSoundMapSize(TombRaiderVersion.TR4, _oldWad.Version == 130);
+
             // Read all samples with multithreading
             var loadedSamples = new ConcurrentDictionary<int, WadSample>();
             Parallel.For(0, _oldWad.Sounds.Count, i =>
@@ -349,6 +353,13 @@ namespace TombLib.Wad.Tr4Wad
             }
         }
 
+        internal static void ConvertTr4Meshes()
+        {
+            _meshes = new List<WadMesh>();
+            foreach (var mesh in _oldWad.Meshes)
+                _meshes.Add(ConvertTr4MeshToWadMesh(mesh));
+        }
+
         internal static WadMoveable ConvertTr4MoveableToWadMoveable(int moveableIndex)
         {
             WadMoveable moveable = new WadMoveable(_wad);
@@ -357,16 +368,10 @@ namespace TombLib.Wad.Tr4Wad
             moveable.ObjectID = m.ObjectID;
             //moveable.Name = TrCatalog.GetMoveableName(TombRaiderVersion.TR4, m.ObjectID);
 
-            // First I build a list of meshes for this moveable
-            List<wad_mesh> meshes = new List<wad_mesh>();
             for (int j = 0; j < m.NumPointers; j++)
-                meshes.Add(_oldWad.Meshes[(int)_oldWad.RealPointers[(int)(m.PointerIndex + j)]]);
-
-            // Then I convert them to WadMesh
-            foreach (var oldMesh in meshes)
             {
-                WadMesh newMesh = ConvertTr4MeshToWadMesh(oldMesh);
-                moveable.Meshes.Add(newMesh);
+                var realPointer = (int)_oldWad.RealPointers[(int)(m.PointerIndex + j)];
+                moveable.Meshes.Add(_wad.Meshes[_meshes[realPointer].Hash]);
             }
 
             int currentLink = (int)m.LinksIndex;
@@ -374,7 +379,7 @@ namespace TombLib.Wad.Tr4Wad
             moveable.Offset = Vector3.Zero;
 
             // Build the skeleton
-            for (int j = 0; j < meshes.Count - 1; j++)
+            for (int j = 0; j < m.NumPointers - 1; j++)
             {
                 WadLink link = new WadLink((WadLinkOpcode)_oldWad.Links[currentLink],
                                            new Vector3(_oldWad.Links[currentLink + 1],
@@ -681,7 +686,7 @@ namespace TombLib.Wad.Tr4Wad
                                                                    oldStaticMesh.VisibilityZ2));
 
             // Then import the mesh. If it was already added, the mesh will not be added to the dictionary.
-            staticMesh.Mesh = ConvertTr4MeshToWadMesh(_oldWad.GetMeshFromPointer(oldStaticMesh.PointersIndex));
+            staticMesh.Mesh = _wad.Meshes[_meshes[(int)_oldWad.RealPointers[oldStaticMesh.PointersIndex]].Hash];
 
             staticMesh.ObjectID = oldStaticMesh.ObjectId;
 

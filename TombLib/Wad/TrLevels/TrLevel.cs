@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.TrLevels
 {
@@ -643,17 +644,9 @@ namespace TombLib.Wad.TrLevels
                         levelReader.ReadBytes(numDemoData);
 
                         // Sound map
-                        if (Version == TrVersion.TR1)
-                            for (var i = 0; i < 256; i++)
-                                SoundMap.Add(levelReader.ReadInt16());
-
-                        if (Version == TrVersion.TR2 || Version == TrVersion.TR3 || Version == TrVersion.TR4)
-                            for (var i = 0; i < 370; i++)
-                                SoundMap.Add(levelReader.ReadInt16());
-
-                        if (Version == TrVersion.TR5)
-                            for (var i = 0; i < 450; i++)
-                                SoundMap.Add(levelReader.ReadInt16());
+                        var soundMapSize = TrCatalog.GetSoundMapSize(TrLevelOperations.GetTrVersion(Version), false);
+                        for (var i = 0; i < soundMapSize; i++)
+                            SoundMap.Add(levelReader.ReadInt16());
 
                         // Sound details
                         var numSoundDetails = levelReader.ReadUInt32();

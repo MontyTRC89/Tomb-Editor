@@ -27,7 +27,7 @@ namespace TombLib.Wad
         private static Wad2 LoadWad2(ChunkReader chunkIO)
         {
             var wad = new Wad2((TombRaiderVersion)LEB128.ReadUInt(chunkIO.Raw));
-
+            
             chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (LoadTextures(chunkIO, id, wad))
@@ -555,6 +555,8 @@ namespace TombLib.Wad
         {
             if (idOuter != Wad2Chunks.Sounds)
                 return false;
+
+            wad.SoundMapSize = LEB128.ReadInt(chunkIO.Raw);
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
