@@ -47,6 +47,18 @@
             this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevel = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
+            this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
+            this.butDrawMoveables = new System.Windows.Forms.ToolStripButton();
+            this.butDrawStatics = new System.Windows.Forms.ToolStripButton();
+            this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.butDrawLightMeshes = new System.Windows.Forms.ToolStripButton();
+            this.butDrawOther = new System.Windows.Forms.ToolStripButton();
+            this.butDrawHorizon = new System.Windows.Forms.ToolStripButton();
+            this.butDrawPortals = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
+            this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
             this.secondaryToolStrip = new DarkUI.Controls.DarkToolStrip();
             this.toolSelection = new System.Windows.Forms.ToolStripButton();
             this.toolBrush = new System.Windows.Forms.ToolStripButton();
@@ -58,29 +70,10 @@
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.butDrawMoveables = new System.Windows.Forms.ToolStripButton();
-            this.butDrawStatics = new System.Windows.Forms.ToolStripButton();
-            this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripButton();
-            this.butDrawLightMeshes = new System.Windows.Forms.ToolStripButton();
-            this.butDrawOther = new System.Windows.Forms.ToolStripButton();
-            this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
-            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.butDrawHorizon = new System.Windows.Forms.ToolStripButton();
-            this.butDrawPortals = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-            this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
-            this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel8 = new System.Windows.Forms.ToolStripLabel();
             this.toolStrip.SuspendLayout();
             this.panel3D.SuspendLayout();
-            this.secondaryToolStrip.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
+            this.secondaryToolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -479,15 +472,182 @@
             // panel3D
             // 
             this.panel3D.AllowDrop = true;
-            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3D.Controls.Add(this.darkToolStrip1);
             this.panel3D.Controls.Add(this.secondaryToolStrip);
             this.panel3D.Location = new System.Drawing.Point(3, 31);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(871, 259);
+            this.panel3D.Size = new System.Drawing.Size(871, 286);
             this.panel3D.TabIndex = 13;
+            // 
+            // darkToolStrip1
+            // 
+            this.darkToolStrip1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkToolStrip1.AutoSize = false;
+            this.darkToolStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(53)))), ((int)(((byte)(55)))));
+            this.darkToolStrip1.CanOverflow = false;
+            this.darkToolStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.darkToolStrip1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.butDrawMoveables,
+            this.butDrawStatics,
+            this.butDrawImportedGeometry,
+            this.toolStripSeparator11,
+            this.butDrawLightMeshes,
+            this.butDrawOther,
+            this.butDrawHorizon,
+            this.butDrawPortals,
+            this.toolStripSeparator12,
+            this.butDrawIllegalSlopes,
+            this.butDrawRoomNames});
+            this.darkToolStrip1.Location = new System.Drawing.Point(628, 249);
+            this.darkToolStrip1.Name = "darkToolStrip1";
+            this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(3, 1, 3, 0);
+            this.darkToolStrip1.Size = new System.Drawing.Size(229, 23);
+            this.darkToolStrip1.TabIndex = 17;
+            this.darkToolStrip1.Text = "darkToolStrip1";
+            this.darkToolStrip1.UseUIBackgroundColor = true;
+            // 
+            // butDrawMoveables
+            // 
+            this.butDrawMoveables.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawMoveables.Checked = true;
+            this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawMoveables.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawMoveables.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Merry_Go_Round_48_copy;
+            this.butDrawMoveables.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawMoveables.Name = "butDrawMoveables";
+            this.butDrawMoveables.Size = new System.Drawing.Size(23, 19);
+            this.butDrawMoveables.ToolTipText = "Draw moveables";
+            this.butDrawMoveables.Click += new System.EventHandler(this.butDrawMoveables_Click);
+            // 
+            // butDrawStatics
+            // 
+            this.butDrawStatics.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawStatics.Checked = true;
+            this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawStatics.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawStatics.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Obelisk_48_copy;
+            this.butDrawStatics.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawStatics.Name = "butDrawStatics";
+            this.butDrawStatics.Size = new System.Drawing.Size(23, 19);
+            this.butDrawStatics.ToolTipText = "Draw static meshes";
+            this.butDrawStatics.Click += new System.EventHandler(this.butDrawStatics_Click);
+            // 
+            // butDrawImportedGeometry
+            // 
+            this.butDrawImportedGeometry.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawImportedGeometry.Checked = true;
+            this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawImportedGeometry.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawImportedGeometry.Image = global::TombEditor.Properties.Resources.custom_geometry;
+            this.butDrawImportedGeometry.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(23, 19);
+            this.butDrawImportedGeometry.ToolTipText = "Draw imported geometry";
+            this.butDrawImportedGeometry.Click += new System.EventHandler(this.butDrawImportedGeometry_Click);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator11.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(6, 22);
+            // 
+            // butDrawLightMeshes
+            // 
+            this.butDrawLightMeshes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawLightMeshes.Checked = true;
+            this.butDrawLightMeshes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawLightMeshes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawLightMeshes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawLightMeshes.Image = global::TombEditor.Properties.Resources.LightPoint_16;
+            this.butDrawLightMeshes.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawLightMeshes.Name = "butDrawLightMeshes";
+            this.butDrawLightMeshes.Size = new System.Drawing.Size(23, 19);
+            this.butDrawLightMeshes.ToolTipText = "Draw light meshes";
+            this.butDrawLightMeshes.Click += new System.EventHandler(this.butDrawLightMeshes_Click);
+            // 
+            // butDrawOther
+            // 
+            this.butDrawOther.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawOther.Checked = true;
+            this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawOther.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawOther.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Maintenance_Filled_50_copy;
+            this.butDrawOther.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawOther.Name = "butDrawOther";
+            this.butDrawOther.Size = new System.Drawing.Size(23, 19);
+            this.butDrawOther.ToolTipText = "Draw other objects";
+            this.butDrawOther.Click += new System.EventHandler(this.butDrawOther_Click);
+            // 
+            // butDrawHorizon
+            // 
+            this.butDrawHorizon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawHorizon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawHorizon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawHorizon.Image = global::TombEditor.Properties.Resources.earth_element_16;
+            this.butDrawHorizon.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawHorizon.Name = "butDrawHorizon";
+            this.butDrawHorizon.Size = new System.Drawing.Size(23, 19);
+            this.butDrawHorizon.ToolTipText = "Draw horizon";
+            this.butDrawHorizon.Click += new System.EventHandler(this.butDrawHorizon_Click);
+            // 
+            // butDrawPortals
+            // 
+            this.butDrawPortals.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawPortals.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawPortals.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawPortals.Image = global::TombEditor.Properties.Resources.door_opened_16;
+            this.butDrawPortals.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawPortals.Name = "butDrawPortals";
+            this.butDrawPortals.Size = new System.Drawing.Size(23, 19);
+            this.butDrawPortals.ToolTipText = "Draw portals";
+            this.butDrawPortals.Click += new System.EventHandler(this.butDrawPortals_Click);
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator12.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(6, 22);
+            // 
+            // butDrawIllegalSlopes
+            // 
+            this.butDrawIllegalSlopes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawIllegalSlopes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawIllegalSlopes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawIllegalSlopes.Image = global::TombEditor.Properties.Resources.IllegalSlope1_16;
+            this.butDrawIllegalSlopes.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawIllegalSlopes.Name = "butDrawIllegalSlopes";
+            this.butDrawIllegalSlopes.Size = new System.Drawing.Size(23, 19);
+            this.butDrawIllegalSlopes.ToolTipText = "Draw illegal slopes";
+            this.butDrawIllegalSlopes.Click += new System.EventHandler(this.butDrawIllegalSlopes_Click);
+            // 
+            // butDrawRoomNames
+            // 
+            this.butDrawRoomNames.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawRoomNames.Checked = true;
+            this.butDrawRoomNames.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawRoomNames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawRoomNames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawRoomNames.Image = global::TombEditor.Properties.Resources.generic_text_16;
+            this.butDrawRoomNames.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawRoomNames.Name = "butDrawRoomNames";
+            this.butDrawRoomNames.Size = new System.Drawing.Size(23, 19);
+            this.butDrawRoomNames.ToolTipText = "Draw room names";
+            this.butDrawRoomNames.Click += new System.EventHandler(this.butDrawRoomNames_Click);
             // 
             // secondaryToolStrip
             // 
@@ -630,257 +790,20 @@
             // 
             // panel2DMap
             // 
-            this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2DMap.Location = new System.Drawing.Point(3, 31);
             this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(871, 259);
+            this.panel2DMap.Size = new System.Drawing.Size(871, 286);
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.toolStripLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(39, 20);
-            this.toolStripLabel1.Text = "Show:";
-            // 
-            // darkToolStrip1
-            // 
-            this.darkToolStrip1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkToolStrip1.AutoSize = false;
-            this.darkToolStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(53)))), ((int)(((byte)(55)))));
-            this.darkToolStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            this.darkToolStrip1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkToolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1,
-            this.butDrawMoveables,
-            this.butDrawStatics,
-            this.butDrawImportedGeometry,
-            this.toolStripSeparator11,
-            this.butDrawLightMeshes,
-            this.butDrawOther,
-            this.butDrawHorizon,
-            this.butDrawPortals,
-            this.toolStripSeparator12,
-            this.butDrawIllegalSlopes,
-            this.butDrawRoomNames,
-            this.toolStripSeparator8,
-            this.toolStripLabel2,
-            this.toolStripSeparator10,
-            this.toolStripLabel3,
-            this.toolStripSeparator9,
-            this.toolStripLabel8});
-            this.darkToolStrip1.Location = new System.Drawing.Point(3, 293);
-            this.darkToolStrip1.Name = "darkToolStrip1";
-            this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 3, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(871, 23);
-            this.darkToolStrip1.TabIndex = 17;
-            this.darkToolStrip1.Text = "darkToolStrip1";
-            this.darkToolStrip1.UseUIBackgroundColor = true;
-            // 
-            // toolStripSeparator11
-            // 
-            this.toolStripSeparator11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator11.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(6, 23);
-            // 
-            // butDrawHorizon
-            // 
-            this.butDrawHorizon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawHorizon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawHorizon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawHorizon.Image = global::TombEditor.Properties.Resources.earth_element_16;
-            this.butDrawHorizon.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawHorizon.Name = "butDrawHorizon";
-            this.butDrawHorizon.Size = new System.Drawing.Size(23, 20);
-            this.butDrawHorizon.ToolTipText = "Draw horizon";
-            this.butDrawHorizon.Click += new System.EventHandler(this.butDrawHorizon_Click);
-            // 
-            // butDrawPortals
-            // 
-            this.butDrawPortals.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawPortals.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawPortals.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawPortals.Image = global::TombEditor.Properties.Resources.door_opened_16;
-            this.butDrawPortals.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawPortals.Name = "butDrawPortals";
-            this.butDrawPortals.Size = new System.Drawing.Size(23, 20);
-            this.butDrawPortals.ToolTipText = "Draw portals";
-            this.butDrawPortals.Click += new System.EventHandler(this.butDrawPortals_Click);
-            // 
-            // toolStripSeparator12
-            // 
-            this.toolStripSeparator12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator12.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(6, 23);
-            // 
-            // butDrawIllegalSlopes
-            // 
-            this.butDrawIllegalSlopes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawIllegalSlopes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawIllegalSlopes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawIllegalSlopes.Image = global::TombEditor.Properties.Resources.IllegalSlope1_16;
-            this.butDrawIllegalSlopes.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawIllegalSlopes.Name = "butDrawIllegalSlopes";
-            this.butDrawIllegalSlopes.Size = new System.Drawing.Size(23, 20);
-            this.butDrawIllegalSlopes.ToolTipText = "Draw illegal slopes";
-            this.butDrawIllegalSlopes.Click += new System.EventHandler(this.butDrawIllegalSlopes_Click);
-            // 
-            // butDrawMoveables
-            // 
-            this.butDrawMoveables.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawMoveables.Checked = true;
-            this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.butDrawMoveables.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawMoveables.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Merry_Go_Round_48_copy;
-            this.butDrawMoveables.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(23, 20);
-            this.butDrawMoveables.ToolTipText = "Draw moveables";
-            this.butDrawMoveables.Click += new System.EventHandler(this.butDrawMoveables_Click);
-            // 
-            // butDrawStatics
-            // 
-            this.butDrawStatics.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawStatics.Checked = true;
-            this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.butDrawStatics.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawStatics.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Obelisk_48_copy;
-            this.butDrawStatics.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(23, 20);
-            this.butDrawStatics.ToolTipText = "Draw static meshes";
-            this.butDrawStatics.Click += new System.EventHandler(this.butDrawStatics_Click);
-            // 
-            // butDrawImportedGeometry
-            // 
-            this.butDrawImportedGeometry.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawImportedGeometry.Checked = true;
-            this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.butDrawImportedGeometry.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawImportedGeometry.Image = global::TombEditor.Properties.Resources.custom_geometry;
-            this.butDrawImportedGeometry.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(23, 20);
-            this.butDrawImportedGeometry.ToolTipText = "Draw imported geometry";
-            this.butDrawImportedGeometry.Click += new System.EventHandler(this.butDrawImportedGeometry_Click);
-            // 
-            // butDrawLightMeshes
-            // 
-            this.butDrawLightMeshes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawLightMeshes.Checked = true;
-            this.butDrawLightMeshes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.butDrawLightMeshes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawLightMeshes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawLightMeshes.Image = global::TombEditor.Properties.Resources.LightPoint_16;
-            this.butDrawLightMeshes.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawLightMeshes.Name = "butDrawLightMeshes";
-            this.butDrawLightMeshes.Size = new System.Drawing.Size(23, 20);
-            this.butDrawLightMeshes.ToolTipText = "Draw light meshes";
-            this.butDrawLightMeshes.Click += new System.EventHandler(this.butDrawLightMeshes_Click);
-            // 
-            // butDrawOther
-            // 
-            this.butDrawOther.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawOther.Checked = true;
-            this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.butDrawOther.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawOther.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Maintenance_Filled_50_copy;
-            this.butDrawOther.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(23, 20);
-            this.butDrawOther.ToolTipText = "Draw other objects";
-            this.butDrawOther.Click += new System.EventHandler(this.butDrawOther_Click);
-            // 
-            // butDrawRoomNames
-            // 
-            this.butDrawRoomNames.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawRoomNames.Checked = true;
-            this.butDrawRoomNames.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.butDrawRoomNames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawRoomNames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawRoomNames.Image = global::TombEditor.Properties.Resources.generic_text_16;
-            this.butDrawRoomNames.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawRoomNames.Name = "butDrawRoomNames";
-            this.butDrawRoomNames.Size = new System.Drawing.Size(23, 20);
-            this.butDrawRoomNames.ToolTipText = "Draw room names";
-            this.butDrawRoomNames.Click += new System.EventHandler(this.butDrawRoomNames_Click);
-            // 
-            // toolStripSeparator8
-            // 
-            this.toolStripSeparator8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator8.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 23);
-            this.toolStripSeparator8.Visible = false;
-            // 
-            // toolStripLabel2
-            // 
-            this.toolStripLabel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(93, 20);
-            this.toolStripLabel2.Text = "Objects: 0 of 256";
-            this.toolStripLabel2.Visible = false;
-            // 
-            // toolStripSeparator10
-            // 
-            this.toolStripSeparator10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator10.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(6, 23);
-            this.toolStripSeparator10.Visible = false;
-            // 
-            // toolStripLabel3
-            // 
-            this.toolStripLabel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(89, 20);
-            this.toolStripLabel3.Text = "Rooms: 1 of 512";
-            this.toolStripLabel3.Visible = false;
-            // 
-            // toolStripSeparator9
-            // 
-            this.toolStripSeparator9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator9.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(6, 23);
-            this.toolStripSeparator9.Visible = false;
-            // 
-            // toolStripLabel8
-            // 
-            this.toolStripLabel8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripLabel8.Name = "toolStripLabel8";
-            this.toolStripLabel8.Size = new System.Drawing.Size(52, 20);
-            this.toolStripLabel8.Text = "Statics: 0";
-            this.toolStripLabel8.Visible = false;
             // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.darkToolStrip1);
             this.Controls.Add(this.panel3D);
             this.Controls.Add(this.panel2DMap);
             this.Controls.Add(this.toolStrip);
@@ -892,10 +815,10 @@
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.panel3D.ResumeLayout(false);
-            this.secondaryToolStrip.ResumeLayout(false);
-            this.secondaryToolStrip.PerformLayout();
             this.darkToolStrip1.ResumeLayout(false);
             this.darkToolStrip1.PerformLayout();
+            this.secondaryToolStrip.ResumeLayout(false);
+            this.secondaryToolStrip.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -940,7 +863,6 @@
         private System.Windows.Forms.ToolStripButton toolShovel;
         private System.Windows.Forms.ToolStripButton toolFill;
         private System.Windows.Forms.ToolStripButton toolFlatten;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripButton butDrawMoveables;
         private System.Windows.Forms.ToolStripButton butDrawStatics;
         private System.Windows.Forms.ToolStripButton butDrawImportedGeometry;
@@ -956,12 +878,6 @@
         private System.Windows.Forms.ToolStripButton butDrawIllegalSlopes;
         private System.Windows.Forms.ToolStripButton butDrawRoomNames;
         private System.Windows.Forms.ToolStripButton butCenterCamera;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel3;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel8;
         private System.Windows.Forms.ToolStripButton toolSmooth;
     }
 }
