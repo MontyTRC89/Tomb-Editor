@@ -341,35 +341,6 @@ namespace TombLib.Wad.Tr4Wad
                     {
                         _logger.Warn("Unable to find sample '" + _oldWad.Sounds[j] + "' at any of the defined sound paths");
                     }
-                    /*foreach (string soundPath in _soundPaths)
-                    {
-                        string fileName = Path.Combine(_oldWad.BasePath, soundPath, _oldWad.Sounds[j]);
-
-                        // If wave sound exists, then load it in memory
-                        if (File.Exists(fileName))
-                        {
-                            using (var stream = File.OpenRead(fileName))
-                            {
-                                var buffer = new byte[stream.Length];
-                                stream.Read(buffer, 0, buffer.Length);
-                                var sound = new WadSample(_oldWad.Sounds[j], buffer);
-                                if (_wad.Samples.ContainsKey(sound.Hash))
-                                {
-                                    newInfo.Samples.Add(_wad.Samples[sound.Hash]);
-                                }
-                                else
-                                {
-                                    _wad.Samples.Add(sound.Hash, sound);
-                                    newInfo.Samples.Add(sound);
-                                }
-                            }
-                            goto FoundSound;
-                        }
-                    }*/
-
-                   // _logger.Warn("Unable to find sample '" + _oldWad.Sounds[j] + "' at any of the defined sound paths");
-                 /*   FoundSound:
-                    ;*/
                 }
 
                 newInfo.UpdateHash();

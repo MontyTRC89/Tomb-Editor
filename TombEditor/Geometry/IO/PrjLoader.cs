@@ -597,7 +597,7 @@ namespace TombEditor.Geometry.IO
                         byte reverb = reader.ReadByte();
                         tempRoom._flipGroup = (short)(reader.ReadInt16() & 0xff);
 
-                        room.WaterLevel = (flags1 & 0x0001) != 0 ? waterLevel : (byte)0;
+                        room.WaterLevel = (byte)((flags1 & 0x0001) != 0 ? waterLevel + 1 : 0);
                         room.Reverberation = (Reverberation)reverb;
                         room.ReflectionLevel = (flags1 & 0x0200) != 0 ? mistOrReflectionLevel : (byte)0;
                         room.MistLevel = (flags1 & 0x0100) != 0 ? mistOrReflectionLevel : (byte)0;
