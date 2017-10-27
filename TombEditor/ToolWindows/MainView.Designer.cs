@@ -645,7 +645,7 @@
             this.butDrawRoomNames.Image = global::TombEditor.Properties.Resources.generic_text_16;
             this.butDrawRoomNames.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDrawRoomNames.Name = "butDrawRoomNames";
-            this.butDrawRoomNames.Size = new System.Drawing.Size(23, 19);
+            this.butDrawRoomNames.Size = new System.Drawing.Size(24, 24);
             this.butDrawRoomNames.ToolTipText = "Draw room names";
             this.butDrawRoomNames.Click += new System.EventHandler(this.butDrawRoomNames_Click);
             // 
@@ -670,7 +670,7 @@
             this.secondaryToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.secondaryToolStrip.Location = new System.Drawing.Point(12, 12);
             this.secondaryToolStrip.Name = "secondaryToolStrip";
-            this.secondaryToolStrip.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
+            this.secondaryToolStrip.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.secondaryToolStrip.Size = new System.Drawing.Size(27, 213);
             this.secondaryToolStrip.TabIndex = 0;
             this.secondaryToolStrip.UseUIBackgroundColor = true;
@@ -683,7 +683,7 @@
             this.toolSelection.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Select_None_50_copy;
             this.toolSelection.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolSelection.Name = "toolSelection";
-            this.toolSelection.Size = new System.Drawing.Size(24, 20);
+            this.toolSelection.Size = new System.Drawing.Size(22, 20);
             this.toolSelection.ToolTipText = "Selection";
             this.toolSelection.Click += new System.EventHandler(this.toolSelection_Click);
             // 
@@ -695,7 +695,7 @@
             this.toolBrush.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Brush_48_copy;
             this.toolBrush.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolBrush.Name = "toolBrush";
-            this.toolBrush.Size = new System.Drawing.Size(24, 20);
+            this.toolBrush.Size = new System.Drawing.Size(22, 20);
             this.toolBrush.Text = "toolStripButton7";
             this.toolBrush.ToolTipText = "Brush";
             this.toolBrush.Click += new System.EventHandler(this.toolBrush_Click);
@@ -708,7 +708,7 @@
             this.toolShovel.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Minecraft_Shovel_Filled_50_copy;
             this.toolShovel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolShovel.Name = "toolShovel";
-            this.toolShovel.Size = new System.Drawing.Size(24, 20);
+            this.toolShovel.Size = new System.Drawing.Size(22, 20);
             this.toolShovel.Text = "toolStripButton7";
             this.toolShovel.ToolTipText = "Shovel";
             this.toolShovel.Click += new System.EventHandler(this.toolShovel_Click);
@@ -721,7 +721,7 @@
             this.toolPencil.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Pencil_48_copy;
             this.toolPencil.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolPencil.Name = "toolPencil";
-            this.toolPencil.Size = new System.Drawing.Size(24, 20);
+            this.toolPencil.Size = new System.Drawing.Size(22, 20);
             this.toolPencil.Text = "toolStripButton7";
             this.toolPencil.ToolTipText = "Pencil";
             this.toolPencil.Click += new System.EventHandler(this.toolPencil_Click);
@@ -734,7 +734,7 @@
             this.toolFlatten.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Bulldozer_Filled_50_copy;
             this.toolFlatten.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolFlatten.Name = "toolFlatten";
-            this.toolFlatten.Size = new System.Drawing.Size(24, 20);
+            this.toolFlatten.Size = new System.Drawing.Size(22, 20);
             this.toolFlatten.Text = "toolStripButton7";
             this.toolFlatten.ToolTipText = "Bulldozer";
             this.toolFlatten.Click += new System.EventHandler(this.toolFlatten_Click);
@@ -747,7 +747,7 @@
             this.toolSmooth.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_blur_copy;
             this.toolSmooth.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolSmooth.Name = "toolSmooth";
-            this.toolSmooth.Size = new System.Drawing.Size(24, 20);
+            this.toolSmooth.Size = new System.Drawing.Size(22, 20);
             this.toolSmooth.ToolTipText = "Smooth";
             this.toolSmooth.Click += new System.EventHandler(this.toolSmooth_Click);
             // 
@@ -759,7 +759,7 @@
             this.toolFill.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Fill_Color_48_copy;
             this.toolFill.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolFill.Name = "toolFill";
-            this.toolFill.Size = new System.Drawing.Size(24, 20);
+            this.toolFill.Size = new System.Drawing.Size(22, 20);
             this.toolFill.Text = "toolStripButton7";
             this.toolFill.ToolTipText = "Fill";
             this.toolFill.Click += new System.EventHandler(this.toolFill_Click);
@@ -772,7 +772,7 @@
             this.toolEraser.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Eraser_48_copy;
             this.toolEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolEraser.Name = "toolEraser";
-            this.toolEraser.Size = new System.Drawing.Size(24, 20);
+            this.toolEraser.Size = new System.Drawing.Size(22, 20);
             this.toolEraser.ToolTipText = "Eraser";
             this.toolEraser.Click += new System.EventHandler(this.toolEraser_Click);
             // 
@@ -784,7 +784,7 @@
             this.toolInvisibility.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_invisible_copy;
             this.toolInvisibility.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolInvisibility.Name = "toolInvisibility";
-            this.toolInvisibility.Size = new System.Drawing.Size(24, 20);
+            this.toolInvisibility.Size = new System.Drawing.Size(22, 20);
             this.toolInvisibility.ToolTipText = "Invisibility";
             this.toolInvisibility.Click += new System.EventHandler(this.toolInvisibility_Click);
             // 
