@@ -129,18 +129,16 @@ namespace TombEditor.Controls
         public bool DrawHorizon { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawIllegalSlopes { get; set; }
-
-
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowMoveables { get; set; }
+        public bool ShowMoveables { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowStatics { get; set; }
+        public bool ShowStatics { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowImportedGeometry { get; set; }
+        public bool ShowImportedGeometry { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowLightMeshes { get; set; }
+        public bool ShowLightMeshes { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowOtherObjects { get; set; }
+        public bool ShowOtherObjects { get; set; } = true;
 
         private Editor _editor;
         private DeviceManager _deviceManager;
