@@ -568,6 +568,64 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
+        public static void SmoothSector(Room room, int x, int z, bool floor)
+        {
+            var currBlock = room.GetBlockTry(x, z);
+
+            if (currBlock == null)
+                return;
+
+            Block[] lookupBlocks = new Block[8]
+            {
+                room.GetBlockTry(x - 1, z + 1),
+                room.GetBlockTry(x, z + 1),
+                room.GetBlockTry(x + 1, z + 1),
+                room.GetBlockTry(x + 1, z),
+                room.GetBlockTry(x + 1, z - 1),
+                room.GetBlockTry(x, z - 1),
+                room.GetBlockTry(x - 1, z - 1),
+                room.GetBlockTry(x - 1, z)
+            };
+
+            if (floor)
+            {
+                short[] newFaces = new short[4];
+
+                int validBlockCnt = (Convert.ToInt32(lookupBlocks[7] != null) + Convert.ToInt32(lookupBlocks[0] != null) + Convert.ToInt32(lookupBlocks[1] != null));
+                newFaces[0] = (short)(((lookupBlocks[7]?.QAFaces[1] ?? 0) + (lookupBlocks[0]?.QAFaces[2] ?? 0) + (lookupBlocks[1]?.QAFaces[3] ?? 0)) / (validBlockCnt));
+
+                validBlockCnt = (Convert.ToInt32(lookupBlocks[1] != null) + Convert.ToInt32(lookupBlocks[2] != null) + Convert.ToInt32(lookupBlocks[3] != null));
+                newFaces[1] = (short)(((lookupBlocks[1]?.QAFaces[2] ?? 0) + (lookupBlocks[2]?.QAFaces[3] ?? 0) + (lookupBlocks[3]?.QAFaces[0] ?? 0)) / (validBlockCnt));
+
+                validBlockCnt = (Convert.ToInt32(lookupBlocks[3] != null) + Convert.ToInt32(lookupBlocks[4] != null) + Convert.ToInt32(lookupBlocks[5] != null));
+                newFaces[2] = (short)(((lookupBlocks[3]?.QAFaces[3] ?? 0) + (lookupBlocks[4]?.QAFaces[0] ?? 0) + (lookupBlocks[5]?.QAFaces[1] ?? 0)) / (validBlockCnt));
+
+                validBlockCnt = (Convert.ToInt32(lookupBlocks[5] != null) + Convert.ToInt32(lookupBlocks[6] != null) + Convert.ToInt32(lookupBlocks[7] != null));
+                newFaces[3] = (short)(((lookupBlocks[5]?.QAFaces[0] ?? 0) + (lookupBlocks[6]?.QAFaces[1] ?? 0) + (lookupBlocks[7]?.QAFaces[2] ?? 0)) / (validBlockCnt));
+
+                currBlock.QAFaces[0] += (short)Math.Sign(newFaces[0] - currBlock.QAFaces[0]);
+                currBlock.QAFaces[1] += (short)Math.Sign(newFaces[1] - currBlock.QAFaces[1]);
+                currBlock.QAFaces[2] += (short)Math.Sign(newFaces[2] - currBlock.QAFaces[2]);
+                currBlock.QAFaces[3] += (short)Math.Sign(newFaces[3] - currBlock.QAFaces[3]);
+            }
+            else
+            {
+                int validBlockCnt = (Convert.ToInt32(lookupBlocks[7] != null) + Convert.ToInt32(lookupBlocks[0] != null) + Convert.ToInt32(lookupBlocks[1] != null));
+                currBlock.WSFaces[0] += (short)((lookupBlocks[7].WSFaces[1] + lookupBlocks[0].WSFaces[2] + lookupBlocks[1].WSFaces[3]) / validBlockCnt > currBlock.WSFaces[0] ? 1 : -1);
+
+                validBlockCnt = (Convert.ToInt32(lookupBlocks[1] != null) + Convert.ToInt32(lookupBlocks[2] != null) + Convert.ToInt32(lookupBlocks[3] != null));
+                currBlock.WSFaces[1] += (short)((lookupBlocks[1].WSFaces[2] + lookupBlocks[2].WSFaces[3] + lookupBlocks[3].WSFaces[0]) / validBlockCnt > currBlock.WSFaces[1] ? 1 : -1);
+
+                validBlockCnt = (Convert.ToInt32(lookupBlocks[3] != null) + Convert.ToInt32(lookupBlocks[4] != null) + Convert.ToInt32(lookupBlocks[5] != null));
+                currBlock.WSFaces[2] += (short)((lookupBlocks[3].WSFaces[3] + lookupBlocks[4].WSFaces[0] + lookupBlocks[5].WSFaces[1]) / validBlockCnt > currBlock.WSFaces[2] ? 1 : -1);
+
+                validBlockCnt = (Convert.ToInt32(lookupBlocks[5] != null) + Convert.ToInt32(lookupBlocks[6] != null) + Convert.ToInt32(lookupBlocks[7] != null));
+                currBlock.WSFaces[3] += (short)((lookupBlocks[5].WSFaces[2] + lookupBlocks[6].WSFaces[1] + lookupBlocks[7].WSFaces[0]) / validBlockCnt > currBlock.WSFaces[3] ? 1 : -1);
+            }
+
+            SmartBuildGeometry(room, new Rectangle(x, z, x, z));
+        }
+
         public static void FlipFloorSplit(Room room, Rectangle area)
         {
             for (int x = area.X; x <= area.Right; x++)

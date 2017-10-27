@@ -50,9 +50,10 @@
             this.secondaryToolStrip = new DarkUI.Controls.DarkToolStrip();
             this.toolSelection = new System.Windows.Forms.ToolStripButton();
             this.toolBrush = new System.Windows.Forms.ToolStripButton();
-            this.toolPencil = new System.Windows.Forms.ToolStripButton();
             this.toolShovel = new System.Windows.Forms.ToolStripButton();
+            this.toolPencil = new System.Windows.Forms.ToolStripButton();
             this.toolFlatten = new System.Windows.Forms.ToolStripButton();
+            this.toolSmooth = new System.Windows.Forms.ToolStripButton();
             this.toolFill = new System.Windows.Forms.ToolStripButton();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
@@ -484,7 +485,7 @@
             this.panel3D.Controls.Add(this.secondaryToolStrip);
             this.panel3D.Location = new System.Drawing.Point(3, 31);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(871, 222);
+            this.panel3D.Size = new System.Drawing.Size(871, 259);
             this.panel3D.TabIndex = 13;
             // 
             // secondaryToolStrip
@@ -498,9 +499,10 @@
             this.secondaryToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSelection,
             this.toolBrush,
-            this.toolPencil,
             this.toolShovel,
+            this.toolPencil,
             this.toolFlatten,
+            this.toolSmooth,
             this.toolFill,
             this.toolEraser,
             this.toolInvisibility});
@@ -536,19 +538,6 @@
             this.toolBrush.ToolTipText = "Brush";
             this.toolBrush.Click += new System.EventHandler(this.toolBrush_Click);
             // 
-            // toolPencil
-            // 
-            this.toolPencil.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolPencil.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolPencil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolPencil.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Pencil_48_copy;
-            this.toolPencil.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolPencil.Name = "toolPencil";
-            this.toolPencil.Size = new System.Drawing.Size(24, 20);
-            this.toolPencil.Text = "toolStripButton7";
-            this.toolPencil.ToolTipText = "Pencil";
-            this.toolPencil.Click += new System.EventHandler(this.toolPencil_Click);
-            // 
             // toolShovel
             // 
             this.toolShovel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -562,6 +551,19 @@
             this.toolShovel.ToolTipText = "Shovel";
             this.toolShovel.Click += new System.EventHandler(this.toolShovel_Click);
             // 
+            // toolPencil
+            // 
+            this.toolPencil.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolPencil.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolPencil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolPencil.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_Pencil_48_copy;
+            this.toolPencil.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolPencil.Name = "toolPencil";
+            this.toolPencil.Size = new System.Drawing.Size(24, 20);
+            this.toolPencil.Text = "toolStripButton7";
+            this.toolPencil.ToolTipText = "Pencil";
+            this.toolPencil.Click += new System.EventHandler(this.toolPencil_Click);
+            // 
             // toolFlatten
             // 
             this.toolFlatten.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -574,6 +576,18 @@
             this.toolFlatten.Text = "toolStripButton7";
             this.toolFlatten.ToolTipText = "Bulldozer";
             this.toolFlatten.Click += new System.EventHandler(this.toolFlatten_Click);
+            // 
+            // toolSmooth
+            // 
+            this.toolSmooth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolSmooth.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolSmooth.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolSmooth.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_blur_copy;
+            this.toolSmooth.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolSmooth.Name = "toolSmooth";
+            this.toolSmooth.Size = new System.Drawing.Size(24, 20);
+            this.toolSmooth.ToolTipText = "Smooth";
+            this.toolSmooth.Click += new System.EventHandler(this.toolSmooth_Click);
             // 
             // toolFill
             // 
@@ -605,7 +619,7 @@
             this.toolInvisibility.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolInvisibility.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolInvisibility.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolInvisibility.Image = global::TombEditor.Properties.Resources.TextureNoTexture_1_16;
+            this.toolInvisibility.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_invisible_copy;
             this.toolInvisibility.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolInvisibility.Name = "toolInvisibility";
             this.toolInvisibility.Size = new System.Drawing.Size(24, 20);
@@ -620,7 +634,7 @@
             this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2DMap.Location = new System.Drawing.Point(4, 31);
             this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(871, 222);
+            this.panel2DMap.Size = new System.Drawing.Size(871, 259);
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             // 
@@ -733,10 +747,10 @@
             this.toolStripSeparator9,
             this.toolStripLabel8});
             this.darkToolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.darkToolStrip1.Location = new System.Drawing.Point(0, 256);
+            this.darkToolStrip1.Location = new System.Drawing.Point(0, 293);
             this.darkToolStrip1.Name = "darkToolStrip1";
             this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 3, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(874, 27);
+            this.darkToolStrip1.Size = new System.Drawing.Size(848, 27);
             this.darkToolStrip1.TabIndex = 17;
             this.darkToolStrip1.Text = "darkToolStrip1";
             // 
@@ -864,7 +878,7 @@
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "MainView";
             this.SerializationKey = "MainView";
-            this.Size = new System.Drawing.Size(877, 283);
+            this.Size = new System.Drawing.Size(877, 320);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.panel3D.ResumeLayout(false);
@@ -938,5 +952,6 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel3;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
         private System.Windows.Forms.ToolStripLabel toolStripLabel8;
+        private System.Windows.Forms.ToolStripButton toolSmooth;
     }
 }

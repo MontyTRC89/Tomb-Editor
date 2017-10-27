@@ -11,7 +11,7 @@ namespace TombEditor
     }
     public enum EditorTool
     {
-        None, Selection, Brush, Pencil, Shovel, Flatten, Fill, Eraser, Invisibility
+        None, Selection, Brush, Pencil, Shovel, Flatten, Smooth, Fill, Eraser, Invisibility
     }
 
     public enum EditorActionType

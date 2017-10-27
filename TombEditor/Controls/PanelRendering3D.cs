@@ -708,13 +708,25 @@ namespace TombEditor.Controls
                                             ResetToolActionGrid();
                                             _toolEngaged = true;
 
-                                            if (_editor.Tool != EditorTool.Flatten)
+                                            if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None) && _toolActionGrid[pos.X, pos.Y] == false)
                                             {
-                                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (belongsToFloor ? 0 : 1), (short)(_editor.Tool == EditorTool.Shovel ^ belongsToFloor ? 1 : -1), (_editor.Tool == EditorTool.Brush || _editor.Tool == EditorTool.Shovel));
                                                 _toolActionGrid[pos.X, pos.Y] = true;
+
+                                                switch (_editor.Tool)
+                                                {
+                                                    case EditorTool.Flatten:
+                                                        _toolReferenceBlock = _editor.SelectedRoom.Blocks[pos.X, pos.Y];
+                                                        break;
+
+                                                    case EditorTool.Smooth:
+                                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
+                                                        break;
+
+                                                    default:
+                                                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (belongsToFloor ? 0 : 1), (short)(_editor.Tool == EditorTool.Shovel ^ belongsToFloor ? 1 : -1), (_editor.Tool == EditorTool.Brush || _editor.Tool == EditorTool.Shovel));
+                                                        break;
+                                                }
                                             }
-                                            else
-                                                _toolReferenceBlock = _editor.SelectedRoom.Blocks[pos.X, pos.Y];
                                         }
 
                                         if (ModifierKeys.HasFlag(Keys.Alt))
@@ -862,27 +874,35 @@ namespace TombEditor.Controls
 
                             if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None) && _toolActionGrid[pos.X, pos.Y] == false)
                             {
-                                if (_editor.Tool != EditorTool.Flatten)
-                                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (newBlockPicking.BelongsToFloor ? 0 : 1), (short)(_editor.Tool == EditorTool.Shovel ^ newBlockPicking.BelongsToFloor ? 1 : -1), (_editor.Tool == EditorTool.Brush || _editor.Tool == EditorTool.Shovel));
-                                else
-                                {
-                                    for (int i = 0; i < 4; i++)
-                                    {
-                                        if (newBlockPicking.BelongsToFloor)
-                                        {
-                                            _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolReferenceBlock.QAFaces.Min();
-                                            _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolReferenceBlock.EDFaces.Min();
-                                        }
-                                        else
-                                        {
-                                            _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolReferenceBlock.WSFaces.Min();
-                                            _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolReferenceBlock.RFFaces.Min();
-                                        }
-                                    }
-                                    EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
-                                }
-
                                 _toolActionGrid[pos.X, pos.Y] = true;
+
+                                switch (_editor.Tool)
+                                {
+                                    case EditorTool.Flatten:
+                                        for (int i = 0; i < 4; i++)
+                                        {
+                                            if (newBlockPicking.BelongsToFloor)
+                                            {
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolReferenceBlock.QAFaces.Min();
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolReferenceBlock.EDFaces.Min();
+                                            }
+                                            else
+                                            {
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolReferenceBlock.WSFaces.Min();
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolReferenceBlock.RFFaces.Min();
+                                            }
+                                        }
+                                        EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                    break;
+
+                                    case EditorTool.Smooth:
+                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, newBlockPicking.BelongsToFloor);
+                                        break;
+
+                                    default:
+                                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (newBlockPicking.BelongsToFloor ? 0 : 1), (short)(_editor.Tool == EditorTool.Shovel ^ newBlockPicking.BelongsToFloor ? 1 : -1), (_editor.Tool == EditorTool.Brush || _editor.Tool == EditorTool.Shovel));
+                                        break;
+                                }
                             }
                         }
                     }

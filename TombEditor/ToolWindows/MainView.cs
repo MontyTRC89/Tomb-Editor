@@ -150,6 +150,7 @@ namespace TombEditor.ToolWindows
             toolFill.Checked = tool == EditorTool.Fill;
             toolShovel.Checked = tool == EditorTool.Shovel;
             toolFlatten.Checked = tool == EditorTool.Flatten;
+            toolSmooth.Checked = tool == EditorTool.Smooth;
             toolEraser.Checked = tool == EditorTool.Eraser;
             toolInvisibility.Checked = tool == EditorTool.Invisibility;
 
@@ -396,6 +397,11 @@ namespace TombEditor.ToolWindows
         private void toolEraser_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorTool.Eraser);
+        }
+
+        private void toolSmooth_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorTool.Smooth);
         }
     }
 }

@@ -623,6 +623,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_blur_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_blur_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap subtoolbar_icons8_Brush_48_copy {
             get {
                 object obj = ResourceManager.GetObject("subtoolbar_icons8_Brush_48_copy", resourceCulture);
@@ -656,6 +666,16 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap subtoolbar_icons8_Fill_Color_48_copy {
             get {
                 object obj = ResourceManager.GetObject("subtoolbar_icons8_Fill_Color_48_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_invisible_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_invisible_copy", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
