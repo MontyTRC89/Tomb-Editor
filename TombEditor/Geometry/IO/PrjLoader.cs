@@ -755,30 +755,30 @@ namespace TombEditor.Geometry.IO
                             switch (portal.Direction)
                             {
                                 case PortalDirection.Ceiling:
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
                                             if (tempRoom.Value._blocks[x, z]._ceilingOpacity > portal.Opacity)
                                                 portal.Opacity = tempRoom.Value._blocks[x, z]._ceilingOpacity;
 
                                     // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
                                     // the water flag differs.
-                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
+                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) /*&& (portal.Opacity == PortalOpacity.SolidFaces)*/)
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                                 case PortalDirection.Floor:
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
                                             if (tempRoom.Value._blocks[x, z]._floorOpacity > portal.Opacity)
                                                 portal.Opacity = tempRoom.Value._blocks[x, z]._floorOpacity;
 
                                     // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
                                     // the water flag differs.
-                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
+                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) /*&& (portal.Opacity == PortalOpacity.SolidFaces)*/)
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                                 default:
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
                                             if (tempRoom.Value._blocks[x, z]._wallOpacity > portal.Opacity)
                                                 portal.Opacity = tempRoom.Value._blocks[x, z]._wallOpacity;
                                     break;
