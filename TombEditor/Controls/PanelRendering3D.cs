@@ -760,7 +760,7 @@ namespace TombEditor.Controls
                                             _doSectorSelection = true;
                                         }
                                         else if(_editor.Tool != EditorTool.Selection)
-                                            if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newBlockPicking.Pos) || _editor.SelectedSectors == SectorSelection.None))
+                                            if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newBlockPicking.Pos) || _editor.SelectedSectors == SectorSelection.None)
                                             {
                                                 var usedTexture = _editor.SelectedTexture;
 
@@ -845,7 +845,7 @@ namespace TombEditor.Controls
                             PickingResultBlock newBlockPicking = (PickingResultBlock)newPicking;
                             DrawingPoint pos = newBlockPicking.Pos;
 
-                            if (_toolActionGrid[pos.X, pos.Y] == false)
+                            if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None) && _toolActionGrid[pos.X, pos.Y] == false)
                             {
                                 if (_editor.Tool != EditorTool.Flatten)
                                     EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (newBlockPicking.BelongsToFloor ? 0 : 1), (short)(_editor.Tool == EditorTool.Shovel ^ newBlockPicking.BelongsToFloor ? 1 : -1), (_editor.Tool == EditorTool.Brush || _editor.Tool == EditorTool.Shovel));
@@ -897,7 +897,7 @@ namespace TombEditor.Controls
 
                             if (newPicking != null)
                             {
-                                if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newPicking.Pos) || _editor.SelectedSectors == SectorSelection.None))
+                                if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newPicking.Pos) || _editor.SelectedSectors == SectorSelection.None)
                                 {
                                     var usedTexture = _editor.SelectedTexture;
 
