@@ -10,6 +10,7 @@ using TombLib.Wad;
 using SharpDX;
 using TombLib.Graphics;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.Tr4Wad
 {
@@ -172,6 +173,7 @@ namespace TombLib.Wad.Tr4Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        internal int Version;
         internal List<wad_object_texture> Textures = new List<wad_object_texture>();
         internal byte[] TexturePages;
         internal int NumTexturePages;
@@ -207,13 +209,12 @@ namespace TombLib.Wad.Tr4Wad
             using (BinaryReaderEx reader = new BinaryReaderEx(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 // Read wad version
-                int version = reader.ReadInt32();
-                if (version != 129)
+                Version = reader.ReadInt32();
+                if (Version != 129 && Version != 130)
                 {
-                    logger.Error("Wad version  " + version + " is not supported!");
+                    logger.Error("Wad version  " + Version + " is not supported!");
                     throw new InvalidDataException();
                 }
-
 
                 // Read textures
                 uint numTextures = reader.ReadUInt32();
@@ -467,13 +468,15 @@ namespace TombLib.Wad.Tr4Wad
 
             // Read sounds
             logger.Info("Reading sound (sfx/sam) files associated with wad.");
+            var soundMapSize = TrCatalog.GetSoundMapSize(TombRaiderVersion.TR4, Version == 130);
             using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
                     while (!readerSounds.EndOfStream)
                         Sounds.Add(readerSounds.ReadLine());
 
             using (var readerSfx = new BinaryReaderEx(new FileStream(BasePath + "\\" + BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                for (var i = 0; i < 370; i++)
+                SoundMap = new short[soundMapSize];
+                for (var i = 0; i < soundMapSize; i++)
                 {
                     SoundMap[i] = readerSfx.ReadInt16();
                 }

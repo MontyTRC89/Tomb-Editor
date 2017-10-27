@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.Compilers
 {
@@ -162,14 +164,15 @@ namespace TombEditor.Compilers
                     writer.Write((uint)_aiItems.Count);
                     writer.WriteBlockArray(_aiItems);
 
-                    const short numDemo = 0;
+                    short numDemo = (short)(_level.Wad.Version == TombRaiderVersion.TR4 && 
+                                            _level.Wad.SoundMapSize != 370 ? _level.Wad.SoundMapSize : 0);
                     writer.Write(numDemo);
 
                     // Write sound data
 
                     // Write sound map
                     int lastSound = 0;
-                    for (int i = 0; i < 370; i++)
+                    for (int i = 0; i < _level.Wad.SoundMapSize; i++)
                     {
                         short soundMapValue = -1;
                         if (_level.Wad.SoundInfo.ContainsKey((ushort)i))
