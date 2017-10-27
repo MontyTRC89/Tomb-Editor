@@ -16,6 +16,12 @@ namespace WadTool.Controls
     {
         public WadStatic StaticMesh { get; set; }
         public ArcBallCamera Camera { get; set; }
+
+        public bool DrawVisibilityBox { get; set; }
+        public bool DrawCollisionBox { get; set; }
+        public bool DrawGrid { get; set; }
+        public bool DrawGizmo { get; set; }
+
         public Matrix GizmoTransform
         {
             get
@@ -36,10 +42,18 @@ namespace WadTool.Controls
         private SpriteBatch _spriteBatch;
         private GizmoStaticMeshEditor _gizmo;
         private GeometricPrimitive _plane;
+        private GeometricPrimitive _cube;
 
         public Vector3 StaticPosition { get; set; } = Vector3.Zero;
         public Vector3 StaticRotation { get; set; } = Vector3.Zero;
         public float StaticScale { get; set; } = 1.0f;
+
+        private static readonly Color4 _red = new Color4(1.0f, 0.0f, 0.0f, 1.0f);
+        private static readonly Color4 _green = new Color4(0.0f, 1.0f, 0.0f, 1.0f);
+        private static readonly Color4 _blu = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
+
+        private Buffer<SolidVertex> _vertexBufferVisibility;
+        private Buffer<SolidVertex> _vertexBufferCollision;
 
         public void InitializePanel(GraphicsDevice device)
         {
@@ -89,6 +103,7 @@ namespace WadTool.Controls
             _spriteBatch = new SpriteBatch(_tool.Device);
             _gizmo = new GizmoStaticMeshEditor(_tool.Device, _tool.Effects["Solid"], this);
             _plane = GeometricPrimitive.GridPlane.New(_tool.Device, 8, 4);
+            _cube = GeometricPrimitive.LinesCube.New(_tool.Device, 1024.0f, 1024.0f, 1024.0f);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -103,6 +118,30 @@ namespace WadTool.Controls
                 e.Graphics.FillRectangle(Brushes.White, new System.Drawing.Rectangle(0, 0, Width, Height));
             else
                 Draw();
+        }
+
+        private Buffer<SolidVertex> GetVertexBufferFromBoundingBox(BoundingBox box)
+        {
+            var p0 = new SolidVertex(new Vector3(box.Minimum.X, box.Minimum.Y, box.Minimum.Z));
+            var p1 = new SolidVertex(new Vector3(box.Maximum.X, box.Minimum.Y, box.Minimum.Z));
+            var p2 = new SolidVertex(new Vector3(box.Maximum.X, box.Minimum.Y, box.Maximum.Z));
+            var p3 = new SolidVertex(new Vector3(box.Minimum.X, box.Minimum.Y, box.Maximum.Z));
+            var p4 = new SolidVertex(new Vector3(box.Minimum.X, box.Maximum.Y, box.Minimum.Z));
+            var p5 = new SolidVertex(new Vector3(box.Maximum.X, box.Maximum.Y, box.Minimum.Z));
+            var p6 = new SolidVertex(new Vector3(box.Maximum.X, box.Maximum.Y, box.Maximum.Z));
+            var p7 = new SolidVertex(new Vector3(box.Minimum.X, box.Maximum.Y, box.Maximum.Z));
+
+            var vertices = new SolidVertex[]
+            {
+                p4, p5, p5, p1, p1, p0, p0, p4,
+                    p5, p6, p6, p2, p2, p1, p1, p5,
+                    p2, p6, p6, p7, p7, p3, p3, p2,
+                    p7, p4, p4, p0, p0, p3, p3, p7,
+                    p7, p6, p6, p5, p5, p4, p4, p7,
+                    p0, p1, p1, p2, p2, p3, p3, p0
+            };
+
+            return Buffer<SolidVertex>.New(_tool.Device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
         }
 
         public void Draw()
@@ -120,6 +159,8 @@ namespace WadTool.Controls
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
+
+            Effect solidEffect = _tool.Effects["Solid"];
 
             if (StaticMesh != null)
             {
@@ -151,22 +192,64 @@ namespace WadTool.Controls
 
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
                 }
+
+                // Draw boxes
+                if (DrawVisibilityBox || DrawCollisionBox)
+                {
+                    
+                    if (DrawVisibilityBox)
+                    {
+                        if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
+                        _vertexBufferVisibility = GetVertexBufferFromBoundingBox(StaticMesh.VisibilityBox);
+
+                        _device.SetVertexBuffer(_vertexBufferVisibility);
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
+                        _device.SetIndexBuffer(null, false);
+
+                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                        solidEffect.Parameters["Color"].SetValue(_green);
+                        solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                        _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
+                    }
+
+                    if (DrawCollisionBox)
+                    {
+                        if (_vertexBufferCollision != null) _vertexBufferCollision.Dispose();
+                        _vertexBufferCollision = GetVertexBufferFromBoundingBox(StaticMesh.CollisionBox);
+
+                        _device.SetVertexBuffer(_vertexBufferCollision);
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferCollision));
+                        _device.SetIndexBuffer(null, false);
+
+                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                        solidEffect.Parameters["Color"].SetValue(_red);
+                        solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                        _device.Draw(PrimitiveType.LineList, _vertexBufferCollision.ElementCount);
+                    }
+                }
             }
 
-            // Draw the grid
-            _device.SetVertexBuffer(0, _plane.VertexBuffer);
-            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SolidVertex>(0, _plane.VertexBuffer));
-            _device.SetIndexBuffer(_plane.IndexBuffer, true);
+            if (DrawGrid)
+            {
+                // Draw the grid
+                _device.SetVertexBuffer(0, _plane.VertexBuffer);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SolidVertex>(0, _plane.VertexBuffer));
+                _device.SetIndexBuffer(_plane.IndexBuffer, true);
 
-            Effect effect = _tool.Effects["Solid"];
-            effect.Parameters["ModelViewProjection"].SetValue(viewProjection);
-            effect.Parameters["Color"].SetValue(Vector4.One);
-            effect.Techniques[0].Passes[0].Apply();
+                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                solidEffect.Techniques[0].Passes[0].Apply();
 
-            _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
+                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
+            }
 
-            // Draw the gizmo
-            _gizmo.Draw(viewProjection);
+            if (DrawGizmo)
+            {
+                // Draw the gizmo
+                _gizmo.Draw(viewProjection);
+            }
 
             // Draw debug strings
             _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
@@ -218,10 +301,13 @@ namespace WadTool.Controls
 
             if (e.Button == MouseButtons.Left)
             {
-                var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
-                if (result != null)
-                    _gizmo.ActivateGizmo(result);
-                return;
+                if (DrawGizmo)
+                {
+                    var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
+                    if (result != null)
+                        _gizmo.ActivateGizmo(result);
+                    return;
+                }
             }
 
             _lastX = e.X;

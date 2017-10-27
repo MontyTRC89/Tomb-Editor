@@ -1,4 +1,4 @@
-﻿using DarkUI.Controls;
+﻿using DarkUI.Config;
 using DarkUI.Forms;
 using NLog;
 using System;
@@ -22,8 +22,11 @@ namespace TombEditor
 
         private class PictureTooltip : ToolTip
         {
-            public PictureTooltip()
+            private DarkForm parentForm;
+
+            public PictureTooltip(DarkForm parent)
             {
+                parentForm = parent;
                 OwnerDraw = true;
                 Popup += OnPopup;
                 Draw += OnDraw;
@@ -34,7 +37,7 @@ namespace TombEditor
 
             private void OnPopup(object sender, PopupEventArgs e) // use this event to set the size of the tool tip
             {
-                e.ToolTipSize = new Size(513, 513);
+                e.ToolTipSize = new Size(256, 256);
             }
 
             private void OnDraw(object sender, DrawToolTipEventArgs e) // use this to customzie the tool tip
@@ -48,12 +51,14 @@ namespace TombEditor
                     using (Brush backgroundBrush = new TextureBrush(parent.BackgroundImage, WrapMode.Tile))
                         e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
                 else
-                    using (Brush backgroundBrush = new SolidBrush(parent.BackColor))
+                    using (Brush backgroundBrush = new SolidBrush(Colors.GreyBackground))
                         e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
 
                 // Draw image (if available)
                 if (parent.Image != null)
                     e.Graphics.DrawImage(parent.Image, e.Bounds);
+
+                e.Graphics.InterpolationMode = InterpolationMode.Bicubic;
 
                 // Draw error message (if necessary)
                 Exception exc = parent.Tag as Exception;
@@ -61,8 +66,9 @@ namespace TombEditor
                 {
                     Rectangle textArea = e.Bounds;
                     textArea.Inflate(-5, -5);
-                    e.Graphics.DrawString(" The image could not be loaded.\n Message: " + exc.Message,
-                        DefaultFont, Brushes.White, textArea);
+                    e.Graphics.DrawString(" The image could not be loaded.\n\n Message: " + exc.Message,
+                        parentForm.Font, Brushes.DarkGray, textArea,
+                        new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
                 }
 
                 // Draw border
@@ -109,7 +115,7 @@ namespace TombEditor
             skyTextureFilePathPicPreview.BackColor = _wrongColor;
             fontTextureFilePathPicPreview.BackColor = _wrongColor;
 
-            _pictureTooltip = new PictureTooltip();
+            _pictureTooltip = new PictureTooltip(this);
             _pictureTooltip.SetToolTip(fontTextureFilePathPicPreview, "Font Preview");
             _pictureTooltip.SetToolTip(skyTextureFilePathPicPreview, "Sky Preview");
             components.Add(_pictureTooltip);

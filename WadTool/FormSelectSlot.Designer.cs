@@ -32,21 +32,21 @@
             this.butOK = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.tbSearch = new DarkUI.Controls.DarkTextBox();
             this.SuspendLayout();
             // 
             // treeSlots
             // 
-            this.treeSlots.Location = new System.Drawing.Point(12, 38);
+            this.treeSlots.Location = new System.Drawing.Point(12, 33);
             this.treeSlots.MaxDragChange = 20;
             this.treeSlots.Name = "treeSlots";
-            this.treeSlots.Size = new System.Drawing.Size(336, 336);
+            this.treeSlots.Size = new System.Drawing.Size(280, 341);
             this.treeSlots.TabIndex = 8;
             this.treeSlots.Text = "darkTreeView1";
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(355, 322);
+            this.butOK.Location = new System.Drawing.Point(298, 322);
             this.butOK.Name = "butOK";
             this.butOK.Padding = new System.Windows.Forms.Padding(5);
             this.butOK.Size = new System.Drawing.Size(96, 23);
@@ -56,7 +56,7 @@
             // 
             // butCancel
             // 
-            this.butCancel.Location = new System.Drawing.Point(355, 351);
+            this.butCancel.Location = new System.Drawing.Point(298, 351);
             this.butCancel.Name = "butCancel";
             this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(96, 23);
@@ -66,33 +66,32 @@
             // 
             // darkStatusStrip1
             // 
-            this.darkStatusStrip1.AutoSize = false;
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Location = new System.Drawing.Point(0, 383);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(463, 24);
-            this.darkStatusStrip1.SizingGrip = false;
+            this.darkStatusStrip1.Size = new System.Drawing.Size(406, 24);
             this.darkStatusStrip1.TabIndex = 11;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
-            // darkLabel1
+            // tbSearch
             // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(12, 13);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(101, 13);
-            this.darkLabel1.TabIndex = 12;
-            this.darkLabel1.Text = "Please select a slot:";
+            this.tbSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.tbSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbSearch.Location = new System.Drawing.Point(12, 7);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.Size = new System.Drawing.Size(280, 20);
+            this.tbSearch.TabIndex = 18;
+            this.tbSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyUp);
             // 
             // FormSelectSlot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(463, 407);
-            this.Controls.Add(this.darkLabel1);
+            this.ClientSize = new System.Drawing.Size(406, 407);
+            this.Controls.Add(this.tbSearch);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
@@ -115,6 +114,6 @@
         private DarkUI.Controls.DarkButton butOK;
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
-        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkTextBox tbSearch;
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -207,11 +208,11 @@ namespace TombEditor.Controls
             if (_editor?.Level?.Wad == null)
             {
                 string notifyMessage;
-                if (string.IsNullOrEmpty(_editor.Level.Settings.WadFilePath))
+                if (string.IsNullOrEmpty(_editor?.Level?.Settings?.WadFilePath))
                     notifyMessage = "Click here to load a new WAD file.";
                 else
                 {
-                    notifyMessage = "Unable to load WAD file '" + (_editor.Level.Settings.WadFilePath ?? "") + "'.\n";
+                    notifyMessage = "Unable to load WAD file '" + (Path.GetFileName(_editor.Level.Settings.WadFilePath) ?? "") + "'.\n";
                     notifyMessage += "Click here to choose a replacement.\n\n";
                     notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.WadFilePath) ?? "");
                 }

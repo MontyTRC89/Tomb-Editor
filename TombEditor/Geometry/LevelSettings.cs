@@ -206,10 +206,10 @@ namespace TombEditor.Geometry
         }
 
         public string FontTextureFileNameAbsoluteOrDefault => MakeAbsolute(FontTextureFilePath) ??
-            Path.Combine(System.Windows.Forms.Application.StartupPath, "Editor/Font.pc.png");
+            Path.Combine(System.Windows.Forms.Application.StartupPath, "Editor/Textures/Font.pc.png");
 
         public string SkyTextureFileNameAbsoluteOrDefault => MakeAbsolute(SkyTextureFilePath) ??
-            Path.Combine(System.Windows.Forms.Application.StartupPath, "Editor/pcsky.raw.png");
+            Path.Combine(System.Windows.Forms.Application.StartupPath, "Editor/Textures/pcsky.raw.png");
 
         public string LookupSound(string soundName, bool ignoreMissingSounds)
         {

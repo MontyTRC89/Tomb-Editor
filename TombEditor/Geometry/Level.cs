@@ -87,7 +87,7 @@ namespace TombEditor.Geometry
 
             using (var wad = Wad)
             {
-                var newWad = new Wad2();
+                Wad2 newWad = new Wad2(TombRaiderVersion.TR4);
                 try
                 {
                     if (path.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))

@@ -286,7 +286,7 @@ namespace TombLib.Wad.TrLevels
 
         public static Wad2 ConvertTrLevel(TrLevel oldLevel)
         {
-            Wad2 wad = new Wad2();
+            Wad2 wad = new Wad2(GetTrVersion(oldLevel.Version));
 
             logger.Info("Converting TR level to WAD2");
 
@@ -421,15 +421,21 @@ namespace TombLib.Wad.TrLevels
 
                     if (j < oldLevel.Samples.Count)
                     {
-                        var sound = new WadSound(soundName, oldLevel.Samples[j].Data);
-                        if (wad.WaveSounds.ContainsKey(sound.Hash))
+                        var theSoundIndex = 0;
+                        if (oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                            theSoundIndex = (int)oldLevel.SamplesIndices[j];
+                        else
+                            theSoundIndex = j;
+
+                        var sound = new WadSample(soundName, oldLevel.Samples[theSoundIndex].Data);
+                        if (wad.Samples.ContainsKey(sound.Hash))
                         {
-                            newInfo.WaveSounds.Add(wad.WaveSounds[sound.Hash]);
+                            newInfo.Samples.Add(wad.Samples[sound.Hash]);
                         }
                         else
                         {
-                            wad.WaveSounds.Add(sound.Hash, sound);
-                            newInfo.WaveSounds.Add(sound);
+                            wad.Samples.Add(sound.Hash, sound);
+                            newInfo.Samples.Add(sound);
                         }
                     }
                     else
@@ -447,11 +453,11 @@ namespace TombLib.Wad.TrLevels
         public static WadMoveable ConvertTrLevelMoveableToWadMoveable(Wad2 wad, TrLevel oldLevel, int moveableIndex,
                                                                       Dictionary<int, WadTexture> textures)
         {
-            WadMoveable moveable = new WadMoveable();
+            WadMoveable moveable = new WadMoveable(wad);
             var m = oldLevel.Moveables[moveableIndex];
 
             moveable.ObjectID = m.ObjectID;
-            moveable.Name = TrCatalog.GetMoveableName(GetTrVersion(oldLevel.Version), m.ObjectID);
+            //moveable.Name = TrCatalog.GetMoveableName(GetTrVersion(oldLevel.Version), m.ObjectID);
 
             // First I build a list of meshes for this moveable
             var meshes = new List<tr_mesh>();
@@ -808,10 +814,10 @@ namespace TombLib.Wad.TrLevels
         public static WadStatic ConvertTrLevelStaticMeshToWadStatic(Wad2 wad, TrLevel oldLevel, int staticIndex,
                                                                 Dictionary<int, WadTexture> textures)
         {
-            var staticMesh = new WadStatic();
+            var staticMesh = new WadStatic(wad);
             var oldStaticMesh = oldLevel.StaticMeshes[staticIndex];
 
-            staticMesh.Name = TrCatalog.GetStaticName(GetTrVersion(oldLevel.Version), oldStaticMesh.ObjectID);
+            //staticMesh.Name = TrCatalog.GetStaticName(GetTrVersion(oldLevel.Version), oldStaticMesh.ObjectID);
 
             // First setup collisional and visibility bounding boxes
             staticMesh.CollisionBox = new BoundingBox(new Vector3(oldStaticMesh.CollisionBox.X1,

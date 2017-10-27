@@ -10,10 +10,10 @@ namespace TombLib.Wad
 {
     public class WadSoundInfo
     {
-        private List<WadSound> _sound;
+        private List<WadSample> _sound;
 
         public string Name { get; set; }
-        public List<WadSound> WaveSounds { get { return _sound; } }
+        public List<WadSample> Samples { get { return _sound; } }
         public byte Volume { get; set; }
         public byte Range { get; set; }
         public byte Chance { get; set; }
@@ -28,7 +28,7 @@ namespace TombLib.Wad
 
         public WadSoundInfo()
         {
-            _sound = new List<WadSound>();
+            _sound = new List<WadSample>();
         }
 
         public Hash UpdateHash()
@@ -52,7 +52,7 @@ namespace TombLib.Wad
                 writer.Write(RandomizeGain);
                 writer.Write((byte)Loop);
 
-                foreach (var sample in WaveSounds)
+                foreach (var sample in Samples)
                     writer.Write(sample.WaveData);
 
                 return ms.ToArray();
@@ -73,8 +73,8 @@ namespace TombLib.Wad
             soundInfo.RandomizeGain = RandomizeGain;
             soundInfo.RandomizePitch = RandomizePitch;
 
-            foreach (var wave in WaveSounds)
-                soundInfo.WaveSounds.Add(wave.Clone());
+            foreach (var wave in Samples)
+                soundInfo.Samples.Add(wave.Clone());
 
             soundInfo.UpdateHash();
 

@@ -13,7 +13,7 @@ namespace TombLib.Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static List<WadSound> _wavesTable;
+        private static List<WadSample> _wavesTable;
         private static List<WadMesh> _meshesTable;
         private static List<WadTexture> _texturesTable;
         private static List<WadSprite> _spritesTable;
@@ -32,8 +32,8 @@ namespace TombLib.Wad
 
         private static void WriteWad2(ChunkWriter chunkIO, Wad2 wad)
         {
-            _wavesTable = new List<WadSound>();
-            foreach (var wave in wad.WaveSounds)
+            _wavesTable = new List<WadSample>();
+            foreach (var wave in wad.Samples)
                 _wavesTable.Add(wave.Value);
 
             _meshesTable = new List<WadMesh>();
@@ -47,6 +47,8 @@ namespace TombLib.Wad
             _texturesTable = new List<WadTexture>();
             foreach (var texture in wad.Textures)
                 _texturesTable.Add(texture.Value);
+
+            LEB128.Write(chunkIO.Raw, (uint)wad.Version);
 
             WriteTextures(chunkIO, wad);
             WriteSprites(chunkIO, wad);
@@ -165,7 +167,7 @@ namespace TombLib.Wad
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Waves, () =>
             {
-                foreach (var sample in wad.WaveSounds)
+                foreach (var sample in wad.Samples)
                 {
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.Wave, () =>
                     {
@@ -310,7 +312,7 @@ namespace TombLib.Wad
                             });
                         }
 
-                        chunkIO.WriteChunkString(Wad2Chunks.MoveableName, m.Name);
+                        //chunkIO.WriteChunkString(Wad2Chunks.MoveableName, m.Name);
                     });
                 }
             });
@@ -342,7 +344,7 @@ namespace TombLib.Wad
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, s.CollisionBox.Maximum);
                         });
 
-                        chunkIO.WriteChunkString(Wad2Chunks.StaticName, s.Name);
+                        //chunkIO.WriteChunkString(Wad2Chunks.StaticName, s.Name);
                     });
                 }
             });
@@ -369,7 +371,7 @@ namespace TombLib.Wad
                         LEB128.Write(chunkIO.Raw, (ushort)s.Loop);
 
                         chunkIO.WriteChunkString(Wad2Chunks.SoundName, s.Name);
-                        foreach (var wav in s.WaveSounds)
+                        foreach (var wav in s.Samples)
                             chunkIO.WriteChunkInt(Wad2Chunks.SoundSample, _wavesTable.IndexOf(wav));
                     });
                 }

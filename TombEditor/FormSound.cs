@@ -80,11 +80,11 @@ namespace TombEditor
 
             var sound = _wad.SoundInfo[_selectedSoundId];
 
-            if (sound.WaveSounds.Count > 0)
+            if (sound.Samples.Count > 0)
             {
                 try
                 {
-                    sound.WaveSounds[0].Play();
+                    sound.Samples[0].Play();
                 }
                 catch (Exception exc)
                 {

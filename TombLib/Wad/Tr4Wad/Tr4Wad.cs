@@ -172,19 +172,11 @@ namespace TombLib.Wad.Tr4Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        internal struct texture_piece
-        {
-            public byte Width;
-            public byte Height;
-            public byte[] Data;
-        }
-
         internal List<wad_object_texture> Textures = new List<wad_object_texture>();
-        internal byte[,] TexturePages;
+        internal byte[] TexturePages;
         internal int NumTexturePages;
         internal List<uint> Pointers = new List<uint>();
         internal List<uint> RealPointers = new List<uint>();
-        internal List<uint> HelperPointers = new List<uint>();
         internal List<wad_mesh> Meshes = new List<wad_mesh>();
         internal List<wad_animation> Animations = new List<wad_animation>();
         internal List<wad_state_change> Changes = new List<wad_state_change>();
@@ -235,10 +227,7 @@ namespace TombLib.Wad.Tr4Wad
 
                 uint numTextureBytes = reader.ReadUInt32();
                 logger.Info("Wad texture data size: " + numTextureBytes);
-                TexturePages = new byte[numTextureBytes / 768, 768];
-                for (int y = 0; y < numTextureBytes / 768; y++)
-                    for (int x = 0; x < 768; x++)
-                        TexturePages[y, x] = reader.ReadByte();
+                TexturePages = reader.ReadBytes((int)numTextureBytes);
 
                 NumTexturePages = (int)(numTextureBytes / 196608);
 
@@ -249,7 +238,6 @@ namespace TombLib.Wad.Tr4Wad
                 {
                     Pointers.Add(reader.ReadUInt32());
                     RealPointers.Add(0);
-                    HelperPointers.Add(0);
                 }
 
                 uint numMeshWords = reader.ReadUInt32();
@@ -259,7 +247,7 @@ namespace TombLib.Wad.Tr4Wad
                 logger.Info("Wad mesh data size: " + bytesToRead);
                 while (bytesRead < bytesToRead)
                 {
-                    uint startOfMesh = (uint)reader.BaseStream.Position;
+                    var startOfMesh = (uint)reader.BaseStream.Position;
 
                     wad_mesh mesh = new wad_mesh();
                     mesh.Polygons = new List<wad_polygon>();
@@ -273,20 +261,22 @@ namespace TombLib.Wad.Tr4Wad
                     mesh.Radius = reader.ReadUInt16();
                     mesh.Unknown = reader.ReadUInt16();
 
-                    ushort numVertices = reader.ReadUInt16();
+                    var numVertices = reader.ReadUInt16();
                     mesh.NumVertices = numVertices;
 
-                    int xMin = Int32.MaxValue;
-                    int yMin = Int32.MaxValue;
-                    int zMin = Int32.MaxValue;
-                    int xMax = Int32.MinValue;
-                    int yMax = Int32.MinValue;
-                    int zMax = Int32.MinValue;
+                    var xMin = Int32.MaxValue;
+                    var yMin = Int32.MaxValue;
+                    var zMin = Int32.MaxValue;
+                    var xMax = Int32.MinValue;
+                    var yMax = Int32.MinValue;
+                    var zMax = Int32.MinValue;
 
-                    for (int i = 0; i < numVertices; i++)
+                    for (var i = 0; i < numVertices; i++)
                     {
-                        wad_vertex v;
-                        reader.ReadBlock<wad_vertex>(out v);
+                        var v = new wad_vertex();
+                        v.X = reader.ReadInt16();
+                        v.Y = reader.ReadInt16();
+                        v.Z = reader.ReadInt16();
 
                         if (v.X < xMin)
                             xMin = v.X;
@@ -312,16 +302,18 @@ namespace TombLib.Wad.Tr4Wad
                     mesh.NumNormals = numNormals;
                     if (numNormals > 0)
                     {
-                        for (int i = 0; i < numNormals; i++)
+                        for (var i = 0; i < numNormals; i++)
                         {
-                            wad_vertex v;
-                            reader.ReadBlock<wad_vertex>(out v);
-                            mesh.Normals.Add(v);
+                            var n = new wad_vertex();
+                            n.X = reader.ReadInt16();
+                            n.Y = reader.ReadInt16();
+                            n.Z = reader.ReadInt16();
+                            mesh.Normals.Add(n);
                         }
                     }
                     else
                     {
-                        for (int i = 0; i < -numNormals; i++)
+                        for (var i = 0; i < -numNormals; i++)
                         {
                             mesh.Shades.Add(reader.ReadInt16());
                         }
@@ -330,9 +322,9 @@ namespace TombLib.Wad.Tr4Wad
                     ushort numPolygons = reader.ReadUInt16();
                     mesh.NumPolygons = numPolygons;
                     ushort numQuads = 0;
-                    for (int i = 0; i < numPolygons; i++)
+                    for (var i = 0; i < numPolygons; i++)
                     {
-                        wad_polygon poly = new wad_polygon();
+                        var poly = new wad_polygon();
                         poly.Shape = reader.ReadUInt16();
                         poly.V1 = reader.ReadUInt16();
                         poly.V2 = reader.ReadUInt16();
@@ -351,7 +343,7 @@ namespace TombLib.Wad.Tr4Wad
                     if (numQuads % 2 != 0)
                         reader.ReadInt16();
 
-                    uint endPosition = (uint)reader.BaseStream.Position;
+                    var endPosition = (uint)reader.BaseStream.Position;
                     bytesRead += endPosition - startOfMesh;
                     Meshes.Add(mesh);
 
@@ -359,83 +351,113 @@ namespace TombLib.Wad.Tr4Wad
                     for (int k = 0; k < Pointers.Count; k++)
                     {
                         if (Pointers[k] == bytesRead)
-                        {
                             RealPointers[k] = (uint)Meshes.Count;
-                            HelperPointers[k] = (uint)Meshes.Count;
-                        }
                     }
                 }
 
-                uint numAnimations = reader.ReadUInt32();
+                var numAnimations = reader.ReadUInt32();
                 logger.Info("Wad animations: " + numAnimations);
-                for (int i = 0; i < numAnimations; i++)
+                for (var i = 0; i < numAnimations; i++)
                 {
-                    wad_animation anim;
-                    reader.ReadBlock<wad_animation>(out anim);
+                    var anim = new wad_animation();
+                    anim.KeyFrameOffset = reader.ReadUInt32();
+                    anim.FrameDuration = reader.ReadByte();
+                    anim.KeyFrameSize = reader.ReadByte();
+                    anim.StateId = reader.ReadUInt16();
+                    anim.Speed = reader.ReadInt32();
+                    anim.Accel = reader.ReadInt32();
+                    anim.SpeedLateral = reader.ReadInt32();
+                    anim.AccelLateral = reader.ReadInt32();
+                    anim.FrameStart = reader.ReadUInt16();
+                    anim.FrameEnd = reader.ReadUInt16();
+                    anim.NextAnimation = reader.ReadUInt16();
+                    anim.NextFrame = reader.ReadUInt16();
+                    anim.NumStateChanges = reader.ReadUInt16();
+                    anim.ChangesIndex = reader.ReadUInt16();
+                    anim.NumCommands = reader.ReadUInt16();
+                    anim.CommandOffset = reader.ReadUInt16();
+
                     Animations.Add(anim);
                 }
 
-                uint numChanges = reader.ReadUInt32();
+                var numChanges = reader.ReadUInt32();
                 logger.Info("Wad animation state changes: " + numChanges);
-                for (int i = 0; i < numChanges; i++)
+                for (var i = 0; i < numChanges; i++)
                 {
-                    wad_state_change change;
-                    reader.ReadBlock<wad_state_change>(out change);
+                    var change = new wad_state_change();
+                    change.StateId = reader.ReadUInt16();
+                    change.NumDispatches = reader.ReadUInt16();
+                    change.DispatchesIndex = reader.ReadUInt16();
                     Changes.Add(change);
                 }
 
-                uint numDispatches = reader.ReadUInt32();
+                var numDispatches = reader.ReadUInt32();
                 logger.Info("Wad animation dispatches: " + numDispatches);
-                for (int i = 0; i < numDispatches; i++)
+                for (var i = 0; i < numDispatches; i++)
                 {
-                    wad_anim_dispatch anim;
-                    reader.ReadBlock<wad_anim_dispatch>(out anim);
+                    var anim = new wad_anim_dispatch();
+                    anim.Low = reader.ReadInt16();
+                    anim.High = reader.ReadInt16();
+                    anim.NextAnimation = reader.ReadInt16();
+                    anim.NextFrame = reader.ReadInt16();
                     Dispatches.Add(anim);
                 }
 
-                uint numCommands = reader.ReadUInt32();
+                var numCommands = reader.ReadUInt32();
                 logger.Info("Wad animation commands: " + numCommands);
-                for (int i = 0; i < numCommands; i++)
+                for (var i = 0; i < numCommands; i++)
                 {
-                    short anim;
-                    reader.ReadBlock<short>(out anim);
-                    Commands.Add(anim);
+                    Commands.Add(reader.ReadInt16());
                 }
 
-                uint numLinks = reader.ReadUInt32();
+                var numLinks = reader.ReadUInt32();
                 logger.Info("Wad animation links: " + numLinks);
-                for (int i = 0; i < numLinks; i++)
+                for (var i = 0; i < numLinks; i++)
                 {
-                    int link;
-                    reader.ReadBlock<int>(out link);
-                    Links.Add(link);
+                    Links.Add(reader.ReadInt32());
                 }
 
-                uint numFrames = reader.ReadUInt32();
+                var numFrames = reader.ReadUInt32();
                 logger.Info("Wad animation frames: " + numFrames);
                 for (int i = 0; i < numFrames; i++)
                 {
-                    short frame;
-                    reader.ReadBlock<short>(out frame);
-                    KeyFrames.Add(frame);
+                    KeyFrames.Add(reader.ReadInt16());
                 }
 
-                uint numMoveables = reader.ReadUInt32();
+                var numMoveables = reader.ReadUInt32();
                 logger.Info("Wad objects (moveables): " + numMoveables);
-                for (int i = 0; i < numMoveables; i++)
+                for (var i = 0; i < numMoveables; i++)
                 {
-                    long pos = reader.BaseStream.Position;
-                    wad_moveable moveable;
-                    reader.ReadBlock<wad_moveable>(out moveable);
+                    var moveable = new wad_moveable();
+                    moveable.ObjectID = reader.ReadUInt32();
+                    moveable.NumPointers = reader.ReadUInt16();
+                    moveable.PointerIndex = reader.ReadUInt16();
+                    moveable.LinksIndex = reader.ReadUInt32();
+                    moveable.KeyFrameOffset = reader.ReadUInt32();
+                    moveable.AnimationIndex = reader.ReadInt16();
                     Moveables.Add(moveable);
                 }
 
-                uint numStaticMeshes = reader.ReadUInt32();
+                var numStaticMeshes = reader.ReadUInt32();
                 logger.Info("Wad static meshes: " + numStaticMeshes);
-                for (int i = 0; i < numStaticMeshes; i++)
+                for (var i = 0; i < numStaticMeshes; i++)
                 {
-                    wad_static_mesh staticMesh;
-                    reader.ReadBlock<wad_static_mesh>(out staticMesh);
+                    var staticMesh = new wad_static_mesh();
+                    staticMesh.ObjectId = reader.ReadUInt32();
+                    staticMesh.PointersIndex = reader.ReadUInt16();
+                    staticMesh.VisibilityX1 = reader.ReadInt16();
+                    staticMesh.VisibilityX2 = reader.ReadInt16();
+                    staticMesh.VisibilityY1 = reader.ReadInt16();
+                    staticMesh.VisibilityY2 = reader.ReadInt16();
+                    staticMesh.VisibilityZ1 = reader.ReadInt16();
+                    staticMesh.VisibilityZ2 = reader.ReadInt16();
+                    staticMesh.CollisionX1 = reader.ReadInt16();
+                    staticMesh.CollisionX2 = reader.ReadInt16();
+                    staticMesh.CollisionY1 = reader.ReadInt16();
+                    staticMesh.CollisionY2 = reader.ReadInt16();
+                    staticMesh.CollisionZ1 = reader.ReadInt16();
+                    staticMesh.CollisionZ2 = reader.ReadInt16();
+                    staticMesh.Flags = reader.ReadUInt16();
                     StaticMeshes.Add(staticMesh);
                 }
 
@@ -451,39 +473,41 @@ namespace TombLib.Wad.Tr4Wad
 
             using (var readerSfx = new BinaryReaderEx(new FileStream(BasePath + "\\" + BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                for (int i = 0; i < 370; i++)
+                for (var i = 0; i < 370; i++)
                 {
                     SoundMap[i] = readerSfx.ReadInt16();
                 }
 
-                uint numSounds = readerSfx.ReadUInt32();
+                var numSounds = readerSfx.ReadUInt32();
                 logger.Info("Sounds: " + numSounds);
-                for (int i = 0; i < numSounds; i++)
+                for (var i = 0; i < numSounds; i++)
                 {
-                    wad_sound_info info;
-                    readerSfx.ReadBlock<wad_sound_info>(out info);
-
+                    var info = new wad_sound_info();
+                    info.Sample = readerSfx.ReadUInt16();
+                    info.Volume = readerSfx.ReadByte();
+                    info.Range = readerSfx.ReadByte();
+                    info.Chance = readerSfx.ReadByte();
+                    info.Pitch = readerSfx.ReadByte();
+                    info.Characteristics = readerSfx.ReadUInt16();
                     SoundInfo.Add(info);
                 }
             }
 
             // Read sprites
             logger.Info("Reading sprites (swd file) associated with wad.");
-            using (var readerSprites = new BinaryReaderEx(new FileStream(
-                                        BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
-            FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var readerSprites = new BinaryReaderEx(new FileStream(BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
+                                                                         FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 // Version
                 readerSprites.ReadUInt32();
 
-                uint numSpritesTextures = readerSprites.ReadUInt32();
+                var numSpritesTextures = readerSprites.ReadUInt32();
                 logger.Info("Sprites: " + numSpritesTextures);
 
                 //Sprite texture array
-                for (int i = 0; i < numSpritesTextures; i++)
+                for (var i = 0; i < numSpritesTextures; i++)
                 {
-                    byte[] buffer;
-                    readerSprites.ReadBlockArray(out buffer, 16);
+                    var buffer = readerSprites.ReadBytes(16);
 
                     var spriteTexture = new wad_sprite_texture
                     {
@@ -502,17 +526,19 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 // Sprites size
-                int spriteDataSize = readerSprites.ReadInt32();
+                var spriteDataSize = readerSprites.ReadInt32();
                 SpriteData = readerSprites.ReadBytes(spriteDataSize);
 
-                uint numSequences = readerSprites.ReadUInt32();
+                var numSequences = readerSprites.ReadUInt32();
                 logger.Info("Sprite sequences: " + numSequences);
 
                 // Sprite sequences
-                for (int i = 0; i < numSequences; i++)
+                for (var i = 0; i < numSequences; i++)
                 {
-                    wad_sprite_sequence sequence;
-                    readerSprites.ReadBlock(out sequence);
+                    var sequence = new wad_sprite_sequence();
+                    sequence.ObjectID = readerSprites.ReadInt32();
+                    sequence.NegativeLength = readerSprites.ReadInt16();
+                    sequence.Offset = readerSprites.ReadInt16();
                     SpriteSequences.Add(sequence);
                 }
             }

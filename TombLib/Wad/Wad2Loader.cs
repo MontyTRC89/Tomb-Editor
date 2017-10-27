@@ -26,7 +26,7 @@ namespace TombLib.Wad
 
         private static Wad2 LoadWad2(ChunkReader chunkIO)
         {
-            var wad = new Wad2();
+            var wad = new Wad2((TombRaiderVersion)LEB128.ReadUInt(chunkIO.Raw));
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -147,10 +147,10 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                var sample = new WadSound(name, data);
+                var sample = new WadSample(name, data);
                 sample.UpdateHash();
 
-                wad.WaveSounds.Add(sample.Hash, sample);
+                wad.Samples.Add(sample.Hash, sample);
 
                 return true;
             });
@@ -301,7 +301,7 @@ namespace TombLib.Wad
                 if (id != Wad2Chunks.Moveable)
                     return false;
 
-                var mov = new WadMoveable();
+                var mov = new WadMoveable(wad);
 
                 mov.ObjectID = LEB128.ReadUInt(chunkIO.Raw);
                 chunkIO.ReadChunks((id2, chunkSize2) =>
@@ -316,7 +316,7 @@ namespace TombLib.Wad
                     }
                     if (id2 == Wad2Chunks.MoveableName)
                     {
-                        mov.Name = chunkIO.ReadChunkString(chunkSize2);
+                        /*mov.Name =*/ chunkIO.ReadChunkString(chunkSize2);
                     }
                     else if (id2 == Wad2Chunks.MoveableLink)
                     {
@@ -458,7 +458,7 @@ namespace TombLib.Wad
                 if (id != Wad2Chunks.Static)
                     return false;
 
-                var s = new WadStatic();
+                var s = new WadStatic(wad);
                 s.ObjectID = LEB128.ReadUInt(chunkIO.Raw);
                 s.Mesh = wad.Meshes.ElementAt(LEB128.ReadInt(chunkIO.Raw)).Value;
                 s.Flags = LEB128.ReadShort(chunkIO.Raw);
@@ -499,7 +499,7 @@ namespace TombLib.Wad
                     }
                     else if (id2 == Wad2Chunks.StaticName)
                     {
-                        s.Name = chunkIO.ReadChunkString(chunkSize2);
+                        /*s.Name =*/ chunkIO.ReadChunkString(chunkSize2);
                     }
                     else
                     {
@@ -580,7 +580,7 @@ namespace TombLib.Wad
                     }
                     else if (id2 == Wad2Chunks.SoundSample)
                     {
-                        s.WaveSounds.Add(wad.WaveSounds.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
+                        s.Samples.Add(wad.Samples.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
                     }
                     else
                     {

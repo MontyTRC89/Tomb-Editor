@@ -190,6 +190,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ankh Icon 13.ico" />
+    <None Include="Resources\create_archive-16.png" />
+    <None Include="Resources\resize-16.png" />
+    <None Include="Resources\trash-161.png" />
     <Content Include="wad_tool.ico" />
     <None Include="Resources\3DView-16.png" />
     <None Include="Resources\small_icons-161.png" />

@@ -118,8 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="plus_math-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\plus_math-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="play-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\play-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MovementGizmo-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MovementGizmo-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -148,6 +148,9 @@
   <data name="save-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\save-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="create_archive-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\create_archive-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="generic_text-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\generic_text-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -163,8 +166,8 @@
   <data name="small_icons-161" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\small_icons-161.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="play-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\play-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="trash-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\trash-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="copy-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\copy-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -190,8 +193,8 @@
   <data name="angle_right-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\angle_right-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="volume_up-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\volume_up-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="plus_math-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\plus_math-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="angle_left-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\angle_left-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -202,8 +205,8 @@
   <data name="door_opened-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\door_opened-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="opened_folder-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\opened_folder-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="resize-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\resize-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="movie_projector-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\movie_projector-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -214,8 +217,11 @@
   <data name="clipboard-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\clipboard-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="trash-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\trash-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="volume_up-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\volume_up-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="opened_folder-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\opened_folder-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="rubber_stamp-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\rubber_stamp-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -226,16 +232,19 @@
   <data name="save_as-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\save_as-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="3DView-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\3DView-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="CameraFixed-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CameraFixed-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="create_new-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\create_new-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="3DView-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3DView-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="about_header" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\about_header.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="trash-161" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\trash-161.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

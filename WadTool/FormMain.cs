@@ -1,4 +1,5 @@
 ﻿using DarkUI.Forms;
+using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,6 +22,7 @@ namespace WadTool
     public partial class FormMain : DarkForm
     {
         private WadToolClass _tool;
+        private WadObject _selectedObject;
 
         // TODO ask the user for the paths
         private readonly static List<string> wadSoundPaths =
@@ -65,11 +67,14 @@ namespace WadTool
                 return;
 
             panel3D.CurrentWad = _tool.SourceWad;
+            panel3D.Animation = -1;
+            panel3D.KeyFrame = 0;
 
             if (node.Tag.GetType() == typeof(WadMoveable))
             {
                 var moveable = (WadMoveable)node.Tag;
                 panel3D.CurrentObject = _tool.SourceWad.DirectXMoveables[moveable.ObjectID];
+                if (moveable.Animations.Count != 0) panel3D.Animation = 0;
             }
             else if (node.Tag.GetType() == typeof(WadStatic))
             {
@@ -104,14 +109,20 @@ namespace WadTool
                  node.Tag.GetType() != typeof(WadSprite)))
                 return;
 
+            if (node.Tag.GetType() != typeof(WadSprite)) _selectedObject = (WadObject)node.Tag;
+            panel3D.Animation = -1;
+            panel3D.KeyFrame = 0;
+
             // Load sounds
             treeSounds.Nodes.Clear();
+            treeAnimations.Nodes.Clear();
 
             if (isMoveable)
             {
                 var moveable = (WadMoveable)node.Tag;
                 var sounds = moveable.GetSounds(_tool.DestinationWad);
 
+                // Load sounds in UI
                 foreach (var sound in sounds)
                 {
                     var nodeSound = new DarkUI.Controls.DarkTreeNode(sound.Name);
@@ -120,7 +131,7 @@ namespace WadTool
 
                     int i = 0;
 
-                    foreach (var wave in sound.WaveSounds)
+                    foreach (var wave in sound.Samples)
                     {
                         var nodeWave = new DarkUI.Controls.DarkTreeNode("Sample " + i);
                         nodeWave.Tag = wave;
@@ -129,6 +140,26 @@ namespace WadTool
                         i++;
                     }
                 }
+
+                // Load animations in UI
+                var animationsNodes = new List<DarkUI.Controls.DarkTreeNode>();
+                for (int i = 0; i < moveable.Animations.Count; i++)
+                {
+                    var nodeAnimation = new DarkUI.Controls.DarkTreeNode(moveable.Animations[i].Name);
+                    nodeAnimation.Tag = i;
+                    animationsNodes.Add(nodeAnimation);
+                }               
+                treeAnimations.Nodes.AddRange(animationsNodes);
+
+                groupSelectedMoveable.Enabled = true;
+                groupSelectedMoveable.Text = "Selected moveable: " + moveable.ToString();
+
+                if (moveable.Animations.Count != 0) panel3D.Animation = 0;
+            }
+            else
+            {
+                groupSelectedMoveable.Enabled = false;
+                groupSelectedMoveable.Text = "Selected moveable: ";
             }
 
             panel3D.CurrentWad = _tool.DestinationWad;
@@ -263,6 +294,8 @@ namespace WadTool
                 newWad.GraphicsDevice = _tool.Device;
                 newWad.PrepareDataForDirectX();
                 _tool.SourceWad = newWad;
+
+                labelType.Text = "WAD";
             }
             else if (fileName.EndsWith("wad2"))
             {
@@ -279,6 +312,8 @@ namespace WadTool
                     newWad.GraphicsDevice = _tool.Device;
                     newWad.PrepareDataForDirectX();
                     _tool.SourceWad = newWad;
+
+                    labelType.Text = "Wad2";
                 }
             }
             else
@@ -296,6 +331,8 @@ namespace WadTool
                 newWad.GraphicsDevice = _tool.Device;
                 newWad.PrepareDataForDirectX();
                 _tool.SourceWad = newWad;
+
+                labelType.Text = TrCatalog.GetVersionString(newWad.Version) + " level";
             }
 
             // Disable rendering
@@ -494,7 +531,7 @@ namespace WadTool
             if (form.ShowDialog() != DialogResult.OK)
                 return;
 
-            var objectId = form.ObjectId;
+            var objectId = (uint)form.ObjectId;
             var objectName = form.ObjectName;
 
             // Check if object could be overwritten
@@ -529,10 +566,10 @@ namespace WadTool
             if (treeSounds.SelectedNodes.Count == 0)
                 return;
             var node = treeSounds.SelectedNodes[0];
-            if (node.Tag == null || node.Tag.GetType() != typeof(WadSound))
+            if (node.Tag == null || node.Tag.GetType() != typeof(WadSample))
                 return;
 
-            var currentSound = (WadSound)node.Tag;
+            var currentSound = (WadSample)node.Tag;
 
             currentSound.Play();
         }
@@ -645,9 +682,8 @@ namespace WadTool
 
             var staticMesh = (WadStatic)node.Tag;
 
-            using (var form = new FormStaticMeshEditor())
+            using (var form = new FormStaticMeshEditor(staticMesh))
             {
-                form.StaticMesh = staticMesh;
                 if (form.ShowDialog() == DialogResult.Cancel) return;
 
                 UpdateDestinationWad2UI();
@@ -761,6 +797,155 @@ namespace WadTool
                     }
                 }
             }
+        }
+
+        private void debugAction8ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wad = _tool.SourceWad;
+            wad.Textures.Clear();
+            wad.Moveables.Clear();
+            wad.Statics.Clear();
+            wad.Meshes.Clear();
+
+            var newSounds = new Dictionary<ushort, WadSoundInfo>();
+
+            foreach(var info in wad.SoundInfo)
+            {
+                if (TrCatalog.IsSoundMandatory(wad.Version, info.Key))
+                {
+                    newSounds.Add(info.Key, info.Value);
+                }
+            }
+
+            wad.SoundInfo.Clear();
+            wad.Samples.Clear();
+
+            foreach (var info in newSounds)
+            {
+                wad.SoundInfo.Add(info.Key, info.Value);
+
+                foreach (var sample in info.Value.Samples)
+                {
+                    if (!wad.Samples.ContainsKey(sample.Hash)) wad.Samples.Add(sample.Hash, sample);
+                }
+            }
+
+            Wad2.SaveToFile(wad, "E:\\BaseWad.wad2");
+        }
+
+        private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sounds = TrCatalog.GetAllSounds(TombRaiderVersion.TR4);
+            int numMandatory = 0;
+            foreach (var sound in sounds)
+            {
+                if (TrCatalog.IsSoundMandatory(TombRaiderVersion.TR4, (uint)sound.Key)) numMandatory++;
+            }
+        }
+
+        private void newEmptyWad2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butNewWad2_Click(null, null);
+        }
+
+        private void newEmptyWad2WithSystemSoundsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butNewWad2ForLevel_Click(null, null);
+        }
+
+        private void butNewWad2_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
+            var wad = new Wad2(TombRaiderVersion.TR4);
+            wad.GraphicsDevice = _tool.Device;
+            wad.PrepareDataForDirectX();
+            _tool.DestinationWad = wad;
+
+            UpdateDestinationWad2UI();
+        }
+
+        private void butNewWad2ForLevel_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
+            var wad = Wad2.LoadFromFile("Editor\\BaseWad2\\BaseTR4.wad2");
+            if (wad == null)
+            {
+                DarkMessageBox.Show(this,
+                                    "There was an error while creating the new Wad2",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            wad.GraphicsDevice = _tool.Device;
+            wad.PrepareDataForDirectX();
+            _tool.DestinationWad = wad;
+
+            UpdateDestinationWad2UI();
+        }
+
+        private void butChangeSlot_Click(object sender, EventArgs e)
+        {
+            /*if (_tool.DestinationWad == null)
+            {
+                DarkMessageBox.Show(this, "You must load or create a new destination Wad2", "Error", MessageBoxIcon.Error);
+                return;
+            }
+
+            // Get the selected object
+            if (treeSourceWad.SelectedNodes.Count == 0)
+                return;
+            var node = treeSourceWad.SelectedNodes[0];
+            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic)))
+                return;
+
+            var currentObject = (WadObject)node.Tag;
+            var isMoveable = (currentObject.GetType() == typeof(WadMoveable));
+
+            // Ask for the new slot
+            var form = new FormSelectSlot();
+            form.IsMoveable = isMoveable;
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            var objectId = (uint)form.ObjectId;
+            var objectName = form.ObjectName;
+
+            if (objectId == currentObject.ObjectID)
+            {
+                DarkMessageBox.Show(this, "The slot that you have selected is the same of the current object", "Error", MessageBoxIcon.Error);
+                return;
+            }
+
+            currentObject.ObjectID = objectId;
+
+            UpdateDestinationWad2UI();*/
+        }
+
+        private void lstAnimations_Click(object sender, EventArgs e)
+        {
+            // Get selected animation
+            if (treeAnimations.SelectedNodes.Count == 0) return;
+            var node = treeAnimations.SelectedNodes[0];
+            var animationIndex = (int)node.Tag;
+
+            // Reset scrollbar
+            scrollbarAnimations.Value = 0;
+            scrollbarAnimations.Maximum = (_selectedObject as WadMoveable).Animations[animationIndex].KeyFrames.Count - 1;
+
+            // Reset panel 3D
+            panel3D.Animation = animationIndex;
+            panel3D.KeyFrame = 0;
+            panel3D.Invalidate();
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void scrollbarAnimations_ValueChanged(object sender, DarkUI.Controls.ScrollValueEventArgs e)
+        {
+            panel3D.KeyFrame = scrollbarAnimations.Value;
+            panel3D.Invalidate();
         }
     }
 }

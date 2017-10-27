@@ -41,6 +41,7 @@ namespace TombEditor.Controls
         private Vector2? _viewMoveMouseWorldCoord;
         private int? _currentlyEditedDepthProbeIndex;
         private Point _lastMousePosition;
+        private MovementTimer _movementTimer;
         private static readonly Brush _roomsNormalBrush = new SolidBrush(Color.FromArgb(180, 20, 200, 200));
         private static readonly Brush _roomsNormalAboveBrush = new SolidBrush(Color.FromArgb(120, 50, 50, 200));
         private static readonly Brush _roomsNormalBelowBrush = new SolidBrush(Color.FromArgb(180, 85, 85, 85));
@@ -53,6 +54,7 @@ namespace TombEditor.Controls
         private static readonly Pen _gridPenThin = new Pen(Color.LightGray, 1);
         private static readonly Pen _gridPenThick = new Pen(Color.LightGray, 3);
         private const float _probeRadius = 18;
+        private const float _viewMargin = 10;
 
         public Panel2DMap()
         {
@@ -68,6 +70,8 @@ namespace TombEditor.Controls
                 _depthBar = new DepthBar(_editor);
                 _depthBar.InvalidateParent += Invalidate;
 
+                _movementTimer = new MovementTimer(MoveTimerTick);
+
                 ResetView();
             }
         }
@@ -76,6 +80,7 @@ namespace TombEditor.Controls
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
+            _movementTimer.Dispose();
             base.Dispose(disposing);
         }
 
@@ -113,6 +118,13 @@ namespace TombEditor.Controls
             ViewPosition = -worldPoint;
             ViewPosition = -FromVisualCoord(visualPoint);
             Invalidate();
+        }
+
+        private void LimitPosition()
+        {
+            Vector2 minimum = new Vector2(-_viewMargin / ViewScale);
+            Vector2 maximum = new Vector2(Level.MaxSectorCoord) + new Vector2(_viewMargin / ViewScale);
+            ViewPosition = Vector2.Min(maximum, Vector2.Max(minimum, ViewPosition));
         }
 
         private int? FindClosestProbe(Vector2 clickPos)
@@ -244,6 +256,7 @@ namespace TombEditor.Controls
                             else
                             { // Movement
                                 MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
+                                LimitPosition();
                             }
                         break;
 
@@ -299,33 +312,19 @@ namespace TombEditor.Controls
             // Make control receive key events as suggested here...
             // https://stackoverflow.com/questions/20079373/trouble-creating-keydown-event-in-panel
             if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
-                switch (e.KeyCode)
-                {
-                    case Keys.Down:
-                        ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
-                        Invalidate();
-                        break;
-                    case Keys.Up:
-                        ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
-                        Invalidate();
-                        break;
-                    case Keys.Left:
-                        ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
-                        Invalidate();
-                        break;
-                    case Keys.Right:
-                        ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
-                        Invalidate();
-                        break;
-                    case Keys.PageDown:
-                        ViewScale *= (float)Math.Exp(-_editor.Configuration.Map2D_NavigationSpeedKeyZoom);
-                        Invalidate();
-                        break;
-                    case Keys.PageUp:
-                        ViewScale *= (float)Math.Exp(_editor.Configuration.Map2D_NavigationSpeedKeyZoom);
-                        Invalidate();
-                        break;
-                }
+                _movementTimer.Engage(e.KeyCode);
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            _movementTimer.Stop();
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            _movementTimer.Stop();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -413,6 +412,38 @@ namespace TombEditor.Controls
             e.Graphics.SmoothingMode = SmoothingMode.Default;
             Vector2 cursorPos = FromVisualCoord(PointToClient(MousePosition));
             _depthBar.Draw(e, Size, _editor.Level, cursorPos, _editor.SelectedRoom, _roomsToMove);
+        }
+
+        private void MoveTimerTick(object sender, EventArgs e)
+        {
+            switch (_movementTimer.MoveDirection)
+            {
+                case Keys.Down:
+                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+                case Keys.Up:
+                    ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+                case Keys.Left:
+                    ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier, 0.0f);
+                    Invalidate();
+                    break;
+                case Keys.Right:
+                    ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier, 0.0f);
+                    Invalidate();
+                    break;
+                case Keys.PageDown:
+                    ViewScale *= (float)Math.Exp(-_editor.Configuration.Map2D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+                case Keys.PageUp:
+                    ViewScale *= (float)Math.Exp(_editor.Configuration.Map2D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
+                    Invalidate();
+                    break;
+            }
+            LimitPosition();
         }
 
         private void DrawRoom(PaintEventArgs e, Room room, float currentRangeMin, float currentRangeMax, bool drawFilled, bool drawOutline)
