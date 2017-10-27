@@ -37,7 +37,6 @@
             this.butTextureWalls = new System.Windows.Forms.ToolStripButton();
             this.butAdditiveBlending = new System.Windows.Forms.ToolStripButton();
             this.butDoubleSided = new System.Windows.Forms.ToolStripButton();
-            this.butInvisible = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.butAddCamera = new System.Windows.Forms.ToolStripButton();
             this.butAddFlybyCamera = new System.Windows.Forms.ToolStripButton();
@@ -57,7 +56,7 @@
             this.toolFlatten = new System.Windows.Forms.ToolStripButton();
             this.toolFill = new System.Windows.Forms.ToolStripButton();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.butDrawMoveables = new System.Windows.Forms.ToolStripButton();
@@ -113,7 +112,6 @@
             this.butTextureWalls,
             this.butAdditiveBlending,
             this.butDoubleSided,
-            this.butInvisible,
             this.toolStripSeparator2,
             this.butAddCamera,
             this.butAddFlybyCamera,
@@ -379,19 +377,6 @@
             this.butDoubleSided.ToolTipText = "Double-sided texture";
             this.butDoubleSided.Click += new System.EventHandler(this.butDoubleSided_Click);
             // 
-            // butInvisible
-            // 
-            this.butInvisible.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butInvisible.CheckOnClick = true;
-            this.butInvisible.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butInvisible.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butInvisible.Image = global::TombEditor.Properties.Resources.TextureNoTexture_1_16;
-            this.butInvisible.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butInvisible.Name = "butInvisible";
-            this.butInvisible.Size = new System.Drawing.Size(23, 25);
-            this.butInvisible.ToolTipText = "Invisible texture";
-            this.butInvisible.Click += new System.EventHandler(this.butInvisible_Click);
-            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -529,7 +514,7 @@
             this.toolFlatten,
             this.toolFill,
             this.toolEraser,
-            this.toolStripButton1});
+            this.toolInvisibility});
             this.secondaryToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.secondaryToolStrip.Location = new System.Drawing.Point(12, 12);
             this.secondaryToolStrip.Name = "secondaryToolStrip";
@@ -624,17 +609,19 @@
             this.toolEraser.Name = "toolEraser";
             this.toolEraser.Size = new System.Drawing.Size(24, 20);
             this.toolEraser.ToolTipText = "Eraser";
+            this.toolEraser.Click += new System.EventHandler(this.toolEraser_Click);
             // 
-            // toolStripButton1
+            // toolInvisibility
             // 
-            this.toolStripButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripButton1.Image = global::TombEditor.Properties.Resources.TextureNoTexture_1_16;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(24, 20);
-            this.toolStripButton1.ToolTipText = "Invisibility";
+            this.toolInvisibility.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolInvisibility.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolInvisibility.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolInvisibility.Image = global::TombEditor.Properties.Resources.TextureNoTexture_1_16;
+            this.toolInvisibility.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolInvisibility.Name = "toolInvisibility";
+            this.toolInvisibility.Size = new System.Drawing.Size(24, 20);
+            this.toolInvisibility.ToolTipText = "Invisibility";
+            this.toolInvisibility.Click += new System.EventHandler(this.toolInvisibility_Click);
             // 
             // panel2DMap
             // 
@@ -652,7 +639,7 @@
             // 
             this.toolStripLabel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.toolStripLabel1.ForeColor = System.Drawing.Color.Gray;
+            this.toolStripLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripLabel1.Name = "toolStripLabel1";
             this.toolStripLabel1.Size = new System.Drawing.Size(39, 25);
             this.toolStripLabel1.Text = "Show:";
@@ -738,7 +725,7 @@
             // toolStripLabel2
             // 
             this.toolStripLabel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel2.ForeColor = System.Drawing.Color.Gray;
+            this.toolStripLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripLabel2.Name = "toolStripLabel2";
             this.toolStripLabel2.Size = new System.Drawing.Size(93, 25);
             this.toolStripLabel2.Text = "Objects: 0 of 256";
@@ -754,7 +741,7 @@
             // toolStripLabel3
             // 
             this.toolStripLabel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel3.ForeColor = System.Drawing.Color.Gray;
+            this.toolStripLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripLabel3.Name = "toolStripLabel3";
             this.toolStripLabel3.Size = new System.Drawing.Size(89, 25);
             this.toolStripLabel3.Text = "Rooms: 1 of 512";
@@ -871,7 +858,7 @@
             // toolStripLabel8
             // 
             this.toolStripLabel8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripLabel8.ForeColor = System.Drawing.Color.Gray;
+            this.toolStripLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripLabel8.Name = "toolStripLabel8";
             this.toolStripLabel8.Size = new System.Drawing.Size(52, 25);
             this.toolStripLabel8.Text = "Statics: 0";
@@ -933,7 +920,6 @@
         private System.Windows.Forms.ToolStripButton butTextureWalls;
         private System.Windows.Forms.ToolStripButton butAdditiveBlending;
         private System.Windows.Forms.ToolStripButton butDoubleSided;
-        private System.Windows.Forms.ToolStripButton butInvisible;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton butAddCamera;
         private System.Windows.Forms.ToolStripButton butAddFlybyCamera;
@@ -967,7 +953,7 @@
         private DarkUI.Controls.DarkToolStrip darkToolStrip1;
         private DarkUI.Controls.DarkDropdownList darkDropdownList1;
         private System.Windows.Forms.ToolStripButton toolEraser;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton toolInvisibility;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripButton butDrawHorizon;
         private System.Windows.Forms.ToolStripButton butDrawPortals;

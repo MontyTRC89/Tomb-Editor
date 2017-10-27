@@ -101,12 +101,14 @@ namespace TombEditor.ToolWindows
                 butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
 
                 toolFill.Visible = mode == EditorMode.FaceEdit;
+                toolEraser.Visible = mode == EditorMode.FaceEdit;
+                toolInvisibility.Visible = mode == EditorMode.FaceEdit;
                 toolFlatten.Visible = mode == EditorMode.Geometry;
                 toolShovel.Visible = mode == EditorMode.Geometry;
                 secondaryToolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
                 secondaryToolStrip.AutoSize = true;
 
-                SwitchTool();
+                SwitchTool(mode == EditorMode.FaceEdit ? EditorTool.Brush : EditorTool.Selection);
             }
 
             // Update flipmap toolbar button
@@ -123,7 +125,6 @@ namespace TombEditor.ToolWindows
                 var e = (Editor.SelectedTexturesChangedEvent)obj;
                 butAdditiveBlending.Checked = e.Current.BlendMode == BlendMode.Additive;
                 butDoubleSided.Checked = e.Current.DoubleSided;
-                butInvisible.Checked = e.Current.Texture == TextureInvisible.Instance;
             }
 
             // Update portal opacity controls
@@ -149,6 +150,8 @@ namespace TombEditor.ToolWindows
             toolFill.Checked = tool == EditorTool.Fill;
             toolShovel.Checked = tool == EditorTool.Shovel;
             toolFlatten.Checked = tool == EditorTool.Flatten;
+            toolEraser.Checked = tool == EditorTool.Eraser;
+            toolInvisibility.Checked = tool == EditorTool.Invisibility;
 
             EditorActions.SwitchTool(tool);
         }
@@ -231,9 +234,6 @@ namespace TombEditor.ToolWindows
 
         private void butInvisible_Click(object sender, EventArgs e)
         {
-            var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.Texture = TextureInvisible.Instance;
-            _editor.SelectedTexture = selectedTexture;
         }
 
         private void butAddCamera_Click(object sender, EventArgs e)
@@ -386,6 +386,16 @@ namespace TombEditor.ToolWindows
         private void toolFill_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorTool.Fill);
+        }
+
+        private void toolInvisibility_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorTool.Invisibility);
+        }
+
+        private void toolEraser_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorTool.Eraser);
         }
     }
 }
