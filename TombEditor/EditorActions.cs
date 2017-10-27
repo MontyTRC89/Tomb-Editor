@@ -610,17 +610,24 @@ namespace TombEditor
             }
             else
             {
+                short[] newFaces = new short[4];
+
                 int validBlockCnt = (Convert.ToInt32(lookupBlocks[7] != null) + Convert.ToInt32(lookupBlocks[0] != null) + Convert.ToInt32(lookupBlocks[1] != null));
-                currBlock.WSFaces[0] += (short)((lookupBlocks[7].WSFaces[1] + lookupBlocks[0].WSFaces[2] + lookupBlocks[1].WSFaces[3]) / validBlockCnt > currBlock.WSFaces[0] ? 1 : -1);
+                newFaces[0] = (short)(((lookupBlocks[7]?.WSFaces[1] ?? 0) + (lookupBlocks[0]?.WSFaces[2] ?? 0) + (lookupBlocks[1]?.WSFaces[3] ?? 0)) / (validBlockCnt));
 
                 validBlockCnt = (Convert.ToInt32(lookupBlocks[1] != null) + Convert.ToInt32(lookupBlocks[2] != null) + Convert.ToInt32(lookupBlocks[3] != null));
-                currBlock.WSFaces[1] += (short)((lookupBlocks[1].WSFaces[2] + lookupBlocks[2].WSFaces[3] + lookupBlocks[3].WSFaces[0]) / validBlockCnt > currBlock.WSFaces[1] ? 1 : -1);
+                newFaces[1] = (short)(((lookupBlocks[1]?.WSFaces[2] ?? 0) + (lookupBlocks[2]?.WSFaces[3] ?? 0) + (lookupBlocks[3]?.WSFaces[0] ?? 0)) / (validBlockCnt));
 
                 validBlockCnt = (Convert.ToInt32(lookupBlocks[3] != null) + Convert.ToInt32(lookupBlocks[4] != null) + Convert.ToInt32(lookupBlocks[5] != null));
-                currBlock.WSFaces[2] += (short)((lookupBlocks[3].WSFaces[3] + lookupBlocks[4].WSFaces[0] + lookupBlocks[5].WSFaces[1]) / validBlockCnt > currBlock.WSFaces[2] ? 1 : -1);
+                newFaces[2] = (short)(((lookupBlocks[3]?.WSFaces[3] ?? 0) + (lookupBlocks[4]?.WSFaces[0] ?? 0) + (lookupBlocks[5]?.WSFaces[1] ?? 0)) / (validBlockCnt));
 
                 validBlockCnt = (Convert.ToInt32(lookupBlocks[5] != null) + Convert.ToInt32(lookupBlocks[6] != null) + Convert.ToInt32(lookupBlocks[7] != null));
-                currBlock.WSFaces[3] += (short)((lookupBlocks[5].WSFaces[2] + lookupBlocks[6].WSFaces[1] + lookupBlocks[7].WSFaces[0]) / validBlockCnt > currBlock.WSFaces[3] ? 1 : -1);
+                newFaces[3] = (short)(((lookupBlocks[5]?.WSFaces[0] ?? 0) + (lookupBlocks[6]?.WSFaces[1] ?? 0) + (lookupBlocks[7]?.WSFaces[2] ?? 0)) / (validBlockCnt));
+
+                currBlock.WSFaces[0] += (short)Math.Sign(newFaces[0] - currBlock.WSFaces[0]);
+                currBlock.WSFaces[1] += (short)Math.Sign(newFaces[1] - currBlock.WSFaces[1]);
+                currBlock.WSFaces[2] += (short)Math.Sign(newFaces[2] - currBlock.WSFaces[2]);
+                currBlock.WSFaces[3] += (short)Math.Sign(newFaces[3] - currBlock.WSFaces[3]);
             }
 
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
