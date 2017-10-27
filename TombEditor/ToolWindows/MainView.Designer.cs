@@ -56,9 +56,9 @@
             this.toolShovel = new System.Windows.Forms.ToolStripButton();
             this.toolFlatten = new System.Windows.Forms.ToolStripButton();
             this.toolFill = new System.Windows.Forms.ToolStripButton();
-            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.butDrawMoveables = new System.Windows.Forms.ToolStripButton();
             this.butDrawStatics = new System.Windows.Forms.ToolStripButton();
@@ -536,9 +536,6 @@
             this.secondaryToolStrip.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.secondaryToolStrip.Size = new System.Drawing.Size(27, 213);
             this.secondaryToolStrip.TabIndex = 0;
-            this.secondaryToolStrip.BeginDrag += new System.EventHandler(this.darkToolStrip2_BeginDrag);
-            this.secondaryToolStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.darkToolStrip2_ItemClicked);
-            this.secondaryToolStrip.MouseDown += new System.Windows.Forms.MouseEventHandler(this.darkToolStrip2_MouseDown);
             // 
             // toolSelection
             // 
@@ -671,7 +668,7 @@
             this.butDrawMoveables.Name = "butDrawMoveables";
             this.butDrawMoveables.Size = new System.Drawing.Size(23, 19);
             this.butDrawMoveables.ToolTipText = "Draw moveables";
-            this.butDrawMoveables.Click += new System.EventHandler(this.toolStripButton2_Click);
+            this.butDrawMoveables.Click += new System.EventHandler(this.butDrawMoveables_Click);
             // 
             // butDrawStatics
             // 
@@ -684,7 +681,7 @@
             this.butDrawStatics.Name = "butDrawStatics";
             this.butDrawStatics.Size = new System.Drawing.Size(23, 19);
             this.butDrawStatics.ToolTipText = "Draw static meshes";
-            this.butDrawStatics.Click += new System.EventHandler(this.toolStripButton4_Click);
+            this.butDrawStatics.Click += new System.EventHandler(this.butDrawStatics_Click);
             // 
             // butDrawImportedGeometry
             // 
@@ -697,7 +694,7 @@
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
             this.butDrawImportedGeometry.Size = new System.Drawing.Size(23, 19);
             this.butDrawImportedGeometry.ToolTipText = "Draw imported geometry";
-            this.butDrawImportedGeometry.Click += new System.EventHandler(this.toolStripButton6_Click);
+            this.butDrawImportedGeometry.Click += new System.EventHandler(this.butDrawImportedGeometry_Click);
             // 
             // butDrawLightMeshes
             // 
@@ -710,7 +707,7 @@
             this.butDrawLightMeshes.Name = "butDrawLightMeshes";
             this.butDrawLightMeshes.Size = new System.Drawing.Size(23, 19);
             this.butDrawLightMeshes.ToolTipText = "Draw light meshes";
-            this.butDrawLightMeshes.Click += new System.EventHandler(this.toolStripButton5_Click);
+            this.butDrawLightMeshes.Click += new System.EventHandler(this.butDrawLightMeshes_Click);
             // 
             // butDrawOther
             // 
@@ -723,7 +720,7 @@
             this.butDrawOther.Name = "butDrawOther";
             this.butDrawOther.Size = new System.Drawing.Size(23, 19);
             this.butDrawOther.ToolTipText = "Draw other objects";
-            this.butDrawOther.Click += new System.EventHandler(this.toolStripButton3_Click);
+            this.butDrawOther.Click += new System.EventHandler(this.butDrawOther_Click);
             // 
             // toolStripSeparator8
             // 

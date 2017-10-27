@@ -323,53 +323,39 @@ namespace TombEditor.ToolWindows
             panel3D.Invalidate();
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void toolStripButton2_Click(object sender, EventArgs e)
+        private void butDrawMoveables_Click(object sender, EventArgs e)
         {
             panel3D.ShowMoveables = !panel3D.ShowMoveables;
             butDrawMoveables.Checked = panel3D.ShowMoveables;
+            panel3D.Invalidate();
         }
 
-        private void toolStripButton4_Click(object sender, EventArgs e)
+        private void butDrawStatics_Click(object sender, EventArgs e)
         {
             panel3D.ShowStatics = !panel3D.ShowStatics;
             butDrawStatics.Checked = panel3D.ShowStatics;
+            panel3D.Invalidate();
         }
 
-        private void toolStripButton6_Click(object sender, EventArgs e)
+        private void butDrawImportedGeometry_Click(object sender, EventArgs e)
         {
             panel3D.ShowImportedGeometry = !panel3D.ShowImportedGeometry;
             butDrawImportedGeometry.Checked = panel3D.ShowImportedGeometry;
+            panel3D.Invalidate();
         }
 
-        private void toolStripButton5_Click(object sender, EventArgs e)
+        private void butDrawLightMeshes_Click(object sender, EventArgs e)
         {
             panel3D.ShowLightMeshes = !panel3D.ShowLightMeshes;
             butDrawLightMeshes.Checked = panel3D.ShowLightMeshes;
+            panel3D.Invalidate();
         }
 
-        private void toolStripButton3_Click(object sender, EventArgs e)
+        private void butDrawOther_Click(object sender, EventArgs e)
         {
             panel3D.ShowOtherObjects = !panel3D.ShowOtherObjects;
             butDrawOther.Checked = panel3D.ShowOtherObjects;
-        }
-
-        private void darkToolStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
-        private void darkToolStrip2_MouseDown(object sender, MouseEventArgs e)
-        {
-            return;
-        }
-
-        private void darkToolStrip2_BeginDrag(object sender, EventArgs e)
-        {
-            return;
+            panel3D.Invalidate();
         }
 
         private void toolSelection_Click(object sender, EventArgs e)
