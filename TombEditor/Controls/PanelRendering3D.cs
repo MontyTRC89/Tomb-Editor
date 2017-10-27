@@ -667,7 +667,7 @@ namespace TombEditor.Controls
                             switch (_editor.Mode)
                             {
                                 case EditorMode.Geometry:
-                                    if (_editor.Tool != EditorTool.Selection)
+                                    if (_editor.Tool != EditorTool.Selection && ModifierKeys == Keys.None)
                                     {
                                         ResetToolActionGrid();
                                         _toolEngaged = true;
@@ -716,9 +716,10 @@ namespace TombEditor.Controls
                                         }
                                     }
 
-                                    // Split the faces
+                                    
                                     if (ModifierKeys.HasFlag(Keys.Alt))
                                     {
+                                        // Split the faces
                                         if (belongsToFloor)
                                             EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                                         else
@@ -727,6 +728,7 @@ namespace TombEditor.Controls
                                     }
                                     else if (ModifierKeys.HasFlag(Keys.Shift))
                                     {
+                                        // Rotate sector
                                         EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
                                         return;
                                     }
@@ -834,7 +836,7 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Left:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.Tool != EditorTool.Selection)
+                    if (_editor.Mode == EditorMode.Geometry && _editor.Tool != EditorTool.Selection && ModifierKeys == Keys.None)
                     {
                         PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
 
