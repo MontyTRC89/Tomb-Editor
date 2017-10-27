@@ -657,13 +657,6 @@ namespace TombEditor.Controls
                             DrawingPoint pos = newBlockPicking.Pos;
                             bool belongsToFloor = newBlockPicking.BelongsToFloor;
 
-                            if (_editor.Tool == EditorTool.Selection)
-                            {
-                                // Select rectangle
-                                _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
-                                _doSectorSelection = true;
-                            }
-
                             switch (_editor.Mode)
                             {
                                 case EditorMode.Geometry:
@@ -713,6 +706,12 @@ namespace TombEditor.Controls
                                                     _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeN);
 
                                             }
+                                        }
+                                        else
+                                        {
+                                            // Select rectangle
+                                            _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                            _doSectorSelection = true;
                                         }
                                     }
 
