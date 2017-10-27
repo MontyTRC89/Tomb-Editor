@@ -643,6 +643,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Eraser_48_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Eraser_48_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap subtoolbar_icons8_Fill_Color_48_copy {
             get {
                 object obj = ResourceManager.GetObject("subtoolbar_icons8_Fill_Color_48_copy", resourceCulture);
@@ -653,9 +663,39 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Maintenance_Filled_50_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Maintenance_Filled_50_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Merry_Go_Round_48_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Merry_Go_Round_48_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap subtoolbar_icons8_Minecraft_Shovel_Filled_50_copy {
             get {
                 object obj = ResourceManager.GetObject("subtoolbar_icons8_Minecraft_Shovel_Filled_50_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Obelisk_48_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Obelisk_48_copy", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

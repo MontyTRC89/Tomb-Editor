@@ -468,6 +468,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_icons8-Obelisk-48 copy.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_icons8-Merry Go Round-48 copy.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_icons8-Maintenance Filled-50 copy.png" />
+    <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Eraser-48 copy.png" />
     <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_grip.png" />
     <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Select None-50 copy.png" />
     <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Pencil-48 copy.png" />

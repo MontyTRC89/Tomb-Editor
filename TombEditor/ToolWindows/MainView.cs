@@ -68,6 +68,16 @@ namespace TombEditor.ToolWindows
                 butCopy.Enabled = selectedObject is PositionBasedObjectInstance;
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
             }
+
+            if (obj is Editor.SelectedSectorsChangedEvent)
+            {
+                //bool validSectorSelection = _editor.SelectedSectors.Valid;
+
+                //butTextureFloor.Enabled = validSectorSelection;
+                //butTextureCeiling.Enabled = validSectorSelection;
+                //butTextureWalls.Enabled = validSectorSelection;
+            }
+
             if (obj is Editor.ModeChangedEvent)
             {
                 EditorMode mode = ((Editor.ModeChangedEvent)obj).Current;
@@ -85,6 +95,10 @@ namespace TombEditor.ToolWindows
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
                 panel3D.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry) || (mode == EditorMode.Lighting);
+                
+                butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
+                butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
+                butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
 
                 toolFill.Visible = mode == EditorMode.FaceEdit;
                 toolFlatten.Visible = mode == EditorMode.Geometry;
@@ -188,17 +202,17 @@ namespace TombEditor.ToolWindows
 
         private void butTextureFloor_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void butTextureCeiling_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void butTextureWalls_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void butAdditiveBlending_Click(object sender, EventArgs e)
@@ -316,31 +330,31 @@ namespace TombEditor.ToolWindows
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             panel3D.ShowMoveables = !panel3D.ShowMoveables;
-            toolStripButton2.Checked = panel3D.ShowMoveables;
+            butDrawMoveables.Checked = panel3D.ShowMoveables;
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)
         {
             panel3D.ShowStatics = !panel3D.ShowStatics;
-            toolStripButton4.Checked = panel3D.ShowStatics;
+            butDrawStatics.Checked = panel3D.ShowStatics;
         }
 
         private void toolStripButton6_Click(object sender, EventArgs e)
         {
             panel3D.ShowImportedGeometry = !panel3D.ShowImportedGeometry;
-            toolStripButton6.Checked = panel3D.ShowImportedGeometry;
+            butDrawImportedGeometry.Checked = panel3D.ShowImportedGeometry;
         }
 
         private void toolStripButton5_Click(object sender, EventArgs e)
         {
             panel3D.ShowLightMeshes = !panel3D.ShowLightMeshes;
-            toolStripButton5.Checked = panel3D.ShowLightMeshes;
+            butDrawLightMeshes.Checked = panel3D.ShowLightMeshes;
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
             panel3D.ShowOtherObjects = !panel3D.ShowOtherObjects;
-            toolStripButton3.Checked = panel3D.ShowOtherObjects;
+            butDrawOther.Checked = panel3D.ShowOtherObjects;
         }
 
         private void darkToolStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
