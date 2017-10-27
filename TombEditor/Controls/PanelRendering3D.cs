@@ -97,7 +97,10 @@ namespace TombEditor.Controls
             public DrawingPoint Pos { get; set; }
             public BlockFace Face { get; set; }
             public bool IsFloorHorizontalPlane => (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2);
+            public bool IsCeilingHorizontalPlane => (Face == BlockFace.Ceiling || Face == BlockFace.CeilingTriangle2);
+            public bool BelongsToVertical => (!IsFloorHorizontalPlane && !IsCeilingHorizontalPlane);
             public bool BelongsToFloor => (IsFloorHorizontalPlane || Face <= BlockFace.DiagonalMiddle);
+            public bool BelongsToCeiling => (IsCeilingHorizontalPlane || Face > BlockFace.DiagonalMiddle);
             public PickingResultBlock(float distance, DrawingPoint pos, BlockFace face)
             {
                 Distance = distance;
@@ -127,6 +130,18 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawIllegalSlopes { get; set; }
 
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowMoveables { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowStatics { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowImportedGeometry { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowLightMeshes { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowOtherObjects { get; set; }
+
         private Editor _editor;
         private DeviceManager _deviceManager;
         private Texture2D _textureAtlas;
@@ -152,11 +167,10 @@ namespace TombEditor.Controls
         // Gizmo
         private Gizmo _gizmo;
 
-        // Geometry painter
-
-        public bool _geometryPainterMode = false;
-        private bool _geometryPainterEngaged = false;
-        private bool[,] _geometryPainterGrid;
+        // Tool
+        private bool _toolEngaged = false;
+        private bool[,] _toolActionGrid = new bool[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
+        private Block _toolReferenceBlock;
 
         // Rooms to draw
         private List<Room> _roomsToDraw;
@@ -184,7 +198,7 @@ namespace TombEditor.Controls
 
         public PanelRendering3D()
         {
-            SetStyle(ControlStyles.Selectable, true);
+            SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
@@ -479,6 +493,13 @@ namespace TombEditor.Controls
             }
         }
 
+        private void ResetToolActionGrid()
+        {
+            for (int x = 0; x<Room.MaxRoomDimensions; x++)
+                for (int z = 0; z<Room.MaxRoomDimensions; z++)
+                    _toolActionGrid[x, z] = false;
+        }
+
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             // Don't paint the background
@@ -486,7 +507,14 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Draw();
+            if ((LicenseManager.UsageMode != LicenseUsageMode.Runtime) || (_editor == null) || (_editor.Level == null))
+            {
+                e.Graphics.Clear(Parent.BackColor);
+                e.Graphics.DrawString("3D Room Rendering: Not Available!", Font, Brushes.DarkGray, ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+            }
+            else
+                Draw();
         }
 
         protected override void OnResize(EventArgs e)
@@ -625,18 +653,64 @@ namespace TombEditor.Controls
                             case EditorMode.Geometry:
                                 if (newPicking is PickingResultBlock)
                                 {
-                                    DrawingPoint pos = ((PickingResultBlock)newPicking).Pos;
-
-                                    if (_geometryPainterMode)
-                                    {
-                                        _geometryPainterGrid = new bool[_editor.SelectedRoom.NumXSectors, _editor.SelectedRoom.NumZSectors];
-                                        _geometryPainterEngaged = true;
-                                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, 0, 1, true);
-                                        _geometryPainterGrid[pos.X, pos.Y] = true;
-                                        return;
-                                    }
-
+                                    PickingResultBlock newBlockPicking = (PickingResultBlock)newPicking;
+                                    DrawingPoint pos = newBlockPicking.Pos;
                                     bool belongsToFloor = ((PickingResultBlock)newPicking).BelongsToFloor;
+
+                                    if (_editor.Tool != EditorTool.Selection)
+                                    {
+                                        ResetToolActionGrid();
+                                        _toolEngaged = true;
+
+                                        if (_editor.Tool != EditorTool.Flatten)
+                                        {
+                                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (belongsToFloor ? 0 : 1), (short)(_editor.Tool == EditorTool.Shovel ^ belongsToFloor ? 1 : -1), (_editor.Tool == EditorTool.Brush || _editor.Tool == EditorTool.Shovel));
+                                            _toolActionGrid[pos.X, pos.Y] = true;
+                                        }
+                                        else
+                                            _toolReferenceBlock = _editor.SelectedRoom.Blocks[pos.X, pos.Y];
+                                    }
+                                    else
+                                    {
+                                        // Handle face selection
+                                        if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
+                                        {
+                                            // Rotate the arrows
+                                            if (Control.ModifierKeys.HasFlag(Keys.Control))
+                                            {
+                                                if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSW)
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
+                                                else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSE)
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSW);
+                                                else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNE)
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSE);
+                                                else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNW)
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNE);
+                                                else
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNW);
+                                            }
+                                            else
+                                            {
+                                                if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeW)
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
+                                                else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeS)
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeW);
+                                                else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeE)
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeS);
+                                                else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeN)
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeE);
+                                                else
+                                                    _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeN);
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Select rectangle
+                                            _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                            _doSectorSelection = true;
+                                        }
+                                    }
 
                                     // Split the faces
                                     if (ModifierKeys.HasFlag(Keys.Alt))
@@ -651,45 +725,6 @@ namespace TombEditor.Controls
                                     {
                                         EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
                                         return;
-                                    }
-
-                                    // Handle face selection
-                                    if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
-                                    {
-                                        // Rotate the arrows
-                                        if (Control.ModifierKeys.HasFlag(Keys.Control))
-                                        {
-                                            if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSW)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSE)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSW);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNE)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSE);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNW)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNE);
-                                            else
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNW);
-                                        }
-                                        else
-                                        {
-                                            if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeW)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeS)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeW);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeE)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeS);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeN)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeE);
-                                            else
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeN);
-
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Select rectangle
-                                        _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
-                                        _doSectorSelection = true;
                                     }
                                 }
                                 break;
@@ -772,47 +807,67 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Left:
-                    if (_editor.Mode == EditorMode.Geometry && _geometryPainterMode && _geometryPainterEngaged)
+                    if (_editor.Mode == EditorMode.Geometry && _editor.Tool != EditorTool.Selection)
                     {
                         PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
 
                         if (newPicking is PickingResultBlock)
                         {
-                            DrawingPoint pos = ((PickingResultBlock)newPicking).Pos;
+                            PickingResultBlock newBlockPicking = (PickingResultBlock)newPicking;
+                            DrawingPoint pos = newBlockPicking.Pos;
 
-                            if(_geometryPainterGrid[pos.X, pos.Y] == false)
+                            if(_toolActionGrid[pos.X, pos.Y] == false)
                             {
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, 0, 1, true);
-                                _geometryPainterGrid[pos.X, pos.Y] = true;
+                                if (_editor.Tool != EditorTool.Flatten)
+                                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (newBlockPicking.BelongsToFloor ? 0 : 1), (short)(_editor.Tool == EditorTool.Shovel ^ newBlockPicking.BelongsToFloor ? 1 : -1), (_editor.Tool == EditorTool.Brush || _editor.Tool == EditorTool.Shovel));
+                                else
+                                {
+                                    for(int i = 0; i < 4; i++)
+                                    {
+                                        if (newBlockPicking.BelongsToFloor)
+                                        {
+                                            _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolReferenceBlock.QAFaces.Min();
+                                            _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolReferenceBlock.EDFaces.Min();
+                                        }
+                                        else
+                                        {
+                                            _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolReferenceBlock.WSFaces.Min();
+                                            _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolReferenceBlock.RFFaces.Min();
+                                        }
+                                    }
+                                    EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                }
+
+                                _toolActionGrid[pos.X, pos.Y] = true;
                             }
                         }
-                        return;
                     }
-
-
-                    if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
-                    { // Process gizmo
-                    }
-                    else if (_doSectorSelection)
-                    { // Calculate block selection
-                        PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
-                        if (newPicking is PickingResultBlock)
-                        {
-                            _editor.SelectedSectors = new SectorSelection
-                            {
-                                Start = _editor.SelectedSectors.Start,
-                                End = new SharpDX.DrawingPoint(
-                                        ((PickingResultBlock)newPicking).Pos.X,
-                                        ((PickingResultBlock)newPicking).Pos.Y)
-                            };
+                    else
+                    {
+                        if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
+                        { // Process gizmo
                         }
-                    }
-                    else if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action.Action == EditorActionType.None))
-                    { // Texture editing
-                        PickingResultBlock newPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
+                        else if (_doSectorSelection)
+                        { // Calculate block selection
+                            PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
+                            if (newPicking is PickingResultBlock)
+                            {
+                                _editor.SelectedSectors = new SectorSelection
+                                {
+                                    Start = _editor.SelectedSectors.Start,
+                                    End = new SharpDX.DrawingPoint(
+                                            ((PickingResultBlock)newPicking).Pos.X,
+                                            ((PickingResultBlock)newPicking).Pos.Y)
+                                };
+                            }
+                        }
+                        else if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action.Action == EditorActionType.None))
+                        { // Texture editing
+                            PickingResultBlock newPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
 
-                        if (newPicking != null)
-                            EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
+                            if (newPicking != null)
+                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
+                        }
                     }
                     break;
             }
@@ -824,10 +879,10 @@ namespace TombEditor.Controls
         {
             base.OnMouseUp(e);
 
-            if(_geometryPainterEngaged)
+            if(_toolEngaged)
             {
-                _geometryPainterEngaged = false;
-                _geometryPainterGrid = null;
+                _toolEngaged = false;
+                ResetToolActionGrid();
             }
 
             _doSectorSelection = false;
@@ -2170,9 +2225,6 @@ namespace TombEditor.Controls
         // Call Invalidate() instead to schedule a redraw in the message loop.
         private void Draw()
         {
-            if (DesignMode)
-                return;
-
             Stopwatch _watch = new Stopwatch();
             _watch.Start();
 
@@ -2235,8 +2287,10 @@ namespace TombEditor.Controls
             // Draw moveables and static meshes
             if (_editor != null && _editor.Level != null && _editor.Level.Wad != null)
             {
-                DrawMoveables(viewProjection);
-                DrawStatics(viewProjection);
+                if (ShowMoveables)
+                    DrawMoveables(viewProjection);
+                if (ShowStatics)
+                    DrawStatics(viewProjection);
             }
 
             // Draw room geometry imported
@@ -2266,10 +2320,12 @@ namespace TombEditor.Controls
             DrawInvisibleBuckets(viewProjection);
 
             // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
-            DrawObjects(viewProjection, _roomsToDraw[0]);
+            if(ShowOtherObjects)
+                DrawObjects(viewProjection, _editor.SelectedRoom);
 
             // Draw light objects and bounding volumes only for current room
-            DrawLights(viewProjection, _editor.SelectedRoom);
+            if (ShowLightMeshes)
+                DrawLights(viewProjection, _editor.SelectedRoom);
 
             // Draw the height of the object
             DrawDebugLines(viewProjection);

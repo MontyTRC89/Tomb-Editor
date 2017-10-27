@@ -2160,5 +2160,11 @@ namespace TombEditor
             _editor.Mode = mode;
             _editor.Action = EditorAction.None;
         }
+
+        public static void SwitchTool(EditorTool tool)
+        {
+            _editor.Tool = tool;
+            _editor.Action = EditorAction.None;
+        }
     }
 }

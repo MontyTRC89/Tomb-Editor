@@ -573,6 +573,156 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_cameras_no {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_cameras_no", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_cameras_yes {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_cameras_yes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_geom_no {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_geom_no", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_geom_yes {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_geom_yes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_grip {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_grip", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Brush_48_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Brush_48_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Bulldozer_Filled_50_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Bulldozer_Filled_50_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Fill_Color_48_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Fill_Color_48_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Minecraft_Shovel_Filled_50_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Minecraft_Shovel_Filled_50_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Pencil_48_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Pencil_48_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_Select_None_50_copy {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_Select_None_50_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_objects_no {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_objects_no", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_objects_yes {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_objects_yes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_statics_no {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_statics_no", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_statics_yes {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_statics_yes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap sun_16 {
             get {
                 object obj = ResourceManager.GetObject("sun_16", resourceCulture);

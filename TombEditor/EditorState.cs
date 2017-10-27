@@ -7,7 +7,11 @@ namespace TombEditor
 {
     public enum EditorMode
     {
-        Geometry, Map2D, FaceEdit, Lighting
+        None, Geometry, Map2D, FaceEdit, Lighting
+    }
+    public enum EditorTool
+    {
+        None, Selection, Brush, Pencil, Shovel, Flatten, Fill
     }
 
     public enum EditorActionType

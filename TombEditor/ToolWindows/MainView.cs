@@ -33,6 +33,7 @@ namespace TombEditor.ToolWindows
 
             // Update 3D view
             EditorActions.SwitchMode(EditorMode.Geometry);
+            EditorActions.SwitchTool(EditorTool.Selection);
         }
 
         public void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
@@ -84,6 +85,14 @@ namespace TombEditor.ToolWindows
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
                 panel3D.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry) || (mode == EditorMode.Lighting);
+
+                toolFill.Visible = mode == EditorMode.FaceEdit;
+                toolFlatten.Visible = mode == EditorMode.Geometry;
+                toolShovel.Visible = mode == EditorMode.Geometry;
+                secondaryToolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
+                secondaryToolStrip.AutoSize = true;
+
+                SwitchTool();
             }
 
             // Update flipmap toolbar button
@@ -116,6 +125,18 @@ namespace TombEditor.ToolWindows
                 butOpacitySolidFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.SolidFaces;
                 butOpacityTraversableFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.TraversableFaces;
             }
+        }
+
+        private void SwitchTool(EditorTool tool = EditorTool.Selection)
+        {
+            toolSelection.Checked = tool == EditorTool.Selection;
+            toolBrush.Checked = tool == EditorTool.Brush;
+            toolPencil.Checked = tool == EditorTool.Pencil;
+            toolFill.Checked = tool == EditorTool.Fill;
+            toolShovel.Checked = tool == EditorTool.Shovel;
+            toolFlatten.Checked = tool == EditorTool.Flatten;
+
+            EditorActions.SwitchTool(tool);
         }
 
         private void but3D_Click(object sender, EventArgs e)
@@ -290,8 +311,81 @@ namespace TombEditor.ToolWindows
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            panel3D._geometryPainterMode = !panel3D._geometryPainterMode;
-            toolStripButton1.Checked = panel3D._geometryPainterMode;
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowMoveables = !panel3D.ShowMoveables;
+            toolStripButton2.Checked = panel3D.ShowMoveables;
+        }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowStatics = !panel3D.ShowStatics;
+            toolStripButton4.Checked = panel3D.ShowStatics;
+        }
+
+        private void toolStripButton6_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowImportedGeometry = !panel3D.ShowImportedGeometry;
+            toolStripButton6.Checked = panel3D.ShowImportedGeometry;
+        }
+
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowLightMeshes = !panel3D.ShowLightMeshes;
+            toolStripButton5.Checked = panel3D.ShowLightMeshes;
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowOtherObjects = !panel3D.ShowOtherObjects;
+            toolStripButton3.Checked = panel3D.ShowOtherObjects;
+        }
+
+        private void darkToolStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void darkToolStrip2_MouseDown(object sender, MouseEventArgs e)
+        {
+            return;
+        }
+
+        private void darkToolStrip2_BeginDrag(object sender, EventArgs e)
+        {
+            return;
+        }
+
+        private void toolSelection_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorTool.Selection);
+        }
+
+        private void toolBrush_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorTool.Brush);
+        }
+
+        private void toolPencil_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorTool.Pencil);
+        }
+
+        private void toolShovel_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorTool.Shovel);
+        }
+
+        private void toolFlatten_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorTool.Flatten);
+        }
+
+        private void toolFill_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorTool.Fill);
         }
     }
 }

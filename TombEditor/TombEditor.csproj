@@ -468,6 +468,29 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_grip.png" />
+    <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Select None-50 copy.png" />
+    <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Pencil-48 copy.png" />
+    <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Minecraft Shovel Filled-50 copy.png" />
+    <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Fill Color-48 copy.png" />
+    <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Bulldozer Filled-50 copy.png" />
+    <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Brush-48 copy.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_statics_yes.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_statics_no.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_objects_yes.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_objects_no.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_geom_yes.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_geom_no.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_cameras_yes.png" />
+    <None Include="Resources\preview_subtoolbar_icons\subtoolbar_cameras_no.png" />
+    <None Include="Resources\preview_subtoolbar_icons\statics_yes.png" />
+    <None Include="Resources\preview_subtoolbar_icons\statics_no.png" />
+    <None Include="Resources\preview_subtoolbar_icons\objects_yes.png" />
+    <None Include="Resources\preview_subtoolbar_icons\objects_no.png" />
+    <None Include="Resources\preview_subtoolbar_icons\geom_yes.png" />
+    <None Include="Resources\preview_subtoolbar_icons\geom_no.png" />
+    <None Include="Resources\preview_subtoolbar_icons\cameras_yes.png" />
+    <None Include="Resources\preview_subtoolbar_icons\cameras_no.png" />
     <None Include="Editor\Textures\illegal_slope.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

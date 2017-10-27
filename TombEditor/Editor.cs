@@ -151,6 +151,20 @@ namespace TombEditor
             }
         }
 
+        private EditorTool _tool;
+        public EditorTool Tool
+        {
+            get { return _tool; }
+            set
+            {
+                if (value == _tool)
+                    return;
+                var previous = _tool;
+                _tool = value;
+                //RaiseEvent(new ToolChangedEvent { Previous = previous, Current = value });
+            }
+        }
+
         public class SelectedRoomChangedEvent : IEditorProperyChangedEvent, IEditorRoomChangedEvent
         {
             public Room Previous { get; set; }
