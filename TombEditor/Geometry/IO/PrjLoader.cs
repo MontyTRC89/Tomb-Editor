@@ -1554,17 +1554,17 @@ namespace TombEditor.Geometry.IO
                         // Assign texture coordinates
                         if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
                         {
-                            texture.TexCoord0 = uv[1];
-                            texture.TexCoord1 = uv[0];
-                            texture.TexCoord2 = uv[3];
-                            texture.TexCoord3 = uv[2];
+                            texture.TexCoord0 = uv[2];
+                            texture.TexCoord1 = uv[1];
+                            texture.TexCoord2 = uv[0];
+                            texture.TexCoord3 = uv[3];
                         }
                         else
                         {
-                            texture.TexCoord0 = uv[0];
-                            texture.TexCoord1 = uv[1];
-                            texture.TexCoord2 = uv[2];
-                            texture.TexCoord3 = uv[3];
+                            texture.TexCoord0 = uv[3];
+                            texture.TexCoord1 = uv[0];
+                            texture.TexCoord2 = uv[1];
+                            texture.TexCoord3 = uv[2];
                         }
                     }
 
