@@ -315,17 +315,30 @@ namespace TombEditor.Geometry
             return GetBlockTry(pos.X, pos.Y);
         }
 
-        public Block GetBlockTryThroughPortal(int x, int z)
+        public class RoomBlockPair
         {
+            public Room Room { get; private set; }
+            public Block Block { get; private set; }
+
+            public RoomBlockPair(Room room, Block block)
+            {
+                Room = room;
+                Block = block;
+            }
+        }
+
+        public RoomBlockPair GetBlockTryThroughPortal(int x, int z)
+        {
+            Room adjoiningRoom = null;
             Block sector = GetBlockTry(x, z);
 
             if (sector?.WallPortal != null)
             {
-                Room adjoiningRoom = sector.WallPortal.AdjoiningRoom;
+                adjoiningRoom = sector.WallPortal.AdjoiningRoom;
                 DrawingPoint adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
                 sector = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
             }
-            return sector;
+            return new RoomBlockPair(adjoiningRoom, sector);
         }
 
         public bool IsIllegalSlope(int x, int z)
@@ -417,7 +430,7 @@ namespace TombEditor.Geometry
                     return true; // Slants are inward-pointing, hence engine can't resolve this situation
             }
 
-            // Main illegal slope calculation takes two adjacent corner heights (heightsToCheck[0-1]) from lookup block
+            // Main illegal slope calculation takes two adjacent corner heights (heightsToCheck[0-1]) from lookup block 
             // and looks if they are higher than any slope's lower heights (heightsToCompare[0-1]). Also it checks if
             // lookup block's adjacent ceiling heights (heightsToCheck[2-3]) is lower than minimum passable height.
             // If lookup block contains floor or ceiling diagonal splits, resolve algorighm is diverted (look further).
@@ -429,7 +442,7 @@ namespace TombEditor.Geometry
                 if (slopeDirections[i] == EditorArrowType.EntireFace || slopeIsIllegal)
                     continue;
 
-                Block lookupBlock = null;
+                RoomBlockPair lookupBlock = null;
                 short[] heightsToCompare = new short[2];
                 short[] heightsToCheck = new short[4];
 
@@ -478,82 +491,82 @@ namespace TombEditor.Geometry
 
                 // Diagonal split resolver
 
-                if (lookupBlock.IsAnyWall && lookupBlock.FloorDiagonalSplit == DiagonalSplit.None)
+                if (lookupBlock.Block.IsAnyWall && lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.None)
                 {
                     // If lookup block contains non-diagonal wall, we mark slope as illegal in any case.
 
                     slopeIsIllegal = true;
                     continue;
                 }
-                else if (lookupBlock.FloorDiagonalSplit != DiagonalSplit.None)
+                else if (lookupBlock.Block.FloorDiagonalSplit != DiagonalSplit.None)
                 {
                     // If lookup block has diagonal splits...
                     // For floor diagonal steps and diagonal walls, only steps/walls that are facing away
                     // from split are always treated as potentially illegal, because steps facing towards
                     // split are resolved by engine position corrector nicely.
 
-                    // Since in Tomb Editor diagonal steps are made that way so only single corner height
+                    // Since in Tomb Editor diagonal steps are made that way so only single corner height 
                     // is used for setting step height, we copy one of lookup block's heightsToCheck to
                     // another.
 
                     switch (slopeDirections[i])
                     {
                         case EditorArrowType.EdgeN:
-                            if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
-                                if (lookupBlock.IsAnyWall)
+                                if (lookupBlock.Block.IsAnyWall)
                                 {
                                     slopeIsIllegal = true;
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                                 heightsToCheck[0] = 2;
                             else
                                 heightsToCheck[1] = 3;
                             break;
                         case EditorArrowType.EdgeE:
-                            if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
-                                if (lookupBlock.IsAnyWall)
+                                if (lookupBlock.Block.IsAnyWall)
                                 {
                                     slopeIsIllegal = true;
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp)
                                 heightsToCheck[0] = 3;
                             else
                                 heightsToCheck[1] = 0;
                             break;
                         case EditorArrowType.EdgeS:
-                            if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZp ||
-                                lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
+                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
-                                if (lookupBlock.IsAnyWall)
+                                if (lookupBlock.Block.IsAnyWall)
                                 {
                                     slopeIsIllegal = true;
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                                 heightsToCheck[0] = 0;
                             else
                                 heightsToCheck[1] = 1;
                             break;
                         case EditorArrowType.EdgeW:
-                            if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZp ||
-                                lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
+                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
-                                if (lookupBlock.IsAnyWall)
+                                if (lookupBlock.Block.IsAnyWall)
                                 {
                                     slopeIsIllegal = true;
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn)
                                 heightsToCheck[0] = 1;
                             else
                                 heightsToCheck[1] = 2;
@@ -561,25 +574,32 @@ namespace TombEditor.Geometry
                     }
                 }
 
+                int heightAdjust = 0;
+                if (lookupBlock.Room != null)
+                    heightAdjust = (int)Math.Round(Position.Y - lookupBlock.Room.Position.Y);
+
+                int absoluteLowestPassableHeight = lowestPassableHeight + heightAdjust;
+                int absoluteLowestPassableStep = lowestPassableStep + heightAdjust;
+
                 // Main comparer
 
-                if (lookupBlock.FloorPortal == null)
+                if (lookupBlock.Block.FloorPortal == null)
                 {
-                    if (lookupBlock.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] > lowestPassableStep ||
-                        lookupBlock.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] > lowestPassableStep)
+                    if (lookupBlock.Block.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] > absoluteLowestPassableStep ||
+                        lookupBlock.Block.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] > absoluteLowestPassableStep)
                         slopeIsIllegal = true;
                     else if (heightsToCheck[0] != heightsToCheck[1]) // Only look for opposite slope cases in case there's no diagonal step in lookup block.
-                        if ((lookupBlock.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] <= lowestPassableStep) && (lookupBlock.QAFaces[heightsToCheck[2]] - lookupBlock.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight) ||
-                            (lookupBlock.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] <= lowestPassableStep) && (lookupBlock.QAFaces[heightsToCheck[3]] - lookupBlock.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight))
+                        if ((lookupBlock.Block.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] <= absoluteLowestPassableStep) && (lookupBlock.Block.QAFaces[heightsToCheck[2]] - lookupBlock.Block.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight) ||
+                            (lookupBlock.Block.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] <= absoluteLowestPassableStep) && (lookupBlock.Block.QAFaces[heightsToCheck[3]] - lookupBlock.Block.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight))
                             slopeIsIllegal = true;
                 }
 
-                if(lookupBlock.CeilingPortal == null)
+                if(lookupBlock.Block.CeilingPortal == null)
                 {
-                    if (lookupBlock.WSFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] < lowestPassableHeight - 1 ||
-                        lookupBlock.WSFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] < lowestPassableHeight - 1 ||
-                        lookupBlock.WSFaces[heightsToCheck[0]] - lookupBlock.QAFaces[heightsToCheck[0]] < lowestPassableHeight ||
-                        lookupBlock.WSFaces[heightsToCheck[1]] - lookupBlock.QAFaces[heightsToCheck[1]] < lowestPassableHeight)
+                    if (lookupBlock.Block.WSFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] < absoluteLowestPassableHeight ||
+                        lookupBlock.Block.WSFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] < absoluteLowestPassableHeight ||
+                        lookupBlock.Block.WSFaces[heightsToCheck[0]] - lookupBlock.Block.QAFaces[heightsToCheck[0]] < lowestPassableHeight ||
+                        lookupBlock.Block.WSFaces[heightsToCheck[1]] - lookupBlock.Block.QAFaces[heightsToCheck[1]] < lowestPassableHeight)
                         slopeIsIllegal = true;
                 }
             }
