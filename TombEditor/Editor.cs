@@ -17,12 +17,14 @@ namespace TombEditor
 
     public interface IEditorCameraEvent : IEditorEvent { }
 
-    public interface IEditorRoomChangedEvent : IEditorEvent
+    public interface IEditorEventCausesUnsavedChanges : IEditorEvent { }
+
+    public interface IEditorRoomChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
     {
         Room Room { get; }
     }
 
-    public interface IEditorObjectChangedEvent : IEditorEvent
+    public interface IEditorObjectChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
     {
         ObjectInstance Object { get; }
     }
@@ -91,6 +93,7 @@ namespace TombEditor
                 LoadedTexturesChange();
                 LoadedImportedGeometriesChange();
                 LevelFileNameChange();
+                HasUnsavedChanges = false;
             }
         }
 
@@ -151,11 +154,10 @@ namespace TombEditor
             }
         }
 
-        public class SelectedRoomChangedEvent : IEditorProperyChangedEvent, IEditorRoomChangedEvent
+        public class SelectedRoomChangedEvent : IEditorProperyChangedEvent
         {
             public Room Previous { get; set; }
             public Room Current { get; set; }
-            Room IEditorRoomChangedEvent.Room => Current;
         }
         private Room _selectedRoom;
         public Room SelectedRoom
@@ -254,13 +256,31 @@ namespace TombEditor
                     return;
                 var previous = _Configuration;
                 _Configuration = value;
-                OnConfigurationChanged(previous, value);
                 RaiseEvent(new ConfigurationChangedEvent { Previous = previous, Current = value });
             }
         }
 
+        public class HasUnsavedChangesChangedEvent : IEditorProperyChangedEvent
+        {
+            public bool Previous { get; set; }
+            public bool Current { get; set; }
+        }
+        private bool _hasUnsavedChanges;
+        public bool HasUnsavedChanges
+        {
+            get { return _hasUnsavedChanges; }
+            set
+            {
+                if (value == _hasUnsavedChanges)
+                    return;
+                var previous = _hasUnsavedChanges;
+                _hasUnsavedChanges = value;
+                RaiseEvent(new HasUnsavedChangesChangedEvent { Previous = previous, Current = value });
+            }
+        }
+
         // This is invoked if the loaded wads changed for the level.
-        public class LoadedWadsChangedEvent : IEditorEvent
+        public class LoadedWadsChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
         {
             public TombLib.Wad.Wad2 Current { get; set; }
         }
@@ -270,14 +290,14 @@ namespace TombEditor
         }
 
         // This is invoked if the loaded textures changed for the level.
-        public class LoadedTexturesChangedEvent : IEditorEvent { }
+        public class LoadedTexturesChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
         public void LoadedTexturesChange()
         {
             RaiseEvent(new LoadedTexturesChangedEvent { });
         }
 
         // This is invoked if the loaded imported geometries changed for the level.
-        public class LoadedImportedGeometriesChangedEvent : IEditorEvent { }
+        public class LoadedImportedGeometriesChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
         public void LoadedImportedGeometriesChange()
         {
             RaiseEvent(new LoadedImportedGeometriesChangedEvent { });
@@ -292,7 +312,7 @@ namespace TombEditor
 
         // This is invoked when ever the applied textures in a room change.
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomTextureChangedEvent : IEditorRoomChangedEvent
+        public class RoomTextureChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
         {
             public Room Room { get; set; }
         }
@@ -304,7 +324,7 @@ namespace TombEditor
         // This is invoked when ever the geometry of the room changed. (eg the room is moved, individual sectors are moved up or down, ...)
         // This is not invoked when other the properties of the room change
         // Textures, room properties like reverbration, objects changed, ...
-        public class RoomGeometryChangedEvent : IEditorRoomChangedEvent
+        public class RoomGeometryChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
         {
             public Room Room { get; set; }
         }
@@ -314,15 +334,15 @@ namespace TombEditor
         }
 
         // This is invoked when the level is saved an the file name changed.
-        public class LevelFileNameChanged : IEditorEvent { }
+        public class LevelFileNameChangedEvent : IEditorEvent { }
         public void LevelFileNameChange()
         {
-            RaiseEvent(new LevelFileNameChanged { });
+            RaiseEvent(new LevelFileNameChangedEvent { });
         }
 
         // This is invoked when the amount of rooms is changed. (Rooms have been added or removed)
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomListChangedEvent : IEditorEvent { }
+        public class RoomListChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
         public void RoomListChange()
         {
             RaiseEvent(new RoomListChangedEvent { });
@@ -330,7 +350,7 @@ namespace TombEditor
 
         // This is invoked for all changes to room flags, "Reverbration", ...
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent
+        public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
         {
             public Room Room { get; set; }
         }
@@ -341,7 +361,7 @@ namespace TombEditor
 
         // This is invoked for all changes to sectors. (eg setting a trigger, adding a portal, setting a sector to monkey, ...)
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent
+        public class RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
         {
             public Room Room { get; set; }
         }
@@ -352,7 +372,7 @@ namespace TombEditor
 
         // This is invoked for all changes to objects. (eg changing a light, changing a movable, moving a static, ...)
         // "null" can be passed, if it is not determinable what object changed.
-        public class ObjectChangedEvent : IEditorObjectChangedEvent
+        public class ObjectChangedEvent : IEditorObjectChangedEvent, IEditorEventCausesUnsavedChanges
         {
             public ObjectInstance Object { get; set; }
         }
@@ -391,7 +411,6 @@ namespace TombEditor
         // Notify all components that values of the configuration have changed
         public void ConfigurationChange()
         {
-            OnConfigurationChanged(_Configuration, _Configuration);
             RaiseEvent(new ConfigurationChangedEvent { Previous = _Configuration, Current = _Configuration });
         }
 
@@ -465,7 +484,8 @@ namespace TombEditor
                     try
                     {
                         configurationIsLoadedFromFile = true; // Don't save the configuration again just yet
-                        Configuration = configuration; }
+                        Configuration = configuration;
+                    }
                     finally
                     {
                         configurationIsLoadedFromFile = false;
@@ -474,23 +494,36 @@ namespace TombEditor
             }
         }
 
-        private void OnConfigurationChanged(Configuration previous, Configuration current)
+        private void Editor_EditorEventRaised(IEditorEvent obj)
         {
-            if (!string.Equals(previous?.FilePath ?? "", current?.FilePath ?? "", StringComparison.InvariantCultureIgnoreCase))
+            // Update configuration watcher
+            if (obj is ConfigurationChangedEvent)
             {
-                configurationWatcher?.Dispose();
-                if (!string.IsNullOrEmpty(current?.FilePath))
+                Configuration previous = ((ConfigurationChangedEvent)obj).Previous;
+                Configuration current = ((ConfigurationChangedEvent)obj).Current;
+
+                if (!string.Equals(previous?.FilePath ?? "", current?.FilePath ?? "", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    configurationWatcher = new FileSystemWatcher(Path.GetDirectoryName(current.FilePath), Path.GetFileName(current.FilePath));
-                    configurationWatcher.EnableRaisingEvents = true;
-                    configurationWatcher.Created += ConfigurationWatcher_Changed;
-                    configurationWatcher.Deleted += ConfigurationWatcher_Changed;
-                    configurationWatcher.Renamed += ConfigurationWatcher_Changed;
-                    configurationWatcher.Changed += ConfigurationWatcher_Changed;
+                    configurationWatcher?.Dispose();
+                    if (!string.IsNullOrEmpty(current?.FilePath))
+                    {
+                        configurationWatcher = new FileSystemWatcher(Path.GetDirectoryName(current.FilePath), Path.GetFileName(current.FilePath));
+                        configurationWatcher.EnableRaisingEvents = true;
+                        configurationWatcher.Created += ConfigurationWatcher_Changed;
+                        configurationWatcher.Deleted += ConfigurationWatcher_Changed;
+                        configurationWatcher.Renamed += ConfigurationWatcher_Changed;
+                        configurationWatcher.Changed += ConfigurationWatcher_Changed;
+                    }
                 }
+                if (!configurationIsLoadedFromFile)
+                    current?.SaveTry();
             }
-            if (!configurationIsLoadedFromFile)
-                current?.SaveTry();
+
+            // Update unsaved changes state
+            if (obj is IEditorEventCausesUnsavedChanges)
+            {
+                HasUnsavedChanges = true;
+            }
         }
 
         public void Dispose()
@@ -508,9 +541,11 @@ namespace TombEditor
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
             Level = level;
+
+            EditorEventRaised += Editor_EditorEventRaised;
         }
 
-        public Editor(SynchronizationContext synchronizationContext,  Configuration configuration)
+        public Editor(SynchronizationContext synchronizationContext, Configuration configuration)
             : this(synchronizationContext, configuration, Level.CreateSimpleLevel())
         { }
 

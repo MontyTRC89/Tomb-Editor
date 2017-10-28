@@ -42,7 +42,7 @@ namespace TombEditor.Controls
         private bool _roomMouseMoveStarted;
         private float _barMouseOffset;
         private bool IsExtendedViewActive { get { return _roomMouseMoveStarted && (_roomsToMove != null); } }
-        
+
         public static readonly Color[] ProbeColors = {
             Color.Crimson,
             Color.Purple,
@@ -58,7 +58,7 @@ namespace TombEditor.Controls
         private static readonly Font _explanationStringFont = new Font("Segoe UI", 12.0f, FontStyle.Regular, GraphicsUnit.Pixel);
         private static readonly StringFormat _explanationStringLayout = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far };
         private static readonly Brush _explanationStringBrush = new SolidBrush(Color.Black);
-        private const string _explanationString = "Press the middle mouse button on the map to add a depth bar.\nPress the middle mouse button on the depth bar to remove it.";
+        private const string _explanationString = "Double click or press CTRL + left click on the map to add a depth probe.\nDouble click or press CTRL + left click on a depth probe to remove it.";
         private static readonly Brush _backgroundBrush = new SolidBrush(Color.FromArgb(245, 245, 245));
         private static readonly Pen _outlinePen = new Pen(Color.FromArgb(245, 80, 80, 80), 1);
         private static readonly Pen _heightLinesPen = new Pen(Color.FromArgb(220, 220, 220), 1);
@@ -84,7 +84,7 @@ namespace TombEditor.Controls
                 Color = parent.getProbeColor();
             }
         }
-        
+
 
         private struct RelevantRoom
         {
@@ -93,7 +93,7 @@ namespace TombEditor.Controls
             public float MinDepth;
             public float MaxDepth;
         }
-        
+
         private enum SelectionMode
         {
             None,
@@ -133,12 +133,12 @@ namespace TombEditor.Controls
             depth = Math.Max(Math.Min(depth, MaxDepth), MinDepth);
             return depth;
         }
-        
+
         private static float ToVisualY(RectangleF barArea, float depth)
         {
             return ((MaxDepth - depth) / (MaxDepth - MinDepth)) * barArea.Height + barArea.Y;
         }
-        
+
         /// <returns>true, if the selection should continue in the background of the bar.</returns>
         public bool MouseDown(MouseEventArgs e, Size parentControlSize, Level level, Vector2 clickPos)
         {
@@ -169,7 +169,7 @@ namespace TombEditor.Controls
 
                 // check if a the click happend on a room
                 if (barArea.Contains(e.Location) && (_selectionMode == SelectionMode.None))
-                { 
+                {
                     for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
                     {
                         RectangleF groupArea = groupGetArea(barArea, groupIndex);
@@ -228,7 +228,7 @@ namespace TombEditor.Controls
         public void MouseMove(MouseEventArgs e, Size parentControlSize)
         {
             RectangleF barArea = getBarArea(parentControlSize);
-            
+
             switch (_selectionMode)
             {
                 case SelectionMode.SelectedLimit0:
@@ -306,7 +306,7 @@ namespace TombEditor.Controls
             RectangleF barArea = getBarArea(parentControlSize);
             float selectedLimit0PosY = ToVisualY(barArea, SelectedLimit0);
             float selectedLimit1PosY = ToVisualY(barArea, SelectedLimit1);
-            
+
             // Draw explanation string
             if (barArea.IntersectsWith(e.ClipRectangle))
             {
@@ -384,8 +384,8 @@ namespace TombEditor.Controls
                 for (int groupIndex = 0; groupIndex < DepthProbes.Count; ++groupIndex)
                 {
                     RectangleF groupArea = groupGetArea(barArea, groupIndex);
-                    selectionRect = new RectangleF(new PointF(groupArea.Left, Math.Min(selectedLimit1PosY, selectedLimit0PosY)), 
-                        new SizeF(groupArea.Width, Math.Abs(selectedLimit0PosY - selectedLimit1PosY))); 
+                    selectionRect = new RectangleF(new PointF(groupArea.Left, Math.Min(selectedLimit1PosY, selectedLimit0PosY)),
+                        new SizeF(groupArea.Width, Math.Abs(selectedLimit0PosY - selectedLimit1PosY)));
 
                     using (var b = new SolidBrush(Color.FromArgb(60, DepthProbes[groupIndex].Color.R, DepthProbes[groupIndex].Color.G, DepthProbes[groupIndex].Color.B)))
                         e.Graphics.FillRectangle(b, selectionRect);
@@ -396,7 +396,7 @@ namespace TombEditor.Controls
             if (barArea.IntersectsWith(e.ClipRectangle))
             {
                 IEnumerable<Room> sortedRoomList = level.GetVerticallyAscendingRoomList();
-                
+
                 // Draw group
                 for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
                 {
@@ -470,7 +470,7 @@ namespace TombEditor.Controls
         {
             if (barArea.Contains(e.ClipRectangle))
                 return;
-            
+
             float screenPosY = ToVisualY(barArea, depth);
 
             if (selection)
@@ -498,7 +498,7 @@ namespace TombEditor.Controls
         {
             get { return DepthProbes.Count + 1; }
         }
-        
+
         public RectangleF groupGetArea(RectangleF barArea, int groupIndex)
         {
             return new RectangleF(barArea.Right - (groupIndex + 1) * _barWidth, barArea.Y, _barWidth, barArea.Height);
@@ -559,11 +559,11 @@ namespace TombEditor.Controls
                         var roomSequenceBelow = roomSequences[j];
                         if (roomSequences[j].Last().Room != connectedRoom)
                             continue;
-                        
+
                         float distanceBetweenSequences = roomSequenceAbove[0].MinDepth - roomSequenceBelow.Last().MaxDepth;
                         if (!(distanceBetweenSequences >= 0.0))
                             continue;
-                        
+
                         roomSequences[j].AddRange(roomSequences[i]);
                         roomSequences.RemoveAt(i);
                         --i;

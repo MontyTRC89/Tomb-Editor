@@ -279,9 +279,9 @@ namespace TombEditor.Controls
                     _lastX = e.X;
                     _lastY = e.Y;
 
-                    if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
+                    if (ModifierKeys.HasFlag(Keys.Shift) || (e.Button == MouseButtons.Middle))
                         Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
-                    else if ((ModifierKeys & Keys.Control) == Keys.Control)
+                    else if (ModifierKeys.HasFlag(Keys.Control))
                         Camera.Zoom(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseZoom);
                     else
                         Camera.Rotate(deltaX * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate, -deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate);

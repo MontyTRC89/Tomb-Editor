@@ -57,7 +57,7 @@ namespace TombEditor
         protected override float Scale => ((IScaleable)_editor.SelectedObject).Scale;
 
         protected override float CentreCubeSize => _editor.Configuration.Gizmo_CenterCubeSize;
-        protected override float TranslationSphereSize => _editor.Configuration.Gizmo_TranslationSphereSize;
+        protected override float TranslationConeSize => _editor.Configuration.Gizmo_TranslationConeSize;
         protected override float Size => _editor.Configuration.Gizmo_Size;
         protected override float ScaleCubeSize => _editor.Configuration.Gizmo_ScaleCubeSize;
         protected override float LineThickness => _editor.Configuration.Gizmo_LineThickness;

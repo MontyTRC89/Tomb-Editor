@@ -183,13 +183,18 @@ namespace TombEditor
                 }
             }
 
-            // Update application title
-            if (obj is Editor.LevelFileNameChanged)
+            // Update application title bar
+            if ((obj is Editor.LevelFileNameChangedEvent) || (obj is Editor.HasUnsavedChangesChangedEvent))
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     Utils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
-                Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
+
+                Text = "Tomb Editor " + Application.ProductVersion + " - " + LevelName + (_editor.HasUnsavedChanges ? "*" : "");
             }
+
+            // Update save button
+            if (obj is Editor.HasUnsavedChangesChangedEvent)
+                saveLevelToolStripMenuItem.Enabled = _editor.HasUnsavedChanges;
 
             // Reload window layout if the configuration changed
             if (obj is Editor.ConfigurationChangedEvent)
@@ -209,8 +214,7 @@ namespace TombEditor
             {
                 case CloseReason.None:
                 case CloseReason.UserClosing:
-                    if (DarkMessageBox.Show(this, "Your level will be lost. Do you really want to exit?",
-                            "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    if (!EditorActions.ContinueOnFileDrop(this, "Exit"))
                         e.Cancel = true;
                     break;
             }
@@ -382,12 +386,12 @@ namespace TombEditor
                     break;
 
                 case Keys.W:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(shift ? 4 : 1), alt);
                     break;
 
                 case Keys.S:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)-(shift ? 4 : 1), alt);
                     break;
 
@@ -615,9 +619,7 @@ namespace TombEditor
 
         private void newLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkMessageBox.Show(this,
-                    "Your level will be lost. Do you really want to create a new level?",
-                    "New level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!EditorActions.ContinueOnFileDrop(this, "New level"))
                 return;
 
             _editor.Level = Level.CreateSimpleLevel();
