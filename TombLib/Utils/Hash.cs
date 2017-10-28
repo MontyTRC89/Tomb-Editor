@@ -1,5 +1,4 @@
-﻿using BrandonHaynes.Security.SipHash;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +8,10 @@ namespace TombLib.Utils
 {
     public struct Hash : IEquatable<Hash>
     {
+        private static Random _rng = new Random();
+        private static ulong _keyLow = (ulong)(_rng.Next()) ^ ((ulong)(_rng.Next()) << 32);
+        private static ulong _keyHigh = (ulong)(_rng.Next()) ^ ((ulong)(_rng.Next()) << 32);
+
         public ulong Hash1;
         public ulong Hash2;
 
@@ -34,17 +37,8 @@ namespace TombLib.Utils
 
         public static Hash FromByteArray(byte[] data)
         {
-            byte[] key = { 0x10, 0x21, 0x32, 0x23, 0x14, 0x25, 0x36, 0x27, 0x18, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
-
-            Hash hash = new Hash();
-
-            using (var h = new SipHash(key))
-            {
-                var buffer = h.ComputeHash(data);
-                hash.Hash1 = BitConverter.ToUInt64(buffer, 0);
-            }
-
-            return hash;
+            ulong result = CH.SipHash.SipHash.SipHash_2_4_UlongCast_ForcedInline(data, _keyLow, _keyHigh);
+            return new Hash { Hash1 = result, Hash2 = 0 };
         }
 
         public override int GetHashCode()

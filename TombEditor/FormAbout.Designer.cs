@@ -30,10 +30,11 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.butOk = new DarkUI.Controls.DarkButton();
+            this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.versionLabel = new DarkUI.Controls.DarkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.darkLabel16 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.darkSeparator2 = new DarkUI.Controls.DarkSeparator();
             this.darkLabel15 = new DarkUI.Controls.DarkLabel();
             this.linkLabel10 = new System.Windows.Forms.LinkLabel();
@@ -60,8 +61,9 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
+            this.linkLabel13 = new System.Windows.Forms.LinkLabel();
             this.linkLabel11 = new System.Windows.Forms.LinkLabel();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -76,7 +78,7 @@
             this.tableLayoutPanel1.Controls.Add(this.butOk, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.darkLabel16, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 345);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 354);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -89,11 +91,24 @@
             this.butOk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butOk.Location = new System.Drawing.Point(506, 3);
             this.butOk.Name = "butOk";
-            this.butOk.Padding = new System.Windows.Forms.Padding(5);
             this.butOk.Size = new System.Drawing.Size(103, 26);
             this.butOk.TabIndex = 3;
             this.butOk.Text = "Ok";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            // 
+            // darkLabel16
+            // 
+            this.darkLabel16.AutoSize = true;
+            this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel16.Location = new System.Drawing.Point(3, 0);
+            this.darkLabel16.Name = "darkLabel16";
+            this.darkLabel16.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.darkLabel16.Size = new System.Drawing.Size(367, 24);
+            this.darkLabel16.TabIndex = 28;
+            this.darkLabel16.Text = "Tomb Raider, Tomb Raider Level Editor, Lara Croft are © and trademarks of Square " +
+    "Enix Ltd.\r\nThis software is a freeware and intended only for personal and non-co" +
+    "mmercial use.";
             // 
             // versionLabel
             // 
@@ -123,13 +138,15 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.linkLabel11);
+            this.panel1.Controls.Add(this.darkLabel17);
             this.panel1.Controls.Add(this.darkLabel1);
             this.panel1.Controls.Add(this.darkSeparator2);
             this.panel1.Controls.Add(this.darkLabel15);
             this.panel1.Controls.Add(this.linkLabel10);
             this.panel1.Controls.Add(this.linkLabel9);
             this.panel1.Controls.Add(this.darkLabel14);
+            this.panel1.Controls.Add(this.linkLabel11);
+            this.panel1.Controls.Add(this.linkLabel13);
             this.panel1.Controls.Add(this.linkLabel8);
             this.panel1.Controls.Add(this.darkLabel13);
             this.panel1.Controls.Add(this.linkLabel7);
@@ -152,22 +169,19 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 64);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(612, 281);
+            this.panel1.Size = new System.Drawing.Size(612, 290);
             this.panel1.TabIndex = 8;
             // 
-            // darkLabel16
+            // darkLabel1
             // 
-            this.darkLabel16.AutoSize = true;
-            this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(3, 0);
-            this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.darkLabel16.Size = new System.Drawing.Size(367, 24);
-            this.darkLabel16.TabIndex = 28;
-            this.darkLabel16.Text = "Tomb Raider, Tomb Raider Level Editor, Lara Croft are © and trademarks of Square " +
-    "Enix Ltd.\r\nThis software is a freeware and intended only for personal and non-co" +
-    "mmercial use.";
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(6, 230);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(238, 13);
+            this.darkLabel1.TabIndex = 29;
+            this.darkLabel1.Text = "OpenFolderDialog is used under MIT license.";
             // 
             // darkSeparator2
             // 
@@ -207,9 +221,10 @@
             // linkLabel9
             // 
             this.linkLabel9.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel9.AutoSize = true;
             this.linkLabel9.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel9.Location = new System.Drawing.Point(365, 258);
+            this.linkLabel9.Location = new System.Drawing.Point(365, 270);
             this.linkLabel9.Name = "linkLabel9";
             this.linkLabel9.Size = new System.Drawing.Size(64, 13);
             this.linkLabel9.TabIndex = 21;
@@ -220,10 +235,11 @@
             // 
             // darkLabel14
             // 
+            this.darkLabel14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel14.AutoSize = true;
             this.darkLabel14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel14.Location = new System.Drawing.Point(7, 258);
+            this.darkLabel14.Location = new System.Drawing.Point(7, 270);
             this.darkLabel14.Name = "darkLabel14";
             this.darkLabel14.Size = new System.Drawing.Size(361, 13);
             this.darkLabel14.TabIndex = 20;
@@ -446,7 +462,7 @@
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(6, 106);
             this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(123, 15);
+            this.darkLabel4.Size = new System.Drawing.Size(124, 15);
             this.darkLabel4.TabIndex = 2;
             this.darkLabel4.Text = "Licensing Information";
             // 
@@ -487,29 +503,44 @@
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Original idea and code:\r\nProgramming:\r\nAdditional design:\r\nBeta testing:";
             // 
+            // darkLabel17
+            // 
+            this.darkLabel17.AutoSize = true;
+            this.darkLabel17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel17.Location = new System.Drawing.Point(7, 243);
+            this.darkLabel17.Name = "darkLabel17";
+            this.darkLabel17.Size = new System.Drawing.Size(220, 13);
+            this.darkLabel17.TabIndex = 29;
+            this.darkLabel17.Text = "CH.SipHash is used under Public Domain.";
+            // 
+            // linkLabel13
+            // 
+            this.linkLabel13.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel13.AutoSize = true;
+            this.linkLabel13.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel13.Location = new System.Drawing.Point(242, 230);
+            this.linkLabel13.Name = "linkLabel13";
+            this.linkLabel13.Size = new System.Drawing.Size(211, 13);
+            this.linkLabel13.TabIndex = 19;
+            this.linkLabel13.TabStop = true;
+            this.linkLabel13.Text = "medo64.com/2011/12/openfolderdialog";
+            this.linkLabel13.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel13.Click += new System.EventHandler(this.btnLink_Click);
+            // 
             // linkLabel11
             // 
             this.linkLabel11.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
             this.linkLabel11.AutoSize = true;
             this.linkLabel11.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel11.Location = new System.Drawing.Point(243, 230);
+            this.linkLabel11.Location = new System.Drawing.Point(242, 243);
             this.linkLabel11.Name = "linkLabel11";
-            this.linkLabel11.Size = new System.Drawing.Size(111, 13);
-            this.linkLabel11.TabIndex = 30;
+            this.linkLabel11.Size = new System.Drawing.Size(195, 13);
+            this.linkLabel11.TabIndex = 19;
             this.linkLabel11.TabStop = true;
-            this.linkLabel11.Text = "medo64.com/license";
+            this.linkLabel11.Text = "github.com/tanglebones/ch-siphash";
             this.linkLabel11.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            // 
-            // darkLabel1
-            // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(6, 230);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(238, 13);
-            this.darkLabel1.TabIndex = 29;
-            this.darkLabel1.Text = "OpenFolderDialog is used under MIT license.";
+            this.linkLabel11.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // FormAbout
             // 
@@ -517,7 +548,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butOk;
-            this.ClientSize = new System.Drawing.Size(612, 377);
+            this.ClientSize = new System.Drawing.Size(612, 386);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.pictureBox1);
@@ -579,7 +610,9 @@
         private DarkUI.Controls.DarkLabel darkLabel15;
         private System.Windows.Forms.LinkLabel linkLabel10;
         private DarkUI.Controls.DarkLabel darkLabel16;
-        private System.Windows.Forms.LinkLabel linkLabel11;
         private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkLabel darkLabel17;
+        private System.Windows.Forms.LinkLabel linkLabel13;
+        private System.Windows.Forms.LinkLabel linkLabel11;
     }
 }
