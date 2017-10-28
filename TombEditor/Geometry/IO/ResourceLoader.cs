@@ -141,7 +141,7 @@ namespace TombEditor.Geometry.IO
 
                     image = ImageC.CreateNew(256, 256);
                     for (int i = 0; i < 256 * 256; ++i)
-                        image.Set(i, data[i * 3 + 2], data[i * 3 + 1], data[i * 3]);
+                        image.Set(i, data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
                 }
                 else if (path.EndsWith(".pc"))
                 {
