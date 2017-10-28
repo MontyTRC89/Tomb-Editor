@@ -230,7 +230,7 @@ namespace TombEditor.Controls
                 if(_editor.Mode == EditorMode.Map2D && Camera != null)
                 {
                     var deltaRoomPos = _editor.SelectedRoom.Position - _currentRoomLastPos;
-                    Camera.MoveCameraLinear(deltaRoomPos * 1024);
+                    Camera.MoveCameraLinear(new Vector3(deltaRoomPos.X * 1024.0f, deltaRoomPos.Y * 256.0f, deltaRoomPos.Z * 1024.0f));
                     _currentRoomLastPos = _editor.SelectedRoom.Position;
                 }
             }
