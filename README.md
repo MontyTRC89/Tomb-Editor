@@ -22,3 +22,6 @@ I would like to to thank all the following people that contributed to the develo
 * Gh0stBlade
 * Monsieur Z
 * Teslarus
+
+## External libraries
+[A list can be found here.](ExternalResources.md)
