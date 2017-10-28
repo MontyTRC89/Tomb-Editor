@@ -1053,7 +1053,7 @@ namespace TombEditor
 
         private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //EditorActions.ExportCurrentRoom(this, PanelRendering3D.RoomsTextureAtlas);
+            EditorActions.ExportCurrentRoom(this);
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
