@@ -118,11 +118,13 @@ namespace TombEditor.ToolWindows
             }
         }
 
+        // Opens editor's 3D view
         private void but3D_Click(object sender, EventArgs e)
         {
             EditorActions.SwitchMode(EditorMode.Geometry);
         }
 
+        // Opens editor's 2D view
         private void but2D_Click(object sender, EventArgs e)
         {
             EditorActions.SwitchMode(EditorMode.Map2D);

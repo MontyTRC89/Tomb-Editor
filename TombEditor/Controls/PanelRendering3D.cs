@@ -145,9 +145,13 @@ namespace TombEditor.Controls
         private System.Drawing.Point _lastMousePosition;
         private MovementTimer _movementTimer;
         private bool _doSectorSelection = false;
+        private bool _noSelectionConfirm = false;
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
         private Buffer<EditorVertex> _skyVertexBuffer;
         private Debug _debug;
+
+        // Current room's last position
+        private Vector3 _currentRoomLastPos = new Vector3(0);
 
         // Gizmo
         private Gizmo _gizmo;
@@ -220,6 +224,17 @@ namespace TombEditor.Controls
             if (obj is Editor.ConfigurationChangedEvent)
                 Camera.FieldOfView = ((Editor.ConfigurationChangedEvent)obj).Current.Rendering3D_FieldOfView * (float)(Math.PI / 180);
 
+            // Update camera position
+            if (obj is Editor.RoomGeometryChangedEvent)
+            {
+                if(_editor.Mode == EditorMode.Map2D && Camera != null)
+                {
+                    var deltaRoomPos = _editor.SelectedRoom.Position - _currentRoomLastPos;
+                    Camera.MoveCameraLinear(deltaRoomPos * 1024);
+                    _currentRoomLastPos = _editor.SelectedRoom.Position;
+                }
+            }
+
             // Update drawing
             if ((obj is IEditorObjectChangedEvent) ||
                 (obj is IEditorRoomChangedEvent) ||
@@ -232,11 +247,12 @@ namespace TombEditor.Controls
                 (obj is Editor.LoadedTexturesChangedEvent) ||
                 (obj is Editor.LoadedImportedGeometriesChangedEvent))
             {
+
                 if (_editor.Mode != EditorMode.Map2D)
                     Invalidate();
             }
 
-            // Update curser
+            // Update cursor
             if (obj is Editor.ActionChangedEvent)
             {
                 EditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
@@ -530,22 +546,26 @@ namespace TombEditor.Controls
                 // Do picking on the scene
                 PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
 
-                // Move camera to selected sector
                 if ((newPicking is PickingResultBlock) && (_editor.Action.RelocateCameraActive))
                 {
+                    // Move camera to selected sector
                     _editor.MoveCameraToSector(((PickingResultBlock)newPicking).Pos);
                     return;
                 }
                 else if (newPicking is PickingResultObject)
                 {
+                    // Select new object
                     _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
                 }
-
-                // Set gizmo axis (or none if another object was picked)
-                if (newPicking is PickingResultGizmo)
+                else if (newPicking is PickingResultGizmo)
                 {
+                    // Set gizmo axis
                     _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
-                    return;
+                }
+                else if (newPicking == null)
+                {
+                    // Click outside room; if mouse is released without action, unselect all
+                    _noSelectionConfirm = true;
                 }
 
                 // Process editor actions
@@ -672,7 +692,13 @@ namespace TombEditor.Controls
                                     else
                                     {
                                         // Select rectangle
-                                        _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                        if (ModifierKeys.HasFlag(Keys.Control))
+                                        {
+                                            // Multiple separate tile selection - To Be Implemented...
+                                            _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                        }
+                                        else
+                                            _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
                                         _doSectorSelection = true;
                                     }
                                 }
@@ -729,6 +755,9 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
+            // Reset internal bool for deselection
+            _noSelectionConfirm = false;
+
             // Hover effect on gizmo
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
                 Invalidate();
@@ -741,11 +770,11 @@ namespace TombEditor.Controls
                     // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                     float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
                     float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
-                    if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
+                    if (ModifierKeys.HasFlag(Keys.Shift) || (e.Button == MouseButtons.Middle))
                         Camera.MoveCameraPlane(new Vector3(relativeDeltaX, relativeDeltaY, 0) *
                             _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
-                    else if ((ModifierKeys & Keys.Control) == Keys.Control)
-                        Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
+                    else if (ModifierKeys.HasFlag(Keys.Control))
+                        Camera.Zoom((_editor.Configuration.Rendering3D_InvertMouseZoom ? relativeDeltaY : -relativeDeltaY) * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                     else
                         Camera.Rotate(
                             relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
@@ -788,6 +817,14 @@ namespace TombEditor.Controls
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            // Click outside room
+            if (_noSelectionConfirm && !(ModifierKeys == Keys.Control))
+            {
+                _editor.SelectedSectors = SectorSelection.None;
+                _editor.SelectedObject = null;
+                _noSelectionConfirm = false;    // It gets already set on MouseMove, but it's better to prevent obscure errors and unwanted behavior later on
+            }
+
             base.OnMouseUp(e);
 
             _doSectorSelection = false;
@@ -1026,11 +1063,17 @@ namespace TombEditor.Controls
                 {
                     var geometry = (ImportedGeometryInstance)instance;
 
-                    BoundingBox box = geometry.Model?.DirectXModel?.BoundingBox ?? new BoundingBox(new Vector3(-128), new Vector3(128));
-                    box.Minimum += room.WorldPos + instance.Position;
-                    box.Maximum += room.WorldPos + instance.Position;
-                    if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
-                        result = new PickingResultObject(distance, instance);
+                    if (geometry?.Model?.DirectXModel?.Meshes?.ElementAt(0) != null)
+                        foreach (ImportedGeometryMesh mesh in geometry.Model.DirectXModel.Meshes)
+                            DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                    else
+                    {
+                        BoundingBox box = new BoundingBox(
+                            room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
+                            room.WorldPos + geometry.Position + new Vector3(_littleCubeRadius));
+                        if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
+                            result = new PickingResultObject(distance, instance);
+                    }
                 }
                 else
                 {
@@ -1287,10 +1330,7 @@ namespace TombEditor.Controls
                 // Object position
                 message += "\n" + GetObjectPositionString(light.Room, light);
 
-                Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                    _device.Viewport.MinDepth,
-                    _device.Viewport.MaxDepth, light.ObjectMatrix * viewProjection);
-                _debug.AddString(message, screenPos);
+                DrawDebugString(message, light.ObjectMatrix * viewProjection);
 
                 // Add the line height of the object
                 AddObjectHeightLine(viewProjection, light.Room, light.Position);
@@ -1326,13 +1366,8 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                                                        Height, _device.Viewport.MinDepth,
-                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1362,13 +1397,8 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                                                        Height, _device.Viewport.MinDepth,
-                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1399,13 +1429,8 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                                                        Height, _device.Viewport.MinDepth,
-                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1438,13 +1463,8 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                                                        Height, _device.Viewport.MinDepth,
-                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1512,10 +1532,7 @@ namespace TombEditor.Controls
                         string message = instance.ToString();
                         message += "\nUnavailable " + instance.ItemType.ToString();
 
-                        Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                            _device.Viewport.MinDepth,
-                            _device.Viewport.MaxDepth, instance.RotationPositionMatrix * viewProjection);
-                        _debug.AddString(message, screenPos);
+                        DrawDebugString(message, instance.RotationPositionMatrix * viewProjection);
 
                         // Add the line height of the object
                         AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1540,11 +1557,8 @@ namespace TombEditor.Controls
                     {
                         color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
                         _device.SetRasterizerState(_rasterizerWireframe);
-
-                        Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                            _device.Viewport.MinDepth,
-                            _device.Viewport.MaxDepth, instance.RotationPositionMatrix * viewProjection);
-                        _debug.AddString(instance.ToString(), screenPos);
+                        
+                        DrawDebugString(instance.ToString(), instance.RotationPositionMatrix * viewProjection);
 
                         // Add the line height of the object
                         AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1640,10 +1654,6 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                        Height, _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString();
 
                     // Object position
@@ -1655,8 +1665,7 @@ namespace TombEditor.Controls
                         message += "\nOCB: " + instance.Ocb;
 
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1735,16 +1744,9 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                        Height, _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
-                    string message = instance.ToString();
-
                     // Object position
-                    message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(instance.ToString() + "\n" +
+                        GetObjectPositionString(_editor.SelectedRoom, instance), instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, instance.Position);
@@ -1806,10 +1808,6 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
-                        Height, _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
-
                     string message = _editor.Level.Wad.Statics[instance.WadObjectId].ToString();
 
                     // Object position
@@ -1817,8 +1815,7 @@ namespace TombEditor.Controls
                     message += "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2);
 
                     BuildTriggeredByMessage(ref message, instance);
-
-                    _debug.AddString(message, screenPos);
+                    DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, instance.Position);
@@ -1875,6 +1872,14 @@ namespace TombEditor.Controls
                 _debug.NumVerticesObjects += mesh.NumIndices;
                 _debug.NumTrianglesObjects += mesh.NumIndices / 3;
             }
+        }
+
+        public void DrawDebugString(string message, Matrix transformation, Vector3 offset = new Vector3())
+        {
+            Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, ClientSize.Width, ClientSize.Height,
+                _device.Viewport.MinDepth, _device.Viewport.MaxDepth, transformation);
+            screenPos += offset; // Offset text a little bit
+            _debug.AddString(message, screenPos);
         }
 
         private Ray ConvertMouseToRay(Vector2 mousePosition)
@@ -2334,7 +2339,7 @@ namespace TombEditor.Controls
                 Vector3 screenPos = Vector3.Project(positions[i], 0, 0, Width, Height,
                     _device.Viewport.MinDepth,
                     _device.Viewport.MaxDepth, wvp);
-                _debug.AddString(messages[i], screenPos);
+                _debug.AddString(messages[i], screenPos - new Vector3(45, 0, 0));
             }
         }
 

@@ -27,11 +27,11 @@ namespace WadTool.Controls
         private float _lastX;
         private float _lastY;
         private SpriteBatch _spriteBatch;
-        
+
         public void InitializePanel(GraphicsDevice device)
         {
             _device = device;
-           
+
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
             {
@@ -122,7 +122,7 @@ namespace WadTool.Controls
                         StaticMesh mesh = model.Meshes[i];
                         _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
                         _device.SetVertexInputLayout(_layout);
-                        
+
                         mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
                         mioEffect.Techniques[0].Passes[0].Apply();
 

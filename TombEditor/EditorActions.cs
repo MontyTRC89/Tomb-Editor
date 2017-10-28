@@ -24,6 +24,27 @@ namespace TombEditor
 
         private static Editor _editor = Editor.Instance;
 
+        public static bool ContinueOnFileDrop(IWin32Window owner, string description)
+        {
+            if (!_editor.HasUnsavedChanges)
+                return true;
+
+            switch (DarkMessageBox.Show(owner,
+                "Your unsaved changes will be lost. Do you want to save?",
+                description,
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2))
+            {
+                case DialogResult.No:
+                    return true;
+                case DialogResult.Yes:
+                    return SaveLevel(owner, false);
+                default:
+                    return false;
+            }
+        }
+
         public static void SmartBuildGeometry(Room room, Rectangle area)
         {
             var watch = new System.Diagnostics.Stopwatch();
@@ -1954,35 +1975,45 @@ namespace TombEditor
             _editor.ObjectChange(portal);
         }
 
-        public static void SaveLevel(IWin32Window owner, bool askForPath)
+        public static bool SaveLevel(IWin32Window owner, bool askForPath)
         {
+            string filePath = _editor.Level.Settings.LevelFilePath;
+
             // Show save dialog if necessary
-            if (askForPath || string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
+            if (askForPath || string.IsNullOrEmpty(filePath))
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
                     saveFileDialog.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
-                    if (!string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
+                    if (!string.IsNullOrEmpty(filePath))
                     {
-                        saveFileDialog.InitialDirectory = Path.GetDirectoryName(_editor.Level.Settings.LevelFilePath);
-                        saveFileDialog.FileName = Path.GetFileName(_editor.Level.Settings.LevelFilePath);
+                        saveFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
+                        saveFileDialog.FileName = Path.GetFileName(filePath);
                     }
                     if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
-                        return;
-
-                    _editor.Level.Settings.LevelFilePath = saveFileDialog.FileName;
-                    _editor.LevelFileNameChange();
+                        return false;
+                    filePath = saveFileDialog.FileName;
                 }
 
             // Save level
             try
             {
-                Prj2Writer.SaveToPrj2(_editor.Level.Settings.LevelFilePath, _editor.Level);
+                Prj2Writer.SaveToPrj2(filePath, _editor.Level);
             }
             catch (Exception exc)
             {
-                logger.Error(exc, "Unable to save to \"" + _editor.Level.Settings.LevelFilePath + "\".");
-                DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
+                logger.Error(exc, "Unable to save to \"" + filePath + "\".");
+                DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
+                return false;
             }
+
+            // Update state
+            _editor.HasUnsavedChanges = false;
+            if (_editor.Level.Settings.LevelFilePath != filePath)
+            {
+                _editor.Level.Settings.LevelFilePath = filePath;
+                _editor.LevelFileNameChange();
+            }
+            return true;
         }
 
         /*public static void ExportCurrentRoom(IWin32Window owner)
@@ -2051,9 +2082,7 @@ namespace TombEditor
 
         public static void OpenLevel(IWin32Window owner, string fileName = null)
         {
-            if (DarkMessageBox.Show(owner,
-                "Your level will be lost. Do you really want to open another level file?",
-                "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
             string _fileName = fileName;
@@ -2084,9 +2113,7 @@ namespace TombEditor
 
         public static void OpenLevelPrj(IWin32Window owner, string fileName = null)
         {
-            if (DarkMessageBox.Show(owner,
-                    "Your level will be lost. Do you really want to open another level file?",
-                    "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
             string _fileName = fileName;
