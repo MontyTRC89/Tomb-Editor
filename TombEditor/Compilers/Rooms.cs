@@ -409,7 +409,7 @@ namespace TombEditor.Compilers
 
                 switch (light.Type)
                 {
-                    case LightType.Light:
+                    case LightType.Point:
                         newLight.LightType = 1;
                         newLight.In = light.InnerRange * 1024.0f;
                         newLight.Out = light.OuterRange * 1024.0f;

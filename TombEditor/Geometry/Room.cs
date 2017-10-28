@@ -2718,7 +2718,7 @@ namespace TombEditor.Geometry
 
                     switch (light.Type)
                     {
-                        case LightType.Light:
+                        case LightType.Point:
                         case LightType.Shadow:
                             if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
                             {

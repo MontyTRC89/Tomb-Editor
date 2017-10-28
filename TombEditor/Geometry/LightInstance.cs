@@ -5,7 +5,7 @@ namespace TombEditor.Geometry
 {
     public enum LightType : byte
     {
-        Light, Shadow, Spot, Effect, Sun, FogBulb
+        Point, Shadow, Spot, Effect, Sun, FogBulb
     }
 
     public enum LightParameter
@@ -64,7 +64,7 @@ namespace TombEditor.Geometry
                     break;
             }
         }
-        
+
         public override string ToString()
         {
             return "Light " + Type.ToString() +

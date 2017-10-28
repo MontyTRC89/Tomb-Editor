@@ -1230,7 +1230,7 @@ namespace TombEditor.Controls
 
                 solidEffect.Parameters["ModelViewProjection"].SetValue(light.ObjectMatrix * viewProjection);
 
-                if (light.Type == LightType.Light)
+                if (light.Type == LightType.Point)
                     solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
                 if (light.Type == LightType.Spot)
                     solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
@@ -1254,13 +1254,13 @@ namespace TombEditor.Controls
             {
                 LightInstance light = (LightInstance)_editor.SelectedObject;
 
-                if (light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
+                if (light.Type == LightType.Point || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
                 {
                     _device.SetVertexBuffer(_sphere.VertexBuffer);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
                     _device.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
-                    if (light.Type == LightType.Light || light.Type == LightType.Shadow)
+                    if (light.Type == LightType.Point || light.Type == LightType.Shadow)
                     {
                         Matrix model = Matrix.Scaling(light.InnerRange * 2.0f) * light.ObjectMatrix;
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
@@ -1270,7 +1270,7 @@ namespace TombEditor.Controls
                         _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
                     }
 
-                    if (light.Type == LightType.Light || light.Type == LightType.Shadow ||
+                    if (light.Type == LightType.Point || light.Type == LightType.Shadow ||
                         light.Type == LightType.FogBulb)
                     {
                         Matrix model = Matrix.Scaling(light.OuterRange * 2.0f) * light.ObjectMatrix;
