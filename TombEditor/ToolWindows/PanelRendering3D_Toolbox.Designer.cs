@@ -75,6 +75,7 @@
             this.toolSelection.Name = "toolSelection";
             this.toolSelection.Size = new System.Drawing.Size(23, 20);
             this.toolSelection.ToolTipText = "Selection";
+            this.toolSelection.Click += new System.EventHandler(this.toolSelection_Click);
             // 
             // toolBrush
             // 
@@ -87,6 +88,7 @@
             this.toolBrush.Size = new System.Drawing.Size(23, 20);
             this.toolBrush.Text = "toolStripButton7";
             this.toolBrush.ToolTipText = "Brush";
+            this.toolBrush.Click += new System.EventHandler(this.toolBrush_Click);
             // 
             // toolShovel
             // 
@@ -99,6 +101,7 @@
             this.toolShovel.Size = new System.Drawing.Size(23, 20);
             this.toolShovel.Text = "toolStripButton7";
             this.toolShovel.ToolTipText = "Shovel";
+            this.toolShovel.Click += new System.EventHandler(this.toolShovel_Click);
             // 
             // toolPencil
             // 
@@ -111,6 +114,7 @@
             this.toolPencil.Size = new System.Drawing.Size(23, 20);
             this.toolPencil.Text = "toolStripButton7";
             this.toolPencil.ToolTipText = "Pencil";
+            this.toolPencil.Click += new System.EventHandler(this.toolPencil_Click);
             // 
             // toolFlatten
             // 
@@ -123,6 +127,7 @@
             this.toolFlatten.Size = new System.Drawing.Size(23, 20);
             this.toolFlatten.Text = "toolStripButton7";
             this.toolFlatten.ToolTipText = "Bulldozer";
+            this.toolFlatten.Click += new System.EventHandler(this.toolFlatten_Click);
             // 
             // toolSmooth
             // 
@@ -134,6 +139,7 @@
             this.toolSmooth.Name = "toolSmooth";
             this.toolSmooth.Size = new System.Drawing.Size(23, 20);
             this.toolSmooth.ToolTipText = "Smooth";
+            this.toolSmooth.Click += new System.EventHandler(this.toolSmooth_Click);
             // 
             // toolFill
             // 
@@ -146,6 +152,7 @@
             this.toolFill.Size = new System.Drawing.Size(23, 20);
             this.toolFill.Text = "toolStripButton7";
             this.toolFill.ToolTipText = "Fill";
+            this.toolFill.Click += new System.EventHandler(this.toolFill_Click);
             // 
             // toolEraser
             // 
@@ -157,6 +164,7 @@
             this.toolEraser.Name = "toolEraser";
             this.toolEraser.Size = new System.Drawing.Size(23, 20);
             this.toolEraser.ToolTipText = "Eraser";
+            this.toolEraser.Click += new System.EventHandler(this.toolEraser_Click);
             // 
             // toolInvisibility
             // 
@@ -168,6 +176,7 @@
             this.toolInvisibility.Name = "toolInvisibility";
             this.toolInvisibility.Size = new System.Drawing.Size(23, 20);
             this.toolInvisibility.ToolTipText = "Invisibility";
+            this.toolInvisibility.Click += new System.EventHandler(this.toolInvisibility_Click);
             // 
             // PanelRendering3D_Toolbox
             // 

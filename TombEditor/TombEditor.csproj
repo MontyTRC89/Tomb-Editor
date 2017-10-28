@@ -137,9 +137,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DepthBar.cs" />
-    <Compile Include="Controls\FloatingToolbox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Controls\FloatingToolbox.cs" />
     <Compile Include="Controls\FloatingToolbox.Designer.cs">
       <DependentUpon>FloatingToolbox.cs</DependentUpon>
     </Compile>
@@ -156,16 +154,16 @@
     <Compile Include="Controls\PanelAnimatedTextures.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelRendering3D_Toolbox.cs">
+    <Compile Include="ToolWindows\PanelRendering3D_Toolbox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\PanelRendering3D_Toolbox.Designer.cs">
+    <Compile Include="ToolWindows\PanelRendering3D_Toolbox.Designer.cs">
       <DependentUpon>PanelRendering3D_Toolbox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PanelRendering3D_ViewOptions.cs">
+    <Compile Include="ToolWindows\PanelRendering3D_ViewOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\PanelRendering3D_ViewOptions.Designer.cs">
+    <Compile Include="ToolWindows\PanelRendering3D_ViewOptions.Designer.cs">
       <DependentUpon>PanelRendering3D_ViewOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PanelRenderingItem.cs">
@@ -374,10 +372,10 @@
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PanelRendering3D_Toolbox.resx">
+    <EmbeddedResource Include="ToolWindows\PanelRendering3D_Toolbox.resx">
       <DependentUpon>PanelRendering3D_Toolbox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PanelRendering3D_ViewOptions.resx">
+    <EmbeddedResource Include="ToolWindows\PanelRendering3D_ViewOptions.resx">
       <DependentUpon>PanelRendering3D_ViewOptions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormAbout.resx">

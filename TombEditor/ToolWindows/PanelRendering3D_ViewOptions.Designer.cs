@@ -68,7 +68,7 @@
             this.darkToolStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkToolStrip1.Name = "darkToolStrip1";
             this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(3, 1, 3, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(245, 24);
+            this.darkToolStrip1.Size = new System.Drawing.Size(247, 24);
             this.darkToolStrip1.TabIndex = 18;
             this.darkToolStrip1.Text = "darkToolStrip1";
             this.darkToolStrip1.UseUIBackgroundColor = true;
@@ -95,6 +95,7 @@
             this.butDrawMoveables.Name = "butDrawMoveables";
             this.butDrawMoveables.Size = new System.Drawing.Size(23, 20);
             this.butDrawMoveables.ToolTipText = "Draw moveables";
+            this.butDrawMoveables.Click += new System.EventHandler(this.butDrawMoveables_Click);
             // 
             // butDrawStatics
             // 
@@ -108,6 +109,7 @@
             this.butDrawStatics.Name = "butDrawStatics";
             this.butDrawStatics.Size = new System.Drawing.Size(23, 20);
             this.butDrawStatics.ToolTipText = "Draw static meshes";
+            this.butDrawStatics.Click += new System.EventHandler(this.butDrawStatics_Click);
             // 
             // butDrawImportedGeometry
             // 
@@ -121,6 +123,7 @@
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
             this.butDrawImportedGeometry.Size = new System.Drawing.Size(23, 20);
             this.butDrawImportedGeometry.ToolTipText = "Draw imported geometry";
+            this.butDrawImportedGeometry.Click += new System.EventHandler(this.butDrawImportedGeometry_Click);
             // 
             // toolStripSeparator11
             // 
@@ -142,6 +145,7 @@
             this.butDrawLightMeshes.Name = "butDrawLightMeshes";
             this.butDrawLightMeshes.Size = new System.Drawing.Size(23, 20);
             this.butDrawLightMeshes.ToolTipText = "Draw light meshes";
+            this.butDrawLightMeshes.Click += new System.EventHandler(this.butDrawLightMeshes_Click);
             // 
             // butDrawOther
             // 
@@ -155,6 +159,7 @@
             this.butDrawOther.Name = "butDrawOther";
             this.butDrawOther.Size = new System.Drawing.Size(23, 20);
             this.butDrawOther.ToolTipText = "Draw other objects";
+            this.butDrawOther.Click += new System.EventHandler(this.butDrawOther_Click);
             // 
             // butDrawHorizon
             // 
@@ -166,6 +171,7 @@
             this.butDrawHorizon.Name = "butDrawHorizon";
             this.butDrawHorizon.Size = new System.Drawing.Size(23, 20);
             this.butDrawHorizon.ToolTipText = "Draw horizon";
+            this.butDrawHorizon.Click += new System.EventHandler(this.butDrawHorizon_Click);
             // 
             // butDrawPortals
             // 
@@ -177,6 +183,7 @@
             this.butDrawPortals.Name = "butDrawPortals";
             this.butDrawPortals.Size = new System.Drawing.Size(23, 20);
             this.butDrawPortals.ToolTipText = "Draw portals";
+            this.butDrawPortals.Click += new System.EventHandler(this.butDrawPortals_Click);
             // 
             // toolStripSeparator12
             // 
@@ -217,7 +224,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.darkToolStrip1);
             this.Name = "PanelRendering3D_ViewOptions";
-            this.Size = new System.Drawing.Size(245, 24);
+            this.Size = new System.Drawing.Size(247, 24);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PanelRendering3D_ViewOptions_MouseUp);
             this.darkToolStrip1.ResumeLayout(false);
             this.darkToolStrip1.PerformLayout();

@@ -10,14 +10,14 @@ using System.Windows.Forms;
 
 namespace TombEditor.Controls
 {
+    public class FloatingToolboxContainer
+    {
+        public FloatingToolbox Toolbox;
+        public FloatingToolboxContainer(FloatingToolbox toolbox) { Toolbox = toolbox; }
+    }
 
     public partial class FloatingToolbox : UserControl
     {
-        public class FloatingToolboxContainer
-        {
-            public FloatingToolbox Toolbox;
-            public FloatingToolboxContainer(FloatingToolbox toolbox) { Toolbox = toolbox; }
-        }
 
         [Category("Appearance")]
         public short Transparency

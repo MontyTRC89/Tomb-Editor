@@ -225,6 +225,7 @@ namespace TombEditor
             Size = configuration.Window_Size;
             Location = configuration.Window_Position;
             WindowState = configuration.Window_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
+            
         }
 
         private void SaveWindowLayout(Configuration configuration)

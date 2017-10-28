@@ -978,7 +978,7 @@ namespace TombEditor.Controls
 
             if (e.Data.GetDataPresent(typeof(ItemType)))
                 e.Effect = DragDropEffects.Copy;
-            else if (e.Data.GetDataPresent(typeof(FloatingToolbox.FloatingToolboxContainer)))
+            else if (e.Data.GetDataPresent(typeof(FloatingToolboxContainer)))
                 e.Effect = DragDropEffects.Move;
             else if (EditorActions.DragDropFileSupported(e, true))
                 e.Effect = DragDropEffects.Move;
@@ -991,9 +991,9 @@ namespace TombEditor.Controls
             base.OnDragDrop(e);
 
             // Drop any pending floating toolboxes
-            if (e.Data.GetDataPresent(typeof(FloatingToolbox.FloatingToolboxContainer)))
+            if (e.Data.GetDataPresent(typeof(FloatingToolboxContainer)))
             {
-                FloatingToolbox.FloatingToolboxContainer droppedToolbox = (FloatingToolbox.FloatingToolboxContainer)(e.Data.GetData(typeof(FloatingToolbox.FloatingToolboxContainer)));
+                FloatingToolboxContainer droppedToolbox = (FloatingToolboxContainer)(e.Data.GetData(typeof(FloatingToolboxContainer)));
                 droppedToolbox.Toolbox.DragStop();
             }
 
