@@ -55,7 +55,7 @@ namespace TombEditor.ToolWindows
                     IsLight = true;
                     switch (light.Type)
                     {
-                        case LightType.Light:
+                        case LightType.Point:
                             HasInOutRange = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
@@ -257,7 +257,7 @@ namespace TombEditor.ToolWindows
 
         private void butAddPointLight_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Light };
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Point };
         }
 
         private void butAddShadow_Click(object sender, EventArgs e)

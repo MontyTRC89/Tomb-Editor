@@ -491,7 +491,7 @@ namespace TombEditor.Geometry.IO
                                     switch (objectType)
                                     {
                                         case 0x4000:
-                                            lightType = LightType.Light;
+                                            lightType = LightType.Point;
                                             break;
                                         case 0x6000:
                                             lightType = LightType.Shadow;
