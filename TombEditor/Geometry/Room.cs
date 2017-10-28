@@ -2345,12 +2345,12 @@ namespace TombEditor.Geometry
             var sectorVertices = _sectorVertices[x, z];
             int sectorVerticesStart = sectorVertices.Count;
 
-            sectorVertices.Add(new EditorVertex { Position = p1, UV = texture.TexCoord1, EditorUV = editorUV1 });
-            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord2, EditorUV = editorUV2 });
-            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord0, EditorUV = editorUV0 });
-            sectorVertices.Add(new EditorVertex { Position = p3, UV = texture.TexCoord3, EditorUV = editorUV3 });
-            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord0, EditorUV = editorUV0 });
-            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord2, EditorUV = editorUV2 });
+            sectorVertices.Add(new EditorVertex { Position = p1, UV = texture.TexCoord2, EditorUV = editorUV1 });
+            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord3, EditorUV = editorUV2 });
+            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord1, EditorUV = editorUV0 });
+            sectorVertices.Add(new EditorVertex { Position = p3, UV = texture.TexCoord0, EditorUV = editorUV3 });
+            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord1, EditorUV = editorUV0 });
+            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord3, EditorUV = editorUV2 });
 
             _sectorFaceVertexVertexRange[x, z, (int)face] = new VertexRange { Start = sectorVerticesStart, Count = 6 };
         }
