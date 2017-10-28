@@ -15,6 +15,7 @@ using TombLib.IO;
 using System.IO;
 using Assimp;
 using SharpDX.Toolkit.Graphics;
+using System.Globalization;
 
 namespace TombEditor
 {
@@ -2016,69 +2017,100 @@ namespace TombEditor
             return true;
         }
 
-        /*public static void ExportCurrentRoom(IWin32Window owner)
+        public static void ExportCurrentRoom(IWin32Window owner)
         {
+            RoomGeometryExporter.ExportToObj(_editor.SelectedRoom, "karnak10.obj");
+
             // Ask for the file to save
-            string _fileName = "";
+            string fileName = "";
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Title = "Export current room";
                 saveFileDialog.Filter = "Wavefront OBJ (*.obj)|*.obj";
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
-                _fileName = saveFileDialog.FileName;
+                fileName = saveFileDialog.FileName;
             }
 
-            // Initialize Assimp
-            var context = new AssimpContext();
-            var scene = new Scene();
-            var mesh = new Mesh(Assimp.PrimitiveType.Triangle);
-
-            // Pointer to the selected room
             var room = _editor.SelectedRoom;
+            var path = Path.GetDirectoryName(fileName);
+            var material = path + "\\" + Path.GetFileNameWithoutExtension(fileName) + ".mtl";
 
-            // Now build the Assimp mesh
-            var editorRoomVertices = room.GetRoomVertices();
-            for (int z = 0; z < room.NumZSectors; ++z)
-                for (int x = 0; x < room.NumXSectors; ++x)
-                    for (BlockFace face = 0; face < Block.FaceCount; ++face)
+            if (File.Exists(fileName)) File.Delete(fileName);
+            if (File.Exists(material)) File.Delete(material);
+
+            using (var writer = new StreamWriter(File.OpenWrite(fileName)))
+            {
+                writer.WriteLine("# Exported by Tomb Editor");
+                writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(fileName) + ".mtl");
+                writer.WriteLine("o " + room.Name);
+
+                var scale = 1024.0f;
+
+                // Save vertices
+                var vertices = room.GetRoomVertices();
+                foreach (var vertex in vertices)
+                    writer.WriteLine("v " + (vertex.Position.X / scale).ToString(CultureInfo.InvariantCulture) + " " +
+                                            (vertex.Position.Y / scale).ToString(CultureInfo.InvariantCulture) + " " +
+                                            (vertex.Position.Z / scale).ToString(CultureInfo.InvariantCulture));
+
+                // Save UVs
+                foreach (var vertex in vertices)
+                    writer.WriteLine("vt " + ((vertex.UV.X / _editor.Level.Settings.Textures[0].Image.Size.X)).ToString(CultureInfo.InvariantCulture) + " " +
+                                             ((vertex.UV.Y / _editor.Level.Settings.Textures[0].Image.Size.Y)).ToString(CultureInfo.InvariantCulture));
+
+                // Save faces
+                writer.WriteLine("usemtl Room");
+                writer.WriteLine("s off");
+
+                for (var z = 0; z < room.NumZSectors; z++)
+                {
+                    for (var x = 0; x < room.NumXSectors; x++)
                     {
-                        var range = room.GetFaceVertexRange(x, z, face);
-                        if (range.Count == 0)
-                            continue;
-
-                        TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
-                        if (texture.TextureIsInvisble)
-                            continue;
-
-                        for (int i = range.Start; i < (range.Start + range.Count); i += 3)
+                        for (var f = 0; f < 29; f++)
                         {
-                            mesh.Vertices.Add(new Vector3D(editorRoomVertices[i].Position.X,
-                                                           editorRoomVertices[i].Position.Y,
-                                                           editorRoomVertices[i].Position.Z));
-                            mesh.VertexColorChannels[0].Add(new Color4D(editorRoomVertices[i].FaceColor.X,
-                                                                        editorRoomVertices[i].FaceColor.Y,
-                                                                        editorRoomVertices[i].FaceColor.Z));
-                            mesh.TextureCoordinateChannels[0].Add(new Vector3D(editorRoomVertices[i].UV.X / 2048.0f,
-                                                                               editorRoomVertices[i].UV.Y / 2048.0f,
-                                                                               0.0f));
-                            mesh.Faces.Add(new Face(new int[] { i, i + 1, i + 2 }));
+                            if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
+                                !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
+                            {
+                                var vertexRange = room.GetFaceVertexRange(x, z, (BlockFace)f);
+                                var v1 = vertexRange.Start + 1;
+                                var v2 = vertexRange.Start + 2;
+                                var v3 = vertexRange.Start + 3;
+                                var v4 = vertexRange.Start + 4;
+                                var v5 = vertexRange.Start + 5;
+                                var v6 = vertexRange.Start + 6;
+
+                                if (vertexRange.Count == 3)
+                                {
+                                    writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3);
+                                }
+                                else
+                                {
+                                    writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3);
+                                    writer.WriteLine("f " + v4 + "/" + v4 + " " + v5 + "/" + v5 + " " + v6 + "/" + v6);
+                                }
+                            }
                         }
                     }
+                }
+            }
 
-            atlas.Save(File.OpenWrite(_fileName + ".png"), ImageFileType.Png);
+            using (var writer = new StreamWriter(File.OpenWrite(material)))
+            {
+                writer.WriteLine("# Exported by Tomb Editor");
+                writer.WriteLine("newmtl Room");
+                writer.WriteLine("Ka " + (room.AmbientLight.X / 2.0f).ToString(CultureInfo.InvariantCulture) + " " +
+                                         (room.AmbientLight.Y / 2.0f).ToString(CultureInfo.InvariantCulture) + " " +
+                                         (room.AmbientLight.Z / 2.0f).ToString(CultureInfo.InvariantCulture));
+                writer.WriteLine("Ni 1.000000");
+                writer.WriteLine("d 1.000000");
+                writer.WriteLine("illum 2");
+                writer.WriteLine("map_Kd " + _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.Textures[0].Path));
+            }
 
-            var material = new Material();
-            material.TextureDiffuse = new TextureSlot(_fileName + ".png", TextureType.Diffuse, 0, TextureMapping.FromUV, 0,
-                                                      1.0f, TextureOperation.Add, TextureWrapMode.Clamp, TextureWrapMode.Clamp, 0);
-            scene.Materials.Add(material);
-            mesh.MaterialIndex = 0;
-
-            scene.Meshes.Add(mesh);
-            context.ExportFile(scene, _fileName, "obj", PostProcessSteps.Triangulate |
-                                                        PostProcessSteps.OptimizeMeshes |
-                                                        PostProcessSteps.GenerateSmoothNormals);
-        }*/
+            DarkMessageBox.Show(owner, "Room exported correctly to OBJ file", "Information", MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+        }
 
         public static void OpenLevel(IWin32Window owner, string fileName = null)
         {
