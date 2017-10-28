@@ -45,7 +45,7 @@ namespace TombEditor.ToolWindows
             // Update the object control selection
             if ((obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.SelectedObjectChangedEvent))
             {
-                lstObjects.SelectedItem = (_editor.SelectedObject.Room == _editor.SelectedRoom) ? _editor.SelectedObject : null;
+                lstObjects.SelectedItem = (_editor.SelectedObject?.Room == _editor.SelectedRoom) ? _editor.SelectedObject : null;
             }
         }
 
@@ -72,6 +72,13 @@ namespace TombEditor.ToolWindows
             var instance = lstObjects.SelectedItem as ObjectInstance;
             if (instance != null)
                 EditorActions.DeleteObject(instance);
+        }
+
+        private void butEditObject_Click(object sender, EventArgs e)
+        {
+            var instance = lstObjects.SelectedItem as ObjectInstance;
+            if (instance != null)
+                EditorActions.EditObject(instance, this);
         }
     }
 }

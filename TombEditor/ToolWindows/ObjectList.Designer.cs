@@ -17,6 +17,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelTriggerTools = new System.Windows.Forms.Panel();
+            this.butEditObject = new DarkUI.Controls.DarkButton();
             this.butDeleteObject = new DarkUI.Controls.DarkButton();
             this.panelTriggerList = new System.Windows.Forms.Panel();
             this.lstObjects = new DarkUI.Controls.DarkListBox(this.components);
@@ -27,6 +28,7 @@
             // 
             // panelTriggerTools
             // 
+            this.panelTriggerTools.Controls.Add(this.butEditObject);
             this.panelTriggerTools.Controls.Add(this.butDeleteObject);
             this.panelTriggerTools.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelTriggerTools.Location = new System.Drawing.Point(0, 143);
@@ -34,14 +36,24 @@
             this.panelTriggerTools.Size = new System.Drawing.Size(284, 31);
             this.panelTriggerTools.TabIndex = 57;
             // 
+            // butEditObject
+            // 
+            this.butEditObject.Image = global::TombEditor.Properties.Resources.edit_16;
+            this.butEditObject.Location = new System.Drawing.Point(33, 3);
+            this.butEditObject.Name = "butEditObject";
+            this.butEditObject.Size = new System.Drawing.Size(24, 24);
+            this.butEditObject.TabIndex = 5;
+            this.toolTip.SetToolTip(this.butEditObject, "Edit selected object");
+            this.butEditObject.Click += new System.EventHandler(this.butEditObject_Click);
+            // 
             // butDeleteObject
             // 
             this.butDeleteObject.Image = global::TombEditor.Properties.Resources.trash_16;
-            this.butDeleteObject.Location = new System.Drawing.Point(3, 4);
+            this.butDeleteObject.Location = new System.Drawing.Point(63, 3);
             this.butDeleteObject.Name = "butDeleteObject";
             this.butDeleteObject.Size = new System.Drawing.Size(24, 24);
-            this.butDeleteObject.TabIndex = 3;
-            this.toolTip.SetToolTip(this.butDeleteObject, "Delete trigger");
+            this.butDeleteObject.TabIndex = 6;
+            this.toolTip.SetToolTip(this.butDeleteObject, "Delete selected object");
             this.butDeleteObject.Click += new System.EventHandler(this.butDeleteObject_Click);
             // 
             // panelTriggerList
@@ -98,9 +110,10 @@
 
         #endregion
         private System.Windows.Forms.Panel panelTriggerTools;
-        private DarkUI.Controls.DarkButton butDeleteObject;
         private System.Windows.Forms.Panel panelTriggerList;
         private DarkUI.Controls.DarkListBox lstObjects;
         private System.Windows.Forms.ToolTip toolTip;
+        private DarkUI.Controls.DarkButton butEditObject;
+        private DarkUI.Controls.DarkButton butDeleteObject;
     }
 }
