@@ -26,6 +26,7 @@ namespace TombEditor
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.animationSetSetupGroup = new DarkUI.Controls.DarkGroupBox();
+            this.tooManyFramesWarning = new DarkUI.Controls.DarkLabel();
             this.previewProgressBar = new DarkUI.Controls.DarkProgressBar();
             this.texturesDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.texturesDataGridViewColumnImage = new System.Windows.Forms.DataGridViewImageColumn();
@@ -42,7 +43,6 @@ namespace TombEditor
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.texturesDataGridViewControls = new TombEditor.Controls.DarkDataGridViewControls();
             this.butOk = new DarkUI.Controls.DarkButton();
-            this.tooManyFramesWarning = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -222,6 +222,20 @@ namespace TombEditor
             this.animationSetSetupGroup.TabStop = false;
             this.animationSetSetupGroup.Text = "Animation set setup";
             // 
+            // tooManyFramesWarning
+            // 
+            this.tooManyFramesWarning.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tooManyFramesWarning.BackColor = System.Drawing.Color.Firebrick;
+            this.tooManyFramesWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tooManyFramesWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tooManyFramesWarning.Location = new System.Drawing.Point(279, 96);
+            this.tooManyFramesWarning.Name = "tooManyFramesWarning";
+            this.tooManyFramesWarning.Size = new System.Drawing.Size(101, 223);
+            this.tooManyFramesWarning.TabIndex = 9;
+            this.tooManyFramesWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.tooManyFramesWarning.Visible = false;
+            // 
             // previewProgressBar
             // 
             this.previewProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -359,6 +373,9 @@ namespace TombEditor
             // 
             // darkLabel5
             // 
+            this.darkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel5.Location = new System.Drawing.Point(3, 10);
             this.darkLabel5.Name = "darkLabel5";
@@ -389,21 +406,6 @@ namespace TombEditor
             this.butOk.Text = "Ok";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // tooManyFramesWarning
-            // 
-            this.tooManyFramesWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tooManyFramesWarning.BackColor = System.Drawing.Color.Firebrick;
-            this.tooManyFramesWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tooManyFramesWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tooManyFramesWarning.Location = new System.Drawing.Point(279, 96);
-            this.tooManyFramesWarning.Name = "tooManyFramesWarning";
-            this.tooManyFramesWarning.Size = new System.Drawing.Size(101, 223);
-            this.tooManyFramesWarning.TabIndex = 9;
-            this.tooManyFramesWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.tooManyFramesWarning.Visible = false;
             // 
             // FormAnimatedTextures
             // 
