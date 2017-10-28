@@ -99,16 +99,6 @@ namespace TombEditor.ToolWindows
                 butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
                 butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
                 butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
-
-                toolFill.Visible = mode == EditorMode.FaceEdit;
-                toolEraser.Visible = mode == EditorMode.FaceEdit;
-                toolInvisibility.Visible = mode == EditorMode.FaceEdit;
-                toolFlatten.Visible = mode == EditorMode.Geometry;
-                toolShovel.Visible = mode == EditorMode.Geometry;
-                secondaryToolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
-                secondaryToolStrip.AutoSize = true;
-
-                SwitchTool(mode == EditorMode.FaceEdit ? EditorTool.Brush : EditorTool.Selection);
             }
 
             // Update flipmap toolbar button
@@ -142,21 +132,6 @@ namespace TombEditor.ToolWindows
             }
         }
 
-        private void SwitchTool(EditorTool tool = EditorTool.Selection)
-        {
-            toolSelection.Checked = tool == EditorTool.Selection;
-            toolBrush.Checked = tool == EditorTool.Brush;
-            toolPencil.Checked = tool == EditorTool.Pencil;
-            toolFill.Checked = tool == EditorTool.Fill;
-            toolShovel.Checked = tool == EditorTool.Shovel;
-            toolFlatten.Checked = tool == EditorTool.Flatten;
-            toolSmooth.Checked = tool == EditorTool.Smooth;
-            toolEraser.Checked = tool == EditorTool.Eraser;
-            toolInvisibility.Checked = tool == EditorTool.Invisibility;
-
-            EditorActions.SwitchTool(tool);
-        }
-
         private void but3D_Click(object sender, EventArgs e)
         {
             EditorActions.SwitchMode(EditorMode.Geometry);
@@ -180,13 +155,6 @@ namespace TombEditor.ToolWindows
         private void butCenterCamera_Click(object sender, EventArgs e)
         {
             _editor.ResetCamera();
-        }
-
-        private void butDrawPortals_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawPortals = !panel3D.DrawPortals;
-            butDrawPortals.Checked = panel3D.DrawPortals;
-            panel3D.Invalidate();
         }
 
         private void butOpacityNone_Click(object sender, EventArgs e)
@@ -233,10 +201,6 @@ namespace TombEditor.ToolWindows
             _editor.SelectedTexture = selectedTexture;
         }
 
-        private void butInvisible_Click(object sender, EventArgs e)
-        {
-        }
-
         private void butAddCamera_Click(object sender, EventArgs e)
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceCamera };
@@ -265,20 +229,6 @@ namespace TombEditor.ToolWindows
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
         {
             EditorActions.BuildLevelAndPlay();
-        }
-
-        private void butDrawHorizon_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawHorizon = !panel3D.DrawHorizon;
-            butDrawHorizon.Checked = panel3D.DrawHorizon;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawRoomNames_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawRoomNames = !panel3D.DrawRoomNames;
-            butDrawRoomNames.Checked = panel3D.DrawRoomNames;
-            panel3D.Invalidate();
         }
 
         private void butFlipMap_Click(object sender, EventArgs e)
@@ -315,93 +265,6 @@ namespace TombEditor.ToolWindows
         private void butAddImportedGeometry_Click(object sender, EventArgs e)
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
-        }
-
-        private void butDrawIllegalSlopes_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawIllegalSlopes = !panel3D.DrawIllegalSlopes;
-            butDrawIllegalSlopes.Checked = panel3D.DrawIllegalSlopes;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawMoveables_Click(object sender, EventArgs e)
-        {
-            panel3D.ShowMoveables = !panel3D.ShowMoveables;
-            butDrawMoveables.Checked = panel3D.ShowMoveables;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawStatics_Click(object sender, EventArgs e)
-        {
-            panel3D.ShowStatics = !panel3D.ShowStatics;
-            butDrawStatics.Checked = panel3D.ShowStatics;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawImportedGeometry_Click(object sender, EventArgs e)
-        {
-            panel3D.ShowImportedGeometry = !panel3D.ShowImportedGeometry;
-            butDrawImportedGeometry.Checked = panel3D.ShowImportedGeometry;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawLightMeshes_Click(object sender, EventArgs e)
-        {
-            panel3D.ShowLightMeshes = !panel3D.ShowLightMeshes;
-            butDrawLightMeshes.Checked = panel3D.ShowLightMeshes;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawOther_Click(object sender, EventArgs e)
-        {
-            panel3D.ShowOtherObjects = !panel3D.ShowOtherObjects;
-            butDrawOther.Checked = panel3D.ShowOtherObjects;
-            panel3D.Invalidate();
-        }
-
-        private void toolSelection_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Selection);
-        }
-
-        private void toolBrush_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Brush);
-        }
-
-        private void toolPencil_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Pencil);
-        }
-
-        private void toolShovel_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Shovel);
-        }
-
-        private void toolFlatten_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Flatten);
-        }
-
-        private void toolFill_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Fill);
-        }
-
-        private void toolInvisibility_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Invisibility);
-        }
-
-        private void toolEraser_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Eraser);
-        }
-
-        private void toolSmooth_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Smooth);
         }
     }
 }

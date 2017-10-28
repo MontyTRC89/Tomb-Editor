@@ -73,7 +73,7 @@ namespace DarkUI.Renderers
             {
                 var castItem = (ToolStripButton)e.Item;
 
-                if (castItem.Checked)
+                if (castItem.Checked && e.ToolStrip.Enabled)
                 {
                     using (var b = new SolidBrush(Colors.MenuItemToggledOnFill))
                     {

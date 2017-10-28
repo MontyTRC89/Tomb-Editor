@@ -382,4 +382,10 @@
   <data name="subtoolbar_icons8_invisible_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-invisible copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="grip_horizontal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\grip_horizontal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="grip_vertical" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\grip_vertical.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

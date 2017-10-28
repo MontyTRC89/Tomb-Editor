@@ -137,6 +137,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DepthBar.cs" />
+    <Compile Include="Controls\FloatingToolbox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FloatingToolbox.Designer.cs">
+      <DependentUpon>FloatingToolbox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ImportedGeometryManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -149,6 +155,18 @@
     </Compile>
     <Compile Include="Controls\PanelAnimatedTextures.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\PanelRendering3D_Toolbox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PanelRendering3D_Toolbox.Designer.cs">
+      <DependentUpon>PanelRendering3D_Toolbox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PanelRendering3D_ViewOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PanelRendering3D_ViewOptions.Designer.cs">
+      <DependentUpon>PanelRendering3D_ViewOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
@@ -356,6 +374,12 @@
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PanelRendering3D_Toolbox.resx">
+      <DependentUpon>PanelRendering3D_Toolbox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PanelRendering3D_ViewOptions.resx">
+      <DependentUpon>PanelRendering3D_ViewOptions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
@@ -468,6 +492,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\grip_vertical.png" />
+    <None Include="Resources\grip_horizontal.png" />
     <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-invisible copy.png" />
     <None Include="Resources\3dview_subtoolbar_icons\subtoolbar_icons8-blur copy.png" />
     <None Include="Resources\preview_subtoolbar_icons\subtoolbar_icons8-Obelisk-48 copy.png" />

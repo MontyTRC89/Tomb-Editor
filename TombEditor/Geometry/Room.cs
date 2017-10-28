@@ -446,8 +446,8 @@ namespace TombEditor.Geometry
                         heightsToCompare[1] = 1;
                         heightsToCheck[0] = 3;
                         heightsToCheck[1] = 2;
-                        heightsToCheck[2] = 1;
-                        heightsToCheck[3] = 0;
+                        heightsToCheck[2] = 0;
+                        heightsToCheck[3] = 1;
                         break;
 
                     case EditorArrowType.EdgeE:
@@ -456,8 +456,8 @@ namespace TombEditor.Geometry
                         heightsToCompare[1] = 2;
                         heightsToCheck[0] = 0;
                         heightsToCheck[1] = 3;
-                        heightsToCheck[2] = 2;
-                        heightsToCheck[3] = 1;
+                        heightsToCheck[2] = 1;
+                        heightsToCheck[3] = 2;
                         break;
 
                     case EditorArrowType.EdgeS:
@@ -466,8 +466,8 @@ namespace TombEditor.Geometry
                         heightsToCompare[1] = 3;
                         heightsToCheck[0] = 1;
                         heightsToCheck[1] = 0;
-                        heightsToCheck[2] = 3;
-                        heightsToCheck[3] = 2;
+                        heightsToCheck[2] = 2;
+                        heightsToCheck[3] = 3;
                         break;
 
                     case EditorArrowType.EdgeW:
@@ -476,8 +476,8 @@ namespace TombEditor.Geometry
                         heightsToCompare[1] = 0;
                         heightsToCheck[0] = 2;
                         heightsToCheck[1] = 1;
-                        heightsToCheck[2] = 0;
-                        heightsToCheck[3] = 3;
+                        heightsToCheck[2] = 3;
+                        heightsToCheck[3] = 0;
                         break;
                 }
                 
@@ -574,8 +574,8 @@ namespace TombEditor.Geometry
                         lookupBlock.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] > lowestPassableStep)
                         slopeIsIllegal = true;
                     else if (heightsToCheck[0] != heightsToCheck[1]) // Only look for opposite slope cases in case there's no diagonal step in lookup block.
-                        if (lookupBlock.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] <= lowestPassableStep && lookupBlock.QAFaces[heightsToCheck[2]] - lookupBlock.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight ||
-                            lookupBlock.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] <= lowestPassableStep && lookupBlock.QAFaces[heightsToCheck[3]] - lookupBlock.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight)
+                        if ((lookupBlock.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] <= lowestPassableStep) && (lookupBlock.QAFaces[heightsToCheck[2]] - lookupBlock.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight) ||
+                            (lookupBlock.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] <= lowestPassableStep) && (lookupBlock.QAFaces[heightsToCheck[3]] - lookupBlock.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight))
                             slopeIsIllegal = true;
                 }
 

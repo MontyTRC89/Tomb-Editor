@@ -170,6 +170,10 @@ namespace TombEditor.Controls
         private bool[,] _toolActionGrid = new bool[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
         private Block _toolReferenceBlock;
 
+        // Toolboxes
+        private PanelRendering3D_Toolbox _toolbox;
+        private PanelRendering3D_ViewOptions _options;
+
         // Rooms to draw
         private List<Room> _roomsToDraw;
 
@@ -222,6 +226,8 @@ namespace TombEditor.Controls
             _littleCube?.Dispose();
             _littleSphere?.Dispose();
             _movementTimer?.Dispose();
+            _toolbox.Dispose();
+            _options.Dispose();
             base.Dispose(disposing);
         }
 
@@ -380,6 +386,11 @@ namespace TombEditor.Controls
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
             _gizmo = new Gizmo(deviceManager.Device, deviceManager.Effects["Solid"]);
             _movementTimer = new MovementTimer(MoveTimerTick);
+
+            _toolbox = new PanelRendering3D_Toolbox(this, _editor.Configuration.Rendering3D_ToolboxPosition);
+            _options = new PanelRendering3D_ViewOptions(this, _editor.Configuration.Rendering3D_ViewOptionsPosition);
+            this.Controls.Add(_toolbox);
+            this.Controls.Add(_options);
 
             ResetCamera();
 
@@ -863,7 +874,7 @@ namespace TombEditor.Controls
                             };
                         }
                     }
-                    else if(_editor.Mode == EditorMode.Geometry && ModifierKeys == Keys.None)
+                    else if(_editor.Mode == EditorMode.Geometry && ModifierKeys == Keys.None && _toolEngaged)
                     {
                         PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
 
@@ -967,6 +978,8 @@ namespace TombEditor.Controls
 
             if (e.Data.GetDataPresent(typeof(ItemType)))
                 e.Effect = DragDropEffects.Copy;
+            else if (e.Data.GetDataPresent(typeof(FloatingToolbox.FloatingToolboxContainer)))
+                e.Effect = DragDropEffects.Move;
             else if (EditorActions.DragDropFileSupported(e, true))
                 e.Effect = DragDropEffects.Move;
             else
@@ -976,6 +989,13 @@ namespace TombEditor.Controls
         protected override void OnDragDrop(DragEventArgs e)
         {
             base.OnDragDrop(e);
+
+            // Drop any pending floating toolboxes
+            if (e.Data.GetDataPresent(typeof(FloatingToolbox.FloatingToolboxContainer)))
+            {
+                FloatingToolbox.FloatingToolboxContainer droppedToolbox = (FloatingToolbox.FloatingToolboxContainer)(e.Data.GetData(typeof(FloatingToolbox.FloatingToolboxContainer)));
+                droppedToolbox.Toolbox.DragStop();
+            }
 
             // Check if we are done with all common file tasks
             var filesToProcess = EditorActions.DragDropCommonFiles(e, FindForm());
