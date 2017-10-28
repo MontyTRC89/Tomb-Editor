@@ -267,6 +267,7 @@ namespace TombEditor.Geometry.IO
                                         (red + (red == 0 ? 0.0f : 0.875f)) / 16.0f,
                                         (green + (green == 0 ? 0.0f : 0.875f)) / 16.0f,
                                         (blue + (blue == 0 ? 0.0f : 0.875f)) / 16.0f, 1.0f);
+                                    color -= new Vector4(new Vector3(1.0f / 32.0f), 0.0f); // Adjust for different rounding in TE *.tr4 output
 
                                     if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
                                     {
@@ -428,7 +429,8 @@ namespace TombEditor.Geometry.IO
                             }
                         }
 
-                        room.AmbientLight = new Vector4(reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, 1.0f);
+                        room.AmbientLight = new Vector4(reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, 1.0f) -
+                            new Vector4(new Vector3(1.0f / 32.0f), 0.0f); // Adjust for different rounding in TE *.tr4 output
                         reader.ReadByte();
 
                         short numObjects2 = reader.ReadInt16();
