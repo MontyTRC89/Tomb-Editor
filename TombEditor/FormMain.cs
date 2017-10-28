@@ -29,6 +29,7 @@ namespace TombEditor
         private ToolWindows.Lighting Lighting = new ToolWindows.Lighting();
         private ToolWindows.Palette Palette = new ToolWindows.Palette();
         private ToolWindows.TexturePanel TexturePanel = new ToolWindows.TexturePanel();
+        private ToolWindows.ObjectList ObjectList = new ToolWindows.ObjectList();
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -102,6 +103,8 @@ namespace TombEditor
                     return SectorOptions;
                 case "TexturePanel":
                     return TexturePanel;
+                case "ObjectList":
+                    return ObjectList;
                 default:
                     logger.Warn("Unknown tool window '" + key + "' in configuration.");
                     return null;
@@ -919,6 +922,11 @@ namespace TombEditor
         private void texturePanelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToolWindow_Toggle(TexturePanel);
+        }
+
+        private void objectListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(ObjectList);
         }
 
         private void ToolWindow_Toggle(DarkToolWindow toolWindow)

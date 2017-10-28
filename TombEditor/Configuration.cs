@@ -130,7 +130,7 @@ namespace TombEditor
                         },
                         new DockGroupState
                         {
-                            Contents = new List<string> { "TriggerList" },
+                            Contents = new List<string> { "TriggerList", "ObjectList" },
                             VisibleContent = "TriggerList",
                             Order = 3,
                             Size = new Size(284,174)
