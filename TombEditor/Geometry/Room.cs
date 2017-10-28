@@ -1023,7 +1023,7 @@ namespace TombEditor.Geometry
             }
             else if (Block.IsQuad(h0, h1, h2, h3) && (portalMode == RoomConnectionType.NoPortal))
             {
-                AddRectangle(x, z, face1,
+                AddQuad(x, z, face1,
                     new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
                     new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
                     new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
@@ -2170,7 +2170,7 @@ namespace TombEditor.Geometry
                 if (qA <= cA && qB <= cB)
                 {
                     if (qA > yA && qB > yB)
-                        AddRectangle(x, z, qaFace,
+                        AddQuad(x, z, qaFace,
                             new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
@@ -2199,7 +2199,7 @@ namespace TombEditor.Geometry
                     face = Blocks[x, z].GetFaceTexture(edFace);
 
                     if (eA > yA && eB > yB)
-                        AddRectangle(x, z, edFace,
+                        AddQuad(x, z, edFace,
                             new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
@@ -2244,7 +2244,7 @@ namespace TombEditor.Geometry
                     if (wA >= fA && wB >= fB)
                     {
                         if (wA < yA && wB < yB)
-                            AddRectangle(x, z, wsFace,
+                            AddQuad(x, z, wsFace,
                                 new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                                 new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                                 new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
@@ -2273,7 +2273,7 @@ namespace TombEditor.Geometry
                         face = Blocks[x, z].GetFaceTexture(rfFace);
 
                         if (rA < yA && rB < yB)
-                            AddRectangle(x, z, rfFace,
+                            AddQuad(x, z, rfFace,
                                 new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                                 new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                                 new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
@@ -2306,7 +2306,7 @@ namespace TombEditor.Geometry
             int yC = qB < fB ? fB : qB;
             // middle
             if (yA != yD && yB != yC)
-                AddRectangle(x, z, middleFace,
+                AddQuad(x, z, middleFace,
                     new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                     new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                     new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
@@ -2340,7 +2340,7 @@ namespace TombEditor.Geometry
             return null;
         }
 
-        private void AddRectangle(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
+        private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
         {
             var sectorVertices = _sectorVertices[x, z];
             int sectorVerticesStart = sectorVertices.Count;
