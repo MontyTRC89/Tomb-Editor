@@ -55,93 +55,39 @@ namespace TombEditor
             cbBit5.Checked = (_trigger.CodeBits & (1 << 4)) != 0;
             cbOneShot.Checked = _trigger.OneShot;
             tbTimer.Text = _trigger.Timer.ToString();
+            if (TriggerInstance.UsesTargetObj(_trigger.TargetType))
+                comboParameter.SelectedItem = _trigger.TargetObj;
+            else
+                tbParameter.Text = _trigger.TargetData.ToString();
+
         }
 
         private void comboTargetType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TriggerTargetType triggerTargetType = (TriggerTargetType)comboTargetType.SelectedItem;
+            var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
+            bool usesObject = TriggerInstance.UsesTargetObj(targetType);
 
-            switch (triggerTargetType)
+            tbParameter.Visible = !usesObject;
+            comboParameter.Visible = usesObject;
+
+            switch (targetType)
             {
                 case TriggerTargetType.Object:
-                    tbParameter.Visible = false;
-                    comboParameter.Visible = true;
                     FindAndAddObjects<MoveableInstance>();
                     break;
-
                 case TriggerTargetType.Camera:
-                    tbParameter.Visible = false;
-                    comboParameter.Visible = true;
                     FindAndAddObjects<CameraInstance>();
                     break;
-
                 case TriggerTargetType.Sink:
-                    tbParameter.Visible = false;
-                    comboParameter.Visible = true;
                     FindAndAddObjects<SinkInstance>();
                     break;
-
-                case TriggerTargetType.FlipEffect:
-                    tbParameter.Visible = true;
-                    comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.TargetData.ToString();
-                    break;
-
-                case TriggerTargetType.FlipOn:
-                    tbParameter.Visible = true;
-                    comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.TargetData.ToString();
-                    break;
-
-                case TriggerTargetType.FlipOff:
-                    tbParameter.Visible = true;
-                    comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.TargetData.ToString();
-                    break;
-
                 case TriggerTargetType.Target:
-                    tbParameter.Visible = false;
-                    comboParameter.Visible = true;
-
                     // Actually it is possible to not only target Target objects, but all movables.
                     // This is also useful: It makes sense to target egg a trap or an enemy.
                     FindAndAddObjects<MoveableInstance>();
                     break;
-
-                case TriggerTargetType.FlipMap:
-                    tbParameter.Visible = true;
-                    comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.TargetData.ToString();
-                    break;
-
-                case TriggerTargetType.FinishLevel:
-                    tbParameter.Visible = true;
-                    comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.TargetData.ToString();
-                    break;
-
-                case TriggerTargetType.Secret:
-                    tbParameter.Visible = true;
-                    comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.TargetData.ToString();
-                    break;
-
-                case TriggerTargetType.PlayAudio:
-                    tbParameter.Visible = true;
-                    comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.TargetData.ToString();
-                    break;
-
                 case TriggerTargetType.FlyByCamera:
-                    tbParameter.Visible = false;
-                    comboParameter.Visible = true;
                     FindAndAddObjects<FlybyCameraInstance>();
-                    break;
-
-                case TriggerTargetType.FmvNg:
-                    tbParameter.Visible = true;
-                    comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.TargetData.ToString();
                     break;
             }
         }
@@ -190,9 +136,7 @@ namespace TombEditor
             _trigger.CodeBits = codeBits;
             _trigger.OneShot = cbOneShot.Checked;
 
-            if (_trigger.TargetType == TriggerTargetType.Object || _trigger.TargetType == TriggerTargetType.Camera ||
-                _trigger.TargetType == TriggerTargetType.Target || _trigger.TargetType == TriggerTargetType.FlyByCamera ||
-                _trigger.TargetType == TriggerTargetType.Sink)
+            if (TriggerInstance.UsesTargetObj(_trigger.TargetType))
             {
                 var selectedObject = comboParameter.SelectedItem as ObjectInstance;
                 if (selectedObject == null)
