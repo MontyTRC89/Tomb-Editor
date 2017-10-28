@@ -508,17 +508,17 @@ namespace TombEditor
 
         private void textureFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void textureCeilingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void textureWallsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void importConvertTextureToPng_Click(object sender, EventArgs e)

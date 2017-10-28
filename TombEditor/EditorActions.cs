@@ -927,42 +927,52 @@ namespace TombEditor
             _editor.RoomTextureChange(room);
         }
 
-        public static void TexturizeAllFloor(Room room, TextureArea texture)
+        public static void TexturizeAll(Room room, Rectangle area, TextureArea texture, BlockFaceType type)
         {
-            for (int x = 0; x < room.NumXSectors - 1; x++)
-                for (int z = 0; z < room.NumZSectors - 1; z++)
+            if (area.Width == 0 && area.Height == 0)
+                area = new Rectangle(0, 0, room.NumXSectors - 1, room.NumZSectors - 1);
+
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.Floor, texture);
-                    ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.FloorTriangle2, texture);
+                    switch (type)
+                    {
+                        case BlockFaceType.Floor:
+                            ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.Floor, texture);
+                            ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.FloorTriangle2, texture);
+                            break;
+
+                        case BlockFaceType.Ceiling:
+                            ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.Ceiling, texture);
+                            ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.CeilingTriangle2, texture);
+                            break;
+
+                        case BlockFaceType.Wall:
+                            for (BlockFace face = BlockFace.PositiveZ_QA; face <= BlockFace.DiagonalRF; face++)
+                                if (room.IsFaceDefined(x, z, face))
+                                    ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), face, texture);
+                            break;
+                    }
+
                 }
 
             room.UpdateCompletely();
             _editor.RoomTextureChange(room);
         }
 
-        public static void TexturizeAllCeiling(Room room, TextureArea texture)
+        public static void TexturizeAllFloor(Room room, Rectangle area, TextureArea texture)
         {
-            for (int x = 0; x < room.NumXSectors - 1; x++)
-                for (int z = 0; z < room.NumZSectors - 1; z++)
-                {
-                    ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.Ceiling, texture);
-                    ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.CeilingTriangle2, texture);
-                }
-
-            room.UpdateCompletely();
-            _editor.RoomTextureChange(room);
+            TexturizeAll(room, area, texture, BlockFaceType.Floor);
         }
 
-        public static void TexturizeAllWalls(Room room, TextureArea texture)
+        public static void TexturizeAllCeiling(Room room, Rectangle area, TextureArea texture)
         {
-            for (int x = 0; x < room.NumXSectors; x++)
-                for (int z = 0; z < room.NumZSectors; z++)
-                    for (BlockFace face = BlockFace.PositiveZ_QA; face <= BlockFace.DiagonalRF; face++)
-                        if (room.IsFaceDefined(x, z, face))
-                            ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), face, texture);
+            TexturizeAll(room, area, texture, BlockFaceType.Ceiling);
+        }
 
-            room.UpdateCompletely();
-            _editor.RoomTextureChange(room);
+        public static void TexturizeAllWalls(Room room, Rectangle area, TextureArea texture)
+        {
+            TexturizeAll(room, area, texture, BlockFaceType.Wall);
         }
 
         public static void PlaceObject(Room room, DrawingPoint pos, PositionBasedObjectInstance instance)
@@ -2159,6 +2169,9 @@ namespace TombEditor
         {
             _editor.Mode = mode;
             _editor.Action = EditorAction.None;
+
+            if(_editor.Configuration.Editor_DiscardSelectionOnModeSwitch)
+                _editor.SelectedSectors = SectorSelection.None;
         }
     }
 }

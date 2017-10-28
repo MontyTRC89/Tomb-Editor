@@ -530,22 +530,27 @@ namespace TombEditor.Controls
                 // Do picking on the scene
                 PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
 
-                // Move camera to selected sector
                 if ((newPicking is PickingResultBlock) && (_editor.Action.RelocateCameraActive))
                 {
+                    // Move camera to selected sector
                     _editor.MoveCameraToSector(((PickingResultBlock)newPicking).Pos);
                     return;
                 }
                 else if (newPicking is PickingResultObject)
                 {
+                    // Select new object
                     _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
                 }
-
-                // Set gizmo axis (or none if another object was picked)
-                if (newPicking is PickingResultGizmo)
+                else if (newPicking is PickingResultGizmo)
                 {
+                    // Set gizmo axis
                     _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
-                    return;
+                }
+                else if(newPicking == null)
+                {
+                    // Nothing picked, reset selection
+                    _editor.SelectedSectors = SectorSelection.None;
+                    _editor.SelectedObject = null;
                 }
 
                 // Process editor actions
@@ -679,7 +684,7 @@ namespace TombEditor.Controls
                                 break;
 
                             case EditorMode.FaceEdit:
-
+                            
                                 // Do texturing
                                 if (newPicking is PickingResultBlock)
                                 {
@@ -690,8 +695,15 @@ namespace TombEditor.Controls
                                         EditorActions.RotateTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
                                     else if (ModifierKeys == Keys.Alt)
                                         EditorActions.PickTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
+                                    else if (ModifierKeys == (Keys.Control | Keys.Shift))
+                                    {
+                                        // Select rectangle
+                                        _editor.SelectedSectors = new SectorSelection { Start = newBlockPicking.Pos, End = newBlockPicking.Pos };
+                                        _doSectorSelection = true;
+                                    }
                                     else
-                                        EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face, _editor.SelectedTexture);
+                                        if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newBlockPicking.Pos) || _editor.SelectedSectors == SectorSelection.None))
+                                            EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face, _editor.SelectedTexture);
                                 }
                                 break;
                         }
@@ -778,7 +790,10 @@ namespace TombEditor.Controls
                         PickingResultBlock newPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
 
                         if (newPicking != null)
-                            EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
+                        {
+                            if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newPicking.Pos) || _editor.SelectedSectors == SectorSelection.None))
+                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
+                        }
                     }
                     break;
             }

@@ -67,6 +67,16 @@ namespace TombEditor.ToolWindows
                 butCopy.Enabled = selectedObject is PositionBasedObjectInstance;
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
             }
+
+            if (obj is Editor.SelectedSectorsChangedEvent)
+            {
+                //bool validSectorSelection = _editor.SelectedSectors.Valid;
+
+                //butTextureFloor.Enabled = validSectorSelection;
+                //butTextureCeiling.Enabled = validSectorSelection;
+                //butTextureWalls.Enabled = validSectorSelection;
+            }
+
             if (obj is Editor.ModeChangedEvent)
             {
                 EditorMode mode = ((Editor.ModeChangedEvent)obj).Current;
@@ -84,6 +94,10 @@ namespace TombEditor.ToolWindows
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
                 panel3D.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry) || (mode == EditorMode.Lighting);
+
+                butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
+                butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
+                butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
             }
 
             // Update flipmap toolbar button
@@ -167,17 +181,17 @@ namespace TombEditor.ToolWindows
 
         private void butTextureFloor_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void butTextureCeiling_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void butTextureWalls_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void butAdditiveBlending_Click(object sender, EventArgs e)
