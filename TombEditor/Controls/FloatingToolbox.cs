@@ -17,18 +17,6 @@ namespace TombEditor.Controls
     [ToolboxItem(false)]
     public partial class FloatingToolbox : UserControl
     {
-        [Category("Appearance")]
-        [Description("Makes toolbox drop shadow.")]
-        public bool DropShadow
-        {
-            get { return _dropShadow; }
-            set
-            {
-                _dropShadow = value;
-            }
-        }
-        private bool _dropShadow = true;
-
         [Category("Layout")]
         [Description("Determines snapping distance to parent control")]
         public Size SnappingMargin
@@ -145,6 +133,7 @@ namespace TombEditor.Controls
             }
 
             SetAnchors();
+            Refresh();
         }
 
         private void ClampDimensions()
@@ -197,6 +186,7 @@ namespace TombEditor.Controls
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
+            // Absorb event
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -207,9 +197,8 @@ namespace TombEditor.Controls
             using (var b = new SolidBrush(Colors.GreyBackground))
                 g.FillRectangle(b, ClientRectangle);
 
-            Image grip = Properties.Resources.grip_fill;
-
-            using (TextureBrush brush = new TextureBrush(grip, WrapMode.Tile))
+            // Draw grip
+            using (TextureBrush brush = new TextureBrush(Properties.Resources.grip_fill, WrapMode.Tile))
                 g.FillRectangle(brush, GetGripBounds());
         }
 
