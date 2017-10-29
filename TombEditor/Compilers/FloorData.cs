@@ -13,7 +13,7 @@ namespace TombEditor.Compilers
             ReportProgress(70, "Building floordata");
 
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
-            _floorData.Add(0x8000);
+            _floorData.Add(0x0000);
 
             for (var i = 0; i < _level.Rooms.Length; i++)
             {

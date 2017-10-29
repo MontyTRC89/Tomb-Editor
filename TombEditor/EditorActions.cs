@@ -2052,7 +2052,7 @@ namespace TombEditor
                 foreach (var vertex in vertices)
                     writer.WriteLine("v " + (vertex.Position.X / scale).ToString(CultureInfo.InvariantCulture) + " " +
                                             (vertex.Position.Y / scale).ToString(CultureInfo.InvariantCulture) + " " +
-                                            (vertex.Position.Z / scale).ToString(CultureInfo.InvariantCulture));
+                                            (-vertex.Position.Z / scale).ToString(CultureInfo.InvariantCulture));
 
                 // Save UVs
                 foreach (var vertex in vertices)
