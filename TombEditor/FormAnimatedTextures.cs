@@ -59,16 +59,16 @@ namespace TombEditor
             texturesDataGridViewControls.CreateNewRow = GetSelectedAnimatedTextureFrame;
             texturesDataGridViewColumnTexture.DataSource = new BindingList<LevelTexture>(editor.Level.Settings.Textures);
 
+            // Init state
+            _editor_EditorEventRaised(new InitEvent());
+            if (comboAnimatedTextureSets.Items.Count > 0)
+                comboAnimatedTextureSets.SelectedIndex = 0;
+
             // Setup texture map
             if (_editor.SelectedTexture.TextureIsInvisble)
                 textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
             else
                 textureMap.ShowTexture(_editor.SelectedTexture);
-
-            // Init state
-            _editor_EditorEventRaised(new InitEvent());
-            if (comboAnimatedTextureSets.Items.Count > 0)
-                comboAnimatedTextureSets.SelectedIndex = 0;
         }
 
         protected override void Dispose(bool disposing)
