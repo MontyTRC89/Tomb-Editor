@@ -43,6 +43,7 @@ namespace TombEditor
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.texturesDataGridViewControls = new TombEditor.Controls.DarkDataGridViewControls();
             this.butOk = new DarkUI.Controls.DarkButton();
+            this.label1 = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -83,7 +84,7 @@ namespace TombEditor
             this.butAnimatedTextureSetDelete.Name = "butAnimatedTextureSetDelete";
             this.butAnimatedTextureSetDelete.Size = new System.Drawing.Size(129, 23);
             this.butAnimatedTextureSetDelete.TabIndex = 3;
-            this.butAnimatedTextureSetDelete.Text = "Delete anim set";
+            this.butAnimatedTextureSetDelete.Text = "Delete anim. set";
             this.butAnimatedTextureSetDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAnimatedTextureSetDelete.Click += new System.EventHandler(this.butAnimatedTextureSetDelete_Click);
             // 
@@ -95,7 +96,7 @@ namespace TombEditor
             this.butAnimatedTextureSetNew.Name = "butAnimatedTextureSetNew";
             this.butAnimatedTextureSetNew.Size = new System.Drawing.Size(129, 23);
             this.butAnimatedTextureSetNew.TabIndex = 2;
-            this.butAnimatedTextureSetNew.Text = "New anim set";
+            this.butAnimatedTextureSetNew.Text = "New anim. set";
             this.butAnimatedTextureSetNew.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAnimatedTextureSetNew.Click += new System.EventHandler(this.butAnimatedTextureSetNew_Click);
             // 
@@ -204,6 +205,7 @@ namespace TombEditor
             this.animationSetSetupGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.animationSetSetupGroup.Controls.Add(this.label1);
             this.animationSetSetupGroup.Controls.Add(this.tooManyFramesWarning);
             this.animationSetSetupGroup.Controls.Add(this.previewProgressBar);
             this.animationSetSetupGroup.Controls.Add(this.texturesDataGridView);
@@ -229,9 +231,9 @@ namespace TombEditor
             this.tooManyFramesWarning.BackColor = System.Drawing.Color.Firebrick;
             this.tooManyFramesWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tooManyFramesWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tooManyFramesWarning.Location = new System.Drawing.Point(279, 96);
+            this.tooManyFramesWarning.Location = new System.Drawing.Point(268, 112);
             this.tooManyFramesWarning.Name = "tooManyFramesWarning";
-            this.tooManyFramesWarning.Size = new System.Drawing.Size(101, 223);
+            this.tooManyFramesWarning.Size = new System.Drawing.Size(112, 209);
             this.tooManyFramesWarning.TabIndex = 9;
             this.tooManyFramesWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.tooManyFramesWarning.Visible = false;
@@ -240,6 +242,7 @@ namespace TombEditor
             // 
             this.previewProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.previewProgressBar.Location = new System.Drawing.Point(250, 522);
+            this.previewProgressBar.Maximum = 0;
             this.previewProgressBar.Name = "previewProgressBar";
             this.previewProgressBar.Size = new System.Drawing.Size(130, 16);
             this.previewProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
@@ -264,11 +267,11 @@ namespace TombEditor
             this.texturesDataGridViewColumnTexCoord1,
             this.texturesDataGridViewColumnTexCoord2,
             this.texturesDataGridViewColumnTexCoord3});
-            this.texturesDataGridView.Location = new System.Drawing.Point(6, 21);
+            this.texturesDataGridView.Location = new System.Drawing.Point(9, 36);
             this.texturesDataGridView.Name = "texturesDataGridView";
             this.texturesDataGridView.RowHeadersWidth = 41;
             this.texturesDataGridView.RowTemplate.Height = 48;
-            this.texturesDataGridView.Size = new System.Drawing.Size(267, 350);
+            this.texturesDataGridView.Size = new System.Drawing.Size(255, 335);
             this.texturesDataGridView.TabIndex = 4;
             this.texturesDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.texturesDataGridView_CellFormatting);
             this.texturesDataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.texturesDataGridView_CellParsing);
@@ -350,11 +353,11 @@ namespace TombEditor
             // butUpdate
             // 
             this.butUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butUpdate.Location = new System.Drawing.Point(279, 73);
+            this.butUpdate.Location = new System.Drawing.Point(268, 88);
             this.butUpdate.Name = "butUpdate";
-            this.butUpdate.Size = new System.Drawing.Size(101, 20);
+            this.butUpdate.Size = new System.Drawing.Size(112, 20);
             this.butUpdate.TabIndex = 2;
-            this.butUpdate.Text = "<--- Update ---|";
+            this.butUpdate.Text = "<--Update frame--|";
             this.butUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butUpdate.Click += new System.EventHandler(this.butUpdate_Click);
             // 
@@ -388,13 +391,16 @@ namespace TombEditor
             // 
             this.texturesDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.texturesDataGridViewControls.DeleteName = "Delete frame";
+            this.texturesDataGridViewControls.DownName = "Frame down";
             this.texturesDataGridViewControls.Enabled = false;
-            this.texturesDataGridViewControls.Location = new System.Drawing.Point(279, 21);
+            this.texturesDataGridViewControls.Location = new System.Drawing.Point(268, 36);
             this.texturesDataGridViewControls.MinimumSize = new System.Drawing.Size(92, 100);
             this.texturesDataGridViewControls.Name = "texturesDataGridViewControls";
-            this.texturesDataGridViewControls.NewName = "<--- New ---|";
-            this.texturesDataGridViewControls.Size = new System.Drawing.Size(101, 350);
+            this.texturesDataGridViewControls.NewName = "<--Add frame--|";
+            this.texturesDataGridViewControls.Size = new System.Drawing.Size(112, 337);
             this.texturesDataGridViewControls.TabIndex = 5;
+            this.texturesDataGridViewControls.UpName = "Frame up";
             // 
             // butOk
             // 
@@ -406,6 +412,18 @@ namespace TombEditor
             this.butOk.Text = "Ok";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.label1.Location = new System.Drawing.Point(10, 18);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(254, 15);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Fames";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // FormAnimatedTextures
             // 
@@ -464,5 +482,6 @@ namespace TombEditor
         private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord2;
         private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord3;
         private DarkLabel tooManyFramesWarning;
+        private DarkLabel label1;
     }
 }
