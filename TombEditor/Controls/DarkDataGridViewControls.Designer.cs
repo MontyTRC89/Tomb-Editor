@@ -38,48 +38,46 @@
             // 
             this.butDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDown.Location = new System.Drawing.Point(0, 78);
+            this.butDown.Location = new System.Drawing.Point(0, 90);
             this.butDown.Name = "butDown";
-            this.butDown.Padding = new System.Windows.Forms.Padding(5);
-            this.butDown.Size = new System.Drawing.Size(92, 20);
+            this.butDown.Size = new System.Drawing.Size(24, 24);
             this.butDown.TabIndex = 1;
-            this.butDown.Text = "Down";
+            this.butDown.Text = "↓";
             this.butDown.Click += new System.EventHandler(this.butDown_Click);
             // 
             // butUp
             // 
             this.butUp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.butUp.Location = new System.Drawing.Point(0, 52);
+            this.butUp.Location = new System.Drawing.Point(0, 60);
             this.butUp.Name = "butUp";
-            this.butUp.Padding = new System.Windows.Forms.Padding(5);
-            this.butUp.Size = new System.Drawing.Size(92, 20);
+            this.butUp.Size = new System.Drawing.Size(24, 24);
             this.butUp.TabIndex = 1;
-            this.butUp.Text = "Up";
+            this.butUp.Text = "↑";
             this.butUp.Click += new System.EventHandler(this.butUp_Click);
             // 
             // butNew
             // 
             this.butNew.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.butNew.Image = global::TombEditor.Properties.Resources.plus_math_16;
+            this.butNew.ImagePadding = 4;
             this.butNew.Location = new System.Drawing.Point(0, 0);
             this.butNew.Name = "butNew";
-            this.butNew.Padding = new System.Windows.Forms.Padding(5);
-            this.butNew.Size = new System.Drawing.Size(92, 20);
+            this.butNew.Size = new System.Drawing.Size(24, 24);
             this.butNew.TabIndex = 1;
-            this.butNew.Text = "New";
             this.butNew.Click += new System.EventHandler(this.butNew_Click);
             // 
             // butDelete
             // 
             this.butDelete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDelete.Location = new System.Drawing.Point(0, 26);
+            this.butDelete.Image = global::TombEditor.Properties.Resources.trash_16;
+            this.butDelete.ImagePadding = 3;
+            this.butDelete.Location = new System.Drawing.Point(0, 30);
             this.butDelete.Name = "butDelete";
-            this.butDelete.Padding = new System.Windows.Forms.Padding(5);
-            this.butDelete.Size = new System.Drawing.Size(92, 20);
+            this.butDelete.Size = new System.Drawing.Size(24, 24);
             this.butDelete.TabIndex = 1;
-            this.butDelete.Text = "Delete";
             this.butDelete.Click += new System.EventHandler(this.butDelete_Click);
             // 
             // DarkDataGridViewControls
@@ -91,9 +89,9 @@
             this.Controls.Add(this.butUp);
             this.Controls.Add(this.butDown);
             this.Enabled = false;
-            this.MinimumSize = new System.Drawing.Size(92, 100);
+            this.MinimumSize = new System.Drawing.Size(24, 24);
             this.Name = "DarkDataGridViewControls";
-            this.Size = new System.Drawing.Size(92, 100);
+            this.Size = new System.Drawing.Size(24, 114);
             this.ResumeLayout(false);
 
         }
