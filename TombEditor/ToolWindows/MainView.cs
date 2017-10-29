@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Docking;
 using TombEditor.Geometry;
+using TombEditor.Controls;
 using TombLib.Utils;
 using DarkUI.Forms;
 using SharpDX;
@@ -33,7 +34,16 @@ namespace TombEditor.ToolWindows
 
             // Update 3D view
             EditorActions.SwitchMode(EditorMode.Geometry);
-            EditorActions.SwitchTool(EditorTool.Selection);
+        }
+
+        public void AddToolbox(FloatingToolbox toolbox)
+        {
+            panel3D.Controls.Add(toolbox);
+        }
+
+        public void RemoveToolbox(FloatingToolbox toolbox)
+        {
+            panel3D.Controls.Remove(toolbox);
         }
 
         public void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
@@ -265,6 +275,62 @@ namespace TombEditor.ToolWindows
         private void butAddImportedGeometry_Click(object sender, EventArgs e)
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
+        }
+
+        private void butDrawPortals_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawPortals = !panel3D.DrawPortals;
+            butDrawPortals.Checked = panel3D.DrawPortals;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawHorizon_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawHorizon = !panel3D.DrawHorizon;
+            butDrawHorizon.Checked = panel3D.DrawHorizon;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawRoomNames_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawRoomNames = !panel3D.DrawRoomNames;
+            butDrawRoomNames.Checked = panel3D.DrawRoomNames;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawIllegalSlopes_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawIllegalSlopes = !panel3D.DrawIllegalSlopes;
+            butDrawIllegalSlopes.Checked = panel3D.DrawIllegalSlopes;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawMoveables_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowMoveables = !panel3D.ShowMoveables;
+            butDrawMoveables.Checked = panel3D.ShowMoveables;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawStatics_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowStatics = !panel3D.ShowStatics;
+            butDrawStatics.Checked = panel3D.ShowStatics;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawImportedGeometry_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowImportedGeometry = !panel3D.ShowImportedGeometry;
+            butDrawImportedGeometry.Checked = panel3D.ShowImportedGeometry;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawOther_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowOtherObjects = !panel3D.ShowOtherObjects;
+            butDrawOther.Checked = panel3D.ShowOtherObjects;
+            panel3D.Invalidate();
         }
     }
 }

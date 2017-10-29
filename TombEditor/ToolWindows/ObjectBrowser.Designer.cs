@@ -15,7 +15,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ObjectBrowser));
             this.butResetSearch = new DarkUI.Controls.DarkButton();
             this.butFindItem = new DarkUI.Controls.DarkButton();
             this.panelStaticMeshColor = new System.Windows.Forms.Panel();
@@ -127,7 +127,13 @@
             // comboItems
             // 
             this.comboItems.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.comboItems.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(81)))), ((int)(((byte)(81)))));
+            this.comboItems.BorderStyle = System.Windows.Forms.ButtonBorderStyle.Solid;
+            this.comboItems.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(43)))), ((int)(((byte)(43)))));
+            this.comboItems.ButtonIcon = ((System.Drawing.Bitmap)(resources.GetObject("comboItems.ButtonIcon")));
             this.comboItems.Dock = System.Windows.Forms.DockStyle.Top;
+            this.comboItems.DrawDropdownHoverOutline = false;
+            this.comboItems.DrawFocusRectangle = false;
             this.comboItems.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.comboItems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboItems.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -138,6 +144,8 @@
             this.comboItems.Name = "comboItems";
             this.comboItems.Size = new System.Drawing.Size(196, 24);
             this.comboItems.TabIndex = 1;
+            this.comboItems.Text = null;
+            this.comboItems.TextPadding = new System.Windows.Forms.Padding(2);
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             // 
             // panelHeaderRight

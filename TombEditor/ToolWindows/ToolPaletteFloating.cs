@@ -7,25 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombEditor.Controls;
 
-namespace TombEditor.Controls
+namespace TombEditor.ToolWindows
 {
-    public partial class PanelRendering3D_Toolbox : FloatingToolbox
+    public partial class ToolPaletteFloating : FloatingToolbox
     {
         private Editor _editor;
-        private PanelRendering3D _parentPanel;
 
-        public PanelRendering3D_Toolbox(PanelRendering3D parentPanel, Point location)
+        public ToolPaletteFloating()
         {
             InitializeComponent();
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-
-            Location = location;
-            _parentPanel = parentPanel;
-
-            SwitchMode(_editor.Mode);
         }
 
         protected override void Dispose(bool disposing)
@@ -55,9 +50,10 @@ namespace TombEditor.Controls
             toolInvisibility.Visible = mode == EditorMode.FaceEdit;
             toolFlatten.Visible = mode == EditorMode.Geometry;
             toolShovel.Visible = mode == EditorMode.Geometry;
-            secondaryToolStrip.AutoSize = true;
-            Size = secondaryToolStrip.Size;
+            toolPalette.AutoSize = true;
+            Size = toolPalette.Size + Padding.Size;
             Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
+            FixPosition();
 
             // Select classic winroomedit controls by default
             SwitchTool(mode == EditorMode.FaceEdit ? EditorTool.Brush : EditorTool.Selection);
@@ -121,11 +117,6 @@ namespace TombEditor.Controls
         private void toolSmooth_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorTool.Smooth);
-        }
-
-        private void toolStripLabel1_MouseDown(object sender, MouseEventArgs e)
-        {
-            DragStart(e.Location);
         }
     }
 }

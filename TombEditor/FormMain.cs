@@ -13,7 +13,6 @@ using TombLib.Utils;
 using TombLib.NG;
 using DarkUI.Docking;
 using DarkUI.Forms;
-using TombEditor.Controls;
 
 namespace TombEditor
 {
@@ -29,6 +28,10 @@ namespace TombEditor
         private ToolWindows.Lighting Lighting = new ToolWindows.Lighting();
         private ToolWindows.Palette Palette = new ToolWindows.Palette();
         private ToolWindows.TexturePanel TexturePanel = new ToolWindows.TexturePanel();
+        private ToolWindows.ToolPalette ToolPalette = new ToolWindows.ToolPalette();
+
+        // Floating tool boxes are placed on 3D view at runtime
+        private ToolWindows.ToolPaletteFloating ToolBox = new ToolWindows.ToolPaletteFloating();
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -61,6 +64,7 @@ namespace TombEditor
 
             // Initialize panels
             MainView.Initialize(_deviceManager);
+            MainView.AddToolbox(ToolBox);
             ObjectBrowser.Initialize(_deviceManager);
 
             // Restore window settings
@@ -102,6 +106,8 @@ namespace TombEditor
                     return SectorOptions;
                 case "TexturePanel":
                     return TexturePanel;
+                case "ToolPalette":
+                    return ToolPalette;
                 default:
                     logger.Warn("Unknown tool window '" + key + "' in configuration.");
                     return null;
@@ -225,7 +231,8 @@ namespace TombEditor
             Size = configuration.Window_Size;
             Location = configuration.Window_Position;
             WindowState = configuration.Window_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
-            
+
+            ToolBox.Location = configuration.Rendering3D_ToolboxPosition;
         }
 
         private void SaveWindowLayout(Configuration configuration)
@@ -235,6 +242,8 @@ namespace TombEditor
             configuration.Window_Size = Size;
             configuration.Window_Position = Location;
             configuration.Window_Maximized = WindowState == FormWindowState.Maximized;
+
+            configuration.Rendering3D_ToolboxPosition = ToolBox.Location;
 
             _editor.ConfigurationChange();
         }
@@ -937,6 +946,7 @@ namespace TombEditor
             lightingToolStripMenuItem.Checked = dockArea.ContainsContent(Lighting);
             paletteToolStripMenuItem.Checked = dockArea.ContainsContent(Palette);
             texturePanelToolStripMenuItem.Checked = dockArea.ContainsContent(TexturePanel);
+            dockableToolStripMenuItem.Checked = dockArea.ContainsContent(ToolPalette);
         }
 
         private void ToolWindow_Added(object sender, DockContentEventArgs e)
@@ -1059,6 +1069,16 @@ namespace TombEditor
         {
             using (FormAbout form = new FormAbout())
                 form.ShowDialog(this);
+        }
+
+        private void dockableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(ToolPalette);
+        }
+
+        private void floatingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolBox.Visible = !ToolBox.Visible;
         }
     }
 }

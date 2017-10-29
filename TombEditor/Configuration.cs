@@ -54,7 +54,6 @@ namespace TombEditor
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
         public Vector4 Rendering3D_TextColor { get; set; } = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 15);
-        public Point Rendering3D_ViewOptionsPosition { get; set; } = new Point(25, 225);
 
         public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
         public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;
@@ -116,6 +115,13 @@ namespace TombEditor
                             VisibleContent = "SectorOptions",
                             Order = 0,
                             Size = new Size(284,280)
+                        },
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "ToolPalette" },
+                            VisibleContent = "ToolPalette",
+                            Order = 0,
+                            Size = new Size(284,52)
                         },
                         new DockGroupState
                         {
