@@ -39,20 +39,10 @@ namespace DarkUI.Renderers
         protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
         {
             var g = e.Graphics;
-
-            if(e.ToolStrip is DarkToolStrip)
+            using (var b = new SolidBrush(Colors.GreyBackground))
             {
-                DarkToolStrip darkStrip = (DarkToolStrip)e.ToolStrip;
-                using (var b = new SolidBrush(darkStrip.UseUIBackgroundColor ? e.ToolStrip.BackColor : Colors.GreyBackground))
-                {
-                    g.FillRectangle(b, e.AffectedBounds);
-                }
+                g.FillRectangle(b, e.AffectedBounds);
             }
-            else
-                using (var b = new SolidBrush(Colors.GreyBackground))
-                {
-                    g.FillRectangle(b, e.AffectedBounds);
-                }
         }
 
         protected override void OnRenderImageMargin(ToolStripRenderEventArgs e)

@@ -1,5 +1,4 @@
 ﻿using DarkUI.Renderers;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -7,10 +6,6 @@ namespace DarkUI.Controls
 {
     public sealed class DarkToolStrip : ToolStrip
     {
-        [Category("Appearance")]
-        [Description("Use UI background color instead of specified")]
-        public bool UseUIBackgroundColor { get; set; } = false;
-
         #region Constructor Region
 
         public DarkToolStrip()

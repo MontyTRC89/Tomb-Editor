@@ -110,7 +110,6 @@
             this.toolStrip.Size = new System.Drawing.Size(815, 28);
             this.toolStrip.TabIndex = 12;
             this.toolStrip.Text = "darkToolStrip1";
-            this.toolStrip.UseUIBackgroundColor = true;
             // 
             // toolStripSeparator3
             // 

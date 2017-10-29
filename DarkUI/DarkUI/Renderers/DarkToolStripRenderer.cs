@@ -1,5 +1,4 @@
 ﻿using DarkUI.Config;
-using DarkUI.Controls;
 using DarkUI.Extensions;
 using DarkUI.Icons;
 using System.Drawing;

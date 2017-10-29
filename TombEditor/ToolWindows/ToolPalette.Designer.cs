@@ -65,7 +65,6 @@
             this.secondaryToolStrip.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.secondaryToolStrip.Size = new System.Drawing.Size(212, 27);
             this.secondaryToolStrip.TabIndex = 2;
-            this.secondaryToolStrip.UseUIBackgroundColor = true;
             // 
             // toolSelection
             // 

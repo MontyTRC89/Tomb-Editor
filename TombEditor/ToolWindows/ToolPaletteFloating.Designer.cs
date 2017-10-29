@@ -47,12 +47,11 @@
             this.toolEraser,
             this.toolInvisibility});
             this.toolPalette.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
-            this.toolPalette.Location = new System.Drawing.Point(0, 21);
+            this.toolPalette.Location = new System.Drawing.Point(0, 16);
             this.toolPalette.Name = "toolPalette";
             this.toolPalette.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.toolPalette.Size = new System.Drawing.Size(29, 210);
             this.toolPalette.TabIndex = 1;
-            this.toolPalette.UseUIBackgroundColor = true;
             // 
             // toolSelection
             // 
@@ -171,9 +170,10 @@
             // 
             this.AutoAnchor = true;
             this.Controls.Add(this.toolPalette);
+            this.GripSize = 10;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ToolPaletteFloating";
-            this.Size = new System.Drawing.Size(29, 231);
+            this.Size = new System.Drawing.Size(29, 226);
             this.toolPalette.ResumeLayout(false);
             this.toolPalette.PerformLayout();
             this.ResumeLayout(false);
