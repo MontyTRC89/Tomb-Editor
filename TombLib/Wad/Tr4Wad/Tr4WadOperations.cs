@@ -88,7 +88,7 @@ namespace TombLib.Wad.Tr4Wad
             int zMax = Int32.MinValue;
 
             // Create the bounding sphere
-            mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.SphereX, oldMesh.SphereY, oldMesh.SphereZ),
+            mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.SphereX, -oldMesh.SphereY, oldMesh.SphereZ),
                                                      oldMesh.Radius);
 
             // Add positions
