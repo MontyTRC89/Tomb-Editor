@@ -491,7 +491,7 @@ namespace TombEditor.Geometry.IO
                                 instance.InnerAngle = chunkIO.Raw.ReadSingle();
                                 instance.OuterAngle = chunkIO.Raw.ReadSingle();
                                 instance.Enabled = chunkIO.Raw.ReadBoolean();
-                                instance.CastsShadows = chunkIO.Raw.ReadBoolean();
+                                instance.IsObstructedByRoomGeometry = chunkIO.Raw.ReadBoolean();
                                 instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
                                 instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
                                 room.AddObjectAndSingularPortal(level, instance);

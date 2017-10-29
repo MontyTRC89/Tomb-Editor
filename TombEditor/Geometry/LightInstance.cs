@@ -23,7 +23,7 @@ namespace TombEditor.Geometry
         public float InnerAngle { get; set; } = 20.0f;
         public float OuterAngle { get; set; } = 25.0f;
         public bool Enabled { get; set; } = true;
-        public bool CastsShadows { get; set; } = true;
+        public bool IsObstructedByRoomGeometry { get; set; } = true;
         public bool IsDynamicallyUsed { get; set; } = true;
         public bool IsStaticallyUsed { get; set; } = true;
 
@@ -58,7 +58,7 @@ namespace TombEditor.Geometry
                     IsDynamicallyUsed = false;
                     break;
                 case LightType.FogBulb:
-                    CastsShadows = false;
+                    IsObstructedByRoomGeometry = false;
                     IsStaticallyUsed = false;
                     break;
             }

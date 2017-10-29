@@ -2741,7 +2741,7 @@ namespace TombEditor.Geometry
                                     !RayTraceX((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                                     !RayTraceZ((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                                 {
-                                    if (light.CastsShadows)
+                                    if (light.IsObstructedByRoomGeometry)
                                         continue;
                                 }
 
@@ -2789,7 +2789,7 @@ namespace TombEditor.Geometry
                                     !RayTraceX((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                                     !RayTraceZ((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                                 {
-                                    if (light.CastsShadows)
+                                    if (light.IsObstructedByRoomGeometry)
                                         continue;
                                 }
 
@@ -2844,7 +2844,7 @@ namespace TombEditor.Geometry
                                     !RayTraceX((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                                     !RayTraceZ((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                                 {
-                                    if (light.CastsShadows)
+                                    if (light.IsObstructedByRoomGeometry)
                                         continue;
                                 }
 
