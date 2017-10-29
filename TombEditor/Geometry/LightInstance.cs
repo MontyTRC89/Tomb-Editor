@@ -51,7 +51,6 @@ namespace TombEditor.Geometry
             {
                 case LightType.Shadow:
                     Intensity *= -1;
-                    CastsShadows = false;
                     break;
                 case LightType.Effect:
                     InnerRange = 0.99f;
