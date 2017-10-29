@@ -139,6 +139,27 @@ namespace TombEditor.Controls
             set { butNew.Text = value; }
         }
 
+        [DefaultValue("Delete")]
+        public string DeleteName
+        {
+            get { return butDelete.Text; }
+            set { butDelete.Text = value; }
+        }
+
+        [DefaultValue("Up")]
+        public string UpName
+        {
+            get { return butUp.Text; }
+            set { butUp.Text = value; }
+        }
+
+        [DefaultValue("Down")]
+        public string DownName
+        {
+            get { return butDown.Text; }
+            set { butDown.Text = value; }
+        }
+
         [DefaultValue(true)]
         public bool AllowUserMove
         {
