@@ -161,7 +161,7 @@ namespace TombEditor.Geometry
                     {
                         ImportedGeometryVertex v = new ImportedGeometryVertex();
 
-                        v.Position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z) * info.Scale;
+                        v.Position = new Vector3(positions[i].X, positions[i].Y, -positions[i].Z) * info.Scale;
                         minVertex = Vector3.Min(minVertex, v.Position);
                         maxVertex = Vector3.Max(maxVertex, v.Position);
 
