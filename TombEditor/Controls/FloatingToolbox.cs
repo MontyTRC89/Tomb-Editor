@@ -206,7 +206,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            if(GetGripBounds().Contains(new Point(e.X, e.Y)))
+            if(e.Button == MouseButtons.Left && GetGripBounds().Contains(new Point(e.X, e.Y)))
                 DragStart(e.Location);
         }
 
