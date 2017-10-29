@@ -50,6 +50,7 @@ namespace TombEditor.ToolWindows
             toolInvisibility.Visible = mode == EditorMode.FaceEdit;
             toolFlatten.Visible = mode == EditorMode.Geometry;
             toolShovel.Visible = mode == EditorMode.Geometry;
+            toolSmooth.Visible = mode == EditorMode.Geometry;
             toolPalette.AutoSize = true;
             Size = toolPalette.Size + Padding.Size;
             Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);

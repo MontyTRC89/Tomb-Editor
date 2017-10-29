@@ -119,6 +119,58 @@ namespace TombEditor.Controls
             }
         }
 
+        private class ToolHandler
+        {
+            private bool[,] _actionGrid = new bool[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
+            private Block _referenceBlock;
+
+            public bool Engaged { get; private set; }
+
+            public Block ReferenceBlock
+            {
+                get { return _referenceBlock; }
+                set
+                {
+                    if(_referenceBlock != value)
+                        _referenceBlock = value;
+                }
+            }
+
+            private void ResetToolActionGrid()
+            {
+                for (int x = 0; x < Room.MaxRoomDimensions; x++)
+                    for (int z = 0; z < Room.MaxRoomDimensions; z++)
+                        _actionGrid[x, z] = false;
+            }
+
+            public void Engage()
+            {
+                if (!Engaged)
+                {
+                    Engaged = true;
+                    _referenceBlock = null;
+                    ResetToolActionGrid();
+                }
+            }
+
+            public void Disengage()
+            {
+                if (Engaged)
+                    Engaged = false;
+            }
+
+            public bool Process(int X, int Y)
+            {
+                if (_actionGrid[X, Y] == false)
+                {
+                    _actionGrid[X, Y] = true;
+                    return true;
+                }
+                else
+                    return false;
+            }
+        }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -169,10 +221,8 @@ namespace TombEditor.Controls
         // Gizmo
         private Gizmo _gizmo;
 
-        // Tool
-        private bool _toolEngaged = false;
-        private bool[,] _toolActionGrid = new bool[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
-        private Block _toolReferenceBlock;
+        // Tool handler
+        private ToolHandler _toolHandler;
 
         // Rooms to draw
         private List<Room> _roomsToDraw;
@@ -393,6 +443,7 @@ namespace TombEditor.Controls
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
             _gizmo = new Gizmo(deviceManager.Device, deviceManager.Effects["Solid"]);
+            _toolHandler = new ToolHandler();
             _movementTimer = new MovementTimer(MoveTimerTick);
 
             ResetCamera();
@@ -503,13 +554,6 @@ namespace TombEditor.Controls
                     _textureAtlasRemappingSize = new Vector2(float.MaxValue);
                 }
             }
-        }
-
-        private void ResetToolActionGrid()
-        {
-            for (int x = 0; x<Room.MaxRoomDimensions; x++)
-                for (int z = 0; z<Room.MaxRoomDimensions; z++)
-                    _toolActionGrid[x, z] = false;
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -723,17 +767,14 @@ namespace TombEditor.Controls
                                 case EditorMode.Geometry:
                                     if (_editor.Tool != EditorTool.Selection && ModifierKeys == Keys.None)
                                     {
-                                        ResetToolActionGrid();
-                                        _toolEngaged = true;
+                                        _toolHandler.Engage();
 
-                                        if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None) && _toolActionGrid[pos.X, pos.Y] == false)
+                                        if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None) && _toolHandler.Process(pos.X, pos.Y))
                                         {
-                                            _toolActionGrid[pos.X, pos.Y] = true;
-
                                             switch (_editor.Tool)
                                             {
                                                 case EditorTool.Flatten:
-                                                    _toolReferenceBlock = _editor.SelectedRoom.Blocks[pos.X, pos.Y];
+                                                    _toolHandler.ReferenceBlock = _editor.SelectedRoom.Blocks[pos.X, pos.Y];
                                                     break;
 
                                                 case EditorTool.Smooth:
@@ -877,7 +918,7 @@ namespace TombEditor.Controls
                             };
                         }
                     }
-                    else if(_editor.Mode == EditorMode.Geometry && ModifierKeys == Keys.None && _toolEngaged)
+                    else if(_editor.Mode == EditorMode.Geometry && ModifierKeys == Keys.None && _toolHandler.Engaged)
                     {
                         PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
 
@@ -886,10 +927,8 @@ namespace TombEditor.Controls
                             PickingResultBlock newBlockPicking = (PickingResultBlock)newPicking;
                             DrawingPoint pos = newBlockPicking.Pos;
 
-                            if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None) && _toolActionGrid[pos.X, pos.Y] == false)
+                            if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None) && _toolHandler.Process(pos.X, pos.Y))
                             {
-                                _toolActionGrid[pos.X, pos.Y] = true;
-
                                 switch (_editor.Tool)
                                 {
                                     case EditorTool.Flatten:
@@ -897,13 +936,13 @@ namespace TombEditor.Controls
                                         {
                                             if (newBlockPicking.BelongsToFloor)
                                             {
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolReferenceBlock.QAFaces.Min();
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolReferenceBlock.EDFaces.Min();
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolHandler.ReferenceBlock.QAFaces.Min();
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolHandler.ReferenceBlock.EDFaces.Min();
                                             }
                                             else
                                             {
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolReferenceBlock.WSFaces.Min();
-                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolReferenceBlock.RFFaces.Min();
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolHandler.ReferenceBlock.WSFaces.Min();
+                                                _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolHandler.ReferenceBlock.RFFaces.Min();
                                             }
                                         }
                                         EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
@@ -954,6 +993,8 @@ namespace TombEditor.Controls
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            base.OnMouseUp(e);
+
             // Click outside room
             if (_noSelectionConfirm && !(ModifierKeys == Keys.Control))
             {
@@ -962,14 +1003,7 @@ namespace TombEditor.Controls
                 _noSelectionConfirm = false;    // It gets already set on MouseMove, but it's better to prevent obscure errors and unwanted behavior later on
             }
 
-            base.OnMouseUp(e);
-
-            if(_toolEngaged)
-            {
-                _toolEngaged = false;
-                ResetToolActionGrid();
-            }
-
+            _toolHandler.Disengage();
             _doSectorSelection = false;
             if (_gizmo.MouseUp())
                 Invalidate();

@@ -38,6 +38,7 @@ namespace TombEditor.ToolWindows
             toolInvisibility.Visible = mode == EditorMode.FaceEdit;
             toolFlatten.Visible = mode == EditorMode.Geometry;
             toolShovel.Visible = mode == EditorMode.Geometry;
+            toolSmooth.Visible = mode == EditorMode.Geometry;
             secondaryToolStrip.AutoSize = true;
             Size = secondaryToolStrip.Size;
             Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
