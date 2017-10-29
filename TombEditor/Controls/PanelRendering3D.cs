@@ -151,7 +151,7 @@ namespace TombEditor.Controls
         private Debug _debug;
 
         // Current room's last position
-        private Vector3 _currentRoomLastPos = new Vector3(0);
+        private Vector3? _currentRoomLastPos = null;
 
         // Gizmo
         private Gizmo _gizmo;
@@ -224,16 +224,14 @@ namespace TombEditor.Controls
             if (obj is Editor.ConfigurationChangedEvent)
                 Camera.FieldOfView = ((Editor.ConfigurationChangedEvent)obj).Current.Rendering3D_FieldOfView * (float)(Math.PI / 180);
 
-            // Update camera position
-            if (obj is Editor.RoomGeometryChangedEvent)
+            // Move camera position with room movements
+            if ((obj is Editor.RoomGeometryChangedEvent) && (_editor.Mode == EditorMode.Map2D) && _currentRoomLastPos.HasValue)
             {
-                if(_editor.Mode == EditorMode.Map2D && Camera != null)
-                {
-                    var deltaRoomPos = _editor.SelectedRoom.Position - _currentRoomLastPos;
-                    Camera.MoveCameraLinear(new Vector3(deltaRoomPos.X * 1024.0f, deltaRoomPos.Y * 256.0f, deltaRoomPos.Z * 1024.0f));
-                    _currentRoomLastPos = _editor.SelectedRoom.Position;
-                }
+                Camera.MoveCameraLinear(_editor.SelectedRoom.WorldPos - _currentRoomLastPos.Value);
+                _currentRoomLastPos = _editor.SelectedRoom.WorldPos;
             }
+            else if ((obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.ModeChangedEvent))
+                _currentRoomLastPos = _editor.SelectedRoom.WorldPos;
 
             // Update drawing
             if ((obj is IEditorObjectChangedEvent) ||
@@ -945,7 +943,7 @@ namespace TombEditor.Controls
                     Invalidate();
                     break;
             }
-                
+
         }
 
         private static float TransformRayDistance(ref Ray sourceRay, ref Matrix transform, ref Ray destinationRay, float sourceDistance)
@@ -1557,7 +1555,7 @@ namespace TombEditor.Controls
                     {
                         color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
                         _device.SetRasterizerState(_rasterizerWireframe);
-                        
+
                         DrawDebugString(instance.ToString(), instance.RotationPositionMatrix * viewProjection);
 
                         // Add the line height of the object
