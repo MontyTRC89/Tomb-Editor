@@ -673,7 +673,7 @@ namespace TombEditor.Controls
                             if (_editor.Tool == EditorTool.Selection)
                             {
                                 // Handle face selection
-                                if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
+                                if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
                                 {
                                     // Rotate the arrows
                                     if (Control.ModifierKeys.HasFlag(Keys.Control))
@@ -717,93 +717,85 @@ namespace TombEditor.Controls
                                     _doSectorSelection = true;
                                 }
                             }
-                            else
+
+                            switch (_editor.Mode)
                             {
-                                switch (_editor.Mode)
-                                {
-                                    case EditorMode.Geometry:
-                                        if (_editor.Tool != EditorTool.Selection && ModifierKeys == Keys.None)
+                                case EditorMode.Geometry:
+                                    if (_editor.Tool != EditorTool.Selection && ModifierKeys == Keys.None)
+                                    {
+                                        ResetToolActionGrid();
+                                        _toolEngaged = true;
+
+                                        if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None) && _toolActionGrid[pos.X, pos.Y] == false)
                                         {
-                                            ResetToolActionGrid();
-                                            _toolEngaged = true;
+                                            _toolActionGrid[pos.X, pos.Y] = true;
 
-                                            if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None) && _toolActionGrid[pos.X, pos.Y] == false)
+                                            switch (_editor.Tool)
                                             {
-                                                _toolActionGrid[pos.X, pos.Y] = true;
+                                                case EditorTool.Flatten:
+                                                    _toolReferenceBlock = _editor.SelectedRoom.Blocks[pos.X, pos.Y];
+                                                    break;
 
-                                                switch (_editor.Tool)
-                                                {
-                                                    case EditorTool.Flatten:
-                                                        _toolReferenceBlock = _editor.SelectedRoom.Blocks[pos.X, pos.Y];
-                                                        break;
+                                                case EditorTool.Smooth:
+                                                    EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
+                                                    break;
 
-                                                    case EditorTool.Smooth:
-                                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
-                                                        break;
-
-                                                    default:
-                                                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (belongsToFloor ? 0 : 1), (short)(_editor.Tool == EditorTool.Shovel ^ belongsToFloor ? 1 : -1), (_editor.Tool == EditorTool.Brush || _editor.Tool == EditorTool.Shovel));
-                                                        break;
-                                                }
+                                                default:
+                                                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (belongsToFloor ? 0 : 1), (short)(_editor.Tool == EditorTool.Shovel ^ belongsToFloor ? 1 : -1), (_editor.Tool == EditorTool.Brush || _editor.Tool == EditorTool.Shovel));
+                                                    break;
                                             }
                                         }
+                                    }
 
-                                        if (ModifierKeys.HasFlag(Keys.Alt))
-                                        {
-                                            // Split the faces
-                                            if (belongsToFloor)
-                                                EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
-                                            else
-                                                EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
-                                            return;
-                                        }
-                                        else if (ModifierKeys.HasFlag(Keys.Shift))
-                                        {
-                                            // Rotate sector
-                                            EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
-                                            return;
-                                        }
-                                        break;
-                                        
-                                    case EditorMode.FaceEdit:
-                                        // Do texturing
-                                        if (_editor.Tool == EditorTool.Fill)
-                                        {
-                                            if (newBlockPicking.IsFloorHorizontalPlane)
-                                                EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
-                                            else if (newBlockPicking.IsCeilingHorizontalPlane)
-                                                EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
-                                            else if (newBlockPicking.IsVerticalPlane)
-                                                EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
-                                        }
+                                    if (ModifierKeys.HasFlag(Keys.Alt))
+                                    {
+                                        // Split the faces
+                                        if (belongsToFloor)
+                                            EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                                         else
+                                            EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                        return;
+                                    }
+                                    else if (ModifierKeys.HasFlag(Keys.Shift))
+                                    {
+                                        // Rotate sector
+                                        EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
+                                        return;
+                                    }
+                                    break;
+                                        
+                                case EditorMode.FaceEdit:
+                                    // Do texturing
+                                    if (_editor.Tool == EditorTool.Fill)
+                                    {
+                                        if (newBlockPicking.IsFloorHorizontalPlane)
+                                            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
+                                        else if (newBlockPicking.IsCeilingHorizontalPlane)
+                                            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
+                                        else if (newBlockPicking.IsVerticalPlane)
+                                            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
+                                    }
+                                    else
+                                    {
+                                        if (ModifierKeys == Keys.Control)
+                                            EditorActions.MirrorTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
+                                        else if (ModifierKeys == Keys.Shift)
+                                            EditorActions.RotateTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
+                                        else if (ModifierKeys == Keys.Alt)
+                                            EditorActions.PickTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
+                                        else if (_editor.Tool != EditorTool.Selection && ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newBlockPicking.Pos)) || _editor.SelectedSectors == SectorSelection.None))
                                         {
-                                            if (ModifierKeys == Keys.Control)
-                                                EditorActions.MirrorTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
-                                            else if (ModifierKeys == Keys.Shift)
-                                                EditorActions.RotateTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
-                                            else if (ModifierKeys == Keys.Alt)
-                                                EditorActions.PickTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
-                                            else if (ModifierKeys == (Keys.Control | Keys.Shift))
-                                            {
-                                                // Select rectangle
-                                                _editor.SelectedSectors = new SectorSelection { Start = newBlockPicking.Pos, End = newBlockPicking.Pos };
-                                                _doSectorSelection = true;
-                                            }
-                                            else if (_editor.Tool != EditorTool.Selection && ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newBlockPicking.Pos)) || _editor.SelectedSectors == SectorSelection.None))
-                                            {
-                                                var usedTexture = _editor.SelectedTexture;
+                                            var usedTexture = _editor.SelectedTexture;
 
-                                                if (_editor.Tool == EditorTool.Eraser)
-                                                    usedTexture.Texture = null;
-                                                else if (_editor.Tool == EditorTool.Invisibility)
-                                                    usedTexture.Texture = TextureInvisible.Instance;
+                                            if (_editor.Tool == EditorTool.Eraser)
+                                                usedTexture.Texture = null;
+                                            else if (_editor.Tool == EditorTool.Invisibility)
+                                                usedTexture.Texture = TextureInvisible.Instance;
 
-                                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face, usedTexture);
-                                            }
+                                            EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face, usedTexture);
                                         }
-                                        break;
-                                }
+                                    }
+                                    break;
                             }
                         }
                         break;
@@ -933,7 +925,7 @@ namespace TombEditor.Controls
                         if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
                         { // Process gizmo
                         }
-                        else if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Tool != EditorTool.Pencil) && (_editor.Action.Action == EditorActionType.None))
+                        else if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Tool != EditorTool.Pencil) && (_editor.Action.Action == EditorActionType.None) && (ModifierKeys == Keys.None))
                         {
                             // Texture editing
                             PickingResultBlock newPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;

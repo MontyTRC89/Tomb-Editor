@@ -92,20 +92,6 @@ namespace TombEditor.Controls
             ClampDimensions();
         }
 
-        public void DragStart(Point offset)
-        {
-            dragBounds = Parent.ClientRectangle;
-            dragBounds.Width -= Width;
-            dragBounds.Height -= Height;
-
-            dragOffset = (offset);
-
-            isDragging = true;
-            DoDragDrop(new FloatingToolboxContainer(this), DragDropEffects.Move);
-            SetAnchors();
-            isDragging = false;
-        }
-
         public void FixPosition()
         {
             if(Parent != null)
@@ -171,6 +157,20 @@ namespace TombEditor.Controls
 
                 Anchor = newAnchors;
             }
+        }
+
+        private void DragStart(Point offset)
+        {
+            dragBounds = Parent.ClientRectangle;
+            dragBounds.Width -= Width;
+            dragBounds.Height -= Height;
+
+            dragOffset = (offset);
+
+            isDragging = true;
+            DoDragDrop(new FloatingToolboxContainer(this), DragDropEffects.Move);
+            SetAnchors();
+            isDragging = false;
         }
 
         protected override void WndProc(ref Message m)
