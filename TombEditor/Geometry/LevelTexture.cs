@@ -8,6 +8,9 @@ namespace TombEditor.Geometry
 {
     public class LevelTexture : Texture, IEquatable<LevelTexture>
     {
+        public class UniqueIDType { };
+        public UniqueIDType UniqueID { get; } = new UniqueIDType();
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public const float TextureSoundGranularity = 64.0f;
 

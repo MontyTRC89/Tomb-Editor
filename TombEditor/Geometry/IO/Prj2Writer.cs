@@ -317,7 +317,7 @@ namespace TombEditor.Geometry.IO
                                         chunkIO.Raw.Write(instance.InnerAngle);
                                         chunkIO.Raw.Write(instance.OuterAngle);
                                         chunkIO.Raw.Write(instance.Enabled);
-                                        chunkIO.Raw.Write(instance.CastsShadows);
+                                        chunkIO.Raw.Write(instance.IsObstructedByRoomGeometry);
                                         chunkIO.Raw.Write(instance.IsDynamicallyUsed);
                                         chunkIO.Raw.Write(instance.IsStaticallyUsed);
                                     });
