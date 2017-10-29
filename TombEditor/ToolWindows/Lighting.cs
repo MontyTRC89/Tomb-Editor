@@ -55,7 +55,7 @@ namespace TombEditor.ToolWindows
                     IsLight = true;
                     switch (light.Type)
                     {
-                        case LightType.Light:
+                        case LightType.Point:
                             HasInOutRange = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
@@ -125,7 +125,7 @@ namespace TombEditor.ToolWindows
                     }
 
                     cbLightEnabled.Checked = light.Enabled;
-                    cbLightCastsShadows.Checked = light.CastsShadows;
+                    cbLightIsObstructedByRoomGeometry.Checked = light.IsObstructedByRoomGeometry;
                     cbLightIsDynamicallyUsed.Checked = light.IsDynamicallyUsed;
                     cbLightIsStaticallyUsed.Checked = light.IsStaticallyUsed;
                 }
@@ -140,7 +140,7 @@ namespace TombEditor.ToolWindows
                     numDirectionX.Value = 0;
                     numDirectionY.Value = 0;
                     cbLightEnabled.Checked = false;
-                    cbLightCastsShadows.Checked = false;
+                    cbLightIsObstructedByRoomGeometry.Checked = false;
                     cbLightIsDynamicallyUsed.Checked = false;
                     cbLightIsStaticallyUsed.Checked = false;
                 }
@@ -148,7 +148,7 @@ namespace TombEditor.ToolWindows
                 // Set enabled state
                 panelLightColor.Enabled = IsLight;
                 cbLightEnabled.Enabled = IsLight;
-                cbLightCastsShadows.Enabled = CanCastShadows;
+                cbLightIsObstructedByRoomGeometry.Enabled = CanCastShadows;
                 cbLightIsDynamicallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
                 cbLightIsStaticallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
                 numIntensity.Enabled = IsLight;
@@ -237,10 +237,10 @@ namespace TombEditor.ToolWindows
                 (value) => cbLightEnabled.Checked);
         }
 
-        private void cbLightCastsShadows_CheckedChanged(object sender, EventArgs e)
+        private void cbLightIsObstructedByRoomGeometry_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateLight((light) => light.CastsShadows, (light, value) => light.CastsShadows = value,
-                (value) => cbLightCastsShadows.Checked);
+            UpdateLight((light) => light.IsObstructedByRoomGeometry, (light, value) => light.IsObstructedByRoomGeometry = value,
+                (value) => cbLightIsObstructedByRoomGeometry.Checked);
         }
 
         private void cbLightIsStaticallyUsed_CheckedChanged(object sender, EventArgs e)
@@ -257,7 +257,7 @@ namespace TombEditor.ToolWindows
 
         private void butAddPointLight_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Light };
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Point };
         }
 
         private void butAddShadow_Click(object sender, EventArgs e)

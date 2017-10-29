@@ -8,6 +8,9 @@ namespace TombEditor.Geometry
 {
     public class LevelTexture : Texture, IEquatable<LevelTexture>
     {
+        public class UniqueIDType { };
+        public UniqueIDType UniqueID { get; } = new UniqueIDType();
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public const float TextureSoundGranularity = 64.0f;
 
@@ -148,16 +151,18 @@ namespace TombEditor.Geometry
 
         public bool Equals(LevelTexture other) => base.Equals(other);
 
-        public static bool AreListsEqual(List<LevelTexture> first, List<LevelTexture> second)
+        public override string ToString()
         {
-            if (first.Count != second.Count)
-                return false;
-
-            for (int i = 0; i < first.Count; ++i)
-                if (!first[i].Equals(second[i]))
-                    return false;
-
-            return true;
+            string Filename;
+            try
+            {
+                Filename = System.IO.Path.GetFileNameWithoutExtension(Path);
+            }
+            catch
+            {
+                Filename = "<Unnamed>";
+            }
+            return Filename + " (Level Texture with " + Path + ")";
         }
     }
 }

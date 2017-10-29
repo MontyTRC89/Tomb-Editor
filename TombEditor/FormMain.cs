@@ -28,6 +28,7 @@ namespace TombEditor
         private ToolWindows.Lighting Lighting = new ToolWindows.Lighting();
         private ToolWindows.Palette Palette = new ToolWindows.Palette();
         private ToolWindows.TexturePanel TexturePanel = new ToolWindows.TexturePanel();
+        private ToolWindows.ObjectList ObjectList = new ToolWindows.ObjectList();
         private ToolWindows.ToolPalette ToolPalette = new ToolWindows.ToolPalette();
 
         // Floating tool boxes are placed on 3D view at runtime
@@ -106,6 +107,8 @@ namespace TombEditor
                     return SectorOptions;
                 case "TexturePanel":
                     return TexturePanel;
+                case "ObjectList":
+                    return ObjectList;
                 case "ToolPalette":
                     return ToolPalette;
                 default:
@@ -189,13 +192,18 @@ namespace TombEditor
                 }
             }
 
-            // Update application title
-            if (obj is Editor.LevelFileNameChanged)
+            // Update application title bar
+            if ((obj is Editor.LevelFileNameChangedEvent) || (obj is Editor.HasUnsavedChangesChangedEvent))
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     Utils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
-                Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
+
+                Text = "Tomb Editor " + Application.ProductVersion + " - " + LevelName + (_editor.HasUnsavedChanges ? "*" : "");
             }
+
+            // Update save button
+            if (obj is Editor.HasUnsavedChangesChangedEvent)
+                saveLevelToolStripMenuItem.Enabled = _editor.HasUnsavedChanges;
 
             // Reload window layout if the configuration changed
             if (obj is Editor.ConfigurationChangedEvent)
@@ -215,8 +223,7 @@ namespace TombEditor
             {
                 case CloseReason.None:
                 case CloseReason.UserClosing:
-                    if (DarkMessageBox.Show(this, "Your level will be lost. Do you really want to exit?",
-                            "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    if (!EditorActions.ContinueOnFileDrop(this, "Exit"))
                         e.Cancel = true;
                     break;
             }
@@ -392,12 +399,12 @@ namespace TombEditor
                     break;
 
                 case Keys.W:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(shift ? 4 : 1), alt);
                     break;
 
                 case Keys.S:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)-(shift ? 4 : 1), alt);
                     break;
 
@@ -625,9 +632,7 @@ namespace TombEditor
 
         private void newLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkMessageBox.Show(this,
-                    "Your level will be lost. Do you really want to create a new level?",
-                    "New level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!EditorActions.ContinueOnFileDrop(this, "New level"))
                 return;
 
             _editor.Level = Level.CreateSimpleLevel();
@@ -929,6 +934,11 @@ namespace TombEditor
             ToolWindow_Toggle(TexturePanel);
         }
 
+        private void objectListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(ObjectList);
+        }
+
         private void ToolWindow_Toggle(DarkToolWindow toolWindow)
         {
             if (toolWindow.DockPanel == null)
@@ -980,11 +990,11 @@ namespace TombEditor
         {
             //level.Load("");
 
-            var level = new TombRaider3Level("e:\\tomb3\\data\\crash.tr2");
+            var level = new TombRaider4Level("e:\\trle\\data\\city130.tr4");
             level.Load("crash");
 
-            level = new TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
-            level.Load("jungle");
+            //level = new TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
+            //level.Load("jungle");
         }
 
         private void debugAction2ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1062,7 +1072,7 @@ namespace TombEditor
 
         private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //EditorActions.ExportCurrentRoom(this, PanelRendering3D.RoomsTextureAtlas);
+            EditorActions.ExportCurrentRoom(this);
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

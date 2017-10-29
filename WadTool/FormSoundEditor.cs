@@ -38,7 +38,7 @@ namespace WadTool
         private void UpdateStatistics()
         {
             string message = "Sound Infos: " + _tool.DestinationWad.SoundInfo.Count + " of " + 
-                             TrCatalog.GetSoundMapSize(_tool.DestinationWad.Version) + "    " + 
+                             _tool.DestinationWad.SoundMapSize + "    " + 
                              "Embedded WAV samples: " + _tool.DestinationWad.Samples.Count;
             labelStatus.Text = message;
         }

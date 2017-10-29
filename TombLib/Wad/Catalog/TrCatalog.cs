@@ -79,9 +79,21 @@ namespace TombLib.Wad.Catalog
             return result;
         }
 
-        public static int GetSoundMapSize(TombRaiderVersion version)
+        public static int GetSoundMapSize(TombRaiderVersion version, bool isNgWad130)
         {
-            return Games[version].SoundMapSize;
+            switch (version)
+            {
+                case TombRaiderVersion.TR1:
+                    return 256;
+                case TombRaiderVersion.TR2:
+                case TombRaiderVersion.TR3:
+                    return 370;
+                case TombRaiderVersion.TR4:
+                    return (isNgWad130 ? 2048 : 370);
+                default:
+                    return 450;
+            }
+            //return Games[version].SoundMapSize;
         }
 
         public static string GetVersionString(TombRaiderVersion version)
@@ -151,20 +163,13 @@ namespace TombLib.Wad.Catalog
 
                     // Size of the soundmap
                     var soundMapSize = 0;
-                    if (node.Attributes["max"] == null)
-                    {
-                        if (version == TombRaiderVersion.TR1) soundMapSize = 256;
-                        else if (version == TombRaiderVersion.TR2) soundMapSize = 370;
-                        else if (version == TombRaiderVersion.TR3) soundMapSize = 370;
-                        else if (version == TombRaiderVersion.TR4) soundMapSize = 370;
-                        else if (version == TombRaiderVersion.TR5) soundMapSize = 450;
-                    }
-                    else
-                    {
-                        soundMapSize = Int32.Parse(node.Attributes["max"].Value);
-                    }
+                    if (version == TombRaiderVersion.TR1) soundMapSize = 256;
+                    else if (version == TombRaiderVersion.TR2) soundMapSize = 370;
+                    else if (version == TombRaiderVersion.TR3) soundMapSize = 370;
+                    else if (version == TombRaiderVersion.TR4) soundMapSize = 370;
+                    else if (version == TombRaiderVersion.TR5) soundMapSize = 450;
 
-                    game.SoundMapSize = soundMapSize;
+                    //game.SoundMapSize = soundMapSize;
 
                     // Parse sounds
                     foreach (XmlNode soundNode in node.ChildNodes)

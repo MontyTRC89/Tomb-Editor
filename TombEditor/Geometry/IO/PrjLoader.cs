@@ -267,6 +267,7 @@ namespace TombEditor.Geometry.IO
                                         (red + (red == 0 ? 0.0f : 0.875f)) / 16.0f,
                                         (green + (green == 0 ? 0.0f : 0.875f)) / 16.0f,
                                         (blue + (blue == 0 ? 0.0f : 0.875f)) / 16.0f, 1.0f);
+                                    color -= new Vector4(new Vector3(1.0f / 32.0f), 0.0f); // Adjust for different rounding in TE *.tr4 output
 
                                     if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
                                     {
@@ -428,7 +429,8 @@ namespace TombEditor.Geometry.IO
                             }
                         }
 
-                        room.AmbientLight = new Vector4(reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, 1.0f);
+                        room.AmbientLight = new Vector4(reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, 1.0f) -
+                            new Vector4(new Vector3(1.0f / 32.0f), 0.0f); // Adjust for different rounding in TE *.tr4 output
                         reader.ReadByte();
 
                         short numObjects2 = reader.ReadInt16();
@@ -491,7 +493,7 @@ namespace TombEditor.Geometry.IO
                                     switch (objectType)
                                     {
                                         case 0x4000:
-                                            lightType = LightType.Light;
+                                            lightType = LightType.Point;
                                             break;
                                         case 0x6000:
                                             lightType = LightType.Shadow;
@@ -597,7 +599,7 @@ namespace TombEditor.Geometry.IO
                         byte reverb = reader.ReadByte();
                         tempRoom._flipGroup = (short)(reader.ReadInt16() & 0xff);
 
-                        room.WaterLevel = (flags1 & 0x0001) != 0 ? waterLevel : (byte)0;
+                        room.WaterLevel = (byte)((flags1 & 0x0001) != 0 ? waterLevel + 1 : 0);
                         room.Reverberation = (Reverberation)reverb;
                         room.ReflectionLevel = (flags1 & 0x0200) != 0 ? mistOrReflectionLevel : (byte)0;
                         room.MistLevel = (flags1 & 0x0100) != 0 ? mistOrReflectionLevel : (byte)0;
@@ -755,8 +757,8 @@ namespace TombEditor.Geometry.IO
                             switch (portal.Direction)
                             {
                                 case PortalDirection.Ceiling:
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
                                             if (tempRoom.Value._blocks[x, z]._ceilingOpacity > portal.Opacity)
                                                 portal.Opacity = tempRoom.Value._blocks[x, z]._ceilingOpacity;
 
@@ -766,8 +768,8 @@ namespace TombEditor.Geometry.IO
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                                 case PortalDirection.Floor:
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
                                             if (tempRoom.Value._blocks[x, z]._floorOpacity > portal.Opacity)
                                                 portal.Opacity = tempRoom.Value._blocks[x, z]._floorOpacity;
 
@@ -777,11 +779,28 @@ namespace TombEditor.Geometry.IO
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                                 default:
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
                                             if (tempRoom.Value._blocks[x, z]._wallOpacity > portal.Opacity)
                                                 portal.Opacity = tempRoom.Value._blocks[x, z]._wallOpacity;
                                     break;
+                            }
+
+                            // Set portals consisting entirely of triangles to "TraversableFaces" if any no collision triangle is textured.
+                            if (portal.Opacity == PortalOpacity.None)
+                            {
+                                switch (portal.Direction)
+                                {
+                                    case PortalDirection.Ceiling:
+                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, adjoiningRoom, 1, 9, prjBlock => prjBlock._hasNoCollisionCeiling,
+                                            (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r0, r1, b0, b1));
+                                        break;
+
+                                    case PortalDirection.Floor:
+                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, adjoiningRoom, 0, 8, prjBlock => prjBlock._hasNoCollisionFloor,
+                                            (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r1, r0, b1, b0));
+                                        break;
+                                }
                             }
 
                             // Add portal to rooms
@@ -1041,22 +1060,25 @@ namespace TombEditor.Geometry.IO
                         int firstTexture = reader.ReadInt32();
                         int lastTexture = reader.ReadInt32();
 
-                        if (defined != 1)
+                        if (defined == 0)
                             continue;
 
-                        int TODO_ANIMATED_TEXTURE_IMPORT;
-                        /*var aSet = new AnimatedTextureSet();
-
+                        var animatedTextureSet = new AnimatedTextureSet();
                         for (int j = firstTexture; j <= lastTexture; j++)
                         {
-                            int txtY = j / 4;
-                            int txtX = j % 4;
+                            float y = (j / 4) * 64.0f;
+                            float x = (j % 4) * 64.0f;
 
-                            AnimatedTexture aTexture = new AnimatedTexture(txtX, txtY, 64, 64);
-                            aSet.Textures.Add(aTexture);
+                            animatedTextureSet.Frames.Add(new AnimatedTextureFrame
+                            {
+                                Texture = texture,
+                                TexCoord0 = new Vector2(x + 0.5f, y + 63.5f),
+                                TexCoord1 = new Vector2(x + 0.5f, y + 0.5f),
+                                TexCoord2 = new Vector2(x + 63.5f, y + 0.5f),
+                                TexCoord3 = new Vector2(x + 63.5f, y + 63.5f)
+                            });
                         }
-
-                        level.AnimatedTextures.Add(aSet);*/
+                        level.Settings.AnimatedTextureSets.Add(animatedTextureSet);
                     }
 
                     // Read texture sounds
@@ -1107,8 +1129,8 @@ namespace TombEditor.Geometry.IO
                                 {
                                     if (x > 0)
                                         if ((room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
-                                            room.IsFaceDefined(x- 1, z , BlockFace.PositiveX_ED)) ||
-                                            !IsUndefinedButHasArea(room, x- 1, z , BlockFace.PositiveX_QA))
+                                            room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED)) ||
+                                            !IsUndefinedButHasArea(room, x - 1, z, BlockFace.PositiveX_QA))
                                         {
                                             LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[10]);
                                         }
@@ -1412,6 +1434,55 @@ namespace TombEditor.Geometry.IO
             return false;
         }
 
+        private static void ProcessTexturedNoCollisions(PortalInstance portal, Room room, PrjRoom tempRoom, Room adjoiningRoom, int triangle1FaceTexIndex,
+            int triangle2FaceTexIndex, Predicate<PrjBlock> isNoCollision, Func<Room, Room, Block, Block, Room.RoomConnectionType> getRoomConnectionType)
+        {
+            for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                {
+                    PrjBlock prjBlock = tempRoom._blocks[x, z];
+                    if (!isNoCollision(prjBlock)) // If the tile is isn't no collision, then a triangle face will be available anyway due to 'ForceFloorSolid'
+                        continue;
+
+                    var pos = new DrawingPoint(x, z);
+                    var connectionType = getRoomConnectionType(room, adjoiningRoom,
+                        room.GetBlock(pos), adjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(adjoiningRoom.SectorPos)));
+
+                    switch (connectionType)
+                    {
+                        case Room.RoomConnectionType.TriangularPortalXpZp:
+                        case Room.RoomConnectionType.TriangularPortalXpZn:
+                            if (prjBlock._faces[triangle1FaceTexIndex]._txtType == 0x0007) // TYPE_TEXTURE_TILE
+                                goto foundTexturedTriangle;
+                            break;
+                        case Room.RoomConnectionType.TriangularPortalXnZn:
+                        case Room.RoomConnectionType.TriangularPortalXnZp:
+                            if (prjBlock._faces[triangle2FaceTexIndex]._txtType == 0x0007) // TYPE_TEXTURE_TILE
+                                goto foundTexturedTriangle;
+                            break;
+                    }
+                }
+            return;
+
+            // Found textured triangle on the ceiling/floor
+            foundTexturedTriangle:
+
+            //Set portal to texturable but reset all full faces since they weren't visible in winroomedit either.
+            portal.Opacity = PortalOpacity.TraversableFaces;
+            for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                {
+                    var pos = new DrawingPoint(x, z);
+                    var connectionType = getRoomConnectionType(room, adjoiningRoom,
+                        room.GetBlock(pos), adjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(adjoiningRoom.SectorPos)));
+                    if (connectionType == Room.RoomConnectionType.FullPortal)
+                    {
+                        tempRoom._blocks[x, z]._faces[triangle1FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                        tempRoom._blocks[x, z]._faces[triangle2FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                    }
+                }
+        }
+
 #pragma warning disable 0675 // Disable warning about bitwise or
         private static void LoadTextureArea(Room room, int x, int z, BlockFace face, LevelTexture levelTexture, List<PrjTexInfo> tempTextures, PrjFace prjFace)
         {
@@ -1551,17 +1622,17 @@ namespace TombEditor.Geometry.IO
                         // Assign texture coordinates
                         if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
                         {
-                            texture.TexCoord0 = uv[1];
-                            texture.TexCoord1 = uv[0];
-                            texture.TexCoord2 = uv[3];
-                            texture.TexCoord3 = uv[2];
+                            texture.TexCoord0 = uv[2];
+                            texture.TexCoord1 = uv[1];
+                            texture.TexCoord2 = uv[0];
+                            texture.TexCoord3 = uv[3];
                         }
                         else
                         {
-                            texture.TexCoord0 = uv[0];
-                            texture.TexCoord1 = uv[1];
-                            texture.TexCoord2 = uv[2];
-                            texture.TexCoord3 = uv[3];
+                            texture.TexCoord0 = uv[3];
+                            texture.TexCoord1 = uv[0];
+                            texture.TexCoord2 = uv[1];
+                            texture.TexCoord3 = uv[2];
                         }
                     }
 

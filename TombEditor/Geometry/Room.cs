@@ -320,17 +320,30 @@ namespace TombEditor.Geometry
             return GetBlockTry(pos.X, pos.Y);
         }
 
-        public Block GetBlockTryThroughPortal(int x, int z)
+        public class RoomBlockPair
         {
+            public Room Room { get; private set; }
+            public Block Block { get; private set; }
+
+            public RoomBlockPair(Room room, Block block)
+            {
+                Room = room;
+                Block = block;
+            }
+        }
+
+        public RoomBlockPair GetBlockTryThroughPortal(int x, int z)
+        {
+            Room adjoiningRoom = null;
             Block sector = GetBlockTry(x, z);
 
             if (sector?.WallPortal != null)
             {
-                Room adjoiningRoom = sector.WallPortal.AdjoiningRoom;
+                adjoiningRoom = sector.WallPortal.AdjoiningRoom;
                 DrawingPoint adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
                 sector = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
             }
-            return sector;
+            return new RoomBlockPair(adjoiningRoom, sector);
         }
 
         public bool IsIllegalSlope(int x, int z)
@@ -434,7 +447,7 @@ namespace TombEditor.Geometry
                 if (slopeDirections[i] == EditorArrowType.EntireFace || slopeIsIllegal)
                     continue;
 
-                Block lookupBlock = null;
+                RoomBlockPair lookupBlock = null;
                 short[] heightsToCompare = new short[2];
                 short[] heightsToCheck = new short[4];
 
@@ -480,17 +493,17 @@ namespace TombEditor.Geometry
                         heightsToCheck[3] = 0;
                         break;
                 }
-                
+
                 // Diagonal split resolver
 
-                if (lookupBlock.IsAnyWall && lookupBlock.FloorDiagonalSplit == DiagonalSplit.None)
+                if (lookupBlock.Block.IsAnyWall && lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.None)
                 {
                     // If lookup block contains non-diagonal wall, we mark slope as illegal in any case.
 
                     slopeIsIllegal = true;
                     continue;
                 }
-                else if (lookupBlock.FloorDiagonalSplit != DiagonalSplit.None)
+                else if (lookupBlock.Block.FloorDiagonalSplit != DiagonalSplit.None)
                 {
                     // If lookup block has diagonal splits...
                     // For floor diagonal steps and diagonal walls, only steps/walls that are facing away
@@ -504,61 +517,61 @@ namespace TombEditor.Geometry
                     switch (slopeDirections[i])
                     {
                         case EditorArrowType.EdgeN:
-                            if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
-                                if (lookupBlock.IsAnyWall)
+                                if (lookupBlock.Block.IsAnyWall)
                                 {
                                     slopeIsIllegal = true;
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                                 heightsToCheck[0] = 2;
                             else
                                 heightsToCheck[1] = 3;
                             break;
                         case EditorArrowType.EdgeE:
-                            if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
-                                if (lookupBlock.IsAnyWall)
+                                if (lookupBlock.Block.IsAnyWall)
                                 {
                                     slopeIsIllegal = true;
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp)
                                 heightsToCheck[0] = 3;
                             else
                                 heightsToCheck[1] = 0;
                             break;
                         case EditorArrowType.EdgeS:
-                            if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZp ||
-                                lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
+                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
-                                if (lookupBlock.IsAnyWall)
+                                if (lookupBlock.Block.IsAnyWall)
                                 {
                                     slopeIsIllegal = true;
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                                 heightsToCheck[0] = 0;
                             else
                                 heightsToCheck[1] = 1;
                             break;
                         case EditorArrowType.EdgeW:
-                            if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZp ||
-                                lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
+                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
-                                if (lookupBlock.IsAnyWall)
+                                if (lookupBlock.Block.IsAnyWall)
                                 {
                                     slopeIsIllegal = true;
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn)
                                 heightsToCheck[0] = 1;
                             else
                                 heightsToCheck[1] = 2;
@@ -566,25 +579,32 @@ namespace TombEditor.Geometry
                     }
                 }
 
+                int heightAdjust = 0;
+                if (lookupBlock.Room != null)
+                    heightAdjust = (int)Math.Round(Position.Y - lookupBlock.Room.Position.Y);
+
+                int absoluteLowestPassableHeight = lowestPassableHeight + heightAdjust;
+                int absoluteLowestPassableStep = lowestPassableStep + heightAdjust;
+
                 // Main comparer
 
-                if (lookupBlock.FloorPortal == null)
+                if (lookupBlock.Block.FloorPortal == null)
                 {
-                    if (lookupBlock.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] > lowestPassableStep ||
-                        lookupBlock.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] > lowestPassableStep)
+                    if (lookupBlock.Block.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] > absoluteLowestPassableStep ||
+                        lookupBlock.Block.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] > absoluteLowestPassableStep)
                         slopeIsIllegal = true;
                     else if (heightsToCheck[0] != heightsToCheck[1]) // Only look for opposite slope cases in case there's no diagonal step in lookup block.
-                        if ((lookupBlock.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] <= lowestPassableStep) && (lookupBlock.QAFaces[heightsToCheck[2]] - lookupBlock.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight) ||
-                            (lookupBlock.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] <= lowestPassableStep) && (lookupBlock.QAFaces[heightsToCheck[3]] - lookupBlock.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight))
+                        if ((lookupBlock.Block.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] <= absoluteLowestPassableStep) && (lookupBlock.Block.QAFaces[heightsToCheck[2]] - lookupBlock.Block.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight) ||
+                            (lookupBlock.Block.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] <= absoluteLowestPassableStep) && (lookupBlock.Block.QAFaces[heightsToCheck[3]] - lookupBlock.Block.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight))
                             slopeIsIllegal = true;
                 }
 
-                if(lookupBlock.CeilingPortal == null)
+                if(lookupBlock.Block.CeilingPortal == null)
                 {
-                    if (lookupBlock.WSFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] < lowestPassableHeight - 1 ||
-                        lookupBlock.WSFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] < lowestPassableHeight - 1 ||
-                        lookupBlock.WSFaces[heightsToCheck[0]] - lookupBlock.QAFaces[heightsToCheck[0]] < lowestPassableHeight ||
-                        lookupBlock.WSFaces[heightsToCheck[1]] - lookupBlock.QAFaces[heightsToCheck[1]] < lowestPassableHeight)
+                    if (lookupBlock.Block.WSFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] < absoluteLowestPassableHeight ||
+                        lookupBlock.Block.WSFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] < absoluteLowestPassableHeight ||
+                        lookupBlock.Block.WSFaces[heightsToCheck[0]] - lookupBlock.Block.QAFaces[heightsToCheck[0]] < lowestPassableHeight ||
+                        lookupBlock.Block.WSFaces[heightsToCheck[1]] - lookupBlock.Block.QAFaces[heightsToCheck[1]] < lowestPassableHeight)
                         slopeIsIllegal = true;
                 }
             }
@@ -1008,7 +1028,7 @@ namespace TombEditor.Geometry
             }
             else if (Block.IsQuad(h0, h1, h2, h3) && (portalMode == RoomConnectionType.NoPortal))
             {
-                AddRectangle(x, z, face1,
+                AddQuad(x, z, face1,
                     new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
                     new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
                     new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
@@ -1216,8 +1236,8 @@ namespace TombEditor.Geometry
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qBportal = qAportal;
 
-                        qA = (int)Position.Y + qaNearA; 
-                        qB = (int)Position.Y + qaNearB; 
+                        qA = (int)Position.Y + qaNearA;
+                        qB = (int)Position.Y + qaNearB;
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
@@ -1227,7 +1247,7 @@ namespace TombEditor.Geometry
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wBportal = wAportal;
 
                         wA = (int)Position.Y + wsNearA;
-                        wB = (int)Position.Y + wsNearB; 
+                        wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
                     }
@@ -1429,8 +1449,8 @@ namespace TombEditor.Geometry
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qBportal = qAportal;
 
-                        qA = (int)Position.Y + qaNearA;  
-                        qB = (int)Position.Y + qaNearB;  
+                        qA = (int)Position.Y + qaNearA;
+                        qB = (int)Position.Y + qaNearB;
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
@@ -1439,8 +1459,8 @@ namespace TombEditor.Geometry
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wBportal = wAportal;
 
-                        wA = (int)Position.Y + wsNearA;  
-                        wB = (int)Position.Y + wsNearB;  
+                        wA = (int)Position.Y + wsNearA;
+                        wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
                     }
@@ -1609,7 +1629,7 @@ namespace TombEditor.Geometry
                     }
 
                     if (Blocks[x, z].WallPortal != null)
-                    {                        
+                    {
                         // Get the adjoining room of the portal
                         var portal = FindPortal(x, z, PortalDirection.WallNegativeX);
                         var adjoiningRoom = portal.AdjoiningRoom;
@@ -2155,7 +2175,7 @@ namespace TombEditor.Geometry
                 if (qA <= cA && qB <= cB)
                 {
                     if (qA > yA && qB > yB)
-                        AddRectangle(x, z, qaFace,
+                        AddQuad(x, z, qaFace,
                             new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
@@ -2184,7 +2204,7 @@ namespace TombEditor.Geometry
                     face = Blocks[x, z].GetFaceTexture(edFace);
 
                     if (eA > yA && eB > yB)
-                        AddRectangle(x, z, edFace,
+                        AddQuad(x, z, edFace,
                             new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
@@ -2229,7 +2249,7 @@ namespace TombEditor.Geometry
                     if (wA >= fA && wB >= fB)
                     {
                         if (wA < yA && wB < yB)
-                            AddRectangle(x, z, wsFace,
+                            AddQuad(x, z, wsFace,
                                 new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                                 new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                                 new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
@@ -2258,7 +2278,7 @@ namespace TombEditor.Geometry
                         face = Blocks[x, z].GetFaceTexture(rfFace);
 
                         if (rA < yA && rB < yB)
-                            AddRectangle(x, z, rfFace,
+                            AddQuad(x, z, rfFace,
                                 new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                                 new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                                 new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
@@ -2291,7 +2311,7 @@ namespace TombEditor.Geometry
             int yC = qB < fB ? fB : qB;
             // middle
             if (yA != yD && yB != yC)
-                AddRectangle(x, z, middleFace,
+                AddQuad(x, z, middleFace,
                     new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                     new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                     new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
@@ -2325,17 +2345,17 @@ namespace TombEditor.Geometry
             return null;
         }
 
-        private void AddRectangle(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
+        private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
         {
             var sectorVertices = _sectorVertices[x, z];
             int sectorVerticesStart = sectorVertices.Count;
 
-            sectorVertices.Add(new EditorVertex { Position = p1, UV = texture.TexCoord1, EditorUV = editorUV1 });
-            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord2, EditorUV = editorUV2 });
-            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord0, EditorUV = editorUV0 });
-            sectorVertices.Add(new EditorVertex { Position = p3, UV = texture.TexCoord3, EditorUV = editorUV3 });
-            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord0, EditorUV = editorUV0 });
-            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord2, EditorUV = editorUV2 });
+            sectorVertices.Add(new EditorVertex { Position = p1, UV = texture.TexCoord2, EditorUV = editorUV1 });
+            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord3, EditorUV = editorUV2 });
+            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord1, EditorUV = editorUV0 });
+            sectorVertices.Add(new EditorVertex { Position = p3, UV = texture.TexCoord0, EditorUV = editorUV3 });
+            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord1, EditorUV = editorUV0 });
+            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord3, EditorUV = editorUV2 });
 
             _sectorFaceVertexVertexRange[x, z, (int)face] = new VertexRange { Start = sectorVerticesStart, Count = 6 };
         }
@@ -2686,7 +2706,7 @@ namespace TombEditor.Geometry
             var normal = Vector3.Cross(
                 _allVertices[range.Start + 1].Position - _allVertices[range.Start].Position,
                 _allVertices[range.Start + 2].Position - _allVertices[range.Start].Position);
-            normal.Normalize();
+            normal = normal.Normalize_();
 
             for (int i = 0; i < range.Count; ++i)
             {
@@ -2703,7 +2723,7 @@ namespace TombEditor.Geometry
 
                     switch (light.Type)
                     {
-                        case LightType.Light:
+                        case LightType.Point:
                         case LightType.Shadow:
                             if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
                             {
@@ -2726,7 +2746,7 @@ namespace TombEditor.Geometry
                                     !RayTraceX((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                                     !RayTraceZ((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                                 {
-                                    if (light.CastsShadows)
+                                    if (light.IsObstructedByRoomGeometry)
                                         continue;
                                 }
 
@@ -2774,7 +2794,7 @@ namespace TombEditor.Geometry
                                     !RayTraceX((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                                     !RayTraceZ((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                                 {
-                                    if (light.CastsShadows)
+                                    if (light.IsObstructedByRoomGeometry)
                                         continue;
                                 }
 
@@ -2805,7 +2825,7 @@ namespace TombEditor.Geometry
                             {
                                 // Calculate the ray from light to vertex
                                 var lightVector = position - light.Position;
-                                lightVector.Normalize();
+                                lightVector = lightVector.Normalize_();
 
                                 // Get the distance between light and vertex
                                 float distance = Math.Abs((position - light.Position).Length());
@@ -2829,7 +2849,7 @@ namespace TombEditor.Geometry
                                     !RayTraceX((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                                     !RayTraceZ((int)position.X, (int)position.Y, (int)position.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                                 {
-                                    if (light.CastsShadows)
+                                    if (light.IsObstructedByRoomGeometry)
                                         continue;
                                 }
 

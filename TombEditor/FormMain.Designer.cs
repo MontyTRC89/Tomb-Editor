@@ -129,6 +129,7 @@
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
+            this.objectListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1106,6 +1107,7 @@
             this.lightingToolStripMenuItem,
             this.paletteToolStripMenuItem,
             this.texturePanelToolStripMenuItem,
+            this.objectListToolStripMenuItem,
             this.toolPaletteToolStripMenuItem});
             this.windowToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
@@ -1265,7 +1267,6 @@
             // 
             this.butRoomDown.Location = new System.Drawing.Point(0, 0);
             this.butRoomDown.Name = "butRoomDown";
-            this.butRoomDown.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomDown.Size = new System.Drawing.Size(75, 23);
             this.butRoomDown.TabIndex = 0;
             // 
@@ -1273,7 +1274,6 @@
             // 
             this.butEditRoomName.Location = new System.Drawing.Point(0, 0);
             this.butEditRoomName.Name = "butEditRoomName";
-            this.butEditRoomName.Padding = new System.Windows.Forms.Padding(5);
             this.butEditRoomName.Size = new System.Drawing.Size(75, 23);
             this.butEditRoomName.TabIndex = 0;
             // 
@@ -1281,7 +1281,6 @@
             // 
             this.butDeleteRoom.Location = new System.Drawing.Point(0, 0);
             this.butDeleteRoom.Name = "butDeleteRoom";
-            this.butDeleteRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteRoom.Size = new System.Drawing.Size(75, 23);
             this.butDeleteRoom.TabIndex = 0;
             // 
@@ -1350,6 +1349,15 @@
             this.panelDockArea.Name = "panelDockArea";
             this.panelDockArea.Size = new System.Drawing.Size(1204, 677);
             this.panelDockArea.TabIndex = 26;
+            // 
+            // objectListToolStripMenuItem
+            // 
+            this.objectListToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.objectListToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.objectListToolStripMenuItem.Name = "objectListToolStripMenuItem";
+            this.objectListToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.objectListToolStripMenuItem.Text = "Object List";
+            this.objectListToolStripMenuItem.Click += new System.EventHandler(this.objectListToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -1488,6 +1496,7 @@
         private System.Windows.Forms.ToolStripMenuItem exportRoomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem objectListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolPaletteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dockableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem floatingToolStripMenuItem;

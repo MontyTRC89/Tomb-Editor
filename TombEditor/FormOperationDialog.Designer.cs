@@ -31,7 +31,7 @@ namespace TombEditor
         private void InitializeComponent()
         {
             this.butOk = new DarkUI.Controls.DarkButton();
-            this.pbStato = new System.Windows.Forms.ProgressBar();
+            this.pbStato = new DarkUI.Controls.DarkProgressBar();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.lstLog = new System.Windows.Forms.RichTextBox();
@@ -44,7 +44,6 @@ namespace TombEditor
             this.butOk.Enabled = false;
             this.butOk.Location = new System.Drawing.Point(3, 3);
             this.butOk.Name = "butOk";
-            this.butOk.Padding = new System.Windows.Forms.Padding(5);
             this.butOk.Size = new System.Drawing.Size(317, 26);
             this.butOk.TabIndex = 1;
             this.butOk.Text = "Ok";
@@ -82,7 +81,6 @@ namespace TombEditor
             this.butCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butCancel.Location = new System.Drawing.Point(326, 3);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(317, 26);
             this.butCancel.TabIndex = 2;
             this.butCancel.Text = "Close";
@@ -128,7 +126,7 @@ namespace TombEditor
         #endregion
 
         private DarkButton butOk;
-        private System.Windows.Forms.ProgressBar pbStato;
+        private DarkProgressBar pbStato;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private DarkButton butCancel;
         private System.Windows.Forms.RichTextBox lstLog;

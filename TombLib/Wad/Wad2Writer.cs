@@ -49,7 +49,7 @@ namespace TombLib.Wad
                 _texturesTable.Add(texture.Value);
 
             LEB128.Write(chunkIO.Raw, (uint)wad.Version);
-
+            
             WriteTextures(chunkIO, wad);
             WriteSprites(chunkIO, wad);
             WriteMeshes(chunkIO, wad);
@@ -354,6 +354,7 @@ namespace TombLib.Wad
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Sounds, () =>
             {
+                LEB128.Write(chunkIO.Raw, wad.SoundMapSize);
                 foreach (var sound in wad.SoundInfo)
                 {
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.Sound, () =>

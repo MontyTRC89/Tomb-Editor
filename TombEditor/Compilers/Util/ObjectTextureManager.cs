@@ -17,21 +17,32 @@ namespace TombEditor.Compilers.Util
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public struct Result
-		{
-			public ushort ObjectTextureIndex;
-			public byte FirstVertexIndexToEmit;
+        [Flags]
+        public enum ResultFlags : byte
+        {
+            None = 0,
+            IsNew = 1,
+            DoubleSided = 2
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Result : IEquatable<Result>
+        {
+            public ushort ObjectTextureIndex;
+            public byte FirstVertexIndexToEmit;
+            public ResultFlags Flags;
 
             public tr_face3 CreateFace3(ushort index0, ushort index1, ushort index2, ushort lightingEffect)
             {
+                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? (ushort)0x8000 : (ushort)0));
                 switch (FirstVertexIndexToEmit)
                 {
                     case 0:
-                        return new tr_face3 { Vertices = new ushort[3] { index0, index1, index2 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new tr_face3 { Vertices = new ushort[3] { index0, index1, index2 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     case 1:
-                        return new tr_face3 { Vertices = new ushort[3] { index1, index2, index0 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new tr_face3 { Vertices = new ushort[3] { index1, index2, index0 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     case 2:
-                        return new tr_face3 { Vertices = new ushort[3] { index2, index0, index1 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new tr_face3 { Vertices = new ushort[3] { index2, index0, index1 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     default:
                         throw new ArgumentOutOfRangeException("firstIndexToEmit");
                 }
@@ -39,19 +50,36 @@ namespace TombEditor.Compilers.Util
 
             public tr_face4 CreateFace4(ushort index0, ushort index1, ushort index2, ushort index3, ushort lightingEffect)
             {
+                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? (ushort)0x8000 : (ushort)0));
                 switch (FirstVertexIndexToEmit)
                 {
                     case 0:
-                        return new tr_face4 { Vertices = new ushort[4] { index0, index1, index2, index3 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new tr_face4 { Vertices = new ushort[4] { index0, index1, index2, index3 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     case 1:
-                        return new tr_face4 { Vertices = new ushort[4] { index1, index2, index3, index0 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new tr_face4 { Vertices = new ushort[4] { index1, index2, index3, index0 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     case 2:
-                        return new tr_face4 { Vertices = new ushort[4] { index2, index3, index0, index1 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new tr_face4 { Vertices = new ushort[4] { index2, index3, index0, index1 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     case 3:
-                        return new tr_face4 { Vertices = new ushort[4] { index3, index0, index1, index2 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new tr_face4 { Vertices = new ushort[4] { index3, index0, index1, index2 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     default:
                         throw new ArgumentOutOfRangeException("firstIndexToEmit");
                 }
+            }
+
+            // Custom implementation of these because default implementation is *insanely* slow.
+            // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
+            public static unsafe bool operator ==(Result first, Result second)
+            {
+                return *((uint*)&first) == *((uint*)&second);
+            }
+
+            public static bool operator !=(Result first, Result second) => !(first == second);
+            public bool Equals(Result other) => this == other;
+            public override bool Equals(object obj) => this == (Result)obj;
+            public unsafe override int GetHashCode()
+            {
+                Result this2 = this;
+                return unchecked((-368200913) * *((int*)&this2)); // Random prime
             }
         }
 
@@ -124,7 +152,7 @@ namespace TombEditor.Compilers.Util
                 texture.TexCoord0 = HeuristcallyFixTexCoordUpperBound(texture.TexCoord0);
                 texture.TexCoord1 = HeuristcallyFixTexCoordUpperBound(texture.TexCoord1);
                 texture.TexCoord2 = HeuristcallyFixTexCoordUpperBound(texture.TexCoord2);
-                
+
                 bool isClockwise = !(texture.TriangleArea > 0.0); //'Not' because Y-axis is flipped in texture space
                 Vector2 midPoint = (texture.TexCoord0 + texture.TexCoord1 + texture.TexCoord2) * (1.0f / 3.0f);
 
@@ -143,11 +171,11 @@ namespace TombEditor.Compilers.Util
                 if (toClosestEdge.X < 0)
                     if (toClosestEdge.Y < 0)
                     { // Negative X, Negative Y
-                        // +---+ 
-                        // |  / 
-                        // | / 
-                        // |/ 
-                        // + 
+                        // +---+
+                        // |  /
+                        // | /
+                        // |/
+                        // +
                         if (isClockwise)
                             result |= 0; //static constexpr Diverse::Vec<2, float> Triangle0[3] = { { 0.5f, 0.5f }, { -0.5f, 0.5f }, { 0.5f, -0.5f } };
                         else
@@ -155,11 +183,11 @@ namespace TombEditor.Compilers.Util
                     }
                     else
                     { // Negative X, Postive Y
-                        // + 
-                        // |\ 
-                        // | \ 
-                        // |  \ 
-                        // +---+ 
+                        // +
+                        // |\
+                        // | \
+                        // |  \
+                        // +---+
                         if (isClockwise)
                             result |= 3; //static constexpr Diverse::Vec<2, float> Triangle3[3] = { { 0.5f, -0.5f }, { 0.5f, 0.5f }, { -0.5f, -0.5f } };
                         else
@@ -168,7 +196,7 @@ namespace TombEditor.Compilers.Util
                 else
                     if (toClosestEdge.Y < 0)
                     { // Postive X, Negative Y
-                      // +---+ 
+                      // +---+
                       //  \  |
                       //   \ |
                       //    \|
@@ -184,7 +212,7 @@ namespace TombEditor.Compilers.Util
                       //    /|
                       //   / |
                       //  /  |
-                      // +---+ 
+                      // +---+
                         if (isClockwise)
                             result |= 2; //static constexpr Diverse::Vec<2, float> Triangle2[3] = { { -0.5f, -0.5f }, { 0.5f, -0.5f }, { -0.5f, 0.5f } };
                         else
@@ -201,9 +229,9 @@ namespace TombEditor.Compilers.Util
                 texture.TexCoord1 = HeuristcallyFixTexCoordUpperBound(texture.TexCoord1);
                 texture.TexCoord2 = HeuristcallyFixTexCoordUpperBound(texture.TexCoord2);
                 texture.TexCoord3 = HeuristcallyFixTexCoordUpperBound(texture.TexCoord3);
-                
+
                 bool isClockwise = !(texture.QuadArea > 0.0); // 'Not' because Y-axis is flipped in texture space
-                
+
                 // Determine upper left edge
                 byte upperLeftIndex = 0;
                 float upperLeftScore = texture.TexCoord0.Y + texture.TexCoord0.X;
@@ -234,16 +262,16 @@ namespace TombEditor.Compilers.Util
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
-        private unsafe struct SavedObjectTexture
-		{
-			public ushort TextureID;
-			public ushort IsTriangularAndPadding;
-			public ushort BlendMode;
-			//Bit 0 - 2     mapping correction. It seems that these bits change the way the texture is applied...
-			//Bit 11 - 12   the bump mapping type. Can be 0x01 or 0x10. It's 0x00 if not bump mapped. Only textures for room or animated textures can be bump mapped, not meshes
-			//Bit 15        if set, the texture is for a tri/quad from a room or animated texture. If not set, the texture is for a mesh
-			public ushort NewFlags;
-			public ushort TexCoord0X; // C# sucks!!!!!
+        private unsafe struct SavedObjectTexture : IEquatable<SavedObjectTexture>
+        {
+            public ushort TextureID;
+            public ushort IsTriangularAndPadding;
+            public ushort BlendMode;
+            //Bit 0 - 2     mapping correction. It seems that these bits change the way the texture is applied...
+            //Bit 11 - 12   the bump mapping type. Can be 0x01 or 0x10. It's 0x00 if not bump mapped. Only textures for room or animated textures can be bump mapped, not meshes
+            //Bit 15        if set, the texture is for a tri/quad from a room or animated texture. If not set, the texture is for a mesh
+            public ushort NewFlags;
+            public ushort TexCoord0X; // C# sucks!!!!!
             public ushort TexCoord0Y;
             public ushort TexCoord1X;
             public ushort TexCoord1Y;
@@ -251,17 +279,17 @@ namespace TombEditor.Compilers.Util
             public ushort TexCoord2Y;
             public ushort TexCoord3X;
             public ushort TexCoord3Y;
-            public bool MustBeInFirstPage;
+            public uint TextureSpaceIdentifier;
+            private uint Unused;
 
-            public SavedObjectTexture(ushort textureID, TextureArea texture, TextureAllocator.TextureView view, 
-                                      bool isTriangular, bool isUsedInRoomMesh, bool canRotate,
-                                      bool mustBeInFirstPage, out byte firstTexCoordToEmit)
-			{
-				TextureID = textureID;
+            public SavedObjectTexture(ushort textureID, TextureArea texture, uint textureSpaceIdentifier, TextureAllocator.TextureView view, bool isTriangular, bool isUsedInRoomMesh, bool canRotate, out byte firstTexCoordToEmit)
+            {
+                TextureID = textureID;
                 IsTriangularAndPadding = isTriangular ? (ushort)1 : (ushort)0;
                 BlendMode = (ushort)(texture.BlendMode);
                 NewFlags = GetNewFlag(texture, isTriangular, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit);
-                MustBeInFirstPage = mustBeInFirstPage;
+                TextureSpaceIdentifier = textureSpaceIdentifier;
+                Unused = 0;
 
                 // C# sucks!!!!!
                 TexCoord0X = TexCoord0Y = 0;
@@ -275,12 +303,12 @@ namespace TombEditor.Compilers.Util
                 Vector2 upperBound = new Vector2(view.Width, view.Height) - new Vector2(129.0f / 256.0f);
                 Vector2 lowerBountUint16 = new Vector2(0.0f);
                 Vector2 upperBoundUint16 = new Vector2(view.Width, view.Height) * 256.0f - new Vector2(1.0f);
-                Vector2[] texCoordModification = GetTexCoordModificationFromNewFlags(NewFlags, isTriangular); 
-				for (int i = 0; i < edgeCount; ++i)
-				{
-					Vector2 value = texture.GetTexCoord((i + (canRotate ? firstTexCoordToEmit : 0)) % edgeCount);
+                Vector2[] texCoordModification = GetTexCoordModificationFromNewFlags(NewFlags, isTriangular);
+                for (int i = 0; i < edgeCount; ++i)
+                {
+                    Vector2 value = texture.GetTexCoord((i + (canRotate ? firstTexCoordToEmit : 0)) % edgeCount);
                     value = Vector2.Max(lowerBound, Vector2.Min(upperBound, value));
-					value -= texCoordModification[i];
+                    value -= texCoordModification[i];
                     value *= 256.0f;
                     value = new Vector2((float)Math.Round(value.X), (float)Math.Round(value.Y));
                     value = Vector2.Max(lowerBountUint16, Vector2.Min(upperBoundUint16, value));
@@ -288,7 +316,7 @@ namespace TombEditor.Compilers.Util
                     // C# sucks!!!!!
                     ushort x = (ushort)value.X;
                     ushort y = (ushort)value.Y;
-                    switch (i) 
+                    switch (i)
                     {
                         case 0:
                             TexCoord0X = x;
@@ -338,113 +366,70 @@ namespace TombEditor.Compilers.Util
                 return (firstPtr[0] == secondPtr[0]) && (firstPtr[1] == secondPtr[1]) && (firstPtr[2] == secondPtr[2]);
             }
 
-            public static bool operator !=(SavedObjectTexture first, SavedObjectTexture second)
-            {
-                return !(first == second);
-            }
-
-            public bool Equals(SavedObjectTexture other)
-            {
-                return this == other;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return this == (SavedObjectTexture)obj;
-            }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
+            public static bool operator !=(SavedObjectTexture first, SavedObjectTexture second) => !(first == second);
+            public bool Equals(SavedObjectTexture other) => this == other;
+            public override bool Equals(object obj) => this == (SavedObjectTexture)obj;
+            public override int GetHashCode() => base.GetHashCode();
         };
         private List<SavedObjectTexture> _objectTextures = new List<SavedObjectTexture>();
         private Dictionary<SavedObjectTexture, ushort> _objectTexturesLookup = new Dictionary<SavedObjectTexture, ushort>();
+        private uint _textureSpaceIdentifier = 0;
+        private int _supportsUpTo65536TextureCount = 0;
 
-        //private struct AnimationInfo
-        //{
-        //	std::vector<ushort> AllocatedObjectTextureIndices;
-        //};
-        //private Dictionary<TextureAnimationN const*, AnimationInfo> AnimationsCache;
         private TextureAllocator _textureAllocator = new TextureAllocator();
 
-        private ushort AddObjectTextureWithoutLookup(SavedObjectTexture newEntry, bool onlyUsedForAnimatedTextureRange = false)
-		{
-			int newID = _objectTextures.Count;
-			if (onlyUsedForAnimatedTextureRange)
-			{
-				if (newID > 0xffff)
-					throw new ApplicationException("More than 0xffff object textures are not possible for animated textures.");
-			}
-			else
-			{
-				if (newID > 0x7fff)
+        private ushort AddObjectTextureWithoutLookup(SavedObjectTexture newEntry, bool supportsUpTo65536)
+        {
+            int newID = _objectTextures.Count;
+            if (supportsUpTo65536)
+            {
+                if (newID > 0xffff)
+                    throw new ApplicationException("More than 0xffff object textures are not possible for animated textures.");
+                _supportsUpTo65536TextureCount += 1;
+            }
+            else
+            {
+                if (newID > 0x7fff)
                     throw new ApplicationException("More than 0x7fff object textures that are used for meshes in rooms/movables/statics are not possible.");
-			}
-			_objectTextures.Add(newEntry);
-			return (ushort)(newID);
-		}
+            }
+            _objectTextures.Add(newEntry);
+            return (ushort)(newID);
+        }
 
-        private ushort AddOrGetObjectTexture(SavedObjectTexture newEntry)
-		{
+        private ushort AddOrGetObjectTexture(SavedObjectTexture newEntry, bool supportsUpTo65536, out bool isNew)
+        {
             ushort id;
             if (_objectTexturesLookup.TryGetValue(newEntry, out id))
-				return id;
-            id = AddObjectTextureWithoutLookup(newEntry);
-			_objectTexturesLookup.Add(newEntry, id);
-			return id;
-		}
-
-
-        public Result AddTexture(TextureArea texture, bool isTriangle, bool IsUsedInRoomMesh, bool mustBeInFirstPage)
-		{
-            /*if (Texture.IsAnimation())
-			{
-			    //Get animation object...
-			    auto& AnimationInfo = AnimationsCache[&AnimationTexture];
-			    if (AnimationInfo.AllocatedObjectTextureIndices.empty())
-			    { 
-				    if (AnimationTexture.TextureRefs.empty())
-					    Diverse::SomeExceptionThrow("Texture animations with no textures are not allowed!");
-				    AnimationInfo.AllocatedObjectTextureIndices.resize(AnimationTexture.TextureRefs.size(), UINT16_MAX);
-			    }
-
-                //Allocate object texture if needed...
-                const int32_t NthImage = Diverse::ModRoundDown(AnimationStart, static_cast<int32_t>(AnimationTexture.TextureRefs.size()));
-                auto& CurrentTextureID = AnimationInfo.AllocatedObjectTextureIndices[NthImage];
-			    if (CurrentTextureID == UINT16_MAX)
-			    {
-				    const TextureRefN& TextureRef = AnimationTexture.TextureRefs[NthImage];
-				    const TextureID TextureID = TextureAllocator.GetOrAllocateTexture(*(TextureRef.Texture));
-                    CurrentTextureID = AddObjectTextureWithoutLookup(new SavedObjectTexture(TextureID, TextureRef, VertexCount == 3, true, nullptr));
-			    }
-			
-			    return CurrentTextureID;
-            }*/
-
-            // Add object textures
-            int textureID = _textureAllocator.GetOrAllocateTextureID(ref texture, isTriangle, mustBeInFirstPage);
-            byte firstTexCoordToEmit;
-            ushort objTexIndex = AddOrGetObjectTexture(new SavedObjectTexture((ushort)textureID, texture, 
-                _textureAllocator.GetTextureFromID(textureID), isTriangle, IsUsedInRoomMesh, true, mustBeInFirstPage,
-                out firstTexCoordToEmit));
-            objTexIndex |= (ushort)(texture.DoubleSided ? 0x8000 : 0);
-            return new Result { ObjectTextureIndex = objTexIndex, FirstVertexIndexToEmit = firstTexCoordToEmit };
+            {
+                isNew = false;
+                return id;
+            }
+            id = AddObjectTextureWithoutLookup(newEntry, supportsUpTo65536);
+            _objectTexturesLookup.Add(newEntry, id);
+            isNew = true;
+            return id;
         }
+
+        public Result AddTexture(TextureArea texture, bool isTriangle, bool isUsedInRoomMesh, int packPriorityClass = 0, bool supportsUpTo65536 = false, bool canRotate = true, uint textureSpaceIdentifier = 0)
+        {
+            // Add object textures
+            int textureID = _textureAllocator.GetOrAllocateTextureID(ref texture, isTriangle, packPriorityClass);
+            bool isNew;
+            byte firstTexCoordToEmit;
+            ushort objTexIndex = AddOrGetObjectTexture(new SavedObjectTexture((ushort)textureID, texture, textureSpaceIdentifier,
+                _textureAllocator.GetTextureFromID(textureID), isTriangle, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit), supportsUpTo65536, out isNew);
+            return new Result { ObjectTextureIndex = objTexIndex, FirstVertexIndexToEmit = firstTexCoordToEmit,
+                Flags = (texture.DoubleSided ? ResultFlags.DoubleSided : ResultFlags.None) | (isNew ? ResultFlags.IsNew : ResultFlags.None) };
+        }
+
+        protected virtual void OnPackingTextures(IProgressReporter progressReporter)
+        {}
 
         private volatile int _alphaBlendingTextureCount;
         public List<ImageC> PackTextures(IProgressReporter progressReporter)
         {
             //Add not yet required object textures to texture animations...
-            /*for (auto& Animation : AnimationsCache)
-				for (size_t i = 0; i < Animation.second.AllocatedObjectTextureIndices.size(); ++i)
-					if (Animation.second.AllocatedObjectTextureIndices[i] == UINT16_MAX)
-					{
-						const TextureRefN& TextureRef = Animation.first->GetTextureRef(i);
-						const TextureID TextureID = TextureAllocator.GetOrAllocateTexture(*(TextureRef.Texture));
-						Animation.second.AllocatedObjectTextureIndices[i] =
-							AddObjectTextureWithoutLookup(SavedObjectTexture(TextureID, TextureRef, TextureRef.GetEdgeCount() == 3, true, nullptr), true);
-					}*/
+            OnPackingTextures(progressReporter);
 
             // Enable alpha blending for faces whose textures are not completely opaque.
             Parallel.For(0, _objectTextures.Count, (objectTextureIndex) =>
@@ -476,8 +461,9 @@ namespace TombEditor.Compilers.Util
                 }
             });
             progressReporter.ReportInfo("Alpha blending information built. ( Alpha blending enabled for " + _alphaBlendingTextureCount + " of " + _objectTextures.Count + " object textures)");
+            progressReporter.ReportInfo("Count of general purpose object textures: " + (_objectTextures.Count - _supportsUpTo65536TextureCount) + " (The maximum is 32768)\n");
+            progressReporter.ReportInfo("Count of extended object textures: " + _objectTextures.Count + " (The maximum is 65536)\n");
 
-            progressReporter.ReportInfo("Count of object textures: " + _objectTextures.Count);
             //progressReporter.ReportInfo("Count of animated textures: " + AnimationsCache.Count);
 
             // Debug object textures (if used)
@@ -486,9 +472,10 @@ namespace TombEditor.Compilers.Util
             // Pack textures...
             List<ImageC> result = _textureAllocator.PackTextures();
             progressReporter.ReportInfo("Packed all level and wad textures into " + result.Count + " pages.");
-            
             return result;
         }
+
+        public uint GetNewTextureSpaceIdentifier() => ++_textureSpaceIdentifier;
 
         private void DebugObjectTextures()
         {
@@ -615,7 +602,7 @@ namespace TombEditor.Compilers.Util
                             posY += moveSpeed / scale;
                             form.Invalidate();
                             break;
-                            
+
                         case System.Windows.Forms.Keys.Escape:
                             form.Close();
                             break;
@@ -635,15 +622,15 @@ namespace TombEditor.Compilers.Util
         }
 
         public void WriteObjectTexturesForTr4(BinaryWriterEx stream)
-		{
+        {
             // Write object textures
             stream.Write((uint)_objectTextures.Count);
-			for (int i = 0; i < _objectTextures.Count; ++i)
-			{
+            for (int i = 0; i < _objectTextures.Count; ++i)
+            {
                 SavedObjectTexture objectTexture = _objectTextures[i];
-				TextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
-				ushort Tile = UsedTexturePackInfo.OutputTextureID;
-				Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
+                TextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
+                ushort Tile = UsedTexturePackInfo.OutputTextureID;
+                Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
 
                 stream.Write((ushort)objectTexture.BlendMode);
                 stream.Write((ushort)Tile);
@@ -667,28 +654,7 @@ namespace TombEditor.Compilers.Util
                 stream.Write((uint)0);
                 stream.Write((uint)0);
                 stream.Write((uint)0);
-			}
-		}
-
-		/*public void WriteAnimatedTextures(CompressData& Data)
-		{
-			const size_t AnimationSectionStart = Data.WriteDelayable(4);
-			
-			Data.WriteAny<ushort>(AnimationsCache.size());
-			for (auto AnimationCacheEntry : AnimationsCache)
-			{
-				const AnimationInfo& AnimationData = AnimationCacheEntry.second;
-				Data.WriteAny<int16_t>(AnimationData.AllocatedObjectTextureIndices.size() - 1);
-				for (size_t i = 0; i < AnimationData.AllocatedObjectTextureIndices.size(); ++i)
-					Data.WriteAny<ushort>(AnimationData.AllocatedObjectTextureIndices[i]);
-			}
-
-			//Write the length of the section of the animated texture.
-			const uint Size = static_cast<uint>(Data.GetSize() - AnimationSectionStart) - 4;
-			ASSERT((Size & 1) == 0);
-			char SizeData[4];
-			Diverse::MemWrite(SizeData, Size / 2);
-			Data.WriteAtOffset(AnimationSectionStart, SizeData, 4);
-		}*/
-	}
+            }
+        }
+    }
 }

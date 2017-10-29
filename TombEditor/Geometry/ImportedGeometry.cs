@@ -67,6 +67,15 @@ namespace TombEditor.Geometry
             if (Vertices.Count == 0)
                 return;
 
+            Vector3 minVertex = new Vector3(float.MaxValue);
+            Vector3 maxVertex = new Vector3(float.MinValue);
+            foreach (var vertex in Vertices)
+            {
+                minVertex = Vector3.Min(minVertex, vertex.Position);
+                maxVertex = Vector3.Max(maxVertex, vertex.Position);
+            }
+            BoundingBox = new BoundingBox(minVertex, maxVertex);
+
             VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Default);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Default);
         }
@@ -152,7 +161,7 @@ namespace TombEditor.Geometry
                     {
                         ImportedGeometryVertex v = new ImportedGeometryVertex();
 
-                        v.Position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z) * info.Scale;
+                        v.Position = new Vector3(positions[i].X, positions[i].Y, -positions[i].Z) * info.Scale;
                         minVertex = Vector3.Min(minVertex, v.Position);
                         maxVertex = Vector3.Max(maxVertex, v.Position);
 
@@ -234,17 +243,5 @@ namespace TombEditor.Geometry
         public ImportedGeometry Clone() => (ImportedGeometry)MemberwiseClone();
         object ICloneable.Clone() => Clone();
         public bool Equals(ImportedGeometry other) => base.Equals(other);
-
-        public static bool AreListsEqual(List<ImportedGeometry> first, List<ImportedGeometry> second)
-        {
-            if (first.Count != second.Count)
-                return false;
-
-            for (int i = 0; i < first.Count; ++i)
-                if (!first[i].Equals(second[i]))
-                    return false;
-
-            return true;
-        }
     }
 }

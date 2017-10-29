@@ -5,24 +5,6 @@ namespace TombEditor
 {
     partial class FormTextureSounds
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -31,7 +13,6 @@ namespace TombEditor
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.textureMap = new TombEditor.FormTextureSounds.PanelTextureMapForSounds();
             this.butAssignSound = new DarkUI.Controls.DarkButton();
             this.comboSounds = new DarkUI.Controls.DarkComboBox();
@@ -63,18 +44,12 @@ namespace TombEditor
             // comboSounds
             // 
             this.comboSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.comboSounds.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboSounds.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboSounds.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboSounds.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboSounds.ForeColor = System.Drawing.Color.White;
-            this.comboSounds.FormattingEnabled = true;
-            this.comboSounds.ItemHeight = 18;
-            this.comboSounds.Location = new System.Drawing.Point(8, 532);
+            this.comboSounds.Location = new System.Drawing.Point(8, 533);
             this.comboSounds.Name = "comboSounds";
-            this.comboSounds.Size = new System.Drawing.Size(169, 24);
+            this.comboSounds.Size = new System.Drawing.Size(169, 23);
             this.comboSounds.Sorted = true;
             this.comboSounds.TabIndex = 1;
+            this.comboSounds.Text = null;
             // 
             // butOk
             // 

@@ -15,11 +15,11 @@ namespace TombEditor
     class Effects
     {
         private static Assembly _editorAssembly;
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); 
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static string _path;
         public static GraphicsDevice GraphicsDevice { get; set; }
         public static SharpDX.Toolkit.Graphics.Effect Picking { get; set; }
-        
+
         public static bool Initialize(GraphicsDevice device)
         {
             _editorAssembly = Assembly.GetExecutingAssembly();

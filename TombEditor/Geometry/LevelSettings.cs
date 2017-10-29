@@ -65,6 +65,7 @@ namespace TombEditor.Geometry
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
         public bool GameExecutableSuppressAskingForOptions { get; set; } = true;
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
+        public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
 
         public LevelSettings Clone()
@@ -72,7 +73,8 @@ namespace TombEditor.Geometry
             LevelSettings result = (LevelSettings)MemberwiseClone();
             result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll((soundPath) => soundPath.Clone());
             result.Textures = Textures.ConvertAll((texture) => (LevelTexture)(texture.Clone()));
-            result.ImportedGeometries = ImportedGeometries.ConvertAll((importedGeometry) => (ImportedGeometry)(importedGeometry.Clone()));
+            result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll((set) => set.Clone());
+            result.ImportedGeometries = ImportedGeometries.ConvertAll((geometry) => geometry.Clone());
             return result;
         }
 

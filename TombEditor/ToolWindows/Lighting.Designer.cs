@@ -18,7 +18,7 @@
             this.components = new System.ComponentModel.Container();
             this.cbLightIsDynamicallyUsed = new DarkUI.Controls.DarkCheckBox();
             this.cbLightIsStaticallyUsed = new DarkUI.Controls.DarkCheckBox();
-            this.cbLightCastsShadows = new DarkUI.Controls.DarkCheckBox();
+            this.cbLightIsObstructedByRoomGeometry = new DarkUI.Controls.DarkCheckBox();
             this.cbLightEnabled = new DarkUI.Controls.DarkCheckBox();
             this.panelLightColor = new System.Windows.Forms.Panel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
@@ -80,18 +80,18 @@
             this.toolTip.SetToolTip(this.cbLightIsStaticallyUsed, "Use light for room geometry lighting");
             this.cbLightIsStaticallyUsed.CheckedChanged += new System.EventHandler(this.cbLightIsStaticallyUsed_CheckedChanged);
             // 
-            // cbLightCastsShadows
+            // cbLightIsObstructedByRoomGeometry
             // 
-            this.cbLightCastsShadows.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbLightCastsShadows.Enabled = false;
-            this.cbLightCastsShadows.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightCastsShadows.Location = new System.Drawing.Point(360, 52);
-            this.cbLightCastsShadows.Name = "cbLightCastsShadows";
-            this.cbLightCastsShadows.Size = new System.Drawing.Size(70, 22);
-            this.cbLightCastsShadows.TabIndex = 15;
-            this.cbLightCastsShadows.Text = "Shadows";
-            this.toolTip.SetToolTip(this.cbLightCastsShadows, "Light casts shadows on room geometry");
-            this.cbLightCastsShadows.CheckedChanged += new System.EventHandler(this.cbLightCastsShadows_CheckedChanged);
+            this.cbLightIsObstructedByRoomGeometry.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbLightIsObstructedByRoomGeometry.Enabled = false;
+            this.cbLightIsObstructedByRoomGeometry.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLightIsObstructedByRoomGeometry.Location = new System.Drawing.Point(360, 52);
+            this.cbLightIsObstructedByRoomGeometry.Name = "cbLightIsObstructedByRoomGeometry";
+            this.cbLightIsObstructedByRoomGeometry.Size = new System.Drawing.Size(70, 22);
+            this.cbLightIsObstructedByRoomGeometry.TabIndex = 15;
+            this.cbLightIsObstructedByRoomGeometry.Text = "Obstruct";
+            this.toolTip.SetToolTip(this.cbLightIsObstructedByRoomGeometry, "Determines whether the effect of this light is obstructed by room geometry.");
+            this.cbLightIsObstructedByRoomGeometry.CheckedChanged += new System.EventHandler(this.cbLightIsObstructedByRoomGeometry_CheckedChanged);
             // 
             // cbLightEnabled
             // 
@@ -211,7 +211,6 @@
             this.butAddFogBulb.Image = global::TombEditor.Properties.Resources.Fog_16;
             this.butAddFogBulb.Location = new System.Drawing.Point(77, 102);
             this.butAddFogBulb.Name = "butAddFogBulb";
-            this.butAddFogBulb.Padding = new System.Windows.Forms.Padding(5);
             this.butAddFogBulb.Size = new System.Drawing.Size(68, 23);
             this.butAddFogBulb.TabIndex = 5;
             this.butAddFogBulb.Text = "Fog";
@@ -225,7 +224,6 @@
             this.butAddEffectLight.Image = global::TombEditor.Properties.Resources.Effect_16;
             this.butAddEffectLight.Location = new System.Drawing.Point(77, 73);
             this.butAddEffectLight.Name = "butAddEffectLight";
-            this.butAddEffectLight.Padding = new System.Windows.Forms.Padding(5);
             this.butAddEffectLight.Size = new System.Drawing.Size(68, 23);
             this.butAddEffectLight.TabIndex = 4;
             this.butAddEffectLight.Text = "Effect";
@@ -238,7 +236,6 @@
             this.butAddSpotLight.Image = global::TombEditor.Properties.Resources.Spotlight_16;
             this.butAddSpotLight.Location = new System.Drawing.Point(77, 44);
             this.butAddSpotLight.Name = "butAddSpotLight";
-            this.butAddSpotLight.Padding = new System.Windows.Forms.Padding(5);
             this.butAddSpotLight.Size = new System.Drawing.Size(68, 23);
             this.butAddSpotLight.TabIndex = 3;
             this.butAddSpotLight.Text = "Spot";
@@ -252,7 +249,6 @@
             this.butAddSun.Image = global::TombEditor.Properties.Resources.sun_16;
             this.butAddSun.Location = new System.Drawing.Point(3, 102);
             this.butAddSun.Name = "butAddSun";
-            this.butAddSun.Padding = new System.Windows.Forms.Padding(5);
             this.butAddSun.Size = new System.Drawing.Size(68, 23);
             this.butAddSun.TabIndex = 2;
             this.butAddSun.Text = "Sun";
@@ -266,7 +262,6 @@
             this.butAddShadow.Image = global::TombEditor.Properties.Resources.Shadow_16;
             this.butAddShadow.Location = new System.Drawing.Point(3, 73);
             this.butAddShadow.Name = "butAddShadow";
-            this.butAddShadow.Padding = new System.Windows.Forms.Padding(5);
             this.butAddShadow.Size = new System.Drawing.Size(68, 23);
             this.butAddShadow.TabIndex = 1;
             this.butAddShadow.Text = "Shadow";
@@ -280,7 +275,6 @@
             this.butAddPointLight.Image = global::TombEditor.Properties.Resources.LightPoint_16;
             this.butAddPointLight.Location = new System.Drawing.Point(3, 44);
             this.butAddPointLight.Name = "butAddPointLight";
-            this.butAddPointLight.Padding = new System.Windows.Forms.Padding(5);
             this.butAddPointLight.Size = new System.Drawing.Size(68, 23);
             this.butAddPointLight.TabIndex = 0;
             this.butAddPointLight.Text = "Point";
@@ -528,7 +522,7 @@
             this.Controls.Add(this.numIntensity);
             this.Controls.Add(this.cbLightIsDynamicallyUsed);
             this.Controls.Add(this.cbLightIsStaticallyUsed);
-            this.Controls.Add(this.cbLightCastsShadows);
+            this.Controls.Add(this.cbLightIsObstructedByRoomGeometry);
             this.Controls.Add(this.cbLightEnabled);
             this.Controls.Add(this.panelLightColor);
             this.Controls.Add(this.darkLabel12);
@@ -568,7 +562,7 @@
         #endregion
         private DarkUI.Controls.DarkCheckBox cbLightIsDynamicallyUsed;
         private DarkUI.Controls.DarkCheckBox cbLightIsStaticallyUsed;
-        private DarkUI.Controls.DarkCheckBox cbLightCastsShadows;
+        private DarkUI.Controls.DarkCheckBox cbLightIsObstructedByRoomGeometry;
         private DarkUI.Controls.DarkCheckBox cbLightEnabled;
         private System.Windows.Forms.Panel panelLightColor;
         private DarkUI.Controls.DarkLabel darkLabel12;

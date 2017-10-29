@@ -65,6 +65,9 @@
       <HintPath>..\packages\AssimpNet.3.3.2\lib\net45\AssimpNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MiniZ.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MiniZ.Net.1.0.0\lib\MiniZ.Net.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
       <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -123,6 +126,7 @@
     <Compile Include="Compilers\Structs.cs" />
     <Compile Include="Compilers\Textures.cs" />
     <Compile Include="Compilers\Util\ObjectTextureManager.cs" />
+    <Compile Include="Compilers\Util\ObjectTextureManagerWithAnimations.cs" />
     <Compile Include="Compilers\Util\TextureAllocator.cs" />
     <Compile Include="Compilers\Wad.cs" />
     <Compile Include="Compilers\Writer.cs" />
@@ -144,23 +148,15 @@
     <Compile Include="Controls\ImportedGeometryManager.designer.cs">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OpenFolderDialog.cs" />
     <Compile Include="Controls\MovementTimer.cs" />
     <Compile Include="Controls\PanelPalette.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelAnimatedTextures.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="ToolWindows\ToolPaletteFloating.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ToolWindows\ToolPaletteFloating.Designer.cs">
-      <DependentUpon>ToolPaletteFloating.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
@@ -262,6 +258,7 @@
     <Compile Include="FormSink.Designer.cs">
       <DependentUpon>FormSink.cs</DependentUpon>
     </Compile>
+    <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
     <Compile Include="Geometry\ImportedGeometry.cs" />
@@ -293,6 +290,12 @@
     <Compile Include="ToolWindows\MainView.Designer.cs">
       <DependentUpon>MainView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\ObjectList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\ObjectList.Designer.cs">
+      <DependentUpon>ObjectList.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\Palette.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -310,6 +313,12 @@
     </Compile>
     <Compile Include="ToolWindows\ToolPalette.Designer.cs">
       <DependentUpon>ToolPalette.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ToolPaletteFloating.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\ToolPaletteFloating.Designer.cs">
+      <DependentUpon>ToolPaletteFloating.cs</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\TriggerList.cs">
       <SubType>UserControl</SubType>
@@ -389,6 +398,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ObjectBrowser.resx">
       <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\ObjectList.resx">
+      <DependentUpon>ObjectList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\Palette.resx">
       <DependentUpon>Palette.cs</DependentUpon>
@@ -629,7 +641,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AssimpNet.3.3.2\build\AssimpNet.targets'))" />
+    <Error Condition="!Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets'))" />
   </Target>
+  <Import Project="..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets" Condition="Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

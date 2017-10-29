@@ -45,7 +45,7 @@ namespace WadTool
         protected override float Scale => _control.StaticScale;
 
         protected override float CentreCubeSize => _tool.Configuration.Gizmo_CenterCubeSize;
-        protected override float TranslationSphereSize => _tool.Configuration.Gizmo_TranslationSphereSize;
+        protected override float TranslationConeSize => _tool.Configuration.Gizmo_TranslationConeSize;
         protected override float Size => _tool.Configuration.Gizmo_Size;
         protected override float ScaleCubeSize => _tool.Configuration.Gizmo_ScaleCubeSize;
         protected override float LineThickness => _tool.Configuration.Gizmo_LineThickness;

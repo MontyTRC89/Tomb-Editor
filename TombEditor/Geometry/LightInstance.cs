@@ -5,7 +5,7 @@ namespace TombEditor.Geometry
 {
     public enum LightType : byte
     {
-        Light, Shadow, Spot, Effect, Sun, FogBulb
+        Point, Shadow, Spot, Effect, Sun, FogBulb
     }
 
     public enum LightParameter
@@ -23,7 +23,7 @@ namespace TombEditor.Geometry
         public float InnerAngle { get; set; } = 20.0f;
         public float OuterAngle { get; set; } = 25.0f;
         public bool Enabled { get; set; } = true;
-        public bool CastsShadows { get; set; } = true;
+        public bool IsObstructedByRoomGeometry { get; set; } = true;
         public bool IsDynamicallyUsed { get; set; } = true;
         public bool IsStaticallyUsed { get; set; } = true;
 
@@ -51,7 +51,6 @@ namespace TombEditor.Geometry
             {
                 case LightType.Shadow:
                     Intensity *= -1;
-                    CastsShadows = false;
                     break;
                 case LightType.Effect:
                     InnerRange = 0.99f;
@@ -59,12 +58,12 @@ namespace TombEditor.Geometry
                     IsDynamicallyUsed = false;
                     break;
                 case LightType.FogBulb:
-                    CastsShadows = false;
+                    IsObstructedByRoomGeometry = false;
                     IsStaticallyUsed = false;
                     break;
             }
         }
-        
+
         public override string ToString()
         {
             return "Light " + Type.ToString() +

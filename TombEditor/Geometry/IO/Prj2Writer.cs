@@ -81,7 +81,7 @@ namespace TombEditor.Geometry.IO
                         });
                         levelSettingIds.LevelTextures.Add(texture, index++);
                     };
-                });
+                }, long.MaxValue);
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.ImportedGeometries, () =>
                 {
                     int index = 0;
@@ -96,7 +96,26 @@ namespace TombEditor.Geometry.IO
                         });
                         levelSettingIds.ImportedGeometries.Add(importedGeometry, index++);
                     }
-                });
+                }, long.MaxValue);
+                chunkIO.WriteChunkWithChildren(Prj2Chunks.AnimatedTextureSets, () =>
+                {
+                    foreach (AnimatedTextureSet set in settings.AnimatedTextureSets)
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.AnimatedTextureSet, () =>
+                        {
+                            chunkIO.WriteChunkWithChildren(Prj2Chunks.AnimatedTextureFrames, () =>
+                            {
+                                foreach (AnimatedTextureFrame frame in set.Frames)
+                                    chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrame, () =>
+                                    {
+                                        LEB128.Write(chunkIO.Raw, levelSettingIds.LevelTextures[frame.Texture]);
+                                        chunkIO.Raw.Write(frame.TexCoord0);
+                                        chunkIO.Raw.Write(frame.TexCoord1);
+                                        chunkIO.Raw.Write(frame.TexCoord2);
+                                        chunkIO.Raw.Write(frame.TexCoord3);
+                                    }, 120);
+                            });
+                        });
+                }, long.MaxValue);
             }, long.MaxValue);
 
             return levelSettingIds;
@@ -298,7 +317,7 @@ namespace TombEditor.Geometry.IO
                                         chunkIO.Raw.Write(instance.InnerAngle);
                                         chunkIO.Raw.Write(instance.OuterAngle);
                                         chunkIO.Raw.Write(instance.Enabled);
-                                        chunkIO.Raw.Write(instance.CastsShadows);
+                                        chunkIO.Raw.Write(instance.IsObstructedByRoomGeometry);
                                         chunkIO.Raw.Write(instance.IsDynamicallyUsed);
                                         chunkIO.Raw.Write(instance.IsStaticallyUsed);
                                     });

@@ -265,15 +265,13 @@ namespace TombEditor
 
         private string BrowseFolder(string currentPath, string description, VariableType baseDirType)
         {
-            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            using (OpenFolderDialog dialog = new OpenFolderDialog())
             {
-                dialog.Description = description;
-                dialog.SelectedPath = _levelSettings.MakeAbsolute(currentPath);
-                dialog.RootFolder = Environment.SpecialFolder.MyComputer;
-                SendKeys.Send("{TAB}{TAB}{RIGHT}");  // Workaround https://stackoverflow.com/questions/6942150/why-folderbrowserdialog-dialog-does-not-scroll-to-selected-folder
+                dialog.Title = description;
+                dialog.InitialFolder = _levelSettings.MakeAbsolute(currentPath);
                 if (dialog.ShowDialog(this) != DialogResult.OK)
                     return null;
-                return _levelSettings.MakeRelative(dialog.SelectedPath, baseDirType);
+                return _levelSettings.MakeRelative(dialog.Folder, baseDirType);
             }
         }
 
@@ -404,7 +402,7 @@ namespace TombEditor
 
         private void GameDirectoryBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFolder(_levelSettings.GameDirectory, "Select the game folder. (Should contain Tomb4.exe)", VariableType.LevelDirectory);
+            string result = BrowseFolder(_levelSettings.GameDirectory, "Select the game folder (should contain Tomb4.exe)", VariableType.LevelDirectory);
             if (result != null)
             {
                 _levelSettings.GameDirectory = result;
@@ -415,7 +413,7 @@ namespace TombEditor
         // Sound list
         private OldWadSoundPath soundDataGridViewCreateNewRow()
         {
-            string result = BrowseFolder(_levelSettings.LevelFilePath, "Select a new sound folder. (Should contain *.wav audio files)", VariableType.LevelDirectory);
+            string result = BrowseFolder(_levelSettings.LevelFilePath, "Select a new sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
             if (result != null)
                 return new OldWadSoundPath(result);
             return null;
@@ -445,7 +443,7 @@ namespace TombEditor
 
             if ((soundDataGridView.Columns[e.ColumnIndex] == soundDataGridViewColumnSearch))
             {
-                string result = BrowseFolder(soundDataGridViewDataSource[e.RowIndex].Path, "Select the sound folder. (Should contain *.wav audio files)", VariableType.LevelDirectory);
+                string result = BrowseFolder(soundDataGridViewDataSource[e.RowIndex].Path, "Select the sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
                 if (result != null)
                     soundDataGridViewDataSource[e.RowIndex] = new OldWadSoundPath(result);
             }
@@ -462,7 +460,7 @@ namespace TombEditor
 
         private void gameLevelFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.GameLevelFilePath, "Select place for compiled level.", "Tomb Raider 4 Levels (*.tr4)|*.tr4", VariableType.GameDirectory, true);
+            string result = BrowseFile(_levelSettings.GameLevelFilePath, "Select place for compiled level", "Tomb Raider 4 Levels (*.tr4)|*.tr4", VariableType.GameDirectory, true);
             if (result != null)
             {
                 _levelSettings.GameLevelFilePath = result;

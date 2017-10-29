@@ -50,13 +50,12 @@ namespace TombEditor.Compilers
         private tr_box[] _boxes = new tr_box[0];
         private ushort[] _overlaps = new ushort[0];
         private tr_zone[] _zones = new tr_zone[0];
-        private List<tr_animatedTextures_set> _animatedTextures = new List<tr_animatedTextures_set>();
 
         private List<tr_item> _items = new List<tr_item>();
         private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
 
         // texture data
-        private Util.ObjectTextureManager _objectTextureManager = new Util.ObjectTextureManager();
+        private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
 
         // Temporary dictionaries for mapping editor IDs to level IDs
         private Dictionary<MoveableInstance, int> _moveablesTable;
@@ -70,7 +69,9 @@ namespace TombEditor.Compilers
 
         public LevelCompilerTr4(Level level, string dest, IProgressReporter progressReporter)
             : base(level, dest, progressReporter)
-        {}
+        {
+            _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(level.Settings.AnimatedTextureSets);
+        }
 
         private void PrepareLevelData()
         {
@@ -78,7 +79,7 @@ namespace TombEditor.Compilers
             ConvertWad2DataToTr4(_level.Wad);
             BuildRooms();
             PrepareItems();
-            PrepareSounds();
+            PrepareSoundSources();
             BuildCamerasAndSinks();
             GetAllReachableRooms();
             BuildPathFindingData();
@@ -88,7 +89,7 @@ namespace TombEditor.Compilers
             PrepareTextures();
         }
 
-        private void PrepareSound()
+        private void PrepareSoundsData()
         {
             uint numSamples = 0;
             for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
@@ -102,7 +103,7 @@ namespace TombEditor.Compilers
             {
                 writer.Write(numSamples);
 
-                for (int i = 0; i < 370; i++)
+                for (int i = 0; i < _level.Wad.SoundMapSize; i++)
                 {
                     if (!_level.Wad.SoundInfo.ContainsKey((ushort)i)) continue;
 
@@ -132,7 +133,7 @@ namespace TombEditor.Compilers
 
             // Prepare level data in parallel to the sounds
             using (Task task1 = Task.Factory.StartNew(PrepareLevelData))
-                using (Task task2 = Task.Factory.StartNew(PrepareSound))
+                using (Task task2 = Task.Factory.StartNew(PrepareSoundsData))
                     Task.WaitAll(task1, task2);
 
             //Write the final level
@@ -147,7 +148,7 @@ namespace TombEditor.Compilers
             GC.Collect();
         }
 
-        private void PrepareSounds()
+        private void PrepareSoundSources()
         {
             ReportProgress(40, "Building sound sources");
 

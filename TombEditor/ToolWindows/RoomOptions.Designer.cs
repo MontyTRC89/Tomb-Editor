@@ -71,14 +71,8 @@
             // 
             // comboFlipMap
             // 
-            this.comboFlipMap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboFlipMap.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.comboFlipMap.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboFlipMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboFlipMap.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboFlipMap.ForeColor = System.Drawing.Color.White;
-            this.comboFlipMap.FormattingEnabled = true;
-            this.comboFlipMap.ItemHeight = 18;
             this.comboFlipMap.Items.AddRange(new object[] {
             "Not flipped",
             "0",
@@ -116,14 +110,7 @@
             // 
             // comboReverberation
             // 
-            this.comboReverberation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboReverberation.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboReverberation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboReverberation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboReverberation.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboReverberation.ForeColor = System.Drawing.Color.White;
-            this.comboReverberation.FormattingEnabled = true;
-            this.comboReverberation.ItemHeight = 18;
             this.comboReverberation.Items.AddRange(new object[] {
             "None",
             "Small",
@@ -135,7 +122,6 @@
             this.comboReverberation.Size = new System.Drawing.Size(79, 24);
             this.comboReverberation.TabIndex = 19;
             this.comboReverberation.Text = "None";
-            this.comboReverberation.TextPadding = new System.Windows.Forms.Padding(2);
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
             // darkLabel18
@@ -151,14 +137,8 @@
             // 
             // comboMist
             // 
-            this.comboMist.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboMist.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboMist.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboMist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboMist.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboMist.ForeColor = System.Drawing.Color.White;
-            this.comboMist.FormattingEnabled = true;
-            this.comboMist.ItemHeight = 18;
             this.comboMist.Items.AddRange(new object[] {
             "No",
             "1",
@@ -170,7 +150,6 @@
             this.comboMist.Size = new System.Drawing.Size(52, 24);
             this.comboMist.TabIndex = 18;
             this.comboMist.Text = "No";
-            this.comboMist.TextPadding = new System.Windows.Forms.Padding(2);
             this.comboMist.SelectedIndexChanged += new System.EventHandler(this.comboMist_SelectedIndexChanged);
             // 
             // darkLabel17
@@ -186,14 +165,7 @@
             // 
             // comboReflection
             // 
-            this.comboReflection.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboReflection.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboReflection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboReflection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboReflection.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboReflection.ForeColor = System.Drawing.Color.White;
-            this.comboReflection.FormattingEnabled = true;
-            this.comboReflection.ItemHeight = 18;
             this.comboReflection.Items.AddRange(new object[] {
             "No",
             "1",
@@ -205,7 +177,6 @@
             this.comboReflection.Size = new System.Drawing.Size(52, 24);
             this.comboReflection.TabIndex = 17;
             this.comboReflection.Text = "No";
-            this.comboReflection.TextPadding = new System.Windows.Forms.Padding(2);
             this.comboReflection.SelectedIndexChanged += new System.EventHandler(this.comboReflection_SelectedIndexChanged);
             // 
             // darkLabel16
@@ -256,14 +227,7 @@
             // 
             // comboRoomType
             // 
-            this.comboRoomType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboRoomType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboRoomType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboRoomType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboRoomType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboRoomType.ForeColor = System.Drawing.Color.White;
-            this.comboRoomType.FormattingEnabled = true;
-            this.comboRoomType.ItemHeight = 18;
             this.comboRoomType.Items.AddRange(new object[] {
             "Normal",
             "Water 1",
@@ -278,7 +242,6 @@
             this.comboRoomType.Size = new System.Drawing.Size(99, 24);
             this.comboRoomType.TabIndex = 9;
             this.comboRoomType.Text = "Normal";
-            this.comboRoomType.TextPadding = new System.Windows.Forms.Padding(2);
             this.comboRoomType.SelectedIndexChanged += new System.EventHandler(this.comboRoomType_SelectedIndexChanged);
             // 
             // darkLabel15
@@ -294,14 +257,7 @@
             // 
             // comboRoom
             // 
-            this.comboRoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboRoom.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboRoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboRoom.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboRoom.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboRoom.ForeColor = System.Drawing.Color.White;
-            this.comboRoom.FormattingEnabled = true;
-            this.comboRoom.ItemHeight = 18;
             this.comboRoom.Location = new System.Drawing.Point(3, 28);
             this.comboRoom.Name = "comboRoom";
             this.comboRoom.Size = new System.Drawing.Size(220, 24);

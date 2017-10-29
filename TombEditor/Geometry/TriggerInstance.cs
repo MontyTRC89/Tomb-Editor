@@ -106,9 +106,24 @@ namespace TombEditor.Geometry
         {
             var castedObject = TargetObj as T;
             if (castedObject == null)
-                throw new Exception("Object trigger target of trigger does mistakenly point to '" + TargetObjString + 
+                throw new Exception("Object trigger target of trigger does mistakenly point to '" + TargetObjString +
                     "' instead of an " + typeof(T).ToString().Replace("Instance", "") + ". Trigger (Room: " + room + ") information: '" + this + "'");
             return castedObject;
+        }
+
+        public static bool UsesTargetObj(TriggerTargetType targetType)
+        {
+            switch (targetType)
+            {
+                case TriggerTargetType.Object:
+                case TriggerTargetType.Camera:
+                case TriggerTargetType.Target:
+                case TriggerTargetType.FlyByCamera:
+                case TriggerTargetType.Sink:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

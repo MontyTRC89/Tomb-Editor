@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombEditor.Compilers.Util;
 using TombLib.Wad;
 
 namespace TombEditor.Compilers
@@ -95,71 +96,51 @@ namespace TombEditor.Compilers
                     }
                 }
 
-                short numRectangles = 0;
+                short numQuads = 0;
                 short numTriangles = 0;
 
                 foreach (var poly in oldMesh.Polys)
                 {
                     if (poly.Shape == WadPolygonShape.Quad)
-                        numRectangles++;
+                        numQuads++;
                     else
                         numTriangles++;
                 }
 
-                newMesh.NumTexturedQuads = numRectangles;
+                newMesh.NumTexturedQuads = numQuads;
                 currentMeshSize += 2;
 
                 newMesh.NumTexturedTriangles = numTriangles;
                 currentMeshSize += 2;
 
-                int lastRectangle = 0;
+                int lastQuad = 0;
                 int lastTriangle = 0;
 
-                newMesh.TexturedQuads = new tr_face4[numRectangles];
+                newMesh.TexturedQuads = new tr_face4[numQuads];
                 newMesh.TexturedTriangles = new tr_face3[numTriangles];
 
+                int packPriority = waterfallMeshes.Contains(oldMesh) ? 1 : 0;
                 foreach (var poly in oldMesh.Polys)
                 {
+                    ushort lightingEffect = (poly.Texture.BlendMode == TombLib.Utils.BlendMode.Additive) ? (ushort)1 : (ushort)0;
+                    lightingEffect |= (ushort)(poly.ShineStrength << 1);
+
                     if (poly.Shape == WadPolygonShape.Quad)
                     {
-                        tr_face4 face = new tr_face4();
-
-                        face.Vertices = new ushort[4];
-                        face.Vertices[0] = (ushort)poly.Indices[0];
-                        face.Vertices[1] = (ushort)poly.Indices[1];
-                        face.Vertices[2] = (ushort)poly.Indices[2];
-                        face.Vertices[3] = (ushort)poly.Indices[3];
-
-                        var result = _objectTextureManager.AddTexture(poly.Texture, false, false, waterfallMeshes.Contains(oldMesh));
-                        face.Texture = result.ObjectTextureIndex;
-
-                        face.LightingEffect = (poly.Texture.BlendMode == TombLib.Utils.BlendMode.Additive) ? (ushort)1 : (ushort)0;
-                        face.LightingEffect |= (ushort)(poly.ShineStrength << 1);
-
-                        newMesh.TexturedQuads[lastRectangle] = face;
-
+                        ObjectTextureManager.Result result;
+                        lock (_objectTextureManager)
+                            result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
+                        newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Indices[0], (ushort)poly.Indices[1], (ushort)poly.Indices[2], (ushort)poly.Indices[3], lightingEffect);
                         currentMeshSize += 12;
-                        lastRectangle++;
                     }
                     else
                     {
-                        tr_face3 face = new tr_face3();
+                        ObjectTextureManager.Result result;
+                        lock (_objectTextureManager)
+                            result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
 
-                        face.Vertices = new ushort[3];
-                        face.Vertices[0] = (ushort)poly.Indices[0];
-                        face.Vertices[1] = (ushort)poly.Indices[1];
-                        face.Vertices[2] = (ushort)poly.Indices[2];
-
-                        var result = _objectTextureManager.AddTexture(poly.Texture, true, false, waterfallMeshes.Contains(oldMesh));
-                        face.Texture = result.ObjectTextureIndex;
-
-                        face.LightingEffect = (poly.Texture.BlendMode == TombLib.Utils.BlendMode.Additive) ? (ushort)1 : (ushort)0;
-                        face.LightingEffect |= (ushort)(poly.ShineStrength << 1);
-
-                        newMesh.TexturedTriangles[lastTriangle] = face;
-
+                        newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Indices[0], (ushort)poly.Indices[1], (ushort)poly.Indices[2], lightingEffect);
                         currentMeshSize += 10;
-                        lastTriangle++;
                     }
                 }
 
