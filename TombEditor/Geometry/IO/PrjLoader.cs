@@ -764,7 +764,7 @@ namespace TombEditor.Geometry.IO
 
                                     // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
                                     // the water flag differs.
-                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) /*&& (portal.Opacity == PortalOpacity.SolidFaces)*/)
+                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                                 case PortalDirection.Floor:
@@ -775,7 +775,7 @@ namespace TombEditor.Geometry.IO
 
                                     // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
                                     // the water flag differs.
-                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) /*&& (portal.Opacity == PortalOpacity.SolidFaces)*/)
+                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                                 default:
@@ -784,6 +784,23 @@ namespace TombEditor.Geometry.IO
                                             if (tempRoom.Value._blocks[x, z]._wallOpacity > portal.Opacity)
                                                 portal.Opacity = tempRoom.Value._blocks[x, z]._wallOpacity;
                                     break;
+                            }
+
+                            // Set portals consisting entirely of triangles to "TraversableFaces" if any no collision triangle is textured.
+                            if (portal.Opacity == PortalOpacity.None)
+                            {
+                                switch (portal.Direction)
+                                {
+                                    case PortalDirection.Ceiling:
+                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, adjoiningRoom, 1, 9, prjBlock => prjBlock._hasNoCollisionCeiling,
+                                            (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r0, r1, b0, b1));
+                                        break;
+
+                                    case PortalDirection.Floor:
+                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, adjoiningRoom, 0, 8, prjBlock => prjBlock._hasNoCollisionFloor,
+                                            (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r1, r0, b1, b0));
+                                        break;
+                                }
                             }
 
                             // Add portal to rooms
@@ -1112,8 +1129,8 @@ namespace TombEditor.Geometry.IO
                                 {
                                     if (x > 0)
                                         if ((room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
-                                            room.IsFaceDefined(x- 1, z , BlockFace.PositiveX_ED)) ||
-                                            !IsUndefinedButHasArea(room, x- 1, z , BlockFace.PositiveX_QA))
+                                            room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED)) ||
+                                            !IsUndefinedButHasArea(room, x - 1, z, BlockFace.PositiveX_QA))
                                         {
                                             LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[10]);
                                         }
@@ -1415,6 +1432,55 @@ namespace TombEditor.Geometry.IO
             }
 
             return false;
+        }
+
+        private static void ProcessTexturedNoCollisions(PortalInstance portal, Room room, PrjRoom tempRoom, Room adjoiningRoom, int triangle1FaceTexIndex,
+            int triangle2FaceTexIndex, Predicate<PrjBlock> isNoCollision, Func<Room, Room, Block, Block, Room.RoomConnectionType> getRoomConnectionType)
+        {
+            for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                {
+                    PrjBlock prjBlock = tempRoom._blocks[x, z];
+                    if (!isNoCollision(prjBlock)) // If the tile is isn't no collision, then a triangle face will be available anyway due to 'ForceFloorSolid'
+                        continue;
+
+                    var pos = new DrawingPoint(x, z);
+                    var connectionType = getRoomConnectionType(room, adjoiningRoom,
+                        room.GetBlock(pos), adjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(adjoiningRoom.SectorPos)));
+
+                    switch (connectionType)
+                    {
+                        case Room.RoomConnectionType.TriangularPortalXpZp:
+                        case Room.RoomConnectionType.TriangularPortalXpZn:
+                            if (prjBlock._faces[triangle1FaceTexIndex]._txtType == 0x0007) // TYPE_TEXTURE_TILE
+                                goto foundTexturedTriangle;
+                            break;
+                        case Room.RoomConnectionType.TriangularPortalXnZn:
+                        case Room.RoomConnectionType.TriangularPortalXnZp:
+                            if (prjBlock._faces[triangle2FaceTexIndex]._txtType == 0x0007) // TYPE_TEXTURE_TILE
+                                goto foundTexturedTriangle;
+                            break;
+                    }
+                }
+            return;
+
+            // Found textured triangle on the ceiling/floor
+            foundTexturedTriangle:
+
+            //Set portal to texturable but reset all full faces since they weren't visible in winroomedit either.
+            portal.Opacity = PortalOpacity.TraversableFaces;
+            for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                {
+                    var pos = new DrawingPoint(x, z);
+                    var connectionType = getRoomConnectionType(room, adjoiningRoom,
+                        room.GetBlock(pos), adjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(adjoiningRoom.SectorPos)));
+                    if (connectionType == Room.RoomConnectionType.FullPortal)
+                    {
+                        tempRoom._blocks[x, z]._faces[triangle1FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                        tempRoom._blocks[x, z]._faces[triangle2FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                    }
+                }
         }
 
 #pragma warning disable 0675 // Disable warning about bitwise or
