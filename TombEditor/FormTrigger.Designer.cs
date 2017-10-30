@@ -31,7 +31,6 @@ namespace TombEditor
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormTrigger));
             this.label1 = new DarkUI.Controls.DarkLabel();
             this.comboType = new DarkUI.Controls.DarkComboBox();
             this.comboTargetType = new DarkUI.Controls.DarkComboBox();
@@ -261,10 +260,10 @@ namespace TombEditor
             this.Controls.Add(this.comboType);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormTrigger";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Trigger editor";

@@ -241,10 +241,10 @@
   <data name="create_new-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\create_new-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="about_header" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\about_header.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="trash-161" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\trash-161.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AboutScreen_800" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AboutScreen_800.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

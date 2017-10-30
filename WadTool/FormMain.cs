@@ -37,6 +37,8 @@ namespace WadTool
         {
             InitializeComponent();
 
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+
             _tool = WadToolClass.Instance;
             _tool.Initialize();
 
