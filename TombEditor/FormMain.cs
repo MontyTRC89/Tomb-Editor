@@ -44,6 +44,7 @@ namespace TombEditor
             _editor.EditorEventRaised += EditorEventRaised;
 
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;

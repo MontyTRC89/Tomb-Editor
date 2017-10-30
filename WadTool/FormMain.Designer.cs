@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.darkMenuStrip1 = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -268,7 +267,7 @@
             this.importModelAsStaticMeshToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // convertWADToWad2ToolStripMenuItem
@@ -419,7 +418,7 @@
             this.aboutWadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutWadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutWadToolToolStripMenuItem.Name = "aboutWadToolToolStripMenuItem";
-            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.aboutWadToolToolStripMenuItem.Text = "About Wad Tool...";
             this.aboutWadToolToolStripMenuItem.Click += new System.EventHandler(this.aboutWadToolToolStripMenuItem_Click);
             // 
@@ -652,7 +651,6 @@
             this.butRenameSound.Image = global::WadTool.Properties.Resources.edit_16;
             this.butRenameSound.Location = new System.Drawing.Point(91, 187);
             this.butRenameSound.Name = "butRenameSound";
-            this.butRenameSound.Padding = new System.Windows.Forms.Padding(5);
             this.butRenameSound.Size = new System.Drawing.Size(107, 23);
             this.butRenameSound.TabIndex = 17;
             this.butRenameSound.Text = "Rename";
@@ -663,7 +661,6 @@
             this.butPlaySound.Image = global::WadTool.Properties.Resources.play_16;
             this.butPlaySound.Location = new System.Drawing.Point(9, 187);
             this.butPlaySound.Name = "butPlaySound";
-            this.butPlaySound.Padding = new System.Windows.Forms.Padding(5);
             this.butPlaySound.Size = new System.Drawing.Size(76, 23);
             this.butPlaySound.TabIndex = 15;
             this.butPlaySound.Text = "Play";
@@ -675,7 +672,6 @@
             this.butDeleteObject.Image = global::WadTool.Properties.Resources.trash_161;
             this.butDeleteObject.Location = new System.Drawing.Point(192, 474);
             this.butDeleteObject.Name = "butDeleteObject";
-            this.butDeleteObject.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteObject.Size = new System.Drawing.Size(103, 23);
             this.butDeleteObject.TabIndex = 12;
             this.butDeleteObject.Text = "Delete object";
@@ -687,7 +683,6 @@
             this.butAddObjectToDifferentSlot.Image = global::WadTool.Properties.Resources.angle_left_16;
             this.butAddObjectToDifferentSlot.Location = new System.Drawing.Point(823, 474);
             this.butAddObjectToDifferentSlot.Name = "butAddObjectToDifferentSlot";
-            this.butAddObjectToDifferentSlot.Padding = new System.Windows.Forms.Padding(5);
             this.butAddObjectToDifferentSlot.Size = new System.Drawing.Size(172, 23);
             this.butAddObjectToDifferentSlot.TabIndex = 11;
             this.butAddObjectToDifferentSlot.Text = "Add object to different slot";
@@ -699,7 +694,6 @@
             this.butAddObject.Image = global::WadTool.Properties.Resources.angle_left_16;
             this.butAddObject.Location = new System.Drawing.Point(716, 474);
             this.butAddObject.Name = "butAddObject";
-            this.butAddObject.Padding = new System.Windows.Forms.Padding(5);
             this.butAddObject.Size = new System.Drawing.Size(101, 23);
             this.butAddObject.TabIndex = 10;
             this.butAddObject.Text = "Add object";
@@ -721,7 +715,6 @@
             this.butChangeSlot.Image = global::WadTool.Properties.Resources.copy_16;
             this.butChangeSlot.Location = new System.Drawing.Point(93, 474);
             this.butChangeSlot.Name = "butChangeSlot";
-            this.butChangeSlot.Padding = new System.Windows.Forms.Padding(5);
             this.butChangeSlot.Size = new System.Drawing.Size(93, 23);
             this.butChangeSlot.TabIndex = 19;
             this.butChangeSlot.Text = "Change slot";
@@ -740,8 +733,6 @@
             // 
             // groupSelectedMoveable
             // 
-            this.groupSelectedMoveable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.groupSelectedMoveable.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(81)))), ((int)(((byte)(81)))));
             this.groupSelectedMoveable.Controls.Add(this.darkLabel4);
             this.groupSelectedMoveable.Controls.Add(this.darkButton1);
             this.groupSelectedMoveable.Controls.Add(this.treeAnimations);
@@ -750,7 +741,6 @@
             this.groupSelectedMoveable.Controls.Add(this.butPlaySound);
             this.groupSelectedMoveable.Controls.Add(this.treeSounds);
             this.groupSelectedMoveable.Controls.Add(this.butRenameSound);
-            this.groupSelectedMoveable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.groupSelectedMoveable.Location = new System.Drawing.Point(15, 503);
             this.groupSelectedMoveable.Name = "groupSelectedMoveable";
             this.groupSelectedMoveable.Size = new System.Drawing.Size(560, 216);
@@ -774,7 +764,6 @@
             this.darkButton1.Image = global::WadTool.Properties.Resources.play_16;
             this.darkButton1.Location = new System.Drawing.Point(215, 187);
             this.darkButton1.Name = "darkButton1";
-            this.darkButton1.Padding = new System.Windows.Forms.Padding(5);
             this.darkButton1.Size = new System.Drawing.Size(76, 23);
             this.darkButton1.TabIndex = 19;
             this.darkButton1.Text = "Play";
@@ -795,7 +784,6 @@
             this.darkButton2.Image = global::WadTool.Properties.Resources.edit_16;
             this.darkButton2.Location = new System.Drawing.Point(297, 187);
             this.darkButton2.Name = "darkButton2";
-            this.darkButton2.Padding = new System.Windows.Forms.Padding(5);
             this.darkButton2.Size = new System.Drawing.Size(107, 23);
             this.darkButton2.TabIndex = 21;
             this.darkButton2.Text = "Rename";
@@ -806,7 +794,6 @@
             this.butEditItem.Image = global::WadTool.Properties.Resources.edit_16;
             this.butEditItem.Location = new System.Drawing.Point(15, 474);
             this.butEditItem.Name = "butEditItem";
-            this.butEditItem.Padding = new System.Windows.Forms.Padding(5);
             this.butEditItem.Size = new System.Drawing.Size(72, 23);
             this.butEditItem.TabIndex = 22;
             this.butEditItem.Text = "Edit";
@@ -835,7 +822,6 @@
             this.Controls.Add(this.darkMenuStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.darkMenuStrip1;
             this.MaximizeBox = false;
             this.Name = "FormMain";

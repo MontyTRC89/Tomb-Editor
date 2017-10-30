@@ -32,14 +32,16 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.versionLabel = new DarkUI.Controls.DarkLabel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.darkSeparator2 = new DarkUI.Controls.DarkSeparator();
             this.darkLabel15 = new DarkUI.Controls.DarkLabel();
             this.linkLabel10 = new System.Windows.Forms.LinkLabel();
             this.linkLabel9 = new System.Windows.Forms.LinkLabel();
             this.darkLabel14 = new DarkUI.Controls.DarkLabel();
+            this.linkLabel11 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel13 = new System.Windows.Forms.LinkLabel();
             this.linkLabel8 = new System.Windows.Forms.LinkLabel();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.linkLabel7 = new System.Windows.Forms.LinkLabel();
@@ -61,13 +63,11 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
-            this.linkLabel13 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel11 = new System.Windows.Forms.LinkLabel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -82,14 +82,14 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(612, 32);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(613, 32);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // butOk
             // 
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.butOk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butOk.Location = new System.Drawing.Point(506, 3);
+            this.butOk.Location = new System.Drawing.Point(507, 3);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(103, 26);
             this.butOk.TabIndex = 3;
@@ -117,24 +117,12 @@
             this.versionLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.versionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.versionLabel.Location = new System.Drawing.Point(540, 44);
+            this.versionLabel.Location = new System.Drawing.Point(541, 44);
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(69, 17);
             this.versionLabel.TabIndex = 0;
             this.versionLabel.Text = "[VERSION]";
             this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pictureBox1.Image = global::TombEditor.Properties.Resources.about_header;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(612, 64);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox1.TabIndex = 7;
-            this.pictureBox1.TabStop = false;
             // 
             // panel1
             // 
@@ -169,8 +157,19 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 64);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(612, 290);
+            this.panel1.Size = new System.Drawing.Size(613, 290);
             this.panel1.TabIndex = 8;
+            // 
+            // darkLabel17
+            // 
+            this.darkLabel17.AutoSize = true;
+            this.darkLabel17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel17.Location = new System.Drawing.Point(6, 243);
+            this.darkLabel17.Name = "darkLabel17";
+            this.darkLabel17.Size = new System.Drawing.Size(220, 13);
+            this.darkLabel17.TabIndex = 29;
+            this.darkLabel17.Text = "CH.SipHash is used under Public Domain.";
             // 
             // darkLabel1
             // 
@@ -189,7 +188,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.darkSeparator2.Location = new System.Drawing.Point(10, 100);
             this.darkSeparator2.Name = "darkSeparator2";
-            this.darkSeparator2.Size = new System.Drawing.Size(593, 2);
+            this.darkSeparator2.Size = new System.Drawing.Size(594, 2);
             this.darkSeparator2.TabIndex = 24;
             this.darkSeparator2.Text = "darkSeparator2";
             // 
@@ -244,6 +243,34 @@
             this.darkLabel14.Size = new System.Drawing.Size(361, 13);
             this.darkLabel14.TabIndex = 20;
             this.darkLabel14.Text = "Additional icons and graphics used under CC-BY ND 3.0 license, from";
+            // 
+            // linkLabel11
+            // 
+            this.linkLabel11.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel11.AutoSize = true;
+            this.linkLabel11.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel11.Location = new System.Drawing.Point(242, 243);
+            this.linkLabel11.Name = "linkLabel11";
+            this.linkLabel11.Size = new System.Drawing.Size(195, 13);
+            this.linkLabel11.TabIndex = 19;
+            this.linkLabel11.TabStop = true;
+            this.linkLabel11.Text = "github.com/tanglebones/ch-siphash";
+            this.linkLabel11.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel11.Click += new System.EventHandler(this.btnLink_Click);
+            // 
+            // linkLabel13
+            // 
+            this.linkLabel13.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel13.AutoSize = true;
+            this.linkLabel13.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel13.Location = new System.Drawing.Point(242, 230);
+            this.linkLabel13.Name = "linkLabel13";
+            this.linkLabel13.Size = new System.Drawing.Size(211, 13);
+            this.linkLabel13.TabIndex = 19;
+            this.linkLabel13.TabStop = true;
+            this.linkLabel13.Text = "medo64.com/2011/12/openfolderdialog";
+            this.linkLabel13.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel13.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // linkLabel8
             // 
@@ -462,7 +489,7 @@
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(6, 106);
             this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(124, 15);
+            this.darkLabel4.Size = new System.Drawing.Size(123, 15);
             this.darkLabel4.TabIndex = 2;
             this.darkLabel4.Text = "Licensing Information";
             // 
@@ -503,44 +530,18 @@
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Original idea and code:\r\nProgramming:\r\nAdditional design:\r\nBeta testing:";
             // 
-            // darkLabel17
+            // pictureBox1
             // 
-            this.darkLabel17.AutoSize = true;
-            this.darkLabel17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel17.Location = new System.Drawing.Point(7, 243);
-            this.darkLabel17.Name = "darkLabel17";
-            this.darkLabel17.Size = new System.Drawing.Size(220, 13);
-            this.darkLabel17.TabIndex = 29;
-            this.darkLabel17.Text = "CH.SipHash is used under Public Domain.";
-            // 
-            // linkLabel13
-            // 
-            this.linkLabel13.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel13.AutoSize = true;
-            this.linkLabel13.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel13.Location = new System.Drawing.Point(242, 230);
-            this.linkLabel13.Name = "linkLabel13";
-            this.linkLabel13.Size = new System.Drawing.Size(211, 13);
-            this.linkLabel13.TabIndex = 19;
-            this.linkLabel13.TabStop = true;
-            this.linkLabel13.Text = "medo64.com/2011/12/openfolderdialog";
-            this.linkLabel13.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel13.Click += new System.EventHandler(this.btnLink_Click);
-            // 
-            // linkLabel11
-            // 
-            this.linkLabel11.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel11.AutoSize = true;
-            this.linkLabel11.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel11.Location = new System.Drawing.Point(242, 243);
-            this.linkLabel11.Name = "linkLabel11";
-            this.linkLabel11.Size = new System.Drawing.Size(195, 13);
-            this.linkLabel11.TabIndex = 19;
-            this.linkLabel11.TabStop = true;
-            this.linkLabel11.Text = "github.com/tanglebones/ch-siphash";
-            this.linkLabel11.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel11.Click += new System.EventHandler(this.btnLink_Click);
+            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.pictureBox1.BackgroundImage = global::TombEditor.Properties.Resources.AboutScreen_800;
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(613, 64);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 7;
+            this.pictureBox1.TabStop = false;
             // 
             // FormAbout
             // 
@@ -548,7 +549,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butOk;
-            this.ClientSize = new System.Drawing.Size(612, 386);
+            this.ClientSize = new System.Drawing.Size(613, 386);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.pictureBox1);
@@ -566,11 +567,11 @@
             this.Load += new System.EventHandler(this.FormAbout_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
