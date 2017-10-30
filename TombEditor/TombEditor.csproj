@@ -140,7 +140,6 @@
     <Compile Include="Controls\DarkScrollBarC.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\FloatingToolBox.cs" />
     <Compile Include="Controls\DepthBar.cs" />
     <Compile Include="Controls\ImportedGeometryManager.cs">
       <SubType>UserControl</SubType>

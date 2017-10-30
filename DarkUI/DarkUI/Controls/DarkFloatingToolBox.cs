@@ -5,17 +5,19 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using DarkUI.Config;
 
-namespace TombEditor.Controls
+namespace DarkUI.Controls
 {
-    [ToolboxItem(false)]
-    public class FloatingToolboxContainer
-    {
-        public FloatingToolbox Toolbox;
-        public FloatingToolboxContainer(FloatingToolbox toolbox) { Toolbox = toolbox; }
-    }
+    // To make floating toolbox draggable with icon other than "Disabled", add this class' data handler
+    // for OnDragEnter event on parent control which will setDragDropEffects to Move.
 
     [ToolboxItem(false)]
-    public partial class FloatingToolbox : UserControl
+    public class DarkFloatingToolboxContainer
+    {
+        public DarkFloatingToolbox Toolbox;
+        public DarkFloatingToolboxContainer(DarkFloatingToolbox toolbox) { Toolbox = toolbox; }
+    }
+
+    public partial class DarkFloatingToolbox : UserControl
     {
         [Category("Layout")]
         [Description("Determines snapping distance to parent control")]
@@ -86,7 +88,7 @@ namespace TombEditor.Controls
         private bool isDragging;
         private bool positionClamped;
 
-        public FloatingToolbox()
+        public DarkFloatingToolbox()
         {
             SetStyle(ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
             ClampDimensions();
@@ -168,7 +170,7 @@ namespace TombEditor.Controls
             dragOffset = (offset);
 
             isDragging = true;
-            DoDragDrop(new FloatingToolboxContainer(this), DragDropEffects.Move);
+            DoDragDrop(new DarkFloatingToolboxContainer(this), DragDropEffects.Move);
             SetAnchors();
             isDragging = false;
         }
@@ -198,7 +200,7 @@ namespace TombEditor.Controls
                 g.FillRectangle(b, ClientRectangle);
 
             // Draw grip
-            using (TextureBrush brush = new TextureBrush(Properties.Resources.grip_fill, WrapMode.Tile))
+            using (TextureBrush brush = new TextureBrush(MenuIcons.grip_fill, WrapMode.Tile))
                 g.FillRectangle(brush, GetGripBounds());
         }
 

@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TombEditor.Controls;
+using DarkUI.Controls;
 
 namespace TombEditor.ToolWindows
 {
-    public partial class ToolPaletteFloating : FloatingToolbox
+    public partial class ToolPaletteFloating : DarkFloatingToolbox
     {
         private Editor _editor;
 

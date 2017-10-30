@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Docking;
 using TombEditor.Geometry;
-using TombEditor.Controls;
 using TombLib.Utils;
-using DarkUI.Forms;
+using DarkUI.Controls;
 using SharpDX;
 
 namespace TombEditor.ToolWindows
@@ -36,12 +35,12 @@ namespace TombEditor.ToolWindows
             EditorActions.SwitchMode(EditorMode.Geometry);
         }
 
-        public void AddToolbox(FloatingToolbox toolbox)
+        public void AddToolbox(DarkFloatingToolbox toolbox)
         {
             panel3D.Controls.Add(toolbox);
         }
 
-        public void RemoveToolbox(FloatingToolbox toolbox)
+        public void RemoveToolbox(DarkFloatingToolbox toolbox)
         {
             panel3D.Controls.Remove(toolbox);
         }

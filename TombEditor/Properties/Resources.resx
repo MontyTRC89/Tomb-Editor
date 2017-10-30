@@ -343,9 +343,6 @@
   <data name="subtoolbar_icons8_invisible_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-invisible copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="grip_fill" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\grip_fill.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Obelisk_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Obelisk-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

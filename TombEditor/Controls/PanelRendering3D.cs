@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using SharpDX;
-using TombEditor.Geometry;
 using SharpDX.Toolkit.Graphics;
+using TombEditor.Geometry;
 using TombLib.Graphics;
-using System.IO;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using NLog;
 using TombLib.IO;
 using TombLib.Utils;
+using NLog;
+using DarkUI.Controls;
 
 namespace TombEditor.Controls
 {
@@ -1024,7 +1025,7 @@ namespace TombEditor.Controls
 
             if (e.Data.GetDataPresent(typeof(ItemType)))
                 e.Effect = DragDropEffects.Copy;
-            else if (e.Data.GetDataPresent(typeof(FloatingToolboxContainer)))
+            else if (e.Data.GetDataPresent(typeof(DarkFloatingToolboxContainer)))
                 e.Effect = DragDropEffects.Move;
             else if (EditorActions.DragDropFileSupported(e, true))
                 e.Effect = DragDropEffects.Move;
