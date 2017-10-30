@@ -21,6 +21,7 @@ namespace TombEditor
             this.textureMap = new TombEditor.FormAnimatedTextures.PanelTextureMapForAnimations();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.butUpdate = new DarkUI.Controls.DarkButton();
             this.label1 = new DarkUI.Controls.DarkLabel();
             this.tooManyFramesWarning = new DarkUI.Controls.DarkLabel();
             this.previewProgressBar = new DarkUI.Controls.DarkProgressBar();
@@ -42,7 +43,6 @@ namespace TombEditor
             this.previewImage = new System.Windows.Forms.PictureBox();
             this.texturesDataGridViewControls = new TombEditor.Controls.DarkDataGridViewControls();
             this.butOk = new DarkUI.Controls.DarkButton();
-            this.butUpdate = new DarkUI.Controls.DarkButton();
             this.warningToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -144,6 +144,19 @@ namespace TombEditor
             this.panel1.Size = new System.Drawing.Size(395, 613);
             this.panel1.TabIndex = 0;
             // 
+            // butUpdate
+            // 
+            this.butUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butUpdate.Enabled = false;
+            this.butUpdate.Image = global::TombEditor.Properties.Resources.undo_16;
+            this.butUpdate.ImagePadding = 4;
+            this.butUpdate.Location = new System.Drawing.Point(371, 132);
+            this.butUpdate.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.butUpdate.Name = "butUpdate";
+            this.butUpdate.Size = new System.Drawing.Size(24, 24);
+            this.butUpdate.TabIndex = 2;
+            this.butUpdate.Click += new System.EventHandler(this.butUpdate_Click);
+            // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -153,7 +166,7 @@ namespace TombEditor
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(387, 15);
             this.label1.TabIndex = 17;
-            this.label1.Text = "  Fames";
+            this.label1.Text = "  Frames";
             this.label1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // tooManyFramesWarning
@@ -378,19 +391,6 @@ namespace TombEditor
             this.butOk.Text = "Ok";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // butUpdate
-            // 
-            this.butUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butUpdate.Enabled = false;
-            this.butUpdate.Image = global::TombEditor.Properties.Resources.undo_16;
-            this.butUpdate.ImagePadding = 4;
-            this.butUpdate.Location = new System.Drawing.Point(371, 132);
-            this.butUpdate.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.butUpdate.Name = "butUpdate";
-            this.butUpdate.Size = new System.Drawing.Size(24, 24);
-            this.butUpdate.TabIndex = 2;
-            this.butUpdate.Click += new System.EventHandler(this.butUpdate_Click);
             // 
             // warningToolTip
             // 
