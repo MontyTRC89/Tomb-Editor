@@ -59,14 +59,16 @@ namespace TombEditor
             texturesDataGridViewControls.CreateNewRow = GetSelectedAnimatedTextureFrame;
             texturesDataGridViewColumnTexture.DataSource = new BindingList<LevelTexture>(editor.Level.Settings.Textures);
 
+            // Init state
+            _editor_EditorEventRaised(new InitEvent());
+            if (comboAnimatedTextureSets.Items.Count > 0)
+                comboAnimatedTextureSets.SelectedIndex = 0;
+
             // Setup texture map
             if (_editor.SelectedTexture.TextureIsInvisble)
                 textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
             else
                 textureMap.ShowTexture(_editor.SelectedTexture);
-
-            // Init state
-            _editor_EditorEventRaised(new InitEvent());
         }
 
         protected override void Dispose(bool disposing)
@@ -133,7 +135,7 @@ namespace TombEditor
             if (selectedSet == null)
                 selectedSet = new AnimatedTextureSet();
 
-            // Compare frames
+            // Setup frames
             var dataSource = (TransparentBindingList<AnimatedTextureFrame>)(texturesDataGridView.DataSource);
             if (dataSource?.Items != selectedSet.Frames)
             {
@@ -153,6 +155,7 @@ namespace TombEditor
                     dataSource.ListChanged += NewDataSource_ListChanged;
                 }
             }
+            UpdateEnable();
 
             // Setup preview
             _previewTimer.Enabled = selectedSet.Frames.Count != 0;
@@ -166,7 +169,7 @@ namespace TombEditor
                     frameCount += frame.Repeat;
 
             if (tooManyFramesWarning.Visible = frameCount > _maxLegacyFrames)
-                tooManyFramesWarning.Text = "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "! This will cause crashes with old engines!";
+                warningToolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "! This will cause crashes with old engines!");
         }
 
         private void NewDataSource_ListChanged(object sender, ListChangedEventArgs e)
@@ -236,11 +239,19 @@ namespace TombEditor
             _editor.AnimatedTexturesChange();
         }
 
-        private void comboAnimatedTextureSets_SelectedIndexChanged(object sender, EventArgs e)
+        private void UpdateEnable()
         {
             bool enable = comboAnimatedTextureSets.SelectedItem is AnimatedTextureSet;
-            animationSetSetupGroup.Enabled = enable;
+            settingsPanel.Enabled = enable;
+            texturesDataGridView.Enabled = enable;
+            texturesDataGridViewControls.Enabled = enable;
+            butUpdate.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
+        }
+
+        private void comboAnimatedTextureSets_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateEnable();
             UpdateCurrentAnimationDisplay();
         }
 

@@ -44,11 +44,10 @@
             this.dataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewControls.Enabled = false;
-            this.dataGridViewControls.Location = new System.Drawing.Point(782, 0);
-            this.dataGridViewControls.MinimumSize = new System.Drawing.Size(92, 100);
+            this.dataGridViewControls.Location = new System.Drawing.Point(850, 0);
+            this.dataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.dataGridViewControls.Name = "dataGridViewControls";
-            this.dataGridViewControls.NewName = "Create from file";
-            this.dataGridViewControls.Size = new System.Drawing.Size(92, 330);
+            this.dataGridViewControls.Size = new System.Drawing.Size(24, 330);
             this.dataGridViewControls.TabIndex = 1;
             // 
             // dataGridView
@@ -68,7 +67,7 @@
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowHeadersWidth = 41;
-            this.dataGridView.Size = new System.Drawing.Size(776, 330);
+            this.dataGridView.Size = new System.Drawing.Size(844, 330);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
             this.dataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView_CellFormatting);

@@ -23,7 +23,7 @@ namespace TombEditor.Controls
                     _dataGridView.SelectionChanged -= dataGridView_SelectionChanged;
 
                 _dataGridView = value;
-                Enabled = value != null;
+                UpdateEnable();
 
                 if (value != null)
                     value.SelectionChanged += dataGridView_SelectionChanged;
@@ -125,18 +125,17 @@ namespace TombEditor.Controls
             }
         }
 
-        private void dataGridView_SelectionChanged(object sender, EventArgs e)
+        private void UpdateEnable()
         {
-            butUp.Enabled = DataGridView.SelectedRows.Count > 0;
-            butDown.Enabled = DataGridView.SelectedRows.Count > 0;
-            butDelete.Enabled = DataGridView.SelectedRows.Count > 0;
+            butNew.Enabled = DataGridView != null;
+            butUp.Enabled = DataGridView != null && DataGridView.SelectedRows.Count > 0;
+            butDown.Enabled = DataGridView != null && DataGridView.SelectedRows.Count > 0;
+            butDelete.Enabled = DataGridView != null && DataGridView.SelectedRows.Count > 0;
         }
 
-        [DefaultValue("New")]
-        public string NewName
+        private void dataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            get { return butNew.Text; }
-            set { butNew.Text = value; }
+            UpdateEnable();
         }
 
         [DefaultValue(true)]
