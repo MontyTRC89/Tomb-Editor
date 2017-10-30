@@ -30,6 +30,7 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.butOk = new DarkUI.Controls.DarkButton();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.versionLabel = new DarkUI.Controls.DarkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -60,7 +61,6 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -88,11 +88,22 @@
             this.butOk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butOk.Location = new System.Drawing.Point(506, 3);
             this.butOk.Name = "butOk";
-            this.butOk.Padding = new System.Windows.Forms.Padding(5);
             this.butOk.Size = new System.Drawing.Size(103, 26);
             this.butOk.TabIndex = 3;
             this.butOk.Text = "Ok";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(3, 0);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Padding = new System.Windows.Forms.Padding(5, 8, 8, 8);
+            this.darkLabel1.Size = new System.Drawing.Size(283, 28);
+            this.darkLabel1.TabIndex = 29;
+            this.darkLabel1.Text = "This tool is part of the Tomb Editor SDK (Software Development Kit).";
             // 
             // versionLabel
             // 
@@ -111,8 +122,8 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.pictureBox1.BackgroundImage = global::WadTool.Properties.Resources.AboutScreen_800;
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pictureBox1.Image = global::WadTool.Properties.Resources.about_header;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(612, 64);
@@ -160,7 +171,7 @@
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel16.Location = new System.Drawing.Point(7, 260);
             this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(360, 24);
+            this.darkLabel16.Size = new System.Drawing.Size(362, 24);
             this.darkLabel16.TabIndex = 28;
             this.darkLabel16.Text = "Tomb Raider, Tomb Raider Level Editor, Lara Croft are © and trademarks of Square " +
     "Enix Ltd.\r\nThis software is a freeware and intended only for personal and non-co" +
@@ -443,7 +454,7 @@
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(6, 106);
             this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(124, 15);
+            this.darkLabel4.Size = new System.Drawing.Size(123, 15);
             this.darkLabel4.TabIndex = 2;
             this.darkLabel4.Text = "Licensing Information";
             // 
@@ -468,7 +479,7 @@
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(143, 0);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(317, 60);
+            this.darkLabel3.Size = new System.Drawing.Size(320, 60);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte\r\nteme9, Lwmte\r\nDu" +
     "stie, Titak, Gemini";
@@ -483,18 +494,6 @@
             this.darkLabel2.Size = new System.Drawing.Size(132, 60);
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Original idea and code:\r\nProgramming:\r\nAdditional design:\r\nBeta testing:";
-            // 
-            // darkLabel1
-            // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 0);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Padding = new System.Windows.Forms.Padding(5, 8, 8, 8);
-            this.darkLabel1.Size = new System.Drawing.Size(282, 28);
-            this.darkLabel1.TabIndex = 29;
-            this.darkLabel1.Text = "This tool is part of the Tomb Editor SDK (Software Development Kit).";
             // 
             // FormAbout
             // 

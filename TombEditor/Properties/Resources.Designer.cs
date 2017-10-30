@@ -83,9 +83,9 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap about_header {
+        internal static System.Drawing.Bitmap AboutScreen_800 {
             get {
-                object obj = ResourceManager.GetObject("about_header", resourceCulture);
+                object obj = ResourceManager.GetObject("AboutScreen_800", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
