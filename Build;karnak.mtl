@@ -1,0 +1,7 @@
+# Exported by Tomb Editor
+newmtl Room
+Ka 0,003737745 0,003247549 0,002420343
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd $(LevelDirectory)\..\..\..\trle\maps\karnak\karntext.TGA
