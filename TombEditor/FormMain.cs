@@ -946,6 +946,7 @@ namespace TombEditor
             roomOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(RoomOptions);
             objectBrowserToolStripMenuItem.Checked = dockArea.ContainsContent(ObjectBrowser);
             triggerListToolStripMenuItem.Checked = dockArea.ContainsContent(TriggerList);
+            objectListToolStripMenuItem.Checked = dockArea.ContainsContent(ObjectList);
             lightingToolStripMenuItem.Checked = dockArea.ContainsContent(Lighting);
             paletteToolStripMenuItem.Checked = dockArea.ContainsContent(Palette);
             texturePanelToolStripMenuItem.Checked = dockArea.ContainsContent(TexturePanel);
