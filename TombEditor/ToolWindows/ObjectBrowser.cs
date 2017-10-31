@@ -162,7 +162,7 @@ namespace TombEditor.ToolWindows
 
             panelStaticMeshColor.BackColor = colorDialog.Color;
             instance.Color = colorDialog.Color.ToFloatColor();
-            _editor.ObjectChange(instance);
+            _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
         private void butFindItem_Click(object sender, EventArgs e)

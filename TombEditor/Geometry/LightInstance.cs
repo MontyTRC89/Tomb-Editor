@@ -8,11 +8,6 @@ namespace TombEditor.Geometry
         Point, Shadow, Spot, Effect, Sun, FogBulb
     }
 
-    public enum LightParameter
-    {
-        Intensity, InnerRange, OuterRange, InnerAngle, OuterAngle, RotationX, RotationY
-    }
-
     public class LightInstance : PositionBasedObjectInstance, IRotateableYX
     {
         public LightType Type { get; }

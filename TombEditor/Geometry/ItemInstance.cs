@@ -97,9 +97,9 @@ namespace TombEditor.Geometry
             else
             {
                 if (IsStatic)
-                    return "Static (" + Id + ") " + (wad.Statics.ContainsKey(Id) ? wad.Statics[Id].ToString() : "Unknown");
+                    return "Static " + (wad.Statics.ContainsKey(Id) ? wad.Statics[Id].ToString() : "Unknown");
                 else
-                    return "Moveable (" + Id + ") " + (wad.Moveables.ContainsKey(Id) ? wad.Moveables[Id].ToString() : "Unknown");
+                    return "Moveable " + (wad.Moveables.ContainsKey(Id) ? wad.Moveables[Id].ToString() : "Unknown");
             }
         }
     };
