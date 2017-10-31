@@ -279,7 +279,10 @@ namespace TombEditor.Compilers.Util
 
                     ushort objectTextureIndex;
                     if (animation.Value._frameIndex == i)
+                    {
+                        ApplyTexCoordRotation(ref currentArea, animation.Key.FirstVertexIndexToEmit, animation.Value._isTriangle);
                         objectTextureIndex = animation.Key.ObjectTextureIndex;
+                    }
                     else
                     {
                         // Determine the texture coordinates in frame 'i' by bilinear interpolation
@@ -305,27 +308,7 @@ namespace TombEditor.Compilers.Util
                             frame.TexCoord2 * (texCoord3.X * texCoord3.Y) +
                             frame.TexCoord3 * (texCoord3.X * (1 - texCoord3.Y));
 
-                        // Apply rotation
-                        if (animation.Value._isTriangle)
-                        {
-                            for (int j = 0; j < animation.Key.FirstVertexIndexToEmit; ++j)
-                            {
-                                Vector2 temp = currentArea.TexCoord0;
-                                currentArea.TexCoord0 = currentArea.TexCoord1;
-                                currentArea.TexCoord1 = currentArea.TexCoord2;
-                                currentArea.TexCoord2 = temp;
-                            }
-                            currentArea.TexCoord3 = currentArea.TexCoord2;
-                        }
-                        else
-                            for (int j = 0; j < animation.Key.FirstVertexIndexToEmit; ++j)
-                            {
-                                Vector2 temp = currentArea.TexCoord0;
-                                currentArea.TexCoord0 = currentArea.TexCoord1;
-                                currentArea.TexCoord1 = currentArea.TexCoord2;
-                                currentArea.TexCoord2 = currentArea.TexCoord3;
-                                currentArea.TexCoord3 = temp;
-                            }
+                        ApplyTexCoordRotation(ref currentArea, animation.Key.FirstVertexIndexToEmit, animation.Value._isTriangle);
 
                         // Get a suitable object texture
                         var result = AddTexture(currentArea, animation.Value._isTriangle, animation.Value._isUsedInRoomMesh, 0, true, false, _animationTextureSpaceIdentifierLookup[frame]);
@@ -353,6 +336,30 @@ namespace TombEditor.Compilers.Util
 
             // Continue
             base.OnPackingTextures(progressReporter);
+        }
+
+        private static void ApplyTexCoordRotation(ref TextureArea currentArea, int firstVertexIndexToEmit, bool isTriangle)
+        {
+            if (isTriangle)
+            {
+                for (int j = 0; j < firstVertexIndexToEmit; ++j)
+                {
+                    Vector2 temp = currentArea.TexCoord0;
+                    currentArea.TexCoord0 = currentArea.TexCoord1;
+                    currentArea.TexCoord1 = currentArea.TexCoord2;
+                    currentArea.TexCoord2 = temp;
+                }
+                currentArea.TexCoord3 = currentArea.TexCoord2;
+            }
+            else
+                for (int j = 0; j < firstVertexIndexToEmit; ++j)
+                {
+                    Vector2 temp = currentArea.TexCoord0;
+                    currentArea.TexCoord0 = currentArea.TexCoord1;
+                    currentArea.TexCoord1 = currentArea.TexCoord2;
+                    currentArea.TexCoord2 = currentArea.TexCoord3;
+                    currentArea.TexCoord3 = temp;
+                }
         }
 
         public void WriteAnimatedTexturesForTr4(BinaryWriterEx stream)
