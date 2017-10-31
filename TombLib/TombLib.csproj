@@ -55,8 +55,9 @@
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Pfim, Version=0.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Pfim.0.4.2\lib\netstandard1.0\Pfim.dll</HintPath>
+    <Reference Include="Pfim, Version=0.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Pfim.0.4.4\lib\netstandard1.0\Pfim.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\Libs\SharpDX.dll</HintPath>
