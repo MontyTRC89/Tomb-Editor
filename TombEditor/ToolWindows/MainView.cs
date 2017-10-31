@@ -289,5 +289,12 @@ namespace TombEditor.ToolWindows
             butDrawIllegalSlopes.Checked = panel3D.DrawIllegalSlopes;
             panel3D.Invalidate();
         }
+
+        private void butDrawSlideDirections_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawSlideDirections = !panel3D.DrawSlideDirections;
+            butDrawSlideDirections.Checked = panel3D.DrawSlideDirections;
+            panel3D.Invalidate();
+        }
     }
 }
