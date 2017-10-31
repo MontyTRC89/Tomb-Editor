@@ -482,7 +482,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\slide.png" />
     <None Include="Editor\Textures\illegal_slope.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
