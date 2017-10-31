@@ -705,8 +705,9 @@ namespace TombEditor
             {
                 if (formTrigger.ShowDialog(owner) != DialogResult.OK)
                     return;
-                room.AddObject(_editor.Level, trigger);
             }
+            room.AddObject(_editor.Level, trigger);
+            _editor.ObjectChange(trigger, ObjectChangeType.Add);
             _editor.RoomSectorPropertiesChange(room);
         }
 
@@ -736,7 +737,7 @@ namespace TombEditor
                 newScale = 128.0f;
             instance.Scale = newScale;
 
-            _editor.ObjectChange(_editor.SelectedObject);
+            _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
         }
 
         public static void MoveObject(PositionBasedObjectInstance instance, Vector3 pos, Keys modifierKeys)
@@ -778,7 +779,7 @@ namespace TombEditor
                 instance.Room.CalculateLightingForThisRoom();
                 instance.Room.UpdateBuffers();
             }
-            _editor.ObjectChange(instance);
+            _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
         public static void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
@@ -821,7 +822,7 @@ namespace TombEditor
             }
             if (instance is LightInstance)
                 instance.Room.UpdateCompletely();
-            _editor.ObjectChange(instance);
+            _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
         public static void EditObject(ObjectInstance instance, IWin32Window owner)
@@ -830,50 +831,50 @@ namespace TombEditor
             {
                 using (var formMoveable = new FormMoveable((MoveableInstance)instance))
                     formMoveable.ShowDialog(owner);
-                _editor.ObjectChange(instance);
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is StaticInstance)
             {
                 using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
                     formStaticMesh.ShowDialog(owner);
-                _editor.ObjectChange(instance);
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is FlybyCameraInstance)
             {
                 using (var formFlyby = new FormFlybyCamera((FlybyCameraInstance)instance))
                     formFlyby.ShowDialog(owner);
-                _editor.ObjectChange(instance);
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is CameraInstance)
             {
                 using (var formCamera = new FormCamera((CameraInstance)instance))
                     formCamera.ShowDialog(owner);
-                _editor.ObjectChange(instance);
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SinkInstance)
             {
                 using (var formSink = new FormSink((SinkInstance)instance))
                     formSink.ShowDialog(owner);
-                _editor.ObjectChange(instance);
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SoundSourceInstance)
             {
                 using (var formSoundSource = new FormSound((SoundSourceInstance)instance, _editor.Level.Wad))
                     formSoundSource.ShowDialog(owner);
-                _editor.ObjectChange(instance);
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is TriggerInstance)
             {
                 using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance, obj => _editor.ShowObject(obj)))
                     formTrigger.ShowDialog(owner);
-                _editor.ObjectChange(instance);
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is ImportedGeometryInstance)
             {
                 using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
                     if (formImportedGeometry.ShowDialog(owner) != DialogResult.Cancel)
                         _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
-                _editor.ObjectChange(instance);
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
         }
 
@@ -926,9 +927,7 @@ namespace TombEditor
             }
 
             // Avoid having the removed object still selected
-            if (_editor.SelectedObject == instance)
-                _editor.SelectedObject = null;
-            _editor.ObjectChange(null);
+            _editor.ObjectChange(instance, ObjectChangeType.Remove);
         }
 
         public static void RotateTexture(Room room, DrawingPoint pos, BlockFace face)
@@ -1072,7 +1071,7 @@ namespace TombEditor
             room.AddObject(_editor.Level, instance);
             if (instance is LightInstance)
                 room.UpdateCompletely(); // Rebuild lighting!
-            _editor.ObjectChange(instance);
+            _editor.ObjectChange(instance, ObjectChangeType.Add);
         }
 
         public static void DeleteRoom(Room room, IWin32Window owner)
@@ -1624,7 +1623,7 @@ namespace TombEditor
             foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
                 portalRoom.UpdateCompletely();
             foreach (PortalInstance portal in portals)
-                _editor.ObjectChange(portal);
+                _editor.ObjectChange(portal, ObjectChangeType.Add);
 
             _editor.RoomSectorPropertiesChange(room);
             _editor.RoomSectorPropertiesChange(destination);
@@ -2049,7 +2048,7 @@ namespace TombEditor
 
             portal.Opacity = opacity;
             _editor.SelectedRoom.UpdateCompletely();
-            _editor.ObjectChange(portal);
+            _editor.ObjectChange(portal, ObjectChangeType.Change);
         }
 
         public static bool SaveLevel(IWin32Window owner, bool askForPath)

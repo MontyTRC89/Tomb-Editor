@@ -61,6 +61,7 @@ namespace TombEditor
             // Hook window added/removed events.
             dockArea.ContentAdded += ToolWindow_Added;
             dockArea.ContentRemoved += ToolWindow_Removed;
+            ToolBox.VisibleChanged += ToolBox_VisibleChanged;
 
             // DockPanel message filters for drag and resize.
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
@@ -242,7 +243,9 @@ namespace TombEditor
             Location = configuration.Window_Position;
             WindowState = configuration.Window_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
 
+            ToolBox.Visible = configuration.Rendering3D_ToolboxVisible;
             ToolBox.Location = configuration.Rendering3D_ToolboxPosition;
+            floatingToolStripMenuItem.Checked = ToolBox.Visible;
         }
 
         private void SaveWindowLayout(Configuration configuration)
@@ -253,6 +256,7 @@ namespace TombEditor
             configuration.Window_Position = Location;
             configuration.Window_Maximized = WindowState == FormWindowState.Maximized;
 
+            configuration.Rendering3D_ToolboxVisible = ToolBox.Visible;
             configuration.Rendering3D_ToolboxPosition = ToolBox.Location;
 
             _editor.ConfigurationChange();
@@ -802,6 +806,7 @@ namespace TombEditor
                     if ((lara != null) && (lara.WadObjectId == 0))
                     {
                         room.RemoveObject(_editor.Level, instance);
+                        _editor.ObjectChange(lara, ObjectChangeType.Remove);
                         goto FoundLara;
                     }
                 }
@@ -809,13 +814,7 @@ namespace TombEditor
             FoundLara:
 
             // Add lara to current sector
-            {
-                var room = _editor.SelectedRoom;
-                var block = room.GetBlock(_editor.SelectedSectors.Start);
-                lara.Position = new Vector3(_editor.SelectedSectors.Start.X * 1024 + 512, block.FloorMax * 256, _editor.SelectedSectors.Start.Y * 1024 + 512);
-                room.AddObject(_editor.Level, lara);
-                _editor.ObjectChange(lara);
-            }
+            EditorActions.PlaceObject(_editor.SelectedRoom, _editor.SelectedSectors.Start, lara);
         }
 
         private void cropRoomToolStripMenuItem_Click(object sender, EventArgs e)
@@ -844,10 +843,16 @@ namespace TombEditor
                 EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
         }
 
-        private void editSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        private void editObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedObject != null)
                 EditorActions.EditObject(_editor.SelectedObject, this);
+        }
+
+        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormSearch searchForm = new FormSearch(_editor);
+            searchForm.Show(this); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
         }
 
         private void rotateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -962,6 +967,11 @@ namespace TombEditor
             dockableToolStripMenuItem.Checked = dockArea.ContainsContent(ToolPalette);
         }
 
+        private void ToolBox_VisibleChanged(object sender, EventArgs e)
+        {
+            floatingToolStripMenuItem.Checked = ToolBox.Visible;
+        }
+
         private void ToolWindow_Added(object sender, DockContentEventArgs e)
         {
             if (dockArea.Contains(e.Content))
@@ -973,6 +983,39 @@ namespace TombEditor
             if (!dockArea.Contains(e.Content))
                 ToolWindow_BuildMenu();
         }
+
+        protected override void OnDragEnter(DragEventArgs e)
+        {
+            base.OnDragEnter(e);
+
+            if (EditorActions.DragDropFileSupported(e))
+                e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        protected override void OnDragDrop(DragEventArgs e)
+        {
+            base.OnDragDrop(e);
+            EditorActions.DragDropCommonFiles(e, this);
+        }
+
+        private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.OBJ);
+        }
+
+        private void exportCurrentRoomToMQOToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.Metasequoia);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormAbout form = new FormAbout())
+                form.ShowDialog(this);
+        }
+
 
         // Only for debugging purposes...
 
@@ -1057,33 +1100,6 @@ namespace TombEditor
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
         }
 
-        protected override void OnDragEnter(DragEventArgs e)
-        {
-            base.OnDragEnter(e);
-
-            if (EditorActions.DragDropFileSupported(e))
-                e.Effect = DragDropEffects.Move;
-            else
-                e.Effect = DragDropEffects.None;
-        }
-
-        protected override void OnDragDrop(DragEventArgs e)
-        {
-            base.OnDragDrop(e);
-            EditorActions.DragDropCommonFiles(e, this);
-        }
-
-        private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.OBJ);
-        }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (FormAbout form = new FormAbout())
-                form.ShowDialog(this);
-        }
-
         private void dockableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToolWindow_Toggle(ToolPalette);
@@ -1092,11 +1108,6 @@ namespace TombEditor
         private void floatingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToolBox.Visible = !ToolBox.Visible;
-        }
-            
-        private void exportCurrentRoomToMQOToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.Metasequoia);
         }
     }
 }

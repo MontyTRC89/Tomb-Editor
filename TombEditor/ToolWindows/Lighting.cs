@@ -43,7 +43,7 @@ namespace TombEditor.ToolWindows
             {
                 var light = _editor.SelectedObject as LightInstance;
 
-                bool IsLight = false;
+                // Get light type
                 bool HasInOutRange = false;
                 bool HasInOutAngle = false;
                 bool HasDirection = false;
@@ -51,8 +51,6 @@ namespace TombEditor.ToolWindows
                 bool CanIlluminateStaticAndDynamicGeometry = false;
 
                 if (light != null)
-                {
-                    IsLight = true;
                     switch (light.Type)
                     {
                         case LightType.Point:
@@ -90,141 +88,60 @@ namespace TombEditor.ToolWindows
                             break;
                     }
 
-                    panelLightColor.BackColor = new Vector4(light.Color, 1.0f).ToWinFormsColor();
-                    numIntensity.Value = (decimal)light.Intensity;
-
-                    if (HasInOutRange)
-                    {
-                        numInnerRange.Value = (decimal)light.InnerRange;
-                        numOuterRange.Value = (decimal)light.OuterRange;
-                    }
-                    else
-                    {
-                        numInnerRange.Value = 0;
-                        numOuterRange.Value = 0;
-                    }
-                    if (HasInOutAngle)
-                    {
-                        numInnerAngle.Value = (decimal)light.InnerAngle;
-                        numOuterAngle.Value = (decimal)light.OuterAngle;
-                    }
-                    else
-                    {
-                        numInnerAngle.Value = 0;
-                        numOuterAngle.Value = 0;
-                    }
-                    if (HasDirection)
-                    {
-                        numDirectionY.Value = (decimal)light.RotationY;
-                        numDirectionX.Value = (decimal)light.RotationX;
-                    }
-                    else
-                    {
-                        numDirectionX.Value = 0;
-                        numDirectionY.Value = 0;
-                    }
-
-                    cbLightEnabled.Checked = light.Enabled;
-                    cbLightIsObstructedByRoomGeometry.Checked = light.IsObstructedByRoomGeometry;
-                    cbLightIsDynamicallyUsed.Checked = light.IsDynamicallyUsed;
-                    cbLightIsStaticallyUsed.Checked = light.IsStaticallyUsed;
-                }
-                else
-                {
-                    panelLightColor.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-                    numIntensity.Value = 0;
-                    numInnerRange.Value = 0;
-                    numOuterRange.Value = 0;
-                    numInnerAngle.Value = 0;
-                    numOuterAngle.Value = 0;
-                    numDirectionX.Value = 0;
-                    numDirectionY.Value = 0;
-                    cbLightEnabled.Checked = false;
-                    cbLightIsObstructedByRoomGeometry.Checked = false;
-                    cbLightIsDynamicallyUsed.Checked = false;
-                    cbLightIsStaticallyUsed.Checked = false;
-                }
-
-                // Set enabled state
-                panelLightColor.Enabled = IsLight;
-                cbLightEnabled.Enabled = IsLight;
+                // Update enable state
+                // We set it before the values to make sure that irrelevant values are
+                // not recognized as being changed to 0 in the "ValueChanged" functions.
+                panelLightColor.Enabled = light != null;
+                cbLightEnabled.Enabled = light != null;
                 cbLightIsObstructedByRoomGeometry.Enabled = CanCastShadows;
                 cbLightIsDynamicallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
                 cbLightIsStaticallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
-                numIntensity.Enabled = IsLight;
+                numIntensity.Enabled = light != null;
                 numInnerRange.Enabled = HasInOutRange;
                 numOuterRange.Enabled = HasInOutRange;
                 numInnerAngle.Enabled = HasInOutAngle;
                 numOuterAngle.Enabled = HasInOutAngle;
                 numDirectionY.Enabled = HasDirection;
                 numDirectionX.Enabled = HasDirection;
+
+                // Update value state
+                panelLightColor.BackColor = light != null ? new Vector4(light.Color, 1.0f).ToWinFormsColor() : BackColor;
+                numIntensity.Value = (decimal)(light?.Intensity ?? 0);
+                numInnerRange.Value = HasInOutRange ? (decimal)light.InnerRange : 0;
+                numOuterRange.Value = HasInOutRange ? (decimal)light.OuterRange : 0;
+                numInnerAngle.Value = HasInOutAngle ? (decimal)light.InnerAngle : 0;
+                numOuterAngle.Value = HasInOutAngle ? (decimal)light.OuterAngle : 0;
+                numDirectionY.Value = HasDirection ? (decimal)light.RotationY : 0;
+                numDirectionX.Value = HasDirection ? (decimal)light.RotationX : 0;
+                cbLightEnabled.Checked = light?.Enabled ?? false;
+                cbLightIsObstructedByRoomGeometry.Checked = light?.IsObstructedByRoomGeometry ?? false;
+                cbLightIsDynamicallyUsed.Checked = light?.IsDynamicallyUsed ?? false;
+                cbLightIsStaticallyUsed.Checked = light?.IsStaticallyUsed ?? false;
             }
         }
 
-        public void UpdateParameter(decimal value, LightParameter parameter)
-        {
-            LightInstance light = _editor.SelectedObject as LightInstance;
-            if (light == null)
-                return;
-
-            switch (parameter)
-            {
-                default:
-                case LightParameter.Intensity:
-                    light.Intensity = (float)value;
-                    break;
-
-                case LightParameter.InnerRange:
-                    light.InnerRange = (float)value;
-                    break;
-
-                case LightParameter.OuterRange:
-                    light.OuterRange = (float)value;
-                    break;
-
-                case LightParameter.InnerAngle:
-                    light.InnerAngle = (float)value;
-                    break;
-
-                case LightParameter.OuterAngle:
-                    light.OuterAngle = (float)value;
-                    break;
-
-                case LightParameter.RotationY:
-                    light.RotationY = (float)value;
-                    break;
-
-                case LightParameter.RotationX:
-                    light.RotationX = (float)value;
-                    break;
-            }
-
-            light.Room.UpdateCompletely();
-            _editor.ObjectChange(light);
-        }
-
-        private void UpdateLight<T>(Func<LightInstance, T> getLightValue, Action<LightInstance, T> setLightValue, Func<T, T?> getGuiValue) where T : struct
+        private void UpdateLight<T>(Func<LightInstance, T, bool> compareEquals, Action<LightInstance, T> setLightValue, Func<LightInstance, T?> getGuiValue) where T : struct
         {
             var light = _editor.SelectedObject as LightInstance;
             if (light == null)
                 return;
 
-            T? newValue = getGuiValue(getLightValue(light));
-            if ((!newValue.HasValue) || newValue.Value.Equals(getLightValue(light)))
+            T? newValue = getGuiValue(light);
+            if ((!newValue.HasValue) || compareEquals(light, newValue.Value))
                 return;
 
             setLightValue(light, newValue.Value);
             light.Room.CalculateLightingForThisRoom();
             light.Room.UpdateBuffers();
-            _editor.ObjectChange(light);
+            _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 
         private void panelLightColor_Click(object sender, EventArgs e)
         {
-            UpdateLight((light) => light.Color, (light, value) => light.Color = value,
-                (value) =>
+            UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,
+                (light) =>
                 {
-                    colorDialog.Color = new Vector4(value, 1.0f).ToWinFormsColor();
+                    colorDialog.Color = new Vector4(light.Color, 1.0f).ToWinFormsColor();
                     if (colorDialog.ShowDialog(this) != DialogResult.OK)
                         return null;
                     return colorDialog.Color.ToFloatColor3();
@@ -233,26 +150,26 @@ namespace TombEditor.ToolWindows
 
         private void cbLightEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateLight((light) => light.Enabled, (light, value) => light.Enabled = value,
-                (value) => cbLightEnabled.Checked);
+            UpdateLight<bool>((light, value) => light.Enabled == value, (light, value) => light.Enabled = value,
+                (light) => cbLightEnabled.Checked);
         }
 
         private void cbLightIsObstructedByRoomGeometry_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateLight((light) => light.IsObstructedByRoomGeometry, (light, value) => light.IsObstructedByRoomGeometry = value,
-                (value) => cbLightIsObstructedByRoomGeometry.Checked);
+            UpdateLight<bool>((light, value) => light.IsObstructedByRoomGeometry == value, (light, value) => light.IsObstructedByRoomGeometry = value,
+                (light) => cbLightIsObstructedByRoomGeometry.Checked);
         }
 
         private void cbLightIsStaticallyUsed_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateLight((light) => light.IsStaticallyUsed, (light, value) => light.IsStaticallyUsed = value,
-                (value) => cbLightIsStaticallyUsed.Checked);
+            UpdateLight<bool>((light, value) => light.IsStaticallyUsed == value, (light, value) => light.IsStaticallyUsed = value,
+                (light) => cbLightIsStaticallyUsed.Checked);
         }
 
         private void cbLightIsDynamicallyUsed_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateLight((light) => light.IsDynamicallyUsed, (light, value) => light.IsDynamicallyUsed = value,
-                (value) => cbLightIsDynamicallyUsed.Checked);
+            UpdateLight<bool>((light, value) => light.IsDynamicallyUsed == value, (light, value) => light.IsDynamicallyUsed = value,
+                (light) => cbLightIsDynamicallyUsed.Checked);
         }
 
         private void butAddPointLight_Click(object sender, EventArgs e)
@@ -285,39 +202,66 @@ namespace TombEditor.ToolWindows
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.FogBulb };
         }
 
+        private static bool Compare(float firstValue, float secondValue, NumericUpDown control)
+        {
+            // Check that this setting even matters for the light...
+            if (!control.Enabled)
+                return true;
+
+            // Check if the value differs enough to warrant changing it
+            // We don't want to polute the editor with useless event's because NumericUpDown
+            // decided to round.
+            for (int i = 0; i < control.DecimalPlaces; ++i)
+            {
+                firstValue *= 10.0f;
+                secondValue *= 10.0f;
+            }
+
+            double firstValueDbl = Math.Round(firstValue);
+            double secondValueDbl = Math.Round(secondValue);
+            return firstValueDbl == secondValueDbl;
+        }
+
         private void numIntensity_ValueChanged(object sender, EventArgs e)
         {
-            UpdateParameter(numIntensity.Value, LightParameter.Intensity);
+            UpdateLight<float>((light, value) => Compare(light.Intensity, value, numIntensity),
+                (light, value) => light.Intensity = value, (light) => (float)numIntensity.Value);
         }
 
         private void numInnerRange_ValueChanged(object sender, EventArgs e)
         {
-            UpdateParameter(numInnerRange.Value, LightParameter.InnerRange);
+            UpdateLight<float>((light, value) => Compare(light.InnerRange, value, numInnerRange),
+                (light, value) => light.InnerRange = value, (light) => (float)numInnerRange.Value);
         }
 
         private void numOuterRange_ValueChanged(object sender, EventArgs e)
         {
-            UpdateParameter(numOuterRange.Value, LightParameter.OuterRange);
+            UpdateLight<float>((light, value) => Compare(light.OuterRange, value, numOuterRange),
+                (light, value) => light.OuterRange = value, (light) => (float)numOuterRange.Value);
         }
 
         private void numInnerAngle_ValueChanged(object sender, EventArgs e)
         {
-            UpdateParameter(numInnerAngle.Value, LightParameter.InnerAngle);
+            UpdateLight<float>((light, value) => Compare(light.InnerAngle, value, numInnerAngle),
+                 (light, value) => light.InnerAngle = value, (light) => (float)numInnerAngle.Value);
         }
 
         private void numOuterAngle_ValueChanged(object sender, EventArgs e)
         {
-            UpdateParameter(numOuterAngle.Value, LightParameter.OuterAngle);
-        }
-
-        private void numDirectionX_ValueChanged(object sender, EventArgs e)
-        {
-            UpdateParameter(numDirectionX.Value, LightParameter.RotationX);
+            UpdateLight<float>((light, value) => Compare(light.OuterAngle, value, numOuterAngle),
+                 (light, value) => light.OuterAngle = value, (light) => (float)numOuterAngle.Value);
         }
 
         private void numDirectionY_ValueChanged(object sender, EventArgs e)
         {
-            UpdateParameter(numDirectionY.Value, LightParameter.RotationY);
+            UpdateLight<float>((light, value) => Compare(light.RotationY, value, numDirectionY),
+                 (light, value) => light.RotationY = value, (light) => (float)numDirectionY.Value);
+        }
+
+        private void numDirectionX_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateLight<float>((light, value) => Compare(light.RotationX, value, numDirectionX),
+                 (light, value) => light.RotationX = value, (light) => (float)numDirectionX.Value);
         }
     }
 }

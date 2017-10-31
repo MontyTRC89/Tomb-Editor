@@ -31,7 +31,7 @@ namespace TombEditor.ToolWindows
                     return;
                 light.Color = lightPalette.SelectedColor.ToFloatColor3();
                 _editor.SelectedRoom.UpdateCompletely();
-                _editor.ObjectChange(light);
+                _editor.ObjectChange(light, ObjectChangeType.Change);
             };
         }
 

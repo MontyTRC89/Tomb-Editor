@@ -701,14 +701,14 @@ namespace TombEditor.Controls
                         if (newPicking is PickingResultBlock)
                         {
                             ObjectInstance instance = Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
-                            _editor.ObjectChange(instance);
+                            _editor.ObjectChange(instance, ObjectChangeType.Add);
                             _editor.SelectedObject = instance;
                             _editor.Action = EditorAction.None;
                         }
                         break;
                     case EditorActionType.Stamp:
                         if (newPicking is PickingResultBlock)
-                            _editor.ObjectChange(Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos));
+                            _editor.ObjectChange(Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos), ObjectChangeType.Add);
                         break;
                     case EditorActionType.None:
                         if (newPicking is PickingResultBlock)
@@ -1093,7 +1093,6 @@ namespace TombEditor.Controls
                         var instance = new ImportedGeometryInstance();
                         instance.Model = geometryToDrop;
                         EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos, instance);
-                        _editor.ObjectChange(instance);
                     }
                 }
             }

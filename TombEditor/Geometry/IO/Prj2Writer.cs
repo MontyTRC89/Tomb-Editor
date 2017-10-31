@@ -112,6 +112,7 @@ namespace TombEditor.Geometry.IO
                                         chunkIO.Raw.Write(frame.TexCoord1);
                                         chunkIO.Raw.Write(frame.TexCoord2);
                                         chunkIO.Raw.Write(frame.TexCoord3);
+                                        LEB128.Write(chunkIO.Raw, frame.Repeat);
                                     }, 120);
                             });
                         });
