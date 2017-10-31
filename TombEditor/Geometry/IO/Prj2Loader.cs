@@ -198,7 +198,8 @@ namespace TombEditor.Geometry.IO
                                         TexCoord0 = chunkIO.Raw.ReadVector2(),
                                         TexCoord1 = chunkIO.Raw.ReadVector2(),
                                         TexCoord2 = chunkIO.Raw.ReadVector2(),
-                                        TexCoord3 = chunkIO.Raw.ReadVector2()
+                                        TexCoord3 = chunkIO.Raw.ReadVector2(),
+                                        Repeat = Math.Max(LEB128.ReadInt(chunkIO.Raw), 1)
                                     });
                                     return true;
                                 });
