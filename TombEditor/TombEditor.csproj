@@ -259,9 +259,11 @@
     </Compile>
     <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
+    <Compile Include="Geometry\Exporters\RoomExporterMetasequoia.cs" />
+    <Compile Include="Geometry\Exporters\RoomExporterOBJ.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
     <Compile Include="Geometry\ImportedGeometry.cs" />
-    <Compile Include="Geometry\RoomGeometryExporter.cs" />
+    <Compile Include="Geometry\Exporters\RoomExporter.cs" />
     <Compile Include="Geometry\IO\Prj2Chunks.cs" />
     <Compile Include="Geometry\LevelSettings.cs" />
     <Compile Include="Geometry\ImportedGeometryInstance.cs" />
@@ -531,6 +533,7 @@
     <None Include="Resources\preview_subtoolbar_icons\geom_no.png" />
     <None Include="Resources\preview_subtoolbar_icons\cameras_yes.png" />
     <None Include="Resources\preview_subtoolbar_icons\cameras_no.png" />
+    <None Include="Resources\slide.png" />
     <None Include="Editor\Textures\illegal_slope.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -586,6 +589,30 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Editor\Textures\Palette.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\slide_east.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\slide_west.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\slide_north.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\slide_south.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\slide_east_flip.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\slide_west_flip.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\slide_north_flip.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\slide_south_flip.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Editor\Shaders\Model.fx">

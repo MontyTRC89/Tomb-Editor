@@ -39,6 +39,7 @@
             this.butDrawHorizon = new System.Windows.Forms.ToolStripButton();
             this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
+            this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.butCopy = new System.Windows.Forms.ToolStripButton();
             this.butPaste = new System.Windows.Forms.ToolStripButton();
@@ -76,9 +77,10 @@
             this.butCenterCamera,
             this.butDrawPortals,
             this.butDrawHorizon,
-            this.butDrawIllegalSlopes,
             this.butDrawRoomNames,
             this.dropDownDrawObjects,
+            this.butDrawIllegalSlopes,
+            this.butDrawSlideDirections,
             this.toolStripSeparator1,
             this.butFlipMap,
             this.toolStripSeparator6,
@@ -365,6 +367,19 @@
             this.butDrawRoomNames.Size = new System.Drawing.Size(23, 25);
             this.butDrawRoomNames.ToolTipText = "Draw room names";
             this.butDrawRoomNames.Click += new System.EventHandler(this.butDrawRoomNames_Click);
+            //
+            // butDrawSlideDirections
+            // 
+            this.butDrawSlideDirections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawSlideDirections.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawSlideDirections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawSlideDirections.Image = global::TombEditor.Properties.Resources.slide;
+            this.butDrawSlideDirections.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butDrawSlideDirections.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawSlideDirections.Name = "butDrawSlideDirections";
+            this.butDrawSlideDirections.Size = new System.Drawing.Size(23, 25);
+            this.butDrawSlideDirections.ToolTipText = "Draw slide directions";
+            this.butDrawSlideDirections.Click += new System.EventHandler(this.butDrawSlideDirections_Click);
             // 
             // butFlipMap
             // 
@@ -667,5 +682,6 @@
         private System.Windows.Forms.ToolStripButton butDrawRoomNames;
         private System.Windows.Forms.ToolStripMenuItem butDrawImportedGeometry;
         private System.Windows.Forms.ToolStripMenuItem butDrawOther;
+        private System.Windows.Forms.ToolStripButton butDrawSlideDirections;
     }
 }

@@ -13,6 +13,8 @@ using TombLib.Utils;
 using TombLib.NG;
 using DarkUI.Docking;
 using DarkUI.Forms;
+using TombEditor.Controls;
+using TombEditor.Geometry.Exporters;
 
 namespace TombEditor
 {
@@ -1073,7 +1075,7 @@ namespace TombEditor
 
         private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.ExportCurrentRoom(this);
+            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.OBJ);
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1090,6 +1092,11 @@ namespace TombEditor
         private void floatingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToolBox.Visible = !ToolBox.Visible;
+        }
+            
+        private void exportCurrentRoomToMQOToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.Metasequoia);
         }
     }
 }

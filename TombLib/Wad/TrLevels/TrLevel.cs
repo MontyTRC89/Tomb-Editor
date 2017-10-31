@@ -580,7 +580,8 @@ namespace TombLib.Wad.TrLevels
                         // If version >= TR3, object textures are here
                         if (Version == TrVersion.TR3 || Version == TrVersion.TR4 || Version == TrVersion.TR5)
                         {
-                            if (Version == TrVersion.TR4 || Version == TrVersion.TR5) marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(5));
+                            if (Version == TrVersion.TR4) marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(4));
+                            if (Version == TrVersion.TR5) marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(5));
 
                             var numObjectTextures = levelReader.ReadUInt32();
                             for (var i = 0; i < numObjectTextures; i++)

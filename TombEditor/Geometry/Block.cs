@@ -54,6 +54,11 @@ namespace TombEditor.Geometry
         Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
     }
 
+    public enum SlopeDirection : byte
+    {
+        None = 0, North = 1, East = 2, South = 3, West = 4
+    }
+
     public class Block : ICloneable
     {
         public const BlockFace FaceCount = (BlockFace)29;
@@ -65,6 +70,8 @@ namespace TombEditor.Geometry
         public const int FaceXpZn = 2;
         /// <summary> Index of faces on the negative X and negative Z direction </summary>
         public const int FaceXnZn = 3;
+        /// <summary> Maximum normal height for non-slidable slopes </summary>
+        public const float CriticalSlantComponent = 0.8f;
         /// <summary> The x offset of each face index in [0, 4). </summary>
         public static readonly int[] FaceX = new int[] { 0, 1, 1, 0 };
         /// <summary> The x offset of each face index in [0, 4). </summary>
@@ -231,6 +238,108 @@ namespace TombEditor.Geometry
                 return 3;
 
             return -1;
+        }
+
+        public Vector3[] GetTriangleNormals()
+        {
+            Plane[] tri = new Plane[2];
+
+            var p0 = new Vector3(0, QAFaces[0], 0);
+            var p1 = new Vector3(4, QAFaces[1], 0);
+            var p2 = new Vector3(4, QAFaces[2], -4);
+            var p3 = new Vector3(0, QAFaces[3], -4);
+
+            // Create planes based on floor split direction
+
+            if (FloorSplitDirectionIsXEqualsZ)
+            {
+                tri[0] = new Plane(p1, p2, p3);
+                tri[1] = new Plane(p1, p3, p0);
+            }
+            else
+            {
+                tri[0] = new Plane(p0, p1, p2);
+                tri[1] = new Plane(p0, p2, p3);
+            }
+
+            return new Vector3[2] { tri[0].Normal, tri[1].Normal };
+        }
+
+        public short GetTriangleMinimumFloorPoint(int triangle)
+        {
+            if (triangle != 0 && triangle != 1)
+                return 0;
+
+            if (FloorSplitDirectionIsXEqualsZ)
+            {
+                if (triangle == 0)
+                    return Math.Min(Math.Min(QAFaces[1], QAFaces[2]), QAFaces[3]);
+                else
+                    return Math.Min(Math.Min(QAFaces[1], QAFaces[3]), QAFaces[0]);
+            }
+            else
+            {
+                if (triangle == 0)
+                    return Math.Min(Math.Min(QAFaces[0], QAFaces[1]), QAFaces[2]);
+                else
+                    return Math.Min(Math.Min(QAFaces[0], QAFaces[2]), QAFaces[3]);
+            }
+        }
+
+        public SlopeDirection[] GetTriangleSlopeDirections()
+        {
+            var normals = GetTriangleNormals();
+
+            // Initialize slope directions as unslidable by default (EntireFace means unslidable in our case).
+
+            SlopeDirection[] slopeDirections = new SlopeDirection[2] { SlopeDirection.None, SlopeDirection.None };
+
+            for (int i = 0; i < (FloorIsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
+            {
+                if (Math.Abs(normals[i].Y) <= CriticalSlantComponent) // Triangle is slidable
+                {
+                    bool angleNotDefined = true;
+                    var angle = Math.Atan2(normals[i].X, normals[i].Z) * (180.0f / Math.PI);
+                    angle = angle < 0 ? angle + 360.0f : angle;
+
+                    // Note about 45, 135, 225 and 315 degree steps:
+                    // Core Design has used override instead of rounding for triangular slopes angled under
+                    // 45-degree stride, to produce either east or west-oriented slide.
+
+                    while (angleNotDefined)
+                    {
+                        switch ((int)angle)
+                        {
+                            case 0:
+                            case 360:
+                                slopeDirections[i] = SlopeDirection.North;
+                                angleNotDefined = false;
+                                break;
+                            case 45:
+                            case 90:
+                            case 135:
+                                slopeDirections[i] = SlopeDirection.East;
+                                angleNotDefined = false;
+                                break;
+                            case 180:
+                                slopeDirections[i] = SlopeDirection.South;
+                                angleNotDefined = false;
+                                break;
+                            case 225:
+                            case 270:
+                            case 315:
+                                slopeDirections[i] = SlopeDirection.West;
+                                angleNotDefined = false;
+                                break;
+                            default:
+                                angle = (int)Math.Round(angle / 90.0f, MidpointRounding.AwayFromZero) * 90;
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return slopeDirections;
         }
 
         public bool FloorSplitDirectionIsXEqualsZ
