@@ -1240,15 +1240,6 @@
             this.objectListToolStripMenuItem.Text = "Object List";
             this.objectListToolStripMenuItem.Click += new System.EventHandler(this.objectListToolStripMenuItem_Click);
             // 
-            // objectListToolStripMenuItem
-            // 
-            this.objectListToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.objectListToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.objectListToolStripMenuItem.Name = "objectListToolStripMenuItem";
-            this.objectListToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-            this.objectListToolStripMenuItem.Text = "Object List";
-            this.objectListToolStripMenuItem.Click += new System.EventHandler(this.objectListToolStripMenuItem_Click);
-            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
