@@ -36,6 +36,8 @@
             this.toolStripMenuSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.editObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rotateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.roomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -294,7 +296,9 @@
             this.deleteToolStripMenuItem,
             this.toolStripMenuSeparator4,
             this.editObjectToolStripMenuItem,
-            this.rotateToolStripMenuItem});
+            this.rotateToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.searchToolStripMenuItem});
             this.editToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -371,10 +375,28 @@
             this.rotateToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
             this.rotateToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
-            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rotateToolStripMenuItem.Text = "Rotate";
             this.rotateToolStripMenuItem.Click += new System.EventHandler(this.rotateToolStripMenuItem_Click);
-            //
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // searchToolStripMenuItem
+            // 
+            this.searchToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.searchToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
+            this.searchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.searchToolStripMenuItem.Text = "Search";
+            this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
+            // 
             // roomsToolStripMenuItem
             //
             this.roomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1208,7 +1230,16 @@
             this.texturePanelToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
             this.texturePanelToolStripMenuItem.Text = "Texture Panel";
             this.texturePanelToolStripMenuItem.Click += new System.EventHandler(this.texturePanelToolStripMenuItem_Click);
-            //
+            // 
+            // objectListToolStripMenuItem
+            // 
+            this.objectListToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.objectListToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.objectListToolStripMenuItem.Name = "objectListToolStripMenuItem";
+            this.objectListToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+            this.objectListToolStripMenuItem.Text = "Object List";
+            this.objectListToolStripMenuItem.Click += new System.EventHandler(this.objectListToolStripMenuItem_Click);
+            // 
             // objectListToolStripMenuItem
             // 
             this.objectListToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1219,7 +1250,7 @@
             this.objectListToolStripMenuItem.Click += new System.EventHandler(this.objectListToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
-            //
+            // 
             this.helpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem});
@@ -1227,39 +1258,39 @@
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
-            //
+            // 
             // aboutToolStripMenuItem
-            //
+            // 
             this.aboutToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.aboutToolStripMenuItem.Text = "About Tomb Editor...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            //
+            // 
             // butRoomDown
-            //
+            // 
             this.butRoomDown.Location = new System.Drawing.Point(0, 0);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Size = new System.Drawing.Size(75, 23);
             this.butRoomDown.TabIndex = 0;
-            //
+            // 
             // butEditRoomName
-            //
+            // 
             this.butEditRoomName.Location = new System.Drawing.Point(0, 0);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Size = new System.Drawing.Size(75, 23);
             this.butEditRoomName.TabIndex = 0;
-            //
+            // 
             // butDeleteRoom
-            //
+            // 
             this.butDeleteRoom.Location = new System.Drawing.Point(0, 0);
             this.butDeleteRoom.Name = "butDeleteRoom";
             this.butDeleteRoom.Size = new System.Drawing.Size(75, 23);
             this.butDeleteRoom.TabIndex = 0;
-            //
+            // 
             // statusStrip
-            //
+            // 
             this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1272,40 +1303,40 @@
             this.statusStrip.Size = new System.Drawing.Size(1204, 29);
             this.statusStrip.TabIndex = 29;
             this.statusStrip.Text = "statusStrip";
-            //
+            // 
             // statusStripSelectedRoom
-            //
+            // 
             this.statusStripSelectedRoom.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusStripSelectedRoom.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
             this.statusStripSelectedRoom.Name = "statusStripSelectedRoom";
             this.statusStripSelectedRoom.Size = new System.Drawing.Size(0, 16);
             this.statusStripSelectedRoom.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            //
+            // 
             // statusStripGlobalSelectionArea
-            //
+            // 
             this.statusStripGlobalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusStripGlobalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
             this.statusStripGlobalSelectionArea.Name = "statusStripGlobalSelectionArea";
             this.statusStripGlobalSelectionArea.Size = new System.Drawing.Size(0, 16);
             this.statusStripGlobalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            //
+            // 
             // statusStripLocalSelectionArea
-            //
+            // 
             this.statusStripLocalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusStripLocalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
             this.statusStripLocalSelectionArea.Name = "statusStripLocalSelectionArea";
             this.statusStripLocalSelectionArea.Size = new System.Drawing.Size(0, 16);
             this.statusStripLocalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            //
+            // 
             // darkContextMenu1
-            //
+            // 
             this.darkContextMenu1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkContextMenu1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkContextMenu1.Name = "darkContextMenu1";
             this.darkContextMenu1.Size = new System.Drawing.Size(61, 4);
-            //
+            // 
             // dockArea
-            //
+            // 
             this.dockArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.dockArea.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockArea.Location = new System.Drawing.Point(0, 0);
@@ -1314,9 +1345,9 @@
             this.dockArea.Padding = new System.Windows.Forms.Padding(2);
             this.dockArea.Size = new System.Drawing.Size(1204, 677);
             this.dockArea.TabIndex = 90;
-            //
+            // 
             // panelDockArea
-            //
+            // 
             this.panelDockArea.Controls.Add(this.dockArea);
             this.panelDockArea.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDockArea.Location = new System.Drawing.Point(0, 24);
@@ -1471,5 +1502,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem objectListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportCurrentRoomToMQOToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
     }
 }

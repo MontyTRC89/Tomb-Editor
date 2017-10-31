@@ -834,6 +834,12 @@ namespace TombEditor
                 EditorActions.EditObject(_editor.SelectedObject, this);
         }
 
+        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormSearch searchForm = new FormSearch(_editor);
+            searchForm.Show(this); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
+        }
+
         private void rotateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedObject != null)
