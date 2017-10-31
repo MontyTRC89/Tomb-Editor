@@ -348,86 +348,18 @@ namespace TombEditor.Geometry
             if (WaterLevel > 0 || sector == null || sector.IsAnyWall || !sector.FloorHasSlope)
                 return false;
 
-            const float criticalSlantComponent = 0.8f; // Maximum normal height for non-slidable slopes
-            const int lowestSlidableHeight = 3;
             const int lowestPassableHeight = 4;
             const int lowestPassableStep = 2;  // Lara still can bug out of 2-click step heights
 
-            Plane[] tri = new Plane[2];
+            var normals = sector.GetTriangleNormals();
+            var slopeDirections = sector.GetTriangleSlopeDirections();
 
-            var p0 = new Vector3(0, sector.QAFaces[0], 0);
-            var p1 = new Vector3(4, sector.QAFaces[1], 0);
-            var p2 = new Vector3(4, sector.QAFaces[2], -4);
-            var p3 = new Vector3(0, sector.QAFaces[3], -4);
-
-            // Create planes based on floor split direction
-
-            if (sector.FloorSplitDirectionIsXEqualsZ)
-            {
-                tri[0] = new Plane(p1, p2, p3);
-                tri[1] = new Plane(p1, p3, p0);
-            }
-            else
-            {
-                tri[0] = new Plane(p0, p1, p2);
-                tri[1] = new Plane(p0, p2, p3);
-            }
-
-            // Initialize slope directions as unslidable by default (EntireFace means unslidable in our case).
-
-            EditorArrowType[] slopeDirections = new EditorArrowType[2] { EditorArrowType.EntireFace, EditorArrowType.EntireFace };
-
-            for (int i = 0; i < (sector.FloorIsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
-            {
-                if (Math.Abs(tri[i].Normal.Y) <= criticalSlantComponent) // Triangle is slidable
-                {
-                    bool angleNotDefined = true;
-                    var angle = Math.Atan2(tri[i].Normal.X, tri[i].Normal.Z) * (180.0f / Math.PI);
-                    angle = angle < 0 ? angle + 360.0f : angle;
-
-                    // Note about 45, 135, 225 and 315 degree steps:
-                    // Core Design has used override instead of rounding for triangular slopes angled under
-                    // 45-degree stride, to produce either east or west-oriented slide.
-
-                    while(angleNotDefined)
-                    {
-                        switch ((int)angle)
-                        {
-                            case 0:
-                            case 360:
-                                slopeDirections[i] = EditorArrowType.EdgeN;
-                                angleNotDefined = false;
-                                break;
-                            case 45:
-                            case 90:
-                            case 135:
-                                slopeDirections[i] = EditorArrowType.EdgeE;
-                                angleNotDefined = false;
-                                break;
-                            case 180:
-                                slopeDirections[i] = EditorArrowType.EdgeS;
-                                angleNotDefined = false;
-                                break;
-                            case 225:
-                            case 270:
-                            case 315:
-                                slopeDirections[i] = EditorArrowType.EdgeW;
-                                angleNotDefined = false;
-                                break;
-                            default:
-                                angle = (int)Math.Round(angle / 90.0f, MidpointRounding.AwayFromZero) * 90;
-                                break;
-                        }
-                    }
-                }
-            }
-
-            if (slopeDirections[0] != EditorArrowType.EntireFace && slopeDirections[1] != EditorArrowType.EntireFace &&
+            if (slopeDirections[0] != SlopeDirection.None && slopeDirections[1] != SlopeDirection.None &&
                 slopeDirections[0] != slopeDirections[1])
             {
-                var diff = tri[0].Normal - tri[1].Normal;
+                var diff = normals[0] - normals[1];
                 if (Math.Atan2(diff.X, diff.Z) < 0)
-                    return true; // Slants are inward-pointing, hence engine can't resolve this situation
+                    return true;
             }
 
             // Main illegal slope calculation takes two adjacent corner heights (heightsToCheck[0-1]) from lookup block 
@@ -439,53 +371,45 @@ namespace TombEditor.Geometry
 
             for (int i = 0; i < 2; i++)
             {
-                if (slopeDirections[i] == EditorArrowType.EntireFace || slopeIsIllegal)
+                if (slopeDirections[i] == SlopeDirection.None || slopeIsIllegal)
                     continue;
 
                 RoomBlockPair lookupBlock = null;
                 short[] heightsToCompare = new short[2];
-                short[] heightsToCheck = new short[4];
+                short[] heightsToCheck = new short[2];
 
                 switch (slopeDirections[i])
                 {
-                    case EditorArrowType.EdgeN:
+                    case SlopeDirection.North:
                         lookupBlock = GetBlockTryThroughPortal(x, z + 1);
                         heightsToCompare[0] = 0;
                         heightsToCompare[1] = 1;
                         heightsToCheck[0] = 3;
                         heightsToCheck[1] = 2;
-                        heightsToCheck[2] = 0;
-                        heightsToCheck[3] = 1;
                         break;
 
-                    case EditorArrowType.EdgeE:
+                    case SlopeDirection.East:
                         lookupBlock = GetBlockTryThroughPortal(x + 1, z);
                         heightsToCompare[0] = 1;
                         heightsToCompare[1] = 2;
                         heightsToCheck[0] = 0;
                         heightsToCheck[1] = 3;
-                        heightsToCheck[2] = 1;
-                        heightsToCheck[3] = 2;
                         break;
 
-                    case EditorArrowType.EdgeS:
+                    case SlopeDirection.South:
                         lookupBlock = GetBlockTryThroughPortal(x, z - 1);
                         heightsToCompare[0] = 2;
                         heightsToCompare[1] = 3;
                         heightsToCheck[0] = 1;
                         heightsToCheck[1] = 0;
-                        heightsToCheck[2] = 2;
-                        heightsToCheck[3] = 3;
                         break;
 
-                    case EditorArrowType.EdgeW:
+                    case SlopeDirection.West:
                         lookupBlock = GetBlockTryThroughPortal(x - 1, z);
                         heightsToCompare[0] = 3;
                         heightsToCompare[1] = 0;
                         heightsToCheck[0] = 2;
                         heightsToCheck[1] = 1;
-                        heightsToCheck[2] = 3;
-                        heightsToCheck[3] = 0;
                         break;
                 }
 
@@ -511,7 +435,7 @@ namespace TombEditor.Geometry
 
                     switch (slopeDirections[i])
                     {
-                        case EditorArrowType.EdgeN:
+                        case SlopeDirection.North:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
@@ -526,7 +450,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 3;
                             break;
-                        case EditorArrowType.EdgeE:
+                        case SlopeDirection.East:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
@@ -541,7 +465,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 0;
                             break;
-                        case EditorArrowType.EdgeS:
+                        case SlopeDirection.South:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
@@ -556,7 +480,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 1;
                             break;
-                        case EditorArrowType.EdgeW:
+                        case SlopeDirection.West:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
@@ -589,9 +513,27 @@ namespace TombEditor.Geometry
                         lookupBlock.Block.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] > absoluteLowestPassableStep)
                         slopeIsIllegal = true;
                     else if (heightsToCheck[0] != heightsToCheck[1]) // Only look for opposite slope cases in case there's no diagonal step in lookup block.
-                        if ((lookupBlock.Block.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] <= absoluteLowestPassableStep) && (lookupBlock.Block.QAFaces[heightsToCheck[2]] - lookupBlock.Block.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight) ||
-                            (lookupBlock.Block.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] <= absoluteLowestPassableStep) && (lookupBlock.Block.QAFaces[heightsToCheck[3]] - lookupBlock.Block.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight))
+                    {
+                        var lookupBlockSlopeDirections = lookupBlock.Block.GetTriangleSlopeDirections();
+                        bool checkFirstTriangle = true;
+                        bool checkSecondTriangle = true;
+
+                        if(!sector.FloorIsQuad && !lookupBlock.Block.FloorIsQuad && lookupBlock.Block.FloorSplitDirectionIsXEqualsZ == sector.FloorSplitDirectionIsXEqualsZ)
+                        {
+                            // If both current and lookup sector triangle split direction is the same, ignore far opposite triangles.
+
+                            checkFirstTriangle = (i == 0);
+                            checkSecondTriangle = (i != 0);
+                        }
+
+                        // Triangle is considered illegal only if its lowest point lies lower than lowest passable step height compared to opposite triangle minimum point.
+                        // Triangle is NOT considered illegal, if its slide direction is perpendicular to opposite triangle slide direction.
+
+                        if (checkFirstTriangle && (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(0) - heightAdjust) <= lowestPassableStep && lookupBlockSlopeDirections[0] != SlopeDirection.None && ((int)lookupBlockSlopeDirections[0] % 2) == ((int)slopeDirections[i] % 2)))
                             slopeIsIllegal = true;
+                        if (checkSecondTriangle && (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(1) - heightAdjust) <= lowestPassableStep && lookupBlockSlopeDirections[1] != SlopeDirection.None && ((int)lookupBlockSlopeDirections[1] % 2) == ((int)slopeDirections[i] % 2)))
+                            slopeIsIllegal = true;
+                    }
                 }
 
                 if(lookupBlock.Block.CeilingPortal == null)
