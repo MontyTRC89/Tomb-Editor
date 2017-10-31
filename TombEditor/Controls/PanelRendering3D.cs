@@ -126,6 +126,8 @@ namespace TombEditor.Controls
         public bool DrawHorizon { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawIllegalSlopes { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawSlideDirections { get; set; }
 
         private Editor _editor;
         private DeviceManager _deviceManager;
@@ -3120,16 +3122,46 @@ namespace TombEditor.Controls
                         }
                     }
                 }
-                else if(DrawIllegalSlopes)
+                else
                 {
-                    if ((face == (BlockFace)25 || face == (BlockFace)26) && room.IsIllegalSlope(x, z))
+                    if (face == (BlockFace)25 || face == (BlockFace)26)
                     {
-                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["illegal_slope"]);
-                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                        if (DrawIllegalSlopes && room.IsIllegalSlope(x, z))
+                        {
+                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["illegal_slope"]);
+                            _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                            _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                        }
+                        else if(DrawSlideDirections)
+                        {
+                            var slopeDirection = room.Blocks[x, z].GetTriangleSlopeDirections()[(face == (BlockFace)25 ? 0 : 1)];
+
+                            if (slopeDirection != SlopeDirection.None)
+                            {
+                                string flipSplit = (room.Blocks[x, z].FloorSplitDirectionIsXEqualsZ ? "_flip" : "");
+
+                                switch (slopeDirection)
+                                {
+                                    case SlopeDirection.East:
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_east" + flipSplit]);
+                                        break;
+                                    case SlopeDirection.West:
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_west" + flipSplit]);
+                                        break;
+                                    case SlopeDirection.North:
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_north" + flipSplit]);
+                                        break;
+                                    case SlopeDirection.South:
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_south" + flipSplit]);
+                                        break;
+                                }
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                            }
+                        }
                     }
                 }
-
+                
                 _roomEffect.CurrentTechnique.Passes[0].Apply();
 
                 var vertexRange = room.GetFaceVertexRange(bucket.X, bucket.Z, bucket.Face);

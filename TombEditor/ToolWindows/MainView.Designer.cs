@@ -25,6 +25,7 @@
             this.butDrawHorizon = new System.Windows.Forms.ToolStripButton();
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
             this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
+            this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -72,6 +73,7 @@
             this.butDrawHorizon,
             this.butDrawRoomNames,
             this.butDrawIllegalSlopes,
+            this.butDrawSlideDirections,
             this.toolStripSeparator1,
             this.butFlipMap,
             this.toolStripSeparator6,
@@ -213,6 +215,19 @@
             this.butDrawIllegalSlopes.Size = new System.Drawing.Size(23, 25);
             this.butDrawIllegalSlopes.ToolTipText = "Draw illegal slopes";
             this.butDrawIllegalSlopes.Click += new System.EventHandler(this.butDrawIllegalSlopes_Click);
+            // 
+            // butDrawSlideDirections
+            // 
+            this.butDrawSlideDirections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawSlideDirections.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawSlideDirections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawSlideDirections.Image = global::TombEditor.Properties.Resources.slide;
+            this.butDrawSlideDirections.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butDrawSlideDirections.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawSlideDirections.Name = "butDrawSlideDirections";
+            this.butDrawSlideDirections.Size = new System.Drawing.Size(23, 25);
+            this.butDrawSlideDirections.ToolTipText = "Draw slide directions";
+            this.butDrawSlideDirections.Click += new System.EventHandler(this.butDrawSlideDirections_Click);
             // 
             // toolStripSeparator1
             // 
@@ -595,5 +610,6 @@
         private TombEditor.Controls.PanelRendering3D panel3D;
         private TombEditor.Controls.Panel2DMap panel2DMap;
         private System.Windows.Forms.ToolStripButton butDrawIllegalSlopes;
+        private System.Windows.Forms.ToolStripButton butDrawSlideDirections;
     }
 }

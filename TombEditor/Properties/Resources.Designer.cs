@@ -503,6 +503,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap slide {
+            get {
+                object obj = ResourceManager.GetObject("slide", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap small_icons_16 {
             get {
                 object obj = ResourceManager.GetObject("small_icons_16", resourceCulture);
