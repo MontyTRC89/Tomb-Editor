@@ -24,9 +24,17 @@ namespace TombEditor
         Room Room { get; }
     }
 
+    public enum ObjectChangeType
+    {
+        Add,
+        Remove,
+        Change
+    }
+
     public interface IEditorObjectChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
     {
         ObjectInstance Object { get; }
+        ObjectChangeType ChangeType { get; }
     }
 
     public class Editor : IDisposable
@@ -375,10 +383,11 @@ namespace TombEditor
         public class ObjectChangedEvent : IEditorObjectChangedEvent, IEditorEventCausesUnsavedChanges
         {
             public ObjectInstance Object { get; set; }
+            public ObjectChangeType ChangeType { get; set; }
         }
-        public void ObjectChange(ObjectInstance object_)
+        public void ObjectChange(ObjectInstance object_, ObjectChangeType changeType)
         {
-            RaiseEvent(new ObjectChangedEvent { Object = object_ });
+            RaiseEvent(new ObjectChangedEvent { Object = object_, ChangeType = changeType });
         }
 
         // Move the camera to the center of a specific sector.
@@ -448,7 +457,7 @@ namespace TombEditor
             bool animatedTexturesChanged = newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
 
             // Update the current settings
-            _level.ApplyNewLevelSettings(newSettings, (instance) => ObjectChange(instance));
+            _level.ApplyNewLevelSettings(newSettings, (instance) => ObjectChange(instance, ObjectChangeType.Change));
 
             // Update state
             if (importedGeometryChanged)
@@ -523,6 +532,12 @@ namespace TombEditor
             if (obj is IEditorEventCausesUnsavedChanges)
             {
                 HasUnsavedChanges = true;
+            }
+
+            // Make sure an object that was removed isn't selected
+            if ((obj as IEditorObjectChangedEvent)?.ChangeType == ObjectChangeType.Remove)
+            {
+                SelectedObject = null;
             }
         }
 

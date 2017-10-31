@@ -791,6 +791,7 @@ namespace TombEditor
                     if ((lara != null) && (lara.WadObjectId == 0))
                     {
                         room.RemoveObject(_editor.Level, instance);
+                        _editor.ObjectChange(lara, ObjectChangeType.Remove);
                         goto FoundLara;
                     }
                 }
@@ -798,13 +799,7 @@ namespace TombEditor
             FoundLara:
 
             // Add lara to current sector
-            {
-                var room = _editor.SelectedRoom;
-                var block = room.GetBlock(_editor.SelectedSectors.Start);
-                lara.Position = new Vector3(_editor.SelectedSectors.Start.X * 1024 + 512, block.FloorMax * 256, _editor.SelectedSectors.Start.Y * 1024 + 512);
-                room.AddObject(_editor.Level, lara);
-                _editor.ObjectChange(lara);
-            }
+            EditorActions.PlaceObject(_editor.SelectedRoom, _editor.SelectedSectors.Start, lara);
         }
 
         private void cropRoomToolStripMenuItem_Click(object sender, EventArgs e)
@@ -833,7 +828,7 @@ namespace TombEditor
                 EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
         }
 
-        private void editSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        private void editObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedObject != null)
                 EditorActions.EditObject(_editor.SelectedObject, this);
@@ -962,6 +957,39 @@ namespace TombEditor
                 ToolWindow_BuildMenu();
         }
 
+        protected override void OnDragEnter(DragEventArgs e)
+        {
+            base.OnDragEnter(e);
+
+            if (EditorActions.DragDropFileSupported(e))
+                e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        protected override void OnDragDrop(DragEventArgs e)
+        {
+            base.OnDragDrop(e);
+            EditorActions.DragDropCommonFiles(e, this);
+        }
+
+        private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.OBJ);
+        }
+
+        private void exportCurrentRoomToMQOToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.Metasequoia);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormAbout form = new FormAbout())
+                form.ShowDialog(this);
+        }
+
+
         // Only for debugging purposes...
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1043,38 +1071,6 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
-        }
-
-        protected override void OnDragEnter(DragEventArgs e)
-        {
-            base.OnDragEnter(e);
-
-            if (EditorActions.DragDropFileSupported(e))
-                e.Effect = DragDropEffects.Move;
-            else
-                e.Effect = DragDropEffects.None;
-        }
-
-        protected override void OnDragDrop(DragEventArgs e)
-        {
-            base.OnDragDrop(e);
-            EditorActions.DragDropCommonFiles(e, this);
-        }
-
-        private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.OBJ);
-        }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (FormAbout form = new FormAbout())
-                form.ShowDialog(this);
-        }
-
-        private void exportCurrentRoomToMQOToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.Metasequoia);
         }
     }
 }
