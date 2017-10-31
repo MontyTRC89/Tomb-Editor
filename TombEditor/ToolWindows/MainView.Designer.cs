@@ -373,7 +373,7 @@
             this.butDrawSlideDirections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butDrawSlideDirections.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butDrawSlideDirections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawSlideDirections.Image = global::TombEditor.Properties.Resources.slide;
+            this.butDrawSlideDirections.Image = global::TombEditor.Properties.Resources.Slide_16;
             this.butDrawSlideDirections.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.butDrawSlideDirections.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDrawSlideDirections.Name = "butDrawSlideDirections";
