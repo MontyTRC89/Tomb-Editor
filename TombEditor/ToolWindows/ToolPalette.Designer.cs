@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.secondaryToolStrip = new DarkUI.Controls.DarkToolStrip();
+            this.toolStrip = new DarkUI.Controls.DarkToolStrip();
             this.toolSelection = new System.Windows.Forms.ToolStripButton();
             this.toolBrush = new System.Windows.Forms.ToolStripButton();
             this.toolShovel = new System.Windows.Forms.ToolStripButton();
@@ -38,18 +38,18 @@
             this.toolFill = new System.Windows.Forms.ToolStripButton();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
-            this.secondaryToolStrip.SuspendLayout();
+            this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // secondaryToolStrip
+            // toolStrip
             // 
-            this.secondaryToolStrip.AutoSize = false;
-            this.secondaryToolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.secondaryToolStrip.CanOverflow = false;
-            this.secondaryToolStrip.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.secondaryToolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.secondaryToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.secondaryToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStrip.AutoSize = false;
+            this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStrip.CanOverflow = false;
+            this.toolStrip.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSelection,
             this.toolBrush,
             this.toolShovel,
@@ -59,12 +59,12 @@
             this.toolFill,
             this.toolEraser,
             this.toolInvisibility});
-            this.secondaryToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this.secondaryToolStrip.Location = new System.Drawing.Point(0, 25);
-            this.secondaryToolStrip.Name = "secondaryToolStrip";
-            this.secondaryToolStrip.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.secondaryToolStrip.Size = new System.Drawing.Size(212, 27);
-            this.secondaryToolStrip.TabIndex = 2;
+            this.toolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
+            this.toolStrip.Location = new System.Drawing.Point(0, 25);
+            this.toolStrip.Name = "toolStrip";
+            this.toolStrip.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.toolStrip.Size = new System.Drawing.Size(212, 27);
+            this.toolStrip.TabIndex = 2;
             // 
             // toolSelection
             // 
@@ -183,21 +183,21 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.secondaryToolStrip);
+            this.Controls.Add(this.toolStrip);
             this.DockText = "Tools";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(28, 52);
             this.Name = "ToolPalette";
             this.Size = new System.Drawing.Size(212, 52);
-            this.secondaryToolStrip.ResumeLayout(false);
-            this.secondaryToolStrip.PerformLayout();
+            this.toolStrip.ResumeLayout(false);
+            this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private DarkUI.Controls.DarkToolStrip secondaryToolStrip;
+        private DarkUI.Controls.DarkToolStrip toolStrip;
         private System.Windows.Forms.ToolStripButton toolSelection;
         private System.Windows.Forms.ToolStripButton toolBrush;
         private System.Windows.Forms.ToolStripButton toolShovel;

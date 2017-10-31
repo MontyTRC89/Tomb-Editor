@@ -39,9 +39,9 @@ namespace TombEditor.ToolWindows
             toolFlatten.Visible = mode == EditorMode.Geometry;
             toolShovel.Visible = mode == EditorMode.Geometry;
             toolSmooth.Visible = mode == EditorMode.Geometry;
-            secondaryToolStrip.AutoSize = true;
-            Size = secondaryToolStrip.Size;
-            Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
+            toolStrip.AutoSize = true;
+            Size = toolStrip.Size;
+            toolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
 
             // Select classic winroomedit controls by default
             SwitchTool(mode == EditorMode.FaceEdit ? EditorTool.Brush : EditorTool.Selection);
