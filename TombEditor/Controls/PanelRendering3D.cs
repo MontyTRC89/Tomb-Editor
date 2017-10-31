@@ -717,13 +717,13 @@ namespace TombEditor.Controls
                             DrawingPoint pos = newBlockPicking.Pos;
                             bool belongsToFloor = newBlockPicking.BelongsToFloor;
 
-                            if (_editor.Tool == EditorTool.Selection)
+                            if (_editor.Tool == EditorTool.Selection && !ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Alt))
                             {
                                 // Handle face selection
                                 if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
                                 {
                                     // Rotate the arrows
-                                    if (Control.ModifierKeys.HasFlag(Keys.Control))
+                                    if (ModifierKeys.HasFlag(Keys.Control))
                                     {
                                         if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSW)
                                             _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
