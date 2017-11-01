@@ -535,9 +535,9 @@ namespace TombEditor.Geometry
                         // Triangle is considered illegal only if its lowest point lies lower than lowest passable step height compared to opposite triangle minimum point.
                         // Triangle is NOT considered illegal, if its slide direction is perpendicular to opposite triangle slide direction.
 
-                        if (checkFirstTriangle && (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(0) - heightAdjust) <= lowestPassableStep && lookupBlockSlopeDirections[0] != SlopeDirection.None && ((int)lookupBlockSlopeDirections[0] % 2) == ((int)slopeDirections[i] % 2)))
+                        if (checkFirstTriangle && (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(0) - heightAdjust) <= lowestPassableStep && lookupBlockSlopeDirections[0] != SlopeDirection.None && lookupBlockSlopeDirections[0] != slopeDirections[i] && ((int)lookupBlockSlopeDirections[0] % 2) == ((int)slopeDirections[i] % 2)))
                             slopeIsIllegal = true;
-                        if (checkSecondTriangle && (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(1) - heightAdjust) <= lowestPassableStep && lookupBlockSlopeDirections[1] != SlopeDirection.None && ((int)lookupBlockSlopeDirections[1] % 2) == ((int)slopeDirections[i] % 2)))
+                        if (checkSecondTriangle && (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(1) - heightAdjust) <= lowestPassableStep && lookupBlockSlopeDirections[1] != SlopeDirection.None && lookupBlockSlopeDirections[1] != slopeDirections[i] && ((int)lookupBlockSlopeDirections[1] % 2) == ((int)slopeDirections[i] % 2)))
                             slopeIsIllegal = true;
                     }
                 }
