@@ -60,6 +60,7 @@ namespace TombEditor.Geometry
         private VertexRange[,,] _sectorFaceVertexVertexRange;
         private int[,] _sectorAllVerticesOffset;
         private List<EditorVertex> _allVertices = new List<EditorVertex>();
+        private List<int>[,,] _sectorFaceIndices;
 
         public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {
@@ -101,6 +102,7 @@ namespace TombEditor.Geometry
                     _sectorVertices[x, z] = new List<EditorVertex>();
             _sectorFaceVertexVertexRange = new VertexRange[numXSectors, numZSectors, (int)Block.FaceCount];
             _sectorAllVerticesOffset = new int[numXSectors, numZSectors];
+            _sectorFaceIndices = new List<int>[numXSectors, numZSectors, (int)Block.FaceCount];
 
             Blocks = newBlocks;
 
@@ -208,6 +210,10 @@ namespace TombEditor.Geometry
             for (int x = 0; x < NumXSectors; x++)
                 for (int z = 0; z < NumZSectors; z++)
                     result._sectorVertices[x, z] = new List<EditorVertex>();
+            for (int x = 0; x < NumXSectors; x++)
+                for (int z = 0; z < NumZSectors; z++)
+                    for (int f = 0; f < 29; f++)
+                        result._sectorFaceIndices[x, z, 4] = new List<int>();
             result._sectorFaceVertexVertexRange = new VertexRange[NumXSectors, NumZSectors, (int)Block.FaceCount];
             result._sectorAllVerticesOffset = new int[NumXSectors, NumZSectors];
             result._allVertices = new List<EditorVertex>();
@@ -561,6 +567,16 @@ namespace TombEditor.Geometry
             return new VertexRange { Start = range.Start + offset, Count = range.Count };
         }
 
+        public List<int> GetFaceIndices(int x, int z, BlockFace face)
+        {
+            var range = _sectorFaceIndices[x, z, (int)face];
+            int offset = _sectorAllVerticesOffset[x, z];
+            var indices = new List<int>();
+            foreach (var index in range)
+                indices.Add(index + offset);
+            return indices;
+        }
+
         public void BuildGeometry()
         {
             BuildGeometry(new Rectangle(0, 0, NumXSectors - 1, NumZSectors - 1));
@@ -584,6 +600,7 @@ namespace TombEditor.Geometry
                     {
                         _sectorFaceVertexVertexRange[x, z, (int)f] = new VertexRange();
                         _sectorVertices[x, z].Clear();
+                        _sectorFaceIndices[x, z, (int)f] = new List<int>();
                     }
 
                     // Save the height of the faces
@@ -2295,6 +2312,10 @@ namespace TombEditor.Geometry
             sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord3, EditorUV = editorUV2 });
 
             _sectorFaceVertexVertexRange[x, z, (int)face] = new VertexRange { Start = sectorVerticesStart, Count = 6 };
+            _sectorFaceIndices[x, z, (int)face].AddRange(new int[] { sectorVerticesStart + 2,
+                                                                     sectorVerticesStart + 0,
+                                                                     sectorVerticesStart + 1,
+                                                                     sectorVerticesStart + 3 });
         }
 
         private void AddTriangle(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, bool IsXEqualYDiagonal)
@@ -2308,6 +2329,9 @@ namespace TombEditor.Geometry
             sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord2, EditorUV = editorUV2 * editorUvFactor });
 
             _sectorFaceVertexVertexRange[x, z, (int)face] = new VertexRange { Start = sectorVerticesStart, Count = 3 };
+            _sectorFaceIndices[x, z, (int)face].AddRange(new int[] { sectorVerticesStart + 0,
+                                                                     sectorVerticesStart + 1,
+                                                                     sectorVerticesStart + 2 });
         }
 
         public struct IntersectionInfo
