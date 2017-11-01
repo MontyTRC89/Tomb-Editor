@@ -182,7 +182,7 @@ namespace TombEditor
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
 
             // Get frame and advance frame
-            int frameCount = selectedSet.Frames.Count;
+            int frameCount = selectedSet?.Frames?.Count ?? 0;
             if (frameCount == 0)
             {
                 previewImage.Image = null;
@@ -194,11 +194,10 @@ namespace TombEditor
             for (int i = 0; i < frameCount; ++i)
                 if (selectedSet.Frames[i] == _previewCurrentFrame)
                 {
-                    frameIndex = i;
+                    frameIndex = (i + 1) % frameCount; // Advance to next image
                     break;
                 }
-            AnimatedTextureFrame currentFrame = selectedSet.Frames[frameIndex];
-            _previewCurrentFrame = selectedSet.Frames[(frameIndex + 1) % frameCount];
+            _previewCurrentFrame = selectedSet.Frames[frameIndex];
             _previewCurrentRepeatTimes = 0;
 
             // Update view
@@ -207,11 +206,11 @@ namespace TombEditor
             previewProgressBar.SetProgressNoAnimation(frameIndex);
             previewImage.Image = _imageCache[new CachedImageInfo
             {
-                _image = currentFrame.Texture.Image,
-                _sourceTexCoord0 = currentFrame.TexCoord0,
-                _sourceTexCoord1 = currentFrame.TexCoord1,
-                _sourceTexCoord2 = currentFrame.TexCoord2,
-                _sourceTexCoord3 = currentFrame.TexCoord3,
+                _image = _previewCurrentFrame.Texture.Image,
+                _sourceTexCoord0 = _previewCurrentFrame.TexCoord0,
+                _sourceTexCoord1 = _previewCurrentFrame.TexCoord1,
+                _sourceTexCoord2 = _previewCurrentFrame.TexCoord2,
+                _sourceTexCoord3 = _previewCurrentFrame.TexCoord3,
                 _destinationSize = previewImage.ClientSize
             }];
         }

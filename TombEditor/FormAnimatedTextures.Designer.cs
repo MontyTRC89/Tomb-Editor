@@ -75,6 +75,7 @@ namespace TombEditor
             // 
             // butAnimatedTextureSetDelete
             // 
+            this.butAnimatedTextureSetDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butAnimatedTextureSetDelete.Enabled = false;
             this.butAnimatedTextureSetDelete.Image = global::TombEditor.Properties.Resources.trash_16;
             this.butAnimatedTextureSetDelete.ImagePadding = 3;
@@ -87,6 +88,7 @@ namespace TombEditor
             // 
             // butAnimatedTextureSetNew
             // 
+            this.butAnimatedTextureSetNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butAnimatedTextureSetNew.Image = global::TombEditor.Properties.Resources.plus_math_16;
             this.butAnimatedTextureSetNew.ImagePadding = 4;
             this.butAnimatedTextureSetNew.Location = new System.Drawing.Point(333, 25);
