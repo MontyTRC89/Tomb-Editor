@@ -116,7 +116,8 @@ namespace TombEditor
                     ResetCompletely(); // We don't get precise object messages for objects removed with rooms otherwise.
                 else if (obj is Editor.SelectedRoomChangedEvent && scope == ScopeMode.ObjectsInCurrentRoom)
                     ResetCompletely();
-                else if (obj is IEditorObjectChangedEvent)
+                else if (obj is IEditorObjectChangedEvent && (scope == ScopeMode.AllObjects || scope == ScopeMode.Everything ||
+                    (scope == ScopeMode.ObjectsInCurrentRoom && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom)))
                 {
                     var @event = (IEditorObjectChangedEvent)obj;
                     switch (@event.ChangeType)
@@ -221,6 +222,7 @@ namespace TombEditor
             RemoveObject(obj);
             AddObject(obj);
         }
+
         private void ResetCompletely()
         {
             _cachedSortedObjects = null;

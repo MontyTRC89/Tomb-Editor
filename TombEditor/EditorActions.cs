@@ -862,7 +862,7 @@ namespace TombEditor
             }
 
             // Avoid having the removed object still selected
-            _editor.ObjectChange(instance, ObjectChangeType.Remove);
+            _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
         public static void RotateTexture(Room room, DrawingPoint pos, BlockFace face)
