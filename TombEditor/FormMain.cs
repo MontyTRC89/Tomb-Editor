@@ -806,7 +806,7 @@ namespace TombEditor
                     if ((lara != null) && (lara.WadObjectId == 0))
                     {
                         room.RemoveObject(_editor.Level, instance);
-                        _editor.ObjectChange(lara, ObjectChangeType.Remove);
+                        _editor.ObjectChange(lara, ObjectChangeType.Remove, room);
                         goto FoundLara;
                     }
                 }
@@ -1003,12 +1003,7 @@ namespace TombEditor
 
         private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.OBJ);
-        }
-
-        private void exportCurrentRoomToMQOToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.Metasequoia);
+            EditorActions.ExportCurrentRoom(this);
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)

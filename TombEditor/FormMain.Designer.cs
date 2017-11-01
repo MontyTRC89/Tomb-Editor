@@ -47,7 +47,6 @@
             this.newRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportCurrentRoomToMQOToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.itemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadWADToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadWADToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -411,8 +410,7 @@
             this.newRoomUpToolStripMenuItem,
             this.newRoomDownToolStripMenuItem,
             this.toolStripMenuItem1,
-            this.exportRoomToolStripMenuItem,
-            this.exportCurrentRoomToMQOToolStripMenuItem});
+            this.exportRoomToolStripMenuItem});
             this.roomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.roomsToolStripMenuItem.Name = "roomsToolStripMenuItem";
             this.roomsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
@@ -504,17 +502,8 @@
             this.exportRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.save_16;
             this.exportRoomToolStripMenuItem.Name = "exportRoomToolStripMenuItem";
             this.exportRoomToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.exportRoomToolStripMenuItem.Text = "Export current room to OBJ";
+            this.exportRoomToolStripMenuItem.Text = "Export current room";
             this.exportRoomToolStripMenuItem.Click += new System.EventHandler(this.exportRoomToolStripMenuItem_Click);
-            // 
-            // exportCurrentRoomToMQOToolStripMenuItem
-            // 
-            this.exportCurrentRoomToMQOToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.exportCurrentRoomToMQOToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.exportCurrentRoomToMQOToolStripMenuItem.Name = "exportCurrentRoomToMQOToolStripMenuItem";
-            this.exportCurrentRoomToMQOToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.exportCurrentRoomToMQOToolStripMenuItem.Text = "Export current room to MQO";
-            this.exportCurrentRoomToMQOToolStripMenuItem.Click += new System.EventHandler(this.exportCurrentRoomToMQOToolStripMenuItem_Click);
             // 
             // itemsToolStripMenuItem
             // 
@@ -1528,7 +1517,6 @@
         private System.Windows.Forms.ToolStripMenuItem toolPaletteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dockableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem floatingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportCurrentRoomToMQOToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
     }

@@ -9,27 +9,33 @@ namespace TombEditor.Geometry.Exporters
 {
     public enum RoomImportExportFormat
     {
-        OBJ,
-        Metasequoia
+        Obj,
+        Metasequoia,
+        Fbx,
+        Ply,
+        Collada
     }
 
-    public abstract class RoomExporter
+    public abstract class BaseRoomExporter
     {
         protected Editor _editor;
 
-        public RoomExporter()
+        public BaseRoomExporter()
         {
             _editor = Editor.Instance;
         }
 
         public abstract bool ExportToFile(Room room, string filename);
 
-        public static RoomExporter GetExporter(RoomImportExportFormat format)
+        public static BaseRoomExporter GetExporter(RoomImportExportFormat format)
         {
             switch(format)
             {
-                case RoomImportExportFormat.OBJ: return new RoomExporterOBJ();
+                case RoomImportExportFormat.Obj: return new RoomExporterObj();
                 case RoomImportExportFormat.Metasequoia: return new RoomExporterMetasequoia();
+                case RoomImportExportFormat.Fbx: return new RoomExporterFbx();
+                case RoomImportExportFormat.Ply: return new RoomExporterPly();
+                case RoomImportExportFormat.Collada: return new RoomExporterCollada();
                 default: return null;
             }
         }

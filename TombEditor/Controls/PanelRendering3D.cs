@@ -1074,7 +1074,7 @@ namespace TombEditor.Controls
 
                     foreach(var file in files)
                     {
-                        if (!SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, file))
+                        if (!SupportedFormats.IsExtensionPresent(FileFormatType.GeometryImport, file))
                             continue;
 
                         var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));

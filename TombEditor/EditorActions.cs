@@ -927,7 +927,7 @@ namespace TombEditor
             }
 
             // Avoid having the removed object still selected
-            _editor.ObjectChange(instance, ObjectChangeType.Remove);
+            _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
         public static void RotateTexture(Room room, DrawingPoint pos, BlockFace face)
@@ -1978,7 +1978,7 @@ namespace TombEditor
                 foreach (var file in files)
                     if (SupportedFormats.IsExtensionPresent(FileFormatType.Object, file) ||
                         SupportedFormats.IsExtensionPresent(FileFormatType.Texture, file) ||
-                        (allow3DImport && SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, file)) ||
+                        (allow3DImport && SupportedFormats.IsExtensionPresent(FileFormatType.GeometryImport, file)) ||
                         file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase) ||
                         file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
                         return true;
@@ -2092,32 +2092,47 @@ namespace TombEditor
             return true;
         }
 
-        public static void ExportCurrentRoom(IWin32Window owner, RoomImportExportFormat format)
+        public static void ExportCurrentRoom(IWin32Window owner)
         {
-            var filter = "";
-            switch (format)
-            {
-                case RoomImportExportFormat.OBJ: filter = "Wavefront OBJ (*.obj)|*.obj"; break;
-                case RoomImportExportFormat.Metasequoia: filter = "Metasequoia (*.mqo)|*.mqo"; break;
-                default: return;
-            }
-
-            // Ask for the file to save
-            string fileName = "";
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Title = "Export current room";
-                saveFileDialog.Filter = filter;
-                if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
-                    return;
-                fileName = saveFileDialog.FileName;
+                saveFileDialog.Filter = SupportedFormats.GetFilter(FileFormatType.GeometryExport, false, false);
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.DefaultExt = SupportedFormats.GetExtensionFromIndex(FileFormatType.GeometryExport);
+                saveFileDialog.FileName = _editor.SelectedRoom.Name;
+
+                if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
+                {
+                    RoomImportExportFormat format;
+
+                    string resultingExtension = Path.GetExtension(saveFileDialog.FileName);
+
+                    switch (resultingExtension)
+                    {
+                        default:
+                        case ".obj":
+                            format = RoomImportExportFormat.Obj;
+                            break;
+                        case ".mqo":
+                            format = RoomImportExportFormat.Metasequoia;
+                            break;
+                        case ".fbx":
+                            format = RoomImportExportFormat.Fbx;
+                            break;
+                        case ".ply":
+                            format = RoomImportExportFormat.Ply;
+                            break;
+                    }
+
+                    var exporter = BaseRoomExporter.GetExporter(format);
+                    if (exporter.ExportToFile(_editor.SelectedRoom, saveFileDialog.FileName))
+                    {
+                        DarkMessageBox.Show(owner, "Room exported correctly", "Information", MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                    }
+                }
             }
-
-            var exporter = RoomExporter.GetExporter(format);
-            if (!exporter.ExportToFile(_editor.SelectedRoom, fileName)) return;
-
-            DarkMessageBox.Show(owner, "Room exported correctly", "Information", MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
         }
 
         public static void OpenLevel(IWin32Window owner, string fileName = null)

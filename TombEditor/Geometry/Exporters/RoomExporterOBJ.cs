@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace TombEditor.Geometry.Exporters
 {
-    public class RoomExporterOBJ : RoomExporter
+    public class RoomExporterObj : BaseRoomExporter
     {
-        public RoomExporterOBJ()
+        public RoomExporterObj()
             : base()
         {
            
@@ -57,22 +57,19 @@ namespace TombEditor.Geometry.Exporters
                             if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
                                 !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
                             {
-                                var vertexRange = room.GetFaceVertexRange(x, z, (BlockFace)f);
-                                var v1 = vertexRange.Start + 1;
-                                var v2 = vertexRange.Start + 2;
-                                var v3 = vertexRange.Start + 3;
-                                var v4 = vertexRange.Start + 4;
-                                var v5 = vertexRange.Start + 5;
-                                var v6 = vertexRange.Start + 6;
+                                var indices = room.GetFaceIndices(x, z, (BlockFace)f);
+                                var v1 = indices[0] + 1;
+                                var v2 = indices[1] + 1;
+                                var v3 = indices[2] + 1;
+                                var v4 = (indices.Count > 3 ? indices[3] + 1 : 0);
 
-                                if (vertexRange.Count == 3)
+                                if (indices.Count == 3)
                                 {
                                     writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3);
                                 }
                                 else
                                 {
-                                    writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3);
-                                    writer.WriteLine("f " + v4 + "/" + v4 + " " + v5 + "/" + v5 + " " + v6 + "/" + v6);
+                                    writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3 + " " + v4 + "/" + v4);
                                 }
                             }
                         }
