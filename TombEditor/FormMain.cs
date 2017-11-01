@@ -791,7 +791,7 @@ namespace TombEditor
                     if ((lara != null) && (lara.WadObjectId == 0))
                     {
                         room.RemoveObject(_editor.Level, instance);
-                        _editor.ObjectChange(lara, ObjectChangeType.Remove);
+                        _editor.ObjectChange(lara, ObjectChangeType.Remove, room);
                         goto FoundLara;
                     }
                 }

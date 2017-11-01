@@ -33,6 +33,7 @@ namespace TombEditor
 
     public interface IEditorObjectChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
     {
+        Room Room { get; }
         ObjectInstance Object { get; }
         ObjectChangeType ChangeType { get; }
     }
@@ -175,6 +176,8 @@ namespace TombEditor
             {
                 if (value == _selectedRoom)
                     return;
+                if (value == null)
+                    throw new ArgumentNullException();
                 SelectedSectors = SectorSelection.None;
                 var previous = _selectedRoom;
                 _selectedRoom = value;
@@ -364,6 +367,8 @@ namespace TombEditor
         }
         public void RoomPropertiesChange(Room room)
         {
+            if (room == null)
+                throw new ArgumentNullException();
             RaiseEvent(new RoomPropertiesChangedEvent { Room = room });
         }
 
@@ -375,6 +380,8 @@ namespace TombEditor
         }
         public void RoomSectorPropertiesChange(Room room)
         {
+            if (room == null)
+                throw new ArgumentNullException();
             RaiseEvent(new RoomSectorPropertiesChangedEvent { Room = room });
         }
 
@@ -382,12 +389,19 @@ namespace TombEditor
         // "null" can be passed, if it is not determinable what object changed.
         public class ObjectChangedEvent : IEditorObjectChangedEvent, IEditorEventCausesUnsavedChanges
         {
+            public Room Room { get; set; }
             public ObjectInstance Object { get; set; }
             public ObjectChangeType ChangeType { get; set; }
         }
-        public void ObjectChange(ObjectInstance object_, ObjectChangeType changeType)
+        public void ObjectChange(ObjectInstance @object, ObjectChangeType changeType)
         {
-            RaiseEvent(new ObjectChangedEvent { Object = object_, ChangeType = changeType });
+            ObjectChange(@object, changeType, @object.Room);
+        }
+        public void ObjectChange(ObjectInstance @object, ObjectChangeType changeType, Room room)
+        {
+            if (room == null || @object == null)
+                throw new ArgumentNullException();
+            RaiseEvent(new ObjectChangedEvent { Room = room, Object = @object, ChangeType = changeType });
         }
 
         // Move the camera to the center of a specific sector.
