@@ -28,20 +28,11 @@ namespace TombEditor.Geometry.Exporters
 
             var numFaces = 0;
             for (var z = 0; z < room.NumZSectors; z++)
-            {
                 for (var x = 0; x < room.NumXSectors; x++)
-                {
                     for (var f = 0; f < 29; f++)
-                    {
                         if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
                             !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
-                        {
-                            var vertexRange = room.GetFaceVertexRange(x, z, (BlockFace)f);
                             numFaces++;
-                        }
-                    }
-                }
-            }
 
             using (var writer = new StreamWriter(File.OpenWrite(filename)))
             {
@@ -105,19 +96,6 @@ namespace TombEditor.Geometry.Exporters
                     }
                 }
             }
-
-           /* using (var writer = new StreamWriter(File.OpenWrite(material)))
-            {
-                writer.WriteLine("# Exported by Tomb Editor");
-                writer.WriteLine("newmtl Room");
-                writer.WriteLine("Ka " + (room.AmbientLight.X / 2.0f).ToString(CultureInfo.InvariantCulture) + " " +
-                                         (room.AmbientLight.Y / 2.0f).ToString(CultureInfo.InvariantCulture) + " " +
-                                         (room.AmbientLight.Z / 2.0f).ToString(CultureInfo.InvariantCulture));
-                writer.WriteLine("Ni 1.000000");
-                writer.WriteLine("d 1.000000");
-                writer.WriteLine("illum 2");
-                writer.WriteLine("map_Kd " + _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.Textures[0].Path));
-            }*/
 
             return true;
         }
