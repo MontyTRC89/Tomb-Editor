@@ -58,20 +58,11 @@ namespace TombEditor.Geometry.Exporters
                 // Save faces
                 var numFaces = 0;
                 for (var z = 0; z < room.NumZSectors; z++)
-                {
                     for (var x = 0; x < room.NumXSectors; x++)
-                    {
                         for (var f = 0; f < 29; f++)
-                        {
                             if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
                                 !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
-                            {
-                                var vertexRange = room.GetFaceVertexRange(x, z, (BlockFace)f);
                                 numFaces++;
-                            }
-                        }
-                    }
-                }
 
                 writer.WriteLine("face " + numFaces + " { ");
                 for (var z = 0; z < room.NumZSectors; z++)

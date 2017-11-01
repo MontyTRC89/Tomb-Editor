@@ -12,7 +12,8 @@ namespace TombEditor.Geometry.Exporters
         Obj,
         Metasequoia,
         Fbx,
-        Ply
+        Ply,
+        Collada
     }
 
     public abstract class BaseRoomExporter
@@ -34,6 +35,7 @@ namespace TombEditor.Geometry.Exporters
                 case RoomImportExportFormat.Metasequoia: return new RoomExporterMetasequoia();
                 case RoomImportExportFormat.Fbx: return new RoomExporterFbx();
                 case RoomImportExportFormat.Ply: return new RoomExporterPly();
+                case RoomImportExportFormat.Collada: return new RoomExporterCollada();
                 default: return null;
             }
         }
