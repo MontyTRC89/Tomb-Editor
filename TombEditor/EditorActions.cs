@@ -2022,8 +2022,10 @@ namespace TombEditor
             var filter = "";
             switch (format)
             {
-                case RoomImportExportFormat.OBJ: filter = "Wavefront OBJ (*.obj)|*.obj"; break;
+                case RoomImportExportFormat.Obj: filter = "Wavefront OBJ (*.obj)|*.obj"; break;
                 case RoomImportExportFormat.Metasequoia: filter = "Metasequoia (*.mqo)|*.mqo"; break;
+                case RoomImportExportFormat.Fbx: filter = "Autodesk FBX (*.fbx)|*.fbx"; break;
+                case RoomImportExportFormat.Ply: filter = "Stanford PLY (*.ply)|*.ply"; break;
                 default: return;
             }
 
@@ -2038,7 +2040,7 @@ namespace TombEditor
                 fileName = saveFileDialog.FileName;
             }
 
-            var exporter = RoomExporter.GetExporter(format);
+            var exporter = BaseRoomExporter.GetExporter(format);
             if (!exporter.ExportToFile(_editor.SelectedRoom, fileName)) return;
 
             DarkMessageBox.Show(owner, "Room exported correctly", "Information", MessageBoxButtons.OK,

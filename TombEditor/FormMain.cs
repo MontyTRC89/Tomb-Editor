@@ -982,7 +982,7 @@ namespace TombEditor
 
         private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.OBJ);
+            EditorActions.ExportCurrentRoom(this, RoomImportExportFormat.Obj);
         }
 
         private void exportCurrentRoomToMQOToolStripMenuItem_Click(object sender, EventArgs e)

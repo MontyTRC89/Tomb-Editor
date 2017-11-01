@@ -260,8 +260,10 @@
     </Compile>
     <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
+    <Compile Include="Geometry\Exporters\RoomExporterFbx.cs" />
     <Compile Include="Geometry\Exporters\RoomExporterMetasequoia.cs" />
     <Compile Include="Geometry\Exporters\RoomExporterOBJ.cs" />
+    <Compile Include="Geometry\Exporters\RoomExporterPly.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
     <Compile Include="Geometry\ImportedGeometry.cs" />
     <Compile Include="Geometry\Exporters\RoomExporter.cs" />

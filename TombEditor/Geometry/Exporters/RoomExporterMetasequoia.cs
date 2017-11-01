@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TombEditor.Geometry.Exporters
 {
-    public class RoomExporterMetasequoia : RoomExporter
+    public class RoomExporterMetasequoia : BaseRoomExporter
     {
         public RoomExporterMetasequoia()
             : base()
@@ -27,13 +28,17 @@ namespace TombEditor.Geometry.Exporters
                 writer.WriteLine("Metasequoia Document");
                 writer.WriteLine("Format Text Ver 1.0");
 
+                // Write scene
+                writer.WriteLine("Scene {");
+                writer.WriteLine("amb 0.250 0.250 0.250");
+                writer.WriteLine("}");
+
                 // Write material
                 writer.WriteLine("Material 1 {");
-                writer.WriteLine("\"RoomMaterial\" shader(3) vcol(1) col(" +
-                                    (room.AmbientLight.X / 2.0f).ToString(CultureInfo.InvariantCulture) + " " +
-                                    (room.AmbientLight.Y / 2.0f).ToString(CultureInfo.InvariantCulture) + " " +
-                                    (room.AmbientLight.Z / 2.0f).ToString(CultureInfo.InvariantCulture) + ") " +
-                                 "amb(1) dif(1) tex(\"" + _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.Textures[0].Path) + "\")");
+                writer.Write("\"Room\" col(1.000 1.000 1.000 1.000) dif(0.000) amb(1.000) emi(1.000) spc(0.000) power(5.00) ");
+                writer.Write("tex(\"" + _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.Textures[0].Path) + "\") ");
+                writer.WriteLine("shader(4) vcol(1) ");
+
                 writer.WriteLine("}");
 
                 var scale = 1.0f;
@@ -63,7 +68,6 @@ namespace TombEditor.Geometry.Exporters
                             {
                                 var vertexRange = room.GetFaceVertexRange(x, z, (BlockFace)f);
                                 numFaces++;
-                                if (vertexRange.Count != 3) numFaces++;
                             }
                         }
                     }
@@ -79,43 +83,38 @@ namespace TombEditor.Geometry.Exporters
                             if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
                                 !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
                             {
-                                var vertexRange = room.GetFaceVertexRange(x, z, (BlockFace)f);
-                                var v1 = vertexRange.Start + 0;
-                                var v2 = vertexRange.Start + 1;
-                                var v3 = vertexRange.Start + 2;
-                                var v4 = vertexRange.Start + 3;
-                                var v5 = vertexRange.Start + 4;
-                                var v6 = vertexRange.Start + 5;
+                                var indices = room.GetFaceIndices(x, z, (BlockFace)f);
 
-                                var uv1 = (vertices[v1].UV.X / _editor.Level.Settings.Textures[0].Image.Size.X).ToString(CultureInfo.InvariantCulture) + " " +
-                                          (1.0f - (vertices[v1].UV.Y / _editor.Level.Settings.Textures[0].Image.Size.Y)).ToString(CultureInfo.InvariantCulture);
-                                var uv2 = (vertices[v2].UV.X / _editor.Level.Settings.Textures[0].Image.Size.X).ToString(CultureInfo.InvariantCulture) + " " +
-                                          (1.0f - (vertices[v2].UV.Y / _editor.Level.Settings.Textures[0].Image.Size.Y)).ToString(CultureInfo.InvariantCulture);
-                                var uv3 = (vertices[v3].UV.X / _editor.Level.Settings.Textures[0].Image.Size.X).ToString(CultureInfo.InvariantCulture) + " " +
-                                          (1.0f - (vertices[v3].UV.Y / _editor.Level.Settings.Textures[0].Image.Size.Y)).ToString(CultureInfo.InvariantCulture);
+                                var v1 = indices[0];
+                                var v2 = indices[1];
+                                var v3 = indices[2];
+                                var v4 = (indices.Count > 3 ? indices[3] : 0);
 
-                                if (vertexRange.Count == 3)
+                                var uv1 = GetUV(vertices[v1].UV);
+                                var uv2 = GetUV(vertices[v2].UV); 
+                                var uv3 = GetUV(vertices[v3].UV);
+
+                                var color1 = GetColor(vertices[v1].FaceColor);
+                                var color2 = GetColor(vertices[v2].FaceColor);
+                                var color3 = GetColor(vertices[v3].FaceColor);
+
+                                if (indices.Count == 3)
                                 {
                                     writer.Write("3 V(" + v1 + " " + v2 + " " + v3 + ") ");
                                     writer.Write("M(0) ");
-                                    writer.WriteLine("UV(" + uv1 + " " + uv2 + " " + uv3 + ") ");
+                                    writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + ") ");
+                                    writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + ") ");
+
                                 }
                                 else
                                 {
-                                    writer.Write("3 V(" + v1 + " " + v2 + " " + v3 + ") ");
-                                    writer.Write("M(0) ");
-                                    writer.WriteLine("UV(" + uv1 + " " + uv2 + " " + uv3 + ") ");
+                                    var uv4 = GetUV(vertices[v4].UV);
+                                    var color4 = GetColor(vertices[v4].FaceColor);
 
-                                    var uv4 = (vertices[v4].UV.X / _editor.Level.Settings.Textures[0].Image.Size.X).ToString(CultureInfo.InvariantCulture) + " " +
-                                              (1.0f - (vertices[v4].UV.Y / _editor.Level.Settings.Textures[0].Image.Size.Y)).ToString(CultureInfo.InvariantCulture);
-                                    var uv5 = (vertices[v5].UV.X / _editor.Level.Settings.Textures[0].Image.Size.X).ToString(CultureInfo.InvariantCulture) + " " +
-                                              (1.0f - (vertices[v5].UV.Y / _editor.Level.Settings.Textures[0].Image.Size.Y)).ToString(CultureInfo.InvariantCulture);
-                                    var uv6 = (vertices[v6].UV.X / _editor.Level.Settings.Textures[0].Image.Size.X).ToString(CultureInfo.InvariantCulture) + " " +
-                                              (1.0f - (vertices[v6].UV.Y / _editor.Level.Settings.Textures[0].Image.Size.Y)).ToString(CultureInfo.InvariantCulture);
-
-                                    writer.Write("3 V(" + v4 + " " + v5 + " " + v6 + ") ");
+                                    writer.Write("4 V(" + v1 + " " + v2 + " " + v3 + " " + v4 + ") ");
                                     writer.Write("M(0) ");
-                                    writer.WriteLine("UV(" + uv4 + " " + uv5 + " " + uv6 + ") ");
+                                    writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + " " + uv4 + ") ");
+                                    writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + " " + color4 + ") ");
                                 }
                             }
                         }
@@ -127,6 +126,21 @@ namespace TombEditor.Geometry.Exporters
             }
 
             return true;
+        }
+
+        private string GetUV(Vector2 uv)
+        {
+            return (uv.X / _editor.Level.Settings.Textures[0].Image.Size.X).ToString(CultureInfo.InvariantCulture) + " " +
+                   ((uv.Y / _editor.Level.Settings.Textures[0].Image.Size.Y)).ToString(CultureInfo.InvariantCulture);
+        }
+
+        private uint GetColor(Vector4 color)
+        {
+            var r = (byte)((int)(color.X * 128.0f) & 0xFF);
+            var g = (byte)((int)(color.Y * 128.0f) & 0xFF);
+            var b = (byte)((int)(color.Z * 128.0f) & 0xFF);
+
+            return (uint)(0xFF000000 + (r) + (g << 8) + (b << 16));
         }
     }
 }
