@@ -521,24 +521,35 @@ namespace TombEditor.Geometry
                     else if (heightsToCheck[0] != heightsToCheck[1]) // Only look for opposite slope cases in case there's no diagonal step in lookup block.
                     {
                         var lookupBlockSlopeDirections = lookupBlock.Block.GetTriangleSlopeDirections();
-                        bool checkFirstTriangle = true;
-                        bool checkSecondTriangle = true;
 
-                        if(!sector.FloorIsQuad && !lookupBlock.Block.FloorIsQuad && lookupBlock.Block.FloorSplitDirectionIsXEqualsZ == sector.FloorSplitDirectionIsXEqualsZ)
+                        for (int j = 0; j < 2; j++)
                         {
                             // If both current and lookup sector triangle split direction is the same, ignore far opposite triangles.
 
-                            checkFirstTriangle = (i == 0);
-                            checkSecondTriangle = (i != 0);
+                            if (!sector.FloorIsQuad && !lookupBlock.Block.FloorIsQuad && lookupBlock.Block.FloorSplitDirectionIsXEqualsZ == sector.FloorSplitDirectionIsXEqualsZ)
+                            {
+                                if (sector.FloorSplitDirectionIsXEqualsZ)
+                                {
+                                    if (((slopeDirections[i] == SlopeDirection.North || slopeDirections[i] == SlopeDirection.West) && i == 0 && j == 1) ||
+                                        ((slopeDirections[i] == SlopeDirection.East || slopeDirections[i] == SlopeDirection.South) && i == 1 && j == 0))
+                                        continue;
+                                }
+                                else
+                                {
+                                    if ((slopeDirections[i] < SlopeDirection.South && i == 1 && j == 0) ||
+                                       (slopeDirections[i] >= SlopeDirection.South && i == 0 && j == 1))
+                                        continue;
+                                }
+                            }
+
+                            // Triangle is considered illegal only if its lowest point lies lower than lowest passable step height compared to opposite triangle minimum point.
+                            // Triangle is NOT considered illegal, if its slide direction is perpendicular to opposite triangle slide direction.
+
+                            if (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(j) - heightAdjust) <= lowestPassableStep)
+                                if (lookupBlockSlopeDirections[j] != SlopeDirection.None && lookupBlockSlopeDirections[j] != slopeDirections[i])
+                                    if (((int)lookupBlockSlopeDirections[j] % 2) == ((int)slopeDirections[i] % 2))
+                                        slopeIsIllegal = true;
                         }
-
-                        // Triangle is considered illegal only if its lowest point lies lower than lowest passable step height compared to opposite triangle minimum point.
-                        // Triangle is NOT considered illegal, if its slide direction is perpendicular to opposite triangle slide direction.
-
-                        if (checkFirstTriangle && (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(0) - heightAdjust) <= lowestPassableStep && lookupBlockSlopeDirections[0] != SlopeDirection.None && lookupBlockSlopeDirections[0] != slopeDirections[i] && ((int)lookupBlockSlopeDirections[0] % 2) == ((int)slopeDirections[i] % 2)))
-                            slopeIsIllegal = true;
-                        if (checkSecondTriangle && (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(1) - heightAdjust) <= lowestPassableStep && lookupBlockSlopeDirections[1] != SlopeDirection.None && lookupBlockSlopeDirections[1] != slopeDirections[i] && ((int)lookupBlockSlopeDirections[1] % 2) == ((int)slopeDirections[i] % 2)))
-                            slopeIsIllegal = true;
                     }
                 }
 
