@@ -253,7 +253,7 @@ namespace TombEditor
             string path = _levelSettings.MakeAbsolute(currentPath);
             using (FileDialog dialog = save ? (FileDialog)new SaveFileDialog() : new OpenFileDialog())
             {
-                dialog.Filter = filter + "|All files (*.*)|*";
+                dialog.Filter = filter;
                 dialog.Title = title;
                 dialog.FileName = string.IsNullOrEmpty(currentPath) ? "" : Path.GetFileName(path);
                 dialog.InitialDirectory = string.IsNullOrEmpty(currentPath) ? path : Path.GetDirectoryName(path);
