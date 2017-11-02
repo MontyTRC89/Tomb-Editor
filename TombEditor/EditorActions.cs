@@ -2048,6 +2048,9 @@ namespace TombEditor
                         case ".ply":
                             format = RoomImportExportFormat.Ply;
                             break;
+                        case ".dae":
+                            format = RoomImportExportFormat.Collada;
+                            break;
                     }
 
                     var exporter = BaseRoomExporter.GetExporter(format);

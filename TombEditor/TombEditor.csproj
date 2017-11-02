@@ -262,7 +262,7 @@
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\Exporters\RoomExporterFbx.cs" />
     <Compile Include="Geometry\Exporters\RoomExporterMetasequoia.cs" />
-    <Compile Include="Geometry\Exporters\RoomExporterOBJ.cs" />
+    <Compile Include="Geometry\Exporters\RoomExporterObj.cs" />
     <Compile Include="Geometry\Exporters\RoomExporterCollada.cs" />
     <Compile Include="Geometry\Exporters\RoomExporterPly.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
