@@ -43,7 +43,6 @@
             this.dataGridViewControls.AllowUserMove = false;
             this.dataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridViewControls.Enabled = false;
             this.dataGridViewControls.Location = new System.Drawing.Point(850, 0);
             this.dataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.dataGridViewControls.Name = "dataGridViewControls";
