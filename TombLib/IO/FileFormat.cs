@@ -144,8 +144,9 @@ namespace TombLib.IO
 
             AddFormat(FileFormatType.GeometryExport, FileFormatType.GeometryImport, "Stanford Polygon Library");
             AddFormat(FileFormatType.GeometryExport, FileFormatType.GeometryImport, "Wavefront Object");
-            AddFormat(FileFormatType.GeometryExport, FileFormatType.GeometryImport, "Autodesk");
+            //AddFormat(FileFormatType.GeometryExport, FileFormatType.GeometryImport, "Autodesk");
             AddFormat(FileFormatType.GeometryExport, "Metasequoia", "mqo");
+            AddFormat(FileFormatType.GeometryExport, "Collada", "dae");
 
             // Generate supported texture formats
 
