@@ -734,8 +734,26 @@ namespace TombEditor.Geometry.IO
                     }
                     progressReporter.ReportProgress(30, "Rooms loaded");
 
+                    // Link flip rooms
+                    progressReporter.ReportProgress(31, "Link flip rooms");
+                    foreach (var tempRoom in tempRooms)
+                    {
+                        Room room = level.Rooms[tempRoom.Key];
+
+                        if (tempRoom.Value._flipRoom != -1)
+                        {
+                            Room alternateRoom = level.Rooms[tempRoom.Value._flipRoom];
+
+                            room.AlternateRoom = alternateRoom;
+                            room.AlternateGroup = tempRoom.Value._flipGroup;
+                            alternateRoom.AlternateBaseRoom = room;
+                            alternateRoom.AlternateGroup = tempRoom.Value._flipGroup;
+                            alternateRoom.Position = new Vector3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
+                        }
+                    }
+
                     // Link portals
-                    progressReporter.ReportProgress(31, "Link portals");
+                    progressReporter.ReportProgress(32, "Link portals");
                     foreach (var tempRoom in tempRooms)
                     {
                         Room room = level.Rooms[tempRoom.Key];
@@ -808,7 +826,7 @@ namespace TombEditor.Geometry.IO
                         }
                     }
 
-                    progressReporter.ReportProgress(32, "Portals linked");
+                    progressReporter.ReportProgress(35, "Portals linked");
 
                     // Link triggers
                     {
@@ -853,24 +871,6 @@ namespace TombEditor.Geometry.IO
                                         break;
                                 }
                         progressReporter.ReportProgress(35, "Triggers linked");
-                    }
-
-                    // Link flip rooms
-                    progressReporter.ReportProgress(37, "Link flip rooms");
-                    foreach (var tempRoom in tempRooms)
-                    {
-                        Room room = level.Rooms[tempRoom.Key];
-
-                        if (tempRoom.Value._flipRoom != -1)
-                        {
-                            Room alternateRoom = level.Rooms[tempRoom.Value._flipRoom];
-
-                            room.AlternateRoom = alternateRoom;
-                            room.AlternateGroup = tempRoom.Value._flipGroup;
-                            alternateRoom.AlternateBaseRoom = room;
-                            alternateRoom.AlternateGroup = tempRoom.Value._flipGroup;
-                            alternateRoom.Position = new Vector3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
-                        }
                     }
 
                     // Transform the no collision tiles into the ForceFloorSolid option.

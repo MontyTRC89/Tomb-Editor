@@ -172,7 +172,7 @@ namespace TombEditor.Geometry.Exporters
                                  "</vertices>");
 
                 writer.WriteLine("<triangles material=\"" + textureName + "-material\" count=\"" + numFaces + "\">\n" +
-                                 "<input semantic=\"VERTEX\" source=\"Room-mesh-vertices\" offset=\"0\" />\n" +
+                                 "<input semantic=\"VERTEX\" source=\"#Room-mesh-vertices\" offset=\"0\" />\n" +
                                  "<input semantic=\"TEXCOORD\" source=\"#Room-mesh-map-0\" offset=\"1\" set=\"0\" />\n" +
                                  "<input semantic=\"COLOR\" source=\"#Room-mesh-colors-Col\" offset=\"2\" set=\"0\" />\n" + 
                                  "<p>");
