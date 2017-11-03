@@ -60,6 +60,7 @@ namespace TombEditor.Geometry.IO
             public Rectangle _area;
             public PortalDirection _direction;
             public short _thisRoomIndex;
+            public short _loopRoomIndex;
             public short _oppositePortalId;
         }
 
@@ -214,7 +215,8 @@ namespace TombEditor.Geometry.IO
                                 _area = GetArea(room, 0, portalX, portalZ, portalXBlocks, portalZBlocks),
                                 _direction = directionEnum,
                                 _thisRoomIndex = thisRoomIndex,
-                                _oppositePortalId = portalOppositeSlot
+                                _oppositePortalId = portalOppositeSlot,
+                                _loopRoomIndex = (short)i
                             });
                         }
 
@@ -767,6 +769,7 @@ namespace TombEditor.Geometry.IO
                                 progressReporter.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
                                 continue;
                             }
+
                             Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
                             PortalInstance portal = new PortalInstance(prjPortal._area, prjPortal._direction, adjoiningRoom);
 
