@@ -194,6 +194,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.toolStrip);
+            this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Right;
             this.DockText = "Tools";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(28, 52);
