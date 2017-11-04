@@ -38,6 +38,7 @@
             this.toolFill = new System.Windows.Forms.ToolStripButton();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
+            this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,13 +58,14 @@
             this.toolFlatten,
             this.toolSmooth,
             this.toolFill,
+            this.toolSeparator1,
             this.toolEraser,
             this.toolInvisibility});
             this.toolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.toolStrip.Location = new System.Drawing.Point(0, 25);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.toolStrip.Size = new System.Drawing.Size(212, 27);
+            this.toolStrip.Size = new System.Drawing.Size(222, 27);
             this.toolStrip.TabIndex = 2;
             // 
             // toolSelection
@@ -179,6 +181,14 @@
             this.toolInvisibility.ToolTipText = "Invisibility";
             this.toolInvisibility.Click += new System.EventHandler(this.toolInvisibility_Click);
             // 
+            // toolSeparator1
+            // 
+            this.toolSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolSeparator1.Name = "toolSeparator1";
+            this.toolSeparator1.Size = new System.Drawing.Size(6, 23);
+            // 
             // ToolPalette
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -189,7 +199,7 @@
             this.MinimumSize = new System.Drawing.Size(28, 52);
             this.Name = "ToolPalette";
             this.SerializationKey = "ToolPalette";
-            this.Size = new System.Drawing.Size(212, 52);
+            this.Size = new System.Drawing.Size(222, 52);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -208,5 +218,6 @@
         private System.Windows.Forms.ToolStripButton toolFill;
         private System.Windows.Forms.ToolStripButton toolEraser;
         private System.Windows.Forms.ToolStripButton toolInvisibility;
+        private System.Windows.Forms.ToolStripSeparator toolSeparator1;
     }
 }

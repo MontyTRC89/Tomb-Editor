@@ -9,9 +9,32 @@ namespace TombEditor
     {
         None, Geometry, Map2D, FaceEdit, Lighting
     }
-    public enum EditorTool
+
+    public enum EditorToolType
     {
-        None, Selection, Brush, Pencil, Shovel, Flatten, Smooth, Fill, Eraser, Invisibility
+        None, Selection, Brush, Pencil, Fill, Group, Shovel, Drag, Flatten, Smooth
+    }
+
+    public enum EditorTextureType
+    {
+        Normal, Null, Invisible
+    }
+
+    public struct EditorTool
+    {
+        public EditorToolType Tool { get; set; }
+        public EditorTextureType Texture { get; set; }
+
+        public static bool operator == (EditorTool first, EditorTool second)
+        {
+            return (first.Tool == second.Tool && first.Texture == second.Texture);
+        }
+
+        public static bool operator != (EditorTool first, EditorTool second)
+        {
+            return (first.Tool != second.Tool && first.Texture != second.Texture);
+        }
+
     }
 
     public enum EditorActionType

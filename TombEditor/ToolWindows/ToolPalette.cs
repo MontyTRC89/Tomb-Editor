@@ -36,6 +36,7 @@ namespace TombEditor.ToolWindows
             toolFill.Visible = mode == EditorMode.FaceEdit;
             toolEraser.Visible = mode == EditorMode.FaceEdit;
             toolInvisibility.Visible = mode == EditorMode.FaceEdit;
+            toolSeparator1.Visible = mode == EditorMode.FaceEdit;
             toolFlatten.Visible = mode == EditorMode.Geometry;
             toolShovel.Visible = mode == EditorMode.Geometry;
             toolSmooth.Visible = mode == EditorMode.Geometry;
@@ -44,67 +45,73 @@ namespace TombEditor.ToolWindows
             toolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
 
             // Select classic winroomedit controls by default
-            SwitchTool(mode == EditorMode.FaceEdit ? EditorTool.Brush : EditorTool.Selection);
+            SwitchTool(mode == EditorMode.FaceEdit ? EditorToolType.Brush : EditorToolType.Selection);
         }
 
-        private void SwitchTool(EditorTool tool = EditorTool.Selection)
+        private void SwitchTool(EditorToolType tool = EditorToolType.Selection)
         {
-            toolSelection.Checked = tool == EditorTool.Selection;
-            toolBrush.Checked = tool == EditorTool.Brush;
-            toolPencil.Checked = tool == EditorTool.Pencil;
-            toolFill.Checked = tool == EditorTool.Fill;
-            toolShovel.Checked = tool == EditorTool.Shovel;
-            toolFlatten.Checked = tool == EditorTool.Flatten;
-            toolSmooth.Checked = tool == EditorTool.Smooth;
-            toolEraser.Checked = tool == EditorTool.Eraser;
-            toolInvisibility.Checked = tool == EditorTool.Invisibility;
+            toolSelection.Checked = tool == EditorToolType.Selection;
+            toolBrush.Checked = tool == EditorToolType.Brush;
+            toolPencil.Checked = tool == EditorToolType.Pencil;
+            toolFill.Checked = tool == EditorToolType.Fill;
+            toolShovel.Checked = tool == EditorToolType.Shovel;
+            toolFlatten.Checked = tool == EditorToolType.Flatten;
+            toolSmooth.Checked = tool == EditorToolType.Smooth;
 
-            EditorActions.SwitchTool(tool);
+            EditorActions.SwitchTool(new EditorTool { Tool = tool, Texture = _editor.Tool.Texture });
+        }
+
+        private void SwitchTexture(EditorTextureType texture = EditorTextureType.Normal)
+        {
+            toolEraser.Checked = texture == EditorTextureType.Null;
+            toolInvisibility.Checked = texture == EditorTextureType.Invisible;
+
+            EditorActions.SwitchTool(new EditorTool { Tool = _editor.Tool.Tool, Texture = texture });
         }
 
         private void toolSelection_Click(object sender, EventArgs e)
         {
-            SwitchTool(EditorTool.Selection);
+            SwitchTool(EditorToolType.Selection);
         }
 
         private void toolBrush_Click(object sender, EventArgs e)
         {
-            SwitchTool(EditorTool.Brush);
+            SwitchTool(EditorToolType.Brush);
         }
 
         private void toolPencil_Click(object sender, EventArgs e)
         {
-            SwitchTool(EditorTool.Pencil);
+            SwitchTool(EditorToolType.Pencil);
         }
 
         private void toolShovel_Click(object sender, EventArgs e)
         {
-            SwitchTool(EditorTool.Shovel);
+            SwitchTool(EditorToolType.Shovel);
         }
 
         private void toolFlatten_Click(object sender, EventArgs e)
         {
-            SwitchTool(EditorTool.Flatten);
+            SwitchTool(EditorToolType.Flatten);
         }
 
         private void toolFill_Click(object sender, EventArgs e)
         {
-            SwitchTool(EditorTool.Fill);
-        }
-
-        private void toolInvisibility_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Invisibility);
-        }
-
-        private void toolEraser_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorTool.Eraser);
+            SwitchTool(EditorToolType.Fill);
         }
 
         private void toolSmooth_Click(object sender, EventArgs e)
         {
-            SwitchTool(EditorTool.Smooth);
+            SwitchTool(EditorToolType.Smooth);
+        }
+
+        private void toolInvisibility_Click(object sender, EventArgs e)
+        {
+            SwitchTexture(EditorTextureType.Invisible);
+        }
+
+        private void toolEraser_Click(object sender, EventArgs e)
+        {
+            SwitchTexture(EditorTextureType.Null);
         }
     }
 }

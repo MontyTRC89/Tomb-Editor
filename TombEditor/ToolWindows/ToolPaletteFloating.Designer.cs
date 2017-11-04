@@ -23,6 +23,7 @@
             this.toolFlatten = new System.Windows.Forms.ToolStripButton();
             this.toolSmooth = new System.Windows.Forms.ToolStripButton();
             this.toolFill = new System.Windows.Forms.ToolStripButton();
+            this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.toolPalette.SuspendLayout();
@@ -44,13 +45,14 @@
             this.toolFlatten,
             this.toolSmooth,
             this.toolFill,
+            this.toolSeparator1,
             this.toolEraser,
             this.toolInvisibility});
             this.toolPalette.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolPalette.Location = new System.Drawing.Point(0, 16);
             this.toolPalette.Name = "toolPalette";
             this.toolPalette.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.toolPalette.Size = new System.Drawing.Size(29, 210);
+            this.toolPalette.Size = new System.Drawing.Size(29, 241);
             this.toolPalette.TabIndex = 1;
             // 
             // toolSelection
@@ -142,6 +144,14 @@
             this.toolFill.ToolTipText = "Fill";
             this.toolFill.Click += new System.EventHandler(this.toolFill_Click);
             // 
+            // toolSeparator1
+            // 
+            this.toolSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolSeparator1.Name = "toolSeparator1";
+            this.toolSeparator1.Size = new System.Drawing.Size(22, 6);
+            // 
             // toolEraser
             // 
             this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -173,7 +183,7 @@
             this.GripSize = 10;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ToolPaletteFloating";
-            this.Size = new System.Drawing.Size(29, 226);
+            this.Size = new System.Drawing.Size(28, 231);
             this.toolPalette.ResumeLayout(false);
             this.toolPalette.PerformLayout();
             this.ResumeLayout(false);
@@ -192,5 +202,6 @@
         private System.Windows.Forms.ToolStripButton toolFill;
         private System.Windows.Forms.ToolStripButton toolEraser;
         private System.Windows.Forms.ToolStripButton toolInvisibility;
+        private System.Windows.Forms.ToolStripSeparator toolSeparator1;
     }
 }
