@@ -138,7 +138,7 @@ namespace DarkUI.Renderers
 
             if(e.ToolStrip.LayoutStyle == ToolStripLayoutStyle.VerticalStackWithOverflow)
             {
-                var rect = new Rectangle(3, 3, e.Item.Width - 4, 2);
+                var rect = new Rectangle(3, 3, e.Item.Width - 2, 2);
 
                 using (var p = new Pen(Colors.DarkBorder))
                 {
@@ -147,7 +147,7 @@ namespace DarkUI.Renderers
 
                 using (var p = new Pen(Colors.LightBorder))
                 {
-                    g.DrawLine(p, rect.Left, rect.Top, rect.Width + 1, rect.Top);
+                    g.DrawLine(p, rect.Left, rect.Top, rect.Width, rect.Top);
                 }
             }
             else
