@@ -595,7 +595,8 @@ namespace WadTool
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            //_tool.DestinationWad.ImportWadMeshTest("tank.3ds", 1.0f);
+            UpdateDestinationWad2UI();
         }
 
         private void butSoundEditor_Click(object sender, EventArgs e)
@@ -948,6 +949,11 @@ namespace WadTool
         {
             panel3D.KeyFrame = scrollbarAnimations.Value;
             panel3D.Invalidate();
+        }
+
+        private void importModelAsStaticMeshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

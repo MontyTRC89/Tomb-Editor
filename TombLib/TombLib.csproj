@@ -96,6 +96,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
+    <Compile Include="GeometryIO\BaseGeometryImporter.cs" />
+    <Compile Include="GeometryIO\Importers\AssimpImporter.cs" />
+    <Compile Include="GeometryIO\IOGeometrySettings.cs" />
+    <Compile Include="GeometryIO\IOMaterial.cs" />
+    <Compile Include="GeometryIO\IOMesh.cs" />
+    <Compile Include="GeometryIO\IOModel.cs" />
+    <Compile Include="GeometryIO\IOPolygon.cs" />
+    <Compile Include="GeometryIO\IOTexture.cs" />
+    <Compile Include="GeometryIO\IOVertex.cs" />
     <Compile Include="Graphics\Animation.cs" />
     <Compile Include="Graphics\AnimDispatch.cs" />
     <Compile Include="Graphics\ArcBallCamera.cs" />
@@ -238,7 +248,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="GeometryIO\Exporters\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
