@@ -10,14 +10,14 @@ namespace TombLib.GeometryIO
     public class IOModel
     {
         public List<IOMesh> Meshes { get; private set; }
-        public List<string> Textures { get; private set; }
+        public List<IOTexture> Textures { get; private set; }
         public BoundingBox BoundingBox { get; internal set; }
         public BoundingSphere BoundingSphere { get; internal set; }
 
         public IOModel()
         {
             Meshes = new List<IOMesh>();
-            Textures = new List<string>();
+            Textures = new List<IOTexture>();
         }
     }
 }

@@ -26,6 +26,7 @@ namespace TombLib.GeometryIO
             if (_settings.FlipX) { position.X = -position.X; }
             if (_settings.FlipY) { position.Y = -position.Y; }
             if (_settings.FlipZ) { position.Z = -position.Z; }
+            position *= _settings.Scale;
             return position;
         }
 
@@ -45,6 +46,11 @@ namespace TombLib.GeometryIO
                 uv.Y *= h;
             }
             return uv;
+        }
+
+        protected Vector4 ApplyColorTransform(Vector4 color)
+        {
+            return color;
         }
     }
 }

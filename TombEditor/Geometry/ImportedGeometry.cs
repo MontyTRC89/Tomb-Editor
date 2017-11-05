@@ -231,11 +231,11 @@ namespace TombEditor.Geometry
                 DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
                 DirectXModel.BoundingBox = tmpModel.BoundingBox;
 
-                var tmpTextures = new Dictionary<string, Texture>();
+                var tmpTextures = new Dictionary<IOTexture, Texture>();
 
                 foreach (var text in tmpModel.Textures)
                 {
-                    var texture = GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, text);
+                    var texture = GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, text.Name);
                     tmpTextures.Add(text, texture);
                 }
 
@@ -253,7 +253,7 @@ namespace TombEditor.Geometry
                             {
                                 var vertex = new ImportedGeometryVertex();
                                 vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                vertex.UV = tmpPoly.UV[i];
+                                vertex.UV = mesh.UV[tmpPoly.Indices[i]];
                                 modelMesh.Vertices.Add(vertex);
                                 modelMesh.Indices.Add(currentIndex);
                                 currentIndex++;
@@ -265,7 +265,7 @@ namespace TombEditor.Geometry
                             {
                                 var vertex = new ImportedGeometryVertex();
                                 vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                vertex.UV = tmpPoly.UV[i];
+                                vertex.UV = mesh.UV[tmpPoly.Indices[i]];
                                 modelMesh.Vertices.Add(vertex);
                                 modelMesh.Indices.Add(currentIndex);
                                 currentIndex++;

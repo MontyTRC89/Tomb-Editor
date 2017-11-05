@@ -15,10 +15,9 @@ namespace TombLib.GeometryIO
         public List<Vector2> UV { get; private set; }
         public List<Vector4> Colors { get; private set; }
         public List<IOPolygon> Polygons { get; private set; }
-        //public List<IOTexture> Textures { get; private set; }
         public BoundingBox BoundingBox { get; internal set; }
         public BoundingSphere BoundingSphere { get; internal set; }
-        public string Texture { get; set; }
+        public IOTexture Texture { get; set; }
 
         public IOMesh()
         {
@@ -27,7 +26,30 @@ namespace TombLib.GeometryIO
             UV = new List<Vector2>();
             Colors = new List<Vector4>();
             Polygons = new List<IOPolygon>();
-            //Textures = new List<IOTexture>();
+        }
+
+        public int NumQuads
+        {
+            get
+            {
+                var numQuads = 0;
+                foreach (var poly in Polygons)
+                    if (poly.Shape == IOPolygonShape.Quad)
+                        numQuads++;
+                return numQuads;
+            }
+        }
+
+        public int NumTriangles
+        {
+            get
+            {
+                var numTriangles = 0;
+                foreach (var poly in Polygons)
+                    if (poly.Shape == IOPolygonShape.Triangle)
+                        numTriangles++;
+                return numTriangles;
+            }
         }
     }
 }

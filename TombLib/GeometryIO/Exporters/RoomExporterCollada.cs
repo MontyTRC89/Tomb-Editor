@@ -6,42 +6,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TombEditor.Geometry.Exporters
+namespace TombLib.GeometryIO.Exporters
 {
-    public class RoomExporterCollada : BaseRoomExporter
+    public class RoomExporterCollada : BaseGeometryExporter
     {
-        public RoomExporterCollada()
-            : base()
+        public RoomExporterCollada(IOGeometrySettings settings)
+            : base(settings)
         {
 
         }
 
-        public override bool ExportToFile(Room room, string filename)
+        public override bool ExportToFile(IOModel model, string filename)
         {
             var path = Path.GetDirectoryName(filename);
-            var material = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
-
             if (File.Exists(filename)) File.Delete(filename);
-            if (File.Exists(material)) File.Delete(material);
-
-            var vertices = room.GetRoomVertices();
-
-            var numFaces = 0;
-            for (var z = 0; z < room.NumZSectors; z++)
-                for (var x = 0; x < room.NumXSectors; x++)
-                    for (var f = 0; f < 29; f++)
-                        if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
-                            !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
-                        {
-                            numFaces++;
-                            if (room.GetFaceIndices(x, z, (BlockFace)f).Count > 3) numFaces++;
-                        }
-
-            var scale = 1024.0f;
-
+                 
             using (var writer = new StreamWriter(File.OpenWrite(filename)))
             {
-                var textureName = Path.GetFileName(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.Textures[0].Path)).Replace(".", "_");
+                var roomMesh = model.Meshes[0];
+                var textureName = Path.GetFileName(roomMesh.Texture.Name).Replace(".", "_");
 
                 // Write XML header
                 writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -63,7 +46,7 @@ namespace TombEditor.Geometry.Exporters
                 // Write texture file
                 writer.WriteLine("<library_images>\n" +
                                  "<image id=\"" + textureName + "\" name=\"" + textureName + "\">\n" +
-                                 "<init_from>" + _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.Textures[0].Path) + "</init_from>\n" +
+                                 "<init_from>" + roomMesh.Texture + "</init_from>\n" +
                                  "</image>\n" +
                                  "</library_images>");
 
@@ -120,14 +103,17 @@ namespace TombEditor.Geometry.Exporters
                                  "<mesh>");
                 // Positions
                 writer.WriteLine("<source id=\"Room-mesh-positions\">");
-                writer.Write("<float_array id=\"Room-mesh-positions-array\" count=\"" + vertices.Count * 3 + "\">");
-                foreach (var vertex in vertices)
-                    writer.Write((vertex.Position.X / scale).ToString(CultureInfo.InvariantCulture) + " " +
-                                 (vertex.Position.Y / scale).ToString(CultureInfo.InvariantCulture) + " " +
-                                 (-vertex.Position.Z / scale).ToString(CultureInfo.InvariantCulture) + " ");
+                writer.Write("<float_array id=\"Room-mesh-positions-array\" count=\"" + roomMesh.Positions.Count * 3 + "\">");
+                foreach (var vertex in roomMesh.Positions)
+                {
+                    var position = ApplyAxesTransforms(vertex);
+                    writer.Write(position.X.ToString(CultureInfo.InvariantCulture) + " " +
+                                 position.Y.ToString(CultureInfo.InvariantCulture) + " " +
+                                 position.Z.ToString(CultureInfo.InvariantCulture) + " ");
+                }
                 writer.WriteLine("</float_array>");
                 writer.WriteLine("<technique_common>\n" +
-                                 "<accessor source=\"#Room-mesh-positions-array\" count=\"" + vertices.Count + "\" stride=\"3\">\n" +
+                                 "<accessor source=\"#Room-mesh-positions-array\" count=\"" + roomMesh.Positions.Count + "\" stride=\"3\">\n" +
                                  "<param name=\"X\" type=\"float\" />\n" +
                                  "<param name=\"Y\" type=\"float\" />\n" +
                                  "<param name=\"Z\" type=\"float\" />\n" +
@@ -137,13 +123,16 @@ namespace TombEditor.Geometry.Exporters
 
                 // UV
                 writer.WriteLine("<source id=\"Room-mesh-map-0\">");
-                writer.Write("<float_array id=\"Room-mesh-map-0-array\" count=\"" + vertices.Count * 2 + "\">");
-                foreach (var vertex in vertices)
-                    writer.Write(((vertex.UV.X / _editor.Level.Settings.Textures[0].Image.Size.X)).ToString(CultureInfo.InvariantCulture) + " " +
-                                 (1.0f - (vertex.UV.Y / _editor.Level.Settings.Textures[0].Image.Size.Y)).ToString(CultureInfo.InvariantCulture) + " ");
+                writer.Write("<float_array id=\"Room-mesh-map-0-array\" count=\"" + roomMesh.Positions.Count * 2 + "\">");
+                foreach (var uv in roomMesh.UV)
+                {
+                    var newUV = ApplyUVTransform(uv, roomMesh.Texture.Width, roomMesh.Texture.Height);
+                    writer.Write(newUV.X.ToString(CultureInfo.InvariantCulture) + " " +
+                                 newUV.Y.ToString(CultureInfo.InvariantCulture) + " ");
+                }
                 writer.WriteLine("</float_array>");
                 writer.WriteLine("<technique_common>\n" +
-                                 "<accessor source=\"#Room-mesh-map-0-array\" count=\"" + vertices.Count + "\" stride=\"2\">\n" +
+                                 "<accessor source=\"#Room-mesh-map-0-array\" count=\"" + roomMesh.Positions.Count + "\" stride=\"2\">\n" +
                                  "<param name=\"S\" type=\"float\" />\n" +
                                  "<param name=\"T\" type=\"float\" />\n" +
                                  "</accessor>\n" +
@@ -152,14 +141,17 @@ namespace TombEditor.Geometry.Exporters
 
                 // Color
                 writer.WriteLine("<source id=\"Room-mesh-colors-Col\">");
-                writer.Write("<float_array id=\"Room-mesh-colors-Col-array\" count=\"" + vertices.Count * 3 + "\">");
-                foreach (var vertex in vertices)
-                    writer.Write(vertex.FaceColor.X.ToString(CultureInfo.InvariantCulture) + " " + 
-                                 vertex.FaceColor.Y.ToString(CultureInfo.InvariantCulture) + " " + 
-                                 vertex.FaceColor.Z.ToString(CultureInfo.InvariantCulture) + " ");
+                writer.Write("<float_array id=\"Room-mesh-colors-Col-array\" count=\"" + roomMesh.Positions.Count * 3 + "\">");
+                foreach (var color in roomMesh.Colors)
+                {
+                    var newColor = ApplyColorTransform(color);
+                    writer.Write(newColor.X.ToString(CultureInfo.InvariantCulture) + " " +
+                                 newColor.Y.ToString(CultureInfo.InvariantCulture) + " " +
+                                 newColor.Z.ToString(CultureInfo.InvariantCulture) + " ");
+                }
                 writer.WriteLine("</float_array>");
                 writer.WriteLine("<technique_common>\n" +
-                                 "<accessor source=\"#Room-mesh-colors-Col-array\" count=\"" + vertices.Count + "\" stride=\"3\">\n" +
+                                 "<accessor source=\"#Room-mesh-colors-Col-array\" count=\"" + roomMesh.Positions.Count + "\" stride=\"3\">\n" +
                                  "<param name=\"R\" type=\"float\" />\n" +
                                  "<param name=\"G\" type=\"float\" />\n" +
                                  "<param name=\"B\" type=\"float\" />\n" +
@@ -171,64 +163,40 @@ namespace TombEditor.Geometry.Exporters
                                  "<input semantic=\"POSITION\" source=\"#Room-mesh-positions\" />\n" +
                                  "</vertices>");
 
-                writer.WriteLine("<triangles material=\"" + textureName + "-material\" count=\"" + numFaces + "\">\n" +
+                /*writer.WriteLine("<triangles material=\"" + textureName + "-material\" count=\"" + (roomMesh.NumQuads * 2 + roomMesh.NumTriangles) + "\">\n" +
                                  "<input semantic=\"VERTEX\" source=\"#Room-mesh-vertices\" offset=\"0\" />\n" +
                                  "<input semantic=\"TEXCOORD\" source=\"#Room-mesh-map-0\" offset=\"1\" set=\"0\" />\n" +
-                                 "<input semantic=\"COLOR\" source=\"#Room-mesh-colors-Col\" offset=\"2\" set=\"0\" />\n" + 
-                                 "<p>");
-                for (var z = 0; z < room.NumZSectors; z++)
+                                 "<input semantic=\"COLOR\" source=\"#Room-mesh-colors-Col\" offset=\"2\" set=\"0\" />\n" +
+                                 "<p>");*/
+                writer.WriteLine("<polylist material=\"" + textureName + "-material\" count=\"" + roomMesh.Polygons.Count + "\">\n" +
+                                 "<input semantic=\"VERTEX\" source=\"#Room-mesh-vertices\" offset=\"0\" />\n" +
+                                 "<input semantic=\"TEXCOORD\" source=\"#Room-mesh-map-0\" offset=\"1\" set=\"0\" />\n" +
+                                 "<input semantic=\"COLOR\" source=\"#Room-mesh-colors-Col\" offset=\"2\" set=\"0\" />\n" +
+                                 "<vcount>");
+                foreach (var tmpPoly in roomMesh.Polygons)
                 {
-                    for (var x = 0; x < room.NumXSectors; x++)
-                    {
-                        for (var f = 0; f < 29; f++)
-                        {
-                            if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
-                                !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
-                            {
-                                /* var indices = room.GetFaceIndices(x, z, (BlockFace)f);
-                                 var v1 = indices[0];
-                                 var v2 = indices[1];
-                                 var v3 = indices[2];
-
-                                 if (indices.Count == 3)
-                                 {
-                                     writer.Write(v1 + " " + v1 + " " + v1 + " " + v2 + " " + v2 + " " + v2 + " " + v3 + " " + v3 + " " + v3 + " ");
-                                 }
-                                 else
-                                 {
-                                     var v4 = indices[3];
-                                     var v5 = indices[4];
-                                     var v6 = indices[5];
-                                     writer.Write(v1 + " " + v1 + " " + v1 + " " + v2 + " " + v2 + " " + v2 + " " + v3 + " " + v3 + " " + v3 + " ");
-                                     writer.Write(v4 + " " + v4 + " " + v4 + " " + v5 + " " + v5 + " " + v5 + " " + v6 + " " + v6 + " " + v6 + " ");
-                                 }*/
-
-                                var vertexRange = room.GetFaceVertexRange(x, z, (BlockFace)f);
-                                var v1 = vertexRange.Start + 0;
-                                var v2 = vertexRange.Start + 1;
-                                var v3 = vertexRange.Start + 2;
-
-                                if (vertexRange.Count == 3)
-                                {
-                                    writer.Write(v1 + " " + v1 + " " + v1 + " " + v2 + " " + v2 + " " + v2 + " " + v3 + " " + v3 + " " + v3 + " ");
-                                }
-                                else
-                                {
-                                    var v4 = vertexRange.Start + 3;
-                                    var v5 = vertexRange.Start + 4;
-                                    var v6 = vertexRange.Start + 5;
-                                    writer.Write(v1 + " " + v1 + " " + v1 + " " + v2 + " " + v2 + " " + v2 + " " + v3 + " " + v3 + " " + v3 + " ");
-                                    writer.Write(v4 + " " + v4 + " " + v4 + " " + v5 + " " + v5 + " " + v5 + " " + v6 + " " + v6 + " " + v6 + " ");
-                                }
-                            }
-                        }
-                    }
+                    if (tmpPoly.Shape == IOPolygonShape.Quad)
+                        writer.Write("4 ");
+                    else
+                        writer.Write("3 ");
                 }
-                writer.WriteLine("</p>\n" + 
-                                 "</triangles>\n" +       
+                writer.WriteLine("\n</vcount>\n" +
+                                 "<p>");
+                foreach (var tmpPoly in roomMesh.Polygons)
+                {
+                    foreach (var index in tmpPoly.Indices)
+                        writer.Write(index + " " + index + " " + index + " ");
+                }
+                writer.WriteLine("\n</p>\n" +
+                                 "</polylist>\n" +
                                  "</mesh>\n" +
                                  "</geometry>\n" +
                                  "</library_geometries>");
+                /*writer.WriteLine("</p>\n" + 
+                                 "</triangles>\n" +       
+                                 "</mesh>\n" +
+                                 "</geometry>\n" +
+                                 "</library_geometries>");*/
 
                 // Write scene
                 writer.WriteLine("<library_visual_scenes>\n" +
