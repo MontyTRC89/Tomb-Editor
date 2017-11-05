@@ -809,7 +809,7 @@ namespace TombLib.Wad
             var settings = new IOGeometrySettings
             {
                 WrapUV = true,
-                FlipV = true,
+                FlipUV_V = true,
                 PremultiplyUV = true,
                 Scale = scale
             };

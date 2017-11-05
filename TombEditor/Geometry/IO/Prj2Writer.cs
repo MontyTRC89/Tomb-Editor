@@ -93,6 +93,14 @@ namespace TombEditor.Geometry.IO
                             chunkIO.WriteChunkString(Prj2Chunks.ImportedGeometryName, importedGeometry.Info.Name);
                             chunkIO.WriteChunkString(Prj2Chunks.ImportedGeometryPath, importedGeometry.Info.Path);
                             chunkIO.WriteChunkFloat(Prj2Chunks.ImportedGeometryScale, importedGeometry.Info.Scale);
+                            chunkIO.WriteChunkInt(Prj2Chunks.ImportedGeometryPosAxisFlags,
+                                (importedGeometry.Info.SwapXY ? 1 : 0) |
+                                (importedGeometry.Info.SwapXZ ? 2 : 0) |
+                                (importedGeometry.Info.SwapYZ ? 4 : 0) |
+                                (importedGeometry.Info.FlipX ? 8 : 0) |
+                                (importedGeometry.Info.FlipY ? 16 : 0) |
+                                (importedGeometry.Info.FlipZ ? 32 : 0));
+                            chunkIO.WriteChunkInt(Prj2Chunks.ImportedGeometryTexAxisFlags, importedGeometry.Info.FlipUV_V ? 4 : 0);
                         });
                         levelSettingIds.ImportedGeometries.Add(importedGeometry, index++);
                     }
@@ -362,7 +370,7 @@ namespace TombEditor.Geometry.IO
                                         chunkIO.Raw.Write(instance.RotationX);
                                         chunkIO.Raw.Write(instance.Roll);
                                         chunkIO.Raw.Write(instance.Scale);
-                                        LEB128.Write(chunkIO.Raw, levelSettingIds.ImportedGeometries[instance.Model]);
+                                        LEB128.Write(chunkIO.Raw, instance.Model == null ? -1 : levelSettingIds.ImportedGeometries[instance.Model]);
                                     });
                                 else
                                     logger.Warn("Object " + o + " not supported.");

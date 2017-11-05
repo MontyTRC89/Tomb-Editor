@@ -49,7 +49,7 @@ namespace TombLib.GeometryIO
                 uv.X /= w;
                 uv.Y /= h;
             }
-            if (_settings.FlipV)
+            if (_settings.FlipUV_V)
             {
                 uv.Y = 1.0f - uv.Y;
             }
