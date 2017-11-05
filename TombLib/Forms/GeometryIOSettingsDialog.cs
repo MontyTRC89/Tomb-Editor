@@ -8,7 +8,7 @@ namespace TombLib.GeometryIO
 {
     public partial class GeometryIOSettingsDialog : DarkForm
     {
-        public IOGeometrySettings Settings { get; set; }
+        public IOGeometrySettings Settings { get; private set; }
         private static List<IOGeometrySettingsPreset> _presets = new List<IOGeometrySettingsPreset>();
 
         public GeometryIOSettingsDialog(IOGeometrySettings inSettings)
