@@ -33,6 +33,7 @@ namespace TombEditor.ToolWindows
 
             // Update 3D view
             EditorActions.SwitchMode(EditorMode.Geometry);
+            EditorActions.SwitchTool(new EditorTool() { Tool = EditorToolType.Selection, Texture = EditorTextureType.Normal, TextureUVFixer = true });
         }
 
         public void AddToolbox(DarkFloatingToolbox toolbox)

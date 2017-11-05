@@ -36,9 +36,12 @@
             this.toolFlatten = new System.Windows.Forms.ToolStripButton();
             this.toolSmooth = new System.Windows.Forms.ToolStripButton();
             this.toolFill = new System.Windows.Forms.ToolStripButton();
+            this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
-            this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolUVFixer = new System.Windows.Forms.ToolStripButton();
+            this.toolGroup = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,14 +61,17 @@
             this.toolFlatten,
             this.toolSmooth,
             this.toolFill,
+            this.toolGroup,
             this.toolSeparator1,
             this.toolEraser,
-            this.toolInvisibility});
+            this.toolInvisibility,
+            this.toolSeparator2,
+            this.toolUVFixer});
             this.toolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.toolStrip.Location = new System.Drawing.Point(0, 25);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.toolStrip.Size = new System.Drawing.Size(222, 27);
+            this.toolStrip.Size = new System.Drawing.Size(377, 27);
             this.toolStrip.TabIndex = 2;
             // 
             // toolSelection
@@ -157,6 +163,14 @@
             this.toolFill.ToolTipText = "Fill";
             this.toolFill.Click += new System.EventHandler(this.toolFill_Click);
             // 
+            // toolSeparator1
+            // 
+            this.toolSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolSeparator1.Name = "toolSeparator1";
+            this.toolSeparator1.Size = new System.Drawing.Size(6, 23);
+            // 
             // toolEraser
             // 
             this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -181,13 +195,38 @@
             this.toolInvisibility.ToolTipText = "Invisibility";
             this.toolInvisibility.Click += new System.EventHandler(this.toolInvisibility_Click);
             // 
-            // toolSeparator1
+            // toolSeparator2
             // 
-            this.toolSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolSeparator1.Name = "toolSeparator1";
-            this.toolSeparator1.Size = new System.Drawing.Size(6, 23);
+            this.toolSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolSeparator2.Name = "toolSeparator2";
+            this.toolSeparator2.Size = new System.Drawing.Size(6, 23);
+            // 
+            // toolUVFixer
+            // 
+            this.toolUVFixer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolUVFixer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolUVFixer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolUVFixer.Image = global::TombEditor.Properties.Resources.uv_fix;
+            this.toolUVFixer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolUVFixer.Name = "toolUVFixer";
+            this.toolUVFixer.Size = new System.Drawing.Size(24, 20);
+            this.toolUVFixer.Text = "toolStripButton1";
+            this.toolUVFixer.ToolTipText = "Fix texture coordinates";
+            this.toolUVFixer.Click += new System.EventHandler(this.toolUVFixer_Click);
+            // 
+            // toolGroup
+            // 
+            this.toolGroup.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolGroup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolGroup.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolGroup.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_grid;
+            this.toolGroup.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolGroup.Name = "toolGroup";
+            this.toolGroup.Size = new System.Drawing.Size(24, 24);
+            this.toolGroup.ToolTipText = "Group textuing";
+            this.toolGroup.Click += new System.EventHandler(this.toolGroup_Click);
             // 
             // ToolPalette
             // 
@@ -200,7 +239,7 @@
             this.MinimumSize = new System.Drawing.Size(28, 52);
             this.Name = "ToolPalette";
             this.SerializationKey = "ToolPalette";
-            this.Size = new System.Drawing.Size(222, 52);
+            this.Size = new System.Drawing.Size(377, 52);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -220,5 +259,8 @@
         private System.Windows.Forms.ToolStripButton toolEraser;
         private System.Windows.Forms.ToolStripButton toolInvisibility;
         private System.Windows.Forms.ToolStripSeparator toolSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolSeparator2;
+        private System.Windows.Forms.ToolStripButton toolUVFixer;
+        private System.Windows.Forms.ToolStripButton toolGroup;
     }
 }
