@@ -53,15 +53,10 @@ namespace TombLib.GeometryIO.Importers
                 newModel.Textures.Add(text.Value);
 
             var lastBaseVertex = 0;
-            var minVertex = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            var maxVertex = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-            
+
             // Loop for each mesh loaded in scene
             foreach (var mesh in scene.Meshes)
             {
-                var minVertexMesh = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-                var maxVertexMesh = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-
                 var newMesh = new IOMesh();
 
                 if (!textures.ContainsKey(mesh.MaterialIndex)) continue;
@@ -94,24 +89,11 @@ namespace TombLib.GeometryIO.Importers
                         var color = new Vector4(colors[i].R, colors[i].G, colors[i].B, colors[i].A);
                         newMesh.Colors.Add(color);
                     }
-
-                    // Track min & max vertex for bounding box
-                    if (position.X <= minVertexMesh.X && position.Y <= minVertexMesh.Y && position.Z <= minVertexMesh.Z)
-                        minVertexMesh = position;
-
-                    if (position.X >= maxVertexMesh.X && position.Y >= maxVertexMesh.Y && position.Z >= maxVertexMesh.Z)
-                        maxVertexMesh = position;
-
-                    if (position.X <= minVertex.X && position.Y <= minVertex.Y && position.Z <= minVertex.Z)
-                        minVertex = position;
-
-                    if (position.X >= maxVertex.X && position.Y >= maxVertex.Y && position.Z >= maxVertex.Z)
-                        maxVertex = position;
                 }
 
                 // Add polygons
                 foreach (var face in mesh.Faces)
-                { 
+                {
                     if (face.IndexCount == 3)
                     {
                         var poly = new IOPolygon(IOPolygonShape.Triangle);
@@ -135,24 +117,8 @@ namespace TombLib.GeometryIO.Importers
                     }
                 }
 
-                // Set the bounding box
-                newMesh.BoundingBox = new BoundingBox(minVertex, maxVertex);
-
-                // Calculate bounding sphere
-                var centreMesh = (minVertexMesh + maxVertexMesh) / 2.0f;
-                var radiusMesh = (maxVertexMesh - centreMesh).Length();
-                newMesh.BoundingSphere = new BoundingSphere(centreMesh, radiusMesh);
-
                 newModel.Meshes.Add(newMesh);
             }
-
-            // Set the model's bounding box
-            newModel.BoundingBox = new BoundingBox(minVertex, maxVertex);
-
-            // Calculate model's bounding sphere
-            var centre = (minVertex + maxVertex) / 2.0f;
-            var radius = (maxVertex - centre).Length();
-            newModel.BoundingSphere = new BoundingSphere(centre, radius);
 
             return newModel;
         }

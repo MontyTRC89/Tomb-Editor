@@ -1,5 +1,4 @@
-﻿using Assimp;
-using NLog;
+﻿using NLog;
 using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using System;

@@ -20,10 +20,8 @@ namespace TombLib.GeometryIO.Exporters
         public override bool ExportToFile(IOModel model, string filename)
         {
             var path = Path.GetDirectoryName(filename);
-            
-            if (File.Exists(filename)) File.Delete(filename);
 
-            using (var writer = new StreamWriter(File.OpenWrite(filename)))
+            using (var writer = new StreamWriter(filename, false))
             {
                 var mesh = model.Meshes[0];
 
@@ -94,7 +92,7 @@ namespace TombLib.GeometryIO.Exporters
                         writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + " " + uv4 + ") ");
                         writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + " " + color4 + ") ");
                     }
-                }                
+                }
                 writer.WriteLine("}");
                 writer.WriteLine("}");
                 writer.WriteLine("Eof");

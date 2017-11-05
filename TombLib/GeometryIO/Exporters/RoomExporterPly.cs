@@ -21,10 +21,7 @@ namespace TombLib.GeometryIO.Exporters
             var path = Path.GetDirectoryName(filename);
             var material = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
 
-            if (File.Exists(filename)) File.Delete(filename);
-            if (File.Exists(material)) File.Delete(material);
-
-            using (var writer = new StreamWriter(File.OpenWrite(filename)))
+            using (var writer = new StreamWriter(filename, false))
             {
                 var mesh = model.Meshes[0];
 
@@ -58,7 +55,7 @@ namespace TombLib.GeometryIO.Exporters
                                  uv.Y.ToString(CultureInfo.InvariantCulture) + " ");
 
                     var color = ApplyColorTransform(mesh.Colors[i]);
-                    writer.WriteLine((int)(color.X * 128.0f) + " " + 
+                    writer.WriteLine((int)(color.X * 128.0f) + " " +
                                      (int)(color.Y * 128.0f) + " " +
                                      (int)(color.Z * 128.0f));
                 }
@@ -80,7 +77,7 @@ namespace TombLib.GeometryIO.Exporters
                     {
                         writer.WriteLine("4 " + v1 + " " + v2 + " " + v3 + " " + v4);
                     }
-                }               
+                }
             }
 
             return true;

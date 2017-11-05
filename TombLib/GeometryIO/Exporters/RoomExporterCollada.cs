@@ -19,9 +19,8 @@ namespace TombLib.GeometryIO.Exporters
         public override bool ExportToFile(IOModel model, string filename)
         {
             var path = Path.GetDirectoryName(filename);
-            if (File.Exists(filename)) File.Delete(filename);
-                 
-            using (var writer = new StreamWriter(File.OpenWrite(filename)))
+
+            using (var writer = new StreamWriter(filename, false))
             {
                 var roomMesh = model.Meshes[0];
                 var textureName = Path.GetFileName(roomMesh.Texture.Name).Replace(".", "_");
@@ -192,8 +191,8 @@ namespace TombLib.GeometryIO.Exporters
                                  "</mesh>\n" +
                                  "</geometry>\n" +
                                  "</library_geometries>");
-                /*writer.WriteLine("</p>\n" + 
-                                 "</triangles>\n" +       
+                /*writer.WriteLine("</p>\n" +
+                                 "</triangles>\n" +
                                  "</mesh>\n" +
                                  "</geometry>\n" +
                                  "</library_geometries>");*/
