@@ -13,9 +13,6 @@ using TombLib.Utils;
 using DarkUI.Forms;
 using TombLib.IO;
 using System.IO;
-using Assimp;
-using SharpDX.Toolkit.Graphics;
-using System.Globalization;
 using TombLib.GeometryIO;
 using TombLib.GeometryIO.Exporters;
 

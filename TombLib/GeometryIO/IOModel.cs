@@ -9,15 +9,34 @@ namespace TombLib.GeometryIO
 {
     public class IOModel
     {
-        public List<IOMesh> Meshes { get; private set; }
-        public List<IOTexture> Textures { get; private set; }
-        public BoundingBox BoundingBox { get; internal set; }
-        public BoundingSphere BoundingSphere { get; internal set; }
+        public List<IOMesh> Meshes { get; private set; } = new List<IOMesh>();
+        public List<IOTexture> Textures { get; private set; } = new List<IOTexture>();
 
-        public IOModel()
+        public BoundingBox BoundingBox
         {
-            Meshes = new List<IOMesh>();
-            Textures = new List<IOTexture>();
+            get
+            {
+                Vector3 minVertex = new Vector3(float.PositiveInfinity);
+                Vector3 maxVertex = new Vector3(float.NegativeInfinity);
+                foreach (IOMesh mesh in Meshes)
+                {
+                    BoundingBox partialBoundingBox = mesh.BoundingBox;
+                    minVertex = Vector3.Min(minVertex, partialBoundingBox.Minimum);
+                    maxVertex = Vector3.Max(maxVertex, partialBoundingBox.Maximum);
+                }
+                return new BoundingBox(minVertex, maxVertex);
+            }
+        }
+
+        public BoundingSphere BoundingSphere
+        {
+            get
+            {
+                BoundingBox boundingBox = BoundingBox;
+                Vector3 center = (boundingBox.Minimum + boundingBox.Maximum) * 0.5f;
+                float radius = (boundingBox.Maximum - center).Length();
+                return new BoundingSphere(center, radius);
+            }
         }
     }
 }

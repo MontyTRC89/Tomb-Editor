@@ -13,7 +13,7 @@ namespace TombLib.GeometryIO.Exporters
         public RoomExporterObj(IOGeometrySettings settings)
             : base(settings)
         {
-           
+
         }
 
         public override bool ExportToFile(IOModel model, string filename)
@@ -21,13 +21,10 @@ namespace TombLib.GeometryIO.Exporters
             var path = Path.GetDirectoryName(filename);
             var material = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
 
-            if (File.Exists(filename)) File.Delete(filename);
-            if (File.Exists(material)) File.Delete(material);
-
             var mesh = model.Meshes[0];
 
-            using (var writer = new StreamWriter(File.OpenWrite(filename)))
-            {                
+            using (var writer = new StreamWriter(filename, false))
+            {
                 writer.WriteLine("# Exported by Tomb Editor");
                 writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(filename) + ".mtl");
                 writer.WriteLine("o Room");
@@ -70,7 +67,7 @@ namespace TombLib.GeometryIO.Exporters
                 }
             }
 
-            using (var writer = new StreamWriter(File.OpenWrite(material)))
+            using (var writer = new StreamWriter(material, false))
             {
                 writer.WriteLine("# Exported by Tomb Editor");
                 writer.WriteLine("newmtl Room");
