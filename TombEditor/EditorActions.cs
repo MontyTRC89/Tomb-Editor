@@ -1001,7 +1001,178 @@ namespace TombEditor
         private static void ApplyTextureAutomaticallyNoUpdated(Room room, DrawingPoint pos, BlockFace face, TextureArea texture)
         {
             Block block = room.GetBlock(pos);
-            block.SetFaceTexture(face, texture);
+
+            TextureArea processedTexture = texture;
+
+            switch(face)
+            {
+                case BlockFace.Floor:
+                    if (block.FloorIsQuad)
+                        break;
+                    else
+                    {
+                        if (block.FloorSplitDirectionIsXEqualsZ)
+                        {
+                            Utils.Swap(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                            processedTexture.TexCoord1 = processedTexture.TexCoord3;
+                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                        }
+                        else
+                        {
+                            processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                            processedTexture.TexCoord1 = processedTexture.TexCoord2;
+                            processedTexture.TexCoord2 = processedTexture.TexCoord3;
+                        }
+                    }
+                    break;
+
+                case BlockFace.FloorTriangle2:
+                    if (block.FloorIsQuad)
+                        break;
+                    else
+                    {
+                        if (block.FloorSplitDirectionIsXEqualsZ)
+                            processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                        else
+                        {
+                            processedTexture.TexCoord2 = processedTexture.TexCoord1;
+                            processedTexture.TexCoord1 = processedTexture.TexCoord0;
+                            processedTexture.TexCoord0 = processedTexture.TexCoord3;
+                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                        }
+                    }
+                    break;
+
+
+                case BlockFace.Ceiling:
+                    if (block.CeilingIsQuad)
+                        break;
+                    else
+                    {
+                        if (block.CeilingSplitDirectionIsXEqualsZ)
+                        {
+                            Utils.Swap(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                            processedTexture.TexCoord1 = processedTexture.TexCoord3;
+                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                        }
+                        else
+                        {
+                            processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                            processedTexture.TexCoord1 = processedTexture.TexCoord2;
+                            processedTexture.TexCoord2 = processedTexture.TexCoord3;
+                        }
+                    }
+                    break;
+
+
+                case BlockFace.CeilingTriangle2:
+                    if (block.CeilingIsQuad)
+                        break;
+                    else
+                    {
+                        if (block.CeilingSplitDirectionIsXEqualsZ)
+                        {
+                            processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                        }
+                        else
+                        {
+                            processedTexture.TexCoord2 = processedTexture.TexCoord1;
+                            processedTexture.TexCoord1 = processedTexture.TexCoord0;
+                            processedTexture.TexCoord0 = processedTexture.TexCoord3;
+                            processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                        }
+                    }
+                    break;
+
+                default:
+                    {
+                        var indices = room.GetFaceIndices(pos.X, pos.Y, face);
+                        var vertices = room.GetRoomVertices();
+
+                        if (indices.Count < 3)
+                            break;
+                        else
+                        {
+                            float maxUp;
+                            float minDown;
+                            float delta0;
+                            float delta1;
+                            float delta2;
+                            float delta3;
+                            float difference;
+
+                            if (indices.Count == 4)
+                            {
+                                maxUp = Math.Max(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y);
+                                minDown = Math.Min(vertices[indices[3]].Position.Y, vertices[indices[2]].Position.Y);
+
+                                difference = maxUp - minDown;
+
+                                delta0 = (minDown - vertices[indices[3]].Position.Y) / difference;
+                                delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
+                                delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
+                                delta3 = (minDown - vertices[indices[2]].Position.Y) / difference;
+
+                                processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
+                                processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
+                                processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
+                                processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
+                            }
+                            else
+                            {
+                                maxUp = Math.Max(Math.Max(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y), vertices[indices[2]].Position.Y);
+                                minDown = Math.Min(Math.Min(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y), vertices[indices[2]].Position.Y);
+                                difference = maxUp - minDown;
+
+                                if (vertices[indices[0]].Position.X == vertices[indices[2]].Position.X && vertices[indices[0]].Position.Z == vertices[indices[2]].Position.Z)
+                                {
+                                    delta0 = (minDown - vertices[indices[2]].Position.Y) / difference;
+                                    delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
+                                    delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
+                                    delta3 = (minDown - vertices[indices[1]].Position.Y) / difference;
+
+                                    processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
+                                    processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
+                                    processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
+                                    processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
+
+                                    processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                                    processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                                    processedTexture.TexCoord1 = processedTexture.TexCoord2;
+                                    processedTexture.TexCoord2 = processedTexture.TexCoord3;
+
+                                }
+                                else
+                                {
+                                    // BROKEN!
+
+                                    Utils.Swap(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                                    processedTexture.TexCoord1 = processedTexture.TexCoord3;
+                                    processedTexture.TexCoord3 = processedTexture.TexCoord2;
+
+                                    delta0 = (maxUp - vertices[indices[1]].Position.Y) / difference;
+                                    delta1 = (minDown - vertices[indices[2]].Position.Y) / difference;
+                                    delta2 = (minDown - vertices[indices[0]].Position.Y) / difference;
+                                    delta3 = (maxUp - vertices[indices[0]].Position.Y) / difference;
+
+                                    processedTexture.TexCoord0.Y += (processedTexture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
+                                    processedTexture.TexCoord1.Y += (processedTexture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
+                                    processedTexture.TexCoord2.Y += (processedTexture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
+                                    processedTexture.TexCoord3.Y += (processedTexture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
+
+                                    Vector2 tempTexCoord = processedTexture.TexCoord2;
+                                    processedTexture.TexCoord2 = processedTexture.TexCoord1;
+                                    processedTexture.TexCoord1 = processedTexture.TexCoord0;
+                                    processedTexture.TexCoord0 = tempTexCoord;
+                                    processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            block.SetFaceTexture(face, processedTexture);
         }
 
         public static void ApplyTextureAutomatically(Room room, DrawingPoint pos, BlockFace face, TextureArea texture)
@@ -1011,6 +1182,53 @@ namespace TombEditor
             room.BuildGeometry(new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
+            _editor.RoomTextureChange(room);
+        }
+
+        public static void TexturizeGroup(Room room, Rectangle area, TextureArea texture, BlockFaceType type)
+        {
+            if (area.Width == 0 && area.Height == 0)
+                return;
+
+            if (type == BlockFaceType.Wall)
+                return; // To be implemented...
+            else
+            {
+                Vector2 verticalUVStride = (texture.TexCoord3 - texture.TexCoord2) / (float)(area.Bottom - area.Y + 1);
+                Vector2 horizontalUVStride = (texture.TexCoord2 - texture.TexCoord1) / (float)(area.Right - area.X + 1);
+
+                for (int x = area.X, x1 = 0; x <= area.Right; x++, x1++)
+                {
+                    Vector2 currentX = horizontalUVStride * x1;
+
+                    for (int z = area.Y, z1 = 0; z <= area.Bottom; z++, z1++)
+                    {
+                        TextureArea currentTexture = texture;
+                        Vector2 currentZ = verticalUVStride * z1;
+
+                        currentTexture.TexCoord0 -= currentZ - currentX;
+                        currentTexture.TexCoord1 = currentTexture.TexCoord0 - verticalUVStride;
+                        currentTexture.TexCoord3 = currentTexture.TexCoord0 + horizontalUVStride;
+                        currentTexture.TexCoord2 = currentTexture.TexCoord0 + horizontalUVStride - verticalUVStride;
+
+                        switch (type)
+                        {
+                            case BlockFaceType.Floor:
+
+                                ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.Floor, currentTexture);
+                                ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.FloorTriangle2, currentTexture);
+                                break;
+
+                            case BlockFaceType.Ceiling:
+                                ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.Ceiling, currentTexture);
+                                ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.CeilingTriangle2, currentTexture);
+                                break;
+                        }
+                    }
+                }
+            }
+
+            room.UpdateCompletely();
             _editor.RoomTextureChange(room);
         }
 

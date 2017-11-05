@@ -46,6 +46,7 @@ namespace TombEditor.ToolWindows
         private void SwitchMode(EditorMode mode)
         {
             toolFill.Visible = mode == EditorMode.FaceEdit;
+            toolGroup.Visible = mode == EditorMode.FaceEdit;
             toolEraser.Visible = mode == EditorMode.FaceEdit;
             toolInvisibility.Visible = mode == EditorMode.FaceEdit;
             toolSeparator1.Visible = mode == EditorMode.FaceEdit;
@@ -67,6 +68,7 @@ namespace TombEditor.ToolWindows
             toolBrush.Checked = tool == EditorToolType.Brush;
             toolPencil.Checked = tool == EditorToolType.Pencil;
             toolFill.Checked = tool == EditorToolType.Fill;
+            toolGroup.Checked = tool == EditorToolType.Group;
             toolShovel.Checked = tool == EditorToolType.Shovel;
             toolFlatten.Checked = tool == EditorToolType.Flatten;
             toolSmooth.Checked = tool == EditorToolType.Smooth;
@@ -116,6 +118,11 @@ namespace TombEditor.ToolWindows
         private void toolFill_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorToolType.Fill);
+        }
+
+        private void toolGroup_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Group);
         }
 
         private void toolSmooth_Click(object sender, EventArgs e)

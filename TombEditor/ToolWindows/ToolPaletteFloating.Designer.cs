@@ -16,6 +16,7 @@
         private void InitializeComponent()
         {
             this.toolPalette = new DarkUI.Controls.DarkToolStrip();
+            this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolSelection = new System.Windows.Forms.ToolStripButton();
             this.toolBrush = new System.Windows.Forms.ToolStripButton();
             this.toolShovel = new System.Windows.Forms.ToolStripButton();
@@ -23,7 +24,7 @@
             this.toolFlatten = new System.Windows.Forms.ToolStripButton();
             this.toolSmooth = new System.Windows.Forms.ToolStripButton();
             this.toolFill = new System.Windows.Forms.ToolStripButton();
-            this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolGroup = new System.Windows.Forms.ToolStripButton();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.toolPalette.SuspendLayout();
@@ -45,6 +46,7 @@
             this.toolFlatten,
             this.toolSmooth,
             this.toolFill,
+            this.toolGroup,
             this.toolSeparator1,
             this.toolEraser,
             this.toolInvisibility});
@@ -52,8 +54,16 @@
             this.toolPalette.Location = new System.Drawing.Point(0, 16);
             this.toolPalette.Name = "toolPalette";
             this.toolPalette.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.toolPalette.Size = new System.Drawing.Size(29, 241);
+            this.toolPalette.Size = new System.Drawing.Size(29, 262);
             this.toolPalette.TabIndex = 1;
+            // 
+            // toolSeparator1
+            // 
+            this.toolSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolSeparator1.Name = "toolSeparator1";
+            this.toolSeparator1.Size = new System.Drawing.Size(22, 6);
             // 
             // toolSelection
             // 
@@ -144,13 +154,17 @@
             this.toolFill.ToolTipText = "Fill";
             this.toolFill.Click += new System.EventHandler(this.toolFill_Click);
             // 
-            // toolSeparator1
+            // toolGroup
             // 
-            this.toolSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolSeparator1.Name = "toolSeparator1";
-            this.toolSeparator1.Size = new System.Drawing.Size(22, 6);
+            this.toolGroup.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolGroup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolGroup.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolGroup.Image = global::TombEditor.Properties.Resources.subtoolbar_icons8_grid;
+            this.toolGroup.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolGroup.Name = "toolGroup";
+            this.toolGroup.Size = new System.Drawing.Size(24, 20);
+            this.toolGroup.ToolTipText = "Group textuing";
+            this.toolGroup.Click += new System.EventHandler(this.toolGroup_Click);
             // 
             // toolEraser
             // 
@@ -183,7 +197,7 @@
             this.GripSize = 10;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ToolPaletteFloating";
-            this.Size = new System.Drawing.Size(28, 231);
+            this.Size = new System.Drawing.Size(28, 290);
             this.toolPalette.ResumeLayout(false);
             this.toolPalette.PerformLayout();
             this.ResumeLayout(false);
@@ -203,5 +217,6 @@
         private System.Windows.Forms.ToolStripButton toolEraser;
         private System.Windows.Forms.ToolStripButton toolInvisibility;
         private System.Windows.Forms.ToolStripSeparator toolSeparator1;
+        private System.Windows.Forms.ToolStripButton toolGroup;
     }
 }

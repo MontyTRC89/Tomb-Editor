@@ -643,6 +643,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap subtoolbar_icons8_grid {
+            get {
+                object obj = ResourceManager.GetObject("subtoolbar_icons8_grid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap subtoolbar_icons8_invisible_copy {
             get {
                 object obj = ResourceManager.GetObject("subtoolbar_icons8_invisible_copy", resourceCulture);
