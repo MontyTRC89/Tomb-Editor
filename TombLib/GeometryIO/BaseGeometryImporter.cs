@@ -44,13 +44,14 @@ namespace TombLib.GeometryIO
 
         protected Vector2 ApplyUVTransform(Vector2 uv, int w, int h)
         {
-            if (_settings.FlipV) { uv.Y = 1.0f - uv.Y; }
+            if (_settings.FlipV)
+            {
+                uv.Y = 1.0f - uv.Y;
+            }
             if (_settings.WrapUV)
             {
-                if (uv.X > 1.0f) uv.X -= 1.0f;
-                if (uv.Y > 1.0f) uv.Y -= 1.0f;
-                if (uv.X < 0.0f) uv.X += 1.0f;
-                if (uv.Y < 0.0f) uv.Y += 1.0f;
+                uv.X -= (float)Math.Floor(uv.X);
+                uv.Y -= (float)Math.Floor(uv.Y);
             }
             if (_settings.PremultiplyUV)
             {
