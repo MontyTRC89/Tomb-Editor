@@ -10,15 +10,14 @@ namespace TombLib.GeometryIO
     public class IOTexture
     {
         public string Name { get; private set; }
-        public ImageC Image { get; private set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
-        public IOTexture(string name, ImageC image)
+        public IOTexture(string name, int width, int height)
         {
             this.Name = name;
-            this.Image = image;
+            this.Width = width;
+            this.Height = height;
         }
-
-        public int Width { get { return Image.Width; } }
-        public int Height { get { return Image.Height; } }
     }
 }

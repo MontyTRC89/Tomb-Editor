@@ -43,11 +43,14 @@ namespace TombLib.GeometryIO.Importers
                     }
 
                 if (!found)
-                    textures.Add(i, new IOTexture(diffusePath, ImageC.FromFile(diffusePath)));
+                {
+                    var img = ImageC.FromFile(diffusePath);
+                    textures.Add(i, new IOTexture(diffusePath, img.Width, img.Height));
+                }
             }
 
             foreach (var text in textures)
-                newModel.Textures.Add(text.Value.Name);
+                newModel.Textures.Add(text.Value);
 
             var lastBaseVertex = 0;
             var minVertex = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
@@ -66,12 +69,12 @@ namespace TombLib.GeometryIO.Importers
                 var hasTexCoords = mesh.HasTextureCoords(0);
                 var hasColors = mesh.HasVertexColors(0);
 
-                newMesh.Texture = faceTexture.Name;
+                newMesh.Texture = faceTexture;
 
                 // Source data
                 var positions = mesh.Vertices;
                 var texCoords = mesh.TextureCoordinateChannels[0];
-                var colors = mesh.VertexColorChannels[0]; 
+                var colors = mesh.VertexColorChannels[0];
 
                 for (int i = 0; i < mesh.VertexCount; i++)
                 {
@@ -81,12 +84,9 @@ namespace TombLib.GeometryIO.Importers
                     newMesh.Positions.Add(position);
 
                     // Create UV
-                    if (hasTexCoords)
-                    {
-                        var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);
-                        currentUV = ApplyUVTransform(currentUV, faceTexture.Width, faceTexture.Height);
-                        newMesh.UV.Add(currentUV);
-                    }
+                    var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);
+                    currentUV = ApplyUVTransform(currentUV, faceTexture.Width, faceTexture.Height);
+                    newMesh.UV.Add(currentUV);
 
                     // Create colors
                     if (hasColors)
@@ -111,7 +111,7 @@ namespace TombLib.GeometryIO.Importers
 
                 // Add polygons
                 foreach (var face in mesh.Faces)
-                {
+                { 
                     if (face.IndexCount == 3)
                     {
                         var poly = new IOPolygon(IOPolygonShape.Triangle);
@@ -119,20 +119,6 @@ namespace TombLib.GeometryIO.Importers
                         poly.Indices.Add(lastBaseVertex + face.Indices[0]);
                         poly.Indices.Add(lastBaseVertex + face.Indices[1]);
                         poly.Indices.Add(lastBaseVertex + face.Indices[2]);
-
-                        if (hasTexCoords)
-                        {
-                            poly.UV.Add(newMesh.UV[face.Indices[0]]);
-                            poly.UV.Add(newMesh.UV[face.Indices[1]]);
-                            poly.UV.Add(newMesh.UV[face.Indices[2]]);
-                        }
-
-                        if (hasColors)
-                        {
-                            poly.Colors.Add(newMesh.Colors[face.Indices[0]]);
-                            poly.Colors.Add(newMesh.Colors[face.Indices[1]]);
-                            poly.Colors.Add(newMesh.Colors[face.Indices[2]]);
-                        }
 
                         newMesh.Polygons.Add(poly);
                     }
@@ -144,16 +130,6 @@ namespace TombLib.GeometryIO.Importers
                         poly.Indices.Add(lastBaseVertex + face.Indices[1]);
                         poly.Indices.Add(lastBaseVertex + face.Indices[2]);
                         poly.Indices.Add(lastBaseVertex + face.Indices[3]);
-
-                        poly.UV.Add(newMesh.UV[face.Indices[0]]);
-                        poly.UV.Add(newMesh.UV[face.Indices[1]]);
-                        poly.UV.Add(newMesh.UV[face.Indices[2]]);
-                        poly.UV.Add(newMesh.UV[face.Indices[3]]);
-
-                        poly.Colors.Add(newMesh.Colors[face.Indices[0]]);
-                        poly.Colors.Add(newMesh.Colors[face.Indices[1]]);
-                        poly.Colors.Add(newMesh.Colors[face.Indices[2]]);
-                        poly.Colors.Add(newMesh.Colors[face.Indices[3]]);
 
                         newMesh.Polygons.Add(poly);
                     }

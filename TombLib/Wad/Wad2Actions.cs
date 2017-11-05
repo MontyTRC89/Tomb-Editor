@@ -817,11 +817,11 @@ namespace TombLib.Wad
             var tmpModel = importer.ImportFromFile(fileName);
 
             // Load textures
-            var tmpTextures = new Dictionary<string, WadTexture>();
+            var tmpTextures = new Dictionary<IOTexture, WadTexture>();
             foreach (var tmpTexture in tmpModel.Textures)
             {
                 var texture = new WadTexture();
-                texture.Image = ImageC.FromFile(tmpTexture);
+                texture.Image = ImageC.FromFile(tmpTexture.Name);
                 texture.UpdateHash();
                 if (!Textures.ContainsKey(texture.Hash)) Textures.Add(texture.Hash, texture);
                 tmpTextures.Add(tmpTexture, Textures[texture.Hash]);

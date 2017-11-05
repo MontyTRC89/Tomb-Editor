@@ -19,7 +19,6 @@ namespace TombLib.GeometryIO
         public List<int> Indices { get; private set; }
         public List<Vector2> UV { get; private set; }
         public List<Vector4> Colors { get; private set; }
-        //public IOTexture Texture { get; set; }
 
         public IOPolygon(IOPolygonShape shape)
         {
