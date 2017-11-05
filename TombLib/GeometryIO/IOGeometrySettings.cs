@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace TombLib.GeometryIO
 {
+    public struct IOGeometrySettingsPreset
+    {
+        public string Name;
+        public IOGeometrySettings Settings;
+    }
+
     public class IOGeometrySettings
     {
         public bool SwapXY { get; set; } = false;

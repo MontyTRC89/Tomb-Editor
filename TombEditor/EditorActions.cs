@@ -2036,72 +2036,77 @@ namespace TombEditor
 
                 if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
                 {
-                    IOGeometrySettings settings = new IOGeometrySettings();
-                    BaseGeometryExporter.GetTextureDelegate getTextureCallback = (texture) =>
+                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
-                        if (texture is LevelTexture)
-                            return _editor.Level.Settings.MakeAbsolute(((LevelTexture)texture).Path);
-                        else
-                            return "";
-                    };
-
-                    string resultingExtension = Path.GetExtension(saveFileDialog.FileName);
-                    BaseGeometryExporter exporter;
-                    switch (resultingExtension.ToLowerInvariant())
-                    {
-                        default:
-                        case ".obj":
-                            exporter = new RoomExporterObj(settings, getTextureCallback);
-                            break;
-                        case ".mqo":
-                            exporter = new RoomExporterMetasequoia(settings, getTextureCallback);
-                            break;
-                        case ".ply":
-                            exporter = new RoomExporterPly(settings, getTextureCallback);
-                            break;
-                        case ".dae":
-                            exporter = new RoomExporterCollada(settings, getTextureCallback);
-                            break;
-                    }
-
-                    // Prepare data for export
-                    var model = new IOModel();
-                    var mesh = new IOMesh();
-                    var room = _editor.SelectedRoom;
-
-                    var vertices = room.GetRoomVertices();
-                    for (var i = 0; i < vertices.Count; i++)
-                    {
-                        mesh.Positions.Add(vertices[i].Position);
-                        mesh.UV.Add(vertices[i].UV);
-                        mesh.Colors.Add(vertices[i].FaceColor);
-                    }
-
-                    for (var z = 0; z < room.NumZSectors; z++)
-                    {
-                        for (var x = 0; x < room.NumXSectors; x++)
+                        if(settingsDialog.ShowDialog(owner) == DialogResult.OK)
                         {
-                            for (var f = 0; f < 29; f++)
+                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = (texture) =>
                             {
-                                if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
-                                    !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
+                                if (texture is LevelTexture)
+                                    return _editor.Level.Settings.MakeAbsolute(((LevelTexture)texture).Path);
+                                else
+                                    return "";
+                            };
+
+                            string resultingExtension = Path.GetExtension(saveFileDialog.FileName);
+                            BaseGeometryExporter exporter;
+                            switch (resultingExtension.ToLowerInvariant())
+                            {
+                                default:
+                                case ".obj":
+                                    exporter = new RoomExporterObj(settingsDialog.Settings, getTextureCallback);
+                                    break;
+                                case ".mqo":
+                                    exporter = new RoomExporterMetasequoia(settingsDialog.Settings, getTextureCallback);
+                                    break;
+                                case ".ply":
+                                    exporter = new RoomExporterPly(settingsDialog.Settings, getTextureCallback);
+                                    break;
+                                case ".dae":
+                                    exporter = new RoomExporterCollada(settingsDialog.Settings, getTextureCallback);
+                                    break;
+                            }
+
+                            // Prepare data for export
+                            var model = new IOModel();
+                            var mesh = new IOMesh();
+                            var room = _editor.SelectedRoom;
+
+                            var vertices = room.GetRoomVertices();
+                            for (var i = 0; i < vertices.Count; i++)
+                            {
+                                mesh.Positions.Add(vertices[i].Position);
+                                mesh.UV.Add(vertices[i].UV);
+                                mesh.Colors.Add(vertices[i].FaceColor);
+                            }
+
+                            for (var z = 0; z < room.NumZSectors; z++)
+                            {
+                                for (var x = 0; x < room.NumXSectors; x++)
                                 {
-                                    var indices = room.GetFaceIndices(x, z, (BlockFace)f);
-                                    var poly = new IOPolygon(indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
-                                    poly.Indices.AddRange(indices);
-                                    mesh.Polygons.Add(poly);
+                                    for (var f = 0; f < 29; f++)
+                                    {
+                                        if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
+                                            !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
+                                        {
+                                            var indices = room.GetFaceIndices(x, z, (BlockFace)f);
+                                            var poly = new IOPolygon(indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
+                                            poly.Indices.AddRange(indices);
+                                            mesh.Polygons.Add(poly);
+                                        }
+                                    }
                                 }
                             }
+
+                            mesh.Texture = _editor.Level.Settings.Textures[0];
+                            model.Meshes.Add(mesh);
+
+                            if (exporter.ExportToFile(model, saveFileDialog.FileName))
+                            {
+                                DarkMessageBox.Show(owner, "Room exported correctly", "Information", MessageBoxButtons.OK,
+                                                MessageBoxIcon.Information);
+                            }
                         }
-                    }
-
-                    mesh.Texture = _editor.Level.Settings.Textures[0];
-                    model.Meshes.Add(mesh);
-
-                    if (exporter.ExportToFile(model, saveFileDialog.FileName))
-                    {
-                        DarkMessageBox.Show(owner, "Room exported correctly", "Information", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Information);
                     }
                 }
             }

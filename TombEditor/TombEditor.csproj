@@ -158,100 +158,100 @@
     <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
-    <Compile Include="FormAbout.cs">
+    <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAbout.Designer.cs">
+    <Compile Include="Forms\FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormCamera.cs">
+    <Compile Include="Forms\FormCamera.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormCamera.Designer.cs">
+    <Compile Include="Forms\FormCamera.Designer.cs">
       <DependentUpon>FormCamera.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormChooseRoom.cs">
+    <Compile Include="Forms\FormChooseRoom.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormChooseRoom.Designer.cs">
+    <Compile Include="Forms\FormChooseRoom.Designer.cs">
       <DependentUpon>FormChooseRoom.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormImportedGeometry.cs">
+    <Compile Include="Forms\FormImportedGeometry.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormImportedGeometry.Designer.cs">
+    <Compile Include="Forms\FormImportedGeometry.Designer.cs">
       <DependentUpon>FormImportedGeometry.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormLevelSettings.cs">
+    <Compile Include="Forms\FormLevelSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormLevelSettings.designer.cs">
+    <Compile Include="Forms\FormLevelSettings.designer.cs">
       <DependentUpon>FormLevelSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSearch.cs">
+    <Compile Include="Forms\FormSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSearch.Designer.cs">
+    <Compile Include="Forms\FormSearch.Designer.cs">
       <DependentUpon>FormSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormStaticMesh.cs">
+    <Compile Include="Forms\FormStaticMesh.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormStaticMesh.Designer.cs">
+    <Compile Include="Forms\FormStaticMesh.Designer.cs">
       <DependentUpon>FormStaticMesh.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormOperationDialog.cs">
+    <Compile Include="Forms\FormOperationDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormOperationDialog.Designer.cs">
+    <Compile Include="Forms\FormOperationDialog.Designer.cs">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormInputBox.cs">
+    <Compile Include="Forms\FormInputBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormInputBox.Designer.cs">
+    <Compile Include="Forms\FormInputBox.Designer.cs">
       <DependentUpon>FormInputBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormTextureSounds.cs">
+    <Compile Include="Forms\FormTextureSounds.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormTextureSounds.Designer.cs">
+    <Compile Include="Forms\FormTextureSounds.Designer.cs">
       <DependentUpon>FormTextureSounds.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMain.cs">
+    <Compile Include="Forms\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
+    <Compile Include="Forms\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMoveable.cs">
+    <Compile Include="Forms\FormMoveable.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMoveable.Designer.cs">
+    <Compile Include="Forms\FormMoveable.Designer.cs">
       <DependentUpon>FormMoveable.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormFlybyCamera.cs">
+    <Compile Include="Forms\FormFlybyCamera.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormFlybyCamera.Designer.cs">
+    <Compile Include="Forms\FormFlybyCamera.Designer.cs">
       <DependentUpon>FormFlybyCamera.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormAnimatedTextures.cs">
+    <Compile Include="Forms\FormAnimatedTextures.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAnimatedTextures.Designer.cs">
+    <Compile Include="Forms\FormAnimatedTextures.Designer.cs">
       <DependentUpon>FormAnimatedTextures.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSound.cs">
+    <Compile Include="Forms\FormSound.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSound.Designer.cs">
+    <Compile Include="Forms\FormSound.Designer.cs">
       <DependentUpon>FormSound.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSink.cs">
+    <Compile Include="Forms\FormSink.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSink.Designer.cs">
+    <Compile Include="Forms\FormSink.Designer.cs">
       <DependentUpon>FormSink.cs</DependentUpon>
     </Compile>
     <Compile Include="Geometry\AnimatedTextureSet.cs" />
@@ -351,10 +351,10 @@
     </Compile>
     <Compile Include="Editor.cs" />
     <Compile Include="Effects.cs" />
-    <Compile Include="FormTrigger.cs">
+    <Compile Include="Forms\FormTrigger.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormTrigger.Designer.cs">
+    <Compile Include="Forms\FormTrigger.Designer.cs">
       <DependentUpon>FormTrigger.cs</DependentUpon>
     </Compile>
     <Compile Include="Geometry\LevelTexture.cs" />
@@ -366,16 +366,16 @@
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAbout.resx">
+    <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormCamera.resx">
+    <EmbeddedResource Include="Forms\FormCamera.resx">
       <DependentUpon>FormCamera.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormImportedGeometry.resx">
+    <EmbeddedResource Include="Forms\FormImportedGeometry.resx">
       <DependentUpon>FormImportedGeometry.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSearch.resx">
+    <EmbeddedResource Include="Forms\FormSearch.resx">
       <DependentUpon>FormSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\Lighting.resx">
@@ -415,44 +415,44 @@
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormChooseRoom.resx">
+    <EmbeddedResource Include="Forms\FormChooseRoom.resx">
       <DependentUpon>FormChooseRoom.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormLevelSettings.resx">
+    <EmbeddedResource Include="Forms\FormLevelSettings.resx">
       <DependentUpon>FormLevelSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormStaticMesh.resx">
+    <EmbeddedResource Include="Forms\FormStaticMesh.resx">
       <DependentUpon>FormStaticMesh.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormOperationDialog.resx">
+    <EmbeddedResource Include="Forms\FormOperationDialog.resx">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormInputBox.resx">
+    <EmbeddedResource Include="Forms\FormInputBox.resx">
       <DependentUpon>FormInputBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormTextureSounds.resx">
+    <EmbeddedResource Include="Forms\FormTextureSounds.resx">
       <DependentUpon>FormTextureSounds.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
+    <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMoveable.resx">
+    <EmbeddedResource Include="Forms\FormMoveable.resx">
       <DependentUpon>FormMoveable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormFlybyCamera.resx">
+    <EmbeddedResource Include="Forms\FormFlybyCamera.resx">
       <DependentUpon>FormFlybyCamera.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAnimatedTextures.resx">
+    <EmbeddedResource Include="Forms\FormAnimatedTextures.resx">
       <DependentUpon>FormAnimatedTextures.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSound.resx">
+    <EmbeddedResource Include="Forms\FormSound.resx">
       <DependentUpon>FormSound.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSink.resx">
+    <EmbeddedResource Include="Forms\FormSink.resx">
       <DependentUpon>FormSink.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormTrigger.resx">
+    <EmbeddedResource Include="Forms\FormTrigger.resx">
       <DependentUpon>FormTrigger.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\RoomOptions.resx">
