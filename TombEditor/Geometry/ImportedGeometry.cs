@@ -84,11 +84,19 @@ namespace TombEditor.Geometry
 
     public struct ImportedGeometryInfo
     {
-        public readonly static ImportedGeometryInfo Default = new ImportedGeometryInfo { Name = "Unnamed", Path = "", Scale = 1 };
+        public readonly static ImportedGeometryInfo Default = new ImportedGeometryInfo { Name = "Unnamed", Path = "", Scale = 1, FlipZ = true, FlipUV_V = true };
 
         public string Name { get; set; }
         public string Path { get; set; }
         public float Scale { get; set; }
+
+        public bool SwapXY { get; set; }
+        public bool SwapXZ { get; set; }
+        public bool SwapYZ { get; set; }
+        public bool FlipX { get; set; }
+        public bool FlipY { get; set; }
+        public bool FlipZ { get; set; }
+        public bool FlipUV_V { get; set; }
     }
 
     public class ImportedGeometry : ICloneable, IEquatable<ImportedGeometry>
@@ -131,10 +139,14 @@ namespace TombEditor.Geometry
                 // Invoke the TombLib geometry import code
                 var settingsIO = new IOGeometrySettings
                 {
-                    WrapUV = true,
-                    FlipV = true,
                     Scale = info.Scale,
-                    PremultiplyUV = true
+                    SwapXY = info.SwapXY,
+                    SwapXZ = info.SwapXZ,
+                    SwapYZ = info.SwapYZ,
+                    FlipX = info.FlipX,
+                    FlipY = info.FlipY,
+                    FlipZ = info.FlipZ,
+                    FlipUV_V = info.FlipUV_V
                 };
                 var importer = new AssimpImporter(settingsIO, (absoluteTexturePath) =>
                 {

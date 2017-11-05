@@ -44,7 +44,7 @@ namespace TombLib.GeometryIO
 
         protected Vector2 ApplyUVTransform(Vector2 uv, int w, int h)
         {
-            if (_settings.FlipV)
+            if (_settings.FlipUV_V)
             {
                 uv.Y = 1.0f - uv.Y;
             }

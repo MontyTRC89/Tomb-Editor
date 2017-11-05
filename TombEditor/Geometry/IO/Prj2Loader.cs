@@ -160,6 +160,21 @@ namespace TombEditor.Geometry.IO
                                 importedGeometryInfo.Name = chunkIO.ReadChunkString(chunkSize3);
                             else if (id3 == Prj2Chunks.ImportedGeometryScale)
                                 importedGeometryInfo.Scale = chunkIO.ReadChunkFloat(chunkSize3);
+                            else if (id3 == Prj2Chunks.ImportedGeometryPosAxisFlags)
+                            {
+                                long flag = chunkIO.ReadChunkLong(chunkSize3);
+                                importedGeometryInfo.SwapXY = (flag & 1) != 0;
+                                importedGeometryInfo.SwapXZ = (flag & 2) != 0;
+                                importedGeometryInfo.SwapYZ = (flag & 4) != 0;
+                                importedGeometryInfo.FlipX = (flag & 8) != 0;
+                                importedGeometryInfo.FlipY = (flag & 16) != 0;
+                                importedGeometryInfo.FlipZ = (flag & 32) != 0;
+                            }
+                            else if (id3 == Prj2Chunks.ImportedGeometryTexAxisFlags)
+                            {
+                                long flag = chunkIO.ReadChunkLong(chunkSize3);
+                                importedGeometryInfo.FlipUV_V = (flag & 4) != 0;
+                            }
                             else
                                 return false;
                             return true;
@@ -411,12 +426,12 @@ namespace TombEditor.Geometry.IO
                                 instance.CodeBits = chunkIO.Raw.ReadByte();
                                 instance.Color = chunkIO.Raw.ReadVector4();
                                 room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                             }
                             else if (id3 == Prj2Chunks.ObjectStatic)
                             {
                                 var instance = new StaticInstance();
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                                 instance.Position = chunkIO.Raw.ReadVector3();
                                 instance.RotationY = chunkIO.Raw.ReadSingle();
                                 instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
@@ -432,7 +447,7 @@ namespace TombEditor.Geometry.IO
                                 instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
                                 instance.Fixed = chunkIO.Raw.ReadBoolean();
                                 room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                             }
                             else if (id3 == Prj2Chunks.ObjectFlyBy)
                             {
@@ -448,7 +463,7 @@ namespace TombEditor.Geometry.IO
                                 instance.Sequence = LEB128.ReadUShort(chunkIO.Raw);
                                 instance.Timer = LEB128.ReadShort(chunkIO.Raw);
                                 room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                             }
                             else if (id3 == Prj2Chunks.ObjectSink)
                             {
@@ -457,7 +472,7 @@ namespace TombEditor.Geometry.IO
                                 instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
                                 instance.Strength = chunkIO.Raw.ReadInt16();
                                 room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                             }
                             else if (id3 == Prj2Chunks.ObjectSoundSource)
                             {
@@ -467,7 +482,7 @@ namespace TombEditor.Geometry.IO
                                 instance.Flags = chunkIO.Raw.ReadInt16();
                                 instance.CodeBits = chunkIO.Raw.ReadByte();
                                 room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                             }
                             else if (id3 == Prj2Chunks.ObjectImportedGeometry)
                             {
@@ -478,7 +493,7 @@ namespace TombEditor.Geometry.IO
                                 instance.Scale = chunkIO.Raw.ReadSingle();
                                 instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
                                 room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                             }
                             else if (id3 == Prj2Chunks.ObjectLight)
                             {
@@ -496,7 +511,7 @@ namespace TombEditor.Geometry.IO
                                 instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
                                 instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
                                 room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                             }
                             else if (id3 == Prj2Chunks.ObjectPortal)
                             {
@@ -511,7 +526,7 @@ namespace TombEditor.Geometry.IO
                                 roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, (adjoiningRoom) => instance.AdjoiningRoom = adjoiningRoom ?? room));
 
                                 room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                             }
                             else if (id3 == Prj2Chunks.ObjectTrigger)
                             {
@@ -527,7 +542,7 @@ namespace TombEditor.Geometry.IO
                                 objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, (targetObj) => instance.TargetObj = targetObj));
 
                                 room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.Add(objectID, instance);
+                                newObjects.TryAdd(objectID, instance);
                             }
                             else
                                 return false;
@@ -587,6 +602,12 @@ namespace TombEditor.Geometry.IO
                 return ushort.MaxValue;
             else
                 return (ushort)read;
+        }
+
+        private static void TryAdd<K, T>(this Dictionary<K, T> this_, K key, T value)
+        {
+            if (!this_.ContainsKey(key))
+                this_.Add(key, value);
         }
     }
 }

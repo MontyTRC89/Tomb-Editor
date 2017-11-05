@@ -2036,13 +2036,7 @@ namespace TombEditor
 
                 if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
                 {
-                    IOGeometrySettings settings = new IOGeometrySettings
-                    {
-                        FlipV = true,
-                        FlipZ = true,
-                        PremultiplyUV = true,
-                        Scale = 1024.0f
-                    };
+                    IOGeometrySettings settings = new IOGeometrySettings();
                     BaseGeometryExporter.GetTextureDelegate getTextureCallback = (texture) =>
                     {
                         if (texture is LevelTexture)
