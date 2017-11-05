@@ -1,4 +1,5 @@
 ﻿using Assimp;
+using NLog;
 using SharpDX;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace TombLib.GeometryIO.Importers
 {
     public class AssimpImporter : BaseGeometryImporter
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public AssimpImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
             : base(settings, getTextureCallback)
         {
@@ -53,7 +56,10 @@ namespace TombLib.GeometryIO.Importers
 
                 Texture faceTexture;
                 if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
+                {
+                    logger.Warn("Mesh '" + (mesh.Name ?? "") + "' does have material index " + mesh.MaterialIndex + " which can't be found.");
                     continue;
+                }
                 var hasTexCoords = mesh.HasTextureCoords(0);
                 var hasColors = mesh.HasVertexColors(0);
 
