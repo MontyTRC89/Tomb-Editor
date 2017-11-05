@@ -108,7 +108,6 @@
     <Compile Include="GeometryIO\IOMesh.cs" />
     <Compile Include="GeometryIO\IOModel.cs" />
     <Compile Include="GeometryIO\IOPolygon.cs" />
-    <Compile Include="GeometryIO\IOTexture.cs" />
     <Compile Include="Graphics\Animation.cs" />
     <Compile Include="Graphics\AnimDispatch.cs" />
     <Compile Include="Graphics\ArcBallCamera.cs" />
@@ -160,6 +159,7 @@
     <Compile Include="Utils\Collision.cs" />
     <Compile Include="Utils\MathUtilsEx.cs" />
     <Compile Include="Utils\ConservativeRasterizer.cs" />
+    <Compile Include="Utils\PathC.cs" />
     <Compile Include="Utils\PolygonFunctions.cs" />
     <Compile Include="Utils\RectPacker.cs" />
     <Compile Include="Utils\Texture.cs" />

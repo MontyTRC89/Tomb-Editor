@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO
 {
     public class IOModel
     {
         public List<IOMesh> Meshes { get; private set; } = new List<IOMesh>();
-        public List<IOTexture> Textures { get; private set; } = new List<IOTexture>();
+        public List<Texture> Textures { get; private set; } = new List<Texture>();
 
         public BoundingBox BoundingBox
         {

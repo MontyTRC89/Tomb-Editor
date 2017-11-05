@@ -116,95 +116,6 @@ namespace TombEditor.Geometry
         public Model DirectXModel { get; private set; } = null;
         public List<ImportedGeometryTexture> Textures { get; private set; } = new List<ImportedGeometryTexture>();
 
-        /*public void Update2(LevelSettings settings, Dictionary<string, Texture> absolutePathTextureLookup, ImportedGeometryInfo info)
-        {
-            Info = info;
-            LoadException = null;
-            DirectXModel = null;
-            Textures.Clear();
-
-            try
-            {
-                // Use Assimp.NET for importing model
-                AssimpContext context = new AssimpContext();
-                string importedGeometryPath = settings.MakeAbsolute(info.Path);
-                Scene scene = context.ImportFile(importedGeometryPath, PostProcessPreset.TargetRealTimeMaximumQuality);
-                string importedGeometryDirectory = Path.GetDirectoryName(importedGeometryPath);
-
-                // Create a new static model
-                DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
-
-                Vector3 minVertex = new Vector3(float.MaxValue);
-                Vector3 maxVertex = new Vector3(float.MinValue);
-
-                // Loop for each mesh loaded in scene
-                foreach (var mesh in scene.Meshes)
-                {
-                    ImportedGeometryMesh modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, "Imported");
-
-                    //if mesh has a material extract the diffuse texture, if present
-                    Assimp.Material material = scene.Materials[mesh.MaterialIndex];
-                    if (material != null && material.HasTextureDiffuse)
-                        modelMesh.Texture = GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, material.TextureDiffuse.FilePath);
-
-                    // Determine primitive type (should be always triangle)
-                    if (mesh.PrimitiveType != Assimp.PrimitiveType.Triangle)
-                    {
-                        logger.Info("The imported model contains " + mesh.PrimitiveType + " primitives! Everything except triangles is ignored.");
-                        continue;
-                    }
-
-                    // Prepare DirectX data for this mesh
-                    List<Vector3D> positions = mesh.Vertices;
-                    List<Vector3D> texCoords = mesh.TextureCoordinateChannels[0];
-                    bool hasTexCoords = mesh.HasTextureCoords(0);
-                    for (int i = 0; i < mesh.VertexCount; i++)
-                    {
-                        ImportedGeometryVertex v = new ImportedGeometryVertex();
-
-                        v.Position = new Vector3(positions[i].X, positions[i].Y, -positions[i].Z) * info.Scale;
-                        minVertex = Vector3.Min(minVertex, v.Position);
-                        maxVertex = Vector3.Max(maxVertex, v.Position);
-
-                        if (hasTexCoords)
-                        {
-                            v.UV = new Vector2(texCoords[i].X, 1.0f - texCoords[i].Y);
-
-                            // HACK: maybe something better can be done, but for now it works
-                            if (v.UV.X > 1.0f) v.UV.X -= 1.0f;
-                            if (v.UV.Y > 1.0f) v.UV.Y -= 1.0f;
-                            if (v.UV.X < 0.0f) v.UV.X += 1.0f;
-                            if (v.UV.Y < 0.0f) v.UV.Y += 1.0f;
-
-                            if (modelMesh.Texture?.IsAvailable ?? false)
-                                v.UV *= modelMesh.Texture.Image.Size;
-                        }
-
-                        modelMesh.Vertices.Add(v);
-                    }
-
-                    modelMesh.Indices.AddRange(mesh.GetIndices());
-                    modelMesh.BuildBuffers();
-
-                    // Add mesh to the model
-                    DirectXModel.Meshes.Add(modelMesh);
-                }
-
-                // Set the bounding box
-                DirectXModel.BoundingBox = new BoundingBox(minVertex, maxVertex);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception exc)
-            {
-                LoadException = exc;
-                DirectXModel = null;
-                logger.Warn(exc, "Unable to load model \"" + info.Name + "\" from \"" + info.Path + "\" because an exception occurred during loading.");
-            }
-        }*/
-
         public void Update(LevelSettings settings, Dictionary<string, Texture> absolutePathTextureLookup, ImportedGeometryInfo info)
         {
             Info = info;
@@ -214,29 +125,26 @@ namespace TombEditor.Geometry
 
             try
             {
-                var importedGeometryPath = settings.MakeAbsolute(info.Path);
+                string importedGeometryPath = settings.MakeAbsolute(info.Path);
+                string importedGeometryDirectory = Path.GetDirectoryName(importedGeometryPath);
+
+                // Invoke the TombLib geometry import code
                 var settingsIO = new IOGeometrySettings
                 {
-                    ClampUV = true,
+                    WrapUV = true,
                     FlipV = true,
                     Scale = info.Scale,
                     PremultiplyUV = true
                 };
-                var importer = new AssimpImporter(settingsIO);
+                var importer = new AssimpImporter(settingsIO, (absoluteTexturePath) =>
+                {
+                    return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
+                });
                 var tmpModel = importer.ImportFromFile(importedGeometryPath);
-                var importedGeometryDirectory = Path.GetDirectoryName(importedGeometryPath);
 
                 // Create a new static model
                 DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
                 DirectXModel.BoundingBox = tmpModel.BoundingBox;
-
-                var tmpTextures = new Dictionary<IOTexture, Texture>();
-
-                foreach (var text in tmpModel.Textures)
-                {
-                    var texture = GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, text.Name);
-                    tmpTextures.Add(text, texture);
-                }
 
                 // Loop for each mesh loaded in scene
                 foreach (var mesh in tmpModel.Meshes)
@@ -272,7 +180,7 @@ namespace TombEditor.Geometry
                         }
                     }
 
-                    modelMesh.Texture = tmpTextures[mesh.Texture];
+                    modelMesh.Texture = mesh.Texture;
                     modelMesh.BuildBuffers();
 
                     // Add mesh to the model

@@ -16,7 +16,7 @@ namespace TombLib.GeometryIO
         public bool FlipZ { get; set; } = false;
         public bool FlipV { get; set; } = false;
         public float Scale { get; set; } = 1.0f;
-        public bool ClampUV { get; set; } = true;
+        public bool WrapUV { get; set; } = true;
         public bool PremultiplyUV { get; set; } = true;
     }
 }

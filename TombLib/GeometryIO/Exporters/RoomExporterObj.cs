@@ -5,13 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
     public class RoomExporterObj : BaseGeometryExporter
     {
-        public RoomExporterObj(IOGeometrySettings settings)
-            : base(settings)
+        public RoomExporterObj(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+            : base(settings, getTexturePathCallback)
         {
 
         }
@@ -41,7 +42,7 @@ namespace TombLib.GeometryIO.Exporters
                 // Save UVs
                 foreach (var uv in mesh.UV)
                 {
-                    var newUV = ApplyUVTransform(uv, mesh.Texture.Width, mesh.Texture.Height);
+                    var newUV = ApplyUVTransform(uv, mesh.Texture.Image.Width, mesh.Texture.Image.Height);
                     writer.WriteLine("vt " + newUV.X.ToString(CultureInfo.InvariantCulture) + " " +
                                              newUV.Y.ToString(CultureInfo.InvariantCulture));
                 }
@@ -75,7 +76,7 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("Ni 1.000000");
                 writer.WriteLine("d 1.000000");
                 writer.WriteLine("illum 2");
-                writer.WriteLine("map_Kd " + mesh.Texture.Name);
+                writer.WriteLine("map_Kd " + GetTexturePath(path, mesh.Texture));
             }
 
             return true;
