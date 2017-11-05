@@ -2036,52 +2036,37 @@ namespace TombEditor
 
                 if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
                 {
+                    IOGeometrySettings settings = new IOGeometrySettings
+                    {
+                        FlipV = true,
+                        FlipZ = true,
+                        PremultiplyUV = true,
+                        Scale = 1024.0f
+                    };
+                    BaseGeometryExporter.GetTextureDelegate getTextureCallback = (texture) =>
+                    {
+                        if (texture is LevelTexture)
+                            return _editor.Level.Settings.MakeAbsolute(((LevelTexture)texture).Path);
+                        else
+                            return "";
+                    };
+
                     string resultingExtension = Path.GetExtension(saveFileDialog.FileName);
                     BaseGeometryExporter exporter;
-                    IOGeometrySettings settings;
-
-                    switch (resultingExtension)
+                    switch (resultingExtension.ToLowerInvariant())
                     {
                         default:
                         case ".obj":
-                            settings = new IOGeometrySettings
-                            {
-                                FlipV = true,
-                                FlipZ = true,
-                                PremultiplyUV = true,
-                                Scale = 1024.0f
-                            };
-                            exporter = new RoomExporterObj(settings);
+                            exporter = new RoomExporterObj(settings, getTextureCallback);
                             break;
                         case ".mqo":
-                            settings = new IOGeometrySettings
-                            {
-                                FlipV = true,
-                                FlipZ = true,
-                                PremultiplyUV = true,
-                                Scale = 1024.0f
-                            };
-                            exporter = new RoomExporterMetasequoia(settings);
+                            exporter = new RoomExporterMetasequoia(settings, getTextureCallback);
                             break;
                         case ".ply":
-                            settings = new IOGeometrySettings
-                            {
-                                FlipV = true,
-                                SwapYZ = true,
-                                PremultiplyUV = true,
-                                Scale = 1024.0f
-                            };
-                            exporter = new RoomExporterPly(settings);
+                            exporter = new RoomExporterPly(settings, getTextureCallback);
                             break;
                         case ".dae":
-                            settings = new IOGeometrySettings
-                            {
-                                FlipV = true,
-                                FlipZ = true,
-                                PremultiplyUV = true,
-                                Scale = 1024.0f
-                            };
-                            exporter = new RoomExporterCollada(settings);
+                            exporter = new RoomExporterCollada(settings, getTextureCallback);
                             break;
                     }
 
@@ -2116,9 +2101,7 @@ namespace TombEditor
                         }
                     }
 
-                    mesh.Texture = new IOTexture(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.Textures[0].Path),
-                                                 _editor.Level.Settings.Textures[0].Image.Width,
-                                                 _editor.Level.Settings.Textures[0].Image.Height);
+                    mesh.Texture = _editor.Level.Settings.Textures[0];
                     model.Meshes.Add(mesh);
 
                     if (exporter.ExportToFile(model, saveFileDialog.FileName))

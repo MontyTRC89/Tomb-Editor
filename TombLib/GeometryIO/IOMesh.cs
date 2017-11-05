@@ -15,7 +15,7 @@ namespace TombLib.GeometryIO
         public List<Vector2> UV { get; private set; } = new List<Vector2>();
         public List<Vector4> Colors { get; private set; } = new List<Vector4>();
         public List<IOPolygon> Polygons { get; private set; } = new List<IOPolygon>();
-        public IOTexture Texture { get; set; }
+        public Texture Texture { get; set; }
 
         public int NumQuads
         {

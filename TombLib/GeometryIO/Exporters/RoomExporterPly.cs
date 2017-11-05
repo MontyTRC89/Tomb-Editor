@@ -5,13 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
     public class RoomExporterPly : BaseGeometryExporter
     {
-        public RoomExporterPly(IOGeometrySettings settings)
-            : base(settings)
+        public RoomExporterPly(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+            : base(settings, getTexturePathCallback)
         {
 
         }
@@ -28,7 +29,7 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("ply");
                 writer.WriteLine("format ascii 1.0");
                 writer.WriteLine("comment Created by Tomb Editor");
-                writer.WriteLine("comment TextureFile " + mesh.Texture.Name);
+                writer.WriteLine("comment TextureFile " + GetTexturePath(path, mesh.Texture));
                 writer.WriteLine("element vertex " + mesh.Positions.Count);
                 writer.WriteLine("property float x");
                 writer.WriteLine("property float y");
@@ -50,7 +51,7 @@ namespace TombLib.GeometryIO.Exporters
                                  position.Y.ToString(CultureInfo.InvariantCulture) + " " +
                                  position.Z.ToString(CultureInfo.InvariantCulture) + " ");
 
-                    var uv = ApplyUVTransform(mesh.UV[i], mesh.Texture.Width, mesh.Texture.Height);
+                    var uv = ApplyUVTransform(mesh.UV[i], mesh.Texture.Image.Width, mesh.Texture.Image.Height);
                     writer.Write(uv.X.ToString(CultureInfo.InvariantCulture) + " " +
                                  uv.Y.ToString(CultureInfo.InvariantCulture) + " ");
 

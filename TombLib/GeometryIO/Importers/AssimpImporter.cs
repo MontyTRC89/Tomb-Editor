@@ -2,6 +2,7 @@
 using SharpDX;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,20 +12,22 @@ namespace TombLib.GeometryIO.Importers
 {
     public class AssimpImporter : BaseGeometryImporter
     {
-        public AssimpImporter(IOGeometrySettings settings)
-            : base (settings)
+        public AssimpImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
+            : base(settings, getTextureCallback)
         {
 
         }
 
         public override IOModel ImportFromFile(string filename)
         {
+            string path = Path.GetDirectoryName(filename);
+
             // Use Assimp.NET for importing model
             AssimpContext context = new AssimpContext();
             Scene scene = context.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality);
 
             var newModel = new IOModel();
-            var textures = new Dictionary<int, IOTexture>();
+            var textures = new Dictionary<int, Texture>();
 
             // Create the list of textures to load
             for (int i = 0; i < scene.Materials.Count; i++)
@@ -32,21 +35,10 @@ namespace TombLib.GeometryIO.Importers
                 var mat = scene.Materials[i];
 
                 var diffusePath = (mat.HasTextureDiffuse ? mat.TextureDiffuse.FilePath : null);
-                if (diffusePath == null || diffusePath == "") continue;
+                if (string.IsNullOrWhiteSpace(diffusePath))
+                    continue;
 
-                var found = false;
-                for (var j = 0; j < textures.Count; j++)
-                    if (textures.ElementAt(j).Value.Name == diffusePath)
-                    {
-                        found = true;
-                        break;
-                    }
-
-                if (!found)
-                {
-                    var img = ImageC.FromFile(diffusePath);
-                    textures.Add(i, new IOTexture(diffusePath, img.Width, img.Height));
-                }
+                textures.Add(i, GetTexture(path, diffusePath));
             }
 
             foreach (var text in textures)
@@ -59,8 +51,9 @@ namespace TombLib.GeometryIO.Importers
             {
                 var newMesh = new IOMesh();
 
-                if (!textures.ContainsKey(mesh.MaterialIndex)) continue;
-                var faceTexture = textures[mesh.MaterialIndex];
+                Texture faceTexture;
+                if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
+                    continue;
                 var hasTexCoords = mesh.HasTextureCoords(0);
                 var hasColors = mesh.HasVertexColors(0);
 
@@ -80,7 +73,7 @@ namespace TombLib.GeometryIO.Importers
 
                     // Create UV
                     var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);
-                    currentUV = ApplyUVTransform(currentUV, faceTexture.Width, faceTexture.Height);
+                    currentUV = ApplyUVTransform(currentUV, faceTexture.Image.Width, faceTexture.Image.Height);
                     newMesh.UV.Add(currentUV);
 
                     // Create colors

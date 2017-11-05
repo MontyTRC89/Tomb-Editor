@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace TombEditor.Geometry
 {
+    using TombLib.Utils;
     using TombLib.Wad;
     using ImportedGeometryUpdateInfo = KeyValuePair<ImportedGeometry, ImportedGeometryInfo>;
 
@@ -193,7 +194,7 @@ namespace TombEditor.Geometry
                     case VariableType.EditorDirectory:
                     case VariableType.GameDirectory:
                     case VariableType.LevelDirectory:
-                        string relativePath = Utils.GetRelativePath(GetVariable(baseDirType), path);
+                        string relativePath = PathC.GetRelativePath(GetVariable(baseDirType), path);
                         if (relativePath == null)
                             return Path.GetFullPath(path);
                         return VariableCreate(baseDirType) + Path.DirectorySeparatorChar + relativePath;

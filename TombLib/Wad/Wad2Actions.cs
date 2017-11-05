@@ -808,24 +808,21 @@ namespace TombLib.Wad
             // Import the model
             var settings = new IOGeometrySettings
             {
-                ClampUV = true,
+                WrapUV = true,
                 FlipV = true,
                 PremultiplyUV = true,
                 Scale = scale
             };
-            var importer = new AssimpImporter(settings);
-            var tmpModel = importer.ImportFromFile(fileName);
-
-            // Load textures
-            var tmpTextures = new Dictionary<IOTexture, WadTexture>();
-            foreach (var tmpTexture in tmpModel.Textures)
+            var importer = new AssimpImporter(settings, (absoluteTexturePath) =>
             {
                 var texture = new WadTexture();
-                texture.Image = ImageC.FromFile(tmpTexture.Name);
+                texture.Image = ImageC.FromFile(absoluteTexturePath);
                 texture.UpdateHash();
-                if (!Textures.ContainsKey(texture.Hash)) Textures.Add(texture.Hash, texture);
-                tmpTextures.Add(tmpTexture, Textures[texture.Hash]);
-            }
+                if (!Textures.ContainsKey(texture.Hash))
+                    Textures.Add(texture.Hash, texture);
+                return texture;
+            });
+            var tmpModel = importer.ImportFromFile(fileName);
 
             // Create a new mesh (all meshes from model will be joined)
             var mesh = new WadMesh();
@@ -850,7 +847,7 @@ namespace TombLib.Wad
                         area.TexCoord1 = tmpPoly.UV[1];
                         area.TexCoord2 = tmpPoly.UV[2];
                         area.TexCoord3 = tmpPoly.UV[3];
-                        area.Texture = tmpTextures[tmpMesh.Texture];
+                        area.Texture = tmpMesh.Texture;
                         poly.Texture = area;
 
                         mesh.Polys.Add(poly);
@@ -866,7 +863,7 @@ namespace TombLib.Wad
                         area.TexCoord0 = tmpPoly.UV[0];
                         area.TexCoord1 = tmpPoly.UV[1];
                         area.TexCoord2 = tmpPoly.UV[2];
-                        area.Texture = tmpTextures[tmpMesh.Texture];
+                        area.Texture = tmpMesh.Texture;
                         poly.Texture = area;
 
                         mesh.Polys.Add(poly);
@@ -877,9 +874,10 @@ namespace TombLib.Wad
             }
 
             mesh.UpdateHash();
-            if (!Meshes.ContainsKey(mesh.Hash)) Meshes.Add(mesh.Hash, mesh);
+            if (!Meshes.ContainsKey(mesh.Hash))
+                Meshes.Add(mesh.Hash, mesh);
             mesh = Meshes[mesh.Hash];
-            
+
             return Meshes[mesh.Hash];
         }
 
@@ -1022,7 +1020,7 @@ namespace TombLib.Wad
             foreach (var oldVertex in mesh.VerticesPositions)
             {
                 var transformedVertex = Vector3.Transform(oldVertex, transform);
-                
+
                 if (transformedVertex.X < xMin)
                     xMin = transformedVertex.X;
                 if (transformedVertex.Y < yMin)
