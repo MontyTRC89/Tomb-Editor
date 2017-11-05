@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using TombLib.GeometryIO;
+using TombLib.GeometryIO.Importers;
 using TombLib.Graphics;
 using TombLib.Utils;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
@@ -115,7 +117,7 @@ namespace TombEditor.Geometry
         public Model DirectXModel { get; private set; } = null;
         public List<ImportedGeometryTexture> Textures { get; private set; } = new List<ImportedGeometryTexture>();
 
-        public void Update(LevelSettings settings, Dictionary<string, Texture> absolutePathTextureLookup, ImportedGeometryInfo info)
+        /*public void Update2(LevelSettings settings, Dictionary<string, Texture> absolutePathTextureLookup, ImportedGeometryInfo info)
         {
             Info = info;
             LoadException = null;
@@ -191,6 +193,92 @@ namespace TombEditor.Geometry
 
                 // Set the bounding box
                 DirectXModel.BoundingBox = new BoundingBox(minVertex, maxVertex);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception exc)
+            {
+                LoadException = exc;
+                DirectXModel = null;
+                logger.Warn(exc, "Unable to load model \"" + info.Name + "\" from \"" + info.Path + "\" because an exception occurred during loading.");
+            }
+        }*/
+
+        public void Update(LevelSettings settings, Dictionary<string, Texture> absolutePathTextureLookup, ImportedGeometryInfo info)
+        {
+            Info = info;
+            LoadException = null;
+            DirectXModel = null;
+            Textures.Clear();
+
+            try
+            {
+                var importedGeometryPath = settings.MakeAbsolute(info.Path);
+                var settingsIO = new IOGeometrySettings
+                {
+                    ClampUV = true,
+                    FlipV = true,
+                    Scale = info.Scale,
+                    PremultiplyUV = true
+                };
+                var importer = new AssimpImporter(settingsIO);
+                var tmpModel = importer.ImportFromFile(importedGeometryPath);
+                var importedGeometryDirectory = Path.GetDirectoryName(importedGeometryPath);
+
+                // Create a new static model
+                DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
+                DirectXModel.BoundingBox = tmpModel.BoundingBox;
+
+                var tmpTextures = new Dictionary<IOTexture, Texture>();
+
+                foreach (var text in tmpModel.Textures)
+                {
+                    var texture = GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, text.Name);
+                    tmpTextures.Add(text, texture);
+                }
+
+                // Loop for each mesh loaded in scene
+                foreach (var mesh in tmpModel.Meshes)
+                {
+                    ImportedGeometryMesh modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, "Imported");
+
+                    var currentIndex = 0;
+                    foreach (var tmpPoly in mesh.Polygons)
+                    {
+                        if (tmpPoly.Shape == IOPolygonShape.Quad)
+                        {
+                            for (var i = 0; i < 4; i++)
+                            {
+                                var vertex = new ImportedGeometryVertex();
+                                vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                vertex.UV = mesh.UV[tmpPoly.Indices[i]];
+                                modelMesh.Vertices.Add(vertex);
+                                modelMesh.Indices.Add(currentIndex);
+                                currentIndex++;
+                            }
+                        }
+                        else
+                        {
+                            for (var i = 0; i < 3; i++)
+                            {
+                                var vertex = new ImportedGeometryVertex();
+                                vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                vertex.UV = mesh.UV[tmpPoly.Indices[i]];
+                                modelMesh.Vertices.Add(vertex);
+                                modelMesh.Indices.Add(currentIndex);
+                                currentIndex++;
+                            }
+                        }
+                    }
+
+                    modelMesh.Texture = tmpTextures[mesh.Texture];
+                    modelMesh.BuildBuffers();
+
+                    // Add mesh to the model
+                    DirectXModel.Meshes.Add(modelMesh);
+                }
             }
             catch (OperationCanceledException)
             {

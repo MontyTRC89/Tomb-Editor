@@ -127,6 +127,7 @@ namespace TombEditor.Controls
 
         private void UpdateEnable()
         {
+            Parent.Enabled = DataGridView != null;
             butNew.Enabled = DataGridView != null;
             butUp.Enabled = DataGridView != null && DataGridView.SelectedRows.Count > 0;
             butDown.Enabled = DataGridView != null && DataGridView.SelectedRows.Count > 0;

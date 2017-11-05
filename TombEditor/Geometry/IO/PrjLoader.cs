@@ -60,6 +60,7 @@ namespace TombEditor.Geometry.IO
             public Rectangle _area;
             public PortalDirection _direction;
             public short _thisRoomIndex;
+            public short _loopRoomIndex;
             public short _oppositePortalId;
         }
 
@@ -214,7 +215,8 @@ namespace TombEditor.Geometry.IO
                                 _area = GetArea(room, 0, portalX, portalZ, portalXBlocks, portalZBlocks),
                                 _direction = directionEnum,
                                 _thisRoomIndex = thisRoomIndex,
-                                _oppositePortalId = portalOppositeSlot
+                                _oppositePortalId = portalOppositeSlot,
+                                _loopRoomIndex = (short)i
                             });
                         }
 
@@ -734,8 +736,26 @@ namespace TombEditor.Geometry.IO
                     }
                     progressReporter.ReportProgress(30, "Rooms loaded");
 
+                    // Link flip rooms
+                    progressReporter.ReportProgress(31, "Link flip rooms");
+                    foreach (var tempRoom in tempRooms)
+                    {
+                        Room room = level.Rooms[tempRoom.Key];
+
+                        if (tempRoom.Value._flipRoom != -1)
+                        {
+                            Room alternateRoom = level.Rooms[tempRoom.Value._flipRoom];
+
+                            room.AlternateRoom = alternateRoom;
+                            room.AlternateGroup = tempRoom.Value._flipGroup;
+                            alternateRoom.AlternateBaseRoom = room;
+                            alternateRoom.AlternateGroup = tempRoom.Value._flipGroup;
+                            alternateRoom.Position = new Vector3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
+                        }
+                    }
+
                     // Link portals
-                    progressReporter.ReportProgress(31, "Link portals");
+                    progressReporter.ReportProgress(32, "Link portals");
                     foreach (var tempRoom in tempRooms)
                     {
                         Room room = level.Rooms[tempRoom.Key];
@@ -749,6 +769,7 @@ namespace TombEditor.Geometry.IO
                                 progressReporter.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
                                 continue;
                             }
+
                             Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
                             PortalInstance portal = new PortalInstance(prjPortal._area, prjPortal._direction, adjoiningRoom);
 
@@ -808,7 +829,7 @@ namespace TombEditor.Geometry.IO
                         }
                     }
 
-                    progressReporter.ReportProgress(32, "Portals linked");
+                    progressReporter.ReportProgress(35, "Portals linked");
 
                     // Link triggers
                     {
@@ -853,24 +874,6 @@ namespace TombEditor.Geometry.IO
                                         break;
                                 }
                         progressReporter.ReportProgress(35, "Triggers linked");
-                    }
-
-                    // Link flip rooms
-                    progressReporter.ReportProgress(37, "Link flip rooms");
-                    foreach (var tempRoom in tempRooms)
-                    {
-                        Room room = level.Rooms[tempRoom.Key];
-
-                        if (tempRoom.Value._flipRoom != -1)
-                        {
-                            Room alternateRoom = level.Rooms[tempRoom.Value._flipRoom];
-
-                            room.AlternateRoom = alternateRoom;
-                            room.AlternateGroup = tempRoom.Value._flipGroup;
-                            alternateRoom.AlternateBaseRoom = room;
-                            alternateRoom.AlternateGroup = tempRoom.Value._flipGroup;
-                            alternateRoom.Position = new Vector3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
-                        }
                     }
 
                     // Transform the no collision tiles into the ForceFloorSolid option.

@@ -228,7 +228,7 @@ namespace TombEditor.Compilers
                                 Position = new tr_vertex
                                 {
                                     X = (short)(position.X),
-                                    Y = (short)-(position.Y),
+                                    Y = (short)-(position.Y + room.WorldPos.Y),
                                     Z = (short)(position.Z)
                                 },
                                 Lighting1 = 0,
