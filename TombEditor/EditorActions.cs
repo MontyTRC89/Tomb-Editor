@@ -16,10 +16,20 @@ using System.IO;
 using Assimp;
 using SharpDX.Toolkit.Graphics;
 using System.Globalization;
-using TombEditor.Geometry.Exporters;
+using TombLib.GeometryIO;
+using TombLib.GeometryIO.Exporters;
 
 namespace TombEditor
 {
+    public enum RoomImportExportFormat
+    {
+        Obj,
+        Metasequoia,
+        Fbx,
+        Ply,
+        Collada
+    }
+
     public static class EditorActions
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -2325,29 +2335,92 @@ namespace TombEditor
 
                 if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
                 {
-                    RoomImportExportFormat format;
-
                     string resultingExtension = Path.GetExtension(saveFileDialog.FileName);
+                    BaseGeometryExporter exporter;
+                    IOGeometrySettings settings;
 
                     switch (resultingExtension)
                     {
                         default:
                         case ".obj":
-                            format = RoomImportExportFormat.Obj;
+                            settings = new IOGeometrySettings
+                            {
+                                FlipV = true,
+                                FlipZ = true,
+                                PremultiplyUV = true,
+                                Scale = 1024.0f
+                            };
+                            exporter = new RoomExporterObj(settings);
                             break;
                         case ".mqo":
-                            format = RoomImportExportFormat.Metasequoia;
-                            break;
-                        case ".fbx":
-                            format = RoomImportExportFormat.Fbx;
+                            settings = new IOGeometrySettings
+                            {
+                                FlipV = true,
+                                FlipZ = true,
+                                PremultiplyUV = true,
+                                Scale = 1024.0f
+                            };
+                            exporter = new RoomExporterMetasequoia(settings);
                             break;
                         case ".ply":
-                            format = RoomImportExportFormat.Ply;
+                            settings = new IOGeometrySettings
+                            {
+                                FlipV = true,
+                                SwapYZ = true,
+                                PremultiplyUV = true,
+                                Scale = 1024.0f
+                            };
+                            exporter = new RoomExporterPly(settings);
+                            break;
+                        case ".dae":
+                            settings = new IOGeometrySettings
+                            {
+                                FlipV = true,
+                                FlipZ = true,
+                                PremultiplyUV = true,
+                                Scale = 1024.0f
+                            };
+                            exporter = new RoomExporterCollada(settings);
                             break;
                     }
 
-                    var exporter = BaseRoomExporter.GetExporter(format);
-                    if (exporter.ExportToFile(_editor.SelectedRoom, saveFileDialog.FileName))
+                    // Prepare data for export
+                    var model = new IOModel();
+                    var mesh = new IOMesh();
+                    var room = _editor.SelectedRoom;
+
+                    var vertices = room.GetRoomVertices();
+                    for (var i = 0; i < vertices.Count; i++)
+                    {
+                        mesh.Positions.Add(vertices[i].Position);
+                        mesh.UV.Add(vertices[i].UV);
+                        mesh.Colors.Add(vertices[i].FaceColor);
+                    }
+
+                    for (var z = 0; z < room.NumZSectors; z++)
+                    {
+                        for (var x = 0; x < room.NumXSectors; x++)
+                        {
+                            for (var f = 0; f < 29; f++)
+                            {
+                                if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
+                                    !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
+                                {
+                                    var indices = room.GetFaceIndices(x, z, (BlockFace)f);
+                                    var poly = new IOPolygon(indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
+                                    poly.Indices.AddRange(indices);
+                                    mesh.Polygons.Add(poly);
+                                }
+                            }
+                        }
+                    }
+
+                    mesh.Texture = new IOTexture(_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.Textures[0].Path),
+                                                 _editor.Level.Settings.Textures[0].Image.Width,
+                                                 _editor.Level.Settings.Textures[0].Image.Height);
+                    model.Meshes.Add(mesh);
+
+                    if (exporter.ExportToFile(model, saveFileDialog.FileName))
                     {
                         DarkMessageBox.Show(owner, "Room exported correctly", "Information", MessageBoxButtons.OK,
                                         MessageBoxIcon.Information);

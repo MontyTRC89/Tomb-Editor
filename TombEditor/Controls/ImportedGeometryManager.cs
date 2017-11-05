@@ -84,8 +84,8 @@ namespace TombEditor.Controls
             _wrongColor = dataGridView.BackColor.MixWith(Color.DarkRed, 0.55);
 
             // Initialize sound path data grid view
-            dataGridView.DataSource = _dataGridViewDataSource;
             dataGridViewControls.DataGridView = dataGridView;
+            dataGridViewControls.Enabled = true;                
             dataGridViewControls.CreateNewRow = delegate
                 {
                     string path = BrowseFile(null);
@@ -101,6 +101,7 @@ namespace TombEditor.Controls
                     LevelSettings.ImportedGeometries.Add(newObject);
                     return new ImportedGeometryWrapper(this, newObject);
                 };
+            dataGridView.DataSource = _dataGridViewDataSource;
             dataGridViewControls.DeleteRowCheckIfCancel = MessageUserAboutHimDeletingRows;
             _dataGridViewDataSource.ListChanged += delegate (object sender, ListChangedEventArgs e)
                 {

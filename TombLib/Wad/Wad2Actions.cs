@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.GeometryIO;
+using TombLib.GeometryIO.Importers;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
@@ -801,7 +803,87 @@ namespace TombLib.Wad
             PrepareDataForDirectX();
         }
 
-        public WadMesh ImportWadMeshFromExternalModel(string fileName, float scale = 1000.0f)
+        public WadMesh ImportWadMeshFromExternalModel(string fileName, float scale = 1.0f)
+        {
+            // Import the model
+            var settings = new IOGeometrySettings
+            {
+                ClampUV = true,
+                FlipV = true,
+                PremultiplyUV = true,
+                Scale = scale
+            };
+            var importer = new AssimpImporter(settings);
+            var tmpModel = importer.ImportFromFile(fileName);
+
+            // Load textures
+            var tmpTextures = new Dictionary<IOTexture, WadTexture>();
+            foreach (var tmpTexture in tmpModel.Textures)
+            {
+                var texture = new WadTexture();
+                texture.Image = ImageC.FromFile(tmpTexture.Name);
+                texture.UpdateHash();
+                if (!Textures.ContainsKey(texture.Hash)) Textures.Add(texture.Hash, texture);
+                tmpTextures.Add(tmpTexture, Textures[texture.Hash]);
+            }
+
+            // Create a new mesh (all meshes from model will be joined)
+            var mesh = new WadMesh();
+            mesh.BoundingBox = tmpModel.BoundingBox;
+            mesh.BoundingSphere = tmpModel.BoundingSphere;
+
+            var lastBaseVertex = 0;
+            foreach (var tmpMesh in tmpModel.Meshes)
+            {
+                mesh.VerticesPositions.AddRange(tmpMesh.Positions);
+                foreach (var tmpPoly in tmpMesh.Polygons)
+                {
+                    if (tmpPoly.Shape == IOPolygonShape.Quad)
+                    {
+                        var poly = new WadPolygon(WadPolygonShape.Quad);
+
+                        foreach (var index in tmpPoly.Indices)
+                            poly.Indices.Add(index + lastBaseVertex);
+
+                        var area = new TextureArea();
+                        area.TexCoord0 = tmpPoly.UV[0];
+                        area.TexCoord1 = tmpPoly.UV[1];
+                        area.TexCoord2 = tmpPoly.UV[2];
+                        area.TexCoord3 = tmpPoly.UV[3];
+                        area.Texture = tmpTextures[tmpMesh.Texture];
+                        poly.Texture = area;
+
+                        mesh.Polys.Add(poly);
+                    }
+                    else
+                    {
+                        var poly = new WadPolygon(WadPolygonShape.Triangle);
+
+                        foreach (var index in tmpPoly.Indices)
+                            poly.Indices.Add(index + lastBaseVertex);
+
+                        var area = new TextureArea();
+                        area.TexCoord0 = tmpPoly.UV[0];
+                        area.TexCoord1 = tmpPoly.UV[1];
+                        area.TexCoord2 = tmpPoly.UV[2];
+                        area.Texture = tmpTextures[tmpMesh.Texture];
+                        poly.Texture = area;
+
+                        mesh.Polys.Add(poly);
+                    }
+                }
+
+                lastBaseVertex = mesh.VerticesPositions.Count;
+            }
+
+            mesh.UpdateHash();
+            if (!Meshes.ContainsKey(mesh.Hash)) Meshes.Add(mesh.Hash, mesh);
+            mesh = Meshes[mesh.Hash];
+            
+            return Meshes[mesh.Hash];
+        }
+
+        /*public WadMesh ImportWadMeshFromExternalModel(string fileName, float scale = 1000.0f)
         {
             // Use Assimp.NET for importing model
             AssimpContext context = new AssimpContext();
@@ -925,7 +1007,7 @@ namespace TombLib.Wad
                 Meshes.Add(newMesh.Hash, newMesh);
 
             return Meshes[newMesh.Hash];
-        }
+        }*/
 
         public static BoundingBox CalculateBoundingBox(WadMesh mesh, Matrix transform)
         {

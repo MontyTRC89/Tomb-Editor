@@ -267,7 +267,7 @@
             this.importModelAsStaticMeshToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // convertWADToWad2ToolStripMenuItem
@@ -305,6 +305,7 @@
             this.importModelAsStaticMeshToolStripMenuItem.Name = "importModelAsStaticMeshToolStripMenuItem";
             this.importModelAsStaticMeshToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.importModelAsStaticMeshToolStripMenuItem.Text = "Import model as static mesh";
+            this.importModelAsStaticMeshToolStripMenuItem.Click += new System.EventHandler(this.importModelAsStaticMeshToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem
             // 
@@ -418,7 +419,7 @@
             this.aboutWadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutWadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutWadToolToolStripMenuItem.Name = "aboutWadToolToolStripMenuItem";
-            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.aboutWadToolToolStripMenuItem.Text = "About Wad Tool...";
             this.aboutWadToolToolStripMenuItem.Click += new System.EventHandler(this.aboutWadToolToolStripMenuItem_Click);
             // 

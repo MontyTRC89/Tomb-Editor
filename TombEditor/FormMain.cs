@@ -13,8 +13,6 @@ using TombLib.Utils;
 using TombLib.NG;
 using DarkUI.Docking;
 using DarkUI.Forms;
-using TombEditor.Controls;
-using TombEditor.Geometry.Exporters;
 
 namespace TombEditor
 {
