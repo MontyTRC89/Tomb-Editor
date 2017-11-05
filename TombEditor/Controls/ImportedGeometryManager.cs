@@ -85,7 +85,7 @@ namespace TombEditor.Controls
 
             // Initialize sound path data grid view
             dataGridViewControls.DataGridView = dataGridView;
-            dataGridViewControls.Enabled = true;                
+            dataGridViewControls.Enabled = true;
             dataGridViewControls.CreateNewRow = delegate
                 {
                     string path = BrowseFile(null);
@@ -113,6 +113,7 @@ namespace TombEditor.Controls
                             break;
                     }
                 };
+            Enabled = true;
         }
 
         protected override void OnLoad(EventArgs e)
