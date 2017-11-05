@@ -169,6 +169,7 @@ namespace TombEditor.Controls
                             break;
                     }
                 };
+            Enabled = true;
         }
 
         protected override void OnLoad(EventArgs e)
