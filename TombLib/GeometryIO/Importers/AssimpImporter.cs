@@ -73,7 +73,7 @@ namespace TombLib.GeometryIO.Importers
                 for (int i = 0; i < mesh.VertexCount; i++)
                 {
                     // Create position
-                    var position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z) * _settings.Scale;
+                    var position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z);
                     position = ApplyAxesTransforms(position);
                     newMesh.Positions.Add(position);
 
