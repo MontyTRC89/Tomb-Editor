@@ -1153,27 +1153,24 @@ namespace TombEditor
                                     }
                                     else
                                     {
-                                        // BROKEN!
 
-                                        Utils.Swap(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
-                                        processedTexture.TexCoord1 = processedTexture.TexCoord3;
-                                        processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                                        delta0 = (minDown - vertices[indices[0]].Position.Y) / difference;
+                                        delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
+                                        delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
+                                        delta3 = (minDown - vertices[indices[2]].Position.Y) / difference;
 
-                                        delta0 = (maxUp - vertices[indices[1]].Position.Y) / difference;
-                                        delta1 = (minDown - vertices[indices[2]].Position.Y) / difference;
-                                        delta2 = (minDown - vertices[indices[0]].Position.Y) / difference;
-                                        delta3 = (maxUp - vertices[indices[0]].Position.Y) / difference;
+                                        processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
+                                        processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
+                                        processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
+                                        processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
 
-                                        processedTexture.TexCoord0.Y += (processedTexture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
-                                        processedTexture.TexCoord1.Y += (processedTexture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
-                                        processedTexture.TexCoord2.Y += (processedTexture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
-                                        processedTexture.TexCoord3.Y += (processedTexture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
+                                        processedTexture.TexCoord0 = processedTexture.TexCoord3;
 
                                         Vector2 tempTexCoord = processedTexture.TexCoord2;
-                                        processedTexture.TexCoord2 = processedTexture.TexCoord1;
-                                        processedTexture.TexCoord1 = processedTexture.TexCoord0;
-                                        processedTexture.TexCoord0 = tempTexCoord;
-                                        processedTexture.TexCoord3 = processedTexture.TexCoord2;
+                                        processedTexture.TexCoord2 = processedTexture.TexCoord3;
+                                        processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                                        processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                                        processedTexture.TexCoord1 = tempTexCoord;
                                     }
                                 }
                             }
