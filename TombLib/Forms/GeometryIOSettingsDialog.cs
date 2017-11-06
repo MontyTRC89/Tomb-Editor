@@ -9,7 +9,7 @@ namespace TombLib.GeometryIO
     public partial class GeometryIOSettingsDialog : DarkForm
     {
         public IOGeometrySettings Settings { get; private set; }
-        private static List<IOGeometrySettingsPreset> _presets = new List<IOGeometrySettingsPreset>();
+        private List<IOGeometrySettingsPreset> _presets = new List<IOGeometrySettingsPreset>();
 
         public GeometryIOSettingsDialog(IOGeometrySettings inSettings)
         {
@@ -44,6 +44,24 @@ namespace TombLib.GeometryIO
             if(!_presets.Any((item) => item.Name == name))
             {
                 _presets.Add(new IOGeometrySettingsPreset() { Name = name, Settings = settings });
+                PopulatePresetList();
+            }
+        }
+        
+        public void AddPreset(List<IOGeometrySettingsPreset> presetList)
+        {
+            foreach(var preset in presetList)
+                if (!_presets.Any((item => item.Name == preset.Name)))
+                    _presets.Add(preset);
+
+            PopulatePresetList();
+        }
+
+        public void AddPreset(IOGeometrySettingsPreset preset)
+        {
+            if (!_presets.Any((item => item.Name == preset.Name)))
+            {
+                _presets.Add(preset);
                 PopulatePresetList();
             }
         }
@@ -82,6 +100,8 @@ namespace TombLib.GeometryIO
 
             if (cmbPresetList.Items.Count == 0)
                 cmbPresetList.Enabled = false;
+            else
+                cmbPresetList.Enabled = true;
         }
 
         private void UpdateControls(IOGeometrySettings settings)
