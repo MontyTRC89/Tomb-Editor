@@ -96,7 +96,7 @@ namespace DarkUI.Controls
 
         public void FixPosition()
         {
-            if(Parent != null)
+            if(!DesignMode && Parent != null)
             {
                 int X = Location.X;
                 int Y = Location.Y;
