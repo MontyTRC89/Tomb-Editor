@@ -204,6 +204,12 @@ namespace DarkUI.Controls
                 g.FillRectangle(brush, GetGripBounds());
         }
 
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            base.OnLocationChanged(e);
+            FixPosition();
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
