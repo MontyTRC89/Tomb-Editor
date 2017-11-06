@@ -10,23 +10,12 @@ namespace TombLib.GeometryIO
 {
     public class IOMesh
     {
-        public List<Vector3> Positions { get; private set; }
-        public List<Vector3> Normals { get; private set; }
-        public List<Vector2> UV { get; private set; }
-        public List<Vector4> Colors { get; private set; }
-        public List<IOPolygon> Polygons { get; private set; }
-        public BoundingBox BoundingBox { get; internal set; }
-        public BoundingSphere BoundingSphere { get; internal set; }
-        public IOTexture Texture { get; set; }
-
-        public IOMesh()
-        {
-            Positions = new List<Vector3>();
-            Normals = new List<Vector3>();
-            UV = new List<Vector2>();
-            Colors = new List<Vector4>();
-            Polygons = new List<IOPolygon>();
-        }
+        public List<Vector3> Positions { get; private set; } = new List<Vector3>();
+        public List<Vector3> Normals { get; private set; } = new List<Vector3>();
+        public List<Vector2> UV { get; private set; } = new List<Vector2>();
+        public List<Vector4> Colors { get; private set; } = new List<Vector4>();
+        public List<IOPolygon> Polygons { get; private set; } = new List<IOPolygon>();
+        public Texture Texture { get; set; }
 
         public int NumQuads
         {
@@ -49,6 +38,32 @@ namespace TombLib.GeometryIO
                     if (poly.Shape == IOPolygonShape.Triangle)
                         numTriangles++;
                 return numTriangles;
+            }
+        }
+
+        public BoundingBox BoundingBox
+        {
+            get
+            {
+                Vector3 minVertex = new Vector3(float.PositiveInfinity);
+                Vector3 maxVertex = new Vector3(float.NegativeInfinity);
+                foreach (Vector3 position in Positions)
+                {
+                    minVertex = Vector3.Min(minVertex, position);
+                    maxVertex = Vector3.Max(maxVertex, position);
+                }
+                return new BoundingBox(minVertex, maxVertex);
+            }
+        }
+
+        public BoundingSphere BoundingSphere
+        {
+            get
+            {
+                BoundingBox boundingBox = BoundingBox;
+                Vector3 center = (boundingBox.Minimum + boundingBox.Maximum) * 0.5f;
+                float radius = (boundingBox.Maximum - center).Length();
+                return new BoundingSphere(center, radius);
             }
         }
     }

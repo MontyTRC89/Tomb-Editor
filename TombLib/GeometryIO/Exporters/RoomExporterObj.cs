@@ -5,15 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
     public class RoomExporterObj : BaseGeometryExporter
     {
-        public RoomExporterObj(IOGeometrySettings settings)
-            : base(settings)
+        public RoomExporterObj(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+            : base(settings, getTexturePathCallback)
         {
-           
+
         }
 
         public override bool ExportToFile(IOModel model, string filename)
@@ -21,13 +22,10 @@ namespace TombLib.GeometryIO.Exporters
             var path = Path.GetDirectoryName(filename);
             var material = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
 
-            if (File.Exists(filename)) File.Delete(filename);
-            if (File.Exists(material)) File.Delete(material);
-
             var mesh = model.Meshes[0];
 
-            using (var writer = new StreamWriter(File.OpenWrite(filename)))
-            {                
+            using (var writer = new StreamWriter(filename, false))
+            {
                 writer.WriteLine("# Exported by Tomb Editor");
                 writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(filename) + ".mtl");
                 writer.WriteLine("o Room");
@@ -44,7 +42,7 @@ namespace TombLib.GeometryIO.Exporters
                 // Save UVs
                 foreach (var uv in mesh.UV)
                 {
-                    var newUV = ApplyUVTransform(uv, mesh.Texture.Width, mesh.Texture.Height);
+                    var newUV = ApplyUVTransform(uv, mesh.Texture.Image.Width, mesh.Texture.Image.Height);
                     writer.WriteLine("vt " + newUV.X.ToString(CultureInfo.InvariantCulture) + " " +
                                              newUV.Y.ToString(CultureInfo.InvariantCulture));
                 }
@@ -70,7 +68,7 @@ namespace TombLib.GeometryIO.Exporters
                 }
             }
 
-            using (var writer = new StreamWriter(File.OpenWrite(material)))
+            using (var writer = new StreamWriter(material, false))
             {
                 writer.WriteLine("# Exported by Tomb Editor");
                 writer.WriteLine("newmtl Room");
@@ -78,7 +76,7 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("Ni 1.000000");
                 writer.WriteLine("d 1.000000");
                 writer.WriteLine("illum 2");
-                writer.WriteLine("map_Kd " + mesh.Texture.Name);
+                writer.WriteLine("map_Kd " + GetTexturePath(path, mesh.Texture));
             }
 
             return true;

@@ -5,13 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
     public class RoomExporterCollada : BaseGeometryExporter
     {
-        public RoomExporterCollada(IOGeometrySettings settings)
-            : base(settings)
+        public RoomExporterCollada(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+            : base(settings, getTexturePathCallback)
         {
 
         }
@@ -19,12 +20,12 @@ namespace TombLib.GeometryIO.Exporters
         public override bool ExportToFile(IOModel model, string filename)
         {
             var path = Path.GetDirectoryName(filename);
-            if (File.Exists(filename)) File.Delete(filename);
-                 
-            using (var writer = new StreamWriter(File.OpenWrite(filename)))
+
+            using (var writer = new StreamWriter(filename, false))
             {
                 var roomMesh = model.Meshes[0];
-                var textureName = Path.GetFileName(roomMesh.Texture.Name).Replace(".", "_");
+                string texturePath = GetTexturePath(path, roomMesh.Texture);
+                var textureName = Path.GetFileName(texturePath).Replace(".", "_");
 
                 // Write XML header
                 writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -126,7 +127,7 @@ namespace TombLib.GeometryIO.Exporters
                 writer.Write("<float_array id=\"Room-mesh-map-0-array\" count=\"" + roomMesh.Positions.Count * 2 + "\">");
                 foreach (var uv in roomMesh.UV)
                 {
-                    var newUV = ApplyUVTransform(uv, roomMesh.Texture.Width, roomMesh.Texture.Height);
+                    var newUV = ApplyUVTransform(uv, roomMesh.Texture.Image.Width, roomMesh.Texture.Image.Height);
                     writer.Write(newUV.X.ToString(CultureInfo.InvariantCulture) + " " +
                                  newUV.Y.ToString(CultureInfo.InvariantCulture) + " ");
                 }
@@ -192,8 +193,8 @@ namespace TombLib.GeometryIO.Exporters
                                  "</mesh>\n" +
                                  "</geometry>\n" +
                                  "</library_geometries>");
-                /*writer.WriteLine("</p>\n" + 
-                                 "</triangles>\n" +       
+                /*writer.WriteLine("</p>\n" +
+                                 "</triangles>\n" +
                                  "</mesh>\n" +
                                  "</geometry>\n" +
                                  "</library_geometries>");*/

@@ -6,25 +6,23 @@ using System.Threading.Tasks;
 
 namespace TombLib.GeometryIO
 {
+    public struct IOGeometrySettingsPreset
+    {
+        public string Name;
+        public IOGeometrySettings Settings;
+    }
+
     public class IOGeometrySettings
     {
-        public bool SwapXY { get; set; }
-        public bool SwapXZ { get; set; }
-        public bool SwapYZ { get; set; }
-        public bool FlipX { get; set; }
-        public bool FlipY { get; set; }
-        public bool FlipZ { get; set; }
-        public bool FlipV { get; set; }
-        public float Scale { get; set; }
-        public bool ClampUV { get; set; }
-        public bool PremultiplyUV { get; set; }
-
-        public IOGeometrySettings()
-        {
-            Scale = 1.0f;
-            ClampUV = true;
-            FlipV = true;
-            PremultiplyUV = true;
-        }
+        public bool SwapXY { get; set; } = false;
+        public bool SwapXZ { get; set; } = false;
+        public bool SwapYZ { get; set; } = false;
+        public bool FlipX { get; set; } = false;
+        public bool FlipY { get; set; } = false;
+        public bool FlipZ { get; set; } = true;
+        public bool FlipUV_V { get; set; } = true;
+        public float Scale { get; set; } = 1.0f;
+        public bool WrapUV { get; set; } = true;
+        public bool PremultiplyUV { get; set; } = true;
     }
 }

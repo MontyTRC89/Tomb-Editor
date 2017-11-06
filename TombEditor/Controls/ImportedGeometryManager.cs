@@ -50,6 +50,48 @@ namespace TombEditor.Controls
                 set { Set((ref ImportedGeometryInfo info) => info.Scale = value); }
             }
 
+            public bool SwapXY
+            {
+                get { return Object.Info.SwapXY; }
+                set { Set((ref ImportedGeometryInfo info) => info.SwapXY = value); }
+            }
+
+            public bool SwapXZ
+            {
+                get { return Object.Info.SwapXZ; }
+                set { Set((ref ImportedGeometryInfo info) => info.SwapXZ = value); }
+            }
+
+            public bool SwapYZ
+            {
+                get { return Object.Info.SwapYZ; }
+                set { Set((ref ImportedGeometryInfo info) => info.SwapYZ = value); }
+            }
+
+            public bool FlipX
+            {
+                get { return Object.Info.FlipX; }
+                set { Set((ref ImportedGeometryInfo info) => info.FlipX = value); }
+            }
+
+            public bool FlipY
+            {
+                get { return Object.Info.FlipY; }
+                set { Set((ref ImportedGeometryInfo info) => info.FlipY = value); }
+            }
+
+            public bool FlipZ
+            {
+                get { return Object.Info.FlipZ; }
+                set { Set((ref ImportedGeometryInfo info) => info.FlipZ = value); }
+            }
+
+            public bool FlipUV_V
+            {
+                get { return Object.Info.FlipUV_V; }
+                set { Set((ref ImportedGeometryInfo info) => info.FlipUV_V = value); }
+            }
+
             public string ErrorMessage
             {
                 get
@@ -85,7 +127,7 @@ namespace TombEditor.Controls
 
             // Initialize sound path data grid view
             dataGridViewControls.DataGridView = dataGridView;
-            dataGridViewControls.Enabled = true;                
+            dataGridViewControls.Enabled = true;
             dataGridViewControls.CreateNewRow = delegate
                 {
                     string path = BrowseFile(null);

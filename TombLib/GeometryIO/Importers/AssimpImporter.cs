@@ -1,7 +1,9 @@
 ﻿using Assimp;
+using NLog;
 using SharpDX;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,20 +13,24 @@ namespace TombLib.GeometryIO.Importers
 {
     public class AssimpImporter : BaseGeometryImporter
     {
-        public AssimpImporter(IOGeometrySettings settings)
-            : base (settings)
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        public AssimpImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
+            : base(settings, getTextureCallback)
         {
 
         }
 
         public override IOModel ImportFromFile(string filename)
         {
+            string path = Path.GetDirectoryName(filename);
+
             // Use Assimp.NET for importing model
             AssimpContext context = new AssimpContext();
             Scene scene = context.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality);
 
             var newModel = new IOModel();
-            var textures = new Dictionary<int, IOTexture>();
+            var textures = new Dictionary<int, Texture>();
 
             // Create the list of textures to load
             for (int i = 0; i < scene.Materials.Count; i++)
@@ -32,40 +38,28 @@ namespace TombLib.GeometryIO.Importers
                 var mat = scene.Materials[i];
 
                 var diffusePath = (mat.HasTextureDiffuse ? mat.TextureDiffuse.FilePath : null);
-                if (diffusePath == null || diffusePath == "") continue;
+                if (string.IsNullOrWhiteSpace(diffusePath))
+                    continue;
 
-                var found = false;
-                for (var j = 0; j < textures.Count; j++)
-                    if (textures.ElementAt(j).Value.Name == diffusePath)
-                    {
-                        found = true;
-                        break;
-                    }
-
-                if (!found)
-                {
-                    var img = ImageC.FromFile(diffusePath);
-                    textures.Add(i, new IOTexture(diffusePath, img.Width, img.Height));
-                }
+                textures.Add(i, GetTexture(path, diffusePath));
             }
 
             foreach (var text in textures)
                 newModel.Textures.Add(text.Value);
 
             var lastBaseVertex = 0;
-            var minVertex = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            var maxVertex = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-            
+
             // Loop for each mesh loaded in scene
             foreach (var mesh in scene.Meshes)
             {
-                var minVertexMesh = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-                var maxVertexMesh = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-
                 var newMesh = new IOMesh();
 
-                if (!textures.ContainsKey(mesh.MaterialIndex)) continue;
-                var faceTexture = textures[mesh.MaterialIndex];
+                Texture faceTexture;
+                if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
+                {
+                    logger.Warn("Mesh '" + (mesh.Name ?? "") + "' does have material index " + mesh.MaterialIndex + " which can't be found.");
+                    continue;
+                }
                 var hasTexCoords = mesh.HasTextureCoords(0);
                 var hasColors = mesh.HasVertexColors(0);
 
@@ -85,7 +79,7 @@ namespace TombLib.GeometryIO.Importers
 
                     // Create UV
                     var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);
-                    currentUV = ApplyUVTransform(currentUV, faceTexture.Width, faceTexture.Height);
+                    currentUV = ApplyUVTransform(currentUV, faceTexture.Image.Width, faceTexture.Image.Height);
                     newMesh.UV.Add(currentUV);
 
                     // Create colors
@@ -94,24 +88,11 @@ namespace TombLib.GeometryIO.Importers
                         var color = new Vector4(colors[i].R, colors[i].G, colors[i].B, colors[i].A);
                         newMesh.Colors.Add(color);
                     }
-
-                    // Track min & max vertex for bounding box
-                    if (position.X <= minVertexMesh.X && position.Y <= minVertexMesh.Y && position.Z <= minVertexMesh.Z)
-                        minVertexMesh = position;
-
-                    if (position.X >= maxVertexMesh.X && position.Y >= maxVertexMesh.Y && position.Z >= maxVertexMesh.Z)
-                        maxVertexMesh = position;
-
-                    if (position.X <= minVertex.X && position.Y <= minVertex.Y && position.Z <= minVertex.Z)
-                        minVertex = position;
-
-                    if (position.X >= maxVertex.X && position.Y >= maxVertex.Y && position.Z >= maxVertex.Z)
-                        maxVertex = position;
                 }
 
                 // Add polygons
                 foreach (var face in mesh.Faces)
-                { 
+                {
                     if (face.IndexCount == 3)
                     {
                         var poly = new IOPolygon(IOPolygonShape.Triangle);
@@ -135,24 +116,8 @@ namespace TombLib.GeometryIO.Importers
                     }
                 }
 
-                // Set the bounding box
-                newMesh.BoundingBox = new BoundingBox(minVertex, maxVertex);
-
-                // Calculate bounding sphere
-                var centreMesh = (minVertexMesh + maxVertexMesh) / 2.0f;
-                var radiusMesh = (maxVertexMesh - centreMesh).Length();
-                newMesh.BoundingSphere = new BoundingSphere(centreMesh, radiusMesh);
-
                 newModel.Meshes.Add(newMesh);
             }
-
-            // Set the model's bounding box
-            newModel.BoundingBox = new BoundingBox(minVertex, maxVertex);
-
-            // Calculate model's bounding sphere
-            var centre = (minVertex + maxVertex) / 2.0f;
-            var radius = (maxVertex - centre).Length();
-            newModel.BoundingSphere = new BoundingSphere(centre, radius);
 
             return newModel;
         }

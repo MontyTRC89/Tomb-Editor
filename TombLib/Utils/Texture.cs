@@ -26,7 +26,7 @@ namespace TombLib.Utils
         public bool IsUnavailable => Image == UnloadedPlaceholder;
         public bool IsAvailable => Image != UnloadedPlaceholder;
     }
-    
+
     public class TextureInvisible : Texture
     {
         public static Texture Instance { get; } = new TextureInvisible();
@@ -58,7 +58,7 @@ namespace TombLib.Utils
         public static readonly TextureArea None;
 
         public Texture Texture;
-        public Vector2 TexCoord0; // No array for those because: 
+        public Vector2 TexCoord0; // No array for those because:
         public Vector2 TexCoord1; //    - Cache locality
         public Vector2 TexCoord2; //    - No array bounds checks
         public Vector2 TexCoord3; //    - 'Clone', 'GetHashCode' and so on work by default
@@ -104,7 +104,7 @@ namespace TombLib.Utils
                 yield return new KeyValuePair<int, Vector2>(1, TexCoord1);
                 yield return new KeyValuePair<int, Vector2>(2, TexCoord2);
                 yield return new KeyValuePair<int, Vector2>(3, TexCoord3);
-           }
+            }
         }
 
         public Vector2 GetTexCoord(int index)
@@ -159,7 +159,7 @@ namespace TombLib.Utils
                     CalculateArea(TexCoord2, TexCoord0)) * 0.5f;
             }
         }
-        
+
         public float QuadArea
         {
             get
