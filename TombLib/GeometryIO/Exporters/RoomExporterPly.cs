@@ -5,13 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
     public class RoomExporterPly : BaseGeometryExporter
     {
-        public RoomExporterPly(IOGeometrySettings settings)
-            : base(settings)
+        public RoomExporterPly(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+            : base(settings, getTexturePathCallback)
         {
 
         }
@@ -21,17 +22,14 @@ namespace TombLib.GeometryIO.Exporters
             var path = Path.GetDirectoryName(filename);
             var material = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
 
-            if (File.Exists(filename)) File.Delete(filename);
-            if (File.Exists(material)) File.Delete(material);
-
-            using (var writer = new StreamWriter(File.OpenWrite(filename)))
+            using (var writer = new StreamWriter(filename, false))
             {
                 var mesh = model.Meshes[0];
 
                 writer.WriteLine("ply");
                 writer.WriteLine("format ascii 1.0");
                 writer.WriteLine("comment Created by Tomb Editor");
-                writer.WriteLine("comment TextureFile " + mesh.Texture.Name);
+                writer.WriteLine("comment TextureFile " + GetTexturePath(path, mesh.Texture));
                 writer.WriteLine("element vertex " + mesh.Positions.Count);
                 writer.WriteLine("property float x");
                 writer.WriteLine("property float y");
@@ -53,12 +51,12 @@ namespace TombLib.GeometryIO.Exporters
                                  position.Y.ToString(CultureInfo.InvariantCulture) + " " +
                                  position.Z.ToString(CultureInfo.InvariantCulture) + " ");
 
-                    var uv = ApplyUVTransform(mesh.UV[i], mesh.Texture.Width, mesh.Texture.Height);
+                    var uv = ApplyUVTransform(mesh.UV[i], mesh.Texture.Image.Width, mesh.Texture.Image.Height);
                     writer.Write(uv.X.ToString(CultureInfo.InvariantCulture) + " " +
                                  uv.Y.ToString(CultureInfo.InvariantCulture) + " ");
 
                     var color = ApplyColorTransform(mesh.Colors[i]);
-                    writer.WriteLine((int)(color.X * 128.0f) + " " + 
+                    writer.WriteLine((int)(color.X * 128.0f) + " " +
                                      (int)(color.Y * 128.0f) + " " +
                                      (int)(color.Z * 128.0f));
                 }
@@ -80,7 +78,7 @@ namespace TombLib.GeometryIO.Exporters
                     {
                         writer.WriteLine("4 " + v1 + " " + v2 + " " + v3 + " " + v4);
                     }
-                }               
+                }
             }
 
             return true;

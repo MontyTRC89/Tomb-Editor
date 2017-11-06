@@ -37,6 +37,8 @@ namespace TombEditor.Geometry.IO
         /********/public static readonly ChunkId ImportedGeometryName = ChunkId.FromString("TeName");
         /********/public static readonly ChunkId ImportedGeometryPath = ChunkId.FromString("TePath");
         /********/public static readonly ChunkId ImportedGeometryScale = ChunkId.FromString("TeScale");
+        /********/public static readonly ChunkId ImportedGeometryPosAxisFlags = ChunkId.FromString("TePosAxisFlags");
+        /********/public static readonly ChunkId ImportedGeometryTexAxisFlags = ChunkId.FromString("TeTexAxisFlags");
         /**/public static readonly ChunkId AnimatedTextureSets = ChunkId.FromString("TeAnimatedTextureSets");
         /******/public static readonly ChunkId AnimatedTextureSet = ChunkId.FromString("TeAnimatedTextureSet");
         /**********/public static readonly ChunkId AnimatedTextureFrames = ChunkId.FromString("TeFrames");

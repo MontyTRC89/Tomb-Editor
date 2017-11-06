@@ -6,13 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
     public class RoomExporterMetasequoia : BaseGeometryExporter
     {
-        public RoomExporterMetasequoia(IOGeometrySettings settings)
-            : base(settings)
+        public RoomExporterMetasequoia(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+            : base(settings, getTexturePathCallback)
         {
 
         }
@@ -20,10 +21,8 @@ namespace TombLib.GeometryIO.Exporters
         public override bool ExportToFile(IOModel model, string filename)
         {
             var path = Path.GetDirectoryName(filename);
-            
-            if (File.Exists(filename)) File.Delete(filename);
 
-            using (var writer = new StreamWriter(File.OpenWrite(filename)))
+            using (var writer = new StreamWriter(filename, false))
             {
                 var mesh = model.Meshes[0];
 
@@ -38,7 +37,7 @@ namespace TombLib.GeometryIO.Exporters
                 // Write material
                 writer.WriteLine("Material 1 {");
                 writer.Write("\"Room\" col(1.000 1.000 1.000 1.000) dif(0.000) amb(1.000) emi(1.000) spc(0.000) power(5.00) ");
-                writer.Write("tex(\"" + mesh.Texture.Name + "\") ");
+                writer.Write("tex(\"" + GetTexturePath(path, mesh.Texture) + "\") ");
                 writer.WriteLine("shader(4) vcol(1) ");
 
                 writer.WriteLine("}");
@@ -68,9 +67,9 @@ namespace TombLib.GeometryIO.Exporters
                     var v3 = indices[2];
                     var v4 = (indices.Count > 3 ? indices[3] : 0);
 
-                    var uv1 = GetUV(ApplyUVTransform(mesh.UV[v1], mesh.Texture.Width, mesh.Texture.Height));
-                    var uv2 = GetUV(ApplyUVTransform(mesh.UV[v2], mesh.Texture.Width, mesh.Texture.Height));
-                    var uv3 = GetUV(ApplyUVTransform(mesh.UV[v3], mesh.Texture.Width, mesh.Texture.Height));
+                    var uv1 = GetUV(ApplyUVTransform(mesh.UV[v1], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
+                    var uv2 = GetUV(ApplyUVTransform(mesh.UV[v2], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
+                    var uv3 = GetUV(ApplyUVTransform(mesh.UV[v3], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
 
                     var color1 = GetColor(ApplyColorTransform(mesh.Colors[v1]));
                     var color2 = GetColor(ApplyColorTransform(mesh.Colors[v2]));
@@ -86,7 +85,7 @@ namespace TombLib.GeometryIO.Exporters
                     }
                     else
                     {
-                        var uv4 = GetUV(ApplyUVTransform(mesh.UV[v4], mesh.Texture.Width, mesh.Texture.Height));
+                        var uv4 = GetUV(ApplyUVTransform(mesh.UV[v4], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
                         var color4 = GetColor(ApplyColorTransform(mesh.Colors[v4]));
 
                         writer.Write("4 V(" + v1 + " " + v2 + " " + v3 + " " + v4 + ") ");
@@ -94,7 +93,7 @@ namespace TombLib.GeometryIO.Exporters
                         writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + " " + uv4 + ") ");
                         writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + " " + color4 + ") ");
                     }
-                }                
+                }
                 writer.WriteLine("}");
                 writer.WriteLine("}");
                 writer.WriteLine("Eof");

@@ -4,18 +4,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO
 {
     public abstract class BaseGeometryExporter
     {
-        protected IOGeometrySettings _settings;
+        public delegate string GetTextureDelegate(Texture texture);
+
+        protected IOGeometrySettings _settings { get; }
+        private GetTextureDelegate _getTexturePathCallback { get; }
 
         public abstract bool ExportToFile(IOModel model, string filename);
 
-        public BaseGeometryExporter(IOGeometrySettings settings)
+        public BaseGeometryExporter(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
         {
             _settings = settings;
+            _getTexturePathCallback = getTexturePathCallback;
+        }
+
+        protected string GetTexturePath(string baseDirectory, Texture texture)
+        {
+            string texturePath = _getTexturePathCallback(texture);
+            texturePath = PathC.GetRelativePath(baseDirectory, texturePath);
+            return texturePath;
         }
 
         protected Vector3 ApplyAxesTransforms(Vector3 position)
@@ -37,13 +49,9 @@ namespace TombLib.GeometryIO
                 uv.X /= w;
                 uv.Y /= h;
             }
-            if (_settings.FlipV) { uv.Y = 1.0f - uv.Y; }
-            if (_settings.ClampUV)
+            if (_settings.FlipUV_V)
             {
-                if (uv.X > 1.0f) uv.X -= 1.0f;
-                if (uv.Y > 1.0f) uv.Y -= 1.0f;
-                if (uv.X < 0.0f) uv.X += 1.0f;
-                if (uv.Y < 0.0f) uv.Y += 1.0f;
+                uv.Y = 1.0f - uv.Y;
             }
             return uv;
         }
