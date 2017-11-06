@@ -130,7 +130,7 @@
             65536});
             this.nmScale.Location = new System.Drawing.Point(47, 21);
             this.nmScale.Maximum = new decimal(new int[] {
-            128,
+            2048,
             0,
             0,
             0});
@@ -138,7 +138,7 @@
             1,
             0,
             0,
-            262144});
+            0});
             this.nmScale.MousewheelSingleIncrement = true;
             this.nmScale.Name = "nmScale";
             this.nmScale.Size = new System.Drawing.Size(97, 22);
@@ -147,7 +147,7 @@
             1,
             0,
             0,
-            196608});
+            0});
             // 
             // darkLabel1
             // 

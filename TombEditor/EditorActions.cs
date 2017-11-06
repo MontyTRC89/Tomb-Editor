@@ -2038,6 +2038,9 @@ namespace TombEditor
                 {
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
+                        foreach (var preset in IOSettingsPresets.SettingsPresets)
+                            settingsDialog.AddPreset(preset);
+
                         if(settingsDialog.ShowDialog(owner) == DialogResult.OK)
                         {
                             BaseGeometryExporter.GetTextureDelegate getTextureCallback = (texture) =>
