@@ -38,8 +38,10 @@ namespace TombEditor.ToolWindows
             // Update the trigger control
             if ((obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.ObjectChangedEvent))
             {
+                lstObjects.BeginUpdate();
                 lstObjects.Items.Clear();
                 lstObjects.Items.AddRange(_editor.SelectedRoom.AnyObjects.ToArray());
+                lstObjects.EndUpdate();
             }
 
             // Update the object control selection
