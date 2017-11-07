@@ -717,57 +717,6 @@ namespace TombEditor.Controls
                             DrawingPoint pos = newBlockPicking.Pos;
                             bool belongsToFloor = newBlockPicking.BelongsToFloor;
 
-                            if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group) &&
-                                 !ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Alt))
-                            {
-                                // Handle face selection
-                                if(_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
-                                {
-                                    if (_editor.Mode == EditorMode.Geometry)
-                                    {
-                                        // Rotate the arrows
-                                        if (ModifierKeys.HasFlag(Keys.Control))
-                                        {
-                                            if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSW)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSE)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSW);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNE)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSE);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNW)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNE);
-                                            else
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNW);
-                                        }
-                                        else
-                                        {
-                                            if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeW)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeS)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeW);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeE)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeS);
-                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeN)
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeE);
-                                            else
-                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeN);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    // Select rectangle
-                                    if (ModifierKeys.HasFlag(Keys.Control))
-                                    {
-                                        // Multiple separate tile selection - To Be Implemented...
-                                        _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
-                                    }
-                                    else
-                                        _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
-                                    _doSectorSelection = true;
-                                }
-                            }
-
                             switch (_editor.Mode)
                             {
                                 case EditorMode.Geometry:
@@ -812,17 +761,18 @@ namespace TombEditor.Controls
                                         
                                 case EditorMode.FaceEdit:
                                     // Do texturing
-                                    if (ModifierKeys == Keys.Control)
+                                    if (ModifierKeys.HasFlag(Keys.Control) && _editor.Tool.Tool != EditorToolType.Group)
                                         EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
-                                    else if (ModifierKeys == Keys.Shift)
+                                    else if (ModifierKeys.HasFlag(Keys.Shift))
                                         EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
-                                    else if (ModifierKeys == Keys.Alt)
+                                    else if (ModifierKeys.HasFlag(Keys.Alt))
                                         EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     else
                                     {
                                         if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None)
                                         {
                                             var usedTexture = _editor.SelectedTexture;
+                                            var realArea = (_editor.SelectedSectors.Valid ? _editor.SelectedSectors.Area : new SharpDX.Rectangle(0, 0, _editor.SelectedRoom.NumXSectors - 1, _editor.SelectedRoom.NumZSectors - 1));
 
                                             switch (_editor.Tool.Texture)
                                             {
@@ -832,8 +782,7 @@ namespace TombEditor.Controls
                                                 case EditorTextureType.Invisible:
                                                     usedTexture.Texture = TextureInvisible.Instance;
                                                     break;
-
-
+                                                    
                                                 case EditorTextureType.Null:
                                                 default:
                                                     usedTexture.Texture = null;
@@ -844,18 +793,16 @@ namespace TombEditor.Controls
                                             {
                                                 case EditorToolType.Fill:
                                                     if (newBlockPicking.IsFloorHorizontalPlane)
-                                                        EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, usedTexture);
+                                                        EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Floor);
                                                     else if (newBlockPicking.IsCeilingHorizontalPlane)
-                                                        EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, usedTexture);
+                                                        EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Ceiling);
                                                     else if (newBlockPicking.IsVerticalPlane)
-                                                        EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, usedTexture);
+                                                        EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Wall);
                                                     break;
 
                                                 case EditorToolType.Group:
-                                                    if (newBlockPicking.IsFloorHorizontalPlane)
-                                                        EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors.Area, usedTexture, BlockFaceType.Floor);
-                                                    else if (newBlockPicking.IsCeilingHorizontalPlane)
-                                                        EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors.Area, usedTexture, BlockFaceType.Ceiling);
+                                                    if(_editor.SelectedSectors.Valid)
+                                                        EditorActions.TexturizeGroup(_editor.SelectedRoom, realArea, usedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control));
                                                     break;
 
                                                 case EditorToolType.Brush:
@@ -870,6 +817,58 @@ namespace TombEditor.Controls
                                         }
                                     }
                                     break;
+                            }
+
+                            // Handle face selection
+
+                            if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group)
+                                 && !ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Alt))
+                            {
+                                if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
+                                {
+                                    if (_editor.Mode == EditorMode.Geometry)
+                                    {
+                                        // Rotate the arrows
+                                        if (ModifierKeys.HasFlag(Keys.Control))
+                                        {
+                                            if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSW)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSE)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSW);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNE)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSE);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNW)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNE);
+                                            else
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNW);
+                                        }
+                                        else
+                                        {
+                                            if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeW)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeS)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeW);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeE)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeS);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeN)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeE);
+                                            else
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeN);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    // Select rectangle
+                                    if (ModifierKeys.HasFlag(Keys.Control))
+                                    {
+                                        // Multiple separate tile selection - To Be Implemented...
+                                        _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                    }
+                                    else
+                                        _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                    _doSectorSelection = true;
+                                }
                             }
                         }
                         break;
@@ -3341,22 +3340,22 @@ namespace TombEditor.Controls
                         {
                             var slopeDirection = room.Blocks[x, z].GetTriangleSlopeDirections()[(face == (BlockFace)25 ? 0 : 1)];
 
-                            if (slopeDirection != SlopeDirection.None)
+                            if (slopeDirection != Direction.None)
                             {
                                 string flipSplit = (room.Blocks[x, z].FloorSplitDirectionIsXEqualsZ ? "_flip" : "");
 
                                 switch (slopeDirection)
                                 {
-                                    case SlopeDirection.East:
+                                    case Direction.East:
                                         _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_east" + flipSplit]);
                                         break;
-                                    case SlopeDirection.West:
+                                    case Direction.West:
                                         _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_west" + flipSplit]);
                                         break;
-                                    case SlopeDirection.North:
+                                    case Direction.North:
                                         _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_north" + flipSplit]);
                                         break;
-                                    case SlopeDirection.South:
+                                    case Direction.South:
                                         _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_south" + flipSplit]);
                                         break;
                                 }
