@@ -27,7 +27,7 @@ namespace TombLib.GeometryIO.Importers
 
             // Use Assimp.NET for importing model
             AssimpContext context = new AssimpContext();
-            Scene scene = context.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality);
+            Scene scene = context.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.MakeLeftHanded);
 
             var newModel = new IOModel();
             var textures = new Dictionary<int, Texture>();

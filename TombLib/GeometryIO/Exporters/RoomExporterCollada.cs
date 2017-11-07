@@ -185,7 +185,16 @@ namespace TombLib.GeometryIO.Exporters
                                  "<p>");
                 foreach (var tmpPoly in roomMesh.Polygons)
                 {
-                    foreach (var index in tmpPoly.Indices)
+                    var indices = new List<int>();
+                    indices.Add(tmpPoly.Indices[0]);
+                    indices.Add(tmpPoly.Indices[1]);
+                    indices.Add(tmpPoly.Indices[2]);
+                    if (tmpPoly.Shape == IOPolygonShape.Quad) indices.Add(tmpPoly.Indices[3]);
+
+                    // Change vertex winding
+                    if (_settings.InvertFaces) indices.Reverse();
+
+                    foreach (var index in indices)
                         writer.Write(index + " " + index + " " + index + " ");
                 }
                 writer.WriteLine("\n</p>\n" +

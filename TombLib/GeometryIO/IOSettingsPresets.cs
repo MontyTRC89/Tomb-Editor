@@ -23,6 +23,7 @@ namespace TombLib.GeometryIO
                     Scale = 1024.0f,
                     FlipZ = true,
                     FlipUV_V = true,
+                    InvertFaces = true,
                     PremultiplyUV = true,
                     WrapUV = true
                 }
@@ -50,6 +51,7 @@ namespace TombLib.GeometryIO
                 {
                     Scale = 1024.0f,
                     FlipZ = true,
+                    InvertFaces = true,
                     FlipUV_V = true,
                     PremultiplyUV = true,
                     WrapUV = true
@@ -77,6 +79,7 @@ namespace TombLib.GeometryIO
                 {
                     Scale = 1.0f,
                     FlipZ = true,
+                    InvertFaces = true,
                     FlipUV_V = false,
                     PremultiplyUV = true,
                     WrapUV = true
