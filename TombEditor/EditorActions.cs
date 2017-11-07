@@ -1011,7 +1011,7 @@ namespace TombEditor
 
             TextureArea processedTexture = texture;
 
-            if(_editor.Tool.TextureUVFixer && texture.TextureIsRectangle)
+            if (_editor.Tool.TextureUVFixer && texture.TextureIsRectangle)
             {
                 switch (face)
                 {
@@ -1122,7 +1122,7 @@ namespace TombEditor
                                     delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
                                     delta3 = (minDown - vertices[indices[2]].Position.Y) / difference;
 
-                                    if(texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
+                                    if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
                                     {
                                         processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
                                         processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
@@ -1222,16 +1222,13 @@ namespace TombEditor
             _editor.RoomTextureChange(room);
         }
 
-        public static void TexturizeWallSection(Room room, DrawingPoint pos, Direction direction, BlockFaceType section, TextureArea texture, int subdivisions = 0, int iteration = 0)
+        private static Dictionary<BlockFace, float[]> GetFaces(Room room, DrawingPoint pos, Direction direction, BlockFaceType section)
         {
-            if (subdivisions < 0 || iteration < 0)
-                subdivisions = 0;
-
             bool sectionIsWall = room.GetBlockTry(pos.X, pos.Y).IsAnyWall;
 
             Dictionary<BlockFace, float[]> segments = new Dictionary<BlockFace, float[]>();
 
-            switch(direction)
+            switch (direction)
             {
                 case Direction.North:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
@@ -1329,6 +1326,36 @@ namespace TombEditor
                     break;
             }
 
+            return segments;
+        }
+
+        private static float[] GetAreaExtremums(Room room, Rectangle area, Direction direction, BlockFaceType type)
+        {
+            float maxHeight = float.MinValue;
+            float minHeight = float.MaxValue;
+
+            for (int x = area.X, iterX = 0; x <= area.Right; x++, iterX++)
+                for (int z = area.Y, iterZ = 0; z <= area.Bottom; z++, iterZ++)
+                {
+                    var segments = GetFaces(room, new DrawingPoint(x, z), direction, type);
+
+                    foreach (var segment in segments)
+                    {
+                        minHeight = Math.Min(minHeight, segment.Value[1]);
+                        maxHeight = Math.Max(maxHeight, segment.Value[0]);
+                    }
+                }
+
+            return new float[2] { minHeight, maxHeight };
+        }
+
+        public static void TexturizeWallSection(Room room, DrawingPoint pos, Direction direction, BlockFaceType section, TextureArea texture, int subdivisions = 0, int iteration = 0, float[] overrideHeights = null)
+        {
+            if (subdivisions < 0 || iteration < 0)
+                subdivisions = 0;
+
+            var segments = GetFaces(room, pos, direction, section);
+
             var processedTexture = texture;
             float minSectionHeight = float.MaxValue;
             float maxSectionHeight = float.MinValue;
@@ -1338,6 +1365,9 @@ namespace TombEditor
                 minSectionHeight = Math.Min(minSectionHeight, segment.Value[1]);
                 maxSectionHeight = Math.Max(maxSectionHeight, segment.Value[0]);
             }
+
+            minSectionHeight = (overrideHeights == null ? minSectionHeight : overrideHeights[0]);
+            maxSectionHeight = (overrideHeights == null ? maxSectionHeight : overrideHeights[1]);
 
             float sectionHeight = (maxSectionHeight - minSectionHeight);
             bool inverted = false;
@@ -1403,71 +1433,71 @@ namespace TombEditor
             }
         }
 
-        public static void TexturizeGroup(Room room, Rectangle area, TextureArea texture, BlockFace pickedFace, bool subdivideWalls = false)
+        public static void TexturizeGroup(Room room, Rectangle area, TextureArea texture, BlockFace pickedFace, bool subdivideWalls = false, bool unifyHeight = false)
         {
             if (pickedFace < BlockFace.Floor)
             {
                 int xSubs = (subdivideWalls == true ? area.Right - area.X : 0);
                 int zSubs = (subdivideWalls == true ? area.Bottom - area.Y : 0);
-
+                
                 for (int x = area.X, iterX = 0; x <= area.Right; x++, iterX++)
                     for (int z = area.Y, iterZ = 0; z <= area.Bottom; z++, iterZ++)
                         switch (pickedFace)
                         {
                             case BlockFace.NegativeX_QA:
                             case BlockFace.NegativeX_ED:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.West, BlockFaceType.Floor, texture, zSubs, iterZ);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.West, BlockFaceType.Floor, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.West, BlockFaceType.Floor) : null));
                                 break;
 
                             case BlockFace.NegativeX_Middle:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.West, BlockFaceType.Wall, texture, zSubs, iterZ);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.West, BlockFaceType.Wall, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.West, BlockFaceType.Wall) : null));
                                 break;
 
                             case BlockFace.NegativeX_RF:
                             case BlockFace.NegativeX_WS:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.West, BlockFaceType.Ceiling, texture, zSubs, iterZ);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.West, BlockFaceType.Ceiling, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.West, BlockFaceType.Ceiling) : null));
                                 break;
 
                             case BlockFace.PositiveX_QA:
                             case BlockFace.PositiveX_ED:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.East, BlockFaceType.Floor, texture, zSubs, iterZ);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.East, BlockFaceType.Floor, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.East, BlockFaceType.Floor) : null));
                                 break;
 
                             case BlockFace.PositiveX_Middle:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.East, BlockFaceType.Wall, texture, zSubs, iterZ);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.East, BlockFaceType.Wall, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.East, BlockFaceType.Wall) : null));
                                 break;
 
                             case BlockFace.PositiveX_RF:
                             case BlockFace.PositiveX_WS:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.East, BlockFaceType.Ceiling, texture, zSubs, iterZ);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.East, BlockFaceType.Ceiling, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.East, BlockFaceType.Ceiling) : null));
                                 break;
 
                             case BlockFace.NegativeZ_QA:
                             case BlockFace.NegativeZ_ED:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.South, BlockFaceType.Floor, texture, xSubs, iterX);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.South, BlockFaceType.Floor, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.South, BlockFaceType.Floor) : null));
                                 break;
 
                             case BlockFace.NegativeZ_Middle:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.South, BlockFaceType.Wall, texture, xSubs, iterX);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.South, BlockFaceType.Wall, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.South, BlockFaceType.Wall) : null));
                                 break;
 
                             case BlockFace.NegativeZ_RF:
                             case BlockFace.NegativeZ_WS:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.South, BlockFaceType.Ceiling, texture, xSubs, iterX);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.South, BlockFaceType.Ceiling, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.South, BlockFaceType.Ceiling) : null));
                                 break;
 
                             case BlockFace.PositiveZ_QA:
                             case BlockFace.PositiveZ_ED:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.North, BlockFaceType.Floor, texture, xSubs, iterX);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.North, BlockFaceType.Floor, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.North, BlockFaceType.Floor) : null));
                                 break;
 
                             case BlockFace.PositiveZ_Middle:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.North, BlockFaceType.Wall, texture, xSubs, iterX);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.North, BlockFaceType.Wall, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.North, BlockFaceType.Wall) : null));
                                 break;
 
                             case BlockFace.PositiveZ_RF:
                             case BlockFace.PositiveZ_WS:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.North, BlockFaceType.Ceiling, texture, xSubs, iterX);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.North, BlockFaceType.Ceiling, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.North, BlockFaceType.Ceiling) : null));
                                 break;
 
                             case BlockFace.DiagonalQA:

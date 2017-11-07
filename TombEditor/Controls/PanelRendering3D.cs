@@ -761,60 +761,70 @@ namespace TombEditor.Controls
                                         
                                 case EditorMode.FaceEdit:
                                     // Do texturing
-                                    if (ModifierKeys.HasFlag(Keys.Control) && _editor.Tool.Tool != EditorToolType.Group)
-                                        EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
-                                    else if (ModifierKeys.HasFlag(Keys.Shift))
-                                        EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
-                                    else if (ModifierKeys.HasFlag(Keys.Alt))
-                                        EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
-                                    else
+                                    if (_editor.Tool.Tool != EditorToolType.Group)
                                     {
-                                        if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None)
+                                        if (ModifierKeys.HasFlag(Keys.Control))
                                         {
-                                            var usedTexture = _editor.SelectedTexture;
-                                            var realArea = (_editor.SelectedSectors.Valid ? _editor.SelectedSectors.Area : new SharpDX.Rectangle(0, 0, _editor.SelectedRoom.NumXSectors - 1, _editor.SelectedRoom.NumZSectors - 1));
-
-                                            switch (_editor.Tool.Texture)
-                                            {
-                                                case EditorTextureType.Normal:
-                                                    break;
-
-                                                case EditorTextureType.Invisible:
-                                                    usedTexture.Texture = TextureInvisible.Instance;
-                                                    break;
-                                                    
-                                                case EditorTextureType.Null:
-                                                default:
-                                                    usedTexture.Texture = null;
-                                                    break;
-                                            }
-
-                                            switch (_editor.Tool.Tool)
-                                            {
-                                                case EditorToolType.Fill:
-                                                    if (newBlockPicking.IsFloorHorizontalPlane)
-                                                        EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Floor);
-                                                    else if (newBlockPicking.IsCeilingHorizontalPlane)
-                                                        EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Ceiling);
-                                                    else if (newBlockPicking.IsVerticalPlane)
-                                                        EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Wall);
-                                                    break;
-
-                                                case EditorToolType.Group:
-                                                    if(_editor.SelectedSectors.Valid)
-                                                        EditorActions.TexturizeGroup(_editor.SelectedRoom, realArea, usedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control));
-                                                    break;
-
-                                                case EditorToolType.Brush:
-                                                case EditorToolType.Pencil:
-                                                    EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, usedTexture);
-                                                    break;
-
-                                                default:
-                                                    break;
-                                            }
-
+                                            EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                                            break;
                                         }
+                                        else if (ModifierKeys.HasFlag(Keys.Shift))
+                                        {
+                                            EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                                            break;
+                                        }
+                                        else if (ModifierKeys.HasFlag(Keys.Alt))
+                                        {
+                                            EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                                            break;
+                                        }
+                                    }
+
+                                    if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None)
+                                    {
+                                        var usedTexture = _editor.SelectedTexture;
+                                        var realArea = (_editor.SelectedSectors.Valid ? _editor.SelectedSectors.Area : new SharpDX.Rectangle(0, 0, _editor.SelectedRoom.NumXSectors - 1, _editor.SelectedRoom.NumZSectors - 1));
+
+                                        switch (_editor.Tool.Texture)
+                                        {
+                                            case EditorTextureType.Normal:
+                                                break;
+
+                                            case EditorTextureType.Invisible:
+                                                usedTexture.Texture = TextureInvisible.Instance;
+                                                break;
+
+                                            case EditorTextureType.Null:
+                                            default:
+                                                usedTexture.Texture = null;
+                                                break;
+                                        }
+
+                                        switch (_editor.Tool.Tool)
+                                        {
+                                            case EditorToolType.Fill:
+                                                if (newBlockPicking.IsFloorHorizontalPlane)
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Floor);
+                                                else if (newBlockPicking.IsCeilingHorizontalPlane)
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Ceiling);
+                                                else if (newBlockPicking.IsVerticalPlane)
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Wall);
+                                                break;
+
+                                            case EditorToolType.Group:
+                                                if (_editor.SelectedSectors.Valid)
+                                                    EditorActions.TexturizeGroup(_editor.SelectedRoom, realArea, usedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Alt));
+                                                break;
+
+                                            case EditorToolType.Brush:
+                                            case EditorToolType.Pencil:
+                                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, usedTexture);
+                                                break;
+
+                                            default:
+                                                break;
+                                        }
+
                                     }
                                     break;
                             }
