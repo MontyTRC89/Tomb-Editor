@@ -1354,20 +1354,28 @@ namespace TombEditor
             if (subdivisions < 0 || iteration < 0)
                 subdivisions = 0;
 
+            if (overrideHeights?.Count() != 2)
+                overrideHeights = null;
+
             var segments = GetFaces(room, pos, direction, section);
 
             var processedTexture = texture;
             float minSectionHeight = float.MaxValue;
             float maxSectionHeight = float.MinValue;
 
-            foreach (var segment in segments)
+            if (overrideHeights == null)
             {
-                minSectionHeight = Math.Min(minSectionHeight, segment.Value[1]);
-                maxSectionHeight = Math.Max(maxSectionHeight, segment.Value[0]);
+                foreach (var segment in segments)
+                {
+                    minSectionHeight = Math.Min(minSectionHeight, segment.Value[1]);
+                    maxSectionHeight = Math.Max(maxSectionHeight, segment.Value[0]);
+                }
             }
-
-            minSectionHeight = (overrideHeights == null ? minSectionHeight : overrideHeights[0]);
-            maxSectionHeight = (overrideHeights == null ? maxSectionHeight : overrideHeights[1]);
+            else
+            {
+                minSectionHeight = overrideHeights[0];
+                maxSectionHeight = overrideHeights[1];
+            }
 
             float sectionHeight = (maxSectionHeight - minSectionHeight);
             bool inverted = false;
