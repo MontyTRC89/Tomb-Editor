@@ -2675,7 +2675,7 @@ namespace TombEditor.Geometry
             for (int i = 0; i < _allVertices.Count; ++i)
             {
                 var vertex = _allVertices[i];
-                vertex.FaceColor = AmbientLight;
+                vertex.Color = AmbientLight;
                 _allVertices[i] = vertex;
             }
 
@@ -2701,12 +2701,12 @@ namespace TombEditor.Geometry
             {
                 Vector4 faceColorSum = new Vector4(0);
                 foreach (var vertexIndex in pair.Value)
-                    faceColorSum += _allVertices[vertexIndex].FaceColor;
+                    faceColorSum += _allVertices[vertexIndex].Color;
                 faceColorSum /= pair.Value.Count;
                 foreach (var vertexIndex in pair.Value)
                 {
                     var vertex = _allVertices[vertexIndex];
-                    vertex.FaceColor = faceColorSum;
+                    vertex.Color = faceColorSum;
                     _allVertices[vertexIndex] = vertex;
                 }
             }
@@ -2921,10 +2921,10 @@ namespace TombEditor.Geometry
                 // Apply color
                 EditorVertex vertex = _allVertices[range.Start + i];
 
-                vertex.FaceColor.X = r * (1.0f / 128.0f);
-                vertex.FaceColor.Y = g * (1.0f / 128.0f);
-                vertex.FaceColor.Z = b * (1.0f / 128.0f);
-                vertex.FaceColor.W = 255.0f;
+                vertex.Color.X = r * (1.0f / 128.0f);
+                vertex.Color.Y = g * (1.0f / 128.0f);
+                vertex.Color.Z = b * (1.0f / 128.0f);
+                vertex.Color.W = 255.0f;
 
                 _allVertices[range.Start + i] = vertex;
             }

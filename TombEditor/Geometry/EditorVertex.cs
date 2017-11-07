@@ -17,7 +17,7 @@ namespace TombEditor.Geometry
         [VertexElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 24)]
         public Vector3 Normal;
         [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 36)]
-        public Vector4 FaceColor;
+        public Vector4 Color;
         [VertexElement("TEXCOORD", 1, SharpDX.DXGI.Format.R32G32_Float, 52)]
         public Vector2 EditorUV;
 

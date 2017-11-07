@@ -170,8 +170,8 @@ namespace TombEditor.Compilers
                             int rangeEnd = range.Start + range.Count;
                             for (int i = range.Start; i < rangeEnd; i += 3)
                             {
-                                ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
-                                ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
+                                ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i].Position, editorRoomVertices[i].Color);
+                                ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].Color);
                                 texture.TexCoord0 = editorRoomVertices[i].UV;
                                 texture.TexCoord1 = editorRoomVertices[i + 1].UV;
 
@@ -180,8 +180,8 @@ namespace TombEditor.Compilers
                                     editorRoomVertices[i + 1].Equals(editorRoomVertices[i + 5]) &&
                                     editorRoomVertices[i + 2].Equals(editorRoomVertices[i + 4]))
                                 {
-                                    ushort vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
-                                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 3].Position, editorRoomVertices[i + 3].FaceColor);
+                                    ushort vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].Color);
+                                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 3].Position, editorRoomVertices[i + 3].Color);
                                     texture.TexCoord3 = editorRoomVertices[i + 2].UV;
                                     texture.TexCoord2 = editorRoomVertices[i + 3].UV;
 
@@ -194,7 +194,7 @@ namespace TombEditor.Compilers
                                 }
                                 else
                                 {
-                                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
+                                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].Color);
                                     texture.TexCoord2 = editorRoomVertices[i + 2].UV;
 
                                     Util.ObjectTextureManager.Result result;

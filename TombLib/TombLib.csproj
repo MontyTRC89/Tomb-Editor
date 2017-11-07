@@ -114,6 +114,7 @@
     <Compile Include="GeometryIO\IOMesh.cs" />
     <Compile Include="GeometryIO\IOModel.cs" />
     <Compile Include="GeometryIO\IOPolygon.cs" />
+    <Compile Include="GeometryIO\IOSettingsPresets.cs" />
     <Compile Include="Graphics\Animation.cs" />
     <Compile Include="Graphics\AnimDispatch.cs" />
     <Compile Include="Graphics\ArcBallCamera.cs" />

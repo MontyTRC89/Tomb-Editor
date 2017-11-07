@@ -48,6 +48,8 @@ namespace TombEditor.Geometry
         public Vector3 Normal;
         [VertexElement("TEXCOORD", 1, SharpDX.DXGI.Format.R32G32_Float, 36)]
         public Vector2 Shade;
+        [VertexElement("COLOR", 1, SharpDX.DXGI.Format.R32G32B32A32_Float, 44)]
+        public Vector4 Color;
 
         Vector3 IVertex.Position => Position;
     }

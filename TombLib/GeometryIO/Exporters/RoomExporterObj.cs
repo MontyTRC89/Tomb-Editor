@@ -52,10 +52,19 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("s off");
                 foreach (var poly in mesh.Polygons)
                 {
-                    var v1 = poly.Indices[0] + 1;
-                    var v2 = poly.Indices[1] + 1;
-                    var v3 = poly.Indices[2] + 1;
-                    var v4 = (poly.Shape == IOPolygonShape.Quad ? poly.Indices[3] + 1 : 0);
+                    var indices = new List<int>();
+                    indices.Add(poly.Indices[0] + 1);
+                    indices.Add(poly.Indices[1] + 1);
+                    indices.Add(poly.Indices[2] + 1);
+                    if (poly.Shape == IOPolygonShape.Quad) indices.Add(poly.Indices[3] + 1);
+
+                    // Change vertex winding
+                    if (_settings.InvertFaces) indices.Reverse();
+
+                    var v1 = indices[0];
+                    var v2 = indices[1];
+                    var v3 = indices[2];
+                    var v4 = (poly.Shape == IOPolygonShape.Quad ? indices[3] : 0);
 
                     if (poly.Shape == IOPolygonShape.Triangle)
                     {
