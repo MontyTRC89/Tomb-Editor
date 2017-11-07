@@ -1005,6 +1005,14 @@ namespace TombEditor
             _editor.SelectedTexture = textureArea;
         }
 
+        public static void MirrorSelectedTexture()
+        {
+            TextureArea textureArea = _editor.SelectedTexture;
+            Utils.Swap(ref textureArea.TexCoord0, ref textureArea.TexCoord3);
+            Utils.Swap(ref textureArea.TexCoord1, ref textureArea.TexCoord2);
+            _editor.SelectedTexture = textureArea;
+        }
+
         private static void ApplyTextureAutomaticallyNoUpdated(Room room, DrawingPoint pos, BlockFace face, TextureArea texture)
         {
             Block block = room.GetBlock(pos);

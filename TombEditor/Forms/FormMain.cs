@@ -461,6 +461,8 @@ namespace TombEditor
                 case Keys.Oem5: // German keyboard key for a texture triangle rotation
                     if (ModifierKeys == Keys.None)
                         EditorActions.RotateSelectedTexture();
+                    else if (ModifierKeys.HasFlag(Keys.Shift))
+                        EditorActions.MirrorSelectedTexture();
                     break;
             }
 
