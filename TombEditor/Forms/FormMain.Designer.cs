@@ -154,7 +154,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(1204, 24);
+            this.menuStrip.Size = new System.Drawing.Size(883, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "darkMenuStrip1";
             // 
@@ -1258,7 +1258,7 @@
             this.dockableToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.dockableToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.dockableToolStripMenuItem.Name = "dockableToolStripMenuItem";
-            this.dockableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dockableToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.dockableToolStripMenuItem.Text = "Dockable";
             this.dockableToolStripMenuItem.Click += new System.EventHandler(this.dockableToolStripMenuItem_Click);
             // 
@@ -1267,7 +1267,7 @@
             this.floatingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.floatingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.floatingToolStripMenuItem.Name = "floatingToolStripMenuItem";
-            this.floatingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.floatingToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.floatingToolStripMenuItem.Text = "Floating";
             this.floatingToolStripMenuItem.Click += new System.EventHandler(this.floatingToolStripMenuItem_Click);
             // 
@@ -1319,10 +1319,10 @@
             this.statusStripSelectedRoom,
             this.statusStripGlobalSelectionArea,
             this.statusStripLocalSelectionArea});
-            this.statusStrip.Location = new System.Drawing.Point(0, 701);
+            this.statusStrip.Location = new System.Drawing.Point(0, 214);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.statusStrip.Size = new System.Drawing.Size(1204, 29);
+            this.statusStrip.Size = new System.Drawing.Size(883, 29);
             this.statusStrip.TabIndex = 29;
             this.statusStrip.Text = "statusStrip";
             // 
@@ -1365,7 +1365,7 @@
             this.dockArea.MinimumSize = new System.Drawing.Size(274, 274);
             this.dockArea.Name = "dockArea";
             this.dockArea.Padding = new System.Windows.Forms.Padding(2);
-            this.dockArea.Size = new System.Drawing.Size(1204, 677);
+            this.dockArea.Size = new System.Drawing.Size(883, 274);
             this.dockArea.TabIndex = 90;
             // 
             // panelDockArea
@@ -1374,7 +1374,7 @@
             this.panelDockArea.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDockArea.Location = new System.Drawing.Point(0, 24);
             this.panelDockArea.Name = "panelDockArea";
-            this.panelDockArea.Size = new System.Drawing.Size(1204, 677);
+            this.panelDockArea.Size = new System.Drawing.Size(883, 190);
             this.panelDockArea.TabIndex = 26;
             // 
             // FormMain
@@ -1382,7 +1382,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1204, 730);
+            this.ClientSize = new System.Drawing.Size(883, 243);
             this.Controls.Add(this.panelDockArea);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);

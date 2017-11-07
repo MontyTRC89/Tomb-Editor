@@ -96,7 +96,7 @@ namespace DarkUI.Controls
 
         public void FixPosition()
         {
-            if(Parent != null)
+            if(!DesignMode && Parent != null)
             {
                 int X = Location.X;
                 int Y = Location.Y;
@@ -202,6 +202,12 @@ namespace DarkUI.Controls
             // Draw grip
             using (TextureBrush brush = new TextureBrush(MenuIcons.grip_fill, WrapMode.Tile))
                 g.FillRectangle(brush, GetGripBounds());
+        }
+
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            base.OnLocationChanged(e);
+            FixPosition();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

@@ -33,6 +33,7 @@ namespace TombEditor.ToolWindows
 
             // Update 3D view
             EditorActions.SwitchMode(EditorMode.Geometry);
+            EditorActions.SwitchTool(new EditorTool() { Tool = EditorToolType.Selection, Texture = EditorTextureType.Normal, TextureUVFixer = true });
         }
 
         public void AddToolbox(DarkFloatingToolbox toolbox)
@@ -185,17 +186,17 @@ namespace TombEditor.ToolWindows
 
         private void butTextureFloor_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture, BlockFaceType.Floor);
         }
 
         private void butTextureCeiling_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture, BlockFaceType.Ceiling);
         }
 
         private void butTextureWalls_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture, BlockFaceType.Wall);
         }
 
         private void butAdditiveBlending_Click(object sender, EventArgs e)

@@ -365,7 +365,7 @@ namespace TombEditor.Geometry
             var normals = sector.GetTriangleNormals();
             var slopeDirections = sector.GetTriangleSlopeDirections();
 
-            if (slopeDirections[0] != SlopeDirection.None && slopeDirections[1] != SlopeDirection.None &&
+            if (slopeDirections[0] != Direction.None && slopeDirections[1] != Direction.None &&
                 slopeDirections[0] != slopeDirections[1])
             {
                 var diff = normals[0] - normals[1];
@@ -382,7 +382,7 @@ namespace TombEditor.Geometry
 
             for (int i = 0; i < 2; i++)
             {
-                if (slopeDirections[i] == SlopeDirection.None || slopeIsIllegal)
+                if (slopeDirections[i] == Direction.None || slopeIsIllegal)
                     continue;
 
                 RoomBlockPair lookupBlock = null;
@@ -391,7 +391,7 @@ namespace TombEditor.Geometry
 
                 switch (slopeDirections[i])
                 {
-                    case SlopeDirection.North:
+                    case Direction.North:
                         lookupBlock = GetBlockTryThroughPortal(x, z + 1);
                         heightsToCompare[0] = 0;
                         heightsToCompare[1] = 1;
@@ -399,7 +399,7 @@ namespace TombEditor.Geometry
                         heightsToCheck[1] = 2;
                         break;
 
-                    case SlopeDirection.East:
+                    case Direction.East:
                         lookupBlock = GetBlockTryThroughPortal(x + 1, z);
                         heightsToCompare[0] = 1;
                         heightsToCompare[1] = 2;
@@ -407,7 +407,7 @@ namespace TombEditor.Geometry
                         heightsToCheck[1] = 3;
                         break;
 
-                    case SlopeDirection.South:
+                    case Direction.South:
                         lookupBlock = GetBlockTryThroughPortal(x, z - 1);
                         heightsToCompare[0] = 2;
                         heightsToCompare[1] = 3;
@@ -415,7 +415,7 @@ namespace TombEditor.Geometry
                         heightsToCheck[1] = 0;
                         break;
 
-                    case SlopeDirection.West:
+                    case Direction.West:
                         lookupBlock = GetBlockTryThroughPortal(x - 1, z);
                         heightsToCompare[0] = 3;
                         heightsToCompare[1] = 0;
@@ -446,7 +446,7 @@ namespace TombEditor.Geometry
 
                     switch (slopeDirections[i])
                     {
-                        case SlopeDirection.North:
+                        case Direction.North:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
@@ -461,7 +461,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 3;
                             break;
-                        case SlopeDirection.East:
+                        case Direction.East:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
@@ -476,7 +476,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 0;
                             break;
-                        case SlopeDirection.South:
+                        case Direction.South:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
@@ -491,7 +491,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 1;
                             break;
-                        case SlopeDirection.West:
+                        case Direction.West:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
@@ -535,14 +535,14 @@ namespace TombEditor.Geometry
                             {
                                 if (sector.FloorSplitDirectionIsXEqualsZ)
                                 {
-                                    if (((slopeDirections[i] == SlopeDirection.North || slopeDirections[i] == SlopeDirection.West) && i == 0 && j == 1) ||
-                                        ((slopeDirections[i] == SlopeDirection.East || slopeDirections[i] == SlopeDirection.South) && i == 1 && j == 0))
+                                    if (((slopeDirections[i] == Direction.North || slopeDirections[i] == Direction.West) && i == 0 && j == 1) ||
+                                        ((slopeDirections[i] == Direction.East || slopeDirections[i] == Direction.South) && i == 1 && j == 0))
                                         continue;
                                 }
                                 else
                                 {
-                                    if ((slopeDirections[i] < SlopeDirection.South && i == 1 && j == 0) ||
-                                       (slopeDirections[i] >= SlopeDirection.South && i == 0 && j == 1))
+                                    if ((slopeDirections[i] < Direction.South && i == 1 && j == 0) ||
+                                       (slopeDirections[i] >= Direction.South && i == 0 && j == 1))
                                         continue;
                                 }
                             }
@@ -551,7 +551,7 @@ namespace TombEditor.Geometry
                             // Triangle is NOT considered illegal, if its slide direction is perpendicular to opposite triangle slide direction.
 
                             if (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(j) - heightAdjust) <= lowestPassableStep)
-                                if (lookupBlockSlopeDirections[j] != SlopeDirection.None && lookupBlockSlopeDirections[j] != slopeDirections[i])
+                                if (lookupBlockSlopeDirections[j] != Direction.None && lookupBlockSlopeDirections[j] != slopeDirections[i])
                                     if (((int)lookupBlockSlopeDirections[j] % 2) == ((int)slopeDirections[i] % 2))
                                         slopeIsIllegal = true;
                         }
@@ -574,6 +574,55 @@ namespace TombEditor.Geometry
         public bool IsFaceDefined(int x, int z, BlockFace face)
         {
             return _sectorFaceVertexVertexRange[x, z, (int)face].Count != 0;
+        }
+
+        public float GetFaceHeight(int x, int z, BlockFace face)
+        {
+            if(IsFaceDefined(x, z, face))
+            {
+                float min = float.MaxValue;
+                float max = float.MinValue;
+
+                var indices = GetFaceIndices(x, z, face);
+                foreach(var index in indices)
+                {
+                    min = Math.Min(_allVertices[index].Position.Y, min);
+                    max = Math.Max(_allVertices[index].Position.Y, max);
+                }
+                return (max - min);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public float GetFaceHighestPoint(int x, int z, BlockFace face)
+        {
+            float max = float.MinValue;
+
+            if (IsFaceDefined(x, z, face))
+            {
+                var indices = GetFaceIndices(x, z, face);
+                foreach (var index in indices)
+                    max = Math.Max(_allVertices[index].Position.Y, max);
+            }
+
+            return max;
+        }
+
+        public float GetFaceLowestPoint(int x, int z, BlockFace face)
+        {
+            float min = float.MaxValue;
+
+            if (IsFaceDefined(x, z, face))
+            {
+                var indices = GetFaceIndices(x, z, face);
+                foreach (var index in indices)
+                    min = Math.Min(_allVertices[index].Position.Y, min);
+            }
+
+            return min;
         }
 
         public VertexRange GetFaceVertexRange(int x, int z, BlockFace face)

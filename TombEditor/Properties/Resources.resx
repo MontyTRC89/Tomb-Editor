@@ -316,33 +316,6 @@
   <data name="TextureWalls2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\TextureWalls2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="subtoolbar_icons8_Brush_48_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Brush-48 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="subtoolbar_icons8_Bulldozer_Filled_50_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Bulldozer Filled-50 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="subtoolbar_icons8_Fill_Color_48_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Fill Color-48 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="subtoolbar_icons8_Minecraft_Shovel_Filled_50_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Minecraft Shovel Filled-50 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="subtoolbar_icons8_Pencil_48_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Pencil-48 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="subtoolbar_icons8_Select_None_50_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Select None-50 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="subtoolbar_icons8_Eraser_48_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-Eraser-48 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="subtoolbar_icons8_blur_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-blur copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="subtoolbar_icons8_invisible_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3dview_subtoolbar_icons\subtoolbar_icons8-invisible copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Obelisk_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Obelisk-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -351,5 +324,44 @@
   </data>
   <data name="Slide_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Slide-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Bulldozer_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Bulldozer_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Eraser_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Eraser-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Fill_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Fill-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_GroupTexture_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_GroupTexture-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Invisible_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Invisible-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Normal_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Normal-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Paint_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Paint-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Pencil_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Pencil-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Selection_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Selection-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Shovel_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Shovel-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Smooth_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Smooth-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_UVFixer_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_UVFixer-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Toolbox_Vertex_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\Toolbox_Vertex-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
