@@ -42,6 +42,7 @@
             this.flipYColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.flipZColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.flipUV_Vcolumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.invertFacesColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -65,7 +66,8 @@
             this.flipXColumn,
             this.flipYColumn,
             this.flipZColumn,
-            this.flipUV_Vcolumn});
+            this.flipUV_Vcolumn,
+            this.invertFacesColumn});
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowHeadersWidth = 41;
@@ -101,7 +103,7 @@
             this.pathColumn.DataPropertyName = "Path";
             this.pathColumn.HeaderText = "Path";
             this.pathColumn.Name = "pathColumn";
-            this.pathColumn.Width = 54;
+            this.pathColumn.Width = 53;
             // 
             // searchButtonColumn
             // 
@@ -123,7 +125,7 @@
             this.errorMessageColumn.DataPropertyName = "ErrorMessage";
             this.errorMessageColumn.HeaderText = "Message";
             this.errorMessageColumn.Name = "errorMessageColumn";
-            this.errorMessageColumn.Width = 76;
+            this.errorMessageColumn.Width = 74;
             // 
             // swapXYColumn
             // 
@@ -183,6 +185,13 @@
             this.flipUV_Vcolumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.flipUV_Vcolumn.Width = 44;
             // 
+            // invertFacesColumn
+            // 
+            this.invertFacesColumn.DataPropertyName = "InvertFaces";
+            this.invertFacesColumn.HeaderText = "Inv. F.";
+            this.invertFacesColumn.Name = "invertFacesColumn";
+            this.invertFacesColumn.Width = 44;
+            // 
             // ImportedGeometryManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -211,5 +220,6 @@
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipYColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipZColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn flipUV_Vcolumn;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn invertFacesColumn;
     }
 }

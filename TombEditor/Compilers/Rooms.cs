@@ -307,7 +307,8 @@ namespace TombEditor.Compilers
                                     continue;
 
                                 if (trVertex.Position.X >= (portal.Area.X - 1) * 1024 && trVertex.Position.X <= (portal.Area.Right + 1) * 1024 &&
-                                    trVertex.Position.Z >= (portal.Area.Y - 1) * 1024 && trVertex.Position.Z <= (portal.Area.Bottom + 1) * 1024)
+                                    trVertex.Position.Z >= (portal.Area.Y - 1) * 1024 && trVertex.Position.Z <= (portal.Area.Bottom + 1) * 1024 &&
+                                    -(room.GetLowestCorner() * 256 + room.WorldPos.Y) - 512.0f <= trVertex.Position.Y)
                                 {
                                     trVertex.Attributes = 0x4000;
                                 }

@@ -48,7 +48,7 @@ namespace TombEditor.Geometry
         public Vector3 Normal;
         [VertexElement("TEXCOORD", 1, SharpDX.DXGI.Format.R32G32_Float, 36)]
         public Vector2 Shade;
-        [VertexElement("COLOR", 1, SharpDX.DXGI.Format.R32G32B32A32_Float, 44)]
+        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 44)]
         public Vector4 Color;
 
         Vector3 IVertex.Position => Position;
@@ -99,6 +99,7 @@ namespace TombEditor.Geometry
         public bool FlipY { get; set; }
         public bool FlipZ { get; set; }
         public bool FlipUV_V { get; set; }
+        public bool InvertFaces { get; set; }
     }
 
     public class ImportedGeometry : ICloneable, IEquatable<ImportedGeometry>
@@ -148,7 +149,8 @@ namespace TombEditor.Geometry
                     FlipX = info.FlipX,
                     FlipY = info.FlipY,
                     FlipZ = info.FlipZ,
-                    FlipUV_V = info.FlipUV_V
+                    FlipUV_V = info.FlipUV_V,
+                    InvertFaces = info.InvertFaces
                 };
                 var importer = new AssimpImporter(settingsIO, (absoluteTexturePath) =>
                 {

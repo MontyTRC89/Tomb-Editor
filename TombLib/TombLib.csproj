@@ -109,6 +109,7 @@
       <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="GeometryIO\Importers\AssimpImporter.cs" />
+    <Compile Include="GeometryIO\Importers\MetasequoiaImporter.cs" />
     <Compile Include="GeometryIO\IOGeometrySettings.cs" />
     <Compile Include="GeometryIO\IOMaterial.cs" />
     <Compile Include="GeometryIO\IOMesh.cs" />

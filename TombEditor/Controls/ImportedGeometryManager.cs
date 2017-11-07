@@ -92,6 +92,12 @@ namespace TombEditor.Controls
                 set { Set((ref ImportedGeometryInfo info) => info.FlipUV_V = value); }
             }
 
+            public bool InvertFaces
+            {
+                get { return Object.Info.InvertFaces; }
+                set { Set((ref ImportedGeometryInfo info) => info.InvertFaces = value); }
+            }
+
             public string ErrorMessage
             {
                 get
@@ -134,7 +140,15 @@ namespace TombEditor.Controls
                     if (string.IsNullOrEmpty(path))
                         return null;
 
-                    var info = ImportedGeometryInfo.Default;
+              /*  using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                {
+                    foreach (var preset in IOSettingsPresets.SettingsPresets)
+                        settingsDialog.AddPreset(preset);
+
+                    if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
+                    {*/
+
+                        var info = ImportedGeometryInfo.Default;
                     info.Path = path;
                     info.Name = Path.GetFileNameWithoutExtension(path);
 
