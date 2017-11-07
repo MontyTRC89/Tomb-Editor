@@ -186,17 +186,17 @@ namespace TombEditor.ToolWindows
 
         private void butTextureFloor_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture, BlockFaceType.Floor);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Floor);
         }
 
         private void butTextureCeiling_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture, BlockFaceType.Ceiling);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Ceiling);
         }
 
         private void butTextureWalls_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture, BlockFaceType.Wall);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
         }
 
         private void butAdditiveBlending_Click(object sender, EventArgs e)

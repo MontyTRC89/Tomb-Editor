@@ -773,17 +773,16 @@ namespace TombEditor.Controls
                                             EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                             break;
                                         }
-                                        else if (ModifierKeys.HasFlag(Keys.Alt))
-                                        {
-                                            EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
-                                            break;
-                                        }
                                     }
 
-                                    if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None)
+                                    if (ModifierKeys.HasFlag(Keys.Alt))
+                                    {
+                                        EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                                        break;
+                                    }
+                                    else if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None)
                                     {
                                         var usedTexture = _editor.SelectedTexture;
-                                        var realArea = (_editor.SelectedSectors.Valid ? _editor.SelectedSectors.Area : new SharpDX.Rectangle(0, 0, _editor.SelectedRoom.NumXSectors - 1, _editor.SelectedRoom.NumZSectors - 1));
 
                                         switch (_editor.Tool.Texture)
                                         {
@@ -804,16 +803,16 @@ namespace TombEditor.Controls
                                         {
                                             case EditorToolType.Fill:
                                                 if (newBlockPicking.IsFloorHorizontalPlane)
-                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Floor);
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, BlockFaceType.Floor);
                                                 else if (newBlockPicking.IsCeilingHorizontalPlane)
-                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Ceiling);
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, BlockFaceType.Ceiling);
                                                 else if (newBlockPicking.IsVerticalPlane)
-                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, realArea, usedTexture, BlockFaceType.Wall);
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, BlockFaceType.Wall);
                                                 break;
 
                                             case EditorToolType.Group:
                                                 if (_editor.SelectedSectors.Valid)
-                                                    EditorActions.TexturizeGroup(_editor.SelectedRoom, realArea, usedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Alt));
+                                                    EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Shift));
                                                 break;
 
                                             case EditorToolType.Brush:

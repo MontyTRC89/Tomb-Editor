@@ -1441,8 +1441,10 @@ namespace TombEditor
             }
         }
 
-        public static void TexturizeGroup(Room room, Rectangle area, TextureArea texture, BlockFace pickedFace, bool subdivideWalls = false, bool unifyHeight = false)
+        public static void TexturizeGroup(Room room, SectorSelection selection, TextureArea texture, BlockFace pickedFace, bool subdivideWalls = false, bool unifyHeight = false)
         {
+            Rectangle area = (selection.Valid ? selection.Area : new Rectangle(0, 0, _editor.SelectedRoom.NumXSectors - 1, _editor.SelectedRoom.NumZSectors - 1));
+
             if (pickedFace < BlockFace.Floor)
             {
                 int xSubs = (subdivideWalls == true ? area.Right - area.X : 0);
@@ -1564,8 +1566,10 @@ namespace TombEditor
             _editor.RoomTextureChange(room);
         }
 
-        public static void TexturizeAll(Room room, Rectangle area, TextureArea texture, BlockFaceType type)
+        public static void TexturizeAll(Room room, SectorSelection selection, TextureArea texture, BlockFaceType type)
         {
+            Rectangle area = (selection.Valid ? selection.Area : new Rectangle(0, 0, _editor.SelectedRoom.NumXSectors - 1, _editor.SelectedRoom.NumZSectors - 1));
+
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
