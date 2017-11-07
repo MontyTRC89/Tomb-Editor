@@ -4,6 +4,7 @@
 	float2 UV : TEXCOORD0;
 	float3 Normal : NORMAL0;
 	float2 Shade : TEXCOORD1;
+	float4 Color : COLOR0;
 };
 
 struct PixelInputType

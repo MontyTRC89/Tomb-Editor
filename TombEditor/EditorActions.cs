@@ -2074,13 +2074,14 @@ namespace TombEditor
                             var model = new IOModel();
                             var mesh = new IOMesh();
                             var room = _editor.SelectedRoom;
+                            var deltaPos = new Vector3(room.GetLocalCenter().X, 0, room.GetLocalCenter().Z);
 
                             var vertices = room.GetRoomVertices();
                             for (var i = 0; i < vertices.Count; i++)
                             {
-                                mesh.Positions.Add(vertices[i].Position);
+                                mesh.Positions.Add(vertices[i].Position - deltaPos);
                                 mesh.UV.Add(vertices[i].UV);
-                                mesh.Colors.Add(vertices[i].FaceColor);
+                                mesh.Colors.Add(vertices[i].Color);
                             }
 
                             for (var z = 0; z < room.NumZSectors; z++)

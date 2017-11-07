@@ -116,6 +116,7 @@ namespace TombLib.GeometryIO
             cbPremultiplyUV.Checked = settings.PremultiplyUV;
             cbWrapUV.Checked = settings.WrapUV;
             nmScale.Value = (decimal)settings.Scale;
+            cbInvertFaces.Checked = settings.InvertFaces;
         }
 
         private void UpdateSettings()
@@ -130,6 +131,7 @@ namespace TombLib.GeometryIO
             Settings.PremultiplyUV = cbPremultiplyUV.Checked;
             Settings.WrapUV = cbWrapUV.Checked;
             Settings.Scale = (float)nmScale.Value;
+            Settings.InvertFaces = cbInvertFaces.Checked;
         }
 
         private void butOK_Click(object sender, EventArgs e)

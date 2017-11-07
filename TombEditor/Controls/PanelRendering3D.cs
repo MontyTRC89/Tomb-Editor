@@ -786,7 +786,7 @@ namespace TombEditor.Controls
 
                 case MouseButtons.Left:
                     if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
-                    { // Process gizmo
+                    { 
                     }
                     else if (_doSectorSelection)
                     { // Calculate block selection
@@ -809,6 +809,7 @@ namespace TombEditor.Controls
                         if (newPicking != null)
                             EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
                     }
+                    Invalidate();
                     break;
             }
 
@@ -1678,25 +1679,22 @@ namespace TombEditor.Controls
         {
             _device.SetBlendState(_device.BlendStates.Opaque);
 
-            Effect geometryEffect = _deviceManager.Effects["RoomGeometry"];
+            var geometryEffect = _deviceManager.Effects["RoomGeometry"];
 
             ImportedGeometryInstance _lastObject = null;
 
-            for (int k = 0; k < _roomGeometryToDraw.Count; k++)
+            for (var k = 0; k < _roomGeometryToDraw.Count; k++)
             {
-                ImportedGeometryInstance instance = _roomGeometryToDraw[k];
+                var instance = _roomGeometryToDraw[k];
                 if (instance.Model?.DirectXModel == null)
                     continue;
 
-                ImportedGeometry.Model model = instance.Model.DirectXModel;
+                var model = instance.Model.DirectXModel;
+                var room = instance.Room;
 
-                //_debug.NumMoveables++;
-
-                Room room = instance.Room;
-
-                for (int i = 0; i < model.Meshes.Count; i++)
+                for (var i = 0; i < model.Meshes.Count; i++)
                 {
-                    ImportedGeometryMesh mesh = model.Meshes[i];
+                    var mesh = model.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
 

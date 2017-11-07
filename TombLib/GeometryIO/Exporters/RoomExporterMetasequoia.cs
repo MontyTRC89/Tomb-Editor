@@ -60,12 +60,19 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("face " + mesh.Polygons.Count + " { ");
                 foreach (var poly in mesh.Polygons)
                 {
-                    var indices = poly.Indices;
+                    var indices = new List<int>();
+                    indices.Add(poly.Indices[0]);
+                    indices.Add(poly.Indices[1]);
+                    indices.Add(poly.Indices[2]);
+                    if (poly.Shape == IOPolygonShape.Quad) indices.Add(poly.Indices[3]);
+
+                    // Change vertex winding
+                    if (_settings.InvertFaces) indices.Reverse();
 
                     var v1 = indices[0];
                     var v2 = indices[1];
                     var v3 = indices[2];
-                    var v4 = (indices.Count > 3 ? indices[3] : 0);
+                    var v4 = (poly.Shape == IOPolygonShape.Quad ? indices[3] : 0);
 
                     var uv1 = GetUV(ApplyUVTransform(mesh.UV[v1], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
                     var uv2 = GetUV(ApplyUVTransform(mesh.UV[v2], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
@@ -81,7 +88,6 @@ namespace TombLib.GeometryIO.Exporters
                         writer.Write("M(0) ");
                         writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + ") ");
                         writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + ") ");
-
                     }
                     else
                     {

@@ -34,6 +34,7 @@
             this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.cbInvertFaces = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nmScale)).BeginInit();
             this.panelContents.SuspendLayout();
             this.darkGroupBox3.SuspendLayout();
@@ -43,7 +44,7 @@
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(117, 214);
+            this.butOK.Location = new System.Drawing.Point(117, 246);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(84, 23);
             this.butOK.TabIndex = 0;
@@ -53,7 +54,7 @@
             // butCancel
             // 
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(207, 214);
+            this.butCancel.Location = new System.Drawing.Point(207, 246);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(84, 23);
             this.butCancel.TabIndex = 1;
@@ -187,7 +188,7 @@
             // 
             this.lblPreset.AutoSize = true;
             this.lblPreset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblPreset.Location = new System.Drawing.Point(3, 174);
+            this.lblPreset.Location = new System.Drawing.Point(3, 209);
             this.lblPreset.Name = "lblPreset";
             this.lblPreset.Size = new System.Drawing.Size(41, 13);
             this.lblPreset.TabIndex = 5;
@@ -196,7 +197,7 @@
             // cmbPresetList
             // 
             this.cmbPresetList.FormattingEnabled = true;
-            this.cmbPresetList.Location = new System.Drawing.Point(50, 170);
+            this.cmbPresetList.Location = new System.Drawing.Point(50, 205);
             this.cmbPresetList.Name = "cmbPresetList";
             this.cmbPresetList.Size = new System.Drawing.Size(227, 23);
             this.cmbPresetList.TabIndex = 6;
@@ -213,7 +214,7 @@
             this.panelContents.Location = new System.Drawing.Point(8, 8);
             this.panelContents.Name = "panelContents";
             this.panelContents.SectionHeader = null;
-            this.panelContents.Size = new System.Drawing.Size(283, 200);
+            this.panelContents.Size = new System.Drawing.Size(283, 232);
             this.panelContents.TabIndex = 7;
             // 
             // darkGroupBox3
@@ -223,7 +224,7 @@
             this.darkGroupBox3.Controls.Add(this.cbWrapUV);
             this.darkGroupBox3.Location = new System.Drawing.Point(126, 62);
             this.darkGroupBox3.Name = "darkGroupBox3";
-            this.darkGroupBox3.Size = new System.Drawing.Size(151, 102);
+            this.darkGroupBox3.Size = new System.Drawing.Size(151, 137);
             this.darkGroupBox3.TabIndex = 8;
             this.darkGroupBox3.TabStop = false;
             this.darkGroupBox3.Text = "Texture mapping";
@@ -241,6 +242,7 @@
             // 
             // darkGroupBox1
             // 
+            this.darkGroupBox1.Controls.Add(this.cbInvertFaces);
             this.darkGroupBox1.Controls.Add(this.cbSwapXY);
             this.darkGroupBox1.Controls.Add(this.cbFlipZ);
             this.darkGroupBox1.Controls.Add(this.cbSwapXZ);
@@ -249,10 +251,19 @@
             this.darkGroupBox1.Controls.Add(this.cbFlipX);
             this.darkGroupBox1.Location = new System.Drawing.Point(6, 6);
             this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(114, 158);
+            this.darkGroupBox1.Size = new System.Drawing.Size(114, 193);
             this.darkGroupBox1.TabIndex = 8;
             this.darkGroupBox1.TabStop = false;
             this.darkGroupBox1.Text = "Axis";
+            // 
+            // cbInvertFaces
+            // 
+            this.cbInvertFaces.AutoSize = true;
+            this.cbInvertFaces.Location = new System.Drawing.Point(6, 159);
+            this.cbInvertFaces.Name = "cbInvertFaces";
+            this.cbInvertFaces.Size = new System.Drawing.Size(84, 17);
+            this.cbInvertFaces.TabIndex = 6;
+            this.cbInvertFaces.Text = "Invert faces";
             // 
             // GeometryIOSettingsDialog
             // 
@@ -261,7 +272,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(298, 244);
+            this.ClientSize = new System.Drawing.Size(298, 281);
             this.Controls.Add(this.panelContents);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
@@ -307,5 +318,6 @@
         private DarkUI.Controls.DarkGroupBox darkGroupBox3;
         private DarkUI.Controls.DarkGroupBox darkGroupBox2;
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
+        private DarkUI.Controls.DarkCheckBox cbInvertFaces;
     }
 }

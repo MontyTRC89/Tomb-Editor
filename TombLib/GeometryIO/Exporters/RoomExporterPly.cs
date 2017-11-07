@@ -64,7 +64,15 @@ namespace TombLib.GeometryIO.Exporters
                 // Save faces
                 foreach (var poly in mesh.Polygons)
                 {
-                    var indices = poly.Indices;
+                    var indices = new List<int>();
+                    indices.Add(poly.Indices[0]);
+                    indices.Add(poly.Indices[1]);
+                    indices.Add(poly.Indices[2]);
+                    if (poly.Shape == IOPolygonShape.Quad) indices.Add(poly.Indices[3]);
+
+                    // Change vertex winding
+                    if (_settings.InvertFaces) indices.Reverse();
+
                     var v1 = indices[0];
                     var v2 = indices[1];
                     var v3 = indices[2];
