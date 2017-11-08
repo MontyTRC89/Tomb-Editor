@@ -178,7 +178,7 @@ namespace TombEditor
             this.tooManyFramesWarning.BackColor = System.Drawing.Color.Firebrick;
             this.tooManyFramesWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tooManyFramesWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tooManyFramesWarning.Image = global::TombEditor.Properties.Resources.IllegalSlope1_16;
+            this.tooManyFramesWarning.Image = global::TombEditor.Properties.Resources.general_Warning_16;
             this.tooManyFramesWarning.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.tooManyFramesWarning.Location = new System.Drawing.Point(371, 162);
             this.tooManyFramesWarning.Name = "tooManyFramesWarning";
