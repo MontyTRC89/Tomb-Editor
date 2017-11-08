@@ -18,21 +18,21 @@
             this.components = new System.ComponentModel.Container();
             this.panel2DGrid = new TombEditor.Controls.Panel2DGrid();
             this.panelRight = new System.Windows.Forms.Panel();
-            this.butCeiling = new System.Windows.Forms.Button();
+            this.butCeiling = new DarkUI.Controls.DarkButton();
             this.butClimbPositiveZ = new DarkUI.Controls.DarkButton();
             this.butClimbPositiveX = new DarkUI.Controls.DarkButton();
             this.butClimbNegativeZ = new DarkUI.Controls.DarkButton();
             this.butClimbNegativeX = new DarkUI.Controls.DarkButton();
-            this.butNotWalkableBox = new System.Windows.Forms.Button();
-            this.butPortal = new System.Windows.Forms.Button();
+            this.butNotWalkableBox = new DarkUI.Controls.DarkButton();
+            this.butPortal = new DarkUI.Controls.DarkButton();
             this.butFlagTriggerTriggerer = new DarkUI.Controls.DarkButton();
-            this.butDeath = new System.Windows.Forms.Button();
+            this.butDeath = new DarkUI.Controls.DarkButton();
             this.butForceSolidFloor = new DarkUI.Controls.DarkButton();
-            this.butMonkey = new System.Windows.Forms.Button();
+            this.butMonkey = new DarkUI.Controls.DarkButton();
             this.butFlagBeetle = new DarkUI.Controls.DarkButton();
-            this.butBox = new System.Windows.Forms.Button();
-            this.butFloor = new System.Windows.Forms.Button();
-            this.butWall = new System.Windows.Forms.Button();
+            this.butBox = new DarkUI.Controls.DarkButton();
+            this.butFloor = new DarkUI.Controls.DarkButton();
+            this.butWall = new DarkUI.Controls.DarkButton();
             this.panel2DGrid_sub = new System.Windows.Forms.Panel();
             this.butDiagonalWall = new DarkUI.Controls.DarkButton();
             this.butDiagonalCeiling = new DarkUI.Controls.DarkButton();
@@ -80,10 +80,7 @@
             // 
             this.butCeiling.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.butCeiling.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butCeiling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
-            this.butCeiling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
-            this.butCeiling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butCeiling.BackColorUseGeneric = false;
             this.butCeiling.ForeColor = System.Drawing.Color.White;
             this.butCeiling.Location = new System.Drawing.Point(32, 0);
             this.butCeiling.Name = "butCeiling";
@@ -91,7 +88,6 @@
             this.butCeiling.TabIndex = 1;
             this.butCeiling.Text = "C";
             this.toolTip.SetToolTip(this.butCeiling, "Set sector ceiling");
-            this.butCeiling.UseVisualStyleBackColor = false;
             this.butCeiling.Click += new System.EventHandler(this.butCeiling_Click);
             // 
             // butClimbPositiveZ
@@ -100,7 +96,6 @@
             this.butClimbPositiveZ.Image = global::TombEditor.Properties.Resources.climb_north;
             this.butClimbPositiveZ.Location = new System.Drawing.Point(3, 140);
             this.butClimbPositiveZ.Name = "butClimbPositiveZ";
-            this.butClimbPositiveZ.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbPositiveZ.Size = new System.Drawing.Size(24, 24);
             this.butClimbPositiveZ.TabIndex = 10;
             this.toolTip.SetToolTip(this.butClimbPositiveZ, "Climb on North side");
@@ -112,7 +107,6 @@
             this.butClimbPositiveX.Image = global::TombEditor.Properties.Resources.climb_east;
             this.butClimbPositiveX.Location = new System.Drawing.Point(32, 168);
             this.butClimbPositiveX.Name = "butClimbPositiveX";
-            this.butClimbPositiveX.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbPositiveX.Size = new System.Drawing.Size(24, 24);
             this.butClimbPositiveX.TabIndex = 13;
             this.toolTip.SetToolTip(this.butClimbPositiveX, "Climb on East side");
@@ -124,7 +118,6 @@
             this.butClimbNegativeZ.Image = global::TombEditor.Properties.Resources.climb_south;
             this.butClimbNegativeZ.Location = new System.Drawing.Point(32, 140);
             this.butClimbNegativeZ.Name = "butClimbNegativeZ";
-            this.butClimbNegativeZ.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbNegativeZ.Size = new System.Drawing.Size(24, 24);
             this.butClimbNegativeZ.TabIndex = 11;
             this.toolTip.SetToolTip(this.butClimbNegativeZ, "Climb on South side");
@@ -136,7 +129,6 @@
             this.butClimbNegativeX.Image = global::TombEditor.Properties.Resources.climb_west;
             this.butClimbNegativeX.Location = new System.Drawing.Point(3, 168);
             this.butClimbNegativeX.Name = "butClimbNegativeX";
-            this.butClimbNegativeX.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbNegativeX.Size = new System.Drawing.Size(24, 24);
             this.butClimbNegativeX.TabIndex = 12;
             this.toolTip.SetToolTip(this.butClimbNegativeX, "Climb on West side");
@@ -146,10 +138,7 @@
             // 
             this.butNotWalkableBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butNotWalkableBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(150)))));
-            this.butNotWalkableBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butNotWalkableBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(75)))));
-            this.butNotWalkableBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(112)))));
-            this.butNotWalkableBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butNotWalkableBox.BackColorUseGeneric = false;
             this.butNotWalkableBox.ForeColor = System.Drawing.Color.White;
             this.butNotWalkableBox.Location = new System.Drawing.Point(32, 28);
             this.butNotWalkableBox.Name = "butNotWalkableBox";
@@ -157,17 +146,13 @@
             this.butNotWalkableBox.TabIndex = 3;
             this.butNotWalkableBox.Text = "N";
             this.toolTip.SetToolTip(this.butNotWalkableBox, "Not walkable");
-            this.butNotWalkableBox.UseVisualStyleBackColor = false;
             this.butNotWalkableBox.Click += new System.EventHandler(this.butNotWalkableBox_Click);
             // 
             // butPortal
             // 
             this.butPortal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butPortal.BackColor = System.Drawing.Color.Black;
-            this.butPortal.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butPortal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Black;
-            this.butPortal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
-            this.butPortal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butPortal.BackColorUseGeneric = false;
             this.butPortal.ForeColor = System.Drawing.Color.White;
             this.butPortal.Location = new System.Drawing.Point(3, 84);
             this.butPortal.Name = "butPortal";
@@ -175,15 +160,14 @@
             this.butPortal.TabIndex = 6;
             this.butPortal.Text = "P";
             this.toolTip.SetToolTip(this.butPortal, "Portal");
-            this.butPortal.UseVisualStyleBackColor = false;
             this.butPortal.Click += new System.EventHandler(this.butPortal_Click);
             // 
             // butFlagTriggerTriggerer
             // 
             this.butFlagTriggerTriggerer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butFlagTriggerTriggerer.BackColorUseGeneric = false;
             this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(32, 112);
             this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
-            this.butFlagTriggerTriggerer.Padding = new System.Windows.Forms.Padding(5);
             this.butFlagTriggerTriggerer.Size = new System.Drawing.Size(24, 24);
             this.butFlagTriggerTriggerer.TabIndex = 9;
             this.butFlagTriggerTriggerer.Text = "T";
@@ -194,10 +178,7 @@
             // 
             this.butDeath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butDeath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(240)))), ((int)(((byte)(0)))));
-            this.butDeath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butDeath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
-            this.butDeath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(180)))), ((int)(((byte)(0)))));
-            this.butDeath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butDeath.BackColorUseGeneric = false;
             this.butDeath.ForeColor = System.Drawing.Color.White;
             this.butDeath.Location = new System.Drawing.Point(32, 56);
             this.butDeath.Name = "butDeath";
@@ -205,7 +186,6 @@
             this.butDeath.TabIndex = 5;
             this.butDeath.Text = "D";
             this.toolTip.SetToolTip(this.butDeath, "Death");
-            this.butDeath.UseVisualStyleBackColor = false;
             this.butDeath.Click += new System.EventHandler(this.butDeath_Click);
             // 
             // butForceSolidFloor
@@ -213,7 +193,6 @@
             this.butForceSolidFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butForceSolidFloor.Location = new System.Drawing.Point(3, 196);
             this.butForceSolidFloor.Name = "butForceSolidFloor";
-            this.butForceSolidFloor.Padding = new System.Windows.Forms.Padding(5);
             this.butForceSolidFloor.Size = new System.Drawing.Size(53, 29);
             this.butForceSolidFloor.TabIndex = 14;
             this.butForceSolidFloor.Text = "FSF";
@@ -224,10 +203,7 @@
             // 
             this.butMonkey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butMonkey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.butMonkey.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butMonkey.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.butMonkey.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.butMonkey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butMonkey.BackColorUseGeneric = false;
             this.butMonkey.ForeColor = System.Drawing.Color.White;
             this.butMonkey.Location = new System.Drawing.Point(3, 56);
             this.butMonkey.Name = "butMonkey";
@@ -235,7 +211,6 @@
             this.butMonkey.TabIndex = 4;
             this.butMonkey.Text = "M";
             this.toolTip.SetToolTip(this.butMonkey, "Monkeyswing");
-            this.butMonkey.UseVisualStyleBackColor = false;
             this.butMonkey.Click += new System.EventHandler(this.butMonkey_Click);
             // 
             // butFlagBeetle
@@ -243,7 +218,6 @@
             this.butFlagBeetle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butFlagBeetle.Location = new System.Drawing.Point(3, 112);
             this.butFlagBeetle.Name = "butFlagBeetle";
-            this.butFlagBeetle.Padding = new System.Windows.Forms.Padding(5);
             this.butFlagBeetle.Size = new System.Drawing.Size(24, 24);
             this.butFlagBeetle.TabIndex = 8;
             this.butFlagBeetle.Text = "B";
@@ -254,27 +228,20 @@
             // 
             this.butBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.butBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.butBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.butBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butBox.BackColorUseGeneric = false;
             this.butBox.ForeColor = System.Drawing.Color.White;
             this.butBox.Location = new System.Drawing.Point(3, 28);
             this.butBox.Name = "butBox";
             this.butBox.Size = new System.Drawing.Size(24, 24);
             this.butBox.TabIndex = 2;
             this.butBox.Text = "B";
-            this.butBox.UseVisualStyleBackColor = false;
             this.butBox.Click += new System.EventHandler(this.butBox_Click);
             // 
             // butFloor
             // 
             this.butFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.butFloor.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butFloor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
-            this.butFloor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
-            this.butFloor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butFloor.BackColorUseGeneric = false;
             this.butFloor.ForeColor = System.Drawing.Color.White;
             this.butFloor.Location = new System.Drawing.Point(3, 0);
             this.butFloor.Name = "butFloor";
@@ -282,17 +249,13 @@
             this.butFloor.TabIndex = 0;
             this.butFloor.Text = "F";
             this.toolTip.SetToolTip(this.butFloor, "Set sector floor");
-            this.butFloor.UseVisualStyleBackColor = false;
             this.butFloor.Click += new System.EventHandler(this.butFloor_Click);
             // 
             // butWall
             // 
             this.butWall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butWall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
-            this.butWall.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butWall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(80)))), ((int)(((byte)(0)))));
-            this.butWall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
-            this.butWall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butWall.BackColorUseGeneric = false;
             this.butWall.ForeColor = System.Drawing.Color.White;
             this.butWall.Location = new System.Drawing.Point(32, 84);
             this.butWall.Name = "butWall";
@@ -300,7 +263,6 @@
             this.butWall.TabIndex = 7;
             this.butWall.Text = "W";
             this.toolTip.SetToolTip(this.butWall, "Wall");
-            this.butWall.UseVisualStyleBackColor = false;
             this.butWall.Click += new System.EventHandler(this.butWall_Click);
             // 
             // panel2DGrid_sub
@@ -321,7 +283,6 @@
             this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.DiagonalWall2_16;
             this.butDiagonalWall.Location = new System.Drawing.Point(192, 0);
             this.butDiagonalWall.Name = "butDiagonalWall";
-            this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
             this.butDiagonalWall.Size = new System.Drawing.Size(90, 24);
             this.butDiagonalWall.TabIndex = 17;
             this.butDiagonalWall.Text = "Diag wall";
@@ -336,7 +297,6 @@
             this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.StepCeiling_16;
             this.butDiagonalCeiling.Location = new System.Drawing.Point(97, 0);
             this.butDiagonalCeiling.Name = "butDiagonalCeiling";
-            this.butDiagonalCeiling.Padding = new System.Windows.Forms.Padding(5);
             this.butDiagonalCeiling.Size = new System.Drawing.Size(90, 24);
             this.butDiagonalCeiling.TabIndex = 16;
             this.butDiagonalCeiling.Text = "Ceiling step";
@@ -350,7 +310,6 @@
             this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.StepFloor_1_16;
             this.butDiagonalFloor.Location = new System.Drawing.Point(2, 0);
             this.butDiagonalFloor.Name = "butDiagonalFloor";
-            this.butDiagonalFloor.Padding = new System.Windows.Forms.Padding(5);
             this.butDiagonalFloor.Size = new System.Drawing.Size(90, 24);
             this.butDiagonalFloor.TabIndex = 15;
             this.butDiagonalFloor.Text = "Floor step";
@@ -398,21 +357,21 @@
         #endregion
         private Controls.Panel2DGrid panel2DGrid;
         private System.Windows.Forms.Panel panelRight;
-        private System.Windows.Forms.Button butCeiling;
+        private DarkUI.Controls.DarkButton butCeiling;
         private DarkUI.Controls.DarkButton butClimbPositiveZ;
         private DarkUI.Controls.DarkButton butClimbPositiveX;
         private DarkUI.Controls.DarkButton butClimbNegativeZ;
         private DarkUI.Controls.DarkButton butClimbNegativeX;
-        private System.Windows.Forms.Button butNotWalkableBox;
-        private System.Windows.Forms.Button butPortal;
+        private DarkUI.Controls.DarkButton butNotWalkableBox;
+        private DarkUI.Controls.DarkButton butPortal;
         private DarkUI.Controls.DarkButton butFlagTriggerTriggerer;
-        private System.Windows.Forms.Button butDeath;
+        private DarkUI.Controls.DarkButton butDeath;
         private DarkUI.Controls.DarkButton butForceSolidFloor;
-        private System.Windows.Forms.Button butMonkey;
+        private DarkUI.Controls.DarkButton butMonkey;
         private DarkUI.Controls.DarkButton butFlagBeetle;
-        private System.Windows.Forms.Button butBox;
-        private System.Windows.Forms.Button butFloor;
-        private System.Windows.Forms.Button butWall;
+        private DarkUI.Controls.DarkButton butBox;
+        private DarkUI.Controls.DarkButton butFloor;
+        private DarkUI.Controls.DarkButton butWall;
         private System.Windows.Forms.Panel panel2DGrid_sub;
         private DarkUI.Controls.DarkButton butDiagonalWall;
         private DarkUI.Controls.DarkButton butDiagonalCeiling;
