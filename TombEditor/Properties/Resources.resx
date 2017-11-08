@@ -397,4 +397,7 @@
   <data name="toolbox_Vertex_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_toolbox\toolbox_Vertex-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="sectortype_ForceSolidFloor_16_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_ForceSolidFloor-16 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

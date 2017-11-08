@@ -660,6 +660,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap sectortype_ForceSolidFloor_16_copy {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_ForceSolidFloor_16_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap sectortype_Monkey_16 {
             get {
                 object obj = ResourceManager.GetObject("sectortype_Monkey_16", resourceCulture);

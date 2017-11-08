@@ -146,11 +146,11 @@
             // butForceSolidFloor
             // 
             this.butForceSolidFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butForceSolidFloor.Image = global::TombEditor.Properties.Resources.sectortype_ForceSolidFloor_16_copy;
             this.butForceSolidFloor.Location = new System.Drawing.Point(3, 196);
             this.butForceSolidFloor.Name = "butForceSolidFloor";
             this.butForceSolidFloor.Size = new System.Drawing.Size(53, 29);
             this.butForceSolidFloor.TabIndex = 14;
-            this.butForceSolidFloor.Text = "FSF";
             this.toolTip.SetToolTip(this.butForceSolidFloor, "Force solid floor");
             this.butForceSolidFloor.Click += new System.EventHandler(this.butForceSolidFloor_Click);
             // 
