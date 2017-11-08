@@ -79,7 +79,7 @@
             // butCeiling
             // 
             this.butCeiling.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(170)))), ((int)(((byte)(170)))));
             this.butCeiling.BackColorUseGeneric = false;
             this.butCeiling.ForeColor = System.Drawing.Color.White;
             this.butCeiling.Image = global::TombEditor.Properties.Resources.sectortype_Roof_16;
@@ -133,7 +133,7 @@
             // butDeath
             // 
             this.butDeath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butDeath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(240)))), ((int)(((byte)(0)))));
+            this.butDeath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(200)))), ((int)(((byte)(0)))));
             this.butDeath.BackColorUseGeneric = false;
             this.butDeath.ForeColor = System.Drawing.Color.White;
             this.butDeath.Image = global::TombEditor.Properties.Resources.sectortype_Death_16;
@@ -196,7 +196,7 @@
             // butFloor
             // 
             this.butFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.butFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(170)))), ((int)(((byte)(170)))));
             this.butFloor.BackColorUseGeneric = false;
             this.butFloor.ForeColor = System.Drawing.Color.White;
             this.butFloor.Image = global::TombEditor.Properties.Resources.sectortype_Floor_1_16;
@@ -210,7 +210,7 @@
             // butWall
             // 
             this.butWall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butWall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
+            this.butWall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
             this.butWall.BackColorUseGeneric = false;
             this.butWall.ForeColor = System.Drawing.Color.White;
             this.butWall.Image = global::TombEditor.Properties.Resources.sectortype_Wall_1_16;
