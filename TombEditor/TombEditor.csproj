@@ -484,20 +484,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icons_sectortype\sectortype_Wall_1-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_TriggerTriggerer-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_Roof-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_Portal -16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_NotWalkable-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_Monkey-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_Floor_1-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_Death-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_ClimbWest-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_ClimbSouth_1-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_ClimbNorth-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_ClimbEast-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_Box-16.png" />
-    <None Include="Resources\icons_sectortype\sectortype_Beetle-16.png" />
     <None Include="Editor\Textures\illegal_slope.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
