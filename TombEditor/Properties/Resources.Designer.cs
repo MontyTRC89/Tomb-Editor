@@ -193,16 +193,6 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DiagonalWall2_16 {
-            get {
-                object obj = ResourceManager.GetObject("DiagonalWall2_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap door_opened_16 {
             get {
                 object obj = ResourceManager.GetObject("door_opened_16", resourceCulture);
@@ -533,6 +523,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap sectortype_DiagonalWall2_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_DiagonalWall2_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap sectortype_Floor_1_16 {
             get {
                 object obj = ResourceManager.GetObject("sectortype_Floor_1_16", resourceCulture);
@@ -576,6 +576,26 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap sectortype_Roof_16 {
             get {
                 object obj = ResourceManager.GetObject("sectortype_Roof_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_StepCeiling_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_StepCeiling_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_StepFloor_1_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_StepFloor_1_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -666,26 +686,6 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap Spotlight_16 {
             get {
                 object obj = ResourceManager.GetObject("Spotlight_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap StepCeiling_16 {
-            get {
-                object obj = ResourceManager.GetObject("StepCeiling_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap StepFloor_1_16 {
-            get {
-                object obj = ResourceManager.GetObject("StepFloor_1_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -297,7 +297,7 @@
             // 
             this.butDiagonalFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.StepFloor_1_16;
+            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.sectortype_StepFloor_1_16;
             this.butDiagonalFloor.Location = new System.Drawing.Point(2, 0);
             this.butDiagonalFloor.Name = "butDiagonalFloor";
             this.butDiagonalFloor.Size = new System.Drawing.Size(90, 24);
@@ -310,7 +310,7 @@
             // 
             this.butDiagonalWall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.DiagonalWall2_16;
+            this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.sectortype_DiagonalWall2_16;
             this.butDiagonalWall.Location = new System.Drawing.Point(192, 0);
             this.butDiagonalWall.Name = "butDiagonalWall";
             this.butDiagonalWall.Size = new System.Drawing.Size(90, 24);
@@ -324,7 +324,7 @@
             // 
             this.butDiagonalCeiling.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.StepCeiling_16;
+            this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.sectortype_StepCeiling_16;
             this.butDiagonalCeiling.Location = new System.Drawing.Point(97, 0);
             this.butDiagonalCeiling.Name = "butDiagonalCeiling";
             this.butDiagonalCeiling.Size = new System.Drawing.Size(90, 24);
