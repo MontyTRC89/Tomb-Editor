@@ -12,6 +12,7 @@ namespace DarkUI.Controls
     {
         #region Field Region
 
+        private bool _useGenericBackColor = true;
         private DarkButtonStyle _style = DarkButtonStyle.Normal;
         private DarkControlState _buttonState = DarkControlState.Normal;
 
@@ -52,6 +53,19 @@ namespace DarkUI.Controls
         {
             get { return base.Padding; }
             set { base.Padding = value; }
+        }
+
+        [Category("Appearance")]
+        [Description("Determines if system BackColor should be used or not.")]
+        [DefaultValue(true)]
+        public bool BackColorUseGeneric
+        {
+            get { return _useGenericBackColor; }
+            set
+            {
+                _useGenericBackColor = value;
+                Invalidate();
+            }
         }
 
         [Category("Appearance")]
@@ -320,7 +334,8 @@ namespace DarkUI.Controls
 
             var textColor = Colors.LightText;
             var borderColor = Colors.GreySelection;
-            var fillColor = _isDefault ? Colors.DarkBlueBackground : Colors.LightBackground;
+            var fillColor = _useGenericBackColor ? (_isDefault ? Colors.DarkBlueBackground : Colors.LightBackground) : BackColor;
+            var hoverColor = _useGenericBackColor ? (_isDefault ? Colors.BlueBackground : Colors.LighterBackground) : ControlPaint.Dark(BackColor);
 
             if (Enabled)
             {
@@ -333,7 +348,7 @@ namespace DarkUI.Controls
                         switch (ButtonState)
                         {
                             case DarkControlState.Hover:
-                                fillColor = _isDefault ? Colors.BlueBackground : Colors.LighterBackground;
+                                fillColor = hoverColor;
                                 break;
                             case DarkControlState.Pressed:
                                 fillColor = Colors.DarkBackground;

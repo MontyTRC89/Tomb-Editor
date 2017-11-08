@@ -292,7 +292,7 @@
             // 
             // butRoomUp
             // 
-            this.butRoomUp.Image = global::TombEditor.Properties.Resources.RoomRaise_16;
+            this.butRoomUp.Image = global::TombEditor.Properties.Resources.actions_RoomRaise_16;
             this.butRoomUp.Location = new System.Drawing.Point(259, 88);
             this.butRoomUp.Name = "butRoomUp";
             this.butRoomUp.Padding = new System.Windows.Forms.Padding(5);
@@ -303,7 +303,7 @@
             // 
             // butRoomDown
             // 
-            this.butRoomDown.Image = global::TombEditor.Properties.Resources.RoomLower_16;
+            this.butRoomDown.Image = global::TombEditor.Properties.Resources.actions_RoomLower_16;
             this.butRoomDown.Location = new System.Drawing.Point(259, 118);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Padding = new System.Windows.Forms.Padding(5);
@@ -314,7 +314,7 @@
             // 
             // butEditRoomName
             // 
-            this.butEditRoomName.Image = global::TombEditor.Properties.Resources.edit_16;
+            this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditRoomName.Location = new System.Drawing.Point(229, 28);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Padding = new System.Windows.Forms.Padding(5);
@@ -325,7 +325,7 @@
             // 
             // butDeleteRoom
             // 
-            this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.trash_16;
+            this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteRoom.Location = new System.Drawing.Point(259, 58);
             this.butDeleteRoom.Name = "butDeleteRoom";
             this.butDeleteRoom.Padding = new System.Windows.Forms.Padding(5);
@@ -336,7 +336,7 @@
             // 
             // butCropRoom
             // 
-            this.butCropRoom.Image = global::TombEditor.Properties.Resources.crop_16;
+            this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
             this.butCropRoom.Location = new System.Drawing.Point(259, 28);
             this.butCropRoom.Name = "butCropRoom";
             this.butCropRoom.Padding = new System.Windows.Forms.Padding(5);
@@ -347,7 +347,7 @@
             // 
             // butSplitRoom
             // 
-            this.butSplitRoom.Image = global::TombEditor.Properties.Resources.split_files_16;
+            this.butSplitRoom.Image = global::TombEditor.Properties.Resources.general_split_files_16;
             this.butSplitRoom.Location = new System.Drawing.Point(229, 88);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Padding = new System.Windows.Forms.Padding(5);
@@ -358,7 +358,7 @@
             // 
             // butCopyRoom
             // 
-            this.butCopyRoom.Image = global::TombEditor.Properties.Resources.copy_16;
+            this.butCopyRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.butCopyRoom.Location = new System.Drawing.Point(229, 58);
             this.butCopyRoom.Name = "butCopyRoom";
             this.butCopyRoom.Padding = new System.Windows.Forms.Padding(5);

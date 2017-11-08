@@ -444,7 +444,7 @@ namespace TombEditor.Controls
                 RectangleF drawArea = RectangleF.FromLTRB(drawStart.X, drawStart.Y, drawEnd.X, drawEnd.Y);
 
                 // Draw background
-                using (var textureBrush = new TextureBrush(Properties.Resources.TransparentBackground))
+                using (var textureBrush = new TextureBrush(Properties.Resources.misc_TransparentBackground))
                     e.Graphics.FillRectangle(textureBrush, drawArea);
 
                 // Switch interpolation based on current view scale

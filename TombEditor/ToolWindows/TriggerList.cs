@@ -40,6 +40,7 @@ namespace TombEditor.ToolWindows
                 (obj is Editor.SelectedRoomChangedEvent) ||
                 (obj is Editor.RoomSectorPropertiesChangedEvent))
             {
+                lstTriggers.BeginUpdate();
                 lstTriggers.Items.Clear();
                 
                 if ((_editor.Level != null) && _editor.SelectedSectors.Valid)
@@ -59,6 +60,7 @@ namespace TombEditor.ToolWindows
                         lstTriggers.Items.Add(trigger);
                     }
 
+                    lstTriggers.EndUpdate();
                 }
             }
 

@@ -45,7 +45,7 @@
             // butResetSearch
             //
             this.butResetSearch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butResetSearch.Image = global::TombEditor.Properties.Resources.undo_16;
+            this.butResetSearch.Image = global::TombEditor.Properties.Resources.general_undo_16;
             this.butResetSearch.Location = new System.Drawing.Point(5, 30);
             this.butResetSearch.Name = "butResetSearch";
             this.butResetSearch.Padding = new System.Windows.Forms.Padding(5);
@@ -58,7 +58,7 @@
             // butFindItem
             //
             this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butFindItem.Image = global::TombEditor.Properties.Resources.search_16;
+            this.butFindItem.Image = global::TombEditor.Properties.Resources.general_search_16;
             this.butFindItem.Location = new System.Drawing.Point(5, 1);
             this.butFindItem.Name = "butFindItem";
             this.butFindItem.Padding = new System.Windows.Forms.Padding(5);
@@ -89,7 +89,7 @@
             //
             // butItemsBack
             //
-            this.butItemsBack.Image = global::TombEditor.Properties.Resources.angle_left_16;
+            this.butItemsBack.Image = global::TombEditor.Properties.Resources.general_angle_left_16;
             this.butItemsBack.Location = new System.Drawing.Point(1, 0);
             this.butItemsBack.Name = "butItemsBack";
             this.butItemsBack.Padding = new System.Windows.Forms.Padding(5);
@@ -160,7 +160,7 @@
             //
             // butItemsNext
             //
-            this.butItemsNext.Image = global::TombEditor.Properties.Resources.angle_right_16;
+            this.butItemsNext.Image = global::TombEditor.Properties.Resources.general_angle_right_16;
             this.butItemsNext.Location = new System.Drawing.Point(3, 0);
             this.butItemsNext.Name = "butItemsNext";
             this.butItemsNext.Padding = new System.Windows.Forms.Padding(5);
@@ -170,7 +170,7 @@
             //
             // butAddItem
             //
-            this.butAddItem.Image = global::TombEditor.Properties.Resources.plus_math_16;
+            this.butAddItem.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAddItem.Location = new System.Drawing.Point(33, 0);
             this.butAddItem.Name = "butAddItem";
             this.butAddItem.Padding = new System.Windows.Forms.Padding(5);

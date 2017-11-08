@@ -82,7 +82,7 @@
             this.toolSelection.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolSelection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolSelection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolSelection.Image = global::TombEditor.Properties.Resources.Toolbox_Selection_16;
+            this.toolSelection.Image = global::TombEditor.Properties.Resources.toolbox_Selection_16;
             this.toolSelection.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolSelection.Name = "toolSelection";
             this.toolSelection.Size = new System.Drawing.Size(24, 20);
@@ -94,7 +94,7 @@
             this.toolBrush.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolBrush.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolBrush.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolBrush.Image = global::TombEditor.Properties.Resources.Toolbox_Paint_16;
+            this.toolBrush.Image = global::TombEditor.Properties.Resources.toolbox_Paint_16;
             this.toolBrush.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolBrush.Name = "toolBrush";
             this.toolBrush.Size = new System.Drawing.Size(24, 20);
@@ -107,7 +107,7 @@
             this.toolShovel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolShovel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolShovel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolShovel.Image = global::TombEditor.Properties.Resources.Toolbox_Shovel_16;
+            this.toolShovel.Image = global::TombEditor.Properties.Resources.toolbox_Shovel_16;
             this.toolShovel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolShovel.Name = "toolShovel";
             this.toolShovel.Size = new System.Drawing.Size(24, 20);
@@ -120,7 +120,7 @@
             this.toolPencil.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolPencil.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolPencil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolPencil.Image = global::TombEditor.Properties.Resources.Toolbox_Pencil_16;
+            this.toolPencil.Image = global::TombEditor.Properties.Resources.toolbox_Pencil_16;
             this.toolPencil.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolPencil.Name = "toolPencil";
             this.toolPencil.Size = new System.Drawing.Size(24, 20);
@@ -133,7 +133,7 @@
             this.toolFlatten.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolFlatten.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolFlatten.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolFlatten.Image = global::TombEditor.Properties.Resources.Toolbox_Bulldozer_1_16;
+            this.toolFlatten.Image = global::TombEditor.Properties.Resources.toolbox_Bulldozer_1_16;
             this.toolFlatten.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolFlatten.Name = "toolFlatten";
             this.toolFlatten.Size = new System.Drawing.Size(24, 20);
@@ -146,7 +146,7 @@
             this.toolSmooth.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolSmooth.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolSmooth.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolSmooth.Image = global::TombEditor.Properties.Resources.Toolbox_Smooth_16;
+            this.toolSmooth.Image = global::TombEditor.Properties.Resources.toolbox_Smooth_16;
             this.toolSmooth.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolSmooth.Name = "toolSmooth";
             this.toolSmooth.Size = new System.Drawing.Size(24, 20);
@@ -158,7 +158,7 @@
             this.toolFill.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolFill.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolFill.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolFill.Image = global::TombEditor.Properties.Resources.Toolbox_Fill_16;
+            this.toolFill.Image = global::TombEditor.Properties.Resources.toolbox_Fill_16;
             this.toolFill.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolFill.Name = "toolFill";
             this.toolFill.Size = new System.Drawing.Size(24, 20);
@@ -171,7 +171,7 @@
             this.toolGroup.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolGroup.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolGroup.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolGroup.Image = global::TombEditor.Properties.Resources.Toolbox_GroupTexture_16;
+            this.toolGroup.Image = global::TombEditor.Properties.Resources.toolbox_GroupTexture_16;
             this.toolGroup.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolGroup.Name = "toolGroup";
             this.toolGroup.Size = new System.Drawing.Size(24, 20);
@@ -183,7 +183,7 @@
             this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolEraser.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolEraser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolEraser.Image = global::TombEditor.Properties.Resources.Toolbox_Eraser_16;
+            this.toolEraser.Image = global::TombEditor.Properties.Resources.toolbox_Eraser_16;
             this.toolEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolEraser.Name = "toolEraser";
             this.toolEraser.Size = new System.Drawing.Size(24, 20);
@@ -195,7 +195,7 @@
             this.toolInvisibility.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolInvisibility.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolInvisibility.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolInvisibility.Image = global::TombEditor.Properties.Resources.Toolbox_Invisible_16;
+            this.toolInvisibility.Image = global::TombEditor.Properties.Resources.toolbox_Invisible_16;
             this.toolInvisibility.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolInvisibility.Name = "toolInvisibility";
             this.toolInvisibility.Size = new System.Drawing.Size(24, 20);
@@ -207,7 +207,7 @@
             this.toolUVFixer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolUVFixer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolUVFixer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolUVFixer.Image = global::TombEditor.Properties.Resources.Toolbox_UVFixer_16;
+            this.toolUVFixer.Image = global::TombEditor.Properties.Resources.toolbox_UVFixer_16;
             this.toolUVFixer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolUVFixer.Name = "toolUVFixer";
             this.toolUVFixer.Size = new System.Drawing.Size(24, 20);

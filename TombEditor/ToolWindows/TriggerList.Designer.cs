@@ -40,7 +40,7 @@
             // 
             // butAddTrigger
             // 
-            this.butAddTrigger.Image = global::TombEditor.Properties.Resources.plus_math_16;
+            this.butAddTrigger.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAddTrigger.Location = new System.Drawing.Point(3, 4);
             this.butAddTrigger.Name = "butAddTrigger";
             this.butAddTrigger.Padding = new System.Windows.Forms.Padding(5);
@@ -51,7 +51,7 @@
             // 
             // butEditTrigger
             // 
-            this.butEditTrigger.Image = global::TombEditor.Properties.Resources.edit_16;
+            this.butEditTrigger.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditTrigger.Location = new System.Drawing.Point(33, 4);
             this.butEditTrigger.Name = "butEditTrigger";
             this.butEditTrigger.Padding = new System.Windows.Forms.Padding(5);
@@ -62,7 +62,7 @@
             // 
             // butDeleteTrigger
             // 
-            this.butDeleteTrigger.Image = global::TombEditor.Properties.Resources.trash_16;
+            this.butDeleteTrigger.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteTrigger.Location = new System.Drawing.Point(63, 4);
             this.butDeleteTrigger.Name = "butDeleteTrigger";
             this.butDeleteTrigger.Padding = new System.Windows.Forms.Padding(5);

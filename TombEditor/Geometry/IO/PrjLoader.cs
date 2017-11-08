@@ -521,7 +521,7 @@ namespace TombEditor.Geometry.IO
                                     {
                                         Position = position,
                                         Color = new Vector3(lightR / 128.0f, lightG / 128.0f, lightB / 128.0f),
-                                        Enabled = lightOn == 0x01,
+                                        Enabled = true, //lightOn == 0x01,
                                         InnerRange = lightIn / 1024.0f,
                                         OuterRange = lightOut / 1024.0f,
                                         Intensity = lightIntensity / 8192.0f,
@@ -603,7 +603,7 @@ namespace TombEditor.Geometry.IO
 
                         room.WaterLevel = (byte)((flags1 & 0x0001) != 0 ? waterLevel + 1 : 0);
                         room.Reverberation = (Reverberation)reverb;
-                        room.ReflectionLevel = (flags1 & 0x0200) != 0 ? mistOrReflectionLevel : (byte)0;
+                        room.ReflectionLevel = (flags1 & 0x0200) != 0 ? (byte)(mistOrReflectionLevel + 1) : (byte)0;
                         room.MistLevel = (flags1 & 0x0100) != 0 ? mistOrReflectionLevel : (byte)0;
                         room.FlagQuickSand = (flags1 & 0x0004) != 0;
                         room.FlagHorizon = (flags1 & 0x0008) != 0;
