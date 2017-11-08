@@ -19,10 +19,6 @@
             this.panel2DGrid = new TombEditor.Controls.Panel2DGrid();
             this.panelRight = new System.Windows.Forms.Panel();
             this.butCeiling = new DarkUI.Controls.DarkButton();
-            this.butClimbPositiveZ = new DarkUI.Controls.DarkButton();
-            this.butClimbPositiveX = new DarkUI.Controls.DarkButton();
-            this.butClimbNegativeZ = new DarkUI.Controls.DarkButton();
-            this.butClimbNegativeX = new DarkUI.Controls.DarkButton();
             this.butNotWalkableBox = new DarkUI.Controls.DarkButton();
             this.butPortal = new DarkUI.Controls.DarkButton();
             this.butFlagTriggerTriggerer = new DarkUI.Controls.DarkButton();
@@ -34,11 +30,15 @@
             this.butFloor = new DarkUI.Controls.DarkButton();
             this.butWall = new DarkUI.Controls.DarkButton();
             this.panel2DGrid_sub = new System.Windows.Forms.Panel();
-            this.butDiagonalWall = new DarkUI.Controls.DarkButton();
-            this.butDiagonalCeiling = new DarkUI.Controls.DarkButton();
-            this.butDiagonalFloor = new DarkUI.Controls.DarkButton();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.butClimbPositiveZ = new DarkUI.Controls.DarkButton();
+            this.butClimbPositiveX = new DarkUI.Controls.DarkButton();
+            this.butClimbNegativeZ = new DarkUI.Controls.DarkButton();
+            this.butClimbNegativeX = new DarkUI.Controls.DarkButton();
+            this.butDiagonalFloor = new DarkUI.Controls.DarkButton();
+            this.butDiagonalWall = new DarkUI.Controls.DarkButton();
+            this.butDiagonalCeiling = new DarkUI.Controls.DarkButton();
             this.panelRight.SuspendLayout();
             this.panel2DGrid_sub.SuspendLayout();
             this.panelBottom.SuspendLayout();
@@ -82,57 +82,13 @@
             this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.butCeiling.BackColorUseGeneric = false;
             this.butCeiling.ForeColor = System.Drawing.Color.White;
+            this.butCeiling.Image = global::TombEditor.Properties.Resources.sectortype_Roof_16;
             this.butCeiling.Location = new System.Drawing.Point(32, 0);
             this.butCeiling.Name = "butCeiling";
             this.butCeiling.Size = new System.Drawing.Size(24, 24);
             this.butCeiling.TabIndex = 1;
-            this.butCeiling.Text = "C";
             this.toolTip.SetToolTip(this.butCeiling, "Set sector ceiling");
             this.butCeiling.Click += new System.EventHandler(this.butCeiling_Click);
-            // 
-            // butClimbPositiveZ
-            // 
-            this.butClimbPositiveZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butClimbPositiveZ.Image = global::TombEditor.Properties.Resources.climb_north;
-            this.butClimbPositiveZ.Location = new System.Drawing.Point(3, 140);
-            this.butClimbPositiveZ.Name = "butClimbPositiveZ";
-            this.butClimbPositiveZ.Size = new System.Drawing.Size(24, 24);
-            this.butClimbPositiveZ.TabIndex = 10;
-            this.toolTip.SetToolTip(this.butClimbPositiveZ, "Climb on North side");
-            this.butClimbPositiveZ.Click += new System.EventHandler(this.butClimbPositiveZ_Click);
-            // 
-            // butClimbPositiveX
-            // 
-            this.butClimbPositiveX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butClimbPositiveX.Image = global::TombEditor.Properties.Resources.climb_east;
-            this.butClimbPositiveX.Location = new System.Drawing.Point(32, 168);
-            this.butClimbPositiveX.Name = "butClimbPositiveX";
-            this.butClimbPositiveX.Size = new System.Drawing.Size(24, 24);
-            this.butClimbPositiveX.TabIndex = 13;
-            this.toolTip.SetToolTip(this.butClimbPositiveX, "Climb on East side");
-            this.butClimbPositiveX.Click += new System.EventHandler(this.butClimbPositiveX_Click);
-            // 
-            // butClimbNegativeZ
-            // 
-            this.butClimbNegativeZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butClimbNegativeZ.Image = global::TombEditor.Properties.Resources.climb_south;
-            this.butClimbNegativeZ.Location = new System.Drawing.Point(32, 140);
-            this.butClimbNegativeZ.Name = "butClimbNegativeZ";
-            this.butClimbNegativeZ.Size = new System.Drawing.Size(24, 24);
-            this.butClimbNegativeZ.TabIndex = 11;
-            this.toolTip.SetToolTip(this.butClimbNegativeZ, "Climb on South side");
-            this.butClimbNegativeZ.Click += new System.EventHandler(this.butClimbNegativeZ_Click);
-            // 
-            // butClimbNegativeX
-            // 
-            this.butClimbNegativeX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butClimbNegativeX.Image = global::TombEditor.Properties.Resources.climb_west;
-            this.butClimbNegativeX.Location = new System.Drawing.Point(3, 168);
-            this.butClimbNegativeX.Name = "butClimbNegativeX";
-            this.butClimbNegativeX.Size = new System.Drawing.Size(24, 24);
-            this.butClimbNegativeX.TabIndex = 12;
-            this.toolTip.SetToolTip(this.butClimbNegativeX, "Climb on West side");
-            this.butClimbNegativeX.Click += new System.EventHandler(this.butClimbNegativeX_Click);
             // 
             // butNotWalkableBox
             // 
@@ -140,11 +96,11 @@
             this.butNotWalkableBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(150)))));
             this.butNotWalkableBox.BackColorUseGeneric = false;
             this.butNotWalkableBox.ForeColor = System.Drawing.Color.White;
+            this.butNotWalkableBox.Image = global::TombEditor.Properties.Resources.sectortype_NotWalkable_16;
             this.butNotWalkableBox.Location = new System.Drawing.Point(32, 28);
             this.butNotWalkableBox.Name = "butNotWalkableBox";
             this.butNotWalkableBox.Size = new System.Drawing.Size(24, 24);
             this.butNotWalkableBox.TabIndex = 3;
-            this.butNotWalkableBox.Text = "N";
             this.toolTip.SetToolTip(this.butNotWalkableBox, "Not walkable");
             this.butNotWalkableBox.Click += new System.EventHandler(this.butNotWalkableBox_Click);
             // 
@@ -154,11 +110,11 @@
             this.butPortal.BackColor = System.Drawing.Color.Black;
             this.butPortal.BackColorUseGeneric = false;
             this.butPortal.ForeColor = System.Drawing.Color.White;
+            this.butPortal.Image = global::TombEditor.Properties.Resources.sectortype_Portal__16;
             this.butPortal.Location = new System.Drawing.Point(3, 84);
             this.butPortal.Name = "butPortal";
             this.butPortal.Size = new System.Drawing.Size(24, 24);
             this.butPortal.TabIndex = 6;
-            this.butPortal.Text = "P";
             this.toolTip.SetToolTip(this.butPortal, "Portal");
             this.butPortal.Click += new System.EventHandler(this.butPortal_Click);
             // 
@@ -166,11 +122,11 @@
             // 
             this.butFlagTriggerTriggerer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butFlagTriggerTriggerer.BackColorUseGeneric = false;
+            this.butFlagTriggerTriggerer.Image = global::TombEditor.Properties.Resources.sectortype_TriggerTriggerer_16;
             this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(32, 112);
             this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
             this.butFlagTriggerTriggerer.Size = new System.Drawing.Size(24, 24);
             this.butFlagTriggerTriggerer.TabIndex = 9;
-            this.butFlagTriggerTriggerer.Text = "T";
             this.toolTip.SetToolTip(this.butFlagTriggerTriggerer, "Delay trigger until Trigger Triggerer is used");
             this.butFlagTriggerTriggerer.Click += new System.EventHandler(this.butFlagTriggerTriggerer_Click);
             // 
@@ -180,11 +136,11 @@
             this.butDeath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(240)))), ((int)(((byte)(0)))));
             this.butDeath.BackColorUseGeneric = false;
             this.butDeath.ForeColor = System.Drawing.Color.White;
+            this.butDeath.Image = global::TombEditor.Properties.Resources.sectortype_Death_16;
             this.butDeath.Location = new System.Drawing.Point(32, 56);
             this.butDeath.Name = "butDeath";
             this.butDeath.Size = new System.Drawing.Size(24, 24);
             this.butDeath.TabIndex = 5;
-            this.butDeath.Text = "D";
             this.toolTip.SetToolTip(this.butDeath, "Death");
             this.butDeath.Click += new System.EventHandler(this.butDeath_Click);
             // 
@@ -205,22 +161,22 @@
             this.butMonkey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.butMonkey.BackColorUseGeneric = false;
             this.butMonkey.ForeColor = System.Drawing.Color.White;
+            this.butMonkey.Image = global::TombEditor.Properties.Resources.sectortype_Monkey_16;
             this.butMonkey.Location = new System.Drawing.Point(3, 56);
             this.butMonkey.Name = "butMonkey";
             this.butMonkey.Size = new System.Drawing.Size(24, 24);
             this.butMonkey.TabIndex = 4;
-            this.butMonkey.Text = "M";
             this.toolTip.SetToolTip(this.butMonkey, "Monkeyswing");
             this.butMonkey.Click += new System.EventHandler(this.butMonkey_Click);
             // 
             // butFlagBeetle
             // 
             this.butFlagBeetle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butFlagBeetle.Image = global::TombEditor.Properties.Resources.sectortype_Beetle_16;
             this.butFlagBeetle.Location = new System.Drawing.Point(3, 112);
             this.butFlagBeetle.Name = "butFlagBeetle";
             this.butFlagBeetle.Size = new System.Drawing.Size(24, 24);
             this.butFlagBeetle.TabIndex = 8;
-            this.butFlagBeetle.Text = "B";
             this.toolTip.SetToolTip(this.butFlagBeetle, "Beetle checkpoint");
             this.butFlagBeetle.Click += new System.EventHandler(this.butFlagBeetle_Click);
             // 
@@ -230,11 +186,11 @@
             this.butBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.butBox.BackColorUseGeneric = false;
             this.butBox.ForeColor = System.Drawing.Color.White;
+            this.butBox.Image = global::TombEditor.Properties.Resources.sectortype_Box_16;
             this.butBox.Location = new System.Drawing.Point(3, 28);
             this.butBox.Name = "butBox";
             this.butBox.Size = new System.Drawing.Size(24, 24);
             this.butBox.TabIndex = 2;
-            this.butBox.Text = "B";
             this.butBox.Click += new System.EventHandler(this.butBox_Click);
             // 
             // butFloor
@@ -243,11 +199,11 @@
             this.butFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.butFloor.BackColorUseGeneric = false;
             this.butFloor.ForeColor = System.Drawing.Color.White;
+            this.butFloor.Image = global::TombEditor.Properties.Resources.sectortype_Floor_1_16;
             this.butFloor.Location = new System.Drawing.Point(3, 0);
             this.butFloor.Name = "butFloor";
             this.butFloor.Size = new System.Drawing.Size(24, 24);
             this.butFloor.TabIndex = 0;
-            this.butFloor.Text = "F";
             this.toolTip.SetToolTip(this.butFloor, "Set sector floor");
             this.butFloor.Click += new System.EventHandler(this.butFloor_Click);
             // 
@@ -257,11 +213,11 @@
             this.butWall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
             this.butWall.BackColorUseGeneric = false;
             this.butWall.ForeColor = System.Drawing.Color.White;
+            this.butWall.Image = global::TombEditor.Properties.Resources.sectortype_Wall_1_16;
             this.butWall.Location = new System.Drawing.Point(32, 84);
             this.butWall.Name = "butWall";
             this.butWall.Size = new System.Drawing.Size(24, 24);
             this.butWall.TabIndex = 7;
-            this.butWall.Text = "W";
             this.toolTip.SetToolTip(this.butWall, "Wall");
             this.butWall.Click += new System.EventHandler(this.butWall_Click);
             // 
@@ -275,6 +231,81 @@
             this.panel2DGrid_sub.Padding = new System.Windows.Forms.Padding(2, 0, 0, 4);
             this.panel2DGrid_sub.Size = new System.Drawing.Size(284, 229);
             this.panel2DGrid_sub.TabIndex = 111;
+            // 
+            // panelBottom
+            // 
+            this.panelBottom.Controls.Add(this.butDiagonalFloor);
+            this.panelBottom.Controls.Add(this.butDiagonalWall);
+            this.panelBottom.Controls.Add(this.butDiagonalCeiling);
+            this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelBottom.Location = new System.Drawing.Point(0, 254);
+            this.panelBottom.Name = "panelBottom";
+            this.panelBottom.Padding = new System.Windows.Forms.Padding(3);
+            this.panelBottom.Size = new System.Drawing.Size(284, 26);
+            this.panelBottom.TabIndex = 110;
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
+            // 
+            // butClimbPositiveZ
+            // 
+            this.butClimbPositiveZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butClimbPositiveZ.Image = global::TombEditor.Properties.Resources.sectortype_ClimbNorth_16;
+            this.butClimbPositiveZ.Location = new System.Drawing.Point(3, 140);
+            this.butClimbPositiveZ.Name = "butClimbPositiveZ";
+            this.butClimbPositiveZ.Size = new System.Drawing.Size(24, 24);
+            this.butClimbPositiveZ.TabIndex = 10;
+            this.toolTip.SetToolTip(this.butClimbPositiveZ, "Climb on North side");
+            this.butClimbPositiveZ.Click += new System.EventHandler(this.butClimbPositiveZ_Click);
+            // 
+            // butClimbPositiveX
+            // 
+            this.butClimbPositiveX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butClimbPositiveX.Image = global::TombEditor.Properties.Resources.sectortype_ClimbEast_16;
+            this.butClimbPositiveX.Location = new System.Drawing.Point(32, 168);
+            this.butClimbPositiveX.Name = "butClimbPositiveX";
+            this.butClimbPositiveX.Size = new System.Drawing.Size(24, 24);
+            this.butClimbPositiveX.TabIndex = 13;
+            this.toolTip.SetToolTip(this.butClimbPositiveX, "Climb on East side");
+            this.butClimbPositiveX.Click += new System.EventHandler(this.butClimbPositiveX_Click);
+            // 
+            // butClimbNegativeZ
+            // 
+            this.butClimbNegativeZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butClimbNegativeZ.Image = global::TombEditor.Properties.Resources.sectortype_ClimbSouth_1_16;
+            this.butClimbNegativeZ.Location = new System.Drawing.Point(32, 140);
+            this.butClimbNegativeZ.Name = "butClimbNegativeZ";
+            this.butClimbNegativeZ.Size = new System.Drawing.Size(24, 24);
+            this.butClimbNegativeZ.TabIndex = 11;
+            this.toolTip.SetToolTip(this.butClimbNegativeZ, "Climb on South side");
+            this.butClimbNegativeZ.Click += new System.EventHandler(this.butClimbNegativeZ_Click);
+            // 
+            // butClimbNegativeX
+            // 
+            this.butClimbNegativeX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butClimbNegativeX.Image = global::TombEditor.Properties.Resources.sectortype_ClimbWest_16;
+            this.butClimbNegativeX.Location = new System.Drawing.Point(3, 168);
+            this.butClimbNegativeX.Name = "butClimbNegativeX";
+            this.butClimbNegativeX.Size = new System.Drawing.Size(24, 24);
+            this.butClimbNegativeX.TabIndex = 12;
+            this.toolTip.SetToolTip(this.butClimbNegativeX, "Climb on West side");
+            this.butClimbNegativeX.Click += new System.EventHandler(this.butClimbNegativeX_Click);
+            // 
+            // butDiagonalFloor
+            // 
+            this.butDiagonalFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.StepFloor_1_16;
+            this.butDiagonalFloor.Location = new System.Drawing.Point(2, 0);
+            this.butDiagonalFloor.Name = "butDiagonalFloor";
+            this.butDiagonalFloor.Size = new System.Drawing.Size(90, 24);
+            this.butDiagonalFloor.TabIndex = 15;
+            this.butDiagonalFloor.Text = "Floor step";
+            this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
             // 
             // butDiagonalWall
             // 
@@ -302,37 +333,6 @@
             this.butDiagonalCeiling.Text = "Ceiling step";
             this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDiagonalCeiling.Click += new System.EventHandler(this.butDiagonalCeiling_Click);
-            // 
-            // butDiagonalFloor
-            // 
-            this.butDiagonalFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.StepFloor_1_16;
-            this.butDiagonalFloor.Location = new System.Drawing.Point(2, 0);
-            this.butDiagonalFloor.Name = "butDiagonalFloor";
-            this.butDiagonalFloor.Size = new System.Drawing.Size(90, 24);
-            this.butDiagonalFloor.TabIndex = 15;
-            this.butDiagonalFloor.Text = "Floor step";
-            this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
-            // 
-            // panelBottom
-            // 
-            this.panelBottom.Controls.Add(this.butDiagonalFloor);
-            this.panelBottom.Controls.Add(this.butDiagonalWall);
-            this.panelBottom.Controls.Add(this.butDiagonalCeiling);
-            this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(0, 254);
-            this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Padding = new System.Windows.Forms.Padding(3);
-            this.panelBottom.Size = new System.Drawing.Size(284, 26);
-            this.panelBottom.TabIndex = 110;
-            // 
-            // toolTip
-            // 
-            this.toolTip.AutoPopDelay = 5000;
-            this.toolTip.InitialDelay = 500;
-            this.toolTip.ReshowDelay = 100;
             // 
             // SectorOptions
             // 
