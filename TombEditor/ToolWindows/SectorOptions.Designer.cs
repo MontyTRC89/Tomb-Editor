@@ -121,7 +121,6 @@
             // butFlagTriggerTriggerer
             // 
             this.butFlagTriggerTriggerer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butFlagTriggerTriggerer.BackColorUseGeneric = false;
             this.butFlagTriggerTriggerer.Image = global::TombEditor.Properties.Resources.sectortype_TriggerTriggerer_16;
             this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(32, 112);
             this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
