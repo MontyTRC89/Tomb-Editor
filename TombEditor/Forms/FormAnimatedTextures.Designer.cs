@@ -77,7 +77,7 @@ namespace TombEditor
             // 
             this.butAnimatedTextureSetDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butAnimatedTextureSetDelete.Enabled = false;
-            this.butAnimatedTextureSetDelete.Image = global::TombEditor.Properties.Resources.trash_16;
+            this.butAnimatedTextureSetDelete.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butAnimatedTextureSetDelete.ImagePadding = 3;
             this.butAnimatedTextureSetDelete.Location = new System.Drawing.Point(371, 25);
             this.butAnimatedTextureSetDelete.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
@@ -89,7 +89,7 @@ namespace TombEditor
             // butAnimatedTextureSetNew
             // 
             this.butAnimatedTextureSetNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAnimatedTextureSetNew.Image = global::TombEditor.Properties.Resources.plus_math_16;
+            this.butAnimatedTextureSetNew.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAnimatedTextureSetNew.ImagePadding = 4;
             this.butAnimatedTextureSetNew.Location = new System.Drawing.Point(342, 25);
             this.butAnimatedTextureSetNew.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
@@ -150,7 +150,7 @@ namespace TombEditor
             // 
             this.butUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butUpdate.Enabled = false;
-            this.butUpdate.Image = global::TombEditor.Properties.Resources.undo_16;
+            this.butUpdate.Image = global::TombEditor.Properties.Resources.general_undo_16;
             this.butUpdate.ImagePadding = 4;
             this.butUpdate.Location = new System.Drawing.Point(371, 132);
             this.butUpdate.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);

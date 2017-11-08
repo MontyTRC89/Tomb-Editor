@@ -38,7 +38,7 @@
             // 
             // butEditObject
             // 
-            this.butEditObject.Image = global::TombEditor.Properties.Resources.edit_16;
+            this.butEditObject.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditObject.Location = new System.Drawing.Point(3, 3);
             this.butEditObject.Name = "butEditObject";
             this.butEditObject.Size = new System.Drawing.Size(24, 24);
@@ -48,7 +48,7 @@
             // 
             // butDeleteObject
             // 
-            this.butDeleteObject.Image = global::TombEditor.Properties.Resources.trash_16;
+            this.butDeleteObject.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteObject.Location = new System.Drawing.Point(33, 3);
             this.butDeleteObject.Name = "butDeleteObject";
             this.butDeleteObject.Size = new System.Drawing.Size(24, 24);

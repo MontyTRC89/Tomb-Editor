@@ -242,7 +242,7 @@
             this.butFlipMap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butFlipMap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butFlipMap.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butFlipMap.Image = global::TombEditor.Properties.Resources.copy_link_16;
+            this.butFlipMap.Image = global::TombEditor.Properties.Resources.general_copy_link_16;
             this.butFlipMap.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butFlipMap.Name = "butFlipMap";
             this.butFlipMap.Size = new System.Drawing.Size(23, 25);
@@ -263,7 +263,7 @@
             this.butCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butCopy.Enabled = false;
             this.butCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butCopy.Image = global::TombEditor.Properties.Resources.copy_16;
+            this.butCopy.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.butCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCopy.Name = "butCopy";
             this.butCopy.Size = new System.Drawing.Size(23, 25);
@@ -275,7 +275,7 @@
             this.butPaste.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butPaste.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butPaste.Image = global::TombEditor.Properties.Resources.clipboard_16;
+            this.butPaste.Image = global::TombEditor.Properties.Resources.general_clipboard_16;
             this.butPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butPaste.Name = "butPaste";
             this.butPaste.Size = new System.Drawing.Size(23, 25);
