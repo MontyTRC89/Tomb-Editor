@@ -533,7 +533,7 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.pictureBox1.BackgroundImage = global::TombEditor.Properties.Resources.AboutScreen_800;
+            this.pictureBox1.BackgroundImage = global::TombEditor.Properties.Resources.misc_AboutScreen_800;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);

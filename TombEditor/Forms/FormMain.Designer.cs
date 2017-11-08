@@ -1027,7 +1027,7 @@
             // 
             this.buildLevelPlayToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.buildLevelPlayToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.buildLevelPlayToolStripMenuItem.Image = global::TombEditor.Properties.Resources.play_16;
+            this.buildLevelPlayToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_play_16;
             this.buildLevelPlayToolStripMenuItem.Name = "buildLevelPlayToolStripMenuItem";
             this.buildLevelPlayToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
             this.buildLevelPlayToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
@@ -1038,7 +1038,7 @@
             // 
             this.buildLevelToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.buildLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.buildLevelToolStripMenuItem.Image = global::TombEditor.Properties.Resources.software_installer_16;
+            this.buildLevelToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_compile_16;
             this.buildLevelToolStripMenuItem.Name = "buildLevelToolStripMenuItem";
             this.buildLevelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
             this.buildLevelToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
@@ -1072,7 +1072,7 @@
             // 
             this.stampToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.stampToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.stampToolStripMenuItem.Image = global::TombEditor.Properties.Resources.rubber_stamp_16;
+            this.stampToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_rubber_stamp_16;
             this.stampToolStripMenuItem.Name = "stampToolStripMenuItem";
             this.stampToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
             this.stampToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
@@ -1096,7 +1096,7 @@
             // 
             this.splitRoomToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.splitRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.splitRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.split_files_16;
+            this.splitRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_split_files_16;
             this.splitRoomToolStripMenuItem.Name = "splitRoomToolStripMenuItem";
             this.splitRoomToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.Shift) 
@@ -1122,7 +1122,7 @@
             // 
             this.newRoomUpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newRoomUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newRoomUpToolStripMenuItem.Image = global::TombEditor.Properties.Resources.NewRoomUp_16;
+            this.newRoomUpToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_NewRoomUp_16;
             this.newRoomUpToolStripMenuItem.Name = "newRoomUpToolStripMenuItem";
             this.newRoomUpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.D)));
@@ -1134,7 +1134,7 @@
             // 
             this.newRoomDownToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newRoomDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newRoomDownToolStripMenuItem.Image = global::TombEditor.Properties.Resources.NewRoomDown_16;
+            this.newRoomDownToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_NewRoomDown_16;
             this.newRoomDownToolStripMenuItem.Name = "newRoomDownToolStripMenuItem";
             this.newRoomDownToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.U)));
@@ -1166,7 +1166,7 @@
             // 
             this.addCameraToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.addCameraToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addCameraToolStripMenuItem.Image = global::TombEditor.Properties.Resources.Camera_16;
+            this.addCameraToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_Camera_16;
             this.addCameraToolStripMenuItem.Name = "addCameraToolStripMenuItem";
             this.addCameraToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.C)));
             this.addCameraToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
@@ -1177,7 +1177,7 @@
             // 
             this.addFlybyCameraToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.addFlybyCameraToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addFlybyCameraToolStripMenuItem.Image = global::TombEditor.Properties.Resources.movie_projector_16;
+            this.addFlybyCameraToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_movie_projector_16;
             this.addFlybyCameraToolStripMenuItem.Name = "addFlybyCameraToolStripMenuItem";
             this.addFlybyCameraToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
             this.addFlybyCameraToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
@@ -1188,7 +1188,7 @@
             // 
             this.addSinkToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.addSinkToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addSinkToolStripMenuItem.Image = global::TombEditor.Properties.Resources.tornado_16;
+            this.addSinkToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_tornado_16;
             this.addSinkToolStripMenuItem.Name = "addSinkToolStripMenuItem";
             this.addSinkToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.K)));
             this.addSinkToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
@@ -1199,7 +1199,7 @@
             // 
             this.addSoundSourceToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.addSoundSourceToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addSoundSourceToolStripMenuItem.Image = global::TombEditor.Properties.Resources.volume_up_16;
+            this.addSoundSourceToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_speaker_16;
             this.addSoundSourceToolStripMenuItem.Name = "addSoundSourceToolStripMenuItem";
             this.addSoundSourceToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
             this.addSoundSourceToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
@@ -1210,7 +1210,7 @@
             // 
             this.addImportedGeometryToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.addImportedGeometryToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addImportedGeometryToolStripMenuItem.Image = global::TombEditor.Properties.Resources.custom_geometry;
+            this.addImportedGeometryToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_custom_geometry;
             this.addImportedGeometryToolStripMenuItem.Name = "addImportedGeometryToolStripMenuItem";
             this.addImportedGeometryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.I)));
             this.addImportedGeometryToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
@@ -1263,7 +1263,7 @@
             // 
             this.textureFloorToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.textureFloorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.textureFloorToolStripMenuItem.Image = global::TombEditor.Properties.Resources.TextureFloor2_16;
+            this.textureFloorToolStripMenuItem.Image = global::TombEditor.Properties.Resources.texture_Floor2_16;
             this.textureFloorToolStripMenuItem.Name = "textureFloorToolStripMenuItem";
             this.textureFloorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.T)));
@@ -1275,7 +1275,7 @@
             // 
             this.textureWallsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.textureWallsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.textureWallsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.TextureWalls2_16;
+            this.textureWallsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.texture_Walls2_16;
             this.textureWallsToolStripMenuItem.Name = "textureWallsToolStripMenuItem";
             this.textureWallsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.U)));
@@ -1287,7 +1287,7 @@
             // 
             this.textureCeilingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.textureCeilingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.textureCeilingToolStripMenuItem.Image = global::TombEditor.Properties.Resources.TextureCeiling2_16;
+            this.textureCeilingToolStripMenuItem.Image = global::TombEditor.Properties.Resources.texture_Ceiling2_16;
             this.textureCeilingToolStripMenuItem.Name = "textureCeilingToolStripMenuItem";
             this.textureCeilingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.V)));
@@ -1299,7 +1299,7 @@
             // 
             this.animationRangesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.animationRangesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.animationRangesToolStripMenuItem.Image = global::TombEditor.Properties.Resources.film_reel_16;
+            this.animationRangesToolStripMenuItem.Image = global::TombEditor.Properties.Resources.texture_anim_ranges;
             this.animationRangesToolStripMenuItem.Name = "animationRangesToolStripMenuItem";
             this.animationRangesToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.animationRangesToolStripMenuItem.Text = "Animation ranges...";
@@ -1319,7 +1319,7 @@
             // 
             this.textureSoundsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.textureSoundsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.textureSoundsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.volume_up_16;
+            this.textureSoundsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_speaker_16;
             this.textureSoundsToolStripMenuItem.Name = "textureSoundsToolStripMenuItem";
             this.textureSoundsToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.textureSoundsToolStripMenuItem.Text = "Texture sounds...";
