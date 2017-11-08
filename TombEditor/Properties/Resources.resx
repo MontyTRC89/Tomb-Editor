@@ -130,18 +130,6 @@
   <data name="center_direction_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\center_direction-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="climb_east" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\climb-east.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="climb_north" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\climb-north.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="climb_south" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\climb-south.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="climb_west" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\climb-west.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="clipboard_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\clipboard-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -321,5 +309,47 @@
   </data>
   <data name="Slide_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Slide-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_Beetle_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_Beetle-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_Box_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_Box-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_ClimbEast_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_ClimbEast-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_ClimbNorth_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_ClimbNorth-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_ClimbSouth_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_ClimbSouth_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_ClimbWest_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_ClimbWest-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_Death_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_Death-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_Floor_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_Floor_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_Monkey_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_Monkey-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_NotWalkable_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_NotWalkable-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_Portal__16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_Portal -16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_Roof_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_Roof-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_TriggerTriggerer_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_TriggerTriggerer-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sectortype_Wall_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_sectortype\sectortype_Wall_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

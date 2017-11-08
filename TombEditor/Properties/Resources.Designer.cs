@@ -133,46 +133,6 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap climb_east {
-            get {
-                object obj = ResourceManager.GetObject("climb_east", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap climb_north {
-            get {
-                object obj = ResourceManager.GetObject("climb_north", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap climb_south {
-            get {
-                object obj = ResourceManager.GetObject("climb_south", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap climb_west {
-            get {
-                object obj = ResourceManager.GetObject("climb_west", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap clipboard_16 {
             get {
                 object obj = ResourceManager.GetObject("clipboard_16", resourceCulture);
@@ -476,6 +436,146 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap search_16 {
             get {
                 object obj = ResourceManager.GetObject("search_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_Beetle_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_Beetle_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_Box_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_Box_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_ClimbEast_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_ClimbEast_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_ClimbNorth_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_ClimbNorth_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_ClimbSouth_1_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_ClimbSouth_1_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_ClimbWest_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_ClimbWest_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_Death_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_Death_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_Floor_1_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_Floor_1_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_Monkey_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_Monkey_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_NotWalkable_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_NotWalkable_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_Portal__16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_Portal__16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_Roof_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_Roof_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_TriggerTriggerer_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_TriggerTriggerer_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sectortype_Wall_1_16 {
+            get {
+                object obj = ResourceManager.GetObject("sectortype_Wall_1_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
