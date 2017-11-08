@@ -397,7 +397,7 @@ namespace TombEditor.Compilers
                 var newLight = new tr4_room_light
                 {
                     X = (int)Math.Round(newRoom.Info.X + light.Position.X),
-                    Y = (int)Math.Round(-light.Position.Y + room.WorldPos.Y),
+                    Y = (int)-Math.Round(light.Position.Y + room.WorldPos.Y),
                     Z = (int)Math.Round(newRoom.Info.Z + light.Position.Z),
                     Color = PackColorTo24Bit(new Vector4(light.Color, 1.0f)),
                     Intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f))
