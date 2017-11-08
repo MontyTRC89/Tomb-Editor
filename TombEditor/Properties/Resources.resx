@@ -118,32 +118,26 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="angle_left_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\angle_left-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="angle_right_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\angle_right-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Camera_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Camera-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="center_direction_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\center_direction-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="clipboard_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\clipboard-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_clipboard_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_clipboard-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="copy_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\copy-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_copy_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_copy-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="copy_link_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\copy_link-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_copy_link_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_copy_link-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="create_new_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\create_new-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_create_new_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_create_new-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="crop_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\crop-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_crop_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_crop-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="door_opened_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\door_opened-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -151,8 +145,8 @@
   <data name="earth_element_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\earth_element-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="edit_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\edit-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_edit_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_edit-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Effect_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Effect-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -163,11 +157,17 @@
   <data name="Fog_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Fog-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="general_angle_left_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_angle_left-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_angle_right_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_angle_right-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_trash_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_trash-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="generic_text_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\generic_text-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="import_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\import-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="LightPoint_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LightPoint-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -187,11 +187,11 @@
   <data name="play_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\play-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="plus_math_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\plus_math-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_plus_math_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_plus_math-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="redo_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\redo-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_redo_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_redo-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RoomLower_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RoomLower-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -202,11 +202,11 @@
   <data name="rubber_stamp_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\rubber_stamp-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="search_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\search-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_search_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_search-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="settings_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\settings-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_settings_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_settings-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Shadow_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Shadow-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -236,13 +236,10 @@
     <value>..\Resources\tornado-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="TransparentBackground" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TransparentBackground.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\misc\TransparentBackground.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="trash_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\trash-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="undo_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\undo-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="general_undo_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_undo-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="volume_up_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\volume_up-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -287,7 +284,7 @@
     <value>..\Resources\TextureWalls2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="AboutScreen_800" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AboutScreen_800.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\misc\AboutScreen_800.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Slide_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Slide-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
