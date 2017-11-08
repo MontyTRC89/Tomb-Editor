@@ -263,6 +263,56 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_Export_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_Export_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_Import_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_Import_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_Open_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_Open_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_Save_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_Save_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_Save_As_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_Save_As_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap generic_text_16 {
             get {
                 object obj = ResourceManager.GetObject("generic_text_16", resourceCulture);
@@ -343,16 +393,6 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap opened_folder_16 {
-            get {
-                object obj = ResourceManager.GetObject("opened_folder_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap play_16 {
             get {
                 object obj = ResourceManager.GetObject("play_16", resourceCulture);
@@ -406,26 +446,6 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap rubber_stamp_16 {
             get {
                 object obj = ResourceManager.GetObject("rubber_stamp_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap save_16 {
-            get {
-                object obj = ResourceManager.GetObject("save_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap save_as_16 {
-            get {
-                object obj = ResourceManager.GetObject("save_as_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
