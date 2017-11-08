@@ -1103,7 +1103,8 @@ namespace TombEditor
 
         private void floatingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ToolBox.Visible = !ToolBox.Visible;
+            if(_editor.Mode != EditorMode.Lighting)
+                ToolBox.Visible = !ToolBox.Visible;
         }
     }
 }
