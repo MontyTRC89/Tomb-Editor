@@ -116,17 +116,30 @@ namespace TombEditor
         {
             if (keyData == Keys.N)
             {
-                var frame = GetSelectedAnimatedTextureFrame();
-                var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
-                if ((selectedSet != null) && (frame != null))
-                {
-                    selectedSet.Frames.Add(frame);
-                    _editor.AnimatedTexturesChange();
-                }
+                AddFrame();
                 return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void AddFrame()
+        {
+            var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+            if(selectedSet == null)
+            {
+                selectedSet = new AnimatedTextureSet();
+                _editor.Level.Settings.AnimatedTextureSets.Add(selectedSet);
+                _editor.AnimatedTexturesChange();
+                comboAnimatedTextureSets.SelectedItem = selectedSet;
+            }
+
+            var frame = GetSelectedAnimatedTextureFrame();
+            if (frame != null)
+            {
+                selectedSet.Frames.Add(frame);
+                _editor.AnimatedTexturesChange();
+            }
         }
 
         private void UpdateCurrentAnimationDisplay()
@@ -378,6 +391,9 @@ namespace TombEditor
 
         private void texturesDataGridView_SelectionChanged(object sender, EventArgs e)
         {
+            if (textureMap.Focused) // We're updating frames inside texture map itself
+                return;
+
             butUpdate.Enabled = texturesDataGridView.SelectedRows.Count > 0;
 
             if (texturesDataGridView.SelectedRows.Count > 0)
@@ -452,6 +468,11 @@ namespace TombEditor
                     return (FormAnimatedTextures)parent;
                 }
             }
+        }
+
+        private void textureMap_DoubleClick(object sender, EventArgs e)
+        {
+            AddFrame();
         }
     }
 }
