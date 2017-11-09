@@ -105,6 +105,7 @@ namespace TombEditor
             this.textureMap.Name = "textureMap";
             this.textureMap.Size = new System.Drawing.Size(395, 612);
             this.textureMap.TabIndex = 0;
+            this.textureMap.DoubleClick += new System.EventHandler(this.textureMap_DoubleClick);
             // 
             // tableLayoutPanel1
             // 
@@ -120,6 +121,7 @@ namespace TombEditor
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(802, 618);
             this.tableLayoutPanel1.TabIndex = 43;
             // 
@@ -178,7 +180,7 @@ namespace TombEditor
             this.tooManyFramesWarning.BackColor = System.Drawing.Color.Firebrick;
             this.tooManyFramesWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tooManyFramesWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tooManyFramesWarning.Image = global::TombEditor.Properties.Resources.IllegalSlope1_16;
+            this.tooManyFramesWarning.Image = global::TombEditor.Properties.Resources.general_Warning_16;
             this.tooManyFramesWarning.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.tooManyFramesWarning.Location = new System.Drawing.Point(371, 162);
             this.tooManyFramesWarning.Name = "tooManyFramesWarning";

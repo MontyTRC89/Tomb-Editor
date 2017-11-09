@@ -33,6 +33,8 @@ namespace TombEditor
         public bool Log_WriteToFile { get; set; } = true;
         public int Log_ArchiveN { get; set; } = 0;
 
+        public bool Editor_DiscardSelectionOnModeSwitch { get; set; } = false;
+
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
@@ -52,6 +54,8 @@ namespace TombEditor
         public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
         public Vector4 Rendering3D_TextColor { get; set; } = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        public bool Rendering3D_ToolboxVisible { get; set; } = true;
+        public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
 
         public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
         public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;
@@ -114,6 +118,13 @@ namespace TombEditor
                             Order = 0,
                             Size = new Size(284,280)
                         },
+                        //new DockGroupState
+                        //{
+                        //    Contents = new List<string> { "ToolPalette" },
+                        //    VisibleContent = "ToolPalette",
+                        //    Order = 0,
+                        //    Size = new Size(284,52)
+                        //},
                         new DockGroupState
                         {
                             Contents = new List<string> { "RoomOptions" },

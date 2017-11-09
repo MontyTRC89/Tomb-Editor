@@ -116,17 +116,30 @@ namespace TombEditor
         {
             if (keyData == Keys.N)
             {
-                var frame = GetSelectedAnimatedTextureFrame();
-                var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
-                if ((selectedSet != null) && (frame != null))
-                {
-                    selectedSet.Frames.Add(frame);
-                    _editor.AnimatedTexturesChange();
-                }
+                AddFrame();
                 return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void AddFrame()
+        {
+            var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+            if(selectedSet == null)
+            {
+                selectedSet = new AnimatedTextureSet();
+                _editor.Level.Settings.AnimatedTextureSets.Add(selectedSet);
+                _editor.AnimatedTexturesChange();
+                comboAnimatedTextureSets.SelectedItem = selectedSet;
+            }
+
+            var frame = GetSelectedAnimatedTextureFrame();
+            if (frame != null)
+            {
+                selectedSet.Frames.Add(frame);
+                _editor.AnimatedTexturesChange();
+            }
         }
 
         private void UpdateCurrentAnimationDisplay()
@@ -158,7 +171,15 @@ namespace TombEditor
             UpdateEnable();
 
             // Setup preview
-            _previewTimer.Enabled = selectedSet.Frames.Count != 0;
+            if (selectedSet.Frames.Count == 0)
+            {
+                _previewTimer.Enabled = false;
+                previewImage.Image = null;
+                previewProgressBar.Maximum = 0;
+                previewProgressBar.Value = 0;
+            }
+            else
+                _previewTimer.Enabled = true;
             _previewTimer.Interval = (int)Math.Round(1000 / _previewFps);
 
             // Update warning about too many frames
@@ -378,6 +399,9 @@ namespace TombEditor
 
         private void texturesDataGridView_SelectionChanged(object sender, EventArgs e)
         {
+            if (textureMap.Focused) // We're updating frames inside texture map itself
+                return;
+
             butUpdate.Enabled = texturesDataGridView.SelectedRows.Count > 0;
 
             if (texturesDataGridView.SelectedRows.Count > 0)
@@ -452,6 +476,11 @@ namespace TombEditor
                     return (FormAnimatedTextures)parent;
                 }
             }
+        }
+
+        private void textureMap_DoubleClick(object sender, EventArgs e)
+        {
+            AddFrame();
         }
     }
 }

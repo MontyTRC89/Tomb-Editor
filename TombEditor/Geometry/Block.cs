@@ -54,7 +54,7 @@ namespace TombEditor.Geometry
         Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
     }
 
-    public enum SlopeDirection : byte
+    public enum Direction : byte
     {
         None = 0, North = 1, East = 2, South = 3, West = 4
     }
@@ -286,13 +286,13 @@ namespace TombEditor.Geometry
             }
         }
 
-        public SlopeDirection[] GetTriangleSlopeDirections()
+        public Direction[] GetTriangleSlopeDirections()
         {
             var normals = GetTriangleNormals();
 
             // Initialize slope directions as unslidable by default (EntireFace means unslidable in our case).
 
-            SlopeDirection[] slopeDirections = new SlopeDirection[2] { SlopeDirection.None, SlopeDirection.None };
+            Direction[] slopeDirections = new Direction[2] { Direction.None, Direction.None };
 
             for (int i = 0; i < (FloorIsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
             {
@@ -312,23 +312,23 @@ namespace TombEditor.Geometry
                         {
                             case 0:
                             case 360:
-                                slopeDirections[i] = SlopeDirection.North;
+                                slopeDirections[i] = Direction.North;
                                 angleNotDefined = false;
                                 break;
                             case 45:
                             case 90:
                             case 135:
-                                slopeDirections[i] = SlopeDirection.East;
+                                slopeDirections[i] = Direction.East;
                                 angleNotDefined = false;
                                 break;
                             case 180:
-                                slopeDirections[i] = SlopeDirection.South;
+                                slopeDirections[i] = Direction.South;
                                 angleNotDefined = false;
                                 break;
                             case 225:
                             case 270:
                             case 315:
-                                slopeDirections[i] = SlopeDirection.West;
+                                slopeDirections[i] = Direction.West;
                                 angleNotDefined = false;
                                 break;
                             default:

@@ -292,7 +292,7 @@
             // 
             // butRoomUp
             // 
-            this.butRoomUp.Image = global::TombEditor.Properties.Resources.RoomRaise_16;
+            this.butRoomUp.Image = global::TombEditor.Properties.Resources.actions_RoomRaise_16;
             this.butRoomUp.Location = new System.Drawing.Point(259, 88);
             this.butRoomUp.Name = "butRoomUp";
             this.butRoomUp.Padding = new System.Windows.Forms.Padding(5);
@@ -303,7 +303,7 @@
             // 
             // butRoomDown
             // 
-            this.butRoomDown.Image = global::TombEditor.Properties.Resources.RoomLower_16;
+            this.butRoomDown.Image = global::TombEditor.Properties.Resources.actions_RoomLower_16;
             this.butRoomDown.Location = new System.Drawing.Point(259, 118);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Padding = new System.Windows.Forms.Padding(5);
@@ -347,7 +347,7 @@
             // 
             // butSplitRoom
             // 
-            this.butSplitRoom.Image = global::TombEditor.Properties.Resources.split_files_16;
+            this.butSplitRoom.Image = global::TombEditor.Properties.Resources.general_split_files_16;
             this.butSplitRoom.Location = new System.Drawing.Point(229, 88);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Padding = new System.Windows.Forms.Padding(5);

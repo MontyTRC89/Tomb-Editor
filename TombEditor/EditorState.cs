@@ -7,7 +7,44 @@ namespace TombEditor
 {
     public enum EditorMode
     {
-        Geometry, Map2D, FaceEdit, Lighting
+        None, Geometry, Map2D, FaceEdit, Lighting
+    }
+
+    public enum EditorToolType
+    {
+        None, Selection, Brush, Pencil, Fill, Group, Shovel, Drag, Flatten, Smooth
+    }
+
+    public enum EditorTextureType
+    {
+        Normal, Null, Invisible
+    }
+
+    public struct EditorTool
+    {
+        public EditorToolType Tool { get; set; }
+        public EditorTextureType Texture { get; set; }
+        public bool TextureUVFixer { get; set; }
+
+        public static bool operator == (EditorTool first, EditorTool second)
+        {
+            return (first.Tool == second.Tool && first.Texture == second.Texture && first.TextureUVFixer == second.TextureUVFixer);
+        }
+
+        public static bool operator !=(EditorTool first, EditorTool second)
+        {
+            return (first.Tool != second.Tool || first.Texture != second.Texture || first.TextureUVFixer != second.TextureUVFixer);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this == (EditorTool)obj;
+        }
+
+        public override int GetHashCode()
+        {
+            return Tool.GetHashCode() ^ (Texture.GetHashCode() * unchecked((int)3062904283)) ^ (TextureUVFixer.GetHashCode() * 1334740973);
+        }
     }
 
     public enum EditorActionType

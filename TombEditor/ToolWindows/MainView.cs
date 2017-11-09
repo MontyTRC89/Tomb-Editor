@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using DarkUI.Docking;
 using TombEditor.Geometry;
 using TombLib.Utils;
-using DarkUI.Forms;
+using DarkUI.Controls;
 using SharpDX;
 
 namespace TombEditor.ToolWindows
@@ -33,6 +33,19 @@ namespace TombEditor.ToolWindows
 
             // Update 3D view
             EditorActions.SwitchMode(EditorMode.Geometry);
+            EditorActions.SwitchTool(new EditorTool() { Tool = EditorToolType.Selection, Texture = EditorTextureType.Normal, TextureUVFixer = true });
+        }
+
+        public void AddToolbox(DarkFloatingToolbox toolbox)
+        {
+            if(!panel3D.Contains(toolbox))
+                panel3D.Controls.Add(toolbox);
+        }
+
+        public void RemoveToolbox(DarkFloatingToolbox toolbox)
+        {
+            if(panel3D.Controls.Contains(toolbox))
+                panel3D.Controls.Remove(toolbox);
         }
 
         public void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
@@ -67,6 +80,16 @@ namespace TombEditor.ToolWindows
                 butCopy.Enabled = selectedObject is PositionBasedObjectInstance;
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
             }
+
+            if (obj is Editor.SelectedSectorsChangedEvent)
+            {
+                //bool validSectorSelection = _editor.SelectedSectors.Valid;
+
+                //butTextureFloor.Enabled = validSectorSelection;
+                //butTextureCeiling.Enabled = validSectorSelection;
+                //butTextureWalls.Enabled = validSectorSelection;
+            }
+
             if (obj is Editor.ModeChangedEvent)
             {
                 EditorMode mode = ((Editor.ModeChangedEvent)obj).Current;
@@ -84,6 +107,10 @@ namespace TombEditor.ToolWindows
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
                 panel3D.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry) || (mode == EditorMode.Lighting);
+                
+                butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
+                butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
+                butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
             }
 
             // Update flipmap toolbar button
@@ -100,7 +127,6 @@ namespace TombEditor.ToolWindows
                 var e = (Editor.SelectedTexturesChangedEvent)obj;
                 butAdditiveBlending.Checked = e.Current.BlendMode == BlendMode.Additive;
                 butDoubleSided.Checked = e.Current.DoubleSided;
-                butInvisible.Checked = e.Current.Texture == TextureInvisible.Instance;
             }
 
             // Update portal opacity controls
@@ -145,13 +171,6 @@ namespace TombEditor.ToolWindows
             _editor.ResetCamera();
         }
 
-        private void butDrawPortals_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawPortals = !panel3D.DrawPortals;
-            butDrawPortals.Checked = panel3D.DrawPortals;
-            panel3D.Invalidate();
-        }
-
         private void butOpacityNone_Click(object sender, EventArgs e)
         {
             EditorActions.SetPortalOpacity(PortalOpacity.None, this);
@@ -169,17 +188,17 @@ namespace TombEditor.ToolWindows
 
         private void butTextureFloor_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Floor);
         }
 
         private void butTextureCeiling_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Ceiling);
         }
 
         private void butTextureWalls_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
         }
 
         private void butAdditiveBlending_Click(object sender, EventArgs e)
@@ -193,13 +212,6 @@ namespace TombEditor.ToolWindows
         {
             var selectedTexture = _editor.SelectedTexture;
             selectedTexture.DoubleSided = butDoubleSided.Checked;
-            _editor.SelectedTexture = selectedTexture;
-        }
-
-        private void butInvisible_Click(object sender, EventArgs e)
-        {
-            var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.Texture = TextureInvisible.Instance;
             _editor.SelectedTexture = selectedTexture;
         }
 
@@ -231,20 +243,6 @@ namespace TombEditor.ToolWindows
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
         {
             EditorActions.BuildLevelAndPlay();
-        }
-
-        private void butDrawHorizon_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawHorizon = !panel3D.DrawHorizon;
-            butDrawHorizon.Checked = panel3D.DrawHorizon;
-            panel3D.Invalidate();
-        }
-
-        private void butDrawRoomNames_Click(object sender, EventArgs e)
-        {
-            panel3D.DrawRoomNames = !panel3D.DrawRoomNames;
-            butDrawRoomNames.Checked = panel3D.DrawRoomNames;
-            panel3D.Invalidate();
         }
 
         private void butFlipMap_Click(object sender, EventArgs e)
@@ -283,6 +281,27 @@ namespace TombEditor.ToolWindows
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
         }
 
+        private void butDrawPortals_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawPortals = !panel3D.DrawPortals;
+            butDrawPortals.Checked = panel3D.DrawPortals;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawHorizon_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawHorizon = !panel3D.DrawHorizon;
+            butDrawHorizon.Checked = panel3D.DrawHorizon;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawRoomNames_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawRoomNames = !panel3D.DrawRoomNames;
+            butDrawRoomNames.Checked = panel3D.DrawRoomNames;
+            panel3D.Invalidate();
+        }
+
         private void butDrawIllegalSlopes_Click(object sender, EventArgs e)
         {
             panel3D.DrawIllegalSlopes = !panel3D.DrawIllegalSlopes;
@@ -290,6 +309,34 @@ namespace TombEditor.ToolWindows
             panel3D.Invalidate();
         }
 
+        private void butDrawMoveables_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowMoveables = !panel3D.ShowMoveables;
+            butDrawMoveables.Checked = panel3D.ShowMoveables;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawStatics_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowStatics = !panel3D.ShowStatics;
+            butDrawStatics.Checked = panel3D.ShowStatics;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawImportedGeometry_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowImportedGeometry = !panel3D.ShowImportedGeometry;
+            butDrawImportedGeometry.Checked = panel3D.ShowImportedGeometry;
+            panel3D.Invalidate();
+        }
+
+        private void butDrawOther_Click(object sender, EventArgs e)
+        {
+            panel3D.ShowOtherObjects = !panel3D.ShowOtherObjects;
+            butDrawOther.Checked = panel3D.ShowOtherObjects;
+            panel3D.Invalidate();
+        }
+        
         private void butDrawSlideDirections_Click(object sender, EventArgs e)
         {
             panel3D.DrawSlideDirections = !panel3D.DrawSlideDirections;
