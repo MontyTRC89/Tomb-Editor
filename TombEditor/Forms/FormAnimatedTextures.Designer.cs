@@ -105,6 +105,7 @@ namespace TombEditor
             this.textureMap.Name = "textureMap";
             this.textureMap.Size = new System.Drawing.Size(395, 612);
             this.textureMap.TabIndex = 0;
+            this.textureMap.DoubleClick += new System.EventHandler(this.textureMap_DoubleClick);
             // 
             // tableLayoutPanel1
             // 
@@ -120,6 +121,7 @@ namespace TombEditor
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(802, 618);
             this.tableLayoutPanel1.TabIndex = 43;
             // 
