@@ -103,6 +103,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_DisableGeometryPicking_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_DisableGeometryPicking_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_door_opened_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_door_opened_16", resourceCulture);
