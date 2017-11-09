@@ -25,7 +25,7 @@ namespace TombEditor.Geometry
             {
                 if (value == null)
                     throw new NullReferenceException("'AdjoiningRoom' must not be null");
-                _adjoiningRoom = value.AlternateBaseRoom ?? value;
+                _adjoiningRoom = /*value.AlternateBaseRoom ??*/ value;
             }
         }
 
