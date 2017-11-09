@@ -171,7 +171,15 @@ namespace TombEditor
             UpdateEnable();
 
             // Setup preview
-            _previewTimer.Enabled = selectedSet.Frames.Count != 0;
+            if (selectedSet.Frames.Count == 0)
+            {
+                _previewTimer.Enabled = false;
+                previewImage.Image = null;
+                previewProgressBar.Maximum = 0;
+                previewProgressBar.Value = 0;
+            }
+            else
+                _previewTimer.Enabled = true;
             _previewTimer.Interval = (int)Math.Round(1000 / _previewFps);
 
             // Update warning about too many frames
