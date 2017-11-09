@@ -2038,10 +2038,13 @@ namespace TombEditor
                 {
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
-                        foreach (var preset in IOSettingsPresets.SettingsPresets)
-                            settingsDialog.AddPreset(preset);
+                        settingsDialog.AddPreset(IOSettingsPresets.SettingsPresets);
+                        string resultingExtension = Path.GetExtension(saveFileDialog.FileName).ToLowerInvariant();
 
-                        if(settingsDialog.ShowDialog(owner) == DialogResult.OK)
+                        if(resultingExtension.Equals(".mqo"))
+                            settingsDialog.SelectPreset("Metasequoia MQO");
+
+                        if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
                         {
                             BaseGeometryExporter.GetTextureDelegate getTextureCallback = (texture) =>
                             {
@@ -2051,9 +2054,8 @@ namespace TombEditor
                                     return "";
                             };
 
-                            string resultingExtension = Path.GetExtension(saveFileDialog.FileName);
                             BaseGeometryExporter exporter;
-                            switch (resultingExtension.ToLowerInvariant())
+                            switch (resultingExtension)
                             {
                                 default:
                                 case ".obj":
