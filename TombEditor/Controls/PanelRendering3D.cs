@@ -1948,7 +1948,7 @@ namespace TombEditor.Controls
                     {
                         if (theRoom.AlternateRoom != null)
                         {
-                            visitedRooms.Add(theRoom);
+                            visitedRooms.Add(theRoom.AlternateRoom);
                             if (!_roomsToDraw.Contains(theRoom.AlternateRoom)) _roomsToDraw.Add(theRoom.AlternateRoom);
                         }
                         else
@@ -1990,11 +1990,25 @@ namespace TombEditor.Controls
                     if (Vector3.Dot(normal, cameraDirection) < -0.1f && theLimit > 1)
                         continue;
 
-                    if (/*portal.Room == theRoom &&*/ !visitedRooms.Contains(portal.AdjoiningRoom) &&
-                        !stackRooms.Contains(portal.AdjoiningRoom))
+                    if (!isFlipped)
                     {
-                        stackRooms.Push(portal.AdjoiningRoom);
-                        stackLimits.Push(theLimit + 1);
+                        var roomToAdd = (portal.AdjoiningRoom.AlternateBaseRoom != null ? portal.AdjoiningRoom.AlternateBaseRoom : portal.AdjoiningRoom);
+                        if (!visitedRooms.Contains(roomToAdd) &&
+                            !stackRooms.Contains(roomToAdd))
+                        {
+                            stackRooms.Push(roomToAdd);
+                            stackLimits.Push(theLimit + 1);
+                        }
+                    }
+                    else
+                    {
+                        var roomToAdd = (portal.AdjoiningRoom.AlternateRoom != null ? portal.AdjoiningRoom.AlternateRoom : portal.AdjoiningRoom);
+                        if (!visitedRooms.Contains(roomToAdd) &&
+                            !stackRooms.Contains(roomToAdd))
+                        {
+                            stackRooms.Push(roomToAdd);
+                            stackLimits.Push(theLimit + 1);
+                        }
                     }
                 }
             }

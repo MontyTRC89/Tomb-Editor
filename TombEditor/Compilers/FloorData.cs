@@ -108,7 +108,7 @@ namespace TombEditor.Compilers
                         if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                         {
                             var portal = block.FloorPortal;
-                            int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            int roomIndex = _roomsRemappingDictionary[(portal.AdjoiningRoom.AlternateBaseRoom != null ? portal.AdjoiningRoom.AlternateBaseRoom : portal.AdjoiningRoom)];
                             if (roomIndex >= 254)
                                 throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
                             sector.RoomBelow = checked((byte)roomIndex);
@@ -122,7 +122,7 @@ namespace TombEditor.Compilers
                         if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                         {
                             var portal = block.CeilingPortal;
-                            int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            int roomIndex = _roomsRemappingDictionary[(portal.AdjoiningRoom.AlternateBaseRoom != null ? portal.AdjoiningRoom.AlternateBaseRoom : portal.AdjoiningRoom)];
                             if (roomIndex >= 254)
                                 throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
                             sector.RoomAbove = checked((byte)roomIndex);
@@ -139,7 +139,7 @@ namespace TombEditor.Compilers
                             if (block.WallPortal.Opacity != PortalOpacity.SolidFaces)
                             {
                                 const ushort data1 = 0x8001;
-                                var data2 = (ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom];
+                                var data2 = (ushort)_roomsRemappingDictionary[(block.WallPortal.AdjoiningRoom.AlternateBaseRoom != null ? block.WallPortal.AdjoiningRoom.AlternateBaseRoom : block.WallPortal.AdjoiningRoom)];
 
                                 _floorData.Add(data1);
                                 _floorData.Add(data2);

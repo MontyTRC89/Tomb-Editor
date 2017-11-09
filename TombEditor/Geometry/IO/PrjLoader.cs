@@ -62,6 +62,7 @@ namespace TombEditor.Geometry.IO
             public short _thisRoomIndex;
             public short _loopRoomIndex;
             public short _oppositePortalId;
+            public short _count;
         }
 
         public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
@@ -109,8 +110,10 @@ namespace TombEditor.Geometry.IO
 
                     var tempRooms = new Dictionary<int, PrjRoom>();
                     var tempPortals = new Dictionary<int, PrjPortal>();
+                    var tempPortalsCount = new Dictionary<int, int>();
 
                     progressReporter.ReportProgress(2, "Number of rooms: " + numRooms);
+                    var writer = new StreamWriter(File.OpenWrite("portalsprj.txt"));
 
                     for (int i = 0; i < numRooms; i++)
                     {
@@ -162,6 +165,10 @@ namespace TombEditor.Geometry.IO
                             portalThings[j] = reader.ReadInt16();
                             tempRoom._portals.Add(portalThings[j]);
                         }
+
+                        writer.WriteLine("Room " + i);
+                        writer.WriteLine("-------------------------------------");
+
                         for (int j = 0; j < numPortals; j++)
                         {
                             ushort direction = reader.ReadUInt16();
@@ -204,8 +211,23 @@ namespace TombEditor.Geometry.IO
                             if (thisRoomIndex != i)
                                 logger.Debug("Portal in room '" + roomName + "' doesn't refer to it's own room. That's probably ok, if it's a flip room.");
 
+                            writer.WriteLine("  Portal # " + portalThings[j]);
+                            writer.WriteLine("      Room loop: " + i);
+                            writer.WriteLine("      Room struct: " + thisRoomIndex);
+                            writer.WriteLine("      Opposite: " + portalOppositeSlot);
+                            writer.WriteLine("      Direction: " + directionEnum.ToString());
+
                             if (tempPortals.ContainsKey(portalThings[j]))
                             {
+                                tempPortalsCount[portalThings[j]]++;
+                                if (thisRoomIndex == i)
+                                {
+                                    var portal = tempPortals[portalThings[j]];
+                                    portal._thisRoomIndex = thisRoomIndex;
+                                    portal._loopRoomIndex = thisRoomIndex;
+                                    tempPortals[portalThings[j]] = portal;
+                                }
+
                                 logger.Debug("Portal in room '" + roomName + "' was already present in the list.");
                                 continue;
                             }
@@ -218,6 +240,8 @@ namespace TombEditor.Geometry.IO
                                 _oppositePortalId = portalOppositeSlot,
                                 _loopRoomIndex = (short)i
                             });
+
+                            tempPortalsCount.Add(portalThings[j], 1);
                         }
 
                         // Read objects
@@ -754,6 +778,9 @@ namespace TombEditor.Geometry.IO
                         }
                     }
 
+                    writer.Flush();
+                    writer.Close();
+
                     // Link portals
                     progressReporter.ReportProgress(32, "Link portals");
                     foreach (var tempRoom in tempRooms)
@@ -761,7 +788,7 @@ namespace TombEditor.Geometry.IO
                         Room room = level.Rooms[tempRoom.Key];
                         foreach (var portalId in tempRoom.Value._portals)
                         {
-                            PrjPortal prjPortal = tempPortals[portalId];
+                            var prjPortal = tempPortals[portalId];
 
                             // Link to the opposite room
                             if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
@@ -770,9 +797,37 @@ namespace TombEditor.Geometry.IO
                                 continue;
                             }
 
-                            Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
-                            PortalInstance portal = new PortalInstance(prjPortal._area, prjPortal._direction, adjoiningRoom);
+                            var oppositePortalId = prjPortal._oppositePortalId;
+                            var count = tempPortalsCount[portalId];
+                            var countOpposite = tempPortalsCount[oppositePortalId];
+                            var adjoiningRoomIndex = 0;
 
+                            if (count == 2 && countOpposite == 2)
+                                adjoiningRoomIndex = tempPortals[oppositePortalId]._thisRoomIndex;
+                            else if (count == 1 && countOpposite == 2)
+                                adjoiningRoomIndex = tempPortals[oppositePortalId]._thisRoomIndex;
+                            else if (count == 2 && countOpposite == 1)
+                                adjoiningRoomIndex = tempPortals[oppositePortalId]._thisRoomIndex;
+                            else
+                                adjoiningRoomIndex = tempPortals[prjPortal._oppositePortalId]._loopRoomIndex;
+
+                            /*if (count == 2)
+                            {
+                                // For sure this portal is from a base room and also copied in flipped room
+                                adjoiningRoomIndex = tempPortals[prjPortal._oppositePortalId]._thisRoomIndex;
+                            }
+                            else
+                            {
+                                var countOpposite = tempPortalsCount[prjPortal._oppositePortalId];
+                                if (countOpposite == 2)
+                                    adjoiningRoomIndex = tempPortals[prjPortal._oppositePortalId]._thisRoomIndex;
+                                else
+                                    adjoiningRoomIndex = tempPortals[prjPortal._oppositePortalId]._loopRoomIndex;
+                            }*/
+
+                            var adjoiningRoom = level.Rooms[adjoiningRoomIndex];
+                            var portal = new PortalInstance(prjPortal._area, prjPortal._direction, adjoiningRoom);
+                            
                             // Figure out opacity of the portal
                             portal.Opacity = PortalOpacity.None;
                             switch (portal.Direction)
