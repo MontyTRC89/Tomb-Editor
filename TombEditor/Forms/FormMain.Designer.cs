@@ -891,7 +891,7 @@
             this.floatingToolStripMenuItem.Name = "floatingToolStripMenuItem";
             this.floatingToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.floatingToolStripMenuItem.Text = "Floating";
-            this.floatingToolStripMenuItem.Click += new System.EventHandler(this.floatingToolStripMenuItem_Click);
+            this.floatingToolStripMenuItem.CheckedChanged += new System.EventHandler(this.floatingToolStripMenuItem_CheckedChanged);
             // 
             // helpToolStripMenuItem
             // 

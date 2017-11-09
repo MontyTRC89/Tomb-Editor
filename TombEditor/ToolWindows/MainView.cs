@@ -38,12 +38,14 @@ namespace TombEditor.ToolWindows
 
         public void AddToolbox(DarkFloatingToolbox toolbox)
         {
-            panel3D.Controls.Add(toolbox);
+            if(!panel3D.Contains(toolbox))
+                panel3D.Controls.Add(toolbox);
         }
 
         public void RemoveToolbox(DarkFloatingToolbox toolbox)
         {
-            panel3D.Controls.Remove(toolbox);
+            if(panel3D.Controls.Contains(toolbox))
+                panel3D.Controls.Remove(toolbox);
         }
 
         public void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)

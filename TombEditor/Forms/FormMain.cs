@@ -59,7 +59,6 @@ namespace TombEditor
             // Hook window added/removed events.
             dockArea.ContentAdded += ToolWindow_Added;
             dockArea.ContentRemoved += ToolWindow_Removed;
-            ToolBox.VisibleChanged += ToolBox_VisibleChanged;
 
             // DockPanel message filters for drag and resize.
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
@@ -67,7 +66,6 @@ namespace TombEditor
 
             // Initialize panels
             MainView.Initialize(_deviceManager);
-            MainView.AddToolbox(ToolBox);
             ObjectBrowser.Initialize(_deviceManager);
 
             // Restore window settings
@@ -241,9 +239,8 @@ namespace TombEditor
             Location = configuration.Window_Position;
             WindowState = configuration.Window_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
 
-            ToolBox.Visible = configuration.Rendering3D_ToolboxVisible;
+            floatingToolStripMenuItem.Checked = configuration.Rendering3D_ToolboxVisible;
             ToolBox.Location = configuration.Rendering3D_ToolboxPosition;
-            floatingToolStripMenuItem.Checked = ToolBox.Visible;
         }
 
         private void SaveWindowLayout(Configuration configuration)
@@ -254,7 +251,7 @@ namespace TombEditor
             configuration.Window_Position = Location;
             configuration.Window_Maximized = WindowState == FormWindowState.Maximized;
 
-            configuration.Rendering3D_ToolboxVisible = ToolBox.Visible;
+            configuration.Rendering3D_ToolboxVisible = floatingToolStripMenuItem.Checked;
             configuration.Rendering3D_ToolboxPosition = ToolBox.Location;
 
             _editor.ConfigurationChange();
@@ -968,11 +965,6 @@ namespace TombEditor
             dockableToolStripMenuItem.Checked = dockArea.ContainsContent(ToolPalette);
         }
 
-        private void ToolBox_VisibleChanged(object sender, EventArgs e)
-        {
-            floatingToolStripMenuItem.Checked = ToolBox.Visible;
-        }
-
         private void ToolWindow_Added(object sender, DockContentEventArgs e)
         {
             if (dockArea.Contains(e.Content))
@@ -983,6 +975,14 @@ namespace TombEditor
         {
             if (!dockArea.Contains(e.Content))
                 ToolWindow_BuildMenu();
+        }
+
+        private void ToolBox_Show(bool show)
+        {
+            if (show)
+                MainView.AddToolbox(ToolBox);
+            else
+                MainView.RemoveToolbox(ToolBox);
         }
 
         protected override void OnDragEnter(DragEventArgs e)
@@ -1101,10 +1101,9 @@ namespace TombEditor
             ToolWindow_Toggle(ToolPalette);
         }
 
-        private void floatingToolStripMenuItem_Click(object sender, EventArgs e)
+        private void floatingToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            if(_editor.Mode != EditorMode.Lighting)
-                ToolBox.Visible = !ToolBox.Visible;
+            ToolBox_Show(floatingToolStripMenuItem.Checked);
         }
     }
 }
