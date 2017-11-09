@@ -130,7 +130,7 @@
             // butPlaySound
             // 
             this.butPlaySound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butPlaySound.Image = global::TombEditor.Properties.Resources.play_16;
+            this.butPlaySound.Image = global::TombEditor.Properties.Resources.actions_play_16;
             this.butPlaySound.Location = new System.Drawing.Point(514, 410);
             this.butPlaySound.Name = "butPlaySound";
             this.butPlaySound.Padding = new System.Windows.Forms.Padding(5);

@@ -38,7 +38,7 @@ namespace TombLib.GeometryIO
             if (_settings.FlipX) { position.X = -position.X; }
             if (_settings.FlipY) { position.Y = -position.Y; }
             if (_settings.FlipZ) { position.Z = -position.Z; }
-            position *= _settings.Scale;
+            position = (_settings.DivideByScale ? position * _settings.Scale : position / _settings.Scale);
             return position;
         }
 

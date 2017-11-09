@@ -26,8 +26,8 @@ namespace TombEditor.ToolWindows
             this.rbTileSize64 = new DarkUI.Controls.DarkRadioButton();
             this.rbTileSize32 = new DarkUI.Controls.DarkRadioButton();
             this.butBump = new DarkUI.Controls.DarkButton();
-            this.butAnimationRanges = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
+            this.butAnimationRanges = new DarkUI.Controls.DarkButton();
             this.panelTextureTools.SuspendLayout();
             this.panelTileSizeSelector.SuspendLayout();
             this.SuspendLayout();
@@ -128,21 +128,8 @@ namespace TombEditor.ToolWindows
             // 
             this.butBump.Location = new System.Drawing.Point(0, 0);
             this.butBump.Name = "butBump";
-            this.butBump.Padding = new System.Windows.Forms.Padding(5);
             this.butBump.Size = new System.Drawing.Size(75, 23);
             this.butBump.TabIndex = 4;
-            // 
-            // butAnimationRanges
-            // 
-            this.butAnimationRanges.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butAnimationRanges.Location = new System.Drawing.Point(3, 27);
-            this.butAnimationRanges.Name = "butAnimationRanges";
-            this.butAnimationRanges.Padding = new System.Windows.Forms.Padding(5);
-            this.butAnimationRanges.Size = new System.Drawing.Size(138, 23);
-            this.butAnimationRanges.TabIndex = 0;
-            this.butAnimationRanges.Text = "Animation ranges";
-            this.butAnimationRanges.Click += new System.EventHandler(this.butAnimationRanges_Click);
             this.butBump.Visible = false;
             // 
             // butTextureSounds
@@ -151,11 +138,21 @@ namespace TombEditor.ToolWindows
             this.butTextureSounds.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butTextureSounds.Location = new System.Drawing.Point(144, 27);
             this.butTextureSounds.Name = "butTextureSounds";
-            this.butTextureSounds.Padding = new System.Windows.Forms.Padding(5);
             this.butTextureSounds.Size = new System.Drawing.Size(138, 23);
             this.butTextureSounds.TabIndex = 1;
             this.butTextureSounds.Text = "Texture sounds";
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
+            // 
+            // butAnimationRanges
+            // 
+            this.butAnimationRanges.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butAnimationRanges.Location = new System.Drawing.Point(3, 27);
+            this.butAnimationRanges.Name = "butAnimationRanges";
+            this.butAnimationRanges.Size = new System.Drawing.Size(138, 23);
+            this.butAnimationRanges.TabIndex = 0;
+            this.butAnimationRanges.Text = "Animation ranges";
+            this.butAnimationRanges.Click += new System.EventHandler(this.butAnimationRanges_Click);
             // 
             // TexturePanel
             // 

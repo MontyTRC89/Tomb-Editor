@@ -356,91 +356,103 @@ namespace TombEditor.Controls
             _movementTimer.Stop();
         }
 
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            // Don't paint the background
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
-            if ((_editor == null) || (_editor.Level == null))
-                return;
 
-            var barArea = _depthBar.getBarArea(Size);
-
-            // Draw 2d map if necessary and not occluded by 2d bar
-            if (!barArea.Contains(e.ClipRectangle))
+            if ((LicenseManager.UsageMode != LicenseUsageMode.Runtime) || (_editor == null) || (_editor.Level == null))
             {
-                e.Graphics.Clear(Color.White);
+                e.Graphics.Clear(Parent.BackColor);
+                e.Graphics.DrawString("2D Room Rendering: Not Available!", Font, Brushes.DarkGray, ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+            }
+            else
+            {
+                var barArea = _depthBar.getBarArea(Size);
 
-                // Draw hidden rooms
-                float currentRangeMin = _editor.SelectedRoom.Position.Y + _editor.SelectedRoom.GetLowestCorner();
-                float currentRangeMax = _editor.SelectedRoom.Position.Y + _editor.SelectedRoom.GetHighestCorner();
-                IEnumerable<Room> sortedRoomList = _editor.Level.GetVerticallyAscendingRoomList();
-                bool drewAny = false;
-                foreach (Room room in sortedRoomList)
-                    if (!_depthBar.CheckRoom(room)) // Check if the room fits the depth bar criterion
-                    {
-                        drewAny = true;
-                        DrawRoom(e, room, currentRangeMin, currentRangeMax, true, false);
-                    }
-                if (drewAny)
-                    e.Graphics.FillRectangle(_roomsOutsideOverdraw, e.ClipRectangle); // Make the rooms in the background appear faded
-
-                // Draw grid lines
-                Vector2 GridLines0 = FromVisualCoord(new PointF());
-                Vector2 GridLines1 = FromVisualCoord(new PointF() + Size);
-                Vector2 GridLinesStart = Vector2.Min(GridLines0, GridLines1);
-                Vector2 GridLinesEnd = Vector2.Max(GridLines0, GridLines1);
-                GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(Level.MaxSectorCoord));
-                GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(Level.MaxSectorCoord));
-                Point GridLinesStartInt = new Point((int)Math.Floor(GridLinesStart.X), (int)Math.Floor(GridLinesStart.Y));
-                Point GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
-
-                for (int x = GridLinesStartInt.X; x <= GridLinesEndInt.X; ++x)
-                    e.Graphics.DrawLine(((x % 10) == 0) ? _gridPenThick : _gridPenThin,
-                        ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, Level.MaxSectorCoord)));
-
-                for (int y = GridLinesStartInt.Y; y <= GridLinesEndInt.Y; ++y)
-                    e.Graphics.DrawLine(((y % 10) == 0) ? _gridPenThick : _gridPenThin,
-                        ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(Level.MaxSectorCoord, y)));
-
-                // Draw visible rooms
-                foreach (Room room in sortedRoomList)
-                    if (_depthBar.CheckRoom(room)) // Check if the room fits the depth bar criterion
-                        DrawRoom(e, room, currentRangeMin, currentRangeMax, true, true);
-
-                // Draw probe positions with digits
-                for (int i = 0; i < _depthBar.DepthProbes.Count; ++i)
+                // Draw 2d map if necessary and not occluded by 2d bar
+                if (!barArea.Contains(e.ClipRectangle))
                 {
-                    PointF depthProbeVisualPos = ToVisualCoord(_depthBar.DepthProbes[i].Position);
-                    RectangleF depthProbeRect = new RectangleF(depthProbeVisualPos.X - _probeRadius / 2, depthProbeVisualPos.Y - _probeRadius / 2, _probeRadius, _probeRadius);
+                    e.Graphics.Clear(Color.White);
 
-                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    e.Graphics.FillEllipse(new SolidBrush(Color.White), depthProbeRect);
-
-                    using (var probePen = new Pen(_depthBar.DepthProbes[i].Color, 2))
-                    {
-                        probePen.Color = Color.FromArgb(60, probePen.Color.R, probePen.Color.G, probePen.Color.B);
-                        e.Graphics.FillEllipse(probePen.Brush, depthProbeRect);
-
-                        probePen.Color = Color.FromArgb(240, probePen.Color.R, probePen.Color.G, probePen.Color.B);
-                        e.Graphics.DrawEllipse(probePen, depthProbeRect);
-
-                        SizeF textRectSize = e.Graphics.MeasureString(i.ToString(), DepthBar.ProbeFont);
-                        PointF textRextPos = new PointF(depthProbeVisualPos.X - textRectSize.Width / 2, depthProbeVisualPos.Y - textRectSize.Height / 2);
-
-                        e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probePen.Brush, new RectangleF(textRextPos, textRectSize), DepthBar.ProbeStringLayout);
-
-                        // Draw depth bar numbers
-                        if (!barArea.Contains(e.ClipRectangle))
+                    // Draw hidden rooms
+                    float currentRangeMin = _editor.SelectedRoom.Position.Y + _editor.SelectedRoom.GetLowestCorner();
+                    float currentRangeMax = _editor.SelectedRoom.Position.Y + _editor.SelectedRoom.GetHighestCorner();
+                    IEnumerable<Room> sortedRoomList = _editor.Level.GetVerticallyAscendingRoomList();
+                    bool drewAny = false;
+                    foreach (Room room in sortedRoomList)
+                        if (!_depthBar.CheckRoom(room)) // Check if the room fits the depth bar criterion
                         {
-                            RectangleF groupArea = _depthBar.groupGetArea(barArea, i);
-                            e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probePen.Brush, new RectangleF(groupArea.X, 0, groupArea.Width, groupArea.Y), DepthBar.ProbeStringLayout);
+                            drewAny = true;
+                            DrawRoom(e, room, currentRangeMin, currentRangeMax, true, false);
+                        }
+                    if (drewAny)
+                        e.Graphics.FillRectangle(_roomsOutsideOverdraw, e.ClipRectangle); // Make the rooms in the background appear faded
+
+                    // Draw grid lines
+                    Vector2 GridLines0 = FromVisualCoord(new PointF());
+                    Vector2 GridLines1 = FromVisualCoord(new PointF() + Size);
+                    Vector2 GridLinesStart = Vector2.Min(GridLines0, GridLines1);
+                    Vector2 GridLinesEnd = Vector2.Max(GridLines0, GridLines1);
+                    GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(Level.MaxSectorCoord));
+                    GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(Level.MaxSectorCoord));
+                    Point GridLinesStartInt = new Point((int)Math.Floor(GridLinesStart.X), (int)Math.Floor(GridLinesStart.Y));
+                    Point GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
+
+                    for (int x = GridLinesStartInt.X; x <= GridLinesEndInt.X; ++x)
+                        e.Graphics.DrawLine(((x % 10) == 0) ? _gridPenThick : _gridPenThin,
+                            ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, Level.MaxSectorCoord)));
+
+                    for (int y = GridLinesStartInt.Y; y <= GridLinesEndInt.Y; ++y)
+                        e.Graphics.DrawLine(((y % 10) == 0) ? _gridPenThick : _gridPenThin,
+                            ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(Level.MaxSectorCoord, y)));
+
+                    // Draw visible rooms
+                    foreach (Room room in sortedRoomList)
+                        if (_depthBar.CheckRoom(room)) // Check if the room fits the depth bar criterion
+                            DrawRoom(e, room, currentRangeMin, currentRangeMax, true, true);
+
+                    // Draw probe positions with digits
+                    for (int i = 0; i < _depthBar.DepthProbes.Count; ++i)
+                    {
+                        PointF depthProbeVisualPos = ToVisualCoord(_depthBar.DepthProbes[i].Position);
+                        RectangleF depthProbeRect = new RectangleF(depthProbeVisualPos.X - _probeRadius / 2, depthProbeVisualPos.Y - _probeRadius / 2, _probeRadius, _probeRadius);
+
+                        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                        e.Graphics.FillEllipse(new SolidBrush(Color.White), depthProbeRect);
+
+                        using (var probePen = new Pen(_depthBar.DepthProbes[i].Color, 2))
+                        {
+                            probePen.Color = Color.FromArgb(60, probePen.Color.R, probePen.Color.G, probePen.Color.B);
+                            e.Graphics.FillEllipse(probePen.Brush, depthProbeRect);
+
+                            probePen.Color = Color.FromArgb(240, probePen.Color.R, probePen.Color.G, probePen.Color.B);
+                            e.Graphics.DrawEllipse(probePen, depthProbeRect);
+
+                            SizeF textRectSize = e.Graphics.MeasureString(i.ToString(), DepthBar.ProbeFont);
+                            PointF textRextPos = new PointF(depthProbeVisualPos.X - textRectSize.Width / 2, depthProbeVisualPos.Y - textRectSize.Height / 2);
+
+                            e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probePen.Brush, new RectangleF(textRextPos, textRectSize), DepthBar.ProbeStringLayout);
+
+                            // Draw depth bar numbers
+                            if (!barArea.Contains(e.ClipRectangle))
+                            {
+                                RectangleF groupArea = _depthBar.groupGetArea(barArea, i);
+                                e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probePen.Brush, new RectangleF(groupArea.X, 0, groupArea.Width, groupArea.Y), DepthBar.ProbeStringLayout);
+                            }
                         }
                     }
                 }
-            }
 
-            // Draw depth bar
-            e.Graphics.SmoothingMode = SmoothingMode.Default;
-            Vector2 cursorPos = FromVisualCoord(PointToClient(MousePosition));
-            _depthBar.Draw(e, Size, _editor.Level, cursorPos, _editor.SelectedRoom, _roomsToMove);
+                // Draw depth bar
+                e.Graphics.SmoothingMode = SmoothingMode.Default;
+                Vector2 cursorPos = FromVisualCoord(PointToClient(MousePosition));
+                _depthBar.Draw(e, Size, _editor.Level, cursorPos, _editor.SelectedRoom, _roomsToMove);
+            }
         }
 
         private void MoveTimerTick(object sender, EventArgs e)

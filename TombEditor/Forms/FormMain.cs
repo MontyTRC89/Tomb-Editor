@@ -29,6 +29,10 @@ namespace TombEditor
         private ToolWindows.Palette Palette = new ToolWindows.Palette();
         private ToolWindows.TexturePanel TexturePanel = new ToolWindows.TexturePanel();
         private ToolWindows.ObjectList ObjectList = new ToolWindows.ObjectList();
+        private ToolWindows.ToolPalette ToolPalette = new ToolWindows.ToolPalette();
+
+        // Floating tool boxes are placed on 3D view at runtime
+        private ToolWindows.ToolPaletteFloating ToolBox = new ToolWindows.ToolPaletteFloating();
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -105,6 +109,8 @@ namespace TombEditor
                     return TexturePanel;
                 case "ObjectList":
                     return ObjectList;
+                case "ToolPalette":
+                    return ToolPalette;
                 default:
                     logger.Warn("Unknown tool window '" + key + "' in configuration.");
                     return null;
@@ -232,6 +238,9 @@ namespace TombEditor
             Size = configuration.Window_Size;
             Location = configuration.Window_Position;
             WindowState = configuration.Window_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
+
+            floatingToolStripMenuItem.Checked = configuration.Rendering3D_ToolboxVisible;
+            ToolBox.Location = configuration.Rendering3D_ToolboxPosition;
         }
 
         private void SaveWindowLayout(Configuration configuration)
@@ -241,6 +250,9 @@ namespace TombEditor
             configuration.Window_Size = Size;
             configuration.Window_Position = Location;
             configuration.Window_Maximized = WindowState == FormWindowState.Maximized;
+
+            configuration.Rendering3D_ToolboxVisible = floatingToolStripMenuItem.Checked;
+            configuration.Rendering3D_ToolboxPosition = ToolBox.Location;
 
             _editor.ConfigurationChange();
         }
@@ -446,6 +458,8 @@ namespace TombEditor
                 case Keys.Oem5: // German keyboard key for a texture triangle rotation
                     if (ModifierKeys == Keys.None)
                         EditorActions.RotateSelectedTexture();
+                    else if (ModifierKeys.HasFlag(Keys.Shift))
+                        EditorActions.MirrorSelectedTexture();
                     break;
             }
 
@@ -515,17 +529,17 @@ namespace TombEditor
 
         private void textureFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Floor);
         }
 
         private void textureCeilingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Ceiling);
         }
 
         private void textureWallsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
         }
 
         private void importConvertTextureToPng_Click(object sender, EventArgs e)
@@ -948,6 +962,7 @@ namespace TombEditor
             lightingToolStripMenuItem.Checked = dockArea.ContainsContent(Lighting);
             paletteToolStripMenuItem.Checked = dockArea.ContainsContent(Palette);
             texturePanelToolStripMenuItem.Checked = dockArea.ContainsContent(TexturePanel);
+            dockableToolStripMenuItem.Checked = dockArea.ContainsContent(ToolPalette);
         }
 
         private void ToolWindow_Added(object sender, DockContentEventArgs e)
@@ -960,6 +975,14 @@ namespace TombEditor
         {
             if (!dockArea.Contains(e.Content))
                 ToolWindow_BuildMenu();
+        }
+
+        private void ToolBox_Show(bool show)
+        {
+            if (show)
+                MainView.AddToolbox(ToolBox);
+            else
+                MainView.RemoveToolbox(ToolBox);
         }
 
         protected override void OnDragEnter(DragEventArgs e)
@@ -1071,6 +1094,16 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
+        }
+
+        private void dockableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(ToolPalette);
+        }
+
+        private void floatingToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            ToolBox_Show(floatingToolStripMenuItem.Checked);
         }
     }
 }

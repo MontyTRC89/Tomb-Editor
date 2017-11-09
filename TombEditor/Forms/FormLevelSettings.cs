@@ -197,7 +197,7 @@ namespace TombEditor
                 {
                     fontTextureFilePathPicPreview.Image?.Dispose();
                     fontTextureFilePathPicPreview.Image = ResourceLoader.LoadRawExtraTexture(fontPath).ToBitmap();
-                    fontTextureFilePathPicPreview.BackgroundImage = Properties.Resources.TransparentBackground;
+                    fontTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     fontTextureFilePathPicPreview.Tag = null;
                     fontTextureFilePathTxt.BackColor = _correctColor;
                 }
@@ -220,7 +220,7 @@ namespace TombEditor
                 {
                     skyTextureFilePathPicPreview.Image?.Dispose();
                     skyTextureFilePathPicPreview.Image = ResourceLoader.LoadRawExtraTexture(skyPath).ToBitmap();
-                    skyTextureFilePathPicPreview.BackgroundImage = Properties.Resources.TransparentBackground;
+                    skyTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     skyTextureFilePathPicPreview.Tag = null;
                     skyTextureFilePathTxt.BackColor = _correctColor;
                 }
