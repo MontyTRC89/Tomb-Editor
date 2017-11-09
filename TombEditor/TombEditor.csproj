@@ -148,6 +148,11 @@
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -273,11 +278,6 @@
     <Compile Include="Geometry\SinkInstance.cs" />
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="ListExtensions.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="ToolWindows\Lighting.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -307,6 +307,18 @@
     </Compile>
     <Compile Include="ToolWindows\TexturePanel.Designer.cs">
       <DependentUpon>TexturePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ToolPalette.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\ToolPalette.Designer.cs">
+      <DependentUpon>ToolPalette.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ToolPaletteFloating.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\ToolPaletteFloating.Designer.cs">
+      <DependentUpon>ToolPaletteFloating.cs</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\TriggerList.cs">
       <SubType>UserControl</SubType>
@@ -365,6 +377,9 @@
     <Compile Include="TexturePackerTest.cs" />
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\ToolPaletteFloating.resx">
+      <DependentUpon>ToolPaletteFloating.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
@@ -460,6 +475,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\TexturePanel.resx">
       <DependentUpon>TexturePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\ToolPalette.resx">
+      <DependentUpon>ToolPalette.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\TriggerList.resx">
       <DependentUpon>TriggerList.cs</DependentUpon>
