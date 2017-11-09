@@ -887,6 +887,7 @@
             // floatingToolStripMenuItem
             // 
             this.floatingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.floatingToolStripMenuItem.CheckOnClick = true;
             this.floatingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.floatingToolStripMenuItem.Name = "floatingToolStripMenuItem";
             this.floatingToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
