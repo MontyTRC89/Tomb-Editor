@@ -25,13 +25,14 @@
             this.butDrawPortals = new System.Windows.Forms.ToolStripButton();
             this.butDrawHorizon = new System.Windows.Forms.ToolStripButton();
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
+            this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
+            this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
             this.dropDownDrawObjects = new System.Windows.Forms.ToolStripDropDownButton();
             this.butDrawMoveables = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawStatics = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawOther = new System.Windows.Forms.ToolStripMenuItem();
-            this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
-            this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
+            this.butDisableGeometryPicking = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -75,6 +76,7 @@
             this.butLightingMode,
             this.toolStripSeparator3,
             this.butCenterCamera,
+            this.butDisableGeometryPicking,
             this.butDrawPortals,
             this.butDrawHorizon,
             this.butDrawRoomNames,
@@ -220,6 +222,31 @@
             this.butDrawRoomNames.ToolTipText = "Draw room names";
             this.butDrawRoomNames.Click += new System.EventHandler(this.butDrawRoomNames_Click);
             // 
+            // butDrawIllegalSlopes
+            // 
+            this.butDrawIllegalSlopes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawIllegalSlopes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawIllegalSlopes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawIllegalSlopes.Image = global::TombEditor.Properties.Resources.general_Warning_16;
+            this.butDrawIllegalSlopes.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawIllegalSlopes.Name = "butDrawIllegalSlopes";
+            this.butDrawIllegalSlopes.Size = new System.Drawing.Size(23, 25);
+            this.butDrawIllegalSlopes.ToolTipText = "Draw illegal slopes";
+            this.butDrawIllegalSlopes.Click += new System.EventHandler(this.butDrawIllegalSlopes_Click);
+            // 
+            // butDrawSlideDirections
+            // 
+            this.butDrawSlideDirections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawSlideDirections.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawSlideDirections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawSlideDirections.Image = global::TombEditor.Properties.Resources.actions_Slide_16;
+            this.butDrawSlideDirections.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butDrawSlideDirections.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawSlideDirections.Name = "butDrawSlideDirections";
+            this.butDrawSlideDirections.Size = new System.Drawing.Size(23, 25);
+            this.butDrawSlideDirections.ToolTipText = "Draw slide directions";
+            this.butDrawSlideDirections.Click += new System.EventHandler(this.butDrawSlideDirections_Click);
+            // 
             // dropDownDrawObjects
             // 
             this.dropDownDrawObjects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -284,30 +311,16 @@
             this.butDrawOther.Text = "Draw other objects";
             this.butDrawOther.Click += new System.EventHandler(this.butDrawOther_Click);
             // 
-            // butDrawIllegalSlopes
+            // butDisableGeometryPicking
             // 
-            this.butDrawIllegalSlopes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawIllegalSlopes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawIllegalSlopes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawIllegalSlopes.Image = global::TombEditor.Properties.Resources.general_Warning_16;
-            this.butDrawIllegalSlopes.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawIllegalSlopes.Name = "butDrawIllegalSlopes";
-            this.butDrawIllegalSlopes.Size = new System.Drawing.Size(23, 25);
-            this.butDrawIllegalSlopes.ToolTipText = "Draw illegal slopes";
-            this.butDrawIllegalSlopes.Click += new System.EventHandler(this.butDrawIllegalSlopes_Click);
-            // 
-            // butDrawSlideDirections
-            // 
-            this.butDrawSlideDirections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawSlideDirections.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDrawSlideDirections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawSlideDirections.Image = global::TombEditor.Properties.Resources.actions_Slide_16;
-            this.butDrawSlideDirections.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butDrawSlideDirections.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawSlideDirections.Name = "butDrawSlideDirections";
-            this.butDrawSlideDirections.Size = new System.Drawing.Size(23, 25);
-            this.butDrawSlideDirections.ToolTipText = "Draw slide directions";
-            this.butDrawSlideDirections.Click += new System.EventHandler(this.butDrawSlideDirections_Click);
+            this.butDisableGeometryPicking.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDisableGeometryPicking.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDisableGeometryPicking.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDisableGeometryPicking.Image = global::TombEditor.Properties.Resources.actions_DisableGeometryPicking_16;
+            this.butDisableGeometryPicking.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDisableGeometryPicking.Name = "butDisableGeometryPicking";
+            this.butDisableGeometryPicking.Size = new System.Drawing.Size(23, 25);
+            this.butDisableGeometryPicking.ToolTipText = "Disable custom geometry picking";
             // 
             // toolStripSeparator1
             // 
@@ -683,5 +696,6 @@
         private System.Windows.Forms.ToolStripMenuItem butDrawImportedGeometry;
         private System.Windows.Forms.ToolStripMenuItem butDrawOther;
         private System.Windows.Forms.ToolStripButton butDrawSlideDirections;
+        private System.Windows.Forms.ToolStripButton butDisableGeometryPicking;
     }
 }

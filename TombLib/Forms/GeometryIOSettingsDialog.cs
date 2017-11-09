@@ -116,6 +116,7 @@ namespace TombLib.GeometryIO
             cbPremultiplyUV.Checked = settings.PremultiplyUV;
             cbWrapUV.Checked = settings.WrapUV;
             nmScale.Value = (decimal)settings.Scale;
+            cbDivide.Checked = settings.DivideByScale;
             cbInvertFaces.Checked = settings.InvertFaces;
         }
 
@@ -131,6 +132,7 @@ namespace TombLib.GeometryIO
             Settings.PremultiplyUV = cbPremultiplyUV.Checked;
             Settings.WrapUV = cbWrapUV.Checked;
             Settings.Scale = (float)nmScale.Value;
+            Settings.DivideByScale = cbDivide.Checked;
             Settings.InvertFaces = cbInvertFaces.Checked;
         }
 
@@ -165,6 +167,7 @@ namespace TombLib.GeometryIO
             cbFlipUV_V.CheckedChanged += ModifiedPresetEvent;
             cbPremultiplyUV.CheckedChanged += ModifiedPresetEvent;
             cbWrapUV.CheckedChanged += ModifiedPresetEvent;
+            cbDivide.CheckedChanged += ModifiedPresetEvent;
             nmScale.ValueChanged += ModifiedPresetEvent;
         }
 
@@ -179,6 +182,7 @@ namespace TombLib.GeometryIO
             cbFlipUV_V.CheckedChanged -= ModifiedPresetEvent;
             cbPremultiplyUV.CheckedChanged -= ModifiedPresetEvent;
             cbWrapUV.CheckedChanged -= ModifiedPresetEvent;
+            cbDivide.CheckedChanged -= ModifiedPresetEvent;
             nmScale.ValueChanged -= ModifiedPresetEvent;
         }
 
