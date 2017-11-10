@@ -208,9 +208,16 @@ namespace TombEditor.Geometry
                 RFFaces[i] = Math.Max(RFFaces[i], WSFaces[i]);
 
                 if (verticalSubdivision == 0 || verticalSubdivision == 2 || verticalSubdivision == -1)
-                    QAFaces[i] = Math.Min(QAFaces[i], WSFaces[i]);
+                    if(FloorDiagonalSplit != DiagonalSplit.None)
+                        QAFaces[i] = Math.Min(QAFaces[i], CeilingMin);
+                    else
+                        QAFaces[i] = Math.Min(QAFaces[i], WSFaces[i]);
+
                 if (verticalSubdivision == 1 || verticalSubdivision == 3 || verticalSubdivision == -1)
-                    WSFaces[i] = Math.Max(WSFaces[i], QAFaces[i]);
+                    if(CeilingDiagonalSplit != DiagonalSplit.None)
+                        WSFaces[i] = Math.Max(WSFaces[i], FloorMax);
+                    else
+                        WSFaces[i] = Math.Max(WSFaces[i], QAFaces[i]);
             }
         }
 
