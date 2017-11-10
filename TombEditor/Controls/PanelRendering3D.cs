@@ -955,7 +955,9 @@ namespace TombEditor.Controls
                             }
                         }
 
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, currentArrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)_toolHandler.UpdateDragState(e.Y), ModifierKeys.HasFlag(Keys.Alt));
+                        var dragValue = _toolHandler.UpdateDragState(e.Y);
+                        if(dragValue != 0)
+                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, currentArrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue, ModifierKeys.HasFlag(Keys.Alt));
                     }
                     else
                     {
