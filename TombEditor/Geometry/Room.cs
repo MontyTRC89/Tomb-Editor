@@ -362,8 +362,8 @@ namespace TombEditor.Geometry
             const int lowestPassableHeight = 4;
             const int lowestPassableStep = 2;  // Lara still can bug out of 2-click step heights
 
-            var normals = sector.GetTriangleNormals();
-            var slopeDirections = sector.GetTriangleSlopeDirections();
+            var normals = sector.GetFloorTriangleNormals();
+            var slopeDirections = sector.GetFloorTriangleSlopeDirections();
 
             if (slopeDirections[0] != Direction.None && slopeDirections[1] != Direction.None &&
                 slopeDirections[0] != slopeDirections[1])
@@ -525,7 +525,7 @@ namespace TombEditor.Geometry
                         slopeIsIllegal = true;
                     else if (heightsToCheck[0] != heightsToCheck[1]) // Only look for opposite slope cases in case there's no diagonal step in lookup block.
                     {
-                        var lookupBlockSlopeDirections = lookupBlock.Block.GetTriangleSlopeDirections();
+                        var lookupBlockSlopeDirections = lookupBlock.Block.GetFloorTriangleSlopeDirections();
 
                         for (int j = 0; j < 2; j++)
                         {

@@ -247,7 +247,7 @@ namespace TombEditor.Geometry
             return -1;
         }
 
-        public Vector3[] GetTriangleNormals()
+        public Vector3[] GetFloorTriangleNormals()
         {
             Plane[] tri = new Plane[2];
 
@@ -293,55 +293,89 @@ namespace TombEditor.Geometry
             }
         }
 
-        public Direction[] GetTriangleSlopeDirections()
+        public Direction[] GetFloorTriangleSlopeDirections()
         {
-            var normals = GetTriangleNormals();
+            var normals = GetFloorTriangleNormals();
 
             // Initialize slope directions as unslidable by default (EntireFace means unslidable in our case).
 
             Direction[] slopeDirections = new Direction[2] { Direction.None, Direction.None };
 
-            for (int i = 0; i < (FloorIsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
+            if(FloorHasSlope)
             {
-                if (Math.Abs(normals[i].Y) <= CriticalSlantComponent) // Triangle is slidable
+                for (int i = 0; i < (FloorIsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
                 {
-                    bool angleNotDefined = true;
-                    var angle = Math.Atan2(normals[i].X, normals[i].Z) * (180.0f / Math.PI);
-                    angle = angle < 0 ? angle + 360.0f : angle;
-
-                    // Note about 45, 135, 225 and 315 degree steps:
-                    // Core Design has used override instead of rounding for triangular slopes angled under
-                    // 45-degree stride, to produce either east or west-oriented slide.
-
-                    while (angleNotDefined)
+                    if (Math.Abs(normals[i].Y) <= CriticalSlantComponent) // Triangle is slidable
                     {
-                        switch ((int)angle)
+                        bool angleNotDefined = true;
+                        var angle = Math.Atan2(normals[i].X, normals[i].Z) * (180.0f / Math.PI);
+                        angle = angle < 0 ? angle + 360.0f : angle;
+
+                        // Note about 45, 135, 225 and 315 degree steps:
+                        // Core Design has used override instead of rounding for triangular slopes angled under
+                        // 45-degree stride, to produce either east or west-oriented slide.
+
+                        while (angleNotDefined)
                         {
-                            case 0:
-                            case 360:
-                                slopeDirections[i] = Direction.North;
-                                angleNotDefined = false;
-                                break;
-                            case 45:
-                            case 90:
-                            case 135:
-                                slopeDirections[i] = Direction.East;
-                                angleNotDefined = false;
-                                break;
-                            case 180:
-                                slopeDirections[i] = Direction.South;
-                                angleNotDefined = false;
-                                break;
-                            case 225:
-                            case 270:
-                            case 315:
-                                slopeDirections[i] = Direction.West;
-                                angleNotDefined = false;
-                                break;
-                            default:
-                                angle = (int)Math.Round(angle / 90.0f, MidpointRounding.AwayFromZero) * 90;
-                                break;
+                            switch ((int)angle)
+                            {
+                                case 0:
+                                case 360:
+                                    slopeDirections[i] = Direction.North;
+                                    angleNotDefined = false;
+                                    break;
+                                case 45:
+                                case 90:
+                                case 135:
+                                    slopeDirections[i] = Direction.East;
+                                    angleNotDefined = false;
+                                    break;
+                                case 180:
+                                    slopeDirections[i] = Direction.South;
+                                    angleNotDefined = false;
+                                    break;
+                                case 225:
+                                case 270:
+                                case 315:
+                                    slopeDirections[i] = Direction.West;
+                                    angleNotDefined = false;
+                                    break;
+                                default:
+                                    angle = (int)Math.Round(angle / 90.0f, MidpointRounding.AwayFromZero) * 90;
+                                    break;
+                            }
                         }
+                    }
+                }
+
+                if(FloorDiagonalSplit != DiagonalSplit.None)
+                {
+                    switch(FloorDiagonalSplit)
+                    {
+                        case DiagonalSplit.XpZn:
+                            slopeDirections[1] = slopeDirections[0];
+                            slopeDirections[0] = Direction.None;
+                            break;
+                        case DiagonalSplit.XnZp:
+                            if(!FloorIsQuad)
+                            {
+                                slopeDirections[0] = slopeDirections[1];
+                                slopeDirections[1] = Direction.None;
+                            }
+                            break;
+                        case DiagonalSplit.XnZn:
+                            if (FloorIsQuad)
+                            {
+                                slopeDirections[1] = slopeDirections[0];
+                                slopeDirections[0] = Direction.None;
+                            }
+                            else
+                                slopeDirections[0] = Direction.None;
+                            break;
+                        case DiagonalSplit.XpZp:
+                            if (!FloorIsQuad)
+                                slopeDirections[1] = Direction.None;
+                            break;
                     }
                 }
             }
@@ -495,8 +529,8 @@ namespace TombEditor.Geometry
 
         public bool FloorIsQuad => IsQuad(QAFaces[FaceXnZp], QAFaces[FaceXpZp], QAFaces[FaceXpZn], QAFaces[FaceXnZn]);
         public bool CeilingIsQuad => IsQuad(WSFaces[FaceXnZp], WSFaces[FaceXpZp], WSFaces[FaceXpZn], WSFaces[FaceXnZn]);
-        public bool FloorHasSlope => FloorDiagonalSplit == DiagonalSplit.None && FloorMax - FloorMin > 2;
-        public bool CeilingHasSlope => CeilingDiagonalSplit == DiagonalSplit.None && CeilingMax - CeilingMin > 2;
+        public bool FloorHasSlope => FloorMax - FloorMin > 2;
+        public bool CeilingHasSlope => CeilingMax - CeilingMin > 2;
         public int FloorIfQuadSlopeX => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXnZp] : 0;
         public int FloorIfQuadSlopeZ => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXpZn] : 0;
         public int CeilingIfQuadSlopeX => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXnZp] : 0;

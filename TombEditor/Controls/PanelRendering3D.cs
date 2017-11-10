@@ -3502,7 +3502,7 @@ namespace TombEditor.Controls
                         }
                         else if(DrawSlideDirections)
                         {
-                            var slopeDirection = room.Blocks[x, z].GetTriangleSlopeDirections()[(face == (BlockFace)25 ? 0 : 1)];
+                            var slopeDirection = room.Blocks[x, z].GetFloorTriangleSlopeDirections()[(face == (BlockFace)25 ? 0 : 1)];
 
                             if (slopeDirection != Direction.None)
                             {
