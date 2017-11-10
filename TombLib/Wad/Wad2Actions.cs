@@ -772,6 +772,8 @@ namespace TombLib.Wad
 
         public uint GetFirstFreeStaticMesh()
         {
+            if (Statics.Count == 0) return 0;
+
             // Get the first available sound
             uint found = UInt32.MaxValue;
             for (int i = 0; i < Statics.Count; i++)
@@ -784,11 +786,11 @@ namespace TombLib.Wad
             return found;
         }
 
-        public void CreateNewStaticMeshFromExternalModel(string fileName, float scale = 1000.0f)
+        public void CreateNewStaticMeshFromExternalModel(string fileName, IOGeometrySettings settings)
         {
             uint objectId = GetFirstFreeStaticMesh();
 
-            var mesh = ImportWadMeshFromExternalModel(fileName, scale);
+            var mesh = ImportWadMeshFromExternalModel(fileName, settings);
 
             var staticMesh = new WadStatic(this);
 
@@ -803,16 +805,9 @@ namespace TombLib.Wad
             PrepareDataForDirectX();
         }
 
-        public WadMesh ImportWadMeshFromExternalModel(string fileName, float scale = 1.0f)
+        public WadMesh ImportWadMeshFromExternalModel(string fileName, IOGeometrySettings settings)
         {
             // Import the model
-            var settings = new IOGeometrySettings
-            {
-                WrapUV = true,
-                FlipUV_V = true,
-                PremultiplyUV = true,
-                Scale = scale
-            };
             var importer = new AssimpImporter(settings, (absoluteTexturePath) =>
             {
                 var texture = new WadTexture();
@@ -843,10 +838,10 @@ namespace TombLib.Wad
                             poly.Indices.Add(index + lastBaseVertex);
 
                         var area = new TextureArea();
-                        area.TexCoord0 = tmpPoly.UV[0];
-                        area.TexCoord1 = tmpPoly.UV[1];
-                        area.TexCoord2 = tmpPoly.UV[2];
-                        area.TexCoord3 = tmpPoly.UV[3];
+                        area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
+                        area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
+                        area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
+                        area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
                         area.Texture = tmpMesh.Texture;
                         poly.Texture = area;
 
@@ -860,9 +855,9 @@ namespace TombLib.Wad
                             poly.Indices.Add(index + lastBaseVertex);
 
                         var area = new TextureArea();
-                        area.TexCoord0 = tmpPoly.UV[0];
-                        area.TexCoord1 = tmpPoly.UV[1];
-                        area.TexCoord2 = tmpPoly.UV[2];
+                        area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
+                        area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
+                        area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
                         area.Texture = tmpMesh.Texture;
                         poly.Texture = area;
 

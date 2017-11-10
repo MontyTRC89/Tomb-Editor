@@ -11,6 +11,7 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib.GeometryIO;
 using TombLib.IO;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -652,7 +653,7 @@ namespace WadTool
 
         private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _tool.DestinationWad.CreateNewStaticMeshFromExternalModel("tank.3ds", 1.0f);
+            //_tool.DestinationWad.CreateNewStaticMeshFromExternalModel("tank.3ds", 1.0f);
             UpdateDestinationWad2UI();
         }
 
@@ -953,7 +954,21 @@ namespace WadTool
 
         private void importModelAsStaticMeshToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            using (FileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Filter = SupportedFormats.GetFilter(FileFormatType.GeometryImport);
+                dialog.Title = "Select a 3D file that you want to see imported.";
+                if (dialog.ShowDialog(this) != DialogResult.OK) return;
 
+                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                {
+                    form.AddPreset(IOSettingsPresets.SettingsPresets);
+                    if (form.ShowDialog() == DialogResult.Cancel) return;
+                    _tool.DestinationWad.CreateNewStaticMeshFromExternalModel(dialog.FileName, form.Settings);
+                    UpdateDestinationWad2UI();
+                }
+                    
+            }
         }
     }
 }
