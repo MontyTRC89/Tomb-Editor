@@ -656,7 +656,7 @@ namespace TombEditor.Compilers
 
                     block = room.Blocks[xInRoom, zInRoom];
 
-                    // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 cornes.
+                    // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 corners.
                     // This happen for example when there are 3 room connected together and the corner is inside the box.
                     // In this case, there are portals but the function can't travel to neighbour rooms because is stuck in the corner.
                     // For now I assume that the dest X, Z can't be reached.

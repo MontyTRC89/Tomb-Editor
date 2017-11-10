@@ -14,6 +14,21 @@ namespace TombLib.GeometryIO
         {
             SettingsPresets = new List<IOGeometrySettingsPreset>();
 
+            // Generic
+            SettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "Generic OBJ",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1.0f,
+                    FlipZ = true,
+                    FlipUV_V = true,
+                    InvertFaces = true,
+                    PremultiplyUV = true,
+                    WrapUV = true
+                }
+            });
+
             // Blender
             SettingsPresets.Add(new IOGeometrySettingsPreset
             {
