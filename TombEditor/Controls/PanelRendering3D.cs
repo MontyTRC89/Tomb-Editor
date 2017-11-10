@@ -124,22 +124,21 @@ namespace TombEditor.Controls
         {
             private static int dragDeadZone = 40;
 
+            private PanelRendering3D _parent;
             private bool[,] _actionGrid = new bool[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
-            private Block _referenceBlock;
+            private PickingResultBlock _referencePicking;
             private int _referencePosition;
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
-            public bool ReferenceIsFloor { get; private set; }
+            public Block ReferenceBlock => _parent._editor.SelectedRoom.GetBlockTry(_referencePicking.Pos.X, _referencePicking.Pos.Y);
+            public bool ReferenceIsFloor => _referencePicking.BelongsToFloor;
+            public bool ReferenceIsDiagonalStep => (_referencePicking.BelongsToFloor ? ReferenceBlock.FloorDiagonalSplit != DiagonalSplit.None : ReferenceBlock.CeilingDiagonalSplit != DiagonalSplit.None);
+            public bool ReferenceIsOppositeDiagonalStep => ReferenceIsDiagonalStep && (_referencePicking.BelongsToFloor ? _referencePicking.Face == BlockFace.Floor ^ ReferenceBlock.FloorDiagonalSplit < DiagonalSplit.XpZn : _referencePicking.Face == BlockFace.Ceiling ^ ReferenceBlock.CeilingDiagonalSplit < DiagonalSplit.XpZn);
 
-            public Block ReferenceBlock
+            public ToolHandler(PanelRendering3D parent)
             {
-                get { return _referenceBlock; }
-                set
-                {
-                    if(_referenceBlock != value)
-                        _referenceBlock = value;
-                }
+                _parent = parent;
             }
 
             private void ResetToolActionGrid()
@@ -149,15 +148,14 @@ namespace TombEditor.Controls
                         _actionGrid[x, z] = false;
             }
 
-            public void Engage(int refY, bool refFloor)
+            public void Engage(int refY, PickingResultBlock refPicking)
             {
                 if (!Engaged)
                 {
                     Engaged = true;
                     Dragged = false;
-                    ReferenceIsFloor = refFloor;
-                    _referenceBlock = null;
                     _referencePosition = refY / dragDeadZone;
+                    _referencePicking = refPicking;
                     ResetToolActionGrid();
                 }
             }
@@ -469,7 +467,7 @@ namespace TombEditor.Controls
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
             _gizmo = new Gizmo(deviceManager.Device, deviceManager.Effects["Solid"]);
-            _toolHandler = new ToolHandler();
+            _toolHandler = new ToolHandler(this);
             _movementTimer = new MovementTimer(MoveTimerTick);
 
             ResetCamera();
@@ -760,21 +758,18 @@ namespace TombEditor.Controls
                                     }
                                     else if (_editor.Tool.Tool != EditorToolType.Selection)
                                     {
-                                        _toolHandler.Engage(e.Y, belongsToFloor);
+                                        _toolHandler.Engage(e.Y, newBlockPicking);
 
                                         if (((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None) && _toolHandler.Process(pos.X, pos.Y))
                                         {
                                             switch (_editor.Tool.Tool)
                                             {
-                                                case EditorToolType.Flatten:
-                                                    _toolHandler.ReferenceBlock = _editor.SelectedRoom.Blocks[pos.X, pos.Y];
-                                                    break;
-
                                                 case EditorToolType.Smooth:
                                                     EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
                                                     break;
 
                                                 case EditorToolType.Drag:
+                                                case EditorToolType.Flatten:
                                                     break;
 
                                                 default:
@@ -944,7 +939,23 @@ namespace TombEditor.Controls
                     }
                     else if (_editor.Tool.Tool == EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection && _editor.SelectedSectors.Valid)
                     {
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)_toolHandler.UpdateDragState(e.Y), ModifierKeys.HasFlag(Keys.Alt));
+                        EditorArrowType currentArrow = _editor.SelectedSectors.Arrow;
+
+                        if(_toolHandler.ReferenceIsDiagonalStep)
+                        {
+                            if(_toolHandler.ReferenceIsFloor)
+                            {
+                                if (_toolHandler.ReferenceIsOppositeDiagonalStep)
+                                    currentArrow = EditorArrowType.DiagonalFloorCorner;
+                            }
+                            else
+                            {
+                                if (_toolHandler.ReferenceIsOppositeDiagonalStep)
+                                    currentArrow = EditorArrowType.DiagonalCeilingCorner;
+                            }
+                        }
+
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, currentArrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)_toolHandler.UpdateDragState(e.Y), ModifierKeys.HasFlag(Keys.Alt));
                     }
                     else
                     {
