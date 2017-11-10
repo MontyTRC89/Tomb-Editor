@@ -48,6 +48,7 @@ namespace TombEditor.ToolWindows
                 toolShovel.Checked = currentTool.Tool == EditorToolType.Shovel;
                 toolFlatten.Checked = currentTool.Tool == EditorToolType.Flatten;
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
+                toolDrag.Checked = currentTool.Tool == EditorToolType.Drag;
 
                 toolEraser.Checked = currentTool.Texture == EditorTextureType.Null;
                 toolInvisibility.Checked = currentTool.Texture == EditorTextureType.Invisible;
@@ -69,6 +70,7 @@ namespace TombEditor.ToolWindows
                 toolFlatten.Visible = mode == EditorMode.Geometry;
                 toolShovel.Visible = mode == EditorMode.Geometry;
                 toolSmooth.Visible = mode == EditorMode.Geometry;
+                toolDrag.Visible = mode == EditorMode.Geometry;
                 toolPalette.AutoSize = true;
                 Height = toolPalette.Size.Height + Padding.Size.Height;
                 Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
@@ -136,6 +138,11 @@ namespace TombEditor.ToolWindows
         private void toolSmooth_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorToolType.Smooth);
+        }
+
+        private void toolDrag_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Drag);
         }
 
         private void toolInvisibility_Click(object sender, EventArgs e)
