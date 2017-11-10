@@ -162,7 +162,7 @@ namespace TombEditor
                 RaiseEvent(new ModeChangedEvent { Previous = previous, Current = value });
             }
         }
-
+                
         public class ToolChangedEvent : IEditorProperyChangedEvent
         {
             public EditorTool Previous { get; set; }
