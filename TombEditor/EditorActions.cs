@@ -136,13 +136,13 @@ namespace TombEditor
                         case EditorArrowType.EntireFace:
                             if (verticalSubdivision == 0)
                             {
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XpZn && block.QAFaces[2] == block.QAFaces[0] && increment < 0)
+                                if (block.FloorDiagonalSplit == DiagonalSplit.XpZn && block.QAFaces[1] == block.QAFaces[0] && increment < 0)
                                     continue;
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZn && block.QAFaces[3] == block.QAFaces[1] && increment < 0)
+                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZn && block.QAFaces[2] == block.QAFaces[1] && increment < 0)
                                     continue;
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZp && block.QAFaces[0] == block.QAFaces[2] && increment < 0)
+                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZp && block.QAFaces[3] == block.QAFaces[2] && increment < 0)
                                     continue;
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XpZp && block.QAFaces[1] == block.QAFaces[3] && increment < 0)
+                                if (block.FloorDiagonalSplit == DiagonalSplit.XpZp && block.QAFaces[0] == block.QAFaces[3] && increment < 0)
                                     continue;
 
                                 if (block.FloorDiagonalSplit != DiagonalSplit.XpZn)
@@ -159,13 +159,13 @@ namespace TombEditor
                             }
                             else if (verticalSubdivision == 1)
                             {
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn && block.WSFaces[2] == block.WSFaces[0] && increment > 0)
+                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn && block.WSFaces[1] == block.WSFaces[0] && increment > 0)
                                     continue;
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn && block.WSFaces[3] == block.WSFaces[1] && increment > 0)
+                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn && block.WSFaces[2] == block.WSFaces[1] && increment > 0)
                                     continue;
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp && block.WSFaces[0] == block.WSFaces[2] && increment > 0)
+                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp && block.WSFaces[3] == block.WSFaces[2] && increment > 0)
                                     continue;
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp && block.WSFaces[1] == block.WSFaces[3] && increment > 0)
+                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp && block.WSFaces[0] == block.WSFaces[3] && increment > 0)
                                     continue;
 
                                 if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn)

@@ -348,7 +348,12 @@ namespace TombEditor.Geometry
                     }
                 }
 
-                if(FloorDiagonalSplit != DiagonalSplit.None)
+                // We swap triangle directions for XpZn and XnZp cases, because in these cases
+                // triangle indices are inverted.
+                // For other cases, we move slide direction triangle to proper one accordingly to
+                // step slant value encoded in corner heights.
+
+                if (FloorDiagonalSplit != DiagonalSplit.None)
                 {
                     switch(FloorDiagonalSplit)
                     {
@@ -356,6 +361,7 @@ namespace TombEditor.Geometry
                             slopeDirections[1] = slopeDirections[0];
                             slopeDirections[0] = Direction.None;
                             break;
+
                         case DiagonalSplit.XnZp:
                             if(!FloorIsQuad)
                             {
@@ -363,6 +369,7 @@ namespace TombEditor.Geometry
                                 slopeDirections[1] = Direction.None;
                             }
                             break;
+
                         case DiagonalSplit.XnZn:
                             if (FloorIsQuad)
                             {
@@ -372,6 +379,7 @@ namespace TombEditor.Geometry
                             else
                                 slopeDirections[0] = Direction.None;
                             break;
+
                         case DiagonalSplit.XpZp:
                             if (!FloorIsQuad)
                                 slopeDirections[1] = Direction.None;
