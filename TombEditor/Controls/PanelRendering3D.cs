@@ -194,6 +194,8 @@ namespace TombEditor.Controls
         public bool ShowOtherObjects { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawSlideDirections { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DisablePickingForImportedGeometry { get; set; }
 
         private Editor _editor;
         private DeviceManager _deviceManager;
@@ -429,7 +431,7 @@ namespace TombEditor.Controls
             new BasicEffect(_device);
 
             // Initialize the rasterizer state for wireframe drawing
-            SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
+            var renderStateDesc =
                 new SharpDX.Direct3D11.RasterizerStateDescription
                 {
                     CullMode = SharpDX.Direct3D11.CullMode.None,
@@ -443,8 +445,8 @@ namespace TombEditor.Controls
                     IsScissorEnabled = false,
                     SlopeScaledDepthBias = 0
                 };
-
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
+
             _gizmo = new Gizmo(deviceManager.Device, deviceManager.Effects["Solid"]);
             _toolHandler = new ToolHandler();
             _movementTimer = new MovementTimer(MoveTimerTick);
@@ -1272,7 +1274,7 @@ namespace TombEditor.Controls
                             result = new PickingResultObject(distance, instance);
                     }
                 }
-                else if (instance is ImportedGeometryInstance)
+                else if (instance is ImportedGeometryInstance && !DisablePickingForImportedGeometry)
                 {
                     var geometry = (ImportedGeometryInstance)instance;
 
@@ -1890,8 +1892,6 @@ namespace TombEditor.Controls
 
         private void DrawRoomImportedGeometry(Matrix viewProjection)
         {
-            _device.SetBlendState(_device.BlendStates.Opaque);
-
             var geometryEffect = _deviceManager.Effects["RoomGeometry"];
 
             ImportedGeometryInstance _lastObject = null;
@@ -2425,12 +2425,6 @@ namespace TombEditor.Controls
                     DrawStatics(viewProjection);
             }
 
-            // Draw room geometry imported
-            if (_editor != null && _editor.Level != null)
-            {
-                DrawRoomImportedGeometry(viewProjection);
-            }
-
             // Set some common parameters of the shader
             _roomEffect = _deviceManager.Effects["Room"];
             _roomEffect.Parameters["UseVertexColors"].SetValue(false);
@@ -2457,6 +2451,12 @@ namespace TombEditor.Controls
                 DrawObjects(viewProjection, _editor.SelectedRoom);
                 // Draw light objects and bounding volumes only for current room
                 DrawLights(viewProjection, _editor.SelectedRoom);
+            }
+
+            // Draw room geometry imported
+            if (_editor != null && _editor.Level != null)
+            {
+                DrawRoomImportedGeometry(viewProjection);
             }
 
             // Draw the height of the object

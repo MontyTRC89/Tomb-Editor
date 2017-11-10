@@ -343,5 +343,13 @@ namespace TombEditor.ToolWindows
             butDrawSlideDirections.Checked = panel3D.DrawSlideDirections;
             panel3D.Invalidate();
         }
+
+        private void butDisableGeometryPicking_Click(object sender, EventArgs e)
+        {
+            panel3D.DisablePickingForImportedGeometry = !panel3D.DisablePickingForImportedGeometry;
+            butDisableGeometryPicking.Checked = panel3D.DisablePickingForImportedGeometry;
+            if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
+            panel3D.Invalidate();
+        }
     }
 }
