@@ -834,6 +834,11 @@ namespace TombEditor
             EditorActions.Copy(this);
         }
 
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.SelectedSectors = new SectorSelection { Area = _editor.SelectedRoom.LocalArea };
+        }
+
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedObject != null)
@@ -1012,6 +1017,15 @@ namespace TombEditor
                 form.ShowDialog(this);
         }
 
+        private void dockableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(ToolPalette);
+        }
+
+        private void floatingToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            ToolBox_Show(floatingToolStripMenuItem.Checked);
+        }
 
         // Only for debugging purposes...
 
@@ -1094,16 +1108,6 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
-        }
-
-        private void dockableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(ToolPalette);
-        }
-
-        private void floatingToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            ToolBox_Show(floatingToolStripMenuItem.Checked);
         }
     }
 }
