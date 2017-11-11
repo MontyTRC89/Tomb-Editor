@@ -48,6 +48,7 @@ namespace TombEditor
         public float Rendering3D_NavigationSpeedMouseZoom { get; set; } = 72000.0f;
         public float Rendering3D_NavigationSpeedMouseTranslate { get; set; } = 22000.0f;
         public float Rendering3D_NavigationSpeedMouseRotate { get; set; } = 3.0f;
+        public float Rendering3D_DragMouseSensitivity { get; set; } = 0.05f;
         public bool Rendering3D_InvertMouseZoom { get; set; } = false;
         public float Rendering3D_LineWidth { get; set; } = 10.0f;
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;

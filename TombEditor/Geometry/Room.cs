@@ -563,8 +563,8 @@ namespace TombEditor.Geometry
 
                             var heightDifference = sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(realTriangleIndex) - heightAdjust);
 
-                            if ((heightsToCheck[0] != heightsToCheck[1] && heightDifference <= lowestPassableStep) ||
-                                (heightsToCheck[0] == heightsToCheck[1] && heightDifference <= 0 && heightDifference > -lowestPassableStep))
+                            if ((heightsToCheck[0] != heightsToCheck[1] && heightDifference <= lowestPassableStep) || // Ordinary cases
+                                (heightsToCheck[0] == heightsToCheck[1] && heightDifference <= 0 && heightDifference > -lowestPassableStep))  // Diagonal step cases
                             {
 
                                 if (lookupBlockSlopeDirections[j] != Direction.None && lookupBlockSlopeDirections[j] != slopeDirections[i])

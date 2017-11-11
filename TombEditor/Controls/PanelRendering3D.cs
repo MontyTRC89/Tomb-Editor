@@ -122,12 +122,10 @@ namespace TombEditor.Controls
 
         private class ToolHandler
         {
-            private static int dragDeadZone = 40;
-
             private PanelRendering3D _parent;
             private bool[,] _actionGrid = new bool[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
             private PickingResultBlock _referencePicking;
-            private int _referencePosition;
+            private Point _referencePosition;
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
@@ -235,13 +233,13 @@ namespace TombEditor.Controls
                         _actionGrid[x, z] = false;
             }
 
-            public void Engage(int refY, PickingResultBlock refPicking)
+            public void Engage(int refX, int refY, PickingResultBlock refPicking)
             {
                 if (!Engaged)
                 {
                     Engaged = true;
                     Dragged = false;
-                    _referencePosition = refY / dragDeadZone;
+                    _referencePosition = new Point((int)(refX * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(refY * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
                     _referencePicking = refPicking;
                     ResetToolActionGrid();
                 }
@@ -264,19 +262,19 @@ namespace TombEditor.Controls
                     return false;
             }
 
-            public int UpdateDragState(int currentY)
+            public Point UpdateDragState(int newX, int newY)
             {
-                var newRefPosition = currentY / dragDeadZone;
+                var newRefPosition = new Point((int)(newX * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(newY * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
 
                 if (newRefPosition != _referencePosition)
                 {
-                    var delta = _referencePosition - newRefPosition;
+                    var delta = new Point(_referencePosition.X - newRefPosition.X, _referencePosition.Y - newRefPosition.Y);
                     _referencePosition = newRefPosition;
                     Dragged = true;
                     return (delta);
                 }
                 else
-                    return 0;
+                    return new Point(0, 0);
             }
         }
 
@@ -845,7 +843,7 @@ namespace TombEditor.Controls
                                     }
                                     else if (_editor.Tool.Tool != EditorToolType.Selection)
                                     {
-                                        _toolHandler.Engage(e.Y, newBlockPicking);
+                                        _toolHandler.Engage(e.X, e.Y, newBlockPicking);
 
                                         if (((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None) && _toolHandler.Process(pos.X, pos.Y))
                                         {
@@ -1042,9 +1040,9 @@ namespace TombEditor.Controls
                             }
                         }
 
-                        var dragValue = _toolHandler.UpdateDragState(e.Y);
-                        if(dragValue != 0)
-                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, currentArrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue, ModifierKeys.HasFlag(Keys.Alt));
+                        var dragValue = _toolHandler.UpdateDragState(e.X, e.Y);
+                        if(dragValue.Y != 0)
+                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, currentArrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y, ModifierKeys.HasFlag(Keys.Alt));
                     }
                     else
                     {
