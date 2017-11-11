@@ -8,11 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Docking;
+using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
 {
     public partial class ToolPalette : DarkToolWindow
     {
+        private class InitEvent : IEditorEvent { }
+
         private Editor _editor;
 
         public ToolPalette()
@@ -21,15 +24,14 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-
-            SwitchMode(_editor.Mode);
+            EditorEventRaised(new InitEvent());
         }
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is Editor.ToolChangedEvent)
+            if (obj is Editor.ToolChangedEvent || obj is InitEvent)
             {
-                var currentTool = ((Editor.ToolChangedEvent)obj).Current;
+                EditorTool currentTool = _editor.Tool;
 
                 toolSelection.Checked = currentTool.Tool == EditorToolType.Selection;
                 toolBrush.Checked = currentTool.Tool == EditorToolType.Brush;
@@ -40,15 +42,18 @@ namespace TombEditor.ToolWindows
                 toolFlatten.Checked = currentTool.Tool == EditorToolType.Flatten;
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
 
-                toolEraser.Checked = currentTool.Texture == EditorTextureType.Null;
-                toolInvisibility.Checked = currentTool.Texture == EditorTextureType.Invisible;
-
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
 
-            if (obj is Editor.ModeChangedEvent)
+            if (obj is Editor.SelectedTexturesChangedEvent || obj is InitEvent)
             {
-                var mode = ((Editor.ModeChangedEvent)obj).Current;
+                toolEraser.Checked = _editor.SelectedTexture.Texture == null;
+                toolInvisibility.Checked = _editor.SelectedTexture.Texture is TextureInvisible;
+            }
+
+            if (obj is Editor.ModeChangedEvent || obj is InitEvent)
+            {
+                EditorMode mode = _editor.Mode;
 
                 toolFill.Visible = mode == EditorMode.FaceEdit;
                 toolGroup.Visible = mode == EditorMode.FaceEdit;
@@ -69,42 +74,11 @@ namespace TombEditor.ToolWindows
             }
         }
 
-        private void SwitchMode(EditorMode mode)
+        private void SwitchTool(EditorToolType tool)
         {
-            toolFill.Visible = mode == EditorMode.FaceEdit;
-            toolEraser.Visible = mode == EditorMode.FaceEdit;
-            toolInvisibility.Visible = mode == EditorMode.FaceEdit;
-            toolSeparator1.Visible = mode == EditorMode.FaceEdit;
-            toolFlatten.Visible = mode == EditorMode.Geometry;
-            toolShovel.Visible = mode == EditorMode.Geometry;
-            toolSmooth.Visible = mode == EditorMode.Geometry;
-            toolStrip.AutoSize = true;
-            Size = toolStrip.Size;
-            toolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
-
-            // Select classic winroomedit controls by default
-            SwitchTool(mode == EditorMode.FaceEdit ? EditorToolType.Brush : EditorToolType.Selection);
-        }
-
-        private void SwitchTool(EditorToolType tool = EditorToolType.Selection)
-        {
-            toolSelection.Checked = tool == EditorToolType.Selection;
-            toolBrush.Checked = tool == EditorToolType.Brush;
-            toolPencil.Checked = tool == EditorToolType.Pencil;
-            toolFill.Checked = tool == EditorToolType.Fill;
-            toolShovel.Checked = tool == EditorToolType.Shovel;
-            toolFlatten.Checked = tool == EditorToolType.Flatten;
-            toolSmooth.Checked = tool == EditorToolType.Smooth;
-
-            EditorActions.SwitchTool(new EditorTool { Tool = tool, Texture = _editor.Tool.Texture, TextureUVFixer = _editor.Tool.TextureUVFixer });
-        }
-
-        private void SwitchTexture(EditorTextureType texture = EditorTextureType.Normal)
-        {
-            toolEraser.Checked = texture == EditorTextureType.Null;
-            toolInvisibility.Checked = texture == EditorTextureType.Invisible;
-
-            EditorActions.SwitchTool(new EditorTool { Tool = _editor.Tool.Tool, Texture = texture, TextureUVFixer = _editor.Tool.TextureUVFixer });
+            EditorTool currentTool = _editor.Tool;
+            currentTool.Tool = tool;
+            EditorActions.SwitchTool(currentTool);
         }
 
         private void toolSelection_Click(object sender, EventArgs e)
@@ -149,17 +123,19 @@ namespace TombEditor.ToolWindows
 
         private void toolInvisibility_Click(object sender, EventArgs e)
         {
-            SwitchTexture(EditorTextureType.Invisible);
+            _editor.SelectedTexture = new TextureArea { Texture = TextureInvisible.Instance };
         }
 
         private void toolEraser_Click(object sender, EventArgs e)
         {
-            SwitchTexture(EditorTextureType.Null);
+            _editor.SelectedTexture = new TextureArea { Texture = null };
         }
 
         private void toolUVFixer_Click(object sender, EventArgs e)
         {
-            EditorActions.SwitchTool(new EditorTool { Tool = _editor.Tool.Tool, Texture = _editor.Tool.Texture, TextureUVFixer = !_editor.Tool.TextureUVFixer });
+            EditorTool currentTool = _editor.Tool;
+            currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
+            EditorActions.SwitchTool(currentTool);
         }
     }
 }

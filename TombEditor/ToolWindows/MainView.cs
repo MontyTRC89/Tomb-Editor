@@ -30,10 +30,6 @@ namespace TombEditor.ToolWindows
         public void Initialize(DeviceManager _deviceManager)
         {
             panel3D.InitializePanel(_deviceManager);
-
-            // Update 3D view
-            EditorActions.SwitchMode(EditorMode.Geometry);
-            EditorActions.SwitchTool(new EditorTool() { Tool = EditorToolType.Selection, Texture = EditorTextureType.Normal, TextureUVFixer = true });
         }
 
         public void AddToolbox(DarkFloatingToolbox toolbox)
@@ -107,7 +103,7 @@ namespace TombEditor.ToolWindows
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
                 panel3D.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry) || (mode == EditorMode.Lighting);
-                
+
                 butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
                 butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
                 butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
@@ -336,7 +332,7 @@ namespace TombEditor.ToolWindows
             butDrawOther.Checked = panel3D.ShowOtherObjects;
             panel3D.Invalidate();
         }
-        
+
         private void butDrawSlideDirections_Click(object sender, EventArgs e)
         {
             panel3D.DrawSlideDirections = !panel3D.DrawSlideDirections;
