@@ -760,7 +760,7 @@ namespace TombEditor.Controls
                                         }
                                     }
                                     break;
-                                        
+
                                 case EditorMode.FaceEdit:
                                     // Do texturing
                                     if (_editor.Tool.Tool != EditorToolType.Group)
@@ -784,42 +784,25 @@ namespace TombEditor.Controls
                                     }
                                     else if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None)
                                     {
-                                        var usedTexture = _editor.SelectedTexture;
-
-                                        switch (_editor.Tool.Texture)
-                                        {
-                                            case EditorTextureType.Normal:
-                                                break;
-
-                                            case EditorTextureType.Invisible:
-                                                usedTexture.Texture = TextureInvisible.Instance;
-                                                break;
-
-                                            case EditorTextureType.Null:
-                                            default:
-                                                usedTexture.Texture = null;
-                                                break;
-                                        }
-
                                         switch (_editor.Tool.Tool)
                                         {
                                             case EditorToolType.Fill:
                                                 if (newBlockPicking.IsFloorHorizontalPlane)
-                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, BlockFaceType.Floor);
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Floor);
                                                 else if (newBlockPicking.IsCeilingHorizontalPlane)
-                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, BlockFaceType.Ceiling);
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Ceiling);
                                                 else if (newBlockPicking.IsVerticalPlane)
-                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, BlockFaceType.Wall);
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
                                                 break;
 
                                             case EditorToolType.Group:
                                                 if (_editor.SelectedSectors.Valid)
-                                                    EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Shift));
+                                                    EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Shift));
                                                 break;
 
                                             case EditorToolType.Brush:
                                             case EditorToolType.Pencil:
-                                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, usedTexture);
+                                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
                                                 break;
 
                                             default:
@@ -946,7 +929,7 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Left:
-                    
+
                     if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
                     {
                         // Process gizmo
@@ -1008,14 +991,7 @@ namespace TombEditor.Controls
                                     if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                          _editor.SelectedSectors == SectorSelection.None))
                                     {
-                                        var usedTexture = _editor.SelectedTexture;
-
-                                        if (_editor.Tool.Texture == EditorTextureType.Null)
-                                            usedTexture.Texture = null;
-                                        else if (_editor.Tool.Texture == EditorTextureType.Invisible)
-                                            usedTexture.Texture = TextureInvisible.Instance;
-
-                                        EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newPicking.Face, usedTexture);
+                                        EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newPicking.Face, _editor.SelectedTexture);
                                     }
                                 }
                             }
@@ -3386,7 +3362,7 @@ namespace TombEditor.Controls
                         }
                     }
                 }
-                
+
                 _roomEffect.CurrentTechnique.Passes[0].Apply();
 
                 var vertexRange = room.GetFaceVertexRange(bucket.X, bucket.Z, bucket.Face);
