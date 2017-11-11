@@ -1071,25 +1071,9 @@ namespace TombEditor.Controls
                     }
                     else if (_editor.Tool.Tool == EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection && _editor.SelectedSectors.Valid)
                     {
-                        EditorArrowType currentArrow = _editor.SelectedSectors.Arrow;
-
-                        if(_toolHandler.ReferenceIsDiagonalStep)
-                        {
-                            if(_toolHandler.ReferenceIsFloor)
-                            {
-                                if (_toolHandler.ReferenceIsOppositeDiagonalStep)
-                                    currentArrow = EditorArrowType.DiagonalFloorCorner;
-                            }
-                            else
-                            {
-                                if (_toolHandler.ReferenceIsOppositeDiagonalStep)
-                                    currentArrow = EditorArrowType.DiagonalCeilingCorner;
-                            }
-                        }
-
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y);
                         if(dragValue.Y != 0)
-                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, currentArrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y, ModifierKeys.HasFlag(Keys.Alt), true);
+                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y, ModifierKeys.HasFlag(Keys.Alt), _toolHandler.ReferenceIsOppositeDiagonalStep, true);
                     }
                     else
                     {

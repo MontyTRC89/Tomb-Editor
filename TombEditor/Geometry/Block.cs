@@ -199,10 +199,10 @@ namespace TombEditor.Geometry
             GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
             FixHeights(verticalSubdivision);
         }
-        public void Raise(bool floor, bool diagonalStep, short increment, bool lowerFace = false)
+        public void Raise(int verticalSubdivision, bool diagonalStep, short increment)
         {
-            var faces = floor ? (lowerFace ? EDFaces : QAFaces) : (lowerFace ? RFFaces : WSFaces);
-            var split = floor ? FloorDiagonalSplit : CeilingDiagonalSplit;
+            var faces = GetVerticalSubdivision(verticalSubdivision);
+            var split = (verticalSubdivision == 0 || verticalSubdivision == 2) ? FloorDiagonalSplit : CeilingDiagonalSplit;
 
             if (diagonalStep)
             {
@@ -234,6 +234,31 @@ namespace TombEditor.Geometry
                     faces[i] += increment;
                 }
             }
+        }
+
+        public void RaiseStepWise(int verticalSubdivision, bool diagonalStep, short increment, bool autoSwitch = false)
+        {
+            if (FloorDiagonalSplit != DiagonalSplit.None)
+            {
+                var faces = GetVerticalSubdivision(verticalSubdivision);
+                var floor = verticalSubdivision == 0 || verticalSubdivision == 2;
+                var split = floor ? FloorDiagonalSplit : CeilingDiagonalSplit;
+                var stepIsLimited = increment != 0 && ((increment > 0) == (!floor ^ diagonalStep));
+
+                if ((split == DiagonalSplit.XpZn && faces[0] == faces[1] && stepIsLimited) ||
+                    (split == DiagonalSplit.XnZn && faces[1] == faces[2] && stepIsLimited) ||
+                    (split == DiagonalSplit.XnZp && faces[2] == faces[3] && stepIsLimited) ||
+                    (split == DiagonalSplit.XpZp && faces[3] == faces[0] && stepIsLimited))
+                {
+                    if (autoSwitch)
+                    {
+                        Rotate(floor, 2);
+                        Raise(verticalSubdivision, !diagonalStep, increment);
+                    }
+                    return;
+                }
+            }
+            Raise(verticalSubdivision, diagonalStep, increment);
         }
 
         public void Rotate(bool floor, int iterations = 1)

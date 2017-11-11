@@ -65,7 +65,7 @@ namespace TombEditor
             _editor.RoomGeometryChange(room);
         }
 
-        public static void EditSectorGeometry(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, short increment, bool smooth, bool mouseMode = false)
+        public static void EditSectorGeometry(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false)
         {
             if (smooth)
             {
@@ -133,83 +133,26 @@ namespace TombEditor
 
                     switch (arrow)
                     {
-                        case EditorArrowType.DiagonalFloorCorner:
-                            if((block.FloorDiagonalSplit == DiagonalSplit.XpZn && block.QAFaces[0] == block.QAFaces[1] && increment > 0) ||
-                               (block.FloorDiagonalSplit == DiagonalSplit.XnZn && block.QAFaces[1] == block.QAFaces[2] && increment > 0) ||
-                               (block.FloorDiagonalSplit == DiagonalSplit.XnZp && block.QAFaces[2] == block.QAFaces[3] && increment > 0) ||
-                               (block.FloorDiagonalSplit == DiagonalSplit.XpZp && block.QAFaces[3] == block.QAFaces[0] && increment > 0))
-                            {
-                                if (mouseMode)
-                                {
-                                    block.Rotate(true, 2);
-                                    block.Raise(true, false, increment);
-                                }
-                                break;
-                            }
-                            block.Raise(true, true, increment);
-                            break;
-
-                        case EditorArrowType.DiagonalCeilingCorner:
-                            if ((block.CeilingDiagonalSplit == DiagonalSplit.XpZn && block.WSFaces[0] == block.WSFaces[1] && increment < 0) ||
-                                (block.CeilingDiagonalSplit == DiagonalSplit.XpZp && block.WSFaces[1] == block.WSFaces[2] && increment < 0) ||
-                                (block.CeilingDiagonalSplit == DiagonalSplit.XnZp && block.WSFaces[2] == block.WSFaces[3] && increment < 0) ||
-                                (block.CeilingDiagonalSplit == DiagonalSplit.XpZp && block.WSFaces[3] == block.WSFaces[0] && increment < 0))
-                            {
-                                if (mouseMode)
-                                {
-                                    block.Rotate(true, 2);
-                                    block.Raise(false, false, increment);
-                                }
-                                break;
-                            }
-                            block.Raise(false, true, increment);
-                            break;
-
                         case EditorArrowType.EntireFace:
                             if (verticalSubdivision == 0)
                             {
-                                if ((block.FloorDiagonalSplit == DiagonalSplit.XpZn && block.QAFaces[1] == block.QAFaces[0] && increment < 0) ||
-                                    (block.FloorDiagonalSplit == DiagonalSplit.XnZn && block.QAFaces[2] == block.QAFaces[1] && increment < 0) ||
-                                    (block.FloorDiagonalSplit == DiagonalSplit.XnZp && block.QAFaces[3] == block.QAFaces[2] && increment < 0) ||
-                                    (block.FloorDiagonalSplit == DiagonalSplit.XpZp && block.QAFaces[0] == block.QAFaces[3] && increment < 0) )
-                                {
-                                    if (mouseMode)
-                                    {
-                                        block.Rotate(true, 2);
-                                        block.Raise(true, true, increment);
-                                    }
-                                    break;
-                                }
-                                block.Raise(true, false, increment);
-
+                                block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
                                 if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
                             {
-                                if ((block.CeilingDiagonalSplit == DiagonalSplit.XpZn && block.WSFaces[1] == block.WSFaces[0] && increment > 0) ||
-                                    (block.CeilingDiagonalSplit == DiagonalSplit.XnZn && block.WSFaces[2] == block.WSFaces[1] && increment > 0) ||
-                                    (block.CeilingDiagonalSplit == DiagonalSplit.XnZp && block.WSFaces[3] == block.WSFaces[2] && increment > 0) ||
-                                    (block.CeilingDiagonalSplit == DiagonalSplit.XpZp && block.WSFaces[0] == block.WSFaces[3] && increment > 0))
-                                {
-                                    if (mouseMode)
-                                    {
-                                        block.Rotate(false, 2);
-                                        block.Raise(false, true, increment);
-                                    }
-                                    break;
-                                }
-                                block.Raise(false, false, increment);
+                                block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
                             }
                             else if (verticalSubdivision == 2)
                             {
-                                block.Raise(true, false, increment, true);
+                                block.Raise(verticalSubdivision, false, increment);
                                 if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
                             {
-                                block.Raise(false, false, increment, true);
+                                block.Raise(verticalSubdivision, false, increment);
                             }
                             break;
 

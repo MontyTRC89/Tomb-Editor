@@ -101,9 +101,7 @@ namespace TombEditor
         CornerNW,
         CornerNE,
         CornerSE,
-        CornerSW,
-        DiagonalFloorCorner,
-        DiagonalCeilingCorner
+        CornerSW
     }
 
     public struct SectorSelection
