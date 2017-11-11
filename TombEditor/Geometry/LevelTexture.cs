@@ -9,7 +9,7 @@ namespace TombEditor.Geometry
     public class LevelTexture : Texture, IEquatable<LevelTexture>
     {
         public class UniqueIDType { };
-        public UniqueIDType UniqueID { get; } = new UniqueIDType();
+        public UniqueIDType UniqueID { get; private set; } = new UniqueIDType();
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public const float TextureSoundGranularity = 64.0f;
@@ -103,6 +103,7 @@ namespace TombEditor.Geometry
         {
             return new LevelTexture
             {
+                UniqueID = UniqueID,
                 Image = Image,
                 Path = Path,
                 ImageLoadException = ImageLoadException,
@@ -150,6 +151,15 @@ namespace TombEditor.Geometry
         }
 
         public bool Equals(LevelTexture other) => base.Equals(other);
+
+        public void Assign(LevelTexture other)
+        {
+            Image = other.Image;
+            Path = other.Path;
+            ImageLoadException = other.ImageLoadException;
+            Convert512PixelsToDoubleRows = other.Convert512PixelsToDoubleRows;
+            _replaceMagentaWithTransparency = other._replaceMagentaWithTransparency;
+        }
 
         public override string ToString()
         {
