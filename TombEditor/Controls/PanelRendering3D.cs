@@ -233,6 +233,52 @@ namespace TombEditor.Controls
                         _actionGrid[x, z] = false;
             }
 
+            // We need to relocate picked diagonal faces, because behaviour is undefined
+            // for these cases if diagonal step was raised above limit and swapped.
+            private void RelocatePicking()
+            {
+                if(_referencePicking.Face == BlockFace.DiagonalED ||
+                   _referencePicking.Face == BlockFace.DiagonalQA ||
+                   _referencePicking.Face == BlockFace.DiagonalMiddle)
+                {
+                    switch(ReferenceBlock.FloorDiagonalSplit)
+                    {
+                        case DiagonalSplit.XnZp:
+                            _referencePicking.Face = BlockFace.Floor;
+                            break;
+                        case DiagonalSplit.XpZn:
+                            _referencePicking.Face = BlockFace.FloorTriangle2;
+                            break;
+                        case DiagonalSplit.XpZp:
+                            _referencePicking.Face = BlockFace.Floor;
+                            break;
+                        case DiagonalSplit.XnZn:
+                            _referencePicking.Face = BlockFace.FloorTriangle2;
+                            break;
+                    }
+                }
+
+                if (_referencePicking.Face == BlockFace.DiagonalWS ||
+                    _referencePicking.Face == BlockFace.DiagonalRF)
+                {
+                    switch (ReferenceBlock.CeilingDiagonalSplit)
+                    {
+                        case DiagonalSplit.XnZp:
+                            _referencePicking.Face = BlockFace.Ceiling;
+                            break;
+                        case DiagonalSplit.XpZn:
+                            _referencePicking.Face = BlockFace.CeilingTriangle2;
+                            break;
+                        case DiagonalSplit.XpZp:
+                            _referencePicking.Face = BlockFace.Ceiling;
+                            break;
+                        case DiagonalSplit.XnZn:
+                            _referencePicking.Face = BlockFace.CeilingTriangle2;
+                            break;
+                    }
+                }
+            }
+
             public void Engage(int refX, int refY, PickingResultBlock refPicking)
             {
                 if (!Engaged)
@@ -241,6 +287,7 @@ namespace TombEditor.Controls
                     Dragged = false;
                     _referencePosition = new Point((int)(refX * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(refY * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
                     _referencePicking = refPicking;
+                    RelocatePicking();
                     ResetToolActionGrid();
                 }
             }
@@ -268,7 +315,7 @@ namespace TombEditor.Controls
 
                 if (newRefPosition != _referencePosition)
                 {
-                    var delta = new Point(_referencePosition.X - newRefPosition.X, _referencePosition.Y - newRefPosition.Y);
+                    var delta = new Point(Math.Sign(_referencePosition.X - newRefPosition.X), Math.Sign(_referencePosition.Y - newRefPosition.Y));
                     _referencePosition = newRefPosition;
                     Dragged = true;
                     return (delta);
@@ -1042,7 +1089,7 @@ namespace TombEditor.Controls
 
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y);
                         if(dragValue.Y != 0)
-                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, currentArrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y, ModifierKeys.HasFlag(Keys.Alt));
+                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, currentArrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y, ModifierKeys.HasFlag(Keys.Alt), true);
                     }
                     else
                     {

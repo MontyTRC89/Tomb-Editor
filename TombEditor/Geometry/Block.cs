@@ -199,6 +199,125 @@ namespace TombEditor.Geometry
             GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
             FixHeights(verticalSubdivision);
         }
+        public void Raise(bool floor, bool diagonalStep, short increment, bool lowerFace = false)
+        {
+            var faces = floor ? (lowerFace ? EDFaces : QAFaces) : (lowerFace ? RFFaces : WSFaces);
+            var split = floor ? FloorDiagonalSplit : CeilingDiagonalSplit;
+
+            if (diagonalStep)
+            {
+                switch (split)
+                {
+                    case DiagonalSplit.XpZn:
+                        faces[0] += increment;
+                        break;
+                    case DiagonalSplit.XnZn:
+                        faces[1] += increment;
+                        break;
+                    case DiagonalSplit.XnZp:
+                        faces[2] += increment;
+                        break;
+                    case DiagonalSplit.XpZp:
+                        faces[3] += increment;
+                        break;
+                }
+            }
+            else
+            {
+                for(int i = 0; i < 4; i++)
+                {
+                    if ((i == 0 && split == DiagonalSplit.XpZn) ||
+                        (i == 1 && split == DiagonalSplit.XnZn) ||
+                        (i == 2 && split == DiagonalSplit.XnZp) ||
+                        (i == 3 && split == DiagonalSplit.XpZp) )
+                        continue;
+                    faces[i] += increment;
+                }
+            }
+        }
+
+        public void Rotate(bool floor, int iterations = 1)
+        {
+            if (iterations < 1 || iterations > 3)
+                return;
+
+            for (int i = 0; i < iterations; i++)
+            {
+                if ((floor || Type == BlockType.Wall) &&
+                     FloorDiagonalSplit != DiagonalSplit.None)
+                {
+                    if (FloorDiagonalSplit == DiagonalSplit.XnZp)
+                        FloorDiagonalSplit = DiagonalSplit.XpZp;
+                    else if (FloorDiagonalSplit == DiagonalSplit.XpZp)
+                        FloorDiagonalSplit = DiagonalSplit.XpZn;
+                    else if (FloorDiagonalSplit == DiagonalSplit.XpZn)
+                        FloorDiagonalSplit = DiagonalSplit.XnZn;
+                    else if (FloorDiagonalSplit == DiagonalSplit.XnZn)
+                        FloorDiagonalSplit = DiagonalSplit.XnZp;
+                }
+
+                if ((!floor || Type == BlockType.Wall) &&
+                     CeilingDiagonalSplit != DiagonalSplit.None)
+                {
+                    if (CeilingDiagonalSplit == DiagonalSplit.XnZp)
+                        CeilingDiagonalSplit = DiagonalSplit.XpZp;
+                    else if (CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                        CeilingDiagonalSplit = DiagonalSplit.XpZn;
+                    else if (CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                        CeilingDiagonalSplit = DiagonalSplit.XnZn;
+                    else if (CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                        CeilingDiagonalSplit = DiagonalSplit.XnZp;
+                }
+
+                short[] swapFace = new short[4];
+
+                if (floor || Type == BlockType.Wall)
+                {
+                    swapFace[0] = QAFaces[3];
+                    swapFace[1] = QAFaces[0];
+                    swapFace[2] = QAFaces[1];
+                    swapFace[3] = QAFaces[2];
+
+                    QAFaces[0] = swapFace[0];
+                    QAFaces[1] = swapFace[1];
+                    QAFaces[2] = swapFace[2];
+                    QAFaces[3] = swapFace[3];
+
+                    swapFace[0] = EDFaces[3];
+                    swapFace[1] = EDFaces[0];
+                    swapFace[2] = EDFaces[1];
+                    swapFace[3] = EDFaces[2];
+
+                    EDFaces[0] = swapFace[0];
+                    EDFaces[1] = swapFace[1];
+                    EDFaces[2] = swapFace[2];
+                    EDFaces[3] = swapFace[3];
+                }
+                else if (!floor || Type == BlockType.Wall)
+                {
+                    swapFace[0] = WSFaces[3];
+                    swapFace[1] = WSFaces[0];
+                    swapFace[2] = WSFaces[1];
+                    swapFace[3] = WSFaces[2];
+
+                    WSFaces[0] = swapFace[0];
+                    WSFaces[1] = swapFace[1];
+                    WSFaces[2] = swapFace[2];
+                    WSFaces[3] = swapFace[3];
+
+                    swapFace[0] = RFFaces[3];
+                    swapFace[1] = RFFaces[0];
+                    swapFace[2] = RFFaces[1];
+                    swapFace[3] = RFFaces[2];
+
+                    RFFaces[0] = swapFace[0];
+                    RFFaces[1] = swapFace[1];
+                    RFFaces[2] = swapFace[2];
+                    RFFaces[3] = swapFace[3];
+                }
+                FixHeights(floor ? 1 : 0);
+            }
+        }
 
         public void FixHeights(int verticalSubdivision = -1)
         {
