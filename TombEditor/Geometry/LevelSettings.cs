@@ -57,8 +57,8 @@ namespace TombEditor.Geometry
             {
                 new OldWadSoundPath("Sounds"),
                 new OldWadSoundPath(""),
-                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "Sounds"),
-                new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds")
+                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "Sounds\\Samples"),
+                new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds\\Samples")
             };
 
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
