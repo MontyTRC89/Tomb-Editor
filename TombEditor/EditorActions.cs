@@ -183,10 +183,9 @@ namespace TombEditor
                         {
                             if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
                                 continue;
-                            if (currentSplit != splits[0])
-                                currentFaces[corners[0]] += increment;
-                            if (currentSplit != splits[1])
-                                currentFaces[corners[1]] += increment;
+                            for(int i = 0; i < 2; i++)
+                                if (currentSplit != splits[i])
+                                    currentFaces[corners[i]] += increment;
                         }
                         else
                         {
