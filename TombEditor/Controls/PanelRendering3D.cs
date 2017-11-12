@@ -95,16 +95,19 @@ namespace TombEditor.Controls
 
         private class PickingResultBlock : PickingResult
         {
+            public float VerticalCoord { get; set; }
             public DrawingPoint Pos { get; set; }
             public BlockFace Face { get; set; }
+
             public bool IsFloorHorizontalPlane => (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2);
             public bool IsCeilingHorizontalPlane => (Face == BlockFace.Ceiling || Face == BlockFace.CeilingTriangle2);
             public bool IsVerticalPlane => (!IsFloorHorizontalPlane && !IsCeilingHorizontalPlane);
             public bool BelongsToFloor => (IsFloorHorizontalPlane || Face <= BlockFace.DiagonalMiddle);
             public bool BelongsToCeiling => (IsCeilingHorizontalPlane || Face > BlockFace.DiagonalMiddle);
-            public PickingResultBlock(float distance, DrawingPoint pos, BlockFace face)
+            public PickingResultBlock(float distance, float verticalCoord, DrawingPoint pos, BlockFace face)
             {
                 Distance = distance;
+                VerticalCoord = verticalCoord;
                 Pos = pos;
                 Face = face;
             }
@@ -234,6 +237,7 @@ namespace TombEditor.Controls
 
             // We need to relocate picked diagonal faces, because behaviour is undefined
             // for these cases if diagonal step was raised above limit and swapped.
+            // Also, we relocate middle face pickings for walls to nearest floor or ceiling face.
             private void RelocatePicking()
             {
                 if(_referencePicking.Face == BlockFace.DiagonalED ||
@@ -275,6 +279,33 @@ namespace TombEditor.Controls
                             _referencePicking.Face = BlockFace.CeilingTriangle2;
                             break;
                     }
+                }
+
+                if(_referencePicking.Face == BlockFace.NegativeX_Middle ||
+                   _referencePicking.Face == BlockFace.NegativeZ_Middle ||
+                   _referencePicking.Face == BlockFace.PositiveX_Middle ||
+                   _referencePicking.Face == BlockFace.PositiveZ_Middle)
+                {
+                    Direction direction = Direction.North;
+                    switch(_referencePicking.Face)
+                    {
+                        case BlockFace.NegativeX_Middle:
+                            direction = Direction.West;
+                            break;
+                        case BlockFace.PositiveX_Middle:
+                            direction = Direction.East;
+                            break;
+                        case BlockFace.NegativeZ_Middle:
+                            direction = Direction.South;
+                            break;
+                    }
+
+                    var face = EditorActions.GetFaces(_parent._editor.SelectedRoom, _referencePicking.Pos, direction, BlockFaceType.Wall).First((item) => item.Key == _referencePicking.Face);
+
+                    if (face.Value[0] - _referencePicking.VerticalCoord > _referencePicking.VerticalCoord - face.Value[1])
+                        _referencePicking.Face = BlockFace.Floor;
+                    else
+                        _referencePicking.Face = BlockFace.Ceiling;
                 }
             }
 
@@ -1471,7 +1502,7 @@ namespace TombEditor.Controls
             // Check room geometry
             var roomIntersectInfo = room.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));
             if ((roomIntersectInfo != null) && ((result == null) || (roomIntersectInfo.Value.Distance < result.Distance)))
-                result = new PickingResultBlock(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.Pos, roomIntersectInfo.Value.Face);
+                result = new PickingResultBlock(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.VerticalCoord, roomIntersectInfo.Value.Pos, roomIntersectInfo.Value.Face);
 
             return result;
         }

@@ -2421,6 +2421,7 @@ namespace TombEditor.Geometry
             public DrawingPoint Pos;
             public BlockFace Face;
             public float Distance;
+            public float VerticalCoord;
         };
 
         public IntersectionInfo? RayIntersectsGeometry(Ray ray)
@@ -2442,10 +2443,13 @@ namespace TombEditor.Geometry
                             float distance;
                             if (ray.Intersects(ref p0, ref p1, ref p2, out distance))
                             {
+                                Vector3 position;
+                                ray.Intersects(ref p0, ref p1, ref p2, out position);
+
                                 var normal = Vector3.Cross(p1 - p0, p2 - p0);
                                 if (Vector3.Dot(ray.Direction, normal) <= 0)
                                     if (!(distance > result.Distance))
-                                        result = new IntersectionInfo() { Distance = distance, Face = face, Pos = new DrawingPoint(x, z) };
+                                        result = new IntersectionInfo() { Distance = distance, Face = face, Pos = new DrawingPoint(x, z), VerticalCoord = position.Y };
                             }
                         }
                     }

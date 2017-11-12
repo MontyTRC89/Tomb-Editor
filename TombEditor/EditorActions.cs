@@ -1154,7 +1154,7 @@ namespace TombEditor
             _editor.RoomTextureChange(room);
         }
 
-        private static Dictionary<BlockFace, float[]> GetFaces(Room room, DrawingPoint pos, Direction direction, BlockFaceType section)
+        public static Dictionary<BlockFace, float[]> GetFaces(Room room, DrawingPoint pos, Direction direction, BlockFaceType section)
         {
             bool sectionIsWall = room.GetBlockTry(pos.X, pos.Y).IsAnyWall;
 
