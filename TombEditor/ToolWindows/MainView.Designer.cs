@@ -223,8 +223,6 @@
             // butDrawRoomNames
             // 
             this.butDrawRoomNames.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawRoomNames.Checked = true;
-            this.butDrawRoomNames.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawRoomNames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butDrawRoomNames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawRoomNames.Image = global::TombEditor.Properties.Resources.actions_generic_text_16;

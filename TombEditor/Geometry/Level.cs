@@ -53,6 +53,7 @@ namespace TombEditor.Geometry
 
         public IEnumerable<Room> GetVerticallyAscendingRoomList()
         {
+            var editor = Editor.Instance;
             var roomList = new List<KeyValuePair<float, Room>>();
             foreach (Room room in Rooms)
                 if (room != null)
