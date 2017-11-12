@@ -254,7 +254,7 @@ namespace TombEditor.Geometry
                     (split == DiagonalSplit.XnZp && faces[2] == faces[3] && stepIsLimited) ||
                     (split == DiagonalSplit.XpZp && faces[3] == faces[0] && stepIsLimited))
                 {
-                    if (autoSwitch)
+                    if (autoSwitch && !IsAnyWall)
                     {
                         Rotate(floor, 2);
                         Raise(verticalSubdivision, !diagonalStep, increment);
