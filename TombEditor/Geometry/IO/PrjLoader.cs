@@ -737,99 +737,113 @@ namespace TombEditor.Geometry.IO
                     progressReporter.ReportProgress(30, "Rooms loaded");
 
                     // Link flip rooms
-                    progressReporter.ReportProgress(31, "Link flip rooms");
-                    foreach (var tempRoom in tempRooms)
                     {
-                        Room room = level.Rooms[tempRoom.Key];
-
-                        if (tempRoom.Value._flipRoom != -1)
+                        progressReporter.ReportProgress(31, "Link alternate rooms");
+                        foreach (var tempRoom in tempRooms)
                         {
-                            Room alternateRoom = level.Rooms[tempRoom.Value._flipRoom];
+                            Room room = level.Rooms[tempRoom.Key];
 
-                            room.AlternateRoom = alternateRoom;
-                            room.AlternateGroup = tempRoom.Value._flipGroup;
-                            alternateRoom.AlternateBaseRoom = room;
-                            alternateRoom.AlternateGroup = tempRoom.Value._flipGroup;
-                            alternateRoom.Position = new Vector3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
+                            if (tempRoom.Value._flipRoom != -1)
+                            {
+                                Room alternateRoom = level.Rooms[tempRoom.Value._flipRoom];
+
+                                room.AlternateRoom = alternateRoom;
+                                room.AlternateGroup = tempRoom.Value._flipGroup;
+                                alternateRoom.AlternateBaseRoom = room;
+                                alternateRoom.AlternateGroup = tempRoom.Value._flipGroup;
+                                alternateRoom.Position = new Vector3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
+                            }
                         }
+                        progressReporter.ReportProgress(31, "Alternate rooms linked");
                     }
 
                     // Link portals
-                    progressReporter.ReportProgress(32, "Link portals");
-                    foreach (var tempRoom in tempRooms)
                     {
-                        Room room = level.Rooms[tempRoom.Key];
-                        foreach (var portalId in tempRoom.Value._portals)
+                        progressReporter.ReportProgress(32, "Link portals");
+                        foreach (var tempRoom in tempRooms)
                         {
-                            PrjPortal prjPortal = tempPortals[portalId];
-
-                            // Link to the opposite room
-                            if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
+                            Room room = level.Rooms[tempRoom.Key];
+                            foreach (var portalId in tempRoom.Value._portals)
                             {
-                                progressReporter.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
-                                continue;
+                                PrjPortal prjPortal = tempPortals[portalId];
+
+                                // Link to the opposite room
+                                if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
+                                {
+                                    progressReporter.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
+                                    continue;
+                                }
+
+                                Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
+                                PortalInstance portal = new PortalInstance(prjPortal._area, prjPortal._direction, adjoiningRoom);
+                                room.AddObjectAndSingularPortal(level, portal);
                             }
+                        }
+                        progressReporter.ReportProgress(35, "Portals linked");
+                    }
 
-                            Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
-                            PortalInstance portal = new PortalInstance(prjPortal._area, prjPortal._direction, adjoiningRoom);
-
-                            // Figure out opacity of the portal
-                            portal.Opacity = PortalOpacity.None;
-                            switch (portal.Direction)
+                    // Setup portals
+                    {
+                        progressReporter.ReportProgress(32, "Setup portals");
+                        foreach (var tempRoom in tempRooms)
+                        {
+                            Room room = level.Rooms[tempRoom.Key];
+                            foreach (PortalInstance portal in room.Portals)
                             {
-                                case PortalDirection.Ceiling:
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
-                                            if (tempRoom.Value._blocks[x, z]._ceilingOpacity > portal.Opacity)
-                                                portal.Opacity = tempRoom.Value._blocks[x, z]._ceilingOpacity;
-
-                                    // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
-                                    // the water flag differs.
-                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
-                                        portal.Opacity = PortalOpacity.TraversableFaces;
-                                    break;
-                                case PortalDirection.Floor:
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
-                                            if (tempRoom.Value._blocks[x, z]._floorOpacity > portal.Opacity)
-                                                portal.Opacity = tempRoom.Value._blocks[x, z]._floorOpacity;
-
-                                    // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
-                                    // the water flag differs.
-                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
-                                        portal.Opacity = PortalOpacity.TraversableFaces;
-                                    break;
-                                default:
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
-                                            if (tempRoom.Value._blocks[x, z]._wallOpacity > portal.Opacity)
-                                                portal.Opacity = tempRoom.Value._blocks[x, z]._wallOpacity;
-                                    break;
-                            }
-
-                            // Set portals consisting entirely of triangles to "TraversableFaces" if any no collision triangle is textured.
-                            if (portal.Opacity == PortalOpacity.None)
-                            {
+                                // Figure out opacity of the portal
+                                portal.Opacity = PortalOpacity.None;
                                 switch (portal.Direction)
                                 {
                                     case PortalDirection.Ceiling:
-                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, adjoiningRoom, 1, 9, prjBlock => prjBlock._hasNoCollisionCeiling,
-                                            (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r0, r1, b0, b1));
-                                        break;
+                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                            for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                                                if (tempRoom.Value._blocks[x, z]._ceilingOpacity > portal.Opacity)
+                                                    portal.Opacity = tempRoom.Value._blocks[x, z]._ceilingOpacity;
 
+                                        // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
+                                        // the water flag differs.
+                                        if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
+                                            portal.Opacity = PortalOpacity.TraversableFaces;
+                                        break;
                                     case PortalDirection.Floor:
-                                        ProcessTexturedNoCollisions(portal, room, tempRoom.Value, adjoiningRoom, 0, 8, prjBlock => prjBlock._hasNoCollisionFloor,
-                                            (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r1, r0, b1, b0));
+                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                            for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                                                if (tempRoom.Value._blocks[x, z]._floorOpacity > portal.Opacity)
+                                                    portal.Opacity = tempRoom.Value._blocks[x, z]._floorOpacity;
+
+                                        // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
+                                        // the water flag differs.
+                                        if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
+                                            portal.Opacity = PortalOpacity.TraversableFaces;
+                                        break;
+                                    default:
+                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                            for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                                                if (tempRoom.Value._blocks[x, z]._wallOpacity > portal.Opacity)
+                                                    portal.Opacity = tempRoom.Value._blocks[x, z]._wallOpacity;
                                         break;
                                 }
+
+                                // Set portals consisting entirely of triangles to "TraversableFaces" if any no collision triangle is textured.
+                                if (portal.Opacity == PortalOpacity.None)
+                                {
+                                    switch (portal.Direction)
+                                    {
+                                        case PortalDirection.Ceiling:
+                                            ProcessTexturedNoCollisions(portal, room, tempRoom.Value, 1, 9, prjBlock => prjBlock._hasNoCollisionCeiling,
+                                                (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r0, r1, b0, b1));
+                                            break;
+
+                                        case PortalDirection.Floor:
+                                            ProcessTexturedNoCollisions(portal, room, tempRoom.Value, 0, 8, prjBlock => prjBlock._hasNoCollisionFloor,
+                                                (r0, r1, b0, b1) => Room.CalculateRoomConnectionTypeWithoutAlternates(r1, r0, b1, b0));
+                                            break;
+                                    }
+                                }
                             }
-
-                            // Add portal to rooms
-                            room.AddObjectAndSingularPortal(level, portal);
                         }
+                        progressReporter.ReportProgress(35, "Portals setup");
                     }
-
-                    progressReporter.ReportProgress(35, "Portals linked");
 
                     // Link triggers
                     {
@@ -1437,7 +1451,7 @@ namespace TombEditor.Geometry.IO
             return false;
         }
 
-        private static void ProcessTexturedNoCollisions(PortalInstance portal, Room room, PrjRoom tempRoom, Room adjoiningRoom, int triangle1FaceTexIndex,
+        private static void ProcessTexturedNoCollisions(PortalInstance portal, Room room, PrjRoom tempRoom, int triangle1FaceTexIndex,
             int triangle2FaceTexIndex, Predicate<PrjBlock> isNoCollision, Func<Room, Room, Block, Block, Room.RoomConnectionType> getRoomConnectionType)
         {
             for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
@@ -1448,8 +1462,8 @@ namespace TombEditor.Geometry.IO
                         continue;
 
                     var pos = new DrawingPoint(x, z);
-                    var connectionType = getRoomConnectionType(room, adjoiningRoom,
-                        room.GetBlock(pos), adjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(adjoiningRoom.SectorPos)));
+                    var connectionType = getRoomConnectionType(room, portal.AdjoiningRoom,
+                        room.GetBlock(pos), portal.AdjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos)));
 
                     switch (connectionType)
                     {
@@ -1476,8 +1490,8 @@ namespace TombEditor.Geometry.IO
                 for (int x = portal.Area.X; x <= portal.Area.Right; x++)
                 {
                     var pos = new DrawingPoint(x, z);
-                    var connectionType = getRoomConnectionType(room, adjoiningRoom,
-                        room.GetBlock(pos), adjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(adjoiningRoom.SectorPos)));
+                    var connectionType = getRoomConnectionType(room, portal.AdjoiningRoom,
+                        room.GetBlock(pos), portal.AdjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos)));
                     if (connectionType == Room.RoomConnectionType.FullPortal)
                     {
                         tempRoom._blocks[x, z]._faces[triangle1FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
