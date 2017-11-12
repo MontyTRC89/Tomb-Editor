@@ -9,11 +9,11 @@ namespace TombLib.Graphics
 {
     public class Bone
     {
-        public string Name;
-        public Matrix Transform;
-        public Matrix GlobalTransform;
-        public Bone Parent;
-        public List<Bone> Children = new List<Bone>();
-        public short Index;
+        public string Name { get; set; }
+        public Matrix Transform { get; set; }
+        public Matrix GlobalTransform { get; set; }
+        public Bone Parent { get; set; }
+        public List<Bone> Children { get; set; } = new List<Bone>();
+        public short Index { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace WadTool.Controls
         private float _lastX;
         private float _lastY;
         private SpriteBatch _spriteBatch;
-
+        
         public void InitializePanel(GraphicsDevice device)
         {
             _device = device;
@@ -147,21 +147,62 @@ namespace WadTool.Controls
                     mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                     // Build animation transforms
-                    if (model.Animations.Count != 0)  
-                        model.BuildAnimationPose(model.Animations[Animation].KeyFrames[KeyFrame]);
+                    var matrices = new List<Matrix>();
+                    if (model.Animations.Count != 0)
+                    {
+                        var animation = model.Animations[Animation];
+                        if (KeyFrame % animation.Framerate == 0)
+                        {
+                            model.BuildAnimationPose(model.Animations[Animation].KeyFrames[KeyFrame / animation.Framerate]);
+                            for (var b = 0; b < model.Meshes.Count; b++)
+                                matrices.Add(model.AnimationTransforms[b]);
+                        }
+                        else
+                        {
+                            var transforms1 = new List<Matrix>();
+                            var transforms2 = new List<Matrix>();
+                            var frame1 = (int)Math.Floor((double)KeyFrame / animation.Framerate);
+                            var frame2 = frame1 + 1;
+
+                            // Build transforms for current keyframe
+                            model.BuildAnimationPose(model.Animations[Animation].KeyFrames[frame1]);
+                            for (var b = 0; b < model.Meshes.Count; b++)
+                                transforms1.Add(model.AnimationTransforms[b]);
+
+                            var amount = (float)(KeyFrame - frame1) / animation.Framerate;
+
+                            if (frame2 >= animation.KeyFrames.Count)
+                            {              
+                                // Impossible case (in theory...)
+                                for (var b = 0; b < model.Meshes.Count; b++)
+                                    matrices.Add(transforms1[b]);
+                            }
+                            else
+                            {
+                                // Build transforms for current keyframe + 1
+                                model.BuildAnimationPose(model.Animations[Animation].KeyFrames[frame2]);
+                                for (var b = 0; b < model.Meshes.Count; b++)
+                                    transforms2.Add(model.AnimationTransforms[b]);
+                                
+                                // Interpolate
+                                for (var b = 0; b < model.Meshes.Count; b++)
+                                    matrices.Add(Matrix.Lerp(transforms1[b], transforms2[2], amount));
+                            }
+                        }                        
+                    }
+                    else
+                    {
+                        foreach (var bone in model.Bones)
+                            matrices.Add(bone.GlobalTransform);
+                    }
 
                     for (int i = 0; i < model.Meshes.Count; i++)
                     {
                         SkinnedMesh mesh = skin.Meshes[i];
                         if (mesh.Vertices.Count == 0)
                             continue;
-
-                        Matrix modelMatrix;
-                        if (model.AnimationTransforms != null)
-                            modelMatrix = model.AnimationTransforms[i];
-                        else
-                            modelMatrix = model.Bones[i].GlobalTransform;
-                        mioEffect.Parameters["ModelViewProjection"].SetValue(modelMatrix * viewProjection);
+                        
+                        mioEffect.Parameters["ModelViewProjection"].SetValue(matrices[i] * viewProjection);
 
                         mioEffect.Techniques[0].Passes[0].Apply();
                         _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);

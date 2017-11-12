@@ -7,9 +7,9 @@ namespace TombLib.Graphics
 {
     public class AnimDispatch
     {
-        public short LowFrame;
-        public short HighFrame;
-        public short NextAnimation;
-        public short NextFrame;
+        public short LowFrame { get; set; }
+        public short HighFrame { get; set; }
+        public short NextAnimation { get; set; }
+        public short NextFrame { get; set; }
     }
 }
