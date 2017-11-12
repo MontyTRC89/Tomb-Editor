@@ -773,10 +773,31 @@ namespace TombEditor.Geometry.IO
                                     progressReporter.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
                                     continue;
                                 }
-
                                 Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
+
+                                // Ignore duplicates from the point of view from bidirectional portals
+                                if (room.Flipped)
+                                    continue;
+                                switch (prjPortal._direction)
+                                {
+                                    case PortalDirection.Ceiling:
+                                    case PortalDirection.WallNegativeX:
+                                    case PortalDirection.WallNegativeZ:
+                                        continue;
+                                }
+
+                                // Add portals bidirectionally
                                 PortalInstance portal = new PortalInstance(prjPortal._area, prjPortal._direction, adjoiningRoom);
-                                room.AddObjectAndSingularPortal(level, portal);
+                                try
+                                {
+                                    room.AddObject(level, portal);
+                                }
+                                catch (Exception exc)
+                                {
+                                    string message = "Unable to link portal " + portal + " in room " + room + ".";
+                                    progressReporter.ReportProgress(35, message);
+                                    logger.Error(exc, message);
+                                }
                             }
                         }
                         progressReporter.ReportProgress(35, "Portals linked");
