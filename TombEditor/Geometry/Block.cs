@@ -242,11 +242,12 @@ namespace TombEditor.Geometry
 
         public void RaiseStepWise(int verticalSubdivision, bool diagonalStep, short increment, bool autoSwitch = false)
         {
-            if (FloorDiagonalSplit != DiagonalSplit.None)
+            var floor = (verticalSubdivision % 2 == 0);
+            var split = floor ? FloorDiagonalSplit : CeilingDiagonalSplit;
+
+            if (split != DiagonalSplit.None)
             {
                 var faces = GetVerticalSubdivision(verticalSubdivision);
-                var floor = verticalSubdivision == 0 || verticalSubdivision == 2;
-                var split = floor ? FloorDiagonalSplit : CeilingDiagonalSplit;
                 var stepIsLimited = increment != 0 && ((increment > 0) == (!floor ^ diagonalStep));
 
                 if ((split == DiagonalSplit.XpZn && faces[0] == faces[1] && stepIsLimited) ||
