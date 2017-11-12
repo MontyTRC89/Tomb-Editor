@@ -487,6 +487,14 @@ namespace TombEditor.Controls
             else if ((obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.ModeChangedEvent))
                 _currentRoomLastPos = _editor.SelectedRoom.WorldPos;
 
+            // Reset tool handler state
+            if((obj is Editor.SelectedRoomChangedEvent) ||
+               (obj is Editor.ModeChangedEvent) ||
+               (obj is Editor.ToolChangedEvent))
+            {
+                _toolHandler?.Disengage();
+            }
+
             // Update drawing
             if ((obj is IEditorObjectChangedEvent) ||
                 (obj is IEditorRoomChangedEvent) ||
