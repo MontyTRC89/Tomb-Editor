@@ -56,7 +56,7 @@ namespace TombEditor.Geometry
 
     public enum Direction : byte
     {
-        None = 0, North = 1, East = 2, South = 3, West = 4
+        None = 0, PositiveZ = 1, PositiveX = 2, NegativeZ = 3, NegativeX = 4, Diagonal = 5
     }
 
     public class Block : ICloneable
@@ -254,12 +254,17 @@ namespace TombEditor.Geometry
                     (split == DiagonalSplit.XnZp && faces[2] == faces[3] && stepIsLimited) ||
                     (split == DiagonalSplit.XpZp && faces[3] == faces[0] && stepIsLimited))
                 {
-                    if (autoSwitch && !IsAnyWall)
-                    {
-                        Rotate(floor, 2);
+                    if (IsAnyWall && autoSwitch)
                         Raise(verticalSubdivision, !diagonalStep, increment);
+                    else
+                    {
+                        if (autoSwitch)
+                        {
+                            Rotate(floor, 2);
+                            Raise(verticalSubdivision, !diagonalStep, increment);
+                            return;
+                        }
                     }
-                    return;
                 }
             }
             Raise(verticalSubdivision, diagonalStep, increment);
@@ -469,23 +474,23 @@ namespace TombEditor.Geometry
                             {
                                 case 0:
                                 case 360:
-                                    slopeDirections[i] = Direction.North;
+                                    slopeDirections[i] = Direction.PositiveZ;
                                     angleNotDefined = false;
                                     break;
                                 case 45:
                                 case 90:
                                 case 135:
-                                    slopeDirections[i] = Direction.East;
+                                    slopeDirections[i] = Direction.PositiveX;
                                     angleNotDefined = false;
                                     break;
                                 case 180:
-                                    slopeDirections[i] = Direction.South;
+                                    slopeDirections[i] = Direction.NegativeZ;
                                     angleNotDefined = false;
                                     break;
                                 case 225:
                                 case 270:
                                 case 315:
-                                    slopeDirections[i] = Direction.West;
+                                    slopeDirections[i] = Direction.NegativeX;
                                     angleNotDefined = false;
                                     break;
                                 default:

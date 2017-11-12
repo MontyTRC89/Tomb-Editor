@@ -280,19 +280,19 @@ namespace TombEditor.Controls
                     switch (_referencePicking.Face)
                     {
                         case BlockFace.NegativeX_Middle:
-                            direction = Direction.West;
+                            direction = Direction.NegativeX;
                             break;
                         case BlockFace.PositiveX_Middle:
-                            direction = Direction.East;
+                            direction = Direction.PositiveX;
                             break;
                         case BlockFace.NegativeZ_Middle:
-                            direction = Direction.South;
+                            direction = Direction.NegativeZ;
                             break;
                         case BlockFace.PositiveZ_Middle:
-                            direction = Direction.North;
+                            direction = Direction.PositiveZ;
                             break;
                         default:
-                            direction = Direction.None;
+                            direction = Direction.Diagonal;
                             break;
                     }
 
@@ -3573,16 +3573,16 @@ namespace TombEditor.Controls
 
                                 switch (slopeDirection)
                                 {
-                                    case Direction.East:
+                                    case Direction.PositiveX:
                                         _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_east" + flipSplit]);
                                         break;
-                                    case Direction.West:
+                                    case Direction.NegativeX:
                                         _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_west" + flipSplit]);
                                         break;
-                                    case Direction.North:
+                                    case Direction.PositiveZ:
                                         _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_north" + flipSplit]);
                                         break;
-                                    case Direction.South:
+                                    case Direction.NegativeZ:
                                         _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["slide_south" + flipSplit]);
                                         break;
                                 }

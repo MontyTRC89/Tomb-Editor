@@ -391,7 +391,7 @@ namespace TombEditor.Geometry
 
                 switch (slopeDirections[i])
                 {
-                    case Direction.North:
+                    case Direction.PositiveZ:
                         lookupBlock = GetBlockTryThroughPortal(x, z + 1);
                         heightsToCompare[0] = 0;
                         heightsToCompare[1] = 1;
@@ -399,7 +399,7 @@ namespace TombEditor.Geometry
                         heightsToCheck[1] = 2;
                         break;
 
-                    case Direction.South:
+                    case Direction.NegativeZ:
                         lookupBlock = GetBlockTryThroughPortal(x, z - 1);
                         heightsToCompare[0] = 2;
                         heightsToCompare[1] = 3;
@@ -410,7 +410,7 @@ namespace TombEditor.Geometry
                     // We only need to override east and west diagonal split HeightsToCompare[1] cases, because 
                     // slanted diagonal splits are always 45 degrees, hence these are only two slide directions possible.
 
-                    case Direction.East:
+                    case Direction.PositiveX:
                         lookupBlock = GetBlockTryThroughPortal(x + 1, z);
                         heightsToCompare[0] = 1;
                         heightsToCompare[1] = (short)(sector.FloorDiagonalSplit == DiagonalSplit.XnZp ? 1 : 2);
@@ -418,7 +418,7 @@ namespace TombEditor.Geometry
                         heightsToCheck[1] = 3;
                         break;
 
-                    case Direction.West:
+                    case Direction.NegativeX:
                         lookupBlock = GetBlockTryThroughPortal(x - 1, z);
                         heightsToCompare[0] = 3;
                         heightsToCompare[1] = (short)(sector.FloorDiagonalSplit == DiagonalSplit.XpZn ? 3 : 0);
@@ -449,7 +449,7 @@ namespace TombEditor.Geometry
 
                     switch (slopeDirections[i])
                     {
-                        case Direction.North:
+                        case Direction.PositiveZ:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
@@ -464,7 +464,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 3;
                             break;
-                        case Direction.East:
+                        case Direction.PositiveX:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
@@ -479,7 +479,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 0;
                             break;
-                        case Direction.South:
+                        case Direction.NegativeZ:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
@@ -494,7 +494,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 1;
                             break;
-                        case Direction.West:
+                        case Direction.NegativeX:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
@@ -539,14 +539,14 @@ namespace TombEditor.Geometry
                             {
                                 if (sector.FloorSplitDirectionIsXEqualsZ)
                                 {
-                                    if (((slopeDirections[i] == Direction.North || slopeDirections[i] == Direction.West) && i == 0 && j == 1) ||
-                                        ((slopeDirections[i] == Direction.East || slopeDirections[i] == Direction.South) && i == 1 && j == 0))
+                                    if (((slopeDirections[i] == Direction.PositiveZ || slopeDirections[i] == Direction.NegativeX) && i == 0 && j == 1) ||
+                                        ((slopeDirections[i] == Direction.PositiveX || slopeDirections[i] == Direction.NegativeZ) && i == 1 && j == 0))
                                         continue;
                                 }
                                 else
                                 {
-                                    if ((slopeDirections[i] < Direction.South && i == 1 && j == 0) ||
-                                       (slopeDirections[i] >= Direction.South && i == 0 && j == 1))
+                                    if ((slopeDirections[i] < Direction.NegativeZ && i == 1 && j == 0) ||
+                                       (slopeDirections[i] >= Direction.NegativeZ && i == 0 && j == 1))
                                         continue;
                                 }
                             }
