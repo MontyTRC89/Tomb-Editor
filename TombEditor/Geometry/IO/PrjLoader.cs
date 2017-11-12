@@ -736,7 +736,7 @@ namespace TombEditor.Geometry.IO
                     }
                     progressReporter.ReportProgress(30, "Rooms loaded");
 
-                    // Link flip rooms
+                    // Link alternate rooms
                     {
                         progressReporter.ReportProgress(31, "Link alternate rooms");
                         foreach (var tempRoom in tempRooms)
@@ -760,10 +760,22 @@ namespace TombEditor.Geometry.IO
                     // Link portals
                     {
                         progressReporter.ReportProgress(32, "Link portals");
-                        foreach (var tempRoom in tempRooms)
+                        for (int roomIndex = 0; roomIndex < level.Rooms.GetLength(0); ++roomIndex)
                         {
-                            Room room = level.Rooms[tempRoom.Key];
-                            foreach (var portalId in tempRoom.Value._portals)
+                            Room room = level.Rooms[roomIndex];
+                            if (room == null)
+                                continue;
+                            if (room.AlternateBaseRoom != null) // Alternate rooms are already processed together with the base room. We can skip them.
+                                continue;
+                            PrjRoom tempRoom = tempRooms[roomIndex];
+                            PrjRoom tempAlternateRoom = tempRoom._flipRoom == -1 ? new PrjRoom() : tempRooms[tempRoom._flipRoom];
+
+                            var basePortalLinks = new KeyValuePair<Room, PortalDirection>[room.NumXSectors, room.NumZSectors];
+                            var alternatePortalLinks = room.Flipped ? new KeyValuePair<Room, PortalDirection>[room.NumXSectors, room.NumZSectors] : null;
+                            List<Rectangle> portalAreaSuggestions = new List<Rectangle>();
+
+                            // Collect portal data
+                            Action<int, bool> processPortal = (int portalId, bool isAlternate) =>
                             {
                                 PrjPortal prjPortal = tempPortals[portalId];
 
@@ -771,23 +783,201 @@ namespace TombEditor.Geometry.IO
                                 if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
                                 {
                                     progressReporter.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
-                                    continue;
+                                    return;
                                 }
                                 Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
+                                adjoiningRoom = adjoiningRoom.AlternateBaseRoom ?? adjoiningRoom;
 
                                 // Ignore duplicates from the point of view from bidirectional portals
-                                if (room.Flipped)
-                                    continue;
                                 switch (prjPortal._direction)
                                 {
                                     case PortalDirection.Ceiling:
                                     case PortalDirection.WallNegativeX:
                                     case PortalDirection.WallNegativeZ:
-                                        continue;
+                                        return;
                                 }
 
-                                // Add portals bidirectionally
-                                PortalInstance portal = new PortalInstance(prjPortal._area, prjPortal._direction, adjoiningRoom);
+                                // Process linking information
+                                portalAreaSuggestions.Add(prjPortal._area);
+                                var linkArray = isAlternate ? alternatePortalLinks : basePortalLinks;
+                                var currentLink = new KeyValuePair<Room, PortalDirection>(adjoiningRoom, prjPortal._direction);
+
+                                // Add portal link information to sectors
+                                string errorMessage = null;
+                                var collidingLinks = new List<KeyValuePair<Room, PortalDirection>>();
+                                for (int z = prjPortal._area.Y; z <= prjPortal._area.Bottom; ++z)
+                                    for (int x = prjPortal._area.X; x <= prjPortal._area.Right; ++x)
+                                    {
+                                        var existingLink = linkArray[x, z];
+                                        if ((existingLink.Key != null) && (existingLink.Key != currentLink.Key || existingLink.Value != currentLink.Value))
+                                        {
+                                            if (!collidingLinks.Contains(existingLink))
+                                            {
+                                                collidingLinks.Add(existingLink);
+                                                if (errorMessage == null)
+                                                    errorMessage = "In room '" + room + "' portal to room '" + currentLink.Key + "' (Direction: " + currentLink.Value + ") overlaps with:";
+                                                errorMessage += "\n    At [" + x + ", " + z + "] portal to room '" + existingLink.Key + "' (Direction: " + existingLink.Value + ")";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            linkArray[x, z] = currentLink;
+                                        }
+                                    }
+
+                                // Output diagonostics
+                                if (errorMessage != null)
+                                    progressReporter.ReportWarn(errorMessage);
+                            };
+                            foreach (var portalId in tempRoom._portals)
+                                processPortal(portalId, false);
+                            if (alternatePortalLinks != null)
+                                foreach (var portalId in tempAlternateRoom._portals)
+                                    processPortal(portalId, true);
+
+                            // Unify alternate room and base room portals. Since we don't support mismatches
+                            // in Tomb Editor, portals have to be perfectly symmetrical.
+                            if (alternatePortalLinks != null)
+                                for (int z = 0; z < room.NumZSectors; ++z)
+                                    for (int x = 0; x < room.NumXSectors; ++x)
+                                    {
+                                        var baseLink = basePortalLinks[x, z];
+                                        var alternateLink = alternatePortalLinks[x, z];
+                                        if (basePortalLinks[x, z].Key == null)
+                                        {
+                                            if (alternatePortalLinks[x, z].Key == null)
+                                            {
+                                                // No portal what so ever. Easy case, we don't have to do anything
+                                            }
+                                            else
+                                            {
+                                                // In this case we can extend the scope of the alternate room portal
+                                                // to the base room and set 'ForceFloorSolid' in the base room.
+                                                basePortalLinks[x, z] = alternatePortalLinks[x, z];
+                                                room.Blocks[x, z].ForceFloorSolid = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (alternatePortalLinks[x, z].Key == null)
+                                            {
+                                                // Portal in the base room.  But we need to make sure that there won't be
+                                                // a portal in the alternate room by setting it's 'ForceFloorSolid'.
+                                                room.AlternateRoom.Blocks[x, z].ForceFloorSolid = true;
+                                            }
+                                            else if (basePortalLinks[x, z].Key == alternatePortalLinks[x, z].Key &&
+                                                basePortalLinks[x, z].Value == alternatePortalLinks[x, z].Value)
+                                            {
+                                                // Portal match on the sector: Easy case, we don't have to do anything
+                                            }
+                                            else
+                                            {
+                                                // Oops, we have contradiction that can't be resolved in our system:
+                                                // The base room and the alternate room link to *different* rooms on the same sector.
+                                                progressReporter.ReportWarn("In room '" + room + "' at [" + x + ", " + z + "] the base room and the alternate room have portals " +
+                                                    "to different adjoining rooms! This is unsuppored in Tomb Editor. The portal in the base room will be preserved.\n" +
+                                                    "    Base room portal destination: " + basePortalLinks[x, z].Key + "' (Direction: " + basePortalLinks[x, z].Value + ")\n" +
+                                                    "    Alternate room portal destination: " + alternatePortalLinks[x, z].Key + "' (Direction: " + alternatePortalLinks[x, z].Value + ")");
+                                            }
+                                        }
+                                    }
+                            alternatePortalLinks = null; // This array is no longer needed
+
+                            // Validate portal suggestions
+                            {
+                                // Portals must have a positive area
+                                for (int i = portalAreaSuggestions.Count - 1; i >= 0; --i)
+                                    if (portalAreaSuggestions[i].X <= 0 || portalAreaSuggestions[i].Y <= 0)
+                                        portalAreaSuggestions.RemoveAt(i);
+
+                                // Portals areas must be disjunct
+                                RestartPortalSuggestionArrayProcessing:
+                                for (int i = 0; i < portalAreaSuggestions.Count; ++i)
+                                    for (int j = i + 1; j < portalAreaSuggestions.Count; ++j)
+                                        if (portalAreaSuggestions[i].Contains(portalAreaSuggestions[j]))
+                                        { // Jump over superseeded and identical area suggestions
+                                            portalAreaSuggestions.RemoveAt(j--);
+                                        }
+                                        else if (portalAreaSuggestions[j].Contains(portalAreaSuggestions[i]))
+                                        { // Restart the process if an earlier area suggestion is now superseeded.
+                                            portalAreaSuggestions[j] = portalAreaSuggestions[i];
+                                            portalAreaSuggestions.RemoveAt(i);
+                                            goto RestartPortalSuggestionArrayProcessing;
+                                        }
+                                        else if (portalAreaSuggestions[i].Intersects(portalAreaSuggestions[j]))
+                                        {
+                                            // This suggestion can't be made disjunct easily.
+                                            // We just throw the suggestion out.
+                                            portalAreaSuggestions.RemoveAt(j--);
+                                        }
+
+                                // Suggested areas must only contain identical links
+                                for (int i = portalAreaSuggestions.Count - 1; i >= 0; --i)
+                                {
+                                    Rectangle portalAreaSuggestion = portalAreaSuggestions[i];
+                                    var startLink = basePortalLinks[portalAreaSuggestion.X, portalAreaSuggestion.Y];
+                                    if (startLink.Key == null)
+                                    {
+                                        portalAreaSuggestions.RemoveAt(i);
+                                        continue;
+                                    }
+                                    for (int z = portalAreaSuggestion.Y; z <= portalAreaSuggestion.Bottom; ++z)
+                                        for (int x = portalAreaSuggestion.X; x <= portalAreaSuggestion.Right; ++x)
+                                            if ((basePortalLinks[x, z].Key != startLink.Key) || (basePortalLinks[x, z].Value != startLink.Value))
+                                            {
+                                                portalAreaSuggestions.RemoveAt(i);
+                                                goto ProcessNextAreaSuggestion;
+                                            }
+                                    ProcessNextAreaSuggestion:
+                                    ;
+                                }
+                            }
+
+                            // Create new portals for the area that is not coverted with suggestions
+                            // because they had to get thrown out earlier
+                            var portals = new List<PortalInstance>();
+                            {
+                                // Use the suggestions
+                                foreach (Rectangle portalAreaSuggestion in portalAreaSuggestions)
+                                {
+                                    var link = basePortalLinks[portalAreaSuggestion.X, portalAreaSuggestion.Y];
+                                    portals.Add(new PortalInstance(portalAreaSuggestion, link.Value, link.Key));
+                                    for (int z = portalAreaSuggestion.Y; z <= portalAreaSuggestion.Bottom; ++z)
+                                        for (int x = portalAreaSuggestion.X; x <= portalAreaSuggestion.Right; ++x)
+                                            basePortalLinks[x, z] = new KeyValuePair<Room, PortalDirection>();
+                                }
+
+                                // Search for an sector not covered yet and create a portal for it.
+                                for (int z = 0; z < room.NumZSectors; ++z)
+                                    for (int x = 0; x < room.NumXSectors; ++x)
+                                    {
+                                        var link = basePortalLinks[x, z];
+                                        if (link.Key == null)
+                                            continue;
+
+                                        // Search an area that is as big as possible that contains only links of this type
+                                        int endZ = z + 1;
+                                        for (; endZ < room.NumZSectors; ++endZ)
+                                            if ((basePortalLinks[x, endZ].Key != link.Key) || (basePortalLinks[x, endZ].Value != link.Value))
+                                                break;
+                                        int endX = x + 1;
+                                        for (; endX < room.NumXSectors; ++endX)
+                                            for (int z2 = z; z2 < endZ; ++z2)
+                                                if ((basePortalLinks[endX, z2].Key != link.Key) || (basePortalLinks[endX, z2].Value != link.Value))
+                                                    goto FoundEndX;
+                                        FoundEndX:
+
+                                        // Create portal
+                                        portals.Add(new PortalInstance(new Rectangle(x, z, endX - 1, endZ - 1), link.Value, link.Key));
+                                        for (int z2 = z; z < endZ; ++z)
+                                            for (int x2 = x; x < endX; ++x)
+                                                basePortalLinks[x2, z2] = new KeyValuePair<Room, PortalDirection>();
+                                    }
+                            }
+
+                            // Add portals
+                            foreach (PortalInstance portal in portals)
+                            {
                                 try
                                 {
                                     room.AddObject(level, portal);
@@ -912,25 +1102,56 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Transform the no collision tiles into the ForceFloorSolid option.
-                    progressReporter.ReportProgress(40, "Convert NoCollision to ForceFloorSolid");
-                    foreach (var tempRoom in tempRooms)
                     {
-                        Room room = level.Rooms[tempRoom.Key];
-                        for (int z = 0; z < room.NumZSectors; ++z)
-                            for (int x = 0; x < room.NumXSectors; ++x)
-                            {
-                                Room.RoomConnectionInfo connectionInfo = room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
-                                switch (connectionInfo.AnyType)
+                        progressReporter.ReportProgress(40, "Convert NoCollision to ForceFloorSolid");
+
+                        // Promote NoCollision
+                        foreach (var tempRoom in tempRooms)
+                        {
+                            Room room = level.Rooms[tempRoom.Key];
+                            for (int z = 0; z < room.NumZSectors; ++z)
+                                for (int x = 0; x < room.NumXSectors; ++x)
                                 {
-                                    case Room.RoomConnectionType.TriangularPortalXnZn:
-                                    case Room.RoomConnectionType.TriangularPortalXpZn:
-                                    case Room.RoomConnectionType.TriangularPortalXnZp:
-                                    case Room.RoomConnectionType.TriangularPortalXpZp:
-                                        if (!tempRoom.Value._blocks[x, z]._hasNoCollisionFloor)
-                                            room.Blocks[x, z].ForceFloorSolid = true;
-                                        break;
+                                    Room.RoomConnectionInfo connectionInfo = room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
+                                    switch (connectionInfo.AnyType)
+                                    {
+                                        case Room.RoomConnectionType.TriangularPortalXnZn:
+                                        case Room.RoomConnectionType.TriangularPortalXpZn:
+                                        case Room.RoomConnectionType.TriangularPortalXnZp:
+                                        case Room.RoomConnectionType.TriangularPortalXpZp:
+                                            if (!tempRoom.Value._blocks[x, z]._hasNoCollisionFloor)
+                                                room.Blocks[x, z].ForceFloorSolid = true;
+                                            break;
+                                    }
                                 }
+                        }
+
+                        // We don't need 'ForceFloorSolid' if all portals are solid anyway
+                        // (This also improves cases from earlier with alternate rooms.)
+                        foreach (var tempRoom in tempRooms)
+                        {
+                            Room room = level.Rooms[tempRoom.Key];
+                            foreach (PortalInstance portal in room.Portals)
+                            {
+                                if (portal.Direction == PortalDirection.Ceiling)
+                                    break;
+
+                                PortalInstance oppositePortal = portal.FindOppositePortal(room);
+                                PortalInstance alternatePortal = portal.FindAlternatePortal(room.AlternateVersion);
+                                PortalInstance alternateOppositePortal = oppositePortal.FindAlternatePortal(oppositePortal.AdjoiningRoom.AlternateVersion);
+                                if ((portal?.IsTraversable ?? false) ||
+                                    (oppositePortal?.IsTraversable ?? false) ||
+                                    (alternatePortal?.IsTraversable ?? false) ||
+                                    (alternateOppositePortal?.IsTraversable ?? false))
+                                    continue;
+
+                                for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
+                                        room.Blocks[x, z].ForceFloorSolid = false;
                             }
+                        }
+
+                        progressReporter.ReportProgress(40, "Converted NoCollision to ForceFloorSolid");
                     }
 
                     // Ignore unused things indices
