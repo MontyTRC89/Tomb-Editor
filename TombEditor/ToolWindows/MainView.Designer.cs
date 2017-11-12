@@ -22,6 +22,7 @@
             this.butLightingMode = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.butCenterCamera = new System.Windows.Forms.ToolStripButton();
+            this.butDisableGeometryPicking = new System.Windows.Forms.ToolStripButton();
             this.butDrawPortals = new System.Windows.Forms.ToolStripButton();
             this.butDrawHorizon = new System.Windows.Forms.ToolStripButton();
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
@@ -32,7 +33,6 @@
             this.butDrawStatics = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawOther = new System.Windows.Forms.ToolStripMenuItem();
-            this.butDisableGeometryPicking = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -184,6 +184,18 @@
             this.butCenterCamera.ToolTipText = "Center 3D camera (F6)";
             this.butCenterCamera.Click += new System.EventHandler(this.butCenterCamera_Click);
             // 
+            // butDisableGeometryPicking
+            // 
+            this.butDisableGeometryPicking.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDisableGeometryPicking.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDisableGeometryPicking.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDisableGeometryPicking.Image = global::TombEditor.Properties.Resources.actions_DisableGeometryPicking_16;
+            this.butDisableGeometryPicking.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDisableGeometryPicking.Name = "butDisableGeometryPicking";
+            this.butDisableGeometryPicking.Size = new System.Drawing.Size(23, 25);
+            this.butDisableGeometryPicking.ToolTipText = "Disable custom geometry picking";
+            this.butDisableGeometryPicking.Click += new System.EventHandler(this.butDisableGeometryPicking_Click);
+            // 
             // butDrawPortals
             // 
             this.butDrawPortals.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -310,17 +322,6 @@
             this.butDrawOther.Size = new System.Drawing.Size(207, 22);
             this.butDrawOther.Text = "Draw other objects";
             this.butDrawOther.Click += new System.EventHandler(this.butDrawOther_Click);
-            // 
-            // butDisableGeometryPicking
-            // 
-            this.butDisableGeometryPicking.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDisableGeometryPicking.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDisableGeometryPicking.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDisableGeometryPicking.Image = global::TombEditor.Properties.Resources.actions_DisableGeometryPicking_16;
-            this.butDisableGeometryPicking.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDisableGeometryPicking.Name = "butDisableGeometryPicking";
-            this.butDisableGeometryPicking.Size = new System.Drawing.Size(23, 25);
-            this.butDisableGeometryPicking.ToolTipText = "Disable custom geometry picking";
             // 
             // toolStripSeparator1
             // 

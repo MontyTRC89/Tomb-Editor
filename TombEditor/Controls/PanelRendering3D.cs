@@ -377,6 +377,8 @@ namespace TombEditor.Controls
         public bool ShowOtherObjects { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawSlideDirections { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DisablePickingForImportedGeometry { get; set; }
 
         private Editor _editor;
         private DeviceManager _deviceManager;
@@ -620,7 +622,7 @@ namespace TombEditor.Controls
             new BasicEffect(_device);
 
             // Initialize the rasterizer state for wireframe drawing
-            SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
+            var renderStateDesc =
                 new SharpDX.Direct3D11.RasterizerStateDescription
                 {
                     CullMode = SharpDX.Direct3D11.CullMode.None,
@@ -634,8 +636,8 @@ namespace TombEditor.Controls
                     IsScissorEnabled = false,
                     SlopeScaledDepthBias = 0
                 };
-
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
+
             _gizmo = new Gizmo(deviceManager.Device, deviceManager.Effects["Solid"]);
             _toolHandler = new ToolHandler(this);
             _movementTimer = new MovementTimer(MoveTimerTick);
@@ -973,42 +975,25 @@ namespace TombEditor.Controls
                                     }
                                     else if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None)
                                     {
-                                        var usedTexture = _editor.SelectedTexture;
-
-                                        switch (_editor.Tool.Texture)
-                                        {
-                                            case EditorTextureType.Normal:
-                                                break;
-
-                                            case EditorTextureType.Invisible:
-                                                usedTexture.Texture = TextureInvisible.Instance;
-                                                break;
-
-                                            case EditorTextureType.Null:
-                                            default:
-                                                usedTexture.Texture = null;
-                                                break;
-                                        }
-
                                         switch (_editor.Tool.Tool)
                                         {
                                             case EditorToolType.Fill:
                                                 if (newBlockPicking.IsFloorHorizontalPlane)
-                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, BlockFaceType.Floor);
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Floor);
                                                 else if (newBlockPicking.IsCeilingHorizontalPlane)
-                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, BlockFaceType.Ceiling);
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Ceiling);
                                                 else if (newBlockPicking.IsVerticalPlane)
-                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, BlockFaceType.Wall);
+                                                    EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
                                                 break;
 
                                             case EditorToolType.Group:
                                                 if (_editor.SelectedSectors.Valid)
-                                                    EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors, usedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Shift));
+                                                    EditorActions.TexturizeGroup(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control), ModifierKeys.HasFlag(Keys.Shift));
                                                 break;
 
                                             case EditorToolType.Brush:
                                             case EditorToolType.Pencil:
-                                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, usedTexture);
+                                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
                                                 break;
 
                                             default:
@@ -1102,7 +1087,7 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Left:
-                    
+
                     if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
                     {
                         // Process gizmo
@@ -1173,14 +1158,7 @@ namespace TombEditor.Controls
                                     if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                          _editor.SelectedSectors == SectorSelection.None))
                                     {
-                                        var usedTexture = _editor.SelectedTexture;
-
-                                        if (_editor.Tool.Texture == EditorTextureType.Null)
-                                            usedTexture.Texture = null;
-                                        else if (_editor.Tool.Texture == EditorTextureType.Invisible)
-                                            usedTexture.Texture = TextureInvisible.Instance;
-
-                                        EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newPicking.Face, usedTexture);
+                                        EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newPicking.Face, _editor.SelectedTexture);
                                     }
                                 }
                             }
@@ -1482,7 +1460,7 @@ namespace TombEditor.Controls
                             result = new PickingResultObject(distance, instance);
                     }
                 }
-                else if (instance is ImportedGeometryInstance)
+                else if (instance is ImportedGeometryInstance && !DisablePickingForImportedGeometry)
                 {
                     var geometry = (ImportedGeometryInstance)instance;
 
@@ -2100,8 +2078,6 @@ namespace TombEditor.Controls
 
         private void DrawRoomImportedGeometry(Matrix viewProjection)
         {
-            _device.SetBlendState(_device.BlendStates.Opaque);
-
             var geometryEffect = _deviceManager.Effects["RoomGeometry"];
 
             ImportedGeometryInstance _lastObject = null;
@@ -2635,12 +2611,6 @@ namespace TombEditor.Controls
                     DrawStatics(viewProjection);
             }
 
-            // Draw room geometry imported
-            if (_editor != null && _editor.Level != null)
-            {
-                DrawRoomImportedGeometry(viewProjection);
-            }
-
             // Set some common parameters of the shader
             _roomEffect = _deviceManager.Effects["Room"];
             _roomEffect.Parameters["UseVertexColors"].SetValue(false);
@@ -2667,6 +2637,12 @@ namespace TombEditor.Controls
                 DrawObjects(viewProjection, _editor.SelectedRoom);
                 // Draw light objects and bounding volumes only for current room
                 DrawLights(viewProjection, _editor.SelectedRoom);
+            }
+
+            // Draw room geometry imported
+            if (_editor != null && _editor.Level != null)
+            {
+                DrawRoomImportedGeometry(viewProjection);
             }
 
             // Draw the height of the object
@@ -3596,7 +3572,7 @@ namespace TombEditor.Controls
                         }
                     }
                 }
-                
+
                 _roomEffect.CurrentTechnique.Passes[0].Apply();
 
                 var vertexRange = room.GetFaceVertexRange(bucket.X, bucket.Z, bucket.Face);

@@ -211,6 +211,30 @@ namespace TombEditor.Geometry
                             }
             }
 
+            // Level texture
+            {
+                // Reuse old level texture objects to keep references up to date
+                var oldLookup = new Dictionary<LevelTexture.UniqueIDType, LevelTexture>();
+                foreach (LevelTexture oldLevelTexture in oldSettings.Textures)
+                    oldLookup.Add(oldLevelTexture.UniqueID, oldLevelTexture);
+                for (int i = 0; i < newSettings.Textures.Count; ++i)
+                {
+                    LevelTexture newLevelTexture = newSettings.Textures[i];
+                    LevelTexture oldLevelTexture;
+                    if (oldLookup.TryGetValue(newLevelTexture.UniqueID, out oldLevelTexture))
+                    {
+                        oldLevelTexture.Assign(newLevelTexture);
+                        newSettings.Textures[i] = oldLevelTexture;
+                        oldLookup.Remove(oldLevelTexture.UniqueID); // The same object shouldn't be matched multiple times.
+                    }
+                }
+
+                // Reset level texture objects if any objects are now missing
+                if (oldLookup.Count != 0)
+                    throw new NotImplementedException("Unfortunately we can't remove level textures safely from the level at the moment!" +
+                        "However this should not be triggered currently because there is no GUI for multi texture management.");
+            }
+
             // Update wads if necessary
             if (newSettings.MakeAbsolute(newSettings.WadFilePath) != oldSettings.MakeAbsolute(oldSettings.WadFilePath))
                 ReloadObjectsTry();

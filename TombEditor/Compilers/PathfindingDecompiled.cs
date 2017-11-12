@@ -145,7 +145,7 @@ namespace TombEditor.Compilers
             do
             {
                 dec_tr_box_aux box1 = dec_boxes[i];
-                dec_boxes[i].OverlapIndex = 0x7ff;
+                dec_boxes[i].OverlapIndex = 0x4000;  
 
                 int numOverlapsAdded = 0;
 
@@ -161,7 +161,6 @@ namespace TombEditor.Compilers
                     {
                         if (i != j)
                         {
-                            if (i % 50 == 0 && j % 50 == 0) Console.WriteLine("CHecking overlap " + i + " vs " + j);
                             dec_tr_box_aux box2 = dec_boxes[j];
 
                             if (box2.Flag0x04)
@@ -169,7 +168,7 @@ namespace TombEditor.Compilers
                                 if (Dec_BoxesOverlap(ref box1, ref box2))
                                 {
                                     if (dec_numOverlaps == 16384) return false;
-                                    if (dec_boxes[i].OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+                                    if (dec_boxes[i].OverlapIndex == 0x4000) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
                                     dec_overlaps[dec_numOverlaps] = (ushort)j;
 
@@ -208,7 +207,7 @@ namespace TombEditor.Compilers
                                     if (Dec_BoxesOverlap(ref box1, ref box2))
                                     {
                                         if (dec_numOverlaps == 16384) return false;
-                                        if (dec_boxes[i].OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+                                        if (dec_boxes[i].OverlapIndex == 0x4000) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
                                         dec_overlaps[dec_numOverlaps] = (ushort)j;
 
@@ -241,7 +240,7 @@ namespace TombEditor.Compilers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int Dec_AddBox(ref dec_tr_box_aux box)
         {
-            if (dec_numBoxes == 2040) return -1;
+            if (dec_numBoxes == 2048) return -1;
 
             int boxIndex = -1;
 
@@ -262,7 +261,7 @@ namespace TombEditor.Compilers
             if (boxIndex == -1)
             {
                 boxIndex = dec_numBoxes;
-                box.OverlapIndex = 0x7ff;
+                box.OverlapIndex = 0x4000;
                 dec_boxes[dec_numBoxes] = box;
                 dec_numBoxes++;
             }
@@ -656,7 +655,7 @@ namespace TombEditor.Compilers
 
                     block = room.Blocks[xInRoom, zInRoom];
 
-                    // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 cornes.
+                    // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 corners.
                     // This happen for example when there are 3 room connected together and the corner is inside the box.
                     // In this case, there are portals but the function can't travel to neighbour rooms because is stuck in the corner.
                     // For now I assume that the dest X, Z can't be reached.
@@ -668,8 +667,7 @@ namespace TombEditor.Compilers
                     if (block.WallPortal == null) break;
 
                     var adjoiningRoom = GetAdjoiningRoom(block.WallPortal);
-                    // if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
-
+                   
                     dec_currentRoom = adjoiningRoom;
                     theRoom = adjoiningRoom;
 
@@ -690,9 +688,6 @@ namespace TombEditor.Compilers
                 while (room.GetFloorRoomConnectionInfo(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
                 {
                     var adjoiningRoom = GetAdjoiningRoom(block.FloorPortal);
-                    //Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
-                    //if (adjoiningRoom.AlternateRoom != null && dec_flipped)
-                    //    adjoiningRoom = adjoiningRoom.AlternateRoom;
                     if ((room.WaterLevel != 0) != (adjoiningRoom.WaterLevel != 0))
                         break;
 
@@ -764,8 +759,6 @@ namespace TombEditor.Compilers
             else
             {
                 adjoiningRoom = GetAdjoiningRoom(block.WallPortal);
-                //adjoiningRoom = block.WallPortal.AdjoiningRoom;
-                //if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
 
                 dec_currentRoom = adjoiningRoom;
                 dec_boxExtendsInAnotherRoom = true;
@@ -786,10 +779,7 @@ namespace TombEditor.Compilers
             while (room.GetFloorRoomConnectionInfo(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
                 var adjoiningRoom2 = GetAdjoiningRoom(block.FloorPortal);
-                //Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
-                //if (adjoiningRoom2.AlternateRoom != null && dec_flipped)
-                //    adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
-
+                
                 if ((room.WaterLevel != 0) != (adjoiningRoom2.WaterLevel != 0))
                     break;
 
@@ -854,9 +844,6 @@ namespace TombEditor.Compilers
             if (dec_water && room.WaterLevel != 0 && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null)
             {
                 var adjoiningRoom3 = GetAdjoiningRoom(block.CeilingPortal);
-
-                //Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
-                //if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
 
                 if (adjoiningRoom3.WaterLevel == 0)
                 {

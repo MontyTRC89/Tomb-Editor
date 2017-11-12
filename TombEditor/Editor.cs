@@ -149,7 +149,7 @@ namespace TombEditor
             public EditorMode Previous { get; set; }
             public EditorMode Current { get; set; }
         }
-        private EditorMode _mode;
+        private EditorMode _mode = EditorMode.Geometry;
         public EditorMode Mode
         {
             get { return _mode; }
@@ -168,7 +168,7 @@ namespace TombEditor
             public EditorTool Previous { get; set; }
             public EditorTool Current { get; set; }
         }
-        private EditorTool _tool;
+        private EditorTool _tool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true };
         public EditorTool Tool
         {
             get { return _tool; }

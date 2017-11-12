@@ -74,26 +74,34 @@ namespace TombEditor
             private static extern int PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
             [DllImport("user32.dll")]
             private static extern int GetWindowRect(IntPtr hWnd, out RECT lpRect);
+            [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+            private static extern int FindWindow(string className, string windowText);
+            [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+            private static extern int ShowWindowAsync(int hwnd, int command);
             [StructLayout(LayoutKind.Sequential)]
             private struct RECT
             {
                 public int Left;
                 public int Top;
                 public int Right;
-                public int Bottom; 
+                public int Bottom;
             }
             private const uint WM_CLOSE = 0x0010;
-            
+            private const int SW_HIDE = 0;
+            private const int SW_SHOW = 1;
+
             private const int maxWaitMilliseconds = 4000;
             private const int windowIdenficicationMaxHeight = 100;
             private const int windowIdenficicationMaxWidth = 400;
+            private const int maxTaskBarShowDelay = 5000;
+            private const int maxRetryDelay = 300;
             private bool _closedWindow;
             private Process _process;
 
             public static void Do(Process process)
             {
                 var this_ = new CloseAskingForOptionsWindowState { _process = process };
-                
+
                 // Create GC handles.
                 EnumWindowsProc onEnumWindowDelegate = OnEnumWindow;
                 GCHandle thisHandle = GCHandle.Alloc(this_);
@@ -117,14 +125,29 @@ namespace TombEditor
                 {
                     thisHandle.Free();
                 }
+
+                // Make sure the task bar stays visible
+                // (Workaround super annoying TRNG problem!)
+                {
+                    Stopwatch timer = new Stopwatch();
+                    timer.Start();
+                    int taskbarHandle = ReportError(FindWindow("Shell_TrayWnd", ""));
+
+                    while (timer.ElapsedMilliseconds < maxTaskBarShowDelay)
+                    {
+                        ReportError(ShowWindowAsync(taskbarHandle, SW_SHOW));
+                        Thread.Sleep(maxRetryDelay);
+                    }
+                }
             }
 
-            private static void ReportError(int result)
+            private static int ReportError(int result)
             {
                 if (result != 0)
-                    return;
+                    return result;
                 int errorCode = Marshal.GetLastWin32Error();
-                logger.Warn("An WinAPI error occurred in 'TR4Controller': " + errorCode);
+                logger.Warn("An WinAPI error occurred in 'TombLauncher': " + errorCode);
+                return 0;
             }
 
             private static int OnEnumWindow(IntPtr hWnd, IntPtr lParam)
@@ -135,7 +158,7 @@ namespace TombEditor
                 ReportError(GetWindowThreadProcessId(hWnd, out processID));
                 if (this_._process.Id != processID)
                     return 1;
-               
+
                 // Check if this is the CTRL window by comparing its size
                 RECT area;
                 ReportError(GetWindowRect(hWnd, out area));
@@ -151,7 +174,7 @@ namespace TombEditor
                 this_._closedWindow = true;
                 return 0;
             }
-            
+
             //[DllImport("ntdll.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             //private static extern int NtSuspendProcess(IntPtr processHandle);
 
@@ -168,7 +191,6 @@ namespace TombEditor
             //    ReportWindowsError(GetWindowTextW(hWnd, str, str.Capacity));
             //    return str.ToString();
             //}
-
         }
     }
 }
