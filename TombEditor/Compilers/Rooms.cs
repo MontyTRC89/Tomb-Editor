@@ -648,7 +648,7 @@ namespace TombEditor.Compilers
             // Create portal
             outPortals.Add(new tr_room_portal
             {
-                AdjoiningRoom = (ushort)_roomsRemappingDictionary[(portal.AdjoiningRoom.AlternateBaseRoom != null ? portal.AdjoiningRoom.AlternateBaseRoom : portal.AdjoiningRoom)],
+                AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                 Vertices = portalVertices,
                 Normal = normal
             });
@@ -783,7 +783,7 @@ namespace TombEditor.Compilers
                 // Add portal
                 outPortals.Add(new tr_room_portal
                 {
-                    AdjoiningRoom = (ushort)_roomsRemappingDictionary[(portal.AdjoiningRoom.AlternateBaseRoom != null ? portal.AdjoiningRoom.AlternateBaseRoom : portal.AdjoiningRoom)],
+                    AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                     Vertices = portalVertices,
                     Normal = normal
                 });
