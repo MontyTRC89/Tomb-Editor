@@ -524,7 +524,7 @@ namespace TombEditor
         {
             var currBlock = room.GetBlockTry(x, z);
 
-            if (currBlock == null)
+            if (currBlock == null || (floor && currBlock.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.CeilingDiagonalSplit != DiagonalSplit.None))
                 return;
 
             Block[] lookupBlocks = new Block[8]

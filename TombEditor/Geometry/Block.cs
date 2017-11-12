@@ -196,8 +196,12 @@ namespace TombEditor.Geometry
 
         public void ChangeEdge(int verticalSubdivision, int edge, short increment)
         {
-            GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
-            FixHeights(verticalSubdivision);
+            if((verticalSubdivision == 0 || verticalSubdivision == 2) && FloorDiagonalSplit == DiagonalSplit.None ||
+               (verticalSubdivision == 1 || verticalSubdivision == 3) && CeilingDiagonalSplit == DiagonalSplit.None)
+            {
+                GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
+                FixHeights(verticalSubdivision);
+            }
         }
         public void Raise(int verticalSubdivision, bool diagonalStep, short increment)
         {
