@@ -597,20 +597,6 @@ namespace TombEditor.Compilers
             }
         }
 
-        private Room GetAdjoiningRoom(PortalInstance portal)
-        {
-            Room adjoiningRoom = portal.AdjoiningRoom;
-
-            if (!portal.AdjoiningRoom.Flipped) return adjoiningRoom;
-
-            if (!dec_flipped)
-                adjoiningRoom = (portal.AdjoiningRoom.AlternateBaseRoom != null ? portal.AdjoiningRoom.AlternateBaseRoom : portal.AdjoiningRoom);
-            else
-                adjoiningRoom = (portal.AdjoiningRoom.AlternateRoom != null ? portal.AdjoiningRoom.AlternateRoom : portal.AdjoiningRoom);
-
-            return adjoiningRoom;
-        }
-
         private bool Dec_CanSectorBeReachedAndIsSolid(int x, int z)
         {
             bool borderOrOutside = Dec_IsOutsideOrdBorderRoom(x, z);
@@ -666,8 +652,9 @@ namespace TombEditor.Compilers
 
                     if (block.WallPortal == null) break;
 
-                    var adjoiningRoom = GetAdjoiningRoom(block.WallPortal);
-                   
+                    Room adjoiningRoom = block.WallPortal.AdjoiningRoom;
+
+
                     dec_currentRoom = adjoiningRoom;
                     theRoom = adjoiningRoom;
 
@@ -687,7 +674,7 @@ namespace TombEditor.Compilers
                 // After having probed that we can reach X, Z from the original room, do the following
                 while (room.GetFloorRoomConnectionInfo(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
                 {
-                    var adjoiningRoom = GetAdjoiningRoom(block.FloorPortal);
+                    Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
                     if ((room.WaterLevel != 0) != (adjoiningRoom.WaterLevel != 0))
                         break;
 
@@ -758,8 +745,7 @@ namespace TombEditor.Compilers
             }
             else
             {
-                adjoiningRoom = GetAdjoiningRoom(block.WallPortal);
-
+                adjoiningRoom = block.WallPortal.AdjoiningRoom;
                 dec_currentRoom = adjoiningRoom;
                 dec_boxExtendsInAnotherRoom = true;
 
@@ -778,8 +764,8 @@ namespace TombEditor.Compilers
 
             while (room.GetFloorRoomConnectionInfo(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
-                var adjoiningRoom2 = GetAdjoiningRoom(block.FloorPortal);
-                
+                Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
+
                 if ((room.WaterLevel != 0) != (adjoiningRoom2.WaterLevel != 0))
                     break;
 
@@ -843,7 +829,8 @@ namespace TombEditor.Compilers
 
             if (dec_water && room.WaterLevel != 0 && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null)
             {
-                var adjoiningRoom3 = GetAdjoiningRoom(block.CeilingPortal);
+                Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
+                if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
 
                 if (adjoiningRoom3.WaterLevel == 0)
                 {
