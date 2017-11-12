@@ -373,7 +373,7 @@ namespace TombEditor.Geometry
                     return true;
             }
 
-            // Main illegal slope calculation takes two adjacent corner heights (heightsToCheck[0-1]) from lookup block 
+            // Main illegal slope calculation takes two adjacent corner heights (heightsToCheck[0-1]) from lookup block
             // and looks if they are higher than any slope's lower heights (heightsToCompare[0-1]). Also it checks if
             // lookup block's adjacent ceiling heights (heightsToCheck[2-3]) is lower than minimum passable height.
             // If lookup block contains floor or ceiling diagonal splits, resolve algorighm is diverted (look further).
@@ -440,7 +440,7 @@ namespace TombEditor.Geometry
                     // from split are always treated as potentially illegal, because steps facing towards
                     // split are resolved by engine position corrector nicely.
 
-                    // Since in Tomb Editor diagonal steps are made that way so only single corner height 
+                    // Since in Tomb Editor diagonal steps are made that way so only single corner height
                     // is used for setting step height, we copy one of lookup block's heightsToCheck to
                     // another.
 
@@ -3224,7 +3224,7 @@ namespace TombEditor.Geometry
                         addedObjects.Add(AlternateVersion.AddObjectAndSingularPortal(level, portal.Clone()));
 
                     addedObjects.Add(portal.AdjoiningRoom.AddObjectAndSingularPortal(level, oppositePortal));
-                    if (AlternateVersion != null)
+                    if (portal.AdjoiningRoom.AlternateVersion != null)
                         addedObjects.Add(portal.AdjoiningRoom.AlternateVersion.AddObjectAndSingularPortal(level, oppositePortal.Clone()));
                 }
                 catch
