@@ -241,53 +241,43 @@ namespace TombEditor.Controls
             private void RelocatePicking()
             {
                 if(_referencePicking.Face == BlockFace.DiagonalED ||
-                   _referencePicking.Face == BlockFace.DiagonalQA ||
-                   _referencePicking.Face == BlockFace.DiagonalMiddle)
+                   _referencePicking.Face == BlockFace.DiagonalQA)
                 {
                     switch(ReferenceBlock.FloorDiagonalSplit)
                     {
                         case DiagonalSplit.XnZp:
-                            _referencePicking.Face = BlockFace.Floor;
-                            break;
-                        case DiagonalSplit.XpZn:
-                            _referencePicking.Face = BlockFace.FloorTriangle2;
-                            break;
                         case DiagonalSplit.XpZp:
                             _referencePicking.Face = BlockFace.Floor;
                             break;
+                        case DiagonalSplit.XpZn:
                         case DiagonalSplit.XnZn:
                             _referencePicking.Face = BlockFace.FloorTriangle2;
                             break;
                     }
                 }
-
-                if (_referencePicking.Face == BlockFace.DiagonalWS ||
-                    _referencePicking.Face == BlockFace.DiagonalRF)
+                else if (_referencePicking.Face == BlockFace.DiagonalWS ||
+                         _referencePicking.Face == BlockFace.DiagonalRF)
                 {
                     switch (ReferenceBlock.CeilingDiagonalSplit)
                     {
                         case DiagonalSplit.XnZp:
-                            _referencePicking.Face = BlockFace.Ceiling;
-                            break;
-                        case DiagonalSplit.XpZn:
-                            _referencePicking.Face = BlockFace.CeilingTriangle2;
-                            break;
                         case DiagonalSplit.XpZp:
                             _referencePicking.Face = BlockFace.Ceiling;
                             break;
+                        case DiagonalSplit.XpZn:
                         case DiagonalSplit.XnZn:
                             _referencePicking.Face = BlockFace.CeilingTriangle2;
                             break;
                     }
                 }
-
-                if(_referencePicking.Face == BlockFace.NegativeX_Middle ||
-                   _referencePicking.Face == BlockFace.NegativeZ_Middle ||
-                   _referencePicking.Face == BlockFace.PositiveX_Middle ||
-                   _referencePicking.Face == BlockFace.PositiveZ_Middle)
+                else if (_referencePicking.Face == BlockFace.NegativeX_Middle ||
+                         _referencePicking.Face == BlockFace.NegativeZ_Middle ||
+                         _referencePicking.Face == BlockFace.PositiveX_Middle ||
+                         _referencePicking.Face == BlockFace.PositiveZ_Middle ||
+                         _referencePicking.Face == BlockFace.DiagonalMiddle)
                 {
-                    Direction direction = Direction.North;
-                    switch(_referencePicking.Face)
+                    Direction direction;
+                    switch (_referencePicking.Face)
                     {
                         case BlockFace.NegativeX_Middle:
                             direction = Direction.West;
@@ -298,14 +288,42 @@ namespace TombEditor.Controls
                         case BlockFace.NegativeZ_Middle:
                             direction = Direction.South;
                             break;
+                        case BlockFace.PositiveZ_Middle:
+                            direction = Direction.North;
+                            break;
+                        default:
+                            direction = Direction.None;
+                            break;
                     }
 
                     var face = EditorActions.GetFaces(_parent._editor.SelectedRoom, _referencePicking.Pos, direction, BlockFaceType.Wall).First((item) => item.Key == _referencePicking.Face);
 
                     if (face.Value[0] - _referencePicking.VerticalCoord > _referencePicking.VerticalCoord - face.Value[1])
-                        _referencePicking.Face = BlockFace.Floor;
+                        switch (ReferenceBlock.FloorDiagonalSplit)
+                        {
+                            default:
+                            case DiagonalSplit.XnZp:
+                            case DiagonalSplit.XpZp:
+                                _referencePicking.Face = BlockFace.Floor;
+                                break;
+                            case DiagonalSplit.XpZn:
+                            case DiagonalSplit.XnZn:
+                                _referencePicking.Face = BlockFace.FloorTriangle2;
+                                break;
+                        }
                     else
-                        _referencePicking.Face = BlockFace.Ceiling;
+                        switch (ReferenceBlock.CeilingDiagonalSplit)
+                        {
+                            default:
+                            case DiagonalSplit.XnZp:
+                            case DiagonalSplit.XpZp:
+                                _referencePicking.Face = BlockFace.Ceiling;
+                                break;
+                            case DiagonalSplit.XpZn:
+                            case DiagonalSplit.XnZn:
+                                _referencePicking.Face = BlockFace.CeilingTriangle2;
+                                break;
+                        }
                 }
             }
 
