@@ -134,386 +134,325 @@ namespace TombEditor
                     switch (arrow)
                     {
                         case EditorArrowType.EntireFace:
-                            if (verticalSubdivision == 0)
+                            switch(verticalSubdivision)
                             {
-                                block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                block.Raise(verticalSubdivision, false, increment);
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                block.Raise(verticalSubdivision, false, increment);
+                                case 0:
+                                    block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
+                                    break;
+                                case 1:
+                                    block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
+                                    break;
+                                case 2:
+                                    block.Raise(verticalSubdivision, false, increment);
+                                    break;
+                                case 3:
+                                    block.Raise(verticalSubdivision, false, increment);
+                                    break;
                             }
                             break;
 
                         case EditorArrowType.EdgeN:
-                            if (verticalSubdivision == 0)
+                            switch(verticalSubdivision)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZn)
-                                    block.QAFaces[0] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZn)
-                                    block.QAFaces[1] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn)
-                                    block.WSFaces[0] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZn)
-                                    block.WSFaces[1] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                block.EDFaces[0] += increment;
-                                block.EDFaces[1] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                block.RFFaces[0] += increment;
-                                block.RFFaces[1] += increment;
+                                case 0:
+                                    if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                        continue;
+                                    if (block.FloorDiagonalSplit != DiagonalSplit.XpZn)
+                                        block.QAFaces[0] += increment;
+                                    if (block.FloorDiagonalSplit != DiagonalSplit.XnZn)
+                                        block.QAFaces[1] += increment;
+                                    break;
+                                case 1:
+                                    if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
+                                        continue;
+                                    if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn)
+                                        block.WSFaces[0] += increment;
+                                    if (block.CeilingDiagonalSplit != DiagonalSplit.XnZn)
+                                        block.WSFaces[1] += increment;
+                                    break;
+                                case 2:
+                                    block.EDFaces[0] += increment;
+                                    block.EDFaces[1] += increment;
+                                    break;
+                                case 3:
+                                    block.RFFaces[0] += increment;
+                                    block.RFFaces[1] += increment;
+                                    break;
                             }
                             break;
 
                         case EditorArrowType.EdgeE:
-                            if (verticalSubdivision == 0)
+                            switch (verticalSubdivision)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZn)
-                                    block.QAFaces[1] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZp)
-                                    block.QAFaces[2] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZn)
-                                    block.WSFaces[1] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZp)
-                                    block.WSFaces[2] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                block.EDFaces[1] += increment;
-                                block.EDFaces[2] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                block.RFFaces[1] += increment;
-                                block.RFFaces[2] += increment;
+                                case 0:
+                                    if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                        continue;
+                                    if (block.FloorDiagonalSplit != DiagonalSplit.XnZn)
+                                        block.QAFaces[1] += increment;
+                                    if (block.FloorDiagonalSplit != DiagonalSplit.XnZp)
+                                        block.QAFaces[2] += increment;
+                                    break;
+                                case 1:
+                                    if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
+                                        continue;
+                                    if (block.CeilingDiagonalSplit != DiagonalSplit.XnZn)
+                                        block.WSFaces[1] += increment;
+                                    if (block.CeilingDiagonalSplit != DiagonalSplit.XnZp)
+                                        block.WSFaces[2] += increment;
+                                    break;
+                                case 2:
+                                    block.EDFaces[1] += increment;
+                                    block.EDFaces[2] += increment;
+                                    break;
+                                case 3:
+                                    block.RFFaces[1] += increment;
+                                    block.RFFaces[2] += increment;
+                                    break;
                             }
                             break;
 
                         case EditorArrowType.EdgeS:
-                            if (verticalSubdivision == 0)
+                            switch (verticalSubdivision)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
+                                case 0:
+                                    if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                        continue;
+                                    if (block.FloorDiagonalSplit != DiagonalSplit.XnZp)
+                                        block.QAFaces[2] += increment;
+                                    if (block.FloorDiagonalSplit != DiagonalSplit.XpZp)
+                                        block.QAFaces[3] += increment;
+                                    break;
+                                case 1:
+                                    if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
+                                        continue;
+                                    if (block.CeilingDiagonalSplit != DiagonalSplit.XnZp)
+                                        block.WSFaces[2] += increment;
+                                    if (block.CeilingDiagonalSplit != DiagonalSplit.XpZp)
+                                        block.WSFaces[3] += increment;
+                                    break;
 
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZp)
-                                    block.QAFaces[2] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZp)
-                                    block.QAFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZp)
-                                    block.WSFaces[2] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZp)
-                                    block.WSFaces[3] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                block.EDFaces[2] += increment;
-                                block.EDFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                block.RFFaces[2] += increment;
-                                block.RFFaces[3] += increment;
+                                case 2:
+                                    block.EDFaces[2] += increment;
+                                    block.EDFaces[3] += increment;
+                                    break;
+                                case 3:
+                                    block.RFFaces[2] += increment;
+                                    block.RFFaces[3] += increment;
+                                    break;
                             }
                             break;
 
                         case EditorArrowType.EdgeW:
-                            if (verticalSubdivision == 0)
+                            switch (verticalSubdivision)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
+                                case 0:
+                                    if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                        continue;
+                                    if (block.FloorDiagonalSplit != DiagonalSplit.XpZn)
+                                        block.QAFaces[0] += increment;
+                                    if (block.FloorDiagonalSplit != DiagonalSplit.XpZp)
+                                        block.QAFaces[3] += increment;
+                                    break;
+                                case 1:
+                                    if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
+                                        continue;
+                                    if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn)
+                                        block.WSFaces[0] += increment;
+                                    if (block.CeilingDiagonalSplit != DiagonalSplit.XpZp)
+                                        block.WSFaces[3] += increment;
+                                    break;
 
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZn)
-                                    block.QAFaces[0] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZp)
-                                    block.QAFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn)
-                                    block.WSFaces[0] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZp)
-                                    block.WSFaces[3] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                block.EDFaces[0] += increment;
-                                block.EDFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                block.RFFaces[0] += increment;
-                                block.RFFaces[3] += increment;
+                                case 2:
+                                    block.EDFaces[0] += increment;
+                                    block.EDFaces[3] += increment;
+                                    break;
+                                case 3:
+                                    block.RFFaces[0] += increment;
+                                    block.RFFaces[3] += increment;
+                                    break;
                             }
                             break;
 
                         case EditorArrowType.CornerNW:
-                            if (verticalSubdivision == 0)
+                            switch (verticalSubdivision)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                {
-                                    if (block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                                case 0:
+                                    if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
                                     {
-                                        if (block.QAFaces[0] == block.QAFaces[1] && increment < 0)
+                                        if (block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                                        {
+                                            if (block.QAFaces[0] == block.QAFaces[1] && increment < 0)
+                                                continue;
+                                        }
+                                        else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XpZn && block.QAFaces[0] == block.QAFaces[2] && increment > 0)
+                                            block.Rotate(true, 2);
+                                        else
                                             continue;
                                     }
-                                    else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XpZn && block.QAFaces[0] == block.QAFaces[2] && increment > 0)
-                                        block.Rotate(true, 2);
-                                    else
-                                        continue;
-                                }
-                                block.QAFaces[0] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                {
-                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp)
+                                    block.QAFaces[0] += increment;
+                                    break;
+                                case 1:
+                                    if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
                                     {
-                                        if (block.WSFaces[0] == block.WSFaces[1] && increment > 0)
+                                        if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp)
+                                        {
+                                            if (block.WSFaces[0] == block.WSFaces[1] && increment > 0)
+                                                continue;
+                                        }
+                                        else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XpZn && block.WSFaces[0] == block.WSFaces[2] && increment < 0)
+                                            block.Rotate(false, 2);
+                                        else
                                             continue;
                                     }
-                                    else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XpZn && block.WSFaces[0] == block.WSFaces[2] && increment < 0)
-                                        block.Rotate(false, 2);
-                                    else
-                                        continue;
-                                }
-                                block.WSFaces[0] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                block.EDFaces[0] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                block.RFFaces[0] += increment;
+                                    block.WSFaces[0] += increment;
+                                    break;
+                                case 2:
+                                    block.EDFaces[0] += increment;
+                                    break;
+                                case 3:
+                                    block.RFFaces[0] += increment;
+                                    break;
                             }
                             break;
 
                         case EditorArrowType.CornerNE:
-                            if (verticalSubdivision == 0)
+                            switch (verticalSubdivision)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                {
-                                    if (block.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                                case 0:
+                                    if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
                                     {
-                                        if (block.QAFaces[1] == block.QAFaces[2] && increment < 0)
+                                        if (block.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                                        {
+                                            if (block.QAFaces[1] == block.QAFaces[2] && increment < 0)
+                                                continue;
+                                        }
+                                        else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XnZn && block.QAFaces[1] == block.QAFaces[3] && increment > 0)
+                                            block.Rotate(true, 2);
+                                        else
                                             continue;
                                     }
-                                    else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XnZn && block.QAFaces[1] == block.QAFaces[3] && increment > 0)
-                                        block.Rotate(true, 2);
-                                    else
-                                        continue;
-                                }
-                                block.QAFaces[1] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                {
-                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                                    block.QAFaces[1] += increment;
+                                    break;
+                                case 1:
+                                    if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
                                     {
-                                        if (block.WSFaces[1] == block.WSFaces[2] && increment > 0)
+                                        if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                                        {
+                                            if (block.WSFaces[1] == block.WSFaces[2] && increment > 0)
+                                                continue;
+                                        }
+                                        else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XnZn && block.WSFaces[1] == block.WSFaces[3] && increment < 0)
+                                            block.Rotate(false, 2);
+                                        else
                                             continue;
                                     }
-                                    else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XnZn && block.WSFaces[1] == block.WSFaces[3] && increment < 0)
-                                        block.Rotate(false, 2);
-                                    else
-                                        continue;
-                                }
-                                block.WSFaces[1] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                block.EDFaces[1] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                block.RFFaces[1] += increment;
+                                    block.WSFaces[1] += increment;
+                                    break;
+                                case 2:
+                                    block.EDFaces[1] += increment;
+                                    break;
+                                case 3:
+                                    block.RFFaces[1] += increment;
+                                    break;
                             }
                             break;
 
                         case EditorArrowType.CornerSE:
-                            if (verticalSubdivision == 0)
+                            switch (verticalSubdivision)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                {
-                                    if (block.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                                case 0:
+                                    if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
                                     {
-                                        if (block.QAFaces[2] == block.QAFaces[3] && increment < 0)
+                                        if (block.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                                        {
+                                            if (block.QAFaces[2] == block.QAFaces[3] && increment < 0)
+                                                continue;
+                                        }
+                                        else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XnZp && block.QAFaces[2] == block.QAFaces[0] && increment > 0)
+                                            block.Rotate(true, 2);
+                                        else
                                             continue;
                                     }
-                                    else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XnZp && block.QAFaces[2] == block.QAFaces[0] && increment > 0)
-                                        block.Rotate(true, 2);
-                                    else
-                                        continue;
-                                }
-                                block.QAFaces[2] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                {
-                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                                    block.QAFaces[2] += increment;
+                                    break;
+                                case 1:
+                                    if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
                                     {
-                                        if (block.WSFaces[2] == block.WSFaces[3] && increment > 0)
+                                        if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                                        {
+                                            if (block.WSFaces[2] == block.WSFaces[3] && increment > 0)
+                                                continue;
+                                        }
+                                        else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XnZp && block.WSFaces[2] == block.WSFaces[0] && increment < 0)
+                                            block.Rotate(false, 2);
+                                        else
                                             continue;
                                     }
-                                    else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XnZp && block.WSFaces[2] == block.WSFaces[0] && increment < 0)
-                                        block.Rotate(false, 2);
-                                    else
-                                        continue;
-                                }
-                                block.WSFaces[2] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                block.EDFaces[2] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                block.RFFaces[2] += increment;
+                                    block.WSFaces[2] += increment;
+                                    break;
+                                case 2:
+                                    block.EDFaces[2] += increment;
+                                    break;
+                                case 3:
+                                    block.RFFaces[2] += increment;
+                                    break;
                             }
                             break;
 
                         case EditorArrowType.CornerSW:
-                            if (verticalSubdivision == 0)
+                            switch (verticalSubdivision)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                {
-                                    if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                                case 0:
+                                    if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
                                     {
-                                        if (block.QAFaces[3] == block.QAFaces[0] && increment < 0)
+                                        if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                                        {
+                                            if (block.QAFaces[3] == block.QAFaces[0] && increment < 0)
+                                                continue;
+                                        }
+                                        else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XpZp && block.QAFaces[3] == block.QAFaces[1] && increment > 0)
+                                            block.Rotate(true, 2);
+                                        else
                                             continue;
                                     }
-                                    else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XpZp && block.QAFaces[3] == block.QAFaces[1] && increment > 0)
-                                        block.Rotate(true, 2);
-                                    else
-                                        continue;
-                                }
-                                block.QAFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                {
-                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                                    block.QAFaces[3] += increment;
+                                    break;
+                                case 1:
+                                    if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
                                     {
-                                        if (block.WSFaces[3] == block.WSFaces[0] && increment > 0)
+                                        if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                                        {
+                                            if (block.WSFaces[3] == block.WSFaces[0] && increment > 0)
+                                                continue;
+                                        }
+                                        else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XpZp && block.WSFaces[3] == block.WSFaces[1] && increment < 0)
+                                            block.Rotate(false, 2);
+                                        else
                                             continue;
                                     }
-                                    else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XpZp && block.WSFaces[3] == block.WSFaces[1] && increment < 0)
-                                        block.Rotate(false, 2);
-                                    else
-                                        continue;
-                                }
-                                block.WSFaces[3] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                block.EDFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                block.RFFaces[3] += increment;
+                                    block.WSFaces[3] += increment;
+                                    break;
+                                case 2:
+                                    block.EDFaces[3] += increment;
+                                    break;
+                                case 3:
+                                    block.RFFaces[3] += increment;
+                                    break;
                             }
                             break;
                     }
+
+                    // FIXME:
+                    // Code with unknown purpose. It was repeating in above case switch for all verticalSubdivision values 0 and 2,
+                    // so it was moved here to remove a lot of duplicated code. Maybe it should be removed completely, cause no
+                    // particular purpose is seen here.
+                    if(verticalSubdivision % 2 == 0)
+                    {
+                        if (block.FloorPortal != null)
+                            continue;
+                    }
+                    // end of unknown code.
+
                     block.FixHeights(verticalSubdivision);
                 }
 
