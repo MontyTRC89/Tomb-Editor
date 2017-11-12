@@ -321,15 +321,18 @@ namespace TombEditor
                         case EditorArrowType.CornerNW:
                             if (verticalSubdivision == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.XnZp && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
                                 {
-                                    if (block.QAFaces[0] == block.QAFaces[1] && increment < 0)
+                                    if (block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                                    {
+                                        if (block.QAFaces[0] == block.QAFaces[1] && increment < 0)
+                                            continue;
+                                    }
+                                    else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XpZn && block.QAFaces[0] == block.QAFaces[2] && increment > 0)
+                                        block.Rotate(true, 2);
+                                    else
                                         continue;
                                 }
-
                                 block.QAFaces[0] += increment;
 
                                 if (block.FloorPortal != null)
@@ -337,15 +340,18 @@ namespace TombEditor
                             }
                             else if (verticalSubdivision == 1)
                             {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZp && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp)
+                                if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
                                 {
-                                    if (block.WSFaces[0] == block.WSFaces[1] && increment > 0)
+                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp)
+                                    {
+                                        if (block.WSFaces[0] == block.WSFaces[1] && increment > 0)
+                                            continue;
+                                    }
+                                    else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XpZn && block.WSFaces[0] == block.WSFaces[2] && increment < 0)
+                                        block.Rotate(false, 2);
+                                    else
                                         continue;
                                 }
-
                                 block.WSFaces[0] += increment;
                             }
                             else if (verticalSubdivision == 2)
@@ -364,15 +370,18 @@ namespace TombEditor
                         case EditorArrowType.CornerNE:
                             if (verticalSubdivision == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.XpZp && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
                                 {
-                                    if (block.QAFaces[1] == block.QAFaces[2] && increment < 0)
+                                    if (block.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                                    {
+                                        if (block.QAFaces[1] == block.QAFaces[2] && increment < 0)
+                                            continue;
+                                    }
+                                    else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XnZn && block.QAFaces[1] == block.QAFaces[3] && increment > 0)
+                                        block.Rotate(true, 2);
+                                    else
                                         continue;
                                 }
-
                                 block.QAFaces[1] += increment;
 
                                 if (block.FloorPortal != null)
@@ -380,15 +389,18 @@ namespace TombEditor
                             }
                             else if (verticalSubdivision == 1)
                             {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZp && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                                if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
                                 {
-                                    if (block.WSFaces[1] == block.WSFaces[2] && increment > 0)
+                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                                    {
+                                        if (block.WSFaces[1] == block.WSFaces[2] && increment > 0)
+                                            continue;
+                                    }
+                                    else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XnZn && block.WSFaces[1] == block.WSFaces[3] && increment < 0)
+                                        block.Rotate(false, 2);
+                                    else
                                         continue;
                                 }
-
                                 block.WSFaces[1] += increment;
                             }
                             else if (verticalSubdivision == 2)
@@ -407,15 +419,18 @@ namespace TombEditor
                         case EditorArrowType.CornerSE:
                             if (verticalSubdivision == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.XpZn && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
                                 {
-                                    if (block.QAFaces[2] == block.QAFaces[3] && increment < 0)
+                                    if (block.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                                    {
+                                        if (block.QAFaces[2] == block.QAFaces[3] && increment < 0)
+                                            continue;
+                                    }
+                                    else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XnZp && block.QAFaces[2] == block.QAFaces[0] && increment > 0)
+                                        block.Rotate(true, 2);
+                                    else
                                         continue;
                                 }
-
                                 block.QAFaces[2] += increment;
 
                                 if (block.FloorPortal != null)
@@ -423,15 +438,18 @@ namespace TombEditor
                             }
                             else if (verticalSubdivision == 1)
                             {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                                if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
                                 {
-                                    if (block.WSFaces[2] == block.WSFaces[3] && increment > 0)
+                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                                    {
+                                        if (block.WSFaces[2] == block.WSFaces[3] && increment > 0)
+                                            continue;
+                                    }
+                                    else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XnZp && block.WSFaces[2] == block.WSFaces[0] && increment < 0)
+                                        block.Rotate(false, 2);
+                                    else
                                         continue;
                                 }
-
                                 block.WSFaces[2] += increment;
                             }
                             else if (verticalSubdivision == 2)
@@ -450,15 +468,18 @@ namespace TombEditor
                         case EditorArrowType.CornerSW:
                             if (verticalSubdivision == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.XnZn && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
                                 {
-                                    if (block.QAFaces[3] == block.QAFaces[0] && increment < 0)
+                                    if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                                    {
+                                        if (block.QAFaces[3] == block.QAFaces[0] && increment < 0)
+                                            continue;
+                                    }
+                                    else if (autoSwitchDiagonals && block.FloorDiagonalSplit == DiagonalSplit.XpZp && block.QAFaces[3] == block.QAFaces[1] && increment > 0)
+                                        block.Rotate(true, 2);
+                                    else
                                         continue;
                                 }
-
                                 block.QAFaces[3] += increment;
 
                                 if (block.FloorPortal != null)
@@ -466,15 +487,18 @@ namespace TombEditor
                             }
                             else if (verticalSubdivision == 1)
                             {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZn && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                                if (block.Type != BlockType.Wall && block.CeilingDiagonalSplit != DiagonalSplit.None)
                                 {
-                                    if (block.WSFaces[3] == block.WSFaces[0] && increment > 0)
+                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                                    {
+                                        if (block.WSFaces[3] == block.WSFaces[0] && increment > 0)
+                                            continue;
+                                    }
+                                    else if (autoSwitchDiagonals && block.CeilingDiagonalSplit == DiagonalSplit.XpZp && block.WSFaces[3] == block.WSFaces[1] && increment < 0)
+                                        block.Rotate(false, 2);
+                                    else
                                         continue;
                                 }
-
                                 block.WSFaces[3] += increment;
                             }
                             else if (verticalSubdivision == 2)
@@ -565,7 +589,7 @@ namespace TombEditor
         {
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
-                    if(!room.Blocks[x, z].FloorIsQuad)
+                    if(!room.Blocks[x, z].FloorIsQuad && room.Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
                         room.Blocks[x, z].FloorSplitDirectionToggled = !room.Blocks[x, z].FloorSplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
@@ -575,7 +599,7 @@ namespace TombEditor
         {
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
-                    if (!room.Blocks[x, z].CeilingIsQuad)
+                    if (!room.Blocks[x, z].CeilingIsQuad && room.Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
                         room.Blocks[x, z].CeilingSplitDirectionToggled = !room.Blocks[x, z].CeilingSplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
@@ -1661,6 +1685,7 @@ namespace TombEditor
                                 room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
                         }
 
+                        room.Blocks[x, z].FloorSplitDirectionToggled = false;
                         room.Blocks[x, z].FixHeights();
                     }
                 }
@@ -1748,6 +1773,7 @@ namespace TombEditor
                                 room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
                         }
 
+                        room.Blocks[x, z].CeilingSplitDirectionToggled = false;
                         room.Blocks[x, z].FixHeights();
                     }
                 }

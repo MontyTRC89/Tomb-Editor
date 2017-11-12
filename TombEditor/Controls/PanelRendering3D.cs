@@ -178,7 +178,6 @@ namespace TombEditor.Controls
                         }
                         else
                         {
-
                             switch (ReferenceBlock.CeilingDiagonalSplit)
                             {
                                 case DiagonalSplit.XnZp:
