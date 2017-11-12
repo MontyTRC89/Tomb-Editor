@@ -8,8 +8,8 @@ namespace TombLib.Graphics
 {
     public class KeyFrame
     {
-        public BoundingBox BoundingBox;
-        public List<Matrix> Translations = new List<Matrix>();
-        public List<Matrix> Rotations = new List<Matrix>();
+        public BoundingBox BoundingBox { get; set; }
+        public List<Matrix> Translations { get; set; } = new List<Matrix>();
+        public List<Matrix> Rotations { get; set; } = new List<Matrix>();
     }
 }

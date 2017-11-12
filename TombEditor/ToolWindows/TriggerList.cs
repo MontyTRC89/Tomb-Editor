@@ -59,9 +59,9 @@ namespace TombEditor.ToolWindows
                     {
                         lstTriggers.Items.Add(trigger);
                     }
-
-                    lstTriggers.EndUpdate();
                 }
+
+                lstTriggers.EndUpdate();
             }
 
             // Update the trigger control selection

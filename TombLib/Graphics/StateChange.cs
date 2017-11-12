@@ -7,7 +7,7 @@ namespace TombLib.Graphics
 {
     public class StateChange
     {
-        public short StateId;
-        public List<AnimDispatch> AnimDispatches = new List<AnimDispatch>();
+        public short StateId { get; set; }
+        public List<AnimDispatch> AnimDispatches { get; set; } = new List<AnimDispatch>();
     }
 }
