@@ -314,7 +314,6 @@ namespace TombEditor.Controls
                 if (!Engaged)
                 {
                     Engaged = true;
-                    Dragged = false;
                     _referencePosition = new Point((int)(refX * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(refY * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
                     _referencePicking = refPicking;
                     RelocatePicking();
@@ -325,7 +324,10 @@ namespace TombEditor.Controls
             public void Disengage()
             {
                 if (Engaged)
+                {
                     Engaged = false;
+                    Dragged = false;
+                }
             }
 
             public bool Process(int X, int Y)
