@@ -72,7 +72,7 @@ namespace TombEditor.ToolWindows
                 toolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
 
                 // Select classic winroomedit controls by default
-                SwitchTool(mode == EditorMode.FaceEdit ? EditorToolType.Brush : EditorToolType.Selection);
+                SwitchTool(mode == EditorMode.FaceEdit ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
             }
         }
 

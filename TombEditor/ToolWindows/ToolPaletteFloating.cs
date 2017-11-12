@@ -84,7 +84,7 @@ namespace TombEditor.ToolWindows
                 FixPosition();
 
                 // Select classic winroomedit controls by default
-                SwitchTool(mode == EditorMode.FaceEdit ? EditorToolType.Brush : EditorToolType.Selection);
+                SwitchTool(mode == EditorMode.FaceEdit ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
             }
 
             if (obj is Editor.ConfigurationChangedEvent)

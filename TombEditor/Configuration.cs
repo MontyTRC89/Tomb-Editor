@@ -75,6 +75,9 @@ namespace TombEditor
         public float TextureMap_DefaultTileSelectionSize { get; set; } = 64.0f;
         public bool TextureMap_UseAdvancedTexturingByDefault { get; set; } = false;
 
+        public EditorToolType Tool_DefaultGeometry { get; set; } = EditorToolType.Selection;
+        public EditorToolType Tool_DefaultFaceEdit { get; set; } = EditorToolType.Brush;
+
         public float Gizmo_Size { get; set; } = 1536.0f;
         public float Gizmo_TranslationConeSize { get; set; } = 220.0f;
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
