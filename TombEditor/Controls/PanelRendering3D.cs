@@ -914,9 +914,12 @@ namespace TombEditor.Controls
                         if (newPicking is PickingResultBlock)
                         {
                             ObjectInstance instance = Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
-                            _editor.ObjectChange(instance, ObjectChangeType.Add);
-                            _editor.SelectedObject = instance;
-                            _editor.Action = EditorAction.None;
+                            if(instance != null)
+                            {
+                                _editor.ObjectChange(instance, ObjectChangeType.Add);
+                                _editor.SelectedObject = instance;
+                                _editor.Action = EditorAction.None;
+                            }
                         }
                         break;
                     case EditorActionType.Stamp:
