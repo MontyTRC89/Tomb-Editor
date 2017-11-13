@@ -107,6 +107,8 @@ namespace TombEditor.ToolWindows
                 butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
                 butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
                 butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
+                butDoubleSided.Enabled = mode == EditorMode.FaceEdit;
+                butAdditiveBlending.Enabled = mode == EditorMode.FaceEdit;
             }
 
             // Update flipmap toolbar button
@@ -309,6 +311,7 @@ namespace TombEditor.ToolWindows
         {
             panel3D.ShowMoveables = !panel3D.ShowMoveables;
             butDrawMoveables.Checked = panel3D.ShowMoveables;
+            if (_editor.SelectedObject is MoveableInstance) _editor.SelectedObject = null;
             panel3D.Invalidate();
         }
 
@@ -316,6 +319,7 @@ namespace TombEditor.ToolWindows
         {
             panel3D.ShowStatics = !panel3D.ShowStatics;
             butDrawStatics.Checked = panel3D.ShowStatics;
+            if (_editor.SelectedObject is StaticInstance) _editor.SelectedObject = null;
             panel3D.Invalidate();
         }
 
@@ -323,6 +327,7 @@ namespace TombEditor.ToolWindows
         {
             panel3D.ShowImportedGeometry = !panel3D.ShowImportedGeometry;
             butDrawImportedGeometry.Checked = panel3D.ShowImportedGeometry;
+            if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
             panel3D.Invalidate();
         }
 
@@ -330,6 +335,12 @@ namespace TombEditor.ToolWindows
         {
             panel3D.ShowOtherObjects = !panel3D.ShowOtherObjects;
             butDrawOther.Checked = panel3D.ShowOtherObjects;
+            if (_editor.SelectedObject is LightInstance ||
+                _editor.SelectedObject is CameraInstance ||
+                _editor.SelectedObject is FlybyCameraInstance ||
+                _editor.SelectedObject is SinkInstance ||
+                _editor.SelectedObject is SoundSourceInstance)
+                    _editor.SelectedObject = null;
             panel3D.Invalidate();
         }
 

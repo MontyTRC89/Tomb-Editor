@@ -139,9 +139,6 @@
   <data name="general_crop_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_general\general_crop-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="actions_door_opened_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons_actions\actions_door_opened-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="actions_horizon_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_actions\actions_horizon-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -349,9 +346,6 @@
   <data name="sectortype_DiagonalWall2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_sectortype\sectortype_DiagonalWall2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="actions_show_objects_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons_actions\actions_show_objects-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="sectortype_StepCeiling_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_sectortype\sectortype_StepCeiling-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -400,10 +394,19 @@
   <data name="sectortype_ForceSolidFloor_16_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_sectortype\sectortype_ForceSolidFloor-16 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="actions_DisableGeometryPicking_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons_actions\actions_DisableGeometryPicking-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="toolbox_Drag_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_toolbox\toolbox_Drag-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="actions_DrawObjects_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_actions\actions_DrawObjects-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="actions_DrawPortals_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_actions\actions_DrawPortals-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="actions_HideCustomGeometry_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_actions\actions_HideCustomGeometry_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_AboutIcon_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_AboutIcon-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

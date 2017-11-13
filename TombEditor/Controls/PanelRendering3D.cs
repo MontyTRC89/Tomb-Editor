@@ -1433,13 +1433,7 @@ namespace TombEditor.Controls
 
             // First check for all objects in the room
             foreach (var instance in room.Objects)
-                if (instance is LightInstance)
-                {
-                    BoundingSphere sphere = new BoundingSphere(room.WorldPos + instance.Position, _littleSphereRadius);
-                    if (ray.Intersects(ref sphere, out distance) && ((result == null) || (distance < result.Distance)))
-                        result = new PickingResultObject(distance, instance);
-                }
-                else if (instance is MoveableInstance)
+                if (instance is MoveableInstance && ShowMoveables)
                 {
                     MoveableInstance modelInfo = (MoveableInstance)instance;
                     if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(modelInfo.WadObjectId) ?? false)
@@ -1461,7 +1455,7 @@ namespace TombEditor.Controls
                             result = new PickingResultObject(distance, instance);
                     }
                 }
-                else if (instance is StaticInstance)
+                else if (instance is StaticInstance && ShowStatics)
                 {
                     StaticInstance modelInfo = (StaticInstance)instance;
                     if (_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(modelInfo.WadObjectId) ?? false)
@@ -1480,7 +1474,7 @@ namespace TombEditor.Controls
                             result = new PickingResultObject(distance, instance);
                     }
                 }
-                else if (instance is ImportedGeometryInstance && !DisablePickingForImportedGeometry)
+                else if (instance is ImportedGeometryInstance && ShowImportedGeometry && !DisablePickingForImportedGeometry)
                 {
                     var geometry = (ImportedGeometryInstance)instance;
 
@@ -1496,13 +1490,22 @@ namespace TombEditor.Controls
                             result = new PickingResultObject(distance, instance);
                     }
                 }
-                else
+                else if (ShowOtherObjects)
                 {
-                    BoundingBox box = new BoundingBox(
-                        room.WorldPos + instance.Position - new Vector3(_littleCubeRadius),
-                        room.WorldPos + instance.Position + new Vector3(_littleCubeRadius));
-                    if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
-                        result = new PickingResultObject(distance, instance);
+                    if (instance is LightInstance)
+                    {
+                        BoundingSphere sphere = new BoundingSphere(room.WorldPos + instance.Position, _littleSphereRadius);
+                        if (ray.Intersects(ref sphere, out distance) && ((result == null) || (distance < result.Distance)))
+                            result = new PickingResultObject(distance, instance);
+                    }
+                    else
+                    {
+                        BoundingBox box = new BoundingBox(
+                            room.WorldPos + instance.Position - new Vector3(_littleCubeRadius),
+                            room.WorldPos + instance.Position + new Vector3(_littleCubeRadius));
+                        if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
+                            result = new PickingResultObject(distance, instance);
+                    }
                 }
 
             // Check room geometry

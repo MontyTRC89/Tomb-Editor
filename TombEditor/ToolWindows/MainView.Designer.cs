@@ -189,7 +189,7 @@
             this.butDisableGeometryPicking.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butDisableGeometryPicking.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butDisableGeometryPicking.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDisableGeometryPicking.Image = global::TombEditor.Properties.Resources.actions_DisableGeometryPicking_16;
+            this.butDisableGeometryPicking.Image = global::TombEditor.Properties.Resources.actions_HideCustomGeometry_1_16;
             this.butDisableGeometryPicking.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDisableGeometryPicking.Name = "butDisableGeometryPicking";
             this.butDisableGeometryPicking.Size = new System.Drawing.Size(23, 25);
@@ -201,7 +201,7 @@
             this.butDrawPortals.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butDrawPortals.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butDrawPortals.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawPortals.Image = global::TombEditor.Properties.Resources.actions_door_opened_16;
+            this.butDrawPortals.Image = global::TombEditor.Properties.Resources.actions_DrawPortals_16;
             this.butDrawPortals.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDrawPortals.Name = "butDrawPortals";
             this.butDrawPortals.Size = new System.Drawing.Size(23, 25);
@@ -267,7 +267,7 @@
             this.butDrawImportedGeometry,
             this.butDrawOther});
             this.dropDownDrawObjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.dropDownDrawObjects.Image = global::TombEditor.Properties.Resources.actions_show_objects_16;
+            this.dropDownDrawObjects.Image = global::TombEditor.Properties.Resources.actions_DrawObjects_16;
             this.dropDownDrawObjects.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.dropDownDrawObjects.Name = "dropDownDrawObjects";
             this.dropDownDrawObjects.Size = new System.Drawing.Size(29, 25);
@@ -450,6 +450,7 @@
             // 
             this.butTextureFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureFloor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTextureFloor.Enabled = false;
             this.butTextureFloor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureFloor.Image = global::TombEditor.Properties.Resources.texture_Floor2_16;
             this.butTextureFloor.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -462,6 +463,7 @@
             // 
             this.butTextureCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureCeiling.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTextureCeiling.Enabled = false;
             this.butTextureCeiling.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureCeiling.Image = global::TombEditor.Properties.Resources.texture_Ceiling2_16;
             this.butTextureCeiling.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -474,6 +476,7 @@
             // 
             this.butTextureWalls.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureWalls.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTextureWalls.Enabled = false;
             this.butTextureWalls.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureWalls.Image = global::TombEditor.Properties.Resources.texture_Walls2_16;
             this.butTextureWalls.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -487,6 +490,7 @@
             this.butAdditiveBlending.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butAdditiveBlending.CheckOnClick = true;
             this.butAdditiveBlending.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAdditiveBlending.Enabled = false;
             this.butAdditiveBlending.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butAdditiveBlending.Image = global::TombEditor.Properties.Resources.texture_Transparent_1_16;
             this.butAdditiveBlending.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -500,6 +504,7 @@
             this.butDoubleSided.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butDoubleSided.CheckOnClick = true;
             this.butDoubleSided.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDoubleSided.Enabled = false;
             this.butDoubleSided.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDoubleSided.Image = global::TombEditor.Properties.Resources.texture_DoubleSided_1_16;
             this.butDoubleSided.ImageTransparentColor = System.Drawing.Color.Magenta;
