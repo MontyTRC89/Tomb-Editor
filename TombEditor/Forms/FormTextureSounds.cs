@@ -133,6 +133,8 @@ namespace TombEditor
 
                             RectangleF descArea = RectangleF.FromLTRB(descStart.X, descStart.Y, tileEnd.X, tileEnd.Y);
                             e.Graphics.FillRectangle(soundBrush, descArea);
+                            if(ViewScale > 6)
+                                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
                             e.Graphics.DrawString(sound.ToString(), textureSoundFont, Brushes.Black, descArea, _textureSoundStringFormat);
 
                             RectangleF tileArea = RectangleF.FromLTRB(tileStart.X, tileStart.Y, tileEnd.X, tileEnd.Y);
