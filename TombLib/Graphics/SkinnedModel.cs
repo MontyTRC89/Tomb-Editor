@@ -236,6 +236,9 @@ namespace TombLib.Graphics
                 Animation animation = new Animation();
                 WadAnimation wadAnim = mov.Animations[j];
 
+                animation.Framerate = wadAnim.FrameDuration;
+                animation.RealNumberOfFrames = (short)wadAnim.RealNumberOfFrames;
+
                 animation.KeyFrames = new List<KeyFrame>();
 
                 for (int f = 0; f < wadAnim.KeyFrames.Count; f++)

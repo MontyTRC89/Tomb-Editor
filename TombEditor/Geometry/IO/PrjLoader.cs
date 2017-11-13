@@ -73,7 +73,7 @@ namespace TombEditor.Geometry.IO
 
             string gameDirectory = FindGameDirectory(filename);
             progressReporter.ReportProgress(0, "Game directory: " + gameDirectory);
-            level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.LevelDirectory);
+            level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.GameDirectory);
 
             try
             {

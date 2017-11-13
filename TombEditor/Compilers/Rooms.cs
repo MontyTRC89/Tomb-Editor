@@ -586,16 +586,50 @@ namespace TombEditor.Compilers
         private void ConvertWallPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, params int[] relevantDirections)
         {
             // Calculate dimensions of portal
-            float yMin = float.MaxValue;
-            float yMax = float.MinValue;
-            for (int z = portal.Area.Top; z <= portal.Area.Bottom; ++z)
-                for (int x = portal.Area.Left; x <= portal.Area.Right; ++x)
+            var yMin = float.MaxValue;
+            var yMax = float.MinValue;
+
+            var startX = 0;
+            var endX = 0;
+            var startZ = 0;
+            var endZ = 0;
+
+            switch (portal.Direction)
+            {
+                case PortalDirection.WallNegativeX:
+                    startX = 1;
+                    endX = 1;
+                    startZ = Math.Min(portal.Area.Top, portal.Area.Bottom);
+                    endZ = Math.Max(portal.Area.Top, portal.Area.Bottom);
+                    break;
+                case PortalDirection.WallPositiveX:
+                    startX = room.NumXSectors - 2;
+                    endX = room.NumXSectors - 2;
+                    startZ = Math.Min(portal.Area.Top, portal.Area.Bottom);
+                    endZ = Math.Max(portal.Area.Top, portal.Area.Bottom);
+                    break;
+                case PortalDirection.WallNegativeZ:
+                    startX = Math.Min(portal.Area.Left, portal.Area.Right);
+                    endX = Math.Max(portal.Area.Left, portal.Area.Right);
+                    startZ = 1;
+                    endZ = 1;
+                    break;
+                case PortalDirection.WallPositiveZ:
+                    startX = Math.Min(portal.Area.Left, portal.Area.Right);
+                    endX = Math.Max(portal.Area.Left, portal.Area.Right);
+                    startZ = room.NumZSectors - 2;
+                    endZ = room.NumZSectors - 2;
+                    break;
+            }
+
+            for (var z = startZ; z <= endZ; ++z)
+                for (var x = startX; x <= endX; ++x)
                 {
                     Block block = room.Blocks[x, z];
-                    foreach (int relevantDirection in relevantDirections)
+                    foreach (var relevantDirection in relevantDirections)
                     {
-                        float floor = 256.0f * block.QAFaces[relevantDirection] + room.WorldPos.Y;
-                        float ceiling = 256.0f * block.WSFaces[relevantDirection] + room.WorldPos.Y;
+                        var floor = 256.0f * block.QAFaces[relevantDirection] + room.WorldPos.Y;
+                        var ceiling = 256.0f * block.WSFaces[relevantDirection] + room.WorldPos.Y;
                         yMin = Math.Min(yMin, Math.Min(floor, ceiling));
                         yMax = Math.Max(yMax, Math.Max(floor, ceiling));
                     }
@@ -603,10 +637,10 @@ namespace TombEditor.Compilers
             yMin = (float)Math.Floor(yMin);
             yMax = (float)Math.Ceiling(yMax);
 
-            float xMin = portal.Area.X * 1024.0f;
-            float xMax = (portal.Area.Right + 1) * 1024.0f;
-            float zMin = portal.Area.Y * 1024.0f;
-            float zMax = (portal.Area.Bottom + 1) * 1024.0f;
+            var xMin = portal.Area.X * 1024.0f;
+            var xMax = (portal.Area.Right + 1) * 1024.0f;
+            var zMin = portal.Area.Y * 1024.0f;
+            var zMax = (portal.Area.Bottom + 1) * 1024.0f;
 
             // Determine normal and portal vertices
             tr_vertex[] portalVertices = new tr_vertex[4];

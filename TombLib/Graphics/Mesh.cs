@@ -19,7 +19,6 @@ namespace TombLib.Graphics
         public Buffer<T> VertexBuffer { get; protected set; }
         public Buffer IndexBuffer { get; protected set; }
 
-        public List<Submesh> SubMeshes { get; set; }
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
         
@@ -29,7 +28,7 @@ namespace TombLib.Graphics
         public Mesh(GraphicsDevice device, string name)
             : base(device, name)
         {
-            SubMeshes = new List<Submesh>();
+            
         }
 
         public abstract void BuildBuffers();

@@ -933,7 +933,7 @@ namespace WadTool
 
             // Reset scrollbar
             scrollbarAnimations.Value = 0;
-            scrollbarAnimations.Maximum = (_selectedObject as WadMoveable).Animations[animationIndex].KeyFrames.Count - 1;
+            scrollbarAnimations.Maximum = (_selectedObject as WadMoveable).Animations[animationIndex].RealNumberOfFrames;
 
             // Reset panel 3D
             panel3D.Animation = animationIndex;
