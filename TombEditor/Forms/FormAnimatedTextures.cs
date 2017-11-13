@@ -273,6 +273,7 @@ namespace TombEditor
         {
             UpdateEnable();
             UpdateCurrentAnimationDisplay();
+            textureMap.Invalidate();
         }
 
         private void butUpdate_Click(object sender, EventArgs e)
@@ -426,8 +427,10 @@ namespace TombEditor
             protected override float MaxTextureSize => float.PositiveInfinity;
             protected override bool DrawTriangle => false;
 
-            private static readonly Pen outlinePen = new Pen(System.Drawing.Color.DarkViolet, 1);
-            private static readonly Brush textBrush = new SolidBrush(System.Drawing.Color.DarkViolet);
+            private static readonly Pen outlinePen = new Pen(System.Drawing.Color.Silver, 2);
+            private static readonly Pen activeOutlinePen = new Pen(System.Drawing.Color.Violet, 2);
+            private static readonly Brush textBrush = new SolidBrush(System.Drawing.Color.Violet);
+            private static readonly Brush textShadowBrush = new SolidBrush(System.Drawing.Color.Black);
             private static readonly Font textFont = new Font("Segoe UI", 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
             private static readonly StringFormat textFormat = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
 
@@ -435,35 +438,62 @@ namespace TombEditor
             {
                 // Paint other animated textures
                 LevelSettings levelSettings = ParentForm._editor.Level.Settings;
-                foreach (AnimatedTextureSet set in levelSettings.AnimatedTextureSets)
-                    for (int i = 0; i < set.Frames.Count; ++i)
+                if (levelSettings.AnimatedTextureSets.Count > 0)
+                {
+                    var selectedSet = ParentForm.comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+
+                    foreach (AnimatedTextureSet set in levelSettings.AnimatedTextureSets)
+                        if (set != selectedSet)
+                            DrawSetOutlines(e, set, false);
+
+                    DrawSetOutlines(e, selectedSet, true);
+                }
+
+                // Paint current selection
+                base.OnPaintSelection(e);
+            }
+
+            private void DrawSetOutlines(PaintEventArgs e, AnimatedTextureSet set, bool current)
+            {
+                for (int i = 0; i < set.Frames.Count; ++i)
+                {
+                    AnimatedTextureFrame frame = set.Frames[i];
+                    if (frame.Texture == SelectedTexture.Texture)
                     {
-                        AnimatedTextureFrame frame = set.Frames[i];
-                        if (frame.Texture == SelectedTexture.Texture)
+                        PointF[] edges = new PointF[]
                         {
-                            PointF[] edges = new PointF[]
-                            {
                                 ToVisualCoord(frame.TexCoord0),
                                 ToVisualCoord(frame.TexCoord1),
                                 ToVisualCoord(frame.TexCoord2),
                                 ToVisualCoord(frame.TexCoord3)
-                            };
+                        };
 
-                            PointF upperLeft = new PointF(
-                                Math.Min(Math.Min(edges[0].X, edges[1].X), Math.Min(edges[2].X, edges[3].X)),
-                                Math.Min(Math.Min(edges[0].Y, edges[1].Y), Math.Min(edges[2].Y, edges[3].Y)));
-                            PointF lowerRight = new PointF(
-                                Math.Max(Math.Max(edges[0].X, edges[1].X), Math.Max(edges[2].X, edges[3].X)),
-                                Math.Max(Math.Max(edges[0].Y, edges[1].Y), Math.Max(edges[2].Y, edges[3].Y)));
+                        PointF upperLeft = new PointF(
+                            Math.Min(Math.Min(edges[0].X, edges[1].X), Math.Min(edges[2].X, edges[3].X)),
+                            Math.Min(Math.Min(edges[0].Y, edges[1].Y), Math.Min(edges[2].Y, edges[3].Y)));
+                        PointF lowerRight = new PointF(
+                            Math.Max(Math.Max(edges[0].X, edges[1].X), Math.Max(edges[2].X, edges[3].X)),
+                            Math.Max(Math.Max(edges[0].Y, edges[1].Y), Math.Max(edges[2].Y, edges[3].Y)));
+
+                        if (current)
+                        {
+                            string counterString = i + "/" + set.Frames.Count;
+                            SizeF textSize = e.Graphics.MeasureString(counterString, textFont);
                             RectangleF textArea = RectangleF.FromLTRB(upperLeft.X, upperLeft.Y, lowerRight.X, lowerRight.Y);
-                            e.Graphics.DrawString(i + "/" + set.Frames.Count, textFont, textBrush, textArea, textFormat);
 
-                            e.Graphics.DrawPolygon(outlinePen, edges);
+                            if(textArea.Width > textSize.Width && textArea.Height > textSize.Height)
+                            {
+                                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                                e.Graphics.DrawString(counterString, textFont, textShadowBrush, textArea, textFormat);
+                                textArea.X -= 1;
+                                textArea.Y -= 1;
+                                e.Graphics.DrawString(counterString, textFont, textBrush, textArea, textFormat);
+                                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                            }
                         }
+                        e.Graphics.DrawPolygon(current ? activeOutlinePen : outlinePen, edges);
                     }
-
-                // Paint current selection
-                base.OnPaintSelection(e);
+                }
             }
 
             protected FormAnimatedTextures ParentForm
