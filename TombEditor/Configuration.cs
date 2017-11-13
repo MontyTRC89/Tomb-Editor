@@ -48,6 +48,7 @@ namespace TombEditor
         public float Rendering3D_NavigationSpeedMouseZoom { get; set; } = 72000.0f;
         public float Rendering3D_NavigationSpeedMouseTranslate { get; set; } = 22000.0f;
         public float Rendering3D_NavigationSpeedMouseRotate { get; set; } = 3.0f;
+        public float Rendering3D_DragMouseSensitivity { get; set; } = 0.05f;
         public bool Rendering3D_InvertMouseZoom { get; set; } = false;
         public float Rendering3D_LineWidth { get; set; } = 10.0f;
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;
@@ -73,6 +74,9 @@ namespace TombEditor
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
         public float TextureMap_DefaultTileSelectionSize { get; set; } = 64.0f;
         public bool TextureMap_UseAdvancedTexturingByDefault { get; set; } = false;
+
+        public EditorToolType Tool_DefaultGeometry { get; set; } = EditorToolType.Selection;
+        public EditorToolType Tool_DefaultFaceEdit { get; set; } = EditorToolType.Brush;
 
         public float Gizmo_Size { get; set; } = 1536.0f;
         public float Gizmo_TranslationConeSize { get; set; } = 220.0f;

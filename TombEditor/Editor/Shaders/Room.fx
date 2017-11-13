@@ -20,6 +20,8 @@ float4x4 Model;
 float LineWidth;
 
 float4 Color;
+bool Dim;
+bool Highlight;
 
 bool DrawSectorOutlinesAndUseEditorUV;
 bool TextureEnabled;
@@ -98,6 +100,12 @@ float4 PS(PixelInputType input) : SV_TARGET
 	float3 colorMul = min(input.Color.xyz, 1.0f);
 	result.xyz = result.xyz * colorMul + colorAdd;
 	result.w *= input.Color.w;
+    
+    // Highlight & Dim (selection & diagonal steps)
+    if(Highlight)
+        result.xyz += 0.2f;
+    if(Dim && !(result.x > 0.85f && result.y > 0.85f && result.z > 0.85f))
+        result *= 0.70f;
 
 	// Draw outline
 	if (DrawSectorOutlinesAndUseEditorUV)

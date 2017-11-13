@@ -41,6 +41,7 @@ namespace TombEditor.ToolWindows
                 toolShovel.Checked = currentTool.Tool == EditorToolType.Shovel;
                 toolFlatten.Checked = currentTool.Tool == EditorToolType.Flatten;
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
+                toolDrag.Checked = currentTool.Tool == EditorToolType.Drag;
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
@@ -65,12 +66,13 @@ namespace TombEditor.ToolWindows
                 toolFlatten.Visible = mode == EditorMode.Geometry;
                 toolShovel.Visible = mode == EditorMode.Geometry;
                 toolSmooth.Visible = mode == EditorMode.Geometry;
+                toolDrag.Visible = mode == EditorMode.Geometry;
                 toolStrip.AutoSize = true;
                 Size = toolStrip.Size;
                 toolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
 
                 // Select classic winroomedit controls by default
-                SwitchTool(mode == EditorMode.FaceEdit ? EditorToolType.Brush : EditorToolType.Selection);
+                SwitchTool(mode == EditorMode.FaceEdit ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
             }
         }
 
@@ -119,6 +121,11 @@ namespace TombEditor.ToolWindows
         private void toolGroup_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorToolType.Group);
+        }
+
+        private void toolDrag_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Drag);
         }
 
         private void toolInvisibility_Click(object sender, EventArgs e)

@@ -437,19 +437,19 @@ namespace TombEditor
                     _pressedZorY = true;
 
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
                     break;
                 case Keys.H:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)-(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 0, (short)-(shift ? 4 : 1), alt, true);
                     break;
                 case Keys.U:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 0, (short)(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 1, (short)(shift ? 4 : 1), alt, true);
                     break;
                 case Keys.J:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 0, (short)-(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 1, (short)-(shift ? 4 : 1), alt, true);
                     break;
 
                 case Keys.OemMinus: // US keyboard key in documentation

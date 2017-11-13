@@ -65,7 +65,7 @@ namespace TombEditor
             _editor.RoomGeometryChange(room);
         }
 
-        public static void EditSectorGeometry(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, short increment, bool smooth)
+        public static void EditSectorGeometry(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false)
         {
             if (smooth)
             {
@@ -131,468 +131,92 @@ namespace TombEditor
                 {
                     Block block = room.Blocks[x, z];
 
-                    switch (arrow)
+                    if(arrow == EditorArrowType.EntireFace)
                     {
-                        case EditorArrowType.EntireFace:
-                            if (verticalSubdivision == 0)
-                            {
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XpZn && block.QAFaces[2] == block.QAFaces[0] && increment < 0)
-                                    continue;
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZn && block.QAFaces[3] == block.QAFaces[1] && increment < 0)
-                                    continue;
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZp && block.QAFaces[0] == block.QAFaces[2] && increment < 0)
-                                    continue;
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XpZp && block.QAFaces[1] == block.QAFaces[3] && increment < 0)
-                                    continue;
-
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZn)
-                                    room.Blocks[x, z].QAFaces[0] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZn)
-                                    room.Blocks[x, z].QAFaces[1] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZp)
-                                    room.Blocks[x, z].QAFaces[2] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZp)
-                                    room.Blocks[x, z].QAFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn && block.WSFaces[2] == block.WSFaces[0] && increment > 0)
-                                    continue;
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn && block.WSFaces[3] == block.WSFaces[1] && increment > 0)
-                                    continue;
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp && block.WSFaces[0] == block.WSFaces[2] && increment > 0)
-                                    continue;
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp && block.WSFaces[1] == block.WSFaces[3] && increment > 0)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn)
-                                    room.Blocks[x, z].WSFaces[0] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZn)
-                                    room.Blocks[x, z].WSFaces[1] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZp)
-                                    room.Blocks[x, z].WSFaces[2] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZp)
-                                    room.Blocks[x, z].WSFaces[3] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                room.Blocks[x, z].EDFaces[0] += increment;
-                                room.Blocks[x, z].EDFaces[1] += increment;
-                                room.Blocks[x, z].EDFaces[2] += increment;
-                                room.Blocks[x, z].EDFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                room.Blocks[x, z].RFFaces[0] += increment;
-                                room.Blocks[x, z].RFFaces[1] += increment;
-                                room.Blocks[x, z].RFFaces[2] += increment;
-                                room.Blocks[x, z].RFFaces[3] += increment;
-                            }
-                            break;
-
-                        case EditorArrowType.EdgeN:
-                            if (verticalSubdivision == 0)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZn)
-                                    room.Blocks[x, z].QAFaces[0] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZn)
-                                    room.Blocks[x, z].QAFaces[1] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn)
-                                    room.Blocks[x, z].WSFaces[0] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZn)
-                                    room.Blocks[x, z].WSFaces[1] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                room.Blocks[x, z].EDFaces[0] += increment;
-                                room.Blocks[x, z].EDFaces[1] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                room.Blocks[x, z].RFFaces[0] += increment;
-                                room.Blocks[x, z].RFFaces[1] += increment;
-                            }
-                            break;
-
-                        case EditorArrowType.EdgeE:
-                            if (verticalSubdivision == 0)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZn)
-                                    room.Blocks[x, z].QAFaces[1] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZp)
-                                    room.Blocks[x, z].QAFaces[2] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZn)
-                                    room.Blocks[x, z].WSFaces[1] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZp)
-                                    room.Blocks[x, z].WSFaces[2] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                room.Blocks[x, z].EDFaces[1] += increment;
-                                room.Blocks[x, z].EDFaces[2] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                room.Blocks[x, z].RFFaces[1] += increment;
-                                room.Blocks[x, z].RFFaces[2] += increment;
-                            }
-                            break;
-
-                        case EditorArrowType.EdgeS:
-                            if (verticalSubdivision == 0)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XnZp)
-                                    room.Blocks[x, z].QAFaces[2] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZp)
-                                    room.Blocks[x, z].QAFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZp)
-                                    room.Blocks[x, z].WSFaces[2] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZp)
-                                    room.Blocks[x, z].WSFaces[3] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                room.Blocks[x, z].EDFaces[2] += increment;
-                                room.Blocks[x, z].EDFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                room.Blocks[x, z].RFFaces[2] += increment;
-                                room.Blocks[x, z].RFFaces[3] += increment;
-                            }
-                            break;
-
-                        case EditorArrowType.EdgeW:
-                            if (verticalSubdivision == 0)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZn)
-                                    room.Blocks[x, z].QAFaces[0] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.XpZp)
-                                    room.Blocks[x, z].QAFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn)
-                                    room.Blocks[x, z].WSFaces[0] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZp)
-                                    room.Blocks[x, z].WSFaces[3] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                room.Blocks[x, z].EDFaces[0] += increment;
-                                room.Blocks[x, z].EDFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                room.Blocks[x, z].RFFaces[0] += increment;
-                                room.Blocks[x, z].RFFaces[3] += increment;
-                            }
-                            break;
-
-                        case EditorArrowType.CornerNW:
-                            if (verticalSubdivision == 0)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.XnZp && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XnZp)
-                                {
-                                    if (block.QAFaces[0] == block.QAFaces[1] && increment < 0)
-                                        continue;
-                                }
-
-                                room.Blocks[x, z].QAFaces[0] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZp && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp)
-                                {
-                                    if (block.WSFaces[0] == block.WSFaces[1] && increment > 0)
-                                        continue;
-                                }
-
-                                room.Blocks[x, z].WSFaces[0] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                room.Blocks[x, z].EDFaces[0] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                room.Blocks[x, z].RFFaces[0] += increment;
-                            }
-                            break;
-
-                        case EditorArrowType.CornerNE:
-                            if (verticalSubdivision == 0)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.XpZp && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XpZp)
-                                {
-                                    if (block.QAFaces[1] == block.QAFaces[2] && increment < 0)
-                                        continue;
-                                }
-
-                                room.Blocks[x, z].QAFaces[1] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZp && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
-                                {
-                                    if (block.WSFaces[1] == block.WSFaces[2] && increment > 0)
-                                        continue;
-                                }
-
-                                room.Blocks[x, z].WSFaces[1] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                room.Blocks[x, z].EDFaces[1] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                room.Blocks[x, z].RFFaces[1] += increment;
-                            }
-                            break;
-
-                        case EditorArrowType.CornerSE:
-                            if (verticalSubdivision == 0)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.XpZn && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XpZn)
-                                {
-                                    if (block.QAFaces[2] == block.QAFaces[3] && increment < 0)
-                                        continue;
-                                }
-
-                                room.Blocks[x, z].QAFaces[2] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XpZn && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
-                                {
-                                    if (block.WSFaces[2] == block.WSFaces[3] && increment > 0)
-                                        continue;
-                                }
-
-                                room.Blocks[x, z].WSFaces[2] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                room.Blocks[x, z].EDFaces[2] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                room.Blocks[x, z].RFFaces[2] += increment;
-                            }
-                            break;
-
-                        case EditorArrowType.CornerSW:
-                            if (verticalSubdivision == 0)
-                            {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.XnZn && block.FloorDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XnZn)
-                                {
-                                    if (block.QAFaces[3] == block.QAFaces[0] && increment < 0)
-                                        continue;
-                                }
-
-                                room.Blocks[x, z].QAFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 1)
-                            {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.XnZn && block.CeilingDiagonalSplit != DiagonalSplit.None)
-                                    continue;
-
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
-                                {
-                                    if (block.WSFaces[3] == block.WSFaces[0] && increment > 0)
-                                        continue;
-                                }
-
-                                room.Blocks[x, z].WSFaces[3] += increment;
-                            }
-                            else if (verticalSubdivision == 2)
-                            {
-                                room.Blocks[x, z].EDFaces[3] += increment;
-
-                                if (block.FloorPortal != null)
-                                    continue;
-                            }
-                            else if (verticalSubdivision == 3)
-                            {
-                                room.Blocks[x, z].RFFaces[3] += increment;
-                            }
-                            break;
-
-                        case EditorArrowType.DiagonalFloorCorner:
-                            if (block.FloorDiagonalSplit == DiagonalSplit.XpZn)
-                            {
-                                if (block.QAFaces[0] == block.QAFaces[1] && increment > 0)
-                                    continue;
-                                room.Blocks[x, z].QAFaces[0] += increment;
-                            }
-
-                            if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
-                            {
-                                if (block.QAFaces[1] == block.QAFaces[2] && increment > 0)
-                                    continue;
-                                room.Blocks[x, z].QAFaces[1] += increment;
-                            }
-
-                            if (block.FloorDiagonalSplit == DiagonalSplit.XnZp)
-                            {
-                                if (block.QAFaces[2] == block.QAFaces[3] && increment > 0)
-                                    continue;
-                                room.Blocks[x, z].QAFaces[2] += increment;
-                            }
-
-                            if (block.FloorDiagonalSplit == DiagonalSplit.XpZp)
-                            {
-                                if (block.QAFaces[3] == block.QAFaces[0] && increment > 0)
-                                    continue;
-                                room.Blocks[x, z].QAFaces[3] += increment;
-                            }
-
-                            break;
-
-                        case EditorArrowType.DiagonalCeilingCorner:
-                            if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
-                            {
-                                if (block.WSFaces[0] == block.WSFaces[1] && increment < 0)
-                                    continue;
-                                room.Blocks[x, z].WSFaces[0] += increment;
-                            }
-
-                            if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
-                            {
-                                if (block.WSFaces[1] == block.WSFaces[2] && increment < 0)
-                                    continue;
-                                room.Blocks[x, z].WSFaces[1] += increment;
-                            }
-
-                            if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp)
-                            {
-                                if (block.WSFaces[2] == block.WSFaces[3] && increment < 0)
-                                    continue;
-                                room.Blocks[x, z].WSFaces[2] += increment;
-                            }
-
-                            if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
-                            {
-                                if (block.WSFaces[3] == block.WSFaces[0] && increment < 0)
-                                    continue;
-                                room.Blocks[x, z].WSFaces[3] += increment;
-                            }
-
-                            break;
+                        if(verticalSubdivision < 2)
+                            block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
+                        else
+                            block.Raise(verticalSubdivision, false, increment);
                     }
-                    room.Blocks[x, z].FixHeights(verticalSubdivision);
+                    else
+                    {
+                        var floor = (verticalSubdivision % 2 == 0);
+                        var currentFaces = block.GetVerticalSubdivision(verticalSubdivision);
+                        var currentSplit = floor ? block.FloorDiagonalSplit : block.CeilingDiagonalSplit;
+                        var incrementInvalid = floor ? (increment < 0) : (increment > 0);
+                        int[] corners = new int[2] { 0, 0 };
+                        DiagonalSplit[] splits = new DiagonalSplit[2] { DiagonalSplit.None, DiagonalSplit.None };
+
+                        switch (arrow)
+                        {
+                            case EditorArrowType.EdgeN:
+                            case EditorArrowType.CornerNW:
+                                corners[0] = 0;
+                                corners[1] = 1;
+                                splits[0] = DiagonalSplit.XpZn;
+                                splits[1] = (arrow == EditorArrowType.CornerNW) ? DiagonalSplit.XnZp : DiagonalSplit.XnZn;
+                                break;
+                            case EditorArrowType.EdgeE:
+                            case EditorArrowType.CornerNE:
+                                corners[0] = 1;
+                                corners[1] = 2;
+                                splits[0] = DiagonalSplit.XnZn;
+                                splits[1] = (arrow == EditorArrowType.CornerNE) ? DiagonalSplit.XpZp : DiagonalSplit.XnZp;
+                                break;
+                            case EditorArrowType.EdgeS:
+                            case EditorArrowType.CornerSE:
+                                corners[0] = 2;
+                                corners[1] = 3;
+                                splits[0] = DiagonalSplit.XnZp;
+                                splits[1] = (arrow == EditorArrowType.CornerSE) ? DiagonalSplit.XpZn : DiagonalSplit.XpZp;
+                                break;
+                            case EditorArrowType.EdgeW:
+                            case EditorArrowType.CornerSW:
+                                corners[0] = 3;
+                                corners[1] = 0;
+                                splits[0] = DiagonalSplit.XpZp;
+                                splits[1] = (arrow == EditorArrowType.CornerSW) ? DiagonalSplit.XnZn : DiagonalSplit.XpZn;
+                                break;
+                        }
+
+                        if(arrow <= EditorArrowType.EdgeW)
+                        {
+                            if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
+                                continue;
+                            for(int i = 0; i < 2; i++)
+                                if (currentSplit != splits[i])
+                                    currentFaces[corners[i]] += increment;
+                        }
+                        else
+                        {
+                            if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
+                            {
+                                if (currentSplit == splits[1])
+                                {
+                                    if (currentFaces[corners[0]] == currentFaces[corners[1]] && incrementInvalid)
+                                        continue;
+                                }
+                                else if (autoSwitchDiagonals && currentSplit == splits[0] && currentFaces[corners[0]] == currentFaces[corners[1]] && !incrementInvalid)
+                                    block.Rotate(floor, 2);
+                                else
+                                    continue;
+                            }
+                            currentFaces[corners[0]] += increment;
+                        }
+                    }
+
+                    // FIXME:
+                    // Code with unknown purpose. It was repeating in above case switch for all verticalSubdivision values 0 and 2,
+                    // so it was moved here to remove a lot of duplicated code. Maybe it should be removed completely, cause no
+                    // particular purpose is seen here.
+                    if(verticalSubdivision % 2 == 0)
+                    {
+                        if (block.FloorPortal != null)
+                            continue;
+                    }
+                    // end of unknown code.
+
+                    block.FixHeights(verticalSubdivision);
                 }
 
             SmartBuildGeometry(room, area);
@@ -602,7 +226,7 @@ namespace TombEditor
         {
             var currBlock = room.GetBlockTry(x, z);
 
-            if (currBlock == null)
+            if (currBlock == null || (floor && currBlock.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.CeilingDiagonalSplit != DiagonalSplit.None))
                 return;
 
             Block[] lookupBlocks = new Block[8]
@@ -667,7 +291,7 @@ namespace TombEditor
         {
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
-                    if(!room.Blocks[x, z].FloorIsQuad)
+                    if(!room.Blocks[x, z].FloorIsQuad && room.Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
                         room.Blocks[x, z].FloorSplitDirectionToggled = !room.Blocks[x, z].FloorSplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
@@ -677,7 +301,7 @@ namespace TombEditor
         {
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
-                    if (!room.Blocks[x, z].CeilingIsQuad)
+                    if (!room.Blocks[x, z].CeilingIsQuad && room.Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
                         room.Blocks[x, z].CeilingSplitDirectionToggled = !room.Blocks[x, z].CeilingSplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
@@ -1232,7 +856,7 @@ namespace TombEditor
             _editor.RoomTextureChange(room);
         }
 
-        private static Dictionary<BlockFace, float[]> GetFaces(Room room, DrawingPoint pos, Direction direction, BlockFaceType section)
+        public static Dictionary<BlockFace, float[]> GetFaces(Room room, DrawingPoint pos, Direction direction, BlockFaceType section)
         {
             bool sectionIsWall = room.GetBlockTry(pos.X, pos.Y).IsAnyWall;
 
@@ -1240,7 +864,7 @@ namespace TombEditor
 
             switch (direction)
             {
-                case Direction.North:
+                case Direction.PositiveZ:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveZ_RF))
@@ -1259,7 +883,7 @@ namespace TombEditor
                         segments.Add(BlockFace.PositiveZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveZ_Middle) });
                     break;
 
-                case Direction.South:
+                case Direction.NegativeZ:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeZ_RF))
@@ -1278,7 +902,7 @@ namespace TombEditor
                         segments.Add(BlockFace.NegativeZ_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeZ_Middle) });
                     break;
 
-                case Direction.East:
+                case Direction.PositiveX:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.PositiveX_RF))
@@ -1297,7 +921,7 @@ namespace TombEditor
                         segments.Add(BlockFace.PositiveX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.PositiveX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.PositiveX_Middle) });
                     break;
 
-                case Direction.West:
+                case Direction.NegativeX:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.NegativeX_RF))
@@ -1316,7 +940,7 @@ namespace TombEditor
                         segments.Add(BlockFace.NegativeX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_Middle) });
                     break;
 
-                case Direction.None: // Diagonal                    
+                case Direction.Diagonal:             
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalRF))
@@ -1408,7 +1032,7 @@ namespace TombEditor
                     {
                         float stride = (texture.TexCoord2.X - texture.TexCoord1.X) / (subdivisions + 1);
 
-                        if (inverted == false & (direction == Direction.West || direction == Direction.North))
+                        if (inverted == false & (direction == Direction.NegativeX || direction == Direction.PositiveZ))
                         {
                             inverted = true;
                             iteration = subdivisions - iteration;
@@ -1434,7 +1058,7 @@ namespace TombEditor
                     {
                         float stride = (texture.TexCoord0.Y - texture.TexCoord3.Y) / (subdivisions + 1);
 
-                        if (inverted == false & (direction == Direction.East || direction == Direction.South))
+                        if (inverted == false & (direction == Direction.PositiveX || direction == Direction.NegativeZ))
                         {
                             inverted = true;
                             iteration = subdivisions - iteration;
@@ -1466,72 +1090,72 @@ namespace TombEditor
                         {
                             case BlockFace.NegativeX_QA:
                             case BlockFace.NegativeX_ED:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.West, BlockFaceType.Floor, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.West, BlockFaceType.Floor) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null));
                                 break;
 
                             case BlockFace.NegativeX_Middle:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.West, BlockFaceType.Wall, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.West, BlockFaceType.Wall) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.NegativeX, BlockFaceType.Wall, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Wall) : null));
                                 break;
 
                             case BlockFace.NegativeX_RF:
                             case BlockFace.NegativeX_WS:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.West, BlockFaceType.Ceiling, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.West, BlockFaceType.Ceiling) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null));
                                 break;
 
                             case BlockFace.PositiveX_QA:
                             case BlockFace.PositiveX_ED:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.East, BlockFaceType.Floor, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.East, BlockFaceType.Floor) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null));
                                 break;
 
                             case BlockFace.PositiveX_Middle:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.East, BlockFaceType.Wall, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.East, BlockFaceType.Wall) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.PositiveX, BlockFaceType.Wall, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Wall) : null));
                                 break;
 
                             case BlockFace.PositiveX_RF:
                             case BlockFace.PositiveX_WS:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.East, BlockFaceType.Ceiling, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.East, BlockFaceType.Ceiling) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null));
                                 break;
 
                             case BlockFace.NegativeZ_QA:
                             case BlockFace.NegativeZ_ED:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.South, BlockFaceType.Floor, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.South, BlockFaceType.Floor) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null));
                                 break;
 
                             case BlockFace.NegativeZ_Middle:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.South, BlockFaceType.Wall, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.South, BlockFaceType.Wall) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.NegativeZ, BlockFaceType.Wall, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Wall) : null));
                                 break;
 
                             case BlockFace.NegativeZ_RF:
                             case BlockFace.NegativeZ_WS:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.South, BlockFaceType.Ceiling, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.South, BlockFaceType.Ceiling) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null));
                                 break;
 
                             case BlockFace.PositiveZ_QA:
                             case BlockFace.PositiveZ_ED:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.North, BlockFaceType.Floor, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.North, BlockFaceType.Floor) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null));
                                 break;
 
                             case BlockFace.PositiveZ_Middle:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.North, BlockFaceType.Wall, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.North, BlockFaceType.Wall) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.PositiveZ, BlockFaceType.Wall, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Wall) : null));
                                 break;
 
                             case BlockFace.PositiveZ_RF:
                             case BlockFace.PositiveZ_WS:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.North, BlockFaceType.Ceiling, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.North, BlockFaceType.Ceiling) : null));
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null));
                                 break;
 
                             case BlockFace.DiagonalQA:
                             case BlockFace.DiagonalED:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.None, BlockFaceType.Floor, texture);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.Diagonal, BlockFaceType.Floor, texture);
                                 break;
 
                             case BlockFace.DiagonalMiddle:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.None, BlockFaceType.Wall, texture);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.Diagonal, BlockFaceType.Wall, texture);
                                 break;
 
                             case BlockFace.DiagonalRF:
                             case BlockFace.DiagonalWS:
-                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.None, BlockFaceType.Ceiling, texture);
+                                TexturizeWallSection(room, new DrawingPoint(x, z), Direction.Diagonal, BlockFaceType.Ceiling, texture);
                                 break;
                         }
             }
@@ -1693,71 +1317,79 @@ namespace TombEditor
                         room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Floor))
                         continue;
 
-                    // Now try to guess the floor split
-                    short maxHeight = -32767;
-                    byte theCorner = 0;
-
-                    if (room.Blocks[x, z].QAFaces[0] > maxHeight)
+                    if (room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                     {
-                        maxHeight = room.Blocks[x, z].QAFaces[0];
-                        theCorner = 0;
+                        room.Blocks[x, z].Rotate(true);
                     }
-
-                    if (room.Blocks[x, z].QAFaces[1] > maxHeight)
+                    else
                     {
-                        maxHeight = room.Blocks[x, z].QAFaces[1];
-                        theCorner = 1;
-                    }
+                        // Now try to guess the floor split
+                        short maxHeight = -32767;
+                        byte theCorner = 0;
 
-                    if (room.Blocks[x, z].QAFaces[2] > maxHeight)
-                    {
-                        maxHeight = room.Blocks[x, z].QAFaces[2];
-                        theCorner = 2;
-                    }
+                        if (room.Blocks[x, z].QAFaces[0] > maxHeight)
+                        {
+                            maxHeight = room.Blocks[x, z].QAFaces[0];
+                            theCorner = 0;
+                        }
 
-                    if (room.Blocks[x, z].QAFaces[3] > maxHeight)
-                    {
-                        maxHeight = room.Blocks[x, z].QAFaces[3];
-                        theCorner = 3;
-                    }
+                        if (room.Blocks[x, z].QAFaces[1] > maxHeight)
+                        {
+                            maxHeight = room.Blocks[x, z].QAFaces[1];
+                            theCorner = 1;
+                        }
 
-                    if (theCorner == 0)
-                    {
-                        room.Blocks[x, z].QAFaces[1] = maxHeight;
-                        room.Blocks[x, z].QAFaces[3] = maxHeight;
-                        room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
-                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
-                    }
+                        if (room.Blocks[x, z].QAFaces[2] > maxHeight)
+                        {
+                            maxHeight = room.Blocks[x, z].QAFaces[2];
+                            theCorner = 2;
+                        }
 
-                    if (theCorner == 1)
-                    {
-                        room.Blocks[x, z].QAFaces[0] = maxHeight;
-                        room.Blocks[x, z].QAFaces[2] = maxHeight;
-                        room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
-                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
-                    }
+                        if (room.Blocks[x, z].QAFaces[3] > maxHeight)
+                        {
+                            maxHeight = room.Blocks[x, z].QAFaces[3];
+                            theCorner = 3;
+                        }
 
-                    if (theCorner == 2)
-                    {
-                        room.Blocks[x, z].QAFaces[1] = maxHeight;
-                        room.Blocks[x, z].QAFaces[3] = maxHeight;
-                        room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
-                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
-                    }
+                        if (theCorner == 0)
+                        {
+                            room.Blocks[x, z].QAFaces[1] = maxHeight;
+                            room.Blocks[x, z].QAFaces[3] = maxHeight;
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                                room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
+                        }
 
-                    if (theCorner == 3)
-                    {
-                        room.Blocks[x, z].QAFaces[0] = maxHeight;
-                        room.Blocks[x, z].QAFaces[2] = maxHeight;
-                        room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
-                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
-                    }
+                        if (theCorner == 1)
+                        {
+                            room.Blocks[x, z].QAFaces[0] = maxHeight;
+                            room.Blocks[x, z].QAFaces[2] = maxHeight;
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                                room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
+                        }
 
-                    room.Blocks[x, z].FixHeights();
+                        if (theCorner == 2)
+                        {
+                            room.Blocks[x, z].QAFaces[1] = maxHeight;
+                            room.Blocks[x, z].QAFaces[3] = maxHeight;
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                                room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
+                        }
+
+                        if (theCorner == 3)
+                        {
+                            room.Blocks[x, z].QAFaces[0] = maxHeight;
+                            room.Blocks[x, z].QAFaces[2] = maxHeight;
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                                room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
+                        }
+
+                        room.Blocks[x, z].FloorSplitDirectionToggled = false;
+                        room.Blocks[x, z].FixHeights();
+                    }
                 }
 
             SmartBuildGeometry(room, area);
@@ -1772,71 +1404,80 @@ namespace TombEditor
                         room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Ceiling))
                         continue;
 
-                    // Now try to guess the floor split
-                    short minHeight = 32767;
-                    byte theCorner = 0;
 
-                    if (room.Blocks[x, z].WSFaces[0] < minHeight)
+                    if (room.Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None)
                     {
-                        minHeight = room.Blocks[x, z].WSFaces[0];
-                        theCorner = 0;
+                        room.Blocks[x, z].Rotate(false);
                     }
-
-                    if (room.Blocks[x, z].WSFaces[1] < minHeight)
+                    else
                     {
-                        minHeight = room.Blocks[x, z].WSFaces[1];
-                        theCorner = 1;
-                    }
+                        // Now try to guess the floor split
+                        short minHeight = 32767;
+                        byte theCorner = 0;
 
-                    if (room.Blocks[x, z].WSFaces[2] < minHeight)
-                    {
-                        minHeight = room.Blocks[x, z].WSFaces[2];
-                        theCorner = 2;
-                    }
+                        if (room.Blocks[x, z].WSFaces[0] < minHeight)
+                        {
+                            minHeight = room.Blocks[x, z].WSFaces[0];
+                            theCorner = 0;
+                        }
 
-                    if (room.Blocks[x, z].WSFaces[3] < minHeight)
-                    {
-                        minHeight = room.Blocks[x, z].WSFaces[3];
-                        theCorner = 3;
-                    }
+                        if (room.Blocks[x, z].WSFaces[1] < minHeight)
+                        {
+                            minHeight = room.Blocks[x, z].WSFaces[1];
+                            theCorner = 1;
+                        }
 
-                    if (theCorner == 0)
-                    {
-                        room.Blocks[x, z].WSFaces[1] = minHeight;
-                        room.Blocks[x, z].WSFaces[3] = minHeight;
-                        room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
-                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
-                    }
+                        if (room.Blocks[x, z].WSFaces[2] < minHeight)
+                        {
+                            minHeight = room.Blocks[x, z].WSFaces[2];
+                            theCorner = 2;
+                        }
 
-                    if (theCorner == 1)
-                    {
-                        room.Blocks[x, z].WSFaces[0] = minHeight;
-                        room.Blocks[x, z].WSFaces[2] = minHeight;
-                        room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
-                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
-                    }
+                        if (room.Blocks[x, z].WSFaces[3] < minHeight)
+                        {
+                            minHeight = room.Blocks[x, z].WSFaces[3];
+                            theCorner = 3;
+                        }
 
-                    if (theCorner == 2)
-                    {
-                        room.Blocks[x, z].WSFaces[1] = minHeight;
-                        room.Blocks[x, z].WSFaces[3] = minHeight;
-                        room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
-                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
-                    }
+                        if (theCorner == 0)
+                        {
+                            room.Blocks[x, z].WSFaces[1] = minHeight;
+                            room.Blocks[x, z].WSFaces[3] = minHeight;
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                                room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
+                        }
 
-                    if (theCorner == 3)
-                    {
-                        room.Blocks[x, z].WSFaces[0] = minHeight;
-                        room.Blocks[x, z].WSFaces[2] = minHeight;
-                        room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
-                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
-                    }
+                        if (theCorner == 1)
+                        {
+                            room.Blocks[x, z].WSFaces[0] = minHeight;
+                            room.Blocks[x, z].WSFaces[2] = minHeight;
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                                room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
+                        }
 
-                    room.Blocks[x, z].FixHeights();
+                        if (theCorner == 2)
+                        {
+                            room.Blocks[x, z].WSFaces[1] = minHeight;
+                            room.Blocks[x, z].WSFaces[3] = minHeight;
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                                room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
+                        }
+
+                        if (theCorner == 3)
+                        {
+                            room.Blocks[x, z].WSFaces[0] = minHeight;
+                            room.Blocks[x, z].WSFaces[2] = minHeight;
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
+                            if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                                room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
+                        }
+
+                        room.Blocks[x, z].CeilingSplitDirectionToggled = false;
+                        room.Blocks[x, z].FixHeights();
+                    }
                 }
 
             SmartBuildGeometry(room, area);
@@ -1852,7 +1493,7 @@ namespace TombEditor
                         continue;
 
                     if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                        RotateSector(room.Blocks[x, z], true);
+                        room.Blocks[x, z].Rotate(true);
                     else
                     {
                         // Now try to guess the floor split
@@ -1919,92 +1560,6 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void RotateDiagonalSplit(Block block, bool floor = true)
-        {
-            if (block.Type == BlockType.BorderWall)
-                return;
-
-            if ((floor || block.Type == BlockType.Wall) &&
-                    block.FloorDiagonalSplit != DiagonalSplit.None)
-            {
-                if (block.FloorDiagonalSplit == DiagonalSplit.XnZp)
-                    block.FloorDiagonalSplit = DiagonalSplit.XpZp;
-                else if (block.FloorDiagonalSplit == DiagonalSplit.XpZp)
-                    block.FloorDiagonalSplit = DiagonalSplit.XpZn;
-                else if (block.FloorDiagonalSplit == DiagonalSplit.XpZn)
-                    block.FloorDiagonalSplit = DiagonalSplit.XnZn;
-                else if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
-                    block.FloorDiagonalSplit = DiagonalSplit.XnZp;
-            }
-
-            if ((!floor || block.Type == BlockType.Wall) &&
-                 block.CeilingDiagonalSplit != DiagonalSplit.None)
-            {
-                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp)
-                    block.CeilingDiagonalSplit = DiagonalSplit.XpZp;
-                else if (block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
-                    block.CeilingDiagonalSplit = DiagonalSplit.XpZn;
-                else if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
-                    block.CeilingDiagonalSplit = DiagonalSplit.XnZn;
-                else if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
-                    block.CeilingDiagonalSplit = DiagonalSplit.XnZp;
-            }
-        }
-
-        public static void RotateSector(Block block, bool floor)
-        {
-            RotateDiagonalSplit(block, floor);
-
-            short[] swapFace = new short[4];
-
-            if (floor || block.Type == BlockType.Wall)
-            {
-                swapFace[0] = block.QAFaces[3];
-                swapFace[1] = block.QAFaces[0];
-                swapFace[2] = block.QAFaces[1];
-                swapFace[3] = block.QAFaces[2];
-
-                block.QAFaces[0] = swapFace[0];
-                block.QAFaces[1] = swapFace[1];
-                block.QAFaces[2] = swapFace[2];
-                block.QAFaces[3] = swapFace[3];
-
-                swapFace[0] = block.EDFaces[3];
-                swapFace[1] = block.EDFaces[0];
-                swapFace[2] = block.EDFaces[1];
-                swapFace[3] = block.EDFaces[2];
-
-                block.EDFaces[0] = swapFace[0];
-                block.EDFaces[1] = swapFace[1];
-                block.EDFaces[2] = swapFace[2];
-                block.EDFaces[3] = swapFace[3];
-            }
-            else if (!floor || block.Type == BlockType.Wall)
-            {
-                swapFace[0] = block.WSFaces[3];
-                swapFace[1] = block.WSFaces[0];
-                swapFace[2] = block.WSFaces[1];
-                swapFace[3] = block.WSFaces[2];
-
-                block.WSFaces[0] = swapFace[0];
-                block.WSFaces[1] = swapFace[1];
-                block.WSFaces[2] = swapFace[2];
-                block.WSFaces[3] = swapFace[3];
-
-                swapFace[0] = block.RFFaces[3];
-                swapFace[1] = block.RFFaces[0];
-                swapFace[2] = block.RFFaces[1];
-                swapFace[3] = block.RFFaces[2];
-
-                block.RFFaces[0] = swapFace[0];
-                block.RFFaces[1] = swapFace[1];
-                block.RFFaces[2] = swapFace[2];
-                block.RFFaces[3] = swapFace[3];
-            }
-
-            block.FixHeights(floor ? 1 : 0);
-        }
-
         public static void RotateSectors(Room room, Rectangle area, bool floor)
         {
             for (int x = area.X; x <= area.Right; x++)
@@ -2014,7 +1569,7 @@ namespace TombEditor
                         (floor && room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Floor)) ||
                         (!floor && room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Ceiling)))
                         continue;
-                    RotateSector(room.Blocks[x, z], floor);
+                    room.Blocks[x, z].Rotate(floor);
                 }
 
             SmartBuildGeometry(room, area);

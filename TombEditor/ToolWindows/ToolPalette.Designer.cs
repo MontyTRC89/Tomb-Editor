@@ -42,6 +42,7 @@
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolUVFixer = new System.Windows.Forms.ToolStripButton();
+            this.toolDrag = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,6 +56,7 @@
             this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSelection,
+            this.toolDrag,
             this.toolBrush,
             this.toolShovel,
             this.toolPencil,
@@ -228,6 +230,18 @@
             this.toolUVFixer.ToolTipText = "Fix texture coordinates";
             this.toolUVFixer.Click += new System.EventHandler(this.toolUVFixer_Click);
             // 
+            // toolDrag
+            // 
+            this.toolDrag.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolDrag.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolDrag.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolDrag.Image = global::TombEditor.Properties.Resources.toolbox_Drag_16;
+            this.toolDrag.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolDrag.Name = "toolDrag";
+            this.toolDrag.Size = new System.Drawing.Size(23, 20);
+            this.toolDrag.ToolTipText = "Drag";
+            this.toolDrag.Click += new System.EventHandler(this.toolDrag_Click);
+            // 
             // ToolPalette
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -262,5 +276,6 @@
         private System.Windows.Forms.ToolStripSeparator toolSeparator2;
         private System.Windows.Forms.ToolStripButton toolUVFixer;
         private System.Windows.Forms.ToolStripButton toolGroup;
+        private System.Windows.Forms.ToolStripButton toolDrag;
     }
 }
