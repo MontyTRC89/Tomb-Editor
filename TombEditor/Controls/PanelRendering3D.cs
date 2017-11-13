@@ -1144,12 +1144,12 @@ namespace TombEditor.Controls
                                         case EditorToolType.Flatten:
                                             for (int i = 0; i < 4; i++)
                                             {
-                                                if (newPicking.BelongsToFloor)
+                                                if (newPicking.BelongsToFloor && _toolHandler.ReferenceIsFloor)
                                                 {
                                                     _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolHandler.ReferenceBlock.QAFaces.Min();
                                                     _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolHandler.ReferenceBlock.EDFaces.Min();
                                                 }
-                                                else
+                                                else if (newPicking.BelongsToCeiling && !_toolHandler.ReferenceIsFloor)
                                                 {
                                                     _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolHandler.ReferenceBlock.WSFaces.Min();
                                                     _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolHandler.ReferenceBlock.RFFaces.Min();
