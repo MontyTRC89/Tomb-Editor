@@ -2978,8 +2978,9 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["UseVertexColors"].SetValue(false);
                 }
 
-                // Reset highlight for all faces
+                // Reset highlight / dim for all faces
                 _roomEffect.Parameters["Highlight"].SetValue(false);
+                _roomEffect.Parameters["Dim"].SetValue(false);
 
                 // Calculate the bounds of the current selection
                 int xMin = Math.Min(_editor.SelectedSectors.Start.X, _editor.SelectedSectors.End.X);
@@ -3002,7 +3003,6 @@ namespace TombEditor.Controls
                 else
                 {
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 200.0f / 255.0f, 200.0f / 255.0f, 1.0f));
-                    _roomEffect.Parameters["Dim"].SetValue(false);
 
                     if ((room.Blocks[x, z].Flags & BlockFlags.DeathElectricity) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
@@ -3022,7 +3022,7 @@ namespace TombEditor.Controls
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorTrigger));
                 }
 
-                // Portals
+                // Portals / diagonal steps
                 if (face < (BlockFace)25)
                 {
                     if (room.Blocks[x, z].WallPortal != null)
