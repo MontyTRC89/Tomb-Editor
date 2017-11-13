@@ -102,10 +102,10 @@ float4 PS(PixelInputType input) : SV_TARGET
 	result.w *= input.Color.w;
     
     // Highlight & Dim (selection & diagonal steps)
-    if(Dim)
-        result -= float4(0.09f, 0.09f, 0.09f, 0.0f);
     if(Highlight)
-        result += float4(0.2f, 0.2f, 0.2f, 0.0f);
+        result.xyz += 0.2f;
+    if(Dim && !(result.x > 0.85f && result.y > 0.85f && result.z > 0.85f))
+        result *= 0.70f;
 
 	// Draw outline
 	if (DrawSectorOutlinesAndUseEditorUV)
