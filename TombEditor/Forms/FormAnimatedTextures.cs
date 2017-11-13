@@ -483,12 +483,11 @@ namespace TombEditor
 
                             if(textArea.Width > textSize.Width && textArea.Height > textSize.Height)
                             {
-                                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
                                 e.Graphics.DrawString(counterString, textFont, textShadowBrush, textArea, textFormat);
                                 textArea.X -= 1;
                                 textArea.Y -= 1;
                                 e.Graphics.DrawString(counterString, textFont, textBrush, textArea, textFormat);
-                                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
                             }
                         }
                         e.Graphics.DrawPolygon(current ? activeOutlinePen : outlinePen, edges);
