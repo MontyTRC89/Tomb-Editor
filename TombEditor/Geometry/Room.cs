@@ -362,8 +362,8 @@ namespace TombEditor.Geometry
             const int lowestPassableHeight = 4;
             const int lowestPassableStep = 2;  // Lara still can bug out of 2-click step heights
 
-            var normals = sector.GetTriangleNormals();
-            var slopeDirections = sector.GetTriangleSlopeDirections();
+            var normals = sector.GetFloorTriangleNormals();
+            var slopeDirections = sector.GetFloorTriangleSlopeDirections();
 
             if (slopeDirections[0] != Direction.None && slopeDirections[1] != Direction.None &&
                 slopeDirections[0] != slopeDirections[1])
@@ -391,7 +391,7 @@ namespace TombEditor.Geometry
 
                 switch (slopeDirections[i])
                 {
-                    case Direction.North:
+                    case Direction.PositiveZ:
                         lookupBlock = GetBlockTryThroughPortal(x, z + 1);
                         heightsToCompare[0] = 0;
                         heightsToCompare[1] = 1;
@@ -399,15 +399,7 @@ namespace TombEditor.Geometry
                         heightsToCheck[1] = 2;
                         break;
 
-                    case Direction.East:
-                        lookupBlock = GetBlockTryThroughPortal(x + 1, z);
-                        heightsToCompare[0] = 1;
-                        heightsToCompare[1] = 2;
-                        heightsToCheck[0] = 0;
-                        heightsToCheck[1] = 3;
-                        break;
-
-                    case Direction.South:
+                    case Direction.NegativeZ:
                         lookupBlock = GetBlockTryThroughPortal(x, z - 1);
                         heightsToCompare[0] = 2;
                         heightsToCompare[1] = 3;
@@ -415,10 +407,21 @@ namespace TombEditor.Geometry
                         heightsToCheck[1] = 0;
                         break;
 
-                    case Direction.West:
+                    // We only need to override east and west diagonal split HeightsToCompare[1] cases, because 
+                    // slanted diagonal splits are always 45 degrees, hence these are only two slide directions possible.
+
+                    case Direction.PositiveX:
+                        lookupBlock = GetBlockTryThroughPortal(x + 1, z);
+                        heightsToCompare[0] = 1;
+                        heightsToCompare[1] = (short)(sector.FloorDiagonalSplit == DiagonalSplit.XnZp ? 1 : 2);
+                        heightsToCheck[0] = 0;
+                        heightsToCheck[1] = 3;
+                        break;
+
+                    case Direction.NegativeX:
                         lookupBlock = GetBlockTryThroughPortal(x - 1, z);
                         heightsToCompare[0] = 3;
-                        heightsToCompare[1] = 0;
+                        heightsToCompare[1] = (short)(sector.FloorDiagonalSplit == DiagonalSplit.XpZn ? 3 : 0);
                         heightsToCheck[0] = 2;
                         heightsToCheck[1] = 1;
                         break;
@@ -446,7 +449,7 @@ namespace TombEditor.Geometry
 
                     switch (slopeDirections[i])
                     {
-                        case Direction.North:
+                        case Direction.PositiveZ:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
@@ -461,7 +464,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 3;
                             break;
-                        case Direction.East:
+                        case Direction.PositiveX:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
@@ -476,7 +479,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 0;
                             break;
-                        case Direction.South:
+                        case Direction.NegativeZ:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
                             {
@@ -491,7 +494,7 @@ namespace TombEditor.Geometry
                             else
                                 heightsToCheck[1] = 1;
                             break;
-                        case Direction.West:
+                        case Direction.NegativeX:
                             if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
                                 lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                             {
@@ -523,37 +526,60 @@ namespace TombEditor.Geometry
                     if (lookupBlock.Block.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] > absoluteLowestPassableStep ||
                         lookupBlock.Block.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] > absoluteLowestPassableStep)
                         slopeIsIllegal = true;
-                    else if (heightsToCheck[0] != heightsToCheck[1]) // Only look for opposite slope cases in case there's no diagonal step in lookup block.
+                    else
                     {
-                        var lookupBlockSlopeDirections = lookupBlock.Block.GetTriangleSlopeDirections();
+                        var lookupBlockSlopeDirections = lookupBlock.Block.GetFloorTriangleSlopeDirections();
 
                         for (int j = 0; j < 2; j++)
                         {
                             // If both current and lookup sector triangle split direction is the same, ignore far opposite triangles.
+                            // FIXME: works only for normal sectors. Diagonal steps are broken!
 
-                            if (!sector.FloorIsQuad && !lookupBlock.Block.FloorIsQuad && lookupBlock.Block.FloorSplitDirectionIsXEqualsZ == sector.FloorSplitDirectionIsXEqualsZ)
+                            if (!sector.FloorIsQuad && !lookupBlock.Block.FloorIsQuad)
                             {
-                                if (sector.FloorSplitDirectionIsXEqualsZ)
+                                var sectorSplitDirection = (sector.FloorDiagonalSplit == DiagonalSplit.None ? sector.FloorSplitDirectionIsXEqualsZ : ((int)sector.FloorDiagonalSplit % 2 != 0));
+                                var lookupSplitDirection = (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.None ? lookupBlock.Block.FloorSplitDirectionIsXEqualsZ : ((int)lookupBlock.Block.FloorDiagonalSplit % 2 != 0));
+
+                                if (sectorSplitDirection == lookupSplitDirection)
                                 {
-                                    if (((slopeDirections[i] == Direction.North || slopeDirections[i] == Direction.West) && i == 0 && j == 1) ||
-                                        ((slopeDirections[i] == Direction.East || slopeDirections[i] == Direction.South) && i == 1 && j == 0))
+                                    if (sector.FloorDiagonalSplit != DiagonalSplit.None && lookupBlock.Block.FloorDiagonalSplit != DiagonalSplit.None)
                                         continue;
-                                }
-                                else
-                                {
-                                    if ((slopeDirections[i] < Direction.South && i == 1 && j == 0) ||
-                                       (slopeDirections[i] >= Direction.South && i == 0 && j == 1))
-                                        continue;
+
+                                    if (sectorSplitDirection)
+                                    {
+                                        if (((slopeDirections[i] == Direction.PositiveZ || slopeDirections[i] == Direction.NegativeX) && i == 0 && j == 1) ||
+                                            ((slopeDirections[i] == Direction.PositiveX || slopeDirections[i] == Direction.NegativeZ) && i == 1 && j == 0))
+                                            continue;
+                                    }
+                                    else
+                                    {
+                                        if ((slopeDirections[i] < Direction.NegativeZ && i == 1 && j == 0) ||
+                                            (slopeDirections[i] >= Direction.NegativeZ && i == 0 && j == 1))
+                                            continue;
+                                    }
                                 }
                             }
+
+                            // This code is needed to get REAL triangle index for diagonal step cases, because for some reason, triangle indices are inverted in this case.
+
+                            var realTriangleIndex = j;
+
+                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn || lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                                realTriangleIndex = (realTriangleIndex == 0 ? 1 : 0);
 
                             // Triangle is considered illegal only if its lowest point lies lower than lowest passable step height compared to opposite triangle minimum point.
                             // Triangle is NOT considered illegal, if its slide direction is perpendicular to opposite triangle slide direction.
 
-                            if (sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(j) - heightAdjust) <= lowestPassableStep)
+                            var heightDifference = sector.GetTriangleMinimumFloorPoint(i) - (lookupBlock.Block.GetTriangleMinimumFloorPoint(realTriangleIndex) - heightAdjust);
+
+                            if ((heightsToCheck[0] != heightsToCheck[1] && heightDifference <= lowestPassableStep) || // Ordinary cases
+                                (heightsToCheck[0] == heightsToCheck[1] && heightDifference <= 0 && heightDifference > -lowestPassableStep))  // Diagonal step cases
+                            {
+
                                 if (lookupBlockSlopeDirections[j] != Direction.None && lookupBlockSlopeDirections[j] != slopeDirections[i])
                                     if (((int)lookupBlockSlopeDirections[j] % 2) == ((int)slopeDirections[i] % 2))
                                         slopeIsIllegal = true;
+                            }
                         }
                     }
                 }
@@ -2404,6 +2430,7 @@ namespace TombEditor.Geometry
             public DrawingPoint Pos;
             public BlockFace Face;
             public float Distance;
+            public float VerticalCoord;
         };
 
         public IntersectionInfo? RayIntersectsGeometry(Ray ray)
@@ -2425,10 +2452,13 @@ namespace TombEditor.Geometry
                             float distance;
                             if (ray.Intersects(ref p0, ref p1, ref p2, out distance))
                             {
+                                Vector3 position;
+                                ray.Intersects(ref p0, ref p1, ref p2, out position);
+
                                 var normal = Vector3.Cross(p1 - p0, p2 - p0);
                                 if (Vector3.Dot(ray.Direction, normal) <= 0)
                                     if (!(distance > result.Distance))
-                                        result = new IntersectionInfo() { Distance = distance, Face = face, Pos = new DrawingPoint(x, z) };
+                                        result = new IntersectionInfo() { Distance = distance, Face = face, Pos = new DrawingPoint(x, z), VerticalCoord = position.Y };
                             }
                         }
                     }

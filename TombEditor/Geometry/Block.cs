@@ -56,7 +56,7 @@ namespace TombEditor.Geometry
 
     public enum Direction : byte
     {
-        None = 0, North = 1, East = 2, South = 3, West = 4
+        None = 0, PositiveZ = 1, PositiveX = 2, NegativeZ = 3, NegativeX = 4, Diagonal = 5
     }
 
     public class Block : ICloneable
@@ -196,8 +196,162 @@ namespace TombEditor.Geometry
 
         public void ChangeEdge(int verticalSubdivision, int edge, short increment)
         {
-            GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
-            FixHeights(verticalSubdivision);
+            if((verticalSubdivision == 0 || verticalSubdivision == 2) && FloorDiagonalSplit == DiagonalSplit.None ||
+               (verticalSubdivision == 1 || verticalSubdivision == 3) && CeilingDiagonalSplit == DiagonalSplit.None)
+            {
+                GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
+                FixHeights(verticalSubdivision);
+            }
+        }
+        public void Raise(int verticalSubdivision, bool diagonalStep, short increment)
+        {
+            var faces = GetVerticalSubdivision(verticalSubdivision);
+            var split = (verticalSubdivision == 0 || verticalSubdivision == 2) ? FloorDiagonalSplit : CeilingDiagonalSplit;
+
+            if (diagonalStep)
+            {
+                switch (split)
+                {
+                    case DiagonalSplit.XpZn:
+                        faces[0] += increment;
+                        break;
+                    case DiagonalSplit.XnZn:
+                        faces[1] += increment;
+                        break;
+                    case DiagonalSplit.XnZp:
+                        faces[2] += increment;
+                        break;
+                    case DiagonalSplit.XpZp:
+                        faces[3] += increment;
+                        break;
+                }
+            }
+            else
+            {
+                for(int i = 0; i < 4; i++)
+                {
+                    if ((i == 0 && split == DiagonalSplit.XpZn) ||
+                        (i == 1 && split == DiagonalSplit.XnZn) ||
+                        (i == 2 && split == DiagonalSplit.XnZp) ||
+                        (i == 3 && split == DiagonalSplit.XpZp) )
+                        continue;
+                    faces[i] += increment;
+                }
+            }
+        }
+
+        public void RaiseStepWise(int verticalSubdivision, bool diagonalStep, short increment, bool autoSwitch = false)
+        {
+            var floor = (verticalSubdivision % 2 == 0);
+            var split = floor ? FloorDiagonalSplit : CeilingDiagonalSplit;
+
+            if (split != DiagonalSplit.None)
+            {
+                var faces = GetVerticalSubdivision(verticalSubdivision);
+                var stepIsLimited = increment != 0 && ((increment > 0) == (!floor ^ diagonalStep));
+
+                if ((split == DiagonalSplit.XpZn && faces[0] == faces[1] && stepIsLimited) ||
+                    (split == DiagonalSplit.XnZn && faces[1] == faces[2] && stepIsLimited) ||
+                    (split == DiagonalSplit.XnZp && faces[2] == faces[3] && stepIsLimited) ||
+                    (split == DiagonalSplit.XpZp && faces[3] == faces[0] && stepIsLimited))
+                {
+                    if (IsAnyWall && autoSwitch)
+                        Raise(verticalSubdivision, !diagonalStep, increment);
+                    else
+                    {
+                        if (autoSwitch)
+                        {
+                            Rotate(floor, 2);
+                            Raise(verticalSubdivision, !diagonalStep, increment);
+                        }
+                        return;
+                    }
+                }
+            }
+            Raise(verticalSubdivision, diagonalStep, increment);
+        }
+
+        public void Rotate(bool floor, int iterations = 1)
+        {
+            if (iterations < 1 || iterations > 3)
+                return;
+
+            for (int i = 0; i < iterations; i++)
+            {
+                if ((floor || Type == BlockType.Wall) &&
+                     FloorDiagonalSplit != DiagonalSplit.None)
+                {
+                    if (FloorDiagonalSplit == DiagonalSplit.XnZp)
+                        FloorDiagonalSplit = DiagonalSplit.XpZp;
+                    else if (FloorDiagonalSplit == DiagonalSplit.XpZp)
+                        FloorDiagonalSplit = DiagonalSplit.XpZn;
+                    else if (FloorDiagonalSplit == DiagonalSplit.XpZn)
+                        FloorDiagonalSplit = DiagonalSplit.XnZn;
+                    else if (FloorDiagonalSplit == DiagonalSplit.XnZn)
+                        FloorDiagonalSplit = DiagonalSplit.XnZp;
+                }
+
+                if ((!floor || Type == BlockType.Wall) &&
+                     CeilingDiagonalSplit != DiagonalSplit.None)
+                {
+                    if (CeilingDiagonalSplit == DiagonalSplit.XnZp)
+                        CeilingDiagonalSplit = DiagonalSplit.XpZp;
+                    else if (CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                        CeilingDiagonalSplit = DiagonalSplit.XpZn;
+                    else if (CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                        CeilingDiagonalSplit = DiagonalSplit.XnZn;
+                    else if (CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                        CeilingDiagonalSplit = DiagonalSplit.XnZp;
+                }
+
+                short[] swapFace = new short[4];
+
+                if (floor || Type == BlockType.Wall)
+                {
+                    swapFace[0] = QAFaces[3];
+                    swapFace[1] = QAFaces[0];
+                    swapFace[2] = QAFaces[1];
+                    swapFace[3] = QAFaces[2];
+
+                    QAFaces[0] = swapFace[0];
+                    QAFaces[1] = swapFace[1];
+                    QAFaces[2] = swapFace[2];
+                    QAFaces[3] = swapFace[3];
+
+                    swapFace[0] = EDFaces[3];
+                    swapFace[1] = EDFaces[0];
+                    swapFace[2] = EDFaces[1];
+                    swapFace[3] = EDFaces[2];
+
+                    EDFaces[0] = swapFace[0];
+                    EDFaces[1] = swapFace[1];
+                    EDFaces[2] = swapFace[2];
+                    EDFaces[3] = swapFace[3];
+                }
+                else if (!floor || Type == BlockType.Wall)
+                {
+                    swapFace[0] = WSFaces[3];
+                    swapFace[1] = WSFaces[0];
+                    swapFace[2] = WSFaces[1];
+                    swapFace[3] = WSFaces[2];
+
+                    WSFaces[0] = swapFace[0];
+                    WSFaces[1] = swapFace[1];
+                    WSFaces[2] = swapFace[2];
+                    WSFaces[3] = swapFace[3];
+
+                    swapFace[0] = RFFaces[3];
+                    swapFace[1] = RFFaces[0];
+                    swapFace[2] = RFFaces[1];
+                    swapFace[3] = RFFaces[2];
+
+                    RFFaces[0] = swapFace[0];
+                    RFFaces[1] = swapFace[1];
+                    RFFaces[2] = swapFace[2];
+                    RFFaces[3] = swapFace[3];
+                }
+                FixHeights(floor ? 1 : 0);
+            }
         }
 
         public void FixHeights(int verticalSubdivision = -1)
@@ -208,9 +362,16 @@ namespace TombEditor.Geometry
                 RFFaces[i] = Math.Max(RFFaces[i], WSFaces[i]);
 
                 if (verticalSubdivision == 0 || verticalSubdivision == 2 || verticalSubdivision == -1)
-                    QAFaces[i] = Math.Min(QAFaces[i], WSFaces[i]);
+                    if(FloorDiagonalSplit != DiagonalSplit.None)
+                        QAFaces[i] = Math.Min(QAFaces[i], CeilingMin);
+                    else
+                        QAFaces[i] = Math.Min(QAFaces[i], WSFaces[i]);
+
                 if (verticalSubdivision == 1 || verticalSubdivision == 3 || verticalSubdivision == -1)
-                    WSFaces[i] = Math.Max(WSFaces[i], QAFaces[i]);
+                    if(CeilingDiagonalSplit != DiagonalSplit.None)
+                        WSFaces[i] = Math.Max(WSFaces[i], FloorMax);
+                    else
+                        WSFaces[i] = Math.Max(WSFaces[i], QAFaces[i]);
             }
         }
 
@@ -240,7 +401,7 @@ namespace TombEditor.Geometry
             return -1;
         }
 
-        public Vector3[] GetTriangleNormals()
+        public Vector3[] GetFloorTriangleNormals()
         {
             Plane[] tri = new Plane[2];
 
@@ -286,55 +447,97 @@ namespace TombEditor.Geometry
             }
         }
 
-        public Direction[] GetTriangleSlopeDirections()
+        public Direction[] GetFloorTriangleSlopeDirections()
         {
-            var normals = GetTriangleNormals();
+            var normals = GetFloorTriangleNormals();
 
             // Initialize slope directions as unslidable by default (EntireFace means unslidable in our case).
 
             Direction[] slopeDirections = new Direction[2] { Direction.None, Direction.None };
 
-            for (int i = 0; i < (FloorIsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
+            if(FloorHasSlope)
             {
-                if (Math.Abs(normals[i].Y) <= CriticalSlantComponent) // Triangle is slidable
+                for (int i = 0; i < (FloorIsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
                 {
-                    bool angleNotDefined = true;
-                    var angle = Math.Atan2(normals[i].X, normals[i].Z) * (180.0f / Math.PI);
-                    angle = angle < 0 ? angle + 360.0f : angle;
-
-                    // Note about 45, 135, 225 and 315 degree steps:
-                    // Core Design has used override instead of rounding for triangular slopes angled under
-                    // 45-degree stride, to produce either east or west-oriented slide.
-
-                    while (angleNotDefined)
+                    if (Math.Abs(normals[i].Y) <= CriticalSlantComponent) // Triangle is slidable
                     {
-                        switch ((int)angle)
+                        bool angleNotDefined = true;
+                        var angle = Math.Atan2(normals[i].X, normals[i].Z) * (180.0f / Math.PI);
+                        angle = angle < 0 ? angle + 360.0f : angle;
+
+                        // Note about 45, 135, 225 and 315 degree steps:
+                        // Core Design has used override instead of rounding for triangular slopes angled under
+                        // 45-degree stride, to produce either east or west-oriented slide.
+
+                        while (angleNotDefined)
                         {
-                            case 0:
-                            case 360:
-                                slopeDirections[i] = Direction.North;
-                                angleNotDefined = false;
-                                break;
-                            case 45:
-                            case 90:
-                            case 135:
-                                slopeDirections[i] = Direction.East;
-                                angleNotDefined = false;
-                                break;
-                            case 180:
-                                slopeDirections[i] = Direction.South;
-                                angleNotDefined = false;
-                                break;
-                            case 225:
-                            case 270:
-                            case 315:
-                                slopeDirections[i] = Direction.West;
-                                angleNotDefined = false;
-                                break;
-                            default:
-                                angle = (int)Math.Round(angle / 90.0f, MidpointRounding.AwayFromZero) * 90;
-                                break;
+                            switch ((int)angle)
+                            {
+                                case 0:
+                                case 360:
+                                    slopeDirections[i] = Direction.PositiveZ;
+                                    angleNotDefined = false;
+                                    break;
+                                case 45:
+                                case 90:
+                                case 135:
+                                    slopeDirections[i] = Direction.PositiveX;
+                                    angleNotDefined = false;
+                                    break;
+                                case 180:
+                                    slopeDirections[i] = Direction.NegativeZ;
+                                    angleNotDefined = false;
+                                    break;
+                                case 225:
+                                case 270:
+                                case 315:
+                                    slopeDirections[i] = Direction.NegativeX;
+                                    angleNotDefined = false;
+                                    break;
+                                default:
+                                    angle = (int)Math.Round(angle / 90.0f, MidpointRounding.AwayFromZero) * 90;
+                                    break;
+                            }
                         }
+                    }
+                }
+
+                // We swap triangle directions for XpZn and XnZp cases, because in these cases
+                // triangle indices are inverted.
+                // For other cases, we move slide direction triangle to proper one accordingly to
+                // step slant value encoded in corner heights.
+
+                if (FloorDiagonalSplit != DiagonalSplit.None)
+                {
+                    switch(FloorDiagonalSplit)
+                    {
+                        case DiagonalSplit.XpZn:
+                            slopeDirections[1] = slopeDirections[0];
+                            slopeDirections[0] = Direction.None;
+                            break;
+
+                        case DiagonalSplit.XnZp:
+                            if(!FloorIsQuad)
+                            {
+                                slopeDirections[0] = slopeDirections[1];
+                                slopeDirections[1] = Direction.None;
+                            }
+                            break;
+
+                        case DiagonalSplit.XnZn:
+                            if (FloorIsQuad)
+                            {
+                                slopeDirections[1] = slopeDirections[0];
+                                slopeDirections[0] = Direction.None;
+                            }
+                            else
+                                slopeDirections[0] = Direction.None;
+                            break;
+
+                        case DiagonalSplit.XpZp:
+                            if (!FloorIsQuad)
+                                slopeDirections[1] = Direction.None;
+                            break;
                     }
                 }
             }
@@ -486,10 +689,10 @@ namespace TombEditor.Geometry
                 (hXpZp - hXnZp) == (hXpZn - hXnZn);
         }
 
-        public bool FloorIsQuad => IsQuad(QAFaces[FaceXnZp], QAFaces[FaceXpZp], QAFaces[FaceXpZn], QAFaces[FaceXnZn]);
-        public bool CeilingIsQuad => IsQuad(WSFaces[FaceXnZp], WSFaces[FaceXpZp], WSFaces[FaceXpZn], WSFaces[FaceXnZn]);
-        public bool FloorHasSlope => FloorDiagonalSplit == DiagonalSplit.None && FloorMax - FloorMin > 2;
-        public bool CeilingHasSlope => CeilingDiagonalSplit == DiagonalSplit.None && CeilingMax - CeilingMin > 2;
+        public bool FloorIsQuad => FloorDiagonalSplit == DiagonalSplit.None && IsQuad(QAFaces[FaceXnZp], QAFaces[FaceXpZp], QAFaces[FaceXpZn], QAFaces[FaceXnZn]);
+        public bool CeilingIsQuad => CeilingDiagonalSplit == DiagonalSplit.None && IsQuad(WSFaces[FaceXnZp], WSFaces[FaceXpZp], WSFaces[FaceXpZn], WSFaces[FaceXnZn]);
+        public bool FloorHasSlope => FloorMax - FloorMin > 2;
+        public bool CeilingHasSlope => CeilingMax - CeilingMin > 2;
         public int FloorIfQuadSlopeX => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXnZp] : 0;
         public int FloorIfQuadSlopeZ => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXpZn] : 0;
         public int CeilingIfQuadSlopeX => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXnZp] : 0;
