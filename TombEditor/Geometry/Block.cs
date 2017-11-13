@@ -263,8 +263,8 @@ namespace TombEditor.Geometry
                         {
                             Rotate(floor, 2);
                             Raise(verticalSubdivision, !diagonalStep, increment);
-                            return;
                         }
+                        return;
                     }
                 }
             }

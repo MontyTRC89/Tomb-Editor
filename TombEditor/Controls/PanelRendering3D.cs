@@ -2619,6 +2619,8 @@ namespace TombEditor.Controls
 
             // Set some common parameters of the shader
             _roomEffect = _deviceManager.Effects["Room"];
+            _roomEffect.Parameters["Highlight"].SetValue(false);
+            _roomEffect.Parameters["Dim"].SetValue(false);
             _roomEffect.Parameters["UseVertexColors"].SetValue(false);
             _roomEffect.Parameters["TextureEnabled"].SetValue(false);
             _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
@@ -2976,6 +2978,9 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["UseVertexColors"].SetValue(false);
                 }
 
+                // Reset highlight for all faces
+                _roomEffect.Parameters["Highlight"].SetValue(false);
+
                 // Calculate the bounds of the current selection
                 int xMin = Math.Min(_editor.SelectedSectors.Start.X, _editor.SelectedSectors.End.X);
                 int xMax = Math.Max(_editor.SelectedSectors.Start.X, _editor.SelectedSectors.End.X);
@@ -2997,6 +3002,7 @@ namespace TombEditor.Controls
                 else
                 {
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 200.0f / 255.0f, 200.0f / 255.0f, 1.0f));
+                    _roomEffect.Parameters["Dim"].SetValue(false);
 
                     if ((room.Blocks[x, z].Flags & BlockFlags.DeathElectricity) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
@@ -3025,12 +3031,26 @@ namespace TombEditor.Controls
 
                 if (face == (BlockFace)25 || face == (BlockFace)26)
                 {
+                    if (room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                    {
+                        if ((room.Blocks[x, z].FloorDiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Floor) ||
+                            (room.Blocks[x, z].FloorDiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.FloorTriangle2))
+                            _roomEffect.Parameters["Dim"].SetValue(true);
+                    }
+
                     if (room.Blocks[x, z].FloorPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 
                 if (face == (BlockFace)27 || face == (BlockFace)28)
                 {
+                    if (room.Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None)
+                    {
+                        if ((room.Blocks[x, z].CeilingDiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Ceiling) ||
+                            (room.Blocks[x, z].CeilingDiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.CeilingTriangle2))
+                            _roomEffect.Parameters["Dim"].SetValue(true);
+                    }
+
                     if (room.Blocks[x, z].CeilingPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
@@ -3045,6 +3065,9 @@ namespace TombEditor.Controls
                     // We are in a selected area, so enable selection color
                     _roomEffect.Parameters["UseVertexColors"].SetValue(false);
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.998f, 0.0f, 0.0f, 1.0f)); // Selection color
+
+                    //Highlight selection, if current tool is dragging
+                    _roomEffect.Parameters["Highlight"].SetValue(_toolHandler.Dragged);
 
                     // Apply arrows to floor and ceiling
                     if (face == (BlockFace)25 || face == (BlockFace)26)
