@@ -535,19 +535,28 @@ namespace TombEditor.Geometry
                             // If both current and lookup sector triangle split direction is the same, ignore far opposite triangles.
                             // FIXME: works only for normal sectors. Diagonal steps are broken!
 
-                            if (!sector.FloorIsQuad && !lookupBlock.Block.FloorIsQuad && lookupBlock.Block.FloorSplitDirectionIsXEqualsZ == sector.FloorSplitDirectionIsXEqualsZ)
+                            if (!sector.FloorIsQuad && !lookupBlock.Block.FloorIsQuad)
                             {
-                                if (sector.FloorSplitDirectionIsXEqualsZ)
+                                var sectorSplitDirection = (sector.FloorDiagonalSplit == DiagonalSplit.None ? sector.FloorSplitDirectionIsXEqualsZ : ((int)sector.FloorDiagonalSplit % 2 != 0));
+                                var lookupSplitDirection = (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.None ? lookupBlock.Block.FloorSplitDirectionIsXEqualsZ : ((int)lookupBlock.Block.FloorDiagonalSplit % 2 != 0));
+
+                                if (sectorSplitDirection == lookupSplitDirection)
                                 {
-                                    if (((slopeDirections[i] == Direction.PositiveZ || slopeDirections[i] == Direction.NegativeX) && i == 0 && j == 1) ||
-                                        ((slopeDirections[i] == Direction.PositiveX || slopeDirections[i] == Direction.NegativeZ) && i == 1 && j == 0))
+                                    if (sector.FloorDiagonalSplit != DiagonalSplit.None && lookupBlock.Block.FloorDiagonalSplit != DiagonalSplit.None)
                                         continue;
-                                }
-                                else
-                                {
-                                    if ((slopeDirections[i] < Direction.NegativeZ && i == 1 && j == 0) ||
-                                       (slopeDirections[i] >= Direction.NegativeZ && i == 0 && j == 1))
-                                        continue;
+
+                                    if (sectorSplitDirection)
+                                    {
+                                        if (((slopeDirections[i] == Direction.PositiveZ || slopeDirections[i] == Direction.NegativeX) && i == 0 && j == 1) ||
+                                            ((slopeDirections[i] == Direction.PositiveX || slopeDirections[i] == Direction.NegativeZ) && i == 1 && j == 0))
+                                            continue;
+                                    }
+                                    else
+                                    {
+                                        if ((slopeDirections[i] < Direction.NegativeZ && i == 1 && j == 0) ||
+                                            (slopeDirections[i] >= Direction.NegativeZ && i == 0 && j == 1))
+                                            continue;
+                                    }
                                 }
                             }
 
