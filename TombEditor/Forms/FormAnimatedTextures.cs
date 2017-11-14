@@ -455,6 +455,9 @@ namespace TombEditor
 
             private void DrawSetOutlines(PaintEventArgs e, AnimatedTextureSet set, bool current)
             {
+                if (set == null)
+                    return;
+
                 for (int i = 0; i < set.Frames.Count; ++i)
                 {
                     AnimatedTextureFrame frame = set.Frames[i];
