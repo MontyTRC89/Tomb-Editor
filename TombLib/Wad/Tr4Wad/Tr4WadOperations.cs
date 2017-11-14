@@ -171,12 +171,15 @@ namespace TombLib.Wad.Tr4Wad
             for (int i = 0; i < _oldWad.Moveables.Count; i++)
             {
                 ConvertTr4MoveableToWadMoveable(i);
+                _wad.LegacyNames.Add(_oldWad.LegacyNames[i], _wad.Moveables.ElementAt(i).Value);
             }
             _logger.Info("Moveable conversion complete.");
 
             for (int i = 0; i < _oldWad.StaticMeshes.Count; i++)
             {
                 ConvertTr4StaticMeshToWadStatic(i);
+                _wad.LegacyNames.Add(_oldWad.LegacyNames[i + _oldWad.Moveables.Count + _oldWad.SpriteSequences.Count], 
+                                     _wad.Statics.ElementAt(i).Value);
             }
             _logger.Info("Static mesh conversion complete.");
         }
