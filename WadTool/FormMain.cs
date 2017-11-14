@@ -157,7 +157,14 @@ namespace WadTool
                 groupSelectedMoveable.Enabled = true;
                 groupSelectedMoveable.Text = "Selected moveable: " + moveable.ToString();
 
-                if (moveable.Animations.Count != 0) panel3D.Animation = 0;
+                if (moveable.Animations.Count != 0)
+                {
+                    // Reset scrollbar
+                    scrollbarAnimations.Value = 0;
+                    scrollbarAnimations.Maximum = (_selectedObject as WadMoveable).Animations[0].KeyFrames.Count - 1;
+                    panel3D.Animation = 0;
+                    panel3D.KeyFrame = 0;
+                }
             }
             else
             {
@@ -933,7 +940,7 @@ namespace WadTool
 
             // Reset scrollbar
             scrollbarAnimations.Value = 0;
-            scrollbarAnimations.Maximum = (_selectedObject as WadMoveable).Animations[animationIndex].RealNumberOfFrames;
+            scrollbarAnimations.Maximum = (_selectedObject as WadMoveable).Animations[animationIndex].KeyFrames.Count - 1;
 
             // Reset panel 3D
             panel3D.Animation = animationIndex;

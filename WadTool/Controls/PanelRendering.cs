@@ -151,14 +151,15 @@ namespace WadTool.Controls
                     if (model.Animations.Count != 0)
                     {
                         var animation = model.Animations[Animation];
-                        if (KeyFrame % animation.Framerate == 0)
-                        {
-                            model.BuildAnimationPose(model.Animations[Animation].KeyFrames[KeyFrame / animation.Framerate]);
+                        /*if (KeyFrame % animation.Framerate == 0)
+                        {*/
+                            model.BuildAnimationPose(model.Animations[Animation].KeyFrames[KeyFrame/* / animation.Framerate*/]);
                             for (var b = 0; b < model.Meshes.Count; b++)
                                 matrices.Add(model.AnimationTransforms[b]);
-                        }
+                        /*}
                         else
                         {
+
                             var transforms1 = new List<Matrix>();
                             var transforms2 = new List<Matrix>();
                             var frame1 = (int)Math.Floor((double)KeyFrame / animation.Framerate);
@@ -188,7 +189,7 @@ namespace WadTool.Controls
                                 for (var b = 0; b < model.Meshes.Count; b++)
                                     matrices.Add(Matrix.Lerp(transforms1[b], transforms2[2], amount));
                             }
-                        }                        
+                        }    */                    
                     }
                     else
                     {
