@@ -591,6 +591,7 @@ namespace TombEditor
             Level = level;
 
             EditorEventRaised += Editor_EditorEventRaised;
+            Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
         }
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration)
