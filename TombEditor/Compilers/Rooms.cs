@@ -559,16 +559,16 @@ namespace TombEditor.Compilers
             {
                 switch (portal.Direction)
                 {
-                    case PortalDirection.WallPositiveZ:
+                    case PortalDirection.WallNegativeZ:
                         ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXnZn, Block.FaceXpZn);
                         break;
-                    case PortalDirection.WallPositiveX:
+                    case PortalDirection.WallNegativeX:
                         ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXnZn, Block.FaceXnZp);
                         break;
-                    case PortalDirection.WallNegativeZ:
+                    case PortalDirection.WallPositiveZ:
                         ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXpZp, Block.FaceXnZp);
                         break;
-                    case PortalDirection.WallNegativeX:
+                    case PortalDirection.WallPositiveX:
                         ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXpZp, Block.FaceXpZn);
                         break;
                     case PortalDirection.Floor:
