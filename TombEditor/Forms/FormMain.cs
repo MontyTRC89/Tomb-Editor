@@ -13,6 +13,7 @@ using TombLib.Utils;
 using TombLib.NG;
 using DarkUI.Docking;
 using DarkUI.Forms;
+using TombLib.GeometryIO.Importers;
 
 namespace TombEditor
 {
@@ -1107,7 +1108,10 @@ namespace TombEditor
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
+            //NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
+            var importer = new MetasequoiaRoomImporter(new TombLib.GeometryIO.IOGeometrySettings(), null);
+            importer.ImportFromFile("Room0saved.mqo");
+
         }
     }
 }
