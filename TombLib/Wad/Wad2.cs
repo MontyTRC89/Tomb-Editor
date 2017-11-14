@@ -37,6 +37,7 @@ namespace TombLib.Wad
         public Dictionary<Hash, WadSprite> SpriteTextures { get; private set; }
         public string FileName { get; set; }
         public int SoundMapSize { get; set; }
+        public Dictionary<string, WadObject> LegacyNames { get; private set; }
 
         // Data for rendering
         public GraphicsDevice GraphicsDevice { get; set; }
@@ -73,6 +74,7 @@ namespace TombLib.Wad
             SpriteSequences = new List<WadSpriteSequence>();
             SpriteTextures = new Dictionary<Hash, WadSprite>();
             Samples = new Dictionary<Hash, WadSample>();
+            LegacyNames = new Dictionary<string, WadObject>();
         }
 
         public void RebuildTextureAtlas()

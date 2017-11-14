@@ -194,6 +194,8 @@ namespace TombLib.Wad.Tr4Wad
         internal List<wad_sprite_texture> SpriteTextures = new List<wad_sprite_texture>();
         internal byte[] SpriteData;
 
+        internal List<string> LegacyNames { get; set; } = new List<string>();
+
         internal List<string> Sounds { get; set; } = new List<string>();
         internal string BaseName { get; set; }
         internal string BasePath { get; set; }
@@ -544,6 +546,13 @@ namespace TombLib.Wad.Tr4Wad
                     sequence.Offset = readerSprites.ReadInt16();
                     SpriteSequences.Add(sequence);
                 }
+            }
+
+            // Read WAS
+            using (var reader = new StreamReader(File.OpenRead(BasePath + Path.DirectorySeparatorChar + BaseName + ".was")))
+            {
+                while (!reader.EndOfStream)
+                    LegacyNames.Add(reader.ReadLine().Split(':')[0]);
             }
         }
 

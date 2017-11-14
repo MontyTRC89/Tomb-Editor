@@ -11,6 +11,7 @@ using TombLib.IO;
 using Color = System.Drawing.Color;
 using TombLib.Utils;
 using System.Threading.Tasks;
+using TombLib.Wad;
 
 namespace TombEditor.Geometry.IO
 {
@@ -64,6 +65,19 @@ namespace TombEditor.Geometry.IO
             public short _oppositePortalId;
         }
 
+        private struct PrjObject
+        {
+            public ushort ScriptId;
+            public byte CodeBits;
+            public bool ClearBody;
+            public uint WadObjectId;
+            public Vector3 Position;
+            public short Ocb;
+            public float RotationY;
+            public Vector4 Color;
+            public bool Invisible;
+        }    
+        
         public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
         {
             var level = new Level();
@@ -112,9 +126,10 @@ namespace TombEditor.Geometry.IO
 
                     progressReporter.ReportProgress(2, "Number of rooms: " + numRooms);
 
+                    var tempObjects = new Dictionary<int, List<PrjObject>>();
+
                     for (int i = 0; i < numRooms; i++)
                     {
-
                         // Room is defined?
                         short defined = reader.ReadInt16();
                         if (defined == 0x01)
@@ -231,6 +246,8 @@ namespace TombEditor.Geometry.IO
 
                         logger.Debug("    Objects and Triggers: " + numObjects);
 
+                        var objects = new List<PrjObject>();
+
                         for (int j = 0; j < numObjects; j++)
                         {
                             short objectType = reader.ReadInt16();
@@ -271,7 +288,21 @@ namespace TombEditor.Geometry.IO
                                         (blue + (blue == 0 ? 0.0f : 0.875f)) / 16.0f, 1.0f);
                                     color -= new Vector4(new Vector3(1.0f / 32.0f), 0.0f); // Adjust for different rounding in TE *.tr4 output
 
-                                    if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
+                                    var obj = new PrjObject
+                                    {
+                                        ScriptId = unchecked((ushort)(objectsThings[j])),
+                                        CodeBits = (byte)((objOcb >> 1) & 0x1f),
+                                        Invisible = (objOcb & 0x0001) != 0,
+                                        ClearBody = (objOcb & 0x0080) != 0,
+                                        WadObjectId = unchecked((uint)objSlot),
+                                        Position = position,
+                                        Ocb = objTimer,
+                                        RotationY = objFacing * (360.0f / 65535.0f),
+                                        Color = color
+                                    };
+
+                                    objects.Add(obj);
+                                    /*if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
                                     {
                                         var instance = new MoveableInstance()
                                         {
@@ -299,7 +330,7 @@ namespace TombEditor.Geometry.IO
                                         };
 
                                         room.AddObject(level, instance);
-                                    }
+                                    }*/
                                     break;
 
                                 case 0x0010:
@@ -430,6 +461,8 @@ namespace TombEditor.Geometry.IO
                                     continue;
                             }
                         }
+
+                        tempObjects.Add(i, objects);
 
                         room.AmbientLight = new Vector4(reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, 1.0f) -
                             new Vector4(new Vector3(1.0f / 32.0f), 0.0f); // Adjust for different rounding in TE *.tr4 output
@@ -1056,51 +1089,6 @@ namespace TombEditor.Geometry.IO
                         progressReporter.ReportProgress(35, "Portals setup");
                     }
 
-                    // Link triggers
-                    {
-                        progressReporter.ReportProgress(31, "Link triggers");
-
-                        // Build lookup table for IDs
-                        Dictionary<ushort, PositionBasedObjectInstance> objectLookup =
-                            level.Rooms.Where(room => room != null)
-                            .SelectMany(room => room.Objects)
-                            .Where(instance => instance is IHasScriptID)
-                            .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
-
-                        // Lookup objects from IDs for all triggers
-                        foreach (Room room in level.Rooms.Where(room => room != null))
-                            foreach (var instance in room.Triggers.ToList())
-                                switch (instance.TargetType)
-                                {
-                                    case TriggerTargetType.Object:
-                                    case TriggerTargetType.Target:
-                                    case TriggerTargetType.Camera:
-                                    case TriggerTargetType.FlyByCamera:
-                                    case TriggerTargetType.Sink:
-                                        ushort triggerTargetId = unchecked((ushort)(instance.TargetData));
-                                        if (!objectLookup.ContainsKey(triggerTargetId))
-                                        {
-                                            progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + triggerTargetId + " that is unavailable.");
-                                            room.RemoveObject(level, instance);
-                                            continue;
-                                        }
-
-                                        instance.TargetObj = objectLookup[triggerTargetId];
-                                        instance.TargetData = 0;
-
-                                        // Sinks and cameras are classified as 'object's most of time for some reason.
-                                        // We have to fix that.
-                                        if (instance.TargetObj is FlybyCameraInstance)
-                                            instance.TargetType = TriggerTargetType.FlyByCamera;
-                                        if (instance.TargetObj is SinkInstance)
-                                            instance.TargetType = TriggerTargetType.Sink;
-                                        if (instance.TargetObj is CameraInstance)
-                                            instance.TargetType = TriggerTargetType.Camera;
-                                        break;
-                                }
-                        progressReporter.ReportProgress(35, "Triggers linked");
-                    }
-
                     // Transform the no collision tiles into the ForceFloorSolid option.
                     {
                         progressReporter.ReportProgress(40, "Convert NoCollision to ForceFloorSolid");
@@ -1270,6 +1258,7 @@ namespace TombEditor.Geometry.IO
 
                     // Write slots
                     const bool writeSlots = false;
+                    var slots = new Dictionary<int, string>();
                     using (var writerSlots = writeSlots ? new StreamWriter("slots.txt") : null)
                     {
                         int numSlots = reader.ReadInt32();
@@ -1300,9 +1289,99 @@ namespace TombEditor.Geometry.IO
 
                             int objectId = reader.ReadInt32();
 
+                            slots.Add(i, slotName);
+
                             reader.ReadBytes(108);
                             writerSlots?.WriteLine(i + "\t" + slotName + "\t" + slotType + "\t" + objectId);
                         }
+                    }
+
+                    // After loading slots, I compare them to legacy names and I add moveables and statics
+                    for (var i = 0; i < numRooms; i++)
+                    {
+                        if (level.Rooms[i] == null) continue;
+
+                        for (var j = 0; j < tempObjects[i].Count; j++)
+                        {
+                            var currentObj = tempObjects[i][j];
+                            if (!level.Wad.LegacyNames.ContainsKey(slots[(int)currentObj.WadObjectId])) continue;
+
+                            var wadObj = level.Wad.LegacyNames[slots[(int)currentObj.WadObjectId]];
+
+                            if (wadObj is WadMoveable)
+                            {
+                                var instance = new MoveableInstance()
+                                {
+                                    ScriptId = currentObj.ScriptId,
+                                    CodeBits = currentObj.CodeBits,
+                                    Invisible = currentObj.Invisible,
+                                    ClearBody = currentObj.ClearBody,
+                                    WadObjectId = wadObj.ObjectID,
+                                    Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
+                                    Ocb = currentObj.Ocb,
+                                    RotationY = currentObj.RotationY,
+                                    Color = currentObj.Color
+                                };
+                                level.Rooms[i].AddObject(level, instance);
+                            }
+                            else
+                            {
+                                var instance = new StaticInstance()
+                                {
+                                    ScriptId = currentObj.ScriptId,
+                                    WadObjectId = wadObj.ObjectID,
+                                    Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
+                                    RotationY = currentObj.RotationY,
+                                    Color = currentObj.Color
+                                };
+                                level.Rooms[i].AddObject(level, instance);
+                            }
+                        }
+                    }
+
+                    // Link triggers
+                    {
+                        progressReporter.ReportProgress(31, "Link triggers");
+
+                        // Build lookup table for IDs
+                        Dictionary<ushort, PositionBasedObjectInstance> objectLookup =
+                            level.Rooms.Where(room => room != null)
+                            .SelectMany(room => room.Objects)
+                            .Where(instance => instance is IHasScriptID)
+                            .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
+
+                        // Lookup objects from IDs for all triggers
+                        foreach (Room room in level.Rooms.Where(room => room != null))
+                            foreach (var instance in room.Triggers.ToList())
+                                switch (instance.TargetType)
+                                {
+                                    case TriggerTargetType.Object:
+                                    case TriggerTargetType.Target:
+                                    case TriggerTargetType.Camera:
+                                    case TriggerTargetType.FlyByCamera:
+                                    case TriggerTargetType.Sink:
+                                        ushort triggerTargetId = unchecked((ushort)(instance.TargetData));
+                                        if (!objectLookup.ContainsKey(triggerTargetId))
+                                        {
+                                            progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + triggerTargetId + " that is unavailable.");
+                                            room.RemoveObject(level, instance);
+                                            continue;
+                                        }
+
+                                        instance.TargetObj = objectLookup[triggerTargetId];
+                                        instance.TargetData = 0;
+
+                                        // Sinks and cameras are classified as 'object's most of time for some reason.
+                                        // We have to fix that.
+                                        if (instance.TargetObj is FlybyCameraInstance)
+                                            instance.TargetType = TriggerTargetType.FlyByCamera;
+                                        if (instance.TargetObj is SinkInstance)
+                                            instance.TargetType = TriggerTargetType.Sink;
+                                        if (instance.TargetObj is CameraInstance)
+                                            instance.TargetType = TriggerTargetType.Camera;
+                                        break;
+                                }
+                        progressReporter.ReportProgress(35, "Triggers linked");
                     }
 
                     // Read animated textures
@@ -1656,7 +1735,7 @@ namespace TombEditor.Geometry.IO
 
                 return level;
             }
-            catch
+            catch (Exception e)
             {
                 level.Dispose(); // We log in the level above
                 throw;
