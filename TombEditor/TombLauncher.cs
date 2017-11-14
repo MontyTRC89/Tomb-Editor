@@ -15,32 +15,70 @@ namespace TombEditor
 {
     public static class TombLauncher
     {
-        public static void Launch(LevelSettings settings)
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        public static void Launch(LevelSettings settings, IWin32Window owner)
         {
             string executablePath = settings.MakeAbsolute(settings.GameExecutableFilePath);
-            var info = new ProcessStartInfo
-            {
-                WorkingDirectory = Path.GetDirectoryName(executablePath),
-                FileName = executablePath
-            };
 
-            // Just start Tomb4.exe ?
-            if (!settings.GameExecutableSuppressAskingForOptions || !IsWindows)
+            // Try to launch the game
+            try
             {
-                Process.Start(info).Dispose();
-                return;
-            }
-
-            // Start tomb4.exe in seperate thread to wait for the options dialog to appear
-            // so it can be suppressed subsequently by sending WM_CLOSE.
-            Thread thread = new Thread(() =>
+                var info = new ProcessStartInfo
                 {
-                    using (Process process = Process.Start(info))
-                        CloseAskingForOptionsWindowState.Do(process);
-                });
-            thread.IsBackground = true;
-            thread.Priority = ThreadPriority.BelowNormal;
-            thread.Start();
+                    WorkingDirectory = Path.GetDirectoryName(executablePath),
+                    FileName = executablePath
+                };
+
+                // Start the game (i.e. "tomb4.exe")
+                Process process = Process.Start(info);
+                try
+                {
+                    // Seperate thread to wait for the options dialog to appear
+                    // so it can be suppressed subsequently by sending WM_CLOSE.
+                    if (settings.GameExecutableSuppressAskingForOptions && IsWindows)
+                    {
+                        Process process2 = process;
+                        Thread thread = new Thread(() =>
+                        {
+                            try
+                            {
+                                process = null;
+                                Tomb4ConvinienceImprovements.Do(process);
+                            }
+                            catch (Exception exc)
+                            {
+                                logger.Error(exc, "The 'Tomb4ConvinienceImprovements' thread caused issues.");
+                            }
+                            finally
+                            {
+                                process2?.Dispose();
+                            }
+                        });
+
+                        thread.IsBackground = true;
+                        thread.Priority = ThreadPriority.BelowNormal;
+                        thread.Start();
+                        process = null;
+                    }
+                }
+                finally
+                {
+                    process?.Dispose();
+                }
+            }
+            catch (Exception exc)
+            {
+                logger.Warn(exc, "Trying to launch the game  '" + executablePath + "'.");
+
+                // Show message
+                string message = "Go to tools, level settings, game paths to set a valid executable path.";
+                if (Utils.IsFileNotFoundException(exc) || !File.Exists(executablePath))
+                    message = "Unable to find '" + executablePath + "'. " + message;
+                else
+                    message = "Unable to start '" + executablePath + "' because a " + exc.GetType().Name + " occurred (" + exc.Message + "). " + message;
+                DarkUI.Forms.DarkMessageBox.Show(owner, message, "Unable to start executable", MessageBoxIcon.Error);
+            }
         }
 
         private static bool IsWindows
@@ -60,7 +98,7 @@ namespace TombEditor
             }
         }
 
-        private class CloseAskingForOptionsWindowState
+        private class Tomb4ConvinienceImprovements
         {
             private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -100,7 +138,7 @@ namespace TombEditor
 
             public static void Do(Process process)
             {
-                var this_ = new CloseAskingForOptionsWindowState { _process = process };
+                var this_ = new Tomb4ConvinienceImprovements { _process = process };
 
                 // Create GC handles.
                 EnumWindowsProc onEnumWindowDelegate = OnEnumWindow;
@@ -153,7 +191,7 @@ namespace TombEditor
             private static int OnEnumWindow(IntPtr hWnd, IntPtr lParam)
             {
                 // Check if the window is owned by Tomb4.exe
-                var this_ = (CloseAskingForOptionsWindowState)(GCHandle.FromIntPtr(lParam).Target);
+                var this_ = (Tomb4ConvinienceImprovements)(GCHandle.FromIntPtr(lParam).Target);
                 int processID;
                 ReportError(GetWindowThreadProcessId(hWnd, out processID));
                 if (this_._process.Id != processID)

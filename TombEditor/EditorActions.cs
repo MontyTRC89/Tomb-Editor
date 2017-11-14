@@ -940,7 +940,7 @@ namespace TombEditor
                         segments.Add(BlockFace.NegativeX_Middle, new float[2] { room.GetFaceHighestPoint(pos.X, pos.Y, BlockFace.NegativeX_Middle), room.GetFaceLowestPoint(pos.X, pos.Y, BlockFace.NegativeX_Middle) });
                     break;
 
-                case Direction.Diagonal:             
+                case Direction.Diagonal:
                     if (section == BlockFaceType.Ceiling || sectionIsWall)
                     {
                         if (room.IsFaceDefined(pos.X, pos.Y, BlockFace.DiagonalRF))
@@ -1083,7 +1083,7 @@ namespace TombEditor
             {
                 int xSubs = (subdivideWalls == true ? area.Right - area.X : 0);
                 int zSubs = (subdivideWalls == true ? area.Bottom - area.Y : 0);
-                
+
                 for (int x = area.X, iterX = 0; x <= area.Right; x++, iterX++)
                     for (int z = area.Y, iterZ = 0; z <= area.Bottom; z++, iterZ++)
                         switch (pickedFace)
@@ -1231,7 +1231,7 @@ namespace TombEditor
             room.UpdateCompletely();
             _editor.RoomTextureChange(room);
         }
-        
+
         public static void PlaceObject(Room room, DrawingPoint pos, PositionBasedObjectInstance instance)
         {
             Block block = room.GetBlock(pos);
@@ -2008,12 +2008,10 @@ namespace TombEditor
             }
         }
 
-        public static void BuildLevelAndPlay()
+        public static void BuildLevelAndPlay(IWin32Window owner)
         {
-            if (!BuildLevel(true))
-                return;
-
-            TombLauncher.Launch(_editor.Level.Settings);
+            if (BuildLevel(true))
+                TombLauncher.Launch(_editor.Level.Settings, owner);
         }
 
         public static void LoadTextures(IWin32Window owner)
