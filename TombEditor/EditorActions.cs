@@ -1313,8 +1313,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
-                        room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Floor))
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
 
                     if (room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
@@ -1400,8 +1399,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
-                        room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Ceiling))
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
 
 
@@ -1488,8 +1486,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
-                        room.Blocks[x, z].Portals.Any())
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
 
                     if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
@@ -1565,9 +1562,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
-                        (floor && room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Floor)) ||
-                        (!floor && room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Ceiling)))
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
                     room.Blocks[x, z].Rotate(floor);
                 }
@@ -1581,8 +1576,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
-                        room.Blocks[x, z].Portals.Any())
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
                     room.Blocks[x, z].Type = BlockType.Wall;
                     room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.None;
@@ -1597,8 +1591,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
-                        room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Floor))
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
 
                     room.Blocks[x, z].Type = BlockType.Floor;
@@ -1614,8 +1607,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
-                        room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Ceiling))
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
 
                     room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.None;
