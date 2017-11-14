@@ -152,10 +152,23 @@ namespace TombEditor.Geometry
                     FlipUV_V = info.FlipUV_V,
                     InvertFaces = info.InvertFaces
                 };
-                var importer = new AssimpImporter(settingsIO, (absoluteTexturePath) =>
+
+                BaseGeometryImporter importer;
+                if (importedGeometryPath.ToLower().EndsWith(".mqo"))
                 {
-                    return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
-                });
+                    importer = new MetasequoiaRoomImporter(settingsIO, (absoluteTexturePath) =>
+                    {
+                        return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
+                    });
+                }
+                else
+                {
+                    importer = new AssimpImporter(settingsIO, (absoluteTexturePath) =>
+                    {
+                        return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
+                    });
+                }                    
+               
                 var tmpModel = importer.ImportFromFile(importedGeometryPath);
 
                 // Create a new static model
@@ -165,7 +178,7 @@ namespace TombEditor.Geometry
                 // Loop for each mesh loaded in scene
                 foreach (var mesh in tmpModel.Meshes)
                 {
-                    ImportedGeometryMesh modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, "Imported");
+                    var modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, "Imported");
 
                     var currentIndex = 0;
                     foreach (var tmpPoly in mesh.Polygons)
