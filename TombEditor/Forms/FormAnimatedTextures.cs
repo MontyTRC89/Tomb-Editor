@@ -329,6 +329,9 @@ namespace TombEditor
 
         private void texturesDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            if (e.RowIndex >= texturesDataGridView.Rows.Count || e.ColumnIndex >= texturesDataGridView.Columns.Count)
+                return;
+
             if ((e.DesiredType == typeof(Image)) || e.DesiredType.IsSubclassOf(typeof(Image)))
             {
                 // Image column
