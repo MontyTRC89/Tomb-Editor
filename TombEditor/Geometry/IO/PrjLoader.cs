@@ -71,7 +71,7 @@ namespace TombEditor.Geometry.IO
             // Setup paths
             level.Settings.LevelFilePath = Path.ChangeExtension(filename, "prj2");
 
-            string gameDirectory = FindGameDirectory(filename);
+            string gameDirectory = FindGameDirectory(filename, progressReporter);
             progressReporter.ReportProgress(0, "Game directory: " + gameDirectory);
             level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.LevelDirectory);
 
@@ -1909,19 +1909,31 @@ namespace TombEditor.Geometry.IO
             return new Rectangle(startX, startZ, endX, endZ);
         }
 
-        private static string FindGameDirectory(string filename)
+        private static string FindGameDirectory(string filename, IProgressReporter progressReporter)
         {
-            string directory = filename;
-            while (!string.IsNullOrEmpty(directory))
+            try
             {
-                if (File.Exists(Path.Combine(directory, "Tomb4.exe")) ||
-                    File.Exists(Path.Combine(directory, "script.dat")))
+                string directory = filename;
+                while (!string.IsNullOrEmpty(directory))
                 {
-                    return directory;
+                    if (File.Exists(Path.Combine(directory, "Tomb4.exe")) ||
+                        File.Exists(Path.Combine(directory, "script.dat")))
+                    {
+                        return directory;
+                    }
+                    directory = Path.GetDirectoryName(directory);
                 }
-                directory = Path.GetDirectoryName(directory);
             }
-            return Path.GetDirectoryName(filename);
+            catch (Exception exc)
+            {
+                logger.Error(exc);
+            }
+
+            // Error
+            string result = Path.GetDirectoryName(filename);
+            progressReporter.ReportWarn("Tomb Editor was not able to find the game directory. The game directory defaulted to '" + result +
+                "'. It should be customized under 'Tools' -> 'Level Settings' before using 'play'.");
+            return result;
         }
     }
 }

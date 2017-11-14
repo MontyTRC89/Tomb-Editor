@@ -240,7 +240,7 @@ namespace TombEditor.ToolWindows
 
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
         {
-            EditorActions.BuildLevelAndPlay();
+            EditorActions.BuildLevelAndPlay(this);
         }
 
         private void butFlipMap_Click(object sender, EventArgs e)

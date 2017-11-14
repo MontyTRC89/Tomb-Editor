@@ -670,7 +670,7 @@ namespace TombEditor
 
         private void buildLevelPlayToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.BuildLevelAndPlay();
+            EditorActions.BuildLevelAndPlay(this);
         }
 
         private void animationRangesToolStripMenuItem_Click(object sender, EventArgs e)
