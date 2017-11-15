@@ -639,7 +639,7 @@ namespace TombEditor
             _editor.SelectedTexture = textureArea;
         }
 
-        private static void ApplyTextureAutomaticallyNoUpdated(Room room, DrawingPoint pos, BlockFace face, TextureArea texture)
+        private static bool ApplyTextureAutomaticallyNoUpdated(Room room, DrawingPoint pos, BlockFace face, TextureArea texture)
         {
             Block block = room.GetBlock(pos);
 
@@ -843,17 +843,20 @@ namespace TombEditor
                 }
             }
 
-            block.SetFaceTexture(face, processedTexture);
+            return block.SetFaceTexture(face, processedTexture);
         }
 
-        public static void ApplyTextureAutomatically(Room room, DrawingPoint pos, BlockFace face, TextureArea texture)
+        public static bool ApplyTextureAutomatically(Room room, DrawingPoint pos, BlockFace face, TextureArea texture)
         {
-            ApplyTextureAutomaticallyNoUpdated(room, pos, face, texture);
-
-            room.BuildGeometry(new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
-            room.CalculateLightingForThisRoom();
-            room.UpdateBuffers();
-            _editor.RoomTextureChange(room);
+            var textureApplied = ApplyTextureAutomaticallyNoUpdated(room, pos, face, texture);
+            if (textureApplied)
+            {
+                room.BuildGeometry(new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                room.CalculateLightingForThisRoom();
+                room.UpdateBuffers();
+                _editor.RoomTextureChange(room);
+            }
+            return textureApplied;
         }
 
         public static Dictionary<BlockFace, float[]> GetFaces(Room room, DrawingPoint pos, Direction direction, BlockFaceType section)

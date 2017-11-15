@@ -141,9 +141,15 @@ namespace TombEditor.Geometry
 
         object ICloneable.Clone() => Clone();
 
-        public void SetFaceTexture(BlockFace face, TextureArea texture)
+        public bool SetFaceTexture(BlockFace face, TextureArea texture)
         {
-            _faceTextures[(int)face] = texture;
+            if(_faceTextures[(int)face] != texture)
+            {
+                _faceTextures[(int)face] = texture;
+                return true;
+            }
+            else
+                return false;
         }
 
         public TextureArea GetFaceTexture(BlockFace face)

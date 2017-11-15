@@ -113,7 +113,7 @@ namespace TombEditor
 
         public static bool operator !=(SectorSelection first, SectorSelection second)
         {
-            return (first.Start != second.Start) || (first.End != second.End) || (first.Arrow == second.Arrow);
+            return (first.Start != second.Start) || (first.End != second.End) || (first.Arrow != second.Arrow);
         }
 
         public override bool Equals(object obj)
