@@ -143,7 +143,8 @@ namespace TombEditor.Geometry
 
         public void SetFaceTexture(BlockFace face, TextureArea texture)
         {
-            _faceTextures[(int)face] = texture;
+            if (_faceTextures[(int)face] != texture)
+                _faceTextures[(int)face] = texture;
         }
 
         public TextureArea GetFaceTexture(BlockFace face)

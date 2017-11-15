@@ -529,9 +529,10 @@ namespace TombEditor.Controls
                 (obj is Editor.LoadedTexturesChangedEvent) ||
                 (obj is Editor.LoadedImportedGeometriesChangedEvent))
             {
+                //logger.Debug("Event Processed! " + obj.ToString());
 
                 if (_editor.Mode != EditorMode.Map2D)
-                    Invalidate();
+                    Refresh();
             }
 
             // Update cursor
@@ -568,7 +569,7 @@ namespace TombEditor.Controls
 
                 Vector3 center = _editor.SelectedRoom.GetLocalCenter();
                 Camera.Target = new Vector3(e.Sector.X * 1024.0f + 512.0f, center.Y, e.Sector.Y * 1024.0f + 512.0f) + _editor.SelectedRoom.WorldPos;
-                Invalidate();
+                Refresh();
             }
         }
 
@@ -601,7 +602,7 @@ namespace TombEditor.Controls
 
             // Initialize a new camera
             Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 2750, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
-            Invalidate();
+            Refresh();
         }
 
         public void InitializePanel(DeviceManager deviceManager)
@@ -795,7 +796,7 @@ namespace TombEditor.Controls
             if (_presenter != null && ClientSize.Width != 0 && ClientSize.Height != 0)
             {
                 _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
-                Invalidate();
+                Refresh();
             }
         }
 
@@ -818,7 +819,7 @@ namespace TombEditor.Controls
             base.OnMouseWheel(e);
 
             Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
-            Invalidate();
+            Refresh();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -1085,7 +1086,7 @@ namespace TombEditor.Controls
 
             // Hover effect on gizmo
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
-                Invalidate();
+                Refresh();
 
             // Process action
             switch (e.Button)
@@ -1106,7 +1107,7 @@ namespace TombEditor.Controls
                             -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
                     _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y); // Update gizmo
-                    Invalidate();
+                    Refresh();
                     break;
 
                 case MouseButtons.Left:
@@ -1187,7 +1188,6 @@ namespace TombEditor.Controls
                             }
                         }
                     }
-                    Invalidate();
                     break;
             }
 
@@ -1252,9 +1252,9 @@ namespace TombEditor.Controls
             _toolHandler.Disengage();
             _doSectorSelection = false;
             if (_gizmo.MouseUp())
-                Invalidate();
+                Refresh();
             Capture = false;
-            Invalidate();
+            Refresh();
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -1341,32 +1341,32 @@ namespace TombEditor.Controls
             {
                 case Keys.Up:
                     Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier);
-                    Invalidate();
+                    Refresh();
                     break;
 
                 case Keys.Down:
                     Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier);
-                    Invalidate();
+                    Refresh();
                     break;
 
                 case Keys.Left:
                     Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier, 0);
-                    Invalidate();
+                    Refresh();
                     break;
 
                 case Keys.Right:
                     Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate * _movementTimer.MoveMultiplier, 0);
-                    Invalidate();
+                    Refresh();
                     break;
 
                 case Keys.PageUp:
                     Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
-                    Invalidate();
+                    Refresh();
                     break;
 
                 case Keys.PageDown:
                     Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom * _movementTimer.MoveMultiplier);
-                    Invalidate();
+                    Refresh();
                     break;
             }
 
@@ -2552,7 +2552,7 @@ namespace TombEditor.Controls
         }
 
         // Do NOT call this method to redraw the scene!
-        // Call Invalidate() instead to schedule a redraw in the message loop.
+        // Call Refresh() instead to schedule a redraw in the message loop.
         private void Draw()
         {
             Stopwatch _watch = new Stopwatch();
@@ -2675,7 +2675,7 @@ namespace TombEditor.Controls
 
             _device.Present();
 
-            //logger.Debug("Draw Call! " + _watch.Elapsed.TotalSeconds + "ms");
+            logger.Debug("Draw Call! " + _watch.Elapsed.TotalSeconds + "ms");
         }
 
         private void DrawSelectedFogBulb()

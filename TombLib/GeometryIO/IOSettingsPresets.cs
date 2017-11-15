@@ -92,7 +92,7 @@ namespace TombLib.GeometryIO
                 Name = "Metasequoia MQO",
                 Settings = new IOGeometrySettings
                 {
-                    Scale = 1.0f,
+                    Scale = 1024.0f,
                     FlipZ = true,
                     InvertFaces = true,
                     FlipUV_V = false,
