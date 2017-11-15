@@ -1080,12 +1080,14 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
+            bool redrawWindow = false;
+
             // Reset internal bool for deselection
             _noSelectionConfirm = false;
 
             // Hover effect on gizmo
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
-                Invalidate();
+               redrawWindow = true;
 
             // Process action
             switch (e.Button)
@@ -1106,7 +1108,7 @@ namespace TombEditor.Controls
                             -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
                     _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y); // Update gizmo
-                    Invalidate();
+                    redrawWindow = true;
                     break;
 
                 case MouseButtons.Left:
@@ -1114,12 +1116,16 @@ namespace TombEditor.Controls
                     if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
                     {
                         // Process gizmo
+                        redrawWindow = true;
                     }
                     else if (_editor.Tool.Tool == EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection && _editor.SelectedSectors.Valid)
                     {
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y);
                         if(dragValue.Y != 0)
+                        {
                             EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y, ModifierKeys.HasFlag(Keys.Alt), _toolHandler.ReferenceIsOppositeDiagonalStep, true);
+                            redrawWindow = true;
+                        }
                     }
                     else
                     {
@@ -1131,11 +1137,17 @@ namespace TombEditor.Controls
 
                             if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool == EditorToolType.Drag) && _doSectorSelection)
                             {
-                                _editor.SelectedSectors = new SectorSelection
+                                var newSelection = new SectorSelection
                                 {
                                     Start = _editor.SelectedSectors.Start,
                                     End = new DrawingPoint(pos.X, pos.Y)
                                 };
+
+                                if (_editor.SelectedSectors != newSelection)
+                                {
+                                    _editor.SelectedSectors = newSelection;
+                                    redrawWindow = true;
+                                }
                             }
                             else if (_editor.Mode == EditorMode.Geometry && _toolHandler.Engaged && ModifierKeys == Keys.None)
                             {
@@ -1172,6 +1184,7 @@ namespace TombEditor.Controls
                                             EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (newPicking.BelongsToFloor ? 0 : 1), (short)(_editor.Tool.Tool == EditorToolType.Shovel ^ newPicking.BelongsToFloor ? 1 : -1), (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
                                             break;
                                     }
+                                    redrawWindow = true;
                                 }
                             }
                             else if (_editor.Mode == EditorMode.FaceEdit && _editor.Action.Action == EditorActionType.None && ModifierKeys == Keys.None)
@@ -1181,15 +1194,17 @@ namespace TombEditor.Controls
                                     if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                          _editor.SelectedSectors == SectorSelection.None))
                                     {
-                                        EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newPicking.Face, _editor.SelectedTexture);
+                                        redrawWindow = EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newPicking.Face, _editor.SelectedTexture);
                                     }
                                 }
                             }
                         }
                     }
-                    Invalidate();
                     break;
             }
+
+            if (redrawWindow)
+                Invalidate();
 
             _lastMousePosition = e.Location;
         }
