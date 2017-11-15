@@ -190,6 +190,7 @@
             this.butBox.Name = "butBox";
             this.butBox.Size = new System.Drawing.Size(24, 24);
             this.butBox.TabIndex = 2;
+            this.toolTip.SetToolTip(this.butBox, "Set box sector");
             this.butBox.Click += new System.EventHandler(this.butBox_Click);
             // 
             // butFloor
@@ -304,6 +305,7 @@
             this.butDiagonalFloor.TabIndex = 15;
             this.butDiagonalFloor.Text = "Floor step";
             this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butDiagonalFloor, "Click again to rotate step");
             this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
             // 
             // butDiagonalWall
@@ -331,6 +333,7 @@
             this.butDiagonalCeiling.TabIndex = 16;
             this.butDiagonalCeiling.Text = "Ceiling step";
             this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butDiagonalCeiling, "Click again to rotate step");
             this.butDiagonalCeiling.Click += new System.EventHandler(this.butDiagonalCeiling_Click);
             // 
             // SectorOptions

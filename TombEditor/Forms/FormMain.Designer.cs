@@ -388,8 +388,8 @@
             this.rotateToolStripMenuItem.Enabled = false;
             this.rotateToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
-            this.rotateToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
             this.rotateToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.rotateToolStripMenuItem.ShortcutKeyDisplayString = "Shift+R";
             this.rotateToolStripMenuItem.Text = "Rotate";
             this.rotateToolStripMenuItem.Click += new System.EventHandler(this.rotateToolStripMenuItem_Click);
             // 
