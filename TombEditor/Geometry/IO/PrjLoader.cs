@@ -37,6 +37,19 @@ namespace TombEditor.Geometry.IO
             public PortalOpacity _wallOpacity;
             public bool _hasNoCollisionFloor;
             public bool _hasNoCollisionCeiling;
+
+            public PortalOpacity GetOpacity(PortalDirection direction)
+            {
+                switch (direction)
+                {
+                    case PortalDirection.Ceiling:
+                        return _ceilingOpacity;
+                    case PortalDirection.Floor:
+                        return _floorOpacity;
+                    default:
+                        return _wallOpacity;
+                }
+            }
         }
 
         private struct PrjTexInfo
@@ -1036,35 +1049,77 @@ namespace TombEditor.Geometry.IO
                             {
                                 // Figure out opacity of the portal
                                 portal.Opacity = PortalOpacity.None;
+                                for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                    for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                                        if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) > portal.Opacity)
+                                            portal.Opacity = tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction);
+
+                                // Fixup inconsistent opacity
+                                // If a portal needs to have a higher type of opacity than indivual sectors
+                                // those individual sectors need manual fixup.
+                                if (portal.Opacity != PortalOpacity.None)
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                                            if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) <= PortalOpacity.None)
+                                                switch (portal.Direction)
+                                                {
+                                                    case PortalDirection.Floor:
+                                                        switch (room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z)).AnyType)
+                                                        {
+                                                            case Room.RoomConnectionType.NoPortal:
+                                                                tempRoom.Value._blocks[x, z]._faces[0]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                                tempRoom.Value._blocks[x, z]._faces[8]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                                break;
+                                                            case Room.RoomConnectionType.TriangularPortalXpZp:
+                                                            case Room.RoomConnectionType.TriangularPortalXpZn:
+                                                                tempRoom.Value._blocks[x, z]._faces[0]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                                break;
+                                                            case Room.RoomConnectionType.TriangularPortalXnZn:
+                                                            case Room.RoomConnectionType.TriangularPortalXnZp:
+                                                                tempRoom.Value._blocks[x, z]._faces[8]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                                break;
+                                                        }
+                                                        break;
+                                                    case PortalDirection.Ceiling:
+                                                        switch (room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z)).AnyType)
+                                                        {
+                                                            case Room.RoomConnectionType.NoPortal:
+                                                                tempRoom.Value._blocks[x, z]._faces[1]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                                tempRoom.Value._blocks[x, z]._faces[9]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                                break;
+                                                            case Room.RoomConnectionType.TriangularPortalXpZp:
+                                                            case Room.RoomConnectionType.TriangularPortalXpZn:
+                                                                tempRoom.Value._blocks[x, z]._faces[1]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                                break;
+                                                            case Room.RoomConnectionType.TriangularPortalXnZn:
+                                                            case Room.RoomConnectionType.TriangularPortalXnZp:
+                                                                tempRoom.Value._blocks[x, z]._faces[9]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                                break;
+                                                        }
+                                                        break;
+                                                    case PortalDirection.WallNegativeX:
+                                                    case PortalDirection.WallPositiveX:
+                                                        tempRoom.Value._blocks[x, z]._faces[4]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                        break;
+                                                    case PortalDirection.WallNegativeZ:
+                                                    case PortalDirection.WallPositiveZ:
+                                                        tempRoom.Value._blocks[x, z]._faces[7]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                        break;
+                                                }
+                                if (portal.Opacity != PortalOpacity.SolidFaces && portal.Direction != PortalDirection.Ceiling)
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                                            if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) == PortalOpacity.SolidFaces)
+                                                room.Blocks[x, z].ForceFloorSolid = true;
+
+                                // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
+                                // the water flag differs.
                                 switch (portal.Direction)
                                 {
                                     case PortalDirection.Ceiling:
-                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                                            for (int x = portal.Area.X; x <= portal.Area.Right; x++)
-                                                if (tempRoom.Value._blocks[x, z]._ceilingOpacity > portal.Opacity)
-                                                    portal.Opacity = tempRoom.Value._blocks[x, z]._ceilingOpacity;
-
-                                        // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
-                                        // the water flag differs.
-                                        if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
-                                            portal.Opacity = PortalOpacity.TraversableFaces;
-                                        break;
                                     case PortalDirection.Floor:
-                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                                            for (int x = portal.Area.X; x <= portal.Area.Right; x++)
-                                                if (tempRoom.Value._blocks[x, z]._floorOpacity > portal.Opacity)
-                                                    portal.Opacity = tempRoom.Value._blocks[x, z]._floorOpacity;
-
-                                        // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
-                                        // the water flag differs.
                                         if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
                                             portal.Opacity = PortalOpacity.TraversableFaces;
-                                        break;
-                                    default:
-                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                                            for (int x = portal.Area.X; x <= portal.Area.Right; x++)
-                                                if (tempRoom.Value._blocks[x, z]._wallOpacity > portal.Opacity)
-                                                    portal.Opacity = tempRoom.Value._blocks[x, z]._wallOpacity;
                                         break;
                                 }
 
