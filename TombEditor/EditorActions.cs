@@ -1864,7 +1864,7 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void GridWalls3(Room room, Rectangle Area)
+        public static void GridWalls(Room room, Rectangle Area, bool fiveDivisions = false)
         {
             for (int x = Area.X; x <= Area.Right; x++)
                 for (int z = Area.Y; z <= Area.Bottom; z++)
@@ -1872,45 +1872,40 @@ namespace TombEditor
                     Block block = room.Blocks[x, z];
                     if (block.IsAnyWall)
                     {
-                        VerticalSpace?[] verticalAreas = new VerticalSpace?[4];
-                        for (int i = 0; i < 4; ++i)
-                            verticalAreas[i] = room.GetHeightAtPointMinSpace(x + Block.FaceX[i], z + Block.FaceZ[i]);
-                        if (verticalAreas.Any((verticalArea) => verticalArea.HasValue)) // We can only do it if there is information available
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                // Use the closest available vertical area information and divide it equally
-                                VerticalSpace verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
-                                block.EDFaces[i] = (short)Math.Round(verticalArea.FloorY);
-                                block.QAFaces[i] = (short)Math.Round((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 1.0f) / 3.0f);
-                                block.WSFaces[i] = (short)Math.Round((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f);
-                                block.RFFaces[i] = (short)Math.Round(verticalArea.CeilingY);
-                            }
-                    }
-                }
+                        int cornerToSkip = -1;
 
-            SmartBuildGeometry(room, Area);
-        }
+                        switch(block.FloorDiagonalSplit)
+                        {
+                            case DiagonalSplit.XnZn:
+                                cornerToSkip = 1;
+                                break;
+                            case DiagonalSplit.XnZp:
+                                cornerToSkip = 2;
+                                break;
+                            case DiagonalSplit.XpZn:
+                                cornerToSkip = 0;
+                                break;
+                            case DiagonalSplit.XpZp:
+                                cornerToSkip = 3;
+                                break;
+                        }
 
-        public static void GridWalls5(Room room, Rectangle Area)
-        {
-            for (int x = Area.X; x <= Area.Right; x++)
-                for (int z = Area.Y; z <= Area.Bottom; z++)
-                {
-                    Block block = room.Blocks[x, z];
-                    if (block.IsAnyWall)
-                    {
                         VerticalSpace?[] verticalAreas = new VerticalSpace?[4];
                         for (int i = 0; i < 4; ++i)
                             verticalAreas[i] = room.GetHeightAtPointMinSpace(x + Block.FaceX[i], z + Block.FaceZ[i]);
                         if (verticalAreas.Any(verticalArea => verticalArea.HasValue)) // We can only do it if there is information available
                             for (int i = 0; i < 4; ++i)
                             {
+                                // Skip opposite diagonal step corner
+                                if (i == cornerToSkip)
+                                    continue;
+
                                 // Use the closest available vertical area information and divide it equally
                                 VerticalSpace verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
-                                block.EDFaces[i] = (short)Math.Round((verticalArea.FloorY * 4.0f + verticalArea.CeilingY * 1.0f) / 5.0f);
-                                block.QAFaces[i] = (short)Math.Round((verticalArea.FloorY * 3.0f + verticalArea.CeilingY * 2.0f) / 5.0f);
-                                block.WSFaces[i] = (short)Math.Round((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f);
-                                block.RFFaces[i] = (short)Math.Round((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 4.0f) / 5.0f);
+                                block.EDFaces[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 4.0f + verticalArea.CeilingY * 1.0f) / 5.0f) : verticalArea.FloorY);
+                                block.QAFaces[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 3.0f + verticalArea.CeilingY * 2.0f) / 5.0f) : ((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 1.0f) / 3.0f));
+                                block.WSFaces[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f) : ((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f));
+                                block.RFFaces[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 4.0f) / 5.0f) : verticalArea.CeilingY);
                             }
                     }
                 }
