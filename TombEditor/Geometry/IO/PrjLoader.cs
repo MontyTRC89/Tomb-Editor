@@ -89,8 +89,8 @@ namespace TombEditor.Geometry.IO
             public float RotationY;
             public Vector4 Color;
             public bool Invisible;
-        }    
-        
+        }
+
         public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
         {
             var level = new Level();
@@ -2051,16 +2051,16 @@ namespace TombEditor.Geometry.IO
         {
             var stringBuffer = new byte[255];
             int sb = 0;
-            while (true)
+            while (sb < 255)
             {
                 byte s = reader.ReadByte();
 
                 if (s == 0x2E)
-                {                    
+                {
                     stringBuffer[sb] = s;
                     sb++;
 
-                    while (sb <= 255)
+                    while (sb < 255)
                     {
                         s = reader.ReadByte();
                         if (s == 0x00) continue;
