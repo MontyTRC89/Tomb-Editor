@@ -1157,19 +1157,7 @@ namespace TombEditor.Geometry.IO
                     bool isTextureNA;
                     LevelTexture texture;
                     {
-                        var stringBuffer = new byte[255];
-                        int sb = 0;
-                        while (true)
-                        {
-                            byte s = reader.ReadByte();
-                            if (s == 0x20)
-                                break;
-                            if (s == 0x00)
-                                continue;
-                            stringBuffer[sb] = s;
-                            sb++;
-                        }
-
+                        var stringBuffer = GetPrjString(reader);
                         string textureFilename = _encodingCodepageWindows.GetString(stringBuffer);
                         isTextureNA = textureFilename.StartsWith("NA");
                         if (string.IsNullOrEmpty(textureFilename) || isTextureNA)
@@ -1212,18 +1200,7 @@ namespace TombEditor.Geometry.IO
 
                     // Read WAD path
                     {
-                        var stringBuffer = new byte[255];
-                        int sb = 0;
-                        while (true)
-                        {
-                            byte s = reader.ReadByte();
-                            if (s == 0x20)
-                                break;
-                            if (s == 0x00)
-                                continue;
-                            stringBuffer[sb] = s;
-                            sb++;
-                        }
+                        var stringBuffer = GetPrjString(reader);
                         string wadName = _encodingCodepageWindows.GetString(stringBuffer);
                         if (string.IsNullOrEmpty(wadName) || wadName.StartsWith("NA"))
                             level.Settings.WadFilePath = "";
@@ -2013,6 +1990,41 @@ namespace TombEditor.Geometry.IO
             progressReporter.ReportWarn("Tomb Editor was not able to find the game directory. The game directory defaulted to '" + result +
                 "'. It should be customized under 'Tools' -> 'Level Settings' before using 'play'.");
             return result;
+        }
+
+        private static byte[] GetPrjString(BinaryReader reader)
+        {
+            var stringBuffer = new byte[255];
+            int sb = 0;
+            while (true)
+            {
+                byte s = reader.ReadByte();
+
+                if (s == 0x2E)
+                {                    
+                    stringBuffer[sb] = s;
+                    sb++;
+
+                    while (sb <= 255)
+                    {
+                        s = reader.ReadByte();
+                        if (s == 0x00) continue;
+                        if (s == 0x20) break;
+                        stringBuffer[sb] = s;
+                        sb++;
+                    }
+
+                    break;
+                }
+
+                if (s == 0x00) continue;
+                if (sb == 255) break;
+
+                stringBuffer[sb] = s;
+                sb++;
+            }
+
+            return stringBuffer;
         }
     }
 }
