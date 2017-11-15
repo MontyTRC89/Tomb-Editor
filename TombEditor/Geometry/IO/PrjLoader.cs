@@ -1057,7 +1057,7 @@ namespace TombEditor.Geometry.IO
                                 // Fixup inconsistent opacity
                                 // If a portal needs to have a higher type of opacity than indivual sectors
                                 // those individual sectors need manual fixup.
-                                if (portal.Opacity != PortalOpacity.None)
+                                /*if (portal.Opacity != PortalOpacity.None)
                                     for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
                                         for (int x = portal.Area.X; x <= portal.Area.Right; x++)
                                             if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) <= PortalOpacity.None)
@@ -1105,7 +1105,8 @@ namespace TombEditor.Geometry.IO
                                                     case PortalDirection.WallPositiveZ:
                                                         tempRoom.Value._blocks[x, z]._faces[7]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                         break;
-                                                }
+                                                }*/
+
                                 if (portal.Opacity != PortalOpacity.SolidFaces && portal.Direction != PortalDirection.Ceiling)
                                     for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
                                         for (int x = portal.Area.X; x <= portal.Area.Right; x++)
