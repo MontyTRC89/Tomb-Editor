@@ -665,6 +665,20 @@ namespace TombEditor.Geometry
             var indices = new List<int>();
             foreach (var index in range)
                 indices.Add(index + offset);
+
+            if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
+            {
+                indices.Reverse();
+
+                // Change vertices order for ceiling polygons
+              /*  for (int i = 0; i < indices.Count; i += 3)
+                {
+                    var tempVertex = indices[i + 2];
+                    indices[i + 2] = indices[i];
+                    indices[i] = tempVertex;
+                }*/
+            }
+
             return indices;
         }
 
