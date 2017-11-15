@@ -770,14 +770,14 @@ namespace TombEditor
         private void gridWallsIn3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (EditorActions.CheckForRoomAndBlockSelection(this))
-                EditorActions.GridWalls3(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+                EditorActions.GridWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void gridWallsIn5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.GridWalls5(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            EditorActions.GridWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, true);
         }
 
         private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)
