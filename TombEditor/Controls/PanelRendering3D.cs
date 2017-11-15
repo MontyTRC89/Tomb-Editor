@@ -1205,7 +1205,7 @@ namespace TombEditor.Controls
             }
 
             if (redrawWindow)
-                Invalidate();
+                Refresh();
 
             _lastMousePosition = e.Location;
         }
