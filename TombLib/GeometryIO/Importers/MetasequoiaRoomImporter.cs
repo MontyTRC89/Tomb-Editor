@@ -29,6 +29,16 @@ namespace TombLib.GeometryIO.Importers
             var textures = new Dictionary<int, Texture>();
             var lastVertex = 0;
 
+            // TODO: to remove after presets refactoring
+            _settings = new IOGeometrySettings
+            {
+                PremultiplyUV = true,
+                Scale = 1024.0f,
+                FlipX = false,
+                FlipZ = true,
+                FlipUV_V = false
+            };
+
             using (var reader = new StreamReader(File.OpenRead(filename)))
             {
                 var line = reader.ReadLine();
@@ -67,16 +77,16 @@ namespace TombLib.GeometryIO.Importers
                         {
                             var materialString = reader.ReadLine().Trim();
                             var tokensMaterial = materialString.Split(' ');
+                            
                             for (var j = 0; j < tokensMaterial.Length; j++)
                             {
                                 var texturePath = "";
                                 if (tokensMaterial[j].StartsWith("tex"))
                                 {
                                     texturePath = tokensMaterial[j].Substring(5, tokensMaterial[j].Length - 7);
+                                    if (texturePath != "") textures.Add(i, GetTexture(Path.GetDirectoryName(filename), texturePath));
                                     break;
                                 }
-                                if (texturePath != "")
-                                    textures.Add(j, GetTexture(Path.GetDirectoryName(filename), texturePath));
                             }
                         }
                         continue;
@@ -94,9 +104,9 @@ namespace TombLib.GeometryIO.Importers
                                 for (var i = 0; i < numVertices; i++)
                                 {
                                     var tokensPosition = reader.ReadLine().Trim().Split(' ');
-                                    positions.Add(ApplyAxesTransforms(new Vector3(float.Parse(tokensPosition[0]),
-                                                                      float.Parse(tokensPosition[1]),
-                                                                      float.Parse(tokensPosition[2]))));
+                                    positions.Add(ApplyAxesTransforms(new Vector3(MathUtilEx.ParseFloatCultureInvariant(tokensPosition[0]),
+                                                                                  MathUtilEx.ParseFloatCultureInvariant(tokensPosition[1]),
+                                                                                  MathUtilEx.ParseFloatCultureInvariant(tokensPosition[2]))));
                                 }
                             }
                             else if (tokens[0] == "face")
@@ -104,60 +114,70 @@ namespace TombLib.GeometryIO.Importers
                                 var numFaces = int.Parse(tokens[1]);
                                 for (var i = 0; i < numFaces; i++)
                                 {
-                                    var tokensFace = reader.ReadLine().Trim().Split(' ');
-                                    var numVerticesInFace = int.Parse(tokensFace[0]);
+                                    line = reader.ReadLine().Trim();
+
+                                    var numVerticesInFace = int.Parse(line.Substring(0, line.IndexOf(' ')));
                                     var poly = new IOPolygon(numVerticesInFace == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
 
-                                    for (var j = 1; j < tokensFace.Length; j++)
+                                    // We MUST have vertices
+                                    var stringVertices = GetSubBlock(line, "V");
+                                    if (stringVertices == "") return null;
+                                    var tokensVertices = stringVertices.Split(' ');
+                                    for (var k = 0; k < numVerticesInFace; k++)
                                     {
-                                        if (tokensFace[j].StartsWith("V("))
+                                        var index = int.Parse(tokensVertices[k]);
+                                        mesh.Positions.Add(positions[index]);
+                                        poly.Indices.Add(lastVertex);
+                                        lastVertex++;
+                                    }
+
+                                    // UV
+                                    var stringUV = GetSubBlock(line, "UV");
+                                    if (stringUV != "")
+                                    {
+                                        var tokensUV = stringUV.Split(' ');
+                                        for (var k = 0; k < numVerticesInFace; k++)
                                         {
-                                            lastVertex = 0;
-                                            var tokensVertices = tokensFace[j].Replace("V(", "").Replace(")", "").Split(' ');
-                                            for (var k = 0; k < numVerticesInFace; k++)
-                                            {
-                                                var index = int.Parse(tokensVertices[k]);
-                                                mesh.Positions.Add(positions[index]);
-                                                poly.Indices.Add(lastVertex);
-                                                lastVertex++;
-                                            }
-                                        }
-                                        else if (tokensFace[j].StartsWith("M("))
-                                        {
-                                            var material = int.Parse(tokensFace[j].Replace("M(", "").Replace(")", ""));
-                                        }
-                                        if (tokensFace[j].StartsWith("UV("))
-                                        {
-                                            var tokensVertices = tokensFace[j].Replace("UV(", "").Replace(")", "").Split(' ');
-                                            for (var k = 0; k < numVerticesInFace; k++)
-                                            {
-                                                var uv = ApplyUVTransform(new Vector2(float.Parse(tokensVertices[2 * k]),
-                                                                                      float.Parse(tokensVertices[2 * k])),
-                                                                          textures[0].Image.Width,
-                                                                          textures[0].Image.Height);
-                                                mesh.UV.Add(uv);
-                                            }
-                                        }
-                                        if (tokensFace[j].StartsWith("COL("))
-                                        {
-                                            var tokensVertices = tokensFace[j].Replace("COL(", "").Replace(")", "").Split(' ');
-                                            for (var k = 0; k < numVerticesInFace; k++)
-                                            {
-                                                var color = ApplyColorTransform(GetColor(int.Parse(tokensVertices[k])));
-                                                mesh.Colors.Add(color);
-                                            }
+                                            var uv = ApplyUVTransform(new Vector2(MathUtilEx.ParseFloatCultureInvariant(tokensUV[2 * k]),
+                                                                                  MathUtilEx.ParseFloatCultureInvariant(tokensUV[2 * k + 1])),
+                                                                      textures[0].Image.Width,
+                                                                      textures[0].Image.Height);
+                                            mesh.UV.Add(uv);
                                         }
                                     }
+
+                                    // Colors
+                                    var stringColor = GetSubBlock(line, "COL");
+                                    if (stringColor != "")
+                                    {
+                                        var tokensColor = stringColor.Split(' ');
+                                        for (var k = 0; k < numVerticesInFace; k++)
+                                        {
+                                            var color = ApplyColorTransform(GetColor(int.Parse(tokensVertices[k])));
+                                            mesh.Colors.Add(color);
+                                        }
+                                    }
+
+                                    mesh.Polygons.Add(poly);
                                 }
                             }
                         }
                     }
                 }
 
+                mesh.Texture = textures[0];
                 model.Meshes.Add(mesh);
             }        
 
             return model;
+        }
+
+        private string GetSubBlock(string line, string pattern)
+        {
+            if (!line.Contains(" " + pattern + "(")) return "";
+            var s = line.Substring(line.IndexOf(" " + pattern + "(") + 2 + pattern.Length);
+            s = s.Substring(0, s.IndexOf(")"));
+            return s;
         }
 
         private Vector4 GetColor(int color)

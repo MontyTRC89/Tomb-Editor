@@ -13,7 +13,7 @@ namespace TombLib.GeometryIO
     {
         public delegate Texture GetTextureDelegate(string absoluteFilePath);
 
-        protected IOGeometrySettings _settings { get; }
+        protected IOGeometrySettings _settings { get; set; }
         private GetTextureDelegate _getTextureCallback { get; }
 
         public abstract IOModel ImportFromFile(string filename);

@@ -1,6 +1,7 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -439,6 +440,19 @@ namespace TombLib.Utils
         {
             this_.Normalize();
             return this_;
+        }
+
+        public static float ParseFloatCultureInvariant(string num)
+        {
+            if (String.IsNullOrEmpty(num)) { throw new ArgumentNullException("input"); }
+
+            float res;
+            if (Single.TryParse(num, NumberStyles.Float, CultureInfo.InvariantCulture, out res))
+            {
+                return res;
+            }
+
+            return 0.0f;
         }
     }
 }

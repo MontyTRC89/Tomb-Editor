@@ -191,9 +191,17 @@ namespace TombEditor.Geometry
                                 vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
                                 vertex.UV = mesh.UV[tmpPoly.Indices[i]];
                                 modelMesh.Vertices.Add(vertex);
-                                modelMesh.Indices.Add(currentIndex);
-                                currentIndex++;
                             }
+
+                            modelMesh.Indices.Add(currentIndex);
+                            modelMesh.Indices.Add(currentIndex + 1);
+                            modelMesh.Indices.Add(currentIndex + 2);
+
+                            modelMesh.Indices.Add(currentIndex);
+                            modelMesh.Indices.Add(currentIndex + 2);
+                            modelMesh.Indices.Add(currentIndex + 3);
+
+                            currentIndex += 4;
                         }
                         else
                         {
