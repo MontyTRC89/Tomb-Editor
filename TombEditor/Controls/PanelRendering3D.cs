@@ -2773,6 +2773,8 @@ namespace TombEditor.Controls
             // Setup shader
             _roomEffect.Parameters["TextureEnabled"].SetValue(true);
             _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
+            _roomEffect.Parameters["Highlight"].SetValue(false);
+            _roomEffect.Parameters["Dim"].SetValue(false);
             _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 
             RoomRenderBucket _lastBucket = null;
@@ -2848,6 +2850,8 @@ namespace TombEditor.Controls
             // Setup shader
             _roomEffect.Parameters["TextureEnabled"].SetValue(false);
             _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(true);
+            _roomEffect.Parameters["Highlight"].SetValue(false);
+            _roomEffect.Parameters["Dim"].SetValue(false);
             _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 0.0f, 0.0f));
             _roomEffect.Parameters["UseVertexColors"].SetValue(false);
             _device.SetBlendState(_device.BlendStates.AlphaBlend);
@@ -2891,6 +2895,8 @@ namespace TombEditor.Controls
             // Setup shader
             _roomEffect.Parameters["TextureEnabled"].SetValue(true);
             _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
+            _roomEffect.Parameters["Highlight"].SetValue(false);
+            _roomEffect.Parameters["Dim"].SetValue(false);
 
             RoomRenderBucket _lastBucket = null;
 
@@ -2984,7 +2990,7 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["UseVertexColors"].SetValue(false);
                 }
 
-                // Reset highlight / dim for all faces
+                // Reset selection highlight / dim for all faces
                 _roomEffect.Parameters["Highlight"].SetValue(false);
                 _roomEffect.Parameters["Dim"].SetValue(false);
 
