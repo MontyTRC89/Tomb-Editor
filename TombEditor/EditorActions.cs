@@ -76,11 +76,17 @@ namespace TombEditor
                 SmoothGeometryEditingType smoothEditingType = SmoothGeometryEditingType.Any;
 
                 for (int x = area.X; x <= area.Right; x++)
+                {
                     for (int z = area.Y; z <= area.Bottom; z++)
-                        if (smoothEditingType != SmoothGeometryEditingType.Wall && room.Blocks[x, z].Type == BlockType.Floor)
+                    {
+                        if (smoothEditingType != SmoothGeometryEditingType.Wall && smoothEditingType != SmoothGeometryEditingType.None && room.Blocks[x, z].Type == BlockType.Floor)
                             smoothEditingType = SmoothGeometryEditingType.Floor;
-                        else if (smoothEditingType != SmoothGeometryEditingType.Floor && room.Blocks[x, z].Type != BlockType.Floor)
+                        else if (smoothEditingType != SmoothGeometryEditingType.Floor && smoothEditingType != SmoothGeometryEditingType.None && room.Blocks[x, z].Type != BlockType.Floor)
                             smoothEditingType = SmoothGeometryEditingType.Wall;
+                        else
+                            smoothEditingType = SmoothGeometryEditingType.None;
+                    }
+                }
 
                 // Adjust editing area to exclude the side on which the arrow starts
                 // This is a superset of the behaviour of the old editor to smooth edit a single edge or side.

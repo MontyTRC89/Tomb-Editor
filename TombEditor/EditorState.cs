@@ -100,7 +100,7 @@ namespace TombEditor
 
     public enum SmoothGeometryEditingType
     {
-        Any, Floor, Wall
+        None, Floor, Wall, Any
     }
 
     public struct SectorSelection
