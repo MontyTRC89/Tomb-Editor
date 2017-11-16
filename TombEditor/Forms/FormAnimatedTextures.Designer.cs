@@ -225,6 +225,7 @@ namespace TombEditor
             this.texturesDataGridView.RowTemplate.Height = 48;
             this.texturesDataGridView.Size = new System.Drawing.Size(361, 368);
             this.texturesDataGridView.TabIndex = 15;
+            this.texturesDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.texturesDataGridView_CellDoubleClick);
             this.texturesDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.texturesDataGridView_CellFormatting);
             this.texturesDataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.texturesDataGridView_CellParsing);
             this.texturesDataGridView.SelectionChanged += new System.EventHandler(this.texturesDataGridView_SelectionChanged);

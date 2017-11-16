@@ -265,7 +265,6 @@ namespace TombEditor
             settingsPanel.Enabled = enable;
             texturesDataGridView.Enabled = enable;
             texturesDataGridViewControls.Enabled = enable;
-            butUpdate.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
         }
 
@@ -403,11 +402,11 @@ namespace TombEditor
 
         private void texturesDataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            if (textureMap.Focused) // We're updating frames inside texture map itself
-                return;
+            butUpdate.Enabled = texturesDataGridView.SelectedRows.Count > 0 && texturesDataGridView.Rows.Count > 0;
+        }
 
-            butUpdate.Enabled = texturesDataGridView.SelectedRows.Count > 0;
-
+        private void texturesDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
             if (texturesDataGridView.SelectedRows.Count > 0)
             {
                 var frame = (AnimatedTextureFrame)(texturesDataGridView.SelectedRows[0].DataBoundItem);
