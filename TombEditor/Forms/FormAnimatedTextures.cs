@@ -177,9 +177,13 @@ namespace TombEditor
                 previewImage.Image = null;
                 previewProgressBar.Maximum = 0;
                 previewProgressBar.Value = 0;
+                previewProgressBar.TextMode = DarkUI.Controls.DarkProgressBarMode.NoText;
             }
             else
+            {
                 _previewTimer.Enabled = true;
+                previewProgressBar.TextMode = DarkUI.Controls.DarkProgressBarMode.XOfN;
+            }
             _previewTimer.Interval = (int)Math.Round(1000 / _previewFps);
 
             // Update warning about too many frames
