@@ -105,7 +105,7 @@ namespace TombLib.GeometryIO.Importers
 
                         newMesh.Polygons.Add(poly);
                     }
-                    else
+                    else if (face.IndexCount == 4)
                     {
                         var poly = new IOPolygon(IOPolygonShape.Quad);
 

@@ -234,15 +234,20 @@ namespace TombEditor.Controls
                         RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep, _gridStep);
                         Block block = currentRoom.Blocks[x, z];
 
+                        e.Graphics.FillRectangle(_floorBrush, rectangle);
+
+                        if (block.Type == BlockType.BorderWall)
+                            e.Graphics.FillRectangle(_borderWallBrush, rectangle);
+
+                        if (block.Type == BlockType.Wall)
+                            e.Graphics.FillRectangle(_wallBrush, rectangle);
+
+                        if (block.FloorPortal != null || block.CeilingPortal != null || block.WallPortal != null)
+                            e.Graphics.FillRectangle(_portalBrush, rectangle);
+
                         // Draw floor tile
                         if (block.Triggers.Count != 0)
                             e.Graphics.FillRectangle(_triggerBrush, rectangle);
-                        else if (block.FloorPortal != null || block.CeilingPortal != null || block.WallPortal != null)
-                            e.Graphics.FillRectangle(_portalBrush, rectangle);
-                        else if (block.Type == BlockType.BorderWall)
-                            e.Graphics.FillRectangle(_borderWallBrush, rectangle);
-                        else if (block.Type == BlockType.Wall)
-                            e.Graphics.FillRectangle(_wallBrush, rectangle);
                         else if (block.Flags.HasFlag(BlockFlags.NotWalkableFloor))
                             e.Graphics.FillRectangle(_notWalkableBrush, rectangle);
                         else if (block.Flags.HasFlag(BlockFlags.Box))
@@ -251,8 +256,6 @@ namespace TombEditor.Controls
                             e.Graphics.FillRectangle(_monkeyBrush, rectangle);
                         else if (block.Flags.HasFlag(BlockFlags.DeathFire) || block.Flags.HasFlag(BlockFlags.DeathElectricity) || block.Flags.HasFlag(BlockFlags.DeathLava))
                             e.Graphics.FillRectangle(_deathBrush, rectangle);
-                        else
-                            e.Graphics.FillRectangle(_floorBrush, rectangle);
 
                         //Draw additional features on floor tile
                         if (block.ForceFloorSolid)
