@@ -666,18 +666,17 @@ namespace TombEditor.Geometry
             foreach (var index in range)
                 indices.Add(index + offset);
 
-             /* if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
+            if ((face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2) && indices.Count == 4)
             {
-                indices.Reverse();
 
-                // Change vertices order for ceiling polygons
-              for (int i = 0; i < indices.Count; i += 3)
-                {
-                    var tempVertex = indices[i + 2];
-                    indices[i + 2] = indices[i];
-                    indices[i] = tempVertex;
-                }
-            }*/
+                /*var temp = indices[0];
+                indices[0] = indices[1];
+                indices[1] = temp;
+
+                temp = indices[3];
+                indices[3] = indices[2];
+                indices[2] = temp;*/
+            }
 
             return indices;
         }
@@ -936,7 +935,7 @@ namespace TombEditor.Geometry
                     // Floor polygons
                     RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
                     BuildFloorOrCeilingFace(x, z, qa0, qa1, qa2, qa3, Blocks[x, z].FloorDiagonalSplit, Blocks[x, z].FloorSplitDirectionIsXEqualsZ,
-                        BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType);
+                        BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType, false);
 
                     // Ceiling polygons
                     var sectorVertices = _sectorVertices[x, z];
@@ -944,7 +943,7 @@ namespace TombEditor.Geometry
 
                     RoomConnectionInfo ceilingPortalInfo = GetCeilingRoomConnectionInfo(new DrawingPoint(x, z));
                     BuildFloorOrCeilingFace(x, z, ws0, ws1, ws2, ws3, Blocks[x, z].CeilingDiagonalSplit, Blocks[x, z].CeilingSplitDirectionIsXEqualsZ,
-                        BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType);
+                        BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType, true);
 
                     // Change vertices order for ceiling polygons
                     for (int i = startCeilingPolygons; i < sectorVertices.Count; i += 3)
@@ -966,7 +965,9 @@ namespace TombEditor.Geometry
                 }
         }
 
-        private void BuildFloorOrCeilingFace(int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY, BlockFace face1, BlockFace face2, RoomConnectionType portalMode)
+        private void BuildFloorOrCeilingFace(int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY, 
+                                             BlockFace face1, BlockFace face2, RoomConnectionType portalMode,
+                                             bool isForCeiling)
         {
             BlockType blockType = Blocks[x, z].Type;
 
@@ -1092,7 +1093,8 @@ namespace TombEditor.Geometry
                     new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
                     new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
                     new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
-                    Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                    Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f),
+                    isForCeiling);
             }
             else if (diagonalSplitXEqualsY || (portalMode == RoomConnectionType.TriangularPortalXnZp) || (portalMode == RoomConnectionType.TriangularPortalXpZn))
             {
@@ -2404,23 +2406,36 @@ namespace TombEditor.Geometry
             return null;
         }
 
-        private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3)
+        private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, 
+                             TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3,
+                             bool isForCeiling = false)
         {
             var sectorVertices = _sectorVertices[x, z];
             int sectorVerticesStart = sectorVertices.Count;
 
-            sectorVertices.Add(new EditorVertex { Position = p1, UV = texture.TexCoord2, EditorUV = editorUV1 });
-            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord3, EditorUV = editorUV2 });
-            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord1, EditorUV = editorUV0 });
-            sectorVertices.Add(new EditorVertex { Position = p3, UV = texture.TexCoord0, EditorUV = editorUV3 });
+            sectorVertices.Add(new EditorVertex { Position = p1, UV = texture.TexCoord2, EditorUV = editorUV1 });  // 1
+            sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord3, EditorUV = editorUV2 });  // 2
+            sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord1, EditorUV = editorUV0 });  // 0
+            sectorVertices.Add(new EditorVertex { Position = p3, UV = texture.TexCoord0, EditorUV = editorUV3 });  // 3
             sectorVertices.Add(new EditorVertex { Position = p0, UV = texture.TexCoord1, EditorUV = editorUV0 });
             sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord3, EditorUV = editorUV2 });
 
             _sectorFaceVertexVertexRange[x, z, (int)face] = new VertexRange { Start = sectorVerticesStart, Count = 6 };
-            _sectorFaceIndices[x, z, (int)face].AddRange(new int[] { sectorVerticesStart + 2,
-                                                                     sectorVerticesStart + 0,
-                                                                     sectorVerticesStart + 1,
-                                                                     sectorVerticesStart + 3 });
+
+            if (!isForCeiling)
+            {
+                _sectorFaceIndices[x, z, (int)face].AddRange(new int[] { sectorVerticesStart + 2,
+                                                                         sectorVerticesStart + 0,
+                                                                         sectorVerticesStart + 1,
+                                                                         sectorVerticesStart + 3 });
+            }
+            else
+            {
+                _sectorFaceIndices[x, z, (int)face].AddRange(new int[] { sectorVerticesStart + 5,
+                                                                         sectorVerticesStart + 1,
+                                                                         sectorVerticesStart + 2,
+                                                                         sectorVerticesStart + 0 });
+            }
         }
 
         private void AddTriangle(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, bool IsXEqualYDiagonal)

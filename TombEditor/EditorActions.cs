@@ -2260,13 +2260,32 @@ namespace TombEditor
                             var deltaPos = new Vector3(room.GetLocalCenter().X, 0, room.GetLocalCenter().Z);
 
                             var vertices = room.GetRoomVertices();
-                            for (var i = 0; i < vertices.Count; i++)
-                            {
-                                mesh.Positions.Add(vertices[i].Position - deltaPos);
-                                mesh.UV.Add(vertices[i].UV);
-                                mesh.Colors.Add(vertices[i].Color);
-                            }
+                            /* for (var i = 0; i < vertices.Count; i++)
+                             {
+                                 mesh.Positions.Add(vertices[i].Position - deltaPos);
+                                 mesh.UV.Add(vertices[i].UV);
+                                 mesh.Colors.Add(vertices[i].Color);
+                             }
 
+                             for (var z = 0; z < room.NumZSectors; z++)
+                             {
+                                 for (var x = 0; x < room.NumXSectors; x++)
+                                 {
+                                     for (var f = 0; f < 29; f++)
+                                     {
+                                         if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
+                                             !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
+                                         {
+                                             var indices = room.GetFaceIndices(x, z, (BlockFace)f);
+                                             var poly = new IOPolygon(indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
+                                             poly.Indices.AddRange(indices);
+                                             mesh.Polygons.Add(poly);
+                                         }
+                                     }
+                                 }
+                             }*/
+
+                            var lastIndex = 0;
                             for (var z = 0; z < room.NumZSectors; z++)
                             {
                                 for (var x = 0; x < room.NumXSectors; x++)
@@ -2278,12 +2297,24 @@ namespace TombEditor
                                         {
                                             var indices = room.GetFaceIndices(x, z, (BlockFace)f);
                                             var poly = new IOPolygon(indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
-                                            poly.Indices.AddRange(indices);
+                                            for (var i = 0; i < indices.Count; i++)
+                                            {
+                                                poly.Indices.Add(lastIndex);
+                                                lastIndex++;
+                                            }
                                             mesh.Polygons.Add(poly);
+
+                                            foreach (var index in indices)
+                                            {
+                                                mesh.Positions.Add(vertices[index].Position - deltaPos);
+                                                mesh.UV.Add(vertices[index].UV);
+                                                mesh.Colors.Add(vertices[index].Color);
+                                            }
                                         }
                                     }
                                 }
                             }
+
 
                             mesh.Texture = _editor.Level.Settings.Textures[0];
                             model.Meshes.Add(mesh);
