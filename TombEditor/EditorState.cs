@@ -98,6 +98,11 @@ namespace TombEditor
         CornerSW
     }
 
+    public enum SmoothGeometryEditingType
+    {
+        Any, Floor, Wall
+    }
+
     public struct SectorSelection
     {
         public DrawingPoint Start { get; set; }

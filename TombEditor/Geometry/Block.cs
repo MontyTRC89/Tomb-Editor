@@ -200,14 +200,18 @@ namespace TombEditor.Geometry
             FixHeights(verticalSubdivision);
         }
 
-        public void ChangeEdge(int verticalSubdivision, int edge, short increment)
+        public void ChangeEdge(int verticalSubdivision, int edge, short increment, SmoothGeometryEditingType editingType = SmoothGeometryEditingType.Any)
         {
-            if((((verticalSubdivision == 0 || verticalSubdivision == 2) && FloorDiagonalSplit == DiagonalSplit.None) ||
-                ((verticalSubdivision == 1 || verticalSubdivision == 3) && CeilingDiagonalSplit == DiagonalSplit.None)) &&
-               !IsAnyWall)
+            if(((verticalSubdivision == 0 || verticalSubdivision == 2) && FloorDiagonalSplit == DiagonalSplit.None) ||
+               ((verticalSubdivision == 1 || verticalSubdivision == 3) && CeilingDiagonalSplit == DiagonalSplit.None))
             {
-                GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
-                FixHeights(verticalSubdivision);
+                if(editingType == SmoothGeometryEditingType.Any ||
+                   (Type == BlockType.Floor && editingType == SmoothGeometryEditingType.Floor) ||
+                   (Type != BlockType.Floor && editingType == SmoothGeometryEditingType.Wall))
+                {
+                    GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
+                    FixHeights(verticalSubdivision);
+                }
             }
         }
         public void Raise(int verticalSubdivision, bool diagonalStep, short increment)
