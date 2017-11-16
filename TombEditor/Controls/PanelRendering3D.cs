@@ -1182,7 +1182,8 @@ namespace TombEditor.Controls
                                             break;
 
                                         default:
-                                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (newPicking.BelongsToFloor ? 0 : 1), (short)(_editor.Tool.Tool == EditorToolType.Shovel ^ newPicking.BelongsToFloor ? 1 : -1), (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
+                                            if(_editor.SelectedRoom.Blocks[pos.X, pos.Y].IsAnyWall == _toolHandler.ReferenceBlock.IsAnyWall)
+                                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (newPicking.BelongsToFloor ? 0 : 1), (short)(_editor.Tool.Tool == EditorToolType.Shovel ^ newPicking.BelongsToFloor ? 1 : -1), (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
                                             break;
                                     }
                                     redrawWindow = true;
