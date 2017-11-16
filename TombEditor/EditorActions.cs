@@ -311,6 +311,13 @@ namespace TombEditor
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
 
+        public static void RaiseGroup(Room room, Rectangle area, DrawingPoint pickPoint, GroupShapeType shape, int verticalSubdivision, short increment)
+        {
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
+                    return;
+        }
+
         public static void FlipFloorSplit(Room room, Rectangle area)
         {
             for (int x = area.X; x <= area.Right; x++)
@@ -1582,20 +1589,29 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
+            _editor.RoomSectorPropertiesChange(room);
         }
 
         public static void RotateSectors(Room room, Rectangle area, bool floor)
         {
+            bool wallsRotated = false;
+
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
                     if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
                     room.Blocks[x, z].Rotate(floor);
+
+                    if (room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None && room.Blocks[x, z].IsAnyWall)
+                        wallsRotated = true;
                 }
 
             SmartBuildGeometry(room, area);
             _editor.RoomGeometryChange(room);
+
+            if(wallsRotated)
+                _editor.RoomSectorPropertiesChange(room);
         }
 
         public static void SetWall(Room room, Rectangle area)
