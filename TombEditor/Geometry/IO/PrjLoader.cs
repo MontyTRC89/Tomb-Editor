@@ -2054,6 +2054,9 @@ namespace TombEditor.Geometry.IO
             int sb = 0;
             while (sb < 255)
             {
+                // If file was not loaded, then here is NA plus a space
+                if (sb == 3 && stringBuffer[0] == 0x4E && stringBuffer[1] == 0x41 && stringBuffer[2] == 0x20) break;
+
                 byte s = reader.ReadByte();
 
                 if (s == 0x2E)

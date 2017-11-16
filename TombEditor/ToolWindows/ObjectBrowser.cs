@@ -53,7 +53,8 @@ namespace TombEditor.ToolWindows
                         comboItems.Items.Add(movable);
                     foreach (var staticMesh in _editor.Level.Wad.Statics.Values)
                         comboItems.Items.Add(staticMesh);
-                    comboItems.SelectedIndex = 0;
+                    if (!(_editor.Level.Wad.Moveables.Count == 0 && _editor.Level.Wad.Statics.Count == 0))
+                        comboItems.SelectedIndex = 0;
                 }
             }
 
