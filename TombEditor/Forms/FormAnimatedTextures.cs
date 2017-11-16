@@ -486,7 +486,7 @@ namespace TombEditor
 
                         if (current)
                         {
-                            string counterString = i + "/" + set.Frames.Count;
+                            string counterString = (i + 1) + "/" + set.Frames.Count;
                             SizeF textSize = e.Graphics.MeasureString(counterString, textFont);
                             RectangleF textArea = RectangleF.FromLTRB(upperLeft.X, upperLeft.Y, lowerRight.X, lowerRight.Y);
 
