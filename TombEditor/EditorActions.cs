@@ -73,19 +73,24 @@ namespace TombEditor
                 // It's needed to force smoothing function to edit either only wall sections or floor sections, 
                 // in case user wants to smoothly edit only wall splits or actual floor height.
 
-                SmoothGeometryEditingType smoothEditingType = SmoothGeometryEditingType.Any;
+                SmoothGeometryEditingType smoothEditingType = SmoothGeometryEditingType.None;
 
                 for (int x = area.X; x <= area.Right; x++)
                 {
                     for (int z = area.Y; z <= area.Bottom; z++)
                     {
-                        if (smoothEditingType != SmoothGeometryEditingType.Wall && smoothEditingType != SmoothGeometryEditingType.None && room.Blocks[x, z].Type == BlockType.Floor)
+                        if (smoothEditingType != SmoothGeometryEditingType.Wall && room.Blocks[x, z].Type == BlockType.Floor)
                             smoothEditingType = SmoothGeometryEditingType.Floor;
-                        else if (smoothEditingType != SmoothGeometryEditingType.Floor && smoothEditingType != SmoothGeometryEditingType.None && room.Blocks[x, z].Type != BlockType.Floor)
+                        else if (smoothEditingType != SmoothGeometryEditingType.Floor && room.Blocks[x, z].Type != BlockType.Floor)
                             smoothEditingType = SmoothGeometryEditingType.Wall;
                         else
-                            smoothEditingType = SmoothGeometryEditingType.None;
+                        {
+                            smoothEditingType = SmoothGeometryEditingType.Any;
+                            break;
+                        }
                     }
+                    if (smoothEditingType == SmoothGeometryEditingType.Any)
+                        break;
                 }
 
                 // Adjust editing area to exclude the side on which the arrow starts
