@@ -69,6 +69,19 @@ namespace TombEditor
         {
             if (smooth)
             {
+                // Scan selection and decide if the selected zone is wall-only, floor-only, or both.
+                // It's needed to force smoothing function to edit either only wall sections or floor sections, 
+                // in case user wants to smoothly edit only wall splits or actual floor height.
+
+                SmoothGeometryEditingType smoothEditingType = SmoothGeometryEditingType.Any;
+
+                for (int x = area.X; x <= area.Right; x++)
+                    for (int z = area.Y; z <= area.Bottom; z++)
+                        if (smoothEditingType != SmoothGeometryEditingType.Wall && room.Blocks[x, z].Type == BlockType.Floor)
+                            smoothEditingType = SmoothGeometryEditingType.Floor;
+                        else if (smoothEditingType != SmoothGeometryEditingType.Floor && room.Blocks[x, z].Type != BlockType.Floor)
+                            smoothEditingType = SmoothGeometryEditingType.Wall;
+
                 // Adjust editing area to exclude the side on which the arrow starts
                 // This is a superset of the behaviour of the old editor to smooth edit a single edge or side.
                 switch (arrow)
@@ -101,28 +114,28 @@ namespace TombEditor
                 arrow = EditorArrowType.EntireFace;
 
                 // Smoothly change sectors on the corners
-                room.GetBlockTry(area.X - 1, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment);
-                room.GetBlockTry(area.Right + 1, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment);
-                room.GetBlockTry(area.Right + 1, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZp, increment);
-                room.GetBlockTry(area.X - 1, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment);
+                room.GetBlockTry(area.X - 1, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment, smoothEditingType);
+                room.GetBlockTry(area.Right + 1, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment, smoothEditingType);
+                room.GetBlockTry(area.Right + 1, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZp, increment, smoothEditingType);
+                room.GetBlockTry(area.X - 1, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment, smoothEditingType);
 
                 // Smoothly change sectors on the sides
                 for (int x = area.X; x <= area.Right; x++)
                 {
-                    room.GetBlockTry(x, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZp, increment);
-                    room.GetBlockTry(x, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment);
+                    room.GetBlockTry(x, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZp, increment, smoothEditingType);
+                    room.GetBlockTry(x, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment, smoothEditingType);
 
-                    room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment);
-                    room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment);
+                    room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment, smoothEditingType);
+                    room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment, smoothEditingType);
                 }
 
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    room.GetBlockTry(area.X - 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment);
-                    room.GetBlockTry(area.X - 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment);
+                    room.GetBlockTry(area.X - 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment, smoothEditingType);
+                    room.GetBlockTry(area.X - 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment, smoothEditingType);
 
-                    room.GetBlockTry(area.Right + 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXnZp, increment);
-                    room.GetBlockTry(area.Right + 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment);
+                    room.GetBlockTry(area.Right + 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXnZp, increment, smoothEditingType);
+                    room.GetBlockTry(area.Right + 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment, smoothEditingType);
                 }
             }
 
