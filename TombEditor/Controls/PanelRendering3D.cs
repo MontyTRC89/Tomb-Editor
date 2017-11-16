@@ -969,7 +969,12 @@ namespace TombEditor.Controls
                                                     break;
 
                                                 default:
-                                                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (belongsToFloor ? 0 : 1), (short)(_editor.Tool.Tool == EditorToolType.Shovel ^ belongsToFloor ? 1 : -1), (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
+                                                    EditorActions.EditSectorGeometry(_editor.SelectedRoom,
+                                                        new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y),
+                                                        EditorArrowType.EntireFace,
+                                                        (belongsToFloor ? 0 : 1),
+                                                        (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor ? 1 : -1),
+                                                        (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
                                                     break;
                                             }
                                         }
@@ -1150,43 +1155,50 @@ namespace TombEditor.Controls
                                     redrawWindow = true;
                                 }
                             }
-                            else if (_editor.Mode == EditorMode.Geometry && _toolHandler.Engaged && ModifierKeys == Keys.None)
+                            else if (_editor.Mode == EditorMode.Geometry && _toolHandler.Engaged && !ModifierKeys.HasFlag(Keys.Alt | Keys.Shift))
                             {
                                 if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                      _editor.SelectedSectors == SectorSelection.None) && _toolHandler.Process(pos.X, pos.Y))
                                 {
-                                    switch (_editor.Tool.Tool)
+                                    if (_editor.SelectedRoom.Blocks[pos.X, pos.Y].IsAnyWall == _toolHandler.ReferenceBlock.IsAnyWall)
                                     {
-                                        case EditorToolType.Flatten:
-                                            for (int i = 0; i < 4; i++)
-                                            {
-                                                if (newPicking.BelongsToFloor && _toolHandler.ReferenceIsFloor)
+                                        switch (_editor.Tool.Tool)
+                                        {
+                                            case EditorToolType.Flatten:
+                                                for (int i = 0; i < 4; i++)
                                                 {
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolHandler.ReferenceBlock.QAFaces.Min();
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolHandler.ReferenceBlock.EDFaces.Min();
+                                                    if (newPicking.BelongsToFloor && _toolHandler.ReferenceIsFloor)
+                                                    {
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolHandler.ReferenceBlock.QAFaces.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolHandler.ReferenceBlock.EDFaces.Min();
+                                                    }
+                                                    else if (newPicking.BelongsToCeiling && !_toolHandler.ReferenceIsFloor)
+                                                    {
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolHandler.ReferenceBlock.WSFaces.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolHandler.ReferenceBlock.RFFaces.Min();
+                                                    }
                                                 }
-                                                else if (newPicking.BelongsToCeiling && !_toolHandler.ReferenceIsFloor)
-                                                {
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolHandler.ReferenceBlock.WSFaces.Min();
-                                                    _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolHandler.ReferenceBlock.RFFaces.Min();
-                                                }
-                                            }
-                                            EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
-                                            break;
+                                                EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                                break;
 
-                                        case EditorToolType.Smooth:
-                                            EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, newPicking.BelongsToFloor);
-                                            break;
+                                            case EditorToolType.Smooth:
+                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, newPicking.BelongsToFloor);
+                                                break;
 
-                                        case EditorToolType.Drag:
-                                            break;
+                                            case EditorToolType.Drag:
+                                                break;
 
-                                        default:
-                                            if(_editor.SelectedRoom.Blocks[pos.X, pos.Y].IsAnyWall == _toolHandler.ReferenceBlock.IsAnyWall)
-                                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), EditorArrowType.EntireFace, (newPicking.BelongsToFloor ? 0 : 1), (short)(_editor.Tool.Tool == EditorToolType.Shovel ^ newPicking.BelongsToFloor ? 1 : -1), (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
-                                            break;
+                                            default:
+                                                EditorActions.EditSectorGeometry(_editor.SelectedRoom,
+                                                    new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y),
+                                                    EditorArrowType.EntireFace,
+                                                    (newPicking.BelongsToFloor ? 0 : 1), 
+                                                    (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ newPicking.BelongsToFloor ? 1 : -1), 
+                                                    (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
+                                                break;
+                                        }
+                                        redrawWindow = true;
                                     }
-                                    redrawWindow = true;
                                 }
                             }
                             else if (_editor.Mode == EditorMode.FaceEdit && _editor.Action.Action == EditorActionType.None && ModifierKeys == Keys.None)
