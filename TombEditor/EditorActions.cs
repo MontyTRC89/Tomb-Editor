@@ -311,13 +311,6 @@ namespace TombEditor
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
 
-        public static void RaiseGroup(Room room, Rectangle area, DrawingPoint pickPoint, GroupShapeType shape, int verticalSubdivision, short increment)
-        {
-            for (int x = area.X; x <= area.Right; x++)
-                for (int z = area.Y; z <= area.Bottom; z++)
-                    return;
-        }
-
         public static void FlipFloorSplit(Room room, Rectangle area)
         {
             for (int x = area.X; x <= area.Right; x++)
