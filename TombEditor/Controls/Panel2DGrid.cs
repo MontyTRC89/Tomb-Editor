@@ -236,12 +236,6 @@ namespace TombEditor.Controls
 
                         e.Graphics.FillRectangle(_floorBrush, rectangle);
 
-                        if (block.Type == BlockType.BorderWall)
-                            e.Graphics.FillRectangle(_borderWallBrush, rectangle);
-
-                        if (block.Type == BlockType.Wall)
-                            e.Graphics.FillRectangle(_wallBrush, rectangle);
-
                         if (block.FloorPortal != null || block.CeilingPortal != null || block.WallPortal != null)
                             e.Graphics.FillRectangle(_portalBrush, rectangle);
 
@@ -257,23 +251,64 @@ namespace TombEditor.Controls
                         else if (block.Flags.HasFlag(BlockFlags.DeathFire) || block.Flags.HasFlag(BlockFlags.DeathElectricity) || block.Flags.HasFlag(BlockFlags.DeathLava))
                             e.Graphics.FillRectangle(_deathBrush, rectangle);
 
-                        //Draw additional features on floor tile
+                        // Draw floor-related features on floor tile
                         if (block.ForceFloorSolid)
                             e.Graphics.FillRectangle(_forceFloorSolidBrush, rectangle);
-                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _climbWidth);
-                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveX))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.Right - _climbWidth, rectangle.Y, _climbWidth, rectangle.Height);
-                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeZ))
-                        e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _climbWidth, rectangle.Width, _climbWidth);
-                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeX))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _climbWidth, rectangle.Height);
                         RectangleF beetleTriggerRectangle = rectangle;
                         beetleTriggerRectangle.Inflate(-2, -2);
                         if ((block.Flags & BlockFlags.Beetle) != 0)
                             e.Graphics.DrawRectangle(_beetlePen, beetleTriggerRectangle);
                         if ((currentRoom.Blocks[x, z].Flags & BlockFlags.TriggerTriggerer) != 0)
                             e.Graphics.DrawRectangle(_triggerTriggererPen, beetleTriggerRectangle);
+
+                        // Draw wall, if any
+                        if (block.Type == BlockType.BorderWall)
+                            e.Graphics.FillRectangle(_borderWallBrush, rectangle);
+                        else if (block.Type == BlockType.Wall)
+                        {
+                            if (block.FloorDiagonalSplit == DiagonalSplit.None)
+                                e.Graphics.FillRectangle(_wallBrush, rectangle);
+                            else
+                            {
+                                PointF[] points = new PointF[3];
+
+                                switch (block.FloorDiagonalSplit)
+                                {
+                                    case DiagonalSplit.XnZn:
+                                        points[0] = new PointF(rectangle.Left, rectangle.Top);
+                                        points[1] = new PointF(rectangle.Left, rectangle.Bottom);
+                                        points[2] = new PointF(rectangle.Right, rectangle.Bottom);
+                                        break;
+                                    case DiagonalSplit.XnZp:
+                                        points[0] = new PointF(rectangle.Left, rectangle.Bottom);
+                                        points[1] = new PointF(rectangle.Left, rectangle.Top);
+                                        points[2] = new PointF(rectangle.Right, rectangle.Top);
+                                        break;
+                                    case DiagonalSplit.XpZn:
+                                        points[0] = new PointF(rectangle.Left, rectangle.Bottom);
+                                        points[1] = new PointF(rectangle.Right, rectangle.Top);
+                                        points[2] = new PointF(rectangle.Right, rectangle.Bottom);
+                                        break;
+                                    case DiagonalSplit.XpZp:
+                                        points[0] = new PointF(rectangle.Left, rectangle.Top);
+                                        points[1] = new PointF(rectangle.Right, rectangle.Top);
+                                        points[2] = new PointF(rectangle.Right, rectangle.Bottom);
+                                        break;
+
+                                }
+                                e.Graphics.FillPolygon(_wallBrush, points);
+                            }
+                        }
+
+                        // Draw wall-related features
+                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _climbWidth);
+                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveX))
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.Right - _climbWidth, rectangle.Y, _climbWidth, rectangle.Height);
+                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeZ))
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _climbWidth, rectangle.Width, _climbWidth);
+                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeX))
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _climbWidth, rectangle.Height);
                     }
 
                 // Draw black grid lines

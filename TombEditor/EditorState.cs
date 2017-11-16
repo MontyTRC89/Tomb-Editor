@@ -103,6 +103,11 @@ namespace TombEditor
         None, Floor, Wall, Any
     }
 
+    public enum GroupShapeType
+    {
+        Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid
+    }
+
     public struct SectorSelection
     {
         public DrawingPoint Start { get; set; }
