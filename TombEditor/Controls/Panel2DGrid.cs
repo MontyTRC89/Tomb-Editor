@@ -236,6 +236,10 @@ namespace TombEditor.Controls
 
                         e.Graphics.FillRectangle(_floorBrush, rectangle);
 
+                        // Draw wall, if any
+                        if (block.Type == BlockType.BorderWall)
+                            e.Graphics.FillRectangle(_borderWallBrush, rectangle);
+                        
                         if (block.FloorPortal != null || block.CeilingPortal != null || block.WallPortal != null)
                             e.Graphics.FillRectangle(_portalBrush, rectangle);
 
@@ -261,10 +265,7 @@ namespace TombEditor.Controls
                         if ((currentRoom.Blocks[x, z].Flags & BlockFlags.TriggerTriggerer) != 0)
                             e.Graphics.DrawRectangle(_triggerTriggererPen, beetleTriggerRectangle);
 
-                        // Draw wall, if any
-                        if (block.Type == BlockType.BorderWall)
-                            e.Graphics.FillRectangle(_borderWallBrush, rectangle);
-                        else if (block.Type == BlockType.Wall)
+                        if (block.Type == BlockType.Wall)
                         {
                             if (block.FloorDiagonalSplit == DiagonalSplit.None)
                                 e.Graphics.FillRectangle(_wallBrush, rectangle);
