@@ -3000,13 +3000,8 @@ namespace TombEditor.Geometry
             if (_allVertices.Count == 0)
                 return;
 
-            // HACK
-            if ((_vertexBuffer == null) || (_vertexBuffer.ElementCount < _allVertices.Count))
-            {
-                _vertexBuffer?.Dispose();
-                _vertexBuffer = Buffer.New(DeviceManager.DefaultDeviceManager.Device, _allVertices.ToArray(), BufferFlags.VertexBuffer);
-            }
-
+            if (_vertexBuffer != null) _vertexBuffer.Dispose();
+            _vertexBuffer = Buffer.New(DeviceManager.DefaultDeviceManager.Device, _allVertices.ToArray(), BufferFlags.VertexBuffer);
             _vertexBuffer.SetData<EditorVertex>(_allVertices.ToArray());
         }
 
