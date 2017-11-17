@@ -85,7 +85,7 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("Ni 1.000000");
                 writer.WriteLine("d 1.000000");
                 writer.WriteLine("illum 2");
-                writer.WriteLine("map_Kd \"" + GetTexturePath(path, mesh.Texture) + "\"");
+                writer.WriteLine("map_Kd " + GetTexturePath(path, mesh.Texture));
             }
 
             return true;
