@@ -645,6 +645,14 @@ namespace TombLib.Wad.Tr4Wad
                 {
                     foreach (var animDispatch in stateChange.Dispatches)
                     {
+                        // Probably WadMerger's bug
+                        if (animDispatch.NextAnimation > 32767)
+                        {
+                            animDispatch.NextAnimation = 0;
+                            animDispatch.NextFrame = 0;
+                            continue;
+                        }
+
                         if (moveable.Animations[animDispatch.NextAnimation].FrameBase != 0)
                         {
                             ushort newFrame = (ushort)(animDispatch.NextFrame % moveable.Animations[animDispatch.NextAnimation].FrameBase);
