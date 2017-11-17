@@ -388,8 +388,8 @@
             this.rotateToolStripMenuItem.Enabled = false;
             this.rotateToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
-            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.rotateToolStripMenuItem.ShortcutKeyDisplayString = "Shift+R";
+            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.rotateToolStripMenuItem.Text = "Rotate";
             this.rotateToolStripMenuItem.Click += new System.EventHandler(this.rotateToolStripMenuItem_Click);
             // 
@@ -510,7 +510,8 @@
             // exportRoomToolStripMenuItem
             // 
             this.exportRoomToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.exportRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.exportRoomToolStripMenuItem.Enabled = false;
+            this.exportRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.exportRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_Export_16;
             this.exportRoomToolStripMenuItem.Name = "exportRoomToolStripMenuItem";
             this.exportRoomToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
@@ -1044,7 +1045,8 @@
             // textureMapBuilderToolStripMenuItem
             // 
             this.textureMapBuilderToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.textureMapBuilderToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.textureMapBuilderToolStripMenuItem.Enabled = false;
+            this.textureMapBuilderToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.textureMapBuilderToolStripMenuItem.Image = global::TombEditor.Properties.Resources.small_icons_16;
             this.textureMapBuilderToolStripMenuItem.Name = "textureMapBuilderToolStripMenuItem";
             this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
