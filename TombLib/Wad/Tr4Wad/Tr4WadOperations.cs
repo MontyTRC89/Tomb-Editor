@@ -645,7 +645,7 @@ namespace TombLib.Wad.Tr4Wad
                 {
                     foreach (var animDispatch in stateChange.Dispatches)
                     {
-                        // Probably WadMerger's bug
+                        // HACK: Probably WadMerger's bug
                         if (animDispatch.NextAnimation > 32767)
                         {
                             animDispatch.NextAnimation = 0;
@@ -657,7 +657,7 @@ namespace TombLib.Wad.Tr4Wad
                         {
                             ushort newFrame = (ushort)(animDispatch.NextFrame % moveable.Animations[animDispatch.NextAnimation].FrameBase);
 
-                            // In some cases dispatches have invalid NextFrame.
+                            // HACK: In some cases dispatches have invalid NextFrame.
                             // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to zero.
                             if (newFrame > moveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames) newFrame = 0;
 

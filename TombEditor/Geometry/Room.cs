@@ -3005,6 +3005,24 @@ namespace TombEditor.Geometry
             _vertexBuffer.SetData<EditorVertex>(_allVertices.ToArray());
         }
 
+        public int DynamicLightsCount
+        {
+            get
+            {
+                var numLights = 0;
+                foreach (var obj in Objects)
+                {
+                    if (obj is LightInstance)
+                    {
+                        var light = obj as LightInstance;
+                        if (light.Type != LightType.FogBulb && light.Type != LightType.Effect)
+                            numLights++;
+                    }
+                }
+                return numLights;
+            }
+        }
+
         public Buffer<EditorVertex> VertexBuffer => _vertexBuffer;
 
         public Matrix Transform => Matrix.Translation(new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f));

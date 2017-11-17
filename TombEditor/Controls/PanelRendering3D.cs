@@ -15,6 +15,7 @@ using TombLib.IO;
 using TombLib.Utils;
 using NLog;
 using DarkUI.Controls;
+using DarkUI.Forms;
 
 namespace TombEditor.Controls
 {
@@ -865,6 +866,13 @@ namespace TombEditor.Controls
                     case EditorActionType.PlaceLight:
                         if (newPicking is PickingResultBlock)
                         {
+                            if (_editor.SelectedRoom.DynamicLightsCount == 21)
+                            {
+                                DarkMessageBox.Show(this, "Sorry, you can't add more than 21 dynamic lights (TR4 engine limit)", 
+                                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+
                             EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, new LightInstance(_editor.Action.LightType));
                             _editor.Action = EditorAction.None;
                         }
