@@ -567,11 +567,15 @@ namespace TombEditor.Geometry.IO
                                     {
                                         Position = position,
                                         Color = new Vector3(lightR / 128.0f, lightG / 128.0f, lightB / 128.0f),
-                                        Enabled = true, //lightOn == 0x01,
                                         InnerRange = lightIn / 1024.0f,
                                         OuterRange = lightOut / 1024.0f,
-                                        Intensity = lightIntensity / 8192.0f,
+                                        Intensity = lightIntensity / 8192.0f
                                     };
+
+                                    // Import light on specially to not override
+                                    // the default setting which depends on the light type.
+                                    if (lightOn != 0x01)
+                                        light.IsDynamicallyUsed = false;
 
                                     // Import light rotation
                                     light.SetArbitaryRotationsYX(lightY + 180, -lightX);
