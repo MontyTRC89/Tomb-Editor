@@ -409,7 +409,7 @@
   <data name="general_AboutIcon_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_general\general_AboutIcon-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="toolbox_GroupSlopeUp_16_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons_toolbox\toolbox_GroupSlopeUp-16 copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="toolbox_GroupSlopeUp_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_toolbox\toolbox_GroupSlopeUp-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
