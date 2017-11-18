@@ -132,6 +132,7 @@ namespace TombEditor.Controls
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
+            public DrawingPoint ReferencePosition => _referencePicking.Pos;
             public Block ReferenceBlock => _parent._editor.SelectedRoom.GetBlockTry(_referencePicking.Pos.X, _referencePicking.Pos.Y);
             public bool ReferenceIsFloor => _referencePicking.BelongsToFloor;
             public bool ReferenceIsDiagonalStep => (_referencePicking.BelongsToFloor ? ReferenceBlock.FloorDiagonalSplit != DiagonalSplit.None : ReferenceBlock.CeilingDiagonalSplit != DiagonalSplit.None);
@@ -958,25 +959,15 @@ namespace TombEditor.Controls
 
                                         if (((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None) && _toolHandler.Process(pos.X, pos.Y))
                                         {
-                                            switch (_editor.Tool.Tool)
-                                            {
-                                                case EditorToolType.Smooth:
-                                                    EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
-                                                    break;
-
-                                                case EditorToolType.Drag:
-                                                case EditorToolType.Flatten:
-                                                    break;
-
-                                                default:
-                                                    EditorActions.EditSectorGeometry(_editor.SelectedRoom,
-                                                        new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y),
-                                                        EditorArrowType.EntireFace,
-                                                        (belongsToFloor ? 0 : 1),
-                                                        (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor ? 1 : -1),
-                                                        (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
-                                                    break;
-                                            }
+                                            if(_editor.Tool.Tool == EditorToolType.Smooth)
+                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
+                                            else if(_editor.Tool.Tool < EditorToolType.Flatten)
+                                                EditorActions.EditSectorGeometry(_editor.SelectedRoom,
+                                                    new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y),
+                                                    EditorArrowType.EntireFace,
+                                                    (belongsToFloor ? 0 : 1),
+                                                    (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor ? 1 : -1),
+                                                    (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
                                         }
                                     }
                                     break;
@@ -1035,7 +1026,7 @@ namespace TombEditor.Controls
 
                             // Handle face selection
 
-                            if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool == EditorToolType.Drag)
+                            if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag)
                                  && !ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Alt))
                             {
                                 if (!_editor.SelectedSectors.Valid || !_editor.SelectedSectors.Area.Contains(pos))
@@ -1124,12 +1115,28 @@ namespace TombEditor.Controls
                         // Process gizmo
                         redrawWindow = true;
                     }
-                    else if (_editor.Tool.Tool == EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection && _editor.SelectedSectors.Valid)
+                    else if (_editor.Tool.Tool >= EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection && _editor.SelectedSectors.Valid)
                     {
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y);
                         if(dragValue.Y != 0)
                         {
-                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y, ModifierKeys.HasFlag(Keys.Alt), _toolHandler.ReferenceIsOppositeDiagonalStep, true);
+                            switch(_editor.Tool.Tool)
+                            {
+                                case EditorToolType.Drag:
+                                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, 
+                                        _editor.SelectedSectors.Area, 
+                                        _editor.SelectedSectors.Arrow, 
+                                        (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), 
+                                        (short)dragValue.Y,
+                                        ModifierKeys.HasFlag(Keys.Alt), 
+                                        _toolHandler.ReferenceIsOppositeDiagonalStep, true);
+                                    break;
+
+                                case EditorToolType.Ramp:
+                                    EditorActions.RaiseGroup(_editor.SelectedRoom, _editor.SelectedSectors.Area, _toolHandler.ReferencePosition, _editor.SelectedSectors.Arrow, ModifierKeys.HasFlag(Keys.Alt), (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y);
+                                    break;
+                            }
+                            
                             redrawWindow = true;
                         }
                     }
@@ -1141,7 +1148,7 @@ namespace TombEditor.Controls
                         {
                             DrawingPoint pos = newPicking.Pos;
 
-                            if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool == EditorToolType.Drag) && _doSectorSelection)
+                            if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag) && _doSectorSelection)
                             {
                                 var newSelection = new SectorSelection
                                 {
@@ -1233,7 +1240,7 @@ namespace TombEditor.Controls
                     PickingResultBlock newPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                     if (newPicking != null)
                     {
-                        if (_editor.Mode == EditorMode.Geometry && (_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Drag))
+                        if (_editor.Mode == EditorMode.Geometry && (_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool >= EditorToolType.Drag))
                             if(!_doSectorSelection && !_toolHandler.Dragged && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newPicking.Pos))
                                 if(!ModifierKeys.HasFlag(Keys.Shift) && !ModifierKeys.HasFlag(Keys.Alt))
                                 {

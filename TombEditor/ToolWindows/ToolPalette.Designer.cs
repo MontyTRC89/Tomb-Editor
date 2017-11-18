@@ -30,6 +30,7 @@
         {
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
             this.toolSelection = new System.Windows.Forms.ToolStripButton();
+            this.toolDrag = new System.Windows.Forms.ToolStripButton();
             this.toolBrush = new System.Windows.Forms.ToolStripButton();
             this.toolShovel = new System.Windows.Forms.ToolStripButton();
             this.toolPencil = new System.Windows.Forms.ToolStripButton();
@@ -42,7 +43,7 @@
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolUVFixer = new System.Windows.Forms.ToolStripButton();
-            this.toolDrag = new System.Windows.Forms.ToolStripButton();
+            this.toolRamp = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,6 +58,7 @@
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSelection,
             this.toolDrag,
+            this.toolRamp,
             this.toolBrush,
             this.toolShovel,
             this.toolPencil,
@@ -87,6 +89,18 @@
             this.toolSelection.Size = new System.Drawing.Size(23, 20);
             this.toolSelection.ToolTipText = "Selection";
             this.toolSelection.Click += new System.EventHandler(this.toolSelection_Click);
+            // 
+            // toolDrag
+            // 
+            this.toolDrag.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolDrag.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolDrag.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolDrag.Image = global::TombEditor.Properties.Resources.toolbox_Drag_16;
+            this.toolDrag.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolDrag.Name = "toolDrag";
+            this.toolDrag.Size = new System.Drawing.Size(23, 20);
+            this.toolDrag.ToolTipText = "Drag";
+            this.toolDrag.Click += new System.EventHandler(this.toolDrag_Click);
             // 
             // toolBrush
             // 
@@ -230,17 +244,16 @@
             this.toolUVFixer.ToolTipText = "Fix texture coordinates";
             this.toolUVFixer.Click += new System.EventHandler(this.toolUVFixer_Click);
             // 
-            // toolDrag
+            // toolRamp
             // 
-            this.toolDrag.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolDrag.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolDrag.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolDrag.Image = global::TombEditor.Properties.Resources.toolbox_Drag_16;
-            this.toolDrag.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolDrag.Name = "toolDrag";
-            this.toolDrag.Size = new System.Drawing.Size(23, 20);
-            this.toolDrag.ToolTipText = "Drag";
-            this.toolDrag.Click += new System.EventHandler(this.toolDrag_Click);
+            this.toolRamp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolRamp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolRamp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolRamp.Image = global::TombEditor.Properties.Resources.toolbox_GroupSlopeUp_16_copy;
+            this.toolRamp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolRamp.Name = "toolRamp";
+            this.toolRamp.Size = new System.Drawing.Size(24, 24);
+            this.toolRamp.Click += new System.EventHandler(this.toolRamp_Click);
             // 
             // ToolPalette
             // 
@@ -277,5 +290,6 @@
         private System.Windows.Forms.ToolStripButton toolUVFixer;
         private System.Windows.Forms.ToolStripButton toolGroup;
         private System.Windows.Forms.ToolStripButton toolDrag;
+        private System.Windows.Forms.ToolStripButton toolRamp;
     }
 }

@@ -12,7 +12,10 @@ namespace TombEditor
 
     public enum EditorToolType
     {
-        None, Selection, Brush, Pencil, Fill, Group, Shovel, Drag, Flatten, Smooth
+        None, Selection, Brush, Pencil,
+        Fill, Group,
+        Shovel, Smooth,
+        Flatten, Drag, Ramp, HalfPipe, Bowl, Pyramid
     }
 
     public struct EditorTool
@@ -101,11 +104,6 @@ namespace TombEditor
     public enum SmoothGeometryEditingType
     {
         None, Floor, Wall, Any
-    }
-
-    public enum GroupShapeType
-    {
-        Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid
     }
 
     public struct SectorSelection

@@ -53,6 +53,7 @@ namespace TombEditor.ToolWindows
                 toolFlatten.Checked = currentTool.Tool == EditorToolType.Flatten;
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
                 toolDrag.Checked = currentTool.Tool == EditorToolType.Drag;
+                toolRamp.Checked = currentTool.Tool == EditorToolType.Ramp;
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
@@ -78,6 +79,8 @@ namespace TombEditor.ToolWindows
                 toolShovel.Visible = mode == EditorMode.Geometry;
                 toolSmooth.Visible = mode == EditorMode.Geometry;
                 toolDrag.Visible = mode == EditorMode.Geometry;
+                toolRamp.Visible = mode == EditorMode.Geometry;
+
                 toolPalette.AutoSize = true;
                 Height = toolPalette.Size.Height + Padding.Size.Height;
                 Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
@@ -158,6 +161,11 @@ namespace TombEditor.ToolWindows
             EditorTool currentTool = _editor.Tool;
             currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
             EditorActions.SwitchTool(currentTool);
+        }
+
+        private void toolRamp_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Ramp);
         }
     }
 }

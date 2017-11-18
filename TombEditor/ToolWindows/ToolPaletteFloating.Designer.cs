@@ -26,6 +26,7 @@
             this.toolFill = new System.Windows.Forms.ToolStripButton();
             this.toolGroup = new System.Windows.Forms.ToolStripButton();
             this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolRamp = new System.Windows.Forms.ToolStripButton();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -44,6 +45,7 @@
             this.toolPalette.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSelection,
             this.toolDrag,
+            this.toolRamp,
             this.toolBrush,
             this.toolShovel,
             this.toolPencil,
@@ -60,7 +62,7 @@
             this.toolPalette.Location = new System.Drawing.Point(0, 16);
             this.toolPalette.Name = "toolPalette";
             this.toolPalette.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.toolPalette.Size = new System.Drawing.Size(29, 288);
+            this.toolPalette.Size = new System.Drawing.Size(29, 330);
             this.toolPalette.TabIndex = 1;
             // 
             // toolSelection
@@ -184,6 +186,17 @@
             this.toolSeparator1.Name = "toolSeparator1";
             this.toolSeparator1.Size = new System.Drawing.Size(22, 6);
             // 
+            // toolRamp
+            // 
+            this.toolRamp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolRamp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolRamp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolRamp.Image = global::TombEditor.Properties.Resources.toolbox_GroupSlopeUp_16_copy;
+            this.toolRamp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolRamp.Name = "toolRamp";
+            this.toolRamp.Size = new System.Drawing.Size(24, 20);
+            this.toolRamp.Click += new System.EventHandler(this.toolRamp_Click);
+            // 
             // toolEraser
             // 
             this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -225,7 +238,6 @@
             this.toolUVFixer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolUVFixer.Name = "toolUVFixer";
             this.toolUVFixer.Size = new System.Drawing.Size(24, 20);
-            this.toolUVFixer.Text = "toolStripButton1";
             this.toolUVFixer.ToolTipText = "Fix texture coordinates";
             this.toolUVFixer.Click += new System.EventHandler(this.toolUVFixer_Click);
             // 
@@ -236,7 +248,7 @@
             this.GripSize = 10;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "ToolPaletteFloating";
-            this.Size = new System.Drawing.Size(28, 307);
+            this.Size = new System.Drawing.Size(28, 346);
             this.toolPalette.ResumeLayout(false);
             this.toolPalette.PerformLayout();
             this.ResumeLayout(false);
@@ -260,5 +272,6 @@
         private System.Windows.Forms.ToolStripSeparator toolSeparator2;
         private System.Windows.Forms.ToolStripButton toolUVFixer;
         private System.Windows.Forms.ToolStripButton toolDrag;
+        private System.Windows.Forms.ToolStripButton toolRamp;
     }
 }

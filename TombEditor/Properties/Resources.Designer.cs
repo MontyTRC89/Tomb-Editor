@@ -933,6 +933,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap toolbox_GroupSlopeUp_16_copy {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_GroupSlopeUp_16_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap toolbox_GroupTexture_16 {
             get {
                 object obj = ResourceManager.GetObject("toolbox_GroupTexture_16", resourceCulture);

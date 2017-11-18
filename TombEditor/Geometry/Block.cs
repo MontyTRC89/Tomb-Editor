@@ -556,6 +556,54 @@ namespace TombEditor.Geometry
             return slopeDirections;
         }
 
+        public short GetFaceMin(int verticalSubdivision, Direction direction = Direction.None)
+        {
+            var faces = GetVerticalSubdivision(verticalSubdivision);
+
+            if(direction == Direction.None)
+                return Math.Min(Math.Min(faces[0], faces[1]), Math.Min(faces[2], faces[3]));
+            else
+            {
+                switch (direction)
+                {
+                    case Direction.PositiveZ:
+                        return Math.Min(faces[0], faces[1]);
+                    case Direction.NegativeZ:
+                        return Math.Min(faces[2], faces[3]);
+                    case Direction.PositiveX:
+                        return Math.Min(faces[1], faces[2]);
+                    case Direction.NegativeX:
+                        return Math.Min(faces[0], faces[3]);
+                    default:
+                        return 0;
+                }
+            }
+        }
+
+        public short GetFaceMax(int verticalSubdivision, Direction direction = Direction.None)
+        {
+            var faces = GetVerticalSubdivision(verticalSubdivision);
+
+            if (direction == Direction.None)
+                return Math.Max(Math.Max(faces[0], faces[1]), Math.Max(faces[2], faces[3]));
+            else
+            {
+                switch (direction)
+                {
+                    case Direction.PositiveZ:
+                        return Math.Max(faces[0], faces[1]);
+                    case Direction.NegativeZ:
+                        return Math.Max(faces[2], faces[3]);
+                    case Direction.PositiveX:
+                        return Math.Max(faces[1], faces[2]);
+                    case Direction.NegativeX:
+                        return Math.Max(faces[0], faces[3]);
+                    default:
+                        return 0;
+                }
+            }
+        }
+
         public bool FloorSplitDirectionIsXEqualsZ
         {
             get
@@ -708,9 +756,9 @@ namespace TombEditor.Geometry
         public int FloorIfQuadSlopeZ => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXpZn] : 0;
         public int CeilingIfQuadSlopeX => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXnZp] : 0;
         public int CeilingIfQuadSlopeZ => CeilingIsQuad ? WSFaces[FaceXpZn] - WSFaces[FaceXpZp] : 0;
-        public short FloorMax => Math.Max(Math.Max(QAFaces[0], QAFaces[1]), Math.Max(QAFaces[2], QAFaces[3]));
-        public short FloorMin => Math.Min(Math.Min(QAFaces[0], QAFaces[1]), Math.Min(QAFaces[2], QAFaces[3]));
-        public short CeilingMax => Math.Max(Math.Max(WSFaces[0], WSFaces[1]), Math.Max(WSFaces[2], WSFaces[3]));
-        public short CeilingMin => Math.Min(Math.Min(WSFaces[0], WSFaces[1]), Math.Min(WSFaces[2], WSFaces[3]));
+        public short FloorMax => GetFaceMax(0);
+        public short FloorMin => GetFaceMin(0);
+        public short CeilingMax => GetFaceMax(1);
+        public short CeilingMin => GetFaceMin(1);
     }
 }

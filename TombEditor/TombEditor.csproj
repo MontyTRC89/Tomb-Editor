@@ -502,6 +502,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\icons_toolbox\toolbox_GroupSlopeUp-16 copy.png" />
     <None Include="Editor\Textures\illegal_slope.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
