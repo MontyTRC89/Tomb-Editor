@@ -311,9 +311,9 @@ namespace TombEditor
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
 
-        public static void RaiseGroup(Room room, Rectangle area, DrawingPoint pickPoint, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, short increment)
+        public static void TransformGroup(Room room, Rectangle area, DrawingPoint pickPoint, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, short increment)
         {
-            if (arrow == EditorArrowType.EntireFace || arrow > EditorArrowType.EdgeW)
+            if (type < GroupShapeType.Bowl && (arrow == EditorArrowType.EntireFace || arrow > EditorArrowType.EdgeW))
                 return;
 
             short startHeight = 0;
@@ -324,8 +324,9 @@ namespace TombEditor
             Block topRight = room.Blocks[area.Right, area.Bottom];
             Block bottomLeft = room.Blocks[area.Left, area.Top];
             Block bottomRight = room.Blocks[area.Right, area.Top];
+            Block middle = room.Blocks[area.Left + zoneSize[0] / 2, area.Top + zoneSize[1] / 2];
 
-            if(type == GroupShapeType.Ramp || type == GroupShapeType.QuarterPipe)
+            if (type == GroupShapeType.Ramp || type == GroupShapeType.QuarterPipe)
             {
                 switch (arrow)
                 {
@@ -353,10 +354,12 @@ namespace TombEditor
                                       topRight.GetVerticalSubdivision(verticalSubdivision)[1] +
                                       bottomLeft.GetVerticalSubdivision(verticalSubdivision)[3] +
                                       bottomRight.GetVerticalSubdivision(verticalSubdivision)[2]) / 4);
-                endHeight = room.GetMaxHeight(area, verticalSubdivision);
+                endHeight = (increment > 0) ? middle.GetFaceMax(verticalSubdivision) : middle.GetFaceMin(verticalSubdivision);
             }
 
-            if(type <= GroupShapeType.HalfPipe)
+            var heightScale = endHeight - startHeight + increment;
+
+            if (type <= GroupShapeType.HalfPipe)
             {
                 int editDirection = (arrow == EditorArrowType.EdgeN || arrow == EditorArrowType.EdgeS) ? 1 : 0;
                 int fillDirection = editDirection == 0 ? 1 : 0;
@@ -379,21 +382,15 @@ namespace TombEditor
                 }
 
                 float grain = 0;
-                float step = 0;
 
-                switch (type)
+                if(type == GroupShapeType.Ramp)
+                    grain = 1 / (float)zoneSize[editDirection];
+                else
                 {
-                    case GroupShapeType.Ramp:
-                        grain = (endHeight - startHeight + increment) / (float)zoneSize[editDirection];
-                        break;
-
-                    case GroupShapeType.QuarterPipe:
-                        step = ((float)Math.PI / 2) / (float)zoneSize[editDirection];
-                        grain = endHeight - startHeight + increment;
-                        break;
-
-                    case GroupShapeType.HalfPipe:
-                        break;
+                    if(type == GroupShapeType.QuarterPipe)
+                        grain = ((float)Math.PI / 2) / (float)zoneSize[editDirection];
+                    else
+                        grain = ((float)Math.PI) / (float)zoneSize[editDirection];
                 }
                 
                 short currentHeight = 0;
@@ -403,20 +400,52 @@ namespace TombEditor
                     switch (type)
                     {
                         case GroupShapeType.Ramp:
-                            currentHeight = (short)Math.Round(startHeight + grain * i);
+                            currentHeight = (short)(Math.Round(grain * i * heightScale) + startHeight);
                             break;
 
                         case GroupShapeType.QuarterPipe:
-                            currentHeight = (short)Math.Round(startHeight + Math.Sin(step * i) * grain);
-                            break;
-
                         case GroupShapeType.HalfPipe:
+                            currentHeight = (short)(Math.Round(Math.Sin(grain * i) * heightScale) + startHeight);
                             break;
                     }
 
                     for (int XorZ = startPoint[fillDirection]; XorZ != endPoint[fillDirection]; XorZ += pointIncrement[fillDirection])
                         room.SetPoint((editDirection == 1 ? XorZ : ZorX), (editDirection == 1 ? ZorX : XorZ), verticalSubdivision, currentHeight, area);
                 }
+            }
+            else
+            {
+                float[] grain = new float[2] { 0, 0 };
+
+                for(int i = 0; i < 2; i++)
+                {
+                    if (type == GroupShapeType.Bowl)
+                        grain[i] = ((float)Math.PI) / (float)zoneSize[i];
+                    else
+                        grain[i] = 2 / (float)zoneSize[i];
+                }
+
+                float overallHeight = 0;
+                short currentHeight = 0;
+
+                for (int x = area.Left, i = 0; x != area.Right + 2; x++, i++)
+                {
+                    if(type == GroupShapeType.Bowl)
+                        overallHeight = (float)Math.Sin(grain[0] * i);
+
+                    for (int z = area.Top, j = 0; z != area.Bottom + 2; z++, j++)
+                    {
+                        float finalHeight = 0;
+
+                        if (type == GroupShapeType.Bowl)
+                            finalHeight = overallHeight * (float)Math.Sin(grain[1] * j);
+
+                        currentHeight = (short)Math.Round(finalHeight * heightScale + startHeight);
+
+                        room.SetPoint(x, z, verticalSubdivision, currentHeight, area);
+                    }
+                }
+
             }
 
             SmartBuildGeometry(room, area);

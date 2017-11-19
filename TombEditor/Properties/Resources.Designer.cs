@@ -933,9 +933,19 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap toolbox_GroupSlopeUp_16 {
+        internal static System.Drawing.Bitmap toolbox_GroupQuarterPipe {
             get {
-                object obj = ResourceManager.GetObject("toolbox_GroupSlopeUp_16", resourceCulture);
+                object obj = ResourceManager.GetObject("toolbox_GroupQuarterPipe", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap toolbox_GroupRamp {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_GroupRamp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -43,6 +43,10 @@ namespace TombEditor.ToolWindows
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
                 toolDrag.Checked = currentTool.Tool == EditorToolType.Drag;
                 toolRamp.Checked = currentTool.Tool == EditorToolType.Ramp;
+                toolQuarterPipe.Checked = currentTool.Tool == EditorToolType.QuarterPipe;
+                toolHalfPipe.Checked = currentTool.Tool == EditorToolType.HalfPipe;
+                toolBowl.Checked = currentTool.Tool == EditorToolType.Bowl;
+                toolPyramid.Checked = currentTool.Tool == EditorToolType.Pyramid;
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
@@ -62,13 +66,17 @@ namespace TombEditor.ToolWindows
                 toolEraser.Visible = mode == EditorMode.FaceEdit;
                 toolInvisibility.Visible = mode == EditorMode.FaceEdit;
                 toolUVFixer.Visible = mode == EditorMode.FaceEdit;
-                toolSeparator1.Visible = mode == EditorMode.FaceEdit;
+                //toolSeparator1.Visible = mode == EditorMode.FaceEdit;
                 toolSeparator2.Visible = mode == EditorMode.FaceEdit;
                 toolFlatten.Visible = mode == EditorMode.Geometry;
                 toolShovel.Visible = mode == EditorMode.Geometry;
                 toolSmooth.Visible = mode == EditorMode.Geometry;
                 toolDrag.Visible = mode == EditorMode.Geometry;
                 toolRamp.Visible = mode == EditorMode.Geometry;
+                toolQuarterPipe.Visible = mode == EditorMode.Geometry;
+                toolHalfPipe.Visible = mode == EditorMode.Geometry;
+                toolBowl.Visible = mode == EditorMode.Geometry;
+                toolPyramid.Visible = mode == EditorMode.Geometry;
                 toolStrip.AutoSize = true;
                 Size = toolStrip.Size;
                 toolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);

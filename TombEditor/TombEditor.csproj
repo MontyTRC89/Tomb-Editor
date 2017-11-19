@@ -502,6 +502,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\icons_toolbox\toolbox_GroupRamp.png" />
+    <None Include="Resources\icons_toolbox\toolbox_GroupQuarterPipe.png" />
+    <None Include="Resources\icons_toolbox\toolbox_GroupDome.png" />
+    <None Include="Resources\icons_toolbox\toolbox_Dome-16.png" />
     <None Include="Editor\Textures\illegal_slope.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -1120,23 +1120,42 @@ namespace TombEditor.Controls
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y);
                         if(dragValue.Y != 0)
                         {
-                            switch(_editor.Tool.Tool)
+                            if(_editor.Tool.Tool == EditorToolType.Drag)
                             {
-                                case EditorToolType.Drag:
-                                    EditorActions.EditSectorGeometry(_editor.SelectedRoom, 
-                                        _editor.SelectedSectors.Area, 
-                                        _editor.SelectedSectors.Arrow, 
-                                        (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), 
-                                        (short)dragValue.Y,
-                                        ModifierKeys.HasFlag(Keys.Alt), 
-                                        _toolHandler.ReferenceIsOppositeDiagonalStep, true);
-                                    break;
-
-                                case EditorToolType.Ramp:
-                                    EditorActions.RaiseGroup(_editor.SelectedRoom, _editor.SelectedSectors.Area, _toolHandler.ReferencePosition, _editor.SelectedSectors.Arrow, ModifierKeys.HasFlag(Keys.Alt) ? GroupShapeType.QuarterPipe : GroupShapeType.Ramp, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y);
-                                    break;
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom,
+                                    _editor.SelectedSectors.Area,
+                                    _editor.SelectedSectors.Arrow,
+                                    (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
+                                    (short)dragValue.Y,
+                                    ModifierKeys.HasFlag(Keys.Alt),
+                                    _toolHandler.ReferenceIsOppositeDiagonalStep, true);
                             }
-                            
+                            else
+                            {
+                                GroupShapeType shape = GroupShapeType.Ramp;
+                                switch(_editor.Tool.Tool)
+                                {
+                                    case EditorToolType.Pyramid:
+                                        shape = GroupShapeType.Pyramid;
+                                        break;
+                                    case EditorToolType.QuarterPipe:
+                                        shape = GroupShapeType.QuarterPipe;
+                                        break;
+                                    case EditorToolType.HalfPipe:
+                                        shape = GroupShapeType.HalfPipe;
+                                        break;
+                                    case EditorToolType.Bowl:
+                                        shape = GroupShapeType.Bowl;
+                                        break;
+                                }
+                                EditorActions.TransformGroup(_editor.SelectedRoom,
+                                    _editor.SelectedSectors.Area,
+                                    _toolHandler.ReferencePosition,
+                                    _editor.SelectedSectors.Arrow,
+                                    shape,
+                                    (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
+                                    (short)dragValue.Y);
+                            }
                             redrawWindow = true;
                         }
                     }

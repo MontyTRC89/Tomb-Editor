@@ -15,7 +15,7 @@ namespace TombEditor
         None, Selection, Brush, Pencil,
         Fill, Group,
         Shovel, Smooth,
-        Flatten, Drag, Ramp, HalfPipe, Bowl, Pyramid
+        Flatten, Drag, Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid
     }
 
     public struct EditorTool

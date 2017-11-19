@@ -54,6 +54,10 @@ namespace TombEditor.ToolWindows
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
                 toolDrag.Checked = currentTool.Tool == EditorToolType.Drag;
                 toolRamp.Checked = currentTool.Tool == EditorToolType.Ramp;
+                toolQuarterPipe.Checked = currentTool.Tool == EditorToolType.QuarterPipe;
+                toolHalfPipe.Checked = currentTool.Tool == EditorToolType.HalfPipe;
+                toolBowl.Checked = currentTool.Tool == EditorToolType.Bowl;
+                toolPyramid.Checked = currentTool.Tool == EditorToolType.Pyramid;
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
@@ -73,13 +77,17 @@ namespace TombEditor.ToolWindows
                 toolEraser.Visible = mode == EditorMode.FaceEdit;
                 toolInvisibility.Visible = mode == EditorMode.FaceEdit;
                 toolUVFixer.Visible = mode == EditorMode.FaceEdit;
-                toolSeparator1.Visible = mode == EditorMode.FaceEdit;
+                //toolSeparator1.Visible = mode == EditorMode.FaceEdit;
                 toolSeparator2.Visible = mode == EditorMode.FaceEdit;
                 toolFlatten.Visible = mode == EditorMode.Geometry;
                 toolShovel.Visible = mode == EditorMode.Geometry;
                 toolSmooth.Visible = mode == EditorMode.Geometry;
                 toolDrag.Visible = mode == EditorMode.Geometry;
                 toolRamp.Visible = mode == EditorMode.Geometry;
+                toolQuarterPipe.Visible = mode == EditorMode.Geometry;
+                toolHalfPipe.Visible = mode == EditorMode.Geometry;
+                toolBowl.Visible = mode == EditorMode.Geometry;
+                toolPyramid.Visible = mode == EditorMode.Geometry;
 
                 toolPalette.AutoSize = true;
                 Height = toolPalette.Size.Height + Padding.Size.Height;
@@ -146,6 +154,31 @@ namespace TombEditor.ToolWindows
             SwitchTool(EditorToolType.Drag);
         }
 
+        private void toolRamp_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Ramp);
+        }
+
+        private void toolQuarterPipe_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.QuarterPipe);
+        }
+
+        private void toolHalfPipe_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.HalfPipe);
+        }
+
+        private void toolBowl_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Bowl);
+        }
+
+        private void toolPyramid_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Pyramid);
+        }
+
         private void toolInvisibility_Click(object sender, EventArgs e)
         {
             _editor.SelectedTexture = new TextureArea { Texture = TextureInvisible.Instance };
@@ -161,11 +194,6 @@ namespace TombEditor.ToolWindows
             EditorTool currentTool = _editor.Tool;
             currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
             EditorActions.SwitchTool(currentTool);
-        }
-
-        private void toolRamp_Click(object sender, EventArgs e)
-        {
-            SwitchTool(EditorToolType.Ramp);
         }
     }
 }
