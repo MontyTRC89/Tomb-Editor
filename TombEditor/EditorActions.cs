@@ -2299,7 +2299,6 @@ namespace TombEditor
                                 }
                             }
 
-
                             mesh.Texture = _editor.Level.Settings.Textures[0];
                             model.Meshes.Add(mesh);
 

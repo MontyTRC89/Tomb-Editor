@@ -42,6 +42,21 @@ namespace TombLib.GeometryIO
             return position;
         }
 
+        protected Vector2 RoundUV(Vector2 uv)
+        {
+            if ((int)(uv.X - 0.5f) % 16 == 0)
+                uv.X -= 0.5f;
+            else
+                uv.X += 0.5f;
+
+            if ((int)(uv.Y - 0.5f) % 16 == 0)
+                uv.Y -= 0.5f;
+            else
+                uv.Y += 0.5f;
+
+            return uv;
+        }
+
         protected Vector2 ApplyUVTransform(Vector2 uv, int w, int h)
         {
             if (_settings.PremultiplyUV)

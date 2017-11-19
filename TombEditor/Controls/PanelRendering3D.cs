@@ -423,6 +423,7 @@ namespace TombEditor.Controls
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
         private Buffer<EditorVertex> _skyVertexBuffer;
         private Debug _debug;
+        private RasterizerState _rasterizerStateDepthBias;
 
         // Current room's last position
         private Vector3? _currentRoomLastPos = null;
@@ -485,6 +486,7 @@ namespace TombEditor.Controls
             _littleCube?.Dispose();
             _littleSphere?.Dispose();
             _movementTimer?.Dispose();
+            _rasterizerStateDepthBias?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -659,6 +661,14 @@ namespace TombEditor.Controls
                     SlopeScaledDepthBias = 0
                 };
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
+
+            _rasterizerStateDepthBias = RasterizerState.New(_device, new SharpDX.Direct3D11.RasterizerStateDescription
+            {
+                CullMode = SharpDX.Direct3D11.CullMode.Back,
+                FillMode = SharpDX.Direct3D11.FillMode.Solid,
+                DepthBias = -1,
+                SlopeScaledDepthBias = -1
+            });
 
             _gizmo = new Gizmo(deviceManager.Device, deviceManager.Effects["Solid"]);
             _toolHandler = new ToolHandler(this);
@@ -2674,15 +2684,30 @@ namespace TombEditor.Controls
             _roomEffect.Parameters["TextureCoordinateFactor"].SetValue(_textureAtlas == null ? new Vector2(0) : new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
 
             // Draw buckets
-            DrawSolidBuckets(viewProjection);
-
+            DrawSolidBuckets(viewProjection); 
             DrawSelectedFogBulb();
-
             DrawOpaqueBuckets(viewProjection);
             DrawTransparentBuckets(viewProjection);
             DrawInvisibleBuckets(viewProjection);
 
-            if(ShowOtherObjects)
+            // Draw room imported geometry
+            if (_editor != null && _editor.Level != null && _roomGeometryToDraw.Count != 0)
+            {
+                // If picking for imported geometry is disabled, then draw geometry translucent
+                if (DisablePickingForImportedGeometry) _device.SetBlendState(_device.BlendStates.Additive);
+
+                // Before drawing custom geometry, apply a depth bias for reducing Z fighting
+                _device.SetRasterizerState(_rasterizerStateDepthBias);
+
+                // Draw imported geometry
+                DrawRoomImportedGeometry(viewProjection);
+
+                // Reset GPU states
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                if (DisablePickingForImportedGeometry) _device.SetBlendState(_device.BlendStates.Opaque);
+            }
+
+            if (ShowOtherObjects)
             {
                 // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
                 DrawObjects(viewProjection, _editor.SelectedRoom);
@@ -2690,11 +2715,7 @@ namespace TombEditor.Controls
                 DrawLights(viewProjection, _editor.SelectedRoom);
             }
 
-            // Draw room geometry imported
-            if (_editor != null && _editor.Level != null)
-            {
-                DrawRoomImportedGeometry(viewProjection);
-            }
+            
 
             // Draw the height of the object
             DrawDebugLines(viewProjection);

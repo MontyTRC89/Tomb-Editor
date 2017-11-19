@@ -2989,6 +2989,180 @@ namespace TombEditor.Geometry
             }
         }
 
+    /*    private Vector4 CalculateLightingForVertex(Vector3 position, Vector3 normal)
+        {
+            // No Linq here because it's slow
+            List<LightInstance> lights = new List<LightInstance>();
+            foreach (var instance in _objects)
+            {
+                LightInstance light = instance as LightInstance;
+                if (light != null)
+                    lights.Add(light);
+            }
+
+            int r = (int)(AmbientLight.X * 128);
+            int g = (int)(AmbientLight.Y * 128);
+            int b = (int)(AmbientLight.Z * 128);
+
+            foreach (var light in lights) // No Linq here because it's slow
+            {
+                if ((!light.Enabled) || (!light.IsStaticallyUsed))
+                    continue;
+
+                switch (light.Type)
+                {
+                    case LightType.Point:
+                    case LightType.Shadow:
+                        if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
+                        {
+                            // Get the distance between light and vertex
+                            float distance = Math.Abs((position - light.Position).Length());
+
+                            // If distance is greater than light out radius, then skip this light
+                            if (distance > light.OuterRange * 1024.0f)
+                                continue;
+
+                            // Calculate light diffuse value
+                            int diffuse = (int)(light.Intensity * 8192);
+
+                            // Calculate the length squared of the normal vector
+                            float dotN = Vector3.Dot(normal, normal);
+
+                            // Calculate the attenuation
+                            var attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
+                            if (attenuaton > 1.0f)
+                                attenuaton = 1.0f;
+                            if (attenuaton <= 0.0f)
+                                continue;
+
+                            // Calculate final light color
+                            int finalIntensity = (int)(dotN * attenuaton * diffuse);
+
+                            r += (int)(finalIntensity * light.Color.X / 64.0f);
+                            g += (int)(finalIntensity * light.Color.Y / 64.0f);
+                            b += (int)(finalIntensity * light.Color.Z / 64.0f);
+                        }
+                        break;
+                    case LightType.Effect:
+                        if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
+                        {
+                            int x1 = (int)(Math.Floor(light.Position.X / 1024.0f) * 1024);
+                            int z1 = (int)(Math.Floor(light.Position.Z / 1024.0f) * 1024);
+                            int x2 = (int)(Math.Ceiling(light.Position.X / 1024.0f) * 1024);
+                            int z2 = (int)(Math.Ceiling(light.Position.Z / 1024.0f) * 1024);
+
+                            // TODO: winroomedit was supporting effect lights placed on vertical faces and effects light was applied to owning face
+                            // ReSharper disable CompareOfFloatsByEqualityOperator
+                            if (((position.X == x1 && position.Z == z1) || (position.X == x1 && position.Z == z2) || (position.X == x2 && position.Z == z1) ||
+                                 (position.X == x2 && position.Z == z2)) && position.Y <= light.Position.Y)
+                            {
+                                int finalIntensity = (int)(light.Intensity * 8192 * 0.25f);
+
+                                r += (int)(finalIntensity * light.Color.X / 64.0f);
+                                g += (int)(finalIntensity * light.Color.Y / 64.0f);
+                                b += (int)(finalIntensity * light.Color.Z / 64.0f);
+                            }
+                            // ReSharper restore CompareOfFloatsByEqualityOperator
+                        }
+                        break;
+                    case LightType.Sun:
+                        {
+                            // Calculate the light direction
+                            var lightDirection = light.GetDirection();
+
+                            // calcolo la luce diffusa
+                            float diffuse = -Vector3.Dot(lightDirection, normal);
+
+                            if (diffuse <= 0)
+                                continue;
+
+                            if (diffuse > 1)
+                                diffuse = 1.0f;
+
+
+                            int finalIntensity = (int)(diffuse * light.Intensity * 8192);
+                            if (finalIntensity < 0)
+                                continue;
+
+                            r += (int)(finalIntensity * light.Color.X / 64.0f);
+                            g += (int)(finalIntensity * light.Color.Y / 64.0f);
+                            b += (int)(finalIntensity * light.Color.Z / 64.0f);
+                        }
+                        break;
+                    case LightType.Spot:
+                        if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
+                        {
+                            // Calculate the ray from light to vertex
+                            var lightVector = position - light.Position;
+                            lightVector = lightVector.Normalize_();
+
+                            // Get the distance between light and vertex
+                            float distance = Math.Abs((position - light.Position).Length());
+
+                            // If distance is greater than light length, then skip this light
+                            if (distance > light.OuterRange * 1024.0f)
+                                continue;
+
+                            // Calculate the light direction
+                            var lightDirection = light.GetDirection();
+
+                            // Calculate the cosines values for In, Out
+                            double d = Vector3.Dot(lightVector, lightDirection);
+                            double cosI2 = Math.Cos(MathUtil.DegreesToRadians(light.InnerAngle));
+                            double cosO2 = Math.Cos(MathUtil.DegreesToRadians(light.OuterAngle));
+
+                            if (d < cosO2)
+                                continue;
+
+                            // Calculate light diffuse value
+                            float factor = (float)(1.0f - (d - cosI2) / (cosO2 - cosI2));
+                            if (factor > 1.0f)
+                                factor = 1.0f;
+                            if (factor <= 0.0f)
+                                continue;
+
+                            float attenuation = 1.0f;
+                            if (distance >= light.InnerRange * 1024.0f)
+                                attenuation = 1.0f - (distance - light.InnerRange * 1024.0f) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
+
+                            if (attenuation > 1.0f)
+                                attenuation = 1.0f;
+                            if (attenuation < 0.0f)
+                                continue;
+
+                            float dot1 = -Vector3.Dot(lightDirection, normal);
+                            if (dot1 < 0.0f)
+                                continue;
+                            if (dot1 > 1.0f)
+                                dot1 = 1.0f;
+
+                            int finalIntensity = (int)(attenuation * dot1 * factor * light.Intensity * 8192);
+
+                            r += (int)(finalIntensity * light.Color.X / 64.0f);
+                            g += (int)(finalIntensity * light.Color.Y / 64.0f);
+                            b += (int)(finalIntensity * light.Color.Z / 64.0f);
+                        }
+                        break;
+                }
+            }
+
+            if (r < 0)
+                r = 0;
+            if (g < 0)
+                g = 0;
+            if (b < 0)
+                b = 0;
+
+            var color = new Vector4();
+
+            color.X = r * (1.0f / 128.0f);
+            color.Y = g * (1.0f / 128.0f);
+            color.Z = b * (1.0f / 128.0f);
+            color.W = 255.0f;
+
+            return color;
+        }*/
+
         public List<EditorVertex> GetRoomVertices()
         {
             return _allVertices;

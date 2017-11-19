@@ -100,6 +100,7 @@ namespace TombEditor.Geometry
         public bool FlipZ { get; set; }
         public bool FlipUV_V { get; set; }
         public bool InvertFaces { get; set; }
+        public bool UseVertexColor { get; set; }
     }
 
     public class ImportedGeometry : ICloneable, IEquatable<ImportedGeometry>
@@ -150,7 +151,8 @@ namespace TombEditor.Geometry
                     FlipY = info.FlipY,
                     FlipZ = info.FlipZ,
                     FlipUV_V = info.FlipUV_V,
-                    InvertFaces = info.InvertFaces
+                    InvertFaces = info.InvertFaces,
+                    UseVertexColor = info.UseVertexColor
                 };
 
                 BaseGeometryImporter importer;
@@ -181,6 +183,7 @@ namespace TombEditor.Geometry
                     var modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, "Imported");
 
                     var currentIndex = 0;
+                    var currPoly = 0;
                     foreach (var tmpPoly in mesh.Polygons)
                     {
                         if (tmpPoly.Shape == IOPolygonShape.Quad)
@@ -189,7 +192,7 @@ namespace TombEditor.Geometry
                             {
                                 var vertex = new ImportedGeometryVertex();
                                 vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                vertex.UV = mesh.UV[tmpPoly.Indices[i]];
+                                vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
                                 modelMesh.Vertices.Add(vertex);
                             }
 
@@ -209,12 +212,14 @@ namespace TombEditor.Geometry
                             {
                                 var vertex = new ImportedGeometryVertex();
                                 vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                vertex.UV = mesh.UV[tmpPoly.Indices[i]];
+                                vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
                                 modelMesh.Vertices.Add(vertex);
                                 modelMesh.Indices.Add(currentIndex);
                                 currentIndex++;
                             }
                         }
+                        
+                        currPoly++;
                     }
 
                     modelMesh.Texture = mesh.Texture;
