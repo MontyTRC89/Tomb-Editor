@@ -318,13 +318,13 @@ namespace TombEditor
 
             short startHeight = 0;
             short endHeight = 0;
-            int[] zoneSize = new int[2] { area.Right - area.Left + 1, area.Bottom - area.Top + 1};
+            int[] zoneSize = new int[2] { area.Width + 1, area.Height + 1};
 
             Block topLeft = room.Blocks[area.Left, area.Bottom];
             Block topRight = room.Blocks[area.Right, area.Bottom];
             Block bottomLeft = room.Blocks[area.Left, area.Top];
             Block bottomRight = room.Blocks[area.Right, area.Top];
-            Block middle = room.Blocks[area.Left + zoneSize[0] / 2, area.Top + zoneSize[1] / 2];
+            Block middle = room.Blocks[area.Left + area.Width / 2, area.Top + area.Height / 2];
 
             if (type == GroupShapeType.Ramp || type == GroupShapeType.QuarterPipe)
             {
@@ -422,30 +422,36 @@ namespace TombEditor
                     if (type == GroupShapeType.Bowl)
                         grain[i] = ((float)Math.PI) / (float)zoneSize[i];
                     else
-                        grain[i] = 2 / (float)zoneSize[i];
+                    {
+                        // Add pyramid shape function here
+                    }
                 }
-
-                float overallHeight = 0;
-                short currentHeight = 0;
 
                 for (int x = area.Left, i = 0; x != area.Right + 2; x++, i++)
                 {
-                    if(type == GroupShapeType.Bowl)
-                        overallHeight = (float)Math.Sin(grain[0] * i);
+                    float tempHeight = 0;
+
+                    if (type == GroupShapeType.Bowl)
+                        tempHeight = (float)Math.Sin(grain[0] * i);
+                    else
+                    {
+                        // Add pyramid shape function here
+                    }
 
                     for (int z = area.Top, j = 0; z != area.Bottom + 2; z++, j++)
                     {
                         float finalHeight = 0;
 
                         if (type == GroupShapeType.Bowl)
-                            finalHeight = overallHeight * (float)Math.Sin(grain[1] * j);
+                            finalHeight = tempHeight * (float)Math.Sin(grain[1] * j);
+                        else
+                        {
+                            // Add pyramid shape function here
+                        }
 
-                        currentHeight = (short)Math.Round(finalHeight * heightScale + startHeight);
-
-                        room.SetPoint(x, z, verticalSubdivision, currentHeight, area);
+                        room.SetPoint(x, z, verticalSubdivision, (short)(Math.Round(finalHeight * heightScale) + startHeight), area);
                     }
                 }
-
             }
 
             SmartBuildGeometry(room, area);
