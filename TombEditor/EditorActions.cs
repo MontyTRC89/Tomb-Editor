@@ -311,13 +311,13 @@ namespace TombEditor
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
 
-        public static void RaiseGroup(Room room, Rectangle area, DrawingPoint pickPoint, EditorArrowType arrow, bool smooth, int verticalSubdivision, short increment)
+        public static void RaiseGroup(Room room, Rectangle area, DrawingPoint pickPoint, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, short increment)
         {
             if (arrow == EditorArrowType.EntireFace || arrow > EditorArrowType.EdgeW)
                 return;
 
-            short startPoint = 0;
-            short endPoint = 0;
+            short startHeight = 0;
+            short endHeight = 0;
             int[] zoneSize = new int[2] { area.Right - area.Left + 1, area.Bottom - area.Top + 1};
 
             Block topLeft = room.Blocks[area.Left, area.Bottom];
@@ -325,145 +325,99 @@ namespace TombEditor
             Block bottomLeft = room.Blocks[area.Left, area.Top];
             Block bottomRight = room.Blocks[area.Right, area.Top];
 
-            switch (arrow)
-            {
-                case EditorArrowType.EdgeN:
-                    startPoint = (short)((bottomLeft.GetFaceMin(verticalSubdivision, Direction.NegativeZ) + bottomRight.GetFaceMin(verticalSubdivision, Direction.NegativeZ)) / 2);
-                    endPoint = (short)((topLeft.GetFaceMax(verticalSubdivision, Direction.PositiveZ) + topLeft.GetFaceMax(verticalSubdivision, Direction.PositiveZ)) / 2);
-                    break;
-                case EditorArrowType.EdgeS:
-                    startPoint = (short)((topLeft.GetFaceMin(verticalSubdivision, Direction.PositiveZ) + topRight.GetFaceMin(verticalSubdivision, Direction.PositiveZ)) / 2);
-                    endPoint = (short)((bottomLeft.GetFaceMax(verticalSubdivision, Direction.NegativeZ) + bottomRight.GetFaceMax(verticalSubdivision, Direction.NegativeZ)) / 2);
-                    break;
-                case EditorArrowType.EdgeE:
-                    startPoint = (short)((topLeft.GetFaceMin(verticalSubdivision, Direction.NegativeX) + bottomLeft.GetFaceMin(verticalSubdivision, Direction.NegativeX)) / 2);
-                    endPoint = (short)((topRight.GetFaceMax(verticalSubdivision, Direction.PositiveX) + bottomRight.GetFaceMax(verticalSubdivision, Direction.PositiveX)) / 2);
-                    break;
-                case EditorArrowType.EdgeW:
-                    startPoint = (short)((topRight.GetFaceMin(verticalSubdivision, Direction.PositiveX) + bottomRight.GetFaceMin(verticalSubdivision, Direction.PositiveX)) / 2);
-                    endPoint = (short)((topLeft.GetFaceMax(verticalSubdivision, Direction.NegativeX) + bottomLeft.GetFaceMax(verticalSubdivision, Direction.NegativeX)) / 2);
-                    break;
-            }
-
-            int funcSteps;
-            bool verticalEdit = (arrow == EditorArrowType.EdgeN || arrow == EditorArrowType.EdgeS);
-
-            if(verticalEdit)
-                funcSteps = zoneSize[1] + 1;
-            else
-                funcSteps = zoneSize[0] + 1;
-
-            short[] heights = new short[funcSteps];
-
-            if (smooth)
-            {
-                float step = ((float)Math.PI / 2) / (float)(funcSteps - 1);
-                float grain = endPoint - startPoint + increment;
-
-                for (int i = 0; i < funcSteps; i++)
-                    heights[i] = (short)Math.Round(startPoint + Math.Sin(step * i) * grain);
-            }
-            else
-            {
-                float grain = (endPoint - startPoint + increment) / (float)(funcSteps - 1);
-
-                for (int i = 0; i < funcSteps; i++)
-                    heights[i] = (short)Math.Round(startPoint + grain * i);
-            }
-
-            int[] affectedCorner = new int[4];
-            int[] startSector = new int[2] { area.Left, area.Top };
-            int[] endSector = new int[2] { area.Right, area.Bottom };
-            int[] sectorIncrement = new int[2] { 1, 1 };
-
-            if (verticalEdit)
+            if(type == GroupShapeType.Ramp || type == GroupShapeType.QuarterPipe)
             {
                 switch (arrow)
                 {
                     case EditorArrowType.EdgeN:
-                        affectedCorner[0] = 0;
-                        affectedCorner[1] = 1;
-                        affectedCorner[2] = 3;
-                        affectedCorner[3] = 2;
-                        startSector[1] = area.Top;
-                        endSector[1] = area.Bottom;
-                        sectorIncrement[1] = 1;
+                        startHeight = (short)((bottomLeft.GetFaceMin(verticalSubdivision, Direction.NegativeZ) + bottomRight.GetFaceMin(verticalSubdivision, Direction.NegativeZ)) / 2);
+                        endHeight = (short)((topLeft.GetFaceMax(verticalSubdivision, Direction.PositiveZ) + topLeft.GetFaceMax(verticalSubdivision, Direction.PositiveZ)) / 2);
                         break;
                     case EditorArrowType.EdgeS:
-                        affectedCorner[0] = 3;
-                        affectedCorner[1] = 2;
-                        affectedCorner[2] = 0;
-                        affectedCorner[3] = 1;
-                        startSector[1] = area.Bottom;
-                        endSector[1] = area.Top;
-                        sectorIncrement[1] = -1;
+                        startHeight = (short)((topLeft.GetFaceMin(verticalSubdivision, Direction.PositiveZ) + topRight.GetFaceMin(verticalSubdivision, Direction.PositiveZ)) / 2);
+                        endHeight = (short)((bottomLeft.GetFaceMax(verticalSubdivision, Direction.NegativeZ) + bottomRight.GetFaceMax(verticalSubdivision, Direction.NegativeZ)) / 2);
+                        break;
+                    case EditorArrowType.EdgeE:
+                        startHeight = (short)((topLeft.GetFaceMin(verticalSubdivision, Direction.NegativeX) + bottomLeft.GetFaceMin(verticalSubdivision, Direction.NegativeX)) / 2);
+                        endHeight = (short)((topRight.GetFaceMax(verticalSubdivision, Direction.PositiveX) + bottomRight.GetFaceMax(verticalSubdivision, Direction.PositiveX)) / 2);
+                        break;
+                    case EditorArrowType.EdgeW:
+                        startHeight = (short)((topRight.GetFaceMin(verticalSubdivision, Direction.PositiveX) + bottomRight.GetFaceMin(verticalSubdivision, Direction.PositiveX)) / 2);
+                        endHeight = (short)((topLeft.GetFaceMax(verticalSubdivision, Direction.NegativeX) + bottomLeft.GetFaceMax(verticalSubdivision, Direction.NegativeX)) / 2);
                         break;
                 }
             }
             else
             {
-                switch (arrow)
-                {
-                    case EditorArrowType.EdgeE:
-                        affectedCorner[0] = 1;
-                        affectedCorner[1] = 2;
-                        affectedCorner[2] = 0;
-                        affectedCorner[3] = 3;
-                        startSector[0] = area.Left;
-                        endSector[0] = area.Right;
-                        sectorIncrement[0] = 1;
-                        break;
-                    case EditorArrowType.EdgeW:
-                        affectedCorner[0] = 0;
-                        affectedCorner[1] = 3;
-                        affectedCorner[2] = 1;
-                        affectedCorner[3] = 2;
-                        startSector[0] = area.Right;
-                        endSector[0] = area.Left;
-                        sectorIncrement[0] = -1;
-                        break;
-                }
+                startHeight = (short)((topLeft.GetVerticalSubdivision(verticalSubdivision)[0] +
+                                      topRight.GetVerticalSubdivision(verticalSubdivision)[1] +
+                                      bottomLeft.GetVerticalSubdivision(verticalSubdivision)[3] +
+                                      bottomRight.GetVerticalSubdivision(verticalSubdivision)[2]) / 4);
+                endHeight = room.GetMaxHeight(area, verticalSubdivision);
             }
 
-            for (int x = startSector[0], xStride = 0; xStride < zoneSize[0]; x += sectorIncrement[0], xStride++)
-                for (int z = startSector[1], zStride = 0; zStride < zoneSize[1]; z += sectorIncrement[1], zStride++)
+            if(type <= GroupShapeType.HalfPipe)
+            {
+                int editDirection = (arrow == EditorArrowType.EdgeN || arrow == EditorArrowType.EdgeS) ? 1 : 0;
+                int fillDirection = editDirection == 0 ? 1 : 0;
+
+                int[] startPoint = new int[2] { area.Left, area.Top };
+                int[] endPoint = new int[2] { area.Right + 2, area.Bottom + 2};
+                int[] pointIncrement = new int[2] { 1, 1 };
+
+                if (arrow == EditorArrowType.EdgeS)
                 {
-                    if (verticalEdit)
-                    {
-                        if (zStride == 0)
-                        {
-                            room.Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[2]] = heights[zStride];
-                            room.Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[3]] = heights[zStride];
-                        }
-
-                        room.Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[0]] = heights[zStride + 1];
-                        room.Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[1]] = heights[zStride + 1];
-
-                        if (zStride < zoneSize[1] - 1)
-                        {
-                            room.Blocks[x, z + sectorIncrement[1]].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[2]] = heights[zStride + 1];
-                            room.Blocks[x, z + sectorIncrement[1]].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[3]] = heights[zStride + 1];
-                        }
-                    }
-                    else
-                    {
-                        if (xStride == 0)
-                        {
-                            room.Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[2]] = heights[xStride];
-                            room.Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[3]] = heights[xStride];
-                        }
-
-                        room.Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[0]] = heights[xStride + 1];
-                        room.Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[1]] = heights[xStride + 1];
-
-                        if (xStride < zoneSize[0] - 1)
-                        {
-                            room.Blocks[x + sectorIncrement[0], z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[2]] = heights[xStride + 1];
-                            room.Blocks[x + sectorIncrement[0], z].GetVerticalSubdivision(verticalSubdivision)[affectedCorner[3]] = heights[xStride + 1];
-                        }
-                    }
-                    room.Blocks[x, z].FixHeights(verticalSubdivision);
+                    startPoint[1] = area.Bottom + 1;
+                    endPoint[1] = area.Top - 1;
+                    pointIncrement[1] = -1;
                 }
+                else if (arrow == EditorArrowType.EdgeW)
+                {
+                    startPoint[0] = area.Right + 1;
+                    endPoint[0] = area.Left - 1;
+                    pointIncrement[0] = -1;
+                }
+
+                float grain = 0;
+                float step = 0;
+
+                switch (type)
+                {
+                    case GroupShapeType.Ramp:
+                        grain = (endHeight - startHeight + increment) / (float)zoneSize[editDirection];
+                        break;
+
+                    case GroupShapeType.QuarterPipe:
+                        step = ((float)Math.PI / 2) / (float)zoneSize[editDirection];
+                        grain = endHeight - startHeight + increment;
+                        break;
+
+                    case GroupShapeType.HalfPipe:
+                        break;
+                }
+                
+                short currentHeight = 0;
+
+                for (int ZorX = startPoint[editDirection], i = 0; ZorX != endPoint[editDirection]; ZorX += pointIncrement[editDirection], i++)
+                {
+                    switch (type)
+                    {
+                        case GroupShapeType.Ramp:
+                            currentHeight = (short)Math.Round(startHeight + grain * i);
+                            break;
+
+                        case GroupShapeType.QuarterPipe:
+                            currentHeight = (short)Math.Round(startHeight + Math.Sin(step * i) * grain);
+                            break;
+
+                        case GroupShapeType.HalfPipe:
+                            break;
+                    }
+
+                    for (int XorZ = startPoint[fillDirection]; XorZ != endPoint[fillDirection]; XorZ += pointIncrement[fillDirection])
+                        room.SetPoint((editDirection == 1 ? XorZ : ZorX), (editDirection == 1 ? ZorX : XorZ), verticalSubdivision, currentHeight, area);
+                }
+            }
 
             SmartBuildGeometry(room, area);
         }

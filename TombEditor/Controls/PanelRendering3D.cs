@@ -1133,7 +1133,7 @@ namespace TombEditor.Controls
                                     break;
 
                                 case EditorToolType.Ramp:
-                                    EditorActions.RaiseGroup(_editor.SelectedRoom, _editor.SelectedSectors.Area, _toolHandler.ReferencePosition, _editor.SelectedSectors.Arrow, ModifierKeys.HasFlag(Keys.Alt), (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y);
+                                    EditorActions.RaiseGroup(_editor.SelectedRoom, _editor.SelectedSectors.Area, _toolHandler.ReferencePosition, _editor.SelectedSectors.Arrow, ModifierKeys.HasFlag(Keys.Alt) ? GroupShapeType.QuarterPipe : GroupShapeType.Ramp, (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)), (short)dragValue.Y);
                                     break;
                             }
                             
