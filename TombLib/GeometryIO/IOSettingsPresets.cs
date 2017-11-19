@@ -110,7 +110,8 @@ namespace TombLib.GeometryIO
                     InvertFaces = false,
                     FlipUV_V = false,
                     PremultiplyUV = true,
-                    WrapUV = true
+                    WrapUV = true,
+                    UseVertexColor = true
                 }
             });
         }
