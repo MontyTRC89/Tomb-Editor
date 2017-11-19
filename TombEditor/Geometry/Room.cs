@@ -407,7 +407,7 @@ namespace TombEditor.Geometry
                         heightsToCheck[1] = 0;
                         break;
 
-                    // We only need to override east and west diagonal split HeightsToCompare[1] cases, because 
+                    // We only need to override east and west diagonal split HeightsToCompare[1] cases, because
                     // slanted diagonal splits are always 45 degrees, hence these are only two slide directions possible.
 
                     case Direction.PositiveX:
@@ -965,7 +965,7 @@ namespace TombEditor.Geometry
                 }
         }
 
-        private void BuildFloorOrCeilingFace(int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY, 
+        private void BuildFloorOrCeilingFace(int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY,
                                              BlockFace face1, BlockFace face2, RoomConnectionType portalMode,
                                              bool isForCeiling)
         {
@@ -2406,7 +2406,7 @@ namespace TombEditor.Geometry
             return null;
         }
 
-        private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, 
+        private void AddQuad(int x, int z, BlockFace face, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3,
                              TextureArea texture, Vector2 editorUV0, Vector2 editorUV1, Vector2 editorUV2, Vector2 editorUV3,
                              bool isForCeiling = false)
         {
@@ -3177,24 +3177,6 @@ namespace TombEditor.Geometry
             if (_vertexBuffer != null) _vertexBuffer.Dispose();
             _vertexBuffer = Buffer.New(DeviceManager.DefaultDeviceManager.Device, _allVertices.ToArray(), BufferFlags.VertexBuffer);
             _vertexBuffer.SetData<EditorVertex>(_allVertices.ToArray());
-        }
-
-        public int DynamicLightsCount
-        {
-            get
-            {
-                var numLights = 0;
-                foreach (var obj in Objects)
-                {
-                    if (obj is LightInstance)
-                    {
-                        var light = obj as LightInstance;
-                        if (light.Type != LightType.FogBulb && light.Type != LightType.Effect)
-                            numLights++;
-                    }
-                }
-                return numLights;
-            }
         }
 
         public Buffer<EditorVertex> VertexBuffer => _vertexBuffer;

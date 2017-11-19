@@ -876,13 +876,6 @@ namespace TombEditor.Controls
                     case EditorActionType.PlaceLight:
                         if (newPicking is PickingResultBlock)
                         {
-                            if (_editor.SelectedRoom.DynamicLightsCount == 21)
-                            {
-                                DarkMessageBox.Show(this, "Sorry, you can't add more than 21 dynamic lights (TR4 engine limit)", 
-                                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-
                             EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, new LightInstance(_editor.Action.LightType));
                             _editor.Action = EditorAction.None;
                         }
@@ -1210,8 +1203,8 @@ namespace TombEditor.Controls
                                                 EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                                     new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y),
                                                     EditorArrowType.EntireFace,
-                                                    (newPicking.BelongsToFloor ? 0 : 1), 
-                                                    (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ newPicking.BelongsToFloor ? 1 : -1), 
+                                                    (newPicking.BelongsToFloor ? 0 : 1),
+                                                    (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ newPicking.BelongsToFloor ? 1 : -1),
                                                     (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
                                                 break;
                                         }
@@ -2675,7 +2668,7 @@ namespace TombEditor.Controls
             _roomEffect.Parameters["TextureCoordinateFactor"].SetValue(_textureAtlas == null ? new Vector2(0) : new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
 
             // Draw buckets
-            DrawSolidBuckets(viewProjection); 
+            DrawSolidBuckets(viewProjection);
             DrawSelectedFogBulb();
             DrawOpaqueBuckets(viewProjection);
 
@@ -2720,7 +2713,7 @@ namespace TombEditor.Controls
                 // Draw light objects and bounding volumes only for current room
                 DrawLights(viewProjection, _editor.SelectedRoom);
             }
-            
+
             // Draw the height of the object
             DrawDebugLines(viewProjection);
 
