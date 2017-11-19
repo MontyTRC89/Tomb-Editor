@@ -595,7 +595,7 @@
             this.addFlybyCameraToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.addFlybyCameraToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_movie_projector_16;
             this.addFlybyCameraToolStripMenuItem.Name = "addFlybyCameraToolStripMenuItem";
-            this.addFlybyCameraToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
+            this.addFlybyCameraToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.M)));
             this.addFlybyCameraToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.addFlybyCameraToolStripMenuItem.Text = "Add flyby camera";
             this.addFlybyCameraToolStripMenuItem.Click += new System.EventHandler(this.addFlybyCameraToolStripMenuItem_Click);
