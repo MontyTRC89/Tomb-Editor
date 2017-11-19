@@ -463,7 +463,7 @@ namespace TombEditor.Compilers
 
             if (lightCount > 20)
             {
-                _progressReporter.ReportWarn("Room '" + room + "' has more than 20 dynamic lights (It has " + lightCount + "). This can cause crashes with the original engine!");
+                throw new ApplicationException("Room '" + room + "' has more than 20 dynamic lights (It has " + lightCount + "). This can cause crashes with the original engine!");
             }
         }
 
