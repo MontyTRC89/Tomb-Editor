@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace TombLib.NG
 {
-    public class NGExtraParameter
+    public class NgExtraParameter
     {
         public int Id { get; internal set; }
         public string Description { get; internal set; }
 
-        public NGExtraParameter(int id, string description)
+        public NgExtraParameter(int id, string description)
         {
             Id = id;
             Description = description;

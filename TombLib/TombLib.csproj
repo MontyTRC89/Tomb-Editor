@@ -139,10 +139,12 @@
     <Compile Include="IO\ChunkWriter.cs" />
     <Compile Include="IO\FileFormat.cs" />
     <Compile Include="IO\LEB128.cs" />
-    <Compile Include="NG\NGExtraParameter.cs" />
-    <Compile Include="NG\NGTimerParameter.cs" />
-    <Compile Include="NG\NGTrigger.cs" />
-    <Compile Include="NG\NGTriggersDefinitions.cs" />
+    <Compile Include="NG\NgExtraParameter.cs" />
+    <Compile Include="NG\NgListKind.cs" />
+    <Compile Include="NG\NgTimerParameter.cs" />
+    <Compile Include="NG\NgTrigger.cs" />
+    <Compile Include="NG\NgTriggersDefinitions.cs" />
+    <Compile Include="NG\NgVectorPair.cs" />
     <Compile Include="Utils\Cache.cs" />
     <Compile Include="Utils\Hash.cs" />
     <Compile Include="Utils\ImageC.cs" />
@@ -213,31 +215,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NG\NG_Constants.txt">
+    <None Include="NG\Resources\NG_Constants.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="NG\COLORS.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\INVENTORY-ITEM-INDEX.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NG\ADD_EFFECT_255.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\ANIMATION_LIST_255.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\ANIMATION_LIST_B.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\BACKUP.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="NG\PERCENTAGE.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -248,9 +230,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="NG\TIME_LIST_32.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\ANIMATION_RANGE.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="NG\TIME_LIST_128.txt">
@@ -267,6 +246,15 @@
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NG\Resources\MemoryAnimation.txt" />
+    <Content Include="NG\Resources\MemoryCode.txt" />
+    <Content Include="NG\Resources\MemoryInventory.txt" />
+    <Content Include="NG\Resources\MemoryInventoryIndices.txt" />
+    <Content Include="NG\Resources\MemoryItem.txt" />
+    <Content Include="NG\Resources\MemorySave.txt" />
+    <Content Include="NG\Resources\MemorySlots.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
