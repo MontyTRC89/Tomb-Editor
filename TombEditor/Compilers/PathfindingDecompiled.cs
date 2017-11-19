@@ -47,7 +47,7 @@ namespace TombEditor.Compilers
         private void Dec_BuildBoxesAndOverlaps()
         {
             dec_currentRoom = _level.Rooms[0];
-            dec_boxes = new dec_tr_box_aux[2040];
+            dec_boxes = new dec_tr_box_aux[2048];
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
