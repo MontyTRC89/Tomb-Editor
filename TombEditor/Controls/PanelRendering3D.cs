@@ -666,8 +666,8 @@ namespace TombEditor.Controls
             {
                 CullMode = SharpDX.Direct3D11.CullMode.Back,
                 FillMode = SharpDX.Direct3D11.FillMode.Solid,
-                DepthBias = -1,
-                SlopeScaledDepthBias = -1
+                DepthBias = -2,
+                SlopeScaledDepthBias = -2
             });
 
             _gizmo = new Gizmo(deviceManager.Device, deviceManager.Effects["Solid"]);
@@ -2661,15 +2661,6 @@ namespace TombEditor.Controls
                 _device.Clear(ClearOptions.DepthBuffer, SharpDX.Color.Transparent, 1.0f, 0);
             }
 
-            // Draw moveables and static meshes
-            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null)
-            {
-                if (ShowMoveables)
-                    DrawMoveables(viewProjection);
-                if (ShowStatics)
-                    DrawStatics(viewProjection);
-            }
-
             // Set some common parameters of the shader
             _roomEffect = _deviceManager.Effects["Room"];
             _roomEffect.Parameters["Highlight"].SetValue(false);
@@ -2687,6 +2678,21 @@ namespace TombEditor.Controls
             DrawSolidBuckets(viewProjection); 
             DrawSelectedFogBulb();
             DrawOpaqueBuckets(viewProjection);
+
+            // Draw moveables and static meshes
+            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null)
+            {
+                // Before drawing custom geometry, apply a depth bias for reducing Z fighting
+                _device.SetRasterizerState(_rasterizerStateDepthBias);
+
+                if (ShowMoveables)
+                    DrawMoveables(viewProjection);
+                if (ShowStatics)
+                    DrawStatics(viewProjection);
+
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+            }
+
             DrawTransparentBuckets(viewProjection);
             DrawInvisibleBuckets(viewProjection);
 
@@ -2714,9 +2720,7 @@ namespace TombEditor.Controls
                 // Draw light objects and bounding volumes only for current room
                 DrawLights(viewProjection, _editor.SelectedRoom);
             }
-
             
-
             // Draw the height of the object
             DrawDebugLines(viewProjection);
 
