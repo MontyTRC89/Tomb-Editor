@@ -390,23 +390,28 @@ namespace TombEditor.Compilers
             return vertexIndex;
         }
 
-        private static void ConvertLights(Room room, tr_room newRoom)
+        private void ConvertLights(Room room, tr_room newRoom)
         {
-            foreach (var light in room.Objects.OfType<LightInstance>().Where(l => l.IsDynamicallyUsed))
+            int lightCount = 0;
+
+            foreach (var light in room.Objects.OfType<LightInstance>())
             {
+                if (!light.Enabled || !light.IsDynamicallyUsed)
+                    continue;
+                tr_color color = PackColorTo24Bit(new Vector4(light.Color, 1.0f));
+                ushort intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f));
+                if (intensity == 0 || (color.Red == 0 && color.Green == 0 && color.Blue == 0))
+                    continue;
+                lightCount += 1;
+
                 var newLight = new tr4_room_light
                 {
                     X = (int)Math.Round(newRoom.Info.X + light.Position.X),
                     Y = (int)-Math.Round(light.Position.Y + room.WorldPos.Y),
                     Z = (int)Math.Round(newRoom.Info.Z + light.Position.Z),
-                    Color = PackColorTo24Bit(new Vector4(light.Color, 1.0f)),
-                    Intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f))
+                    Color = color,
+                    Intensity = intensity
                 };
-
-                if (newLight.Intensity == 0)
-                    continue;
-
-                Vector3 direction = light.GetDirection();
 
                 switch (light.Type)
                 {
@@ -426,9 +431,10 @@ namespace TombEditor.Compilers
                         newLight.Out = (float)Math.Cos(MathUtil.DegreesToRadians(light.OuterAngle));
                         newLight.Length = light.InnerRange * 1024.0f;
                         newLight.CutOff = light.OuterRange * 1024.0f;
-                        newLight.DirectionX = -direction.X;
-                        newLight.DirectionY = direction.Y;
-                        newLight.DirectionZ = -direction.Z;
+                        Vector3 spotDirection = light.GetDirection();
+                        newLight.DirectionX = -spotDirection.X;
+                        newLight.DirectionY = spotDirection.Y;
+                        newLight.DirectionZ = -spotDirection.Z;
                         break;
                     case LightType.Sun:
                         newLight.LightType = 0;
@@ -436,9 +442,10 @@ namespace TombEditor.Compilers
                         newLight.Out = 0;
                         newLight.Length = 0;
                         newLight.CutOff = 0;
-                        newLight.DirectionX = -direction.X;
-                        newLight.DirectionY = direction.Y;
-                        newLight.DirectionZ = -direction.Z;
+                        Vector3 sunDirection = light.GetDirection();
+                        newLight.DirectionX = -sunDirection.X;
+                        newLight.DirectionY = sunDirection.Y;
+                        newLight.DirectionZ = -sunDirection.Z;
                         break;
                     case LightType.FogBulb:
                         newLight.LightType = 4;
@@ -452,6 +459,11 @@ namespace TombEditor.Compilers
                 }
 
                 newRoom.Lights.Add(newLight);
+            }
+
+            if (lightCount > 20)
+            {
+                _progressReporter.ReportWarn("Room '" + room + "' has more than 20 dynamic lights (It has " + lightCount + "). This can cause crashes with the original engine!");
             }
         }
 
