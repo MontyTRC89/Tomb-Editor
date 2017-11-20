@@ -248,6 +248,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NG\Resources\LaraOtherSlots.txt" />
     <Content Include="NG\Resources\MemoryAnimation.txt" />
     <Content Include="NG\Resources\MemoryCode.txt" />
     <Content Include="NG\Resources\MemoryInventory.txt" />
@@ -255,6 +256,10 @@
     <Content Include="NG\Resources\MemoryItem.txt" />
     <Content Include="NG\Resources\MemorySave.txt" />
     <Content Include="NG\Resources\MemorySlots.txt" />
+    <Content Include="NG\Resources\SlotMeshMoveables.txt" />
+    <Content Include="NG\Resources\VarNormals.txt" />
+    <Content Include="NG\Resources\VarStore.txt" />
+    <Content Include="NG\Resources\VarText.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
