@@ -1,0 +1,240 @@
+﻿120:   +0 Sectors
+119:   +1 Sectors
+118:   +2 Sectors
+117:   +3 Sectors
+116:   +4 Sectors
+115:   +5 Sectors
+114:   +6 Sectors
+113:   +7 Sectors
+112:   +8 Sectors
+111:   +9 Sectors
+121:   -1 Sectors
+122:   -2 Sectors
+123:   -3 Sectors
+124:   -4 Sectors
+125:   -5 Sectors
+126:   -6 Sectors
+127:   -7 Sectors
+128:   -8 Sectors
+129:   -9 Sectors
+110:  +10 Sectors
+109:  +11 Sectors
+108:  +12 Sectors
+107:  +13 Sectors
+106:  +14 Sectors
+105:  +15 Sectors
+104:  +16 Sectors
+103:  +17 Sectors
+102:  +18 Sectors
+101:  +19 Sectors
+100:  +20 Sectors
+ 99:  +21 Sectors
+ 98:  +22 Sectors
+ 97:  +23 Sectors
+ 96:  +24 Sectors
+ 95:  +25 Sectors
+ 94:  +26 Sectors
+ 93:  +27 Sectors
+ 92:  +28 Sectors
+ 91:  +29 Sectors
+ 90:  +30 Sectors
+ 89:  +31 Sectors
+ 88:  +32 Sectors
+ 87:  +33 Sectors
+ 86:  +34 Sectors
+ 85:  +35 Sectors
+ 84:  +36 Sectors
+ 83:  +37 Sectors
+ 82:  +38 Sectors
+ 81:  +39 Sectors
+ 80:  +40 Sectors
+ 79:  +41 Sectors
+ 78:  +42 Sectors
+ 77:  +43 Sectors
+ 76:  +44 Sectors
+ 75:  +45 Sectors
+ 74:  +46 Sectors
+ 73:  +47 Sectors
+ 72:  +48 Sectors
+ 71:  +49 Sectors
+ 70:  +50 Sectors
+ 69:  +51 Sectors
+ 68:  +52 Sectors
+ 67:  +53 Sectors
+ 66:  +54 Sectors
+ 65:  +55 Sectors
+ 64:  +56 Sectors
+ 63:  +57 Sectors
+ 62:  +58 Sectors
+ 61:  +59 Sectors
+ 60:  +60 Sectors
+ 59:  +61 Sectors
+ 58:  +62 Sectors
+ 57:  +63 Sectors
+ 56:  +64 Sectors
+ 55:  +65 Sectors
+ 54:  +66 Sectors
+ 53:  +67 Sectors
+ 52:  +68 Sectors
+ 51:  +69 Sectors
+ 50:  +70 Sectors
+ 49:  +71 Sectors
+ 48:  +72 Sectors
+ 47:  +73 Sectors
+ 46:  +74 Sectors
+ 45:  +75 Sectors
+ 44:  +76 Sectors
+ 43:  +77 Sectors
+ 42:  +78 Sectors
+ 41:  +79 Sectors
+ 40:  +80 Sectors
+ 39:  +81 Sectors
+ 38:  +82 Sectors
+ 37:  +83 Sectors
+ 36:  +84 Sectors
+ 35:  +85 Sectors
+ 34:  +86 Sectors
+ 33:  +87 Sectors
+ 32:  +88 Sectors
+ 31:  +89 Sectors
+ 30:  +90 Sectors
+ 29:  +91 Sectors
+ 28:  +92 Sectors
+ 27:  +93 Sectors
+ 26:  +94 Sectors
+ 25:  +95 Sectors
+ 24:  +96 Sectors
+ 23:  +97 Sectors
+ 22:  +98 Sectors
+ 21:  +99 Sectors
+130:  -10 Sectors
+131:  -11 Sectors
+132:  -12 Sectors
+133:  -13 Sectors
+134:  -14 Sectors
+135:  -15 Sectors
+136:  -16 Sectors
+137:  -17 Sectors
+138:  -18 Sectors
+139:  -19 Sectors
+140:  -20 Sectors
+141:  -21 Sectors
+142:  -22 Sectors
+143:  -23 Sectors
+144:  -24 Sectors
+145:  -25 Sectors
+146:  -26 Sectors
+147:  -27 Sectors
+148:  -28 Sectors
+149:  -29 Sectors
+150:  -30 Sectors
+151:  -31 Sectors
+152:  -32 Sectors
+153:  -33 Sectors
+154:  -34 Sectors
+155:  -35 Sectors
+156:  -36 Sectors
+157:  -37 Sectors
+158:  -38 Sectors
+159:  -39 Sectors
+160:  -40 Sectors
+161:  -41 Sectors
+162:  -42 Sectors
+163:  -43 Sectors
+164:  -44 Sectors
+165:  -45 Sectors
+166:  -46 Sectors
+167:  -47 Sectors
+168:  -48 Sectors
+169:  -49 Sectors
+170:  -50 Sectors
+171:  -51 Sectors
+172:  -52 Sectors
+173:  -53 Sectors
+174:  -54 Sectors
+175:  -55 Sectors
+176:  -56 Sectors
+177:  -57 Sectors
+178:  -58 Sectors
+179:  -59 Sectors
+180:  -60 Sectors
+181:  -61 Sectors
+182:  -62 Sectors
+183:  -63 Sectors
+184:  -64 Sectors
+185:  -65 Sectors
+186:  -66 Sectors
+187:  -67 Sectors
+188:  -68 Sectors
+189:  -69 Sectors
+190:  -70 Sectors
+191:  -71 Sectors
+192:  -72 Sectors
+193:  -73 Sectors
+194:  -74 Sectors
+195:  -75 Sectors
+196:  -76 Sectors
+197:  -77 Sectors
+198:  -78 Sectors
+199:  -79 Sectors
+200:  -80 Sectors
+201:  -81 Sectors
+202:  -82 Sectors
+203:  -83 Sectors
+204:  -84 Sectors
+205:  -85 Sectors
+206:  -86 Sectors
+207:  -87 Sectors
+208:  -88 Sectors
+209:  -89 Sectors
+210:  -90 Sectors
+211:  -91 Sectors
+212:  -92 Sectors
+213:  -93 Sectors
+214:  -94 Sectors
+215:  -95 Sectors
+216:  -96 Sectors
+217:  -97 Sectors
+218:  -98 Sectors
+219:  -99 Sectors
+ 20: +100 Sectors
+ 19: +101 Sectors
+ 18: +102 Sectors
+ 17: +103 Sectors
+ 16: +104 Sectors
+ 15: +105 Sectors
+ 14: +106 Sectors
+ 13: +107 Sectors
+ 12: +108 Sectors
+ 11: +109 Sectors
+ 10: +110 Sectors
+  9: +111 Sectors
+  8: +112 Sectors
+  7: +113 Sectors
+  6: +114 Sectors
+  5: +115 Sectors
+  4: +116 Sectors
+  3: +117 Sectors
+  2: +118 Sectors
+  1: +119 Sectors
+  0: +120 Sectors
+220: -100 Sectors
+221: -101 Sectors
+222: -102 Sectors
+223: -103 Sectors
+224: -104 Sectors
+225: -105 Sectors
+226: -106 Sectors
+227: -107 Sectors
+228: -108 Sectors
+229: -109 Sectors
+230: -110 Sectors
+231: -111 Sectors
+232: -112 Sectors
+233: -113 Sectors
+234: -114 Sectors
+235: -115 Sectors
+236: -116 Sectors
+237: -117 Sectors
+238: -118 Sectors
+239: -119 Sectors
