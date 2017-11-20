@@ -811,7 +811,9 @@ namespace TombEditor.Compilers
 
                     // HACK: this prevents flickering when camera is exactly on the portal
                     var n = new Vector3(normal.X, normal.Y, normal.Z);
-                    n.Normalize();
+                    if (normal.X < 0.0f) n.X = -1; if (normal.X == 0.0f) n.X = 0; if (normal.X > 0.0f) n.X = 1;
+                    if (normal.Y < 0.0f) n.Y = -1; if (normal.Y == 0.0f) n.Y = 0; if (normal.Y > 0.0f) n.Y = 1;
+                    if (normal.Z < 0.0f) n.Z = -1; if (normal.Z == 0.0f) n.Z = 0; if (normal.Z > 0.0f) n.Z = 1;
 
                     portalVertices[0] = new tr_vertex((short)(xMax + n.X), (short)(-yAtXMaxZMin - n.Y), (short)(zMin + n.Z));
                     portalVertices[1] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMin - n.Y), (short)(zMin + n.Z));
