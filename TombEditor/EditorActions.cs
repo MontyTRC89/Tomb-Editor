@@ -424,7 +424,7 @@ namespace TombEditor
                         if (type == GroupShapeType.Bowl)
                             currentHeight = (float)Math.Sqrt(1 - Math.Pow(currX, 2) - Math.Pow(currZ, 2));
                         else
-                            currentHeight = (float)((Math.E - Math.Abs(currX + currZ) - Math.Abs(currZ - currX)) / Math.E);
+                            currentHeight = (float)((1 - Math.Abs(currX + currZ) - Math.Abs(currZ - currX)) + 1);
 
                         currentHeight = float.IsNaN(currentHeight) ? 0 : currentHeight;
                         currentHeight = (float)Math.Round(currentHeight * heightScale) + startHeight;
