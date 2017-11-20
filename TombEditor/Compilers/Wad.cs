@@ -376,7 +376,7 @@ namespace TombEditor.Compilers
                             case WadAnimCommandType.PlaySound:
                                 _animCommands.Add(0x05);
 
-                                _animCommands.Add(command.Parameter1);
+                                _animCommands.Add((ushort)(command.Parameter1 + newAnimation.FrameStart));
                                 _animCommands.Add(command.Parameter2);
 
                                 break;
@@ -384,7 +384,7 @@ namespace TombEditor.Compilers
                             case WadAnimCommandType.FlipEffect:
                                 _animCommands.Add(0x06);
 
-                                _animCommands.Add(command.Parameter1);
+                                _animCommands.Add((ushort)(command.Parameter1 + newAnimation.FrameStart));
                                 _animCommands.Add(command.Parameter2);
 
                                 break;
