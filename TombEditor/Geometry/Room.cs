@@ -352,7 +352,7 @@ namespace TombEditor.Geometry
             return new RoomBlockPair(adjoiningRoom, sector);
         }
 
-        public void SetPoint(int x, int z, int verticalSubdivision, short value, Rectangle area)
+        public void ModifyPoint(int x, int z, int verticalSubdivision, short increment, Rectangle area)
         {
             bool floor = (verticalSubdivision % 2 == 0);
 
@@ -363,7 +363,7 @@ namespace TombEditor.Geometry
                 {
                     if ((floor && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None) || (!floor && Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None))
                     {
-                        Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[3] = value;
+                        Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[3] += increment;
                         Blocks[x, z].FixHeights(verticalSubdivision);
                     }
                 }
@@ -372,7 +372,7 @@ namespace TombEditor.Geometry
                     var adjacentLeftBlock = GetBlockTry(x - 1, z);
                     if (adjacentLeftBlock != null && ((floor && adjacentLeftBlock.FloorDiagonalSplit == DiagonalSplit.None) || (!floor && adjacentLeftBlock.CeilingDiagonalSplit == DiagonalSplit.None)))
                     {
-                        adjacentLeftBlock.GetVerticalSubdivision(verticalSubdivision)[2] = value;
+                        adjacentLeftBlock.GetVerticalSubdivision(verticalSubdivision)[2] += increment;
                         adjacentLeftBlock.FixHeights(verticalSubdivision);
                     }
                 }
@@ -381,7 +381,7 @@ namespace TombEditor.Geometry
                     var adjacentBottomBlock = GetBlockTry(x, z - 1);
                     if (adjacentBottomBlock != null && ((floor && adjacentBottomBlock.FloorDiagonalSplit == DiagonalSplit.None) || (!floor && adjacentBottomBlock.CeilingDiagonalSplit == DiagonalSplit.None)))
                     {
-                        adjacentBottomBlock.GetVerticalSubdivision(verticalSubdivision)[0] = value;
+                        adjacentBottomBlock.GetVerticalSubdivision(verticalSubdivision)[0] += increment;
                         adjacentBottomBlock.FixHeights(verticalSubdivision);
                     }
                 }
@@ -390,7 +390,7 @@ namespace TombEditor.Geometry
                     var adjacentBottomLeftBlock = GetBlockTry(x - 1, z - 1);
                     if (adjacentBottomLeftBlock != null && ((floor && adjacentBottomLeftBlock.FloorDiagonalSplit == DiagonalSplit.None) || (!floor && adjacentBottomLeftBlock.CeilingDiagonalSplit == DiagonalSplit.None)))
                     {
-                        adjacentBottomLeftBlock.GetVerticalSubdivision(verticalSubdivision)[1] = value;
+                        adjacentBottomLeftBlock.GetVerticalSubdivision(verticalSubdivision)[1] += increment;
                         adjacentBottomLeftBlock.FixHeights(verticalSubdivision);
                     }
                 }

@@ -125,10 +125,24 @@ namespace TombEditor.Controls
 
         private class ToolHandler
         {
+            private class ReferenceCell
+            {
+                public short[,] Heights;
+                public bool Processed;
+
+                public ReferenceCell()
+                {
+                    Heights = new short[2, 4] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+                    Processed = false;
+                }
+            }
+
             private PanelRendering3D _parent;
-            private bool[,] _actionGrid = new bool[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
+            private ReferenceCell[,] _actionGrid = new ReferenceCell[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
             private PickingResultBlock _referencePicking;
             private Point _referencePosition;
+            private Point _newPosition;
+            private Room _referenceRoom;
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
@@ -227,13 +241,33 @@ namespace TombEditor.Controls
             public ToolHandler(PanelRendering3D parent)
             {
                 _parent = parent;
+
+                for(int i = 0; i < Room.MaxRoomDimensions; i++)
+                    for (int j = 0; j < Room.MaxRoomDimensions; j++)
+                        _actionGrid[i, j] = new ReferenceCell();
             }
 
             private void ResetToolActionGrid()
             {
-                for (int x = 0; x < Room.MaxRoomDimensions; x++)
-                    for (int z = 0; z < Room.MaxRoomDimensions; z++)
-                        _actionGrid[x, z] = false;
+                for (int x = 0; x < _parent._editor.SelectedRoom.NumXSectors; x++)
+                    for (int z = 0; z < _parent._editor.SelectedRoom.NumZSectors; z++)
+                    {
+                        _actionGrid[x, z].Processed = false;
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (_referencePicking.BelongsToFloor)
+                            {
+                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].QAFaces[i];
+                                _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].EDFaces[i];
+                            }
+                            else
+                            {
+                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].WSFaces[i];
+                                _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].RFFaces[i];
+                            }
+                        }
+                    }
             }
 
             // We need to relocate picked diagonal faces, because behaviour is undefined
@@ -334,7 +368,9 @@ namespace TombEditor.Controls
                 {
                     Engaged = true;
                     _referencePosition = new Point((int)(refX * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(refY * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
+                    _newPosition = _referencePosition;
                     _referencePicking = refPicking;
+                    _referenceRoom = _parent._editor.SelectedRoom;
                     RelocatePicking();
                     ResetToolActionGrid();
                 }
@@ -351,28 +387,53 @@ namespace TombEditor.Controls
 
             public bool Process(int X, int Y)
             {
-                if (_actionGrid[X, Y] == false)
+                if (!_actionGrid[X, Y].Processed)
                 {
-                    _actionGrid[X, Y] = true;
+                    _actionGrid[X, Y].Processed = true;
                     return true;
                 }
                 else
                     return false;
             }
 
-            public Point UpdateDragState(int newX, int newY)
+            public Point? UpdateDragState(int newX, int newY, bool relative)
             {
-                var newRefPosition = new Point((int)(newX * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(newY * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
+                var newPosition = new Point((int)(newX * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity), (int)(newY * _parent._editor.Configuration.Rendering3D_DragMouseSensitivity));
 
-                if (newRefPosition != _referencePosition)
+                if (newPosition != _newPosition)
                 {
-                    var delta = new Point(Math.Sign(_referencePosition.X - newRefPosition.X), Math.Sign(_referencePosition.Y - newRefPosition.Y));
-                    _referencePosition = newRefPosition;
+                    Point delta;
+                    if(relative)
+                        delta = new Point(Math.Sign(_newPosition.X - newPosition.X), Math.Sign(_newPosition.Y - newPosition.Y));
+                    else
+                        delta = new Point(_referencePosition.X - newPosition.X, _referencePosition.Y - newPosition.Y);
+                    _newPosition = newPosition;
                     Dragged = true;
                     return (delta);
                 }
                 else
-                    return new Point(0, 0);
+                    return null;
+            }
+
+            public void DiscardRoomHeightmap()
+            {
+                for (int x = 0; x < _parent._editor.SelectedRoom.NumXSectors; x++)
+                    for (int z = 0; z < _parent._editor.SelectedRoom.NumZSectors; z++)
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (_referencePicking.BelongsToFloor)
+                            {
+                                _referenceRoom.Blocks[x, z].QAFaces[i] = _actionGrid[x, z].Heights[0, i];
+                                _referenceRoom.Blocks[x, z].EDFaces[i] = _actionGrid[x, z].Heights[1, i];
+                            }
+                            else
+                            {
+                                _referenceRoom.Blocks[x, z].WSFaces[i] = _actionGrid[x, z].Heights[0, i];
+                                _referenceRoom.Blocks[x, z].RFFaces[i] = _actionGrid[x, z].Heights[1, i];
+                            }
+                        }
+                    }
             }
         }
 
@@ -1117,8 +1178,8 @@ namespace TombEditor.Controls
                     }
                     else if (_editor.Tool.Tool >= EditorToolType.Drag && _toolHandler.Engaged && !_doSectorSelection && _editor.SelectedSectors.Valid)
                     {
-                        var dragValue = _toolHandler.UpdateDragState(e.X, e.Y);
-                        if(dragValue.Y != 0)
+                        var dragValue = _toolHandler.UpdateDragState(e.X, e.Y, _editor.Tool.Tool == EditorToolType.Drag);
+                        if(dragValue.HasValue)
                         {
                             if(_editor.Tool.Tool == EditorToolType.Drag)
                             {
@@ -1126,7 +1187,7 @@ namespace TombEditor.Controls
                                     _editor.SelectedSectors.Area,
                                     _editor.SelectedSectors.Arrow,
                                     (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
-                                    (short)dragValue.Y,
+                                    (short)Math.Sign(dragValue.Value.Y),
                                     ModifierKeys.HasFlag(Keys.Alt),
                                     _toolHandler.ReferenceIsOppositeDiagonalStep, true);
                             }
@@ -1148,13 +1209,14 @@ namespace TombEditor.Controls
                                         shape = GroupShapeType.Bowl;
                                         break;
                                 }
+                                _toolHandler.DiscardRoomHeightmap();
                                 EditorActions.TransformGroup(_editor.SelectedRoom,
                                     _editor.SelectedSectors.Area,
                                     _toolHandler.ReferencePosition,
                                     _editor.SelectedSectors.Arrow,
                                     shape,
                                     (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
-                                    (short)dragValue.Y);
+                                    dragValue.Value.Y, ModifierKeys.HasFlag(Keys.Alt));
                             }
                             redrawWindow = true;
                         }

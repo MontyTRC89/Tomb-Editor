@@ -311,53 +311,15 @@ namespace TombEditor
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
 
-        public static void TransformGroup(Room room, Rectangle area, DrawingPoint pickPoint, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, short increment)
+        public static void TransformGroup(Room room, Rectangle area, DrawingPoint pickPoint, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, float heightScale, bool smooth)
         {
             if (type < GroupShapeType.Bowl && (arrow == EditorArrowType.EntireFace || arrow > EditorArrowType.EdgeW))
                 return;
 
-            short startHeight = 0;
-            short endHeight = 0;
+            if (smooth)
+                heightScale /= 4;
+
             int[] zoneSize = new int[2] { area.Width + 1, area.Height + 1};
-
-            Block topLeft = room.Blocks[area.Left, area.Bottom];
-            Block topRight = room.Blocks[area.Right, area.Bottom];
-            Block bottomLeft = room.Blocks[area.Left, area.Top];
-            Block bottomRight = room.Blocks[area.Right, area.Top];
-            Block middle = room.Blocks[area.Left + area.Width / 2, area.Top + area.Height / 2];
-
-            if (type == GroupShapeType.Ramp || type == GroupShapeType.QuarterPipe)
-            {
-                switch (arrow)
-                {
-                    case EditorArrowType.EdgeN:
-                        startHeight = (short)((bottomLeft.GetFaceMin(verticalSubdivision, Direction.NegativeZ) + bottomRight.GetFaceMin(verticalSubdivision, Direction.NegativeZ)) / 2);
-                        endHeight = (short)((topLeft.GetFaceMax(verticalSubdivision, Direction.PositiveZ) + topLeft.GetFaceMax(verticalSubdivision, Direction.PositiveZ)) / 2);
-                        break;
-                    case EditorArrowType.EdgeS:
-                        startHeight = (short)((topLeft.GetFaceMin(verticalSubdivision, Direction.PositiveZ) + topRight.GetFaceMin(verticalSubdivision, Direction.PositiveZ)) / 2);
-                        endHeight = (short)((bottomLeft.GetFaceMax(verticalSubdivision, Direction.NegativeZ) + bottomRight.GetFaceMax(verticalSubdivision, Direction.NegativeZ)) / 2);
-                        break;
-                    case EditorArrowType.EdgeE:
-                        startHeight = (short)((topLeft.GetFaceMin(verticalSubdivision, Direction.NegativeX) + bottomLeft.GetFaceMin(verticalSubdivision, Direction.NegativeX)) / 2);
-                        endHeight = (short)((topRight.GetFaceMax(verticalSubdivision, Direction.PositiveX) + bottomRight.GetFaceMax(verticalSubdivision, Direction.PositiveX)) / 2);
-                        break;
-                    case EditorArrowType.EdgeW:
-                        startHeight = (short)((topRight.GetFaceMin(verticalSubdivision, Direction.PositiveX) + bottomRight.GetFaceMin(verticalSubdivision, Direction.PositiveX)) / 2);
-                        endHeight = (short)((topLeft.GetFaceMax(verticalSubdivision, Direction.NegativeX) + bottomLeft.GetFaceMax(verticalSubdivision, Direction.NegativeX)) / 2);
-                        break;
-                }
-            }
-            else
-            {
-                startHeight = (short)((topLeft.GetVerticalSubdivision(verticalSubdivision)[0] +
-                                      topRight.GetVerticalSubdivision(verticalSubdivision)[1] +
-                                      bottomLeft.GetVerticalSubdivision(verticalSubdivision)[3] +
-                                      bottomRight.GetVerticalSubdivision(verticalSubdivision)[2]) / 4);
-                endHeight = (increment > 0) ? middle.GetFaceMax(verticalSubdivision) : middle.GetFaceMin(verticalSubdivision);
-            }
-
-            var heightScale = endHeight - startHeight + increment;
 
             if (type <= GroupShapeType.HalfPipe)
             {
@@ -394,20 +356,20 @@ namespace TombEditor
                     switch (type)
                     {
                         case GroupShapeType.Ramp:
-                            currentHeight = (short)(Math.Round(grain * i * heightScale) + startHeight);
+                            currentHeight = (short)Math.Round(grain * i * heightScale);
                             break;
 
                         case GroupShapeType.QuarterPipe:
-                            currentHeight = (short)(Math.Round(Math.Sqrt(1 - Math.Pow((grain * (zoneSize[editDirection] - i)), 2)) * heightScale) + startHeight);
+                            currentHeight = (short)Math.Round(Math.Sqrt(1 - Math.Pow((grain * (zoneSize[editDirection] - i)), 2)) * heightScale);
                             break;
 
                         case GroupShapeType.HalfPipe:
-                            currentHeight = (short)(Math.Round(Math.Sqrt(1 - Math.Pow((grain * i - 1), 2)) * heightScale) + startHeight);
+                            currentHeight = (short)Math.Round(Math.Sqrt(1 - Math.Pow((grain * i - 1), 2)) * heightScale);
                             break;
                     }
 
                     for (int XorZ = startPoint[fillDirection]; XorZ != endPoint[fillDirection]; XorZ += pointIncrement[fillDirection])
-                        room.SetPoint((editDirection == 1 ? XorZ : ZorX), (editDirection == 1 ? ZorX : XorZ), verticalSubdivision, currentHeight, area);
+                        room.ModifyPoint((editDirection == 1 ? XorZ : ZorX), (editDirection == 1 ? ZorX : XorZ), verticalSubdivision, currentHeight, area);
                 }
             }
             else
@@ -426,10 +388,8 @@ namespace TombEditor
                         else
                             currentHeight = (float)(1 - Math.Max(Math.Abs(currX), Math.Abs(currZ)));
 
-                        currentHeight = float.IsNaN(currentHeight) ? 0 : currentHeight;
-                        currentHeight = (float)Math.Round(currentHeight * heightScale) + startHeight;
-
-                        room.SetPoint(x, z, verticalSubdivision, (short)currentHeight, area);
+                        currentHeight = float.IsNaN(currentHeight) ? 0 : (float)Math.Round(currentHeight * heightScale);
+                        room.ModifyPoint(x, z, verticalSubdivision, (short)currentHeight, area);
                     }
             }
 
