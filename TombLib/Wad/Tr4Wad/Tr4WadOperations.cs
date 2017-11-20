@@ -484,13 +484,13 @@ namespace TombLib.Wad.Tr4Wad
                                 break;
 
                             case 5:
-                                command.Parameter1 = (ushort)_oldWad.Commands[lastCommand + 1];
+                                command.Parameter1 = (ushort)(_oldWad.Commands[lastCommand + 1] - anim.FrameStart);
                                 command.Parameter2 = (ushort)_oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
 
                             case 6:
-                                command.Parameter1 = (ushort)_oldWad.Commands[lastCommand + 1];
+                                command.Parameter1 = (ushort)(_oldWad.Commands[lastCommand + 1] - anim.FrameStart);
                                 command.Parameter2 = (ushort)_oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
