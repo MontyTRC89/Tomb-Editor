@@ -311,87 +311,53 @@ namespace TombEditor
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
 
-        public static void TransformGroup(Room room, Rectangle area, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, float heightScale, bool smooth)
+        public static void ShapeGroup(Room room, Rectangle area, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, double heightScale, bool smooth)
         {
-            if (type < GroupShapeType.Bowl && (arrow == EditorArrowType.EntireFace || arrow > EditorArrowType.EdgeW))
-                return;
-
             if (smooth)
                 heightScale /= 4;
 
-            int[] zoneSize = new int[2] { area.Width + 1, area.Height + 1};
+            double[] zoneSize = new double[2] { area.Width + 1, area.Height + 1};
 
-            if (type <= GroupShapeType.HalfPipe)
-            {
-                int editDirection = (arrow == EditorArrowType.EdgeN || arrow == EditorArrowType.EdgeS) ? 1 : 0;
-                int fillDirection = editDirection == 0 ? 1 : 0;
+            bool step90   = (arrow <= EditorArrowType.EdgeW);
+            bool turn90   = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
+            bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW) ^ type == GroupShapeType.QuarterPipe;
+            bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE) ^ type == GroupShapeType.QuarterPipe;
 
-                int[] startPoint = new int[2] { area.Left, area.Top };
-                int[] endPoint = new int[2] { area.Right + 2, area.Bottom + 2};
-                int[] pointIncrement = new int[2] { 1, 1 };
+            double grainBias = (type >= GroupShapeType.HalfPipe ? 1 : 0);
+            double[] grain = new double[2] { (1 + grainBias) / zoneSize[0], (1 + grainBias) / zoneSize[1] };
 
-                if (arrow == EditorArrowType.EdgeS)
+            for (int x = area.Left, i = 0; x != area.Right + 2; x++, i++)
+                for (int z = area.Top, j = 0; z != area.Bottom + 2; z++, j++)
                 {
-                    startPoint[1] = area.Bottom + 1;
-                    endPoint[1] = area.Top - 1;
-                    pointIncrement[1] = -1;
-                }
-                else if (arrow == EditorArrowType.EdgeW)
-                {
-                    startPoint[0] = area.Right + 1;
-                    endPoint[0] = area.Left - 1;
-                    pointIncrement[0] = -1;
-                }
+                    double currX, currZ, currentHeight;
 
-                float grain;
-                if(type == GroupShapeType.HalfPipe)
-                    grain = 2 / (float)zoneSize[editDirection];
-                else
-                    grain = 1 / (float)zoneSize[editDirection];
-
-                for (int ZorX = startPoint[editDirection], i = 0; ZorX != endPoint[editDirection]; ZorX += pointIncrement[editDirection], i++)
-                {
-                    short currentHeight = 0;
+                    if (type <= GroupShapeType.HalfPipe)
+                    {
+                        currX = !turn90 && step90 ? 0 : grain[0] * (reverseX ? zoneSize[0] - i : i) - grainBias;
+                        currZ =  turn90 && step90 ? 0 : grain[1] * (reverseZ ? zoneSize[1] - j : j) - grainBias;
+                    }
+                    else
+                    {
+                        currX = grain[0] * i - 1;
+                        currZ = grain[1] * j - 1;
+                    }
 
                     switch (type)
                     {
                         case GroupShapeType.Ramp:
-                            currentHeight = (short)Math.Round(grain * i * heightScale);
+                            currentHeight = currX + currZ;
                             break;
-
-                        case GroupShapeType.QuarterPipe:
-                            currentHeight = (short)Math.Round(Math.Sqrt(1 - Math.Pow((grain * (zoneSize[editDirection] - i)), 2)) * heightScale);
+                        case GroupShapeType.Pyramid:
+                            currentHeight = 1 - Math.Max(Math.Abs(currX), Math.Abs(currZ));
                             break;
-
-                        case GroupShapeType.HalfPipe:
-                            currentHeight = (short)Math.Round(Math.Sqrt(1 - Math.Pow((grain * i - 1), 2)) * heightScale);
+                        default:
+                            currentHeight = Math.Sqrt(1 - Math.Pow(currX, 2) - Math.Pow(currZ, 2));
                             break;
                     }
 
-                    for (int XorZ = startPoint[fillDirection]; XorZ != endPoint[fillDirection]; XorZ += pointIncrement[fillDirection])
-                        room.ModifyPoint((editDirection == 1 ? XorZ : ZorX), (editDirection == 1 ? ZorX : XorZ), verticalSubdivision, currentHeight, area);
+                    currentHeight = double.IsNaN(currentHeight) ? 0 : Math.Round(currentHeight * heightScale);
+                    room.ModifyPoint(x, z, verticalSubdivision, (short)currentHeight, area);
                 }
-            }
-            else
-            {
-                float[] grain = new float[2] { 2 / (float)zoneSize[0], 2 / (float)zoneSize[1] };
-
-                for (int x = area.Left, i = 0; x != area.Right + 2; x++, i++)
-                    for (int z = area.Top, j = 0; z != area.Bottom + 2; z++, j++)
-                    {
-                        float currX = grain[0] * i - 1;
-                        float currZ = grain[1] * j - 1;
-                        float currentHeight = 0;
-
-                        if (type == GroupShapeType.Bowl)
-                            currentHeight = (float)Math.Sqrt(1 - Math.Pow(currX, 2) - Math.Pow(currZ, 2));
-                        else
-                            currentHeight = (float)(1 - Math.Max(Math.Abs(currX), Math.Abs(currZ)));
-
-                        currentHeight = float.IsNaN(currentHeight) ? 0 : (float)Math.Round(currentHeight * heightScale);
-                        room.ModifyPoint(x, z, verticalSubdivision, (short)currentHeight, area);
-                    }
-            }
 
             SmartBuildGeometry(room, area);
         }

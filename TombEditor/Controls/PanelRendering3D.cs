@@ -414,10 +414,10 @@ namespace TombEditor.Controls
                     return null;
             }
 
-            public void DiscardRoomHeightmap()
+            public void DiscardRoomHeightmap(bool autoUpdate = false)
             {
-                for (int x = 0; x < _parent._editor.SelectedRoom.NumXSectors; x++)
-                    for (int z = 0; z < _parent._editor.SelectedRoom.NumZSectors; z++)
+                for (int x = 0; x < _referenceRoom.NumXSectors; x++)
+                    for (int z = 0; z < _referenceRoom.NumZSectors; z++)
                     {
                         for (int i = 0; i < 4; i++)
                         {
@@ -433,6 +433,9 @@ namespace TombEditor.Controls
                             }
                         }
                     }
+
+                if(autoUpdate)
+                    EditorActions.SmartBuildGeometry(_referenceRoom, _referenceRoom.LocalArea);
             }
         }
 
@@ -1209,7 +1212,7 @@ namespace TombEditor.Controls
                                         break;
                                 }
                                 _toolHandler.DiscardRoomHeightmap();
-                                EditorActions.TransformGroup(_editor.SelectedRoom,
+                                EditorActions.ShapeGroup(_editor.SelectedRoom,
                                     _editor.SelectedSectors.Area,
                                     _editor.SelectedSectors.Arrow,
                                     shape,
