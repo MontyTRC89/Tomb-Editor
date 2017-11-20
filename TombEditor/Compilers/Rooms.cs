@@ -807,19 +807,25 @@ namespace TombEditor.Compilers
                 tr_vertex normal = new tr_vertex((short)-portalPlane.SlopeX, 4, (short)-portalPlane.SlopeZ);
                 if (isCeiling)
                 {
-                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yAtXMaxZMin, (short)zMin);
-                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yAtXMinZMin, (short)zMin);
-                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yAtXMinZMax, (short)zMax);
-                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yAtXMaxZMax, (short)zMax);
                     normal = new tr_vertex(portalPlane.SlopeX, 4, portalPlane.SlopeZ);
+
+                    // HACK: this prevents flickering when camera is exactly on the portal
+                    var n = new Vector3(normal.X, normal.Y, normal.Z);
+                    n.Normalize();
+
+                    portalVertices[0] = new tr_vertex((short)(xMax + n.X), (short)(-yAtXMaxZMin - n.Y), (short)(zMin + n.Z));
+                    portalVertices[1] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMin - n.Y), (short)(zMin + n.Z));
+                    portalVertices[2] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMax - n.Y), (short)(zMax + n.Z));
+                    portalVertices[3] = new tr_vertex((short)(xMax + n.X), (short)(-yAtXMaxZMax - n.Y), (short)(zMax + n.Z));
                 }
                 else
                 {
+                    normal = new tr_vertex((short)-portalPlane.SlopeX, -4, (short)-portalPlane.SlopeZ);
+
                     portalVertices[0] = new tr_vertex((short)xMax, (short)-yAtXMaxZMax, (short)zMax);
                     portalVertices[1] = new tr_vertex((short)xMin, (short)-yAtXMinZMax, (short)zMax);
                     portalVertices[2] = new tr_vertex((short)xMin, (short)-yAtXMinZMin, (short)zMin);
                     portalVertices[3] = new tr_vertex((short)xMax, (short)-yAtXMaxZMin, (short)zMin);
-                    normal = new tr_vertex((short)-portalPlane.SlopeX, -4, (short)-portalPlane.SlopeZ);
                 }
 
                 // Make the normal vector as short as possible
