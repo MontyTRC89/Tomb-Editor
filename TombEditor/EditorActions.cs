@@ -311,7 +311,7 @@ namespace TombEditor
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
 
-        public static void TransformGroup(Room room, Rectangle area, DrawingPoint pickPoint, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, float heightScale, bool smooth)
+        public static void TransformGroup(Room room, Rectangle area, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, float heightScale, bool smooth)
         {
             if (type < GroupShapeType.Bowl && (arrow == EditorArrowType.EntireFace || arrow > EditorArrowType.EdgeW))
                 return;

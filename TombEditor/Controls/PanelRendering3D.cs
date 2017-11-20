@@ -146,7 +146,6 @@ namespace TombEditor.Controls
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
-            public DrawingPoint ReferencePosition => _referencePicking.Pos;
             public Block ReferenceBlock => _parent._editor.SelectedRoom.GetBlockTry(_referencePicking.Pos.X, _referencePicking.Pos.Y);
             public bool ReferenceIsFloor => _referencePicking.BelongsToFloor;
             public bool ReferenceIsDiagonalStep => (_referencePicking.BelongsToFloor ? ReferenceBlock.FloorDiagonalSplit != DiagonalSplit.None : ReferenceBlock.CeilingDiagonalSplit != DiagonalSplit.None);
@@ -1212,7 +1211,6 @@ namespace TombEditor.Controls
                                 _toolHandler.DiscardRoomHeightmap();
                                 EditorActions.TransformGroup(_editor.SelectedRoom,
                                     _editor.SelectedSectors.Area,
-                                    _toolHandler.ReferencePosition,
                                     _editor.SelectedSectors.Arrow,
                                     shape,
                                     (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
