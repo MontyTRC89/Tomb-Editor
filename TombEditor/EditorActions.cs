@@ -381,22 +381,16 @@ namespace TombEditor
                     pointIncrement[0] = -1;
                 }
 
-                float grain = 0;
-
-                if(type == GroupShapeType.Ramp)
-                    grain = 1 / (float)zoneSize[editDirection];
+                float grain;
+                if(type == GroupShapeType.HalfPipe)
+                    grain = 2 / (float)zoneSize[editDirection];
                 else
-                {
-                    if(type == GroupShapeType.QuarterPipe)
-                        grain = ((float)Math.PI / 2) / (float)zoneSize[editDirection];
-                    else
-                        grain = ((float)Math.PI) / (float)zoneSize[editDirection];
-                }
-                
-                short currentHeight = 0;
+                    grain = 1 / (float)zoneSize[editDirection];
 
                 for (int ZorX = startPoint[editDirection], i = 0; ZorX != endPoint[editDirection]; ZorX += pointIncrement[editDirection], i++)
                 {
+                    short currentHeight = 0;
+
                     switch (type)
                     {
                         case GroupShapeType.Ramp:
@@ -404,8 +398,11 @@ namespace TombEditor
                             break;
 
                         case GroupShapeType.QuarterPipe:
+                            currentHeight = (short)(Math.Round(Math.Sqrt(1 - Math.Pow((grain * (zoneSize[editDirection] - i)), 2)) * heightScale) + startHeight);
+                            break;
+
                         case GroupShapeType.HalfPipe:
-                            currentHeight = (short)(Math.Round(Math.Sin(grain * i) * heightScale) + startHeight);
+                            currentHeight = (short)(Math.Round(Math.Sqrt(1 - Math.Pow((grain * i - 1), 2)) * heightScale) + startHeight);
                             break;
                     }
 
@@ -415,43 +412,25 @@ namespace TombEditor
             }
             else
             {
-                float[] grain = new float[2] { 0, 0 };
-
-                for(int i = 0; i < 2; i++)
-                {
-                    if (type == GroupShapeType.Bowl)
-                        grain[i] = ((float)Math.PI) / (float)zoneSize[i];
-                    else
-                    {
-                        // Add pyramid shape function here
-                    }
-                }
+                float[] grain = new float[2] { 2 / (float)zoneSize[0], 2 / (float)zoneSize[1] };
 
                 for (int x = area.Left, i = 0; x != area.Right + 2; x++, i++)
-                {
-                    float tempHeight = 0;
-
-                    if (type == GroupShapeType.Bowl)
-                        tempHeight = (float)Math.Sin(grain[0] * i);
-                    else
-                    {
-                        // Add pyramid shape function here
-                    }
-
                     for (int z = area.Top, j = 0; z != area.Bottom + 2; z++, j++)
                     {
-                        float finalHeight = 0;
+                        float currX = grain[0] * i - 1;
+                        float currZ = grain[1] * j - 1;
+                        float currentHeight = 0;
 
                         if (type == GroupShapeType.Bowl)
-                            finalHeight = tempHeight * (float)Math.Sin(grain[1] * j);
+                            currentHeight = (float)Math.Sqrt(1 - Math.Pow(currX, 2) - Math.Pow(currZ, 2));
                         else
-                        {
-                            // Add pyramid shape function here
-                        }
+                            currentHeight = (float)((Math.E - Math.Abs(currX + currZ) - Math.Abs(currZ - currX)) / Math.E);
 
-                        room.SetPoint(x, z, verticalSubdivision, (short)(Math.Round(finalHeight * heightScale) + startHeight), area);
+                        currentHeight = float.IsNaN(currentHeight) ? 0 : currentHeight;
+                        currentHeight = (float)Math.Round(currentHeight * heightScale) + startHeight;
+
+                        room.SetPoint(x, z, verticalSubdivision, (short)currentHeight, area);
                     }
-                }
             }
 
             SmartBuildGeometry(room, area);
