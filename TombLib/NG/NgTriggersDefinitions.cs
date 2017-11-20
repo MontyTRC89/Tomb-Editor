@@ -170,8 +170,69 @@ namespace TombLib.NG
                     dict = ReadVectorFileInt("MemorySave");
                     break;
 
-                //case NgListKind.VarText:
+                case NgListKind.VarText:
+                    dict = ReadVectorFileInt("VarText");
+                    break;
 
+                case NgListKind.LongStore:
+                    for (var i = 0; i < 16; i++)
+                        dict.Add(new NgVectorPair(i, "Store Long A" + i));
+                    break;
+
+                case NgListKind.VarStore:
+                    dict = ReadVectorFileInt("VarStore");
+                    break;
+
+                case NgListKind.VarNormals:
+                    dict = ReadVectorFileInt("VarNormals");
+                    break;
+
+                case NgListKind.FlybySequences:
+                    // TODO
+                    break;
+
+                case NgListKind.FogDistances:
+                    for (var i = 0; i < 240; i++)
+                        dict.Add(new NgVectorPair(120 - i, (120 - i) + " sectors"));
+                    break;
+
+                case NgListKind.TextureSequence128:
+                    for (var i = 0; i < 128; i++)
+                        dict.Add(new NgVectorPair(i + 1, "TextureSequence=" + (i + 1)));
+                    break;
+
+                case NgListKind.BackupGames:
+                    for (var i = 0; i < 128; i++)
+                        dict.Add(new NgVectorPair(i + 1, "Game Backup " + (i + 1)));
+                    break;
+
+                case NgListKind.TimerSignedLong:
+                    for (var i = -512; i < 512; i++)
+                    {
+                        if (i < 0)
+                            dict.Add(new NgVectorPair(i, "+" + i + " seconds       (Wait <#> seconds before activating)"));
+                        if (i > 0)
+                            dict.Add(new NgVectorPair(i, "+" + i + " seconds       (Activate and wait <#> seconds before deactivating)"));
+                        if (i == 0)
+                            dict.Add(new NgVectorPair(i, "(NULL. No timer operation) 0 timer"));
+                    }
+                    break;
+
+                case NgListKind.TimerSigned:
+                    for (var i = 0; i < 64; i++)
+                        dict.Add(new NgVectorPair(i, "Timer=+" + i));
+                    for (var i = 64; i < 128; i++)
+                        dict.Add(new NgVectorPair(i, "Timer=-" + (i - 63)));
+                    break;
+
+                case NgListKind.OtherLaraSlots:
+                    dict = ReadVectorFileInt("LaraOtherSlots");
+                    break;
+
+                case NgListKind.SlotMoveables:
+                    dict = ReadVectorFileInt("SlotMeshMoveables");
+                    break;
+                    
             }
 
             return dict;
