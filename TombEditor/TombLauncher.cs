@@ -314,8 +314,8 @@ namespace TombEditor
                 uint ntStatus = NtSuspendProcess(hProc);
                 if (ntStatus != 0)
                 {
-                    ReportError(RtlNtStatusToDosError(ntStatus), "NtSuspendProcess");
-                    return false;
+                    int errorCode = RtlNtStatusToDosError(ntStatus);
+                    logger.Warn("An WinAPI error occurred in 'TombLauncher' at function '" + "NtSuspendProcess" + "': " + errorCode);
                 }
 
                 try
@@ -349,7 +349,10 @@ namespace TombEditor
                 {
                     uint ntStatus2 = NtResumeProcess(hProc);
                     if (ntStatus2 != 0)
-                        ReportError(RtlNtStatusToDosError(ntStatus2), "NtResumeProcess");
+                    {
+                        int errorCode = RtlNtStatusToDosError(ntStatus2);
+                        logger.Warn("An WinAPI error occurred in 'TombLauncher' at function '" + "NtResumeProcess" + "': " + errorCode);
+                    }
                 }
                 return true;
             }
