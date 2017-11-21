@@ -98,6 +98,7 @@
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
+            this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -612,6 +613,7 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.darkLabel12);
             this.panel3.Controls.Add(this.gameExecutableSuppressAskingForOptionsCheckBox);
             this.panel3.Controls.Add(this.gameExecutableFilePathBut);
             this.panel3.Controls.Add(this.darkLabel3);
@@ -619,7 +621,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(3, 103);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(442, 73);
+            this.panel3.Size = new System.Drawing.Size(442, 127);
             this.panel3.TabIndex = 3;
             // 
             // gameExecutableSuppressAskingForOptionsCheckBox
@@ -627,9 +629,9 @@
             this.gameExecutableSuppressAskingForOptionsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.gameExecutableSuppressAskingForOptionsCheckBox.Location = new System.Drawing.Point(19, 46);
             this.gameExecutableSuppressAskingForOptionsCheckBox.Name = "gameExecutableSuppressAskingForOptionsCheckBox";
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Size = new System.Drawing.Size(201, 16);
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Size = new System.Drawing.Size(420, 16);
             this.gameExecutableSuppressAskingForOptionsCheckBox.TabIndex = 4;
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Text = "Suppress asking for settings dialong";
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Text = "Enable Tomb4.exe quick start feature";
             this.gameExecutableSuppressAskingForOptionsCheckBox.CheckedChanged += new System.EventHandler(this.gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged);
             // 
             // gameExecutableFilePathBut
@@ -647,7 +649,7 @@
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(0, 0);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(381, 17);
+            this.darkLabel3.Size = new System.Drawing.Size(439, 17);
             this.darkLabel3.TabIndex = 1;
             this.darkLabel3.Text = "Target executable that is started with the \'Build and Play\' button";
             // 
@@ -687,7 +689,7 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(0, 0);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(381, 17);
+            this.darkLabel2.Size = new System.Drawing.Size(439, 17);
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Target folder for the built *.tr4 file:";
             // 
@@ -727,7 +729,7 @@
             this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel7.Location = new System.Drawing.Point(0, 0);
             this.darkLabel7.Name = "darkLabel7";
-            this.darkLabel7.Size = new System.Drawing.Size(381, 17);
+            this.darkLabel7.Size = new System.Drawing.Size(439, 17);
             this.darkLabel7.TabIndex = 1;
             this.darkLabel7.Text = "Folder in which all runtime game components reside:";
             // 
@@ -865,6 +867,18 @@
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
+            // darkLabel12
+            // 
+            this.darkLabel12.AutoSize = true;
+            this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel12.Location = new System.Drawing.Point(42, 65);
+            this.darkLabel12.Name = "darkLabel12";
+            this.darkLabel12.Size = new System.Drawing.Size(268, 52);
+            this.darkLabel12.TabIndex = 5;
+            this.darkLabel12.Text = "This includes:\r\n  - Automatically loads into the currently open level\r\n  - Suppre" +
+    "sses asking for settings dialog in TRNG\r\n  - Prevents removal of taskbar in TRNG" +
+    "";
+            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -984,5 +998,6 @@
         private DarkUI.Controls.DarkListView optionsList;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
+        private DarkUI.Controls.DarkLabel darkLabel12;
     }
 }
