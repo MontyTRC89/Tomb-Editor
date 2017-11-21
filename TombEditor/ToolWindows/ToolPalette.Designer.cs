@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolPalette));
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
+            this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolHalfPipe = new System.Windows.Forms.ToolStripButton();
+            this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolSelection = new System.Windows.Forms.ToolStripButton();
             this.toolDrag = new System.Windows.Forms.ToolStripButton();
             this.toolBrush = new System.Windows.Forms.ToolStripButton();
@@ -39,15 +41,12 @@
             this.toolSmooth = new System.Windows.Forms.ToolStripButton();
             this.toolFill = new System.Windows.Forms.ToolStripButton();
             this.toolGroup = new System.Windows.Forms.ToolStripButton();
-            this.toolSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolRamp = new System.Windows.Forms.ToolStripButton();
             this.toolQuarterPipe = new System.Windows.Forms.ToolStripButton();
-            this.toolHalfPipe = new System.Windows.Forms.ToolStripButton();
             this.toolBowl = new System.Windows.Forms.ToolStripButton();
             this.toolPyramid = new System.Windows.Forms.ToolStripButton();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
-            this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolUVFixer = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -86,6 +85,33 @@
             this.toolStrip.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.toolStrip.Size = new System.Drawing.Size(417, 27);
             this.toolStrip.TabIndex = 2;
+            // 
+            // toolSeparator1
+            // 
+            this.toolSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolSeparator1.Name = "toolSeparator1";
+            this.toolSeparator1.Size = new System.Drawing.Size(6, 23);
+            // 
+            // toolHalfPipe
+            // 
+            this.toolHalfPipe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolHalfPipe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolHalfPipe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolHalfPipe.Image = global::TombEditor.Properties.Resources.toolbox_GroupHalfPipe_16;
+            this.toolHalfPipe.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolHalfPipe.Name = "toolHalfPipe";
+            this.toolHalfPipe.Size = new System.Drawing.Size(23, 20);
+            this.toolHalfPipe.ToolTipText = "Half Pipe";
+            // 
+            // toolSeparator2
+            // 
+            this.toolSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolSeparator2.Name = "toolSeparator2";
+            this.toolSeparator2.Size = new System.Drawing.Size(6, 23);
             // 
             // toolSelection
             // 
@@ -200,20 +226,12 @@
             this.toolGroup.ToolTipText = "Group textuing";
             this.toolGroup.Click += new System.EventHandler(this.toolGroup_Click);
             // 
-            // toolSeparator1
-            // 
-            this.toolSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolSeparator1.Name = "toolSeparator1";
-            this.toolSeparator1.Size = new System.Drawing.Size(6, 23);
-            // 
             // toolRamp
             // 
             this.toolRamp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolRamp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolRamp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolRamp.Image = global::TombEditor.Properties.Resources.toolbox_GroupRamp;
+            this.toolRamp.Image = global::TombEditor.Properties.Resources.toolbox_GroupRamp_16;
             this.toolRamp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolRamp.Name = "toolRamp";
             this.toolRamp.Size = new System.Drawing.Size(23, 20);
@@ -224,45 +242,32 @@
             this.toolQuarterPipe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolQuarterPipe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolQuarterPipe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolQuarterPipe.Image = global::TombEditor.Properties.Resources.toolbox_GroupQuarterPipe;
+            this.toolQuarterPipe.Image = global::TombEditor.Properties.Resources.toolbox_GroupQuaterPipe_16;
             this.toolQuarterPipe.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolQuarterPipe.Name = "toolQuarterPipe";
             this.toolQuarterPipe.Size = new System.Drawing.Size(23, 20);
             this.toolQuarterPipe.ToolTipText = "Quarter Pipe";
             // 
-            // toolHalfPipe
-            // 
-            this.toolHalfPipe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolHalfPipe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolHalfPipe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolHalfPipe.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolHalfPipe.Name = "toolHalfPipe";
-            this.toolHalfPipe.Size = new System.Drawing.Size(27, 19);
-            this.toolHalfPipe.Text = "HP";
-            this.toolHalfPipe.ToolTipText = "Half Pipe";
-            // 
             // toolBowl
             // 
             this.toolBowl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolBowl.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolBowl.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolBowl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolBowl.Image = ((System.Drawing.Image)(resources.GetObject("toolBowl.Image")));
+            this.toolBowl.Image = global::TombEditor.Properties.Resources.toolbox_GroupBowl_16;
             this.toolBowl.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolBowl.Name = "toolBowl";
-            this.toolBowl.Size = new System.Drawing.Size(23, 19);
-            this.toolBowl.Text = "B";
+            this.toolBowl.Size = new System.Drawing.Size(23, 20);
             this.toolBowl.ToolTipText = "Bowl";
             // 
             // toolPyramid
             // 
             this.toolPyramid.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolPyramid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolPyramid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolPyramid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolPyramid.Image = ((System.Drawing.Image)(resources.GetObject("toolPyramid.Image")));
+            this.toolPyramid.Image = global::TombEditor.Properties.Resources.toolbox_GroupPyramid_16;
             this.toolPyramid.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolPyramid.Name = "toolPyramid";
-            this.toolPyramid.Size = new System.Drawing.Size(23, 19);
-            this.toolPyramid.Text = "P";
+            this.toolPyramid.Size = new System.Drawing.Size(23, 20);
             this.toolPyramid.ToolTipText = "Pyramid";
             // 
             // toolEraser
@@ -288,14 +293,6 @@
             this.toolInvisibility.Size = new System.Drawing.Size(23, 20);
             this.toolInvisibility.ToolTipText = "Invisibility";
             this.toolInvisibility.Click += new System.EventHandler(this.toolInvisibility_Click);
-            // 
-            // toolSeparator2
-            // 
-            this.toolSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolSeparator2.Name = "toolSeparator2";
-            this.toolSeparator2.Size = new System.Drawing.Size(6, 23);
             // 
             // toolUVFixer
             // 
