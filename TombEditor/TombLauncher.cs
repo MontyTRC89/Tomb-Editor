@@ -139,29 +139,31 @@ namespace TombEditor
                 // Setup executable to setup the level index directly to the currently edited level
                 // to avoid having to choose it in the title menu.
                 {
-                    int levelIndex = -1;
-                    try
+                    int levelIndex = ConvertLevelPathToIndex(tomb4Path, levelOutputPath);
+                    logger.Info("Level index: " + levelIndex);
+
+                    List<Tomb4Patcher.Patch> patches = new List<Tomb4Patcher.Patch>();
+                    patches.Add(new Tomb4Patcher.Patch(new IntPtr(0x47E910),
+                        new byte[5] { 0x68, 0x14, 0x18, 0x4B, 0x00 },
+                        new byte[5] { 0xC3, 0x90, 0x90, 0x90, 0x90 }));
+                    patches.Add(new Tomb4Patcher.Patch(new IntPtr(0x47B600),
+                        new byte[5] { 0xa0, 0x70, 0xD1, 0x7F, 0x00 },
+                        new byte[5] { 0xC3, 0x90, 0x90, 0x90, 0x90 }));
+
+                    if (levelIndex > 0)
                     {
-                        levelIndex = ConvertLevelPathToIndex(tomb4Path, levelOutputPath);
-                        logger.Info("Level index: " + levelIndex);
-                        if (levelIndex > 0)
-                            Tomb4Patcher.ApplyPatches(process.Handle, new Tomb4Patcher.Patch[]
-                                {
-                                    new Tomb4Patcher.Patch(new IntPtr(0x4515DA),
-                                        null,
-                                        new byte[1] { checked((byte)levelIndex) }),
-                                    new Tomb4Patcher.Patch(new IntPtr(0x47AE1B),
-                                        new byte[2] { 0x8B, 0xFE },
-                                        new byte[2] { 0xEB, 0x45 }),
-                                    new Tomb4Patcher.Patch(new IntPtr(0x47AE62),
-                                        new byte[11] { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 },
-                                        new byte[11] { 0x89, 0xF7, 0xC6, 0x05, 0xDA, 0x15, 0x45, 0x00, 0x00, 0xEB, 0xB0 })
-                                });
+                        patches.Add(new Tomb4Patcher.Patch(new IntPtr(0x4515DA),
+                            null,
+                            new byte[1] { checked((byte)levelIndex) }));
+                        patches.Add(new Tomb4Patcher.Patch(new IntPtr(0x47AE1B),
+                            new byte[2] { 0x8B, 0xFE },
+                            new byte[2] { 0xEB, 0x45 }));
+                        patches.Add(new Tomb4Patcher.Patch(new IntPtr(0x47AE62),
+                            new byte[11] { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 },
+                            new byte[11] { 0x89, 0xF7, 0xC6, 0x05, 0xDA, 0x15, 0x45, 0x00, 0x00, 0xEB, 0xB0 }));
                     }
-                    catch (Exception exc)
-                    {
-                        logger.Error(exc, "Runtime patching to jump directly to level " + levelIndex + " failed!");
-                    }
+
+                    Tomb4Patcher.ApplyPatches(process.Handle, patches);
                 }
 
                 // Avoid the 'Press CTRL window for settings' window of the TRNG
@@ -223,57 +225,65 @@ namespace TombEditor
 
             private static int ConvertLevelPathToIndex(string tomb4Path, string levelOutputPath)
             {
-                // Based on publically available documentation from here
-                // https://opentomb.earvillage.net/TRosettaStone3/trosettastone.html#_the_script_file
-                string scriptPath = Path.Combine(tomb4Path, "SCRIPT.DAT");
-
-                string[] levelPaths;
-                using (var strm = new FileStream(scriptPath, FileMode.Open, FileAccess.Read,
-                    FileShare.ReadWrite | FileShare.Delete | FileShare.Inheritable))
+                try
                 {
-                    Encoding encoding = Encoding.ASCII;
+                    // Based on publically available documentation from here
+                    // https://opentomb.earvillage.net/TRosettaStone3/trosettastone.html#_the_script_file
+                    string scriptPath = Path.Combine(tomb4Path, "SCRIPT.DAT");
 
-                    // Read 'header'
-                    byte[] header = new byte[56];
-                    strm.Read(header, 0, header.Length);
-
-                    int numTotalLevels = header[9];
-                    int levelpathStringLen = header[12] | (header[13] << 8);
-                    string pcLevelString = encoding.GetString(header, 36, 4);
-
-                    // Read level paths
-                    byte[] offsetsToLevelpathString = new byte[numTotalLevels * 2];
-                    strm.Read(offsetsToLevelpathString, 0, offsetsToLevelpathString.Length);
-                    byte[] levelpathStringBlock = new byte[levelpathStringLen];
-                    strm.Read(levelpathStringBlock, 0, levelpathStringBlock.Length);
-
-                    levelPaths = new string[numTotalLevels];
-                    for (int i = 0; i < numTotalLevels; ++i)
+                    string[] levelPaths;
+                    using (var strm = new FileStream(scriptPath, FileMode.Open, FileAccess.Read,
+                        FileShare.ReadWrite | FileShare.Delete | FileShare.Inheritable))
                     {
-                        int offset = offsetsToLevelpathString[i * 2] | (offsetsToLevelpathString[i * 2 + 1] << 8);
-                        int endOffset = offset;
-                        while (levelpathStringBlock[endOffset] != 0)
-                            ++endOffset;
-                        levelPaths[i] = encoding.GetString(levelpathStringBlock, offset, endOffset - offset) + pcLevelString;
-                    }
-                }
+                        Encoding encoding = Encoding.ASCII;
 
-                // Which index is it?
-                int foundIndex = -1;
-                for (int i = 0; i < levelPaths.Length; ++i)
-                    if (levelOutputPath.EndsWith(levelPaths[i], StringComparison.InvariantCultureIgnoreCase))
-                        if (foundIndex != -1)
+                        // Read 'header'
+                        byte[] header = new byte[56];
+                        strm.Read(header, 0, header.Length);
+
+                        int numTotalLevels = header[9];
+                        int levelpathStringLen = header[12] | (header[13] << 8);
+                        string pcLevelString = encoding.GetString(header, 36, 4);
+
+                        // Read level paths
+                        byte[] offsetsToLevelpathString = new byte[numTotalLevels * 2];
+                        strm.Read(offsetsToLevelpathString, 0, offsetsToLevelpathString.Length);
+                        byte[] levelpathStringBlock = new byte[levelpathStringLen];
+                        strm.Read(levelpathStringBlock, 0, levelpathStringBlock.Length);
+
+                        levelPaths = new string[numTotalLevels];
+                        for (int i = 0; i < numTotalLevels; ++i)
                         {
-                            logger.Warn("Parsing 'script.dat' gives an ambigues result for matching level path '" + levelOutputPath + "'." +
-                                "It matches with '" + levelPaths[i] + "' (index " + i + ")" +
-                                "as well as  '" + levelPaths[foundIndex] + "' (index " + foundIndex + ")");
-                            return -1;
+                            int offset = offsetsToLevelpathString[i * 2] | (offsetsToLevelpathString[i * 2 + 1] << 8);
+                            int endOffset = offset;
+                            while (levelpathStringBlock[endOffset] != 0)
+                                ++endOffset;
+                            levelPaths[i] = encoding.GetString(levelpathStringBlock, offset, endOffset - offset) + pcLevelString;
                         }
-                        else
-                            foundIndex = i;
-                if (foundIndex == -1)
-                    logger.Warn("Parsing 'script.dat' gives no result for matching level path '" + levelOutputPath + "'.");
-                return foundIndex;
+                    }
+
+                    // Which index is it?
+                    int foundIndex = -1;
+                    for (int i = 0; i < levelPaths.Length; ++i)
+                        if (levelOutputPath.EndsWith(levelPaths[i], StringComparison.InvariantCultureIgnoreCase))
+                            if (foundIndex != -1)
+                            {
+                                logger.Warn("Parsing 'script.dat' gives an ambigues result for matching level path '" + levelOutputPath + "'." +
+                                    "It matches with '" + levelPaths[i] + "' (index " + i + ")" +
+                                    "as well as  '" + levelPaths[foundIndex] + "' (index " + foundIndex + ")");
+                                return -1;
+                            }
+                            else
+                                foundIndex = i;
+                    if (foundIndex == -1)
+                        logger.Warn("Parsing 'script.dat' gives no result for matching level path '" + levelOutputPath + "'.");
+                    return foundIndex;
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "An exception occurred while scanning 'script.dat' for the current level.");
+                    return -1;
+                }
             }
         }
 
@@ -296,7 +306,6 @@ namespace TombEditor
             public struct Patch
             {
                 public IntPtr Address { get; }
-                public IntPtr Length => new IntPtr(OldCode != null ? OldCode.Length : NewCode.Length);
                 public byte[] OldCode { get; }
                 public byte[] NewCode { get; }
                 public Patch(IntPtr address, byte[] oldCode, byte[] newCode)
@@ -307,52 +316,62 @@ namespace TombEditor
                     if (oldCode != null && newCode != null && (oldCode.Length != NewCode.Length))
                         throw new ArgumentException();
                 }
+
+                public IntPtr Length => new IntPtr(OldCode != null ? OldCode.Length : NewCode.Length);
             }
 
             public static bool ApplyPatches(IntPtr hProc, IEnumerable<Patch> patches)
             {
-                uint ntStatus = NtSuspendProcess(hProc);
-                if (ntStatus != 0)
-                {
-                    int errorCode = RtlNtStatusToDosError(ntStatus);
-                    logger.Warn("An WinAPI error occurred in 'TombLauncher' at function '" + "NtSuspendProcess" + "': " + errorCode);
-                }
-
                 try
                 {
-                    logger.Info("Sucessfully suspended process for runtime patching.");
-
-                    // Check that the memory to be patched is in the expected state
-                    // to not corrupt the process.
-                    foreach (Patch patch in patches)
-                        if (patch.OldCode != null)
-                        {
-                            byte[] readCode = new byte[patch.Length.ToInt32()];
-                            if (ReportError(ReadProcessMemory(hProc, patch.Address, readCode, patch.Length, IntPtr.Zero), "ReadProcessMemory") == 0)
-                            {
-                                logger.Error("Runtime code patching couldn't applied because 'ReadProcessMemory' failed at address " + patch.Address + ".");
-                                return false;
-                            }
-                            if (!readCode.SequenceEqual(patch.OldCode))
-                            {
-                                logger.Error("Runtime code patching couldn't applied because at address " + patch.Address +
-                                    " the bytes " + ToStr(patch.OldCode) + " instead of " + ToStr(readCode) + ".");
-                                return false;
-                            }
-                        }
-
-                    // Apply patches
-                    foreach (Patch patch in patches)
-                        ReportError(WriteProcessMemory(hProc, patch.Address, patch.NewCode, patch.Length, IntPtr.Zero), "WriteProcessMemory");
-                }
-                finally
-                {
-                    uint ntStatus2 = NtResumeProcess(hProc);
-                    if (ntStatus2 != 0)
+                    uint ntStatus = NtSuspendProcess(hProc);
+                    if (ntStatus != 0)
                     {
-                        int errorCode = RtlNtStatusToDosError(ntStatus2);
-                        logger.Warn("An WinAPI error occurred in 'TombLauncher' at function '" + "NtResumeProcess" + "': " + errorCode);
+                        int errorCode = RtlNtStatusToDosError(ntStatus);
+                        logger.Warn("An WinAPI error occurred in 'TombLauncher' at function '" + "NtSuspendProcess" + "': " + errorCode);
                     }
+
+                    try
+                    {
+                        logger.Info("Sucessfully suspended process for runtime patching.");
+
+                        // Check that the memory to be patched is in the expected state
+                        // to not corrupt the process.
+                        foreach (Patch patch in patches)
+                            if (patch.OldCode != null)
+                            {
+                                byte[] readCode = new byte[patch.Length.ToInt32()];
+                                if (ReportError(ReadProcessMemory(hProc, patch.Address, readCode, patch.Length, IntPtr.Zero), "ReadProcessMemory") == 0)
+                                {
+                                    logger.Error("Runtime code patching couldn't applied because 'ReadProcessMemory' failed at address " + patch.Address + ".");
+                                    return false;
+                                }
+                                if (!readCode.SequenceEqual(patch.OldCode))
+                                {
+                                    logger.Error("Runtime code patching couldn't applied because at address " + patch.Address +
+                                        " the bytes " + ToStr(patch.OldCode) + " instead of " + ToStr(readCode) + ".");
+                                    return false;
+                                }
+                            }
+
+                        // Apply patches
+                        foreach (Patch patch in patches)
+                            ReportError(WriteProcessMemory(hProc, patch.Address, patch.NewCode, patch.Length, IntPtr.Zero), "WriteProcessMemory");
+                    }
+                    finally
+                    {
+                        uint ntStatus2 = NtResumeProcess(hProc);
+                        if (ntStatus2 != 0)
+                        {
+                            int errorCode = RtlNtStatusToDosError(ntStatus2);
+                            logger.Warn("An WinAPI error occurred in 'TombLauncher' at function '" + "NtResumeProcess" + "': " + errorCode);
+                        }
+                    }
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "Unable to apply runtime patching.");
+                    return false;
                 }
                 return true;
             }
