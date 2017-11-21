@@ -139,6 +139,7 @@
     <Compile Include="IO\ChunkWriter.cs" />
     <Compile Include="IO\FileFormat.cs" />
     <Compile Include="IO\LEB128.cs" />
+    <Compile Include="NG\NgDynamicListKind.cs" />
     <Compile Include="NG\NgExtraParameter.cs" />
     <Compile Include="NG\NgListKind.cs" />
     <Compile Include="NG\NgTimerParameter.cs" />
