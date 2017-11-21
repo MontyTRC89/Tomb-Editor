@@ -316,15 +316,16 @@ namespace TombEditor
             if (smooth)
                 heightScale /= 4;
 
-            double[] zoneSize = new double[2] { area.Width + 1, area.Height + 1};
+            double sizeX = area.Width + 1;
+            double sizeZ = area.Height + 1;
+            double grainBias = (type >= GroupShapeType.HalfPipe ? 1 : 0);
+            double grainX = (1 + grainBias) / sizeX;
+            double grainZ = (1 + grainBias) / sizeZ;
 
             bool step90   = (arrow <= EditorArrowType.EdgeW);
             bool turn90   = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
             bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW) ^ type == GroupShapeType.QuarterPipe;
             bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE) ^ type == GroupShapeType.QuarterPipe;
-
-            double grainBias = (type >= GroupShapeType.HalfPipe ? 1 : 0);
-            double[] grain = new double[2] { (1 + grainBias) / zoneSize[0], (1 + grainBias) / zoneSize[1] };
 
             for (int x = area.Left, i = 0; x != area.Right + 2; x++, i++)
                 for (int z = area.Top, j = 0; z != area.Bottom + 2; z++, j++)
@@ -333,13 +334,13 @@ namespace TombEditor
 
                     if (type <= GroupShapeType.HalfPipe)
                     {
-                        currX = !turn90 && step90 ? 0 : grain[0] * (reverseX ? zoneSize[0] - i : i) - grainBias;
-                        currZ =  turn90 && step90 ? 0 : grain[1] * (reverseZ ? zoneSize[1] - j : j) - grainBias;
+                        currX = !turn90 && step90 ? 0 : grainX * (reverseX ? sizeX - i : i) - grainBias;
+                        currZ =  turn90 && step90 ? 0 : grainZ * (reverseZ ? sizeZ - j : j) - grainBias;
                     }
                     else
                     {
-                        currX = grain[0] * i - 1;
-                        currZ = grain[1] * j - 1;
+                        currX = grainX * i - 1;
+                        currZ = grainZ * j - 1;
                     }
 
                     switch (type)
