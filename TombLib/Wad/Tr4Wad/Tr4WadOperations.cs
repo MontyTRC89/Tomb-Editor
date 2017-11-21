@@ -484,13 +484,13 @@ namespace TombLib.Wad.Tr4Wad
                                 break;
 
                             case 5:
-                                command.Parameter1 = (ushort)_oldWad.Commands[lastCommand + 1];
+                                command.Parameter1 = (ushort)(_oldWad.Commands[lastCommand + 1] - anim.FrameStart);
                                 command.Parameter2 = (ushort)_oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
 
                             case 6:
-                                command.Parameter1 = (ushort)_oldWad.Commands[lastCommand + 1];
+                                command.Parameter1 = (ushort)(_oldWad.Commands[lastCommand + 1] - anim.FrameStart);
                                 command.Parameter2 = (ushort)_oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
@@ -645,11 +645,19 @@ namespace TombLib.Wad.Tr4Wad
                 {
                     foreach (var animDispatch in stateChange.Dispatches)
                     {
+                        // HACK: Probably WadMerger's bug
+                        if (animDispatch.NextAnimation > 32767)
+                        {
+                            animDispatch.NextAnimation = 0;
+                            animDispatch.NextFrame = 0;
+                            continue;
+                        }
+
                         if (moveable.Animations[animDispatch.NextAnimation].FrameBase != 0)
                         {
                             ushort newFrame = (ushort)(animDispatch.NextFrame % moveable.Animations[animDispatch.NextAnimation].FrameBase);
 
-                            // In some cases dispatches have invalid NextFrame.
+                            // HACK: In some cases dispatches have invalid NextFrame.
                             // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to zero.
                             if (newFrame > moveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames) newFrame = 0;
 

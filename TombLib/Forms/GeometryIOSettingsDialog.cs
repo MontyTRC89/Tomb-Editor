@@ -118,6 +118,7 @@ namespace TombLib.GeometryIO
             nmScale.Value = (decimal)settings.Scale;
             cbDivide.Checked = settings.DivideByScale;
             cbInvertFaces.Checked = settings.InvertFaces;
+            cbImportBakedLight.Checked = settings.UseVertexColor;
         }
 
         private void UpdateSettings()
@@ -134,6 +135,7 @@ namespace TombLib.GeometryIO
             Settings.Scale = (float)nmScale.Value;
             Settings.DivideByScale = cbDivide.Checked;
             Settings.InvertFaces = cbInvertFaces.Checked;
+            Settings.UseVertexColor = cbImportBakedLight.Checked;
         }
 
         private void butOK_Click(object sender, EventArgs e)

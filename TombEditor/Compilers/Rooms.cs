@@ -390,23 +390,28 @@ namespace TombEditor.Compilers
             return vertexIndex;
         }
 
-        private static void ConvertLights(Room room, tr_room newRoom)
+        private void ConvertLights(Room room, tr_room newRoom)
         {
-            foreach (var light in room.Objects.OfType<LightInstance>().Where(l => l.IsDynamicallyUsed))
+            int lightCount = 0;
+
+            foreach (var light in room.Objects.OfType<LightInstance>())
             {
+                if (!light.Enabled || !light.IsDynamicallyUsed)
+                    continue;
+                tr_color color = PackColorTo24Bit(new Vector4(light.Color, 1.0f));
+                ushort intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f));
+                if (intensity == 0 || (color.Red == 0 && color.Green == 0 && color.Blue == 0))
+                    continue;
+                lightCount += 1;
+
                 var newLight = new tr4_room_light
                 {
                     X = (int)Math.Round(newRoom.Info.X + light.Position.X),
                     Y = (int)-Math.Round(light.Position.Y + room.WorldPos.Y),
                     Z = (int)Math.Round(newRoom.Info.Z + light.Position.Z),
-                    Color = PackColorTo24Bit(new Vector4(light.Color, 1.0f)),
-                    Intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f))
+                    Color = color,
+                    Intensity = intensity
                 };
-
-                if (newLight.Intensity == 0)
-                    continue;
-
-                Vector3 direction = light.GetDirection();
 
                 switch (light.Type)
                 {
@@ -426,9 +431,10 @@ namespace TombEditor.Compilers
                         newLight.Out = (float)Math.Cos(MathUtil.DegreesToRadians(light.OuterAngle));
                         newLight.Length = light.InnerRange * 1024.0f;
                         newLight.CutOff = light.OuterRange * 1024.0f;
-                        newLight.DirectionX = -direction.X;
-                        newLight.DirectionY = direction.Y;
-                        newLight.DirectionZ = -direction.Z;
+                        Vector3 spotDirection = light.GetDirection();
+                        newLight.DirectionX = -spotDirection.X;
+                        newLight.DirectionY = spotDirection.Y;
+                        newLight.DirectionZ = -spotDirection.Z;
                         break;
                     case LightType.Sun:
                         newLight.LightType = 0;
@@ -436,9 +442,10 @@ namespace TombEditor.Compilers
                         newLight.Out = 0;
                         newLight.Length = 0;
                         newLight.CutOff = 0;
-                        newLight.DirectionX = -direction.X;
-                        newLight.DirectionY = direction.Y;
-                        newLight.DirectionZ = -direction.Z;
+                        Vector3 sunDirection = light.GetDirection();
+                        newLight.DirectionX = -sunDirection.X;
+                        newLight.DirectionY = sunDirection.Y;
+                        newLight.DirectionZ = -sunDirection.Z;
                         break;
                     case LightType.FogBulb:
                         newLight.LightType = 4;
@@ -452,6 +459,11 @@ namespace TombEditor.Compilers
                 }
 
                 newRoom.Lights.Add(newLight);
+            }
+
+            if (lightCount > 20)
+            {
+                throw new ApplicationException("Room '" + room + "' has more than 20 dynamic lights (It has " + lightCount + "). This can cause crashes with the original engine!");
             }
         }
 
@@ -795,19 +807,27 @@ namespace TombEditor.Compilers
                 tr_vertex normal = new tr_vertex((short)-portalPlane.SlopeX, 4, (short)-portalPlane.SlopeZ);
                 if (isCeiling)
                 {
-                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yAtXMaxZMin, (short)zMin);
-                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yAtXMinZMin, (short)zMin);
-                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yAtXMinZMax, (short)zMax);
-                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yAtXMaxZMax, (short)zMax);
                     normal = new tr_vertex(portalPlane.SlopeX, 4, portalPlane.SlopeZ);
+
+                    // HACK: this prevents flickering when camera is exactly on the portal
+                    var n = new Vector3(normal.X, normal.Y, normal.Z);
+                    if (normal.X < 0.0f) n.X = -1; if (normal.X == 0.0f) n.X = 0; if (normal.X > 0.0f) n.X = 1;
+                    if (normal.Y < 0.0f) n.Y = -1; if (normal.Y == 0.0f) n.Y = 0; if (normal.Y > 0.0f) n.Y = 1;
+                    if (normal.Z < 0.0f) n.Z = -1; if (normal.Z == 0.0f) n.Z = 0; if (normal.Z > 0.0f) n.Z = 1;
+
+                    portalVertices[0] = new tr_vertex((short)(xMax + n.X), (short)(-yAtXMaxZMin - n.Y), (short)(zMin + n.Z));
+                    portalVertices[1] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMin - n.Y), (short)(zMin + n.Z));
+                    portalVertices[2] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMax - n.Y), (short)(zMax + n.Z));
+                    portalVertices[3] = new tr_vertex((short)(xMax + n.X), (short)(-yAtXMaxZMax - n.Y), (short)(zMax + n.Z));
                 }
                 else
                 {
+                    normal = new tr_vertex((short)-portalPlane.SlopeX, -4, (short)-portalPlane.SlopeZ);
+
                     portalVertices[0] = new tr_vertex((short)xMax, (short)-yAtXMaxZMax, (short)zMax);
                     portalVertices[1] = new tr_vertex((short)xMin, (short)-yAtXMinZMax, (short)zMax);
                     portalVertices[2] = new tr_vertex((short)xMin, (short)-yAtXMinZMin, (short)zMin);
                     portalVertices[3] = new tr_vertex((short)xMax, (short)-yAtXMaxZMin, (short)zMin);
-                    normal = new tr_vertex((short)-portalPlane.SlopeX, -4, (short)-portalPlane.SlopeZ);
                 }
 
                 // Make the normal vector as short as possible

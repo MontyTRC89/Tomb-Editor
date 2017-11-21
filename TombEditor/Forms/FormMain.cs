@@ -37,7 +37,7 @@ namespace TombEditor
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private bool _pressedZorY = false;
+        private bool _pressedMoveCameraKey = false;
         private Editor _editor;
         private DeviceManager _deviceManager = DeviceManager.DefaultDeviceManager;
 
@@ -388,22 +388,32 @@ namespace TombEditor
                     break;
 
                 case Keys.Q:
+                    int qDirection = KeyboardLayoutDetector.KeyboardLayout == KeyboardLayout.Azerty ? -1 : 1;
                     if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)(qDirection * (shift ? 4 : 1)), alt);
                     else if (_editor.SelectedObject is PositionBasedObjectInstance && focused)
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 256, 0), new Vector3(), true);
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, qDirection * 256, 0), new Vector3(), true);
                     break;
 
                 case Keys.A:
+                    int aDirection = KeyboardLayoutDetector.KeyboardLayout == KeyboardLayout.Azerty ? 1 : -1;
                     if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)-(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)(aDirection * (shift ? 4 : 1)), alt);
                     else if (_editor.SelectedObject is PositionBasedObjectInstance && focused)
                         EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, -256, 0), new Vector3(), true);
                     break;
 
                 case Keys.W:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(shift ? 4 : 1), alt);
+                    switch (KeyboardLayoutDetector.KeyboardLayout)
+                    {
+                        case KeyboardLayout.Azerty:
+                            _pressedMoveCameraKey = true;
+                            break;
+                        default:
+                            if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(shift ? 4 : 1), alt);
+                            break;
+                    }
                     break;
 
                 case Keys.S:
@@ -434,12 +444,35 @@ namespace TombEditor
                     break;
 
                 case Keys.Y:
-                    // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
-                    _pressedZorY = true;
-
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
+                    switch (KeyboardLayoutDetector.KeyboardLayout)
+                    {
+                        case KeyboardLayout.Qwertz:
+                            _pressedMoveCameraKey = true;
+                            break;
+                        default:
+                            if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
+                            break;
+                    }
                     break;
+
+                case Keys.Z:
+                    switch (KeyboardLayoutDetector.KeyboardLayout)
+                    {
+                        case KeyboardLayout.Qwertz:
+                            if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
+                            break;
+                        case KeyboardLayout.Azerty:
+                            if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(shift ? 4 : 1), alt);
+                            break;
+                        default:
+                            _pressedMoveCameraKey = true;
+                            break;
+                    }
+                    break;
+
                 case Keys.H:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 0, (short)-(shift ? 4 : 1), alt, true);
@@ -465,7 +498,7 @@ namespace TombEditor
             }
 
             // Set camera relocation mode based on previous inputs
-            if (alt && _pressedZorY)
+            if (alt && _pressedMoveCameraKey)
             {
                 EditorAction action = _editor.Action;
                 action.RelocateCameraActive = true;
@@ -490,14 +523,31 @@ namespace TombEditor
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
-            if ((e.KeyCode == Keys.Menu) || (e.KeyCode == Keys.Y) || (e.KeyCode == Keys.Z))
+
+            // Get camera move key
+            bool keyCodeIsMoveCameraKey;
+            switch (KeyboardLayoutDetector.KeyboardLayout)
+            {
+                case KeyboardLayout.Qwertz:
+                    keyCodeIsMoveCameraKey = e.KeyCode == Keys.Y;
+                    break;
+                case KeyboardLayout.Azerty:
+                    keyCodeIsMoveCameraKey = e.KeyCode == Keys.W;
+                    break;
+                default:
+                    keyCodeIsMoveCameraKey = e.KeyCode == Keys.Z;
+                    break;
+            }
+
+            // Check camera move key state
+            if ((e.KeyCode == Keys.Menu) || keyCodeIsMoveCameraKey)
             {
                 EditorAction action = _editor.Action;
                 action.RelocateCameraActive = false;
                 _editor.Action = action;
             }
-            if ((e.KeyCode == Keys.Y) || (e.KeyCode == Keys.Z))
-                _pressedZorY = false;
+            if (keyCodeIsMoveCameraKey)
+                _pressedMoveCameraKey = false;
         }
 
         protected override void OnLostFocus(EventArgs e)
@@ -507,7 +557,7 @@ namespace TombEditor
             EditorAction action = _editor.Action;
             action.RelocateCameraActive = false;
             _editor.Action = action;
-            _pressedZorY = false;
+            _pressedMoveCameraKey = false;
         }
 
         private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1033,10 +1083,10 @@ namespace TombEditor
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //level.Load("");
-            var level = new TombRaider4Level("e:\\trle\\data\\settomb.tr4");
+            var level = new TombRaider4Level("e:\\trle\\data\\coastal.tr4");
             level.Load("originale");
 
-            level = new TombRaider4Level("E:\\Software\\Tomb-Editor\\Build\\Game\\Data\\settomb.tr4");
+            level = new TombRaider4Level("E:\\Software\\Tomb-Editor\\Build\\Game\\Data\\coastal.tr4");
             level.Load("editor");
 
             //level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");

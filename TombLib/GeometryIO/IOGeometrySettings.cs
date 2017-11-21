@@ -26,5 +26,6 @@ namespace TombLib.GeometryIO
         public bool WrapUV { get; set; } = true;
         public bool PremultiplyUV { get; set; } = true;
         public bool InvertFaces { get; set; } = false;
+        public bool UseVertexColor { get; set; } = false;
     }
 }

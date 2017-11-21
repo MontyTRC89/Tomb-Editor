@@ -8,6 +8,7 @@ namespace TombEditor.Geometry
     {
         public ImportedGeometry Model { get; set; }
         public float Scale { get; set; } = 1;
+        public bool UseVertexColor { get; set; } = false;
 
         private float _roll { get; set; } = 0;
         private float _rotationX { get; set; } = 0;

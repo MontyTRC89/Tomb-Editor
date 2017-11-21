@@ -46,6 +46,19 @@ namespace TombLib.GeometryIO
 
             SettingsPresets.Add(new IOGeometrySettingsPreset
             {
+                Name = "Blender DAE",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1024.0f,
+                    FlipZ = true,
+                    FlipUV_V = true,
+                    PremultiplyUV = true,
+                    WrapUV = true
+                }
+            });
+
+            SettingsPresets.Add(new IOGeometrySettingsPreset
+            {
                 Name = "Blender PLY",
                 Settings = new IOGeometrySettings
                 {
@@ -94,10 +107,11 @@ namespace TombLib.GeometryIO
                 {
                     Scale = 1024.0f,
                     FlipZ = true,
-                    InvertFaces = true,
+                    InvertFaces = false,
                     FlipUV_V = false,
                     PremultiplyUV = true,
-                    WrapUV = true
+                    WrapUV = true,
+                    UseVertexColor = true
                 }
             });
         }

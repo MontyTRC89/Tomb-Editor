@@ -1,0 +1,127 @@
+﻿  1: Decrease ceiling collision by  1 clicks
+  2: Decrease ceiling collision by  2 clicks
+  3: Decrease ceiling collision by  3 clicks
+  4: Decrease ceiling collision by  4 clicks
+  5: Decrease ceiling collision by  5 clicks
+  6: Decrease ceiling collision by  6 clicks
+  7: Decrease ceiling collision by  7 clicks
+  8: Decrease ceiling collision by  8 clicks
+  9: Decrease ceiling collision by  9 clicks
+ 10: Decrease ceiling collision by 10 clicks
+ 11: Decrease ceiling collision by 11 clicks
+ 12: Decrease ceiling collision by 12 clicks
+ 13: Decrease ceiling collision by 13 clicks
+ 14: Decrease ceiling collision by 14 clicks
+ 15: Decrease ceiling collision by 15 clicks
+ 16: Decrease ceiling collision by 16 clicks
+ 17: Decrease ceiling collision by 17 clicks
+ 18: Decrease ceiling collision by 18 clicks
+ 19: Decrease ceiling collision by 19 clicks
+ 20: Decrease ceiling collision by 20 clicks
+ 21: Decrease ceiling collision by 21 clicks
+ 22: Decrease ceiling collision by 22 clicks
+ 23: Decrease ceiling collision by 23 clicks
+ 24: Decrease ceiling collision by 24 clicks
+ 25: Decrease ceiling collision by 25 clicks
+ 26: Decrease ceiling collision by 26 clicks
+ 27: Decrease ceiling collision by 27 clicks
+ 28: Decrease ceiling collision by 28 clicks
+ 29: Decrease ceiling collision by 29 clicks
+ 30: Decrease ceiling collision by 30 clicks
+ 31: Decrease ceiling collision by 31 clicks
+ 32: Decrease ceiling collision by 32 clicks
+ 33: Decrease ceiling collision by 33 clicks
+ 34: Decrease ceiling collision by 34 clicks
+ 35: Decrease ceiling collision by 35 clicks
+ 36: Decrease ceiling collision by 36 clicks
+ 37: Decrease ceiling collision by 37 clicks
+ 38: Decrease ceiling collision by 38 clicks
+ 39: Decrease ceiling collision by 39 clicks
+ 40: Decrease ceiling collision by 40 clicks
+ 41: Decrease ceiling collision by 41 clicks
+ 42: Decrease ceiling collision by 42 clicks
+ 43: Decrease ceiling collision by 43 clicks
+ 44: Decrease ceiling collision by 44 clicks
+ 45: Decrease ceiling collision by 45 clicks
+ 46: Decrease ceiling collision by 46 clicks
+ 47: Decrease ceiling collision by 47 clicks
+ 48: Decrease ceiling collision by 48 clicks
+ 49: Decrease ceiling collision by 49 clicks
+ 50: Decrease ceiling collision by 50 clicks
+ 51: Decrease ceiling collision by 51 clicks
+ 52: Decrease ceiling collision by 52 clicks
+ 53: Decrease ceiling collision by 53 clicks
+ 54: Decrease ceiling collision by 54 clicks
+ 55: Decrease ceiling collision by 55 clicks
+ 56: Decrease ceiling collision by 56 clicks
+ 57: Decrease ceiling collision by 57 clicks
+ 58: Decrease ceiling collision by 58 clicks
+ 59: Decrease ceiling collision by 59 clicks
+ 60: Decrease ceiling collision by 60 clicks
+ 61: Decrease ceiling collision by 61 clicks
+ 62: Decrease ceiling collision by 62 clicks
+ 63: Decrease ceiling collision by 63 clicks
+ 65: Increase ceiling collision by  1 clicks
+ 66: Increase ceiling collision by  2 clicks
+ 67: Increase ceiling collision by  3 clicks
+ 68: Increase ceiling collision by  4 clicks
+ 69: Increase ceiling collision by  5 clicks
+ 70: Increase ceiling collision by  6 clicks
+ 71: Increase ceiling collision by  7 clicks
+ 72: Increase ceiling collision by  8 clicks
+ 73: Increase ceiling collision by  9 clicks
+ 74: Increase ceiling collision by 10 clicks
+ 75: Increase ceiling collision by 11 clicks
+ 76: Increase ceiling collision by 12 clicks
+ 77: Increase ceiling collision by 13 clicks
+ 78: Increase ceiling collision by 14 clicks
+ 79: Increase ceiling collision by 15 clicks
+ 80: Increase ceiling collision by 16 clicks
+ 81: Increase ceiling collision by 17 clicks
+ 82: Increase ceiling collision by 18 clicks
+ 83: Increase ceiling collision by 19 clicks
+ 84: Increase ceiling collision by 20 clicks
+ 85: Increase ceiling collision by 21 clicks
+ 86: Increase ceiling collision by 22 clicks
+ 87: Increase ceiling collision by 23 clicks
+ 88: Increase ceiling collision by 24 clicks
+ 89: Increase ceiling collision by 25 clicks
+ 90: Increase ceiling collision by 26 clicks
+ 91: Increase ceiling collision by 27 clicks
+ 92: Increase ceiling collision by 28 clicks
+ 93: Increase ceiling collision by 29 clicks
+ 94: Increase ceiling collision by 30 clicks
+ 95: Increase ceiling collision by 31 clicks
+ 96: Increase ceiling collision by 32 clicks
+ 97: Increase ceiling collision by 33 clicks
+ 98: Increase ceiling collision by 34 clicks
+ 99: Increase ceiling collision by 35 clicks
+100: Increase ceiling collision by 36 clicks
+101: Increase ceiling collision by 37 clicks
+102: Increase ceiling collision by 38 clicks
+103: Increase ceiling collision by 39 clicks
+104: Increase ceiling collision by 40 clicks
+105: Increase ceiling collision by 41 clicks
+106: Increase ceiling collision by 42 clicks
+107: Increase ceiling collision by 43 clicks
+108: Increase ceiling collision by 44 clicks
+109: Increase ceiling collision by 45 clicks
+110: Increase ceiling collision by 46 clicks
+111: Increase ceiling collision by 47 clicks
+112: Increase ceiling collision by 48 clicks
+113: Increase ceiling collision by 49 clicks
+114: Increase ceiling collision by 50 clicks
+115: Increase ceiling collision by 51 clicks
+116: Increase ceiling collision by 52 clicks
+117: Increase ceiling collision by 53 clicks
+118: Increase ceiling collision by 54 clicks
+119: Increase ceiling collision by 55 clicks
+120: Increase ceiling collision by 56 clicks
+121: Increase ceiling collision by 57 clicks
+122: Increase ceiling collision by 58 clicks
+123: Increase ceiling collision by 59 clicks
+124: Increase ceiling collision by 60 clicks
+125: Increase ceiling collision by 61 clicks
+126: Increase ceiling collision by 62 clicks
+127: Increase ceiling collision by 63 clicks
+  0: No change

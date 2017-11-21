@@ -139,10 +139,12 @@
     <Compile Include="IO\ChunkWriter.cs" />
     <Compile Include="IO\FileFormat.cs" />
     <Compile Include="IO\LEB128.cs" />
-    <Compile Include="NG\NGExtraParameter.cs" />
-    <Compile Include="NG\NGTimerParameter.cs" />
-    <Compile Include="NG\NGTrigger.cs" />
-    <Compile Include="NG\NGTriggersDefinitions.cs" />
+    <Compile Include="NG\NgExtraParameter.cs" />
+    <Compile Include="NG\NgListKind.cs" />
+    <Compile Include="NG\NgTimerParameter.cs" />
+    <Compile Include="NG\NgTrigger.cs" />
+    <Compile Include="NG\NgTriggersDefinitions.cs" />
+    <Compile Include="NG\NgVectorPair.cs" />
     <Compile Include="Utils\Cache.cs" />
     <Compile Include="Utils\Hash.cs" />
     <Compile Include="Utils\ImageC.cs" />
@@ -213,31 +215,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NG\NG_Constants.txt">
+    <None Include="NG\Resources\NG_Constants.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="NG\COLORS.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\INVENTORY-ITEM-INDEX.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NG\ADD_EFFECT_255.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\ANIMATION_LIST_255.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\ANIMATION_LIST_B.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\BACKUP.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="NG\PERCENTAGE.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -248,9 +230,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="NG\TIME_LIST_32.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="NG\ANIMATION_RANGE.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="NG\TIME_LIST_128.txt">
@@ -267,6 +246,46 @@
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NG\Resources\BACKUP_LIST.txt" />
+    <Content Include="NG\Resources\BIT_LIST.txt" />
+    <Content Include="NG\Resources\BUTTONS_LIST.txt" />
+    <Content Include="NG\Resources\CAMERA_EFFECTS.txt" />
+    <Content Include="NG\Resources\COLLISION_CEILING.txt" />
+    <Content Include="NG\Resources\COLLISION_FLOOR.txt" />
+    <Content Include="NG\Resources\COLORS.txt" />
+    <Content Include="NG\Resources\DEGREES.txt" />
+    <Content Include="NG\Resources\FOG_DISTANCES.txt" />
+    <Content Include="NG\Resources\FRAG_2x2.txt" />
+    <Content Include="NG\Resources\FRAG_4x4.txt" />
+    <Content Include="NG\Resources\INVENTORY-ITEM-INDEX.txt" />
+    <Content Include="NG\Resources\INVENTORY-ITEMS.txt" />
+    <Content Include="NG\Resources\LARA_OTHER_SLOTS.txt" />
+    <Content Include="NG\Resources\MEMORY_ANIMATION.txt" />
+    <Content Include="NG\Resources\MEMORY_CODE.txt" />
+    <Content Include="NG\Resources\MEMORY_INVENTORY.txt" />
+    <Content Include="NG\Resources\MEM_INVENTORY_INDICES.txt" />
+    <Content Include="NG\Resources\MEMORY_ITEM.txt" />
+    <Content Include="NG\Resources\MEMORY_SAVE.txt" />
+    <Content Include="NG\Resources\MEMORY_SLOT.txt" />
+    <Content Include="NG\Resources\MICRO_CLICKS.txt" />
+    <Content Include="NG\Resources\NEGATIVE_NUMBERS.txt" />
+    <Content Include="NG\Resources\PERCENTAGE.txt" />
+    <Content Include="NG\Resources\RECHARGE_256.txt" />
+    <Content Include="NG\Resources\SEQUENCE_128.txt" />
+    <Content Include="NG\Resources\SEQUENCE_32.txt" />
+    <Content Include="NG\Resources\SET_STANDARD_MESH.txt" />
+    <Content Include="NG\Resources\SWAP_MESH_SLOT.txt" />
+    <Content Include="NG\Resources\FRAG_3x3.txt" />
+    <Content Include="NG\Resources\TEX_SEQUENCE.txt" />
+    <Content Include="NG\Resources\TIMER_SIGNED.txt" />
+    <Content Include="NG\Resources\TIMER_SIGNED_LONG.txt" />
+    <Content Include="NG\Resources\TRANSPARENCY32.txt" />
+    <Content Include="NG\Resources\VAR_NORMALS.txt" />
+    <Content Include="NG\Resources\VAR_LONG_STORE.txt" />
+    <Content Include="NG\Resources\VAR_STORE.txt" />
+    <Content Include="NG\Resources\VAR_TEXT.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

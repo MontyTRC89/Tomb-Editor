@@ -1,0 +1,8 @@
+﻿  0: Moved of  45 degrees
+  1: Moved of  90 degrees
+  2: Moved of 135 degrees
+  3: Moved of 180 degrees
+  4: Moved of 225 degrees
+  5: Moved of 270 degrees
+  6: Moved of 315 degrees
+  7: Moved of 360 degrees

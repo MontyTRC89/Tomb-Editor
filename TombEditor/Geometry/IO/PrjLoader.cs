@@ -567,11 +567,15 @@ namespace TombEditor.Geometry.IO
                                     {
                                         Position = position,
                                         Color = new Vector3(lightR / 128.0f, lightG / 128.0f, lightB / 128.0f),
-                                        Enabled = true, //lightOn == 0x01,
                                         InnerRange = lightIn / 1024.0f,
                                         OuterRange = lightOut / 1024.0f,
-                                        Intensity = lightIntensity / 8192.0f,
+                                        Intensity = lightIntensity / 8192.0f
                                     };
+
+                                    // Import light on specially to not override
+                                    // the default setting which depends on the light type.
+                                    if (lightOn != 0x01)
+                                        light.IsDynamicallyUsed = false;
 
                                     // Import light rotation
                                     light.SetArbitaryRotationsYX(lightY + 180, -lightX);
@@ -1057,44 +1061,24 @@ namespace TombEditor.Geometry.IO
                                 // Fixup inconsistent opacity
                                 // If a portal needs to have a higher type of opacity than indivual sectors
                                 // those individual sectors need manual fixup.
-                                /*if (portal.Opacity != PortalOpacity.None)
+                                if (portal.Opacity != PortalOpacity.None)
                                     for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
                                         for (int x = portal.Area.X; x <= portal.Area.Right; x++)
                                             if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) <= PortalOpacity.None)
                                                 switch (portal.Direction)
                                                 {
                                                     case PortalDirection.Floor:
-                                                        switch (room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z)).AnyType)
+                                                        if (room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z)).AnyType == Room.RoomConnectionType.FullPortal)
                                                         {
-                                                            case Room.RoomConnectionType.NoPortal:
-                                                                tempRoom.Value._blocks[x, z]._faces[0]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                                tempRoom.Value._blocks[x, z]._faces[8]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                                break;
-                                                            case Room.RoomConnectionType.TriangularPortalXpZp:
-                                                            case Room.RoomConnectionType.TriangularPortalXpZn:
-                                                                tempRoom.Value._blocks[x, z]._faces[0]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                                break;
-                                                            case Room.RoomConnectionType.TriangularPortalXnZn:
-                                                            case Room.RoomConnectionType.TriangularPortalXnZp:
-                                                                tempRoom.Value._blocks[x, z]._faces[8]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                                break;
+                                                            tempRoom.Value._blocks[x, z]._faces[0]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                            tempRoom.Value._blocks[x, z]._faces[8]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                         }
                                                         break;
                                                     case PortalDirection.Ceiling:
-                                                        switch (room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z)).AnyType)
+                                                        if (room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z)).AnyType == Room.RoomConnectionType.FullPortal)
                                                         {
-                                                            case Room.RoomConnectionType.NoPortal:
-                                                                tempRoom.Value._blocks[x, z]._faces[1]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                                tempRoom.Value._blocks[x, z]._faces[9]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                                break;
-                                                            case Room.RoomConnectionType.TriangularPortalXpZp:
-                                                            case Room.RoomConnectionType.TriangularPortalXpZn:
-                                                                tempRoom.Value._blocks[x, z]._faces[1]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                                break;
-                                                            case Room.RoomConnectionType.TriangularPortalXnZn:
-                                                            case Room.RoomConnectionType.TriangularPortalXnZp:
-                                                                tempRoom.Value._blocks[x, z]._faces[9]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
-                                                                break;
+                                                            tempRoom.Value._blocks[x, z]._faces[1]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
+                                                            tempRoom.Value._blocks[x, z]._faces[9]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                         }
                                                         break;
                                                     case PortalDirection.WallNegativeX:
@@ -1105,7 +1089,7 @@ namespace TombEditor.Geometry.IO
                                                     case PortalDirection.WallPositiveZ:
                                                         tempRoom.Value._blocks[x, z]._faces[7]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                         break;
-                                                }*/
+                                                }
 
                                 if (portal.Opacity != PortalOpacity.SolidFaces && portal.Direction != PortalDirection.Ceiling)
                                     for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
