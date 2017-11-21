@@ -357,7 +357,7 @@ namespace TombEditor
                             if (type == GroupShapeType.QuarterPipe) currentHeight = 1 - currentHeight;
                             break;
                     }
-                    currentHeight *= heightScale;
+                    currentHeight = Math.Round(currentHeight * heightScale);
 
                     if (stepped)
                     {
