@@ -1221,11 +1221,12 @@ namespace TombEditor.Controls
                     }
                     else
                     {
-                        PickingResultBlock newPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
+                        PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
 
-                        if (newPicking != null)
+                        if (newBlockPicking != null)
                         {
-                            DrawingPoint pos = newPicking.Pos;
+                            DrawingPoint pos = newBlockPicking.Pos;
+                            bool belongsToFloor = newBlockPicking.BelongsToFloor;
 
                             if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag) && _doSectorSelection)
                             {
@@ -1253,12 +1254,12 @@ namespace TombEditor.Controls
                                             case EditorToolType.Flatten:
                                                 for (int i = 0; i < 4; i++)
                                                 {
-                                                    if (newPicking.BelongsToFloor && _toolHandler.ReferenceIsFloor)
+                                                    if (belongsToFloor && _toolHandler.ReferenceIsFloor)
                                                     {
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolHandler.ReferenceBlock.QAFaces.Min();
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolHandler.ReferenceBlock.EDFaces.Min();
                                                     }
-                                                    else if (newPicking.BelongsToCeiling && !_toolHandler.ReferenceIsFloor)
+                                                    else if (!belongsToFloor && !_toolHandler.ReferenceIsFloor)
                                                     {
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolHandler.ReferenceBlock.WSFaces.Min();
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolHandler.ReferenceBlock.RFFaces.Min();
@@ -1268,7 +1269,7 @@ namespace TombEditor.Controls
                                                 break;
 
                                             case EditorToolType.Smooth:
-                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, newPicking.BelongsToFloor);
+                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
                                                 break;
 
                                             case EditorToolType.Drag:
@@ -1278,8 +1279,8 @@ namespace TombEditor.Controls
                                                 EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                                     new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y),
                                                     EditorArrowType.EntireFace,
-                                                    (newPicking.BelongsToFloor ? 0 : 1),
-                                                    (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ newPicking.BelongsToFloor ? 1 : -1),
+                                                    (belongsToFloor ? 0 : 1),
+                                                    (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor ? 1 : -1),
                                                     (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
                                                 break;
                                         }
@@ -1293,9 +1294,7 @@ namespace TombEditor.Controls
                                 {
                                     if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                          _editor.SelectedSectors == SectorSelection.None))
-                                    {
-                                        redrawWindow = EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newPicking.Face, _editor.SelectedTexture);
-                                    }
+                                        redrawWindow = EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
                                 }
                             }
                         }
@@ -1316,26 +1315,29 @@ namespace TombEditor.Controls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    PickingResultBlock newPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
-                    if (newPicking != null && !_toolHandler.Dragged)
+                    PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
+                    if (newBlockPicking != null && !_toolHandler.Dragged)
                     {
+                        DrawingPoint pos = newBlockPicking.Pos;
+                        bool belongsToFloor = newBlockPicking.BelongsToFloor;
+
                         if (ModifierKeys.HasFlag(Keys.Alt))
                         {
                             // Split the faces
-                            if (newPicking.BelongsToFloor)
-                                EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(newPicking.Pos.X, newPicking.Pos.Y, newPicking.Pos.X, newPicking.Pos.Y));
+                            if (belongsToFloor)
+                                EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                             else
-                                EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(newPicking.Pos.X, newPicking.Pos.Y, newPicking.Pos.X, newPicking.Pos.Y));
+                                EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                             return;
                         }
                         else if (ModifierKeys.HasFlag(Keys.Shift))
                         {
                             // Rotate sector
-                            EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(newPicking.Pos.X, newPicking.Pos.Y, newPicking.Pos.X, newPicking.Pos.Y), newPicking.BelongsToFloor);
+                            EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
                             return;
                         }
                         else if (_editor.Mode == EditorMode.Geometry && (_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool >= EditorToolType.Drag))
-                            if (!_doSectorSelection && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newPicking.Pos))
+                            if (!_doSectorSelection && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
                                 // Rotate the arrows
                                 if (ModifierKeys.HasFlag(Keys.Control))
                                 {
