@@ -48,7 +48,6 @@
             this.toolPalette.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolPalette.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSelection,
-            this.toolDrag,
             this.toolBrush,
             this.toolShovel,
             this.toolPencil,
@@ -57,6 +56,7 @@
             this.toolFill,
             this.toolGroup,
             this.toolSeparator1,
+            this.toolDrag,
             this.toolRamp,
             this.toolQuarterPipe,
             this.toolHalfPipe,
@@ -93,7 +93,7 @@
             this.toolDrag.Image = global::TombEditor.Properties.Resources.toolbox_Drag_16;
             this.toolDrag.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolDrag.Name = "toolDrag";
-            this.toolDrag.Size = new System.Drawing.Size(24, 20);
+            this.toolDrag.Size = new System.Drawing.Size(24, 24);
             this.toolDrag.ToolTipText = "Drag";
             this.toolDrag.Click += new System.EventHandler(this.toolDrag_Click);
             // 

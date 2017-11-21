@@ -316,32 +316,25 @@ namespace TombEditor
             if (precise)
                 heightScale /= 4;
 
-            double sizeX = area.Width + (stepped ? 0 : 1);
-            double sizeZ = area.Height + (stepped ? 0 : 1);
-            double grainBias = (type >= GroupShapeType.HalfPipe ? 1 : 0);
-            double grainX = (1 + grainBias) / sizeX;
-            double grainZ = (1 + grainBias) / sizeZ;
-
+            bool uniformShape = (type >= GroupShapeType.HalfPipe);
+            bool allFace  = (arrow == EditorArrowType.EntireFace);
             bool step90   = (arrow <= EditorArrowType.EdgeW);
             bool turn90   = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
-            bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW);
-            bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE);
+            bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW) ^ uniformShape;
+            bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE) ^ uniformShape;
+
+            double sizeX = area.Width + (stepped ? 0 : 1);
+            double sizeZ = area.Height + (stepped ? 0 : 1);
+            double grainBias = (uniformShape ? (!step90 ? 0 : 1) : 0);
+            double grainX = (1 + grainBias) / sizeX;
+            double grainZ = (1 + grainBias) / sizeZ;
 
             for (int w = area.Left, x = 0; w < area.Left + sizeX + 1; w++, x++)
                 for (int h = area.Top, z = 0; h != area.Top + sizeZ + 1; h++, z++)
                 {
-                    double currX, currZ, currentHeight;
-
-                    if (type <= GroupShapeType.HalfPipe)
-                    {
-                        currX = !turn90 && step90 ? 0 : grainX * (reverseX ? sizeX - x : x) - grainBias;
-                        currZ =  turn90 && step90 ? 0 : grainZ * (reverseZ ? sizeZ - z : z) - grainBias;
-                    }
-                    else
-                    {
-                        currX = grainX * x - 1;
-                        currZ = grainZ * z - 1;
-                    }
+                    double currentHeight;
+                    double currX = !turn90 && step90 && !allFace && type <= GroupShapeType.HalfPipe ? 0 : grainX * (reverseX ? sizeX - x : x) - grainBias;
+                    double currZ =  turn90 && step90 && !allFace && type <= GroupShapeType.HalfPipe ? 0 : grainZ * (reverseZ ? sizeZ - z : z) - grainBias;
 
                     switch (type)
                     {
