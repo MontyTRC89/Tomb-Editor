@@ -316,25 +316,27 @@ namespace TombEditor
             if (precise)
                 heightScale /= 4;
 
+            bool linearShape  = (type <= GroupShapeType.HalfPipe);
             bool uniformShape = (type >= GroupShapeType.HalfPipe);
             bool allFace  = (arrow == EditorArrowType.EntireFace);
             bool step90   = (arrow <= EditorArrowType.EdgeW);
             bool turn90   = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
             bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW) ^ uniformShape;
             bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE) ^ uniformShape;
+            bool uniformAlign = (type > GroupShapeType.HalfPipe && !allFace && step90);
 
             double sizeX = area.Width + (stepped ? 0 : 1);
             double sizeZ = area.Height + (stepped ? 0 : 1);
             double grainBias = (uniformShape ? (!step90 ? 0 : 1) : 0);
-            double grainX = (1 + grainBias) / sizeX;
-            double grainZ = (1 + grainBias) / sizeZ;
+            double grainX = (1 + grainBias) / sizeX / (uniformAlign &&  turn90 ? 2 : 1);
+            double grainZ = (1 + grainBias) / sizeZ / (uniformAlign && !turn90 ? 2 : 1);
 
             for (int w = area.Left, x = 0; w < area.Left + sizeX + 1; w++, x++)
                 for (int h = area.Top, z = 0; h != area.Top + sizeZ + 1; h++, z++)
                 {
                     double currentHeight;
-                    double currX = !turn90 && step90 && !allFace && type <= GroupShapeType.HalfPipe ? 0 : grainX * (reverseX ? sizeX - x : x) - grainBias;
-                    double currZ =  turn90 && step90 && !allFace && type <= GroupShapeType.HalfPipe ? 0 : grainZ * (reverseZ ? sizeZ - z : z) - grainBias;
+                    double currX = (linearShape && !turn90 && step90) ? 0 : grainX * (reverseX ? sizeX - x : x) - (uniformAlign &&  turn90 ? 0 : grainBias);
+                    double currZ = (linearShape &&  turn90 && step90) ? 0 : grainZ * (reverseZ ? sizeZ - z : z) - (uniformAlign && !turn90 ? 0 : grainBias);
 
                     switch (type)
                     {
@@ -360,7 +362,6 @@ namespace TombEditor
                     else
                         room.ModifyPoint(w, h, verticalSubdivision, (short)currentHeight, area);
                 }
-
             SmartBuildGeometry(room, area);
         }
 
