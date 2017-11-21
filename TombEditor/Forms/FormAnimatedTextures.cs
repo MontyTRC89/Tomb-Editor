@@ -267,9 +267,16 @@ namespace TombEditor
         {
             bool enable = comboAnimatedTextureSets.SelectedItem is AnimatedTextureSet;
             settingsPanel.Enabled = enable;
-            texturesDataGridView.Enabled = enable;
             texturesDataGridViewControls.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
+
+            if (enable)
+            {
+                AnimatedTextureSet selectedSet = (AnimatedTextureSet)comboAnimatedTextureSets.SelectedItem;
+                texturesDataGridView.Enabled = selectedSet.Frames.Count > 0;
+            }
+            else
+                texturesDataGridView.Enabled = enable;
         }
 
         private void comboAnimatedTextureSets_SelectedIndexChanged(object sender, EventArgs e)
