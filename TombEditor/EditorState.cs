@@ -22,16 +22,15 @@ namespace TombEditor
     {
         public EditorToolType Tool { get; set; }
         public bool TextureUVFixer { get; set; }
-        public bool SmoothModifier { get; set; }
 
         public static bool operator == (EditorTool first, EditorTool second)
         {
-            return (first.Tool == second.Tool && first.TextureUVFixer == second.TextureUVFixer && first.SmoothModifier == second.SmoothModifier);
+            return (first.Tool == second.Tool && first.TextureUVFixer == second.TextureUVFixer);
         }
 
         public static bool operator !=(EditorTool first, EditorTool second)
         {
-            return (first.Tool != second.Tool || first.TextureUVFixer != second.TextureUVFixer && first.SmoothModifier == second.SmoothModifier);
+            return (first.Tool != second.Tool || first.TextureUVFixer != second.TextureUVFixer);
         }
 
         public override bool Equals(object obj)
