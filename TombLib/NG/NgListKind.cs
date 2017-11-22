@@ -8,79 +8,23 @@ namespace TombLib.NG
 {
     public enum NgListKind
     {
-        FogColors,
-        Percentage,
-        Slots,
-        StaticSlots,
-        Transparency32,
-        BitList,
-        NegativeNumbers,
-        CollisionFloor,
-        CollisionCeiling,
-        MemoryInventoryIndices,
-        MicroClicks,
-        MemoryAnimation,
-        MemoryInventory,
-        MemorySlot,
-        MemoryCode,
-        MemoryItem,
-        MemorySave,
-        VarText,
-        LongStore,
-        VarStore,
-        VarNormals,
-        FlybySequences,
-        FogDistances,
-        TextureSequence128,
-        BackupGames,
-        TimerSignedLong,
-        TimerSigned,
-        OtherLaraSlots,
-        SlotMoveables,
-        SlotSTandardMeshes,
-        SlotSwapMeshes,
-        CameraEffects,
-        Flyby,
-        StaticsList,
-        Sink,
-        ButtonsList,
-        Recharge,
-        Inventory,
-        Moveables,
-        Degrees,
-        Sequence32,
-        Sequence128,
-        Colors,
-        InventoryIndex,
-        Frag2x2,
-        Frag3x3,
-        Frag4x4,
-        HalfClicks,
-        HalfClicks32,
-        Time128,
-        AnimationRanges,
-        PsxStrings,
-        PcStrings,
-        StringList255,
-        NgStringList255,
-        NgAllStrings,
-        CdTracks,
-        FmvList,
-        SoundEffectsA,
-        SoundEffectsB,
-        Sfx1024,
-        TimeList32,
-        Animation32A,
-        Animation32B,
-        Animation32C,
-        Animation255,
-        AnimationLaraB,
-        StateId,
-        SlotAnimLara,
-        AddEffect,
-        ClickDistance32,
-        OcbLaraStart,
-        RoomList255,
-        KeyboardMode
+        Node,
+        Unknown,
+        Rooms255, // ROOMS_255
+        SoundEffectsA, // SOUND_EFFECT_A
+        SoundEffectsB, // SOUND_EFFECT_B
+        Sfx1024, // SFX_1024
+        NgStringsList255, // NG_STRING_LIST_255
+        NgStringsAll, // NG_STRING_LIST_ALL
+        PsxStringsList, // PSX_STRING_LIST
+        PcStringsList, // PC_STRING_LIST
+        StringsList255, // STRING_LIST_255
+        MoveablesInLevel, // MOVEABLES
+        SinksInLevel, // SINK_LIST
+        StaticsInLevel, // STATIC_LIST
+        FlybyCamerasInLevel, // FLYBY_LIST
+        CamerasInLevel, // CAMERA_EFFECTS
+        WadSlots, // WAD-SLOTS
+        StaticsSlots, // STATIC_SLOTS
     }
 }
