@@ -482,7 +482,7 @@
             this.newRoomUpToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_NewRoomUp_16;
             this.newRoomUpToolStripMenuItem.Name = "newRoomUpToolStripMenuItem";
             this.newRoomUpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.D)));
+            | System.Windows.Forms.Keys.U)));
             this.newRoomUpToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
             this.newRoomUpToolStripMenuItem.Text = "New room up";
             this.newRoomUpToolStripMenuItem.Click += new System.EventHandler(this.newRoomUpToolStripMenuItem_Click);
@@ -494,7 +494,7 @@
             this.newRoomDownToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_NewRoomDown_16;
             this.newRoomDownToolStripMenuItem.Name = "newRoomDownToolStripMenuItem";
             this.newRoomDownToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.U)));
+            | System.Windows.Forms.Keys.D)));
             this.newRoomDownToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
             this.newRoomDownToolStripMenuItem.Text = "New room down";
             this.newRoomDownToolStripMenuItem.Click += new System.EventHandler(this.newRoomDownToolStripMenuItem_Click);

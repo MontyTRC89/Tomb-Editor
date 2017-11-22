@@ -75,6 +75,7 @@
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.gameExecutableSuppressAskingForOptionsCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.gameExecutableFilePathBut = new DarkUI.Controls.DarkButton();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
@@ -98,6 +99,7 @@
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
+            this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -164,7 +166,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(670, 304);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(670, 353);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // darkSectionPanel2
@@ -175,7 +177,7 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(209, 3);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(458, 264);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(458, 313);
             this.darkSectionPanel2.TabIndex = 2;
             // 
             // optionsContainer
@@ -191,7 +193,7 @@
             this.optionsContainer.Location = new System.Drawing.Point(1, 1);
             this.optionsContainer.Name = "optionsContainer";
             this.optionsContainer.SelectedIndex = 0;
-            this.optionsContainer.Size = new System.Drawing.Size(456, 262);
+            this.optionsContainer.Size = new System.Drawing.Size(456, 311);
             this.optionsContainer.TabIndex = 2;
             // 
             // tabPage1
@@ -502,7 +504,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(448, 236);
+            this.tabPage3.Size = new System.Drawing.Size(448, 259);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Sound locations";
             // 
@@ -517,7 +519,7 @@
             this.soundDataGridViewControls.Location = new System.Drawing.Point(424, 72);
             this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.soundDataGridViewControls.Name = "soundDataGridViewControls";
-            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 161);
+            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 184);
             this.soundDataGridViewControls.TabIndex = 3;
             // 
             // soundDataGridView
@@ -534,7 +536,7 @@
             this.soundDataGridView.Location = new System.Drawing.Point(3, 72);
             this.soundDataGridView.Name = "soundDataGridView";
             this.soundDataGridView.RowHeadersWidth = 41;
-            this.soundDataGridView.Size = new System.Drawing.Size(415, 161);
+            this.soundDataGridView.Size = new System.Drawing.Size(415, 184);
             this.soundDataGridView.TabIndex = 2;
             this.soundDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundDataGridView_CellContentClick);
             this.soundDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundDataGridView_CellFormatting);
@@ -571,7 +573,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(448, 236);
+            this.tabPage4.Size = new System.Drawing.Size(448, 259);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Imported geometry";
             // 
@@ -584,7 +586,7 @@
             this.importedGeometryManager.Location = new System.Drawing.Point(3, 23);
             this.importedGeometryManager.Name = "importedGeometryManager";
             this.importedGeometryManager.SelectedImportedGeometry = null;
-            this.importedGeometryManager.Size = new System.Drawing.Size(434, 199);
+            this.importedGeometryManager.Size = new System.Drawing.Size(434, 222);
             this.importedGeometryManager.TabIndex = 2;
             // 
             // darkLabel11
@@ -606,12 +608,14 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(448, 236);
+            this.tabPage5.Size = new System.Drawing.Size(448, 285);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Game paths";
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.darkLabel13);
+            this.panel3.Controls.Add(this.darkLabel12);
             this.panel3.Controls.Add(this.gameExecutableSuppressAskingForOptionsCheckBox);
             this.panel3.Controls.Add(this.gameExecutableFilePathBut);
             this.panel3.Controls.Add(this.darkLabel3);
@@ -619,17 +623,27 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(3, 103);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(442, 73);
+            this.panel3.Size = new System.Drawing.Size(442, 182);
             this.panel3.TabIndex = 3;
+            // 
+            // darkLabel12
+            // 
+            this.darkLabel12.AutoSize = true;
+            this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel12.Location = new System.Drawing.Point(42, 65);
+            this.darkLabel12.Name = "darkLabel12";
+            this.darkLabel12.Size = new System.Drawing.Size(268, 65);
+            this.darkLabel12.TabIndex = 5;
+            this.darkLabel12.Text = resources.GetString("darkLabel12.Text");
             // 
             // gameExecutableSuppressAskingForOptionsCheckBox
             // 
             this.gameExecutableSuppressAskingForOptionsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.gameExecutableSuppressAskingForOptionsCheckBox.Location = new System.Drawing.Point(19, 46);
             this.gameExecutableSuppressAskingForOptionsCheckBox.Name = "gameExecutableSuppressAskingForOptionsCheckBox";
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Size = new System.Drawing.Size(201, 16);
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Size = new System.Drawing.Size(420, 16);
             this.gameExecutableSuppressAskingForOptionsCheckBox.TabIndex = 4;
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Text = "Suppress asking for settings dialong";
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Text = "Enable Tomb4.exe quick start feature";
             this.gameExecutableSuppressAskingForOptionsCheckBox.CheckedChanged += new System.EventHandler(this.gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged);
             // 
             // gameExecutableFilePathBut
@@ -647,7 +661,7 @@
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(0, 0);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(381, 17);
+            this.darkLabel3.Size = new System.Drawing.Size(439, 17);
             this.darkLabel3.TabIndex = 1;
             this.darkLabel3.Text = "Target executable that is started with the \'Build and Play\' button";
             // 
@@ -687,7 +701,7 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(0, 0);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(381, 17);
+            this.darkLabel2.Size = new System.Drawing.Size(439, 17);
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Target folder for the built *.tr4 file:";
             // 
@@ -727,7 +741,7 @@
             this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel7.Location = new System.Drawing.Point(0, 0);
             this.darkLabel7.Name = "darkLabel7";
-            this.darkLabel7.Size = new System.Drawing.Size(381, 17);
+            this.darkLabel7.Size = new System.Drawing.Size(439, 17);
             this.darkLabel7.TabIndex = 1;
             this.darkLabel7.Text = "Folder in which all runtime game components reside:";
             // 
@@ -808,7 +822,7 @@
             this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 264);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 313);
             this.darkSectionPanel1.TabIndex = 7;
             // 
             // optionsList
@@ -817,7 +831,7 @@
             this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.optionsList.Location = new System.Drawing.Point(1, 1);
             this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 262);
+            this.optionsList.Size = new System.Drawing.Size(198, 311);
             this.optionsList.TabIndex = 6;
             // 
             // panel11
@@ -826,7 +840,7 @@
             this.panel11.Controls.Add(this.butApply);
             this.panel11.Controls.Add(this.butOk);
             this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Location = new System.Drawing.Point(407, 273);
+            this.panel11.Location = new System.Drawing.Point(407, 322);
             this.panel11.Name = "panel11";
             this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
             this.panel11.Size = new System.Drawing.Size(260, 28);
@@ -865,11 +879,21 @@
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
+            // darkLabel13
+            // 
+            this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel13.Location = new System.Drawing.Point(16, 140);
+            this.darkLabel13.Name = "darkLabel13";
+            this.darkLabel13.Size = new System.Drawing.Size(404, 31);
+            this.darkLabel13.TabIndex = 5;
+            this.darkLabel13.Text = "If you are using TRNG, to speed up level load and exit further, it is recommended" +
+    " to enable \'soft fullscreen\' mode in the TRNG settings.";
+            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(670, 304);
+            this.ClientSize = new System.Drawing.Size(670, 353);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
@@ -984,5 +1008,7 @@
         private DarkUI.Controls.DarkListView optionsList;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
+        private DarkUI.Controls.DarkLabel darkLabel12;
+        private DarkUI.Controls.DarkLabel darkLabel13;
     }
 }

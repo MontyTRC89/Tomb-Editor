@@ -1,5 +1,6 @@
 ﻿using DarkUI.Extensions;
 using DarkUI.Forms;
+using NLog;
 using SharpDX;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace TombEditor
 {
     public partial class FormAnimatedTextures : DarkForm
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private class InitEvent : IEditorEvent { }
         private class TransparentBindingList<T> : BindingList<T>
         {
@@ -153,8 +156,9 @@ namespace TombEditor
             if (dataSource?.Items != selectedSet.Frames)
             {
                 var newDataSource = new TransparentBindingList<AnimatedTextureFrame>(selectedSet.Frames);
-                newDataSource.ListChanged += NewDataSource_ListChanged;
                 texturesDataGridView.DataSource = newDataSource;
+                newDataSource.ListChanged += NewDataSource_ListChanged; // This needs to happen *after* it's set as a datasource
+                // otherwise the view is updated before the datagridview is in a valid state and an exception can occure in certain cicumstances while cell formatting a deleted row.
             }
             else
             {
@@ -267,9 +271,16 @@ namespace TombEditor
         {
             bool enable = comboAnimatedTextureSets.SelectedItem is AnimatedTextureSet;
             settingsPanel.Enabled = enable;
-            texturesDataGridView.Enabled = enable;
             texturesDataGridViewControls.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
+
+            if (enable)
+            {
+                AnimatedTextureSet selectedSet = (AnimatedTextureSet)comboAnimatedTextureSets.SelectedItem;
+                texturesDataGridView.Enabled = selectedSet.Frames.Count > 0;
+            }
+            else
+                texturesDataGridView.Enabled = enable;
         }
 
         private void comboAnimatedTextureSets_SelectedIndexChanged(object sender, EventArgs e)
@@ -332,13 +343,24 @@ namespace TombEditor
 
         private void texturesDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            // Get frame for the currently formatted row
             if (e.RowIndex >= texturesDataGridView.Rows.Count || e.ColumnIndex >= texturesDataGridView.Columns.Count)
                 return;
+            AnimatedTextureFrame frame;
+            try
+            {
+                frame = (AnimatedTextureFrame)(texturesDataGridView.Rows[e.RowIndex].DataBoundItem);
+            }
+            catch (Exception exc)
+            {
+                logger.Info(exc, "Cell formatting failed for row " + e.RowIndex + ".");
+                return;
+            }
 
+            // Do cell formatting
             if ((e.DesiredType == typeof(Image)) || e.DesiredType.IsSubclassOf(typeof(Image)))
             {
                 // Image column
-                var frame = (AnimatedTextureFrame)(texturesDataGridView.Rows[e.RowIndex].DataBoundItem);
                 CachedImageInfo info;
                 info._destinationSize = new Size(texturesDataGridView.Columns[e.ColumnIndex].Width, texturesDataGridView.Rows[e.RowIndex].Height);
                 info._sourceTexCoord0 = frame.TexCoord0;
@@ -352,7 +374,6 @@ namespace TombEditor
             }
             else if (texturesDataGridView.Columns[e.ColumnIndex].Name == texturesDataGridViewColumnArea.Name)
             {
-                var frame = (AnimatedTextureFrame)(texturesDataGridView.Rows[e.RowIndex].DataBoundItem);
                 var area = frame.Area;
                 e.Value = "(" + area.X + ", " + area.Y + ")-> (" + area.Right + ", " + area.Bottom + ")";
                 e.FormattingApplied = true;
