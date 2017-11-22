@@ -502,11 +502,51 @@
 <END>
 
 <START_EFFECT_52_T_H>
-#SAME_OF#=EFFECT_51_T
+0: All keyboard commands
+1: Up
+2: Down
+3: Left
+4: Right
+5: Duck
+6: Dash
+7: Walk
+8: Jump
+9: Action (and Enter)
+10: Draw Weapon
+11: Use Flare
+12: Look
+13: Roll
+14: Inventory
+15: Step Left
+16: Step Right
+17: Pause
+18: Save the game (special)
+19: Load the game (special)
+20: Select weapon keys (all fast weapon selctors)
 <END>
 
 <START_EFFECT_53_T_H>
-#SAME_OF#=EFFECT_51_T
+0: All keyboard commands
+1: Up
+2: Down
+3: Left
+4: Right
+5: Duck
+6: Dash
+7: Walk
+8: Jump
+9: Action (and Enter)
+10: Draw Weapon
+11: Use Flare
+12: Look
+13: Roll
+14: Inventory
+15: Step Left
+16: Step Right
+17: Pause
+18: Save the game (special)
+19: Load the game (special)
+20: Select weapon keys (all fast weapon selctors)
 <END>
 
 <START_EFFECT_53_E_H>
@@ -590,11 +630,41 @@
 
 
 <START_EFFECT_59_T_H>
-#SAME_OF#=EFFECT_58_T
+0: 1th Frame
+1: 2th Frame
+2: 3th Frame
+3: 4th Frame
+4: 5th Frame
+5: 6th Frame
+6: 7th Frame
+7: 8th Frame
+8: 9th Frame
+9: 10th Frame
+10: 11th Frame
+11: 12th Frame
+12: 13th Frame
+13: 14th Frame
+14: 15th Frame
+15: 16th Frame
 <END>
 
 <START_EFFECT_59_E_H>
-#SAME_OF#=EFFECT_58_E
+0: 1th Position
+1: 2th Position
+2: 3th Position
+3: 4th Position
+4: 5th Position
+5: 6th Position
+6: 7th Position
+7: 8th Position
+8: 9th Position
+9: 10th Position
+10: 11th Position
+11: 12th Position
+12: 13th Position
+13: 14th Position
+14: 15th Position
+15: 16th Position
 <END>
 
 <START_EFFECT_60_T_H>
@@ -761,7 +831,11 @@
 
 
 <START_EFFECT_85_T_H>
-#SAME_OF#=EFFECT_84_T
+3:Very long time
+8:Long
+16:Default
+22:Fast
+25:Very fast
 <END>
 
 <START_EFFECT_85_E_H>
@@ -1012,7 +1086,13 @@
 <END>
 
 <START_EFFECT_116_E_H>
-#SAME_OF#=EFFECT_115_E
+0:Water room
+2:Quick Sand room
+4:Damage room
+5:Outside room
+10:Snow room
+11:Rain room 
+12:Cold water room
 <END>
 
 <START_EFFECT_117_T_H>
@@ -1063,7 +1143,8 @@
 <END>
 
 <START_EFFECT_122_T_H>
-#SAME_OF#=EFFECT_121_T
+0:Disable LOOK feature
+1:Disable Combat Camera
 <END>
 
 <START_EFFECT_123_T_H>
@@ -1737,11 +1818,27 @@
 <END>
 
 <START_EFFECT_229_T_H>
-#SAME_OF#=EFFECT_228_T
+0: 1 RANDOM way - Low Intensity (1 sector)
+1: 2 RANDOM way - Middle Intensity (2 sectors)
+2: 4 RANDOM way - High Intensity  (4 sectors)
+3: 8 RANDOM way - Very high Intensity (8 sectors)
+4:16 RANDOM way - Huge Intensity (16 sectors)
+5:32 RANDOM way - Max Intensity (32 sectors)
+8: 1 PULSE way -  Low Intensity (1 sector)
+9: 2 PULSE way - Middle Intensity (2 sectors)
+10: 4 PULSE way - High Intensity (4 sectors)
+11: 8 PULSE way - Very high Intensity (8 sectors)
+12:16 PULSE way - Huge Intensity (16 sectors)
+13:32 PULSE way - Max Intensity (32 sector)
 <END>
 
 <START_EFFECT_229_E_H>
-#SAME_OF#=EFFECT_228_E
+0:6.0 Very Slow  (6 seconds)
+1:4.0 Slow  (4 seconds)
+2:3.0 Middle  (3 seconds)
+3:2.0 Fast   (2 seconds)
+4:1.0 Very Fast (1 second)
+5:0.5 Ultra Fast (0.5 seconds)
 <END>
 
 <START_EFFECT_230_T_H>
@@ -1839,7 +1936,11 @@
 <END>
 
 <START_EFFECT_242_E_H>
-#SAME_OF#=EFFECT_240_E
+0: Use a space as separator
+1: Use a comma + space as separator
+2: Use a fullstop + space as separator
+3: Use a fullstop + new line character
+4: Use a fullstop + 2 new line characters
 <END>
 
 <START_EFFECT_243_T_H>
@@ -1847,7 +1948,11 @@
 <END>
 
 <START_EFFECT_243_E_H>
-#SAME_OF#=EFFECT_240_E
+0: Use a space as separator
+1: Use a comma + space as separator
+2: Use a fullstop + space as separator
+3: Use a fullstop + new line character
+4: Use a fullstop + 2 new line characters
 <END>
 
 <START_EFFECT_244_T_H>
@@ -2798,7 +2903,22 @@
 <END>
 
 <START_EFFECT_382_T_H>
-#SAME_OF#=EFFECT_381_T
+0:Absolute. Camera placed at NORTH of target
+1:Absolute. Camera placed at NORTH-EAST of target
+2:Absolute. Camera placed at EAST of target
+3:Absolute. Camera placed at SOUTH-EAST of target
+4:Absolute. Camera placed at SOUTH of target
+5:Absolute. Camera placed at SOUTH-WEST of target
+6:Absolute. Camera placed at WEST of target
+7:Absolute. Camera placed at NORTH-WEST of target
+8:Relative. Camera placed AHEAD of target
+9:Relative. Camera placed at RIGHT-AHEAD of target
+10:Relative. Camera placed at RIGHT of target
+11:Relative. Camera placed at RIGHT-BEHIND of target
+12:Relative. Camera placed at BEHIND of target
+13:Relative. Camera placed at LEFT-BEHIND of target
+14:Relative. Camera placed at LEFT of target
+15:Relative. Camera placed at LEFT-AHEAD of target
 <END>
 
 <START_EFFECT_382_E_H>
@@ -2806,7 +2926,22 @@
 <END>
 
 <START_EFFECT_383_T_H>
-#SAME_OF#=EFFECT_381_T
+0:Absolute. Camera placed at NORTH of target
+1:Absolute. Camera placed at NORTH-EAST of target
+2:Absolute. Camera placed at EAST of target
+3:Absolute. Camera placed at SOUTH-EAST of target
+4:Absolute. Camera placed at SOUTH of target
+5:Absolute. Camera placed at SOUTH-WEST of target
+6:Absolute. Camera placed at WEST of target
+7:Absolute. Camera placed at NORTH-WEST of target
+8:Relative. Camera placed AHEAD of target
+9:Relative. Camera placed at RIGHT-AHEAD of target
+10:Relative. Camera placed at RIGHT of target
+11:Relative. Camera placed at RIGHT-BEHIND of target
+12:Relative. Camera placed at BEHIND of target
+13:Relative. Camera placed at LEFT-BEHIND of target
+14:Relative. Camera placed at LEFT of target
+15:Relative. Camera placed at LEFT-AHEAD of target
 <END>
 
 <START_EFFECT_383_E_H>
@@ -2878,7 +3013,31 @@
 <END>
 
 <START_EFFECT_390_T_H>
-#SAME_OF#=EFFECT_389_T
+0:Degrees Infinite (rotate forever)
+1:Degrees  15
+2:Degrees  30
+3:Degrees  45
+4:Degrees  60
+5:Degrees  75
+6:Degrees  90
+7:Degrees 105
+8:Degrees 120
+9:Degrees 135
+10:Degrees 150
+11:Degrees 165
+12:Degrees 180
+13:Degrees 195
+14:Degrees 210
+15:Degrees 225
+16:Degrees 240
+17:Degrees 255
+18:Degrees 270
+19:Degrees 285
+20:Degrees 300
+21:Degrees 315
+22:Degrees 330
+23:Degrees 345
+24:Degrees=360 (full circle and stop)
 <END>
 
 <START_EFFECT_390_E_H>
@@ -2993,27 +3152,72 @@
 <END>
 
 <START_EFFECT_399_T_H>
-#SAME_OF#=EFFECT_66_T
+1:Blinking White
+2:White
+3:Red
+4:Blue
+5:Metal (White + Gray)
+6:Gold (White + Yellow)
+7:Dark Metal (Dark Gray + Light Gray)
+8:Yellow
 <END>
 
 <START_EFFECT_399_E_H>
-#SAME_OF#=EFFECT_66_E
+1:Bottom line, central alignment
+2:Top line, central alignment
+3:Central line, central aligment
+4:Top line, left aligmnet
+5:Top line, right aligment
+6:Bottom line, left aligment
+7:Bottom line, right aligment
+10:Under left default bars
+11:Under right default bars
 <END>
 
 <START_EFFECT_400_T_H>
-#SAME_OF#=EFFECT_66_T
+1:Blinking White
+2:White
+3:Red
+4:Blue
+5:Metal (White + Gray)
+6:Gold (White + Yellow)
+7:Dark Metal (Dark Gray + Light Gray)
+8:Yellow
 <END>
 
 <START_EFFECT_400_E_H>
-#SAME_OF#=EFFECT_66_E
+1:Bottom line, central alignment
+2:Top line, central alignment
+3:Central line, central aligment
+4:Top line, left aligmnet
+5:Top line, right aligment
+6:Bottom line, left aligment
+7:Bottom line, right aligment
+10:Under left default bars
+11:Under right default bars
 <END> 
 
 <START_EFFECT_401_T_H>
-#SAME_OF#=EFFECT_66_T
+1:Blinking White
+2:White
+3:Red
+4:Blue
+5:Metal (White + Gray)
+6:Gold (White + Yellow)
+7:Dark Metal (Dark Gray + Light Gray)
+8:Yellow
 <END>
 
 <START_EFFECT_401_E_H>
-#SAME_OF#=EFFECT_66_E
+1:Bottom line, central alignment
+2:Top line, central alignment
+3:Central line, central aligment
+4:Top line, left aligmnet
+5:Top line, right aligment
+6:Bottom line, left aligment
+7:Bottom line, right aligment
+10:Under left default bars
+11:Under right default bars
 <END>
 
 <START_EFFECT_402_T_H>
@@ -3219,7 +3423,10 @@
 <END>
 
 <START_ACTION_10_E_H>
-#SAME_OF#=ACTION_5_E
+0:Clockwise slowly
+1:Clockwise fastly
+2:Inverse Clockwise slowly
+3:Inverse Clockwise fastly
 <END>
 
 <START_ACTION_11_E_H>
@@ -3281,31 +3488,80 @@
 <END>
 
 <START_ACTION_19_E_H>
-#SAME_OF#=ACTION_18_E
+0: North
+2: North-East
+4: East
+6: South-East
+8: South
+10: South-West
+12: West
+14: North-West
 <END>
 
 <START_ACTION_20_E_H>
-#SAME_OF#=ACTION_18_E
+0: North
+2: North-East
+4: East
+6: South-East
+8: South
+10: South-West
+12: West
+14: North-West
 <END>
 
 <START_ACTION_21_E_H>
-#SAME_OF#=ACTION_18_E
+0: North
+2: North-East
+4: East
+6: South-East
+8: South
+10: South-West
+12: West
+14: North-West
 <END>
 
 <START_ACTION_22_E_H>
-#SAME_OF#=ACTION_18_E
+0: North
+2: North-East
+4: East
+6: South-East
+8: South
+10: South-West
+12: West
+14: North-West
 <END>
 
 <START_ACTION_23_E_H>
-#SAME_OF#=ACTION_18_E
+0: North
+2: North-East
+4: East
+6: South-East
+8: South
+10: South-West
+12: West
+14: North-West
 <END>
 
 <START_ACTION_24_E_H>
-#SAME_OF#=ACTION_18_E
+0: North
+2: North-East
+4: East
+6: South-East
+8: South
+10: South-West
+12: West
+14: North-West
 <END>
 
 <START_ACTION_25_E_H>
-#SAME_OF#=ACTION_18_E
+0: North
+2: North-East
+4: East
+6: South-East
+8: South
+10: South-West
+12: West
+14: North-West
 <END>
 
 <START_ACTION_26_E_H>
@@ -3991,7 +4247,10 @@
 
 
 <START_CONDITION_7_B_H>
-#SAME_OF#=CONDITION_6_B
+0:DEFAULT. Lara is over current #fragment
+1:PAD. Lara is touching current #fragment
+2:INVERSE. Lara is over any fragment except specified #fragment
+3:PAD & INVERSE. Lara is touching any fragment except specified #fragment
 <END>
 
 
@@ -4000,7 +4259,10 @@
 <END>
 
 <START_CONDITION_8_B_H>
-#SAME_OF#=CONDITION_6_B
+0:DEFAULT. Lara is over current #fragment
+1:PAD. Lara is touching current #fragment
+2:INVERSE. Lara is over any fragment except specified #fragment
+3:PAD & INVERSE. Lara is touching any fragment except specified #fragment
 <END>
 
 <START_CONDITION_9_O>
@@ -4444,7 +4706,10 @@
 <END>
 
 <START_CONDITION_61_B_H>
-#SAME_OF#=CONDITION_60_B
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
 <END>
 
 <START_CONDITION_62_O_H>
@@ -4452,7 +4717,10 @@
 <END>
 
 <START_CONDITION_62_B_H>
-#SAME_OF#=CONDITION_60_B
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
 <END>
 
 <START_CONDITION_63_O_H>
@@ -4460,7 +4728,10 @@
 <END>
 
 <START_CONDITION_63_B_H>
-#SAME_OF#=CONDITION_60_B
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
 <END>
 
 
@@ -4469,7 +4740,10 @@
 <END>
 
 <START_CONDITION_64_B_H>
-#SAME_OF#=CONDITION_60_B
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
 <END>
 
 <START_CONDITION_65_O_H>
@@ -4477,7 +4751,10 @@
 <END>
 
 <START_CONDITION_65_B_H>
-#SAME_OF#=CONDITION_60_B
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
 <END>
 
 <START_CONDITION_66_O_H>
@@ -4485,7 +4762,10 @@
 <END>
 
 <START_CONDITION_66_B_H>
-#SAME_OF#=CONDITION_60_B
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
 <END>
 
 
@@ -4494,7 +4774,10 @@
 <END>
 
 <START_CONDITION_67_B_H>
-#SAME_OF#=CONDITION_60_B
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
 <END>
 
 <START_CONDITION_68_O_H>
@@ -4502,7 +4785,10 @@
 <END>
 
 <START_CONDITION_68_B_H>
-#SAME_OF#=CONDITION_60_B
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
 <END>
 
 <START_CONDITION_69_O_H>
@@ -4521,7 +4807,10 @@
 <END>
 
 <START_CONDITION_70_B_H>
-#SAME_OF#=CONDITION_69_B
+0:DEFAULT. Lara is over current Triangle
+1:PAD. Lara is touching current Triangle
+2:INVERSE. Lara is outside of current Triangle
+3:PAD & INVERSE. Lara is touching the outside zone of current Triangle
 <END>
 
 <START_CONDITION_71_O_H>
@@ -4529,7 +4818,10 @@
 <END>
 
 <START_CONDITION_71_B_H>
-#SAME_OF#=CONDITION_69_B
+0:DEFAULT. Lara is over current Triangle
+1:PAD. Lara is touching current Triangle
+2:INVERSE. Lara is outside of current Triangle
+3:PAD & INVERSE. Lara is touching the outside zone of current Triangle
 <END>
 
 <START_CONDITION_72_O_H>
@@ -4537,7 +4829,10 @@
 <END>
 
 <START_CONDITION_72_B_H>
-#SAME_OF#=CONDITION_69_B
+0:DEFAULT. Lara is over current Triangle
+1:PAD. Lara is touching current Triangle
+2:INVERSE. Lara is outside of current Triangle
+3:PAD & INVERSE. Lara is touching the outside zone of current Triangle
 <END>
 
 
@@ -4546,7 +4841,10 @@
 <END>
 
 <START_CONDITION_73_B_H>
-#SAME_OF#=CONDITION_69_B
+0:DEFAULT. Lara is over current Triangle
+1:PAD. Lara is touching current Triangle
+2:INVERSE. Lara is outside of current Triangle
+3:PAD & INVERSE. Lara is touching the outside zone of current Triangle
 <END>
 
 <START_CONDITION_74_O_H>
@@ -4554,7 +4852,10 @@
 <END>
 
 <START_CONDITION_74_B_H>
-#SAME_OF#=CONDITION_69_B
+0:DEFAULT. Lara is over current Triangle
+1:PAD. Lara is touching current Triangle
+2:INVERSE. Lara is outside of current Triangle
+3:PAD & INVERSE. Lara is touching the outside zone of current Triangle
 <END>
 
 <START_CONDITION_75_O_H>
@@ -4562,7 +4863,10 @@
 <END>
 
 <START_CONDITION_75_B_H>
-#SAME_OF#=CONDITION_69_B
+0:DEFAULT. Lara is over current Triangle
+1:PAD. Lara is touching current Triangle
+2:INVERSE. Lara is outside of current Triangle
+3:PAD & INVERSE. Lara is touching the outside zone of current Triangle
 <END>
 
 <START_CONDITION_76_O_H>
@@ -4570,7 +4874,10 @@
 <END>
 
 <START_CONDITION_76_B_H>
-#SAME_OF#=CONDITION_69_B
+0:DEFAULT. Lara is over current Triangle
+1:PAD. Lara is touching current Triangle
+2:INVERSE. Lara is outside of current Triangle
+3:PAD & INVERSE. Lara is touching the outside zone of current Triangle
 <END>
 
 <START_CONDITION_77_O_H>
@@ -4589,7 +4896,10 @@
 <END>
 
 <START_CONDITION_78_B_H>
-#SAME_OF#=CONDITION_69_B
+0:DEFAULT. Lara is over current Triangle
+1:PAD. Lara is touching current Triangle
+2:INVERSE. Lara is outside of current Triangle
+3:PAD & INVERSE. Lara is touching the outside zone of current Triangle
 <END>
 
 <START_CONDITION_79_O_H>
@@ -4608,7 +4918,10 @@
 <END>
 
 <START_CONDITION_80_B_H>
-#SAME_OF#=CONDITION_60_B
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
 <END>
 
 <START_CONDITION_81_O_H>
@@ -4706,7 +5019,12 @@
 <END>
 
 <START_CONDITION_94_B_H>
-#SAME_OF#=CONDITION_93_B
+ 0: BigText (319 characters)
+ 1: Last Input Text  (79 characters)
+ 2: Text1 (79 characters)
+ 3: Text2 (79 characters)
+ 4: Text3 (79 characters)
+ 5: Text4 (79 characters)
 <END>
 
 <START_CONDITION_95_O>
@@ -4714,7 +5032,12 @@
 <END>
 
 <START_CONDITION_95_B_H>
-#SAME_OF#=CONDITION_93_B
+ 0: BigText (319 characters)
+ 1: Last Input Text  (79 characters)
+ 2: Text1 (79 characters)
+ 3: Text2 (79 characters)
+ 4: Text3 (79 characters)
+ 5: Text4 (79 characters)
 <END>
 
 <START_CONDITION_96_O>
@@ -4722,7 +5045,12 @@
 <END>
 
 <START_CONDITION_96_B_H>
-#SAME_OF#=CONDITION_93_B
+ 0: BigText (319 characters)
+ 1: Last Input Text  (79 characters)
+ 2: Text1 (79 characters)
+ 3: Text2 (79 characters)
+ 4: Text3 (79 characters)
+ 5: Text4 (79 characters)
 <END>
 
 <START_CONDITION_97_O>

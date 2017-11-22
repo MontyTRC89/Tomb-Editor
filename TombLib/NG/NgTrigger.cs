@@ -15,19 +15,29 @@ namespace TombLib.NG
         Button
     }
 
-    public class NgTrigger
+    public class NgTriggerNode
     {
         public int Id { get; internal set; }
-        public string Description { get; internal set; }
-        public Dictionary<int, NgTimerParameter> TimerParameters { get; private set; }
-        public Dictionary<int, NgExtraParameter> ExtraParameters { get; private set; }
-        
-        public NgTrigger(int id, string description)
+        public string Value { get; internal set; }
+
+        public Dictionary<int, NgTriggerNode> ObjectList { get; set; }
+        public Dictionary<int, NgTriggerNode> TimerList { get; set; }
+        public Dictionary<int, NgTriggerNode> ExtraList { get; set; }
+        public Dictionary<int, NgTriggerNode> ButtonList { get; set; }
+
+        public NgListKind ObjectListKind { get; set; }
+        public NgListKind TimerListKind { get; set; }
+        public NgListKind ExtraListKind { get; set; }
+        public NgListKind ButtonListKind { get; set; }
+
+        public NgTriggerNode(int id, string value)
         {
             Id = id;
-            Description = description;
-            TimerParameters = new Dictionary<int, NgTimerParameter>();
-            ExtraParameters = new Dictionary<int, NgExtraParameter>();
+            Value = value;
+            ObjectList = new Dictionary<int, NgTriggerNode>();
+            TimerList = new Dictionary<int, NgTriggerNode>();
+            ExtraList = new Dictionary<int, NgTriggerNode>();
+            ButtonList = new Dictionary<int, NgTriggerNode>();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TombLib.NG
 {
-    internal class NgVectorPair
+    public class NgVectorPair
     {
         public object Key { get; set; }
         public string Value { get; set; }
