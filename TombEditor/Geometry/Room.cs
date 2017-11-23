@@ -349,6 +349,9 @@ namespace TombEditor.Geometry
                 DrawingPoint adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
                 sector = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
             }
+            else
+                adjoiningRoom = this;
+
             return new RoomBlockPair(adjoiningRoom, sector);
         }
 
@@ -579,10 +582,7 @@ namespace TombEditor.Geometry
                     }
                 }
 
-                int heightAdjust = 0;
-                if (lookupBlock.Room != null)
-                    heightAdjust = (int)Math.Round(Position.Y - lookupBlock.Room.Position.Y);
-
+                int heightAdjust = (int)Math.Round(Position.Y - lookupBlock.Room.Position.Y);
                 int absoluteLowestPassableHeight = lowestPassableHeight + heightAdjust;
                 int absoluteLowestPassableStep = lowestPassableStep + heightAdjust;
 

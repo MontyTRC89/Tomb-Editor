@@ -1097,7 +1097,7 @@ namespace TombEditor.Controls
                                         if (_toolHandler.Process(pos.X, pos.Y))
                                         {
                                             if(_editor.Tool.Tool == EditorToolType.Smooth)
-                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
+                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, (belongsToFloor ? 0 : 1));
                                             else if(_editor.Tool.Tool < EditorToolType.Flatten)
                                                 EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                                     new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y),
@@ -1342,7 +1342,7 @@ namespace TombEditor.Controls
                                                 break;
 
                                             case EditorToolType.Smooth:
-                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
+                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, (belongsToFloor ? 0 : 1));
                                                 break;
 
                                             case EditorToolType.Drag:

@@ -246,67 +246,56 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void SmoothSector(Room room, int x, int z, bool floor)
+        public static void SmoothSector(Room room, int x, int z, int v)
         {
-            var currBlock = room.GetBlockTry(x, z);
+            var floor = (v % 2 == 0);
+            var currBlock = room.GetBlockTryThroughPortal(x, z);
 
-            if (currBlock == null || (floor && currBlock.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.CeilingDiagonalSplit != DiagonalSplit.None))
+            if (currBlock == null || (floor && currBlock.Block.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.Block.CeilingDiagonalSplit != DiagonalSplit.None))
                 return;
 
-            Block[] lookupBlocks = new Block[8]
+            Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
             {
-                room.GetBlockTry(x - 1, z + 1),
-                room.GetBlockTry(x, z + 1),
-                room.GetBlockTry(x + 1, z + 1),
-                room.GetBlockTry(x + 1, z),
-                room.GetBlockTry(x + 1, z - 1),
-                room.GetBlockTry(x, z - 1),
-                room.GetBlockTry(x - 1, z - 1),
-                room.GetBlockTry(x - 1, z)
+                room.GetBlockTryThroughPortal(x - 1, z + 1),
+                room.GetBlockTryThroughPortal(x, z + 1),
+                room.GetBlockTryThroughPortal(x + 1, z + 1),
+                room.GetBlockTryThroughPortal(x + 1, z),
+                room.GetBlockTryThroughPortal(x + 1, z - 1),
+                room.GetBlockTryThroughPortal(x, z - 1),
+                room.GetBlockTryThroughPortal(x - 1, z - 1),
+                room.GetBlockTryThroughPortal(x - 1, z)
             };
 
-            if (floor)
-            {
-                short[] newFaces = new short[4];
+            int[] adj = new int[8];
+            for (int i = 0; i < 8; i++)
+                adj[i] = (int)Math.Round(currBlock.Room.Position.Y - lookupBlocks[i].Room.Position.Y);
+
+            short[] newFaces = new short[4];
 
                 int validBlockCnt = (Convert.ToInt32(lookupBlocks[7] != null) + Convert.ToInt32(lookupBlocks[0] != null) + Convert.ToInt32(lookupBlocks[1] != null));
-                newFaces[0] = (short)(((lookupBlocks[7]?.QAFaces[1] ?? 0) + (lookupBlocks[0]?.QAFaces[2] ?? 0) + (lookupBlocks[1]?.QAFaces[3] ?? 0)) / (validBlockCnt));
+                newFaces[0] = (short)(((lookupBlocks[7]?.Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[7] +
+                                       (lookupBlocks[0]?.Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[0] +
+                                       (lookupBlocks[1]?.Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[1]) / (validBlockCnt));
 
                 validBlockCnt = (Convert.ToInt32(lookupBlocks[1] != null) + Convert.ToInt32(lookupBlocks[2] != null) + Convert.ToInt32(lookupBlocks[3] != null));
-                newFaces[1] = (short)(((lookupBlocks[1]?.QAFaces[2] ?? 0) + (lookupBlocks[2]?.QAFaces[3] ?? 0) + (lookupBlocks[3]?.QAFaces[0] ?? 0)) / (validBlockCnt));
+                newFaces[1] = (short)(((lookupBlocks[1]?.Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2] +
+                                       (lookupBlocks[2]?.Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
+                                       (lookupBlocks[3]?.Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0]) / (validBlockCnt));
 
                 validBlockCnt = (Convert.ToInt32(lookupBlocks[3] != null) + Convert.ToInt32(lookupBlocks[4] != null) + Convert.ToInt32(lookupBlocks[5] != null));
-                newFaces[2] = (short)(((lookupBlocks[3]?.QAFaces[3] ?? 0) + (lookupBlocks[4]?.QAFaces[0] ?? 0) + (lookupBlocks[5]?.QAFaces[1] ?? 0)) / (validBlockCnt));
+                newFaces[2] = (short)(((lookupBlocks[3]?.Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
+                                       (lookupBlocks[4]?.Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
+                                       (lookupBlocks[5]?.Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1]) / (validBlockCnt));
 
                 validBlockCnt = (Convert.ToInt32(lookupBlocks[5] != null) + Convert.ToInt32(lookupBlocks[6] != null) + Convert.ToInt32(lookupBlocks[7] != null));
-                newFaces[3] = (short)(((lookupBlocks[5]?.QAFaces[0] ?? 0) + (lookupBlocks[6]?.QAFaces[1] ?? 0) + (lookupBlocks[7]?.QAFaces[2] ?? 0)) / (validBlockCnt));
+                newFaces[3] = (short)(((lookupBlocks[5]?.Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
+                                       (lookupBlocks[6]?.Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1] +
+                                       (lookupBlocks[7]?.Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2]) / (validBlockCnt));
 
-                currBlock.QAFaces[0] += (short)Math.Sign(newFaces[0] - currBlock.QAFaces[0]);
-                currBlock.QAFaces[1] += (short)Math.Sign(newFaces[1] - currBlock.QAFaces[1]);
-                currBlock.QAFaces[2] += (short)Math.Sign(newFaces[2] - currBlock.QAFaces[2]);
-                currBlock.QAFaces[3] += (short)Math.Sign(newFaces[3] - currBlock.QAFaces[3]);
-            }
-            else
-            {
-                short[] newFaces = new short[4];
-
-                int validBlockCnt = (Convert.ToInt32(lookupBlocks[7] != null) + Convert.ToInt32(lookupBlocks[0] != null) + Convert.ToInt32(lookupBlocks[1] != null));
-                newFaces[0] = (short)(((lookupBlocks[7]?.WSFaces[1] ?? 0) + (lookupBlocks[0]?.WSFaces[2] ?? 0) + (lookupBlocks[1]?.WSFaces[3] ?? 0)) / (validBlockCnt));
-
-                validBlockCnt = (Convert.ToInt32(lookupBlocks[1] != null) + Convert.ToInt32(lookupBlocks[2] != null) + Convert.ToInt32(lookupBlocks[3] != null));
-                newFaces[1] = (short)(((lookupBlocks[1]?.WSFaces[2] ?? 0) + (lookupBlocks[2]?.WSFaces[3] ?? 0) + (lookupBlocks[3]?.WSFaces[0] ?? 0)) / (validBlockCnt));
-
-                validBlockCnt = (Convert.ToInt32(lookupBlocks[3] != null) + Convert.ToInt32(lookupBlocks[4] != null) + Convert.ToInt32(lookupBlocks[5] != null));
-                newFaces[2] = (short)(((lookupBlocks[3]?.WSFaces[3] ?? 0) + (lookupBlocks[4]?.WSFaces[0] ?? 0) + (lookupBlocks[5]?.WSFaces[1] ?? 0)) / (validBlockCnt));
-
-                validBlockCnt = (Convert.ToInt32(lookupBlocks[5] != null) + Convert.ToInt32(lookupBlocks[6] != null) + Convert.ToInt32(lookupBlocks[7] != null));
-                newFaces[3] = (short)(((lookupBlocks[5]?.WSFaces[0] ?? 0) + (lookupBlocks[6]?.WSFaces[1] ?? 0) + (lookupBlocks[7]?.WSFaces[2] ?? 0)) / (validBlockCnt));
-
-                currBlock.WSFaces[0] += (short)Math.Sign(newFaces[0] - currBlock.WSFaces[0]);
-                currBlock.WSFaces[1] += (short)Math.Sign(newFaces[1] - currBlock.WSFaces[1]);
-                currBlock.WSFaces[2] += (short)Math.Sign(newFaces[2] - currBlock.WSFaces[2]);
-                currBlock.WSFaces[3] += (short)Math.Sign(newFaces[3] - currBlock.WSFaces[3]);
-            }
+                currBlock.Block.GetVerticalSubdivision(v)[0] += (short)Math.Sign(newFaces[0] - currBlock.Block.GetVerticalSubdivision(v)[0]);
+                currBlock.Block.GetVerticalSubdivision(v)[1] += (short)Math.Sign(newFaces[1] - currBlock.Block.GetVerticalSubdivision(v)[1]);
+                currBlock.Block.GetVerticalSubdivision(v)[2] += (short)Math.Sign(newFaces[2] - currBlock.Block.GetVerticalSubdivision(v)[2]);
+                currBlock.Block.GetVerticalSubdivision(v)[3] += (short)Math.Sign(newFaces[3] - currBlock.Block.GetVerticalSubdivision(v)[3]);
 
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
