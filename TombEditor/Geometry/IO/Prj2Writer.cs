@@ -359,6 +359,7 @@ namespace TombEditor.Geometry.IO
                                         LEB128.Write(chunkIO.Raw, instance.Timer);
                                         LEB128.Write(chunkIO.Raw, instance.CodeBits);
                                         chunkIO.Raw.Write(instance.OneShot);
+                                        chunkIO.WriteChunkInt(Prj2Chunks.ObjectTriggerExtra, instance.ExtraData);
                                     });
                                 else if (o is ImportedGeometryInstance)
                                     chunkIO.WriteChunk(Prj2Chunks.ObjectImportedGeometry, () =>

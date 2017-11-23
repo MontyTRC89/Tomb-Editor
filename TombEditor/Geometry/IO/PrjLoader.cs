@@ -395,6 +395,9 @@ namespace TombEditor.Geometry.IO
                                         case 12:
                                             triggerTypeEnum = TriggerType.Monkey;
                                             break;
+                                        case 13:
+                                            triggerTypeEnum = TriggerType.Condition;
+                                            break;
                                         default:
                                             progressReporter.ReportWarn("Unknown trigger type " + triggerType + " encountered in room #" + i + " '" + roomName + "'");
                                             continue;
@@ -463,7 +466,8 @@ namespace TombEditor.Geometry.IO
                                         TargetType = triggerTargetTypeEnum,
                                         CodeBits = (byte)((~triggerFlags >> 1) & 0x1f),
                                         OneShot = (triggerFlags & 0x0001) != 0,
-                                        Timer = triggerTimer,
+                                        Timer = (short)(triggerTimer & 0xFF),
+                                        ExtraData = (short)((triggerTimer & 0xFF00) >> 8),
                                         TargetData = triggerItemNumber
                                     };
                                     room.AddObject(level, trigger);
