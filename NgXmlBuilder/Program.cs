@@ -53,7 +53,7 @@ namespace NgXmlBuilder
             Console.WriteLine("Done");
 
             // Test
-            NgTriggersDefinitions.LoadTriggersDefinitions("NG\\NgCatalog.xml");
+            NgCatalog.LoadCatalog("NG\\NgCatalog.xml");
         }
 
         private static Dictionary<int, NgTriggerNode> GetListFromTxt(string name)
@@ -195,7 +195,7 @@ namespace NgXmlBuilder
             using (var reader = new StreamReader(File.OpenRead("NG\\NG_Constants.txt")))
             {
                 string line;
-                
+
                 while (!reader.EndOfStream)
                 {
                     var block = ReadNgBlock(reader);
@@ -207,40 +207,40 @@ namespace NgXmlBuilder
                         if (block.Id == 15)
                         {
                             // Trigger for timer field
-                            NgTriggersDefinitions.TimerFieldTrigger = new NgTriggerNode(-1, "Timer Field");
-                            NgTriggersDefinitions.TimerFieldTrigger.ObjectList = GetListFromTxt("TIMER_SIGNED_LONG");
+                            NgCatalog.TimerFieldTrigger = new NgTriggerNode(-1, "Timer Field");
+                            NgCatalog.TimerFieldTrigger.ObjectList = GetListFromTxt("TIMER_SIGNED_LONG");
                         }
                         else if (block.Id == 9)
                         {
                             // Trigger for flip effect
-                            NgTriggersDefinitions.FlipEffectTrigger = new NgTriggerNode(-1, "Flip Effect");
+                            NgCatalog.FlipEffectTrigger = new NgTriggerNode(-1, "Flip Effect");
                             foreach (var item in block.Items)
                             {
-                                NgTriggersDefinitions.FlipEffectTrigger.ObjectList.Add(GetItemId(item),
+                                NgCatalog.FlipEffectTrigger.ObjectList.Add(GetItemId(item),
                                     new NgTriggerNode(GetItemId(item), XmlEncodeString(GetItemValue(item))));
                             }
                         }
                         else if (block.Id == 11)
                         {
                             // Trigger for action
-                            NgTriggersDefinitions.ActionTrigger = new NgTriggerNode(-1, "Action");
+                            NgCatalog.ActionTrigger = new NgTriggerNode(-1, "Action");
                             foreach (var item in block.Items)
                             {
-                                NgTriggersDefinitions.ActionTrigger.TimerList.Add(GetItemId(item),
+                                NgCatalog.ActionTrigger.TimerList.Add(GetItemId(item),
                                     new NgTriggerNode(GetItemId(item), XmlEncodeString(GetItemValue(item))));
                             }
                         }
                         else if (block.Id == 12)
                         {
                             // Condition trigger
-                            NgTriggersDefinitions.ConditionTrigger = new NgTriggerNode(-1, "Condition");
+                            NgCatalog.ConditionTrigger = new NgTriggerNode(-1, "Condition");
                             foreach (var item in block.Items)
                             {
-                                NgTriggersDefinitions.ConditionTrigger.TimerList.Add(GetItemId(item),
+                                NgCatalog.ConditionTrigger.TimerList.Add(GetItemId(item),
                                     new NgTriggerNode(GetItemId(item), XmlEncodeString(GetItemValue(item))));
                             }
                         }
-                    }  
+                    }
                     else if (block.Type == NgBlockType.Effect)
                     {
                         if (block.ParameterType == NgParameterType.Timer)
@@ -248,16 +248,16 @@ namespace NgXmlBuilder
                             var result = new Dictionary<int, NgTriggerNode>();
                             var kind = NgListKind.Unknown;
                             GetList(block, out result, out kind);
-                            NgTriggersDefinitions.FlipEffectTrigger.ObjectList[block.Id].TimerList = result;
-                            NgTriggersDefinitions.FlipEffectTrigger.ObjectList[block.Id].TimerListKind = kind;
+                            NgCatalog.FlipEffectTrigger.ObjectList[block.Id].TimerList = result;
+                            NgCatalog.FlipEffectTrigger.ObjectList[block.Id].TimerListKind = kind;
                         }
                         else if (block.ParameterType == NgParameterType.Extra)
                         {
                             var result = new Dictionary<int, NgTriggerNode>();
                             var kind = NgListKind.Unknown;
                             GetList(block, out result, out kind);
-                            NgTriggersDefinitions.FlipEffectTrigger.ObjectList[block.Id].ExtraList = result;
-                            NgTriggersDefinitions.FlipEffectTrigger.ObjectList[block.Id].ExtraListKind = kind;
+                            NgCatalog.FlipEffectTrigger.ObjectList[block.Id].ExtraList = result;
+                            NgCatalog.FlipEffectTrigger.ObjectList[block.Id].ExtraListKind = kind;
                         }
                     }
                     else if (block.Type == NgBlockType.Action)
@@ -267,16 +267,16 @@ namespace NgXmlBuilder
                             var result = new Dictionary<int, NgTriggerNode>();
                             var kind = NgListKind.Unknown;
                             GetList(block, out result, out kind);
-                            NgTriggersDefinitions.ActionTrigger.TimerList[block.Id].ObjectList = result;
-                            NgTriggersDefinitions.ActionTrigger.TimerList[block.Id].ObjectListKind = kind;
+                            NgCatalog.ActionTrigger.TimerList[block.Id].ObjectList = result;
+                            NgCatalog.ActionTrigger.TimerList[block.Id].ObjectListKind = kind;
                         }
                         else if (block.ParameterType == NgParameterType.Extra)
                         {
                             var result = new Dictionary<int, NgTriggerNode>();
                             var kind = NgListKind.Unknown;
                             GetList(block, out result, out kind);
-                            NgTriggersDefinitions.ActionTrigger.TimerList[block.Id].ExtraList = result;
-                            NgTriggersDefinitions.ActionTrigger.TimerList[block.Id].ExtraListKind = kind;
+                            NgCatalog.ActionTrigger.TimerList[block.Id].ExtraList = result;
+                            NgCatalog.ActionTrigger.TimerList[block.Id].ExtraListKind = kind;
                         }
                     }
                     else if (block.Type == NgBlockType.Condition)
@@ -286,24 +286,24 @@ namespace NgXmlBuilder
                             var result = new Dictionary<int, NgTriggerNode>();
                             var kind = NgListKind.Unknown;
                             GetList(block, out result, out kind);
-                            NgTriggersDefinitions.ConditionTrigger.TimerList[block.Id].ObjectList = result;
-                            NgTriggersDefinitions.ConditionTrigger.TimerList[block.Id].ObjectListKind = kind;
+                            NgCatalog.ConditionTrigger.TimerList[block.Id].ObjectList = result;
+                            NgCatalog.ConditionTrigger.TimerList[block.Id].ObjectListKind = kind;
                         }
                         else if (block.ParameterType == NgParameterType.Extra)
                         {
                             var result = new Dictionary<int, NgTriggerNode>();
                             var kind = NgListKind.Unknown;
                             GetList(block, out result, out kind);
-                            NgTriggersDefinitions.ConditionTrigger.TimerList[block.Id].ExtraList = result;
-                            NgTriggersDefinitions.ConditionTrigger.TimerList[block.Id].ExtraListKind = kind;
+                            NgCatalog.ConditionTrigger.TimerList[block.Id].ExtraList = result;
+                            NgCatalog.ConditionTrigger.TimerList[block.Id].ExtraListKind = kind;
                         }
                         else if (block.ParameterType == NgParameterType.Button)
                         {
                             var result = new Dictionary<int, NgTriggerNode>();
                             var kind = NgListKind.Unknown;
                             GetList(block, out result, out kind);
-                            NgTriggersDefinitions.ConditionTrigger.TimerList[block.Id].ButtonList = result;
-                            NgTriggersDefinitions.ConditionTrigger.TimerList[block.Id].ButtonListKind = kind;
+                            NgCatalog.ConditionTrigger.TimerList[block.Id].ButtonList = result;
+                            NgCatalog.ConditionTrigger.TimerList[block.Id].ButtonListKind = kind;
                         }
                     }
                 }
@@ -324,9 +324,9 @@ namespace NgXmlBuilder
                     // Write timer trigger
                     writer.WriteLine("<TimerTrigger>");
                     writer.WriteLine("<ObjectList Kind=\"Fixed\">");
-                    for (var i = 0; i < NgTriggersDefinitions.TimerFieldTrigger.ObjectList.Count; i++)
+                    for (var i = 0; i < NgCatalog.TimerFieldTrigger.ObjectList.Count; i++)
                     {
-                        var current = NgTriggersDefinitions.TimerFieldTrigger.ObjectList.ElementAt(i);
+                        var current = NgCatalog.TimerFieldTrigger.ObjectList.ElementAt(i);
                         writer.WriteLine("<Object K=\"" + current.Key + "\" " +
                                          "V=\"" + current.Value.Value + "\" />");
                     }
@@ -336,9 +336,9 @@ namespace NgXmlBuilder
                     // Write flip effect trigger
                     writer.WriteLine("<FlipEffectTrigger>");
                     writer.WriteLine("<ObjectList Kind=\"Fixed\">");
-                    for (var i = 0; i < NgTriggersDefinitions.FlipEffectTrigger.ObjectList.Count; i++)
+                    for (var i = 0; i < NgCatalog.FlipEffectTrigger.ObjectList.Count; i++)
                     {
-                        var current = NgTriggersDefinitions.FlipEffectTrigger.ObjectList.ElementAt(i);
+                        var current = NgCatalog.FlipEffectTrigger.ObjectList.ElementAt(i);
                         writer.WriteLine("<Object K=\"" + current.Key + "\" " +
                                          "V=\"" + current.Value.Value + "\">");
 
@@ -368,9 +368,9 @@ namespace NgXmlBuilder
                     // Write action trigger
                     writer.WriteLine("<ActionTrigger>");
                     writer.WriteLine("<TimerList Kind=\"Fixed\">");
-                    for (var i = 0; i < NgTriggersDefinitions.ActionTrigger.TimerList.Count; i++)
+                    for (var i = 0; i < NgCatalog.ActionTrigger.TimerList.Count; i++)
                     {
-                        var current = NgTriggersDefinitions.ActionTrigger.TimerList.ElementAt(i);
+                        var current = NgCatalog.ActionTrigger.TimerList.ElementAt(i);
                         writer.WriteLine("<Timer K=\"" + current.Key + "\" " +
                                          "V=\"" + current.Value.Value + "\">");
 
@@ -400,9 +400,9 @@ namespace NgXmlBuilder
                     // Write condition trigger
                     writer.WriteLine("<ConditionTrigger>");
                     writer.WriteLine("<TimerList Kind=\"Fixed\">");
-                    for (var i = 0; i < NgTriggersDefinitions.ConditionTrigger.TimerList.Count; i++)
+                    for (var i = 0; i < NgCatalog.ConditionTrigger.TimerList.Count; i++)
                     {
-                        var current = NgTriggersDefinitions.ConditionTrigger.TimerList.ElementAt(i);
+                        var current = NgCatalog.ConditionTrigger.TimerList.ElementAt(i);
                         writer.WriteLine("<Timer K=\"" + current.Key + "\" " +
                                          "V=\"" + current.Value.Value + "\">");
 
@@ -431,7 +431,7 @@ namespace NgXmlBuilder
 
                     writer.WriteLine("</Triggers>");
                     writer.WriteLine("</xml>");
-                }         
+                }
             }
 
             var xml = new XmlDocument();
@@ -449,7 +449,7 @@ namespace NgXmlBuilder
         private static XmlElement CreateNodeForListItem(XmlDocument xml, string nodeName, int index, int key, string value)
         {
             var node = xml.CreateElement(nodeName);
-           
+
             var attribute = xml.CreateAttribute("Index");
             attribute.Value = index.ToString();
             node.Attributes.Append(attribute);
