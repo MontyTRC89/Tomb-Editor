@@ -349,7 +349,77 @@ namespace TombEditor.Geometry
                 DrawingPoint adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
                 sector = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
             }
+            else
+                adjoiningRoom = this;
+
             return new RoomBlockPair(adjoiningRoom, sector);
+        }
+
+        public void ModifyPoint(int x, int z, int verticalSubdivision, short increment, Rectangle area)
+        {
+            bool floor = (verticalSubdivision % 2 == 0);
+
+            if (x <= 0 || z <= 0 || x >= NumXSectors || z >= NumZSectors)
+                return;
+            {
+                if (area.Contains(x, z))
+                {
+                    if ((floor && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None) || (!floor && Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None))
+                    {
+                        Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[3] += increment;
+                        Blocks[x, z].FixHeights(verticalSubdivision);
+                    }
+                }
+                if (area.Contains(x - 1, z))
+                {
+                    var adjacentLeftBlock = GetBlockTry(x - 1, z);
+                    if (adjacentLeftBlock != null && ((floor && adjacentLeftBlock.FloorDiagonalSplit == DiagonalSplit.None) || (!floor && adjacentLeftBlock.CeilingDiagonalSplit == DiagonalSplit.None)))
+                    {
+                        adjacentLeftBlock.GetVerticalSubdivision(verticalSubdivision)[2] += increment;
+                        adjacentLeftBlock.FixHeights(verticalSubdivision);
+                    }
+                }
+                if (area.Contains(x, z - 1))
+                {
+                    var adjacentBottomBlock = GetBlockTry(x, z - 1);
+                    if (adjacentBottomBlock != null && ((floor && adjacentBottomBlock.FloorDiagonalSplit == DiagonalSplit.None) || (!floor && adjacentBottomBlock.CeilingDiagonalSplit == DiagonalSplit.None)))
+                    {
+                        adjacentBottomBlock.GetVerticalSubdivision(verticalSubdivision)[0] += increment;
+                        adjacentBottomBlock.FixHeights(verticalSubdivision);
+                    }
+                }
+                if (area.Contains(x - 1, z - 1))
+                {
+                    var adjacentBottomLeftBlock = GetBlockTry(x - 1, z - 1);
+                    if (adjacentBottomLeftBlock != null && ((floor && adjacentBottomLeftBlock.FloorDiagonalSplit == DiagonalSplit.None) || (!floor && adjacentBottomLeftBlock.CeilingDiagonalSplit == DiagonalSplit.None)))
+                    {
+                        adjacentBottomLeftBlock.GetVerticalSubdivision(verticalSubdivision)[1] += increment;
+                        adjacentBottomLeftBlock.FixHeights(verticalSubdivision);
+                    }
+                }
+            }
+        }
+
+        public short GetMinHeight(Rectangle area, int verticalSubdivision)
+        {
+            short minimum = short.MaxValue;
+
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
+                    minimum = Math.Min(minimum, Blocks[x, z].GetFaceMin(verticalSubdivision));
+
+            return minimum;
+        }
+
+        public short GetMaxHeight(Rectangle area, int verticalSubdivision)
+        {
+            short maximum = short.MinValue;
+
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
+                    maximum = Math.Max(maximum, Blocks[x, z].GetFaceMin(verticalSubdivision));
+
+            return maximum;
         }
 
         public bool IsIllegalSlope(int x, int z)
@@ -512,10 +582,7 @@ namespace TombEditor.Geometry
                     }
                 }
 
-                int heightAdjust = 0;
-                if (lookupBlock.Room != null)
-                    heightAdjust = (int)Math.Round(Position.Y - lookupBlock.Room.Position.Y);
-
+                int heightAdjust = (int)Math.Round(Position.Y - lookupBlock.Room.Position.Y);
                 int absoluteLowestPassableHeight = lowestPassableHeight + heightAdjust;
                 int absoluteLowestPassableStep = lowestPassableStep + heightAdjust;
 

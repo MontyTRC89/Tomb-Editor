@@ -246,71 +246,139 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void SmoothSector(Room room, int x, int z, bool floor)
+        public static void SmoothSector(Room room, int x, int z, int v)
         {
-            var currBlock = room.GetBlockTry(x, z);
+            var floor = (v % 2 == 0);
+            var currBlock = room.GetBlockTryThroughPortal(x, z);
 
-            if (currBlock == null || (floor && currBlock.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.CeilingDiagonalSplit != DiagonalSplit.None))
+            if (currBlock == null || (floor && currBlock.Block.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.Block.CeilingDiagonalSplit != DiagonalSplit.None))
                 return;
 
-            Block[] lookupBlocks = new Block[8]
+            Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
             {
-                room.GetBlockTry(x - 1, z + 1),
-                room.GetBlockTry(x, z + 1),
-                room.GetBlockTry(x + 1, z + 1),
-                room.GetBlockTry(x + 1, z),
-                room.GetBlockTry(x + 1, z - 1),
-                room.GetBlockTry(x, z - 1),
-                room.GetBlockTry(x - 1, z - 1),
-                room.GetBlockTry(x - 1, z)
+                room.GetBlockTryThroughPortal(x - 1, z + 1),
+                room.GetBlockTryThroughPortal(x, z + 1),
+                room.GetBlockTryThroughPortal(x + 1, z + 1),
+                room.GetBlockTryThroughPortal(x + 1, z),
+                room.GetBlockTryThroughPortal(x + 1, z - 1),
+                room.GetBlockTryThroughPortal(x, z - 1),
+                room.GetBlockTryThroughPortal(x - 1, z - 1),
+                room.GetBlockTryThroughPortal(x - 1, z)
             };
 
-            if (floor)
-            {
-                short[] newFaces = new short[4];
+            int[] adj = new int[8];
+            for (int i = 0; i < 8; i++)
+                adj[i] = (int)Math.Round(currBlock.Room.Position.Y - lookupBlocks[i].Room.Position.Y);
+
+            short[] newFaces = new short[4];
 
                 int validBlockCnt = (Convert.ToInt32(lookupBlocks[7] != null) + Convert.ToInt32(lookupBlocks[0] != null) + Convert.ToInt32(lookupBlocks[1] != null));
-                newFaces[0] = (short)(((lookupBlocks[7]?.QAFaces[1] ?? 0) + (lookupBlocks[0]?.QAFaces[2] ?? 0) + (lookupBlocks[1]?.QAFaces[3] ?? 0)) / (validBlockCnt));
+                newFaces[0] = (short)(((lookupBlocks[7]?.Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[7] +
+                                       (lookupBlocks[0]?.Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[0] +
+                                       (lookupBlocks[1]?.Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[1]) / (validBlockCnt));
 
                 validBlockCnt = (Convert.ToInt32(lookupBlocks[1] != null) + Convert.ToInt32(lookupBlocks[2] != null) + Convert.ToInt32(lookupBlocks[3] != null));
-                newFaces[1] = (short)(((lookupBlocks[1]?.QAFaces[2] ?? 0) + (lookupBlocks[2]?.QAFaces[3] ?? 0) + (lookupBlocks[3]?.QAFaces[0] ?? 0)) / (validBlockCnt));
+                newFaces[1] = (short)(((lookupBlocks[1]?.Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2] +
+                                       (lookupBlocks[2]?.Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
+                                       (lookupBlocks[3]?.Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0]) / (validBlockCnt));
 
                 validBlockCnt = (Convert.ToInt32(lookupBlocks[3] != null) + Convert.ToInt32(lookupBlocks[4] != null) + Convert.ToInt32(lookupBlocks[5] != null));
-                newFaces[2] = (short)(((lookupBlocks[3]?.QAFaces[3] ?? 0) + (lookupBlocks[4]?.QAFaces[0] ?? 0) + (lookupBlocks[5]?.QAFaces[1] ?? 0)) / (validBlockCnt));
+                newFaces[2] = (short)(((lookupBlocks[3]?.Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
+                                       (lookupBlocks[4]?.Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
+                                       (lookupBlocks[5]?.Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1]) / (validBlockCnt));
 
                 validBlockCnt = (Convert.ToInt32(lookupBlocks[5] != null) + Convert.ToInt32(lookupBlocks[6] != null) + Convert.ToInt32(lookupBlocks[7] != null));
-                newFaces[3] = (short)(((lookupBlocks[5]?.QAFaces[0] ?? 0) + (lookupBlocks[6]?.QAFaces[1] ?? 0) + (lookupBlocks[7]?.QAFaces[2] ?? 0)) / (validBlockCnt));
+                newFaces[3] = (short)(((lookupBlocks[5]?.Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
+                                       (lookupBlocks[6]?.Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1] +
+                                       (lookupBlocks[7]?.Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2]) / (validBlockCnt));
 
-                currBlock.QAFaces[0] += (short)Math.Sign(newFaces[0] - currBlock.QAFaces[0]);
-                currBlock.QAFaces[1] += (short)Math.Sign(newFaces[1] - currBlock.QAFaces[1]);
-                currBlock.QAFaces[2] += (short)Math.Sign(newFaces[2] - currBlock.QAFaces[2]);
-                currBlock.QAFaces[3] += (short)Math.Sign(newFaces[3] - currBlock.QAFaces[3]);
-            }
-            else
-            {
-                short[] newFaces = new short[4];
-
-                int validBlockCnt = (Convert.ToInt32(lookupBlocks[7] != null) + Convert.ToInt32(lookupBlocks[0] != null) + Convert.ToInt32(lookupBlocks[1] != null));
-                newFaces[0] = (short)(((lookupBlocks[7]?.WSFaces[1] ?? 0) + (lookupBlocks[0]?.WSFaces[2] ?? 0) + (lookupBlocks[1]?.WSFaces[3] ?? 0)) / (validBlockCnt));
-
-                validBlockCnt = (Convert.ToInt32(lookupBlocks[1] != null) + Convert.ToInt32(lookupBlocks[2] != null) + Convert.ToInt32(lookupBlocks[3] != null));
-                newFaces[1] = (short)(((lookupBlocks[1]?.WSFaces[2] ?? 0) + (lookupBlocks[2]?.WSFaces[3] ?? 0) + (lookupBlocks[3]?.WSFaces[0] ?? 0)) / (validBlockCnt));
-
-                validBlockCnt = (Convert.ToInt32(lookupBlocks[3] != null) + Convert.ToInt32(lookupBlocks[4] != null) + Convert.ToInt32(lookupBlocks[5] != null));
-                newFaces[2] = (short)(((lookupBlocks[3]?.WSFaces[3] ?? 0) + (lookupBlocks[4]?.WSFaces[0] ?? 0) + (lookupBlocks[5]?.WSFaces[1] ?? 0)) / (validBlockCnt));
-
-                validBlockCnt = (Convert.ToInt32(lookupBlocks[5] != null) + Convert.ToInt32(lookupBlocks[6] != null) + Convert.ToInt32(lookupBlocks[7] != null));
-                newFaces[3] = (short)(((lookupBlocks[5]?.WSFaces[0] ?? 0) + (lookupBlocks[6]?.WSFaces[1] ?? 0) + (lookupBlocks[7]?.WSFaces[2] ?? 0)) / (validBlockCnt));
-
-                currBlock.WSFaces[0] += (short)Math.Sign(newFaces[0] - currBlock.WSFaces[0]);
-                currBlock.WSFaces[1] += (short)Math.Sign(newFaces[1] - currBlock.WSFaces[1]);
-                currBlock.WSFaces[2] += (short)Math.Sign(newFaces[2] - currBlock.WSFaces[2]);
-                currBlock.WSFaces[3] += (short)Math.Sign(newFaces[3] - currBlock.WSFaces[3]);
-            }
+                currBlock.Block.GetVerticalSubdivision(v)[0] += (short)Math.Sign(newFaces[0] - currBlock.Block.GetVerticalSubdivision(v)[0]);
+                currBlock.Block.GetVerticalSubdivision(v)[1] += (short)Math.Sign(newFaces[1] - currBlock.Block.GetVerticalSubdivision(v)[1]);
+                currBlock.Block.GetVerticalSubdivision(v)[2] += (short)Math.Sign(newFaces[2] - currBlock.Block.GetVerticalSubdivision(v)[2]);
+                currBlock.Block.GetVerticalSubdivision(v)[3] += (short)Math.Sign(newFaces[3] - currBlock.Block.GetVerticalSubdivision(v)[3]);
 
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
 
+        public static void ShapeGroup(Room room, Rectangle area, EditorArrowType arrow, EditorToolType type, int verticalSubdivision, double heightScale, bool precise, bool stepped)
+        {
+            if (precise)
+                heightScale /= 4;
+
+            bool linearShape  = (type <= EditorToolType.HalfPipe);
+            bool uniformShape = (type >= EditorToolType.HalfPipe);
+            bool step90       = (arrow <= EditorArrowType.EdgeW);
+            bool turn90       = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
+            bool reverseX     = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW) ^ uniformShape;
+            bool reverseZ     = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE) ^ uniformShape;
+            bool uniformAlign = (arrow != EditorArrowType.EntireFace && type > EditorToolType.HalfPipe && step90);
+
+            double sizeX = area.Width  + (stepped ? 0 : 1);
+            double sizeZ = area.Height + (stepped ? 0 : 1);
+            double grainBias = (uniformShape ? (!step90 ? 0 : 1) : 0);
+            double grainX = (1 + grainBias) / sizeX / (uniformAlign &&  turn90 ? 2 : 1);
+            double grainZ = (1 + grainBias) / sizeZ / (uniformAlign && !turn90 ? 2 : 1);
+
+            for (int w = area.Left, x = 0; w < area.Left + sizeX + 1; w++, x++)
+                for (int h = area.Top, z = 0; h != area.Top + sizeZ + 1; h++, z++)
+                {
+                    double currentHeight;
+                    double currX = (linearShape && !turn90 && step90) ? 0 : grainX * (reverseX ? sizeX - x : x) - (uniformAlign &&  turn90 ? 0 : grainBias);
+                    double currZ = (linearShape &&  turn90 && step90) ? 0 : grainZ * (reverseZ ? sizeZ - z : z) - (uniformAlign && !turn90 ? 0 : grainBias);
+
+                    switch (type)
+                    {
+                        case EditorToolType.Ramp:
+                            currentHeight = currX + currZ;
+                            break;
+                        case EditorToolType.Pyramid:
+                            currentHeight = 1 - Math.Max(Math.Abs(currX), Math.Abs(currZ));
+                            break;
+                        default:
+                            currentHeight = Math.Sqrt(1 - Math.Pow(currX, 2) - Math.Pow(currZ, 2));
+                            currentHeight = double.IsNaN(currentHeight) ? 0 : currentHeight;
+                            if (type == EditorToolType.QuarterPipe) currentHeight = 1 - currentHeight;
+                            break;
+                    }
+                    currentHeight = Math.Round(currentHeight * heightScale);
+
+                    if (stepped)
+                    {
+                        room.Blocks[w, h].Raise(verticalSubdivision, false, (short)currentHeight);
+                        room.Blocks[w, h].FixHeights();
+                    }
+                    else
+                        room.ModifyPoint(w, h, verticalSubdivision, (short)currentHeight, area);
+                }
+            SmartBuildGeometry(room, area);
+        }
+
+        public static void ApplyHeightmap(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, float[,] heightmap, float heightScale, bool precise, bool raw)
+        {
+            bool allFace  = (arrow == EditorArrowType.EntireFace); 
+            bool step90   = (arrow <= EditorArrowType.EdgeW);
+            bool turn90   = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
+            bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW);
+            bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE);
+
+            float smoothGrainX = (float)(allFace || (step90 && !turn90) ? Math.PI : Math.PI / 2) / (area.Width + 1);
+            float smoothGrainZ = (float)(allFace || (step90 &&  turn90) ? Math.PI : Math.PI / 2) / (area.Height + 1);
+
+            if (precise)
+                heightScale /= 4;
+
+            for (int w = area.Left, x = 0; w < area.Left + area.Width + 2; w++, x++)
+                for (int h = area.Top, z = 0; h != area.Top + area.Height + 2; h++, z++)
+                {
+                    var smoothFactor = raw ? 1 : (Math.Sin(smoothGrainX * (reverseX ? area.Width + 1 - x : x)) * Math.Sin(smoothGrainZ * (reverseZ ? area.Height + 1 - z : z)));
+
+                    int currX = x * (heightmap.GetLength(0) / (area.Width  + 2));
+                    int currZ = z * (heightmap.GetLength(1) / (area.Height + 2));
+                    room.ModifyPoint(w, h, verticalSubdivision, (short)(Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale)), area);
+                }
+            SmartBuildGeometry(room, area);
+        }
+        
         public static void FlipFloorSplit(Room room, Rectangle area)
         {
             for (int x = area.X; x <= area.Right; x++)

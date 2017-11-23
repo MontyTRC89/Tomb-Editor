@@ -149,11 +149,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="KeyboardLayout.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -279,6 +274,11 @@
     <Compile Include="Geometry\SinkInstance.cs" />
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="ListExtensions.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\Lighting.cs">
       <SubType>UserControl</SubType>
     </Compile>
