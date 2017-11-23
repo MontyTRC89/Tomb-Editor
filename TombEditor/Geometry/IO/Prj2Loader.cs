@@ -541,6 +541,15 @@ namespace TombEditor.Geometry.IO
                                 instance.OneShot = chunkIO.Raw.ReadBoolean();
                                 objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, (targetObj) => instance.TargetObj = targetObj));
 
+                                chunkIO.ReadChunks((id4, chunkSize4) =>
+                                {
+                                    if (id4 == Prj2Chunks.ObjectTriggerExtra)
+                                        instance.ExtraData = (short)chunkIO.ReadChunkShort(chunkSize4);
+                                    else
+                                        return false;
+                                    return true;
+                                });
+
                                 room.AddObjectAndSingularPortal(level, instance);
                                 newObjects.TryAdd(objectID, instance);
                             }

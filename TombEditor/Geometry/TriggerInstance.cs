@@ -53,6 +53,7 @@ namespace TombEditor.Geometry
         public short Timer { get; set; } = 0;
         public bool OneShot { get; set; } = false;
         public byte CodeBits { get; set; } = 0x1f; // Only the lower 5 bits are used.
+        public short ExtraData { get; set; } = 0;
 
         public TriggerInstance(Rectangle area)
             : base(area)

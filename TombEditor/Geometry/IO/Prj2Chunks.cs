@@ -83,5 +83,6 @@ namespace TombEditor.Geometry.IO
         /**********/public static readonly ChunkId ObjectLight = ChunkId.FromString("TeLig");
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
         /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri");
-  }
+        /************/public static readonly ChunkId ObjectTriggerExtra = ChunkId.FromString("TeTriEx");
+    }
 }
