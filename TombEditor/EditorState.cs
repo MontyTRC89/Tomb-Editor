@@ -14,8 +14,8 @@ namespace TombEditor
     {
         None, Selection, Brush, Pencil,
         Fill, Group,
-        Shovel, Smooth,
-        Flatten, Drag, Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid
+        Shovel, Smooth, Flatten,
+        Drag, Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid, Terrain // Do not modify enum order after drag tool!
     }
 
     public struct EditorTool
@@ -104,11 +104,6 @@ namespace TombEditor
     public enum SmoothGeometryEditingType
     {
         None, Floor, Wall, Any
-    }
-
-    public enum GroupShapeType
-    {
-        Ramp, QuarterPipe, HalfPipe, Bowl, Pyramid
     }
 
     public struct SectorSelection

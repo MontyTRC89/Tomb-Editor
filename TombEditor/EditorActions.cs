@@ -311,18 +311,18 @@ namespace TombEditor
             SmartBuildGeometry(room, new Rectangle(x, z, x, z));
         }
 
-        public static void ShapeGroup(Room room, Rectangle area, EditorArrowType arrow, GroupShapeType type, int verticalSubdivision, double heightScale, bool precise, bool stepped)
+        public static void ShapeGroup(Room room, Rectangle area, EditorArrowType arrow, EditorToolType type, int verticalSubdivision, double heightScale, bool precise, bool stepped)
         {
             if (precise)
                 heightScale /= 4;
 
-            bool linearShape  = (type <= GroupShapeType.HalfPipe);
-            bool uniformShape = (type >= GroupShapeType.HalfPipe);
+            bool linearShape  = (type <= EditorToolType.HalfPipe);
+            bool uniformShape = (type >= EditorToolType.HalfPipe);
             bool step90       = (arrow <= EditorArrowType.EdgeW);
             bool turn90       = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
             bool reverseX     = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW) ^ uniformShape;
             bool reverseZ     = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE) ^ uniformShape;
-            bool uniformAlign = (arrow != EditorArrowType.EntireFace && type > GroupShapeType.HalfPipe && step90);
+            bool uniformAlign = (arrow != EditorArrowType.EntireFace && type > EditorToolType.HalfPipe && step90);
 
             double sizeX = area.Width  + (stepped ? 0 : 1);
             double sizeZ = area.Height + (stepped ? 0 : 1);
@@ -339,16 +339,16 @@ namespace TombEditor
 
                     switch (type)
                     {
-                        case GroupShapeType.Ramp:
+                        case EditorToolType.Ramp:
                             currentHeight = currX + currZ;
                             break;
-                        case GroupShapeType.Pyramid:
+                        case EditorToolType.Pyramid:
                             currentHeight = 1 - Math.Max(Math.Abs(currX), Math.Abs(currZ));
                             break;
                         default:
                             currentHeight = Math.Sqrt(1 - Math.Pow(currX, 2) - Math.Pow(currZ, 2));
                             currentHeight = double.IsNaN(currentHeight) ? 0 : currentHeight;
-                            if (type == GroupShapeType.QuarterPipe) currentHeight = 1 - currentHeight;
+                            if (type == EditorToolType.QuarterPipe) currentHeight = 1 - currentHeight;
                             break;
                     }
                     currentHeight = Math.Round(currentHeight * heightScale);
@@ -364,6 +364,32 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
+        public static void ApplyHeightmap(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, float[,] heightmap, float heightScale, bool precise, bool raw)
+        {
+            bool allFace  = (arrow == EditorArrowType.EntireFace); 
+            bool step90   = (arrow <= EditorArrowType.EdgeW);
+            bool turn90   = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
+            bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW);
+            bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE);
+
+            float smoothGrainX = (float)(allFace || (step90 && !turn90) ? Math.PI : Math.PI / 2) / (area.Width + 1);
+            float smoothGrainZ = (float)(allFace || (step90 &&  turn90) ? Math.PI : Math.PI / 2) / (area.Height + 1);
+
+            if (precise)
+                heightScale /= 4;
+
+            for (int w = area.Left, x = 0; w < area.Left + area.Width + 2; w++, x++)
+                for (int h = area.Top, z = 0; h != area.Top + area.Height + 2; h++, z++)
+                {
+                    var smoothFactor = raw ? 1 : (Math.Sin(smoothGrainX * (reverseX ? area.Width + 1 - x : x)) * Math.Sin(smoothGrainZ * (reverseZ ? area.Height + 1 - z : z)));
+
+                    int currX = (int)(x * Math.Floor((double)heightmap.GetLength(0) / (double)(area.Width + 2)));
+                    int currZ = (int)(z * Math.Floor((double)heightmap.GetLength(1) / (double)(area.Height + 2)));
+                    room.ModifyPoint(w, h, verticalSubdivision, (short)(Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale)), area);
+                }
+            SmartBuildGeometry(room, area);
+        }
+        
         public static void FlipFloorSplit(Room room, Rectangle area)
         {
             for (int x = area.X; x <= area.Right; x++)

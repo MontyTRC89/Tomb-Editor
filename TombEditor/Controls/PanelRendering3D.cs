@@ -144,6 +144,10 @@ namespace TombEditor.Controls
             private Point _referencePosition;
             private Point _newPosition;
             private Room _referenceRoom;
+           
+            // Terrain map resolution must be ALWAYS POWER OF 2 PLUS 1 - this is the requirement of diamond square algorithm.
+            private const int TerrainMapResolution = 32 + 1;
+            public float[,] RandomHeightMap = new float[TerrainMapResolution, TerrainMapResolution];
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
@@ -270,13 +274,84 @@ namespace TombEditor.Controls
                     }
             }
 
-            // We need to relocate picked diagonal faces, because behaviour is undefined
-            // for these cases if diagonal step was raised above limit and swapped.
-            // Also, we relocate middle face pickings for walls to nearest floor or ceiling face.
+            private void GenerateNewTerrain()
+            {
+                // Algorithm used here is naive Diamond-Square, which should be enough for low-res TR geometry.
+
+                int s = TerrainMapResolution - 1;
+
+                if((s & (s - 1)) != 0)
+                    throw new Exception("Wrong heightmap size defined for Diamond-Square algorithm. Must be power of 2.");
+
+                float range = 1.0f;
+                float rough = 0.9f;
+                float average = 0.0f;
+                int sideLength, halfSide, x, y;
+
+                Random rndValue = new Random();
+                Array.Clear(RandomHeightMap, 0, RandomHeightMap.Length);
+
+                // While the side length is greater than 1
+                for (sideLength = s; sideLength > 1; sideLength /= 2)
+                {
+                    halfSide = sideLength / 2;
+
+                    // Run Diamond Step
+                    for (x = 0; x < s; x += sideLength)
+                        for (y = 0; y < s; y += sideLength)
+                        {
+                            // Get the average of the corners
+                            average  = RandomHeightMap[x, y];
+                            average += RandomHeightMap[x + sideLength, y];
+                            average += RandomHeightMap[x, y + sideLength];
+                            average += RandomHeightMap[x + sideLength, y + sideLength];
+                            average /= 4.0f;
+
+                            // Offset by a random value
+                            average += rndValue.NextFloat(-range, range);
+                            RandomHeightMap[x + halfSide, y + halfSide] = average;
+                        }
+
+                    // Run Square Step
+                    for (x = 0; x < s; x += halfSide)
+                        for (y = (x + halfSide) % sideLength; y < s; y += sideLength)
+                        {
+                            // Get the average of the corners
+                            average  = RandomHeightMap[(x - halfSide + s) % (s), y];
+                            average += RandomHeightMap[(x + halfSide) % (s), y];
+                            average += RandomHeightMap[x, (y + halfSide) % (s)];
+                            average += RandomHeightMap[x, (y - halfSide + s) % (s)];
+                            average /= 4.0f;
+
+                            // Offset by a random value
+                            average += rndValue.NextFloat(-range, range);
+
+                            // Set the height value to be the calculated average
+                            RandomHeightMap[x, y] = average + range;
+
+                            // Set the height on the opposite edge if this is an edge piece
+                            if (x == 0)
+                                RandomHeightMap[s, y] = average;
+                            if (y == 0)
+                                RandomHeightMap[x, s] = average;
+                        }
+
+                    // Lower the random value range
+                    range -= range * 0.5f * rough;
+                }
+
+                // Hacky postprocess first point to be in sync during scaling operations
+                RandomHeightMap[0, 0] = (RandomHeightMap[0, 1] + RandomHeightMap[1, 0]) / 2.0f;
+            }
+
             private void RelocatePicking()
             {
-                if(_referencePicking.Face == BlockFace.DiagonalED ||
-                   _referencePicking.Face == BlockFace.DiagonalQA)
+                // We need to relocate picked diagonal faces, because behaviour is undefined
+                // for these cases if diagonal step was raised above limit and swapped.
+                // Also, we relocate middle face pickings for walls to nearest floor or ceiling face.
+
+                if (_referencePicking.Face == BlockFace.DiagonalED ||
+                    _referencePicking.Face == BlockFace.DiagonalQA)
                 {
                     switch(ReferenceBlock.FloorDiagonalSplit)
                     {
@@ -373,6 +448,9 @@ namespace TombEditor.Controls
                     _referenceRoom = _parent._editor.SelectedRoom;
                     RelocatePicking();
                     ResetToolActionGrid();
+
+                    if (_parent._editor.Tool.Tool == EditorToolType.Terrain)
+                        GenerateNewTerrain();
                 }
             }
 
@@ -387,7 +465,7 @@ namespace TombEditor.Controls
 
             public bool Process(int X, int Y)
             {
-                if (!_actionGrid[X, Y].Processed)
+                if(((_parent._editor.SelectedSectors.Valid && _parent._editor.SelectedSectors.Area.Contains(X, Y)) || _parent._editor.SelectedSectors == SectorSelection.None) && !_actionGrid[X, Y].Processed)
                 {
                     _actionGrid[X, Y].Processed = true;
                     return true;
@@ -414,8 +492,8 @@ namespace TombEditor.Controls
                 else
                     return null;
             }
-
-            public void DiscardRoomHeightmap(bool autoUpdate = false)
+            
+            public void DiscardEditedGeometry(bool autoUpdate = false)
             {
                 for (int x = 0; x < _referenceRoom.NumXSectors; x++)
                     for (int z = 0; z < _referenceRoom.NumZSectors; z++)
@@ -435,7 +513,7 @@ namespace TombEditor.Controls
                         }
                     }
 
-                if(autoUpdate)
+                if (autoUpdate)
                     EditorActions.SmartBuildGeometry(_referenceRoom, _referenceRoom.LocalArea);
             }
         }
@@ -1016,7 +1094,7 @@ namespace TombEditor.Controls
                                     {
                                         _toolHandler.Engage(e.X, e.Y, newBlockPicking);
 
-                                        if (((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None) && _toolHandler.Process(pos.X, pos.Y))
+                                        if (_toolHandler.Process(pos.X, pos.Y))
                                         {
                                             if(_editor.Tool.Tool == EditorToolType.Smooth)
                                                 EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor);
@@ -1178,43 +1256,39 @@ namespace TombEditor.Controls
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y, _editor.Tool.Tool == EditorToolType.Drag);
                         if(dragValue.HasValue)
                         {
-                            if(_editor.Tool.Tool == EditorToolType.Drag)
+                            switch(_editor.Tool.Tool)
                             {
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom,
-                                    _editor.SelectedSectors.Area,
-                                    _editor.SelectedSectors.Arrow,
-                                    (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
-                                    (short)Math.Sign(dragValue.Value.Y),
-                                    ModifierKeys.HasFlag(Keys.Alt),
-                                    _toolHandler.ReferenceIsOppositeDiagonalStep, true);
-                            }
-                            else
-                            {
-                                GroupShapeType shape = GroupShapeType.Ramp;
-                                switch(_editor.Tool.Tool)
-                                {
-                                    case EditorToolType.Pyramid:
-                                        shape = GroupShapeType.Pyramid;
-                                        break;
-                                    case EditorToolType.QuarterPipe:
-                                        shape = GroupShapeType.QuarterPipe;
-                                        break;
-                                    case EditorToolType.HalfPipe:
-                                        shape = GroupShapeType.HalfPipe;
-                                        break;
-                                    case EditorToolType.Bowl:
-                                        shape = GroupShapeType.Bowl;
-                                        break;
-                                }
-                                _toolHandler.DiscardRoomHeightmap();
-                                EditorActions.ShapeGroup(_editor.SelectedRoom,
-                                    _editor.SelectedSectors.Area,
-                                    _editor.SelectedSectors.Arrow,
-                                    shape,
-                                    (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
-                                    dragValue.Value.Y,
-                                    ModifierKeys.HasFlag(Keys.Shift),
-                                    ModifierKeys.HasFlag(Keys.Alt));
+                                case EditorToolType.Drag:
+                                    EditorActions.EditSectorGeometry(_editor.SelectedRoom,
+                                        _editor.SelectedSectors.Area,
+                                        _editor.SelectedSectors.Arrow,
+                                        (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
+                                        (short)Math.Sign(dragValue.Value.Y),
+                                        ModifierKeys.HasFlag(Keys.Alt),
+                                        _toolHandler.ReferenceIsOppositeDiagonalStep, true);
+                                    break;
+                                case EditorToolType.Terrain:
+                                    _toolHandler.DiscardEditedGeometry();
+                                    EditorActions.ApplyHeightmap(_editor.SelectedRoom,
+                                        _editor.SelectedSectors.Area,
+                                        _editor.SelectedSectors.Arrow,
+                                        _toolHandler.ReferenceIsFloor ? 0 : 1,
+                                        _toolHandler.RandomHeightMap,
+                                        dragValue.Value.Y,
+                                        ModifierKeys.HasFlag(Keys.Shift),
+                                        ModifierKeys.HasFlag(Keys.Alt));
+                                    break;
+                                default:
+                                    _toolHandler.DiscardEditedGeometry();
+                                    EditorActions.ShapeGroup(_editor.SelectedRoom,
+                                        _editor.SelectedSectors.Area,
+                                        _editor.SelectedSectors.Arrow,
+                                        _editor.Tool.Tool,
+                                        (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
+                                        dragValue.Value.Y,
+                                        ModifierKeys.HasFlag(Keys.Shift),
+                                        ModifierKeys.HasFlag(Keys.Alt));
+                                    break;
                             }
                             redrawWindow = true;
                         }
@@ -1244,8 +1318,7 @@ namespace TombEditor.Controls
                             }
                             else if (_editor.Mode == EditorMode.Geometry && _toolHandler.Engaged && !ModifierKeys.HasFlag(Keys.Alt | Keys.Shift))
                             {
-                                if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
-                                     _editor.SelectedSectors == SectorSelection.None) && _toolHandler.Process(pos.X, pos.Y))
+                                if (_toolHandler.Process(pos.X, pos.Y))
                                 {
                                     if (_editor.SelectedRoom.Blocks[pos.X, pos.Y].IsAnyWall == _toolHandler.ReferenceBlock.IsAnyWall)
                                     {
@@ -1273,6 +1346,7 @@ namespace TombEditor.Controls
                                                 break;
 
                                             case EditorToolType.Drag:
+                                            case EditorToolType.Terrain:
                                                 break;
 
                                             default:
@@ -1315,56 +1389,59 @@ namespace TombEditor.Controls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
-                    if (newBlockPicking != null && !_toolHandler.Dragged)
+                    if(_editor.Mode == EditorMode.Geometry)
                     {
-                        DrawingPoint pos = newBlockPicking.Pos;
-                        bool belongsToFloor = newBlockPicking.BelongsToFloor;
+                        PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
+                        if (newBlockPicking != null && !_toolHandler.Dragged)
+                        {
+                            DrawingPoint pos = newBlockPicking.Pos;
+                            bool belongsToFloor = newBlockPicking.BelongsToFloor;
 
-                        if (ModifierKeys.HasFlag(Keys.Alt))
-                        {
-                            // Split the faces
-                            if (belongsToFloor)
-                                EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
-                            else
-                                EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
-                            return;
-                        }
-                        else if (ModifierKeys.HasFlag(Keys.Shift))
-                        {
-                            // Rotate sector
-                            EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
-                            return;
-                        }
-                        else if (_editor.Mode == EditorMode.Geometry && (_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool >= EditorToolType.Drag))
-                            if (!_doSectorSelection && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
-                                // Rotate the arrows
-                                if (ModifierKeys.HasFlag(Keys.Control))
-                                {
-                                    if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSW)
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
-                                    else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSE)
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSW);
-                                    else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNE)
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSE);
-                                    else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNW)
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNE);
-                                    else
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNW);
-                                }
+                            if (ModifierKeys.HasFlag(Keys.Alt))
+                            {
+                                // Split the faces
+                                if (belongsToFloor)
+                                    EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                                 else
-                                {
-                                    if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeW)
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
-                                    else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeS)
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeW);
-                                    else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeE)
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeS);
-                                    else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeN)
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeE);
+                                    EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                return;
+                            }
+                            else if (ModifierKeys.HasFlag(Keys.Shift))
+                            {
+                                // Rotate sector
+                                EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
+                                return;
+                            }
+                            else if (_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool >= EditorToolType.Drag)
+                                if (!_doSectorSelection && _editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
+                                    // Rotate the arrows
+                                    if (ModifierKeys.HasFlag(Keys.Control))
+                                    {
+                                        if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSW)
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
+                                        else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSE)
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSW);
+                                        else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNE)
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSE);
+                                        else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNW)
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNE);
+                                        else
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNW);
+                                    }
                                     else
-                                        _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeN);
-                                }
+                                    {
+                                        if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeW)
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
+                                        else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeS)
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeW);
+                                        else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeE)
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeS);
+                                        else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeN)
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeE);
+                                        else
+                                            _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeN);
+                                    }
+                        }
                     }
                     break;
 

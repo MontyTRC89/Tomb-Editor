@@ -58,6 +58,7 @@ namespace TombEditor.ToolWindows
                 toolHalfPipe.Checked = currentTool.Tool == EditorToolType.HalfPipe;
                 toolBowl.Checked = currentTool.Tool == EditorToolType.Bowl;
                 toolPyramid.Checked = currentTool.Tool == EditorToolType.Pyramid;
+                toolTerrain.Checked = currentTool.Tool == EditorToolType.Terrain;
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
@@ -71,23 +72,24 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.ModeChangedEvent || obj is InitEvent)
             {
                 EditorMode mode = _editor.Mode;
+                bool geometryMode = mode == EditorMode.Geometry;
 
-                toolFill.Visible = mode == EditorMode.FaceEdit;
-                toolGroup.Visible = mode == EditorMode.FaceEdit;
-                toolEraser.Visible = mode == EditorMode.FaceEdit;
-                toolInvisibility.Visible = mode == EditorMode.FaceEdit;
-                toolUVFixer.Visible = mode == EditorMode.FaceEdit;
-                //toolSeparator1.Visible = mode == EditorMode.FaceEdit;
-                toolSeparator2.Visible = mode == EditorMode.FaceEdit;
-                toolFlatten.Visible = mode == EditorMode.Geometry;
-                toolShovel.Visible = mode == EditorMode.Geometry;
-                toolSmooth.Visible = mode == EditorMode.Geometry;
-                toolDrag.Visible = mode == EditorMode.Geometry;
-                toolRamp.Visible = mode == EditorMode.Geometry;
-                toolQuarterPipe.Visible = mode == EditorMode.Geometry;
-                toolHalfPipe.Visible = mode == EditorMode.Geometry;
-                toolBowl.Visible = mode == EditorMode.Geometry;
-                toolPyramid.Visible = mode == EditorMode.Geometry;
+                toolFill.Visible         = !geometryMode;
+                toolGroup.Visible        = !geometryMode;
+                toolEraser.Visible       = !geometryMode;
+                toolInvisibility.Visible = !geometryMode;
+                toolUVFixer.Visible      = !geometryMode;
+                toolSeparator2.Visible   = !geometryMode;
+                toolFlatten.Visible      =  geometryMode;
+                toolShovel.Visible       =  geometryMode;
+                toolSmooth.Visible       =  geometryMode;
+                toolDrag.Visible         =  geometryMode;
+                toolRamp.Visible         =  geometryMode;
+                toolQuarterPipe.Visible  =  geometryMode;
+                toolHalfPipe.Visible     =  geometryMode;
+                toolBowl.Visible         =  geometryMode;
+                toolPyramid.Visible      =  geometryMode;
+                toolTerrain.Visible      =  geometryMode;
 
                 toolPalette.AutoSize = true;
                 Height = toolPalette.Size.Height + Padding.Size.Height;
@@ -177,6 +179,11 @@ namespace TombEditor.ToolWindows
         private void toolPyramid_Click(object sender, EventArgs e)
         {
             SwitchTool(EditorToolType.Pyramid);
+        }
+
+        private void toolTerrain_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Terrain);
         }
 
         private void toolInvisibility_Click(object sender, EventArgs e)
