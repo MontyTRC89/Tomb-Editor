@@ -383,8 +383,8 @@ namespace TombEditor
                 {
                     var smoothFactor = raw ? 1 : (Math.Sin(smoothGrainX * (reverseX ? area.Width + 1 - x : x)) * Math.Sin(smoothGrainZ * (reverseZ ? area.Height + 1 - z : z)));
 
-                    int currX = (int)(x * Math.Floor((double)heightmap.GetLength(0) / (double)(area.Width + 2)));
-                    int currZ = (int)(z * Math.Floor((double)heightmap.GetLength(1) / (double)(area.Height + 2)));
+                    int currX = x * (heightmap.GetLength(0) / (area.Width  + 2));
+                    int currZ = z * (heightmap.GetLength(1) / (area.Height + 2));
                     room.ModifyPoint(w, h, verticalSubdivision, (short)(Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale)), area);
                 }
             SmartBuildGeometry(room, area);
