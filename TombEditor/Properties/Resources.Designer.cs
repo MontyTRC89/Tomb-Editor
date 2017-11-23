@@ -933,6 +933,66 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap toolbox_GroupBowl_16 {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_GroupBowl_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap toolbox_GroupHalfPipe_16 {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_GroupHalfPipe_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap toolbox_GroupPyramid_16 {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_GroupPyramid_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap toolbox_GroupQuaterPipe_16 {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_GroupQuaterPipe_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap toolbox_GroupRamp_16 {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_GroupRamp_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap toolbox_GroupTerrain_16 {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_GroupTerrain_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap toolbox_GroupTexture_16 {
             get {
                 object obj = ResourceManager.GetObject("toolbox_GroupTexture_16", resourceCulture);

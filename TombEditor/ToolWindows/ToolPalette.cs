@@ -42,6 +42,12 @@ namespace TombEditor.ToolWindows
                 toolFlatten.Checked = currentTool.Tool == EditorToolType.Flatten;
                 toolSmooth.Checked = currentTool.Tool == EditorToolType.Smooth;
                 toolDrag.Checked = currentTool.Tool == EditorToolType.Drag;
+                toolRamp.Checked = currentTool.Tool == EditorToolType.Ramp;
+                toolQuarterPipe.Checked = currentTool.Tool == EditorToolType.QuarterPipe;
+                toolHalfPipe.Checked = currentTool.Tool == EditorToolType.HalfPipe;
+                toolBowl.Checked = currentTool.Tool == EditorToolType.Bowl;
+                toolPyramid.Checked = currentTool.Tool == EditorToolType.Pyramid;
+                toolTerrain.Checked = currentTool.Tool == EditorToolType.Terrain;
 
                 toolUVFixer.Checked = currentTool.TextureUVFixer;
             }
@@ -55,18 +61,25 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.ModeChangedEvent || obj is InitEvent)
             {
                 EditorMode mode = _editor.Mode;
+                bool geometryMode = mode == EditorMode.Geometry;
 
-                toolFill.Visible = mode == EditorMode.FaceEdit;
-                toolGroup.Visible = mode == EditorMode.FaceEdit;
-                toolEraser.Visible = mode == EditorMode.FaceEdit;
-                toolInvisibility.Visible = mode == EditorMode.FaceEdit;
-                toolUVFixer.Visible = mode == EditorMode.FaceEdit;
-                toolSeparator1.Visible = mode == EditorMode.FaceEdit;
-                toolSeparator2.Visible = mode == EditorMode.FaceEdit;
-                toolFlatten.Visible = mode == EditorMode.Geometry;
-                toolShovel.Visible = mode == EditorMode.Geometry;
-                toolSmooth.Visible = mode == EditorMode.Geometry;
-                toolDrag.Visible = mode == EditorMode.Geometry;
+                toolFill.Visible         = !geometryMode;
+                toolGroup.Visible        = !geometryMode;
+                toolEraser.Visible       = !geometryMode;
+                toolInvisibility.Visible = !geometryMode;
+                toolUVFixer.Visible      = !geometryMode;
+                toolSeparator2.Visible   = !geometryMode;
+                toolFlatten.Visible      =  geometryMode;
+                toolShovel.Visible       =  geometryMode;
+                toolSmooth.Visible       =  geometryMode;
+                toolDrag.Visible         =  geometryMode;
+                toolRamp.Visible         =  geometryMode;
+                toolQuarterPipe.Visible  =  geometryMode;
+                toolHalfPipe.Visible     =  geometryMode;
+                toolBowl.Visible         =  geometryMode;
+                toolPyramid.Visible      =  geometryMode;
+                toolTerrain.Visible      =  geometryMode;
+
                 toolStrip.AutoSize = true;
                 Size = toolStrip.Size;
                 toolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
@@ -128,6 +141,36 @@ namespace TombEditor.ToolWindows
             SwitchTool(EditorToolType.Drag);
         }
 
+        private void toolRamp_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Ramp);
+        }
+
+        private void toolQuarterPipe_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.QuarterPipe);
+        }
+
+        private void toolHalfPipe_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.HalfPipe);
+        }
+
+        private void toolBowl_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Bowl);
+        }
+
+        private void toolPyramid_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Pyramid);
+        }
+
+        private void toolTerrain_Click(object sender, EventArgs e)
+        {
+            SwitchTool(EditorToolType.Terrain);
+        }
+
         private void toolInvisibility_Click(object sender, EventArgs e)
         {
             _editor.SelectedTexture = new TextureArea { Texture = TextureInvisible.Instance };
@@ -144,5 +187,6 @@ namespace TombEditor.ToolWindows
             currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
             EditorActions.SwitchTool(currentTool);
         }
+
     }
 }
