@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolPalette));
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
             this.toolSelection = new System.Windows.Forms.ToolStripButton();
             this.toolBrush = new System.Windows.Forms.ToolStripButton();
@@ -45,11 +44,11 @@
             this.toolHalfPipe = new System.Windows.Forms.ToolStripButton();
             this.toolBowl = new System.Windows.Forms.ToolStripButton();
             this.toolPyramid = new System.Windows.Forms.ToolStripButton();
+            this.toolTerrain = new System.Windows.Forms.ToolStripButton();
             this.toolEraser = new System.Windows.Forms.ToolStripButton();
             this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
             this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolUVFixer = new System.Windows.Forms.ToolStripButton();
-            this.toolTerrain = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -269,6 +268,18 @@
             this.toolPyramid.ToolTipText = "Pyramid";
             this.toolPyramid.Click += new System.EventHandler(this.toolPyramid_Click);
             // 
+            // toolTerrain
+            // 
+            this.toolTerrain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolTerrain.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolTerrain.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolTerrain.Image = global::TombEditor.Properties.Resources.toolbox_GroupTerrain_16;
+            this.toolTerrain.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolTerrain.Name = "toolTerrain";
+            this.toolTerrain.Size = new System.Drawing.Size(23, 20);
+            this.toolTerrain.ToolTipText = "Terrain";
+            this.toolTerrain.Click += new System.EventHandler(this.toolTerrain_Click);
+            // 
             // toolEraser
             // 
             this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -313,19 +324,6 @@
             this.toolUVFixer.Text = "toolStripButton1";
             this.toolUVFixer.ToolTipText = "Fix texture coordinates";
             this.toolUVFixer.Click += new System.EventHandler(this.toolUVFixer_Click);
-            // 
-            // toolTerrain
-            // 
-            this.toolTerrain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolTerrain.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolTerrain.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolTerrain.Image = ((System.Drawing.Image)(resources.GetObject("toolTerrain.Image")));
-            this.toolTerrain.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolTerrain.Name = "toolTerrain";
-            this.toolTerrain.Size = new System.Drawing.Size(23, 19);
-            this.toolTerrain.Text = "T";
-            this.toolTerrain.ToolTipText = "Terrain";
-            this.toolTerrain.Click += new System.EventHandler(this.toolTerrain_Click);
             // 
             // ToolPalette
             // 
