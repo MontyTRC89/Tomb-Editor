@@ -8,7 +8,8 @@ namespace TombLib.NG
 {
     public enum NgListKind
     {
-        Node,
+        Empty,
+        Fixed,
         Unknown,
         Rooms255, // ROOMS_255
         SoundEffectsA, // SOUND_EFFECT_A
