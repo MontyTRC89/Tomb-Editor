@@ -1256,13 +1256,15 @@ namespace TombEditor.Controls
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y, _editor.Tool.Tool == EditorToolType.Drag);
                         if(dragValue.HasValue)
                         {
-                            switch(_editor.Tool.Tool)
+                            int subdivisionToEdit = (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1));
+
+                            switch (_editor.Tool.Tool)
                             {
                                 case EditorToolType.Drag:
                                     EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                         _editor.SelectedSectors.Area,
                                         _editor.SelectedSectors.Arrow,
-                                        (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
+                                        subdivisionToEdit,
                                         (short)Math.Sign(dragValue.Value.Y),
                                         ModifierKeys.HasFlag(Keys.Alt),
                                         _toolHandler.ReferenceIsOppositeDiagonalStep, true);
@@ -1272,7 +1274,7 @@ namespace TombEditor.Controls
                                     EditorActions.ApplyHeightmap(_editor.SelectedRoom,
                                         _editor.SelectedSectors.Area,
                                         _editor.SelectedSectors.Arrow,
-                                        _toolHandler.ReferenceIsFloor ? 0 : 1,
+                                        subdivisionToEdit,
                                         _toolHandler.RandomHeightMap,
                                         dragValue.Value.Y,
                                         ModifierKeys.HasFlag(Keys.Shift),
@@ -1284,7 +1286,7 @@ namespace TombEditor.Controls
                                         _editor.SelectedSectors.Area,
                                         _editor.SelectedSectors.Arrow,
                                         _editor.Tool.Tool,
-                                        (_toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1)),
+                                        subdivisionToEdit,
                                         dragValue.Value.Y,
                                         ModifierKeys.HasFlag(Keys.Shift),
                                         ModifierKeys.HasFlag(Keys.Alt));
