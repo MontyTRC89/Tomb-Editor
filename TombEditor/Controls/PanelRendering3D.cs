@@ -1094,7 +1094,7 @@ namespace TombEditor.Controls
                                     {
                                         _toolHandler.Engage(e.X, e.Y, newBlockPicking);
 
-                                        if (_toolHandler.Process(pos.X, pos.Y))
+                                        if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                                         {
                                             if(_editor.Tool.Tool == EditorToolType.Smooth)
                                                 EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, (belongsToFloor ? 0 : 1));
@@ -1318,7 +1318,7 @@ namespace TombEditor.Controls
                             }
                             else if (_editor.Mode == EditorMode.Geometry && _toolHandler.Engaged && !ModifierKeys.HasFlag(Keys.Alt | Keys.Shift))
                             {
-                                if (_toolHandler.Process(pos.X, pos.Y))
+                                if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                                 {
                                     if (_editor.SelectedRoom.Blocks[pos.X, pos.Y].IsAnyWall == _toolHandler.ReferenceBlock.IsAnyWall)
                                     {
