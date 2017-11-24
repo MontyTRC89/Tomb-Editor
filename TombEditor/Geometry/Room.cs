@@ -330,29 +330,35 @@ namespace TombEditor.Geometry
         {
             public Room Room { get; private set; }
             public Block Block { get; private set; }
+            public DrawingPoint Pos { get; private set; }
 
-            public RoomBlockPair(Room room, Block block)
+            public RoomBlockPair(Room room, Block block, DrawingPoint pos)
             {
                 Room = room;
                 Block = block;
+                Pos = pos;
             }
         }
 
         public RoomBlockPair GetBlockTryThroughPortal(int x, int z)
         {
-            Room adjoiningRoom = null;
             Block sector = GetBlockTry(x, z);
+            Room adjoiningRoom;
+            DrawingPoint adjoiningSectorCoordinate;
 
             if (sector?.WallPortal != null)
             {
                 adjoiningRoom = sector.WallPortal.AdjoiningRoom;
-                DrawingPoint adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+                adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
                 sector = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
             }
             else
+            {
                 adjoiningRoom = this;
+                adjoiningSectorCoordinate = new DrawingPoint(x, z);
+            }
 
-            return new RoomBlockPair(adjoiningRoom, sector);
+            return new RoomBlockPair(adjoiningRoom, sector, adjoiningSectorCoordinate);
         }
 
         public void ModifyPoint(int x, int z, int verticalSubdivision, short increment, Rectangle area)

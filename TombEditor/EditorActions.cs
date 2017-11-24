@@ -61,11 +61,10 @@ namespace TombEditor
             room.SmartBuildGeometry(area);
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
-
             _editor.RoomGeometryChange(room);
         }
 
-        public static void EditSectorGeometry(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false)
+        public static void EditSectorGeometry(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true)
         {
             if (smooth)
             {
@@ -154,93 +153,98 @@ namespace TombEditor
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
                     Block block = room.Blocks[x, z];
+                    Room.RoomBlockPair lookupBlock = room.GetBlockTryThroughPortal(x, z);
 
-                    if(arrow == EditorArrowType.EntireFace)
+                    bool blockEdited = false;
+
+                    while (!blockEdited)
                     {
-                        if(verticalSubdivision < 2)
-                            block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
-                        else
-                            block.Raise(verticalSubdivision, false, increment);
-                    }
-                    else
-                    {
-                        var floor = (verticalSubdivision % 2 == 0);
-                        var currentFaces = block.GetVerticalSubdivision(verticalSubdivision);
-                        var currentSplit = floor ? block.FloorDiagonalSplit : block.CeilingDiagonalSplit;
-                        var incrementInvalid = floor ? (increment < 0) : (increment > 0);
-                        int[] corners = new int[2] { 0, 0 };
-                        DiagonalSplit[] splits = new DiagonalSplit[2] { DiagonalSplit.None, DiagonalSplit.None };
-
-                        switch (arrow)
+                        if (arrow == EditorArrowType.EntireFace)
                         {
-                            case EditorArrowType.EdgeN:
-                            case EditorArrowType.CornerNW:
-                                corners[0] = 0;
-                                corners[1] = 1;
-                                splits[0] = DiagonalSplit.XpZn;
-                                splits[1] = (arrow == EditorArrowType.CornerNW) ? DiagonalSplit.XnZp : DiagonalSplit.XnZn;
-                                break;
-                            case EditorArrowType.EdgeE:
-                            case EditorArrowType.CornerNE:
-                                corners[0] = 1;
-                                corners[1] = 2;
-                                splits[0] = DiagonalSplit.XnZn;
-                                splits[1] = (arrow == EditorArrowType.CornerNE) ? DiagonalSplit.XpZp : DiagonalSplit.XnZp;
-                                break;
-                            case EditorArrowType.EdgeS:
-                            case EditorArrowType.CornerSE:
-                                corners[0] = 2;
-                                corners[1] = 3;
-                                splits[0] = DiagonalSplit.XnZp;
-                                splits[1] = (arrow == EditorArrowType.CornerSE) ? DiagonalSplit.XpZn : DiagonalSplit.XpZp;
-                                break;
-                            case EditorArrowType.EdgeW:
-                            case EditorArrowType.CornerSW:
-                                corners[0] = 3;
-                                corners[1] = 0;
-                                splits[0] = DiagonalSplit.XpZp;
-                                splits[1] = (arrow == EditorArrowType.CornerSW) ? DiagonalSplit.XnZn : DiagonalSplit.XpZn;
-                                break;
-                        }
-
-                        if(arrow <= EditorArrowType.EdgeW)
-                        {
-                            if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
-                                continue;
-                            for(int i = 0; i < 2; i++)
-                                if (currentSplit != splits[i])
-                                    currentFaces[corners[i]] += increment;
+                            if (verticalSubdivision < 2)
+                                block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
+                            else
+                                block.Raise(verticalSubdivision, false, increment);
                         }
                         else
                         {
-                            if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
+                            var floor = (verticalSubdivision % 2 == 0);
+                            var currentFaces = block.GetVerticalSubdivision(verticalSubdivision);
+                            var currentSplit = floor ? block.FloorDiagonalSplit : block.CeilingDiagonalSplit;
+                            var incrementInvalid = floor ? (increment < 0) : (increment > 0);
+                            int[] corners = new int[2] { 0, 0 };
+                            DiagonalSplit[] splits = new DiagonalSplit[2] { DiagonalSplit.None, DiagonalSplit.None };
+
+                            switch (arrow)
                             {
-                                if (currentSplit == splits[1])
+                                case EditorArrowType.EdgeN:
+                                case EditorArrowType.CornerNW:
+                                    corners[0] = 0;
+                                    corners[1] = 1;
+                                    splits[0] = DiagonalSplit.XpZn;
+                                    splits[1] = (arrow == EditorArrowType.CornerNW) ? DiagonalSplit.XnZp : DiagonalSplit.XnZn;
+                                    break;
+                                case EditorArrowType.EdgeE:
+                                case EditorArrowType.CornerNE:
+                                    corners[0] = 1;
+                                    corners[1] = 2;
+                                    splits[0] = DiagonalSplit.XnZn;
+                                    splits[1] = (arrow == EditorArrowType.CornerNE) ? DiagonalSplit.XpZp : DiagonalSplit.XnZp;
+                                    break;
+                                case EditorArrowType.EdgeS:
+                                case EditorArrowType.CornerSE:
+                                    corners[0] = 2;
+                                    corners[1] = 3;
+                                    splits[0] = DiagonalSplit.XnZp;
+                                    splits[1] = (arrow == EditorArrowType.CornerSE) ? DiagonalSplit.XpZn : DiagonalSplit.XpZp;
+                                    break;
+                                case EditorArrowType.EdgeW:
+                                case EditorArrowType.CornerSW:
+                                    corners[0] = 3;
+                                    corners[1] = 0;
+                                    splits[0] = DiagonalSplit.XpZp;
+                                    splits[1] = (arrow == EditorArrowType.CornerSW) ? DiagonalSplit.XnZn : DiagonalSplit.XpZn;
+                                    break;
+                            }
+
+                            if (arrow <= EditorArrowType.EdgeW)
+                            {
+                                if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
+                                    continue;
+                                for (int i = 0; i < 2; i++)
+                                    if (currentSplit != splits[i])
+                                        currentFaces[corners[i]] += increment;
+                            }
+                            else
+                            {
+                                if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
                                 {
-                                    if (currentFaces[corners[0]] == currentFaces[corners[1]] && incrementInvalid)
+                                    if (currentSplit == splits[1])
+                                    {
+                                        if (currentFaces[corners[0]] == currentFaces[corners[1]] && incrementInvalid)
+                                            continue;
+                                    }
+                                    else if (autoSwitchDiagonals && currentSplit == splits[0] && currentFaces[corners[0]] == currentFaces[corners[1]] && !incrementInvalid)
+                                        block.Rotate(floor, 2);
+                                    else
                                         continue;
                                 }
-                                else if (autoSwitchDiagonals && currentSplit == splits[0] && currentFaces[corners[0]] == currentFaces[corners[1]] && !incrementInvalid)
-                                    block.Rotate(floor, 2);
-                                else
-                                    continue;
+                                currentFaces[corners[0]] += increment;
                             }
-                            currentFaces[corners[0]] += increment;
                         }
+                        block.FixHeights(verticalSubdivision);
+
+                        if (autoUpdateThroughPortal && lookupBlock.Block != block)
+                            block = lookupBlock.Block;
+                        else
+                            blockEdited = true;
                     }
 
-                    // FIXME:
-                    // Code with unknown purpose. It was repeating in above case switch for all verticalSubdivision values 0 and 2,
-                    // so it was moved here to remove a lot of duplicated code. Maybe it should be removed completely, cause no
-                    // particular purpose is seen here.
-                    if(verticalSubdivision % 2 == 0)
-                    {
-                        if (block.FloorPortal != null)
-                            continue;
-                    }
-                    // end of unknown code.
+                    // FIXME: VERY SLOW CODE! Since we need to update geometry in adjoining block through portal, and each block may contain portal to different room,
+                    // we need to find a way to quickly update geometry in all possible adjoining rooms in area. Until then, this function is used on per-sector basis.
 
-                    block.FixHeights(verticalSubdivision);
+                    if(lookupBlock.Room != room)
+                        SmartBuildGeometry(lookupBlock.Room, new Rectangle(lookupBlock.Pos.X, lookupBlock.Pos.Y, lookupBlock.Pos.X, lookupBlock.Pos.Y));
                 }
 
             SmartBuildGeometry(room, area);
@@ -251,7 +255,7 @@ namespace TombEditor
             var floor = (v % 2 == 0);
             var currBlock = room.GetBlockTryThroughPortal(x, z);
 
-            if (currBlock == null || (floor && currBlock.Block.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.Block.CeilingDiagonalSplit != DiagonalSplit.None))
+            if (currBlock == null || currBlock.Room != room || (floor && currBlock.Block.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.Block.CeilingDiagonalSplit != DiagonalSplit.None))
                 return;
 
             Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
@@ -355,6 +359,9 @@ namespace TombEditor
 
         public static void ApplyHeightmap(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, float[,] heightmap, float heightScale, bool precise, bool raw)
         {
+            if (precise)
+                heightScale /= 4;
+
             bool allFace  = (arrow == EditorArrowType.EntireFace); 
             bool step90   = (arrow <= EditorArrowType.EdgeW);
             bool turn90   = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
@@ -363,9 +370,6 @@ namespace TombEditor
 
             float smoothGrainX = (float)(allFace || (step90 && !turn90) ? Math.PI : Math.PI / 2) / (area.Width + 1);
             float smoothGrainZ = (float)(allFace || (step90 &&  turn90) ? Math.PI : Math.PI / 2) / (area.Height + 1);
-
-            if (precise)
-                heightScale /= 4;
 
             for (int w = area.Left, x = 0; w < area.Left + area.Width + 2; w++, x++)
                 for (int h = area.Top, z = 0; h != area.Top + area.Height + 2; h++, z++)

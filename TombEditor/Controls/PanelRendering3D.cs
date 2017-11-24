@@ -251,7 +251,7 @@ namespace TombEditor.Controls
                         _actionGrid[i, j] = new ReferenceCell();
             }
 
-            private void ResetToolActionGrid()
+            private void PrepareActionGrid()
             {
                 for (int x = 0; x < _parent._editor.SelectedRoom.NumXSectors; x++)
                     for (int z = 0; z < _parent._editor.SelectedRoom.NumZSectors; z++)
@@ -447,7 +447,7 @@ namespace TombEditor.Controls
                     _referencePicking = refPicking;
                     _referenceRoom = _parent._editor.SelectedRoom;
                     RelocatePicking();
-                    ResetToolActionGrid();
+                    PrepareActionGrid();
 
                     if (_parent._editor.Tool.Tool == EditorToolType.Terrain)
                         GenerateNewTerrain();
@@ -1104,7 +1104,8 @@ namespace TombEditor.Controls
                                                     EditorArrowType.EntireFace,
                                                     (belongsToFloor ? 0 : 1),
                                                     (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor ? 1 : -1),
-                                                    (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
+                                                    (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel),
+                                                    false);
                                         }
                                     }
                                     break;
@@ -1357,7 +1358,8 @@ namespace TombEditor.Controls
                                                     EditorArrowType.EntireFace,
                                                     (belongsToFloor ? 0 : 1),
                                                     (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor ? 1 : -1),
-                                                    (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel));
+                                                    (_editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel),
+                                                    false);
                                                 break;
                                         }
                                         redrawWindow = true;
@@ -1543,6 +1545,7 @@ namespace TombEditor.Controls
                 }
             }
         }
+
         private void MoveTimerTick(object sender, EventArgs e)
         {
             switch(_movementTimer.MoveDirection)
@@ -1577,7 +1580,6 @@ namespace TombEditor.Controls
                     Invalidate();
                     break;
             }
-
         }
 
         private static float TransformRayDistance(ref Ray sourceRay, ref Matrix transform, ref Ray destinationRay, float sourceDistance)
