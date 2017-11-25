@@ -340,9 +340,43 @@ namespace TombEditor.Geometry
             }
         }
 
+        public RoomBlockPair ProbeLowestBlockThroughPortal(int x, int z, bool doProbe = true)
+        {
+            if (!doProbe)
+            {
+                Block block = GetBlockTry(x, z);
+                if (block != null)
+                    return new RoomBlockPair(this, block, new DrawingPoint(x, z));
+                else
+                    return null;
+            }
+
+            RoomBlockPair sector = GetBlockTryThroughPortal(x, z);
+            Room adjoiningRoom;
+            DrawingPoint adjoiningSectorCoordinate;
+
+            if (sector?.Block.FloorPortal != null)
+            {
+                adjoiningRoom = sector.Block.FloorPortal.AdjoiningRoom;
+                adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+                sector = adjoiningRoom.ProbeLowestBlockThroughPortal(adjoiningSectorCoordinate);
+            }
+
+            return sector;
+        }
+
+        public RoomBlockPair ProbeLowestBlockThroughPortal(DrawingPoint pos, bool doProbe = true)
+        {
+            return ProbeLowestBlockThroughPortal(pos.X, pos.Y, doProbe);
+        }
+
         public RoomBlockPair GetBlockTryThroughPortal(int x, int z)
         {
             Block sector = GetBlockTry(x, z);
+
+            if (sector == null)
+                return null;
+
             Room adjoiningRoom;
             DrawingPoint adjoiningSectorCoordinate;
 

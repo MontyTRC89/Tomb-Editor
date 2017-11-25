@@ -1727,10 +1727,21 @@ namespace TombEditor
 
         public static void ToggleBlockFlag(Room room, Rectangle area, BlockFlags flag)
         {
+            List<Room> roomsToUpdate = new List<Room>();
+            roomsToUpdate.Add(room);
+
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
-                    room.Blocks[x, z].Flags ^= flag;
-            _editor.RoomSectorPropertiesChange(room);
+                {
+                    Room.RoomBlockPair currentBlock = room.ProbeLowestBlockThroughPortal(x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
+                    currentBlock.Block.Flags ^= flag;
+
+                    if (!roomsToUpdate.Contains(currentBlock.Room))
+                        roomsToUpdate.Add(currentBlock.Room);
+                }
+
+            foreach(var currentRoom in roomsToUpdate)
+                _editor.RoomSectorPropertiesChange(currentRoom);
         }
 
         public static void ToggleForceFloorSolid(Room room, Rectangle area)
