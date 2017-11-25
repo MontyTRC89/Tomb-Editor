@@ -44,6 +44,8 @@ namespace TombEditor.Controls
         private float _gridSize => Math.Min(ClientSize.Width, ClientSize.Height);
         private float _gridStep => _gridSize / Room.MaxRoomDimensions;
 
+        public string Message;
+
         public Panel2DGrid()
         {
             DoubleBuffered = true;
@@ -186,7 +188,12 @@ namespace TombEditor.Controls
                 SectorBasedObjectInstance nextPortalOrTrigger = relevantTriggersAndPortals.
                     FindFirstAfterWithWrapAround((obj) => obj == selectedSectorObject, (obj) => true);
                 if (nextPortalOrTrigger != null)
+                {
                     _editor.SelectedObject = nextPortalOrTrigger;
+                    Message = nextPortalOrTrigger.ToString();
+                }
+                else
+                    Message = null;
             }
         }
 
@@ -330,7 +337,6 @@ namespace TombEditor.Controls
                     Pen pen = instance is PortalInstance ? _selectedPortalPen : _selectedTriggerPen;
                     RectangleF visualArea = ToVisualCoord(instance.Area);
                     e.Graphics.DrawRectangle(pen, visualArea);
-                    DrawMessage(e, instance.ToString(), visualArea);
                 }
             }
             catch (Exception exc)

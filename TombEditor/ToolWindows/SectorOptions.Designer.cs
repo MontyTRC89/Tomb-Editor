@@ -51,6 +51,8 @@
             this.panel2DGrid.Name = "panel2DGrid";
             this.panel2DGrid.Size = new System.Drawing.Size(224, 225);
             this.panel2DGrid.TabIndex = 103;
+            this.panel2DGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2DGrid_MouseDown);
+            this.panel2DGrid.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel2DGrid_MouseUp);
             // 
             // panelRight
             // 

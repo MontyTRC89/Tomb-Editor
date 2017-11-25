@@ -175,5 +175,16 @@ namespace TombEditor.ToolWindows
                 return;
             EditorActions.ToggleForceFloorSolid(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
+
+        private void panel2DGrid_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+                toolTip.Show(panel2DGrid.Message, panel2DGrid, e.X, e.Y + Cursor.Size.Height / 2, 3000);
+        }
+
+        private void panel2DGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            toolTip.Hide(panel2DGrid);
+        }
     }
 }
