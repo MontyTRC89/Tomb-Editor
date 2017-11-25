@@ -233,7 +233,7 @@ namespace TombEditor.Controls
                     {
                         RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep, _gridStep);
                         Block block = currentRoom.Blocks[x, z];
-                        Block bottomBlock = currentRoom.ProbeLowestBlockThroughPortal(x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals).Block;
+                        Block bottomBlock = currentRoom.ProbeLowestBlock(x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals).Block;
                         
                         e.Graphics.FillRectangle(_floorBrush, rectangle);
 

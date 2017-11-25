@@ -340,16 +340,14 @@ namespace TombEditor.Geometry
             }
         }
 
-        public RoomBlockPair ProbeLowestBlockThroughPortal(int x, int z, bool doProbe = true)
+        public RoomBlockPair ProbeLowestBlock(int x, int z, bool doProbe = true)
         {
-            if (!doProbe)
-            {
-                Block block = GetBlockTry(x, z);
-                if (block != null)
-                    return new RoomBlockPair(this, block, new DrawingPoint(x, z));
-                else
-                    return null;
-            }
+            Block block = GetBlockTry(x, z);
+
+            if (block == null)
+                return null;
+            else if(!doProbe || block.WallPortal != null)
+                return new RoomBlockPair(this, block, new DrawingPoint(x, z));
 
             RoomBlockPair sector = GetBlockTryThroughPortal(x, z);
             Room adjoiningRoom;
@@ -359,15 +357,15 @@ namespace TombEditor.Geometry
             {
                 adjoiningRoom = sector.Block.FloorPortal.AdjoiningRoom;
                 adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
-                sector = adjoiningRoom.ProbeLowestBlockThroughPortal(adjoiningSectorCoordinate);
+                sector = adjoiningRoom.ProbeLowestBlock(adjoiningSectorCoordinate);
             }
 
             return sector;
         }
 
-        public RoomBlockPair ProbeLowestBlockThroughPortal(DrawingPoint pos, bool doProbe = true)
+        public RoomBlockPair ProbeLowestBlock(DrawingPoint pos, bool doProbe = true)
         {
-            return ProbeLowestBlockThroughPortal(pos.X, pos.Y, doProbe);
+            return ProbeLowestBlock(pos.X, pos.Y, doProbe);
         }
 
         public RoomBlockPair GetBlockTryThroughPortal(int x, int z)

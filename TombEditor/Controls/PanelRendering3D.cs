@@ -3240,7 +3240,7 @@ namespace TombEditor.Controls
                         case BlockFace.PositiveX_RF:
                         case BlockFace.PositiveX_WS:
                             climbDirection = BlockFlags.ClimbNegativeX;
-                            lookupBlock = room.ProbeLowestBlockThroughPortal(x + 1, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
+                            lookupBlock = room.ProbeLowestBlock(x + 1, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
                             break;
                         case BlockFace.NegativeX_ED:
                         case BlockFace.NegativeX_Middle:
@@ -3248,7 +3248,7 @@ namespace TombEditor.Controls
                         case BlockFace.NegativeX_RF:
                         case BlockFace.NegativeX_WS:
                             climbDirection = BlockFlags.ClimbPositiveX;
-                            lookupBlock = room.ProbeLowestBlockThroughPortal(x - 1, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
+                            lookupBlock = room.ProbeLowestBlock(x - 1, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
                             break;
                         case BlockFace.NegativeZ_ED:
                         case BlockFace.NegativeZ_Middle:
@@ -3256,7 +3256,7 @@ namespace TombEditor.Controls
                         case BlockFace.NegativeZ_RF:
                         case BlockFace.NegativeZ_WS:
                             climbDirection = BlockFlags.ClimbPositiveZ;
-                            lookupBlock = room.ProbeLowestBlockThroughPortal(x, z - 1, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
+                            lookupBlock = room.ProbeLowestBlock(x, z - 1, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
                             break;
                         case BlockFace.PositiveZ_ED:
                         case BlockFace.PositiveZ_Middle:
@@ -3264,7 +3264,7 @@ namespace TombEditor.Controls
                         case BlockFace.PositiveZ_RF:
                         case BlockFace.PositiveZ_WS:
                             climbDirection = BlockFlags.ClimbNegativeZ;
-                            lookupBlock = room.ProbeLowestBlockThroughPortal(x, z + 1, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
+                            lookupBlock = room.ProbeLowestBlock(x, z + 1, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
                             break;
                         default:
                             break;
@@ -3346,7 +3346,7 @@ namespace TombEditor.Controls
                             }
 
                             // Also highlight monkeyswing on ceiling
-                            if ((room.ProbeLowestBlockThroughPortal(x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals).Block.Flags & BlockFlags.Monkey) != 0)
+                            if ((room.ProbeLowestBlock(x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals).Block.Flags & BlockFlags.Monkey) != 0)
                                 _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorMonkey));
 
                             if (room.Blocks[x, z].CeilingPortal != null)
