@@ -1733,7 +1733,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    Room.RoomBlockPair currentBlock = room.ProbeLowestBlockThroughPortal(x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
+                    Room.RoomBlockPair currentBlock = room.ProbeLowestBlock(x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
                     currentBlock.Block.Flags ^= flag;
 
                     if (!roomsToUpdate.Contains(currentBlock.Room))
