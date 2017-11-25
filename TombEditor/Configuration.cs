@@ -34,6 +34,7 @@ namespace TombEditor
         public int Log_ArchiveN { get; set; } = 0;
 
         public bool Editor_DiscardSelectionOnModeSwitch { get; set; } = false;
+        public bool Editor_ProbeAttributesThroughPortals { get; set; } = true;
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;

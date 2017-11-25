@@ -233,7 +233,8 @@ namespace TombEditor.Controls
                     {
                         RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep, _gridStep);
                         Block block = currentRoom.Blocks[x, z];
-
+                        Block bottomBlock = currentRoom.ProbeLowestBlockThroughPortal(x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals).Block;
+                        
                         e.Graphics.FillRectangle(_floorBrush, rectangle);
 
                         // Draw wall, if any
@@ -246,13 +247,13 @@ namespace TombEditor.Controls
                         // Draw floor tile
                         if (block.Triggers.Count != 0)
                             e.Graphics.FillRectangle(_triggerBrush, rectangle);
-                        else if (block.Flags.HasFlag(BlockFlags.NotWalkableFloor))
+                        else if (bottomBlock.Flags.HasFlag(BlockFlags.NotWalkableFloor))
                             e.Graphics.FillRectangle(_notWalkableBrush, rectangle);
-                        else if (block.Flags.HasFlag(BlockFlags.Box))
+                        else if (bottomBlock.Flags.HasFlag(BlockFlags.Box))
                             e.Graphics.FillRectangle(_boxBrush, rectangle);
-                        else if (block.Flags.HasFlag(BlockFlags.Monkey))
+                        else if (bottomBlock.Flags.HasFlag(BlockFlags.Monkey))
                             e.Graphics.FillRectangle(_monkeyBrush, rectangle);
-                        else if (block.Flags.HasFlag(BlockFlags.DeathFire) || block.Flags.HasFlag(BlockFlags.DeathElectricity) || block.Flags.HasFlag(BlockFlags.DeathLava))
+                        else if (bottomBlock.Flags.HasFlag(BlockFlags.DeathFire) || block.Flags.HasFlag(BlockFlags.DeathElectricity) || block.Flags.HasFlag(BlockFlags.DeathLava))
                             e.Graphics.FillRectangle(_deathBrush, rectangle);
 
                         // Draw floor-related features on floor tile
@@ -260,9 +261,9 @@ namespace TombEditor.Controls
                             e.Graphics.FillRectangle(_forceFloorSolidBrush, rectangle);
                         RectangleF beetleTriggerRectangle = rectangle;
                         beetleTriggerRectangle.Inflate(-2, -2);
-                        if ((block.Flags & BlockFlags.Beetle) != 0)
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.Beetle))
                             e.Graphics.DrawRectangle(_beetlePen, beetleTriggerRectangle);
-                        if ((currentRoom.Blocks[x, z].Flags & BlockFlags.TriggerTriggerer) != 0)
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.TriggerTriggerer))
                             e.Graphics.DrawRectangle(_triggerTriggererPen, beetleTriggerRectangle);
 
                         if (block.Type == BlockType.Wall)
@@ -302,13 +303,13 @@ namespace TombEditor.Controls
                         }
 
                         // Draw wall-related features
-                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _climbWidth);
-                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveX))
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbPositiveX))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.Right - _climbWidth, rectangle.Y, _climbWidth, rectangle.Height);
-                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeZ))
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbNegativeZ))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _climbWidth, rectangle.Width, _climbWidth);
-                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeX))
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbNegativeX))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _climbWidth, rectangle.Height);
                     }
 
