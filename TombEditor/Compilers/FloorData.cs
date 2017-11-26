@@ -1053,9 +1053,6 @@ namespace TombEditor.Compilers
                         // Triggers
                         if (room.Blocks[x, z].Triggers.Count > 0)
                         {
-                            // TODO: replace this with the engine selector in settings
-                            var compileNg = true;
-
                             TriggerInstance found = null;
 
                             // First, I search a special trigger, if exists
@@ -1130,7 +1127,7 @@ namespace TombEditor.Compilers
                                 }
 
                                 ushort triggerSetup = 0;
-                                if (compileNg)
+                                if (_level.Settings.GameVersion == GameVersion.TRNG)
                                     triggerSetup |= (ushort)((found.TargetType == TriggerTargetType.FlipEffect ? 0 : (found.Timer & 0xff)));
                                 else
                                     triggerSetup |= (ushort)(found.Timer & 0xff);
@@ -1210,7 +1207,7 @@ namespace TombEditor.Compilers
                                         tempCodes.Add(trigger2);
 
                                         // TRNG stores flipeffect timer as an extra ushort
-                                        if (compileNg)
+                                        if (_level.Settings.GameVersion == GameVersion.TRNG)
                                         {
                                             trigger2 = (ushort)(trigger.Timer & 0x7fff);
                                             tempCodes.Add(trigger2);

@@ -34,6 +34,8 @@ namespace TombEditor.Compilers
             //        _tempRooms.Add(room, trRoom);
             //});
 
+            _staticsTable = new Dictionary<StaticInstance, int>();
+
             foreach (var room in _roomsRemappingDictionary.Keys)
             {
                 _tempRooms.Add(room, BuildRoom(room));
@@ -348,17 +350,22 @@ namespace TombEditor.Compilers
             ConvertSectors(room, newRoom);
 
             foreach (var instance in room.Objects.OfType<StaticInstance>())
+            {
+                // For TRNG statics chunk
+                _staticsTable.Add(instance, newRoom.StaticMeshes.Count);
+
                 newRoom.StaticMeshes.Add(new tr_room_staticmesh
                 {
                     X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
                     Y = (int)-Math.Round(room.WorldPos.Y + instance.Position.Y),
                     Z = (int)Math.Round(newRoom.Info.Z + instance.Position.Z),
                     Rotation = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue,
-                        Math.Round(instance.RotationY * (65536.0 / 360.0))))),
+                       Math.Round(instance.RotationY * (65536.0 / 360.0))))),
                     ObjectID = (ushort)instance.WadObjectId,
                     Intensity1 = PackColorTo16Bit(new Vector4(instance.Color.Z, instance.Color.Y, instance.Color.X, instance.Color.W)),
                     Intensity2 = instance.Ocb
                 });
+            }
 
             ConvertLights(room, newRoom);
 
