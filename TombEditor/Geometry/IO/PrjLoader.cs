@@ -1342,7 +1342,7 @@ namespace TombEditor.Geometry.IO
                                     RotationY = currentObj.RotationY,
                                     Color = currentObj.Color
                                 };
-                                logIds.Add(currentObj.ScriptId, "STATIC");
+                                logIds.Add(currentObj.ScriptId, "STATIC " + j + ", " + instance.WadObjectId + " in " + level.Rooms[i].ToString());
                                 level.SetGlobalScriptIdsTableValue(instance);
                                 level.Rooms[i].AddObject(level, instance);
                             }

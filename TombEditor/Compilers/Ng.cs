@@ -22,6 +22,7 @@ namespace TombEditor.Compilers
             // Write chunks
             WriteNgChunkVersion(writer);
             WriteNgChunkMoveablesTable(writer);
+            WriteNgChunkStaticsTable(writer);
             WriteNgChunkLevelFlags(writer);
             WriteNgChunkPluginsNames(writer);
             WriteNgChunkIdFloorTable(writer);
@@ -95,6 +96,33 @@ namespace TombEditor.Compilers
                         writer.Write((short)_flybyTable[instance as FlybyCameraInstance]);
                     else if (instance is SoundSourceInstance)
                         writer.Write((short)_soundSourcesTable[instance as SoundSourceInstance]);
+                    else
+                        writer.Write((short)-1);
+                }
+            }
+        }
+
+        private void WriteNgChunkStaticsTable(BinaryWriter writer)
+        {
+            writer.Write((ushort)(2 + _level.GlobalScriptingIdsTable.Length * 2));
+            writer.Write((ushort)0x8021);
+
+            for (var i = 0; i < _level.GlobalScriptingIdsTable.Length; i++)
+            {
+                if (_level.GlobalScriptingIdsTable[i] == null)
+                {
+                    writer.Write((short)0);
+                    writer.Write((short)-1);
+                }
+                else
+                {
+                    var instance = _level.GlobalScriptingIdsTable[i];
+                    if (instance is StaticInstance)
+                    {
+                        var staticMesh = instance as StaticInstance;
+                        writer.Write((short)_level.Rooms.ReferenceIndexOf(staticMesh.Room));
+                        writer.Write((short)_staticsTable[staticMesh]);
+                    }
                     else
                         writer.Write((short)-1);
                 }

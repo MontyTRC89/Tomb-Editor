@@ -64,6 +64,7 @@ namespace TombEditor.Compilers
         private Dictionary<MoveableInstance, int> _aiObjectsTable;
         private Dictionary<SoundSourceInstance, int> _soundSourcesTable;
         private Dictionary<FlybyCameraInstance, int> _flybyTable;
+        private Dictionary<StaticInstance, int> _staticsTable;
 
         private byte[] _bufferSamples;
 
