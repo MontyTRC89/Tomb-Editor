@@ -1053,6 +1053,9 @@ namespace TombEditor.Compilers
                         // Triggers
                         if (room.Blocks[x, z].Triggers.Count > 0)
                         {
+                            // TODO: replace this with the engine selector in settings
+                            var compileNg = true;
+
                             TriggerInstance found = null;
 
                             // First, I search a special trigger, if exists
@@ -1079,7 +1082,7 @@ namespace TombEditor.Compilers
                             {
                                 lastFloorDataFunction = (ushort)tempCodes.Count;
 
-                                // Trigger type and setup are coming from the found trigger. Other triggers are needed onlt for action.
+                                // Trigger type and setup are coming from the found trigger. Other triggers are needed only for action.
                                 ushort trigger1 = 0x04;
                                 switch (found.TriggerType)
                                 {
@@ -1127,7 +1130,10 @@ namespace TombEditor.Compilers
                                 }
 
                                 ushort triggerSetup = 0;
-                                triggerSetup |= (ushort)(found.Timer & 0xff);
+                                if (compileNg)
+                                    triggerSetup |= (ushort)((found.TargetType == TriggerTargetType.FlipEffect ? 0 : (found.Timer & 0xff)));
+                                else
+                                    triggerSetup |= (ushort)(found.Timer & 0xff);
                                 triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
                                 triggerSetup |= (ushort)((found.CodeBits & 0x1f) << 9);
 
@@ -1202,6 +1208,14 @@ namespace TombEditor.Compilers
                                         // Trigger for flip effect
                                         trigger2 = (ushort)(trigger.TargetData & 0x3ff | (9 << 10));
                                         tempCodes.Add(trigger2);
+
+                                        // TRNG stores flipeffect timer as an extra ushort
+                                        if (compileNg)
+                                        {
+                                            trigger2 = (ushort)(trigger.Timer & 0x7fff);
+                                            tempCodes.Add(trigger2);
+                                        }
+
                                         break;
                                     case TriggerTargetType.Secret:
                                         // Trigger for secret found

@@ -9,6 +9,11 @@ namespace TombEditor.Geometry
         public bool Fixed { get; set; }
 
         public override bool CopyToFlipRooms => false;
+
+        public CameraInstance()
+        {
+            ScriptId = UInt16.MaxValue;
+        }
         
         public override string ToString()
         {

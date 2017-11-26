@@ -102,6 +102,8 @@ namespace TombEditor.Geometry.IO
             progressReporter.ReportProgress(0, "Game directory: " + gameDirectory);
             level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.LevelDirectory);
 
+            var logIds = new SortedDictionary<int, string>();
+
             try
             {
                 // Open file
@@ -289,6 +291,7 @@ namespace TombEditor.Geometry.IO
                             switch (objectType)
                             {
                                 case 0x0008:
+                                    // HACK: avoid things like FONT_GRAPHICS
                                     if (objSlot >= 460 && objSlot <= 464)
                                         continue;
 
@@ -315,35 +318,7 @@ namespace TombEditor.Geometry.IO
                                     };
 
                                     objects.Add(obj);
-                                    /*if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
-                                    {
-                                        var instance = new MoveableInstance()
-                                        {
-                                            ScriptId = unchecked((ushort)(objectsThings[j])),
-                                            CodeBits = (byte)((objOcb >> 1) & 0x1f),
-                                            Invisible = (objOcb & 0x0001) != 0,
-                                            ClearBody = (objOcb & 0x0080) != 0,
-                                            WadObjectId = unchecked((uint)objSlot),
-                                            Position = position,
-                                            Ocb = objTimer,
-                                            RotationY = objFacing * (360.0f / 65535.0f),
-                                            Color = color
-                                        };
-                                        room.AddObject(level, instance);
-                                    }
-                                    else
-                                    {
-                                        var instance = new StaticInstance()
-                                        {
-                                            ScriptId = unchecked((ushort)(objectsThings[j])),
-                                            WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
-                                            Position = position,
-                                            RotationY = objFacing * (360.0f / 65535.0f),
-                                            Color = color
-                                        };
 
-                                        room.AddObject(level, instance);
-                                    }*/
                                     break;
 
                                 case 0x0010:
@@ -466,8 +441,7 @@ namespace TombEditor.Geometry.IO
                                         TargetType = triggerTargetTypeEnum,
                                         CodeBits = (byte)((~triggerFlags >> 1) & 0x1f),
                                         OneShot = (triggerFlags & 0x0001) != 0,
-                                        Timer = (short)(triggerTimer & 0xFF),
-                                        ExtraData = (short)((triggerTimer & 0xFF00) >> 8),
+                                        Timer = (short)(triggerTimer),
                                         TargetData = triggerItemNumber
                                     };
                                     room.AddObject(level, trigger);
@@ -592,15 +566,18 @@ namespace TombEditor.Geometry.IO
                                         light.OuterAngle = lightOut;
                                         light.InnerAngle = lightIn;
                                     }
+                                    logIds.Add(objectsThings2[j], "LIGHT");
                                     room.AddObject(level, light);
                                     break;
                                 case 0x4c00:
                                     var sound = new SoundSourceInstance()
                                     {
+                                        ScriptId = unchecked((ushort)(objectsThings2[j])),
                                         SoundId = unchecked((ushort)objSlot),
                                         Position = position
                                     };
-
+                                    logIds.Add(objectsThings2[j], "SOUND");
+                                    level.SetGlobalScriptIdsTableValue(sound);
                                     room.AddObject(level, sound);
                                     break;
                                 case 0x4400:
@@ -610,7 +587,8 @@ namespace TombEditor.Geometry.IO
                                         Strength = (short)(objTimer / 2),
                                         Position = position
                                     };
-
+                                    logIds.Add(objectsThings2[j], "SINK");
+                                    level.SetGlobalScriptIdsTableValue(sink);
                                     room.AddObject(level, sink);
                                     break;
                                 case 0x4800:
@@ -621,7 +599,8 @@ namespace TombEditor.Geometry.IO
                                         Fixed = (objectType == 0x4080),
                                         Position = position
                                     };
-
+                                    logIds.Add(objectsThings2[j], "CAM");
+                                    level.SetGlobalScriptIdsTableValue(camera);
                                     room.AddObject(level, camera);
                                     break;
                                 case 0x4040:
@@ -639,7 +618,8 @@ namespace TombEditor.Geometry.IO
                                         RotationY = objFacing + 180,
                                         Flags = unchecked((ushort)objOcb)
                                     };
-
+                                    logIds.Add(objectsThings2[j], "FLYBY");
+                                    level.SetGlobalScriptIdsTableValue(flybyCamera);
                                     room.AddObject(level, flybyCamera);
                                     break;
                                 default:
@@ -1189,7 +1169,12 @@ namespace TombEditor.Geometry.IO
                     // Ignore unused things indices
                     int dwNumThings = reader.ReadInt32(); // number of things in the map
                     int dwMaxThings = reader.ReadInt32(); // always 2000
-                    reader.ReadBytes(dwMaxThings * 4);
+                    var things = new int[dwMaxThings];
+                    for (var i = 0; i < dwMaxThings; i++)
+                    {
+                        things[i] = reader.ReadInt32();
+                        //level.SetGlobalScriptIdsTableValue(i, (short)things[i]);
+                    }
 
                     int dwNumLights = reader.ReadInt32(); // number of lights in the map
                     reader.ReadBytes(768 * 4);
@@ -1343,6 +1328,8 @@ namespace TombEditor.Geometry.IO
                                     RotationY = currentObj.RotationY,
                                     Color = currentObj.Color
                                 };
+                                logIds.Add(currentObj.ScriptId, "MOVEABLE");
+                                level.SetGlobalScriptIdsTableValue(instance);
                                 level.Rooms[i].AddObject(level, instance);
                             }
                             else
@@ -1355,10 +1342,16 @@ namespace TombEditor.Geometry.IO
                                     RotationY = currentObj.RotationY,
                                     Color = currentObj.Color
                                 };
+                                logIds.Add(currentObj.ScriptId, "STATIC");
+                                level.SetGlobalScriptIdsTableValue(instance);
                                 level.Rooms[i].AddObject(level, instance);
                             }
                         }
                     }
+
+                    using (var wrt = new StreamWriter(File.OpenWrite("scriptids.txt")))
+                        foreach (var item in logIds)
+                            wrt.WriteLine(item.Key + ": " + item.Value);
 
                     // Link triggers
                     {

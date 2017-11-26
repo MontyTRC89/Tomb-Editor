@@ -1,4 +1,5 @@
-﻿using TombLib.Wad;
+﻿using System;
+using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
@@ -8,6 +9,11 @@ namespace TombEditor.Geometry
         public bool Invisible { get; set; } = false;
         public bool ClearBody { get; set; } = false;
         public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
+
+        public MoveableInstance()
+        {
+            ScriptId = UInt16.MaxValue;
+        }
 
         public override bool CopyToFlipRooms => false;
         public override ItemType ItemType => new ItemType(false, WadObjectId);

@@ -116,6 +116,7 @@
     <Compile Include="Compilers\FloorData.cs" />
     <Compile Include="Compilers\LevelCompiler.cs" />
     <Compile Include="Compilers\LevelCompilerTR4.cs" />
+    <Compile Include="Compilers\Ng.cs" />
     <Compile Include="Compilers\Pathfinding.cs" />
     <Compile Include="Compilers\PathfindingDecompiled.cs" />
     <Compile Include="Compilers\Rooms.cs" />

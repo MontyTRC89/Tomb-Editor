@@ -32,6 +32,7 @@ namespace TombEditor.Geometry
         {
             ObjectInstance result = (ObjectInstance)MemberwiseClone();
             result.Room = null;
+            if (result is IHasScriptID) (result as IHasScriptID).ScriptId = UInt16.MaxValue;
             return result;
         }
 

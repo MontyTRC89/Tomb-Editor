@@ -8,6 +8,11 @@ namespace TombEditor.Geometry
         public short Strength { get; set; }
         
         public override bool CopyToFlipRooms => false;
+
+        public SinkInstance()
+        {
+            ScriptId = UInt16.MaxValue;
+        }
         
         public override string ToString()
         {
