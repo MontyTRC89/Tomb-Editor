@@ -6,38 +6,22 @@ using System.Threading.Tasks;
 
 namespace TombLib.NG
 {
-    public enum NGParameterType
+    public class NgTrigger
     {
-        None,
-        Timer,
-        Object,
-        Extra,
-        Button
-    }
+        public Dictionary<int, NgTriggerMainKeyValuePair> MainList { get; private set; }
 
-    public class NgTriggerNode
-    {
-        public int Id { get; internal set; }
-        public string Value { get; internal set; }
-
-        public Dictionary<int, NgTriggerNode> ObjectList { get; set; }
-        public Dictionary<int, NgTriggerNode> TimerList { get; set; }
-        public Dictionary<int, NgTriggerNode> ExtraList { get; set; }
-        public Dictionary<int, NgTriggerNode> ButtonList { get; set; }
-
-        public NgListKind ObjectListKind { get; set; }
-        public NgListKind TimerListKind { get; set; }
-        public NgListKind ExtraListKind { get; set; }
-        public NgListKind ButtonListKind { get; set; }
-
-        public NgTriggerNode(int id, string value)
+        public NgTrigger()
         {
-            Id = id;
-            Value = value;
-            ObjectList = new Dictionary<int, NgTriggerNode>();
-            TimerList = new Dictionary<int, NgTriggerNode>();
-            ExtraList = new Dictionary<int, NgTriggerNode>();
-            ButtonList = new Dictionary<int, NgTriggerNode>();
+            MainList = new Dictionary<int, NgTriggerMainKeyValuePair>();
+        }
+
+        public List<string> GetListForComboBox()
+        {
+            var result = new List<string>();
+            foreach (var pair in MainList)
+                result.Add(pair.Key + ": " + pair.Value);
+
+            return result;
         }
     }
 }

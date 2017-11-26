@@ -120,7 +120,7 @@ namespace TombEditor.Compilers
                     if (instance is StaticInstance)
                     {
                         var staticMesh = instance as StaticInstance;
-                        writer.Write((short)_roomsRemappingDictionary[staticMesh.Room]);
+                        writer.Write((short)_level.Rooms.ReferenceIndexOf(staticMesh.Room));
                         writer.Write((short)_staticsTable[staticMesh]);
                     }
                     else

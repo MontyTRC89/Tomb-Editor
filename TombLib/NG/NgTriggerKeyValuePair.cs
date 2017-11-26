@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace TombLib.NG
 {
-    public class NgVectorPair
+    public class NgTriggerKeyValuePair
     {
-        public object Key { get; set; }
+        public int Key { get; set; }
         public string Value { get; set; }
 
-        public NgVectorPair(object key, string value)
+        public NgTriggerKeyValuePair(int key, string value)
         {
             this.Key = key;
             this.Value = value;

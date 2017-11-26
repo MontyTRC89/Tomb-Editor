@@ -47,7 +47,8 @@ namespace TombLib.Wad
         public List<WadTexture> PackedTextures { get; set; } = new List<WadTexture>();
 
         // Size of the atlas
-        public const int TextureAtlasSize = 2048;
+        // DX10 requires minimum 8K textures support for hardware certification so we should be safe with this
+        public const int TextureAtlasSize = 8192;
 
         public void Dispose()
         {

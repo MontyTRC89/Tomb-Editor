@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using TombLib.NG;
 
-namespace TombLib.NG
+namespace NgXmlBuilder
 {
-    public class NgCatalog
+    public class NgTempCatalog
     {
-        public static NgTrigger FlipEffectTrigger { get; private set; }
-        public static NgTrigger ActionTrigger { get; private set; }
-        public static NgTrigger TimerFieldTrigger { get; private set; }
-        public static NgTrigger ConditionTrigger { get; private set; }
+        public static NgTriggerNode ActionTrigger { get; set; }
+        public static NgTriggerNode ConditionTrigger { get; set; }
+        public static NgTriggerNode FlipEffectTrigger { get; set; }
+        public static NgTriggerNode TimerFieldTrigger { get; set; }
 
         public static void LoadCatalog(string fileName)
         {
@@ -24,26 +25,26 @@ namespace TombLib.NG
             {
                 if (triggerNode.Name == "TimerTrigger")
                 {
-                    TimerFieldTrigger = new NgTrigger();
+                    TimerFieldTrigger = new NgTriggerNode(-1, "TimerTrigger");
 
                     var objectList = triggerNode.ChildNodes[0];
                     foreach (XmlNode objectNode in objectList.ChildNodes)
                     {
                         var key = int.Parse(objectNode.Attributes["K"].Value);
                         var value = objectNode.Attributes["V"].Value;
-                        TimerFieldTrigger.MainList.Add(key, new NgTriggerMainKeyValuePair(key, value));
+                        TimerFieldTrigger.ObjectList.Add(key, new NgTriggerNode(key, value));
                     }
                 }
                 else if (triggerNode.Name == "FlipEffectTrigger")
                 {
-                    FlipEffectTrigger = new NgTrigger();
+                    FlipEffectTrigger = new NgTriggerNode(-1, "FlipEffectTrigger");
 
                     var objectList = triggerNode.ChildNodes[0];
                     foreach (XmlNode objectNode in objectList.ChildNodes)
                     {
                         var key = int.Parse(objectNode.Attributes["K"].Value);
                         var value = objectNode.Attributes["V"].Value;
-                        var node = new NgTriggerMainKeyValuePair(key, value);
+                        var node = new NgTriggerNode(key, value);
 
                         foreach (XmlNode nodeList in objectNode.ChildNodes)
                         {
@@ -56,7 +57,7 @@ namespace TombLib.NG
                                 {
                                     var key2 = int.Parse(timerNode.Attributes["K"].Value);
                                     var value2 = timerNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
+                                    var node2 = new NgTriggerNode(key2, value2);
                                     node.TimerList.Add(key2, node2);
                                 }
                             }
@@ -69,25 +70,25 @@ namespace TombLib.NG
                                 {
                                     var key2 = int.Parse(extraNode.Attributes["K"].Value);
                                     var value2 = extraNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
+                                    var node2 = new NgTriggerNode(key2, value2);
                                     node.ExtraList.Add(key2, node2);
                                 }
                             }
                         }
 
-                        FlipEffectTrigger.MainList.Add(node.Key, node);
+                        FlipEffectTrigger.ObjectList.Add(node.Id, node);
                     }
                 }
                 else if (triggerNode.Name == "ActionTrigger")
                 {
-                    ActionTrigger = new NgTrigger();
+                    ActionTrigger = new NgTriggerNode(-1, "ActionTrigger");
 
                     var timerList = triggerNode.ChildNodes[0];
                     foreach (XmlNode timerNode in timerList.ChildNodes)
                     {
                         var key = int.Parse(timerNode.Attributes["K"].Value);
                         var value = timerNode.Attributes["V"].Value;
-                        var node = new NgTriggerMainKeyValuePair(key, value);
+                        var node = new NgTriggerNode(key, value);
 
                         foreach (XmlNode nodeList in timerNode.ChildNodes)
                         {
@@ -100,7 +101,7 @@ namespace TombLib.NG
                                 {
                                     var key2 = int.Parse(objectNode.Attributes["K"].Value);
                                     var value2 = objectNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
+                                    var node2 = new NgTriggerNode(key2, value2);
                                     node.ObjectList.Add(key2, node2);
                                 }
                             }
@@ -113,25 +114,25 @@ namespace TombLib.NG
                                 {
                                     var key2 = int.Parse(extraNode.Attributes["K"].Value);
                                     var value2 = extraNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
+                                    var node2 = new NgTriggerNode(key2, value2);
                                     node.ExtraList.Add(key2, node2);
                                 }
                             }
                         }
 
-                        ActionTrigger.MainList.Add(node.Key, node);
+                        ActionTrigger.TimerList.Add(node.Id, node);
                     }
                 }
                 else if (triggerNode.Name == "ConditionTrigger")
                 {
-                    ConditionTrigger = new NgTrigger();
+                    ConditionTrigger = new NgTriggerNode(-1, "ConditionTrigger");
 
                     var timerList = triggerNode.ChildNodes[0];
                     foreach (XmlNode timerNode in timerList.ChildNodes)
                     {
                         var key = int.Parse(timerNode.Attributes["K"].Value);
                         var value = timerNode.Attributes["V"].Value;
-                        var node = new NgTriggerMainKeyValuePair(key, value);
+                        var node = new NgTriggerNode(key, value);
 
                         foreach (XmlNode nodeList in timerNode.ChildNodes)
                         {
@@ -144,26 +145,26 @@ namespace TombLib.NG
                                 {
                                     var key2 = int.Parse(objectNode.Attributes["K"].Value);
                                     var value2 = objectNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
+                                    var node2 = new NgTriggerNode(key2, value2);
                                     node.ObjectList.Add(key2, node2);
                                 }
                             }
-                            else if (nodeList.Name == "ExtraList")
+                            else if (nodeList.Name == "ButtonList")
                             {
                                 var listKind = (NgListKind)Enum.Parse(typeof(NgListKind), nodeList.Attributes["Kind"].Value);
-                                node.ExtraListKind = listKind;
+                                node.ButtonListKind = listKind;
 
                                 foreach (XmlNode buttonNode in nodeList.ChildNodes)
                                 {
                                     var key2 = int.Parse(buttonNode.Attributes["K"].Value);
                                     var value2 = buttonNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
-                                    node.ExtraList.Add(key2, node2);
+                                    var node2 = new NgTriggerNode(key2, value2);
+                                    node.ButtonList.Add(key2, node2);
                                 }
                             }
                         }
 
-                        ConditionTrigger.MainList.Add(node.Key, node);
+                        ConditionTrigger.TimerList.Add(node.Id, node);
                     }
                 }
             }
