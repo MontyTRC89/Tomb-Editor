@@ -32,7 +32,6 @@ namespace TombEditor.Geometry
         {
             ObjectInstance result = (ObjectInstance)MemberwiseClone();
             result.Room = null;
-            if (result is IHasScriptID) (result as IHasScriptID).ScriptId = UInt16.MaxValue;
             return result;
         }
 
@@ -129,10 +128,65 @@ namespace TombEditor.Geometry
         }
     }
 
-    public interface IHasScriptID
+    public abstract class PositionAndScriptBasedObjectInstance : PositionBasedObjectInstance, IHasScriptID
     {
-        ushort? ScriptId { get; set; }
-    };
+        private ScriptIdTable<IHasScriptID> _scriptTable = null;
+        private uint? _scriptId = null;
+        public uint? ScriptId
+        {
+            get
+            {
+                return _scriptId;
+            }
+            set
+            {
+                _scriptTable?.Update(this, _scriptId, value);
+                _scriptId = value;
+            }
+        }
+
+        public void AllocateNewScriptId()
+        {
+            _scriptId = _scriptTable?.UpdateWithNewId(this, _scriptId);
+        }
+
+        public override ObjectInstance Clone()
+        {
+            ObjectInstance result = base.Clone();
+            ((PositionAndScriptBasedObjectInstance)result)._scriptId = null;
+            return result;
+        }
+
+        public override void AddToRoom(Level level, Room room)
+        {
+            base.AddToRoom(level, room);
+            try
+            {
+                level.GlobalScriptingIdsTable.Update(this, null, ScriptId);
+            }
+            catch (Exception)
+            {
+                base.RemoveFromRoom(level, room);
+                throw;
+            }
+            _scriptTable = level.GlobalScriptingIdsTable;
+        }
+
+        public override void RemoveFromRoom(Level level, Room room)
+        {
+            base.RemoveFromRoom(level, room);
+            try
+            {
+                level.GlobalScriptingIdsTable.Update(this, ScriptId, null);
+            }
+            catch (Exception)
+            {
+                base.AddToRoom(level, room);
+                throw;
+            }
+            _scriptTable = null;
+        }
+    }
 
     public static class RotatableExtensions
     {

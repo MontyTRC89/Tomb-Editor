@@ -5,9 +5,8 @@ using System.Text;
 
 namespace TombEditor.Geometry
 {
-    public class FlybyCameraInstance : PositionBasedObjectInstance, IRotateableYXRoll, IHasScriptID
+    public class FlybyCameraInstance : PositionAndScriptBasedObjectInstance, IRotateableYXRoll
     {
-        public ushort? ScriptId { get; set; }
         public ushort Sequence { get; set; }
         public ushort Number { get; set; }
         public short Timer { get; set; }
@@ -55,11 +54,6 @@ namespace TombEditor.Geometry
         }
 
         public override bool CopyToFlipRooms => false;
-
-        public FlybyCameraInstance()
-        {
-            ScriptId = UInt16.MaxValue;
-        }
 
         public override string ToString()
         {

@@ -420,7 +420,7 @@ namespace TombEditor.Geometry.IO
                                 var instance = new MoveableInstance();
                                 instance.Position = chunkIO.Raw.ReadVector3();
                                 instance.RotationY = chunkIO.Raw.ReadSingle();
-                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
                                 instance.WadObjectId = chunkIO.Raw.ReadUInt32();
                                 instance.Ocb = chunkIO.Raw.ReadInt16();
                                 instance.Invisible = chunkIO.Raw.ReadBoolean();
@@ -436,7 +436,7 @@ namespace TombEditor.Geometry.IO
                                 newObjects.TryAdd(objectID, instance);
                                 instance.Position = chunkIO.Raw.ReadVector3();
                                 instance.RotationY = chunkIO.Raw.ReadSingle();
-                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
                                 instance.WadObjectId = chunkIO.Raw.ReadUInt32();
                                 instance.Color = chunkIO.Raw.ReadVector4();
                                 instance.Ocb = chunkIO.Raw.ReadUInt16();
@@ -446,7 +446,7 @@ namespace TombEditor.Geometry.IO
                             {
                                 var instance = new CameraInstance();
                                 instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
                                 instance.Fixed = chunkIO.Raw.ReadBoolean();
                                 room.AddObjectAndSingularPortal(level, instance);
                                 newObjects.TryAdd(objectID, instance);
@@ -457,7 +457,7 @@ namespace TombEditor.Geometry.IO
                                 instance.Position = chunkIO.Raw.ReadVector3();
                                 instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
                                 instance.Roll = chunkIO.Raw.ReadSingle();
-                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
                                 instance.Speed = chunkIO.Raw.ReadSingle();
                                 instance.Fov = chunkIO.Raw.ReadSingle();
                                 instance.Flags = LEB128.ReadUShort(chunkIO.Raw);
@@ -471,7 +471,7 @@ namespace TombEditor.Geometry.IO
                             {
                                 var instance = new SinkInstance();
                                 instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
                                 instance.Strength = chunkIO.Raw.ReadInt16();
                                 room.AddObjectAndSingularPortal(level, instance);
                                 newObjects.TryAdd(objectID, instance);
@@ -604,15 +604,15 @@ namespace TombEditor.Geometry.IO
             return true;
         }
 
-        private static ushort? ReadOptionalLEB128Ushort(BinaryReaderEx reader)
+        private static uint? ReadOptionalLEB128Int(BinaryReaderEx reader)
         {
             long read = LEB128.ReadLong(reader);
             if (read < 0)
                 return null;
-            else if (read > ushort.MaxValue)
-                return ushort.MaxValue;
+            else if (read > uint.MaxValue)
+                return uint.MaxValue;
             else
-                return (ushort)read;
+                return (uint)read;
         }
 
         private static void TryAdd<K, T>(this Dictionary<K, T> this_, K key, T value)

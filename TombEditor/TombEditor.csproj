@@ -149,6 +149,7 @@
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Geometry\ScriptID.cs" />
     <Compile Include="KeyboardLayout.cs" />
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
@@ -273,7 +274,7 @@
     <Compile Include="Geometry\ItemInstance.cs" />
     <Compile Include="Geometry\ObjectInstance.cs" />
     <Compile Include="Geometry\SinkInstance.cs" />
-    <Compile Include="Geometry\SoundInstance.cs" />
+    <Compile Include="Geometry\SoundSourceInstance.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

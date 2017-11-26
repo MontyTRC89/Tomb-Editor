@@ -19,41 +19,7 @@ namespace TombEditor.Geometry
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
         public Wad2 Wad { get; private set; }
         public LevelSettings Settings { get; private set; } = new LevelSettings();
-        public IHasScriptID[] GlobalScriptingIdsTable { get; private set; }
-
-        public Level()
-        {
-            GlobalScriptingIdsTable = new IHasScriptID[6000];
-            for (var i = 0; i < 6000; i++)
-                GlobalScriptingIdsTable[i] = null;
-        }
-
-        public short AddNewObjectToGlobalScriptIdsTable(IHasScriptID instance)
-        {
-            for (var i = 0; i < 6000; i++)
-                if (GlobalScriptingIdsTable[i] == null)
-                {
-                    instance.ScriptId = (ushort)i;
-                    GlobalScriptingIdsTable[i] = instance;
-                    return (short)i;
-                }
-            return -1;
-        }
-
-        internal void SetGlobalScriptIdsTableValue(IHasScriptID value)
-        {
-            GlobalScriptingIdsTable[(int)value.ScriptId] = value;
-        }
-
-        public void RemoveObjectFromGlobalScriptIdsTable(IHasScriptID instance)
-        {
-            for (var i = 0; i < 6000; i++)
-                if (GlobalScriptingIdsTable[i] == instance)
-                {
-                    GlobalScriptingIdsTable[i] = null;
-                    return;
-                }
-        }
+        public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
 
         public static Level CreateSimpleLevel()
         {
@@ -203,7 +169,7 @@ namespace TombEditor.Geometry
                     Rooms[i] = null;
                     return;
                 }
-           throw new ArgumentException("The room does not belong to the level from which it should be removed.");
+            throw new ArgumentException("The room does not belong to the level from which it should be removed.");
         }
 
         public void DeleteRoom(Room room)
