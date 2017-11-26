@@ -146,7 +146,7 @@ namespace TombEditor
             gameDirectoryTxt.Text = _levelSettings.GameDirectory;
             gameLevelFilePathTxt.Text = _levelSettings.GameLevelFilePath;
             gameExecutableFilePathTxt.Text = _levelSettings.GameExecutableFilePath;
-            gameExecutableSuppressAskingForOptionsCheckBox.Checked = _levelSettings.GameExecutableSuppressAskingForOptions;
+            GameEnableQuickStartFeatureCheckBox.Checked = _levelSettings.GameEnableQuickStartFeature;
             comboGameVersion.Text = _levelSettings.GameVersion.ToString(); // Must also accept none enum values.
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -500,9 +500,9 @@ namespace TombEditor
             }
         }
 
-        private void gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void GameEnableQuickStartFeatureCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            _levelSettings.GameExecutableSuppressAskingForOptions = gameExecutableSuppressAskingForOptionsCheckBox.Checked;
+            _levelSettings.GameEnableQuickStartFeature = GameEnableQuickStartFeatureCheckBox.Checked;
             UpdateDialog();
         }
 

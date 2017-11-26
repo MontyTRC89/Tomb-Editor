@@ -88,8 +88,8 @@ namespace TombEditor.Geometry.IO
                     settings.GameLevelFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.GameExecutableFilePath)
                     settings.GameExecutableFilePath = chunkIO.ReadChunkString(chunkSize);
-                else if (id == Prj2Chunks.GameExecutableSuppressAskingForOptions)
-                    settings.GameExecutableSuppressAskingForOptions = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.GameEnableQuickStartFeature)
+                    settings.GameEnableQuickStartFeature = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.GameVersion)
                     settings.GameVersion = (GameVersion)chunkIO.ReadChunkLong(chunkSize);
                 else if (id == Prj2Chunks.Textures)

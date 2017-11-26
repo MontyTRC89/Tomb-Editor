@@ -37,7 +37,7 @@ namespace TombEditor
                 {
                     // Seperate thread to wait for the options dialog to appear
                     // so it can be suppressed subsequently by sending WM_CLOSE.
-                    if (settings.GameExecutableSuppressAskingForOptions && IsWindows)
+                    if (settings.GameEnableQuickStartFeature && IsWindows)
                     {
                         Process process2 = process;
                         Thread thread = new Thread(() =>
