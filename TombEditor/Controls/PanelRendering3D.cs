@@ -665,6 +665,7 @@ namespace TombEditor.Controls
             // Update drawing
             if ((obj is IEditorObjectChangedEvent) ||
                 (obj is IEditorRoomChangedEvent) ||
+                (obj is Editor.ChangeHighlightEvent) ||
                 (obj is Editor.ConfigurationChangedEvent) ||
                 (obj is Editor.SelectedObjectChangedEvent) ||
                 (obj is Editor.SelectedSectorsChangedEvent) ||
@@ -2527,11 +2528,6 @@ namespace TombEditor.Controls
             return new Ray(nearPoint, direction.Normalize_());
         }
 
-        private static Vector4 GetSharpdDXColor(System.Drawing.Color color)
-        {
-            return new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, 1.0f);
-        }
-
         private void CollectObjectsToDraw()
         {
             _moveablesToDraw.Clear();
@@ -3271,87 +3267,69 @@ namespace TombEditor.Controls
                     }
 
                     if(lookupBlock != null && lookupBlock.Block.Flags.HasFlag(climbDirection))
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorClimb));
+                        _roomEffect.Parameters["Color"].SetValue(Editor.ColorClimb);
                     else
                     {
                         if (room.Blocks[x, z].WallPortal == null)
                         {
                             if (face < (BlockFace)10)
                             {
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorWallUpper));
+                                _roomEffect.Parameters["Color"].SetValue(Editor.ColorWallUpper);
                             }
                             else if (face >= (BlockFace)10 && face < (BlockFace)15)
                             {
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorWall));
+                                _roomEffect.Parameters["Color"].SetValue(Editor.ColorWall);
                             }
                             else if (face >= (BlockFace)15 && face < (BlockFace)25)
                             {
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorWallMiddle));
+                                _roomEffect.Parameters["Color"].SetValue(Editor.ColorWallMiddle);
                             }
                         }
                         else
                         {
                             // Wall sections on wall portals rendered yellow.
-                            _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
+                            _roomEffect.Parameters["Color"].SetValue(Editor.ColorPortalFace);
                         }
                     }
                 }
                 else
                 {
-                    // Highlight triggers on both floor and ceiling
-                    if (room.Blocks[x, z].Triggers.Count != 0)
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorTrigger));
-                    else
+                    _roomEffect.Parameters["Color"].SetValue(Editor.ColorFloor);
+
+                    var currentHighlight = _editor.HighlightManager.GetColor(room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
+                    if (currentHighlight.HasValue && currentHighlight.Value != Editor.ColorPortal)
+                        _roomEffect.Parameters["Color"].SetValue(currentHighlight.Value);
+
+                    // Floor-specific highlights
+                    if (face == (BlockFace)25 || face == (BlockFace)26)
                     {
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorFloor));
-
-                        // Floor-specific highlights
-                        if (face == (BlockFace)25 || face == (BlockFace)26)
+                        if (room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                         {
-                            if (room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                            {
-                                if ((room.Blocks[x, z].FloorDiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Floor) ||
-                                    (room.Blocks[x, z].FloorDiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.FloorTriangle2))
-                                    _roomEffect.Parameters["Dim"].SetValue(true);
-                            }
-
-                            if ((room.Blocks[x, z].Flags & BlockFlags.Monkey) != 0)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorMonkey));
-                            if ((room.Blocks[x, z].Flags & BlockFlags.ClimbAny) != 0)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorClimb));
-                            if ((room.Blocks[x, z].Flags & BlockFlags.DeathElectricity) != 0)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
-                            if ((room.Blocks[x, z].Flags & BlockFlags.DeathFire) != 0)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
-                            if ((room.Blocks[x, z].Flags & BlockFlags.DeathLava) != 0)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
-                            if ((room.Blocks[x, z].Flags & BlockFlags.Box) != 0)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorBox));
-                            if ((room.Blocks[x, z].Flags & BlockFlags.NotWalkableFloor) != 0)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNotWalkable));
-
-                            if (room.Blocks[x, z].FloorPortal != null)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
+                            if ((room.Blocks[x, z].FloorDiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Floor) ||
+                                (room.Blocks[x, z].FloorDiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.FloorTriangle2))
+                                _roomEffect.Parameters["Dim"].SetValue(true);
                         }
 
+                        if (!currentHighlight.HasValue && (room.Blocks[x, z].Flags & BlockFlags.ClimbAny) != 0)
+                            _roomEffect.Parameters["Color"].SetValue(Editor.ColorClimb);
 
-                        // Ceiling-specific highlights
-                        if (face == (BlockFace)27 || face == (BlockFace)28)
+                        if (room.Blocks[x, z].FloorPortal != null)
+                            _roomEffect.Parameters["Color"].SetValue(Editor.ColorPortalFace);
+                    }
+
+
+                    // Ceiling-specific highlights
+                    if (face == (BlockFace)27 || face == (BlockFace)28)
+                    {
+                        if (room.Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None)
                         {
-                            if (room.Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None)
-                            {
-                                if ((room.Blocks[x, z].CeilingDiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Ceiling) ||
-                                    (room.Blocks[x, z].CeilingDiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.CeilingTriangle2))
-                                    _roomEffect.Parameters["Dim"].SetValue(true);
-                            }
-
-                            // Also highlight monkeyswing on ceiling
-                            if ((room.ProbeLowestBlock(x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals).Block.Flags & BlockFlags.Monkey) != 0)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorMonkey));
-
-                            if (room.Blocks[x, z].CeilingPortal != null)
-                                _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
+                            if ((room.Blocks[x, z].CeilingDiagonalSplit > DiagonalSplit.XpZp && face == BlockFace.Ceiling) ||
+                                (room.Blocks[x, z].CeilingDiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.CeilingTriangle2))
+                                _roomEffect.Parameters["Dim"].SetValue(true);
                         }
+
+                        if (room.Blocks[x, z].CeilingPortal != null)
+                            _roomEffect.Parameters["Color"].SetValue(Editor.ColorPortalFace);
                     }
                 }
 

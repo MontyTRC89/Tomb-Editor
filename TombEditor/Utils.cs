@@ -271,18 +271,30 @@ namespace TombEditor
             second = temp;
         }
 
-        public static System.Drawing.Color ToWinFormsColor(this Vector4 color)
+        public static System.Drawing.Color ToWinFormsColor(this Vector4 color, bool unnormalizeFrom1 = false)
         {
+            float factor = unnormalizeFrom1 ? 255.0f : 128.0f;
+
             return System.Drawing.Color.FromArgb(
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.W * 128.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.X * 128.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * 128.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 128.0f))));
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.W * factor))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.X * factor))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * factor))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * factor))));
+        }
+
+        public static Vector4 ToFloatColor(byte R, byte G, byte B, byte A, bool normalizeTo1 = false)
+        {
+            return new Vector4(R, G, B, A) / (normalizeTo1 ? 255.0f : 128.0f);
+        }
+
+        public static Vector4 ToFloatColor(byte R, byte G, byte B, bool normalizeTo1 = false)
+        {
+            return ToFloatColor(R, G, B, 255, normalizeTo1);
         }
 
         public static Vector4 ToFloatColor(this System.Drawing.Color color)
         {
-            return new Vector4(color.R, color.G, color.B, color.A) / 128.0f;
+            return ToFloatColor(color.R, color.G, color.B, color.A);
         }
 
         public static Vector3 ToFloatColor3(this System.Drawing.Color color)

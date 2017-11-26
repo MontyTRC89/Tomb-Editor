@@ -436,6 +436,7 @@ namespace TombEditor
                     return;
             }
             room.AddObject(_editor.Level, trigger);
+            _editor.HighlightManager.SetPriority(HighlightType.Trigger);
             _editor.ObjectChange(trigger, ObjectChangeType.Add);
             _editor.RoomSectorPropertiesChange(room);
         }

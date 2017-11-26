@@ -199,17 +199,20 @@ namespace TombEditor.ToolWindows
         private void toolTip_Popup(object sender, PopupEventArgs e)
         {
             if(e.AssociatedControl is DarkButton)
-                SwitchHighlightPriority((DarkButton)e.AssociatedControl);
+                SetHighlightPriority((DarkButton)e.AssociatedControl);
         }
 
         private void sectorPropertyButton_Click(object sender, EventArgs e)
         {
             if (sender is DarkButton)
-                SwitchHighlightPriority((DarkButton)sender);
+                SetHighlightPriority((DarkButton)sender);
         }
 
-        private void SwitchHighlightPriority(DarkButton button)
+        private void SetHighlightPriority(DarkButton button)
         {
+            if (!_editor.Configuration.Editor_AutoSwitchHighlight)
+                return;
+
             HighlightType typeToHighlight;
 
             if (button == butBox)
@@ -229,7 +232,7 @@ namespace TombEditor.ToolWindows
             else
                 typeToHighlight = HighlightType.None;
 
-            panel2DGrid.SwitchHighlightPriority(typeToHighlight);
+            _editor.HighlightManager.SetPriority(typeToHighlight);
         }
     }
 }
