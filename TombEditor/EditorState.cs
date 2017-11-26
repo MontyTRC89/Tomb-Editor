@@ -100,7 +100,7 @@ namespace TombEditor
         CornerSE,
         CornerSW
     }
-    
+
     public enum SmoothGeometryEditingType
     {
         None, Floor, Wall, Any

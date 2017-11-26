@@ -9,6 +9,7 @@ using NLog;
 using TombLib.Graphics;
 using TombEditor.Geometry;
 using System.Drawing.Drawing2D;
+using Vector4 = SharpDX.Vector4;
 
 namespace TombEditor.Controls
 {
@@ -24,11 +25,12 @@ namespace TombEditor.Controls
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
         private static readonly Pen _selectionPen = new Pen(Color.Red, 2);
-        private static readonly Brush _floorBrush = new SolidBrush(Utils.ToWinFormsColor(Editor.ColorFloor, true));
-        private static readonly Brush _wallBrush = new SolidBrush(Utils.ToWinFormsColor(Editor.ColorWall, true));
+        private static readonly Brush _floorBrush = new SolidBrush(HighlightState.ColorFloor.ToWinFormsColor());
+        private static readonly Brush _wallBrush = new SolidBrush(HighlightState.ColorWall.ToWinFormsColor());
         private static readonly Brush _borderWallBrush = new SolidBrush(Color.Gray);
-        private static readonly Brush _forceFloorSolidBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Utils.ToWinFormsColor(Editor.ColorFloor, true).MixWith(Color.Black, 0.1));
-        private static readonly Brush _climbBrush = new SolidBrush(Utils.ToWinFormsColor(Editor.ColorClimb, true));
+        private static readonly Brush _forceFloorSolidBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent,
+            Vector4.Lerp(HighlightState.ColorFloor, new Vector4(0.0f, 0.0f, 0.0f, 1.0f), 0.1f).ToWinFormsColor());
+        private static readonly Brush _climbBrush = new SolidBrush(HighlightState.ColorClimb.ToWinFormsColor());
 
         private float _gridSize => Math.Min(ClientSize.Width, ClientSize.Height);
         private float _gridStep => _gridSize / Room.MaxRoomDimensions;
@@ -56,7 +58,7 @@ namespace TombEditor.Controls
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update drawing
-            if ((obj is Editor.ChangeHighlightEvent) ||
+            if ((obj is HighlightManager.ChangeHighlightEvent) ||
                 (obj is Editor.SelectedRoomChangedEvent) ||
                 (obj is Editor.SelectedSectorsChangedEvent) ||
                 (obj is Editor.RoomSectorPropertiesChangedEvent) ||
@@ -232,7 +234,7 @@ namespace TombEditor.Controls
                         RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep, _gridStep);
                         Block block = currentRoom.Blocks[x, z];
                         Block bottomBlock = currentRoom.ProbeLowestBlock(x, z, probePortals).Block;
-                        
+
                         e.Graphics.FillRectangle(_floorBrush, rectangle);
 
                         // Draw border wall
@@ -241,8 +243,8 @@ namespace TombEditor.Controls
 
                         // Draw solid sector attributes
                         var currentHighlight = _editor.HighlightManager.GetColor(currentRoom, x, z, probePortals);
-                        if(currentHighlight.HasValue)
-                            using (var b = new SolidBrush(Utils.ToWinFormsColor(currentHighlight.Value, true)))
+                        if (currentHighlight.HasValue)
+                            using (var b = new SolidBrush(currentHighlight.Value.ToWinFormsColor()))
                                 e.Graphics.FillRectangle(b, rectangle);
 
                         // Always overlay any solid sector attributes with ForceFloorSolid semi-transparent brush
@@ -257,7 +259,7 @@ namespace TombEditor.Controls
 
                         currentHighlight = _editor.HighlightManager.GetColor(currentRoom, x, z, probePortals, true);
                         if (currentHighlight.HasValue)
-                            using (var b = new Pen(Utils.ToWinFormsColor(currentHighlight.Value, true), _outlineHighlightWidth))
+                            using (var b = new Pen(currentHighlight.Value.ToWinFormsColor(), _outlineHighlightWidth))
                                 e.Graphics.DrawRectangle(b, frameAttribRect);
 
                         // Always draw climb above any other attributes

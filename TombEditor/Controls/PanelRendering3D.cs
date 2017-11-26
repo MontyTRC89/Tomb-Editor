@@ -144,7 +144,7 @@ namespace TombEditor.Controls
             private Point _referencePosition;
             private Point _newPosition;
             private Room _referenceRoom;
-           
+
             // Terrain map resolution must be ALWAYS POWER OF 2 PLUS 1 - this is the requirement of diamond square algorithm.
             private const int TerrainMapResolution = 32 + 1;
             public float[,] RandomHeightMap = new float[TerrainMapResolution, TerrainMapResolution];
@@ -492,7 +492,7 @@ namespace TombEditor.Controls
                 else
                     return null;
             }
-            
+
             public void DiscardEditedGeometry(bool autoUpdate = false)
             {
                 for (int x = 0; x < _referenceRoom.NumXSectors; x++)
@@ -665,7 +665,7 @@ namespace TombEditor.Controls
             // Update drawing
             if ((obj is IEditorObjectChangedEvent) ||
                 (obj is IEditorRoomChangedEvent) ||
-                (obj is Editor.ChangeHighlightEvent) ||
+                (obj is HighlightManager.ChangeHighlightEvent) ||
                 (obj is Editor.ConfigurationChangedEvent) ||
                 (obj is Editor.SelectedObjectChangedEvent) ||
                 (obj is Editor.SelectedSectorsChangedEvent) ||
@@ -3267,37 +3267,37 @@ namespace TombEditor.Controls
                     }
 
                     if(lookupBlock != null && lookupBlock.Block.Flags.HasFlag(climbDirection))
-                        _roomEffect.Parameters["Color"].SetValue(Editor.ColorClimb);
+                        _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorClimb);
                     else
                     {
                         if (room.Blocks[x, z].WallPortal == null)
                         {
                             if (face < (BlockFace)10)
                             {
-                                _roomEffect.Parameters["Color"].SetValue(Editor.ColorWallUpper);
+                                _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorWallUpper);
                             }
                             else if (face >= (BlockFace)10 && face < (BlockFace)15)
                             {
-                                _roomEffect.Parameters["Color"].SetValue(Editor.ColorWall);
+                                _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorWall);
                             }
                             else if (face >= (BlockFace)15 && face < (BlockFace)25)
                             {
-                                _roomEffect.Parameters["Color"].SetValue(Editor.ColorWallMiddle);
+                                _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorWallMiddle);
                             }
                         }
                         else
                         {
                             // Wall sections on wall portals rendered yellow.
-                            _roomEffect.Parameters["Color"].SetValue(Editor.ColorPortalFace);
+                            _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorPortalFace);
                         }
                     }
                 }
                 else
                 {
-                    _roomEffect.Parameters["Color"].SetValue(Editor.ColorFloor);
+                    _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorFloor);
 
                     var currentHighlight = _editor.HighlightManager.GetColor(room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
-                    if (currentHighlight.HasValue && currentHighlight.Value != Editor.ColorPortal)
+                    if (currentHighlight.HasValue && currentHighlight.Value != HighlightState.ColorPortal)
                         _roomEffect.Parameters["Color"].SetValue(currentHighlight.Value);
 
                     // Floor-specific highlights
@@ -3311,10 +3311,10 @@ namespace TombEditor.Controls
                         }
 
                         if (!currentHighlight.HasValue && (room.Blocks[x, z].Flags & BlockFlags.ClimbAny) != 0)
-                            _roomEffect.Parameters["Color"].SetValue(Editor.ColorClimb);
+                            _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorClimb);
 
                         if (room.Blocks[x, z].FloorPortal != null)
-                            _roomEffect.Parameters["Color"].SetValue(Editor.ColorPortalFace);
+                            _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorPortalFace);
                     }
 
 
@@ -3329,7 +3329,7 @@ namespace TombEditor.Controls
                         }
 
                         if (room.Blocks[x, z].CeilingPortal != null)
-                            _roomEffect.Parameters["Color"].SetValue(Editor.ColorPortalFace);
+                            _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorPortalFace);
                     }
                 }
 

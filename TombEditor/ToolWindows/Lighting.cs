@@ -105,7 +105,7 @@ namespace TombEditor.ToolWindows
                 numDirectionX.Enabled = HasDirection;
 
                 // Update value state
-                panelLightColor.BackColor = light != null ? new Vector4(light.Color, 1.0f).ToWinFormsColor() : BackColor;
+                panelLightColor.BackColor = light != null ? new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor() : BackColor;
                 numIntensity.Value = (decimal)(light?.Intensity ?? 0);
                 numInnerRange.Value = HasInOutRange ? (decimal)light.InnerRange : 0;
                 numOuterRange.Value = HasInOutRange ? (decimal)light.OuterRange : 0;
@@ -141,10 +141,10 @@ namespace TombEditor.ToolWindows
             UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,
                 (light) =>
                 {
-                    colorDialog.Color = new Vector4(light.Color, 1.0f).ToWinFormsColor();
+                    colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
                     if (colorDialog.ShowDialog(this) != DialogResult.OK)
                         return null;
-                    return colorDialog.Color.ToFloatColor3();
+                    return (Vector3)colorDialog.Color.ToFloatColor() * 2.0f;
                 });
         }
 
