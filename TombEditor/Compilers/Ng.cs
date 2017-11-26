@@ -86,15 +86,15 @@ namespace TombEditor.Compilers
                 else
                 {
                     var instance = _level.GlobalScriptingIdsTable[i];
-                    if (instance is MoveableInstance)
+                    if (instance is MoveableInstance && _moveablesTable.ContainsKey(instance as MoveableInstance))
                         writer.Write((short)_moveablesTable[instance as MoveableInstance]);
-                    else if (instance is CameraInstance)
+                    else if (instance is CameraInstance && _cameraTable.ContainsKey(instance as CameraInstance))
                         writer.Write((short)_cameraTable[instance as CameraInstance]);
-                    else if (instance is SinkInstance)
+                    else if (instance is SinkInstance && _sinkTable.ContainsKey(instance as SinkInstance))
                         writer.Write((short)_sinkTable[instance as SinkInstance]);
-                    else if (instance is FlybyCameraInstance)
+                    else if (instance is FlybyCameraInstance && _flybyTable.ContainsKey(instance as FlybyCameraInstance))
                         writer.Write((short)_flybyTable[instance as FlybyCameraInstance]);
-                    else if (instance is SoundSourceInstance)
+                    else if (instance is SoundSourceInstance && _soundSourcesTable.ContainsKey(instance as SoundSourceInstance))
                         writer.Write((short)_soundSourcesTable[instance as SoundSourceInstance]);
                     else
                         writer.Write((short)-1);
