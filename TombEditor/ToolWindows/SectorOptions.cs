@@ -11,6 +11,7 @@ using NLog;
 using DarkUI.Docking;
 using TombEditor.Geometry;
 using DarkUI.Forms;
+using DarkUI.Controls;
 
 namespace TombEditor.ToolWindows
 {
@@ -25,6 +26,14 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
+
+            butBox.Click += sectorPropertyButton_Click;
+            butPortal.Click += sectorPropertyButton_Click;
+            butDeath.Click += sectorPropertyButton_Click;
+            butFlagBeetle.Click += sectorPropertyButton_Click;
+            butFlagTriggerTriggerer.Click += sectorPropertyButton_Click;
+            butMonkey.Click += sectorPropertyButton_Click;
+            butNotWalkableBox.Click += sectorPropertyButton_Click;
         }
 
         protected override void Dispose(bool disposing)
@@ -185,6 +194,42 @@ namespace TombEditor.ToolWindows
         private void panel2DGrid_MouseDown(object sender, MouseEventArgs e)
         {
             toolTip.Hide(panel2DGrid);
+        }
+
+        private void toolTip_Popup(object sender, PopupEventArgs e)
+        {
+            if(e.AssociatedControl is DarkButton)
+                SwitchHighlightPriority((DarkButton)e.AssociatedControl);
+        }
+
+        private void sectorPropertyButton_Click(object sender, EventArgs e)
+        {
+            if (sender is DarkButton)
+                SwitchHighlightPriority((DarkButton)sender);
+        }
+
+        private void SwitchHighlightPriority(DarkButton button)
+        {
+            HighlightType typeToHighlight;
+
+            if (button == butBox)
+                typeToHighlight = HighlightType.Box;
+            else if (button == butDeath)
+                typeToHighlight = HighlightType.Death;
+            else if (button == butMonkey)
+                typeToHighlight = HighlightType.Monkey;
+            else if (button == butFlagBeetle)
+                typeToHighlight = HighlightType.Beetle;
+            else if (button == butFlagTriggerTriggerer)
+                typeToHighlight = HighlightType.TriggerTriggerer;
+            else if (button == butNotWalkableBox)
+                typeToHighlight = HighlightType.NotWalkableFloor;
+            else if (button == butPortal)
+                typeToHighlight = HighlightType.Portal;
+            else
+                typeToHighlight = HighlightType.None;
+
+            panel2DGrid.SwitchHighlightPriority(typeToHighlight);
         }
     }
 }
