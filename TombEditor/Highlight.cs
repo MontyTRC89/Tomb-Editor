@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Timers;
+using System.Windows.Forms;
 using SharpDX;
 using TombEditor.Geometry;
 
@@ -57,7 +57,7 @@ namespace TombEditor
             _priorityList = _priorityList.OrderByDescending((item) => item == priorityType).ToList();
         }
 
-        public Vector4? GetHighlightColor(Room room, int x, int z, bool probeThroughPortals, bool getFrameColor = false)
+        public Vector4? GetHighlightColor(Room room, int x, int z, bool probeThroughPortals, bool getFrameColor = false, List<HighlightType> typesToIgnore = null)
         {
             Block block = room.GetBlockTry(x, z);
             if (block == null)
@@ -66,6 +66,9 @@ namespace TombEditor
             Block bottomBlock = room.ProbeLowestBlock(x, z, probeThroughPortals).Block;
             foreach (var highlight in _priorityList)
             {
+                if(typesToIgnore?.Contains(highlight) ?? false)
+                    continue;
+
                 if (getFrameColor)
                 {
                     if (highlight == HighlightType.Beetle && bottomBlock.Flags.HasFlag(BlockFlags.Beetle))
@@ -119,8 +122,8 @@ namespace TombEditor
         private HighlightState _previousState;
 
         private float _transitionValue = 0.0f;
-        private float _transitionSpeed = 0.1f;
-        private Timer _transitionAnimator = new Timer() { Interval = 1 };
+        private float _transitionSpeed = 0.4f;
+        private Timer _transitionAnimator = new Timer() { Interval = 60 };
 
         public HighlightManager(Editor editor)
         {
@@ -128,14 +131,14 @@ namespace TombEditor
             _currentState = new HighlightState();
             _previousState = new HighlightState();
 
-            _transitionAnimator.Elapsed += UpdateTransitionAnimation;
+            _transitionAnimator.Tick += UpdateTransitionAnimation;
         }
 
         public void Dispose()
         {
             if (_transitionAnimator.Enabled)
                 _transitionAnimator.Stop();
-            _transitionAnimator.Elapsed -= UpdateTransitionAnimation;
+            _transitionAnimator.Tick -= UpdateTransitionAnimation;
             _transitionAnimator.Dispose();
         }
 
@@ -148,10 +151,10 @@ namespace TombEditor
             _transitionAnimator.Start();
         }
 
-        public Vector4? GetColor(Room room, int x, int z, bool probeThroughPortals, bool getFrameColor = false)
+        public Vector4? GetColor(Room room, int x, int z, bool probeThroughPortals, bool getFrameColor = false, List<HighlightType> typesToIgnore = null)
         {
-            var prevColor = _previousState.GetHighlightColor(room, x, z, probeThroughPortals, getFrameColor);
-            var currColor = _currentState.GetHighlightColor(room, x, z, probeThroughPortals, getFrameColor);
+            var prevColor = _previousState.GetHighlightColor(room, x, z, probeThroughPortals, getFrameColor, typesToIgnore);
+            var currColor = _currentState.GetHighlightColor(room, x, z, probeThroughPortals, getFrameColor, typesToIgnore);
 
             if (!prevColor.HasValue || !currColor.HasValue)
                 return null;
@@ -159,7 +162,7 @@ namespace TombEditor
             return Vector4.Lerp(prevColor.Value, currColor.Value, _transitionValue);
         }
 
-        private void UpdateTransitionAnimation(object sender, ElapsedEventArgs e)
+        private void UpdateTransitionAnimation(object sender, EventArgs e)
         {
             if (_transitionValue < 1.0f)
                 _transitionValue += _transitionSpeed;

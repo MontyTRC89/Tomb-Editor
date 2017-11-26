@@ -563,6 +563,7 @@ namespace TombEditor.Controls
         private bool _doSectorSelection = false;
         private bool _noSelectionConfirm = false;
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
+        private List<HighlightType> _ignoredHighlights = new List<HighlightType> { HighlightType.Portal };
         private Buffer<EditorVertex> _skyVertexBuffer;
         private Debug _debug;
         private RasterizerState _rasterizerStateDepthBias;
@@ -3296,8 +3297,8 @@ namespace TombEditor.Controls
                 {
                     _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorFloor);
 
-                    var currentHighlight = _editor.HighlightManager.GetColor(room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
-                    if (currentHighlight.HasValue && currentHighlight.Value != HighlightState.ColorPortal)
+                    var currentHighlight = _editor.HighlightManager.GetColor(room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals, false, _ignoredHighlights);
+                    if (currentHighlight.HasValue)
                         _roomEffect.Parameters["Color"].SetValue(currentHighlight.Value);
 
                     // Floor-specific highlights
