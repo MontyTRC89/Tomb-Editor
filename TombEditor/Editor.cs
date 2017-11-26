@@ -42,21 +42,6 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static readonly Vector4 ColorPortal = Utils.ToFloatColor(0, 0, 0, true);
-        public static readonly Vector4 ColorPortalFace = Utils.ToFloatColor(255, 255, 0, true);
-        public static readonly Vector4 ColorFloor = Utils.ToFloatColor(0, 190, 190, true);
-        public static readonly Vector4 ColorWall = Utils.ToFloatColor(0, 160, 0, true);
-        public static readonly Vector4 ColorWallUpper = Utils.ToFloatColor(0, 80, 0, true);
-        public static readonly Vector4 ColorWallMiddle = Utils.ToFloatColor(0, 240, 0, true);
-        public static readonly Vector4 ColorTrigger = Utils.ToFloatColor(200, 0, 200, true);
-        public static readonly Vector4 ColorMonkey = Utils.ToFloatColor(255, 100, 100, true);
-        public static readonly Vector4 ColorClimb = Utils.ToFloatColor(255, 180, 180, true);
-        public static readonly Vector4 ColorBox = Utils.ToFloatColor(100, 100, 100, true);
-        public static readonly Vector4 ColorDeath = Utils.ToFloatColor(20, 240, 20, true);
-        public static readonly Vector4 ColorNotWalkable = Utils.ToFloatColor(0, 0, 150, true);
-        public static readonly Vector4 ColorBeetle = Utils.ToFloatColor(100, 100, 100, true);
-        public static readonly Vector4 ColorTriggerTriggerer = Utils.ToFloatColor(0, 0, 252, true);
-
         public event Action<IEditorEvent> EditorEventRaised;
 
         public void RaiseEvent(IEditorEvent eventObj)
@@ -457,7 +442,6 @@ namespace TombEditor
         }
 
         // Change sector highlights
-        public class ChangeHighlightEvent : IEditorEvent { }
         public HighlightManager HighlightManager { get; private set; }
 
         // Notify all components that values of the configuration have changed

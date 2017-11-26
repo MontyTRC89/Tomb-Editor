@@ -74,7 +74,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.SelectedObjectChangedEvent)
             {
                 ItemInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as ItemInstance;
-                panelStaticMeshColor.BackColor = itemInstance == null ? System.Drawing.Color.Black : itemInstance.Color.ToWinFormsColor();
+                panelStaticMeshColor.BackColor = itemInstance == null ? Color.Black : (itemInstance.Color * 0.5f).ToWinFormsColor();
             }
         }
 
@@ -157,12 +157,12 @@ namespace TombEditor.ToolWindows
             if (instance == null)
                 return;
 
-            colorDialog.Color = instance.Color.ToWinFormsColor();
+            colorDialog.Color = (instance.Color * 0.5f).ToWinFormsColor();
             if (colorDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
             panelStaticMeshColor.BackColor = colorDialog.Color;
-            instance.Color = colorDialog.Color.ToFloatColor();
+            instance.Color = colorDialog.Color.ToFloatColor() * 2.0f;
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Docking;
 using TombEditor.Geometry;
+using SharpDX;
 
 namespace TombEditor.ToolWindows
 {
@@ -29,7 +30,7 @@ namespace TombEditor.ToolWindows
                 LightInstance light = _editor.SelectedObject as LightInstance;
                 if (light == null)
                     return;
-                light.Color = lightPalette.SelectedColor.ToFloatColor3();
+                light.Color = (Vector3)lightPalette.SelectedColor.ToFloatColor() * 2.0f;
                 _editor.SelectedRoom.UpdateCompletely();
                 _editor.ObjectChange(light, ObjectChangeType.Change);
             };

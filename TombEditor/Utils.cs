@@ -271,35 +271,18 @@ namespace TombEditor
             second = temp;
         }
 
-        public static System.Drawing.Color ToWinFormsColor(this Vector4 color, bool unnormalizeFrom1 = false)
+        public static System.Drawing.Color ToWinFormsColor(this Vector4 color)
         {
-            float factor = unnormalizeFrom1 ? 255.0f : 128.0f;
-
             return System.Drawing.Color.FromArgb(
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.W * factor))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.X * factor))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * factor))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * factor))));
-        }
-
-        public static Vector4 ToFloatColor(byte R, byte G, byte B, byte A, bool normalizeTo1 = false)
-        {
-            return new Vector4(R, G, B, A) / (normalizeTo1 ? 255.0f : 128.0f);
-        }
-
-        public static Vector4 ToFloatColor(byte R, byte G, byte B, bool normalizeTo1 = false)
-        {
-            return ToFloatColor(R, G, B, 255, normalizeTo1);
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.W * 255.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.X * 255.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * 255.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));
         }
 
         public static Vector4 ToFloatColor(this System.Drawing.Color color)
         {
-            return ToFloatColor(color.R, color.G, color.B, color.A);
-        }
-
-        public static Vector3 ToFloatColor3(this System.Drawing.Color color)
-        {
-            return new Vector3(color.R, color.G, color.B) / 128.0f;
+            return new Vector4(color.R, color.G, color.B, color.A) / 255.0f;
         }
 
         public static string TryFindAbsolutePath(LevelSettings levelSettings, string filename)
