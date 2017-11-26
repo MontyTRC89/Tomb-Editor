@@ -1220,8 +1220,20 @@ namespace TombEditor.Compilers
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.ActionNg:
-                                        // Trigger for secret found
-                                        _progressReporter.ReportWarn("Level uses action trigger which is not yet supported.");
+                                        // Trigger for action
+                                        if (_level.Settings.GameVersion == GameVersion.TRNG)
+                                        {
+                                            var objectAction = trigger.CastTargetType<MoveableInstance>(room);
+                                            bool isAIaction = objectAction.WadObjectId >= 398 && objectAction.WadObjectId <= 406;
+                                            int itemAction = (isAIaction ? _aiObjectsTable : _moveablesTable)[objectAction];
+                                            trigger2 = (ushort)(itemAction & 0x3ff | (11 << 10));
+                                            tempCodes.Add(trigger2);
+
+                                            trigger2 = (ushort)(trigger.Timer & 0x7fff);
+                                            tempCodes.Add(trigger2);
+                                        }
+                                        else
+                                            _progressReporter.ReportWarn("Level uses action trigger which is not supported in this game engine.");
                                         break;
                                     case TriggerTargetType.FlyByCamera:
                                         // Trigger for fly by

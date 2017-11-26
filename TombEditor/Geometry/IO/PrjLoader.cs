@@ -1374,6 +1374,7 @@ namespace TombEditor.Geometry.IO
                                     case TriggerTargetType.Camera:
                                     case TriggerTargetType.FlyByCamera:
                                     case TriggerTargetType.Sink:
+                                    case TriggerTargetType.ActionNg:
                                         ushort triggerTargetId = unchecked((ushort)(instance.TargetData));
                                         if (!objectLookup.ContainsKey(triggerTargetId))
                                         {
