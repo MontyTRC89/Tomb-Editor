@@ -82,6 +82,7 @@ namespace TombEditor
                     FindAndAddObjects<SinkInstance>();
                     break;
                 case TriggerTargetType.Target:
+                case TriggerTargetType.ActionNg:
                     // Actually it is possible to not only target Target objects, but all movables.
                     // This is also useful: It makes sense to target egg a trap or an enemy.
                     FindAndAddObjects<MoveableInstance>();

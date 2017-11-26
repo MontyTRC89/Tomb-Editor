@@ -124,7 +124,10 @@ namespace TombEditor.Compilers
                         writer.Write((short)_staticsTable[staticMesh]);
                     }
                     else
+                    {
+                        writer.Write((short)0);
                         writer.Write((short)-1);
+                    }
                 }
             }
         }
