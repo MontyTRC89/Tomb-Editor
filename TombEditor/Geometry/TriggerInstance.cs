@@ -20,8 +20,7 @@ namespace TombEditor.Geometry
         Antitrigger = 9,
         HeavySwitch = 10,
         HeavyAntritrigger = 11,
-        Monkey = 12,
-        Condition = 13 // TODO we do not yet import this from *.prj
+        ConditionNg = 12
     }
 
     public enum TriggerTargetType : byte
@@ -121,6 +120,7 @@ namespace TombEditor.Geometry
                 case TriggerTargetType.Target:
                 case TriggerTargetType.FlyByCamera:
                 case TriggerTargetType.Sink:
+                case TriggerTargetType.ActionNg:
                     return true;
                 default:
                     return false;

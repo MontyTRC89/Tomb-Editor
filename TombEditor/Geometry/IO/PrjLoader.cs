@@ -368,10 +368,10 @@ namespace TombEditor.Geometry.IO
                                             triggerTypeEnum = TriggerType.HeavyAntritrigger;
                                             break;
                                         case 12:
-                                            triggerTypeEnum = TriggerType.Monkey;
+                                            triggerTypeEnum = TriggerType.ConditionNg;
                                             break;
                                         case 13:
-                                            triggerTypeEnum = TriggerType.Condition;
+                                            triggerTypeEnum = TriggerType.ConditionNg;
                                             break;
                                         default:
                                             progressReporter.ReportWarn("Unknown trigger type " + triggerType + " encountered in room #" + i + " '" + roomName + "'");

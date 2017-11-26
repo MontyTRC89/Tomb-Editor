@@ -1119,7 +1119,7 @@ namespace TombEditor.Compilers
                                     case TriggerType.HeavyAntritrigger:
                                         trigger1 |= 0x0b << 8;
                                         break;
-                                    case TriggerType.Monkey:
+                                    case TriggerType.ConditionNg:
                                         trigger1 |= 0x0c << 8;
                                         break;
                                     default:
@@ -1128,7 +1128,17 @@ namespace TombEditor.Compilers
 
                                 ushort triggerSetup = 0;
                                 if (_level.Settings.GameVersion == GameVersion.TRNG)
-                                    triggerSetup |= (ushort)((found.TargetType == TriggerTargetType.FlipEffect ? 0 : (found.Timer & 0xff)));
+                                {
+                                    // NG flipeffects store timer and extra in additional ushort
+                                    if (found.TargetType == TriggerTargetType.FlipEffect)
+                                        triggerSetup |= (ushort)0;
+                                    // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
+                                    else if (found.TriggerType == TriggerType.ConditionNg)
+                                        triggerSetup |= (ushort)found.Timer;
+                                    // all other triggers work as usual
+                                    else
+                                        triggerSetup |= (ushort)(found.Timer & 0xff);
+                                }
                                 else
                                     triggerSetup |= (ushort)(found.Timer & 0xff);
                                 triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
