@@ -77,7 +77,7 @@ namespace TombEditor.Geometry
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
-        public bool GameExecutableSuppressAskingForOptions { get; set; } = true;
+        public bool GameEnableQuickStartFeature { get; set; } = true;
         public GameVersion GameVersion { get; set; } = GameVersion.TR4;
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();

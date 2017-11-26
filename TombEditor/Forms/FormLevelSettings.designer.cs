@@ -59,7 +59,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
-            this.gameExecutableSuppressAskingForOptionsCheckBox = new DarkUI.Controls.DarkCheckBox();
+            this.GameEnableQuickStartFeatureCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.gameExecutableFilePathBut = new DarkUI.Controls.DarkButton();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.gameExecutableFilePathTxt = new DarkUI.Controls.DarkTextBox();
@@ -416,7 +416,7 @@
             // 
             this.panel3.Controls.Add(this.darkLabel13);
             this.panel3.Controls.Add(this.darkLabel12);
-            this.panel3.Controls.Add(this.gameExecutableSuppressAskingForOptionsCheckBox);
+            this.panel3.Controls.Add(this.GameEnableQuickStartFeatureCheckBox);
             this.panel3.Controls.Add(this.gameExecutableFilePathBut);
             this.panel3.Controls.Add(this.darkLabel3);
             this.panel3.Controls.Add(this.gameExecutableFilePathTxt);
@@ -446,15 +446,15 @@
             this.darkLabel12.TabIndex = 5;
             this.darkLabel12.Text = resources.GetString("darkLabel12.Text");
             // 
-            // gameExecutableSuppressAskingForOptionsCheckBox
+            // GameEnableQuickStartFeatureCheckBox
             // 
-            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Location = new System.Drawing.Point(19, 46);
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Name = "gameExecutableSuppressAskingForOptionsCheckBox";
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Size = new System.Drawing.Size(420, 16);
-            this.gameExecutableSuppressAskingForOptionsCheckBox.TabIndex = 4;
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Text = "Enable Tomb4.exe quick start feature";
-            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckedChanged += new System.EventHandler(this.gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged);
+            this.GameEnableQuickStartFeatureCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.GameEnableQuickStartFeatureCheckBox.Location = new System.Drawing.Point(19, 46);
+            this.GameEnableQuickStartFeatureCheckBox.Name = "GameEnableQuickStartFeatureCheckBox";
+            this.GameEnableQuickStartFeatureCheckBox.Size = new System.Drawing.Size(420, 16);
+            this.GameEnableQuickStartFeatureCheckBox.TabIndex = 4;
+            this.GameEnableQuickStartFeatureCheckBox.Text = "Enable Tomb4.exe quick start feature";
+            this.GameEnableQuickStartFeatureCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableQuickStartFeatureCheckBox_CheckedChanged);
             // 
             // gameExecutableFilePathBut
             // 
@@ -1023,7 +1023,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn soundDataGridViewColumnPath;
         private DarkUI.Controls.DarkDataGridViewButtonColumn soundDataGridViewColumnSearch;
         private DarkUI.Controls.DarkDataGridView pathVariablesDataGridView;
-        private DarkUI.Controls.DarkCheckBox gameExecutableSuppressAskingForOptionsCheckBox;
+        private DarkUI.Controls.DarkCheckBox GameEnableQuickStartFeatureCheckBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewValueColumn;
         private DarkUI.Controls.DarkLabel darkLabel11;
