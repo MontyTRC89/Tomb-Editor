@@ -62,7 +62,7 @@ namespace TombLib.Graphics
         private static readonly Color4 _zAxisColor = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
         private static readonly Color4 _centerColor = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
         private static readonly Color4 _hoveredAddition = new Color4(0.6f, 0.6f, 0.6f, 1.0f);
-        private static readonly float _arrowHeadOffsetMultiplier = 1.15f;
+        private static readonly float _arrowHeadOffsetMultiplier = 1.13f;
 
         private GizmoMode _mode;
         private float _scaleBase;
@@ -144,19 +144,19 @@ namespace TombLib.Graphics
                 case GizmoMode.TranslateX:
                     {
                         Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ);
-                        GizmoMove(new Vector3(intersection.X - Size, Position.Y, Position.Z));
+                        GizmoMove(new Vector3(intersection.X - Size * _arrowHeadOffsetMultiplier, Position.Y, Position.Z));
                     }
                     break;
                 case GizmoMode.TranslateY:
                     {
                         Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ);
-                        GizmoMove(new Vector3(Position.X, intersection.Y - Size, Position.Z));
+                        GizmoMove(new Vector3(Position.X, intersection.Y - Size * _arrowHeadOffsetMultiplier, Position.Z));
                     }
                     break;
                 case GizmoMode.TranslateZ:
                     {
                         Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY);
-                        GizmoMove(new Vector3(Position.X, Position.Y, intersection.Z + Size));
+                        GizmoMove(new Vector3(Position.X, Position.Y, intersection.Z + Size * _arrowHeadOffsetMultiplier));
                     }
                     break;
                 case GizmoMode.ScaleX:
