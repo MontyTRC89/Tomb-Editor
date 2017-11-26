@@ -635,26 +635,6 @@ namespace TombEditor
                 adjoiningRoom?.AlternateVersion?.UpdateCompletely();
             }
 
-            // Remove triggers pointing to that object
-            foreach (var r in _editor.Level.Rooms)
-            {
-                if (r == null)
-                    continue;
-
-                List<TriggerInstance> triggersToDelete = new List<TriggerInstance>();
-
-                foreach (var trigger in r.Triggers)
-                {
-                    if (trigger.TargetObj != null && trigger.TargetObj == instance)
-                        triggersToDelete.Add(trigger);
-                }
-
-                foreach (var trigger in triggersToDelete)
-                {
-                    r.RemoveObject(_editor.Level, trigger);
-                }
-            }
-
             // Avoid having the removed object still selected
             _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }

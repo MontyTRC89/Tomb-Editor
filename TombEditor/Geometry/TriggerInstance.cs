@@ -47,7 +47,22 @@ namespace TombEditor.Geometry
     {
         public TriggerType TriggerType { get; set; } = TriggerType.Trigger;
         public TriggerTargetType TargetType { get; set; } = TriggerTargetType.FlipEffect;
-        public ObjectInstance TargetObj { get; set; } = null; //Used for following old trigger types: "Camera", "FlyByCamera", "Object", "Sink", "Target"
+        private ObjectInstance _targetObj = null;
+        public ObjectInstance TargetObj //Used for following old trigger types: "Camera", "FlyByCamera", "Object", "Sink", "Target"
+        {
+            get { return _targetObj; }
+            set
+            {
+                if (value == this)
+                    throw new ArgumentException("The \"TargetObj\" may not be the trigger itself.");
+                if (value != null)
+                    value.RemovedFromRoomEvent += _targetObj_RemovedFromRoomEvent;
+                if (_targetObj != null)
+                    _targetObj.RemovedFromRoomEvent -= _targetObj_RemovedFromRoomEvent;
+                _targetObj = value;
+            }
+        }
+
         public short TargetData { get; set; } = 0;
         public short Timer { get; set; } = 0;
         public bool OneShot { get; set; } = false;
@@ -100,6 +115,12 @@ namespace TombEditor.Geometry
             for (int x = Area.X; x <= Area.Right; x++)
                 for (int z = Area.Y; z <= Area.Bottom; z++)
                     room.Blocks[x, z].Triggers.Remove(this);
+        }
+
+        private void _targetObj_RemovedFromRoomEvent(Level level, Room room, ObjectInstance instance)
+        {
+            if (instance == TargetObj)
+                TargetObj = null;
         }
 
         public T CastTargetType<T>(Room room) where T : ObjectInstance

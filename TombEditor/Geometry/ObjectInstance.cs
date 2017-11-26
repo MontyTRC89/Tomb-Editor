@@ -26,6 +26,8 @@ namespace TombEditor.Geometry
 
     public abstract class ObjectInstance : ICloneable
     {
+        public delegate void RemovedFromRoomDelegate(Level level, Room room, ObjectInstance instance);
+        public event RemovedFromRoomDelegate RemovedFromRoomEvent;
         public Room Room { get; private set; } = null;
 
         public virtual ObjectInstance Clone()
@@ -54,6 +56,7 @@ namespace TombEditor.Geometry
                 throw new ArgumentException("An object can't be removed from a room it not part of. The object '" + this + "' belongs to room '" +
                     (Room == null ? "<none>" : Room.ToString()) + "', it can not be removed from room '" + room + "'");
             Room = null;
+            RemovedFromRoomEvent?.Invoke(level, room, this);
         }
 
         public virtual bool CopyToFlipRooms => true;

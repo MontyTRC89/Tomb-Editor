@@ -1156,6 +1156,8 @@ namespace TombEditor.Compilers
                                 {
                                     case TriggerTargetType.Object:
                                         // Trigger for object
+                                        if (trigger.TargetObj == null)
+                                            break;
                                         var object_ = trigger.CastTargetType<MoveableInstance>(room);
                                         bool isAI = object_.WadObjectId >= 398 && object_.WadObjectId <= 406;
                                         int item = (isAI ? _aiObjectsTable : _moveablesTable)[object_];
@@ -1164,6 +1166,8 @@ namespace TombEditor.Compilers
                                         break;
                                     case TriggerTargetType.Camera:
                                         // Trigger for camera
+                                        if (trigger.TargetObj == null)
+                                            break;
                                         var camera = trigger.CastTargetType<CameraInstance>(room);
                                          trigger2 = (ushort)(_cameraTable[camera] & 0x3ff | (1 << 10));
                                         tempCodes.Add(trigger2);
@@ -1176,6 +1180,8 @@ namespace TombEditor.Compilers
                                         break;
                                     case TriggerTargetType.Sink:
                                         // Trigger for sink
+                                        if (trigger.TargetObj == null)
+                                            break;
                                         var sink = trigger.CastTargetType<SinkInstance>(room);
                                         trigger2 = (ushort)(_sinkTable[sink] & 0x3ff | (2 << 10));
                                         tempCodes.Add(trigger2);
@@ -1197,6 +1203,8 @@ namespace TombEditor.Compilers
                                         break;
                                     case TriggerTargetType.Target:
                                         // Trigger for look at item
+                                        if (trigger.TargetObj == null)
+                                            break;
                                         var target = trigger.CastTargetType<MoveableInstance>(room);
                                         trigger2 = (ushort)(_moveablesTable[target] & 0x3ff | (6 << 10));
                                         tempCodes.Add(trigger2);
@@ -1231,6 +1239,8 @@ namespace TombEditor.Compilers
                                         break;
                                     case TriggerTargetType.ActionNg:
                                         // Trigger for action
+                                        if (trigger.TargetObj == null)
+                                            break;
                                         if (_level.Settings.GameVersion == GameVersion.TRNG)
                                         {
                                             var objectAction = trigger.CastTargetType<MoveableInstance>(room);
@@ -1247,6 +1257,8 @@ namespace TombEditor.Compilers
                                         break;
                                     case TriggerTargetType.FlyByCamera:
                                         // Trigger for fly by
+                                        if (trigger.TargetObj == null)
+                                            break;
                                         var flyByCamera = trigger.CastTargetType<FlybyCameraInstance>(room);
                                         trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
                                         tempCodes.Add(trigger2);
