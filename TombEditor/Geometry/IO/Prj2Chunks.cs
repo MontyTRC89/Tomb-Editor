@@ -23,6 +23,7 @@ namespace TombEditor.Geometry.IO
         /**/public static readonly ChunkId GameLevelFilePath = ChunkId.FromString("TeGameLevelFilePath"); // UTF-8 string
         /**/public static readonly ChunkId GameExecutableFilePath = ChunkId.FromString("TeGameExecutableFilePath"); // UTF-8 string
         /**/public static readonly ChunkId GameExecutableSuppressAskingForOptions = ChunkId.FromString("TeGameExecutableSuppressAskingForOptions"); // UTF-8 string
+        /**/public static readonly ChunkId GameVersion = ChunkId.FromString("TeGameVersion");
         /**/public static readonly ChunkId Textures = ChunkId.FromString("TeTextures");
         /******/public static readonly ChunkId InvisibleTexture = ChunkId.FromString("TeInvisibleTexture");
         /******/public static readonly ChunkId LevelTexture = ChunkId.FromString("TeLvlTexture");

@@ -1448,6 +1448,37 @@ namespace TombEditor.Geometry.IO
                         texture.SetTextureSound(i % 4, i / 4, textureSound);
                     }
 
+                    // Ignore 256 zero bytes and recognize *.prj TRNG's
+                    if (reader.BaseStream.Length - reader.BaseStream.Position < 256)
+                        progressReporter.ReportWarn("256 characteristic 0 bytes are missing at the end of the *.prj file.");
+                    else
+                    {
+                        reader.ReadBytes(256);
+
+                        string offsetString = "offset 0x" + reader.BaseStream.Position.ToString("x") + ".";
+
+                        if ((reader.BaseStream.Length - reader.BaseStream.Position) < 2)
+                        { // No header of any sorts
+                            level.Settings.GameVersion = GameVersion.TR4;
+                            progressReporter.ReportInfo("No header of any sorts found. The *.prj file ends at " + offsetString);
+                        }
+                        else
+                        { // Check for extra headers
+                            ushort binaryIdentifier = reader.ReadUInt16();
+                            if (binaryIdentifier == 0x474E)
+                            { // NG header
+                                level.Settings.GameVersion = GameVersion.TRNG;
+                                progressReporter.ReportInfo("NG header found at " + offsetString);
+                            }
+                            else
+                            { // Unknown header
+                                level.Settings.GameVersion = GameVersion.TR4;
+                                progressReporter.ReportInfo("Unknown header 0x" + binaryIdentifier.ToString("x") + " found at " + offsetString);
+                            }
+                        }
+                    }
+                    progressReporter.ReportInfo("Game version: " + level.Settings.GameVersion);
+
                     // Build geometry
                     progressReporter.ReportProgress(80, "Building geometry");
                     foreach (var room in level.Rooms.Where(room => room != null))

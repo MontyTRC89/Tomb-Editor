@@ -35,6 +35,12 @@
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.optionsList = new DarkUI.Controls.DarkListView();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.butApply = new DarkUI.Controls.DarkButton();
+            this.butOk = new DarkUI.Controls.DarkButton();
+            this.butCancel = new DarkUI.Controls.DarkButton();
             this.optionsContainer = new TombEditor.Controls.DarkTabbedContainer();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel6 = new System.Windows.Forms.Panel();
@@ -49,6 +55,28 @@
             this.wadFilePathBut = new DarkUI.Controls.DarkButton();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.wadFilePathTxt = new DarkUI.Controls.DarkTextBox();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.darkLabel13 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel12 = new DarkUI.Controls.DarkLabel();
+            this.gameExecutableSuppressAskingForOptionsCheckBox = new DarkUI.Controls.DarkCheckBox();
+            this.gameExecutableFilePathBut = new DarkUI.Controls.DarkButton();
+            this.darkLabel3 = new DarkUI.Controls.DarkLabel();
+            this.gameExecutableFilePathTxt = new DarkUI.Controls.DarkTextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.gameLevelFilePathBut = new DarkUI.Controls.DarkButton();
+            this.gameLevelFilePathTxt = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.gameDirectoryBut = new DarkUI.Controls.DarkButton();
+            this.darkLabel7 = new DarkUI.Controls.DarkLabel();
+            this.gameDirectoryTxt = new DarkUI.Controls.DarkTextBox();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.comboGameVersion = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel14 = new DarkUI.Controls.DarkLabel();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
+            this.darkLabel11 = new DarkUI.Controls.DarkLabel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panel8 = new System.Windows.Forms.Panel();
             this.fontTextureFilePathPicPreview = new System.Windows.Forms.PictureBox();
@@ -70,44 +98,27 @@
             this.soundDataGridViewColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.soundDataGridViewColumnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.darkLabel10 = new DarkUI.Controls.DarkLabel();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
-            this.darkLabel11 = new DarkUI.Controls.DarkLabel();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.darkLabel12 = new DarkUI.Controls.DarkLabel();
-            this.gameExecutableSuppressAskingForOptionsCheckBox = new DarkUI.Controls.DarkCheckBox();
-            this.gameExecutableFilePathBut = new DarkUI.Controls.DarkButton();
-            this.darkLabel3 = new DarkUI.Controls.DarkLabel();
-            this.gameExecutableFilePathTxt = new DarkUI.Controls.DarkTextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.gameLevelFilePathBut = new DarkUI.Controls.DarkButton();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.gameLevelFilePathTxt = new DarkUI.Controls.DarkTextBox();
-            this.panel7 = new System.Windows.Forms.Panel();
-            this.gameDirectoryBut = new DarkUI.Controls.DarkButton();
-            this.darkLabel7 = new DarkUI.Controls.DarkLabel();
-            this.gameDirectoryTxt = new DarkUI.Controls.DarkTextBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.pathVariablesDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.optionsList = new DarkUI.Controls.DarkListView();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.butApply = new DarkUI.Controls.DarkButton();
-            this.butOk = new DarkUI.Controls.DarkButton();
-            this.butCancel = new DarkUI.Controls.DarkButton();
-            this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
+            this.darkSectionPanel1.SuspendLayout();
+            this.panel11.SuspendLayout();
             this.optionsContainer.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.tabPage5.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel7.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fontTextureFilePathPicPreview)).BeginInit();
@@ -115,15 +126,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.skyTextureFilePathPicPreview)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
-            this.tabPage4.SuspendLayout();
-            this.tabPage5.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel7.SuspendLayout();
             this.tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
-            this.darkSectionPanel1.SuspendLayout();
-            this.panel11.SuspendLayout();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -166,7 +170,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(670, 353);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(670, 393);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // darkSectionPanel2
@@ -177,23 +181,88 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(209, 3);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(458, 313);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(458, 353);
             this.darkSectionPanel2.TabIndex = 2;
+            // 
+            // darkSectionPanel1
+            // 
+            this.darkSectionPanel1.Controls.Add(this.optionsList);
+            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 353);
+            this.darkSectionPanel1.TabIndex = 7;
+            // 
+            // optionsList
+            // 
+            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.optionsList.Location = new System.Drawing.Point(1, 1);
+            this.optionsList.Name = "optionsList";
+            this.optionsList.Size = new System.Drawing.Size(198, 351);
+            this.optionsList.TabIndex = 6;
+            // 
+            // panel11
+            // 
+            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel11.Controls.Add(this.butApply);
+            this.panel11.Controls.Add(this.butOk);
+            this.panel11.Controls.Add(this.butCancel);
+            this.panel11.Location = new System.Drawing.Point(407, 362);
+            this.panel11.Name = "panel11";
+            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panel11.Size = new System.Drawing.Size(260, 28);
+            this.panel11.TabIndex = 5;
+            // 
+            // butApply
+            // 
+            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butApply.Location = new System.Drawing.Point(3, 1);
+            this.butApply.Name = "butApply";
+            this.butApply.Size = new System.Drawing.Size(80, 24);
+            this.butApply.TabIndex = 3;
+            this.butApply.Text = "Apply";
+            this.butApply.Click += new System.EventHandler(this.butApply_Click);
+            // 
+            // butOk
+            // 
+            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butOk.Location = new System.Drawing.Point(89, 1);
+            this.butOk.Name = "butOk";
+            this.butOk.Size = new System.Drawing.Size(80, 24);
+            this.butOk.TabIndex = 3;
+            this.butOk.Text = "Ok";
+            this.butOk.Click += new System.EventHandler(this.butOk_Click);
+            // 
+            // butCancel
+            // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butCancel.Location = new System.Drawing.Point(175, 1);
+            this.butCancel.Name = "butCancel";
+            this.butCancel.Size = new System.Drawing.Size(80, 24);
+            this.butCancel.TabIndex = 3;
+            this.butCancel.Text = "Cancel";
+            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
             // optionsContainer
             // 
             this.optionsContainer.Controls.Add(this.tabPage1);
+            this.optionsContainer.Controls.Add(this.tabPage5);
+            this.optionsContainer.Controls.Add(this.tabPage4);
             this.optionsContainer.Controls.Add(this.tabPage2);
             this.optionsContainer.Controls.Add(this.tabPage3);
-            this.optionsContainer.Controls.Add(this.tabPage4);
-            this.optionsContainer.Controls.Add(this.tabPage5);
             this.optionsContainer.Controls.Add(this.tabPage6);
             this.optionsContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.optionsContainer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.optionsContainer.Location = new System.Drawing.Point(1, 1);
             this.optionsContainer.Name = "optionsContainer";
             this.optionsContainer.SelectedIndex = 0;
-            this.optionsContainer.Size = new System.Drawing.Size(456, 311);
+            this.optionsContainer.Size = new System.Drawing.Size(456, 351);
             this.optionsContainer.TabIndex = 2;
             // 
             // tabPage1
@@ -205,9 +274,9 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(448, 236);
+            this.tabPage1.Size = new System.Drawing.Size(448, 325);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Level file paths";
+            this.tabPage1.Text = "Main file paths";
             // 
             // panel6
             // 
@@ -329,6 +398,236 @@
             this.wadFilePathTxt.TabIndex = 2;
             this.wadFilePathTxt.TextChanged += new System.EventHandler(this.wadFilePathTxt_TextChanged);
             // 
+            // tabPage5
+            // 
+            this.tabPage5.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage5.Controls.Add(this.panel3);
+            this.tabPage5.Controls.Add(this.panel1);
+            this.tabPage5.Controls.Add(this.panel2);
+            this.tabPage5.Controls.Add(this.panel7);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(448, 325);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Game";
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.darkLabel13);
+            this.panel3.Controls.Add(this.darkLabel12);
+            this.panel3.Controls.Add(this.gameExecutableSuppressAskingForOptionsCheckBox);
+            this.panel3.Controls.Add(this.gameExecutableFilePathBut);
+            this.panel3.Controls.Add(this.darkLabel3);
+            this.panel3.Controls.Add(this.gameExecutableFilePathTxt);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(3, 153);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(442, 169);
+            this.panel3.TabIndex = 3;
+            // 
+            // darkLabel13
+            // 
+            this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel13.Location = new System.Drawing.Point(16, 137);
+            this.darkLabel13.Name = "darkLabel13";
+            this.darkLabel13.Size = new System.Drawing.Size(404, 31);
+            this.darkLabel13.TabIndex = 5;
+            this.darkLabel13.Text = "If you are using TRNG, to speed up level load and exit further, it is recommended" +
+    " to enable \'soft fullscreen\' mode in the TRNG settings.";
+            // 
+            // darkLabel12
+            // 
+            this.darkLabel12.AutoSize = true;
+            this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel12.Location = new System.Drawing.Point(42, 65);
+            this.darkLabel12.Name = "darkLabel12";
+            this.darkLabel12.Size = new System.Drawing.Size(268, 65);
+            this.darkLabel12.TabIndex = 5;
+            this.darkLabel12.Text = resources.GetString("darkLabel12.Text");
+            // 
+            // gameExecutableSuppressAskingForOptionsCheckBox
+            // 
+            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Location = new System.Drawing.Point(19, 46);
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Name = "gameExecutableSuppressAskingForOptionsCheckBox";
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Size = new System.Drawing.Size(420, 16);
+            this.gameExecutableSuppressAskingForOptionsCheckBox.TabIndex = 4;
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Text = "Enable Tomb4.exe quick start feature";
+            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckedChanged += new System.EventHandler(this.gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged);
+            // 
+            // gameExecutableFilePathBut
+            // 
+            this.gameExecutableFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.gameExecutableFilePathBut.Location = new System.Drawing.Point(347, 20);
+            this.gameExecutableFilePathBut.Name = "gameExecutableFilePathBut";
+            this.gameExecutableFilePathBut.Size = new System.Drawing.Size(92, 22);
+            this.gameExecutableFilePathBut.TabIndex = 3;
+            this.gameExecutableFilePathBut.Text = "Search";
+            this.gameExecutableFilePathBut.Click += new System.EventHandler(this.gameExecutableFilePathBut_Click);
+            // 
+            // darkLabel3
+            // 
+            this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel3.Location = new System.Drawing.Point(0, 0);
+            this.darkLabel3.Name = "darkLabel3";
+            this.darkLabel3.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel3.TabIndex = 1;
+            this.darkLabel3.Text = "Target executable that is started with the \'Build and Play\' button";
+            // 
+            // gameExecutableFilePathTxt
+            // 
+            this.gameExecutableFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gameExecutableFilePathTxt.Location = new System.Drawing.Point(19, 20);
+            this.gameExecutableFilePathTxt.Name = "gameExecutableFilePathTxt";
+            this.gameExecutableFilePathTxt.Size = new System.Drawing.Size(322, 22);
+            this.gameExecutableFilePathTxt.TabIndex = 2;
+            this.gameExecutableFilePathTxt.TextChanged += new System.EventHandler(this.gameExecutableFilePathTxt_TextChanged);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.gameLevelFilePathBut);
+            this.panel1.Controls.Add(this.gameLevelFilePathTxt);
+            this.panel1.Controls.Add(this.darkLabel2);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(3, 103);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(442, 50);
+            this.panel1.TabIndex = 3;
+            // 
+            // gameLevelFilePathBut
+            // 
+            this.gameLevelFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.gameLevelFilePathBut.Location = new System.Drawing.Point(347, 25);
+            this.gameLevelFilePathBut.Name = "gameLevelFilePathBut";
+            this.gameLevelFilePathBut.Size = new System.Drawing.Size(92, 22);
+            this.gameLevelFilePathBut.TabIndex = 3;
+            this.gameLevelFilePathBut.Text = "Search";
+            this.gameLevelFilePathBut.Click += new System.EventHandler(this.gameLevelFilePathBut_Click);
+            // 
+            // gameLevelFilePathTxt
+            // 
+            this.gameLevelFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gameLevelFilePathTxt.Location = new System.Drawing.Point(19, 25);
+            this.gameLevelFilePathTxt.Name = "gameLevelFilePathTxt";
+            this.gameLevelFilePathTxt.Size = new System.Drawing.Size(322, 22);
+            this.gameLevelFilePathTxt.TabIndex = 2;
+            this.gameLevelFilePathTxt.TextChanged += new System.EventHandler(this.gameLevelFilePathTxt_TextChanged);
+            // 
+            // darkLabel2
+            // 
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(0, 5);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel2.TabIndex = 1;
+            this.darkLabel2.Text = "Target folder for the built *.tr4 file:";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.gameDirectoryBut);
+            this.panel2.Controls.Add(this.darkLabel7);
+            this.panel2.Controls.Add(this.gameDirectoryTxt);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(3, 53);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(442, 50);
+            this.panel2.TabIndex = 2;
+            // 
+            // gameDirectoryBut
+            // 
+            this.gameDirectoryBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.gameDirectoryBut.Location = new System.Drawing.Point(347, 23);
+            this.gameDirectoryBut.Name = "gameDirectoryBut";
+            this.gameDirectoryBut.Size = new System.Drawing.Size(92, 22);
+            this.gameDirectoryBut.TabIndex = 3;
+            this.gameDirectoryBut.Text = "Search";
+            this.gameDirectoryBut.Click += new System.EventHandler(this.GameDirectoryBut_Click);
+            // 
+            // darkLabel7
+            // 
+            this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel7.Location = new System.Drawing.Point(0, 3);
+            this.darkLabel7.Name = "darkLabel7";
+            this.darkLabel7.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel7.TabIndex = 1;
+            this.darkLabel7.Text = "Folder in which all runtime game components reside:";
+            // 
+            // gameDirectoryTxt
+            // 
+            this.gameDirectoryTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gameDirectoryTxt.Location = new System.Drawing.Point(19, 23);
+            this.gameDirectoryTxt.Name = "gameDirectoryTxt";
+            this.gameDirectoryTxt.Size = new System.Drawing.Size(322, 22);
+            this.gameDirectoryTxt.TabIndex = 2;
+            this.gameDirectoryTxt.TextChanged += new System.EventHandler(this.gameDirectoryTxt_TextChanged);
+            // 
+            // panel7
+            // 
+            this.panel7.Controls.Add(this.comboGameVersion);
+            this.panel7.Controls.Add(this.darkLabel14);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel7.Location = new System.Drawing.Point(3, 3);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(442, 50);
+            this.panel7.TabIndex = 2;
+            // 
+            // comboGameVersion
+            // 
+            this.comboGameVersion.FormattingEnabled = true;
+            this.comboGameVersion.Location = new System.Drawing.Point(19, 20);
+            this.comboGameVersion.Name = "comboGameVersion";
+            this.comboGameVersion.Size = new System.Drawing.Size(322, 23);
+            this.comboGameVersion.TabIndex = 2;
+            this.comboGameVersion.Text = null;
+            this.comboGameVersion.SelectedIndexChanged += new System.EventHandler(this.comboGameVersion_SelectedIndexChanged);
+            // 
+            // darkLabel14
+            // 
+            this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel14.Location = new System.Drawing.Point(2, 0);
+            this.darkLabel14.Name = "darkLabel14";
+            this.darkLabel14.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel14.TabIndex = 1;
+            this.darkLabel14.Text = "Game version to target:";
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage4.Controls.Add(this.importedGeometryManager);
+            this.tabPage4.Controls.Add(this.darkLabel11);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(448, 325);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Imported geometry";
+            // 
+            // importedGeometryManager
+            // 
+            this.importedGeometryManager.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.importedGeometryManager.LevelSettings = null;
+            this.importedGeometryManager.Location = new System.Drawing.Point(3, 23);
+            this.importedGeometryManager.Name = "importedGeometryManager";
+            this.importedGeometryManager.SelectedImportedGeometry = null;
+            this.importedGeometryManager.Size = new System.Drawing.Size(434, 262);
+            this.importedGeometryManager.TabIndex = 2;
+            // 
+            // darkLabel11
+            // 
+            this.darkLabel11.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel11.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel11.Name = "darkLabel11";
+            this.darkLabel11.Size = new System.Drawing.Size(442, 24);
+            this.darkLabel11.TabIndex = 1;
+            this.darkLabel11.Text = "All imported geometries associated with this project:";
+            // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Transparent;
@@ -337,9 +636,9 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(448, 236);
+            this.tabPage2.Size = new System.Drawing.Size(448, 325);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Sky & Font paths";
+            this.tabPage2.Text = "Sky & Font";
             // 
             // panel8
             // 
@@ -504,9 +803,9 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(448, 259);
+            this.tabPage3.Size = new System.Drawing.Size(448, 325);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Sound locations";
+            this.tabPage3.Text = "Sounds";
             // 
             // soundDataGridViewControls
             // 
@@ -519,7 +818,7 @@
             this.soundDataGridViewControls.Location = new System.Drawing.Point(424, 72);
             this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.soundDataGridViewControls.Name = "soundDataGridViewControls";
-            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 184);
+            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 224);
             this.soundDataGridViewControls.TabIndex = 3;
             // 
             // soundDataGridView
@@ -536,7 +835,7 @@
             this.soundDataGridView.Location = new System.Drawing.Point(3, 72);
             this.soundDataGridView.Name = "soundDataGridView";
             this.soundDataGridView.RowHeadersWidth = 41;
-            this.soundDataGridView.Size = new System.Drawing.Size(415, 184);
+            this.soundDataGridView.Size = new System.Drawing.Size(415, 224);
             this.soundDataGridView.TabIndex = 2;
             this.soundDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundDataGridView_CellContentClick);
             this.soundDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundDataGridView_CellFormatting);
@@ -565,196 +864,6 @@
             this.darkLabel10.TabIndex = 1;
             this.darkLabel10.Text = resources.GetString("darkLabel10.Text");
             // 
-            // tabPage4
-            // 
-            this.tabPage4.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage4.Controls.Add(this.importedGeometryManager);
-            this.tabPage4.Controls.Add(this.darkLabel11);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(448, 259);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Imported geometry";
-            // 
-            // importedGeometryManager
-            // 
-            this.importedGeometryManager.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.importedGeometryManager.LevelSettings = null;
-            this.importedGeometryManager.Location = new System.Drawing.Point(3, 23);
-            this.importedGeometryManager.Name = "importedGeometryManager";
-            this.importedGeometryManager.SelectedImportedGeometry = null;
-            this.importedGeometryManager.Size = new System.Drawing.Size(434, 222);
-            this.importedGeometryManager.TabIndex = 2;
-            // 
-            // darkLabel11
-            // 
-            this.darkLabel11.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel11.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel11.Name = "darkLabel11";
-            this.darkLabel11.Size = new System.Drawing.Size(442, 24);
-            this.darkLabel11.TabIndex = 1;
-            this.darkLabel11.Text = "All imported geometries associated with this project:";
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage5.Controls.Add(this.panel3);
-            this.tabPage5.Controls.Add(this.panel2);
-            this.tabPage5.Controls.Add(this.panel7);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(448, 285);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Game paths";
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.darkLabel13);
-            this.panel3.Controls.Add(this.darkLabel12);
-            this.panel3.Controls.Add(this.gameExecutableSuppressAskingForOptionsCheckBox);
-            this.panel3.Controls.Add(this.gameExecutableFilePathBut);
-            this.panel3.Controls.Add(this.darkLabel3);
-            this.panel3.Controls.Add(this.gameExecutableFilePathTxt);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel3.Location = new System.Drawing.Point(3, 103);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(442, 182);
-            this.panel3.TabIndex = 3;
-            // 
-            // darkLabel12
-            // 
-            this.darkLabel12.AutoSize = true;
-            this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel12.Location = new System.Drawing.Point(42, 65);
-            this.darkLabel12.Name = "darkLabel12";
-            this.darkLabel12.Size = new System.Drawing.Size(268, 65);
-            this.darkLabel12.TabIndex = 5;
-            this.darkLabel12.Text = resources.GetString("darkLabel12.Text");
-            // 
-            // gameExecutableSuppressAskingForOptionsCheckBox
-            // 
-            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Location = new System.Drawing.Point(19, 46);
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Name = "gameExecutableSuppressAskingForOptionsCheckBox";
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Size = new System.Drawing.Size(420, 16);
-            this.gameExecutableSuppressAskingForOptionsCheckBox.TabIndex = 4;
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Text = "Enable Tomb4.exe quick start feature";
-            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckedChanged += new System.EventHandler(this.gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged);
-            // 
-            // gameExecutableFilePathBut
-            // 
-            this.gameExecutableFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameExecutableFilePathBut.Location = new System.Drawing.Point(347, 20);
-            this.gameExecutableFilePathBut.Name = "gameExecutableFilePathBut";
-            this.gameExecutableFilePathBut.Size = new System.Drawing.Size(92, 22);
-            this.gameExecutableFilePathBut.TabIndex = 3;
-            this.gameExecutableFilePathBut.Text = "Search";
-            this.gameExecutableFilePathBut.Click += new System.EventHandler(this.gameExecutableFilePathBut_Click);
-            // 
-            // darkLabel3
-            // 
-            this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(0, 0);
-            this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(439, 17);
-            this.darkLabel3.TabIndex = 1;
-            this.darkLabel3.Text = "Target executable that is started with the \'Build and Play\' button";
-            // 
-            // gameExecutableFilePathTxt
-            // 
-            this.gameExecutableFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameExecutableFilePathTxt.Location = new System.Drawing.Point(19, 20);
-            this.gameExecutableFilePathTxt.Name = "gameExecutableFilePathTxt";
-            this.gameExecutableFilePathTxt.Size = new System.Drawing.Size(322, 22);
-            this.gameExecutableFilePathTxt.TabIndex = 2;
-            this.gameExecutableFilePathTxt.TextChanged += new System.EventHandler(this.gameExecutableFilePathTxt_TextChanged);
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.gameLevelFilePathBut);
-            this.panel2.Controls.Add(this.darkLabel2);
-            this.panel2.Controls.Add(this.gameLevelFilePathTxt);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel2.Location = new System.Drawing.Point(3, 53);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(442, 50);
-            this.panel2.TabIndex = 2;
-            // 
-            // gameLevelFilePathBut
-            // 
-            this.gameLevelFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameLevelFilePathBut.Location = new System.Drawing.Point(347, 20);
-            this.gameLevelFilePathBut.Name = "gameLevelFilePathBut";
-            this.gameLevelFilePathBut.Size = new System.Drawing.Size(92, 22);
-            this.gameLevelFilePathBut.TabIndex = 3;
-            this.gameLevelFilePathBut.Text = "Search";
-            this.gameLevelFilePathBut.Click += new System.EventHandler(this.gameLevelFilePathBut_Click);
-            // 
-            // darkLabel2
-            // 
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(0, 0);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(439, 17);
-            this.darkLabel2.TabIndex = 1;
-            this.darkLabel2.Text = "Target folder for the built *.tr4 file:";
-            // 
-            // gameLevelFilePathTxt
-            // 
-            this.gameLevelFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameLevelFilePathTxt.Location = new System.Drawing.Point(19, 20);
-            this.gameLevelFilePathTxt.Name = "gameLevelFilePathTxt";
-            this.gameLevelFilePathTxt.Size = new System.Drawing.Size(322, 22);
-            this.gameLevelFilePathTxt.TabIndex = 2;
-            this.gameLevelFilePathTxt.TextChanged += new System.EventHandler(this.gameLevelFilePathTxt_TextChanged);
-            // 
-            // panel7
-            // 
-            this.panel7.Controls.Add(this.gameDirectoryBut);
-            this.panel7.Controls.Add(this.darkLabel7);
-            this.panel7.Controls.Add(this.gameDirectoryTxt);
-            this.panel7.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel7.Location = new System.Drawing.Point(3, 3);
-            this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(442, 50);
-            this.panel7.TabIndex = 2;
-            // 
-            // gameDirectoryBut
-            // 
-            this.gameDirectoryBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameDirectoryBut.Location = new System.Drawing.Point(347, 20);
-            this.gameDirectoryBut.Name = "gameDirectoryBut";
-            this.gameDirectoryBut.Size = new System.Drawing.Size(92, 22);
-            this.gameDirectoryBut.TabIndex = 3;
-            this.gameDirectoryBut.Text = "Search";
-            this.gameDirectoryBut.Click += new System.EventHandler(this.GameDirectoryBut_Click);
-            // 
-            // darkLabel7
-            // 
-            this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel7.Location = new System.Drawing.Point(0, 0);
-            this.darkLabel7.Name = "darkLabel7";
-            this.darkLabel7.Size = new System.Drawing.Size(439, 17);
-            this.darkLabel7.TabIndex = 1;
-            this.darkLabel7.Text = "Folder in which all runtime game components reside:";
-            // 
-            // gameDirectoryTxt
-            // 
-            this.gameDirectoryTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameDirectoryTxt.Location = new System.Drawing.Point(19, 20);
-            this.gameDirectoryTxt.Name = "gameDirectoryTxt";
-            this.gameDirectoryTxt.Size = new System.Drawing.Size(322, 22);
-            this.gameDirectoryTxt.TabIndex = 2;
-            this.gameDirectoryTxt.TextChanged += new System.EventHandler(this.gameDirectoryTxt_TextChanged);
-            // 
             // tabPage6
             // 
             this.tabPage6.BackColor = System.Drawing.Color.Transparent;
@@ -763,7 +872,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(448, 236);
+            this.tabPage6.Size = new System.Drawing.Size(448, 325);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Path placeholders";
             // 
@@ -793,7 +902,7 @@
             this.pathVariablesDataGridView.Name = "pathVariablesDataGridView";
             this.pathVariablesDataGridView.RowHeadersWidth = 41;
             this.pathVariablesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.pathVariablesDataGridView.Size = new System.Drawing.Size(434, 200);
+            this.pathVariablesDataGridView.Size = new System.Drawing.Size(434, 240);
             this.pathVariablesDataGridView.TabIndex = 2;
             this.pathVariablesDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.pathVariablesDataGridView_CellMouseDown);
             // 
@@ -814,86 +923,11 @@
             this.pathVariablesDataGridViewValueColumn.Name = "pathVariablesDataGridViewValueColumn";
             this.pathVariablesDataGridViewValueColumn.ReadOnly = true;
             // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Controls.Add(this.optionsList);
-            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 313);
-            this.darkSectionPanel1.TabIndex = 7;
-            // 
-            // optionsList
-            // 
-            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.optionsList.Location = new System.Drawing.Point(1, 1);
-            this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 311);
-            this.optionsList.TabIndex = 6;
-            // 
-            // panel11
-            // 
-            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel11.Controls.Add(this.butApply);
-            this.panel11.Controls.Add(this.butOk);
-            this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Location = new System.Drawing.Point(407, 322);
-            this.panel11.Name = "panel11";
-            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panel11.Size = new System.Drawing.Size(260, 28);
-            this.panel11.TabIndex = 5;
-            // 
-            // butApply
-            // 
-            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butApply.Location = new System.Drawing.Point(3, 1);
-            this.butApply.Name = "butApply";
-            this.butApply.Size = new System.Drawing.Size(80, 24);
-            this.butApply.TabIndex = 3;
-            this.butApply.Text = "Apply";
-            this.butApply.Click += new System.EventHandler(this.butApply_Click);
-            // 
-            // butOk
-            // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butOk.Location = new System.Drawing.Point(89, 1);
-            this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(80, 24);
-            this.butOk.TabIndex = 3;
-            this.butOk.Text = "Ok";
-            this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // butCancel
-            // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butCancel.Location = new System.Drawing.Point(175, 1);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 24);
-            this.butCancel.TabIndex = 3;
-            this.butCancel.Text = "Cancel";
-            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
-            // 
-            // darkLabel13
-            // 
-            this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel13.Location = new System.Drawing.Point(16, 140);
-            this.darkLabel13.Name = "darkLabel13";
-            this.darkLabel13.Size = new System.Drawing.Size(404, 31);
-            this.darkLabel13.TabIndex = 5;
-            this.darkLabel13.Text = "If you are using TRNG, to speed up level load and exit further, it is recommended" +
-    " to enable \'soft fullscreen\' mode in the TRNG settings.";
-            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(670, 353);
+            this.ClientSize = new System.Drawing.Size(670, 393);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
@@ -906,6 +940,8 @@
             this.pathVariablesDataGridViewContextMenu.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.darkSectionPanel2.ResumeLayout(false);
+            this.darkSectionPanel1.ResumeLayout(false);
+            this.panel11.ResumeLayout(false);
             this.optionsContainer.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.panel6.ResumeLayout(false);
@@ -914,6 +950,15 @@
             this.panel4.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
+            this.tabPage5.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel7.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
@@ -923,18 +968,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.skyTextureFilePathPicPreview)).EndInit();
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).EndInit();
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage5.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel7.ResumeLayout(false);
-            this.panel7.PerformLayout();
             this.tabPage6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
-            this.darkSectionPanel1.ResumeLayout(false);
-            this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1010,5 +1045,8 @@
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkLabel darkLabel13;
+        private System.Windows.Forms.Panel panel1;
+        private DarkUI.Controls.DarkComboBox comboGameVersion;
+        private DarkUI.Controls.DarkLabel darkLabel14;
     }
 }

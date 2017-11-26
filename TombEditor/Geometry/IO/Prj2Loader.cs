@@ -90,6 +90,8 @@ namespace TombEditor.Geometry.IO
                     settings.GameExecutableFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.GameExecutableSuppressAskingForOptions)
                     settings.GameExecutableSuppressAskingForOptions = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.GameVersion)
+                    settings.GameVersion = (GameVersion)chunkIO.ReadChunkLong(chunkSize);
                 else if (id == Prj2Chunks.Textures)
                 {
                     var toLoad = new Dictionary<LevelTexture, string>();

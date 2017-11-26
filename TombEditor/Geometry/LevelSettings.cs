@@ -43,6 +43,19 @@ namespace TombEditor.Geometry
         }
     }
 
+    /// <summary>
+    /// Note: This enumeration can *always* legally be in a state not yet listed here. We should always handle *default* in switch.
+    /// </summary>
+    public enum GameVersion : long
+    {
+        //TR1 = 1,
+        //TR2 = 2,
+        //TR3 = 3,
+        TR4 = 4,
+        //TR5 = 5,
+        TRNG = 16
+    }
+
     public class LevelSettings : ICloneable
     {
         public const string VariableBegin = "$(";
@@ -65,6 +78,7 @@ namespace TombEditor.Geometry
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
         public bool GameExecutableSuppressAskingForOptions { get; set; } = true;
+        public GameVersion GameVersion { get; set; } = GameVersion.TR4;
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();

@@ -94,7 +94,7 @@ namespace TombEditor
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(678, 380) + (Size - ClientSize);
+            MinimumSize = new Size(678, 420) + (Size - ClientSize);
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.OldWadSoundPaths)
@@ -126,9 +126,10 @@ namespace TombEditor
             // Populate variable list
             foreach (VariableType variableType in Enum.GetValues(typeof(VariableType)))
                 if (variableType != VariableType.None)
-                {
                     pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
-                }
+
+            // Populate game version list
+            comboGameVersion.Items.AddRange(Enum.GetValues(typeof(GameVersion)).Cast<object>().ToArray());
 
             // Initialize options list
             optionsContainer.LinkedListView = optionsList;
@@ -146,6 +147,7 @@ namespace TombEditor
             gameLevelFilePathTxt.Text = _levelSettings.GameLevelFilePath;
             gameExecutableFilePathTxt.Text = _levelSettings.GameExecutableFilePath;
             gameExecutableSuppressAskingForOptionsCheckBox.Checked = _levelSettings.GameExecutableSuppressAskingForOptions;
+            comboGameVersion.Text = _levelSettings.GameVersion.ToString(); // Must also accept none enum values.
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -448,6 +450,17 @@ namespace TombEditor
                     soundDataGridViewDataSource[e.RowIndex] = new OldWadSoundPath(result);
             }
         }
+
+        // Game version
+        private void comboGameVersion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var gameVersion = (GameVersion)Enum.Parse(typeof(GameVersion), comboGameVersion.Text);
+            if (_levelSettings.GameVersion == gameVersion)
+                return;
+            _levelSettings.GameVersion = gameVersion; // Must also check none enum values
+            UpdateDialog();
+        }
+
 
         // Game level directory
         private void gameLevelFilePathTxt_TextChanged(object sender, EventArgs e)

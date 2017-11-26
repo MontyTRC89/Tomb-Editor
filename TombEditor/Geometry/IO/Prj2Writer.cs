@@ -15,8 +15,8 @@ namespace TombEditor.Geometry.IO
         public static void SaveToPrj2(string filename, Level level)
         {
             using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-            using (var chunkIO = new ChunkWriter(Prj2Chunks.MagicNumber, fileStream, ChunkWriter.Compression.None))
-                WriteLevel(chunkIO, level);
+                using (var chunkIO = new ChunkWriter(Prj2Chunks.MagicNumber, fileStream, ChunkWriter.Compression.None))
+                    WriteLevel(chunkIO, level);
         }
 
         private class LevelSettingsIds
@@ -59,6 +59,7 @@ namespace TombEditor.Geometry.IO
                 chunkIO.WriteChunkString(Prj2Chunks.GameLevelFilePath, settings.GameLevelFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.GameExecutableFilePath, settings.GameExecutableFilePath ?? "");
                 chunkIO.WriteChunkBool(Prj2Chunks.GameExecutableSuppressAskingForOptions, settings.GameExecutableSuppressAskingForOptions);
+                chunkIO.WriteChunkInt(Prj2Chunks.GameVersion, (long)(settings.GameVersion));
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.Textures, () =>
                 {
                     int index = 0;
