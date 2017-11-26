@@ -68,9 +68,9 @@ namespace TombEditor.Controls
         private static readonly Pen _roomBoundsPen = _outlinePen;
         private static readonly Pen _selectionPen = new Pen(Color.FromArgb(220, 40, 0, 120), 4);
         private static readonly Brush _selectionBrush = new SolidBrush(Color.FromArgb(40, 40, 0, 120));
-        private static readonly Brush _roomsNormalBrush = new SolidBrush(Editor.ColorFloor);
+        private static readonly Brush _roomsNormalBrush = new SolidBrush(Utils.ToWinFormsColor(Editor.ColorFloor));
         private static readonly Brush _roomsSelectionBrush = new SolidBrush(Color.FromArgb(220, 20, 20));
-        private static readonly Brush _roomsWallBrush = new SolidBrush(Editor.ColorWall);
+        private static readonly Brush _roomsWallBrush = new SolidBrush(Utils.ToWinFormsColor(Editor.ColorWall));
         private static readonly Brush _roomsToMoveBrush = new SolidBrush(Color.FromArgb(255, 230, 230, 80));
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(180, 240, 240, 240));
 

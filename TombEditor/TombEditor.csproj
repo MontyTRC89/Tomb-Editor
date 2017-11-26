@@ -150,6 +150,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Geometry\ScriptID.cs" />
+    <Compile Include="Highlight.cs" />
     <Compile Include="KeyboardLayout.cs" />
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>

@@ -13,7 +13,7 @@ namespace TombEditor
 {
     public interface IEditorEvent { };
 
-    public interface IEditorProperyChangedEvent : IEditorEvent { }
+    public interface IEditorPropertyChangedEvent : IEditorEvent { }
 
     public interface IEditorCameraEvent : IEditorEvent { }
 
@@ -42,19 +42,20 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static readonly System.Drawing.Color ColorPortal = System.Drawing.Color.FromArgb(0, 0, 0);
-        public static readonly System.Drawing.Color ColorFloor = System.Drawing.Color.FromArgb(0, 190, 190);
-        public static readonly System.Drawing.Color ColorWall = System.Drawing.Color.FromArgb(0, 160, 0);
-        public static readonly System.Drawing.Color ColorWallUpper = System.Drawing.Color.FromArgb(0, 80, 0);
-        public static readonly System.Drawing.Color ColorWallMiddle = System.Drawing.Color.FromArgb(0, 240, 0);
-        public static readonly System.Drawing.Color ColorTrigger = System.Drawing.Color.FromArgb(200, 0, 200);
-        public static readonly System.Drawing.Color ColorMonkey = System.Drawing.Color.FromArgb(255, 100, 100);
-        public static readonly System.Drawing.Color ColorClimb = System.Drawing.Color.FromArgb(255, 180, 180);
-        public static readonly System.Drawing.Color ColorBox = System.Drawing.Color.FromArgb(100, 100, 100);
-        public static readonly System.Drawing.Color ColorDeath = System.Drawing.Color.FromArgb(20, 240, 20);
-        public static readonly System.Drawing.Color ColorNotWalkable = System.Drawing.Color.FromArgb(0, 0, 150);
-        public static readonly System.Drawing.Color ColorBeetle = System.Drawing.Color.FromArgb(100, 100, 100);
-        public static readonly System.Drawing.Color ColorTriggerTriggerer = System.Drawing.Color.FromArgb(0, 0, 252);
+        public static readonly Vector4 ColorPortal = Utils.ToFloatColor(0, 0, 0, true);
+        public static readonly Vector4 ColorPortalFace = Utils.ToFloatColor(255, 255, 0, true);
+        public static readonly Vector4 ColorFloor = Utils.ToFloatColor(0, 190, 190, true);
+        public static readonly Vector4 ColorWall = Utils.ToFloatColor(0, 160, 0, true);
+        public static readonly Vector4 ColorWallUpper = Utils.ToFloatColor(0, 80, 0, true);
+        public static readonly Vector4 ColorWallMiddle = Utils.ToFloatColor(0, 240, 0, true);
+        public static readonly Vector4 ColorTrigger = Utils.ToFloatColor(200, 0, 200, true);
+        public static readonly Vector4 ColorMonkey = Utils.ToFloatColor(255, 100, 100, true);
+        public static readonly Vector4 ColorClimb = Utils.ToFloatColor(255, 180, 180, true);
+        public static readonly Vector4 ColorBox = Utils.ToFloatColor(100, 100, 100, true);
+        public static readonly Vector4 ColorDeath = Utils.ToFloatColor(20, 240, 20, true);
+        public static readonly Vector4 ColorNotWalkable = Utils.ToFloatColor(0, 0, 150, true);
+        public static readonly Vector4 ColorBeetle = Utils.ToFloatColor(100, 100, 100, true);
+        public static readonly Vector4 ColorTriggerTriggerer = Utils.ToFloatColor(0, 0, 252, true);
 
         public event Action<IEditorEvent> EditorEventRaised;
 
@@ -68,7 +69,7 @@ namespace TombEditor
         // On the positive side, this allows us to catch any state changes from all known and unknown components
         // therefore being very flexible to future components and improveing state safety by guaranteed updates.
 
-        public class LevelChangedEvent : IEditorProperyChangedEvent
+        public class LevelChangedEvent : IEditorPropertyChangedEvent
         {
             public Level Previous { get; set; }
             public Level Current { get; set; }
@@ -111,7 +112,7 @@ namespace TombEditor
             }
         }
 
-        public class ActionChangedEvent : IEditorProperyChangedEvent
+        public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
             public EditorAction Previous { get; set; }
             public EditorAction Current { get; set; }
@@ -130,7 +131,7 @@ namespace TombEditor
             }
         }
 
-        public class ChosenItemChangedEvent : IEditorProperyChangedEvent
+        public class ChosenItemChangedEvent : IEditorPropertyChangedEvent
         {
             public ItemType? Previous { get; set; }
             public ItemType? Current { get; set; }
@@ -149,7 +150,7 @@ namespace TombEditor
             }
         }
 
-        public class ModeChangedEvent : IEditorProperyChangedEvent
+        public class ModeChangedEvent : IEditorPropertyChangedEvent
         {
             public EditorMode Previous { get; set; }
             public EditorMode Current { get; set; }
@@ -168,7 +169,7 @@ namespace TombEditor
             }
         }
 
-        public class ToolChangedEvent : IEditorProperyChangedEvent
+        public class ToolChangedEvent : IEditorPropertyChangedEvent
         {
             public EditorTool Previous { get; set; }
             public EditorTool Current { get; set; }
@@ -187,7 +188,7 @@ namespace TombEditor
             }
         }
 
-        public class SelectedRoomChangedEvent : IEditorProperyChangedEvent
+        public class SelectedRoomChangedEvent : IEditorPropertyChangedEvent
         {
             public Room Previous { get; set; }
             public Room Current { get; set; }
@@ -219,7 +220,7 @@ namespace TombEditor
             return (SelectedRoom != null) && (roomEvent.Room == SelectedRoom);
         }
 
-        public class SelectedObjectChangedEvent : IEditorProperyChangedEvent
+        public class SelectedObjectChangedEvent : IEditorPropertyChangedEvent
         {
             public ObjectInstance Previous { get; set; }
             public ObjectInstance Current { get; set; }
@@ -238,7 +239,7 @@ namespace TombEditor
             }
         }
 
-        public class SelectedSectorsChangedEvent : IEditorProperyChangedEvent
+        public class SelectedSectorsChangedEvent : IEditorPropertyChangedEvent
         {
             public SectorSelection Previous { get; set; }
             public SectorSelection Current { get; set; }
@@ -257,7 +258,7 @@ namespace TombEditor
             }
         }
 
-        public class SelectedTexturesChangedEvent : IEditorProperyChangedEvent
+        public class SelectedTexturesChangedEvent : IEditorPropertyChangedEvent
         {
             public TextureArea Previous { get; set; }
             public TextureArea Current { get; set; }
@@ -276,7 +277,7 @@ namespace TombEditor
             }
         }
 
-        public class ConfigurationChangedEvent : IEditorProperyChangedEvent
+        public class ConfigurationChangedEvent : IEditorPropertyChangedEvent
         {
             public Configuration Previous { get; set; }
             public Configuration Current { get; set; }
@@ -295,7 +296,7 @@ namespace TombEditor
             }
         }
 
-        public class HasUnsavedChangesChangedEvent : IEditorProperyChangedEvent
+        public class HasUnsavedChangesChangedEvent : IEditorPropertyChangedEvent
         {
             public bool Previous { get; set; }
             public bool Current { get; set; }
@@ -455,6 +456,10 @@ namespace TombEditor
             RaiseEvent(new SelectTextureAndCenterViewEvent { Texture = texture });
         }
 
+        // Change sector highlights
+        public class ChangeHighlightEvent : IEditorEvent { }
+        public HighlightManager HighlightManager { get; private set; }
+
         // Notify all components that values of the configuration have changed
         public void ConfigurationChange()
         {
@@ -582,6 +587,7 @@ namespace TombEditor
         public void Dispose()
         {
             configurationWatcher?.Dispose();
+            HighlightManager?.Dispose();
             Level?.Dispose();
         }
 
@@ -594,6 +600,7 @@ namespace TombEditor
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
             Level = level;
+            HighlightManager = new HighlightManager(this);
 
             EditorEventRaised += Editor_EditorEventRaised;
             Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
