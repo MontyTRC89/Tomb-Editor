@@ -8,7 +8,6 @@ using System.ComponentModel;
 using NLog;
 using TombLib.Graphics;
 using TombEditor.Geometry;
-using Rectangle = System.Drawing.Rectangle;
 using System.Drawing.Drawing2D;
 
 namespace TombEditor.Controls
@@ -20,7 +19,7 @@ namespace TombEditor.Controls
         private bool _doSectorSelection = false;
         private Editor _editor;
 
-        private static readonly float _outlineHighlightWidth = 4;
+        private static readonly float _outlineHighlightWidth = 3;
         private static readonly Pen _gridPen = Pens.Black;
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
@@ -250,11 +249,16 @@ namespace TombEditor.Controls
                         if (block.ForceFloorSolid)
                             e.Graphics.FillRectangle(_forceFloorSolidBrush, rectangle);
 
+                        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
                         // Draw framed sector attributes
+                        RectangleF frameAttribRect = rectangle;
+                        frameAttribRect.Inflate(-(_outlineHighlightWidth / 2), -(_outlineHighlightWidth / 2));
+
                         currentHighlight = _editor.HighlightManager.GetColor(currentRoom, x, z, probePortals, true);
                         if (currentHighlight.HasValue)
                             using (var b = new Pen(Utils.ToWinFormsColor(currentHighlight.Value, true), _outlineHighlightWidth))
-                                e.Graphics.DrawRectangle(b, rectangle);
+                                e.Graphics.DrawRectangle(b, frameAttribRect);
 
                         // Always draw climb above any other attributes
                         if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
@@ -265,6 +269,8 @@ namespace TombEditor.Controls
                             e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _outlineHighlightWidth, rectangle.Width, _outlineHighlightWidth);
                         if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbNegativeX))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
+
+                        e.Graphics.SmoothingMode = SmoothingMode.Default;
 
                         // Draw walls
                         if (block.Type == BlockType.Wall)
