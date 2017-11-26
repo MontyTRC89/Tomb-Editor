@@ -10,6 +10,13 @@ using TombEditor.Geometry;
 
 namespace TombEditor
 {
+    public enum HighlightType
+    {
+        None,
+        Trigger, NotWalkableFloor, Box, Monkey, Death, Portal,
+        Beetle, TriggerTriggerer
+    }
+
     public class HighlightState
     {
         private List<KeyValuePair<int, HighlightType>> _priorityList = new List<KeyValuePair<int, HighlightType>>
