@@ -5,10 +5,8 @@ using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
-    public abstract class ItemInstance : PositionBasedObjectInstance, IRotateableY, IHasScriptID
+    public abstract class ItemInstance : PositionAndScriptBasedObjectInstance, IRotateableY
     {
-        public ushort? ScriptId { get; set; }
-
         // Don't use a reference here because the loaded Wad might not
         // contain each required object. Additionally the loaded Wads
         // can change. It would be unnecesary difficult to update all this references.

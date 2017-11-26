@@ -246,7 +246,7 @@ namespace TombEditor.Geometry.IO
                                         LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                         chunkIO.Raw.Write(instance.Position);
                                         chunkIO.Raw.Write(instance.RotationY);
-                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                                         chunkIO.Raw.Write(instance.WadObjectId);
                                         chunkIO.Raw.Write(instance.Ocb);
                                         chunkIO.Raw.Write(instance.Invisible);
@@ -261,7 +261,7 @@ namespace TombEditor.Geometry.IO
                                         LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                         chunkIO.Raw.Write(instance.Position);
                                         chunkIO.Raw.Write(instance.RotationY);
-                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                                         chunkIO.Raw.Write(instance.WadObjectId);
                                         chunkIO.Raw.Write(instance.Color);
                                         chunkIO.Raw.Write(instance.Ocb);
@@ -272,7 +272,7 @@ namespace TombEditor.Geometry.IO
                                         var instance = (CameraInstance)o;
                                         LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                         chunkIO.Raw.Write(instance.Position);
-                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                                         chunkIO.Raw.Write(instance.Fixed);
                                     });
                                 else if (o is FlybyCameraInstance)
@@ -284,7 +284,7 @@ namespace TombEditor.Geometry.IO
                                         chunkIO.Raw.Write(instance.RotationY);
                                         chunkIO.Raw.Write(instance.RotationX);
                                         chunkIO.Raw.Write(instance.Roll);
-                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                                         chunkIO.Raw.Write(instance.Speed);
                                         chunkIO.Raw.Write(instance.Fov);
                                         LEB128.Write(chunkIO.Raw, instance.Flags);
@@ -298,7 +298,7 @@ namespace TombEditor.Geometry.IO
                                         var instance = (SinkInstance)o;
                                         LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                         chunkIO.Raw.Write(instance.Position);
-                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                                         chunkIO.Raw.Write(instance.Strength);
                                     });
                                 else if (o is SoundSourceInstance)

@@ -102,6 +102,7 @@ namespace TombEditor.Geometry.IO
             progressReporter.ReportProgress(0, "Game directory: " + gameDirectory);
             level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.LevelDirectory);
 
+            int TODO_TEMPORARY_SCRIPTID_DEBUGGER_TO_BE_REMOVED;
             var logIds = new SortedDictionary<int, string>();
 
             try
@@ -111,19 +112,6 @@ namespace TombEditor.Geometry.IO
                 {
                     progressReporter.ReportProgress(0, "Begin of PRJ import from " + filename);
                     logger.Debug("Opening Winroomedit PRJ file " + filename);
-
-                    // Check if it's a NGLE PRJ
-                    bool ngle = false;
-                    reader.BaseStream.Seek(reader.BaseStream.Length - 8, SeekOrigin.Begin);
-                    var bytesNgle = reader.ReadBytes(4);
-                    if (bytesNgle[0] == 0x4E && bytesNgle[1] == 0x47 && bytesNgle[2] == 0x4C && bytesNgle[3] == 0x45)
-                    {
-                        progressReporter.ReportProgress(1, "This is a NGLE project");
-                        logger.Debug("NGLE Project");
-                        ngle = true;
-                    }
-
-                    reader.BaseStream.Seek(0, SeekOrigin.Begin);
 
                     // Version
                     reader.ReadBytes(12);
@@ -577,7 +565,6 @@ namespace TombEditor.Geometry.IO
                                         Position = position
                                     };
                                     logIds.Add(objectsThings2[j], "SOUND");
-                                    level.SetGlobalScriptIdsTableValue(sound);
                                     room.AddObject(level, sound);
                                     break;
                                 case 0x4400:
@@ -588,7 +575,6 @@ namespace TombEditor.Geometry.IO
                                         Position = position
                                     };
                                     logIds.Add(objectsThings2[j], "SINK");
-                                    level.SetGlobalScriptIdsTableValue(sink);
                                     room.AddObject(level, sink);
                                     break;
                                 case 0x4800:
@@ -600,7 +586,6 @@ namespace TombEditor.Geometry.IO
                                         Position = position
                                     };
                                     logIds.Add(objectsThings2[j], "CAM");
-                                    level.SetGlobalScriptIdsTableValue(camera);
                                     room.AddObject(level, camera);
                                     break;
                                 case 0x4040:
@@ -619,7 +604,6 @@ namespace TombEditor.Geometry.IO
                                         Flags = unchecked((ushort)objOcb)
                                     };
                                     logIds.Add(objectsThings2[j], "FLYBY");
-                                    level.SetGlobalScriptIdsTableValue(flybyCamera);
                                     room.AddObject(level, flybyCamera);
                                     break;
                                 default:
@@ -1329,7 +1313,6 @@ namespace TombEditor.Geometry.IO
                                     Color = currentObj.Color
                                 };
                                 logIds.Add(currentObj.ScriptId, "MOVEABLE");
-                                level.SetGlobalScriptIdsTableValue(instance);
                                 level.Rooms[i].AddObject(level, instance);
                             }
                             else
@@ -1343,7 +1326,6 @@ namespace TombEditor.Geometry.IO
                                     Color = currentObj.Color
                                 };
                                 logIds.Add(currentObj.ScriptId, "STATIC " + j + ", " + instance.WadObjectId + " in " + level.Rooms[i].ToString());
-                                level.SetGlobalScriptIdsTableValue(instance);
                                 level.Rooms[i].AddObject(level, instance);
                             }
                         }
@@ -1358,7 +1340,7 @@ namespace TombEditor.Geometry.IO
                         progressReporter.ReportProgress(31, "Link triggers");
 
                         // Build lookup table for IDs
-                        Dictionary<ushort, PositionBasedObjectInstance> objectLookup =
+                        Dictionary<uint, PositionBasedObjectInstance> objectLookup =
                             level.Rooms.Where(room => room != null)
                             .SelectMany(room => room.Objects)
                             .Where(instance => instance is IHasScriptID)
@@ -1781,7 +1763,7 @@ namespace TombEditor.Geometry.IO
 
                 return level;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 level.Dispose(); // We log in the level above
                 throw;

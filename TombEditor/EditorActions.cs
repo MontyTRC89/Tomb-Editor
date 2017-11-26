@@ -69,7 +69,7 @@ namespace TombEditor
             if (smooth)
             {
                 // Scan selection and decide if the selected zone is wall-only, floor-only, or both.
-                // It's needed to force smoothing function to edit either only wall sections or floor sections, 
+                // It's needed to force smoothing function to edit either only wall sections or floor sections,
                 // in case user wants to smoothly edit only wall splits or actual floor height.
 
                 SmoothGeometryEditingType smoothEditingType = SmoothGeometryEditingType.None;
@@ -362,7 +362,7 @@ namespace TombEditor
             if (precise)
                 heightScale /= 4;
 
-            bool allFace  = (arrow == EditorArrowType.EntireFace); 
+            bool allFace  = (arrow == EditorArrowType.EntireFace);
             bool step90   = (arrow <= EditorArrowType.EdgeW);
             bool turn90   = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
             bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW);
@@ -382,7 +382,7 @@ namespace TombEditor
                 }
             SmartBuildGeometry(room, area);
         }
-        
+
         public static void FlipFloorSplit(Room room, Rectangle area)
         {
             for (int x = area.X; x <= area.Right; x++)
@@ -654,9 +654,6 @@ namespace TombEditor
                     r.RemoveObject(_editor.Level, trigger);
                 }
             }
-
-            if (instance is IHasScriptID)
-                _editor.Level.RemoveObjectFromGlobalScriptIdsTable(instance as IHasScriptID);
 
             // Avoid having the removed object still selected
             _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
@@ -1341,8 +1338,6 @@ namespace TombEditor
 
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
-            if (instance is IHasScriptID)
-                _editor.Level.AddNewObjectToGlobalScriptIdsTable(instance as IHasScriptID);
             if (instance is LightInstance)
                 room.UpdateCompletely(); // Rebuild lighting!
             _editor.ObjectChange(instance, ObjectChangeType.Add);

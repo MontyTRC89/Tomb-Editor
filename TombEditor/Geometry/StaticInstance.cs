@@ -22,10 +22,5 @@ namespace TombEditor.Geometry
     {
         public ushort Ocb { get; set; } = 0;
         public override ItemType ItemType => new ItemType(true, WadObjectId);
-
-        public StaticInstance()
-        {
-            ScriptId = UInt16.MaxValue;
-        }
     }
 }
