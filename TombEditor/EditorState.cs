@@ -100,6 +100,13 @@ namespace TombEditor
         CornerSE,
         CornerSW
     }
+    
+    public enum HighlightType
+    {
+        None,
+        Trigger, NotWalkableFloor, Box, Monkey, Death, Portal,
+        Beetle, TriggerTriggerer
+    }
 
     public enum SmoothGeometryEditingType
     {

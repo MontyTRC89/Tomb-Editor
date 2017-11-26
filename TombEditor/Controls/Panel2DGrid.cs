@@ -19,30 +19,36 @@ namespace TombEditor.Controls
 
         private bool _doSectorSelection = false;
         private Editor _editor;
+
+        private static readonly float _outlineHighlightWidth = 4;
         private static readonly Pen _gridPen = Pens.Black;
-        private static readonly Brush _portalBrush = new SolidBrush(Color.Black);
-        private static readonly Brush _floorBrush = new SolidBrush(Editor.ColorFloor);
-        private static readonly Brush _wallBrush = new SolidBrush(Editor.ColorWall);
-        private static readonly Brush _borderWallBrush = new SolidBrush(Color.Gray);
-        private static readonly Brush _deathBrush = new SolidBrush(Editor.ColorDeath);
-        private static readonly Brush _monkeyBrush = new SolidBrush(Editor.ColorMonkey);
-        private static readonly Brush _boxBrush = new SolidBrush(Editor.ColorBox);
-        private static readonly Brush _notWalkableBrush = new SolidBrush(Editor.ColorNotWalkable);
-        private static readonly Brush _forceFloorSolidBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Editor.ColorFloor.MixWith(Color.Black, 0.1));
-        private static readonly Pen _beetlePen = new Pen(Color.FromArgb(100, 100, 100), 4);
-        private static readonly Pen _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 4);
-        private static readonly Brush _triggerBrush = new SolidBrush(Editor.ColorTrigger);
-        private static readonly Brush _climbBrush = new SolidBrush(Editor.ColorClimb);
-        private static readonly float _climbWidth = 4;
-        private static readonly Font _font = new Font("Arial", 8);
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
         private static readonly Pen _selectionPen = new Pen(Color.Red, 2);
-        private static readonly Brush _messageBackground = new SolidBrush(Color.Yellow);
-        private static readonly Pen _messagePen = Pens.Black;
-        private const float _textMargin = 2.0f;
+        private static readonly Brush _floorBrush = new SolidBrush(Editor.ColorFloor);
+        private static readonly Brush _wallBrush = new SolidBrush(Editor.ColorWall);
+        private static readonly Brush _borderWallBrush = new SolidBrush(Color.Gray);
+        private static readonly Brush _forceFloorSolidBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Editor.ColorFloor.MixWith(Color.Black, 0.1));
+        private static readonly Brush _climbBrush = new SolidBrush(Editor.ColorClimb);
+
         private float _gridSize => Math.Min(ClientSize.Width, ClientSize.Height);
         private float _gridStep => _gridSize / Room.MaxRoomDimensions;
+
+        private float _flagPriorityBlend = 0.0f;
+        private float _flagPriorityAnimationSpeed = 0.1f;
+        private Timer _flagPriorityAnimator = new Timer() { Interval = 1 };
+        private List<KeyValuePair<int, HighlightType>> _flagPriorityListOld;
+        private List<KeyValuePair<int, HighlightType>> _flagPriorityList = new List<KeyValuePair<int, HighlightType>>
+        {
+            new KeyValuePair<int, HighlightType> (0, HighlightType.Trigger),
+            new KeyValuePair<int, HighlightType> (1, HighlightType.NotWalkableFloor),
+            new KeyValuePair<int, HighlightType> (2, HighlightType.Box),
+            new KeyValuePair<int, HighlightType> (3, HighlightType.Monkey),
+            new KeyValuePair<int, HighlightType> (4, HighlightType.Death),
+            new KeyValuePair<int, HighlightType> (5, HighlightType.Portal),
+            new KeyValuePair<int, HighlightType> (6, HighlightType.Beetle),
+            new KeyValuePair<int, HighlightType> (7, HighlightType.TriggerTriggerer)
+        };
 
         public string Message;
 
@@ -55,6 +61,9 @@ namespace TombEditor.Controls
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
             }
+
+            _flagPriorityListOld = _flagPriorityList;
+            _flagPriorityAnimator.Tick += AnimateHighlightChange;
         }
 
         protected override void Dispose(bool disposing)
@@ -130,6 +139,33 @@ namespace TombEditor.Controls
             return new SharpDX.DrawingPoint(
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / _gridStep)),
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / _gridStep)));
+        }
+
+        public void SwitchHighlightPriority(HighlightType flagToShow)
+        {
+            if (!_editor.Configuration.Editor_AutoSwitchAttributeDisplay)
+                return;
+
+            _flagPriorityListOld = new List<KeyValuePair<int, HighlightType>>(_flagPriorityList);
+            _flagPriorityList = _flagPriorityListOld.OrderByDescending((item) => item.Value == flagToShow)
+                                                    .ThenBy((item) => item.Key)
+                                                    .ToList();
+            _flagPriorityBlend = 0.0f;
+            _flagPriorityAnimator.Enabled = true;
+        }
+
+        private void AnimateHighlightChange(object sender, EventArgs e)
+        {
+            if(_flagPriorityBlend < 1.0f)
+                _flagPriorityBlend += _flagPriorityAnimationSpeed;
+
+            if(_flagPriorityBlend >= 1.0f)
+            {
+                _flagPriorityBlend = 1.0f;
+                _flagPriorityAnimator.Enabled = false;
+            }
+
+            Invalidate();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -244,35 +280,118 @@ namespace TombEditor.Controls
                         
                         e.Graphics.FillRectangle(_floorBrush, rectangle);
 
-                        // Draw wall, if any
+                        // Draw border wall
                         if (block.Type == BlockType.BorderWall)
                             e.Graphics.FillRectangle(_borderWallBrush, rectangle);
-                        
-                        if (block.FloorPortal != null || block.CeilingPortal != null || block.WallPortal != null)
-                            e.Graphics.FillRectangle(_portalBrush, rectangle);
 
-                        // Draw floor tile
-                        if (block.Triggers.Count != 0)
-                            e.Graphics.FillRectangle(_triggerBrush, rectangle);
-                        else if (bottomBlock.Flags.HasFlag(BlockFlags.NotWalkableFloor))
-                            e.Graphics.FillRectangle(_notWalkableBrush, rectangle);
-                        else if (bottomBlock.Flags.HasFlag(BlockFlags.Box))
-                            e.Graphics.FillRectangle(_boxBrush, rectangle);
-                        else if (bottomBlock.Flags.HasFlag(BlockFlags.Monkey))
-                            e.Graphics.FillRectangle(_monkeyBrush, rectangle);
-                        else if (bottomBlock.Flags.HasFlag(BlockFlags.DeathFire) || block.Flags.HasFlag(BlockFlags.DeathElectricity) || block.Flags.HasFlag(BlockFlags.DeathLava))
-                            e.Graphics.FillRectangle(_deathBrush, rectangle);
+                        // Draw solid sector attributes based on current selected priority.
+                        // Priority can be changed via SwitchHighlightPriority public method.
+                        Color? primaryColor = null, secondaryColor = null;
+                        while(!primaryColor.HasValue || !secondaryColor.HasValue)
+                        {
+                            Color tempColor = Color.Empty;
+                            var currentPriorityList = primaryColor.HasValue ? _flagPriorityListOld : _flagPriorityList;
 
-                        // Draw floor-related features on floor tile
+                            foreach (var highlight in currentPriorityList)
+                            {
+                                switch(highlight.Value)
+                                {
+                                    case HighlightType.Trigger:
+                                        if (block.Triggers.Count != 0)
+                                            tempColor = Editor.ColorTrigger;
+                                        break;
+                                    case HighlightType.NotWalkableFloor:
+                                        if (bottomBlock.Flags.HasFlag(BlockFlags.NotWalkableFloor))
+                                            tempColor = Editor.ColorNotWalkable;
+                                        break;
+                                    case HighlightType.Box:
+                                        if (bottomBlock.Flags.HasFlag(BlockFlags.Box))
+                                            tempColor = Editor.ColorBox;
+                                        break;
+                                    case HighlightType.Monkey:
+                                        if (bottomBlock.Flags.HasFlag(BlockFlags.Monkey))
+                                            tempColor = Editor.ColorMonkey;
+                                        break;
+                                    case HighlightType.Death:
+                                        if (bottomBlock.Flags.HasFlag(BlockFlags.DeathFire)  ||
+                                            block.Flags.HasFlag(BlockFlags.DeathElectricity) || 
+                                            block.Flags.HasFlag(BlockFlags.DeathLava))
+                                            tempColor = Editor.ColorDeath;
+                                        break;
+                                    case HighlightType.Portal:
+                                        if (block.FloorPortal != null || block.CeilingPortal != null || block.WallPortal != null)
+                                            tempColor = Editor.ColorPortal;
+                                        break;
+                                }
+                                if (tempColor != Color.Empty)
+                                    break;
+                            }
+
+                            if (!primaryColor.HasValue)
+                                primaryColor = tempColor;
+                            else
+                                secondaryColor = tempColor;
+                        }
+
+                        if (primaryColor.Value != Color.Empty)
+                            using (var b = new SolidBrush(Color.FromArgb(255, primaryColor.Value.R, primaryColor.Value.G, primaryColor.Value.B)))
+                                e.Graphics.FillRectangle(b, rectangle);
+
+                        if (secondaryColor.Value != Color.Empty && primaryColor.Value != secondaryColor.Value && _flagPriorityBlend < 1.0f)
+                            using (var b = new SolidBrush(Color.FromArgb((int)((1.0f - _flagPriorityBlend) * 255.0f), secondaryColor.Value.R, secondaryColor.Value.G, secondaryColor.Value.B)))
+                                e.Graphics.FillRectangle(b, rectangle);
+
+                        // Always overlay any solid sector attribs with ForceFloorSolid semi-transparent brush
                         if (block.ForceFloorSolid)
                             e.Graphics.FillRectangle(_forceFloorSolidBrush, rectangle);
-                        RectangleF beetleTriggerRectangle = rectangle;
-                        beetleTriggerRectangle.Inflate(-2, -2);
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.Beetle))
-                            e.Graphics.DrawRectangle(_beetlePen, beetleTriggerRectangle);
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.TriggerTriggerer))
-                            e.Graphics.DrawRectangle(_triggerTriggererPen, beetleTriggerRectangle);
 
+                        // Now overlay solid attribs with framed attrib (beetle / trigger triggerer)
+                        RectangleF frameAttribRect = rectangle;
+                        frameAttribRect.Inflate(-2, -2);
+                        primaryColor   = null;
+                        secondaryColor = null;
+
+                        while (!primaryColor.HasValue || !secondaryColor.HasValue)
+                        {
+                            Color tempColor = Color.Empty;
+                            var currentPriorityList = primaryColor.HasValue ? _flagPriorityListOld : _flagPriorityList;
+
+                            foreach (var highlight in currentPriorityList)
+                            {
+                                if (highlight.Value == HighlightType.Beetle && bottomBlock.Flags.HasFlag(BlockFlags.Beetle))
+                                    tempColor = Editor.ColorBeetle;
+                                else if (highlight.Value == HighlightType.TriggerTriggerer && bottomBlock.Flags.HasFlag(BlockFlags.TriggerTriggerer))
+                                    tempColor = Editor.ColorTriggerTriggerer;
+
+                                if (tempColor != Color.Empty)
+                                    break;
+                            }
+
+                            if (!primaryColor.HasValue)
+                                primaryColor = tempColor;
+                            else
+                                secondaryColor = tempColor;
+                        }
+
+                        if (primaryColor.Value != Color.Empty)
+                            using (var p = new Pen(Color.FromArgb(255, primaryColor.Value.R, primaryColor.Value.G, primaryColor.Value.B), _outlineHighlightWidth))
+                                e.Graphics.DrawRectangle(p, frameAttribRect);
+
+                        if (secondaryColor.Value != Color.Empty && primaryColor.Value != secondaryColor.Value && _flagPriorityBlend < 1.0f)
+                            using (var p = new Pen(Color.FromArgb((int)((1.0f - _flagPriorityBlend) * 255.0f), secondaryColor.Value.R, secondaryColor.Value.G, secondaryColor.Value.B), _outlineHighlightWidth))
+                                    e.Graphics.DrawRectangle(p, frameAttribRect);
+
+                        // Always draw climb above any other attributes
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _outlineHighlightWidth);
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbPositiveX))
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.Right - _outlineHighlightWidth, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbNegativeZ))
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _outlineHighlightWidth, rectangle.Width, _outlineHighlightWidth);
+                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbNegativeX))
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
+
+                        // Draw walls
                         if (block.Type == BlockType.Wall)
                         {
                             if (block.FloorDiagonalSplit == DiagonalSplit.None)
@@ -308,16 +427,6 @@ namespace TombEditor.Controls
                                 e.Graphics.FillPolygon(_wallBrush, points);
                             }
                         }
-
-                        // Draw wall-related features
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _climbWidth);
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbPositiveX))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.Right - _climbWidth, rectangle.Y, _climbWidth, rectangle.Height);
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbNegativeZ))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _climbWidth, rectangle.Width, _climbWidth);
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbNegativeX))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _climbWidth, rectangle.Height);
                     }
 
                 // Draw black grid lines
@@ -343,36 +452,6 @@ namespace TombEditor.Controls
             {
                 logger.Error(exc, "An exception occured while drawing the 2D grid.");
             }
-        }
-
-        private void DrawMessage(PaintEventArgs e, string text, RectangleF visualArea)
-        {
-            SizeF textSize = e.Graphics.MeasureString(text, _font, ClientSize.Width, StringFormat.GenericDefault);
-            textSize += new SizeF(_textMargin * 2, _textMargin * 2);
-
-            // Choose appropriate space that does not occlude 'visualArea' if possible
-            float spaceAbove = visualArea.Y;
-            float spaceBelow = Height - visualArea.Bottom;
-            float posX = visualArea.X + (visualArea.Width - textSize.Width) * 0.5f;
-            RectangleF textRectangle;
-            if ((spaceAbove <= textSize.Height) && (spaceBelow >= textSize.Height))
-            { // Place message below
-                textRectangle = new RectangleF(new PointF(posX, visualArea.Bottom + _textMargin), textSize);
-            }
-            else
-            { // Place message above
-                textRectangle = new RectangleF(new PointF(posX, visualArea.Y - textSize.Height - _textMargin), textSize);
-            }
-
-            // Move the area so that it is always visible
-            textRectangle.Offset(-Math.Min(textRectangle.Left, 0.0f), -Math.Min(textRectangle.Top, 0.0f));
-            textRectangle.Offset(-Math.Max(textRectangle.Right - ClientSize.Width, 0.0f), -Math.Max(textRectangle.Bottom - Height, 0.0f));
-
-            // Draw the message
-            e.Graphics.FillRectangle(_messageBackground, textRectangle);
-            e.Graphics.DrawRectangle(_messagePen, textRectangle);
-            textRectangle.Inflate(-_textMargin, -_textMargin);
-            e.Graphics.DrawString(text, _font, _messagePen.Brush, textRectangle, StringFormat.GenericDefault);
         }
     }
 }
