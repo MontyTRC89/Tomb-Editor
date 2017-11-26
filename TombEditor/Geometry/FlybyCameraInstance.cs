@@ -56,6 +56,11 @@ namespace TombEditor.Geometry
 
         public override bool CopyToFlipRooms => false;
 
+        public FlybyCameraInstance()
+        {
+            ScriptId = UInt16.MaxValue;
+        }
+
         public override string ToString()
         {
             return "FlyBy " +

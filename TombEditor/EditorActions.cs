@@ -655,6 +655,9 @@ namespace TombEditor
                 }
             }
 
+            if (instance is IHasScriptID)
+                _editor.Level.RemoveObjectFromGlobalScriptIdsTable(instance as IHasScriptID);
+
             // Avoid having the removed object still selected
             _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
@@ -1338,6 +1341,8 @@ namespace TombEditor
 
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
+            if (instance is IHasScriptID)
+                _editor.Level.AddNewObjectToGlobalScriptIdsTable(instance as IHasScriptID);
             if (instance is LightInstance)
                 room.UpdateCompletely(); // Rebuild lighting!
             _editor.ObjectChange(instance, ObjectChangeType.Add);

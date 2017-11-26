@@ -283,15 +283,15 @@ namespace TombEditor.Compilers
                     writer.Write(geometryData.Length);
                     writer.Write(geometryData);
 
-                    // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    //writer.Write(_level.Wad.Sounds.Count);
-
                     ReportProgress(98, "Writing WAVE sounds");
-
                     writer.Write(_bufferSamples);
 
-                    ReportProgress(99, "Done");
+                    // Write NG header
+                    ReportProgress(98, "Writing NG header");
+                    WriteNgHeader(writer);
 
+                    ReportProgress(99, "Done");
+                    
                     writer.Flush();
                 }
             }
