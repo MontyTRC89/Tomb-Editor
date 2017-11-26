@@ -5,7 +5,7 @@ namespace TombEditor.Controls
 {
     public class MovementTimer : IDisposable
     {
-        private Timer _moveTimer = new Timer() { Interval = 1 };
+        private Timer _moveTimer = new Timer() { Interval = 16 };
         private float _moveAcceleration;
         private EventHandler _moveEvent = null;
 
