@@ -8,6 +8,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Threading;
 using TombLib.Wad.Catalog;
+using TombLib.NG;
 
 namespace TombEditor
 {
@@ -42,6 +43,7 @@ namespace TombEditor
             Editor editor = new Editor(WindowsFormsSynchronizationContext.Current, configuration);
             Editor.Instance = editor;
             TrCatalog.LoadCatalog("Editor\\Misc\\TRCatalog.xml");
+            NgCatalog.LoadCatalog("Editor\\Misc\\NgCatalog.xml");
             Application.Run(new FormMain(editor));
             editor.Configuration.SaveTry();
             logger.Info("The editor has exited cleanly. The configuration has been saved!");
