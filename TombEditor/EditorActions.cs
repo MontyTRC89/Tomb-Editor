@@ -155,9 +155,7 @@ namespace TombEditor
                     Block block = room.Blocks[x, z];
                     Room.RoomBlockPair lookupBlock = room.GetBlockTryThroughPortal(x, z);
 
-                    bool blockEdited = false;
-
-                    while (!blockEdited)
+                    EditBlock:
                     {
                         if (arrow == EditorArrowType.EntireFace)
                         {
@@ -233,11 +231,12 @@ namespace TombEditor
                             }
                         }
                         block.FixHeights(verticalSubdivision);
+                    }
 
-                        if (autoUpdateThroughPortal && lookupBlock.Block != block)
-                            block = lookupBlock.Block;
-                        else
-                            blockEdited = true;
+                    if (autoUpdateThroughPortal && lookupBlock.Block != block)
+                    {
+                        block = lookupBlock.Block;
+                        goto EditBlock;
                     }
 
                     // FIXME: VERY SLOW CODE! Since we need to update geometry in adjoining block through portal, and each block may contain portal to different room,
