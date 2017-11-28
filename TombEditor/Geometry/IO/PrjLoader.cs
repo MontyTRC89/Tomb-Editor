@@ -554,7 +554,7 @@ namespace TombEditor.Geometry.IO
                                         light.OuterAngle = lightOut;
                                         light.InnerAngle = lightIn;
                                     }
-                                    logIds.Add(objectsThings2[j], "LIGHT");
+                                    // TODO: logIds.Add(objectsThings2[j], "LIGHT");
                                     room.AddObject(level, light);
                                     break;
                                 case 0x4c00:
@@ -564,7 +564,7 @@ namespace TombEditor.Geometry.IO
                                         SoundId = unchecked((ushort)objSlot),
                                         Position = position
                                     };
-                                    logIds.Add(objectsThings2[j], "SOUND");
+                                    // TODO: logIds.Add(objectsThings2[j], "SOUND");
                                     room.AddObject(level, sound);
                                     break;
                                 case 0x4400:
@@ -574,7 +574,7 @@ namespace TombEditor.Geometry.IO
                                         Strength = (short)(objTimer / 2),
                                         Position = position
                                     };
-                                    logIds.Add(objectsThings2[j], "SINK");
+                                    // TODO: logIds.Add(objectsThings2[j], "SINK");
                                     room.AddObject(level, sink);
                                     break;
                                 case 0x4800:
@@ -585,7 +585,7 @@ namespace TombEditor.Geometry.IO
                                         Fixed = (objectType == 0x4080),
                                         Position = position
                                     };
-                                    logIds.Add(objectsThings2[j], "CAM");
+                                    // TODO: logIds.Add(objectsThings2[j], "CAM");
                                     room.AddObject(level, camera);
                                     break;
                                 case 0x4040:
@@ -603,7 +603,7 @@ namespace TombEditor.Geometry.IO
                                         RotationY = objFacing + 180,
                                         Flags = unchecked((ushort)objOcb)
                                     };
-                                    logIds.Add(objectsThings2[j], "FLYBY");
+                                    // TODO: logIds.Add(objectsThings2[j], "FLYBY");
                                     room.AddObject(level, flybyCamera);
                                     break;
                                 default:
@@ -1312,7 +1312,7 @@ namespace TombEditor.Geometry.IO
                                     RotationY = currentObj.RotationY,
                                     Color = currentObj.Color
                                 };
-                                logIds.Add(currentObj.ScriptId, "MOVEABLE");
+                                // TODO: logIds.Add(currentObj.ScriptId, "MOVEABLE");
                                 level.Rooms[i].AddObject(level, instance);
                             }
                             else
@@ -1325,15 +1325,15 @@ namespace TombEditor.Geometry.IO
                                     RotationY = currentObj.RotationY,
                                     Color = currentObj.Color
                                 };
-                                logIds.Add(currentObj.ScriptId, "STATIC " + j + ", " + instance.WadObjectId + " in " + level.Rooms[i].ToString());
+                                // TODO: logIds.Add(currentObj.ScriptId, "STATIC " + j + ", " + instance.WadObjectId + " in " + level.Rooms[i].ToString());
                                 level.Rooms[i].AddObject(level, instance);
                             }
                         }
                     }
 
-                    using (var wrt = new StreamWriter(File.OpenWrite("scriptids.txt")))
-                        foreach (var item in logIds)
-                            wrt.WriteLine(item.Key + ": " + item.Value);
+                   /* using (var wrt = new StreamWriter(File.OpenWrite("scriptids.txt")))
+                        foreach (var item in // TODO: logIds)
+                            wrt.WriteLine(item.Key + ": " + item.Value);*/
 
                     // Link triggers
                     {

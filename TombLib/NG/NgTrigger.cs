@@ -15,13 +15,13 @@ namespace TombLib.NG
             MainList = new Dictionary<int, NgTriggerMainKeyValuePair>();
         }
 
-        public List<string> GetListForComboBox()
+        public NgTriggerMainKeyValuePair[] GetListForComboBox()
         {
-            var result = new List<string>();
+            var result = new List<NgTriggerMainKeyValuePair>();
             foreach (var pair in MainList)
-                result.Add(pair.Key + ": " + pair.Value);
+                result.Add(pair.Value);
 
-            return result;
+            return result.ToArray();
         }
     }
 }
