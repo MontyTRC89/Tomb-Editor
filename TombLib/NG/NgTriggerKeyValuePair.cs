@@ -16,5 +16,10 @@ namespace TombLib.NG
             this.Key = key;
             this.Value = value;
         }
+
+        public override string ToString()
+        {
+            return Key + ": " + Value;
+        }
     }
 }

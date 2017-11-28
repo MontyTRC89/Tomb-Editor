@@ -8,6 +8,15 @@ namespace TombEditor.Compilers
 {
     public sealed partial class LevelCompilerTr4
     {
+        private bool IsWallSurroundedByWalls(int x, int z, Room room)
+        {
+            if (x > 0 && !room.Blocks[x - 1, z].IsAnyWall) return false;
+            if (z > 0 && !room.Blocks[x, z - 1].IsAnyWall) return false;
+            if (x < room.NumXSectors - 1 && !room.Blocks[x + 1, z].IsAnyWall) return false;
+            if (z < room.NumZSectors - 1 && !room.Blocks[x, z + 1].IsAnyWall) return false;
+            return true;
+        }
+
         private void BuildFloorData()
         {
             ReportProgress(70, "Building floordata");
@@ -49,27 +58,51 @@ namespace TombEditor.Compilers
                         Room isWallWithCeilingPortal = null;
                         foreach (var portal in ceilingPortals)
                         {
-                            if (x < portal.Area.X - 1 || x > portal.Area.Right + 2 || z < portal.Area.Y - 1 || z > portal.Area.Bottom + 2)
-                                continue;
+                            // Check if x, z is inside the portal
+                            if (!(x >= portal.Area.X - 1 && 
+                                  z >= portal.Area.Y - 1 && 
+                                  x <= portal.Area.X + portal.Area.Width + 1 && 
+                                  z <= portal.Area.Y + portal.Area.Height + 1)) continue;
 
+                            // Check if this is a wall
+                            if (!block.IsAnyWall) continue;
+
+                            // Check if current wall is surrounded by walls
+                            if (IsWallSurroundedByWalls(x, z, room)) continue;
+
+                            // Get new coordinates
                             var adjoining = portal.AdjoiningRoom;
                             var x2 = (int)(room.Position.X + x - adjoining.Position.X);
                             var z2 = (int)(room.Position.Z + z - adjoining.Position.Z);
 
-                            if (x2 < 0 || x2 > adjoining.NumXSectors - 1 || z2 < 0 ||
-                                z2 > adjoining.NumZSectors - 1)
-                                continue;
+                            // Check if we are outside the boundaries of adjoining room
+                            if (x2 < 0 || z2 < 0 || x2 > adjoining.NumXSectors - 1 || z2 > adjoining.NumZSectors - 1) continue;
 
-                            var blockType = adjoining.Blocks[x2, z2].Type;
-                            var adjoiningSplit = adjoining.Blocks[x2, z2].FloorDiagonalSplit;
+                            var adjoiningBlock = adjoining.Blocks[x2, z2];
 
-                            if ((x2 > 1 || z2 > 1 || x2 < adjoining.NumXSectors - 1 ||
-                                    z2 < adjoining.NumZSectors - 1) &&
-                                !((blockType == BlockType.Wall && adjoiningSplit == DiagonalSplit.None)
-                                    || blockType == BlockType.BorderWall))
+                            // Now check for a ladder
+                            if (block.Type == BlockType.Wall)
                             {
-                                isWallWithCeilingPortal = portal.AdjoiningRoom;
-                                break;
+                                // Simplest case, just check for ceiling rooms
+                                if (!adjoiningBlock.IsAnyWall)
+                                {
+                                    isWallWithCeilingPortal = portal.AdjoiningRoom;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                // For border walls, we must consider also possible wall portals on ceiling room
+                                if (adjoiningBlock.Type == BlockType.BorderWall && adjoiningBlock.WallPortal != null)
+                                {
+                                    isWallWithCeilingPortal = adjoiningBlock.WallPortal.AdjoiningRoom;
+                                    break;
+                                }
+                                else if (adjoiningBlock.Type == BlockType.Floor)
+                                {
+                                    isWallWithCeilingPortal = portal.AdjoiningRoom;
+                                    break;
+                                }
                             }
                         }
 

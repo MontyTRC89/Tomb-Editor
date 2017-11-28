@@ -168,6 +168,16 @@ namespace TombEditor.Geometry
             }
         }
 
+        public bool ContainsPoint(DrawingPoint point)
+        {
+            return ContainsPoint(point.X, point.Y);
+        }
+
+        public bool ContainsPoint(int x, int z)
+        {
+            return (x >= Area.X && z >= Area.Y && x <= Area.X + Area.Width && z <= Area.Y + Area.Height);
+        }
+
         public override void RemoveFromRoom(Level level, Room room)
         {
             base.RemoveFromRoom(level, room);

@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace TombLib.NG
 {
-    public class NgTriggerMainKeyValuePair
+    public class NgTriggerMainKeyValuePair : NgTriggerKeyValuePair
     {
-        public int Key { get; set; }
-        public string Value { get; set; }
-
         public Dictionary<int, NgTriggerKeyValuePair> ObjectList { get; set; }
         public Dictionary<int, NgTriggerKeyValuePair> TimerList { get; set; }
         public Dictionary<int, NgTriggerKeyValuePair> ExtraList { get; set; }
@@ -19,17 +16,19 @@ namespace TombLib.NG
         public NgListKind TimerListKind { get; set; }
         public NgListKind ExtraListKind { get; set; }
 
-        public NgTriggerMainKeyValuePair(int key, string value)
-        {
-            this.Key = key;
-            this.Value = value;
+        public bool HasObjectList { get { return ObjectListKind != NgListKind.Empty || ObjectList.Count != 0; } }
+        public bool HasTimerList { get { return TimerListKind != NgListKind.Empty || TimerList.Count != 0; } }
+        public bool HasExtraList { get { return ExtraListKind != NgListKind.Empty || ExtraList.Count != 0; } }
 
+        public NgTriggerMainKeyValuePair(int key, string value)
+            : base(key, value)
+        {
             ObjectList = new Dictionary<int, NgTriggerKeyValuePair>();
             TimerList = new Dictionary<int, NgTriggerKeyValuePair>();
             ExtraList = new Dictionary<int, NgTriggerKeyValuePair>();
         }
 
-        public List<string> GetListForComboBox(NgParameterType param)
+        public NgTriggerKeyValuePair[] GetListForComboBox(NgParameterType param)
         {
             var list = new Dictionary<int, NgTriggerKeyValuePair>();
             switch (param)
@@ -39,11 +38,16 @@ namespace TombLib.NG
                 case NgParameterType.Extra: list = ExtraList; break;
             }
 
-            var result = new List<string>();
+            var result = new List<NgTriggerKeyValuePair>();
             foreach (var pair in list)
-                result.Add(pair.Key + ": " + pair.Value);
+                result.Add(pair.Value);
 
-            return result;
+            return result.ToArray();
+        }
+
+        public override string ToString()
+        {
+            return Key + ": " + Value;
         }
     }
 }
