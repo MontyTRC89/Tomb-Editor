@@ -179,10 +179,11 @@ namespace TombEditor
                     case HighlightShape.EdgeXp:
                     case HighlightShape.EdgeZp:
                     case HighlightShape.EdgeZn:
-                        if ((shape == HighlightShape.EdgeXn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeX)) ||
-                            (shape == HighlightShape.EdgeXp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveX)) ||
-                            (shape == HighlightShape.EdgeZp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveZ)) ||
-                            (shape == HighlightShape.EdgeZn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeZ)))
+                        if (!bottomBlock.HasFlag(BlockFlags.ClimbAny))
+                            if ((shape == HighlightShape.EdgeXn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeX)) ||
+                                (shape == HighlightShape.EdgeXp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveX)) ||
+                                (shape == HighlightShape.EdgeZp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveZ)) ||
+                                (shape == HighlightShape.EdgeZn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeZ)))
                             return ColorClimb;
                         break;
                     default:
