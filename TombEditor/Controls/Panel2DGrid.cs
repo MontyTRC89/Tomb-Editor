@@ -25,12 +25,6 @@ namespace TombEditor.Controls
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
         private static readonly Pen _selectionPen = new Pen(Color.Red, 2);
-        private static readonly Brush _floorBrush = new SolidBrush(HighlightState.ColorFloor.ToWinFormsColor());
-        private static readonly Brush _wallBrush = new SolidBrush(HighlightState.ColorWall.ToWinFormsColor());
-        private static readonly Brush _borderWallBrush = new SolidBrush(Color.Gray);
-        private static readonly Brush _forceFloorSolidBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent,
-            Vector4.Lerp(HighlightState.ColorFloor, new Vector4(0.0f, 0.0f, 0.0f, 1.0f), 0.1f).ToWinFormsColor());
-        private static readonly Brush _climbBrush = new SolidBrush(HighlightState.ColorClimb.ToWinFormsColor());
 
         private float _gridSize => Math.Min(ClientSize.Width, ClientSize.Height);
         private float _gridStep => _gridSize / Room.MaxRoomDimensions;
@@ -235,79 +229,80 @@ namespace TombEditor.Controls
                         Block block = currentRoom.Blocks[x, z];
                         Block bottomBlock = currentRoom.ProbeLowestBlock(x, z, probePortals).Block;
 
-                        e.Graphics.FillRectangle(_floorBrush, rectangle);
-
-                        // Draw border wall
-                        if (block.Type == BlockType.BorderWall)
-                            e.Graphics.FillRectangle(_borderWallBrush, rectangle);
-
-                        // Draw solid sector attributes
-                        var currentHighlight = _editor.HighlightManager.GetColor(currentRoom, x, z, probePortals);
-                        if (currentHighlight.HasValue)
-                            using (var b = new SolidBrush(currentHighlight.Value.ToWinFormsColor()))
-                                e.Graphics.FillRectangle(b, rectangle);
-
-                        // Always overlay any solid sector attributes with ForceFloorSolid semi-transparent brush
-                        if (block.ForceFloorSolid)
-                            e.Graphics.FillRectangle(_forceFloorSolidBrush, rectangle);
-
-                        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-                        // Draw framed sector attributes
-                        RectangleF frameAttribRect = rectangle;
-                        frameAttribRect.Inflate(-(_outlineHighlightWidth / 2), -(_outlineHighlightWidth / 2));
-
-                        currentHighlight = _editor.HighlightManager.GetColor(currentRoom, x, z, probePortals, true);
-                        if (currentHighlight.HasValue)
-                            using (var b = new Pen(currentHighlight.Value.ToWinFormsColor(), _outlineHighlightWidth))
-                                e.Graphics.DrawRectangle(b, frameAttribRect);
-
-                        // Always draw climb above any other attributes
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _outlineHighlightWidth);
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbPositiveX))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.Right - _outlineHighlightWidth, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbNegativeZ))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _outlineHighlightWidth, rectangle.Width, _outlineHighlightWidth);
-                        if (bottomBlock.Flags.HasFlag(BlockFlags.ClimbNegativeX))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
-
-                        e.Graphics.SmoothingMode = SmoothingMode.Default;
-
-                        // Draw walls
-                        if (block.Type == BlockType.Wall)
+                        var currentHighlights = _editor.HighlightManager.GetColors(currentRoom, x, z, probePortals);
+                        if (currentHighlights != null)
                         {
-                            if (block.FloorDiagonalSplit == DiagonalSplit.None)
-                                e.Graphics.FillRectangle(_wallBrush, rectangle);
-                            else
+                            for (int i = 0; i < currentHighlights.Count; i++)
                             {
-                                PointF[] points = new PointF[3];
+                                e.Graphics.SmoothingMode = (currentHighlights[i].Shape == HighlightShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias);
 
-                                switch (block.FloorDiagonalSplit)
+                                switch (currentHighlights[i].Shape)
                                 {
-                                    case DiagonalSplit.XnZn:
-                                        points[0] = new PointF(rectangle.Left, rectangle.Top);
-                                        points[1] = new PointF(rectangle.Left, rectangle.Bottom);
-                                        points[2] = new PointF(rectangle.Right, rectangle.Bottom);
+                                    case HighlightShape.Rectangle:
+                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                            e.Graphics.FillRectangle(b, rectangle);
                                         break;
-                                    case DiagonalSplit.XnZp:
-                                        points[0] = new PointF(rectangle.Left, rectangle.Bottom);
-                                        points[1] = new PointF(rectangle.Left, rectangle.Top);
-                                        points[2] = new PointF(rectangle.Right, rectangle.Top);
+                                    case HighlightShape.Frame:
+                                        RectangleF frameAttribRect = rectangle;
+                                        frameAttribRect.Inflate(-(_outlineHighlightWidth / 2), -(_outlineHighlightWidth / 2));
+                                        using (var b = new Pen(currentHighlights[i].Color.ToWinFormsColor(), _outlineHighlightWidth))
+                                            e.Graphics.DrawRectangle(b, frameAttribRect);
                                         break;
-                                    case DiagonalSplit.XpZn:
-                                        points[0] = new PointF(rectangle.Left, rectangle.Bottom);
-                                        points[1] = new PointF(rectangle.Right, rectangle.Top);
-                                        points[2] = new PointF(rectangle.Right, rectangle.Bottom);
+                                    case HighlightShape.EdgeZp:
+                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                            e.Graphics.FillRectangle(b, rectangle.X, rectangle.Y, rectangle.Width, _outlineHighlightWidth);
                                         break;
-                                    case DiagonalSplit.XpZp:
-                                        points[0] = new PointF(rectangle.Left, rectangle.Top);
-                                        points[1] = new PointF(rectangle.Right, rectangle.Top);
-                                        points[2] = new PointF(rectangle.Right, rectangle.Bottom);
+                                    case HighlightShape.EdgeZn:
+                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                            e.Graphics.FillRectangle(b, rectangle.X, rectangle.Bottom - _outlineHighlightWidth, rectangle.Width, _outlineHighlightWidth);
                                         break;
-
+                                    case HighlightShape.EdgeXp:
+                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                            e.Graphics.FillRectangle(b, rectangle.Right - _outlineHighlightWidth, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
+                                        break;
+                                    case HighlightShape.EdgeXn:
+                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                            e.Graphics.FillRectangle(b, rectangle.X, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
+                                        break;
+                                    case HighlightShape.Hatch:
+                                        using (var b = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, currentHighlights[i].Color.ToWinFormsColor()))
+                                            e.Graphics.FillRectangle(b, rectangle);
+                                        break;
+                                    case HighlightShape.TriangleXnZn:
+                                    case HighlightShape.TriangleXnZp:
+                                    case HighlightShape.TriangleXpZn:
+                                    case HighlightShape.TriangleXpZp:
+                                        PointF[] points = new PointF[3];
+                                        if(currentHighlights[i].Shape == HighlightShape.TriangleXnZn)
+                                        {
+                                            points[0] = new PointF(rectangle.Left, rectangle.Top);
+                                            points[1] = new PointF(rectangle.Left, rectangle.Bottom);
+                                            points[2] = new PointF(rectangle.Right, rectangle.Bottom);
+                                        }
+                                        else if (currentHighlights[i].Shape == HighlightShape.TriangleXnZp)
+                                        {
+                                            points[0] = new PointF(rectangle.Left, rectangle.Bottom);
+                                            points[1] = new PointF(rectangle.Left, rectangle.Top);
+                                            points[2] = new PointF(rectangle.Right, rectangle.Top);
+                                        }
+                                        else if (currentHighlights[i].Shape == HighlightShape.TriangleXpZn)
+                                        {
+                                            points[0] = new PointF(rectangle.Left, rectangle.Bottom);
+                                            points[1] = new PointF(rectangle.Right, rectangle.Top);
+                                            points[2] = new PointF(rectangle.Right, rectangle.Bottom);
+                                        }
+                                        else
+                                        {
+                                            points[0] = new PointF(rectangle.Left, rectangle.Top);
+                                            points[1] = new PointF(rectangle.Right, rectangle.Top);
+                                            points[2] = new PointF(rectangle.Right, rectangle.Bottom);
+                                        }
+                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                            e.Graphics.FillPolygon(b, points);
+                                        break;
+                                    default:
+                                        break;
                                 }
-                                e.Graphics.FillPolygon(_wallBrush, points);
                             }
                         }
                     }
@@ -315,7 +310,6 @@ namespace TombEditor.Controls
                 // Draw black grid lines
                 for (int x = 0; x <= Room.MaxRoomDimensions; ++x)
                     e.Graphics.DrawLine(_gridPen, totalArea.X + x * _gridStep, totalArea.Y, totalArea.X + x * _gridStep, totalArea.Y + _gridSize);
-
                 for (int y = 0; y <= Room.MaxRoomDimensions; ++y)
                     e.Graphics.DrawLine(_gridPen, totalArea.X, totalArea.Y + y * _gridStep, totalArea.X + _gridSize, totalArea.Y + y * _gridStep);
 

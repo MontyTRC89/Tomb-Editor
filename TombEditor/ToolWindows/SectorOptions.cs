@@ -234,8 +234,13 @@ namespace TombEditor.ToolWindows
                 typeToHighlight = HighlightType.NotWalkableFloor;
             else if (button == butPortal)
                 typeToHighlight = HighlightType.Portal;
+            else if (button == butClimbNegativeX ||
+                     button == butClimbNegativeZ ||
+                     button == butClimbPositiveX ||
+                     button == butClimbPositiveZ)
+                typeToHighlight = HighlightType.Climb;
             else
-                typeToHighlight = HighlightType.None;
+                typeToHighlight = HighlightType.Wall;
 
             _editor.HighlightManager.SetPriority(typeToHighlight);
         }

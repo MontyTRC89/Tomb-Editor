@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Text;
 using TombEditor.Geometry.IO;
@@ -156,8 +157,6 @@ namespace TombEditor.Geometry
         {
             return _faceTextures[(int)face];
         }
-
-        public bool IsAnyWall => Type != BlockType.Floor;
 
         public IEnumerable<PortalInstance> Portals
         {
@@ -742,12 +741,20 @@ namespace TombEditor.Geometry
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HasFlag(BlockFlags flag)
+        {
+            return (Flags & flag) == flag;
+        }
+
         public static bool IsQuad(int hXnZp, int hXpZp, int hXpZn, int hXnZn)
         {
             return (hXpZp - hXpZn) == (hXnZp - hXnZn) &&
                 (hXpZp - hXnZp) == (hXpZn - hXnZn);
         }
 
+        public bool IsAnyWall => Type != BlockType.Floor;
+        public bool IsAnyPortal => FloorPortal != null || CeilingPortal != null || WallPortal != null;
         public bool FloorIsQuad => FloorDiagonalSplit == DiagonalSplit.None && IsQuad(QAFaces[FaceXnZp], QAFaces[FaceXpZp], QAFaces[FaceXpZn], QAFaces[FaceXnZn]);
         public bool CeilingIsQuad => CeilingDiagonalSplit == DiagonalSplit.None && IsQuad(WSFaces[FaceXnZp], WSFaces[FaceXpZp], WSFaces[FaceXpZn], WSFaces[FaceXnZn]);
         public bool FloorHasSlope => FloorMax - FloorMin > 2;
