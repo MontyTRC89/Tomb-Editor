@@ -70,9 +70,23 @@ namespace TombLib.Wad.Tr4Wad
 
         internal static int GetTr4TextureIdFromPolygon(wad_polygon polygon)
         {
-            int textureId = polygon.Texture & 0xfff;
-            if (textureId > 2047)
-                textureId = -(textureId - 4096);
+            short textureId = (short)(polygon.Texture);
+            if (polygon.Shape == 8)
+            {
+                textureId = (short)(polygon.Texture & 0xFFF);
+                if ((polygon.Texture & 0x8000) != 0) textureId = (short)(-textureId);
+            }
+            else
+            {
+                // HACK: for taking in account sign
+                if (textureId > 0x7FFF)
+                {
+                    textureId = (short)(textureId - 0xFFFF);
+                }
+            }
+
+            textureId = Math.Abs(textureId);
+
             return textureId;
         }
 
