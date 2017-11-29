@@ -18,7 +18,7 @@ namespace TombEditor
         {
             if (disposing && (components != null))
             {
-                components.Dispose();
+                components.Dispose(); 
             }
             base.Dispose(disposing);
         }
@@ -251,6 +251,7 @@ namespace TombEditor
             this.comboExtraParameter.Size = new System.Drawing.Size(587, 23);
             this.comboExtraParameter.TabIndex = 72;
             this.comboExtraParameter.Text = null;
+            this.comboExtraParameter.SelectedIndexChanged += new System.EventHandler(this.comboExtraParameter_SelectedIndexChanged);
             // 
             // labelExtra
             // 

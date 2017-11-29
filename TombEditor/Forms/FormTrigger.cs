@@ -1,6 +1,7 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -129,15 +130,16 @@ namespace TombEditor
         {
             var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
             bool usesObject = TriggerInstance.UsesTargetObj(targetType);
+            var triggerType = (TriggerType)comboType.SelectedItem;
 
             tbParameter.Visible = !usesObject;
             comboParameter.Visible = usesObject;
+            if (triggerType != TriggerType.ConditionNg) comboTimer.Visible = false;
 
-            comboTimer.Visible = false;
             labelExtra.Visible = false;
             comboExtraParameter.Visible = false;
 
-            switch (targetType)
+            switch (targetType) 
             {
                 case TriggerTargetType.Object:
                     FindAndAddObjects<MoveableInstance>();
@@ -221,7 +223,16 @@ namespace TombEditor
 
         private void LoadNgConditionTrigger()
         {
+            var conditionList = NgCatalog.ConditionTrigger.GetListForComboBox();
 
+            tbTimer.Visible = false;
+            comboTimer.Visible = true;
+            comboTimer.Items.Clear();
+            comboTimer.Items.AddRange(conditionList);
+            comboTimer.SelectedIndex = 0;
+
+            comboParameter.Visible = true;
+            tbParameter.Visible = false;
         }
 
         private void FindAndAddObjects<T>() where T : ObjectInstance
@@ -358,19 +369,23 @@ namespace TombEditor
 
         private void comboType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            /*var triggerType = (TriggerType)comboType.SelectedItem;
-            if (triggerType == TriggerType.ConditionNg && _level.Settings.GameVersion == GameVersion.TRNG)
+            var triggerType = (TriggerType)comboType.SelectedItem;
+
+            if (triggerType == TriggerType.ConditionNg)
+            {
+                comboTargetType.Enabled = false;
                 LoadNgConditionTrigger();
+            }
             else
             {
-
-            }*/
+                comboTargetType.Enabled = true;
+            }
         }
 
         private void comboParameter_SelectedIndexChanged(object sender, EventArgs e)
         {
             var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
-
+            
             if (targetType == TriggerTargetType.FlipEffect)
             {
                 // NG flipeffect trigger
@@ -543,10 +558,94 @@ namespace TombEditor
         private void comboTimer_SelectedIndexChanged(object sender, EventArgs e)
         {
             var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
-            
+            var triggerType = (TriggerType)comboType.SelectedItem;
+
+            if (triggerType == TriggerType.ConditionNg)
+            {
+                var condition = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
+                var selectedItem = NgCatalog.ConditionTrigger.MainList[condition];
+
+                // Action trigger always has an object
+                labelParameter.Visible = true;
+                tbParameter.Visible = false;
+                comboParameter.Visible = true;
+                comboParameter.Items.Clear();
+                comboParameter.Text = "";
+
+                if (selectedItem.HasObjectList)
+                {
+                    if (selectedItem.ObjectListKind == NgListKind.Fixed || selectedItem.ObjectListKind == NgListKind.Unknown)
+                    {
+                        comboTargetType.SelectedItem = TriggerTargetType.ParameterNg;
+                        comboParameter.Items.AddRange(selectedItem.GetListForComboBox(NgParameterType.Object));
+                    }
+                    else if (selectedItem.ObjectListKind == NgListKind.MoveablesInLevel)
+                    {
+                        comboTargetType.SelectedItem = TriggerTargetType.Object;
+                        FindAndAddObjects<MoveableInstance>();
+                    }
+                    else if (selectedItem.ObjectListKind == NgListKind.StaticsInLevel)
+                    {
+                        comboTargetType.SelectedItem = TriggerTargetType.Object;
+                        FindAndAddObjects<StaticInstance>();
+                    }
+                    else if (selectedItem.ObjectListKind == NgListKind.SinksInLevel)
+                    {
+                        comboTargetType.SelectedItem = TriggerTargetType.Object;
+                        FindAndAddObjects<SinkInstance>();
+                    }
+                    else if (selectedItem.ObjectListKind == NgListKind.CamerasInLevel)
+                    {
+                        comboTargetType.SelectedItem = TriggerTargetType.Object;
+                        FindAndAddObjects<CameraInstance>();
+                    }
+                    else if (selectedItem.ObjectListKind == NgListKind.FlybyCamerasInLevel)
+                    {
+                        comboTargetType.SelectedItem = TriggerTargetType.Object;
+                        FindAndAddObjects<FlybyCameraInstance>();
+                    }
+                    else
+                    {
+                        comboTargetType.SelectedItem = TriggerTargetType.ParameterNg;
+                        comboParameter.Items.AddRange(GetSpecialNgList(selectedItem.ObjectListKind));
+                    }
+
+                    // Select a default item
+                    if (comboParameter.Items.Count != 0) comboParameter.SelectedIndex = 0;
+                }
+                else
+                {
+                    // TODO: need to check this. Special case: if empty object list, then populate the parameter combobox with moveables by default
+                    FindAndAddObjects<MoveableInstance>();
+                    comboTargetType.SelectedItem = TriggerTargetType.Object;
+                }
+
+                if (selectedItem.HasExtraList)
+                {
+                    labelExtra.Visible = true;
+                    comboExtraParameter.Visible = true;
+                    comboExtraParameter.Items.Clear();
+                    comboExtraParameter.Text = "";
+
+                    if (selectedItem.ExtraListKind == NgListKind.Fixed || selectedItem.ExtraListKind == NgListKind.Unknown)
+                        comboExtraParameter.Items.AddRange(selectedItem.GetListForComboBox(NgParameterType.Extra));
+                    else
+                        comboExtraParameter.Items.AddRange(GetSpecialNgList(selectedItem.ExtraListKind));
+
+                    // Select a default item
+                    if (comboExtraParameter.Items.Count != 0) comboExtraParameter.SelectedIndex = 0;
+                }
+                else
+                {
+                    labelExtra.Visible = false;
+                    comboExtraParameter.Visible = false;
+                }
+            }
+
             if (targetType == TriggerTargetType.ActionNg)
             {
-                var selectedItem = NgCatalog.ActionTrigger.MainList.ElementAt(comboTimer.SelectedIndex).Value;
+                var action = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
+                var selectedItem = NgCatalog.ActionTrigger.MainList[action];
 
                 // Action trigger always has an object
                 labelParameter.Visible = true;
@@ -601,6 +700,22 @@ namespace TombEditor
                     labelExtra.Visible = false;
                     comboExtraParameter.Visible = false;
                 }
+            }
+        }
+
+        private void comboExtraParameter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var triggerType = (TriggerType)comboType.SelectedItem;
+
+            if (triggerType == TriggerType.ConditionNg)
+            {
+                var item = (comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key;
+                BitArray b = new BitArray(new int[] { item });
+                cbBit1.Checked = b[0];
+                cbBit2.Checked = b[1];
+                cbBit3.Checked = b[2];
+                cbBit4.Checked = b[3];
+                cbBit5.Checked = b[4];
             }
         }
     }
