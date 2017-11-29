@@ -261,10 +261,6 @@ namespace TombEditor
 
         protected override bool ProcessDialogKey(Keys keyData)
         {
-            // Don't open menus with the alt key
-            //if (keyData.HasFlag(Keys.Alt))
-            //    return true;
-
             bool focused = IsFocused(MainView) || IsFocused(TexturePanel);
 
             Keys modifierKeys = keyData & (Keys.Alt | Keys.Shift | Keys.Control);
@@ -505,8 +501,10 @@ namespace TombEditor
                 _editor.Action = action;
             }
 
+            // Don't open menus with the alt key
             if (alt)
                 return true;
+
             return base.ProcessDialogKey(keyData);
         }
 
@@ -828,6 +826,18 @@ namespace TombEditor
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.GridWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, true);
+        }
+
+        private void wholeRoomUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f),
+                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
+        }
+
+        private void wholeRoomDownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f),
+                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
         }
 
         private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)

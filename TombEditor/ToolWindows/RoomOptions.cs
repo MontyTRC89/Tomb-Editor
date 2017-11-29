@@ -354,18 +354,14 @@ namespace TombEditor.ToolWindows
 
         private void butRoomUp_Click(object sender, EventArgs e)
         {
-            var roomsToMove = new List<Room>();
-            roomsToMove.Add(_editor.SelectedRoom);
-            if (_editor.SelectedRoom.AlternateVersion != null) roomsToMove.Add(_editor.SelectedRoom.AlternateVersion);
-            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f), roomsToMove.ToArray());
+            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f),
+                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
         }
 
         private void butRoomDown_Click(object sender, EventArgs e)
         {
-            var roomsToMove = new List<Room>();
-            roomsToMove.Add(_editor.SelectedRoom);
-            if (_editor.SelectedRoom.AlternateVersion != null) roomsToMove.Add(_editor.SelectedRoom.AlternateVersion);
-            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f), roomsToMove.ToArray());
+            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f),
+                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
         }
 
         private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)
