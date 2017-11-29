@@ -563,10 +563,23 @@ namespace TombEditor.Controls
         private bool _doSectorSelection = false;
         private bool _noSelectionConfirm = false;
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
-        private List<HighlightType> _ignoredHighlights = new List<HighlightType> { HighlightType.Portal };
         private Buffer<EditorVertex> _skyVertexBuffer;
         private Debug _debug;
         private RasterizerState _rasterizerStateDepthBias;
+
+        private static readonly HashSet<HighlightType> _ignoredHighlights = new HashSet<HighlightType>
+        {
+            HighlightType.Portal,
+            HighlightType.BorderWall,
+            HighlightType.Wall,
+            HighlightType.Beetle,
+            HighlightType.TriggerTriggerer
+        };
+
+        private static readonly List<HighlightShape> _usedShapes = new List<HighlightShape>
+        {
+            HighlightShape.Rectangle
+        };
 
         // Current room's last position
         private Vector3? _currentRoomLastPos = null;
@@ -3267,7 +3280,7 @@ namespace TombEditor.Controls
                             break;
                     }
 
-                    if(lookupBlock != null && lookupBlock.Block.Flags.HasFlag(climbDirection))
+                    if(lookupBlock != null && lookupBlock.Block.HasFlag(climbDirection))
                         _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorClimb);
                     else
                     {
@@ -3295,11 +3308,10 @@ namespace TombEditor.Controls
                 }
                 else
                 {
-                    _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorFloor);
-
-                    var currentHighlight = _editor.HighlightManager.GetColor(room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals, false, _ignoredHighlights);
-                    if (currentHighlight.HasValue)
-                        _roomEffect.Parameters["Color"].SetValue(currentHighlight.Value);
+                    // For now, we only render rectangular solid highlights, so use single rectangle solid shape in _usedShapes list, and use first and only entry in returned highlight list.
+                    var currentHighlights = _editor.HighlightManager.GetColors(room, x, z, _editor.Configuration.Editor_ProbeAttributesThroughPortals, _ignoredHighlights, _usedShapes);
+                    if (currentHighlights != null)
+                        _roomEffect.Parameters["Color"].SetValue(currentHighlights[0].Color);
 
                     // Floor-specific highlights
                     if (face == (BlockFace)25 || face == (BlockFace)26)
@@ -3310,9 +3322,6 @@ namespace TombEditor.Controls
                                 (room.Blocks[x, z].FloorDiagonalSplit <= DiagonalSplit.XpZp && face == BlockFace.FloorTriangle2))
                                 _roomEffect.Parameters["Dim"].SetValue(true);
                         }
-
-                        if (!currentHighlight.HasValue && (room.Blocks[x, z].Flags & BlockFlags.ClimbAny) != 0)
-                            _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorClimb);
 
                         if (room.Blocks[x, z].FloorPortal != null)
                             _roomEffect.Parameters["Color"].SetValue(HighlightState.ColorPortalFace);

@@ -356,7 +356,7 @@ namespace TombEditor.Compilers
         private bool FindMonkeyFloor(Room room, int x, int z)
         {
             FindBottomFloor(ref room, ref x, ref z);
-            return room.Blocks[x, z].Flags.HasFlag(BlockFlags.Monkey);
+            return room.Blocks[x, z].HasFlag(BlockFlags.Monkey);
         }
 
         private void PrepareItems()

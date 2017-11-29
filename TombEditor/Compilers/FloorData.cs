@@ -1046,17 +1046,17 @@ namespace TombEditor.Compilers
                         {
                             ushort climb = 0x06;
 
-                            if (block.Flags.HasFlag(BlockFlags.ClimbPositiveZ)) climb |= (ushort)(0x01 << 8);
-                            if (block.Flags.HasFlag(BlockFlags.ClimbPositiveX)) climb |= (ushort)(0x02 << 8);
-                            if (block.Flags.HasFlag(BlockFlags.ClimbNegativeZ)) climb |= (ushort)(0x04 << 8);
-                            if (block.Flags.HasFlag(BlockFlags.ClimbNegativeX)) climb |= (ushort)(0x08 << 8);
+                            if (block.HasFlag(BlockFlags.ClimbPositiveZ)) climb |= (ushort)(0x01 << 8);
+                            if (block.HasFlag(BlockFlags.ClimbPositiveX)) climb |= (ushort)(0x02 << 8);
+                            if (block.HasFlag(BlockFlags.ClimbNegativeZ)) climb |= (ushort)(0x04 << 8);
+                            if (block.HasFlag(BlockFlags.ClimbNegativeX)) climb |= (ushort)(0x08 << 8);
 
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(climb);
                         }
 
                         // If sector is Death
-                        if (block.Flags.HasFlag(BlockFlags.DeathFire))
+                        if (block.HasFlag(BlockFlags.DeathFire))
                         {
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x05);
