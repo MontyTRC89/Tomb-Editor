@@ -15,6 +15,7 @@ using TombLib.IO;
 using System.IO;
 using TombLib.GeometryIO;
 using TombLib.GeometryIO.Exporters;
+using TombLib.Wad;
 
 namespace TombEditor
 {
@@ -2099,8 +2100,21 @@ namespace TombEditor
 
         public static void BuildLevelAndPlay(IWin32Window owner)
         {
-            if (BuildLevel(true))
-                TombLauncher.Launch(_editor.Level.Settings, owner);
+            if ((_editor?.Level?.Wad?.Moveables[0] != null) &&
+                 _editor.Level.Rooms
+                .Where(room => room != null)
+                .SelectMany(room => room.Objects)
+                .Any((obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == new ItemType(false, 0)))
+            {
+                if (BuildLevel(true))
+                    TombLauncher.Launch(_editor.Level.Settings, owner);
+            }
+            else
+            {
+                DarkMessageBox.Show(owner, "No Lara found. Place Lara to play level.", "No Lara", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
         }
 
         public static void LoadTextures(IWin32Window owner)
