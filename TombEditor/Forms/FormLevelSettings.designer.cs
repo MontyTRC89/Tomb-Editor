@@ -577,6 +577,8 @@
             // 
             // comboGameVersion
             // 
+            this.comboGameVersion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboGameVersion.FormattingEnabled = true;
             this.comboGameVersion.Location = new System.Drawing.Point(19, 20);
             this.comboGameVersion.Name = "comboGameVersion";
@@ -615,7 +617,7 @@
             this.importedGeometryManager.Location = new System.Drawing.Point(3, 23);
             this.importedGeometryManager.Name = "importedGeometryManager";
             this.importedGeometryManager.SelectedImportedGeometry = null;
-            this.importedGeometryManager.Size = new System.Drawing.Size(434, 262);
+            this.importedGeometryManager.Size = new System.Drawing.Size(442, 299);
             this.importedGeometryManager.TabIndex = 2;
             // 
             // darkLabel11
@@ -809,16 +811,12 @@
             // 
             // soundDataGridViewControls
             // 
-            this.soundDataGridViewControls.AllowUserDelete = false;
-            this.soundDataGridViewControls.AllowUserMove = false;
-            this.soundDataGridViewControls.AllowUserNew = false;
             this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundDataGridViewControls.Enabled = false;
-            this.soundDataGridViewControls.Location = new System.Drawing.Point(424, 72);
+            this.soundDataGridViewControls.Location = new System.Drawing.Point(418, 72);
             this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
             this.soundDataGridViewControls.Name = "soundDataGridViewControls";
-            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 224);
+            this.soundDataGridViewControls.Size = new System.Drawing.Size(24, 250);
             this.soundDataGridViewControls.TabIndex = 3;
             // 
             // soundDataGridView
@@ -835,7 +833,7 @@
             this.soundDataGridView.Location = new System.Drawing.Point(3, 72);
             this.soundDataGridView.Name = "soundDataGridView";
             this.soundDataGridView.RowHeadersWidth = 41;
-            this.soundDataGridView.Size = new System.Drawing.Size(415, 224);
+            this.soundDataGridView.Size = new System.Drawing.Size(409, 250);
             this.soundDataGridView.TabIndex = 2;
             this.soundDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundDataGridView_CellContentClick);
             this.soundDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundDataGridView_CellFormatting);
@@ -902,7 +900,7 @@
             this.pathVariablesDataGridView.Name = "pathVariablesDataGridView";
             this.pathVariablesDataGridView.RowHeadersWidth = 41;
             this.pathVariablesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.pathVariablesDataGridView.Size = new System.Drawing.Size(434, 240);
+            this.pathVariablesDataGridView.Size = new System.Drawing.Size(439, 300);
             this.pathVariablesDataGridView.TabIndex = 2;
             this.pathVariablesDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.pathVariablesDataGridView_CellMouseDown);
             // 
