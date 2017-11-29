@@ -94,7 +94,8 @@ namespace TombEditor
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(678, 420) + (Size - ClientSize);
+            MinimumSize = new Size(670, 380) + (Size - ClientSize);
+            Size = MinimumSize;
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.OldWadSoundPaths)
@@ -108,6 +109,10 @@ namespace TombEditor
             soundDataGridView.DataSource = soundDataGridViewDataSource;
             soundDataGridViewControls.DataGridView = soundDataGridView;
             soundDataGridViewControls.CreateNewRow = soundDataGridViewCreateNewRow;
+            soundDataGridViewControls.AllowUserNew = true;
+            soundDataGridViewControls.AllowUserDelete = true;
+            soundDataGridViewControls.AllowUserMove = true;
+            soundDataGridViewControls.Enabled = true;
 
             // Initialize picture previews
             _correctColor = gameLevelFilePathTxt.BackColor;
