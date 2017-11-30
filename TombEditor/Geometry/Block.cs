@@ -472,7 +472,7 @@ namespace TombEditor.Geometry
                     if (Math.Abs(normals[i].Y) <= CriticalSlantComponent) // Triangle is slidable
                     {
                         bool angleNotDefined = true;
-                        var angle = Math.Atan2(normals[i].X, normals[i].Z) * (180.0f / Math.PI);
+                        var angle = MathUtilEx.RadiansToDegrees((float)Math.Atan2(normals[i].X, normals[i].Z));
                         angle = angle < 0 ? angle + 360.0f : angle;
 
                         // Note about 45, 135, 225 and 315 degree steps:
