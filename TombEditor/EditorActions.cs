@@ -368,8 +368,8 @@ namespace TombEditor
             bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW);
             bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE);
 
-            float smoothGrainX = (float)(allFace || (step90 && !turn90) ? Math.PI : Math.PI / 2) / (area.Width + 1);
-            float smoothGrainZ = (float)(allFace || (step90 &&  turn90) ? Math.PI : Math.PI / 2) / (area.Height + 1);
+            float smoothGrainX = (float)(allFace || (step90 && !turn90) ? Math.PI : MathUtilEx.PiOverTwo) / (area.Width + 1);
+            float smoothGrainZ = (float)(allFace || (step90 &&  turn90) ? Math.PI : MathUtilEx.PiOverTwo) / (area.Height + 1);
 
             for (int w = area.Left, x = 0; w < area.Left + area.Width + 2; w++, x++)
                 for (int h = area.Top, z = 0; h != area.Top + area.Height + 2; h++, z++)
