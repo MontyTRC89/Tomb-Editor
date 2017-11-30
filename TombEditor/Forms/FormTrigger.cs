@@ -17,6 +17,15 @@ namespace TombEditor
 {
     public partial class FormTrigger : DarkForm
     {
+        private enum ComboboxChangeEventSource
+        {
+            TriggerType,
+            TargetType,
+            Parameter,
+            Timer,
+            Extra
+        }
+
         private Level _level;
         private TriggerInstance _trigger;
         private bool comboParameterBeingInitialized = false;
@@ -110,6 +119,34 @@ namespace TombEditor
 
                     // Set the value for extra
                     if (actionTrigger.HasExtraList)
+                    {
+                        var extra = ((_trigger.Timer & 0xFF00) >> 8);
+                        SetNgComboboxValue(extra, comboExtraParameter);
+                    }
+                }
+            }
+            else if (_trigger.TriggerType == TriggerType.ConditionNg && isNg)
+            {
+                // NG condition trigger
+                if (_trigger.Timer != 0)
+                {
+                    // Set the correct action 
+                    var condition = (_trigger.Timer & 0xFF);
+                    var conditionTrigger = NgCatalog.ConditionTrigger.MainList[condition];
+                    SetNgComboboxValue(condition, comboTimer);
+
+                    // Set values for object 
+                    if (conditionTrigger.ObjectListKind == NgListKind.MoveablesInLevel ||
+                        conditionTrigger.ObjectListKind == NgListKind.StaticsInLevel ||
+                        conditionTrigger.ObjectListKind == NgListKind.SinksInLevel ||
+                        conditionTrigger.ObjectListKind == NgListKind.CamerasInLevel ||
+                        conditionTrigger.ObjectListKind == NgListKind.FlybyCamerasInLevel)
+                        comboParameter.SelectedItem = _trigger.TargetObj;
+                    else
+                        SetNgComboboxValue(_trigger.TargetData, comboParameter);
+
+                    // Set the value for extra
+                    if (conditionTrigger.HasExtraList)
                     {
                         var extra = ((_trigger.Timer & 0xFF00) >> 8);
                         SetNgComboboxValue(extra, comboExtraParameter);
@@ -280,7 +317,31 @@ namespace TombEditor
             _trigger.OneShot = cbOneShot.Checked;
 
             var isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
-            if (_trigger.TargetType == TriggerTargetType.FlipEffect && isNg)
+            if (_trigger.TriggerType==TriggerType.ConditionNg)
+            {
+                // NG condition trigger
+                var conditionId = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
+                var conditionTrigger = NgCatalog.ConditionTrigger.MainList[conditionId];
+
+                _trigger.Timer = (short)((comboTimer.SelectedItem as NgTriggerKeyValuePair).Key & 0xFF);
+                if (conditionTrigger.HasExtraList)
+                {
+                    _trigger.Timer |= (short)((comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key << 8);
+                }
+                /*if (conditionTrigger.ObjectListKind == NgListKind.MoveablesInLevel ||
+                    conditionTrigger.ObjectListKind == NgListKind.StaticsInLevel ||
+                    conditionTrigger.ObjectListKind == NgListKind.SinksInLevel ||
+                    conditionTrigger.ObjectListKind == NgListKind.CamerasInLevel ||
+                    conditionTrigger.ObjectListKind == NgListKind.FlybyCamerasInLevel)
+                {
+
+                }
+                else
+                {
+                    _trigger.TargetData=(short)combo
+                }*/
+            }
+            else if (_trigger.TargetType == TriggerTargetType.FlipEffect && isNg)
             {
                 // NG flipeffect trigger
                 var flipeffectId = (comboParameter.SelectedItem as NgTriggerKeyValuePair).Key;
