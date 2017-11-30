@@ -66,6 +66,7 @@ namespace TombEditor
         public static readonly Vector4 ColorForceSolidFloor = Vector4.Lerp(ColorFloor, new Vector4(0.0f, 0.0f, 0.0f, 1.0f), 0.1f);
 
         private List<HighlightType> _priorityList = Enum.GetValues(typeof(HighlightType)).Cast<HighlightType>().ToList();
+        public HighlightType Priority => _priorityList[0];
 
         public HighlightState()
         {}
@@ -73,11 +74,6 @@ namespace TombEditor
         public HighlightState(HighlightType priorityType)
         {
             _priorityList = _priorityList.OrderByDescending((item) => item == priorityType).ToList();
-        }
-
-        public HighlightType GetCurrentPriority()
-        {
-            return _priorityList[0];
         }
 
         public Vector4? GetHighlightColor(Room room, int x, int z, bool probeThroughPortals, HighlightShape shape, HashSet<HighlightType> typesToIgnore = null)
@@ -232,7 +228,7 @@ namespace TombEditor
 
         public void SetPriority(HighlightType type)
         {
-            if (_currentState.GetCurrentPriority() == type)
+            if (_currentState.Priority == type)
                 return;
 
             _previousState = _currentState;
