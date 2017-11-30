@@ -75,6 +75,11 @@ namespace TombEditor
             _priorityList = _priorityList.OrderByDescending((item) => item == priorityType).ToList();
         }
 
+        public HighlightType GetCurrentPriority()
+        {
+            return _priorityList[0];
+        }
+
         public Vector4? GetHighlightColor(Room room, int x, int z, bool probeThroughPortals, HighlightShape shape, HashSet<HighlightType> typesToIgnore = null)
         {
             Block block = room.GetBlockTry(x, z);
@@ -227,6 +232,9 @@ namespace TombEditor
 
         public void SetPriority(HighlightType type)
         {
+            if (_currentState.GetCurrentPriority() == type)
+                return;
+
             _previousState = _currentState;
             _currentState = new HighlightState(type);
 
