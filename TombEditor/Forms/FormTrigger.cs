@@ -19,6 +19,8 @@ namespace TombEditor
     {
         private enum ComboboxChangeEventSource
         {
+            None,
+            Load,
             TriggerType,
             TargetType,
             Parameter,
@@ -30,12 +32,14 @@ namespace TombEditor
         private TriggerInstance _trigger;
         private bool comboParameterBeingInitialized = false;
         private Editor _editor;
+        private ComboboxChangeEventSource _lastChange;
 
         public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject)
         {
             _level = level;
             _trigger = trigger;
             _editor = Editor.Instance;
+            _lastChange = ComboboxChangeEventSource.Load;
 
             InitializeComponent();
 
@@ -93,6 +97,11 @@ namespace TombEditor
                     else
                         SetNgComboboxValue(_trigger.Timer, comboTimer);
                 }
+                else
+                {
+                    comboParameter.SelectedIndex = 0;
+                    OnParameterChanged();
+                }
             }
             if (_trigger.TargetType == TriggerTargetType.TimerfieldNg && isNg)
             {
@@ -102,6 +111,11 @@ namespace TombEditor
                     var timerfield = NgCatalog.TimerFieldTrigger.MainList[_trigger.TargetData];
                     SetNgComboboxValue(_trigger.TargetData, comboParameter);
                     tbTimer.Text = _trigger.Timer.ToString();
+                }
+                else
+                {
+                    comboTimer.SelectedIndex = 0;
+                    OnParameterChanged();
                 }
             }
             else if (_trigger.TargetType == TriggerTargetType.ActionNg && isNg)
@@ -123,6 +137,11 @@ namespace TombEditor
                         var extra = ((_trigger.Timer & 0xFF00) >> 8);
                         SetNgComboboxValue(extra, comboExtraParameter);
                     }
+                }
+                else
+                {
+                    comboTimer.SelectedIndex = 0;
+                    OnTimerChanged();
                 }
             }
             else if (_trigger.TriggerType == TriggerType.ConditionNg && isNg)
@@ -152,6 +171,11 @@ namespace TombEditor
                         SetNgComboboxValue(extra, comboExtraParameter);
                     }
                 }
+                else
+                {
+                    comboTimer.SelectedIndex = 0;
+                    OnTimerChanged();
+                }
             }
             else
             {
@@ -161,53 +185,12 @@ namespace TombEditor
                     tbParameter.Text = _trigger.TargetData.ToString();
             }
 
+            _lastChange = ComboboxChangeEventSource.None;
         }
 
         private void comboTargetType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
-            bool usesObject = TriggerInstance.UsesTargetObj(targetType);
-            var triggerType = (TriggerType)comboType.SelectedItem;
-
-            tbParameter.Visible = !usesObject;
-            comboParameter.Visible = usesObject;
-            if (triggerType != TriggerType.ConditionNg) comboTimer.Visible = false;
-
-            labelExtra.Visible = false;
-            comboExtraParameter.Visible = false;
-
-            switch (targetType) 
-            {
-                case TriggerTargetType.Object:
-                    FindAndAddObjects<MoveableInstance>();
-                    break;
-                case TriggerTargetType.Camera:
-                    FindAndAddObjects<CameraInstance>();
-                    break;
-                case TriggerTargetType.Sink:
-                    FindAndAddObjects<SinkInstance>();
-                    break;
-                case TriggerTargetType.Target:
-                    // Actually it is possible to not only target Target objects, but all movables.
-                    // This is also useful: It makes sense to target egg a trap or an enemy.
-                    FindAndAddObjects<MoveableInstance>();
-                    break;
-                case TriggerTargetType.FlyByCamera:
-                    FindAndAddObjects<FlybyCameraInstance>();
-                    break;
-                case TriggerTargetType.FlipEffect:
-                    if (_level.Settings.GameVersion == GameVersion.TRNG)
-                        LoadNgFlipeffectTrigger();
-                    break;
-                case TriggerTargetType.ActionNg:
-                    if (_level.Settings.GameVersion == GameVersion.TRNG)
-                        LoadNgActionTrigger();
-                    break;
-                case TriggerTargetType.TimerfieldNg:
-                    if (_level.Settings.GameVersion == GameVersion.TRNG)
-                        LoadNgTimerFieldTrigger();
-                    break;
-            }
+            OnTriggerTargetChanged();
         }
 
         private void LoadNgFlipeffectTrigger()
@@ -430,67 +413,12 @@ namespace TombEditor
 
         private void comboType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var triggerType = (TriggerType)comboType.SelectedItem;
-
-            if (triggerType == TriggerType.ConditionNg)
-            {
-                comboTargetType.Enabled = false;
-                LoadNgConditionTrigger();
-            }
-            else
-            {
-                comboTargetType.Enabled = true;
-            }
+            OnTriggerTypeChanged();
         }
 
         private void comboParameter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
-            
-            if (targetType == TriggerTargetType.FlipEffect)
-            {
-                // NG flipeffect trigger
-                var flipeffect = (comboParameter.SelectedItem as NgTriggerKeyValuePair).Key;
-                var selectedItem = NgCatalog.FlipEffectTrigger.MainList[flipeffect];
-
-                if (selectedItem.HasTimerList)
-                {
-                    labelTimer.Visible = true;
-                    tbTimer.Visible = false;
-                    comboTimer.Visible = true;
-                    comboTimer.Items.Clear();
-                    comboTimer.Text = "";
-
-                    if (selectedItem.TimerListKind == NgListKind.Fixed || selectedItem.TimerListKind == NgListKind.Unknown)
-                        comboTimer.Items.AddRange(selectedItem.GetListForComboBox(NgParameterType.Timer));
-                    else
-                        comboTimer.Items.AddRange(GetSpecialNgList(selectedItem.TimerListKind));
-                }
-                else
-                {
-                    tbTimer.Visible = false;
-                    labelTimer.Visible = false;
-                    comboTimer.Visible = false;
-                }
-
-                if (selectedItem.HasExtraList)
-                {
-                    labelExtra.Visible = true;
-                    comboExtraParameter.Visible = true;
-                    comboExtraParameter.Items.Clear();
-                    comboExtraParameter.Text = "";
-
-                    if (selectedItem.ExtraListKind == NgListKind.Fixed || selectedItem.ExtraListKind == NgListKind.Unknown)
-                        comboExtraParameter.Items.AddRange(selectedItem.GetListForComboBox(NgParameterType.Extra));
-                    else
-                        comboExtraParameter.Items.AddRange(GetSpecialNgList(selectedItem.ExtraListKind));
-                }
-                else
-                {
-                    labelExtra.Visible = false;
-                    comboExtraParameter.Visible = false;
-                }
-            }
+            OnParameterChanged();
         }
 
         private object[] GetSpecialNgList(NgListKind kind)
@@ -618,6 +546,142 @@ namespace TombEditor
 
         private void comboTimer_SelectedIndexChanged(object sender, EventArgs e)
         {
+            OnTimerChanged();
+        }
+
+        private void comboExtraParameter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnExtraChanged();
+        }
+
+        private void OnTriggerTypeChanged()
+        {
+            var triggerType = (TriggerType)comboType.SelectedItem;
+            var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
+
+            if (triggerType == TriggerType.ConditionNg)
+            {
+                if (targetType == TriggerTargetType.FlipEffect || targetType== TriggerTargetType.ActionNg || 
+                    targetType == TriggerTargetType.ParameterNg)
+                {
+                    DarkMessageBox.Show(this, "You can't combine ConditionNg trigger with Flipeffect, ActionNg or ParameterNg",
+                                        "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    comboTargetType.SelectedItem = TriggerTargetType.Object;
+                }
+                comboTargetType.Enabled = false;
+                LoadNgConditionTrigger();
+            }
+            else
+            {
+                comboTargetType.Enabled = true;
+            }
+        }
+
+        private void OnTriggerTargetChanged()
+        {
+            // Get informations about current tigger
+            var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
+            var triggerType = (TriggerType)comboType.SelectedItem;
+            bool usesObject = TriggerInstance.UsesTargetObj(targetType);
+
+            // This is the general case, NG triggers will override this in their functions
+            tbParameter.Visible = !usesObject;
+            comboParameter.Visible = usesObject;
+            if (triggerType != TriggerType.ConditionNg) comboTimer.Visible = false;
+
+            // Always disabled in general case
+
+            labelExtra.Visible = false;
+            comboExtraParameter.Visible = false;
+
+            switch (targetType)
+            {
+                case TriggerTargetType.Object:
+                    FindAndAddObjects<MoveableInstance>();
+                    break;
+                case TriggerTargetType.Camera:
+                    FindAndAddObjects<CameraInstance>();
+                    break;
+                case TriggerTargetType.Sink:
+                    FindAndAddObjects<SinkInstance>();
+                    break;
+                case TriggerTargetType.Target:
+                    // Actually it is possible to not only target Target objects, but all movables.
+                    // This is also useful: It makes sense to target egg a trap or an enemy.
+                    FindAndAddObjects<MoveableInstance>();
+                    break;
+                case TriggerTargetType.FlyByCamera:
+                    FindAndAddObjects<FlybyCameraInstance>();
+                    break;
+                case TriggerTargetType.FlipEffect:
+                    if (_level.Settings.GameVersion == GameVersion.TRNG)
+                        LoadNgFlipeffectTrigger();
+                    break;
+                case TriggerTargetType.ActionNg:
+                    if (_level.Settings.GameVersion == GameVersion.TRNG)
+                        LoadNgActionTrigger();
+                    break;
+                case TriggerTargetType.TimerfieldNg:
+                    if (_level.Settings.GameVersion == GameVersion.TRNG)
+                        LoadNgTimerFieldTrigger();
+                    break;
+            }
+        }
+
+        private void OnParameterChanged()
+        {
+            var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
+
+            if (targetType == TriggerTargetType.FlipEffect)
+            {
+                // NG flipeffect trigger
+                var flipeffect = (comboParameter.SelectedItem as NgTriggerKeyValuePair).Key;
+                var selectedItem = NgCatalog.FlipEffectTrigger.MainList[flipeffect];
+
+                if (selectedItem.HasTimerList)
+                {
+                    labelTimer.Visible = true;
+                    tbTimer.Visible = false;
+                    comboTimer.Visible = true;
+                    comboTimer.Items.Clear();
+                    comboTimer.Text = "";
+
+                    if (selectedItem.TimerListKind == NgListKind.Fixed || selectedItem.TimerListKind == NgListKind.Unknown)
+                        comboTimer.Items.AddRange(selectedItem.GetListForComboBox(NgParameterType.Timer));
+                    else
+                        comboTimer.Items.AddRange(GetSpecialNgList(selectedItem.TimerListKind));
+                }
+                else
+                {
+                    tbTimer.Visible = false;
+                    labelTimer.Visible = false;
+                    comboTimer.Visible = false;
+                }
+
+                if (selectedItem.HasExtraList)
+                {
+                    labelExtra.Visible = true;
+                    comboExtraParameter.Visible = true;
+                    comboExtraParameter.Items.Clear();
+                    comboExtraParameter.Text = "";
+
+                    if (selectedItem.ExtraListKind == NgListKind.Fixed || selectedItem.ExtraListKind == NgListKind.Unknown)
+                        comboExtraParameter.Items.AddRange(selectedItem.GetListForComboBox(NgParameterType.Extra));
+                    else
+                        comboExtraParameter.Items.AddRange(GetSpecialNgList(selectedItem.ExtraListKind));
+                }
+                else
+                {
+                    labelExtra.Visible = false;
+                    comboExtraParameter.Visible = false;
+                }
+            }
+        }
+
+        private void OnTimerChanged()
+        {
+            _lastChange = ComboboxChangeEventSource.Timer;
+
             var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
             var triggerType = (TriggerType)comboType.SelectedItem;
 
@@ -701,6 +765,8 @@ namespace TombEditor
                     labelExtra.Visible = false;
                     comboExtraParameter.Visible = false;
                 }
+
+                return;
             }
 
             if (targetType == TriggerTargetType.ActionNg)
@@ -715,6 +781,8 @@ namespace TombEditor
                 comboParameter.Items.Clear();
                 comboParameter.Text = "";
 
+                //comboTargetType.SelectedItem = TriggerTargetType.Object;
+                
                 if (selectedItem.HasObjectList)
                 {
                     if (selectedItem.ObjectListKind == NgListKind.Fixed || selectedItem.ObjectListKind == NgListKind.Unknown)
@@ -761,11 +829,15 @@ namespace TombEditor
                     labelExtra.Visible = false;
                     comboExtraParameter.Visible = false;
                 }
+
+                return;
             }
         }
 
-        private void comboExtraParameter_SelectedIndexChanged(object sender, EventArgs e)
+        private void OnExtraChanged()
         {
+            _lastChange = ComboboxChangeEventSource.Extra;
+
             var triggerType = (TriggerType)comboType.SelectedItem;
 
             if (triggerType == TriggerType.ConditionNg)
