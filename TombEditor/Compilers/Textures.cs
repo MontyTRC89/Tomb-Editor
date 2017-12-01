@@ -116,8 +116,8 @@ namespace TombEditor.Compilers
                     newTexture.Y = (byte)newTexture.TopSide;
                     newTexture.Width = (ushort)((oldTexture.Width - 1) * 256);
                     newTexture.Height = (ushort)((oldTexture.Height - 1) * 256);
-                    newTexture.RightSide = (short)(newTexture.LeftSide + (oldTexture.Width - 1));
-                    newTexture.BottomSide = (short)(newTexture.TopSide + (oldTexture.Height - 1));
+                    newTexture.RightSide = (short)(newTexture.LeftSide + (oldTexture.Width));
+                    newTexture.BottomSide = (short)(newTexture.TopSide + (oldTexture.Height));
                     newTexture.Tile = (ushort)(pagesBeforeSprites + packInfo.OutputTextureID);
 
                     tempSprites.Add(newTexture);
