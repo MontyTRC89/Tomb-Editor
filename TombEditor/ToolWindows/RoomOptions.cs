@@ -87,6 +87,17 @@ namespace TombEditor.ToolWindows
                 cbNoLensflare.Checked = room.FlagNoLensflare;
                 cbNoPathfinding.Checked = room.FlagExcludeFromPathFinding;
 
+                if (room.AlternateBaseRoom != null)
+                {
+                    cbLocked.Enabled = false;
+                    cbLocked.Checked = room.AlternateBaseRoom.Locked;
+                }
+                else
+                {
+                    cbLocked.Enabled = true;
+                    cbLocked.Checked = room.Locked;
+                }
+
                 comboFlipMap.SelectedIndex = room.Flipped ? (room.AlternateGroup + 1) : 0;
             }
         }
@@ -370,6 +381,15 @@ namespace TombEditor.ToolWindows
                 return;
 
             _editor.SelectedRoom.FlagNoLensflare = cbNoLensflare.Checked;
+            _editor.RoomPropertiesChange(_editor.SelectedRoom);
+        }
+
+        private void cbLocked_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_editor.SelectedRoom.Locked == cbLocked.Checked)
+                return;
+
+            _editor.SelectedRoom.Locked = cbLocked.Checked;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }

@@ -139,6 +139,14 @@ namespace TombEditor.Controls
             return ((MaxDepth - depth) / (MaxDepth - MinDepth)) * barArea.Height + barArea.Y;
         }
 
+        private bool CheckForLockedRooms()
+        {
+            foreach (var room in _roomsToMove)
+                if (room.Locked)
+                    return true;
+            return false;
+        }
+
         /// <returns>true, if the selection should continue in the background of the bar.</returns>
         public bool MouseDown(MouseEventArgs e, Size parentControlSize, Level level, Vector2 clickPos)
         {
@@ -188,6 +196,7 @@ namespace TombEditor.Controls
                                         {
                                             _roomMouseClicked = roomSequences[i][j].Room;
                                             _roomsToMove = level.GetConnectedRooms(_roomMouseClicked);
+                                            if (Utils.ThereAreLockedRooms(_roomsToMove)) _roomsToMove.Clear(); // This disable moving if a locked room is found
                                             _roomMouseOffset = mouseDepth - _roomMouseClicked.Position.Y;
                                             _roomMouseMoveStarted = false;
                                             _editor.SelectRoomAndResetCamera(_roomMouseClicked);
