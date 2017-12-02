@@ -25,6 +25,7 @@ namespace TombEditor
         private Action<ObjectInstance> _selectObject;
         private Action<Room> _selectRoom;
         private Room _room;
+        private bool _isNg;
 
         public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
                            Action<Room> selectRoom)
@@ -35,6 +36,7 @@ namespace TombEditor
             _selectRoom = selectRoom;
             _selectObject = selectObject;
             _room = _editor.SelectedRoom;
+            _isNg = _level.Settings.GameVersion == GameVersion.TRNG;
 
             InitializeComponent();
         }
@@ -192,8 +194,7 @@ namespace TombEditor
             _trigger.CodeBits = codeBits;
             _trigger.OneShot = cbOneShot.Checked;
 
-            var isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
-            if (_trigger.TriggerType==TriggerType.ConditionNg)
+            if (_trigger.TriggerType==TriggerType.ConditionNg && _isNg)
             {
                 // NG condition trigger
                 var conditionId = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
@@ -206,7 +207,7 @@ namespace TombEditor
                     _trigger.Timer |= (short)((comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key << 8);
                 }
             }
-            else if (_trigger.TargetType == TriggerTargetType.FlipEffect && isNg)
+            else if (_trigger.TargetType == TriggerTargetType.FlipEffect && _isNg)
             {
                 // NG flipeffect trigger
                 var flipeffectId = (comboParameter.SelectedItem as NgTriggerKeyValuePair).Key;
@@ -226,13 +227,13 @@ namespace TombEditor
                     _trigger.Timer = (short)timer;
                 }
             }
-            else if (_trigger.TargetType == TriggerTargetType.TimerfieldNg && isNg)
+            else if (_trigger.TargetType == TriggerTargetType.TimerfieldNg && _isNg)
             {
                 // NG timer trigger
                 _trigger.TargetData = (short)(comboParameter.SelectedItem as NgTriggerKeyValuePair).Key;
                 _trigger.Timer = short.Parse(tbTimer.Text);
             }
-            else if (_trigger.TargetType == TriggerTargetType.ActionNg && isNg)
+            else if (_trigger.TargetType == TriggerTargetType.ActionNg && _isNg)
             {
                 // NG action trigger
                 var action = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
@@ -489,7 +490,7 @@ namespace TombEditor
         {
             var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
 
-            if (targetType == TriggerTargetType.FlipEffect)
+            if (targetType == TriggerTargetType.FlipEffect && _isNg)
             {
                 // NG flipeffect trigger
                 var flipeffect = (comboParameter.SelectedItem as NgTriggerKeyValuePair).Key;
@@ -767,11 +768,8 @@ namespace TombEditor
 
             comboTargetType.SelectedItem = _trigger.TargetType;
 
-            // NG triggers behave differently in some cases
-            var isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
-
             // Now I have to load UI based on trigger
-            if (_trigger.TriggerType == TriggerType.ConditionNg)
+            if (_trigger.TriggerType == TriggerType.ConditionNg && _isNg)
             {
                 comboType.SelectedItem = TriggerType.ConditionNg;
                 OnTriggerTypeChanged();
@@ -818,7 +816,7 @@ namespace TombEditor
             }
 
             OnTriggerTargetChanged();
-            if (_trigger.TargetType == TriggerTargetType.FlipEffect && isNg)
+            if (_trigger.TargetType == TriggerTargetType.FlipEffect && _isNg)
             {
                 LoadNgFlipeffectTrigger();
                 if (NgCatalog.FlipEffectTrigger.MainList.ContainsKey(_trigger.TargetData))
@@ -850,7 +848,7 @@ namespace TombEditor
                     OnParameterChanged();
                 }
             }
-            else if (_trigger.TargetType == TriggerTargetType.TimerfieldNg && isNg)
+            else if (_trigger.TargetType == TriggerTargetType.TimerfieldNg && _isNg)
             {
                 LoadNgTimerFieldTrigger();
                 if (NgCatalog.TimerFieldTrigger.MainList.ContainsKey(_trigger.TargetData))
@@ -867,7 +865,7 @@ namespace TombEditor
                     OnParameterChanged();
                 }
             }
-            else if (_trigger.TargetType == TriggerTargetType.ActionNg && isNg)
+            else if (_trigger.TargetType == TriggerTargetType.ActionNg && _isNg)
             {
                 LoadNgActionTrigger();
                 var action = (_trigger.Timer & 0xFF);
@@ -896,7 +894,7 @@ namespace TombEditor
                     OnTimerChanged();
                 }
             }
-            else if (_trigger.TargetType == TriggerTargetType.ParameterNg && isNg)
+            else if (_trigger.TargetType == TriggerTargetType.ParameterNg && _isNg)
             {
                 // Do  nothing here...
             }
