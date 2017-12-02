@@ -430,7 +430,8 @@ namespace TombEditor
             }
 
             // Display form
-            using (var formTrigger = new FormTrigger(_editor.Level, trigger, obj => _editor.ShowObject(obj)))
+            using (var formTrigger = new FormTrigger(_editor.Level, trigger, obj => _editor.ShowObject(obj),
+                                                     r => _editor.SelectRoomAndResetCamera(r)))
             {
                 if (formTrigger.ShowDialog(owner) != DialogResult.OK)
                     return;
@@ -597,7 +598,8 @@ namespace TombEditor
             }
             else if (instance is TriggerInstance)
             {
-                using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance, obj => _editor.ShowObject(obj)))
+                using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance, obj => _editor.ShowObject(obj),
+                                                         r => _editor.SelectRoomAndResetCamera(r)))
                     formTrigger.ShowDialog(owner);
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }

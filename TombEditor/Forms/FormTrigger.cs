@@ -17,180 +17,26 @@ namespace TombEditor
 {
     public partial class FormTrigger : DarkForm
     {
-        private enum ComboboxChangeEventSource
-        {
-            None,
-            Load,
-            TriggerType,
-            TargetType,
-            Parameter,
-            Timer,
-            Extra
-        }
-
         private Level _level;
         private TriggerInstance _trigger;
         private bool comboParameterBeingInitialized = false;
         private Editor _editor;
-        private ComboboxChangeEventSource _lastChange;
+        private bool _loaded = false;
+        private Action<ObjectInstance> _selectObject;
+        private Action<Room> _selectRoom;
+        private Room _room;
 
-        public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject)
+        public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
+                           Action<Room> selectRoom)
         {
             _level = level;
             _trigger = trigger;
             _editor = Editor.Instance;
-            _lastChange = ComboboxChangeEventSource.Load;
+            _selectRoom = selectRoom;
+            _selectObject = selectObject;
+            _room = _editor.SelectedRoom;
 
             InitializeComponent();
-
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MaximumSize = new Size(32000, Size.Height);
-            MinimumSize = new Size(347 + (Size.Height - ClientSize.Height), Size.Height);
-
-            // Populate lists
-            foreach (TriggerType triggerType in Enum.GetValues(typeof(TriggerType)))
-                comboType.Items.Add(triggerType);
-            foreach (TriggerTargetType triggerTargetType in Enum.GetValues(typeof(TriggerTargetType)))
-                comboTargetType.Items.Add(triggerTargetType);
-
-            // Center items in the trigger window
-            comboParameter.SelectedIndexChanged += delegate
-            {
-                if (!comboParameterBeingInitialized)
-                {
-                    ObjectInstance objectToSelect = comboParameter.SelectedItem as ObjectInstance;
-                    if (objectToSelect != null)
-                        selectObject(objectToSelect);
-                }
-            };
-
-            // Setup dialog
-            comboType.SelectedItem = _trigger.TriggerType;
-            comboTargetType.SelectedItem = _trigger.TargetType;
-            cbBit1.Checked = (_trigger.CodeBits & (1 << 0)) != 0;
-            cbBit2.Checked = (_trigger.CodeBits & (1 << 1)) != 0;
-            cbBit3.Checked = (_trigger.CodeBits & (1 << 2)) != 0;
-            cbBit4.Checked = (_trigger.CodeBits & (1 << 3)) != 0;
-            cbBit5.Checked = (_trigger.CodeBits & (1 << 4)) != 0;
-            cbOneShot.Checked = _trigger.OneShot;
-            tbTimer.Text = _trigger.Timer.ToString();
-
-            var isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
-            if (_trigger.TargetType == TriggerTargetType.FlipEffect && isNg)
-            {
-                // NG flipeffect trigger
-                if (_trigger.TargetData != 0)
-                {
-                    // Set the correct flipeffect
-                    var flipeffect = NgCatalog.FlipEffectTrigger.MainList[_trigger.TargetData];
-                    SetNgComboboxValue(_trigger.TargetData, comboParameter);
-
-                    // Set values for timer and extra
-                    if (flipeffect.HasTimerList && flipeffect.HasExtraList)
-                    {
-                        var timer = (_trigger.Timer & 0xFF);
-                        var extra = ((_trigger.Timer & 0xFF00) >> 8);
-                        SetNgComboboxValue(timer, comboTimer);
-                        SetNgComboboxValue(extra, comboExtraParameter);
-                    }
-                    else
-                        SetNgComboboxValue(_trigger.Timer, comboTimer);
-                }
-                else
-                {
-                    comboParameter.SelectedIndex = 0;
-                    OnParameterChanged();
-                }
-            }
-            if (_trigger.TargetType == TriggerTargetType.TimerfieldNg && isNg)
-            {
-                if (_trigger.TargetData != 0)
-                {
-                    // Set the correct flipeffect
-                    var timerfield = NgCatalog.TimerFieldTrigger.MainList[_trigger.TargetData];
-                    SetNgComboboxValue(_trigger.TargetData, comboParameter);
-                    tbTimer.Text = _trigger.Timer.ToString();
-                }
-                else
-                {
-                    comboTimer.SelectedIndex = 0;
-                    OnParameterChanged();
-                }
-            }
-            else if (_trigger.TargetType == TriggerTargetType.ActionNg && isNg)
-            {
-                // NG action trigger
-                if (_trigger.Timer != 0)
-                {
-                    // Set the correct action 
-                    var action = (_trigger.Timer & 0xFF);
-                    var actionTrigger = NgCatalog.ActionTrigger.MainList[action];
-                    SetNgComboboxValue(action, comboTimer);
-
-                    // Set values for object 
-                    comboParameter.SelectedItem = _trigger.TargetObj;
-
-                    // Set the value for extra
-                    if (actionTrigger.HasExtraList)
-                    {
-                        var extra = ((_trigger.Timer & 0xFF00) >> 8);
-                        SetNgComboboxValue(extra, comboExtraParameter);
-                    }
-                }
-                else
-                {
-                    comboTimer.SelectedIndex = 0;
-                    OnTimerChanged();
-                }
-            }
-            else if (_trigger.TriggerType == TriggerType.ConditionNg && isNg)
-            {
-                // NG condition trigger
-                if (_trigger.Timer != 0)
-                {
-                    // Set the correct action 
-                    var condition = (_trigger.Timer & 0xFF);
-                    var conditionTrigger = NgCatalog.ConditionTrigger.MainList[condition];
-                    SetNgComboboxValue(condition, comboTimer);
-
-                    // Set values for object 
-                    if (conditionTrigger.ObjectListKind == NgListKind.MoveablesInLevel ||
-                        conditionTrigger.ObjectListKind == NgListKind.StaticsInLevel ||
-                        conditionTrigger.ObjectListKind == NgListKind.SinksInLevel ||
-                        conditionTrigger.ObjectListKind == NgListKind.CamerasInLevel ||
-                        conditionTrigger.ObjectListKind == NgListKind.FlybyCamerasInLevel)
-                        comboParameter.SelectedItem = _trigger.TargetObj;
-                    else
-                        SetNgComboboxValue(_trigger.TargetData, comboParameter);
-
-                    // Set the value for extra
-                    if (conditionTrigger.HasExtraList)
-                    {
-                        var extra = ((_trigger.Timer & 0xFF00) >> 8);
-                        SetNgComboboxValue(extra, comboExtraParameter);
-                    }
-                }
-                else
-                {
-                    comboTimer.SelectedIndex = 0;
-                    OnTimerChanged();
-                }
-            }
-            else
-            {
-                if (TriggerInstance.UsesTargetObj(_trigger.TargetType))
-                    comboParameter.SelectedItem = _trigger.TargetObj;
-                else
-                    tbParameter.Text = _trigger.TargetData.ToString();
-            }
-
-            _lastChange = ComboboxChangeEventSource.None;
-        }
-
-        private void comboTargetType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            OnTriggerTargetChanged();
         }
 
         private void LoadNgFlipeffectTrigger()
@@ -202,6 +48,7 @@ namespace TombEditor
             comboParameter.Items.Clear();
             comboParameter.Items.AddRange(flipeffectList);
             comboParameter.SelectedIndex = 0;
+            OnParameterChanged();
 
             tbTimer.Visible = true;
             comboTimer.Visible = false;
@@ -219,6 +66,7 @@ namespace TombEditor
             comboParameter.Items.Clear();
             comboParameter.Items.AddRange(timerfieldList);
             comboParameter.SelectedIndex = 0;
+            OnParameterChanged();
 
             tbTimer.Visible = true;
             comboTimer.Visible = false;
@@ -236,6 +84,7 @@ namespace TombEditor
             comboTimer.Items.Clear();
             comboTimer.Items.AddRange(timerfieldList);
             comboTimer.SelectedIndex = 0;
+            OnTimerChanged();
 
             comboParameter.Visible = true;
             tbParameter.Visible = false;
@@ -250,6 +99,7 @@ namespace TombEditor
             comboTimer.Items.Clear();
             comboTimer.Items.AddRange(conditionList);
             comboTimer.SelectedIndex = 0;
+            OnTimerChanged();
 
             comboParameter.Visible = true;
             tbParameter.Visible = false;
@@ -287,9 +137,52 @@ namespace TombEditor
 
         private void butOK_Click(object sender, EventArgs e)
         {
+            short parsedTimer = 0;
+            if (tbTimer.Visible)
+            {
+                if (!short.TryParse(tbTimer.Text, out parsedTimer))
+                {
+                    DarkMessageBox.Show(this, "Invalid data in Timer field", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            short parsedTarget = 0;
+            if (tbParameter.Visible)
+            {
+                if (!short.TryParse(tbParameter.Text, out parsedTarget))
+                {
+                    DarkMessageBox.Show(this, "Invalid data in Parameter field", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            if (comboParameter.Visible && comboParameter.SelectedIndex == -1)
+            {
+                DarkMessageBox.Show(this, "You have to select a value for the Parameter field", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (comboTimer.Visible && comboTimer.SelectedIndex == -1)
+            {
+                DarkMessageBox.Show(this, "You have to select a value for the Timer field", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (comboExtraParameter.Visible && comboExtraParameter.SelectedIndex == -1)
+            {
+                DarkMessageBox.Show(this, "You have to select a value for the Extra field", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             _trigger.TriggerType = (TriggerType)comboType.SelectedItem;
             _trigger.TargetType = (TriggerTargetType)comboTargetType.SelectedItem;
-            _trigger.Timer = short.Parse(tbTimer.Text);
+            _trigger.Timer = parsedTimer;
             byte codeBits = 0;
             codeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
             codeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
@@ -305,24 +198,13 @@ namespace TombEditor
                 // NG condition trigger
                 var conditionId = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
                 var conditionTrigger = NgCatalog.ConditionTrigger.MainList[conditionId];
+                _trigger.TargetData = (short)(comboParameter.SelectedItem as NgTriggerKeyValuePair).Key;
 
                 _trigger.Timer = (short)((comboTimer.SelectedItem as NgTriggerKeyValuePair).Key & 0xFF);
                 if (conditionTrigger.HasExtraList)
                 {
                     _trigger.Timer |= (short)((comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key << 8);
                 }
-                /*if (conditionTrigger.ObjectListKind == NgListKind.MoveablesInLevel ||
-                    conditionTrigger.ObjectListKind == NgListKind.StaticsInLevel ||
-                    conditionTrigger.ObjectListKind == NgListKind.SinksInLevel ||
-                    conditionTrigger.ObjectListKind == NgListKind.CamerasInLevel ||
-                    conditionTrigger.ObjectListKind == NgListKind.FlybyCamerasInLevel)
-                {
-
-                }
-                else
-                {
-                    _trigger.TargetData=(short)combo
-                }*/
             }
             else if (_trigger.TargetType == TriggerTargetType.FlipEffect && isNg)
             {
@@ -389,17 +271,11 @@ namespace TombEditor
             }
             else
             {
-                short targetData;
-                if (!short.TryParse(tbParameter.Text, out targetData))
-                {
-                    DarkMessageBox.Show(this, "You must insert a valid value for parameter",
-                                        "Save trigger", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
                 _trigger.TargetObj = null;
-                _trigger.TargetData = targetData;
+                _trigger.TargetData = parsedTarget;
             }
+
+            _selectRoom(_room);
 
             DialogResult = DialogResult.OK;
             Close();
@@ -409,16 +285,6 @@ namespace TombEditor
         {
             DialogResult = DialogResult.Cancel;
             Close();
-        }
-
-        private void comboType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            OnTriggerTypeChanged();
-        }
-
-        private void comboParameter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            OnParameterChanged();
         }
 
         private object[] GetSpecialNgList(NgListKind kind)
@@ -472,10 +338,10 @@ namespace TombEditor
                     if (_editor.Level.Wad != null && _editor.Level.Wad.SoundInfo.ContainsKey((ushort)i))
                     {
                         var sound = _editor.Level.Wad.SoundInfo[(ushort)i];
-                        result.Add(i + ": " + sound.Name);
+                        result.Add(new NgTriggerKeyValuePair(i, i + ": " + sound.Name));
                     }
                     else
-                        result.Add(i + ": --- Not present ---");
+                        result.Add(new NgTriggerKeyValuePair(i, i + ": --- Not present ---"));
                 }
             }
             else if (kind == NgListKind.SoundEffectsB)
@@ -486,10 +352,10 @@ namespace TombEditor
                     if (_editor.Level.Wad != null && _editor.Level.Wad.SoundInfo.ContainsKey((ushort)i))
                     {
                         var sound = _editor.Level.Wad.SoundInfo[(ushort)i];
-                        result.Add(i + ": " + sound.Name);
+                        result.Add(new NgTriggerKeyValuePair(i, i + ": " + sound.Name));
                     }
                     else
-                        result.Add(i + ": --- Not present ---");
+                        result.Add(new NgTriggerKeyValuePair(i, i + ": --- Not present ---"));
                 }
             }
             else if (kind == NgListKind.Rooms255)
@@ -497,7 +363,7 @@ namespace TombEditor
                 int lastRoomIndex = 0;
                 foreach (Room room in _level.Rooms.Where(room => room != null))
                 {
-                    result.Add("[" + lastRoomIndex + "] " + room.Name);
+                    result.Add(new NgTriggerKeyValuePair(lastRoomIndex, "[" + lastRoomIndex + "] " + room.Name));
                     lastRoomIndex++;
                 }
             }
@@ -512,10 +378,10 @@ namespace TombEditor
                     if (_editor.Level.Wad != null && _editor.Level.Wad.SoundInfo.ContainsKey((ushort)i))
                     {
                         var sound = _editor.Level.Wad.SoundInfo[(ushort)i];
-                        result.Add(i + ": " + sound.Name);
+                        result.Add(new NgTriggerKeyValuePair(i, i + ": " + sound.Name));
                     }
                     else
-                        result.Add(i + ": --- Not present ---");
+                        result.Add(new NgTriggerKeyValuePair(i, i + ": --- Not present ---"));
                 }
             }
             else if (kind == NgListKind.WadSlots)
@@ -544,20 +410,10 @@ namespace TombEditor
                 }
         }
 
-        private void comboTimer_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            OnTimerChanged();
-        }
-
-        private void comboExtraParameter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            OnExtraChanged();
-        }
-
         private void OnTriggerTypeChanged()
         {
             var triggerType = (TriggerType)comboType.SelectedItem;
-            var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
+            var targetType = TriggerTargetType.Object; // (TriggerTargetType)comboTargetType.SelectedItem;
 
             if (triggerType == TriggerType.ConditionNg)
             {
@@ -585,14 +441,15 @@ namespace TombEditor
             bool usesObject = TriggerInstance.UsesTargetObj(targetType);
 
             // This is the general case, NG triggers will override this in their functions
-            tbParameter.Visible = !usesObject;
-            comboParameter.Visible = usesObject;
-            if (triggerType != TriggerType.ConditionNg) comboTimer.Visible = false;
-
-            // Always disabled in general case
-
-            labelExtra.Visible = false;
-            comboExtraParameter.Visible = false;
+            tbParameter.Visible = !usesObject && triggerType != TriggerType.ConditionNg;
+            comboParameter.Visible = usesObject || triggerType == TriggerType.ConditionNg;
+            if (triggerType != TriggerType.ConditionNg)
+            {
+                comboTimer.Visible = false;
+                tbTimer.Visible = true;
+                labelExtra.Visible = false;
+                comboExtraParameter.Visible = false;
+            }
 
             switch (targetType)
             {
@@ -680,8 +537,6 @@ namespace TombEditor
 
         private void OnTimerChanged()
         {
-            _lastChange = ComboboxChangeEventSource.Timer;
-
             var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
             var triggerType = (TriggerType)comboType.SelectedItem;
 
@@ -690,7 +545,7 @@ namespace TombEditor
                 var condition = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
                 var selectedItem = NgCatalog.ConditionTrigger.MainList[condition];
 
-                // Action trigger always has an object
+                // Condition trigger always has an object
                 labelParameter.Visible = true;
                 tbParameter.Visible = false;
                 comboParameter.Visible = true;
@@ -836,10 +691,7 @@ namespace TombEditor
 
         private void OnExtraChanged()
         {
-            _lastChange = ComboboxChangeEventSource.Extra;
-
             var triggerType = (TriggerType)comboType.SelectedItem;
-
             if (triggerType == TriggerType.ConditionNg)
             {
                 var item = (comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key;
@@ -850,6 +702,226 @@ namespace TombEditor
                 cbBit4.Checked = b[3];
                 cbBit5.Checked = b[4];
             }
+        }
+
+        private void comboExtraParameter_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            OnExtraChanged();
+        }
+
+        private void comboTimer_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            OnTimerChanged();
+        }
+
+        private void comboParameter_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            OnParameterChanged();
+        }
+
+        private void comboType_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            OnTriggerTypeChanged();
+        }
+
+        private void comboTargetType_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            OnTriggerTargetChanged();
+        }
+
+        private void FormTrigger_Load(object sender, EventArgs e)
+        {
+            this.Visible = true;
+
+            // Calculate the sizes at runtime since they actually depend on the choosen layout.
+            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
+            MaximumSize = new Size(32000, Size.Height);
+            MinimumSize = new Size(347 + (Size.Height - ClientSize.Height), Size.Height);
+
+            // Populate lists
+            foreach (TriggerType triggerType in Enum.GetValues(typeof(TriggerType)))
+                comboType.Items.Add(triggerType);
+            foreach (TriggerTargetType triggerTargetType in Enum.GetValues(typeof(TriggerTargetType)))
+                comboTargetType.Items.Add(triggerTargetType);
+
+            // Center items in the trigger window
+            comboParameter.SelectedIndexChanged += delegate
+            {
+                if (!comboParameterBeingInitialized)
+                {
+                    var objectToSelect = comboParameter.SelectedItem as ObjectInstance;
+                    if (objectToSelect != null)
+                        _selectObject(objectToSelect);
+                }
+            };
+
+            // Lot of things to do there
+
+            // Following values can be set here without problems
+            cbBit1.Checked = (_trigger.CodeBits & (1 << 0)) != 0;
+            cbBit2.Checked = (_trigger.CodeBits & (1 << 1)) != 0;
+            cbBit3.Checked = (_trigger.CodeBits & (1 << 2)) != 0;
+            cbBit4.Checked = (_trigger.CodeBits & (1 << 3)) != 0;
+            cbBit5.Checked = (_trigger.CodeBits & (1 << 4)) != 0;
+            cbOneShot.Checked = _trigger.OneShot;
+
+            comboTargetType.SelectedItem = _trigger.TargetType;
+
+            // NG triggers behave differently in some cases
+            var isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
+
+            // Now I have to load UI based on trigger
+            if (_trigger.TriggerType == TriggerType.ConditionNg)
+            {
+                comboType.SelectedItem = TriggerType.ConditionNg;
+                OnTriggerTypeChanged();
+
+                var conditionId = (_trigger.Timer & 0xFF);
+                var conditionTrigger = NgCatalog.ConditionTrigger.MainList[conditionId];
+
+                // Load conditions
+                tbTimer.Visible = false;
+                comboTimer.Visible = true;
+                LoadNgConditionTrigger();
+                SetNgComboboxValue(conditionId, comboTimer);
+                OnTimerChanged();
+
+                comboParameter.Visible = true;
+                tbParameter.Visible = false;
+                switch (conditionTrigger.ObjectListKind)
+                {
+                    case NgListKind.MoveablesInLevel:
+                    case NgListKind.StaticsInLevel:
+                    case NgListKind.CamerasInLevel:
+                    case NgListKind.SinksInLevel:
+                    case NgListKind.FlybyCamerasInLevel:
+                        comboParameter.SelectedItem = _trigger.TargetObj;
+                        OnParameterChanged();
+                        break;
+                    default:
+                        SetNgComboboxValue(_trigger.TargetData, comboParameter);
+                        OnParameterChanged();
+                        break;
+                }
+
+                if (conditionTrigger.HasExtraList)
+                {
+                    var extra = ((_trigger.Timer & 0xFF00) >> 8);
+                    SetNgComboboxValue(extra, comboExtraParameter);
+                    OnExtraChanged();
+                }
+            }
+            else
+            {
+                comboType.SelectedItem = _trigger.TriggerType;
+                OnTriggerTypeChanged();
+            }
+
+            OnTriggerTargetChanged();
+            if (_trigger.TargetType == TriggerTargetType.FlipEffect && isNg)
+            {
+                LoadNgFlipeffectTrigger();
+                if (NgCatalog.FlipEffectTrigger.MainList.ContainsKey(_trigger.TargetData))
+                {
+                    // Set the correct flipeffect
+                    var flipeffect = NgCatalog.FlipEffectTrigger.MainList[_trigger.TargetData];
+                    SetNgComboboxValue(_trigger.TargetData, comboParameter);
+                    OnParameterChanged();
+
+                    // Set values for timer and extra
+                    if (flipeffect.HasTimerList && flipeffect.HasExtraList)
+                    {
+                        var timer = (_trigger.Timer & 0xFF);
+                        var extra = ((_trigger.Timer & 0xFF00) >> 8);
+                        SetNgComboboxValue(timer, comboTimer);
+                        SetNgComboboxValue(extra, comboExtraParameter);
+                        OnTimerChanged();
+                        OnExtraChanged();
+                    }
+                    else
+                    {
+                        SetNgComboboxValue(_trigger.Timer, comboTimer);
+                        OnTimerChanged();
+                    }
+                }
+                else
+                {
+                    comboParameter.SelectedIndex = 0;
+                    OnParameterChanged();
+                }
+            }
+            else if (_trigger.TargetType == TriggerTargetType.TimerfieldNg && isNg)
+            {
+                LoadNgTimerFieldTrigger();
+                if (NgCatalog.TimerFieldTrigger.MainList.ContainsKey(_trigger.TargetData))
+                {
+                    // Set the correct flipeffect
+                    var timerfield = NgCatalog.TimerFieldTrigger.MainList[_trigger.TargetData];
+                    SetNgComboboxValue(_trigger.TargetData, comboParameter);
+                    OnParameterChanged();
+                    tbTimer.Text = _trigger.Timer.ToString();
+                }
+                else
+                {
+                    comboTimer.SelectedIndex = 0;
+                    OnParameterChanged();
+                }
+            }
+            else if (_trigger.TargetType == TriggerTargetType.ActionNg && isNg)
+            {
+                LoadNgActionTrigger();
+                var action = (_trigger.Timer & 0xFF);
+                if (NgCatalog.ActionTrigger.MainList.ContainsKey(action))
+                {
+                    // Set the correct action 
+                    var actionTrigger = NgCatalog.ActionTrigger.MainList[action];
+                    SetNgComboboxValue(action, comboTimer);
+                    OnTimerChanged();
+
+                    // Set values for object 
+                    comboParameter.SelectedItem = _trigger.TargetObj;
+                    OnParameterChanged();
+
+                    // Set the value for extra
+                    if (actionTrigger.HasExtraList)
+                    {
+                        var extra = ((_trigger.Timer & 0xFF00) >> 8);
+                        SetNgComboboxValue(extra, comboExtraParameter);
+                        OnExtraChanged();
+                    }
+                }
+                else
+                {
+                    comboTimer.SelectedIndex = 0;
+                    OnTimerChanged();
+                }
+            }
+            else if (_trigger.TargetType == TriggerTargetType.ParameterNg && isNg)
+            {
+                // Do  nothing here...
+            }
+            else
+            {
+                if (TriggerInstance.UsesTargetObj(_trigger.TargetType))
+                {
+                    tbParameter.Visible = false;
+                    comboParameter.SelectedItem = _trigger.TargetObj;
+                }
+                else
+                {
+                    comboParameter.Visible = false;
+                    tbParameter.Text = _trigger.TargetData.ToString();
+                }
+                OnParameterChanged();
+
+                comboTimer.Visible = false;
+                tbTimer.Text = _trigger.Timer.ToString();
+
+                comboExtraParameter.Visible = false;
+                labelExtra.Visible = false;
+            }
+
+            _loaded = true;
         }
     }
 }
