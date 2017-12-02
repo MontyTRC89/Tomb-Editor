@@ -54,7 +54,6 @@ namespace TombEditor.Controls
         private static readonly Pen _gridPenThin = new Pen(Color.LightGray, 1);
         private static readonly Pen _gridPenThick = new Pen(Color.LightGray, 3);
         private const float _probeRadius = 18;
-        private const float _viewMargin = 10;
 
         public Panel2DMap()
         {
@@ -112,19 +111,19 @@ namespace TombEditor.Controls
             return new PointF((pos.X - ViewPosition.X) * _viewScale + Width * 0.5f, Height * 0.5f - (pos.Y - ViewPosition.Y) * _viewScale);
         }
 
-        private void MoveToFixedPoint(PointF visualPoint, Vector2 worldPoint)
+        private void MoveToFixedPoint(PointF visualPoint, Vector2 worldPoint, bool limitPosition = false)
         {
-            //Adjust ViewPosition in such a way, that the FixedPoint does not move visually
+            // Adjust ViewPosition in such a way, that the FixedPoint does not move visually
             ViewPosition = -worldPoint;
             ViewPosition = -FromVisualCoord(visualPoint);
+            if (limitPosition)
+                LimitPosition();
             Invalidate();
         }
 
         private void LimitPosition()
         {
-            Vector2 minimum = new Vector2(-_viewMargin / ViewScale);
-            Vector2 maximum = new Vector2(Level.MaxSectorCoord) + new Vector2(_viewMargin / ViewScale);
-            ViewPosition = Vector2.Min(maximum, Vector2.Max(minimum, ViewPosition));
+            ViewPosition = Vector2.Clamp(ViewPosition, new Vector2(), new Vector2(Level.MaxSectorCoord));
         }
 
         private int? FindClosestProbe(Vector2 clickPos)
@@ -196,7 +195,6 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Right:
-                case MouseButtons.Middle:
                     // Move view with mouse curser
                     // Mouse curser is a fixed point
                     _viewMoveMouseWorldCoord = clickPos;
@@ -269,21 +267,16 @@ namespace TombEditor.Controls
                 {
                     case MouseButtons.Left:
                         if (_currentlyEditedDepthProbeIndex.HasValue)
-                        {
-                            // Move depth probe around
+                        {// Move depth probe around
                             _depthBar.DepthProbes[(_currentlyEditedDepthProbeIndex.Value)].Position = FromVisualCoord(e.Location);
                             Invalidate();
                         }
                         else if (_roomsToMove != null)
-                            // Move room around
+                        { // Move room around
                             UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
+                        }
                         break;
 
-                    case MouseButtons.Middle:
-                        // Panning
-                        if (_viewMoveMouseWorldCoord != null)
-                            MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
-                        break;
                     case MouseButtons.Right:
                         if (_viewMoveMouseWorldCoord != null)
                             if (ModifierKeys.HasFlag(Keys.Control))
@@ -294,8 +287,7 @@ namespace TombEditor.Controls
                             }
                             else
                             { // Panning
-                                MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
-                                LimitPosition();
+                                MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value, true);
                             }
                         break;
                 }
@@ -462,18 +454,22 @@ namespace TombEditor.Controls
             {
                 case Keys.Down:
                     ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier);
+                    LimitPosition();
                     Invalidate();
                     break;
                 case Keys.Up:
                     ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier);
+                    LimitPosition();
                     Invalidate();
                     break;
                 case Keys.Left:
                     ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier, 0.0f);
+                    LimitPosition();
                     Invalidate();
                     break;
                 case Keys.Right:
                     ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier, 0.0f);
+                    LimitPosition();
                     Invalidate();
                     break;
                 case Keys.PageDown:
@@ -485,7 +481,6 @@ namespace TombEditor.Controls
                     Invalidate();
                     break;
             }
-            LimitPosition();
         }
 
         private void DrawRoom(PaintEventArgs e, Room room, float currentRangeMin, float currentRangeMax, bool drawFilled, bool drawOutline)
