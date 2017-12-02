@@ -75,7 +75,7 @@ namespace TombEditor
             this.comboType.Sorted = true;
             this.comboType.TabIndex = 1;
             this.comboType.Text = null;
-            this.comboType.SelectedIndexChanged += new System.EventHandler(this.comboType_SelectedIndexChanged);
+            this.comboType.SelectionChangeCommitted += new System.EventHandler(this.comboType_SelectionChangeCommitted);
             // 
             // comboTargetType
             // 
@@ -87,7 +87,7 @@ namespace TombEditor
             this.comboTargetType.Sorted = true;
             this.comboTargetType.TabIndex = 3;
             this.comboTargetType.Text = null;
-            this.comboTargetType.SelectedIndexChanged += new System.EventHandler(this.comboTargetType_SelectedIndexChanged);
+            this.comboTargetType.SelectionChangeCommitted += new System.EventHandler(this.comboTargetType_SelectionChangeCommitted);
             // 
             // label2
             // 
@@ -222,7 +222,7 @@ namespace TombEditor
             this.comboParameter.Size = new System.Drawing.Size(587, 23);
             this.comboParameter.TabIndex = 69;
             this.comboParameter.Text = null;
-            this.comboParameter.SelectedIndexChanged += new System.EventHandler(this.comboParameter_SelectedIndexChanged);
+            this.comboParameter.SelectionChangeCommitted += new System.EventHandler(this.comboParameter_SelectionChangeCommitted);
             // 
             // tableLayoutPanel1
             // 
@@ -251,7 +251,7 @@ namespace TombEditor
             this.comboExtraParameter.Size = new System.Drawing.Size(587, 23);
             this.comboExtraParameter.TabIndex = 72;
             this.comboExtraParameter.Text = null;
-            this.comboExtraParameter.SelectedIndexChanged += new System.EventHandler(this.comboExtraParameter_SelectedIndexChanged);
+            this.comboExtraParameter.SelectionChangeCommitted += new System.EventHandler(this.comboExtraParameter_SelectionChangeCommitted);
             // 
             // labelExtra
             // 
@@ -272,7 +272,7 @@ namespace TombEditor
             this.comboTimer.Size = new System.Drawing.Size(587, 23);
             this.comboTimer.TabIndex = 73;
             this.comboTimer.Text = null;
-            this.comboTimer.SelectedIndexChanged += new System.EventHandler(this.comboTimer_SelectedIndexChanged);
+            this.comboTimer.SelectionChangeCommitted += new System.EventHandler(this.comboTimer_SelectionChangeCommitted);
             // 
             // FormTrigger
             // 
@@ -306,6 +306,7 @@ namespace TombEditor
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Trigger editor";
+            this.Load += new System.EventHandler(this.FormTrigger_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
