@@ -44,6 +44,7 @@
             this.butCopyRoom = new DarkUI.Controls.DarkButton();
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.cbLocked = new DarkUI.Controls.DarkCheckBox();
             this.SuspendLayout();
             // 
             // cbNoPathfinding
@@ -71,7 +72,6 @@
             // 
             // comboFlipMap
             // 
-            this.comboFlipMap.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboFlipMap.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboFlipMap.Items.AddRange(new object[] {
             "Not flipped",
@@ -93,8 +93,9 @@
             "15"});
             this.comboFlipMap.Location = new System.Drawing.Point(3, 71);
             this.comboFlipMap.Name = "comboFlipMap";
-            this.comboFlipMap.Size = new System.Drawing.Size(99, 24);
+            this.comboFlipMap.Size = new System.Drawing.Size(99, 23);
             this.comboFlipMap.TabIndex = 8;
+            this.comboFlipMap.Text = null;
             this.comboFlipMap.SelectedIndexChanged += new System.EventHandler(this.comboFlipMap_SelectedIndexChanged);
             // 
             // darkLabel19
@@ -117,9 +118,9 @@
             "Medium",
             "Large",
             "Pipe"});
-            this.comboReverberation.Location = new System.Drawing.Point(202, 165);
+            this.comboReverberation.Location = new System.Drawing.Point(202, 192);
             this.comboReverberation.Name = "comboReverberation";
-            this.comboReverberation.Size = new System.Drawing.Size(79, 24);
+            this.comboReverberation.Size = new System.Drawing.Size(79, 23);
             this.comboReverberation.TabIndex = 19;
             this.comboReverberation.Text = "None";
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
@@ -129,7 +130,7 @@
             this.darkLabel18.AutoSize = true;
             this.darkLabel18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel18.Location = new System.Drawing.Point(199, 149);
+            this.darkLabel18.Location = new System.Drawing.Point(199, 176);
             this.darkLabel18.Name = "darkLabel18";
             this.darkLabel18.Size = new System.Drawing.Size(42, 13);
             this.darkLabel18.TabIndex = 100;
@@ -137,7 +138,6 @@
             // 
             // comboMist
             // 
-            this.comboMist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboMist.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboMist.Items.AddRange(new object[] {
             "No",
@@ -145,9 +145,9 @@
             "2",
             "3",
             "4"});
-            this.comboMist.Location = new System.Drawing.Point(144, 165);
+            this.comboMist.Location = new System.Drawing.Point(144, 192);
             this.comboMist.Name = "comboMist";
-            this.comboMist.Size = new System.Drawing.Size(52, 24);
+            this.comboMist.Size = new System.Drawing.Size(52, 23);
             this.comboMist.TabIndex = 18;
             this.comboMist.Text = "No";
             this.comboMist.SelectedIndexChanged += new System.EventHandler(this.comboMist_SelectedIndexChanged);
@@ -157,7 +157,7 @@
             this.darkLabel17.AutoSize = true;
             this.darkLabel17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel17.Location = new System.Drawing.Point(141, 149);
+            this.darkLabel17.Location = new System.Drawing.Point(141, 176);
             this.darkLabel17.Name = "darkLabel17";
             this.darkLabel17.Size = new System.Drawing.Size(29, 13);
             this.darkLabel17.TabIndex = 98;
@@ -172,9 +172,9 @@
             "2",
             "3",
             "4"});
-            this.comboReflection.Location = new System.Drawing.Point(86, 165);
+            this.comboReflection.Location = new System.Drawing.Point(86, 192);
             this.comboReflection.Name = "comboReflection";
-            this.comboReflection.Size = new System.Drawing.Size(52, 24);
+            this.comboReflection.Size = new System.Drawing.Size(52, 23);
             this.comboReflection.TabIndex = 17;
             this.comboReflection.Text = "No";
             this.comboReflection.SelectedIndexChanged += new System.EventHandler(this.comboReflection_SelectedIndexChanged);
@@ -184,7 +184,7 @@
             this.darkLabel16.AutoSize = true;
             this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(83, 149);
+            this.darkLabel16.Location = new System.Drawing.Point(83, 176);
             this.darkLabel16.Name = "darkLabel16";
             this.darkLabel16.Size = new System.Drawing.Size(59, 13);
             this.darkLabel16.TabIndex = 96;
@@ -239,7 +239,7 @@
             "Quicksand"});
             this.comboRoomType.Location = new System.Drawing.Point(3, 115);
             this.comboRoomType.Name = "comboRoomType";
-            this.comboRoomType.Size = new System.Drawing.Size(99, 24);
+            this.comboRoomType.Size = new System.Drawing.Size(99, 23);
             this.comboRoomType.TabIndex = 9;
             this.comboRoomType.Text = "Normal";
             this.comboRoomType.SelectedIndexChanged += new System.EventHandler(this.comboRoomType_SelectedIndexChanged);
@@ -260,15 +260,16 @@
             this.comboRoom.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboRoom.Location = new System.Drawing.Point(3, 28);
             this.comboRoom.Name = "comboRoom";
-            this.comboRoom.Size = new System.Drawing.Size(220, 24);
+            this.comboRoom.Size = new System.Drawing.Size(220, 23);
             this.comboRoom.TabIndex = 0;
+            this.comboRoom.Text = null;
             this.comboRoom.SelectedIndexChanged += new System.EventHandler(this.comboRoom_SelectedIndexChanged);
             // 
             // panelRoomAmbientLight
             // 
             this.panelRoomAmbientLight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelRoomAmbientLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelRoomAmbientLight.Location = new System.Drawing.Point(3, 166);
+            this.panelRoomAmbientLight.Location = new System.Drawing.Point(3, 193);
             this.panelRoomAmbientLight.Name = "panelRoomAmbientLight";
             this.panelRoomAmbientLight.Size = new System.Drawing.Size(67, 24);
             this.panelRoomAmbientLight.TabIndex = 16;
@@ -279,7 +280,7 @@
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(0, 150);
+            this.darkLabel3.Location = new System.Drawing.Point(0, 177);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(77, 13);
             this.darkLabel3.TabIndex = 88;
@@ -295,7 +296,6 @@
             this.butRoomUp.Image = global::TombEditor.Properties.Resources.actions_RoomRaise_16;
             this.butRoomUp.Location = new System.Drawing.Point(259, 88);
             this.butRoomUp.Name = "butRoomUp";
-            this.butRoomUp.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomUp.Size = new System.Drawing.Size(24, 24);
             this.butRoomUp.TabIndex = 6;
             this.toolTip.SetToolTip(this.butRoomUp, "Move room up");
@@ -306,7 +306,6 @@
             this.butRoomDown.Image = global::TombEditor.Properties.Resources.actions_RoomLower_16;
             this.butRoomDown.Location = new System.Drawing.Point(259, 118);
             this.butRoomDown.Name = "butRoomDown";
-            this.butRoomDown.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomDown.Size = new System.Drawing.Size(24, 24);
             this.butRoomDown.TabIndex = 7;
             this.toolTip.SetToolTip(this.butRoomDown, "Move room down");
@@ -317,7 +316,6 @@
             this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditRoomName.Location = new System.Drawing.Point(229, 28);
             this.butEditRoomName.Name = "butEditRoomName";
-            this.butEditRoomName.Padding = new System.Windows.Forms.Padding(5);
             this.butEditRoomName.Size = new System.Drawing.Size(24, 24);
             this.butEditRoomName.TabIndex = 1;
             this.toolTip.SetToolTip(this.butEditRoomName, "Edit room name");
@@ -328,7 +326,6 @@
             this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteRoom.Location = new System.Drawing.Point(259, 58);
             this.butDeleteRoom.Name = "butDeleteRoom";
-            this.butDeleteRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteRoom.Size = new System.Drawing.Size(24, 24);
             this.butDeleteRoom.TabIndex = 4;
             this.toolTip.SetToolTip(this.butDeleteRoom, "Delete room");
@@ -339,7 +336,6 @@
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
             this.butCropRoom.Location = new System.Drawing.Point(259, 28);
             this.butCropRoom.Name = "butCropRoom";
-            this.butCropRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCropRoom.Size = new System.Drawing.Size(24, 24);
             this.butCropRoom.TabIndex = 2;
             this.toolTip.SetToolTip(this.butCropRoom, "Crop room");
@@ -350,7 +346,6 @@
             this.butSplitRoom.Image = global::TombEditor.Properties.Resources.general_split_files_16;
             this.butSplitRoom.Location = new System.Drawing.Point(229, 88);
             this.butSplitRoom.Name = "butSplitRoom";
-            this.butSplitRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butSplitRoom.Size = new System.Drawing.Size(24, 24);
             this.butSplitRoom.TabIndex = 5;
             this.toolTip.SetToolTip(this.butSplitRoom, "Split room");
@@ -361,7 +356,6 @@
             this.butCopyRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.butCopyRoom.Location = new System.Drawing.Point(229, 58);
             this.butCopyRoom.Name = "butCopyRoom";
-            this.butCopyRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCopyRoom.Size = new System.Drawing.Size(24, 24);
             this.butCopyRoom.TabIndex = 3;
             this.toolTip.SetToolTip(this.butCopyRoom, "Copy room");
@@ -384,10 +378,23 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
+            // cbLocked
+            // 
+            this.cbLocked.AutoSize = true;
+            this.cbLocked.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLocked.Location = new System.Drawing.Point(108, 148);
+            this.cbLocked.Name = "cbLocked";
+            this.cbLocked.Size = new System.Drawing.Size(62, 17);
+            this.cbLocked.TabIndex = 104;
+            this.cbLocked.Text = "Locked";
+            this.toolTip.SetToolTip(this.cbLocked, "Affects particles and Lara\'s hair");
+            this.cbLocked.CheckedChanged += new System.EventHandler(this.cbLocked_CheckedChanged);
+            // 
             // RoomOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbLocked);
             this.Controls.Add(this.cbNoLensflare);
             this.Controls.Add(this.cbNoPathfinding);
             this.Controls.Add(this.cbHorizon);
@@ -419,7 +426,7 @@
             this.MinimumSize = new System.Drawing.Size(284, 192);
             this.Name = "RoomOptions";
             this.SerializationKey = "RoomOptions";
-            this.Size = new System.Drawing.Size(284, 192);
+            this.Size = new System.Drawing.Size(284, 218);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -455,5 +462,6 @@
         private System.Windows.Forms.ColorDialog colorDialog;
         private DarkUI.Controls.DarkCheckBox cbNoLensflare;
         private System.Windows.Forms.ToolTip toolTip;
+        private DarkUI.Controls.DarkCheckBox cbLocked;
     }
 }
