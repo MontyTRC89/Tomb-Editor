@@ -226,8 +226,6 @@ namespace TombEditor.Controls
                     for (int z = 0; z < currentRoom.NumZSectors; z++)
                     {
                         RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep, _gridStep);
-                        Block block = currentRoom.Blocks[x, z];
-                        Block bottomBlock = currentRoom.ProbeLowestBlock(x, z, probePortals).Block;
 
                         var currentHighlights = _editor.HighlightManager.GetColors(currentRoom, x, z, probePortals);
                         if (currentHighlights != null)
@@ -248,25 +246,25 @@ namespace TombEditor.Controls
                                         using (var b = new Pen(currentHighlights[i].Color.ToWinFormsColor(), _outlineHighlightWidth))
                                             e.Graphics.DrawRectangle(b, frameAttribRect);
                                         break;
-                                    case HighlightShape.EdgeZp:
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
-                                            e.Graphics.FillRectangle(b, rectangle.X, rectangle.Y, rectangle.Width, _outlineHighlightWidth);
-                                        break;
-                                    case HighlightShape.EdgeZn:
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
-                                            e.Graphics.FillRectangle(b, rectangle.X, rectangle.Bottom - _outlineHighlightWidth, rectangle.Width, _outlineHighlightWidth);
-                                        break;
-                                    case HighlightShape.EdgeXp:
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
-                                            e.Graphics.FillRectangle(b, rectangle.Right - _outlineHighlightWidth, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
-                                        break;
-                                    case HighlightShape.EdgeXn:
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
-                                            e.Graphics.FillRectangle(b, rectangle.X, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
-                                        break;
                                     case HighlightShape.Hatch:
                                         using (var b = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, currentHighlights[i].Color.ToWinFormsColor()))
                                             e.Graphics.FillRectangle(b, rectangle);
+                                        break;
+                                    case HighlightShape.EdgeZp:
+                                    case HighlightShape.EdgeZn:
+                                    case HighlightShape.EdgeXp:
+                                    case HighlightShape.EdgeXn:
+                                        RectangleF edgeRect;
+                                        if (currentHighlights[i].Shape == HighlightShape.EdgeZp)
+                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, rectangle.Width, _outlineHighlightWidth);
+                                        else if (currentHighlights[i].Shape == HighlightShape.EdgeZn)
+                                            edgeRect = new RectangleF(rectangle.X, rectangle.Bottom - _outlineHighlightWidth, rectangle.Width, _outlineHighlightWidth);
+                                        else if (currentHighlights[i].Shape == HighlightShape.EdgeXp)
+                                            edgeRect = new RectangleF(rectangle.Right - _outlineHighlightWidth, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
+                                        else
+                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
+                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                            e.Graphics.FillRectangle(b, edgeRect);
                                         break;
                                     case HighlightShape.TriangleXnZn:
                                     case HighlightShape.TriangleXnZp:
