@@ -53,12 +53,12 @@ namespace TombEditor.Compilers
             // Apply embossing to each page (BROKEN! SHOULD BE APPLIED TO EACH TEXTURE AREA INDEPENDENTLY!)
             for (int i = 0; i < packedTextures[1].Count; ++i)
             {
-                int Xstride = packedTextures[1][i].Width / 4; // 64
-                int Ystride = packedTextures[1][i].Height / 4; // 64
+                int Xstride = packedTextures[1][i].Width / 16;
+                int Ystride = packedTextures[1][i].Height / 16;
 
                 for (int x = 0; x < packedTextures[1][i].Width; x += Xstride)
                     for (int y = 0; y < packedTextures[1][i].Height; y += Ystride)
-                        packedTextures[1][i].Emboss(x, y, Xstride, Ystride, -1); // -2 = bump level 1, -1 = bump level 2
+                        packedTextures[1][i].Emboss(x, y, Xstride, Ystride, -2); // -2 = bump level 1, -1 = bump level 2
 
 
                 packedTextures[1][i].RawCopyTo(texture32Data, offset);
