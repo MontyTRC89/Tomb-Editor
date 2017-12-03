@@ -17,6 +17,12 @@ namespace TombEditor.Compilers.Util
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        public ObjectTextureManager()
+        {
+            _textureAllocator[0] = new TextureAllocator();
+            _textureAllocator[1] = new TextureAllocator();
+        }
+
         [Flags]
         public enum ResultFlags : byte
         {
@@ -147,6 +153,19 @@ namespace TombEditor.Compilers.Util
         {
             firstTexCoordToEmit = 0;
             ushort result = isUsedInRoomMesh ? (ushort)0x8000 : (ushort)0;
+            
+            switch(texture.BumpMode)
+            {
+                case BumpMapMode.Level1:
+                    result |= 0x0800;
+                    break;
+                case BumpMapMode.Level2:
+                    result |= 0x1000;
+                    break;
+                default:
+                    break;
+            }
+
             if (isTriangular)
             {
                 texture.TexCoord0 = HeuristcallyFixTexCoordUpperBound(texture.TexCoord0);
@@ -375,8 +394,9 @@ namespace TombEditor.Compilers.Util
         private Dictionary<SavedObjectTexture, ushort> _objectTexturesLookup = new Dictionary<SavedObjectTexture, ushort>();
         private uint _textureSpaceIdentifier = 0;
         private int _supportsUpTo65536TextureCount = 0;
+        public int _numNonBumpedTiles = 0;
 
-        private TextureAllocator _textureAllocator = new TextureAllocator();
+        private TextureAllocator[] _textureAllocator = new TextureAllocator[2];
 
         private ushort AddObjectTextureWithoutLookup(SavedObjectTexture newEntry, bool supportsUpTo65536)
         {
@@ -413,11 +433,11 @@ namespace TombEditor.Compilers.Util
         public Result AddTexture(TextureArea texture, bool isTriangle, bool isUsedInRoomMesh, int packPriorityClass = 0, bool supportsUpTo65536 = false, bool canRotate = true, uint textureSpaceIdentifier = 0)
         {
             // Add object textures
-            int textureID = _textureAllocator.GetOrAllocateTextureID(ref texture, isTriangle, packPriorityClass);
+            int textureID = _textureAllocator[texture.AllocIndex].GetOrAllocateTextureID(ref texture, isTriangle, packPriorityClass);
             bool isNew;
             byte firstTexCoordToEmit;
             ushort objTexIndex = AddOrGetObjectTexture(new SavedObjectTexture((ushort)textureID, texture, textureSpaceIdentifier,
-                _textureAllocator.GetTextureFromID(textureID), isTriangle, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit), supportsUpTo65536, out isNew);
+                _textureAllocator[texture.AllocIndex].GetTextureFromID(textureID), isTriangle, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit), supportsUpTo65536, out isNew);
             return new Result { ObjectTextureIndex = objTexIndex, FirstVertexIndexToEmit = firstTexCoordToEmit,
                 Flags = (texture.DoubleSided ? ResultFlags.DoubleSided : ResultFlags.None) | (isNew ? ResultFlags.IsNew : ResultFlags.None) };
         }
@@ -426,7 +446,7 @@ namespace TombEditor.Compilers.Util
         {}
 
         private volatile int _alphaBlendingTextureCount;
-        public List<ImageC> PackTextures(IProgressReporter progressReporter)
+        public List<ImageC>[] PackTextures(IProgressReporter progressReporter)
         {
             //Add not yet required object textures to texture animations...
             OnPackingTextures(progressReporter);
@@ -435,11 +455,12 @@ namespace TombEditor.Compilers.Util
             Parallel.For(0, _objectTextures.Count, (objectTextureIndex) =>
             {
                 SavedObjectTexture objectTexture = _objectTextures[objectTextureIndex];
+                int usedAlloc = (objectTexture.NewFlags & 0x1800) != 0 ? 1 : 0;
                 if (objectTexture.BlendMode != (ushort)BlendMode.Normal) // Only consider alpha blending when blend mode is 0.
                     return;
 
                 bool isTriangle = objectTexture.IsTriangularAndPadding != 0;
-                TextureAllocator.TextureView textureView = _textureAllocator.GetTextureFromID(objectTexture.TextureID);
+                TextureAllocator.TextureView textureView = _textureAllocator[usedAlloc].GetTextureFromID(objectTexture.TextureID);
 
                 // To simplify the test just use the rectangular region around. (We could do a polygonal thing but I am not sure its worth it)
                 Vector2 minTexCoord, maxTexCoord;
@@ -470,8 +491,13 @@ namespace TombEditor.Compilers.Util
             DebugObjectTextures();
 
             // Pack textures...
-            List<ImageC> result = _textureAllocator.PackTextures();
-            progressReporter.ReportInfo("Packed all level and wad textures into " + result.Count + " pages.");
+            List<ImageC>[] result = new List<ImageC>[2];
+            result[0] = _textureAllocator[0].PackTextures();
+            result[1] = _textureAllocator[1].PackTextures();
+
+            _numNonBumpedTiles = result[0].Count;
+
+            progressReporter.ReportInfo("Packed all level and wad textures into " + result[0].Count + " normal and " + result[1].Count + " bumped pages.");
             return result;
         }
 
@@ -628,8 +654,9 @@ namespace TombEditor.Compilers.Util
             for (int i = 0; i < _objectTextures.Count; ++i)
             {
                 SavedObjectTexture objectTexture = _objectTextures[i];
-                TextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
-                ushort Tile = UsedTexturePackInfo.OutputTextureID;
+                int usedAlloc = (objectTexture.NewFlags & 0x1800) != 0 ? 1 : 0;
+                TextureAllocator.Result UsedTexturePackInfo = _textureAllocator[usedAlloc].GetPackInfo(objectTexture.TextureID);
+                ushort Tile = (usedAlloc == 0) ? UsedTexturePackInfo.OutputTextureID : (ushort)(UsedTexturePackInfo.OutputTextureID + _numNonBumpedTiles + 1);
                 Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
 
                 stream.Write((ushort)objectTexture.BlendMode);

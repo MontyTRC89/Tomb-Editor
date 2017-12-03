@@ -1887,6 +1887,7 @@ namespace TombEditor.Geometry.IO
                     texture.Texture = levelTexture;
                     texture.DoubleSided = (prjFace._txtFlags & 0x04) != 0;
                     texture.BlendMode = (prjFace._txtFlags & 0x08) != 0 ? BlendMode.Additive : BlendMode.Normal;
+                    texture.BumpMode = BumpMapMode.None;
 
                     // Apply flipping
                     if ((prjFace._txtFlags & 0x80) != 0)

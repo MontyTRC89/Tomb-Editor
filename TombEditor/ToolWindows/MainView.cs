@@ -358,5 +358,12 @@ namespace TombEditor.ToolWindows
             if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
             panel3D.Invalidate();
         }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            var selectedTexture = _editor.SelectedTexture;
+            selectedTexture.BumpMode = (toolStripButton1.Checked ? BumpMapMode.Level1 : BumpMapMode.None);
+            _editor.SelectedTexture = selectedTexture;
+        }
     }
 }

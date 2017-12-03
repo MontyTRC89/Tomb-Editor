@@ -255,6 +255,7 @@ namespace TombEditor.Compilers
                             TextureArea texture;
                             texture.DoubleSided = false;
                             texture.BlendMode = BlendMode.Normal;
+                            texture.BumpMode = BumpMapMode.None;
                             texture.Texture = mesh.Texture;
                             texture.TexCoord0 = mesh.Vertices[mesh.Indices[j + 0]].UV;
                             texture.TexCoord1 = mesh.Vertices[mesh.Indices[j + 1]].UV;
