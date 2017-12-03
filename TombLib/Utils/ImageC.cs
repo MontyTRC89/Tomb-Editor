@@ -135,30 +135,32 @@ namespace TombLib.Utils
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
-        public void ApplyFilter(int xStart, int yStart, int width, int height, int[,] kernel, int weight)
+        public void Emboss(int xStart, int yStart, int width, int height, int weight)
         {
+            ImageC oldImage = new ImageC(width, height, new byte[width * height * 4]);
+            oldImage.CopyFrom(0, 0, this, xStart, yStart, width, height);
+
+            int[,] kernel = { {-1, 0, 0},
+                              { 0, 0, 0},
+                              { 0, 0, 1} };
+
             int kernel_width = kernel.GetUpperBound(0) + 1;
             int kernel_height = kernel.GetUpperBound(1) + 1;
-            int half_width = kernel_width / 2;
-            int half_height = kernel_height / 2;
 
-            for (int x = half_width + xStart; x <= width - 1 - half_width; x++)
-            {
-                for (int y = half_height + yStart; y <= height - 1 - half_height; y++)
+            for (int x = 0, xReal = xStart; x < width; x++, xReal++)
+                for (int y = 0, yReal = yStart; y < height; y++, yReal++)
                 {
                     int r = 0, g = 0, b = 0;
                     for (int dx = 0; dx < kernel_width; dx++)
-                    {
                         for (int dy = 0; dy < kernel_height; dy++)
                         {
-                            ColorC clr = GetPixel(
-                                x + dx - 1,
-                                y + dy - 1);
-                            r += clr.R * kernel[dx, dy];
-                            g += clr.G * kernel[dx, dy];
-                            b += clr.B * kernel[dx, dy];
+                            int sourceX = MathUtilEx.Clamp(x + dx - 1, 0, width - 1);
+                            int sourceY = MathUtilEx.Clamp(y + dy - 1, 0, height - 1);
+                            ColorC clr = oldImage.GetPixel(sourceX, sourceY);
+                            r += (int)clr.R * kernel[dx, dy];
+                            g += (int)clr.G * kernel[dx, dy];
+                            b += (int)clr.B * kernel[dx, dy];
                         }
-                    }
 
                     r = (int)(127 + r / weight);
                     g = (int)(127 + g / weight);
@@ -169,9 +171,8 @@ namespace TombLib.Utils
                     if (r > 255) r = 255;
                     if (g > 255) g = 255;
                     if (b > 255) b = 255;
-                    SetPixel(x, y, new ColorC((byte)r, (byte)g, (byte)b, (byte)255));
+                    SetPixel(xReal, yReal, new ColorC((byte)r, (byte)g, (byte)b, (byte)255));
                 }
-            }
         }
 
         public Vector2 Size => new Vector2(Width, Height);

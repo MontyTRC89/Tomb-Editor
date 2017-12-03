@@ -24,6 +24,8 @@ namespace TombEditor.Compilers
             List<ImageC>[] packedTextures = _objectTextureManager.PackTextures(_progressReporter);
             List<ImageC> spritePages = BuildSprites(packedTextures[0].Count);
 
+            _objectTextureManager.NumNonBumpedTiles = packedTextures[0].Count + spritePages.Count;
+
             ReportProgress(10, "Building final texture map");
 
             int offset = 0;
@@ -48,15 +50,10 @@ namespace TombEditor.Compilers
                 offset += texturePageSize;
             }
 
-            // Apply sobel to each page (BROKEN!)
-
+            // Apply embossing to each page (BROKEN! SHOULD BE APPLIED TO EACH TEXTURE AREA INDEPENDENTLY!)
             for (int i = 0; i < packedTextures[1].Count; ++i)
             {
-                int[,] kernel = { {-1, 0, 0},
-                                  { 0, 0, 0},
-                                  { 0, 0, 1}  };
-
-                packedTextures[1][i].ApplyFilter(0, 0, packedTextures[1][i].Width, packedTextures[1][i].Height, kernel, 2);
+                packedTextures[1][i].Emboss(0, 0, packedTextures[1][i].Width, packedTextures[1][i].Height, -1); // -2 = bump level 1, -1 = bump level 2
                 packedTextures[1][i].RawCopyTo(texture32Data, offset);
                 offset += texturePageSize;
             }
