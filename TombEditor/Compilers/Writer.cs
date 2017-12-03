@@ -224,9 +224,9 @@ namespace TombEditor.Compilers
 
                     // The room texture tile count currently also currently contains the wad textures
                     // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
-                    writer.Write((ushort)_objectTextureManager._numNonBumpedTiles);
+                    writer.Write((ushort)_objectTextureManager.NumNonBumpedTiles);
                     writer.Write((ushort)0);
-                    writer.Write((ushort)((_texture32Data.GetLength(0) / (256 * 256 * 4)) - _objectTextureManager._numNonBumpedTiles));
+                    writer.Write((ushort)((_texture32Data.GetLength(0) / (256 * 256 * 4)) - _objectTextureManager.NumNonBumpedTiles));
 
                     // Compress data
                     ReportProgress(96, "Compressing data");
