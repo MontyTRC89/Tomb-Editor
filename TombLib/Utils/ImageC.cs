@@ -135,6 +135,45 @@ namespace TombLib.Utils
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
+        public void ApplyFilter(int xStart, int yStart, int width, int height, int[,] kernel, int weight)
+        {
+            int kernel_width = kernel.GetUpperBound(0) + 1;
+            int kernel_height = kernel.GetUpperBound(1) + 1;
+            int half_width = kernel_width / 2;
+            int half_height = kernel_height / 2;
+
+            for (int x = half_width + xStart; x <= width - 1 - half_width; x++)
+            {
+                for (int y = half_height + yStart; y <= height - 1 - half_height; y++)
+                {
+                    int r = 0, g = 0, b = 0;
+                    for (int dx = 0; dx < kernel_width; dx++)
+                    {
+                        for (int dy = 0; dy < kernel_height; dy++)
+                        {
+                            ColorC clr = GetPixel(
+                                x + dx - 1,
+                                y + dy - 1);
+                            r += clr.R * kernel[dx, dy];
+                            g += clr.G * kernel[dx, dy];
+                            b += clr.B * kernel[dx, dy];
+                        }
+                    }
+
+                    r = (int)(127 + r / weight);
+                    g = (int)(127 + g / weight);
+                    b = (int)(127 + b / weight);
+                    if (r < 0) r = 0;
+                    if (g < 0) g = 0;
+                    if (b < 0) b = 0;
+                    if (r > 255) r = 255;
+                    if (g > 255) g = 255;
+                    if (b > 255) b = 255;
+                    SetPixel(x, y, new ColorC((byte)r, (byte)g, (byte)b, (byte)255));
+                }
+            }
+        }
+
         public Vector2 Size => new Vector2(Width, Height);
 
         public int DataSize => Width * Height * PixelSize;

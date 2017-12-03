@@ -15,21 +15,51 @@ namespace TombEditor.Compilers
 {
     public sealed partial class LevelCompilerTr4
     {
+        private const int texturePageSize = (256 * 256 * 4);
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private void PrepareTextures()
         {
-            List<ImageC> packedTextures = _objectTextureManager.PackTextures(_progressReporter);
-            List<ImageC> spritePages = BuildSprites(packedTextures.Count);
+            List<ImageC>[] packedTextures = _objectTextureManager.PackTextures(_progressReporter);
+            List<ImageC> spritePages = BuildSprites(packedTextures[0].Count);
 
             ReportProgress(10, "Building final texture map");
 
-            byte[] texture32Data = new byte[(spritePages.Count + packedTextures.Count) * (256 * 256 * 4)];
+            int offset = 0;
 
-            for (int i = 0; i < packedTextures.Count; ++i)
-                packedTextures[i].RawCopyTo(texture32Data, i * (256 * 256 * 4));
+            byte[] texture32Data = new byte[(spritePages.Count + packedTextures[0].Count + packedTextures[1].Count * 2) * texturePageSize];
+
+            for (int i = 0; i < packedTextures[0].Count; ++i)
+            {
+                packedTextures[0][i].RawCopyTo(texture32Data, offset);
+                offset += texturePageSize;
+            }
+
             for (int i = 0; i < spritePages.Count; ++i)
-                spritePages[i].RawCopyTo(texture32Data, (packedTextures.Count + i) * (256 * 256 * 4));
+            {
+                spritePages[i].RawCopyTo(texture32Data, offset);
+                offset += texturePageSize;
+            }
+
+            for (int i = 0; i < packedTextures[1].Count; ++i)
+            {
+                packedTextures[1][i].RawCopyTo(texture32Data, offset);
+                offset += texturePageSize;
+            }
+
+            // Apply sobel to each page (BROKEN!)
+
+            for (int i = 0; i < packedTextures[1].Count; ++i)
+            {
+                int[,] kernel = { {-1, 0, 0},
+                                  { 0, 0, 0},
+                                  { 0, 0, 1}  };
+
+                packedTextures[1][i].ApplyFilter(0, 0, packedTextures[1][i].Width, packedTextures[1][i].Height, kernel, 2);
+                packedTextures[1][i].RawCopyTo(texture32Data, offset);
+                offset += texturePageSize;
+            }
 
             _texture32Data = texture32Data;
         }

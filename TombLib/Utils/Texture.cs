@@ -53,6 +53,13 @@ namespace TombLib.Utils
         // We probably want support for those in the future.
     }
 
+    public enum BumpMapMode : ushort
+    {
+        None = 0,
+        Level1 = 1,
+        Level2 = 2
+    }
+
     public struct TextureArea
     {
         public static readonly TextureArea None;
@@ -63,6 +70,7 @@ namespace TombLib.Utils
         public Vector2 TexCoord2; //    - No array bounds checks
         public Vector2 TexCoord3; //    - 'Clone', 'GetHashCode' and so on work by default
         public BlendMode BlendMode;
+        public BumpMapMode BumpMode;
         public bool DoubleSided;
 
         public static bool operator ==(TextureArea first, TextureArea second)
@@ -74,6 +82,7 @@ namespace TombLib.Utils
                 (first.TexCoord2.Equals(second.TexCoord2)) &&
                 (first.TexCoord3.Equals(second.TexCoord3)) &&
                 (first.BlendMode == second.BlendMode) &&
+                (first.BumpMode == second.BumpMode) &&
                 (first.DoubleSided == second.DoubleSided);
         }
 
@@ -97,6 +106,8 @@ namespace TombLib.Utils
         public bool TextureIsInvisble => (Texture == null) || (Texture == TextureInvisible.Instance) || (Texture.IsUnavailable);
 
         public bool TextureIsRectangle => ((TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length());
+
+        public int AllocIndex => BumpMode == BumpMapMode.None ? 0 : 1;
 
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
         {
