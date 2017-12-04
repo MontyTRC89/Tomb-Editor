@@ -921,5 +921,53 @@ namespace TombEditor
 
             _loaded = true;
         }
+
+        private void butExportTriggerToScript_Click(object sender, EventArgs e)
+        {
+            var output = "";
+
+            var triggerType = (TriggerType)comboType.SelectedItem;
+            var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
+
+            if (triggerType== TriggerType.ConditionNg)
+            {
+                if (targetType == TriggerTargetType.Object)
+                {
+                    output = "$9000,";
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                if (targetType == TriggerTargetType.FlipEffect)
+                {
+                    var flipeffectId = (comboParameter.SelectedItem as NgTriggerKeyValuePair).Key;
+                    var flipeffectTrigger = NgCatalog.FlipEffectTrigger.MainList[flipeffectId];
+                    output = "$2000," + flipeffectId + ",";
+                    if (flipeffectTrigger.HasExtraList)
+                    {
+                        var timer = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
+                        var extra = (comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key;
+                        output += "$" + Utils.ToHexString((extra << 8) | timer);
+                    }
+                    else
+                    {
+                        var timer = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
+                        output += "$" + Utils.ToHexString(timer);
+                    }
+                }
+                else if (targetType == TriggerTargetType.ActionNg)
+                {
+
+                }
+                else if (targetType == TriggerTargetType.TimerfieldNg)
+                {
+
+                }
+            }
+        }
     }
 }

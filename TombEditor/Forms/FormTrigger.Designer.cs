@@ -52,6 +52,7 @@ namespace TombEditor
             this.comboExtraParameter = new DarkUI.Controls.DarkComboBox();
             this.labelExtra = new DarkUI.Controls.DarkLabel();
             this.comboTimer = new DarkUI.Controls.DarkComboBox();
+            this.butExportTriggerToScript = new DarkUI.Controls.DarkButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -274,11 +275,21 @@ namespace TombEditor
             this.comboTimer.Text = null;
             this.comboTimer.SelectionChangeCommitted += new System.EventHandler(this.comboTimer_SelectionChangeCommitted);
             // 
+            // butExportTriggerToScript
+            // 
+            this.butExportTriggerToScript.Location = new System.Drawing.Point(519, 149);
+            this.butExportTriggerToScript.Name = "butExportTriggerToScript";
+            this.butExportTriggerToScript.Size = new System.Drawing.Size(157, 23);
+            this.butExportTriggerToScript.TabIndex = 74;
+            this.butExportTriggerToScript.Text = "Export trigger to script";
+            this.butExportTriggerToScript.Click += new System.EventHandler(this.butExportTriggerToScript_Click);
+            // 
             // FormTrigger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(688, 236);
+            this.Controls.Add(this.butExportTriggerToScript);
             this.Controls.Add(this.comboTimer);
             this.Controls.Add(this.comboExtraParameter);
             this.Controls.Add(this.labelExtra);
@@ -336,5 +347,6 @@ namespace TombEditor
         private DarkComboBox comboExtraParameter;
         private DarkLabel labelExtra;
         private DarkComboBox comboTimer;
+        private DarkButton butExportTriggerToScript;
     }
 }
