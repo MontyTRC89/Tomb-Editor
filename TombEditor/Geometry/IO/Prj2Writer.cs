@@ -227,6 +227,7 @@ namespace TombEditor.Geometry.IO
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomMistLevel, room.MistLevel);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomReflectionLevel, room.ReflectionLevel);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomReverberation, (int)room.Reverberation);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomLocked, room.Locked);
                         if ((room.AlternateRoom != null) && rooms.ContainsKey(room.AlternateRoom))
                             chunkIO.WriteChunkWithChildren(Prj2Chunks.RoomAlternate, () =>
                             {

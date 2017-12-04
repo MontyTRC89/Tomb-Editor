@@ -53,6 +53,7 @@ namespace TombEditor.Geometry
         public bool FlagNoLensflare { get; set; }
         public bool FlagExcludeFromPathFinding { get; set; }
         public Reverberation Reverberation { get; set; }
+        public bool Locked { get; set; }
 
         // Internal data structures
         private Buffer<EditorVertex> _vertexBuffer;

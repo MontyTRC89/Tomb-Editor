@@ -379,6 +379,8 @@ namespace TombEditor.Geometry.IO
                         room.ReflectionLevel = chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomReverberation)
                         room.Reverberation = (Reverberation)chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomLocked)
+                        room.Locked = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomAlternate)
                     {
                         short alternateGroup = 1;
