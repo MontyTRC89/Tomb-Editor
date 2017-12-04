@@ -653,8 +653,7 @@ namespace TombEditor.Compilers
                     if (block.WallPortal == null) break;
 
                     Room adjoiningRoom = block.WallPortal.AdjoiningRoom;
-
-
+                    
                     dec_currentRoom = adjoiningRoom;
                     theRoom = adjoiningRoom;
 

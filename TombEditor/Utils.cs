@@ -327,5 +327,10 @@ namespace TombEditor
                     return true;
             return false;
         }
+
+        public static string ToHexString(int number)
+        {
+            return "";
+        }
     }
 }

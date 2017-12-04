@@ -1417,6 +1417,11 @@ namespace TombEditor.Geometry
                         wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
+
+                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[1];
+                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[0];
+                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[1];
+                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[0];
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -1630,6 +1635,11 @@ namespace TombEditor.Geometry
                         wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
+
+                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[3];
+                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[2];
+                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[3];
+                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[2];
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -1843,6 +1853,11 @@ namespace TombEditor.Geometry
                         wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
+
+                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[2];
+                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[1];
+                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[2];
+                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[1];
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -2254,6 +2269,11 @@ namespace TombEditor.Geometry
                         wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
+
+                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[1];
+                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[2];
+                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[1];
+                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[2];
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
