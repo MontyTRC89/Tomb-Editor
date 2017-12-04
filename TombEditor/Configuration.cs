@@ -165,7 +165,7 @@ namespace TombEditor
                             Contents = new List<string> { "TexturePanel" },
                             VisibleContent = "TexturePanel",
                             Order = 0,
-                            Size = new Size(309,700)
+                            Size = new Size(301,700)
                         }
                     }
                 },
