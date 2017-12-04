@@ -3037,10 +3037,10 @@ namespace TombEditor.Controls
                     {
                         if (bucket.BlendMode == BlendMode.Normal)
                             _device.SetBlendState(_device.BlendStates.Opaque);
-                        else if (bucket.BlendMode == BlendMode.Additive)
-                            _device.SetBlendState(_device.BlendStates.Additive);
                         else if (bucket.BlendMode == BlendMode.AlphaTest)
                             _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                        else if (bucket.BlendMode == BlendMode.Additive || bucket.BlendMode >= BlendMode.Subtract)
+                            _device.SetBlendState(_device.BlendStates.Additive);
                         else
                             _device.SetBlendState(_device.BlendStates.Opaque);
                     }
@@ -3171,7 +3171,7 @@ namespace TombEditor.Controls
                 // Check if is alpha trasparency or magenta trasparency
                 if (_lastBucket == null)
                 {
-                    if (bucket.BlendMode == BlendMode.Additive)
+                    if (bucket.BlendMode == BlendMode.Additive || (bucket.BlendMode >= BlendMode.Subtract && bucket.BlendMode != BlendMode.AlphaTest))
                         _device.SetBlendState(_device.BlendStates.Additive);
                     else
                         _device.SetBlendState(_device.BlendStates.AlphaBlend);

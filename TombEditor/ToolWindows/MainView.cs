@@ -107,8 +107,6 @@ namespace TombEditor.ToolWindows
                 butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
                 butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
                 butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
-                butDoubleSided.Enabled = mode == EditorMode.FaceEdit;
-                butAdditiveBlending.Enabled = mode == EditorMode.FaceEdit;
             }
 
             // Update flipmap toolbar button
@@ -117,14 +115,6 @@ namespace TombEditor.ToolWindows
             {
                 butFlipMap.Enabled = _editor.SelectedRoom.Flipped;
                 butFlipMap.Checked = _editor.SelectedRoom.AlternateBaseRoom != null;
-            }
-
-            // Update texture properties
-            if (obj is Editor.SelectedTexturesChangedEvent)
-            {
-                var e = (Editor.SelectedTexturesChangedEvent)obj;
-                butAdditiveBlending.Checked = e.Current.BlendMode == BlendMode.Additive;
-                butDoubleSided.Checked = e.Current.DoubleSided;
             }
 
             // Update portal opacity controls
@@ -197,20 +187,6 @@ namespace TombEditor.ToolWindows
         private void butTextureWalls_Click(object sender, EventArgs e)
         {
             EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
-        }
-
-        private void butAdditiveBlending_Click(object sender, EventArgs e)
-        {
-            var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.BlendMode = butAdditiveBlending.Checked ? BlendMode.Additive : BlendMode.Normal;
-            _editor.SelectedTexture = selectedTexture;
-        }
-
-        private void butDoubleSided_Click(object sender, EventArgs e)
-        {
-            var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.DoubleSided = butDoubleSided.Checked;
-            _editor.SelectedTexture = selectedTexture;
         }
 
         private void butAddCamera_Click(object sender, EventArgs e)
@@ -357,13 +333,6 @@ namespace TombEditor.ToolWindows
             butDisableGeometryPicking.Checked = panel3D.DisablePickingForImportedGeometry;
             if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
             panel3D.Invalidate();
-        }
-
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.BumpMode = (toolStripButton1.Checked ? BumpMapMode.Level1 : BumpMapMode.None);
-            _editor.SelectedTexture = selectedTexture;
         }
     }
 }

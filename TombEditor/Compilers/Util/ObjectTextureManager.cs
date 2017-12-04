@@ -18,6 +18,8 @@ namespace TombEditor.Compilers.Util
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public int NumNonBumpedTiles = 0;
+        public int NumBumpedTilesLevel1 = 0;
+        public int NumBumpedTilesLevel2 = 0;
         
         [Flags]
         public enum ResultFlags : byte
@@ -391,7 +393,7 @@ namespace TombEditor.Compilers.Util
         private uint _textureSpaceIdentifier = 0;
         private int _supportsUpTo65536TextureCount = 0;
 
-        private TextureAllocator[] _textureAllocator = new TextureAllocator[2] { new TextureAllocator(), new TextureAllocator() };
+        private TextureAllocator[] _textureAllocator = new TextureAllocator[3] { new TextureAllocator(), new TextureAllocator(), new TextureAllocator() };
 
         private ushort AddObjectTextureWithoutLookup(SavedObjectTexture newEntry, bool supportsUpTo65536)
         {
@@ -454,7 +456,12 @@ namespace TombEditor.Compilers.Util
                     return;
 
                 bool isTriangle = objectTexture.IsTriangularAndPadding != 0;
-                int usedAlloc = (objectTexture.NewFlags & 0x1800) != 0 ? 1 : 0;
+
+                int usedAlloc = 0;
+                if ((objectTexture.NewFlags & 0x0800) != 0)
+                    usedAlloc = 1;
+                else if ((objectTexture.NewFlags & 0x1000) != 0)
+                    usedAlloc = 2;
                 TextureAllocator.TextureView textureView = _textureAllocator[usedAlloc].GetTextureFromID(objectTexture.TextureID);
 
                 // To simplify the test just use the rectangular region around. (We could do a polygonal thing but I am not sure its worth it)
@@ -486,11 +493,12 @@ namespace TombEditor.Compilers.Util
             DebugObjectTextures();
 
             // Pack textures...
-            List<ImageC>[] result = new List<ImageC>[2];
-            result[0] = _textureAllocator[0].PackTextures();
-            result[1] = _textureAllocator[1].PackTextures();
+            List<ImageC>[] result = new List<ImageC>[3];
+            result[0] = _textureAllocator[0].PackTextures();    // Normal tiles
+            result[1] = _textureAllocator[1].PackTextures();    // Bump level 1 tiles
+            result[2] = _textureAllocator[2].PackTextures();    // Bump level 2 tiles
 
-            progressReporter.ReportInfo("Packed all level and wad textures into " + result[0].Count + " normal and " + result[1].Count + " bumped pages.");
+            progressReporter.ReportInfo("Packed all level and wad textures into " + result[0].Count + " normal and " + (result[1].Count + result[2].Count) + " bumped pages.");
             return result;
         }
 
@@ -647,9 +655,21 @@ namespace TombEditor.Compilers.Util
             for (int i = 0; i < _objectTextures.Count; ++i)
             {
                 SavedObjectTexture objectTexture = _objectTextures[i];
-                int usedAlloc = (objectTexture.NewFlags & 0x1800) != 0 ? 1 : 0;
+
+                int usedAlloc = 0;
+                if ((objectTexture.NewFlags & 0x0800) != 0)
+                    usedAlloc = 1;
+                else if ((objectTexture.NewFlags & 0x1000) != 0)
+                    usedAlloc = 2;
                 TextureAllocator.Result UsedTexturePackInfo = _textureAllocator[usedAlloc].GetPackInfo(objectTexture.TextureID);
-                ushort Tile = (usedAlloc == 0) ? UsedTexturePackInfo.OutputTextureID : (ushort)(UsedTexturePackInfo.OutputTextureID + NumNonBumpedTiles);
+
+                int tileOffset = 0;
+                if (usedAlloc == 1)
+                    tileOffset = NumNonBumpedTiles;
+                else if (usedAlloc == 2)
+                    tileOffset = NumNonBumpedTiles + NumBumpedTilesLevel1;
+                ushort Tile = (ushort)(UsedTexturePackInfo.OutputTextureID + tileOffset);
+
                 Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
 
                 stream.Write((ushort)objectTexture.BlendMode);

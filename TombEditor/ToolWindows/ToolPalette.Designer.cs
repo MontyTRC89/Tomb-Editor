@@ -45,9 +45,6 @@
             this.toolBowl = new System.Windows.Forms.ToolStripButton();
             this.toolPyramid = new System.Windows.Forms.ToolStripButton();
             this.toolTerrain = new System.Windows.Forms.ToolStripButton();
-            this.toolEraser = new System.Windows.Forms.ToolStripButton();
-            this.toolInvisibility = new System.Windows.Forms.ToolStripButton();
-            this.toolSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolUVFixer = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -77,9 +74,6 @@
             this.toolBowl,
             this.toolPyramid,
             this.toolTerrain,
-            this.toolEraser,
-            this.toolInvisibility,
-            this.toolSeparator2,
             this.toolUVFixer});
             this.toolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.toolStrip.Location = new System.Drawing.Point(0, 25);
@@ -280,38 +274,6 @@
             this.toolTerrain.ToolTipText = "Terrain";
             this.toolTerrain.Click += new System.EventHandler(this.toolTerrain_Click);
             // 
-            // toolEraser
-            // 
-            this.toolEraser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolEraser.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolEraser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolEraser.Image = global::TombEditor.Properties.Resources.toolbox_Eraser_16;
-            this.toolEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolEraser.Name = "toolEraser";
-            this.toolEraser.Size = new System.Drawing.Size(23, 20);
-            this.toolEraser.ToolTipText = "Eraser";
-            this.toolEraser.Click += new System.EventHandler(this.toolEraser_Click);
-            // 
-            // toolInvisibility
-            // 
-            this.toolInvisibility.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolInvisibility.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolInvisibility.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolInvisibility.Image = global::TombEditor.Properties.Resources.toolbox_Invisible_16;
-            this.toolInvisibility.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolInvisibility.Name = "toolInvisibility";
-            this.toolInvisibility.Size = new System.Drawing.Size(23, 20);
-            this.toolInvisibility.ToolTipText = "Invisibility";
-            this.toolInvisibility.Click += new System.EventHandler(this.toolInvisibility_Click);
-            // 
-            // toolSeparator2
-            // 
-            this.toolSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolSeparator2.Name = "toolSeparator2";
-            this.toolSeparator2.Size = new System.Drawing.Size(6, 23);
-            // 
             // toolUVFixer
             // 
             this.toolUVFixer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -353,10 +315,7 @@
         private System.Windows.Forms.ToolStripButton toolFlatten;
         private System.Windows.Forms.ToolStripButton toolSmooth;
         private System.Windows.Forms.ToolStripButton toolFill;
-        private System.Windows.Forms.ToolStripButton toolEraser;
-        private System.Windows.Forms.ToolStripButton toolInvisibility;
         private System.Windows.Forms.ToolStripSeparator toolSeparator1;
-        private System.Windows.Forms.ToolStripSeparator toolSeparator2;
         private System.Windows.Forms.ToolStripButton toolUVFixer;
         private System.Windows.Forms.ToolStripButton toolGroup;
         private System.Windows.Forms.ToolStripButton toolDrag;

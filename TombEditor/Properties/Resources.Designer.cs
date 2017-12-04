@@ -833,9 +833,29 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap texture_Mirror {
+            get {
+                object obj = ResourceManager.GetObject("texture_Mirror", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap texture_NoTexture_1_16 {
             get {
                 object obj = ResourceManager.GetObject("texture_NoTexture_1_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap texture_Rotate {
+            get {
+                object obj = ResourceManager.GetObject("texture_Rotate", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
