@@ -319,5 +319,13 @@ namespace TombEditor
             }
             return filename;
         }
+
+        public static bool ThereAreLockedRooms(HashSet<Room> rooms)
+        {
+            foreach (var room in rooms)
+                if (room.Locked || (room.AlternateBaseRoom != null && room.AlternateBaseRoom.Locked))
+                    return true;
+            return false;
+        }
     }
 }

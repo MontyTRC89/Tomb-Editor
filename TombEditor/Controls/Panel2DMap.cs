@@ -190,6 +190,7 @@ namespace TombEditor.Controls
                             return;
                         _editor.SelectRoomAndResetCamera(_roomMouseClicked);
                         _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
+                        if (Utils.ThereAreLockedRooms(_roomsToMove)) _roomsToMove.Clear(); // This disable moving if a locked room is found
                         _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos.ToVec2();
                     }
                     break;

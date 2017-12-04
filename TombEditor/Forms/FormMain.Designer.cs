@@ -1042,7 +1042,7 @@
             this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(303, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(332, 6);
             // 
             // wholeRoomUpToolStripMenuItem
             // 
@@ -1051,7 +1051,7 @@
             this.wholeRoomUpToolStripMenuItem.Name = "wholeRoomUpToolStripMenuItem";
             this.wholeRoomUpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.U)));
-            this.wholeRoomUpToolStripMenuItem.Size = new System.Drawing.Size(306, 22);
+            this.wholeRoomUpToolStripMenuItem.Size = new System.Drawing.Size(335, 22);
             this.wholeRoomUpToolStripMenuItem.Text = "Whole room up";
             this.wholeRoomUpToolStripMenuItem.Click += new System.EventHandler(this.wholeRoomUpToolStripMenuItem_Click);
             // 
@@ -1062,7 +1062,7 @@
             this.wholeRoomDownToolStripMenuItem.Name = "wholeRoomDownToolStripMenuItem";
             this.wholeRoomDownToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.D)));
-            this.wholeRoomDownToolStripMenuItem.Size = new System.Drawing.Size(306, 22);
+            this.wholeRoomDownToolStripMenuItem.Size = new System.Drawing.Size(335, 22);
             this.wholeRoomDownToolStripMenuItem.Text = "Whole room down";
             this.wholeRoomDownToolStripMenuItem.Click += new System.EventHandler(this.wholeRoomDownToolStripMenuItem_Click);
             // 
