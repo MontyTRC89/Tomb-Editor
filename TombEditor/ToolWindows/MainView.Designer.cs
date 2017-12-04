@@ -47,10 +47,6 @@
             this.butTextureFloor = new System.Windows.Forms.ToolStripButton();
             this.butTextureCeiling = new System.Windows.Forms.ToolStripButton();
             this.butTextureWalls = new System.Windows.Forms.ToolStripButton();
-            this.butAdditiveBlending = new System.Windows.Forms.ToolStripButton();
-            this.butDoubleSided = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.butAddCamera = new System.Windows.Forms.ToolStripButton();
             this.butAddFlybyCamera = new System.Windows.Forms.ToolStripButton();
             this.butAddSink = new System.Windows.Forms.ToolStripButton();
@@ -98,10 +94,6 @@
             this.butTextureFloor,
             this.butTextureCeiling,
             this.butTextureWalls,
-            this.butAdditiveBlending,
-            this.butDoubleSided,
-            this.toolStripButton1,
-            this.toolStripSeparator2,
             this.butAddCamera,
             this.butAddFlybyCamera,
             this.butAddSink,
@@ -487,55 +479,6 @@
             this.butTextureWalls.ToolTipText = "Texture all walls (Alt+U)";
             this.butTextureWalls.Click += new System.EventHandler(this.butTextureWalls_Click);
             // 
-            // butAdditiveBlending
-            // 
-            this.butAdditiveBlending.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butAdditiveBlending.CheckOnClick = true;
-            this.butAdditiveBlending.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butAdditiveBlending.Enabled = false;
-            this.butAdditiveBlending.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butAdditiveBlending.Image = global::TombEditor.Properties.Resources.texture_Transparent_1_16;
-            this.butAdditiveBlending.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butAdditiveBlending.Name = "butAdditiveBlending";
-            this.butAdditiveBlending.Size = new System.Drawing.Size(23, 25);
-            this.butAdditiveBlending.ToolTipText = "Additive blending";
-            this.butAdditiveBlending.Click += new System.EventHandler(this.butAdditiveBlending_Click);
-            // 
-            // butDoubleSided
-            // 
-            this.butDoubleSided.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDoubleSided.CheckOnClick = true;
-            this.butDoubleSided.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDoubleSided.Enabled = false;
-            this.butDoubleSided.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDoubleSided.Image = global::TombEditor.Properties.Resources.texture_DoubleSided_1_16;
-            this.butDoubleSided.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDoubleSided.Name = "butDoubleSided";
-            this.butDoubleSided.Size = new System.Drawing.Size(23, 25);
-            this.butDoubleSided.ToolTipText = "Double-sided texture";
-            this.butDoubleSided.Click += new System.EventHandler(this.butDoubleSided_Click);
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripButton1.CheckOnClick = true;
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripButton1.Image = global::TombEditor.Properties.Resources.stones_16;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 25);
-            this.toolStripButton1.Text = "toolStripButton1";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
-            // 
             // butAddCamera
             // 
             this.butAddCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -624,7 +567,7 @@
             this.butCompileLevel.Image = global::TombEditor.Properties.Resources.actions_compile_16;
             this.butCompileLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCompileLevel.Name = "butCompileLevel";
-            this.butCompileLevel.Size = new System.Drawing.Size(23, 20);
+            this.butCompileLevel.Size = new System.Drawing.Size(23, 25);
             this.butCompileLevel.ToolTipText = "Build level (Shift+F5)";
             this.butCompileLevel.Click += new System.EventHandler(this.butCompileLevel_Click);
             // 
@@ -690,9 +633,6 @@
         private System.Windows.Forms.ToolStripButton butTextureFloor;
         private System.Windows.Forms.ToolStripButton butTextureCeiling;
         private System.Windows.Forms.ToolStripButton butTextureWalls;
-        private System.Windows.Forms.ToolStripButton butAdditiveBlending;
-        private System.Windows.Forms.ToolStripButton butDoubleSided;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton butAddCamera;
         private System.Windows.Forms.ToolStripButton butAddFlybyCamera;
         private System.Windows.Forms.ToolStripButton butAddSoundSource;
@@ -716,6 +656,5 @@
         private System.Windows.Forms.ToolStripMenuItem butDrawOther;
         private System.Windows.Forms.ToolStripButton butDrawSlideDirections;
         private System.Windows.Forms.ToolStripButton butDisableGeometryPicking;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }

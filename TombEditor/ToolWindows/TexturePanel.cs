@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Docking;
+using TombEditor.Geometry;
+using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
 {
@@ -24,16 +26,9 @@ namespace TombEditor.ToolWindows
 
             panelTextureMap.SelectedTextureChanged += delegate { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
-            // Setup tile size options
-            if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 64.0f)
-                rbTileSize64.Checked = true;
-            else if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 128.0f)
-                rbTileSize128.Checked = true;
-            else if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 256.0f)
-                rbTileSize256.Checked = true;
-            else
-                rbTileSize32.Checked = true;
-            panelTextureMap.TileSelectionSize = _editor.Configuration.TextureMap_DefaultTileSelectionSize;
+            cmbBlending.SelectedIndex = 0;
+            cmbBump.SelectedIndex = 0;
+            cmbTileSize.SelectedIndex = 1;
         }
 
         protected override void Dispose(bool disposing)
@@ -49,11 +44,64 @@ namespace TombEditor.ToolWindows
         {
             // Update texture map
             if (obj is Editor.SelectedTexturesChangedEvent)
+            {
                 panelTextureMap.SelectedTexture = ((Editor.SelectedTexturesChangedEvent)obj).Current;
+                butNoTexture.BackColorUseGeneric = !(panelTextureMap.SelectedTexture.Texture == TextureInvisible.Instance);
+                SwitchBlendMode();
+                SwitchBumpMode();
+                SwitchDoubleSide();
+            }
 
             // Center texture on texture map
             if (obj is Editor.SelectTextureAndCenterViewEvent)
-                panelTextureMap.ShowTexture(((Editor.SelectTextureAndCenterViewEvent)obj).Texture);
+            {
+                var newTexture = ((Editor.SelectTextureAndCenterViewEvent)obj).Texture;
+
+                if (newTexture.Texture is LevelTexture)
+                {
+                    butDoubleSide.BackColorUseGeneric = !newTexture.DoubleSided;
+                    butNoTexture.BackColorUseGeneric = !(panelTextureMap.SelectedTexture.Texture == TextureInvisible.Instance);
+
+                    switch (newTexture.BlendMode)
+                    {
+                        case BlendMode.Normal:
+                        default:
+                            cmbBlending.SelectedIndex = 0;
+                            break;
+                        case BlendMode.Additive:
+                            cmbBlending.SelectedIndex = 1;
+                            break;
+                        case BlendMode.Subtract:
+                            cmbBlending.SelectedIndex = 2;
+                            break;
+                        case BlendMode.Exclude:
+                            cmbBlending.SelectedIndex = 3;
+                            break;
+                        case BlendMode.Screen:
+                            cmbBlending.SelectedIndex = 4;
+                            break;
+                        case BlendMode.Lighten:
+                            cmbBlending.SelectedIndex = 5;
+                            break;
+                    };
+
+                    switch (newTexture.BumpMode)
+                    {
+                        case BumpMapMode.None:
+                        default:
+                            cmbBump.SelectedIndex = 0;
+                            break;
+                        case BumpMapMode.Level1:
+                            cmbBump.SelectedIndex = 1;
+                            break;
+                        case BumpMapMode.Level2:
+                            cmbBump.SelectedIndex = 2;
+                            break;
+                    }
+
+                    panelTextureMap.ShowTexture(newTexture);
+                }
+            }
         }
 
         private void butTextureSounds_Click(object sender, EventArgs e)
@@ -66,28 +114,112 @@ namespace TombEditor.ToolWindows
             EditorActions.ShowAnimationRangesDialog(this);
         }
 
-        private void rbTileSize32_CheckedChanged(object sender, EventArgs e)
+        private void butDoubleSide_Click(object sender, EventArgs e)
         {
-            if (rbTileSize32.Checked)
-                panelTextureMap.TileSelectionSize = 32.0f;
+            if(panelTextureMap.VisibleTexture?.IsAvailable ?? false)
+            {
+                butDoubleSide.BackColorUseGeneric = !butDoubleSide.BackColorUseGeneric;
+                SwitchDoubleSide();
+            }
         }
 
-        private void rbTileSize64_CheckedChanged(object sender, EventArgs e)
+        private void cmbTileSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (rbTileSize64.Checked)
-                panelTextureMap.TileSelectionSize = 64.0f;
+            switch(cmbTileSize.SelectedIndex)
+            {
+                case 0:
+                    panelTextureMap.TileSelectionSize = 32.0f;
+                    break;
+                default:
+                case 1:
+                    panelTextureMap.TileSelectionSize = 64.0f;
+                    break;
+                case 2:
+                    panelTextureMap.TileSelectionSize = 128.0f;
+                    break;
+                case 3:
+                    panelTextureMap.TileSelectionSize = 256.0f;
+                    break;
+            }
         }
 
-        private void rbTileSize128_CheckedChanged(object sender, EventArgs e)
+        private void cmbBump_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (rbTileSize128.Checked)
-                panelTextureMap.TileSelectionSize = 128.0f;
+            SwitchBumpMode();
         }
 
-        private void rbTileSize256_CheckedChanged(object sender, EventArgs e)
+        private void cmbBlending_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (rbTileSize256.Checked)
-                panelTextureMap.TileSelectionSize = 256.0f;
+            SwitchBlendMode();
+        }
+
+        private void butRotate_Click(object sender, EventArgs e)
+        {
+            EditorActions.RotateSelectedTexture();
+        }
+
+        private void butMirror_Click(object sender, EventArgs e)
+        {
+            EditorActions.MirrorSelectedTexture();
+        }
+
+        private void butNoTexture_Click(object sender, EventArgs e)
+        {
+            _editor.SelectedTexture = new TextureArea { Texture = TextureInvisible.Instance };
+        }
+
+        private void SwitchBumpMode()
+        {
+            var selectedTexture = _editor.SelectedTexture;
+            switch (cmbBump.SelectedIndex)
+            {
+                default:
+                case 0:
+                    selectedTexture.BumpMode = BumpMapMode.None;
+                    break;
+                case 1:
+                    selectedTexture.BumpMode = BumpMapMode.Level1;
+                    break;
+                case 2:
+                    selectedTexture.BumpMode = BumpMapMode.Level2;
+                    break;
+            }
+            _editor.SelectedTexture = selectedTexture;
+        }
+
+        private void SwitchBlendMode()
+        {
+            var selectedTexture = _editor.SelectedTexture;
+            switch (cmbBlending.SelectedIndex)
+            {
+                default:
+                case 0:
+                    selectedTexture.BlendMode = BlendMode.Normal;
+                    break;
+                case 1:
+                    selectedTexture.BlendMode = BlendMode.Additive;
+                    break;
+                case 2:
+                    selectedTexture.BlendMode = BlendMode.Subtract;
+                    break;
+                case 3:
+                    selectedTexture.BlendMode = BlendMode.Exclude;
+                    break;
+                case 4:
+                    selectedTexture.BlendMode = BlendMode.Screen;
+                    break;
+                case 5:
+                    selectedTexture.BlendMode = BlendMode.Lighten;
+                    break;
+            }
+            _editor.SelectedTexture = selectedTexture;
+        }
+
+        private void SwitchDoubleSide()
+        {
+            var selectedTexture = _editor.SelectedTexture;
+            selectedTexture.DoubleSided = !butDoubleSide.BackColorUseGeneric;
+            _editor.SelectedTexture = selectedTexture;
         }
     }
 }

@@ -47,7 +47,11 @@ namespace TombLib.Utils
         Normal = 0,
         Additive = 2,
         NoZTest = 4,
+        Subtract = 5,
         Wireframe = 6,
+        Exclude = 8,
+        Screen = 9,
+        Lighten = 10,
         AlphaTest = 100
         // By using FLEP, more BlendMode mode indices can be assigned meaning.
         // We probably want support for those in the future.
@@ -107,7 +111,7 @@ namespace TombLib.Utils
 
         public bool TextureIsRectangle => ((TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length());
 
-        public int AllocIndex => BumpMode == BumpMapMode.None ? 0 : 1;
+        public int AllocIndex => (int)BumpMode;
 
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
         {

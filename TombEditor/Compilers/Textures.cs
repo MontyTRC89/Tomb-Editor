@@ -25,12 +25,14 @@ namespace TombEditor.Compilers
             List<ImageC> spritePages = BuildSprites(packedTextures[0].Count);
 
             _objectTextureManager.NumNonBumpedTiles = packedTextures[0].Count + spritePages.Count;
+            _objectTextureManager.NumBumpedTilesLevel1 = packedTextures[1].Count;
+            _objectTextureManager.NumBumpedTilesLevel2 = packedTextures[2].Count;
 
             ReportProgress(10, "Building final texture map");
 
             int offset = 0;
 
-            byte[] texture32Data = new byte[(spritePages.Count + packedTextures[0].Count + packedTextures[1].Count * 2) * texturePageSize];
+            byte[] texture32Data = new byte[(spritePages.Count + packedTextures[0].Count + ((packedTextures[1].Count + packedTextures[2].Count) * 2)) * texturePageSize];
 
             for (int i = 0; i < packedTextures[0].Count; ++i)
             {
@@ -44,26 +46,28 @@ namespace TombEditor.Compilers
                 offset += texturePageSize;
             }
 
-            for (int i = 0; i < packedTextures[1].Count; ++i)
-            {
-                packedTextures[1][i].RawCopyTo(texture32Data, offset);
-                offset += texturePageSize;
-            }
+            // Copy bump level 1 and 2 tiles
+            for (int p = 0; p < 2; p++)
+                for (int i = 0; i < packedTextures[p + 1].Count; ++i)
+                {
+                    packedTextures[p + 1][i].RawCopyTo(texture32Data, offset);
+                    offset += texturePageSize;
+                }
 
             // Apply embossing to each page (BROKEN! SHOULD BE APPLIED TO EACH TEXTURE AREA INDEPENDENTLY!)
-            for (int i = 0; i < packedTextures[1].Count; ++i)
-            {
-                int Xstride = packedTextures[1][i].Width / 16;
-                int Ystride = packedTextures[1][i].Height / 16;
+            for (int p = 0; p < 2; p++)
+                for (int i = 0; i < packedTextures[p + 1].Count; ++i)
+                {
+                    int Xstride = packedTextures[p + 1][i].Width / 16;
+                    int Ystride = packedTextures[p + 1][i].Height / 16;
 
-                for (int x = 0; x < packedTextures[1][i].Width; x += Xstride)
-                    for (int y = 0; y < packedTextures[1][i].Height; y += Ystride)
-                        packedTextures[1][i].Emboss(x, y, Xstride, Ystride, -2); // -2 = bump level 1, -1 = bump level 2
+                    for (int x = 0; x < packedTextures[p + 1][i].Width; x += Xstride)
+                        for (int y = 0; y < packedTextures[p + 1][i].Height; y += Ystride)
+                            packedTextures[p + 1][i].Emboss(x, y, Xstride, Ystride, (-3 + p)); // -2 = bump level 1, -1 = bump level 2
 
-
-                packedTextures[1][i].RawCopyTo(texture32Data, offset);
-                offset += texturePageSize;
-            }
+                    packedTextures[p + 1][i].RawCopyTo(texture32Data, offset);
+                    offset += texturePageSize;
+                }
 
             _texture32Data = texture32Data;
         }

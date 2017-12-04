@@ -625,6 +625,9 @@ namespace TombEditor.Controls
             get { return _selectedTexture; }
             set
             {
+                if (!(VisibleTexture?.IsAvailable ?? false))
+                    return;
+
                 value.TexCoord0 = Vector2.Max(Vector2.Min(value.TexCoord0, _visibleTexture.Image.Size - new Vector2(0.5f)), new Vector2(0.5f));
                 value.TexCoord1 = Vector2.Max(Vector2.Min(value.TexCoord1, _visibleTexture.Image.Size - new Vector2(0.5f)), new Vector2(0.5f));
                 value.TexCoord2 = Vector2.Max(Vector2.Min(value.TexCoord2, _visibleTexture.Image.Size - new Vector2(0.5f)), new Vector2(0.5f));
