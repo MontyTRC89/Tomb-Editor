@@ -139,14 +139,6 @@ namespace TombEditor.Controls
             return ((MaxDepth - depth) / (MaxDepth - MinDepth)) * barArea.Height + barArea.Y;
         }
 
-        private bool CheckForLockedRooms()
-        {
-            foreach (var room in _roomsToMove)
-                if (room.Locked)
-                    return true;
-            return false;
-        }
-
         /// <returns>true, if the selection should continue in the background of the bar.</returns>
         public bool MouseDown(MouseEventArgs e, Size parentControlSize, Level level, Vector2 clickPos)
         {
