@@ -135,15 +135,10 @@ namespace TombLib.Utils
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
-        public void Emboss(int xStart, int yStart, int width, int height, int weight, int size)
+        public void ApplyKernel(int xStart, int yStart, int width, int height, int weight, int [,] kernel)
         {
             ImageC oldImage = new ImageC(width, height, new byte[width * height * 4]);
             oldImage.CopyFrom(0, 0, this, xStart, yStart, width, height);
-
-            size = MathUtilEx.Clamp(size, 2, 8);
-            int[,] kernel = new int[size, size];
-            kernel[0, 0] = -1;
-            kernel[size - 1, size - 1] = 1;
 
             int kernel_width = kernel.GetUpperBound(0) + 1;
             int kernel_height = kernel.GetUpperBound(1) + 1;
@@ -162,18 +157,21 @@ namespace TombLib.Utils
                             g += (int)clr.G * kernel[dx, dy];
                             b += (int)clr.B * kernel[dx, dy];
                         }
-
-                    r = (int)(127 + r / weight);
-                    g = (int)(127 + g / weight);
-                    b = (int)(127 + b / weight);
-                    if (r < 0) r = 0;
-                    if (g < 0) g = 0;
-                    if (b < 0) b = 0;
-                    if (r > 255) r = 255;
-                    if (g > 255) g = 255;
-                    if (b > 255) b = 255;
+                    r = MathUtilEx.Clamp((int)(127 + r / weight), 0, 255);
+                    g = MathUtilEx.Clamp((int)(127 + g / weight), 0, 255);
+                    b = MathUtilEx.Clamp((int)(127 + b / weight), 0, 255);
                     SetPixel(xReal, yReal, new ColorC((byte)r, (byte)g, (byte)b, (byte)255));
                 }
+        }
+
+        public void Emboss(int xStart, int yStart, int width, int height, int weight, int size)
+        {
+            size = MathUtilEx.Clamp(size, 2, 8);
+            int[,] kernel = new int[size, size];
+            kernel[0, 0] = -1;
+            kernel[size - 1, size - 1] = 1;
+
+            ApplyKernel(xStart, yStart, width, height, weight, kernel);
         }
 
         public Vector2 Size => new Vector2(Width, Height);
