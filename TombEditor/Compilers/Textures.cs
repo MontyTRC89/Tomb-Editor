@@ -63,7 +63,7 @@ namespace TombEditor.Compilers
 
                     for (int x = 0; x < packedTextures[p + 1][i].Width; x += Xstride)
                         for (int y = 0; y < packedTextures[p + 1][i].Height; y += Ystride)
-                            packedTextures[p + 1][i].Emboss(x, y, Xstride, Ystride, (-3 + p)); // -2 = bump level 1, -1 = bump level 2
+                            packedTextures[p + 1][i].Emboss(x, y, Xstride, Ystride, (-3 + p), p+2);
 
                     packedTextures[p + 1][i].RawCopyTo(texture32Data, offset);
                     offset += texturePageSize;

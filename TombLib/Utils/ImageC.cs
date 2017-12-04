@@ -135,14 +135,15 @@ namespace TombLib.Utils
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
-        public void Emboss(int xStart, int yStart, int width, int height, int weight)
+        public void Emboss(int xStart, int yStart, int width, int height, int weight, int size)
         {
             ImageC oldImage = new ImageC(width, height, new byte[width * height * 4]);
             oldImage.CopyFrom(0, 0, this, xStart, yStart, width, height);
 
-            int[,] kernel = { {-1, 0, 0},
-                              { 0, 0, 0},
-                              { 0, 0, 1} };
+            size = MathUtilEx.Clamp(size, 2, 8);
+            int[,] kernel = new int[size, size];
+            kernel[0, 0] = -1;
+            kernel[size - 1, size - 1] = 1;
 
             int kernel_width = kernel.GetUpperBound(0) + 1;
             int kernel_height = kernel.GetUpperBound(1) + 1;
