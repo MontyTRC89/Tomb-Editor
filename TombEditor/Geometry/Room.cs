@@ -2428,62 +2428,59 @@ namespace TombEditor.Geometry
                 }
 
                 // WS and RF
-                if (ceiling)
+                face = Blocks[x, z].GetFaceTexture(wsFace);
+
+                // WS
+                if (wA >= fA && wB >= fB)
                 {
-                    face = Blocks[x, z].GetFaceTexture(wsFace);
+                    if (wA < yA && wB < yB)
+                        AddQuad(x, z, wsFace,
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
+                            face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                    else if (wA < yA && wB == yB)
+                        AddTriangle(x, z, wsFace,
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
+                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                    else if (wA == yA && wB < yB)
+                        AddTriangle(x, z, wsFace,
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
+                }
 
-                    // WS
-                    if (wA >= fA && wB >= fB)
-                    {
-                        if (wA < yA && wB < yB)
-                            AddQuad(x, z, wsFace,
-                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
-                                new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
-                                face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
-                        else if (wA < yA && wB == yB)
-                            AddTriangle(x, z, wsFace,
-                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
-                                face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
-                        else if (wA == yA && wB < yB)
-                            AddTriangle(x, z, wsFace,
-                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
-                                face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
-                    }
+                // RF
+                if (subdivide)
+                {
+                    yA = cA;
+                    yB = cB;
 
-                    // RF
-                    if (subdivide)
-                    {
-                        yA = cA;
-                        yB = cB;
+                    face = Blocks[x, z].GetFaceTexture(rfFace);
 
-                        face = Blocks[x, z].GetFaceTexture(rfFace);
-
-                        if (rA < yA && rB < yB)
-                            AddQuad(x, z, rfFace,
-                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
-                                new Vector3(xA * 1024.0f, rA * 256.0f, zA * 1024.0f),
-                                face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
-                        else if (rA < yA && rB == yB)
-                            AddTriangle(x, z, rfFace,
-                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                new Vector3(xA * 1024.0f, rA * 256.0f, zA * 1024.0f),
-                                face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
-                        else if (rA == yA && rB < yB)
-                            AddTriangle(x, z, rfFace,
-                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
-                                face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
-                    }
+                    if (rA < yA && rB < yB)
+                        AddQuad(x, z, rfFace,
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, rA * 256.0f, zA * 1024.0f),
+                            face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                    else if (rA < yA && rB == yB)
+                        AddTriangle(x, z, rfFace,
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, rA * 256.0f, zA * 1024.0f),
+                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                    else if (rA == yA && rB < yB)
+                        AddTriangle(x, z, rfFace,
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
+                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
                 }
             }
 
