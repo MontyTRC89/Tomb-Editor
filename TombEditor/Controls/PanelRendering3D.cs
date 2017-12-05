@@ -1912,9 +1912,11 @@ namespace TombEditor.Controls
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
                     _device.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
+                    Matrix model;
+
                     if (light.Type == LightType.Point || light.Type == LightType.Shadow)
                     {
-                        Matrix model = Matrix.Scaling(light.InnerRange * 2.0f) * light.ObjectMatrix;
+                        model = Matrix.Scaling(light.InnerRange * 2.0f) * light.ObjectMatrix;
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
@@ -1922,16 +1924,12 @@ namespace TombEditor.Controls
                         _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
                     }
 
-                    if (light.Type == LightType.Point || light.Type == LightType.Shadow ||
-                        light.Type == LightType.FogBulb)
-                    {
-                        Matrix model = Matrix.Scaling(light.OuterRange * 2.0f) * light.ObjectMatrix;
-                        solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+                    model = Matrix.Scaling(light.OuterRange * 2.0f) * light.ObjectMatrix;
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
-                        solidEffect.CurrentTechnique.Passes[0].Apply();
-                        _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
-                    }
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
                 }
                 else if (light.Type == LightType.Spot)
                 {
@@ -2106,7 +2104,7 @@ namespace TombEditor.Controls
                     _device.SetRasterizerState(_rasterizerWireframe);
 
                     string message = "Sound source";
-                    if ((instance.SoundId >= 0) && _editor.Level.Wad != null &&
+                    if (_editor.Level.Wad != null &&
                         _editor.Level.Wad.SoundInfo.ContainsKey(instance.SoundId))
                         message += " (" + _editor.Level.Wad.SoundInfo[instance.SoundId].Name + ") ";
                     else
@@ -2775,6 +2773,15 @@ namespace TombEditor.Controls
         // Call Invalidate() instead to schedule a redraw in the message loop.
         private void Draw()
         {
+            // Verify that editor is ready
+            if (_editor == null |
+                _editor.Level == null || 
+                _editor.SelectedRoom == null || 
+                _editor.SelectedRoom.VertexBuffer == null || 
+                _device == null || 
+                _editor.SelectedRoom == null)
+                return;
+
             Stopwatch _watch = new Stopwatch();
             _watch.Start();
 
@@ -2787,10 +2794,6 @@ namespace TombEditor.Controls
             if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && DrawPortals)
                 AddRoomBoundingBox();
 
-            // Don't draw anything if device is not ready
-            if (_device == null || _editor.SelectedRoom == null)
-                return;
-
             // reset the backbuffer
             Vector4 clearColor = _editor?.SelectedRoom?.AlternateBaseRoom != null ? _editor.Configuration.Rendering3D_BackgroundColorFlipRoom : _editor.Configuration.Rendering3D_BackgroundColor;
             _device.Presenter = _presenter;
@@ -2798,16 +2801,6 @@ namespace TombEditor.Controls
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, clearColor, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-
-            // verify that editor is ready
-            if (_editor.Level == null)
-                return;
-            if (_editor.Level.Rooms.Length == 0)
-                return;
-            if (_editor.SelectedRoom == null)
-                return;
-            if (_editor.SelectedRoom.VertexBuffer == null)
-                return;
 
             //Precalculate the view projection matrix
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
@@ -2828,7 +2821,7 @@ namespace TombEditor.Controls
             Task.WaitAll(task1, task2);
 
             // Draw the skybox if present
-            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null && DrawHorizon)
+            if (_editor.Level.Wad != null && DrawHorizon)
             {
                 DrawSkyBox(viewProjection);
                 _device.Clear(ClearOptions.DepthBuffer, SharpDX.Color.Transparent, 1.0f, 0);
@@ -2853,7 +2846,7 @@ namespace TombEditor.Controls
             DrawOpaqueBuckets(viewProjection);
 
             // Draw moveables and static meshes
-            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null)
+            if (_editor.Level.Wad != null)
             {
                 // Before drawing custom geometry, apply a depth bias for reducing Z fighting
                 _device.SetRasterizerState(_rasterizerStateDepthBias);
@@ -2870,7 +2863,7 @@ namespace TombEditor.Controls
             DrawInvisibleBuckets(viewProjection);
 
             // Draw room imported geometry
-            if (_editor != null && _editor.Level != null && _roomGeometryToDraw.Count != 0)
+            if (_roomGeometryToDraw.Count != 0)
             {
                 // If picking for imported geometry is disabled, then draw geometry translucent
                 if (DisablePickingForImportedGeometry) _device.SetBlendState(_device.BlendStates.Additive);
@@ -3152,8 +3145,7 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["ModelViewProjection"].SetValue(room.Transform * viewProjection);
 
                     // Enable or disable static lighting
-                    bool lights = (room != _editor.SelectedRoom ||
-                                   (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
+                    bool lights = (room != _editor.SelectedRoom || _editor.Mode == EditorMode.Lighting);
                     _roomEffect.Parameters["UseVertexColors"].SetValue(lights);
 
                     _roomEffect.Parameters["Model"].SetValue(room.Transform);
