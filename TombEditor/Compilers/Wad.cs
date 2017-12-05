@@ -280,6 +280,7 @@ namespace TombEditor.Compilers
                             {
                                 _frames.Add(0);
                             }
+                            currentKeyFrameSize += maxKeyFrameSize - currentKeyFrameSize;
                         }
 
                         int endFrame = _frames.Count;
