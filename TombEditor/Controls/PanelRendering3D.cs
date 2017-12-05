@@ -2774,12 +2774,11 @@ namespace TombEditor.Controls
         private void Draw()
         {
             // Verify that editor is ready
-            if (_editor == null |
+            if (_editor == null ||
                 _editor.Level == null || 
                 _editor.SelectedRoom == null || 
                 _editor.SelectedRoom.VertexBuffer == null || 
-                _device == null || 
-                _editor.SelectedRoom == null)
+                _device == null)
                 return;
 
             Stopwatch _watch = new Stopwatch();
