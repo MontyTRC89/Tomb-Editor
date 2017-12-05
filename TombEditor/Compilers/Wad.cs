@@ -169,7 +169,6 @@ namespace TombEditor.Compilers
 
             int currentKeyFrameSize = 0;
             int totalKeyFrameSize = 0;
-            int mmm = 0;
 
             for (int i = 0; i < wad.Moveables.Count; i++)
             {
@@ -281,26 +280,15 @@ namespace TombEditor.Compilers
                             {
                                 _frames.Add(0);
                             }
-
-                            currentKeyFrameSize += maxKeyFrameSize - currentKeyFrameSize;
                         }
 
                         int endFrame = _frames.Count;
-
-                        if (mmm == 0)
-                        {
-                            for (int jjj = baseFrame; jjj < endFrame; jjj++)
-                                Console.WriteLine(_frames[jjj].ToString("X"));
-                            Console.WriteLine("----------------------------");
-                        }
-
+                        
                         keyframesDictionary.Add(keyframe, (uint)totalKeyFrameSize);
                         totalKeyFrameSize += currentKeyFrameSize;
                     }
 
                     animation.KeyFramesSize = maxKeyFrameSize;
-
-                    mmm++;
                 }
             }
 

@@ -183,7 +183,7 @@ namespace TombEditor.Controls
                         // Depth probe normally selected
                         _currentlyEditedDepthProbeIndex = FindClosestProbe(clickPos);
                     }
-                    else if (!currentProbeIndex.HasValue)
+                    else
                     {
                         _roomMouseClicked = DoPicking(clickPos);
                         if (_roomMouseClicked == null)
