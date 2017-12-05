@@ -338,7 +338,7 @@ namespace TombEditor.Geometry
                     EDFaces[2] = swapFace[2];
                     EDFaces[3] = swapFace[3];
                 }
-                else if (!floor || Type == BlockType.Wall)
+                if (!floor || Type == BlockType.Wall)
                 {
                     swapFace[0] = WSFaces[3];
                     swapFace[1] = WSFaces[0];

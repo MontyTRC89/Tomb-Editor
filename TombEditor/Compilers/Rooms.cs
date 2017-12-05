@@ -118,12 +118,7 @@ namespace TombEditor.Compilers
                     if (effectiveReflectionLevel > 4)
                         effectiveReflectionLevel = 4;
 
-                    int effectiveWaterLevel = room.WaterLevel;
-                    if (effectiveWaterLevel < 1)
-                        effectiveWaterLevel = 1;
-                    if (effectiveWaterLevel > 4)
-                        effectiveWaterLevel = 4;
-
+                    int effectiveWaterLevel = MathUtilEx.Clamp(room.WaterLevel, 1, 4);
                     newRoom.WaterScheme = (byte)(effectiveWaterLevel * 4 + effectiveReflectionLevel);
                 }
             }
