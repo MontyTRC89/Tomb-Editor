@@ -56,8 +56,8 @@ namespace TombEditor
 
         public class LevelChangedEvent : IEditorPropertyChangedEvent
         {
-            public Level Previous { get; set; }
-            public Level Current { get; set; }
+            public Level Previous { get; internal set; }
+            public Level Current { get; internal set; }
         }
 
         public class LevelCompilationCompletedEvent : IEditorEvent
@@ -102,7 +102,7 @@ namespace TombEditor
                     EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
                 }
                 RoomListChange();
-                SelectedRoom = _level.Rooms.First((room) => room != null);
+                SelectedRooms = new Room[] { _level.Rooms.First((room) => room != null) };
                 ResetCamera();
                 LoadedWadsChange(value.Wad);
                 LoadedTexturesChange();
@@ -114,8 +114,8 @@ namespace TombEditor
 
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
-            public EditorAction Previous { get; set; }
-            public EditorAction Current { get; set; }
+            public EditorAction Previous { get; internal set; }
+            public EditorAction Current { get; internal set; }
         }
         private EditorAction _action;
         public EditorAction Action
@@ -133,8 +133,8 @@ namespace TombEditor
 
         public class ChosenItemChangedEvent : IEditorPropertyChangedEvent
         {
-            public ItemType? Previous { get; set; }
-            public ItemType? Current { get; set; }
+            public ItemType? Previous { get; internal set; }
+            public ItemType? Current { get; internal set; }
         }
         private ItemType? _chosenItem;
         public ItemType? ChosenItem
@@ -152,8 +152,8 @@ namespace TombEditor
 
         public class ModeChangedEvent : IEditorPropertyChangedEvent
         {
-            public EditorMode Previous { get; set; }
-            public EditorMode Current { get; set; }
+            public EditorMode Previous { get; internal set; }
+            public EditorMode Current { get; internal set; }
         }
         private EditorMode _mode = EditorMode.Geometry;
         public EditorMode Mode
@@ -171,8 +171,8 @@ namespace TombEditor
 
         public class ToolChangedEvent : IEditorPropertyChangedEvent
         {
-            public EditorTool Previous { get; set; }
-            public EditorTool Current { get; set; }
+            public EditorTool Previous { get; internal set; }
+            public EditorTool Current { get; internal set; }
         }
         private EditorTool _tool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true };
         public EditorTool Tool
@@ -188,25 +188,54 @@ namespace TombEditor
             }
         }
 
-        public class SelectedRoomChangedEvent : IEditorPropertyChangedEvent
+        public class SelectedRoomsChangedEvent : IEditorPropertyChangedEvent
         {
-            public Room Previous { get; set; }
-            public Room Current { get; set; }
+            public IReadOnlyList<Room> Previous { get; internal set; }
+            public IReadOnlyList<Room> Current { get; internal set; }
         }
-        private Room _selectedRoom;
-        public Room SelectedRoom
+        private Room[] _selectedRooms;
+        public IReadOnlyList<Room> SelectedRooms
         {
-            get { return _selectedRoom; }
+            get { return _selectedRooms; }
             set
             {
-                if (value == _selectedRoom)
+                if (_selectedRooms != null && _selectedRooms.SequenceEqual(value))
                     return;
-                if (value == null)
-                    throw new ArgumentNullException();
-                SelectedSectors = SectorSelection.None;
-                var previous = _selectedRoom;
-                _selectedRoom = value;
-                RaiseEvent(new SelectedRoomChangedEvent { Previous = previous, Current = value });
+                if (value.Count < 0)
+                    throw new ArgumentException("The selected room list must contain at least 1 room.");
+                if (value.Any(room => room == null))
+                    throw new ArgumentNullException("The selected room list may not contain null.");
+                var roomSet = new HashSet<Room>(new Room[] { null });
+                if (value.Any(room => !roomSet.Add(room)))
+                    throw new ArgumentNullException("The selected room list may not contain duplicates.");
+                var previous = _selectedRooms;
+                _selectedRooms = value.ToArray();
+                if (previous == null || (previous[0] != _selectedRooms[0]))
+                    RaiseEvent(new SelectedRoomChangedEvent(previous, value));
+                else
+                    RaiseEvent(new SelectedRoomsChangedEvent { Previous = previous, Current = value });
+            }
+        }
+        public bool SelectedRoomsContains(Room room) => Array.IndexOf<Room>(_selectedRooms, room) != -1;
+
+        public class SelectedRoomChangedEvent : SelectedRoomsChangedEvent
+        {
+            public new Room Previous => base.Previous[0];
+            public new Room Current => base.Current[0];
+            internal SelectedRoomChangedEvent(IReadOnlyList<Room> previous, IReadOnlyList<Room> current)
+            {
+                base.Current = current;
+                base.Previous = previous;
+            }
+        }
+        public Room SelectedRoom
+        {
+            get { return _selectedRooms[0]; }
+            set
+            {
+                if (value == _selectedRooms[0])
+                    return;
+                SelectedRooms = new Room[] { value };
             }
         }
 
@@ -222,8 +251,8 @@ namespace TombEditor
 
         public class SelectedObjectChangedEvent : IEditorPropertyChangedEvent
         {
-            public ObjectInstance Previous { get; set; }
-            public ObjectInstance Current { get; set; }
+            public ObjectInstance Previous { get; internal set; }
+            public ObjectInstance Current { get; internal set; }
         }
         private ObjectInstance _selectedObject;
         public ObjectInstance SelectedObject
@@ -241,8 +270,8 @@ namespace TombEditor
 
         public class SelectedSectorsChangedEvent : IEditorPropertyChangedEvent
         {
-            public SectorSelection Previous { get; set; }
-            public SectorSelection Current { get; set; }
+            public SectorSelection Previous { get; internal set; }
+            public SectorSelection Current { get; internal set; }
         }
         private SectorSelection _selectedSectors = SectorSelection.None;
         public SectorSelection SelectedSectors
@@ -260,8 +289,8 @@ namespace TombEditor
 
         public class SelectedTexturesChangedEvent : IEditorPropertyChangedEvent
         {
-            public TextureArea Previous { get; set; }
-            public TextureArea Current { get; set; }
+            public TextureArea Previous { get; internal set; }
+            public TextureArea Current { get; internal set; }
         }
         private TextureArea _selectedTexture = TextureArea.None;
         public TextureArea SelectedTexture
@@ -279,8 +308,8 @@ namespace TombEditor
 
         public class ConfigurationChangedEvent : IEditorPropertyChangedEvent
         {
-            public Configuration Previous { get; set; }
-            public Configuration Current { get; set; }
+            public Configuration Previous { get; internal set; }
+            public Configuration Current { get; internal set; }
         }
         private Configuration _Configuration;
         public Configuration Configuration
@@ -298,8 +327,8 @@ namespace TombEditor
 
         public class HasUnsavedChangesChangedEvent : IEditorPropertyChangedEvent
         {
-            public bool Previous { get; set; }
-            public bool Current { get; set; }
+            public bool Previous { get; internal set; }
+            public bool Current { get; internal set; }
         }
         private bool _hasUnsavedChanges;
         public bool HasUnsavedChanges
@@ -318,7 +347,7 @@ namespace TombEditor
         // This is invoked if the loaded wads changed for the level.
         public class LoadedWadsChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
         {
-            public TombLib.Wad.Wad2 Current { get; set; }
+            public TombLib.Wad.Wad2 Current { get; internal set; }
         }
         public void LoadedWadsChange(TombLib.Wad.Wad2 wad)
         {
@@ -350,7 +379,7 @@ namespace TombEditor
         // "null" can be passed, if it is not determinable what room changed.
         public class RoomTextureChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
         {
-            public Room Room { get; set; }
+            public Room Room { get; internal set; }
         }
         public void RoomTextureChange(Room room)
         {
@@ -362,7 +391,7 @@ namespace TombEditor
         // Textures, room properties like reverbration, objects changed, ...
         public class RoomGeometryChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
         {
-            public Room Room { get; set; }
+            public Room Room { get; internal set; }
         }
         public void RoomGeometryChange(Room room)
         {
@@ -388,7 +417,7 @@ namespace TombEditor
         // "null" can be passed, if it is not determinable what room changed.
         public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
         {
-            public Room Room { get; set; }
+            public Room Room { get; internal set; }
         }
         public void RoomPropertiesChange(Room room)
         {
@@ -401,7 +430,7 @@ namespace TombEditor
         // "null" can be passed, if it is not determinable what room changed.
         public class RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
         {
-            public Room Room { get; set; }
+            public Room Room { get; internal set; }
         }
         public void RoomSectorPropertiesChange(Room room)
         {
@@ -414,9 +443,9 @@ namespace TombEditor
         // "null" can be passed, if it is not determinable what object changed.
         public class ObjectChangedEvent : IEditorObjectChangedEvent, IEditorEventCausesUnsavedChanges
         {
-            public Room Room { get; set; }
-            public ObjectInstance Object { get; set; }
-            public ObjectChangeType ChangeType { get; set; }
+            public Room Room { get; internal set; }
+            public ObjectInstance Object { get; internal set; }
+            public ObjectChangeType ChangeType { get; internal set; }
         }
         public void ObjectChange(ObjectInstance @object, ObjectChangeType changeType)
         {
@@ -449,7 +478,7 @@ namespace TombEditor
         // Select a texture and center the view
         public class SelectTextureAndCenterViewEvent : IEditorEvent
         {
-            public TextureArea Texture { get; set; }
+            public TextureArea Texture { get; internal set; }
         }
         public void SelectTextureAndCenterView(TextureArea texture)
         {
@@ -473,6 +502,23 @@ namespace TombEditor
 
             SelectedRoom = newRoom;
             ResetCamera();
+        }
+
+        // Select rooms
+        public void SelectRooms(IEnumerable<Room> newRooms)
+        {
+            if (newRooms.FirstOrDefault() != null)
+                SelectedRooms = newRooms.ToList();
+        }
+
+        // Select rooms and center the camera
+        public void SelectRoomsAndResetCamera(IEnumerable<Room> newRooms)
+        {
+            Room oldRoom = SelectedRoom;
+            SelectRooms(newRooms);
+            Room newRoom = SelectedRoom;
+            if (oldRoom != newRoom)
+                ResetCamera();
         }
 
         // Show an object by going to the room it, selecting it and centering the camera appropriately.

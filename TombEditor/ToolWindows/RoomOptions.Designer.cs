@@ -406,10 +406,10 @@
             this.cbLocked.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbLocked.Location = new System.Drawing.Point(108, 148);
             this.cbLocked.Name = "cbLocked";
-            this.cbLocked.Size = new System.Drawing.Size(62, 17);
+            this.cbLocked.Size = new System.Drawing.Size(105, 17);
             this.cbLocked.TabIndex = 104;
-            this.cbLocked.Text = "Locked";
-            this.toolTip.SetToolTip(this.cbLocked, "Affects particles and Lara\'s hair");
+            this.cbLocked.Text = "Position locked";
+            this.toolTip.SetToolTip(this.cbLocked, "Shows a warning message if this room is accidently moved on the 2D map.");
             this.cbLocked.CheckedChanged += new System.EventHandler(this.cbLocked_CheckedChanged);
             // 
             // RoomOptions
