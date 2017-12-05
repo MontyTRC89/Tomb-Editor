@@ -119,7 +119,7 @@ namespace TombEditor.Controls
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
-            if ((_editor.ChosenItem == null) || (_editor?.Level?.Wad == null))
+            if ((_editor.ChosenItem == null) || (_editor.Level?.Wad == null))
             {
                 _device.Present();
                 return;
