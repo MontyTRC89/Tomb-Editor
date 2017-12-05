@@ -4,7 +4,6 @@ using System.Linq;
 using SharpDX;
 using System.IO;
 using NLog;
-using System.Drawing;
 using TombEditor.Geometry;
 using System.Globalization;
 using System.Threading;
@@ -70,36 +69,6 @@ namespace TombEditor
                 waitTime = ((waitTime + 1) * 4) / 3;
             } while (watch.ElapsedMilliseconds < waitTimeInMilliseconds); // Wait up to 300 milliseconds until the configuration is readable
             return false;
-        }
-
-        public static bool Contains(this SharpDX.Rectangle This, Point point)
-        {
-            return This.Contains(point.X, point.Y);
-        }
-
-        public static void DrawRectangle(this Graphics g, Pen pen, System.Drawing.RectangleF rectangle)
-        {
-            g.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
-        }
-
-        public static Point Max(this Point point0, Point point1)
-        {
-            return new Point(Math.Max(point0.X, point1.X), Math.Max(point0.Y, point1.Y));
-        }
-
-        public static PointF Max(this PointF point0, PointF point1)
-        {
-            return new PointF(Math.Max(point0.X, point1.X), Math.Max(point0.Y, point1.Y));
-        }
-
-        public static Point Min(this Point point0, Point point1)
-        {
-            return new Point(Math.Min(point0.X, point1.X), Math.Min(point0.Y, point1.Y));
-        }
-
-        public static PointF Min(this PointF point0, PointF point1)
-        {
-            return new PointF(Math.Min(point0.X, point1.X), Math.Min(point0.Y, point1.Y));
         }
 
         public static SharpDX.Rectangle Intersect(this SharpDX.Rectangle area, SharpDX.Rectangle other)
@@ -251,81 +220,11 @@ namespace TombEditor
             return null;
         }
 
-        public static System.Drawing.Color MixWith(this System.Drawing.Color firstColor, System.Drawing.Color secondColor, double mixFactor)
-        {
-            if (mixFactor > 1)
-                mixFactor = 1;
-            if (!(mixFactor >= 0))
-                mixFactor = 0;
-            return System.Drawing.Color.FromArgb(
-                (int)Math.Round(firstColor.A * (1 - mixFactor) + secondColor.A * mixFactor),
-                (int)Math.Round(firstColor.R * (1 - mixFactor) + secondColor.R * mixFactor),
-                (int)Math.Round(firstColor.G * (1 - mixFactor) + secondColor.G * mixFactor),
-                (int)Math.Round(firstColor.B * (1 - mixFactor) + secondColor.B * mixFactor));
-        }
-
         public static void Swap<T>(ref T first, ref T second)
         {
             T temp = first;
             first = second;
             second = temp;
-        }
-
-        public static System.Drawing.Color ToWinFormsColor(this Vector4 color)
-        {
-            return System.Drawing.Color.FromArgb(
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.W * 255.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.X * 255.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * 255.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));
-        }
-
-        public static Vector4 ToFloatColor(this System.Drawing.Color color)
-        {
-            return new Vector4(color.R, color.G, color.B, color.A) / 255.0f;
-        }
-
-        public static string TryFindAbsolutePath(LevelSettings levelSettings, string filename)
-        {
-            try
-            {
-                // Is the file easily found?
-                if (File.Exists(filename))
-                    return filename;
-
-                string[] filePathComponents = filename.Split(new char[] { '\\', '/' });
-                string[] levelPathComponents = levelSettings.GetVariable(VariableType.LevelDirectory).Split(new char[] { '\\', '/' });
-
-                // Try to go up 2 directories to find file (works in original levels)
-                // If it turns out that many people have directory structures incompatible to this assumptions
-                // we can add more suffisticated options here in the future.
-                int filePathCheckDepth = Math.Min(3, filePathComponents.GetLength(0) - 1);
-                int levelPathCheckDepth = Math.Min(2, levelPathComponents.GetLength(0) - 1);
-                for (int levelPathUntil = 0; levelPathUntil <= levelPathCheckDepth; ++levelPathUntil)
-                    for (int filePathAfter = 1; filePathAfter <= filePathCheckDepth; ++filePathAfter)
-                    {
-                        var basePath = levelPathComponents.Take(levelPathComponents.GetLength(0) - levelPathUntil);
-                        var filePath = filePathComponents.Skip(filePathComponents.GetLength(0) - filePathAfter);
-                        string filepathSuggestion = string.Join(LevelSettings.Dir.ToString(), basePath.Union(filePath));
-                        if (File.Exists(filepathSuggestion))
-                            return filepathSuggestion;
-                    }
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "TryFindAbsolutePath failed");
-                // In cas of an error we can just give up to find the absolute path alreasy
-                // and prompt the user for the file path.
-            }
-            return filename;
-        }
-
-        public static bool ThereAreLockedRooms(HashSet<Room> rooms)
-        {
-            foreach (var room in rooms)
-                if (room.Locked || (room.AlternateBaseRoom != null && room.AlternateBaseRoom.Locked))
-                    return true;
-            return false;
         }
 
         public static string ToHexString(int number)

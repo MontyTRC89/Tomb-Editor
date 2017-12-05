@@ -64,12 +64,12 @@ namespace TombEditor.Geometry
             }
         }
 
-        public IEnumerable<Room> GetVerticallyAscendingRoomList()
+        public IEnumerable<Room> GetVerticallyAscendingRoomList(Predicate<Room> checkRoom)
         {
             var editor = Editor.Instance;
             var roomList = new List<KeyValuePair<float, Room>>();
             foreach (Room room in Rooms)
-                if (room != null)
+                if (room != null && checkRoom(room))
                     roomList.Add(new KeyValuePair<float, Room>(room.Position.Y + room.GetHighestCorner(), room));
             var result = roomList
                 .OrderBy((roomPair) => roomPair.Key) // don't use the Sort member function because it is unstable!
