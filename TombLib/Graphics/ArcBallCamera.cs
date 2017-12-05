@@ -37,8 +37,8 @@ namespace TombLib.Graphics
         // Default camera distance, used for internal zoom/panning multiplier calculation
         private float DefaultDistance;
 
-        public ArcBallCamera(Vector3 target, float rotationY,
-            float rotationX, float minRotationX, float maxRotationX,
+        public ArcBallCamera(Vector3 target, float rotationX,
+            float rotationY, float minRotationX, float maxRotationX,
             float distance, float minDistance, float maxDistance, float fieldOfView)
         {
             Target = target;

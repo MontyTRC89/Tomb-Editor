@@ -12,7 +12,7 @@ namespace TombEditor.Compilers
         protected LevelCompiler(Level level, string dest, IProgressReporter progressReporter)
         {
             _level = level;
-            _dest = _level.Settings.MakeAbsolute(_level.Settings.GameLevelFilePath);
+            _dest = dest;
             _progressReporter = progressReporter;
         }
 
