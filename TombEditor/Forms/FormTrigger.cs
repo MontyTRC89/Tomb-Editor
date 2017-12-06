@@ -39,6 +39,18 @@ namespace TombEditor
             _isNg = _level.Settings.GameVersion == GameVersion.TRNG;
 
             InitializeComponent();
+
+            // Resize components to make all sizes consistent
+
+            tbParameter.AutoSize = false;
+            tbTimer.AutoSize = false;
+            tbParameter.Height = 23;
+            tbTimer.Height = 23;
+
+            //if (!_isNg)
+            //    this.Height = 220 + (this.Height - ClientSize.Height);
+            //else
+            //    this.Height = 240 + (this.Height - ClientSize.Height);
         }
 
         private void LoadNgFlipeffectTrigger()
@@ -943,11 +955,13 @@ namespace TombEditor
             {
                 labelScript.Visible = false;
                 tbScript.Visible = false;
+                butCopyToClipboard.Visible = false;
                 return;
             }
 
             labelScript.Visible = true;
             tbScript.Visible = true;
+            butCopyToClipboard.Visible = true;
 
             /*if ((!comboParameter.Visible || comboParameter.SelectedItem == null) ||
                 (!comboTimer.Visible || comboTimer.SelectedItem == null) ||
@@ -1041,6 +1055,11 @@ namespace TombEditor
             }
 
             tbScript.Text = output;
+        }
+
+        private void butCopyToClipboard_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Clipboard.SetText(tbScript.Text);
         }
     }
 }

@@ -31,6 +31,7 @@ namespace TombEditor
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new DarkUI.Controls.DarkLabel();
             this.comboType = new DarkUI.Controls.DarkComboBox();
             this.comboTargetType = new DarkUI.Controls.DarkComboBox();
@@ -54,6 +55,8 @@ namespace TombEditor
             this.comboTimer = new DarkUI.Controls.DarkComboBox();
             this.tbScript = new DarkUI.Controls.DarkTextBox();
             this.labelScript = new DarkUI.Controls.DarkLabel();
+            this.butCopyToClipboard = new DarkUI.Controls.DarkButton();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,9 +64,9 @@ namespace TombEditor
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label1.Location = new System.Drawing.Point(16, 13);
+            this.label1.Location = new System.Drawing.Point(9, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Trigger Type:";
             // 
@@ -71,7 +74,7 @@ namespace TombEditor
             // 
             this.comboType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboType.Location = new System.Drawing.Point(89, 10);
+            this.comboType.Location = new System.Drawing.Point(82, 10);
             this.comboType.Name = "comboType";
             this.comboType.Size = new System.Drawing.Size(587, 23);
             this.comboType.Sorted = true;
@@ -83,7 +86,7 @@ namespace TombEditor
             // 
             this.comboTargetType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboTargetType.Location = new System.Drawing.Point(89, 37);
+            this.comboTargetType.Location = new System.Drawing.Point(82, 37);
             this.comboTargetType.Name = "comboTargetType";
             this.comboTargetType.Size = new System.Drawing.Size(587, 23);
             this.comboTargetType.Sorted = true;
@@ -95,7 +98,7 @@ namespace TombEditor
             // 
             this.label2.AutoSize = true;
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label2.Location = new System.Drawing.Point(16, 40);
+            this.label2.Location = new System.Drawing.Point(9, 41);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(38, 13);
             this.label2.TabIndex = 2;
@@ -105,7 +108,7 @@ namespace TombEditor
             // 
             this.labelParameter.AutoSize = true;
             this.labelParameter.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelParameter.Location = new System.Drawing.Point(16, 68);
+            this.labelParameter.Location = new System.Drawing.Point(9, 68);
             this.labelParameter.Name = "labelParameter";
             this.labelParameter.Size = new System.Drawing.Size(57, 13);
             this.labelParameter.TabIndex = 4;
@@ -115,25 +118,25 @@ namespace TombEditor
             // 
             this.tbParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbParameter.Location = new System.Drawing.Point(89, 64);
+            this.tbParameter.Location = new System.Drawing.Point(82, 64);
             this.tbParameter.Name = "tbParameter";
-            this.tbParameter.Size = new System.Drawing.Size(568, 22);
+            this.tbParameter.Size = new System.Drawing.Size(587, 22);
             this.tbParameter.TabIndex = 5;
             // 
             // tbTimer
             // 
             this.tbTimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTimer.Location = new System.Drawing.Point(89, 92);
+            this.tbTimer.Location = new System.Drawing.Point(82, 91);
             this.tbTimer.Name = "tbTimer";
-            this.tbTimer.Size = new System.Drawing.Size(568, 22);
+            this.tbTimer.Size = new System.Drawing.Size(587, 22);
             this.tbTimer.TabIndex = 7;
             // 
             // labelTimer
             // 
             this.labelTimer.AutoSize = true;
             this.labelTimer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelTimer.Location = new System.Drawing.Point(16, 96);
+            this.labelTimer.Location = new System.Drawing.Point(9, 96);
             this.labelTimer.Name = "labelTimer";
             this.labelTimer.Size = new System.Drawing.Size(55, 13);
             this.labelTimer.TabIndex = 6;
@@ -141,8 +144,9 @@ namespace TombEditor
             // 
             // cbBit4
             // 
+            this.cbBit4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit4.AutoSize = true;
-            this.cbBit4.Location = new System.Drawing.Point(248, 155);
+            this.cbBit4.Location = new System.Drawing.Point(241, 148);
             this.cbBit4.Name = "cbBit4";
             this.cbBit4.Size = new System.Drawing.Size(49, 17);
             this.cbBit4.TabIndex = 65;
@@ -150,8 +154,9 @@ namespace TombEditor
             // 
             // cbBit3
             // 
+            this.cbBit3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit3.AutoSize = true;
-            this.cbBit3.Location = new System.Drawing.Point(195, 155);
+            this.cbBit3.Location = new System.Drawing.Point(188, 148);
             this.cbBit3.Name = "cbBit3";
             this.cbBit3.Size = new System.Drawing.Size(49, 17);
             this.cbBit3.TabIndex = 64;
@@ -159,8 +164,9 @@ namespace TombEditor
             // 
             // cbBit2
             // 
+            this.cbBit2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit2.AutoSize = true;
-            this.cbBit2.Location = new System.Drawing.Point(142, 155);
+            this.cbBit2.Location = new System.Drawing.Point(135, 148);
             this.cbBit2.Name = "cbBit2";
             this.cbBit2.Size = new System.Drawing.Size(49, 17);
             this.cbBit2.TabIndex = 63;
@@ -168,8 +174,9 @@ namespace TombEditor
             // 
             // cbBit1
             // 
+            this.cbBit1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit1.AutoSize = true;
-            this.cbBit1.Location = new System.Drawing.Point(89, 155);
+            this.cbBit1.Location = new System.Drawing.Point(82, 148);
             this.cbBit1.Name = "cbBit1";
             this.cbBit1.Size = new System.Drawing.Size(49, 17);
             this.cbBit1.TabIndex = 62;
@@ -177,8 +184,9 @@ namespace TombEditor
             // 
             // cbBit5
             // 
+            this.cbBit5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbBit5.AutoSize = true;
-            this.cbBit5.Location = new System.Drawing.Point(301, 155);
+            this.cbBit5.Location = new System.Drawing.Point(294, 148);
             this.cbBit5.Name = "cbBit5";
             this.cbBit5.Size = new System.Drawing.Size(49, 17);
             this.cbBit5.TabIndex = 61;
@@ -186,8 +194,9 @@ namespace TombEditor
             // 
             // cbOneShot
             // 
+            this.cbOneShot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbOneShot.AutoSize = true;
-            this.cbOneShot.Location = new System.Drawing.Point(89, 180);
+            this.cbOneShot.Location = new System.Drawing.Point(82, 170);
             this.cbOneShot.Name = "cbOneShot";
             this.cbOneShot.Size = new System.Drawing.Size(75, 17);
             this.cbOneShot.TabIndex = 66;
@@ -195,8 +204,9 @@ namespace TombEditor
             // 
             // butCancel
             // 
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butCancel.Location = new System.Drawing.Point(346, 3);
+            this.butCancel.Location = new System.Drawing.Point(341, 3);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(174, 22);
             this.butCancel.TabIndex = 68;
@@ -207,7 +217,7 @@ namespace TombEditor
             // butOK
             // 
             this.butOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butOK.Location = new System.Drawing.Point(166, 3);
+            this.butOK.Location = new System.Drawing.Point(161, 3);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(174, 22);
             this.butOK.TabIndex = 67;
@@ -219,7 +229,7 @@ namespace TombEditor
             // 
             this.comboParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboParameter.Location = new System.Drawing.Point(89, 64);
+            this.comboParameter.Location = new System.Drawing.Point(82, 64);
             this.comboParameter.Name = "comboParameter";
             this.comboParameter.Size = new System.Drawing.Size(587, 23);
             this.comboParameter.TabIndex = 69;
@@ -237,18 +247,18 @@ namespace TombEditor
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.butOK, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.butCancel, 2, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(1, 207);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(1, 198);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(687, 28);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(677, 28);
             this.tableLayoutPanel1.TabIndex = 70;
             // 
             // comboExtraParameter
             // 
             this.comboExtraParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboExtraParameter.Location = new System.Drawing.Point(89, 120);
+            this.comboExtraParameter.Location = new System.Drawing.Point(82, 118);
             this.comboExtraParameter.Name = "comboExtraParameter";
             this.comboExtraParameter.Size = new System.Drawing.Size(587, 23);
             this.comboExtraParameter.TabIndex = 72;
@@ -259,7 +269,7 @@ namespace TombEditor
             // 
             this.labelExtra.AutoSize = true;
             this.labelExtra.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelExtra.Location = new System.Drawing.Point(16, 124);
+            this.labelExtra.Location = new System.Drawing.Point(9, 122);
             this.labelExtra.Name = "labelExtra";
             this.labelExtra.Size = new System.Drawing.Size(50, 13);
             this.labelExtra.TabIndex = 71;
@@ -269,7 +279,7 @@ namespace TombEditor
             // 
             this.comboTimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboTimer.Location = new System.Drawing.Point(89, 91);
+            this.comboTimer.Location = new System.Drawing.Point(82, 91);
             this.comboTimer.Name = "comboTimer";
             this.comboTimer.Size = new System.Drawing.Size(587, 23);
             this.comboTimer.TabIndex = 73;
@@ -278,7 +288,9 @@ namespace TombEditor
             // 
             // tbScript
             // 
-            this.tbScript.Location = new System.Drawing.Point(524, 150);
+            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbScript.Location = new System.Drawing.Point(491, 148);
             this.tbScript.Name = "tbScript";
             this.tbScript.ReadOnly = true;
             this.tbScript.Size = new System.Drawing.Size(152, 22);
@@ -288,17 +300,31 @@ namespace TombEditor
             // 
             this.labelScript.AutoSize = true;
             this.labelScript.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelScript.Location = new System.Drawing.Point(479, 156);
+            this.labelScript.Location = new System.Drawing.Point(443, 150);
             this.labelScript.Name = "labelScript";
             this.labelScript.Size = new System.Drawing.Size(39, 13);
             this.labelScript.TabIndex = 75;
             this.labelScript.Text = "Script:";
             // 
+            // butCopyToClipboard
+            // 
+            this.butCopyToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCopyToClipboard.Image = global::TombEditor.Properties.Resources.general_copy_16;
+            this.butCopyToClipboard.Location = new System.Drawing.Point(647, 148);
+            this.butCopyToClipboard.Name = "butCopyToClipboard";
+            this.butCopyToClipboard.Size = new System.Drawing.Size(22, 22);
+            this.butCopyToClipboard.TabIndex = 76;
+            this.toolTip.SetToolTip(this.butCopyToClipboard, "Copy to clipboard");
+            this.butCopyToClipboard.Click += new System.EventHandler(this.butCopyToClipboard_Click);
+            // 
             // FormTrigger
             // 
+            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(688, 236);
+            this.CancelButton = this.butCancel;
+            this.ClientSize = new System.Drawing.Size(678, 227);
+            this.Controls.Add(this.butCopyToClipboard);
             this.Controls.Add(this.labelScript);
             this.Controls.Add(this.tbScript);
             this.Controls.Add(this.comboTimer);
@@ -320,6 +346,7 @@ namespace TombEditor
             this.Controls.Add(this.label2);
             this.Controls.Add(this.comboType);
             this.Controls.Add(this.label1);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -360,5 +387,7 @@ namespace TombEditor
         private DarkComboBox comboTimer;
         private DarkTextBox tbScript;
         private DarkLabel labelScript;
+        private DarkButton butCopyToClipboard;
+        private ToolTip toolTip;
     }
 }
