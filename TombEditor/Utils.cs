@@ -330,7 +330,7 @@ namespace TombEditor
 
         public static string ToHexString(int number)
         {
-            return "";
+            return number.ToString("X4").ToUpper();
         }
     }
 }
