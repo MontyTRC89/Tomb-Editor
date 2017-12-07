@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombEditor.Geometry;
+using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.Compilers
 {
@@ -21,13 +23,14 @@ namespace TombEditor.Compilers
 
             // Write chunks
             WriteNgChunkVersion(writer);
+            WriteNgChunkLevelFlags(writer);
+            WriteNgChunkExtraRoomFlags(writer);
             WriteNgChunkMoveablesTable(writer);
             WriteNgChunkStaticsTable(writer);
-            WriteNgChunkLevelFlags(writer);
             WriteNgChunkPluginsNames(writer);
             WriteNgChunkIdFloorTable(writer);
             WriteNgChunkRemapRooms(writer);
-
+            
             // Write end signature
             writer.Write(endSignature);
             writer.Write((int)(writer.BaseStream.Position + 4 - startOffset));
@@ -44,6 +47,22 @@ namespace TombEditor.Compilers
                     writer.Write((short)-1);
                 else
                     writer.Write((short)_roomsRemappingDictionary[_level.Rooms[i]]);
+            }
+        }
+
+        private void WriteNgChunkExtraRoomFlags(BinaryWriter writer)
+        {
+            writer.Write((ushort)(3 + _tempRooms.Count * 4));
+            writer.Write((ushort)0x8009);
+
+            writer.Write((ushort)_tempRooms.Count);
+            for (var i = 0; i < _tempRooms.Count; i++)
+            {
+                var waterLevel = (byte)_tempRooms.ElementAt(i).Key.WaterLevel;
+                if (waterLevel != 0) waterLevel--;
+
+                var buffer = new byte[] { waterLevel, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; // TODO: ask Paolone for water level 
+                writer.Write(buffer);
             }
         }
 
@@ -70,8 +89,11 @@ namespace TombEditor.Compilers
 
         private void WriteNgChunkLevelFlags(BinaryWriter writer)
         {
-            var buffer = new byte[] { 0x04, 0x00, 0x0D, 0x80, 0x01, 0x00, 0x00, 0x00 };
+            var flags = 0x01;
+            if (_level.Wad.SoundMapSize != TrCatalog.GetSoundMapSize(TombRaiderVersion.TR4, false)) flags |= 0x02;
+            var buffer = new byte[] { 0x04, 0x00, 0x0D, 0x80 };
             writer.Write(buffer);
+            writer.Write((int)flags);
         }
 
         private void WriteNgChunkMoveablesTable(BinaryWriter writer)
