@@ -7,6 +7,15 @@ using System.Threading.Tasks;
 
 namespace TombEditor.Geometry
 {
+    public enum AnimatedTextureAnimationType
+    {
+        Frames,
+        PFrames,
+        FullRotate,
+        RiverRotate,
+        HalfRotate
+    }
+
     public class AnimatedTextureFrame : ICloneable, IEquatable<AnimatedTextureFrame>
     {
         public LevelTexture Texture { get; set; }
@@ -52,6 +61,11 @@ namespace TombEditor.Geometry
 
     public class AnimatedTextureSet : ICloneable, IEquatable<AnimatedTextureSet>
     {
+        public AnimatedTextureAnimationType AnimationType { get; set; }
+        public byte Fps { get; set; }
+        public byte UvRotate { get; set; }
+        public byte Delay { get; set; }
+
         public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
 
         public AnimatedTextureSet Clone()
