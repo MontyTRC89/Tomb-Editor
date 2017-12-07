@@ -113,6 +113,14 @@ namespace TombEditor.Geometry.IO
                         {
                             chunkIO.WriteChunkWithChildren(Prj2Chunks.AnimatedTextureFrames, () =>
                             {
+                                chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureSetExtraInfo, () =>
+                                {
+                                    LEB128.Write(chunkIO.Raw, (byte)set.AnimationType);
+                                    LEB128.Write(chunkIO.Raw, set.Fps);
+                                    LEB128.Write(chunkIO.Raw, set.UvRotate);
+                                    LEB128.Write(chunkIO.Raw, set.Delay);
+                                });
+
                                 foreach (AnimatedTextureFrame frame in set.Frames)
                                     chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrame, () =>
                                     {
