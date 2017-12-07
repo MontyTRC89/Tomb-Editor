@@ -30,10 +30,86 @@ namespace TombEditor.Compilers
             WriteNgChunkPluginsNames(writer);
             WriteNgChunkIdFloorTable(writer);
             WriteNgChunkRemapRooms(writer);
-            
+            WriteNgChunkAnimatedTextures(writer);
+
             // Write end signature
             writer.Write(endSignature);
             writer.Write((int)(writer.BaseStream.Position + 4 - startOffset));
+        }
+
+        private void WriteNgChunkAnimatedTextures(BinaryWriter writer)
+        {
+            var startOfChunk = writer.BaseStream.Position;
+
+            writer.Write((ushort)0);
+            writer.Write((ushort)0x8002);
+
+            // Count number of textures with UVRotate
+            var numUvRotate = (short)0;
+            foreach (var set in _objectTextureManager.CompiledAnimatedTextures)
+                if (set.AnimationType == AnimatedTextureAnimationType.FullRotate ||
+                    set.AnimationType == AnimatedTextureAnimationType.HalfRotate ||
+                    set.AnimationType == AnimatedTextureAnimationType.RiverRotate)
+                    numUvRotate++;
+            writer.Write(numUvRotate);
+            writer.Write((short)_objectTextureManager.CompiledAnimatedTextures.Count);
+
+            // Array VetInfoRangeAnim
+            for (var i = 0; i < 40; i++)
+            {
+                if (i >= _objectTextureManager.CompiledAnimatedTextures.Count)
+                    writer.Write((short)0);
+                else
+                {
+                    var param = (ushort)0;
+                    var set = _objectTextureManager.CompiledAnimatedTextures[i];
+
+                    switch (set.AnimationType)
+                    {
+                        case AnimatedTextureAnimationType.Frames:
+                            param = 0x00;
+                            param |= (ushort)(set.Delay & 0x1FFF);
+                            break;
+                        case AnimatedTextureAnimationType.PFrames:
+                            param = 0x4000;
+                            break;
+                        case AnimatedTextureAnimationType.FullRotate:
+                            param = 0x8000;
+                            param |= (ushort)((set.Fps << 8) & 0x1F00);
+                            param |= (ushort)(set.UvRotate & 0x00FF);
+                            break;
+                        case AnimatedTextureAnimationType.RiverRotate:
+                            param = 0xA000;
+                            param |= (ushort)((set.Fps << 8) & 0x1F00);
+                            param |= (ushort)(set.UvRotate & 0x00FF);
+                            break;
+                        case AnimatedTextureAnimationType.HalfRotate:
+                            param = 0xC000;
+                            param |= (ushort)((set.Fps << 8) & 0x1F00);
+                            param |= (ushort)(set.UvRotate & 0x00FF);
+                            break;
+                    }
+
+                    writer.Write(param);
+                }
+            }
+
+            // Array VetFromTex
+            for (var i = 0; i < 40; i++)
+                writer.Write((ushort)0);
+
+            // Array VetToTex
+            for (var i = 0; i < 40; i++)
+                writer.Write((ushort)0);
+
+            var sizeDefault = (short)64;
+            writer.Write(sizeDefault);
+
+            var endOfChunk = writer.BaseStream.Position;
+            var numWords = (endOfChunk - startOfChunk) / 2;
+            writer.Seek((int)startOfChunk, SeekOrigin.Begin);
+            writer.Write((ushort)numWords);
+            writer.Seek((int)endOfChunk, SeekOrigin.Begin);
         }
 
         private void WriteNgChunkRemapRooms(BinaryWriter writer)
