@@ -524,6 +524,9 @@
     <None Include="Editor\Misc\NgCatalog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Editor\Misc\NullSample.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="Editor\Shaders\RoomGeometry.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
