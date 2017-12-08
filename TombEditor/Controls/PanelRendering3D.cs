@@ -744,11 +744,11 @@ namespace TombEditor.Controls
         }
         private float DefaultCameraAngleX
         {
-            get { return (float)Math.PI; }
+            get { return 0.6f; }
         }
         private float DefaultCameraAngleY
         {
-            get { return 0.6f; }
+            get { return (float)Math.PI; }
         }
 
         public void ResetCamera()
