@@ -110,9 +110,7 @@ namespace TombLib.Utils
         public bool TextureIsInvisble => (Texture == null) || (Texture == TextureInvisible.Instance) || (Texture.IsUnavailable);
 
         public bool TextureIsRectangle => ((TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length());
-
-        public int AllocIndex => (int)BumpMode;
-
+        
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
         {
             get

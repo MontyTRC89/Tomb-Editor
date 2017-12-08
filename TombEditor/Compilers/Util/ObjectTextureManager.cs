@@ -287,6 +287,11 @@ namespace TombEditor.Compilers.Util
                 return _textureAllocator[0];
         }
 
+        private TextureAllocator GetTargetAllocator(BumpMapMode mode)
+        {
+            return _textureAllocator[(int)mode];
+        }
+
         private int GetPageOffset(ushort flags)
         {
             if ((flags & 0x0800) != 0)
@@ -449,11 +454,11 @@ namespace TombEditor.Compilers.Util
         public Result AddTexture(TextureArea texture, bool isTriangle, bool isUsedInRoomMesh, int packPriorityClass = 0, bool supportsUpTo65536 = false, bool canRotate = true, uint textureSpaceIdentifier = 0)
         {
             // Add object textures
-            int textureID = _textureAllocator[texture.AllocIndex].GetOrAllocateTextureID(ref texture, isTriangle, packPriorityClass);
+            int textureID = GetTargetAllocator(texture.BumpMode).GetOrAllocateTextureID(ref texture, isTriangle, packPriorityClass);
             bool isNew;
             byte firstTexCoordToEmit;
             ushort objTexIndex = AddOrGetObjectTexture(new SavedObjectTexture((ushort)textureID, texture, textureSpaceIdentifier,
-                _textureAllocator[texture.AllocIndex].GetTextureFromID(textureID), isTriangle, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit), supportsUpTo65536, out isNew);
+                GetTargetAllocator(texture.BumpMode).GetTextureFromID(textureID), isTriangle, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit), supportsUpTo65536, out isNew);
             return new Result { ObjectTextureIndex = objTexIndex, FirstVertexIndexToEmit = firstTexCoordToEmit,
                 Flags = (texture.DoubleSided ? ResultFlags.DoubleSided : ResultFlags.None) | (isNew ? ResultFlags.IsNew : ResultFlags.None) };
         }
@@ -507,9 +512,8 @@ namespace TombEditor.Compilers.Util
 
             // Pack textures...
             List<ImageC>[] result = new List<ImageC>[3];
-            result[0] = _textureAllocator[0].PackTextures();    // Normal tiles
-            result[1] = _textureAllocator[1].PackTextures();    // Bump level 1 tiles
-            result[2] = _textureAllocator[2].PackTextures();    // Bump level 2 tiles
+            for(int i = 0; i < 3; i++)
+                result[i] = _textureAllocator[i].PackTextures();
 
             progressReporter.ReportInfo("Packed all level and wad textures into " + result[0].Count + " normal and " + (result[1].Count + result[2].Count) + " bumped pages.");
             return result;
