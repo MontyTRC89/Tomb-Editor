@@ -42,8 +42,9 @@ namespace TombEditor.Geometry.IO
         /********/public static readonly ChunkId ImportedGeometryTexAxisFlags = ChunkId.FromString("TeTexAxisFlags");
         /**/public static readonly ChunkId AnimatedTextureSets = ChunkId.FromString("TeAnimatedTextureSets");
         /******/public static readonly ChunkId AnimatedTextureSet = ChunkId.FromString("TeAnimatedTextureSet");
-        /**********/public static readonly ChunkId AnimatedTextureFrames = ChunkId.FromString("TeFrames");
-        /**************/public static readonly ChunkId AnimatedTextureFrame = ChunkId.FromString("TeFrame");
+        /**********/public static readonly ChunkId AnimatedTextureSetExtraInfo = ChunkId.FromString("TeAnimatedTextureSetExtra");
+        /**************/public static readonly ChunkId AnimatedTextureFrames = ChunkId.FromString("TeFrames");
+        /******************/public static readonly ChunkId AnimatedTextureFrame = ChunkId.FromString("TeFrame");
         public static readonly ChunkId Rooms = ChunkId.FromString("TeRooms");
         /**/public static readonly ChunkId Room = ChunkId.FromString("TeRoom"); // Contains X, Y sectors, Name, Position directly
         /******/public static readonly ChunkId RoomIndex = ChunkId.FromString("TeI");

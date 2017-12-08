@@ -11,6 +11,15 @@ using TombLib.Utils;
 
 namespace TombEditor.Compilers.Util
 {
+    public struct CompiledAnimatedTexture
+    {
+        public AnimatedTextureAnimationType AnimationType;
+        public byte Fps;
+        public byte UvRotate;
+        public byte Delay;
+        public List<ushort> _objectTextureIndices;
+    }
+
     public class ObjectTextureManagerWithAnimations : ObjectTextureManager
     {
         public const int AnimationLookupGranularityX = 64;
@@ -43,13 +52,11 @@ namespace TombEditor.Compilers.Util
         // Animation expansion is delayed to allow to allow them to use really big object texture indices.
         private readonly Dictionary<Result, AnimationVersion> _delayAddedAnimationVersions = new Dictionary<Result, AnimationVersion>();
 
-        private struct CompiledAnimatedTexture
-        {
-            public List<ushort> _objectTextureIndices;
-        }
         private readonly List<CompiledAnimatedTexture> _compiledAnimatedTextures = new List<CompiledAnimatedTexture>();
 
         private const float _marginFactor = 1.0f / 512.0f;
+
+        public List<CompiledAnimatedTexture> CompiledAnimatedTextures { get { return _compiledAnimatedTextures; } }
 
         public ObjectTextureManagerWithAnimations(IEnumerable<AnimatedTextureSet> animatedTextureSets)
         {
@@ -268,8 +275,13 @@ namespace TombEditor.Compilers.Util
                 }
 
                 // Create compiled animated texture
+                // TODO: remove test values when UI will be ready
                 CompiledAnimatedTexture compiledAnimatedTexture;
                 compiledAnimatedTexture._objectTextureIndices = new List<ushort>();
+                compiledAnimatedTexture.AnimationType = AnimatedTextureAnimationType.Frames; // set.AnimationType;
+                compiledAnimatedTexture.Fps = 30; // set.Fps;
+                compiledAnimatedTexture.UvRotate = 0; // set.UvRotate;
+                compiledAnimatedTexture.Delay = 0; // set.Delay;
 
                 // Expand animation
                 for (int i = 0; i < set.Frames.Count; ++i)

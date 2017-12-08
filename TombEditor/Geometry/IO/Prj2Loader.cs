@@ -201,7 +201,14 @@ namespace TombEditor.Geometry.IO
                         var set = new AnimatedTextureSet();
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            if (id3 == Prj2Chunks.AnimatedTextureFrames)
+                            if (id3 == Prj2Chunks.AnimatedTextureSetExtraInfo)
+                            {
+                                set.AnimationType = (AnimatedTextureAnimationType)LEB128.ReadByte(chunkIO.Raw);
+                                set.Fps = LEB128.ReadByte(chunkIO.Raw);
+                                set.UvRotate = LEB128.ReadByte(chunkIO.Raw);
+                                set.Delay = LEB128.ReadByte(chunkIO.Raw);
+                            }
+                            else if (id3 == Prj2Chunks.AnimatedTextureFrames)
                             {
                                 var frames = new List<AnimatedTextureFrame>();
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
