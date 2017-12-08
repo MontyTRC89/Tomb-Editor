@@ -22,15 +22,15 @@ namespace TombEditor.Compilers
             writer.Write(ngleStartSignature);
 
             // Write chunks
-            WriteNgChunkVersion(writer);
             WriteNgChunkLevelFlags(writer);
             WriteNgChunkExtraRoomFlags(writer);
-            WriteNgChunkMoveablesTable(writer);
             WriteNgChunkStaticsTable(writer);
+            WriteNgChunkAnimatedTextures(writer);
+            WriteNgChunkMoveablesTable(writer);
             WriteNgChunkPluginsNames(writer);
             WriteNgChunkIdFloorTable(writer);
             WriteNgChunkRemapRooms(writer);
-            WriteNgChunkAnimatedTextures(writer);
+            WriteNgChunkVersion(writer);
 
             // Write end signature
             writer.Write(endSignature);
