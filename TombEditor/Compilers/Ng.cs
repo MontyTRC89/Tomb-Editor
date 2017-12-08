@@ -51,7 +51,7 @@ namespace TombEditor.Compilers
                     set.AnimationType == AnimatedTextureAnimationType.HalfRotate ||
                     set.AnimationType == AnimatedTextureAnimationType.RiverRotate)
                     numUvRotate++;
-            writer.Write(numUvRotate);
+            writer.Write((short)(numUvRotate + 0x0100));
             writer.Write((short)_objectTextureManager.CompiledAnimatedTextures.Count);
 
             // Array VetInfoRangeAnim
