@@ -278,9 +278,9 @@ namespace TombEditor.Compilers.Util
                 // TODO: remove test values when UI will be ready
                 CompiledAnimatedTexture compiledAnimatedTexture;
                 compiledAnimatedTexture._objectTextureIndices = new List<ushort>();
-                compiledAnimatedTexture.AnimationType = AnimatedTextureAnimationType.Frames; // set.AnimationType;
+                compiledAnimatedTexture.AnimationType = AnimatedTextureAnimationType.FullRotate; // set.AnimationType;
                 compiledAnimatedTexture.Fps = 30; // set.Fps;
-                compiledAnimatedTexture.UvRotate = 0; // set.UvRotate;
+                compiledAnimatedTexture.UvRotate = 5; // set.UvRotate;
                 compiledAnimatedTexture.Delay = 0; // set.Delay;
 
                 // Expand animation
