@@ -20,7 +20,7 @@ namespace TombEditor.Compilers.Util
         public int NumNonBumpedTiles = 0;
         public int NumBumpedTilesLevel1 = 0;
         public int NumBumpedTilesLevel2 = 0;
-        
+
         [Flags]
         public enum ResultFlags : byte
         {
@@ -151,7 +151,6 @@ namespace TombEditor.Compilers.Util
         {
             firstTexCoordToEmit = 0;
             ushort result = isUsedInRoomMesh ? (ushort)0x8000 : (ushort)0;
-            
             switch(texture.BumpMode)
             {
                 case BumpMapMode.Level1:
@@ -276,6 +275,26 @@ namespace TombEditor.Compilers.Util
                 }
             }
             return result;
+        }
+
+        private TextureAllocator GetTargetAllocator(ushort flags)
+        {
+            if ((flags & 0x0800) != 0)
+                return _textureAllocator[1];
+            else if ((flags & 0x1000) != 0)
+                return _textureAllocator[2];
+            else
+                return _textureAllocator[0];
+        }
+
+        private int GetPageOffset(ushort flags)
+        {
+            if ((flags & 0x0800) != 0)
+                return NumNonBumpedTiles;
+            else if ((flags & 0x1000) != 0)
+                return NumNonBumpedTiles + NumBumpedTilesLevel1;
+            else
+                return 0;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -456,13 +475,7 @@ namespace TombEditor.Compilers.Util
                     return;
 
                 bool isTriangle = objectTexture.IsTriangularAndPadding != 0;
-
-                int usedAlloc = 0;
-                if ((objectTexture.NewFlags & 0x0800) != 0)
-                    usedAlloc = 1;
-                else if ((objectTexture.NewFlags & 0x1000) != 0)
-                    usedAlloc = 2;
-                TextureAllocator.TextureView textureView = _textureAllocator[usedAlloc].GetTextureFromID(objectTexture.TextureID);
+                TextureAllocator.TextureView textureView = GetTargetAllocator(objectTexture.NewFlags).GetTextureFromID(objectTexture.TextureID);
 
                 // To simplify the test just use the rectangular region around. (We could do a polygonal thing but I am not sure its worth it)
                 Vector2 minTexCoord, maxTexCoord;
@@ -655,21 +668,9 @@ namespace TombEditor.Compilers.Util
             for (int i = 0; i < _objectTextures.Count; ++i)
             {
                 SavedObjectTexture objectTexture = _objectTextures[i];
+                TextureAllocator.Result UsedTexturePackInfo = GetTargetAllocator(objectTexture.NewFlags).GetPackInfo(objectTexture.TextureID);
 
-                int usedAlloc = 0;
-                if ((objectTexture.NewFlags & 0x0800) != 0)
-                    usedAlloc = 1;
-                else if ((objectTexture.NewFlags & 0x1000) != 0)
-                    usedAlloc = 2;
-                TextureAllocator.Result UsedTexturePackInfo = _textureAllocator[usedAlloc].GetPackInfo(objectTexture.TextureID);
-
-                int tileOffset = 0;
-                if (usedAlloc == 1)
-                    tileOffset = NumNonBumpedTiles;
-                else if (usedAlloc == 2)
-                    tileOffset = NumNonBumpedTiles + NumBumpedTilesLevel1;
-                ushort Tile = (ushort)(UsedTexturePackInfo.OutputTextureID + tileOffset);
-
+                ushort Tile = (ushort)(UsedTexturePackInfo.OutputTextureID + GetPageOffset(objectTexture.NewFlags));
                 Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
 
                 stream.Write((ushort)objectTexture.BlendMode);
