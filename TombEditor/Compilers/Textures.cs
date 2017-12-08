@@ -34,12 +34,14 @@ namespace TombEditor.Compilers
 
             byte[] texture32Data = new byte[(spritePages.Count + packedTextures[0].Count + ((packedTextures[1].Count + packedTextures[2].Count) * 2)) * texturePageSize];
 
+            // Copy non-bumped tiles
             for (int i = 0; i < packedTextures[0].Count; ++i)
             {
                 packedTextures[0][i].RawCopyTo(texture32Data, offset);
                 offset += texturePageSize;
             }
 
+            // Copy sprite tiles
             for (int i = 0; i < spritePages.Count; ++i)
             {
                 spritePages[i].RawCopyTo(texture32Data, offset);
@@ -54,7 +56,7 @@ namespace TombEditor.Compilers
                     offset += texturePageSize;
                 }
 
-            // Apply embossing to each page (BROKEN! SHOULD BE APPLIED TO EACH TEXTURE AREA INDEPENDENTLY!)
+            // Apply embossing to each page (WORKAROUND! SHOULD BE APPLIED TO EACH TEXTURE AREA INDEPENDENTLY!)
             for (int p = 0; p < 2; p++)
                 for (int i = 0; i < packedTextures[p + 1].Count; ++i)
                 {
