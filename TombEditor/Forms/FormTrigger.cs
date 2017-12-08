@@ -39,6 +39,18 @@ namespace TombEditor
             _isNg = _level.Settings.GameVersion == GameVersion.TRNG;
 
             InitializeComponent();
+
+            // Resize components to make all sizes consistent
+
+            tbParameter.AutoSize = false;
+            tbTimer.AutoSize = false;
+            tbParameter.Height = 23;
+            tbTimer.Height = 23;
+
+            //if (!_isNg)
+            //    this.Height = 220 + (this.Height - ClientSize.Height);
+            //else
+            //    this.Height = 240 + (this.Height - ClientSize.Height);
         }
 
         private void LoadNgFlipeffectTrigger()
@@ -139,6 +151,7 @@ namespace TombEditor
 
         private void butOK_Click(object sender, EventArgs e)
         {
+            // Check if all inputs are valid
             short parsedTimer = 0;
             if (tbTimer.Visible)
             {
@@ -182,6 +195,7 @@ namespace TombEditor
                 return;
             }
 
+            // Store some values like we have not NG triggers
             _trigger.TriggerType = (TriggerType)comboType.SelectedItem;
             _trigger.TargetType = (TriggerTargetType)comboTargetType.SelectedItem;
             _trigger.Timer = parsedTimer;
@@ -194,6 +208,7 @@ namespace TombEditor
             _trigger.CodeBits = codeBits;
             _trigger.OneShot = cbOneShot.Checked;
 
+            // Now, if NG triggers, we must save them differently
             if (_trigger.TriggerType==TriggerType.ConditionNg && _isNg)
             {
                 // NG condition trigger
@@ -203,9 +218,7 @@ namespace TombEditor
 
                 _trigger.Timer = (short)((comboTimer.SelectedItem as NgTriggerKeyValuePair).Key & 0xFF);
                 if (conditionTrigger.HasExtraList)
-                {
                     _trigger.Timer |= (short)((comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key << 8);
-                }
             }
             else if (_trigger.TargetType == TriggerTargetType.FlipEffect && _isNg)
             {
@@ -214,12 +227,11 @@ namespace TombEditor
                 var flipeffect = NgCatalog.FlipEffectTrigger.MainList[flipeffectId];
                 _trigger.TargetData = (short)flipeffectId;
 
-                // Set values for timer and extra
                 if (flipeffect.HasTimerList && flipeffect.HasExtraList)
                 {
                     var timer = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
                     var extra = (comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key;
-                    _trigger.Timer = (short)((extra << 8) + timer);
+                    _trigger.Timer = (short)(((extra & 0xFF) << 8) + (timer & 0xFF));
                 }
                 else
                 {
@@ -238,8 +250,7 @@ namespace TombEditor
                 // NG action trigger
                 var action = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
                 var actionTrigger = NgCatalog.ActionTrigger.MainList[action];
-                _trigger.Timer = (short)action;
-
+                
                 // Set value for object
                 var selectedObject = comboParameter.SelectedItem as ObjectInstance;
                 if (selectedObject == null)
@@ -250,16 +261,15 @@ namespace TombEditor
 
                 _trigger.TargetObj = selectedObject;
                 _trigger.TargetData = 0;
-
-                // Set values for extra
+                
+                var timer = (short)action;
                 if (actionTrigger.HasExtraList)
-                {
-                    var extra = (comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key;
-                    _trigger.Timer += (short)(extra << 8);
-                }
+                    timer |= (short)(((comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key & 0xFF) << 8);
+                _trigger.Timer = timer;
             }
             else if (TriggerInstance.UsesTargetObj(_trigger.TargetType))
             {
+                // Non NG trigger that uses object parameters
                 var selectedObject = comboParameter.SelectedItem as ObjectInstance;
                 if (selectedObject == null)
                 {
@@ -272,10 +282,12 @@ namespace TombEditor
             }
             else
             {
+                // Non NG trigger that uses numeric parameter
                 _trigger.TargetObj = null;
                 _trigger.TargetData = parsedTarget;
             }
 
+            // Reset the selection to room where the trigger is
             _selectRoom(_room);
 
             DialogResult = DialogResult.OK;
@@ -414,7 +426,7 @@ namespace TombEditor
         private void OnTriggerTypeChanged()
         {
             var triggerType = (TriggerType)comboType.SelectedItem;
-            var targetType = TriggerTargetType.Object; // (TriggerTargetType)comboTargetType.SelectedItem;
+            var targetType = TriggerTargetType.Object;  
 
             if (triggerType == TriggerType.ConditionNg)
             {
@@ -432,6 +444,8 @@ namespace TombEditor
             {
                 comboTargetType.Enabled = true;
             }
+
+            if (_loaded) UpdateExportToTrigger();
         }
 
         private void OnTriggerTargetChanged()
@@ -484,6 +498,8 @@ namespace TombEditor
                         LoadNgTimerFieldTrigger();
                     break;
             }
+
+            if (_loaded) UpdateExportToTrigger();
         }
 
         private void OnParameterChanged()
@@ -534,6 +550,8 @@ namespace TombEditor
                     comboExtraParameter.Visible = false;
                 }
             }
+
+            if (_loaded) UpdateExportToTrigger();
         }
 
         private void OnTimerChanged()
@@ -621,8 +639,6 @@ namespace TombEditor
                     labelExtra.Visible = false;
                     comboExtraParameter.Visible = false;
                 }
-
-                return;
             }
 
             if (targetType == TriggerTargetType.ActionNg)
@@ -685,9 +701,9 @@ namespace TombEditor
                     labelExtra.Visible = false;
                     comboExtraParameter.Visible = false;
                 }
-
-                return;
             }
+
+            if (_loaded) UpdateExportToTrigger();
         }
 
         private void OnExtraChanged()
@@ -703,6 +719,8 @@ namespace TombEditor
                 cbBit4.Checked = b[3];
                 cbBit5.Checked = b[4];
             }
+
+            if (_loaded) UpdateExportToTrigger();
         }
 
         private void comboExtraParameter_SelectionChangeCommitted(object sender, EventArgs e)
@@ -919,25 +937,73 @@ namespace TombEditor
                 labelExtra.Visible = false;
             }
 
+            UpdateExportToTrigger();
+
             _loaded = true;
         }
 
-        private void butExportTriggerToScript_Click(object sender, EventArgs e)
+        private void UpdateExportToTrigger()
         {
             var output = "";
 
             var triggerType = (TriggerType)comboType.SelectedItem;
             var targetType = (TriggerTargetType)comboTargetType.SelectedItem;
 
-            if (triggerType== TriggerType.ConditionNg)
+            if (!_isNg || !(triggerType == TriggerType.ConditionNg || targetType == TriggerTargetType.FlipEffect || 
+                targetType == TriggerTargetType.ActionNg || targetType == TriggerTargetType.ParameterNg || 
+                targetType == TriggerTargetType.TimerfieldNg))
             {
+                labelScript.Visible = false;
+                tbScript.Visible = false;
+                butCopyToClipboard.Visible = false;
+                return;
+            }
+
+            labelScript.Visible = true;
+            tbScript.Visible = true;
+            butCopyToClipboard.Visible = true;
+
+            /*if ((!comboParameter.Visible || comboParameter.SelectedItem == null) ||
+                (!comboTimer.Visible || comboTimer.SelectedItem == null) ||
+                (!comboExtraParameter.Visible || comboExtraParameter.SelectedItem == null))
+            {
+                tbScript.Text = "Check all fields!";
+                return;
+            }*/
+
+            if (triggerType == TriggerType.ConditionNg)
+            {
+                var condition = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
+                var conditionTrigger = NgCatalog.ConditionTrigger.MainList[condition];
+
                 if (targetType == TriggerTargetType.Object)
                 {
-                    output = "$9000,";
+                    var selectedObject = comboParameter.SelectedItem as ObjectInstance;
+                    if (selectedObject == null)
+                    {
+                        DarkMessageBox.Show(this, "You don't have in your project any object of the type that you have required", "Export trigger", MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    var target = (selectedObject as IHasScriptID).ScriptId;
+                    var timer = condition;
+                    if (conditionTrigger.HasExtraList)
+                    {
+                        if (comboExtraParameter.SelectedItem == null) { tbScript.Text = "Check all fields!"; return; }
+                        timer |= ((comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key << 8);
+                    }
+                    output = "$9000," + target + ",$" + Utils.ToHexString(timer);
                 }
                 else
                 {
-
+                    var parameter = (comboParameter.SelectedItem as NgTriggerKeyValuePair).Key;
+                    var timer = condition;
+                    if (conditionTrigger.HasExtraList)
+                    {
+                        if (comboExtraParameter.SelectedItem == null) { tbScript.Text = "Check all fields!"; return; }
+                        timer |= ((comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key << 8);
+                    }
+                    output = "$8000," + parameter + ",$" + Utils.ToHexString(timer);
                 }
             }
             else
@@ -949,25 +1015,51 @@ namespace TombEditor
                     output = "$2000," + flipeffectId + ",";
                     if (flipeffectTrigger.HasExtraList)
                     {
+                        if (comboTimer.SelectedItem == null) { tbScript.Text = "Check all fields!"; return; }
+                        if (comboExtraParameter.SelectedItem == null) { tbScript.Text = "Check all fields!"; return; }
                         var timer = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
                         var extra = (comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key;
                         output += "$" + Utils.ToHexString((extra << 8) | timer);
                     }
                     else
                     {
+                        if (comboTimer.SelectedItem == null) { tbScript.Text = "Check all fields!"; return; }
                         var timer = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
                         output += "$" + Utils.ToHexString(timer);
                     }
                 }
                 else if (targetType == TriggerTargetType.ActionNg)
                 {
+                    var action = (comboTimer.SelectedItem as NgTriggerKeyValuePair).Key;
+                    var actionTrigger = NgCatalog.ActionTrigger.MainList[action];
+                    var timer = (short)action;
 
-                }
-                else if (targetType == TriggerTargetType.TimerfieldNg)
-                {
+                    var selectedObject = comboParameter.SelectedItem as ObjectInstance;
+                    if (selectedObject == null)
+                    {
+                        DarkMessageBox.Show(this, "You don't have in your project any object of the type that you have required", "Export trigger", MessageBoxIcon.Warning);
+                        return;
+                    }
 
+                    if (actionTrigger.HasExtraList)
+                    {
+                        if (comboExtraParameter.SelectedItem == null) { tbScript.Text = "Check all fields!"; return; }
+                        var extra = (comboExtraParameter.SelectedItem as NgTriggerKeyValuePair).Key;
+                        timer += (short)(extra << 8);
+                    }
+
+                    var target = (selectedObject as IHasScriptID).ScriptId;
+
+                    output = "$5000," + target + ",$" + Utils.ToHexString(timer);
                 }
             }
+
+            tbScript.Text = output;
+        }
+
+        private void butCopyToClipboard_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Clipboard.SetText(tbScript.Text);
         }
     }
 }
