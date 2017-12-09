@@ -128,6 +128,9 @@
     <Compile Include="Compilers\Wad.cs" />
     <Compile Include="Compilers\Writer.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ContextMenus\SolidGeometryContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -141,7 +144,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DepthBar.cs" />
-    <Compile Include="Controls\ContextMenus\MoveableOrStaticContextMenu.cs">
+    <Compile Include="Controls\ContextMenus\PositionBasedObjectContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ImportedGeometryManager.cs">

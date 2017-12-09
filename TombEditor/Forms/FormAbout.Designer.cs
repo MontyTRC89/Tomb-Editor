@@ -104,7 +104,7 @@
             this.darkLabel16.Location = new System.Drawing.Point(3, 0);
             this.darkLabel16.Name = "darkLabel16";
             this.darkLabel16.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.darkLabel16.Size = new System.Drawing.Size(367, 24);
+            this.darkLabel16.Size = new System.Drawing.Size(365, 24);
             this.darkLabel16.TabIndex = 28;
             this.darkLabel16.Text = "Tomb Raider, Tomb Raider Level Editor, Lara Croft are © and trademarks of Square " +
     "Enix Ltd.\r\nThis software is a freeware and intended only for personal and non-co" +
@@ -489,7 +489,7 @@
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(6, 121);
             this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(123, 15);
+            this.darkLabel4.Size = new System.Drawing.Size(124, 15);
             this.darkLabel4.TabIndex = 2;
             this.darkLabel4.Text = "Licensing Information";
             // 
@@ -514,7 +514,7 @@
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(143, 0);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(320, 75);
+            this.darkLabel3.Size = new System.Drawing.Size(317, 75);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte\r\nteme9, Lwmte\r\nDu" +
     "stie, Titak, Gemini\r\nPaolone";
@@ -526,10 +526,10 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(3, 0);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(134, 75);
+            this.darkLabel2.Size = new System.Drawing.Size(132, 75);
             this.darkLabel2.TabIndex = 1;
-            this.darkLabel2.Text = "Original idea and code:\r\nProgramming:\r\nAdditional design:\r\nBeta testing:\r\nNG file" +
-    " format advisor:";
+            this.darkLabel2.Text = "Original idea and code:\r\nProgramming:\r\nAdditional design:\r\nBeta testing:\r\nAdditio" +
+    "nal help - NG:";
             // 
             // pictureBox1
             // 
