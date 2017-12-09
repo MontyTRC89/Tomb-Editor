@@ -128,6 +128,9 @@
     <Compile Include="Compilers\Wad.cs" />
     <Compile Include="Compilers\Writer.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Controls\ContextMenus\SolidGeometryContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\DarkDataGridViewControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -138,6 +141,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DepthBar.cs" />
+    <Compile Include="Controls\ContextMenus\MoveableOrStaticContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ImportedGeometryManager.cs">
       <SubType>UserControl</SubType>
     </Compile>

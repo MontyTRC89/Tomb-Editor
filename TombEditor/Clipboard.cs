@@ -12,6 +12,8 @@ namespace TombEditor
             _instance = instance;
         }
 
+        public static bool HasObjectToPaste { get { return _instance != null; } }
+
         public static PositionBasedObjectInstance Paste(Level level, Room room, DrawingPoint pos)
         {
             if (_instance == null)
