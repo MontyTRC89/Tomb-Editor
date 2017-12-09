@@ -612,6 +612,26 @@ namespace TombEditor
             }
         }
 
+        public static void PasteObject(DrawingPoint pos)
+        {
+            var instance = Clipboard.Paste(_editor.Level, _editor.SelectedRoom, pos);
+            if (instance != null)
+            {
+                _editor.ObjectChange(instance, ObjectChangeType.Add);
+                _editor.SelectedObject = instance;
+                _editor.Action = EditorAction.None;
+            }
+        }
+
+        public static void SnapObjectToGrid(PositionBasedObjectInstance instance, IWin32Window owner)
+        {
+            var newPosition = new Vector3(instance.Position.X, instance.Position.Y, instance.Position.Z);
+            for (int i = 0; i < 3; ++i)
+                newPosition[i] = ((float)Math.Round(newPosition[i] / 64)) * 64;
+
+            _editor.ObjectChange(instance, ObjectChangeType.Change);
+        }
+
         public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
         {
             if (DarkMessageBox.Show(owner, "Do you really want to delete " + instance.ToString() + "?",
