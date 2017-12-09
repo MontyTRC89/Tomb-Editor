@@ -22,15 +22,15 @@ namespace TombEditor.Compilers
             writer.Write(ngleStartSignature);
 
             // Write chunks
-            WriteNgChunkVersion(writer);
             WriteNgChunkLevelFlags(writer);
-            WriteNgChunkExtraRoomFlags(writer);
-            WriteNgChunkMoveablesTable(writer);
+            //WriteNgChunkExtraRoomFlags(writer);
             WriteNgChunkStaticsTable(writer);
+            WriteNgChunkAnimatedTextures(writer);
+            WriteNgChunkMoveablesTable(writer);
             WriteNgChunkPluginsNames(writer);
             WriteNgChunkIdFloorTable(writer);
             WriteNgChunkRemapRooms(writer);
-            WriteNgChunkAnimatedTextures(writer);
+            WriteNgChunkVersion(writer);
 
             // Write end signature
             writer.Write(endSignature);
@@ -51,7 +51,7 @@ namespace TombEditor.Compilers
                     set.AnimationType == AnimatedTextureAnimationType.HalfRotate ||
                     set.AnimationType == AnimatedTextureAnimationType.RiverRotate)
                     numUvRotate++;
-            writer.Write(numUvRotate);
+            writer.Write((short)(numUvRotate + 0x0100));
             writer.Write((short)_objectTextureManager.CompiledAnimatedTextures.Count);
 
             // Array VetInfoRangeAnim
