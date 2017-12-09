@@ -35,11 +35,11 @@
             this.butWall = new DarkUI.Controls.DarkButton();
             this.panel2DGrid_sub = new System.Windows.Forms.Panel();
             this.panelBottom = new System.Windows.Forms.Panel();
-            this.butDiagonalFloor = new DarkUI.Controls.DarkButton();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.butDiagonalWall = new DarkUI.Controls.DarkButton();
+            this.butDiagonalFloor = new DarkUI.Controls.DarkButton();
             this.butDiagonalCeiling = new DarkUI.Controls.DarkButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panelRight.SuspendLayout();
             this.panel2DGrid_sub.SuspendLayout();
             this.panelBottom.SuspendLayout();
@@ -291,58 +291,6 @@
             this.panelBottom.Size = new System.Drawing.Size(284, 26);
             this.panelBottom.TabIndex = 110;
             // 
-            // butDiagonalFloor
-            // 
-            this.butDiagonalFloor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.sectortype_StepFloor_1_16;
-            this.butDiagonalFloor.Location = new System.Drawing.Point(2, 2);
-            this.butDiagonalFloor.Margin = new System.Windows.Forms.Padding(2);
-            this.butDiagonalFloor.Name = "butDiagonalFloor";
-            this.butDiagonalFloor.Size = new System.Drawing.Size(90, 22);
-            this.butDiagonalFloor.TabIndex = 15;
-            this.butDiagonalFloor.Text = "Floor step";
-            this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.toolTip.SetToolTip(this.butDiagonalFloor, "Click again to rotate step");
-            this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
-            // 
-            // butDiagonalWall
-            // 
-            this.butDiagonalWall.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.sectortype_DiagonalWall2_16;
-            this.butDiagonalWall.Location = new System.Drawing.Point(190, 2);
-            this.butDiagonalWall.Margin = new System.Windows.Forms.Padding(2);
-            this.butDiagonalWall.Name = "butDiagonalWall";
-            this.butDiagonalWall.Size = new System.Drawing.Size(92, 22);
-            this.butDiagonalWall.TabIndex = 17;
-            this.butDiagonalWall.Text = "Diag wall";
-            this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.toolTip.SetToolTip(this.butDiagonalWall, "Click again to rotate wall");
-            this.butDiagonalWall.Click += new System.EventHandler(this.butDiagonalWall_Click);
-            // 
-            // butDiagonalCeiling
-            // 
-            this.butDiagonalCeiling.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.sectortype_StepCeiling_16;
-            this.butDiagonalCeiling.Location = new System.Drawing.Point(96, 2);
-            this.butDiagonalCeiling.Margin = new System.Windows.Forms.Padding(2);
-            this.butDiagonalCeiling.Name = "butDiagonalCeiling";
-            this.butDiagonalCeiling.Size = new System.Drawing.Size(90, 22);
-            this.butDiagonalCeiling.TabIndex = 16;
-            this.butDiagonalCeiling.Text = "Ceiling step";
-            this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.toolTip.SetToolTip(this.butDiagonalCeiling, "Click again to rotate step");
-            this.butDiagonalCeiling.Click += new System.EventHandler(this.butDiagonalCeiling_Click);
-            // 
-            // toolTip
-            // 
-            this.toolTip.AutoPopDelay = 5000;
-            this.toolTip.InitialDelay = 500;
-            this.toolTip.ReshowDelay = 100;
-            this.toolTip.Popup += new System.Windows.Forms.PopupEventHandler(this.toolTip_Popup);
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 3;
@@ -360,6 +308,58 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(284, 26);
             this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // butDiagonalWall
+            // 
+            this.butDiagonalWall.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.sectortype_DiagonalWall2_16;
+            this.butDiagonalWall.Location = new System.Drawing.Point(190, 0);
+            this.butDiagonalWall.Margin = new System.Windows.Forms.Padding(2, 0, 2, 2);
+            this.butDiagonalWall.Name = "butDiagonalWall";
+            this.butDiagonalWall.Size = new System.Drawing.Size(92, 24);
+            this.butDiagonalWall.TabIndex = 17;
+            this.butDiagonalWall.Text = "Diag wall";
+            this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butDiagonalWall, "Click again to rotate wall");
+            this.butDiagonalWall.Click += new System.EventHandler(this.butDiagonalWall_Click);
+            // 
+            // butDiagonalFloor
+            // 
+            this.butDiagonalFloor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.sectortype_StepFloor_1_16;
+            this.butDiagonalFloor.Location = new System.Drawing.Point(2, 0);
+            this.butDiagonalFloor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 2);
+            this.butDiagonalFloor.Name = "butDiagonalFloor";
+            this.butDiagonalFloor.Size = new System.Drawing.Size(90, 24);
+            this.butDiagonalFloor.TabIndex = 15;
+            this.butDiagonalFloor.Text = "Floor step";
+            this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butDiagonalFloor, "Click again to rotate step");
+            this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
+            // 
+            // butDiagonalCeiling
+            // 
+            this.butDiagonalCeiling.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.sectortype_StepCeiling_16;
+            this.butDiagonalCeiling.Location = new System.Drawing.Point(96, 0);
+            this.butDiagonalCeiling.Margin = new System.Windows.Forms.Padding(2, 0, 2, 2);
+            this.butDiagonalCeiling.Name = "butDiagonalCeiling";
+            this.butDiagonalCeiling.Size = new System.Drawing.Size(90, 24);
+            this.butDiagonalCeiling.TabIndex = 16;
+            this.butDiagonalCeiling.Text = "Ceiling step";
+            this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butDiagonalCeiling, "Click again to rotate step");
+            this.butDiagonalCeiling.Click += new System.EventHandler(this.butDiagonalCeiling_Click);
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
+            this.toolTip.Popup += new System.Windows.Forms.PopupEventHandler(this.toolTip_Popup);
             // 
             // SectorOptions
             // 
