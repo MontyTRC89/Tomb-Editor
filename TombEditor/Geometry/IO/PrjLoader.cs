@@ -1424,12 +1424,17 @@ namespace TombEditor.Geometry.IO
                         texture.SetTextureSound(i % 4, i / 4, textureSound);
                     }
 
-                    // Ignore 256 zero bytes and recognize *.prj TRNG's
+                    // Try to parse bump mapping and recognize *.prj TRNG's
                     if (reader.BaseStream.Length - reader.BaseStream.Position < 256)
                         progressReporter.ReportWarn("256 characteristic 0 bytes are missing at the end of the *.prj file.");
                     else
                     {
-                        reader.ReadBytes(256);
+                        // Read bump mapping data
+                        texture.ResizeBumpMappingInfos(4, 64);
+                        for (int i = 0; i < 256; i++)
+                        {
+                            texture.SetBumpMappingLevel(i % 4, i / 4, (BumpMappingLevel)reader.ReadByte());
+                        }
 
                         string offsetString = "offset 0x" + reader.BaseStream.Position.ToString("x") + ".";
 
@@ -1763,7 +1768,7 @@ namespace TombEditor.Geometry.IO
 
                 return level;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 level.Dispose(); // We log in the level above
                 throw;

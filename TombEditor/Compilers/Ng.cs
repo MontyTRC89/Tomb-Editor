@@ -25,7 +25,7 @@ namespace TombEditor.Compilers
             WriteNgChunkLevelFlags(writer);
             //WriteNgChunkExtraRoomFlags(writer);
             WriteNgChunkStaticsTable(writer);
-            //WriteNgChunkAnimatedTextures(writer);
+            WriteNgChunkAnimatedTextures(writer);
             WriteNgChunkMoveablesTable(writer);
             WriteNgChunkPluginsNames(writer);
             WriteNgChunkIdFloorTable(writer);
