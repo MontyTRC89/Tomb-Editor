@@ -34,7 +34,6 @@ namespace TombEditor
             this.butAssignSound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butAssignSound.Location = new System.Drawing.Point(183, 532);
             this.butAssignSound.Name = "butAssignSound";
-            this.butAssignSound.Padding = new System.Windows.Forms.Padding(5);
             this.butAssignSound.Size = new System.Drawing.Size(113, 24);
             this.butAssignSound.TabIndex = 2;
             this.butAssignSound.Text = "Assign sound";
@@ -54,9 +53,9 @@ namespace TombEditor
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butOk.Location = new System.Drawing.Point(303, 532);
             this.butOk.Name = "butOk";
-            this.butOk.Padding = new System.Windows.Forms.Padding(5);
             this.butOk.Size = new System.Drawing.Size(114, 24);
             this.butOk.TabIndex = 3;
             this.butOk.Text = "Ok";
@@ -65,8 +64,10 @@ namespace TombEditor
             // 
             // FormTextureSounds
             // 
+            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butOk;
             this.ClientSize = new System.Drawing.Size(424, 562);
             this.Controls.Add(this.comboSounds);
             this.Controls.Add(this.butAssignSound);

@@ -31,7 +31,6 @@ namespace TombEditor
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.comboStrength = new DarkUI.Controls.DarkComboBox();
             this.label5 = new DarkUI.Controls.DarkLabel();
             this.butCancel = new DarkUI.Controls.DarkButton();
@@ -74,8 +73,9 @@ namespace TombEditor
             "31"});
             this.comboStrength.Location = new System.Drawing.Point(113, 12);
             this.comboStrength.Name = "comboStrength";
-            this.comboStrength.Size = new System.Drawing.Size(86, 24);
+            this.comboStrength.Size = new System.Drawing.Size(86, 23);
             this.comboStrength.TabIndex = 22;
+            this.comboStrength.Text = null;
             // 
             // label5
             // 
@@ -89,9 +89,9 @@ namespace TombEditor
             // 
             // butCancel
             // 
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(113, 72);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(86, 23);
             this.butCancel.TabIndex = 1;
             this.butCancel.Text = "Cancel";
@@ -102,7 +102,6 @@ namespace TombEditor
             // 
             this.butOK.Location = new System.Drawing.Point(21, 72);
             this.butOK.Name = "butOK";
-            this.butOK.Padding = new System.Windows.Forms.Padding(5);
             this.butOK.Size = new System.Drawing.Size(86, 23);
             this.butOK.TabIndex = 0;
             this.butOK.Text = "OK";
@@ -111,8 +110,10 @@ namespace TombEditor
             // 
             // FormSink
             // 
+            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(224, 109);
             this.Controls.Add(this.comboStrength);
             this.Controls.Add(this.label5);

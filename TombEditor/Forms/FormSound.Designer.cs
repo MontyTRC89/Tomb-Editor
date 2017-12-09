@@ -37,8 +37,8 @@
             this.cbBit4 = new DarkUI.Controls.DarkCheckBox();
             this.lstSounds = new DarkUI.Controls.DarkListView();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
-            this.darkButton1 = new DarkUI.Controls.DarkButton();
-            this.darkButton2 = new DarkUI.Controls.DarkButton();
+            this.butOK = new DarkUI.Controls.DarkButton();
+            this.butCancel = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
             // 
             // label1
@@ -56,9 +56,6 @@
             // 
             this.tbSound.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbSound.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbSound.Location = new System.Drawing.Point(59, 412);
             this.tbSound.Name = "tbSound";
             this.tbSound.Size = new System.Drawing.Size(449, 22);
@@ -133,42 +130,41 @@
             this.butPlaySound.Image = global::TombEditor.Properties.Resources.actions_play_16;
             this.butPlaySound.Location = new System.Drawing.Point(514, 410);
             this.butPlaySound.Name = "butPlaySound";
-            this.butPlaySound.Padding = new System.Windows.Forms.Padding(5);
             this.butPlaySound.Size = new System.Drawing.Size(92, 23);
             this.butPlaySound.TabIndex = 62;
             this.butPlaySound.Text = "Play sound";
             this.butPlaySound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butPlaySound.Click += new System.EventHandler(this.butPlay_Click);
             // 
-            // darkButton1
+            // butOK
             // 
-            this.darkButton1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.darkButton1.Location = new System.Drawing.Point(174, 495);
-            this.darkButton1.Name = "darkButton1";
-            this.darkButton1.Padding = new System.Windows.Forms.Padding(5);
-            this.darkButton1.Size = new System.Drawing.Size(130, 24);
-            this.darkButton1.TabIndex = 63;
-            this.darkButton1.Text = "Ok";
-            this.darkButton1.Click += new System.EventHandler(this.butOK_Click);
+            this.butOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.butOK.Location = new System.Drawing.Point(174, 495);
+            this.butOK.Name = "butOK";
+            this.butOK.Size = new System.Drawing.Size(130, 24);
+            this.butOK.TabIndex = 63;
+            this.butOK.Text = "Ok";
+            this.butOK.Click += new System.EventHandler(this.butOK_Click);
             // 
-            // darkButton2
+            // butCancel
             // 
-            this.darkButton2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.darkButton2.Location = new System.Drawing.Point(310, 495);
-            this.darkButton2.Name = "darkButton2";
-            this.darkButton2.Padding = new System.Windows.Forms.Padding(5);
-            this.darkButton2.Size = new System.Drawing.Size(130, 24);
-            this.darkButton2.TabIndex = 64;
-            this.darkButton2.Text = "Cancel";
-            this.darkButton2.Click += new System.EventHandler(this.butCancel_Click);
+            this.butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.butCancel.Location = new System.Drawing.Point(310, 495);
+            this.butCancel.Name = "butCancel";
+            this.butCancel.Size = new System.Drawing.Size(130, 24);
+            this.butCancel.TabIndex = 64;
+            this.butCancel.Text = "Cancel";
+            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
             // FormSound
             // 
+            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(618, 531);
-            this.Controls.Add(this.darkButton1);
-            this.Controls.Add(this.darkButton2);
+            this.Controls.Add(this.butOK);
+            this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butPlaySound);
             this.Controls.Add(this.lstSounds);
             this.Controls.Add(this.cbBit4);
@@ -202,7 +198,7 @@
         private DarkUI.Controls.DarkCheckBox cbBit4;
         private DarkUI.Controls.DarkListView lstSounds;
         private DarkUI.Controls.DarkButton butPlaySound;
-        private DarkUI.Controls.DarkButton darkButton1;
-        private DarkUI.Controls.DarkButton darkButton2;
+        private DarkUI.Controls.DarkButton butOK;
+        private DarkUI.Controls.DarkButton butCancel;
     }
 }
