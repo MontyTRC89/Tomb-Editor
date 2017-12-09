@@ -39,6 +39,17 @@ namespace TombEditor.Geometry
             return result;
         }
 
+        public List<TriggerInstance> GetAllTriggersPointingToObject(ObjectInstance instance)
+        {
+            var triggers = new List<TriggerInstance>();
+            foreach (var room in Rooms)
+                if (room != null)
+                    foreach (var trigger in room.Triggers)
+                        if (trigger.TargetObj == instance)
+                            triggers.Add(trigger);
+            return triggers;
+        }
+
         private void GetConnectedRoomsRecursively(ISet<Room> result, Room startingRoom)
         {
             if ((startingRoom == null) || result.Contains(startingRoom))

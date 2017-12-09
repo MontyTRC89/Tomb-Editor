@@ -571,7 +571,7 @@ namespace TombEditor.Controls
 
         // Context menus
         private DrawingPoint _lastBlock;
-        private MoveableOrStaticContextMenu _contextMenuObject;
+        private PositionBasedObjectContextMenu _contextMenuObject;
         private SolidGeometryContextMenu _contextMenuSolidGeometry;
 
         public DrawingPoint LastSelectedBlock { get { return _lastBlock; } }
@@ -633,7 +633,7 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised += EditorEventRaised;
             }
 
-            _contextMenuObject = new MoveableOrStaticContextMenu(this);
+            _contextMenuObject = new PositionBasedObjectContextMenu(this);
             _contextMenuSolidGeometry = new SolidGeometryContextMenu(this);
         }
 
@@ -1489,7 +1489,7 @@ namespace TombEditor.Controls
                         if (newPicking is PickingResultObject)
                         {
                             _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
-                            _contextMenuObject.Show(this, e.Location);
+                            _contextMenuObject.OpenMenu(this, e.Location);
                         }
                         else if (newPicking is PickingResultBlock)
                         {
@@ -1497,7 +1497,7 @@ namespace TombEditor.Controls
                             {
                                 var pickedBlock = (newPicking as PickingResultBlock);
                                 _lastBlock = pickedBlock.Pos;
-                                _contextMenuSolidGeometry.Show(this, e.Location);
+                                _contextMenuSolidGeometry.OpenMenu(this, e.Location);
                             }
                         }
                     }
