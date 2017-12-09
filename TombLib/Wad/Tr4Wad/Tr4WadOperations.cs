@@ -303,6 +303,7 @@ namespace TombLib.Wad.Tr4Wad
             var loadedSamples = new ConcurrentDictionary<int, WadSample>();
             Parallel.For(0, _oldWad.Sounds.Count, i =>
               {
+                  var foundFileName = "";
                   foreach (string soundPath in _soundPaths)
                   {
                       string fileName = Path.Combine(_oldWad.BasePath, soundPath, _oldWad.Sounds[i]);
@@ -310,14 +311,24 @@ namespace TombLib.Wad.Tr4Wad
                       // If wave sound exists, then load it in memory
                       if (File.Exists(fileName))
                       {
-                          using (var stream = File.OpenRead(fileName))
-                          {
-                              var buffer = new byte[stream.Length];
-                              stream.Read(buffer, 0, buffer.Length);
-                              var sound = new WadSample(_oldWad.Sounds[i], buffer);
-                              loadedSamples.TryAdd(i, sound);
-                          }
+                          foundFileName = fileName;
+                          break;
                       }
+                  }
+
+                  var sampleName = _oldWad.Sounds[i];
+                  if (foundFileName == "")
+                  {
+                      foundFileName = "Editor\\Misc\\NullSample.wav";
+                      sampleName = "NullSample.wav";
+                  }
+
+                  using (var stream = File.OpenRead(foundFileName))
+                  {
+                      var buffer = new byte[stream.Length];
+                      stream.Read(buffer, 0, buffer.Length);
+                      var sound = new WadSample(sampleName, buffer);
+                      loadedSamples.TryAdd(i, sound);
                   }
               });
 

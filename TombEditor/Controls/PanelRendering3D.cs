@@ -559,6 +559,7 @@ namespace TombEditor.Controls
         private const float _littleCubeRadius = 128.0f;
         private const float _littleSphereRadius = 128.0f;
         private System.Drawing.Point _lastMousePosition;
+        private System.Drawing.Point _startMousePosition;
         private MovementTimer _movementTimer;
         private bool _doSectorSelection = false;
         private bool _noSelectionConfirm = false;
@@ -744,11 +745,11 @@ namespace TombEditor.Controls
         }
         private float DefaultCameraAngleX
         {
-            get { return (float)Math.PI; }
+            get { return 0.6f; }
         }
         private float DefaultCameraAngleY
         {
-            get { return 0.6f; }
+            get { return (float)Math.PI; }
         }
 
         public void ResetCamera()
@@ -1199,6 +1200,10 @@ namespace TombEditor.Controls
                         break;
                 }
             }
+            else if (e.Button == MouseButtons.Right)
+            {
+                _startMousePosition = e.Location;
+            }
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
@@ -1462,6 +1467,12 @@ namespace TombEditor.Controls
                                     }
                         }
                     }
+                    break;
+
+                case MouseButtons.Right:
+                    var distance = new Vector2(_startMousePosition.X, _startMousePosition.Y) - new Vector2(e.Location.X, e.Location.Y);
+                    // EXPERIMENTAL: show context menus here
+                    //if (distance.Length() < 4.0f) MessageBox.Show("Right click detected!");
                     break;
 
             }
