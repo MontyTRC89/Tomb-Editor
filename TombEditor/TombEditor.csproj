@@ -131,6 +131,9 @@
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ContextMenus\SelectedGeometryContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ContextMenus\SolidGeometryContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
