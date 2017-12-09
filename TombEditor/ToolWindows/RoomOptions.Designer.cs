@@ -49,6 +49,7 @@
             // 
             // cbNoPathfinding
             // 
+            this.cbNoPathfinding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbNoPathfinding.AutoSize = true;
             this.cbNoPathfinding.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbNoPathfinding.Location = new System.Drawing.Point(108, 125);
@@ -61,6 +62,7 @@
             // 
             // cbHorizon
             // 
+            this.cbHorizon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbHorizon.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbHorizon.Location = new System.Drawing.Point(108, 79);
             this.cbHorizon.Name = "cbHorizon";
@@ -72,6 +74,8 @@
             // 
             // comboFlipMap
             // 
+            this.comboFlipMap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboFlipMap.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboFlipMap.Items.AddRange(new object[] {
             "Not flipped",
@@ -194,6 +198,7 @@
             // 
             // cbFlagOutside
             // 
+            this.cbFlagOutside.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbFlagOutside.AutoSize = true;
             this.cbFlagOutside.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbFlagOutside.Location = new System.Drawing.Point(173, 79);
@@ -206,6 +211,7 @@
             // 
             // cbFlagCold
             // 
+            this.cbFlagCold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbFlagCold.AutoSize = true;
             this.cbFlagCold.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbFlagCold.Location = new System.Drawing.Point(173, 56);
@@ -218,6 +224,7 @@
             // 
             // cbFlagDamage
             // 
+            this.cbFlagDamage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbFlagDamage.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbFlagDamage.Location = new System.Drawing.Point(108, 56);
             this.cbFlagDamage.Name = "cbFlagDamage";
@@ -229,6 +236,8 @@
             // 
             // comboRoomType
             // 
+            this.comboRoomType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboRoomType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboRoomType.Items.AddRange(new object[] {
             "Normal",
@@ -374,6 +383,7 @@
             // 
             // cbNoLensflare
             // 
+            this.cbNoLensflare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbNoLensflare.AutoSize = true;
             this.cbNoLensflare.Location = new System.Drawing.Point(108, 102);
             this.cbNoLensflare.Name = "cbNoLensflare";
@@ -391,6 +401,7 @@
             // 
             // cbLocked
             // 
+            this.cbLocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbLocked.AutoSize = true;
             this.cbLocked.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbLocked.Location = new System.Drawing.Point(108, 148);
