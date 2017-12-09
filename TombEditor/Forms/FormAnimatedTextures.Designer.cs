@@ -406,8 +406,10 @@ namespace TombEditor
             // 
             // FormAnimatedTextures
             // 
+            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butOk;
             this.ClientSize = new System.Drawing.Size(809, 656);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.butOk);
