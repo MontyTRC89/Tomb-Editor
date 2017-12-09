@@ -1493,16 +1493,12 @@ namespace TombEditor.Controls
                         }
                         else if (newPicking is PickingResultBlock)
                         {
-                            if (Clipboard.HasObjectToPaste)
-                            {
-                                var pickedBlock = (newPicking as PickingResultBlock);
-                                _lastBlock = pickedBlock.Pos;
-                                _contextMenuSolidGeometry.OpenMenu(this, e.Location);
-                            }
+                            var pickedBlock = (newPicking as PickingResultBlock);
+                            _lastBlock = pickedBlock.Pos;
+                            _contextMenuSolidGeometry.OpenMenu(this, e.Location);
                         }
                     }
                     break;
-
             }
 
             // Click outside room
