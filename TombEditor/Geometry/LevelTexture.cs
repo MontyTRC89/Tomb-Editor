@@ -13,6 +13,7 @@ namespace TombEditor.Geometry
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public const float TextureSoundGranularity = 64.0f;
+        public const float BumpMappingGranularity = 64.0f;
 
         public string Path { get; private set; }
         public Exception ImageLoadException { get; private set; }
@@ -22,6 +23,7 @@ namespace TombEditor.Geometry
         public override bool ReplaceMagentaWithTransparency => _replaceMagentaWithTransparency;
 
         private TextureSound[,] _textureSounds = new TextureSound[0, 0];
+        private BumpMappingLevel[,] _bumpMappingLevel = new BumpMappingLevel[0, 0];
 
         public LevelTexture()
         { }
@@ -67,6 +69,11 @@ namespace TombEditor.Geometry
                 ResizeTextureSounds(
                     (int)Math.Ceiling(Image.Width / TextureSoundGranularity),
                     (int)Math.Ceiling(Image.Height / TextureSoundGranularity));
+
+                // Resize bump maps
+                ResizeBumpMappingInfos(
+                    (int)Math.Ceiling(Image.Width / BumpMappingGranularity),
+                    (int)Math.Ceiling(Image.Height / BumpMappingGranularity));
             }
             catch (Exception exc)
             {
@@ -116,9 +123,19 @@ namespace TombEditor.Geometry
             return _textureSounds[x, y];
         }
 
+        public BumpMappingLevel GetBumpMapLevel(int x, int y)
+        {
+            return _bumpMappingLevel[x, y];
+        }
+
         public void SetTextureSound(int x, int y, TextureSound value)
         {
             _textureSounds[x, y] = value;
+        }
+
+        public void SetBumpMappingLevel(int x, int y, BumpMappingLevel info)
+        {
+            _bumpMappingLevel[x, y] = info;
         }
 
         public TextureSound? GetTextureSoundFromTexCoord(Vector2 coord)
@@ -129,8 +146,19 @@ namespace TombEditor.Geometry
             return _textureSounds[(int)(coord.X), (int)(coord.Y)];
         }
 
+        public BumpMappingLevel? GetBumpMappingLevelFromTexCoord(Vector2 coord)
+        {
+            coord /= BumpMappingGranularity;
+            if (!((coord.X >= 0) && (coord.Y >= 0) && (coord.X < BumpMappingWidth) && (coord.Y < BumpMappingHeight)))
+                return null;
+            return _bumpMappingLevel[(int)(coord.X), (int)(coord.Y)];
+        }
+
         public int TextureSoundWidth => _textureSounds.GetLength(0);
         public int TextureSoundHeight => _textureSounds.GetLength(1);
+
+        public int BumpMappingWidth => _bumpMappingLevel.GetLength(0);
+        public int BumpMappingHeight => _bumpMappingLevel.GetLength(1);
 
         public void ResizeTextureSounds(int width, int height)
         {
@@ -147,6 +175,24 @@ namespace TombEditor.Geometry
                     for (int x = 0; x < TextureSoundWidth; ++x)
                         newTextureSounds[x, y] = _textureSounds[x, y];
                 _textureSounds = newTextureSounds;
+            }
+        }
+
+        public void ResizeBumpMappingInfos(int width, int height)
+        {
+            int requiredBumpMappingWidth = Math.Max(BumpMappingWidth, width);
+            int requiredBumpMappingHeight = Math.Max(BumpMappingHeight, height);
+            if ((BumpMappingWidth < requiredBumpMappingWidth) ||
+                (BumpMappingHeight < requiredBumpMappingHeight))
+            {
+                var newBumpMappingInfos = new BumpMappingLevel[requiredBumpMappingWidth, requiredBumpMappingHeight];
+                for (int y = 0; y < requiredBumpMappingHeight; ++y)
+                    for (int x = 0; x < requiredBumpMappingWidth; ++x)
+                        newBumpMappingInfos[x, y] = BumpMappingLevel.None;
+                for (int y = 0; y < BumpMappingHeight; ++y)
+                    for (int x = 0; x < BumpMappingWidth; ++x)
+                        newBumpMappingInfos[x, y] = _bumpMappingLevel[x, y];
+                _bumpMappingLevel = newBumpMappingInfos;
             }
         }
 

@@ -149,6 +149,7 @@
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Geometry\BumpMappingInfo.cs" />
     <Compile Include="Geometry\ScriptID.cs" />
     <Compile Include="Highlight.cs" />
     <Compile Include="KeyboardLayout.cs" />
