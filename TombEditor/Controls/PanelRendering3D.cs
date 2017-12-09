@@ -16,6 +16,7 @@ using TombLib.Utils;
 using NLog;
 using DarkUI.Controls;
 using DarkUI.Forms;
+using TombEditor.Controls.ContextMenus;
 
 namespace TombEditor.Controls
 {
@@ -568,6 +569,13 @@ namespace TombEditor.Controls
         private Debug _debug;
         private RasterizerState _rasterizerStateDepthBias;
 
+        // Context menus
+        private DrawingPoint _lastBlock;
+        private MoveableOrStaticContextMenu _contextMenuObject;
+        private SolidGeometryContextMenu _contextMenuSolidGeometry;
+
+        public DrawingPoint LastSelectedBlock { get { return _lastBlock; } }
+
         private static readonly HashSet<HighlightType> _ignoredHighlights = new HashSet<HighlightType>
         {
             HighlightType.Portal,
@@ -624,6 +632,9 @@ namespace TombEditor.Controls
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
             }
+
+            _contextMenuObject = new MoveableOrStaticContextMenu(this);
+            _contextMenuSolidGeometry = new SolidGeometryContextMenu(this);
         }
 
         protected override void Dispose(bool disposing)
@@ -1472,7 +1483,24 @@ namespace TombEditor.Controls
                 case MouseButtons.Right:
                     var distance = new Vector2(_startMousePosition.X, _startMousePosition.Y) - new Vector2(e.Location.X, e.Location.Y);
                     // EXPERIMENTAL: show context menus here
-                    //if (distance.Length() < 4.0f) MessageBox.Show("Right click detected!");
+                    if (distance.Length() < 4.0f)
+                    {
+                        var newPicking = DoPicking(GetRay(e.X, e.Y));
+                        if (newPicking is PickingResultObject)
+                        {
+                            _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
+                            _contextMenuObject.Show(this, e.Location);
+                        }
+                        else if (newPicking is PickingResultBlock)
+                        {
+                            if (Clipboard.HasObjectToPaste)
+                            {
+                                var pickedBlock = (newPicking as PickingResultBlock);
+                                _lastBlock = pickedBlock.Pos;
+                                _contextMenuSolidGeometry.Show(this, e.Location);
+                            }
+                        }
+                    }
                     break;
 
             }
