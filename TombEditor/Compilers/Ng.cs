@@ -23,9 +23,9 @@ namespace TombEditor.Compilers
 
             // Write chunks
             WriteNgChunkLevelFlags(writer);
-            WriteNgChunkExtraRoomFlags(writer);
+            //WriteNgChunkExtraRoomFlags(writer);
             WriteNgChunkStaticsTable(writer);
-            WriteNgChunkAnimatedTextures(writer);
+            //WriteNgChunkAnimatedTextures(writer);
             WriteNgChunkMoveablesTable(writer);
             WriteNgChunkPluginsNames(writer);
             WriteNgChunkIdFloorTable(writer);
