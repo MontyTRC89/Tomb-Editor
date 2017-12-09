@@ -573,6 +573,7 @@ namespace TombEditor.Controls
         private DrawingPoint _lastBlock;
         private PositionBasedObjectContextMenu _contextMenuObject;
         private SolidGeometryContextMenu _contextMenuSolidGeometry;
+        private SelectedGeometryContextMenu _contextSelectedSectors;
 
         public DrawingPoint LastSelectedBlock { get { return _lastBlock; } }
 
@@ -635,6 +636,7 @@ namespace TombEditor.Controls
 
             _contextMenuObject = new PositionBasedObjectContextMenu(this);
             _contextMenuSolidGeometry = new SolidGeometryContextMenu(this);
+            _contextSelectedSectors = new SelectedGeometryContextMenu(this);
         }
 
         protected override void Dispose(bool disposing)
@@ -1424,7 +1426,7 @@ namespace TombEditor.Controls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if(_editor.Mode == EditorMode.Geometry)
+                    if (_editor.Mode == EditorMode.Geometry)
                     {
                         PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null && !_toolHandler.Dragged)
@@ -1495,7 +1497,10 @@ namespace TombEditor.Controls
                         {
                             var pickedBlock = (newPicking as PickingResultBlock);
                             _lastBlock = pickedBlock.Pos;
-                            _contextMenuSolidGeometry.OpenMenu(this, e.Location);
+                            if (_editor.SelectedSectors != null && _editor.SelectedSectors.Area.Contains(_lastBlock))
+                                _contextSelectedSectors.OpenMenu(this, e.Location);
+                            else
+                                _contextMenuSolidGeometry.OpenMenu(this, e.Location);
                         }
                     }
                     break;
