@@ -111,6 +111,8 @@
             // 
             // comboReverberation
             // 
+            this.comboReverberation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboReverberation.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboReverberation.Items.AddRange(new object[] {
             "None",
@@ -257,6 +259,8 @@
             // 
             // comboRoom
             // 
+            this.comboRoom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboRoom.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboRoom.Location = new System.Drawing.Point(3, 28);
             this.comboRoom.Name = "comboRoom";
@@ -293,6 +297,7 @@
             // 
             // butRoomUp
             // 
+            this.butRoomUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butRoomUp.Image = global::TombEditor.Properties.Resources.actions_RoomRaise_16;
             this.butRoomUp.Location = new System.Drawing.Point(259, 88);
             this.butRoomUp.Name = "butRoomUp";
@@ -303,6 +308,7 @@
             // 
             // butRoomDown
             // 
+            this.butRoomDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butRoomDown.Image = global::TombEditor.Properties.Resources.actions_RoomLower_16;
             this.butRoomDown.Location = new System.Drawing.Point(259, 118);
             this.butRoomDown.Name = "butRoomDown";
@@ -313,6 +319,7 @@
             // 
             // butEditRoomName
             // 
+            this.butEditRoomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditRoomName.Location = new System.Drawing.Point(229, 28);
             this.butEditRoomName.Name = "butEditRoomName";
@@ -323,6 +330,7 @@
             // 
             // butDeleteRoom
             // 
+            this.butDeleteRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteRoom.Location = new System.Drawing.Point(259, 58);
             this.butDeleteRoom.Name = "butDeleteRoom";
@@ -333,6 +341,7 @@
             // 
             // butCropRoom
             // 
+            this.butCropRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
             this.butCropRoom.Location = new System.Drawing.Point(259, 28);
             this.butCropRoom.Name = "butCropRoom";
@@ -343,6 +352,7 @@
             // 
             // butSplitRoom
             // 
+            this.butSplitRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSplitRoom.Image = global::TombEditor.Properties.Resources.general_split_files_16;
             this.butSplitRoom.Location = new System.Drawing.Point(229, 88);
             this.butSplitRoom.Name = "butSplitRoom";
@@ -353,6 +363,7 @@
             // 
             // butCopyRoom
             // 
+            this.butCopyRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCopyRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.butCopyRoom.Location = new System.Drawing.Point(229, 58);
             this.butCopyRoom.Name = "butCopyRoom";
@@ -423,7 +434,7 @@
             this.Controls.Add(this.butCopyRoom);
             this.DockText = "Room Options";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(284, 192);
+            this.MinimumSize = new System.Drawing.Size(284, 218);
             this.Name = "RoomOptions";
             this.SerializationKey = "RoomOptions";
             this.Size = new System.Drawing.Size(284, 218);
