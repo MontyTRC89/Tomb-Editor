@@ -78,6 +78,42 @@ namespace TombLib.Wad
             LegacyNames = new Dictionary<string, WadObject>();
         }
 
+        // This function wiill be used for showing all textures of Wad2 in a single map
+        public ImageC GetPackedTextureMap()
+        {
+            // Pack the textures in a single atlas
+            var packedTextures = new List<WadTexture>();
+
+            for (int i = 0; i < Textures.Count; i++)
+            {
+                PackedTextures.Add(Textures.ElementAt(i).Value);
+            }
+
+            PackedTextures.Sort(new ComparerWadTextures());
+            var factor = TextureAtlasSize / 512;
+            var height = TextureAtlasSize * factor;
+            var packer = new RectPackerSimpleStack(512, height);
+
+            foreach (var texture in PackedTextures)
+            {
+                var point = packer.TryAdd(texture.Width, texture.Height);
+                texture.PositionInPackedTexture = new Vector2(point.Value.X, point.Value.Y);
+            }
+
+            // Copy the page in a temp bitmap. 
+            // I generate a texture atlas, putting all texture pages inside 2048x2048 pixel textures.
+            var tempBitmap = ImageC.CreateNew(512, packer.MaxHeight);
+
+            foreach (var texture in PackedTextures)
+            {
+                int startX = (int)texture.PositionInPackedTexture.X;
+                int startY = (int)texture.PositionInPackedTexture.Y;
+                tempBitmap.CopyFrom(startX, startY, texture.Image);
+            }
+
+            return tempBitmap;
+        }
+
         public void RebuildTextureAtlas()
         {
             if (DirectXTexture != null) DirectXTexture.Dispose();

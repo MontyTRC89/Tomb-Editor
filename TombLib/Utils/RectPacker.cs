@@ -23,6 +23,8 @@ namespace TombLib.Utils
         public int Width { get; protected set; }
         public int Height { get; protected set; }
 
+        public abstract int MaxHeight { get; }
+
         protected RectPacker(int width, int height)
         {
             Width = width;
@@ -40,6 +42,8 @@ namespace TombLib.Utils
         public RectPackerSimpleStack(int width, int height)
             : base(width, height)
         { }
+
+        public override int MaxHeight { get { return _currentY + _stackHeight; } }
 
         public override Point? TryAdd(int width, int height)
         {

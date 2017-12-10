@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.GeometryIO;
 using TombLib.IO;
+using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Wad.Tr4Wad;
@@ -846,12 +847,9 @@ namespace WadTool
 
         private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var sounds = TrCatalog.GetAllSounds(TombRaiderVersion.TR4);
-            int numMandatory = 0;
-            foreach (var sound in sounds)
-            {
-                if (TrCatalog.IsSoundMandatory(TombRaiderVersion.TR4, (uint)sound.Key)) numMandatory++;
-            }
+            
+
+            //tempBitmap.Save("testpack.png");
         }
 
         private void newEmptyWad2ToolStripMenuItem_Click(object sender, EventArgs e)
