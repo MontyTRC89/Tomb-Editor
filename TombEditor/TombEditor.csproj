@@ -134,7 +134,7 @@
     <Compile Include="Controls\ContextMenus\SelectedGeometryContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ContextMenus\SolidGeometryContextMenu.cs">
+    <Compile Include="Controls\ContextMenus\BlockContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DarkDataGridViewControls.cs">

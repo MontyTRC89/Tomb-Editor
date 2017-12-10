@@ -572,7 +572,7 @@ namespace TombEditor.Controls
         // Context menus
         private DrawingPoint _lastBlock;
         private PositionBasedObjectContextMenu _contextMenuObject;
-        private SolidGeometryContextMenu _contextMenuSolidGeometry;
+        private BlockContextMenu _contextMenuSolidGeometry;
         private SelectedGeometryContextMenu _contextSelectedSectors;
 
         public DrawingPoint LastSelectedBlock { get { return _lastBlock; } }
@@ -635,7 +635,7 @@ namespace TombEditor.Controls
             }
 
             _contextMenuObject = new PositionBasedObjectContextMenu(this);
-            _contextMenuSolidGeometry = new SolidGeometryContextMenu(this);
+            _contextMenuSolidGeometry = new BlockContextMenu(this);
             _contextSelectedSectors = new SelectedGeometryContextMenu(this);
         }
 
