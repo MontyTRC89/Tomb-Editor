@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib.Controls;
 using TombLib.Wad.Tr4Wad;
 
 namespace TombLib.Forms
@@ -82,16 +83,25 @@ namespace TombLib.Forms
                     default: return;
                 }
             }
+            else
+            {
+                DialogResult = DialogResult.OK;
+                Close();
+            }
         }
 
         private void butAddPath_Click(object sender, EventArgs e)
         {
-            if (folderBrowser.ShowDialog() == DialogResult.OK)
+            using (OpenFolderDialog dialog = new OpenFolderDialog())
             {
-                Tr4WadOperations.SoundPaths.Add(folderBrowser.SelectedPath);
-                Tr4WadOperations.FindTr4Samples();
-                ReloadSoundPaths();
-                ReloadSamples();
+                dialog.Title = "Select a new sound folder (should contain *.wav audio files)";
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    Tr4WadOperations.SoundPaths.Add(dialog.Folder);
+                    Tr4WadOperations.FindTr4Samples();
+                    ReloadSoundPaths();
+                    ReloadSamples();
+                }
             }
         }
 
