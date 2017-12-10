@@ -73,12 +73,16 @@ namespace TombLib.Utils
         }
 
         private TreePackerNode _startNode;
+        private int _maxHeight = 0;
+
+        public override int MaxHeight { get { return _maxHeight; } }
 
         public TreePacker(int width, int height)
             : base(width, height)
         {
             _startNode = new TreePackerNode();
             _startNode.Rectangle = new Rectangle(0, 0, width, height);
+            _maxHeight = 0;
         }
 
         public override Point? TryAdd(int width, int height)
@@ -87,6 +91,8 @@ namespace TombLib.Utils
             var node = _startNode.InsertNode(rect);
             if (node == null) return null;
             var result = new Point(node.Rectangle.X, node.Rectangle.Y);
+            var newHeight = node.Rectangle.Y + node.Rectangle.Height;
+            if (newHeight > _maxHeight) _maxHeight = newHeight;
             return result;
         }
     }
