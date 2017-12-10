@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using TombEditor.Geometry;
+using TombLib.Utils;
 
 namespace TombEditor.Compilers
 {

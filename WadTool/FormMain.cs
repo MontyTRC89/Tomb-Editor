@@ -294,7 +294,7 @@ namespace WadTool
                 var originalWad = new Tr4Wad();
                 originalWad.LoadWad(fileName);
 
-                var newWad = Tr4WadOperations.ConvertTr4Wad(originalWad, wadSoundPaths);
+                var newWad = Tr4WadOperations.ConvertTr4Wad(originalWad, wadSoundPaths, null);
                 if (newWad == null)
                     return;
 

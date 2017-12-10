@@ -95,7 +95,7 @@ namespace TombEditor.Geometry.IO
                 // Try loading the file
                 try
                 {
-                    level.ReloadWad();
+                    level.ReloadWad(progressReporter);
                     return;
                 }
                 catch (Exception exc)
