@@ -2211,6 +2211,28 @@ namespace TombEditor
             return false;
         }
 
+        public static void MoveLara(IWin32Window owner, DrawingPoint p)
+        {
+            // Search for first Lara and remove her
+            MoveableInstance lara;
+            foreach (Room room in _editor.Level.Rooms.Where(room => room != null))
+                foreach (var instance in room.Objects)
+                {
+                    lara = instance as MoveableInstance;
+                    if ((lara != null) && (lara.WadObjectId == 0))
+                    {
+                        room.RemoveObject(_editor.Level, instance);
+                        _editor.ObjectChange(lara, ObjectChangeType.Remove, room);
+                        goto FoundLara;
+                    }
+                }
+            lara = new MoveableInstance { WadObjectId = 0 }; // Lara
+            FoundLara:
+
+            // Add lara to current sector
+            EditorActions.PlaceObject(_editor.SelectedRoom, p, lara);
+        }
+
         public static int DragDropCommonFiles(DragEventArgs e, IWin32Window owner)
         {
             int unsupportedFileCount = 0;
