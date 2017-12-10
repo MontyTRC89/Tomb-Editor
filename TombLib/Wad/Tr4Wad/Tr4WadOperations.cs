@@ -38,6 +38,7 @@ namespace TombLib.Wad.Tr4Wad
         private static Dictionary<int, WadTexture> _convertedTextures;
         private static List<WadMesh> _meshes;
         private static List<SamplePathInfo> _samples;
+        private static IProgressReporter _progressReporter;
 
         internal static List<SamplePathInfo> Samples { get { return _samples; } }
         internal static List<string> SoundPaths { get { return _soundPaths; } }
@@ -257,11 +258,27 @@ namespace TombLib.Wad.Tr4Wad
             _logger.Info("Sprite conversion complete.");
         }
 
-        public static Wad2 ConvertTr4Wad(Tr4Wad old, List<string> soundPaths)
+        private static bool ShowImportTr4WadForm()
+        {
+            /// Ask the help of the user
+            using (var form = new FormImportTr4Wad())
+            {
+                if (form.ShowDialog() == DialogResult.Cancel) return false;
+
+                // At this point, the user is warned if there are missing files,
+                // and if he accepts then we continue adding NullSample.wav for each missing sample
+                FindTr4Samples();
+
+                return true;
+            }
+        }
+
+        public static Wad2 ConvertTr4Wad(Tr4Wad old, List<string> soundPaths, IProgressReporter progressReporter)
         {
             _oldWad = old;
             _wad = new Wad2(TombRaiderVersion.TR4);
             _soundPaths = soundPaths;
+            _progressReporter = progressReporter;
 
             _logger.Info("Converting TR4 WAD to WAD2");
 
@@ -270,15 +287,20 @@ namespace TombLib.Wad.Tr4Wad
             var result = FindTr4Samples();
             if (!result)
             {
-                /// Ask the help of the user
-                using (var form = new FormImportTr4Wad())
+                // In multithreading context, we must use this for not raising exceptions
+                if (_progressReporter != null)
                 {
-                    if (form.ShowDialog() == DialogResult.Cancel) return null;
-
-                    // At this point, the user is warned if there are missing files,
-                    // and if he accepts then we continue adding NullSample.wav for each missing sample
-                    FindTr4Samples();
+                    _progressReporter.InvokeGui(delegate (IWin32Window owner)
+                    {
+                        result = ShowImportTr4WadForm();
+                    });
                 }
+                else
+                {
+                    result = ShowImportTr4WadForm();
+                }
+
+                if (!result) return null;
             }
 
             // First convert all textures

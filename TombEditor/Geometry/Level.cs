@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Tr4Wad;
 
@@ -89,7 +90,7 @@ namespace TombEditor.Geometry
             Wad = null;
         }
 
-        public void ReloadWad()
+        public void ReloadWad(IProgressReporter progressReporter)
         {
             string path = Settings.MakeAbsolute(Settings.WadFilePath);
             if (string.IsNullOrEmpty(path))
@@ -111,7 +112,12 @@ namespace TombEditor.Geometry
 
                         var oldWad = new Tr4Wad();
                         oldWad.LoadWad(path);
-                        newWad = Tr4WadOperations.ConvertTr4Wad(oldWad, soundPaths);
+                        newWad = Tr4WadOperations.ConvertTr4Wad(oldWad, soundPaths, progressReporter);
+                        if (newWad == null)
+                        {
+                            newWad?.Dispose();
+                            return;
+                        }
                     }
                     else
                     {
@@ -134,7 +140,7 @@ namespace TombEditor.Geometry
         {
             try
             {
-                ReloadWad();
+                ReloadWad(null);
             }
             catch (Exception exc)
             {

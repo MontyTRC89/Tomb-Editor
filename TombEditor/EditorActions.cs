@@ -2158,20 +2158,20 @@ namespace TombEditor
                 return;
 
             settings.WadFilePath = path;
-            _editor.Level.ReloadWad();
+            _editor.Level.ReloadWad(null);
             _editor.LoadedWadsChange(_editor.Level.Wad);
         }
 
         public static void UnloadWad()
         {
             _editor.Level.Settings.WadFilePath = null;
-            _editor.Level.ReloadWad();
+            _editor.Level.ReloadWad(null);
             _editor.LoadedWadsChange(null);
         }
 
         public static void ReloadWad()
         {
-            _editor.Level.ReloadWad();
+            _editor.Level.ReloadWad(null);
             _editor.LoadedWadsChange(null);
         }
 
@@ -2224,7 +2224,7 @@ namespace TombEditor
                     if (SupportedFormats.IsExtensionPresent(FileFormatType.Object, file))
                     {
                         _editor.Level.Settings.WadFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
-                        _editor.Level.ReloadWad();
+                        _editor.Level.ReloadWad(null);
                         _editor.LoadedWadsChange(_editor.Level.Wad);
                     }
                     else if (SupportedFormats.IsExtensionPresent(FileFormatType.Texture, file))

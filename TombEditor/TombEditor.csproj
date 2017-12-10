@@ -280,7 +280,6 @@
     <Compile Include="Geometry\ImportedGeometryInstance.cs" />
     <Compile Include="Geometry\TextureSound.cs" />
     <Compile Include="Gizmo.cs" />
-    <Compile Include="IProgressReporter.cs" />
     <Compile Include="Geometry\IO\ResourceLoader.cs" />
     <Compile Include="Geometry\IO\Prj2Loader.cs" />
     <Compile Include="Geometry\IO\Prj2Writer.cs" />

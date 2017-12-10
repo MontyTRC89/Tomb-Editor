@@ -12,6 +12,7 @@ using Color = System.Drawing.Color;
 using TombLib.Utils;
 using System.Threading.Tasks;
 using TombLib.Wad;
+using TombLib.Utils;
 
 namespace TombEditor.Geometry.IO
 {
