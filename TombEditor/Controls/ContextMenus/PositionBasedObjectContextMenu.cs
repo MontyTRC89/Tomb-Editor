@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombEditor.Geometry;
 
 namespace TombEditor.Controls.ContextMenus
 {
@@ -19,7 +20,7 @@ namespace TombEditor.Controls.ContextMenus
         public PositionBasedObjectContextMenu(PanelRendering3D panel3D)
             : base()
         {
-            _itemProperties = new ToolStripMenuItem("Properties", null, (o, e) =>
+            _itemProperties = new ToolStripMenuItem("Edit object", global::TombEditor.Properties.Resources.general_edit_16, (o, e) =>
             {
               EditorActions.EditObject(_editor.SelectedObject, panel3D);
             });
@@ -44,8 +45,12 @@ namespace TombEditor.Controls.ContextMenus
         {
             Items.Clear();
 
-            Items.Add(_itemProperties);
-            Items.Add(new ToolStripSeparator());
+            if (!(_editor.SelectedObject is LightInstance))
+            {
+                Items.Add(_itemProperties);
+                Items.Add(new ToolStripSeparator());
+            }
+
             Items.Add(_itemCopy);
             Items.Add(_itemClone);
             Items.Add(_itemDelete);
