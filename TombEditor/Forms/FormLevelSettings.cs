@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using TombEditor.Controls;
 using TombEditor.Geometry;
 using TombEditor.Geometry.IO;
+using TombLib.Controls;
 using TombLib.IO;
 
 namespace TombEditor

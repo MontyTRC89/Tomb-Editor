@@ -96,6 +96,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\OpenFolderDialog.cs" />
     <Compile Include="Forms\FormImportTr4Wad.cs">
       <SubType>Form</SubType>
     </Compile>

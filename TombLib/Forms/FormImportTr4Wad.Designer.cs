@@ -52,7 +52,7 @@ namespace TombLib.Forms
             // 
             // butCancel
             // 
-            this.butCancel.Location = new System.Drawing.Point(336, 530);
+            this.butCancel.Location = new System.Drawing.Point(573, 477);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(84, 23);
             this.butCancel.TabIndex = 3;
@@ -61,7 +61,7 @@ namespace TombLib.Forms
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(246, 530);
+            this.butOK.Location = new System.Drawing.Point(483, 477);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(84, 23);
             this.butOK.TabIndex = 2;
@@ -71,7 +71,7 @@ namespace TombLib.Forms
             // darkLabel1
             // 
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(13, 13);
+            this.darkLabel1.Location = new System.Drawing.Point(9, 15);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(648, 20);
             this.darkLabel1.TabIndex = 4;
@@ -88,7 +88,7 @@ namespace TombLib.Forms
             this.columnSampleName,
             this.columnSamplePath,
             this.columnFound});
-            this.dgvSamples.Location = new System.Drawing.Point(16, 36);
+            this.dgvSamples.Location = new System.Drawing.Point(12, 38);
             this.dgvSamples.Name = "dgvSamples";
             this.dgvSamples.RowHeadersWidth = 41;
             this.dgvSamples.Size = new System.Drawing.Size(645, 303);
@@ -115,7 +115,7 @@ namespace TombLib.Forms
             // 
             // butAddPath
             // 
-            this.butAddPath.Location = new System.Drawing.Point(487, 475);
+            this.butAddPath.Location = new System.Drawing.Point(12, 477);
             this.butAddPath.Name = "butAddPath";
             this.butAddPath.Size = new System.Drawing.Size(84, 23);
             this.butAddPath.TabIndex = 6;
@@ -125,7 +125,7 @@ namespace TombLib.Forms
             // butDeletePath
             // 
             this.butDeletePath.Enabled = false;
-            this.butDeletePath.Location = new System.Drawing.Point(577, 475);
+            this.butDeletePath.Location = new System.Drawing.Point(102, 477);
             this.butDeletePath.Name = "butDeletePath";
             this.butDeletePath.Size = new System.Drawing.Size(84, 23);
             this.butDeletePath.TabIndex = 7;
@@ -135,7 +135,7 @@ namespace TombLib.Forms
             // darkLabel2
             // 
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(13, 354);
+            this.darkLabel2.Location = new System.Drawing.Point(9, 356);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(648, 20);
             this.darkLabel2.TabIndex = 8;
@@ -143,7 +143,7 @@ namespace TombLib.Forms
             // 
             // butReloadSamples
             // 
-            this.butReloadSamples.Location = new System.Drawing.Point(562, 7);
+            this.butReloadSamples.Location = new System.Drawing.Point(558, 9);
             this.butReloadSamples.Name = "butReloadSamples";
             this.butReloadSamples.Size = new System.Drawing.Size(99, 23);
             this.butReloadSamples.TabIndex = 10;
@@ -158,7 +158,7 @@ namespace TombLib.Forms
             this.lstPaths.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lstPaths.FormattingEnabled = true;
             this.lstPaths.ItemHeight = 18;
-            this.lstPaths.Location = new System.Drawing.Point(16, 377);
+            this.lstPaths.Location = new System.Drawing.Point(12, 379);
             this.lstPaths.Name = "lstPaths";
             this.lstPaths.Size = new System.Drawing.Size(645, 92);
             this.lstPaths.TabIndex = 11;
@@ -170,23 +170,23 @@ namespace TombLib.Forms
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusSamples});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 567);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 508);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(673, 32);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(666, 26);
             this.darkStatusStrip1.TabIndex = 12;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
             // statusSamples
             // 
             this.statusSamples.Name = "statusSamples";
-            this.statusSamples.Size = new System.Drawing.Size(0, 19);
+            this.statusSamples.Size = new System.Drawing.Size(0, 0);
             // 
             // FormImportTr4Wad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(673, 599);
+            this.ClientSize = new System.Drawing.Size(666, 534);
             this.ControlBox = false;
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.lstPaths);
@@ -203,6 +203,8 @@ namespace TombLib.Forms
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormImportTr4Wad";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Import TR4 WAD";
             this.Load += new System.EventHandler(this.FormImportTr4Wad_Load);
