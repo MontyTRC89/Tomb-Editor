@@ -132,6 +132,7 @@
             this.statusStripSelectedRoom = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStripGlobalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStripLocalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
@@ -1369,7 +1370,8 @@
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusStripSelectedRoom,
             this.statusStripGlobalSelectionArea,
-            this.statusStripLocalSelectionArea});
+            this.statusStripLocalSelectionArea,
+            this.statusLastCompilation});
             this.statusStrip.Location = new System.Drawing.Point(0, 214);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
@@ -1400,6 +1402,12 @@
             this.statusStripLocalSelectionArea.Name = "statusStripLocalSelectionArea";
             this.statusStripLocalSelectionArea.Size = new System.Drawing.Size(0, 16);
             this.statusStripLocalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // statusLastCompilation
+            // 
+            this.statusLastCompilation.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
+            this.statusLastCompilation.Name = "statusLastCompilation";
+            this.statusLastCompilation.Size = new System.Drawing.Size(0, 16);
             // 
             // darkContextMenu1
             // 
@@ -1574,5 +1582,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem wholeRoomUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wholeRoomDownToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel statusLastCompilation;
     }
 }

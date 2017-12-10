@@ -96,6 +96,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FormImportTr4Wad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormImportTr4Wad.Designer.cs">
+      <DependentUpon>FormImportTr4Wad.cs</DependentUpon>
+    </Compile>
     <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
     <Compile Include="GeometryIO\BaseGeometryImporter.cs" />
     <Compile Include="GeometryIO\Exporters\RoomExporterCollada.cs" />
@@ -215,6 +221,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\FormImportTr4Wad.resx">
+      <DependentUpon>FormImportTr4Wad.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\GeometryIOSettingsDialog.resx">
       <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>

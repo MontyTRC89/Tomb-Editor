@@ -59,6 +59,21 @@ namespace TombEditor
             public Level Previous { get; set; }
             public Level Current { get; set; }
         }
+
+        public class LevelCompilationCompletedEvent : IEditorEvent
+        {
+            public int Boxes { get; set; }
+            public int Overlaps { get; set; }
+            public int Textures { get; set; }
+
+            public LevelCompilationCompletedEvent(int boxes, int overlaps, int textures)
+            {
+                Boxes = boxes;
+                Overlaps = overlaps;
+                Textures = textures;
+            }
+        }
+
         private Level _level;
         public Level Level
         {

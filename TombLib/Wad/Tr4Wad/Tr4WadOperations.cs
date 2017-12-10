@@ -8,11 +8,27 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.Tr4Wad
 {
+    internal class SamplePathInfo
+    {
+        public string Sample { get; }
+        public string Path { get; set; }
+        public bool Found { get { return Path != "" && File.Exists(Path); } }
+        public int Id { get; }
+
+        public SamplePathInfo(int id, string sample)
+        {
+            Sample = sample;
+            Id = id;
+        }
+    }
+
     public static class Tr4WadOperations
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -21,6 +37,38 @@ namespace TombLib.Wad.Tr4Wad
         private static List<string> _soundPaths;
         private static Dictionary<int, WadTexture> _convertedTextures;
         private static List<WadMesh> _meshes;
+        private static List<SamplePathInfo> _samples;
+
+        internal static List<SamplePathInfo> Samples { get { return _samples; } }
+        internal static List<string> SoundPaths { get { return _soundPaths; } }
+
+        internal static bool FindTr4Samples()
+        {
+            if (_samples.Count == 0)
+            {
+                for (var i = 0; i < _oldWad.Sounds.Count; i++)
+                    _samples.Add(new SamplePathInfo(i, _oldWad.Sounds[i]));
+            }
+
+            var foundSamples = 0;
+            for (var i = 0; i < _oldWad.Sounds.Count; i++)
+            {
+                foreach (string soundPath in _soundPaths)
+                {
+                    string fileName = Path.Combine(_oldWad.BasePath, soundPath, _oldWad.Sounds[i]);
+
+                    // If wave sound exists, then load it in memory
+                    if (File.Exists(fileName))
+                    {
+                        _samples[i].Path = fileName;
+                        foundSamples++;
+                        break;
+                    }
+                }
+            }
+
+            return (foundSamples == _oldWad.Sounds.Count);
+        }
 
         internal static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture()
         {
@@ -217,6 +265,22 @@ namespace TombLib.Wad.Tr4Wad
 
             _logger.Info("Converting TR4 WAD to WAD2");
 
+            // Try to find all samples
+            _samples = new List<SamplePathInfo>();
+            var result = FindTr4Samples();
+            if (!result)
+            {
+                /// Ask the help of the user
+                using (var form = new FormImportTr4Wad())
+                {
+                    if (form.ShowDialog() == DialogResult.Cancel) return null;
+
+                    // At this point, the user is warned if there are missing files,
+                    // and if he accepts then we continue adding NullSample.wav for each missing sample
+                    FindTr4Samples();
+                }
+            }
+
             // First convert all textures
             _convertedTextures = ConvertTr4TexturesToWadTexture();
             for (int i = 0; i < _convertedTextures.Count; i++)
@@ -303,27 +367,16 @@ namespace TombLib.Wad.Tr4Wad
             var loadedSamples = new ConcurrentDictionary<int, WadSample>();
             Parallel.For(0, _oldWad.Sounds.Count, i =>
               {
-                  var foundFileName = "";
-                  foreach (string soundPath in _soundPaths)
+                  var info = _samples[i];
+                  var sampleName = info.Sample;
+                  var sampleFileName = info.Path;
+                  if (!info.Found)
                   {
-                      string fileName = Path.Combine(_oldWad.BasePath, soundPath, _oldWad.Sounds[i]);
-
-                      // If wave sound exists, then load it in memory
-                      if (File.Exists(fileName))
-                      {
-                          foundFileName = fileName;
-                          break;
-                      }
-                  }
-
-                  var sampleName = _oldWad.Sounds[i];
-                  if (foundFileName == "")
-                  {
-                      foundFileName = "Editor\\Misc\\NullSample.wav";
                       sampleName = "NullSample.wav";
+                      sampleFileName = "Editor\\Misc\\NullSample.wav";
                   }
 
-                  using (var stream = File.OpenRead(foundFileName))
+                  using (var stream = File.OpenRead(sampleFileName))
                   {
                       var buffer = new byte[stream.Length];
                       stream.Read(buffer, 0, buffer.Length);
