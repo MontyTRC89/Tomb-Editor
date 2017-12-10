@@ -477,6 +477,8 @@ namespace TombEditor.Compilers.Util
 
         public uint GetNewTextureSpaceIdentifier() => ++_textureSpaceIdentifier;
 
+        public int Count { get { return _objectTextures.Count; } }
+
         private void DebugObjectTextures()
         {
             /*float zoomSpeed = (float)Math.Sqrt(2);

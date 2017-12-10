@@ -145,6 +145,11 @@ namespace TombEditor.Compilers
 
             ReportProgress(100, "Elapsed time: " + (mills / 1000.0f));
 
+            // Raise an event for statistics update
+            Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent(_boxes.Length,
+                                                                                 _overlaps.Length,
+                                                                                 _objectTextureManager.Count));
+
             // Force garbage collector to compact memory
             GC.Collect();
         }

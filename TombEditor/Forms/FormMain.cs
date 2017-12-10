@@ -147,6 +147,13 @@ namespace TombEditor
                 gridWallsIn5ToolStripMenuItem.Enabled = validSectorSelection;
             }
 
+            // Update compilation statistics
+            if (obj is Editor.LevelCompilationCompletedEvent)
+            {
+                var evt = obj as Editor.LevelCompilationCompletedEvent;
+                statusLastCompilation.Text = "Boxes = " + evt.Boxes + " | Overlaps = " + evt.Overlaps + " | Textures = " + evt.Textures;
+            }
+
             // Update room information on the status strip
             if ((obj is Editor.SelectedRoomChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomGeometryChangedEvent) ||
