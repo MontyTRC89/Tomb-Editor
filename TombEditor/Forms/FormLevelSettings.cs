@@ -154,6 +154,7 @@ namespace TombEditor
             gameExecutableFilePathTxt.Text = _levelSettings.GameExecutableFilePath;
             GameEnableQuickStartFeatureCheckBox.Checked = _levelSettings.GameEnableQuickStartFeature;
             comboGameVersion.Text = _levelSettings.GameVersion.ToString(); // Must also accept none enum values.
+            tbScriptPath.Text = _levelSettings.ScriptDirectory;
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -544,6 +545,16 @@ namespace TombEditor
         private void butCancel_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void scriptPathBut_Click(object sender, EventArgs e)
+        {
+            string result = BrowseFolder(_levelSettings.ScriptDirectory, "Select the folder of TXT sources for script", VariableType.ScriptDirectory);
+            if (result != null)
+            {
+                _levelSettings.ScriptDirectory = result;
+                UpdateDialog();
+            }
         }
 
         // Target path

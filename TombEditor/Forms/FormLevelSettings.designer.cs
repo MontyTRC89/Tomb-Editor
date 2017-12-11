@@ -103,6 +103,10 @@
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
+            this.panel10 = new System.Windows.Forms.Panel();
+            this.scriptPathBut = new DarkUI.Controls.DarkButton();
+            this.darkLabel15 = new DarkUI.Controls.DarkLabel();
+            this.tbScriptPath = new DarkUI.Controls.DarkTextBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -128,6 +132,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.panel11.SuspendLayout();
+            this.panel10.SuspendLayout();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -203,6 +208,7 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage1.Controls.Add(this.panel10);
             this.tabPage1.Controls.Add(this.panel6);
             this.tabPage1.Controls.Add(this.panel4);
             this.tabPage1.Controls.Add(this.panel5);
@@ -379,7 +385,9 @@
             this.darkLabel12.Name = "darkLabel12";
             this.darkLabel12.Size = new System.Drawing.Size(268, 65);
             this.darkLabel12.TabIndex = 5;
-            this.darkLabel12.Text = resources.GetString("darkLabel12.Text");
+            this.darkLabel12.Text = "This includes:\n  - Automatically loads into the currently open level\n  - Speeds u" +
+    "p loading and saving times\n  - Suppresses asking for settings dialog in TRNG\n  -" +
+    " Prevents removal of taskbar in TRNG";
             // 
             // GameEnableQuickStartFeatureCheckBox
             // 
@@ -926,6 +934,45 @@
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
+            // panel10
+            // 
+            this.panel10.Controls.Add(this.scriptPathBut);
+            this.panel10.Controls.Add(this.darkLabel15);
+            this.panel10.Controls.Add(this.tbScriptPath);
+            this.panel10.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel10.Location = new System.Drawing.Point(3, 159);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(442, 50);
+            this.panel10.TabIndex = 3;
+            // 
+            // scriptPathBut
+            // 
+            this.scriptPathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.scriptPathBut.Location = new System.Drawing.Point(347, 23);
+            this.scriptPathBut.Name = "scriptPathBut";
+            this.scriptPathBut.Size = new System.Drawing.Size(92, 22);
+            this.scriptPathBut.TabIndex = 3;
+            this.scriptPathBut.Text = "Search";
+            this.scriptPathBut.Click += new System.EventHandler(this.scriptPathBut_Click);
+            // 
+            // darkLabel15
+            // 
+            this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel15.Location = new System.Drawing.Point(0, 3);
+            this.darkLabel15.Name = "darkLabel15";
+            this.darkLabel15.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel15.TabIndex = 1;
+            this.darkLabel15.Text = "Path of TXT files for script:";
+            // 
+            // tbScriptPath
+            // 
+            this.tbScriptPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbScriptPath.Location = new System.Drawing.Point(19, 23);
+            this.tbScriptPath.Name = "tbScriptPath";
+            this.tbScriptPath.Size = new System.Drawing.Size(322, 22);
+            this.tbScriptPath.TabIndex = 2;
+            // 
             // FormLevelSettings
             // 
             this.AcceptButton = this.butOk;
@@ -975,6 +1022,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel11.ResumeLayout(false);
+            this.panel10.ResumeLayout(false);
+            this.panel10.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1053,5 +1102,9 @@
         private System.Windows.Forms.Panel panel1;
         private DarkUI.Controls.DarkComboBox comboGameVersion;
         private DarkUI.Controls.DarkLabel darkLabel14;
+        private System.Windows.Forms.Panel panel10;
+        private DarkUI.Controls.DarkButton scriptPathBut;
+        private DarkUI.Controls.DarkLabel darkLabel15;
+        private DarkUI.Controls.DarkTextBox tbScriptPath;
     }
 }

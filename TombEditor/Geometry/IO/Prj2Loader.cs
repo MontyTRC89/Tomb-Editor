@@ -92,6 +92,8 @@ namespace TombEditor.Geometry.IO
                     settings.GameEnableQuickStartFeature = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.GameVersion)
                     settings.GameVersion = (GameVersion)chunkIO.ReadChunkLong(chunkSize);
+                else if (id == Prj2Chunks.ScriptDirectory)
+                    settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.Textures)
                 {
                     var toLoad = new Dictionary<LevelTexture, string>();

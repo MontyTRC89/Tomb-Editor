@@ -14,6 +14,8 @@ namespace TombEditor.Geometry
     {
         [Description("The directory of the *.prj2 file.")]
         LevelDirectory,
+        [Description("The directory of the .txt files for script")]
+        ScriptDirectory,
         [Description("The directory in which all game components reside.")]
         GameDirectory,
         [Description("The directory of the editor application.")]
@@ -74,6 +76,7 @@ namespace TombEditor.Geometry
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds\\Samples")
             };
 
+        public string ScriptDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Script";
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
@@ -108,6 +111,8 @@ namespace TombEditor.Geometry
                     return "";
                 case VariableType.EditorDirectory:
                     return System.Windows.Forms.Application.StartupPath;
+                case VariableType.ScriptDirectory:
+                    return System.Windows.Forms.Application.StartupPath + Dir + "Script";
                 case VariableType.LevelDirectory:
                     if (!string.IsNullOrEmpty(LevelFilePath))
                         return Path.GetDirectoryName(LevelFilePath);
@@ -208,6 +213,7 @@ namespace TombEditor.Geometry
                     case VariableType.EditorDirectory:
                     case VariableType.GameDirectory:
                     case VariableType.LevelDirectory:
+                    case VariableType.ScriptDirectory:
                         string relativePath = PathC.GetRelativePath(GetVariable(baseDirType), path);
                         if (relativePath == null)
                             return Path.GetFullPath(path);

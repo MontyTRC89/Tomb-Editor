@@ -121,7 +121,7 @@ namespace TombLib.Graphics
                 for (int j = 0; j < msh.Polys.Count; j++)
                 {
                     WadPolygon poly = msh.Polys[j];
-                    Vector2 positionInPackedTexture = ((WadTexture)(poly.Texture.Texture)).PositionInPackedTexture;
+                    Vector2 positionInPackedTexture = ((WadTexture)(poly.Texture.Texture)).PositionInTextureAtlas;
 
                     if (poly.Shape == WadPolygonShape.Triangle)
                     {

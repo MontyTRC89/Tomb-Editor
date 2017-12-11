@@ -19,6 +19,7 @@ namespace TombEditor.Geometry.IO
         /**/public static readonly ChunkId OldWadSoundPaths = ChunkId.FromString("TeOldWadSoundPaths");
         /******/public static readonly ChunkId OldWadSoundPath = ChunkId.FromString("TeOldWadSoundPath");
         /**********/public static readonly ChunkId OldWadSoundPathPath = ChunkId.FromString("TePath"); // UTF-8 string
+        /**/public static readonly ChunkId ScriptDirectory = ChunkId.FromString("TeScriptDirectory"); // UTF-8 string
         /**/public static readonly ChunkId GameDirectory = ChunkId.FromString("TeGameDirectory"); // UTF-8 string
         /**/public static readonly ChunkId GameLevelFilePath = ChunkId.FromString("TeGameLevelFilePath"); // UTF-8 string
         /**/public static readonly ChunkId GameExecutableFilePath = ChunkId.FromString("TeGameExecutableFilePath"); // UTF-8 string
