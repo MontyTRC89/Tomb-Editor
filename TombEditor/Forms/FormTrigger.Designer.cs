@@ -66,7 +66,7 @@ namespace TombEditor
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label1.Location = new System.Drawing.Point(9, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 13);
+            this.label1.Size = new System.Drawing.Size(70, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Trigger Type:";
             // 
@@ -232,6 +232,7 @@ namespace TombEditor
             this.comboParameter.Location = new System.Drawing.Point(82, 64);
             this.comboParameter.Name = "comboParameter";
             this.comboParameter.Size = new System.Drawing.Size(587, 23);
+            this.comboParameter.Sorted = true;
             this.comboParameter.TabIndex = 69;
             this.comboParameter.Text = null;
             this.comboParameter.SelectionChangeCommitted += new System.EventHandler(this.comboParameter_SelectionChangeCommitted);
@@ -261,6 +262,7 @@ namespace TombEditor
             this.comboExtraParameter.Location = new System.Drawing.Point(82, 118);
             this.comboExtraParameter.Name = "comboExtraParameter";
             this.comboExtraParameter.Size = new System.Drawing.Size(587, 23);
+            this.comboExtraParameter.Sorted = true;
             this.comboExtraParameter.TabIndex = 72;
             this.comboExtraParameter.Text = null;
             this.comboExtraParameter.SelectionChangeCommitted += new System.EventHandler(this.comboExtraParameter_SelectionChangeCommitted);
@@ -282,6 +284,7 @@ namespace TombEditor
             this.comboTimer.Location = new System.Drawing.Point(82, 91);
             this.comboTimer.Name = "comboTimer";
             this.comboTimer.Size = new System.Drawing.Size(587, 23);
+            this.comboTimer.Sorted = true;
             this.comboTimer.TabIndex = 73;
             this.comboTimer.Text = null;
             this.comboTimer.SelectionChangeCommitted += new System.EventHandler(this.comboTimer_SelectionChangeCommitted);
