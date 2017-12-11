@@ -16,12 +16,32 @@ namespace TombEditor.Compilers.Util
         public AnimatedTextureAnimationType AnimationType;
         public byte Fps;
         public byte UvRotate;
-        public byte Delay;
+        public short Delay;
         public List<ushort> _objectTextureIndices;
+
+        public bool IsUvRotate
+        {
+            get
+            {
+                return AnimationType == AnimatedTextureAnimationType.FullRotate ||
+                       AnimationType == AnimatedTextureAnimationType.HalfRotate ||
+                       AnimationType == AnimatedTextureAnimationType.RiverRotate;
+            }
+        }
     }
 
     public class ObjectTextureManagerWithAnimations : ObjectTextureManager
     {
+        private class ComparerAnimatedTextureSets : IComparer<CompiledAnimatedTexture>
+        {
+            public int Compare(CompiledAnimatedTexture x, CompiledAnimatedTexture y)
+            {
+                if (x.IsUvRotate == y.IsUvRotate) return 0;
+                if (x.IsUvRotate && !y.IsUvRotate) return -1;
+                return 1;
+            }
+        }
+
         public const int AnimationLookupGranularityX = 64;
         public const int AnimationLookupGranularityY = 64;
         public static readonly Vector2 AnimationLookupFactor = new Vector2(1.0f / AnimationLookupGranularityX, 1.0f / AnimationLookupGranularityY);
@@ -278,10 +298,10 @@ namespace TombEditor.Compilers.Util
                 // TODO: remove test values when UI will be ready
                 CompiledAnimatedTexture compiledAnimatedTexture;
                 compiledAnimatedTexture._objectTextureIndices = new List<ushort>();
-                compiledAnimatedTexture.AnimationType = AnimatedTextureAnimationType.Frames; // set.AnimationType;
-                compiledAnimatedTexture.Fps = 30; // set.Fps;
-                compiledAnimatedTexture.UvRotate = 0; // set.UvRotate;
-                compiledAnimatedTexture.Delay = 0; // set.Delay;
+                compiledAnimatedTexture.AnimationType = set.AnimationType;
+                compiledAnimatedTexture.Fps = set.Fps;
+                compiledAnimatedTexture.UvRotate = set.UvRotate;
+                compiledAnimatedTexture.Delay = set.Delay;
 
                 // Expand animation
                 for (int i = 0; i < set.Frames.Count; ++i)
@@ -374,8 +394,25 @@ namespace TombEditor.Compilers.Util
                 }
         }
 
+        public byte UvRotateCount
+        {
+            get
+            {
+                var num = 0;
+                foreach (var set in _compiledAnimatedTextures)
+                    if (set.AnimationType == AnimatedTextureAnimationType.FullRotate ||
+                        set.AnimationType == AnimatedTextureAnimationType.HalfRotate ||
+                        set.AnimationType == AnimatedTextureAnimationType.RiverRotate)
+                        num++;
+                return (byte)num;
+            }
+        }
+
         public void WriteAnimatedTexturesForTr4(BinaryWriterEx stream)
         {
+            // Sort sets
+            _compiledAnimatedTextures.Sort(new ComparerAnimatedTextureSets());
+
             int numAnimatedTexture = 1;
             foreach (var compiledAnimatedTexture in _compiledAnimatedTextures)
                 numAnimatedTexture += compiledAnimatedTexture._objectTextureIndices.Count + 1;

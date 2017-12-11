@@ -45,13 +45,8 @@ namespace TombEditor.Compilers
             writer.Write((ushort)0x8002);
 
             // Count number of textures with UVRotate
-            var numUvRotate = (short)0;
-            foreach (var set in _objectTextureManager.CompiledAnimatedTextures)
-                if (set.AnimationType == AnimatedTextureAnimationType.FullRotate ||
-                    set.AnimationType == AnimatedTextureAnimationType.HalfRotate ||
-                    set.AnimationType == AnimatedTextureAnimationType.RiverRotate)
-                    numUvRotate++;
-            writer.Write((short)(numUvRotate + 0x0100));
+            writer.Write((byte)0x01);
+            writer.Write((byte)_objectTextureManager.UvRotateCount);
             writer.Write((short)_objectTextureManager.CompiledAnimatedTextures.Count);
 
             // Array VetInfoRangeAnim

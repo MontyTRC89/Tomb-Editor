@@ -64,16 +64,30 @@ namespace TombEditor.Geometry
         public AnimatedTextureAnimationType AnimationType { get; set; }
         public byte Fps { get; set; }
         public byte UvRotate { get; set; }
-        public byte Delay { get; set; }
+        public short Delay { get; set; }
 
         public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
 
+        public bool IsUvRotate
+        {
+            get
+            {
+                return AnimationType == AnimatedTextureAnimationType.FullRotate ||
+                       AnimationType == AnimatedTextureAnimationType.HalfRotate ||
+                       AnimationType == AnimatedTextureAnimationType.RiverRotate; 
+            }
+        }
+
         public AnimatedTextureSet Clone()
         {
-            return new AnimatedTextureSet { Frames = Frames.ConvertAll(frame => frame.Clone()) };
+            return new AnimatedTextureSet { Frames = Frames.ConvertAll(frame => frame.Clone()),
+                                            AnimationType = AnimationType,
+                                            Fps = Fps,
+                                            UvRotate = UvRotate,
+                                            Delay = Delay };
         }
         object ICloneable.Clone() => Clone();
-        public bool AnimationIsTrivial => Frames.Count <= 1;
+        public bool AnimationIsTrivial => Frames.Count < 1;
 
         public bool Equals(AnimatedTextureSet other) => Frames.SequenceEqual(other.Frames);
         public override bool Equals(object other) => Equals((AnimatedTextureSet)other);

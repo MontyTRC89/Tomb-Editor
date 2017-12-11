@@ -1,4 +1,4 @@
-// Copyright (c) 2011 Josip Medved <jmedved@jmedved.com>  http://www.jmedved.com
+﻿// Copyright (c) 2011 Josip Medved <jmedved@jmedved.com>  http://www.jmedved.com
 // Code used under MIT license (https://www.medo64.com/license/)
 
 using System;
@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace TombLib.Controls
+namespace TombLib.Utils
 {
-    public class OpenFolderDialog : IDisposable
+    public class BrowseFolderDialog : IDisposable
     {
 
         /// <summary>
