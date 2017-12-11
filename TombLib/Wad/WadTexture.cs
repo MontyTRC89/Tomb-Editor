@@ -58,7 +58,8 @@ namespace TombLib.Wad
         public int Height { get { return Image.Height; } }
 
         // Helper data
-        public Vector2 PositionInPackedTexture { get; set; }
+        public Vector2 PositionInTextureAtlas { get; set; }
+        public Vector2 PositionInPackedTextureMap { get; set; }
         public Vector2 PositionInOriginalTexturePage { get; set; }
         public ushort Tile { get; set; }
     }

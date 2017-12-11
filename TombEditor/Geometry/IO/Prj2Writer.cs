@@ -60,6 +60,7 @@ namespace TombEditor.Geometry.IO
                 chunkIO.WriteChunkString(Prj2Chunks.GameExecutableFilePath, settings.GameExecutableFilePath ?? "");
                 chunkIO.WriteChunkBool(Prj2Chunks.GameEnableQuickStartFeature, settings.GameEnableQuickStartFeature);
                 chunkIO.WriteChunkInt(Prj2Chunks.GameVersion, (long)(settings.GameVersion));
+                chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.Textures, () =>
                 {
                     int index = 0;
