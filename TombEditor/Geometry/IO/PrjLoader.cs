@@ -1451,6 +1451,65 @@ namespace TombEditor.Geometry.IO
                             { // NG header
                                 level.Settings.GameVersion = GameVersion.TRNG;
                                 progressReporter.ReportInfo("NG header found at " + offsetString);
+
+                                // Parse NG chunks
+                                while(reader.BaseStream.Position<reader.BaseStream.Length)
+                                {
+                                    var size = reader.ReadUInt16();
+                                    var chunkId = reader.ReadUInt16();
+
+                                    if (size == 0x474E && chunkId == 0x454C) break; // NGLE marker found
+
+                                    if (chunkId == 0x8002)
+                                    {
+                                        // Animated textures chunk
+                                        var numUvRanges = reader.ReadUInt16();
+                                        var numAnimatedRanges = reader.ReadUInt16();
+                                        for (var i = 0; i < 40; i++)
+                                        {
+                                            if (i < numAnimationRanges)
+                                            {
+                                                var data = reader.ReadUInt16();
+                                                var animationType = data & 0xE000;
+
+                                                switch (animationType)
+                                                {
+                                                    case 0x0000:
+                                                        level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.Frames;
+                                                        level.Settings.AnimatedTextureSets[i].Delay = (short)(data & 0x1FFF);
+                                                        break;
+
+                                                    case 0x4000:
+                                                        level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.PFrames;
+                                                        break;
+
+                                                    case 0x8000:
+                                                        level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.FullRotate;
+                                                        level.Settings.AnimatedTextureSets[i].Fps = (byte)((data & 0x1F00) >> 8);
+                                                        level.Settings.AnimatedTextureSets[i].UvRotate = (byte)(data & 0x00FF);
+                                                        break;
+
+                                                    case 0xA000:
+                                                        level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.HalfRotate;
+                                                        level.Settings.AnimatedTextureSets[i].Fps = (byte)((data & 0x1F00) >> 8);
+                                                        level.Settings.AnimatedTextureSets[i].UvRotate = (byte)(data & 0x00FF);
+                                                        break;
+
+                                                    case 0xC000:
+                                                        level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.RiverRotate;
+                                                        level.Settings.AnimatedTextureSets[i].Fps = (byte)((data & 0x1F00) >> 8);
+                                                        level.Settings.AnimatedTextureSets[i].UvRotate = (byte)(data & 0x00FF);
+                                                        break;
+                                                }
+                                            }
+                                            else
+                                                reader.ReadUInt16();
+                                        }
+                                        reader.ReadBytes(164); // This data can be discarded
+                                    }
+                                    else
+                                        reader.BaseStream.Seek(size - 4, SeekOrigin.Current); // Jump to the next chunk
+                                }
                             }
                             else
                             { // Unknown header

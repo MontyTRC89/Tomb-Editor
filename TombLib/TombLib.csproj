@@ -96,7 +96,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\OpenFolderDialog.cs" />
     <Compile Include="Forms\FormImportTr4Wad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,6 +151,7 @@
     <Compile Include="NG\NgListKind.cs" />
     <Compile Include="NG\NgTriggerKeyValuePair.cs" />
     <Compile Include="NG\NgTriggerMainKeyValuePair.cs" />
+    <Compile Include="Utils\BrowseFolderDialog.cs" />
     <Compile Include="Utils\Cache.cs" />
     <Compile Include="Utils\Hash.cs" />
     <Compile Include="Utils\ImageC.cs" />

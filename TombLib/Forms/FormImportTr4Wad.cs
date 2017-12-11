@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TombLib.Controls;
+using TombLib.Utils;
 using TombLib.Wad.Tr4Wad;
 
 namespace TombLib.Forms
@@ -92,7 +92,7 @@ namespace TombLib.Forms
 
         private void butAddPath_Click(object sender, EventArgs e)
         {
-            using (OpenFolderDialog dialog = new OpenFolderDialog())
+            using (var dialog = new BrowseFolderDialog())
             {
                 dialog.Title = "Select a new sound folder (should contain *.wav audio files)";
                 if (dialog.ShowDialog(this) == DialogResult.OK)

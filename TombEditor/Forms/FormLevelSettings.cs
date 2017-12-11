@@ -9,10 +9,9 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TombEditor.Controls;
 using TombEditor.Geometry;
 using TombEditor.Geometry.IO;
-using TombLib.Controls;
+using TombLib.Utils;
 using TombLib.IO;
 
 namespace TombEditor
@@ -274,7 +273,7 @@ namespace TombEditor
 
         private string BrowseFolder(string currentPath, string description, VariableType baseDirType)
         {
-            using (OpenFolderDialog dialog = new OpenFolderDialog())
+            using (var dialog = new BrowseFolderDialog())
             {
                 dialog.Title = description;
                 dialog.InitialFolder = _levelSettings.MakeAbsolute(currentPath);

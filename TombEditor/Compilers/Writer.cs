@@ -138,7 +138,8 @@ namespace TombEditor.Compilers
                     _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
 
                     // Write object textures
-                    writer.Write(new byte[] { 0x00, 0x54, 0x45, 0x58 });
+                    writer.Write(_objectTextureManager.UvRotateCount);
+                    writer.Write(new byte[] { 0x54, 0x45, 0x58 });
 
                     _objectTextureManager.WriteObjectTexturesForTr4(writer);
 

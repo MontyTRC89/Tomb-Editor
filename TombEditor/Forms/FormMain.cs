@@ -1083,10 +1083,10 @@ namespace TombEditor
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //level.Load("");
-            var level = new TombRaider4Level("e:\\trle\\data\\coastal.tr4");
+            var level = new TombRaider4Level("D:\\trle\\data\\karnak.tr4");
             level.Load("originale");
 
-            level = new TombRaider4Level("E:\\Software\\Tomb-Editor\\Build\\Game\\Data\\coastal.tr4");
+            level = new TombRaider4Level("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
             level.Load("editor");
 
             //level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
