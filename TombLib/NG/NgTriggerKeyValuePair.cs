@@ -19,7 +19,7 @@ namespace TombLib.NG
 
         public override string ToString()
         {
-            return Key + ": " + Value;
+            return Value;
         }
     }
 }

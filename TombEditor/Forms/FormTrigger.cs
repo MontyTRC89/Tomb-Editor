@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -407,10 +408,66 @@ namespace TombEditor
             }
             else if (kind == NgListKind.PcStringsList)
             {
-
+                result = LoadStringsFromTxt("PCStrings");
+            }
+            else if (kind == NgListKind.PsxStringsList)
+            {
+                result = LoadStringsFromTxt("PSXStrings");
+            }
+            else if (kind == NgListKind.NgStringsList255)
+            {
+                result = LoadStringsFromTxt("ExtraNG", 256);
+            }
+            else if (kind == NgListKind.NgStringsAll)
+            {
+                result = LoadStringsFromTxt("ExtraNG");
+            }
+            else if (kind == NgListKind.StringsList255)
+            {
+                result = LoadStringsFromTxt("Strings", 256);
             }
 
             return result.ToArray();
+        }
+
+        private List<object> LoadStringsFromTxt(string block, int max = 1024)
+        {
+            var result = new List<object>();
+            var path = _level.Settings.MakeAbsolute(_level.Settings.ScriptDirectory) + "\\english.txt";
+            if (!File.Exists(path)) return result;
+
+            using (var reader = new StreamReader(File.OpenRead(path)))
+            {
+                var foundBlock = false;
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine().Trim();
+                    if (line.StartsWith("["))
+                    {
+                        line = line.Replace("[", "").Replace("]", "");
+                        if (line == block)
+                        {
+                            foundBlock = true;
+                            break;
+                        }
+                    }
+                }
+
+                // If block is not found, then exit
+                if (!foundBlock) return result;
+
+                // Read strings of block until end of stream or next block or limit reached
+                var numStrings = 0;
+                while (!reader.EndOfStream && numStrings <= max)
+                {
+                    var line = reader.ReadLine().Trim();
+                    if (line.StartsWith("[")) break;
+                    result.Add(new NgTriggerKeyValuePair(numStrings, line));
+                    numStrings++;
+                }
+            }
+
+            return result;
         }
 
         private void SetNgComboboxValue(int value, DarkComboBox combobox)
