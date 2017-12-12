@@ -186,8 +186,6 @@ namespace NgXmlBuilder
         {
             using (var reader = new StreamReader(File.OpenRead("NG\\NG_Constants.txt")))
             {
-                string line;
-
                 while (!reader.EndOfStream)
                 {
                     var block = ReadNgBlock(reader);
