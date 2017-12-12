@@ -64,7 +64,6 @@ namespace TombEditor.Geometry
         public AnimatedTextureAnimationType AnimationType { get; set; }
         public byte Fps { get; set; }
         public byte UvRotate { get; set; }
-        public short Delay { get; set; }
 
         public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
 
@@ -83,8 +82,8 @@ namespace TombEditor.Geometry
             return new AnimatedTextureSet { Frames = Frames.ConvertAll(frame => frame.Clone()),
                                             AnimationType = AnimationType,
                                             Fps = Fps,
-                                            UvRotate = UvRotate,
-                                            Delay = Delay };
+                                            UvRotate = UvRotate
+                                          };
         }
         object ICloneable.Clone() => Clone();
         public bool AnimationIsTrivial => Frames.Count < 1;

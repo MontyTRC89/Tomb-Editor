@@ -208,7 +208,6 @@ namespace TombEditor.Geometry.IO
                                 set.AnimationType = (AnimatedTextureAnimationType)LEB128.ReadByte(chunkIO.Raw);
                                 set.Fps = LEB128.ReadByte(chunkIO.Raw);
                                 set.UvRotate = LEB128.ReadByte(chunkIO.Raw);
-                                set.Delay = LEB128.ReadByte(chunkIO.Raw);
                             }
                             else if (id3 == Prj2Chunks.AnimatedTextureFrames)
                             {
