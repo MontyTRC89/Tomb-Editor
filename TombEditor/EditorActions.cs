@@ -446,7 +446,7 @@ namespace TombEditor
 
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
         {
-            if (modifierKeys.HasFlag(Keys.Shift | Keys.Control))
+            if (modifierKeys.HasFlag(Keys.Control))
                 return new Vector3(0.0f);
             if (modifierKeys.HasFlag(Keys.Shift))
                 return new Vector3(64.0f);
@@ -1348,28 +1348,36 @@ namespace TombEditor
             _editor.ObjectChange(instance, ObjectChangeType.Add);
         }
 
-        public static void DeleteRoom(Room room, IWin32Window owner)
+        public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner)
         {
+            rooms_ = rooms_.Select(room => room.AlternateBaseRoom ?? room).Distinct();
+            HashSet<Room> rooms = new HashSet<Room>(rooms_);
+
             // Check if is the last room
-            int remainingRoomCount = _editor.Level.Rooms.Count(r => (r != null) && (r != room) && (r != room.AlternateVersion));
+            int remainingRoomCount = _editor.Level.Rooms.Count(r => (r != null) && !rooms.Contains(r) && !rooms.Contains(r.AlternateVersion));
             if (remainingRoomCount <= 0)
             {
-                DarkMessageBox.Show(owner, "You must have at least one room in your level", "Error", MessageBoxIcon.Error);
+                DarkMessageBox.Show(owner, "You must have at least one room in your level.", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             // Ask for confirmation
             if (DarkMessageBox.Show(owner,
-                    "Do you really want to delete this room? All objects (including portals) inside room will be deleted and " +
+                    "Do you really want to delete rooms? All objects (including portals) inside rooms will be deleted and " +
                     "triggers pointing to them will be removed.",
-                    "Delete room", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
+                    "Delete rooms", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
             {
                 return;
             }
 
             // Do it finally
-            List<Room> adjoiningRooms = room.Portals.Select(portal => portal.AdjoiningRoom).Distinct().ToList();
-            _editor.Level.DeleteRoom(room);
+            List<Room> adjoiningRooms = rooms.SelectMany(room => room.Portals)
+                .Select(portal => portal.AdjoiningRoom)
+                .Distinct()
+                .Except(rooms)
+                .ToList();
+            foreach (Room room in rooms)
+                _editor.Level.DeleteRoom(room);
 
             // Update selection
             foreach (Room adjoiningRoom in adjoiningRooms)
@@ -1377,7 +1385,7 @@ namespace TombEditor
                 adjoiningRoom?.UpdateCompletely();
                 adjoiningRoom?.AlternateVersion?.UpdateCompletely();
             }
-            if (_editor.SelectedRoom == room)
+            if (rooms.Contains(_editor.SelectedRoom))
                 _editor.SelectRoomAndResetCamera(_editor.Level.Rooms.FirstOrDefault(r => r != null));
             _editor.RoomListChange();
         }
@@ -2088,7 +2096,7 @@ namespace TombEditor
             }
         }
 
-        public static void CopyRoom(IWin32Window owner)
+        public static void DuplicateRooms(IWin32Window owner)
         {
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
             newRoom.Name = _editor.SelectedRoom.Name + " (copy)";

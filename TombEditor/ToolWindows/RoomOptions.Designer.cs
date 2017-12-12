@@ -38,10 +38,8 @@
             this.butRoomUp = new DarkUI.Controls.DarkButton();
             this.butRoomDown = new DarkUI.Controls.DarkButton();
             this.butEditRoomName = new DarkUI.Controls.DarkButton();
-            this.butDeleteRoom = new DarkUI.Controls.DarkButton();
             this.butCropRoom = new DarkUI.Controls.DarkButton();
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
-            this.butCopyRoom = new DarkUI.Controls.DarkButton();
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.cbLocked = new DarkUI.Controls.DarkCheckBox();
@@ -201,7 +199,7 @@
             this.cbFlagOutside.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbFlagOutside.AutoSize = true;
             this.cbFlagOutside.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagOutside.Location = new System.Drawing.Point(173, 79);
+            this.cbFlagOutside.Location = new System.Drawing.Point(199, 79);
             this.cbFlagOutside.Name = "cbFlagOutside";
             this.cbFlagOutside.Size = new System.Drawing.Size(54, 17);
             this.cbFlagOutside.TabIndex = 13;
@@ -214,7 +212,7 @@
             this.cbFlagCold.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbFlagCold.AutoSize = true;
             this.cbFlagCold.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagCold.Location = new System.Drawing.Point(173, 56);
+            this.cbFlagCold.Location = new System.Drawing.Point(199, 56);
             this.cbFlagCold.Name = "cbFlagCold";
             this.cbFlagCold.Size = new System.Drawing.Size(50, 17);
             this.cbFlagCold.TabIndex = 11;
@@ -337,20 +335,8 @@
             this.toolTip.SetToolTip(this.butEditRoomName, "Edit room name");
             this.butEditRoomName.Click += new System.EventHandler(this.butEditRoomName_Click);
             // 
-            // butDeleteRoom
-            // 
-            this.butDeleteRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.general_trash_16;
-            this.butDeleteRoom.Location = new System.Drawing.Point(259, 58);
-            this.butDeleteRoom.Name = "butDeleteRoom";
-            this.butDeleteRoom.Size = new System.Drawing.Size(24, 24);
-            this.butDeleteRoom.TabIndex = 4;
-            this.toolTip.SetToolTip(this.butDeleteRoom, "Delete room");
-            this.butDeleteRoom.Click += new System.EventHandler(this.butDeleteRoom_Click);
-            // 
             // butCropRoom
             // 
-            this.butCropRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
             this.butCropRoom.Location = new System.Drawing.Point(259, 28);
             this.butCropRoom.Name = "butCropRoom";
@@ -363,23 +349,12 @@
             // 
             this.butSplitRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSplitRoom.Image = global::TombEditor.Properties.Resources.general_split_files_16;
-            this.butSplitRoom.Location = new System.Drawing.Point(229, 88);
+            this.butSplitRoom.Location = new System.Drawing.Point(259, 58);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Size = new System.Drawing.Size(24, 24);
             this.butSplitRoom.TabIndex = 5;
             this.toolTip.SetToolTip(this.butSplitRoom, "Split room");
             this.butSplitRoom.Click += new System.EventHandler(this.butSplitRoom_Click);
-            // 
-            // butCopyRoom
-            // 
-            this.butCopyRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCopyRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butCopyRoom.Location = new System.Drawing.Point(229, 58);
-            this.butCopyRoom.Name = "butCopyRoom";
-            this.butCopyRoom.Size = new System.Drawing.Size(24, 24);
-            this.butCopyRoom.TabIndex = 3;
-            this.toolTip.SetToolTip(this.butCopyRoom, "Copy room");
-            this.butCopyRoom.Click += new System.EventHandler(this.butCopyRoom_Click);
             // 
             // cbNoLensflare
             // 
@@ -439,10 +414,8 @@
             this.Controls.Add(this.darkLabel3);
             this.Controls.Add(this.butRoomDown);
             this.Controls.Add(this.butEditRoomName);
-            this.Controls.Add(this.butDeleteRoom);
             this.Controls.Add(this.butCropRoom);
             this.Controls.Add(this.butSplitRoom);
-            this.Controls.Add(this.butCopyRoom);
             this.DockText = "Room Options";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(284, 218);
@@ -477,10 +450,8 @@
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkButton butRoomDown;
         private DarkUI.Controls.DarkButton butEditRoomName;
-        private DarkUI.Controls.DarkButton butDeleteRoom;
         private DarkUI.Controls.DarkButton butCropRoom;
         private DarkUI.Controls.DarkButton butSplitRoom;
-        private DarkUI.Controls.DarkButton butCopyRoom;
         private System.Windows.Forms.ColorDialog colorDialog;
         private DarkUI.Controls.DarkCheckBox cbNoLensflare;
         private System.Windows.Forms.ToolTip toolTip;

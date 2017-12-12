@@ -122,19 +122,19 @@ namespace TombEditor
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Gray out menu options that do not apply
-            if (obj is Editor.SelectedObjectChangedEvent)
+            if (obj is Editor.SelectedObjectChangedEvent || obj is Editor.ModeChangedEvent)
             {
                 ObjectInstance selectedObject = _editor.SelectedObject;
                 copyToolStripMenuItem.Enabled = selectedObject is PositionBasedObjectInstance;
                 stampToolStripMenuItem.Enabled = selectedObject is PositionBasedObjectInstance;
-                deleteToolStripMenuItem.Enabled = selectedObject != null;
-                editToolStripMenuItem.Enabled = selectedObject != null;
+
+                deleteToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject != null;
                 rotateToolStripMenuItem.Enabled = selectedObject is IRotateableY;
             }
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
                 bool validSectorSelection = _editor.SelectedSectors.Valid;
-                smoothRandomCeilingDownToolStripMenuItem.Enabled = validSectorSelection;
+                transformToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomCeilingUpToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomFloorDownToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomFloorUpToolStripMenuItem.Enabled = validSectorSelection;
@@ -884,9 +884,17 @@ namespace TombEditor
             EditorActions.SplitRoom(this);
         }
 
-        private void copyRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        private void duplicateRoomsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.CopyRoom(this);
+            EditorActions.DuplicateRooms(this);
+        }
+
+        private void deleteRoomsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editor.Mode == EditorMode.Map2D)
+                EditorActions.DeleteRooms(_editor.SelectedRooms, this);
+            else
+                EditorActions.DeleteRooms(new Room[] { _editor.SelectedRoom }, this);
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -896,13 +904,22 @@ namespace TombEditor
 
         private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.SelectedSectors = new SectorSelection { Area = _editor.SelectedRoom.LocalArea };
+            if (_editor.Mode == EditorMode.Map2D)
+            {
+                //_editor.SelectedRooms(_editor.Level.Rooms.Where(room => room != null));
+                _editor.SelectedSectors = new SectorSelection { Area = _editor.SelectedRoom.LocalArea };
+            }
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_editor.SelectedObject != null)
-                EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
+            if (_editor.Mode == EditorMode.Map2D)
+                EditorActions.DeleteRooms(_editor.SelectedRooms, this);
+            else
+            {
+                if (_editor.SelectedObject != null)
+                    EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
+            }
         }
 
         private void editObjectToolStripMenuItem_Click(object sender, EventArgs e)

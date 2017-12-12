@@ -334,11 +334,6 @@ namespace TombEditor.ToolWindows
             EditorActions.SplitRoom(this);
         }
 
-        private void butCopyRoom_Click(object sender, EventArgs e)
-        {
-            EditorActions.CopyRoom(this);
-        }
-
         private void butEditRoomName_Click(object sender, EventArgs e)
         {
             using (var form = new FormInputBox())
@@ -354,13 +349,6 @@ namespace TombEditor.ToolWindows
                 _editor.RoomPropertiesChange(_editor.SelectedRoom);
                 _editor.RoomListChange();
             }
-        }
-
-        private void butDeleteRoom_Click(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom == null)
-                return;
-            EditorActions.DeleteRoom(_editor.SelectedRoom, this);
         }
 
         private void butRoomUp_Click(object sender, EventArgs e)
