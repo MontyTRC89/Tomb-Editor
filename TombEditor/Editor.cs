@@ -616,6 +616,18 @@ namespace TombEditor
                     current?.SaveTry();
             }
 
+            // Update room selection so that no deleted rooms are selected
+            if (obj is RoomListChangedEvent)
+            {
+                IEnumerable<Room> newSelection = SelectedRooms.Intersect(_level.Rooms.Where(room => room != null));
+                if (newSelection.FirstOrDefault() == null)
+                    SelectRoomAndResetCamera(_level.Rooms.Where(room => room != null).First());
+                else if (newSelection.Contains(SelectedRoom))
+                    SelectRooms(newSelection.ToList());
+                else
+                    SelectRoomsAndResetCamera(newSelection.ToList());
+            }
+
             // Update unsaved changes state
             if (obj is IEditorEventCausesUnsavedChanges)
             {

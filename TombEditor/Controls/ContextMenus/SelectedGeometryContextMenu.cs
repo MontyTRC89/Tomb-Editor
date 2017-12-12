@@ -14,7 +14,6 @@ namespace TombEditor.Controls.ContextMenus
         private ToolStripItem _itemAddPortal;
         private ToolStripItem _itemCropRoom;
         private ToolStripItem _itemSplitRoom;
-        private ToolStripItem _itemCopyRoom;
 
         public SelectedGeometryContextMenu(PanelRendering3D panel3D)
             : base()
@@ -38,11 +37,6 @@ namespace TombEditor.Controls.ContextMenus
             {
                 EditorActions.SplitRoom(panel3D);
             });
-
-            _itemCopyRoom = new ToolStripMenuItem("Clone room", global::TombEditor.Properties.Resources.general_copy_16, (o, e) =>
-            {
-                EditorActions.CopyRoom(panel3D);
-            });
         }
 
         public override void OpenMenu(Control c, Point p)
@@ -54,7 +48,6 @@ namespace TombEditor.Controls.ContextMenus
             Items.Add(new ToolStripSeparator());
             Items.Add(_itemCropRoom);
             Items.Add(_itemSplitRoom);
-            Items.Add(_itemCopyRoom);
 
             Show(c, p);
         }
