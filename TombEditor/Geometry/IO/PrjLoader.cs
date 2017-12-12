@@ -12,7 +12,6 @@ using Color = System.Drawing.Color;
 using TombLib.Utils;
 using System.Threading.Tasks;
 using TombLib.Wad;
-using TombLib.Utils;
 
 namespace TombEditor.Geometry.IO
 {
@@ -1828,7 +1827,7 @@ namespace TombEditor.Geometry.IO
 
                 return level;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 level.Dispose(); // We log in the level above
                 throw;

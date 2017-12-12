@@ -65,7 +65,7 @@ namespace WadTool
                 {
                     Save();
                 }
-                catch (Exception exc)
+                catch (Exception)
                 {
                     //logger.Info(exc, "Unable to save configuration to \"" + GetDefaultPath() + "\"");
                 }
@@ -96,7 +96,7 @@ namespace WadTool
             {
                 return Load();
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 //log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + GetDefaultPath() + "\"", null, exc));
                 return new Configuration { FilePath = GetDefaultPath() };
