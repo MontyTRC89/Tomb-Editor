@@ -61,7 +61,6 @@ namespace TombEditor
         private const float _maxLegacyFrames = 16;
 
         private bool _isNg;
-        private bool _loaded;
 
         public FormAnimatedTextures(Editor editor)
         {
@@ -81,17 +80,6 @@ namespace TombEditor
             texturesDataGridViewControls.DataGridView = texturesDataGridView;
             texturesDataGridViewControls.CreateNewRow = GetSelectedAnimatedTextureFrame;
             texturesDataGridViewColumnTexture.DataSource = new BindingList<LevelTexture>(editor.Level.Settings.Textures);
-
-            // Init state
-            _editor_EditorEventRaised(new InitEvent());
-            if (comboAnimatedTextureSets.Items.Count > 0)
-                comboAnimatedTextureSets.SelectedIndex = 0;
-
-            // Setup texture map
-            if (_editor.SelectedTexture.TextureIsInvisble)
-                textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
-            else
-                textureMap.ShowTexture(_editor.SelectedTexture);
 
             // NG settings
             _isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
@@ -114,7 +102,16 @@ namespace TombEditor
                 settingsPanelNG.Visible = false;
             }
 
-            _loaded = true;
+            // Init state
+            _editor_EditorEventRaised(new InitEvent());
+            if (comboAnimatedTextureSets.Items.Count > 0)
+                comboAnimatedTextureSets.SelectedIndex = 0;
+
+            // Setup texture map
+            if (_editor.SelectedTexture.TextureIsInvisble)
+                textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
+            else
+                textureMap.ShowTexture(_editor.SelectedTexture);
         }
 
         protected override void Dispose(bool disposing)
