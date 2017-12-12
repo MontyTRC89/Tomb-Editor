@@ -1,4 +1,5 @@
-﻿using DarkUI.Extensions;
+﻿using DarkUI.Controls;
+using DarkUI.Extensions;
 using DarkUI.Forms;
 using NLog;
 using SharpDX;
@@ -33,6 +34,22 @@ namespace TombEditor
             public Vector2 _sourceTexCoord3;
             public Size _destinationSize;
         };
+        private struct NgAnimatedTextureSettingPair
+        {
+            public int Key;
+            public string Value;
+
+            public NgAnimatedTextureSettingPair(int key,string value)
+            {
+                Key = key;
+                Value = value;
+            }
+
+            public override string ToString()
+            {
+                return Value;
+            }
+        }
 
         private Editor _editor;
         private Cache<CachedImageInfo, Bitmap> _imageCache;
@@ -42,6 +59,9 @@ namespace TombEditor
         private int _previewCurrentRepeatTimes = 0;
         private const float _previewFps = 15;
         private const float _maxLegacyFrames = 16;
+
+        private bool _isNg;
+        private bool _loaded;
 
         public FormAnimatedTextures(Editor editor)
         {
@@ -72,6 +92,29 @@ namespace TombEditor
                 textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
             else
                 textureMap.ShowTexture(_editor.SelectedTexture);
+
+            // NG settings
+            _isNg = _editor.Level.Settings.GameVersion == GameVersion.TRNG;
+            if (_isNg)
+            {
+                // Fill effect combobox
+                foreach (var animationType in Enum.GetValues(typeof(AnimatedTextureAnimationType)))
+                    comboEffect.Items.Add(animationType);
+
+                // Fill uv rotate combobox
+                for (var i = -64; i < 0; i++)
+                    comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(i, "UvRotate = " + i));
+                comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(0, "Default (from script)"));
+                for (var i = 1; i <= 64; i++)
+                    comboUvRotate.Items.Add(new NgAnimatedTextureSettingPair(i, "UvRotate = " + i));
+            }
+            else
+            {
+                labelHeaderNgSettings.Visible = false;
+                settingsPanelNG.Visible = false;
+            }
+
+            _loaded = true;
         }
 
         protected override void Dispose(bool disposing)
@@ -199,6 +242,35 @@ namespace TombEditor
 
             if (tooManyFramesWarning.Visible = frameCount > _maxLegacyFrames)
                 warningToolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "! This will cause crashes with old engines!");
+
+            if (_isNg)
+            {
+                comboEffect.SelectedItem = selectedSet.AnimationType;
+                OnEffectChanged();
+
+                switch (selectedSet.AnimationType)
+                {
+                    case AnimatedTextureAnimationType.Frames:
+                        NgSelectComboboxValue(selectedSet.Fps, comboFps);
+                        break;
+                    case AnimatedTextureAnimationType.FullRotate:
+                    case AnimatedTextureAnimationType.HalfRotate:
+                    case AnimatedTextureAnimationType.RiverRotate:
+                        NgSelectComboboxValue(selectedSet.Fps, comboFps);
+                        NgSelectComboboxValue(selectedSet.UvRotate, comboUvRotate);
+                        break;
+                }
+            }
+        }
+
+        private void NgSelectComboboxValue(int value, DarkComboBox cb)
+        {
+            foreach (NgAnimatedTextureSettingPair item in cb.Items)
+                if (item.Key == value)
+                {
+                    cb.SelectedItem = item;
+                    return;
+                }
         }
 
         private void NewDataSource_ListChanged(object sender, ListChangedEventArgs e)
@@ -269,8 +341,9 @@ namespace TombEditor
 
         private void UpdateEnable()
         {
+            //if (!_loaded) return;
             bool enable = comboAnimatedTextureSets.SelectedItem is AnimatedTextureSet;
-            settingsPanel.Enabled = enable;
+            settingsPanelNG.Enabled = enable;
             texturesDataGridViewControls.Enabled = enable;
             butAnimatedTextureSetDelete.Enabled = enable;
 
@@ -540,6 +613,83 @@ namespace TombEditor
         private void textureMap_DoubleClick(object sender, EventArgs e)
         {
             AddFrame();
+        }
+
+        private void comboEffect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnEffectChanged();
+        }
+
+        private void OnEffectChanged()
+        {
+            var effect = (AnimatedTextureAnimationType)comboEffect.SelectedItem;
+            switch (effect)
+            {
+                case AnimatedTextureAnimationType.Frames:
+                    labelFps.Visible = true;
+                    comboFps.Visible = true;
+                    labelUvRotate.Visible = false;
+                    comboUvRotate.Visible = false;
+
+                    comboFps.Items.Clear();
+                    comboFps.Items.Add(new NgAnimatedTextureSettingPair(0, "Default"));
+                    for (var i = 30; i > 1; i--)
+                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " Fps"));
+                    for (var i = 1; i <= 8; i++)
+                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(-i, i + " Sfps"));
+                    comboFps.SelectedIndex = 0;
+
+                    break;
+
+                case AnimatedTextureAnimationType.PFrames:
+                    labelFps.Visible = false;
+                    comboFps.Visible = false;
+                    labelUvRotate.Visible = false;
+                    comboUvRotate.Visible = false;
+                    break;
+
+                case AnimatedTextureAnimationType.FullRotate:
+                case AnimatedTextureAnimationType.HalfRotate:
+                case AnimatedTextureAnimationType.RiverRotate:
+                    labelFps.Visible = true;
+                    comboFps.Visible = true;
+                    labelUvRotate.Visible = true;
+                    comboUvRotate.Visible = true;
+
+                    comboFps.Items.Clear();
+                    comboFps.Items.Add(new NgAnimatedTextureSettingPair(0, "Default"));
+                    for (var i = 1; i <= 32; i++)
+                        comboFps.Items.Add(new NgAnimatedTextureSettingPair(i, i + " Fps"));
+
+                    comboFps.SelectedIndex = 0;
+                    comboUvRotate.SelectedIndex = 64;
+
+                    break;
+            }
+        }
+
+        private void comboEffect_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+            if (selectedSet == null) return;
+            selectedSet.AnimationType = (AnimatedTextureAnimationType)comboEffect.SelectedItem;
+            _editor.AnimatedTexturesChange();
+        }
+
+        private void comboFps_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+            if (selectedSet == null) return;
+            selectedSet.Fps = (byte)((NgAnimatedTextureSettingPair)comboFps.SelectedItem).Key;
+            _editor.AnimatedTexturesChange();
+        }
+
+        private void comboUvRotate_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+            if (selectedSet == null) return;
+            selectedSet.UvRotate = (byte)((NgAnimatedTextureSettingPair)comboUvRotate.SelectedItem).Key;
+            _editor.AnimatedTexturesChange();
         }
     }
 }

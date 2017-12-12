@@ -1476,7 +1476,7 @@ namespace TombEditor.Geometry.IO
                                                 {
                                                     case 0x0000:
                                                         level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.Frames;
-                                                        level.Settings.AnimatedTextureSets[i].Delay = (short)(data & 0x1FFF);
+                                                        level.Settings.AnimatedTextureSets[i].Fps = (byte)(data & 0x00FF);
                                                         break;
 
                                                     case 0x4000:

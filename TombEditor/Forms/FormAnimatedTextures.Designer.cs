@@ -34,11 +34,14 @@ namespace TombEditor
             this.texturesDataGridViewColumnTexCoord1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.texturesDataGridViewColumnTexCoord2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.texturesDataGridViewColumnTexCoord3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.labelHeaderNgSettings = new DarkUI.Controls.DarkLabel();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
-            this.settingsPanel = new System.Windows.Forms.Panel();
-            this.darkLabel5 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel3 = new DarkUI.Controls.DarkLabel();
+            this.settingsPanelNG = new System.Windows.Forms.Panel();
+            this.labelUvRotate = new DarkUI.Controls.DarkLabel();
+            this.comboUvRotate = new DarkUI.Controls.DarkComboBox();
+            this.labelFps = new DarkUI.Controls.DarkLabel();
+            this.comboFps = new DarkUI.Controls.DarkComboBox();
+            this.labelEffect = new DarkUI.Controls.DarkLabel();
             this.comboEffect = new DarkUI.Controls.DarkComboBox();
             this.previewImage = new System.Windows.Forms.PictureBox();
             this.texturesDataGridViewControls = new TombEditor.Controls.DarkDataGridViewControls();
@@ -47,7 +50,7 @@ namespace TombEditor
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).BeginInit();
-            this.settingsPanel.SuspendLayout();
+            this.settingsPanelNG.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -121,7 +124,7 @@ namespace TombEditor
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 618F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(802, 618);
             this.tableLayoutPanel1.TabIndex = 43;
             // 
@@ -132,9 +135,9 @@ namespace TombEditor
             this.panel1.Controls.Add(this.tooManyFramesWarning);
             this.panel1.Controls.Add(this.previewProgressBar);
             this.panel1.Controls.Add(this.texturesDataGridView);
-            this.panel1.Controls.Add(this.darkLabel2);
+            this.panel1.Controls.Add(this.labelHeaderNgSettings);
             this.panel1.Controls.Add(this.darkLabel4);
-            this.panel1.Controls.Add(this.settingsPanel);
+            this.panel1.Controls.Add(this.settingsPanelNG);
             this.panel1.Controls.Add(this.previewImage);
             this.panel1.Controls.Add(this.texturesDataGridViewControls);
             this.panel1.Controls.Add(this.butAnimatedTextureSetDelete);
@@ -291,17 +294,17 @@ namespace TombEditor
             this.texturesDataGridViewColumnTexCoord3.Name = "texturesDataGridViewColumnTexCoord3";
             this.texturesDataGridViewColumnTexCoord3.Width = 70;
             // 
-            // darkLabel2
+            // labelHeaderNgSettings
             // 
-            this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.labelHeaderNgSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(4, 443);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(255, 18);
-            this.darkLabel2.TabIndex = 10;
-            this.darkLabel2.Text = " Settings";
-            this.darkLabel2.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.labelHeaderNgSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelHeaderNgSettings.Location = new System.Drawing.Point(4, 443);
+            this.labelHeaderNgSettings.Name = "labelHeaderNgSettings";
+            this.labelHeaderNgSettings.Size = new System.Drawing.Size(255, 18);
+            this.labelHeaderNgSettings.TabIndex = 10;
+            this.labelHeaderNgSettings.Text = " NG Settings";
+            this.labelHeaderNgSettings.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // darkLabel4
             // 
@@ -314,56 +317,85 @@ namespace TombEditor
             this.darkLabel4.Text = " Preview";
             this.darkLabel4.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
-            // settingsPanel
+            // settingsPanelNG
             // 
-            this.settingsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.settingsPanelNG.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.settingsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.settingsPanel.Controls.Add(this.darkLabel5);
-            this.settingsPanel.Controls.Add(this.darkLabel3);
-            this.settingsPanel.Controls.Add(this.comboEffect);
-            this.settingsPanel.Enabled = false;
-            this.settingsPanel.Location = new System.Drawing.Point(4, 464);
-            this.settingsPanel.Name = "settingsPanel";
-            this.settingsPanel.Size = new System.Drawing.Size(255, 148);
-            this.settingsPanel.TabIndex = 12;
+            this.settingsPanelNG.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.settingsPanelNG.Controls.Add(this.labelUvRotate);
+            this.settingsPanelNG.Controls.Add(this.comboUvRotate);
+            this.settingsPanelNG.Controls.Add(this.labelFps);
+            this.settingsPanelNG.Controls.Add(this.comboFps);
+            this.settingsPanelNG.Controls.Add(this.labelEffect);
+            this.settingsPanelNG.Controls.Add(this.comboEffect);
+            this.settingsPanelNG.Location = new System.Drawing.Point(4, 464);
+            this.settingsPanelNG.Name = "settingsPanelNG";
+            this.settingsPanelNG.Size = new System.Drawing.Size(255, 148);
+            this.settingsPanelNG.TabIndex = 12;
             // 
-            // darkLabel5
+            // labelUvRotate
             // 
-            this.darkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.labelUvRotate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelUvRotate.Location = new System.Drawing.Point(-5, 70);
+            this.labelUvRotate.Name = "labelUvRotate";
+            this.labelUvRotate.Size = new System.Drawing.Size(67, 23);
+            this.labelUvRotate.TabIndex = 10;
+            this.labelUvRotate.Text = "UvRotate:";
+            this.labelUvRotate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboUvRotate
+            // 
+            this.comboUvRotate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel5.Location = new System.Drawing.Point(3, 10);
-            this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(247, 83);
-            this.darkLabel5.TabIndex = 6;
-            this.darkLabel5.Text = "To Do";
-            this.darkLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.comboUvRotate.Location = new System.Drawing.Point(70, 70);
+            this.comboUvRotate.Name = "comboUvRotate";
+            this.comboUvRotate.Size = new System.Drawing.Size(180, 23);
+            this.comboUvRotate.TabIndex = 11;
+            this.comboUvRotate.Text = "Normal";
+            this.comboUvRotate.SelectionChangeCommitted += new System.EventHandler(this.comboUvRotate_SelectionChangeCommitted);
             // 
-            // darkLabel3
+            // labelFps
             // 
-            this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(9, 12);
-            this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(53, 23);
-            this.darkLabel3.TabIndex = 6;
-            this.darkLabel3.Text = "Effect:";
-            this.darkLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelFps.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelFps.Location = new System.Drawing.Point(9, 41);
+            this.labelFps.Name = "labelFps";
+            this.labelFps.Size = new System.Drawing.Size(53, 23);
+            this.labelFps.TabIndex = 8;
+            this.labelFps.Text = "Fps:";
+            this.labelFps.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // comboFps
+            // 
+            this.comboFps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboFps.Location = new System.Drawing.Point(70, 41);
+            this.comboFps.Name = "comboFps";
+            this.comboFps.Size = new System.Drawing.Size(180, 23);
+            this.comboFps.TabIndex = 9;
+            this.comboFps.Text = "Normal";
+            this.comboFps.SelectionChangeCommitted += new System.EventHandler(this.comboFps_SelectionChangeCommitted);
+            // 
+            // labelEffect
+            // 
+            this.labelEffect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelEffect.Location = new System.Drawing.Point(9, 12);
+            this.labelEffect.Name = "labelEffect";
+            this.labelEffect.Size = new System.Drawing.Size(53, 23);
+            this.labelEffect.TabIndex = 6;
+            this.labelEffect.Text = "Effect:";
+            this.labelEffect.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // comboEffect
             // 
             this.comboEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboEffect.Items.AddRange(new object[] {
-            "Normal",
-            "Half Rotate",
-            "Full Rotate"});
             this.comboEffect.Location = new System.Drawing.Point(70, 12);
             this.comboEffect.Name = "comboEffect";
             this.comboEffect.Size = new System.Drawing.Size(180, 23);
             this.comboEffect.TabIndex = 7;
             this.comboEffect.Text = "Normal";
+            this.comboEffect.SelectedIndexChanged += new System.EventHandler(this.comboEffect_SelectedIndexChanged);
+            this.comboEffect.SelectionChangeCommitted += new System.EventHandler(this.comboEffect_SelectionChangeCommitted);
             // 
             // previewImage
             // 
@@ -389,6 +421,7 @@ namespace TombEditor
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butOk.Location = new System.Drawing.Point(669, 626);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(134, 23);
@@ -424,7 +457,7 @@ namespace TombEditor
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).EndInit();
-            this.settingsPanel.ResumeLayout(false);
+            this.settingsPanelNG.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.previewImage)).EndInit();
             this.ResumeLayout(false);
 
@@ -443,11 +476,10 @@ namespace TombEditor
         private DarkLabel tooManyFramesWarning;
         private DarkProgressBar previewProgressBar;
         private DarkDataGridView texturesDataGridView;
-        private DarkLabel darkLabel2;
+        private DarkLabel labelHeaderNgSettings;
         private DarkLabel darkLabel4;
-        private Panel settingsPanel;
-        private DarkLabel darkLabel5;
-        private DarkLabel darkLabel3;
+        private Panel settingsPanelNG;
+        private DarkLabel labelEffect;
         private DarkComboBox comboEffect;
         private PictureBox previewImage;
         private Controls.DarkDataGridViewControls texturesDataGridViewControls;
@@ -462,5 +494,9 @@ namespace TombEditor
         private DarkButton butUpdate;
         private ToolTip warningToolTip;
         private System.ComponentModel.IContainer components;
+        private DarkLabel labelUvRotate;
+        private DarkComboBox comboUvRotate;
+        private DarkLabel labelFps;
+        private DarkComboBox comboFps;
     }
 }

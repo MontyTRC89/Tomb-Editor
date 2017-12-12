@@ -296,12 +296,32 @@ namespace TombEditor.Compilers.Util
 
                 // Create compiled animated texture
                 // TODO: remove test values when UI will be ready
-                CompiledAnimatedTexture compiledAnimatedTexture;
+                CompiledAnimatedTexture compiledAnimatedTexture = new CompiledAnimatedTexture();
                 compiledAnimatedTexture._objectTextureIndices = new List<ushort>();
                 compiledAnimatedTexture.AnimationType = set.AnimationType;
-                compiledAnimatedTexture.Fps = set.Fps;
-                compiledAnimatedTexture.UvRotate = set.UvRotate;
-                compiledAnimatedTexture.Delay = set.Delay;
+                if (set.AnimationType == AnimatedTextureAnimationType.Frames)
+                {
+                    if (set.Fps < 0)
+                    {
+                        compiledAnimatedTexture.Fps = 0;
+                        compiledAnimatedTexture.Delay = (byte)-set.Fps;
+                    }
+                    else
+                    {
+                        compiledAnimatedTexture.Fps = set.Fps;
+                        compiledAnimatedTexture.Delay = 0;
+                    }
+                }
+                else if (set.AnimationType == AnimatedTextureAnimationType.PFrames)
+                {
+                    compiledAnimatedTexture.Fps = 0;
+                    compiledAnimatedTexture.Delay = 0;
+                }
+                else
+                {
+                    compiledAnimatedTexture.Fps = set.Fps;
+                    compiledAnimatedTexture.UvRotate = set.UvRotate;
+                }
 
                 // Expand animation
                 for (int i = 0; i < set.Frames.Count; ++i)
@@ -410,7 +430,7 @@ namespace TombEditor.Compilers.Util
 
         public void WriteAnimatedTexturesForTr4(BinaryWriterEx stream)
         {
-            // Sort sets
+            // Sort sets for keeping UVRotate ranges first
             _compiledAnimatedTextures.Sort(new ComparerAnimatedTextureSets());
 
             int numAnimatedTexture = 1;

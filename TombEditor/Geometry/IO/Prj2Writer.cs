@@ -119,7 +119,6 @@ namespace TombEditor.Geometry.IO
                                     LEB128.Write(chunkIO.Raw, (byte)set.AnimationType);
                                     LEB128.Write(chunkIO.Raw, set.Fps);
                                     LEB128.Write(chunkIO.Raw, set.UvRotate);
-                                    LEB128.Write(chunkIO.Raw, set.Delay);
                                 });
 
                                 foreach (AnimatedTextureFrame frame in set.Frames)
