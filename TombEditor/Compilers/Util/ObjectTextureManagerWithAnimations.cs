@@ -14,8 +14,8 @@ namespace TombEditor.Compilers.Util
     public struct CompiledAnimatedTexture
     {
         public AnimatedTextureAnimationType AnimationType;
-        public byte Fps;
-        public byte UvRotate;
+        public sbyte Fps;
+        public sbyte UvRotate;
         public short Delay;
         public List<ushort> _objectTextureIndices;
 

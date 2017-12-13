@@ -59,6 +59,7 @@ namespace TombEditor
         private int _previewCurrentRepeatTimes = 0;
         private const float _previewFps = 15;
         private const float _maxLegacyFrames = 16;
+        private int _lastY = 0;
 
         private bool _isNg;
 
@@ -66,6 +67,7 @@ namespace TombEditor
         {
             InitializeComponent();
             _previewTimer.Tick += _previewTimer_Tick;
+            previewImage.Paint += _onPicturePreviewPaint;
             _editor = editor;
             _editor.EditorEventRaised += _editor_EditorEventRaised;
 
@@ -184,7 +186,7 @@ namespace TombEditor
                 _editor.AnimatedTexturesChange();
             }
         }
-
+        
         private void UpdateCurrentAnimationDisplay()
         {
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
@@ -228,7 +230,32 @@ namespace TombEditor
                 _previewTimer.Enabled = true;
                 previewProgressBar.TextMode = DarkUI.Controls.DarkProgressBarMode.XOfN;
             }
-            _previewTimer.Interval = (int)Math.Round(1000 / _previewFps);
+
+            if (!_isNg)
+            {
+                _previewTimer.Interval = (int)Math.Round(1000 / _previewFps);
+            }
+            else
+            {
+                switch (selectedSet.AnimationType)
+                {
+                    case AnimatedTextureAnimationType.Frames:
+                        if (selectedSet.Fps > 0)
+                            _previewTimer.Interval = (int)Math.Round(1000 / selectedSet.Fps / 2.0f);
+                        else if (selectedSet.Fps < 0)
+                            _previewTimer.Interval = -selectedSet.Fps * 1000;
+                        break;
+
+                    case AnimatedTextureAnimationType.PFrames:
+                        _previewTimer.Interval = (int)Math.Round(1000 / _previewFps); // TODO: verify this
+                        break;
+
+                    case AnimatedTextureAnimationType.FullRotate:
+                        _previewTimer.Interval = (int)Math.Round(1000 / (selectedSet.Fps != 0 ? selectedSet.Fps : _previewFps));
+                        _lastY = 0;
+                        break;
+                }
+            }
 
             // Update warning about too many frames
             int frameCount = 0;
@@ -311,6 +338,31 @@ namespace TombEditor
                 _sourceTexCoord3 = _previewCurrentFrame.TexCoord3,
                 _destinationSize = previewImage.ClientSize
             }];
+        }
+
+        private void _onPicturePreviewPaint(object sender, PaintEventArgs args)
+        {
+            var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
+            if (selectedSet == null) return;
+
+            var image = (sender as PictureBox).Image;
+            if (image == null) return;
+
+            var g = args.Graphics;
+
+            if (selectedSet.IsUvRotate)
+            {
+                g.DrawImage(image, new Point(0, _lastY * 2 - 128));
+                g.DrawImage(image, new Point(0, _lastY * 2));
+
+                _lastY += selectedSet.UvRotate;
+                if (_lastY == 64 && selectedSet.Fps > 0) _lastY = 0;
+                if (_lastY == 0 && selectedSet.Fps < 0) _lastY = 64;
+            }
+            else
+            {
+                g.DrawImage(image, new Point(0, 0));
+            }
         }
 
         private void butAnimatedTextureSetNew_Click(object sender, EventArgs e)
@@ -677,7 +729,7 @@ namespace TombEditor
         {
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
             if (selectedSet == null) return;
-            selectedSet.Fps = (byte)((NgAnimatedTextureSettingPair)comboFps.SelectedItem).Key;
+            selectedSet.Fps = (sbyte)((NgAnimatedTextureSettingPair)comboFps.SelectedItem).Key;
             _editor.AnimatedTexturesChange();
         }
 
@@ -685,7 +737,7 @@ namespace TombEditor
         {
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
             if (selectedSet == null) return;
-            selectedSet.UvRotate = (byte)((NgAnimatedTextureSettingPair)comboUvRotate.SelectedItem).Key;
+            selectedSet.UvRotate = (sbyte)((NgAnimatedTextureSettingPair)comboUvRotate.SelectedItem).Key;
             _editor.AnimatedTexturesChange();
         }
     }

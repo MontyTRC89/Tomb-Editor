@@ -1476,7 +1476,7 @@ namespace TombEditor.Geometry.IO
                                                 {
                                                     case 0x0000:
                                                         level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.Frames;
-                                                        level.Settings.AnimatedTextureSets[i].Fps = (byte)(data & 0x00FF);
+                                                        level.Settings.AnimatedTextureSets[i].Fps = (sbyte)(data & 0x00FF);
                                                         break;
 
                                                     case 0x4000:
@@ -1485,20 +1485,20 @@ namespace TombEditor.Geometry.IO
 
                                                     case 0x8000:
                                                         level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.FullRotate;
-                                                        level.Settings.AnimatedTextureSets[i].Fps = (byte)((data & 0x1F00) >> 8);
-                                                        level.Settings.AnimatedTextureSets[i].UvRotate = (byte)(data & 0x00FF);
+                                                        level.Settings.AnimatedTextureSets[i].Fps = (sbyte)((data & 0x1F00) >> 8);
+                                                        level.Settings.AnimatedTextureSets[i].UvRotate = (sbyte)(data & 0x00FF);
                                                         break;
 
                                                     case 0xA000:
                                                         level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.HalfRotate;
-                                                        level.Settings.AnimatedTextureSets[i].Fps = (byte)((data & 0x1F00) >> 8);
-                                                        level.Settings.AnimatedTextureSets[i].UvRotate = (byte)(data & 0x00FF);
+                                                        level.Settings.AnimatedTextureSets[i].Fps = (sbyte)((data & 0x1F00) >> 8);
+                                                        level.Settings.AnimatedTextureSets[i].UvRotate = (sbyte)(data & 0x00FF);
                                                         break;
 
                                                     case 0xC000:
                                                         level.Settings.AnimatedTextureSets[i].AnimationType = AnimatedTextureAnimationType.RiverRotate;
-                                                        level.Settings.AnimatedTextureSets[i].Fps = (byte)((data & 0x1F00) >> 8);
-                                                        level.Settings.AnimatedTextureSets[i].UvRotate = (byte)(data & 0x00FF);
+                                                        level.Settings.AnimatedTextureSets[i].Fps = (sbyte)((data & 0x1F00) >> 8);
+                                                        level.Settings.AnimatedTextureSets[i].UvRotate = (sbyte)(data & 0x00FF);
                                                         break;
                                                 }
                                             }
