@@ -62,8 +62,8 @@ namespace TombEditor.Geometry
     public class AnimatedTextureSet : ICloneable, IEquatable<AnimatedTextureSet>
     {
         public AnimatedTextureAnimationType AnimationType { get; set; }
-        public byte Fps { get; set; }
-        public byte UvRotate { get; set; }
+        public sbyte Fps { get; set; }
+        public sbyte UvRotate { get; set; }
 
         public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
 
