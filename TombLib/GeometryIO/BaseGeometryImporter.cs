@@ -50,8 +50,8 @@ namespace TombLib.GeometryIO
             }
             if (_settings.WrapUV)
             {
-                uv.X -= (float)Math.Floor(uv.X);
-                uv.Y -= (float)Math.Floor(uv.Y);
+                uv.X -= (uv.X > 1.0f ? (float)Math.Floor(uv.X) : 0.0f);
+                uv.Y -= (uv.Y > 1.0f ? (float)Math.Floor(uv.Y) : 0.0f);
             }
             if (_settings.PremultiplyUV)
             {

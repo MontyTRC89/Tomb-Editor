@@ -23,12 +23,10 @@ namespace TombLib.GeometryIO.Importers
         public override IOModel ImportFromFile(string filename)
         {
             var model = new IOModel();
-            var mesh = new IOMesh();
             var materials = new List<string>();
             var positions = new List<Vector3>();
             var textures = new Dictionary<int, Texture>();
-            var lastVertex = 0;
-
+            
             // TODO: to remove after presets refactoring
             _settings = new IOGeometrySettings
             {
@@ -93,6 +91,8 @@ namespace TombLib.GeometryIO.Importers
                     }
                     else if (chunk == "Object")
                     {
+                        var mesh = new IOMesh();
+                        var lastVertex = 0;
                         while (!reader.EndOfStream)
                         {
                             line = reader.ReadLine().Trim();
@@ -108,6 +108,7 @@ namespace TombLib.GeometryIO.Importers
                                                                                   MathUtilEx.ParseFloatCultureInvariant(tokensPosition[1]),
                                                                                   MathUtilEx.ParseFloatCultureInvariant(tokensPosition[2]))));
                                 }
+                                line = reader.ReadLine().Trim();
                             }
                             else if (tokens[0] == "face")
                             {
@@ -160,13 +161,16 @@ namespace TombLib.GeometryIO.Importers
 
                                     mesh.Polygons.Add(poly);
                                 }
+                                line = reader.ReadLine().Trim();
                             }
+                            else if (tokens[0] == "}")
+                                break;
                         }
-                    }
-                }
 
-                mesh.Texture = textures[0];
-                model.Meshes.Add(mesh);
+                        mesh.Texture = textures[0];
+                        model.Meshes.Add(mesh);
+                    }
+                }                
             }        
 
             return model;
