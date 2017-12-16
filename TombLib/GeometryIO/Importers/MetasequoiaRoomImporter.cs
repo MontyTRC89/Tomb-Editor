@@ -92,6 +92,8 @@ namespace TombLib.GeometryIO.Importers
                     else if (chunk == "Object")
                     {
                         var mesh = new IOMesh();
+                        positions = new List<Vector3>();
+
                         var lastVertex = 0;
                         while (!reader.EndOfStream)
                         {
