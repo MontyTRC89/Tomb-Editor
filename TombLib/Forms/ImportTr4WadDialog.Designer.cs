@@ -2,7 +2,7 @@
 
 namespace TombLib.Forms
 {
-    partial class FormImportTr4Wad : DarkForm
+    partial class ImportTr4WadDialog : DarkForm
     {
         /// <summary>
         /// Required designer variable.
@@ -38,14 +38,14 @@ namespace TombLib.Forms
             this.columnSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnSamplePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnFound = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.butAddPath = new DarkUI.Controls.DarkButton();
-            this.butDeletePath = new DarkUI.Controls.DarkButton();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.butReloadSamples = new DarkUI.Controls.DarkButton();
             this.lstPaths = new DarkUI.Controls.DarkListBox(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusSamples = new System.Windows.Forms.ToolStripStatusLabel();
+            this.butReloadSamples = new DarkUI.Controls.DarkButton();
+            this.butDeletePath = new DarkUI.Controls.DarkButton();
+            this.butAddPath = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).BeginInit();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -113,25 +113,6 @@ namespace TombLib.Forms
             this.columnFound.ReadOnly = true;
             this.columnFound.Width = 50;
             // 
-            // butAddPath
-            // 
-            this.butAddPath.Location = new System.Drawing.Point(12, 477);
-            this.butAddPath.Name = "butAddPath";
-            this.butAddPath.Size = new System.Drawing.Size(84, 23);
-            this.butAddPath.TabIndex = 6;
-            this.butAddPath.Text = "Add path";
-            this.butAddPath.Click += new System.EventHandler(this.butAddPath_Click);
-            // 
-            // butDeletePath
-            // 
-            this.butDeletePath.Enabled = false;
-            this.butDeletePath.Location = new System.Drawing.Point(102, 477);
-            this.butDeletePath.Name = "butDeletePath";
-            this.butDeletePath.Size = new System.Drawing.Size(84, 23);
-            this.butDeletePath.TabIndex = 7;
-            this.butDeletePath.Text = "Delete path";
-            this.butDeletePath.Click += new System.EventHandler(this.butDeletePath_Click);
-            // 
             // darkLabel2
             // 
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -140,15 +121,6 @@ namespace TombLib.Forms
             this.darkLabel2.Size = new System.Drawing.Size(648, 20);
             this.darkLabel2.TabIndex = 8;
             this.darkLabel2.Text = "Search paths:";
-            // 
-            // butReloadSamples
-            // 
-            this.butReloadSamples.Location = new System.Drawing.Point(558, 9);
-            this.butReloadSamples.Name = "butReloadSamples";
-            this.butReloadSamples.Size = new System.Drawing.Size(99, 23);
-            this.butReloadSamples.TabIndex = 10;
-            this.butReloadSamples.Text = "Reload samples";
-            this.butReloadSamples.Click += new System.EventHandler(this.butReloadSamples_Click);
             // 
             // lstPaths
             // 
@@ -170,10 +142,10 @@ namespace TombLib.Forms
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusSamples});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 508);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 504);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(666, 26);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(662, 26);
             this.darkStatusStrip1.TabIndex = 12;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -182,11 +154,45 @@ namespace TombLib.Forms
             this.statusSamples.Name = "statusSamples";
             this.statusSamples.Size = new System.Drawing.Size(0, 0);
             // 
-            // FormImportTr4Wad
+            // butReloadSamples
+            // 
+            this.butReloadSamples.Image = global::TombLib.Properties.Resources.general_redo_16;
+            this.butReloadSamples.Location = new System.Drawing.Point(548, 9);
+            this.butReloadSamples.Name = "butReloadSamples";
+            this.butReloadSamples.Size = new System.Drawing.Size(109, 23);
+            this.butReloadSamples.TabIndex = 10;
+            this.butReloadSamples.Text = "Reload samples";
+            this.butReloadSamples.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butReloadSamples.Click += new System.EventHandler(this.butReloadSamples_Click);
+            // 
+            // butDeletePath
+            // 
+            this.butDeletePath.Enabled = false;
+            this.butDeletePath.Image = global::TombLib.Properties.Resources.general_trash_16;
+            this.butDeletePath.Location = new System.Drawing.Point(102, 477);
+            this.butDeletePath.Name = "butDeletePath";
+            this.butDeletePath.Size = new System.Drawing.Size(100, 23);
+            this.butDeletePath.TabIndex = 7;
+            this.butDeletePath.Text = "Delete path";
+            this.butDeletePath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDeletePath.Click += new System.EventHandler(this.butDeletePath_Click);
+            // 
+            // butAddPath
+            // 
+            this.butAddPath.Image = global::TombLib.Properties.Resources.general_plus_math_16;
+            this.butAddPath.Location = new System.Drawing.Point(12, 477);
+            this.butAddPath.Name = "butAddPath";
+            this.butAddPath.Size = new System.Drawing.Size(84, 23);
+            this.butAddPath.TabIndex = 6;
+            this.butAddPath.Text = "Add path";
+            this.butAddPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAddPath.Click += new System.EventHandler(this.butAddPath_Click);
+            // 
+            // ImportTr4WadDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(666, 534);
+            this.ClientSize = new System.Drawing.Size(662, 530);
             this.ControlBox = false;
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.lstPaths);
@@ -202,7 +208,7 @@ namespace TombLib.Forms
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormImportTr4Wad";
+            this.Name = "ImportTr4WadDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

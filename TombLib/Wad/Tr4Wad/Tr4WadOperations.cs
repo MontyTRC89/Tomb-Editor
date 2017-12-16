@@ -261,7 +261,7 @@ namespace TombLib.Wad.Tr4Wad
         private static bool ShowImportTr4WadForm()
         {
             /// Ask the help of the user
-            using (var form = new FormImportTr4Wad())
+            using (var form = new ImportTr4WadDialog())
             {
                 if (form.ShowDialog() == DialogResult.Cancel) return false;
 
@@ -276,7 +276,7 @@ namespace TombLib.Wad.Tr4Wad
         public static Wad2 ConvertTr4Wad(Tr4Wad old, List<string> soundPaths, IProgressReporter progressReporter)
         {
             _oldWad = old;
-            _wad = new Wad2(TombRaiderVersion.TR4);
+            _wad = new Wad2(TombRaiderVersion.TR4, true);
             _soundPaths = soundPaths;
             _progressReporter = progressReporter;
 

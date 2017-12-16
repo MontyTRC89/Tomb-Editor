@@ -1,4 +1,4 @@
-﻿namespace WadTool
+﻿namespace TombLib.Forms
 {
     partial class FormSelectWave
     {
@@ -61,7 +61,6 @@
             // 
             this.butCancel.Location = new System.Drawing.Point(82, 379);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(65, 23);
             this.butCancel.TabIndex = 12;
             this.butCancel.Text = "Cancel";
@@ -71,7 +70,6 @@
             // 
             this.butOK.Location = new System.Drawing.Point(13, 379);
             this.butOK.Name = "butOK";
-            this.butOK.Padding = new System.Windows.Forms.Padding(5);
             this.butOK.Size = new System.Drawing.Size(63, 23);
             this.butOK.TabIndex = 11;
             this.butOK.Text = "OK";
@@ -84,10 +82,9 @@
             // 
             // butPlaySound
             // 
-            this.butPlaySound.Image = global::WadTool.Properties.Resources.play_16;
+            this.butPlaySound.Image = global::TombLib.Properties.Resources.actions_play_16;
             this.butPlaySound.Location = new System.Drawing.Point(270, 379);
             this.butPlaySound.Name = "butPlaySound";
-            this.butPlaySound.Padding = new System.Windows.Forms.Padding(5);
             this.butPlaySound.Size = new System.Drawing.Size(57, 23);
             this.butPlaySound.TabIndex = 16;
             this.butPlaySound.Text = "Play";
@@ -96,21 +93,17 @@
             // 
             // butAddNewWave
             // 
-            this.butAddNewWave.Image = global::WadTool.Properties.Resources.plus_math_16;
+            this.butAddNewWave.Image = global::TombLib.Properties.Resources.general_plus_math_16;
             this.butAddNewWave.Location = new System.Drawing.Point(153, 379);
             this.butAddNewWave.Name = "butAddNewWave";
-            this.butAddNewWave.Padding = new System.Windows.Forms.Padding(5);
             this.butAddNewWave.Size = new System.Drawing.Size(111, 23);
             this.butAddNewWave.TabIndex = 13;
-            this.butAddNewWave.Text = "Add new WAV";
+            this.butAddNewWave.Text = "Add new sample";
             this.butAddNewWave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddNewWave.Click += new System.EventHandler(this.butAddNewWave_Click);
             // 
             // tbSearch
             // 
-            this.tbSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbSearch.Location = new System.Drawing.Point(13, 12);
             this.tbSearch.Name = "tbSearch";
             this.tbSearch.Size = new System.Drawing.Size(313, 20);

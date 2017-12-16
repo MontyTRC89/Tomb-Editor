@@ -140,6 +140,7 @@ namespace TombLib.Wad
 
                                 chunkIO.WriteChunkWithChildren(isQuad ? Wad2Chunks.MeshQuad : Wad2Chunks.MeshTriangle, () =>
                                 {
+
                                     LEB128.Write(chunkIO.Raw, poly.Indices[0]);
                                     LEB128.Write(chunkIO.Raw, poly.Indices[1]);
                                     LEB128.Write(chunkIO.Raw, poly.Indices[2]);
@@ -155,6 +156,11 @@ namespace TombLib.Wad
                                         chunkIO.Raw.Write(poly.Texture.TexCoord3);
                                     LEB128.Write(chunkIO.Raw, (long)poly.Texture.BlendMode);
                                     chunkIO.Raw.Write(poly.Texture.DoubleSided);
+
+                                    chunkIO.WriteChunk(Wad2Chunks.MeshPolygonExtra, () =>
+                                    {
+                                        LEB128.Write(chunkIO.Raw, (int)0);
+                                    });
                                 });
                             }
                         });

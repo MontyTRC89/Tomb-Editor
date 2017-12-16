@@ -12,19 +12,18 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
 
-namespace WadTool
+namespace TombLib.Forms
 {
     public partial class FormSelectWave : DarkForm
     {
         public WadSample SelectedWave { get; private set; }
 
-        private WadToolClass _tool;
+        private Wad2 _wad;
 
-        public FormSelectWave()
+        public FormSelectWave(Wad2 wad)
         {
             InitializeComponent();
-
-            _tool = WadToolClass.Instance;
+            _wad = wad;
         }
 
         private void FormSelectWave_Load(object sender, EventArgs e)
@@ -65,14 +64,14 @@ namespace WadTool
             }
 
             // Check if the sound exists
-            if (_tool.DestinationWad.Samples.ContainsKey(sound.Hash))
+            if (_wad.Samples.ContainsKey(sound.Hash))
             {
                 DarkMessageBox.Show(this, "The selected sample already exists in this Wad2", "Information", MessageBoxIcon.Information);
                 return;
             }
             else
             {
-                _tool.DestinationWad.Samples.Add(sound.Hash, sound);
+                _wad.Samples.Add(sound.Hash, sound);
                 ReloadWaves();
             }
         }
@@ -81,7 +80,7 @@ namespace WadTool
         {
             lstWaves.Items.Clear();
 
-            foreach (var wave in _tool.DestinationWad.Samples)
+            foreach (var wave in _wad.Samples)
             {
                 if (tbSearch.Text != "" && !wave.Value.Name.Contains(tbSearch.Text)) continue;
 

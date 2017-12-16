@@ -13,18 +13,21 @@ using System.Windows.Forms;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
-namespace WadTool
+namespace TombLib.Forms
 {
     public partial class FormSoundEditor : DarkForm
     {
-        private WadToolClass _tool;
+        private Wad2 _wad;
         private int _currentSound = -1;
+        private bool _saveWadOnExit;
 
-        public FormSoundEditor()
+        public FormSoundEditor(Wad2 wad, bool saveWadOnExit)
         {
             InitializeComponent();
-
-            _tool = WadToolClass.Instance;
+            _wad = wad;
+            _saveWadOnExit = saveWadOnExit;
+            butSave.Visible = _saveWadOnExit;
+            butClose.Visible = _saveWadOnExit;
         }
 
         private void FormSoundEditor_Load(object sender, EventArgs e)
@@ -37,9 +40,9 @@ namespace WadTool
 
         private void UpdateStatistics()
         {
-            string message = "Sound Infos: " + _tool.DestinationWad.SoundInfo.Count + " of " + 
-                             _tool.DestinationWad.SoundMapSize + "    " + 
-                             "Embedded WAV samples: " + _tool.DestinationWad.Samples.Count;
+            string message = "Sound Infos: " + _wad.SoundInfo.Count + " of " + 
+                             _wad.SoundMapSize + "    " + 
+                             "Embedded WAV samples: " + _wad.Samples.Count;
             labelStatus.Text = message;
         }
 
@@ -47,7 +50,7 @@ namespace WadTool
         {
             lstSoundInfos.Items.Clear();
 
-            foreach (var soundInfo in _tool.DestinationWad.SoundInfo)
+            foreach (var soundInfo in _wad.SoundInfo)
             {
                 var item = new DarkUI.Controls.DarkListItem(soundInfo.Key + ": " + soundInfo.Value.Name);
                 item.Tag = soundInfo.Key;
@@ -59,7 +62,7 @@ namespace WadTool
 
         private void butAddNewSound_Click(object sender, EventArgs e)
         {
-            ushort newSoundId = _tool.DestinationWad.GetFirstFreeSoundSlot();
+            ushort newSoundId = _wad.GetFirstFreeSoundSlot();
             if (newSoundId == ushort.MaxValue)
             {
                 DarkMessageBox.Show(this, "You soundmap is already full", "Error", MessageBoxIcon.Error);
@@ -89,7 +92,7 @@ namespace WadTool
 
             // Get the selected sound info
             var item = lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]];
-            var soundInfo = _tool.DestinationWad.SoundInfo[(ushort)item.Tag];
+            var soundInfo = _wad.SoundInfo[(ushort)item.Tag];
 
             // Fill the UI
             tbName.Text = soundInfo.Name;
@@ -120,7 +123,7 @@ namespace WadTool
         {
             // I can't overwrite other sounds
             if (comboId.SelectedIndex != _currentSound &&
-                _tool.DestinationWad.SoundInfo.ContainsKey((ushort)comboId.SelectedIndex))
+                _wad.SoundInfo.ContainsKey((ushort)comboId.SelectedIndex))
             {
                 DarkMessageBox.Show(this, "The selected slot is already assigned to another sound", "Error", MessageBoxIcon.Error);
                 return;
@@ -138,7 +141,7 @@ namespace WadTool
 
             if (oldSoundId != -1)
             {
-                foreach (var moveable in _tool.DestinationWad.Moveables)
+                foreach (var moveable in _wad.Moveables)
                 {
                     foreach (var animation in moveable.Value.Animations)
                     {
@@ -164,7 +167,7 @@ namespace WadTool
             if (oldSoundId == -1)
                 soundInfo = new WadSoundInfo();
             else
-                soundInfo = _tool.DestinationWad.SoundInfo[(ushort)oldSoundId];
+                soundInfo = _wad.SoundInfo[(ushort)oldSoundId];
 
             // Save changes
             soundInfo.Chance = Byte.Parse(tbChance.Text);
@@ -183,7 +186,7 @@ namespace WadTool
 
             if (oldSoundId == -1)
             {
-                _tool.DestinationWad.SoundInfo.Add(newSoundId, soundInfo);
+                _wad.SoundInfo.Add(newSoundId, soundInfo);
 
                 ReloadSoundInfos();
             }
@@ -191,8 +194,8 @@ namespace WadTool
             {
                 if (oldSoundId != newSoundId)
                 {
-                    _tool.DestinationWad.SoundInfo.Remove((ushort)oldSoundId);
-                    _tool.DestinationWad.SoundInfo.Add(newSoundId, soundInfo);
+                    _wad.SoundInfo.Remove((ushort)oldSoundId);
+                    _wad.SoundInfo.Add(newSoundId, soundInfo);
 
                     ReloadSoundInfos();
                 }
@@ -207,7 +210,7 @@ namespace WadTool
 
         private void butAddNewWave_Click(object sender, EventArgs e)
         {
-            var form = new FormSelectWave();
+            var form = new FormSelectWave(_wad);
             if (form.ShowDialog() == DialogResult.Cancel) return;
 
             // Search for already existing sample
@@ -259,11 +262,11 @@ namespace WadTool
             if (lstSoundInfos.SelectedIndices.Count == 0) return;
 
             var item = lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]];
-            var soundInfo = _tool.DestinationWad.SoundInfo[(ushort)item.Tag];
+            var soundInfo = _wad.SoundInfo[(ushort)item.Tag];
             var soundIdToRemove = (ushort)item.Tag;
 
             // Get all moveables that are using this sound
-            var moveables = _tool.DestinationWad.GetAllMoveablesReferencingSound(soundIdToRemove);
+            var moveables = _wad.GetAllMoveablesReferencingSound(soundIdToRemove);
 
             if (moveables.Count != 0)
             {
@@ -289,10 +292,27 @@ namespace WadTool
             }
 
             // Delete the sound and remap anim commands
-            _tool.DestinationWad.DeleteSound(soundIdToRemove);
+            _wad.DeleteSound(soundIdToRemove);
 
             ReloadSoundInfos();
             _currentSound = -1;
+        }
+
+        private void FormSoundEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
+
+        private void butClose_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void butSave_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }
