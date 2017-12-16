@@ -1,23 +1,16 @@
 ﻿using DarkUI.Forms;
-using SharpDX;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Media;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.GeometryIO;
 using TombLib.IO;
-using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Wad.Tr4Wad;
 using TombLib.Wad.TrLevels;
+using TombLib.Forms;
 
 namespace WadTool
 {
@@ -203,21 +196,18 @@ namespace WadTool
                 return;
 
             // Load the Wad2
-            string fileName = openFileDialogWad.FileName.ToLower();
-            using (var stream = File.OpenRead(fileName))
-            {
-                var newWad = Wad2.LoadFromStream(stream);
-                if (newWad == null)
-                    return;
+            var fileName = openFileDialogWad.FileName.ToLower();
+            var newWad = Wad2.LoadFromFile(fileName);
+            if (newWad == null)
+                return;
 
-                if (_tool.DestinationWad != null)
-                    _tool.DestinationWad.Dispose();
+            if (_tool.DestinationWad != null)
+                _tool.DestinationWad.Dispose();
 
-                newWad.FileName = openFileDialogWad.FileName;
-                newWad.GraphicsDevice = _tool.Device;
-                newWad.PrepareDataForDirectX();
-                _tool.DestinationWad = newWad;
-            }
+            newWad.FileName = openFileDialogWad.FileName;
+            newWad.GraphicsDevice = _tool.Device;
+            newWad.PrepareDataForDirectX();
+            _tool.DestinationWad = newWad;
 
             // Update the UI
             UpdateDestinationWad2UI();
@@ -310,22 +300,19 @@ namespace WadTool
             }
             else if (fileName.EndsWith("wad2"))
             {
-                using (var stream = File.OpenRead(fileName))
-                {
-                    var newWad = Wad2.LoadFromStream(stream);
-                    if (newWad == null)
-                        return;
+                var newWad = Wad2.LoadFromFile(fileName);
+                if (newWad == null)
+                    return;
 
-                    if (_tool.SourceWad != null)
-                        _tool.SourceWad.Dispose();
+                if (_tool.SourceWad != null)
+                    _tool.SourceWad.Dispose();
 
-                    newWad.FileName = openFileDialogWad.FileName;
-                    newWad.GraphicsDevice = _tool.Device;
-                    newWad.PrepareDataForDirectX();
-                    _tool.SourceWad = newWad;
+                newWad.FileName = openFileDialogWad.FileName;
+                newWad.GraphicsDevice = _tool.Device;
+                newWad.PrepareDataForDirectX();
+                _tool.SourceWad = newWad;
 
-                    labelType.Text = "Wad2";
-                }
+                labelType.Text = "Wad2";
             }
             else
             {
@@ -616,7 +603,7 @@ namespace WadTool
                 return;
             }
 
-            var form = new FormSoundEditor();
+            var form = new FormSoundEditor(_tool.DestinationWad, false);
             form.ShowDialog();
         }
 
@@ -865,7 +852,7 @@ namespace WadTool
         private void butNewWad2_Click(object sender, EventArgs e)
         {
             if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
-            var wad = new Wad2(TombRaiderVersion.TR4);
+            var wad = new Wad2(TombRaiderVersion.TR4, false);
             wad.GraphicsDevice = _tool.Device;
             wad.PrepareDataForDirectX();
             _tool.DestinationWad = wad;

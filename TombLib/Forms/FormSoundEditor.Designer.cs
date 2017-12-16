@@ -1,4 +1,4 @@
-﻿namespace WadTool
+﻿namespace TombLib.Forms
 {
     partial class FormSoundEditor
     {
@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSoundEditor));
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
+            this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.lstSoundInfos = new DarkUI.Controls.DarkListView();
             this.lstWaves = new DarkUI.Controls.DarkListView();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
@@ -56,7 +56,8 @@
             this.butAddNewWave = new DarkUI.Controls.DarkButton();
             this.butDeleteWave = new DarkUI.Controls.DarkButton();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
-            this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.butClose = new DarkUI.Controls.DarkButton();
+            this.butSave = new DarkUI.Controls.DarkButton();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,6 +73,11 @@
             this.darkStatusStrip1.Size = new System.Drawing.Size(576, 32);
             this.darkStatusStrip1.TabIndex = 0;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
+            // 
+            // labelStatus
+            // 
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(0, 0);
             // 
             // lstSoundInfos
             // 
@@ -102,9 +108,6 @@
             // 
             // tbName
             // 
-            this.tbName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbName.Location = new System.Drawing.Point(326, 49);
             this.tbName.Name = "tbName";
             this.tbName.Size = new System.Drawing.Size(239, 20);
@@ -139,9 +142,6 @@
             // 
             // tbVolume
             // 
-            this.tbVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbVolume.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbVolume.Location = new System.Drawing.Point(326, 87);
             this.tbVolume.Name = "tbVolume";
             this.tbVolume.Size = new System.Drawing.Size(79, 20);
@@ -159,9 +159,6 @@
             // 
             // tbRange
             // 
-            this.tbRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbRange.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbRange.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbRange.Location = new System.Drawing.Point(326, 113);
             this.tbRange.Name = "tbRange";
             this.tbRange.Size = new System.Drawing.Size(79, 20);
@@ -179,9 +176,6 @@
             // 
             // tbPitch
             // 
-            this.tbPitch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbPitch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbPitch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbPitch.Location = new System.Drawing.Point(326, 139);
             this.tbPitch.Name = "tbPitch";
             this.tbPitch.Size = new System.Drawing.Size(79, 20);
@@ -199,9 +193,6 @@
             // 
             // tbChance
             // 
-            this.tbChance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbChance.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbChance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbChance.Location = new System.Drawing.Point(326, 165);
             this.tbChance.Name = "tbChance";
             this.tbChance.Size = new System.Drawing.Size(79, 20);
@@ -239,10 +230,9 @@
             // 
             // butSaveChanges
             // 
-            this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
+            this.butSaveChanges.Image = global::TombLib.Properties.Resources.general_Save_16;
             this.butSaveChanges.Location = new System.Drawing.Point(453, 12);
             this.butSaveChanges.Name = "butSaveChanges";
-            this.butSaveChanges.Padding = new System.Windows.Forms.Padding(5);
             this.butSaveChanges.Size = new System.Drawing.Size(112, 23);
             this.butSaveChanges.TabIndex = 36;
             this.butSaveChanges.Text = "Save changes";
@@ -252,38 +242,15 @@
             // 
             // comboId
             // 
-            this.comboId.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.comboId.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(81)))), ((int)(((byte)(81)))));
-            this.comboId.BorderStyle = System.Windows.Forms.ButtonBorderStyle.Solid;
-            this.comboId.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(43)))), ((int)(((byte)(43)))));
-            this.comboId.ButtonIcon = ((System.Drawing.Bitmap)(resources.GetObject("comboId.ButtonIcon")));
-            this.comboId.DrawDropdownHoverOutline = false;
-            this.comboId.DrawFocusRectangle = false;
-            this.comboId.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.comboId.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboId.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboId.ForeColor = System.Drawing.Color.Gainsboro;
             this.comboId.FormattingEnabled = true;
             this.comboId.Location = new System.Drawing.Point(326, 12);
             this.comboId.Name = "comboId";
             this.comboId.Size = new System.Drawing.Size(79, 21);
             this.comboId.TabIndex = 35;
             this.comboId.Text = "None";
-            this.comboId.TextPadding = new System.Windows.Forms.Padding(2);
             // 
             // comboLoop
             // 
-            this.comboLoop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.comboLoop.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(81)))), ((int)(((byte)(81)))));
-            this.comboLoop.BorderStyle = System.Windows.Forms.ButtonBorderStyle.Solid;
-            this.comboLoop.ButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(43)))), ((int)(((byte)(43)))), ((int)(((byte)(43)))));
-            this.comboLoop.ButtonIcon = ((System.Drawing.Bitmap)(resources.GetObject("comboLoop.ButtonIcon")));
-            this.comboLoop.DrawDropdownHoverOutline = false;
-            this.comboLoop.DrawFocusRectangle = false;
-            this.comboLoop.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.comboLoop.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboLoop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboLoop.ForeColor = System.Drawing.Color.Gainsboro;
             this.comboLoop.FormattingEnabled = true;
             this.comboLoop.Items.AddRange(new object[] {
             "None",
@@ -295,14 +262,12 @@
             this.comboLoop.Size = new System.Drawing.Size(79, 21);
             this.comboLoop.TabIndex = 33;
             this.comboLoop.Text = "None";
-            this.comboLoop.TextPadding = new System.Windows.Forms.Padding(2);
             // 
             // butAddNewSound
             // 
-            this.butAddNewSound.Image = global::WadTool.Properties.Resources.plus_math_16;
+            this.butAddNewSound.Image = global::TombLib.Properties.Resources.general_plus_math_16;
             this.butAddNewSound.Location = new System.Drawing.Point(12, 470);
             this.butAddNewSound.Name = "butAddNewSound";
-            this.butAddNewSound.Padding = new System.Windows.Forms.Padding(5);
             this.butAddNewSound.Size = new System.Drawing.Size(123, 23);
             this.butAddNewSound.TabIndex = 14;
             this.butAddNewSound.Text = "Add new sound";
@@ -311,10 +276,9 @@
             // 
             // butDeleteSound
             // 
-            this.butDeleteSound.Image = global::WadTool.Properties.Resources.trash_16;
+            this.butDeleteSound.Image = global::TombLib.Properties.Resources.general_trash_16;
             this.butDeleteSound.Location = new System.Drawing.Point(141, 470);
             this.butDeleteSound.Name = "butDeleteSound";
-            this.butDeleteSound.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteSound.Size = new System.Drawing.Size(112, 23);
             this.butDeleteSound.TabIndex = 13;
             this.butDeleteSound.Text = "Delete sound";
@@ -333,10 +297,9 @@
             // 
             // butAddNewWave
             // 
-            this.butAddNewWave.Image = global::WadTool.Properties.Resources.plus_math_16;
+            this.butAddNewWave.Image = global::TombLib.Properties.Resources.general_plus_math_16;
             this.butAddNewWave.Location = new System.Drawing.Point(486, 354);
             this.butAddNewWave.Name = "butAddNewWave";
-            this.butAddNewWave.Padding = new System.Windows.Forms.Padding(5);
             this.butAddNewWave.Size = new System.Drawing.Size(79, 23);
             this.butAddNewWave.TabIndex = 39;
             this.butAddNewWave.Text = "Add new";
@@ -345,10 +308,9 @@
             // 
             // butDeleteWave
             // 
-            this.butDeleteWave.Image = global::WadTool.Properties.Resources.trash_16;
+            this.butDeleteWave.Image = global::TombLib.Properties.Resources.general_trash_16;
             this.butDeleteWave.Location = new System.Drawing.Point(486, 383);
             this.butDeleteWave.Name = "butDeleteWave";
-            this.butDeleteWave.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteWave.Size = new System.Drawing.Size(79, 23);
             this.butDeleteWave.TabIndex = 38;
             this.butDeleteWave.Text = "Delete";
@@ -357,26 +319,42 @@
             // 
             // butPlaySound
             // 
-            this.butPlaySound.Image = global::WadTool.Properties.Resources.play_16;
+            this.butPlaySound.Image = global::TombLib.Properties.Resources.actions_play_16;
             this.butPlaySound.Location = new System.Drawing.Point(486, 412);
             this.butPlaySound.Name = "butPlaySound";
-            this.butPlaySound.Padding = new System.Windows.Forms.Padding(5);
             this.butPlaySound.Size = new System.Drawing.Size(79, 23);
             this.butPlaySound.TabIndex = 40;
             this.butPlaySound.Text = "Play";
             this.butPlaySound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butPlaySound.Click += new System.EventHandler(this.butPlaySound_Click);
             // 
-            // labelStatus
+            // butClose
             // 
-            this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(0, 19);
+            this.butClose.Location = new System.Drawing.Point(456, 470);
+            this.butClose.Name = "butClose";
+            this.butClose.Size = new System.Drawing.Size(109, 23);
+            this.butClose.TabIndex = 41;
+            this.butClose.Text = "Exit without saving";
+            this.butClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butClose.Click += new System.EventHandler(this.butClose_Click);
+            // 
+            // butSave
+            // 
+            this.butSave.Location = new System.Drawing.Point(357, 470);
+            this.butSave.Name = "butSave";
+            this.butSave.Size = new System.Drawing.Size(93, 23);
+            this.butSave.TabIndex = 42;
+            this.butSave.Text = "Save to Wad2";
+            this.butSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butSave.Click += new System.EventHandler(this.butSave_Click);
             // 
             // FormSoundEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(576, 535);
+            this.Controls.Add(this.butSave);
+            this.Controls.Add(this.butClose);
             this.Controls.Add(this.butPlaySound);
             this.Controls.Add(this.butAddNewWave);
             this.Controls.Add(this.butDeleteWave);
@@ -410,6 +388,7 @@
             this.Name = "FormSoundEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sound editor";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSoundEditor_FormClosing);
             this.Load += new System.EventHandler(this.FormSoundEditor_Load);
             this.darkStatusStrip1.ResumeLayout(false);
             this.darkStatusStrip1.PerformLayout();
@@ -448,5 +427,7 @@
         private DarkUI.Controls.DarkButton butDeleteWave;
         private DarkUI.Controls.DarkButton butPlaySound;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
+        private DarkUI.Controls.DarkButton butClose;
+        private DarkUI.Controls.DarkButton butSave;
     }
 }

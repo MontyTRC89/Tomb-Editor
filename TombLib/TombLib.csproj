@@ -96,11 +96,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\FormImportTr4Wad.cs">
+    <Compile Include="Forms\FormSelectWave.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormImportTr4Wad.Designer.cs">
-      <DependentUpon>FormImportTr4Wad.cs</DependentUpon>
+    <Compile Include="Forms\FormSelectWave.Designer.cs">
+      <DependentUpon>FormSelectWave.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormSoundEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSoundEditor.Designer.cs">
+      <DependentUpon>FormSoundEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ImportTr4WadDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ImportTr4WadDialog.Designer.cs">
+      <DependentUpon>ImportTr4WadDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
     <Compile Include="GeometryIO\BaseGeometryImporter.cs" />
@@ -151,6 +163,11 @@
     <Compile Include="NG\NgListKind.cs" />
     <Compile Include="NG\NgTriggerKeyValuePair.cs" />
     <Compile Include="NG\NgTriggerMainKeyValuePair.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utils\BrowseFolderDialog.cs" />
     <Compile Include="Utils\Cache.cs" />
     <Compile Include="Utils\Hash.cs" />
@@ -223,11 +240,21 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\FormImportTr4Wad.resx">
-      <DependentUpon>FormImportTr4Wad.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormSelectWave.resx">
+      <DependentUpon>FormSelectWave.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSoundEditor.resx">
+      <DependentUpon>FormSoundEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ImportTr4WadDialog.resx">
+      <DependentUpon>ImportTr4WadDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GeometryIOSettingsDialog.resx">
       <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +262,57 @@
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_clipboard-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_copy_link-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_copy-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_create_new-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_edit-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_Export-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_Import-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_Open-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_plus_math-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_redo-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_Save As-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_Save-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_search-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_trash-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_undo-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\general_Warning-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\actions_play-16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -15,19 +15,24 @@ namespace TombLib.Wad
         public static Wad2 LoadFromFile(string filename)
         {
             using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return LoadFromStream(fileStream);
+            {
+                using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, fileStream))
+                    return LoadWad2(chunkIO, filename);
+            }
+            //return LoadFromStream(fileStream);
         }
 
-        public static Wad2 LoadFromStream(Stream stream)
+        /*public static Wad2 LoadFromStream(Stream stream)
         {
             using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, stream))
                 return LoadWad2(chunkIO);
-        }
+        }*/
 
-        private static Wad2 LoadWad2(ChunkReader chunkIO)
+        private static Wad2 LoadWad2(ChunkReader chunkIO, string fileName)
         {
-            var wad = new Wad2((TombRaiderVersion)LEB128.ReadUInt(chunkIO.Raw));
-            
+            var wad = new Wad2((TombRaiderVersion)LEB128.ReadUInt(chunkIO.Raw), false);
+            wad.FileName = fileName;
+
             chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (LoadTextures(chunkIO, id, wad))
@@ -265,6 +270,17 @@ namespace TombLib.Wad
                                 textureArea.DoubleSided = chunkIO.Raw.ReadBoolean();
                                 polygon.Texture = textureArea;
 
+                                chunkIO.ReadChunks((id4, chunkSize4) =>
+                                {
+                                    if (id4 == Wad2Chunks.MeshPolygonExtra)
+                                    {
+                                        LEB128.ReadInt(chunkIO.Raw);
+                                        return true;
+                                    }
+                                    else
+                                        return false;
+                                });
+
                                 mesh.Polys.Add(polygon);
                             }
                             else
@@ -314,7 +330,7 @@ namespace TombLib.Wad
                     {
                         mov.Meshes.Add(wad.Meshes.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
                     }
-                    if (id2 == Wad2Chunks.MoveableName)
+                    else if (id2 == Wad2Chunks.MoveableName)
                     {
                         /*mov.Name =*/ chunkIO.ReadChunkString(chunkSize2);
                     }

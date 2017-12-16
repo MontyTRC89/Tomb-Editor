@@ -101,10 +101,11 @@ namespace TombEditor.Geometry
 
             using (var wad = Wad)
             {
-                Wad2 newWad = new Wad2(TombRaiderVersion.TR4);
+                var isWad2 = path.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase);
+                var newWad = new Wad2(TombRaiderVersion.TR4, !isWad2);
                 try
                 {
-                    if (path.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))
+                    if (!isWad2)
                     {
                         List<string> soundPaths = new List<string>();
                         foreach (OldWadSoundPath path_ in Settings.OldWadSoundPaths)
@@ -121,7 +122,7 @@ namespace TombEditor.Geometry
                     }
                     else
                     {
-                        newWad = Wad2.LoadFromStream(File.OpenRead(path));
+                        newWad = Wad2.LoadFromFile(path);
                     }
                     newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
                     newWad.PrepareDataForDirectX();

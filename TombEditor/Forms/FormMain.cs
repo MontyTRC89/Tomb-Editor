@@ -14,6 +14,7 @@ using TombLib.NG;
 using DarkUI.Docking;
 using DarkUI.Forms;
 using TombLib.GeometryIO.Importers;
+using TombLib.Forms;
 
 namespace TombEditor
 {
@@ -145,6 +146,14 @@ namespace TombEditor
                 flattenFloorToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn3ToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn5ToolStripMenuItem.Enabled = validSectorSelection;
+            }
+
+            if (obj is Editor.LoadedWadsChangedEvent)
+            {
+                if (_editor.Level.Wad != null)
+                    soundManagerToolStripMenuItem.Enabled = !_editor.Level.Wad.IsImported;
+                else
+                    soundManagerToolStripMenuItem.Enabled = false;
             }
 
             // Update compilation statistics
@@ -1136,7 +1145,7 @@ namespace TombEditor
         private void debugAction3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Wad2.SaveToStream(_editor.Level.Wad, File.OpenWrite("E:\\test.wad2"));
-            Wad2.LoadFromStream(File.OpenRead("E:\\test.wad2"));
+            //Wad2.LoadFromStream(File.OpenRead("E:\\test.wad2"));
             //RoomGeometryExporter.ExportRoomToObj(_editor.SelectedRoom, "room.obj");
         }
 
@@ -1162,6 +1171,24 @@ namespace TombEditor
             var importer = new MetasequoiaRoomImporter(new TombLib.GeometryIO.IOGeometrySettings(), null);
             importer.ImportFromFile("Room0saved.mqo");
 
+        }
+
+        private void soundManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormSoundEditor(_editor.Level.Wad, true))
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    if (DarkMessageBox.Show(this, "Do you want to save changes to original Wad2 file?", "Save changes",
+                                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        Wad2.SaveToFile(_editor.Level.Wad, _editor.Level.Wad.FileName);
+                    else
+                        EditorActions.ReloadWad();
+
+                }
+                else
+                    EditorActions.ReloadWad();
+            }
         }
     }
 }

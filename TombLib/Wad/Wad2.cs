@@ -26,6 +26,7 @@ namespace TombLib.Wad
     public partial class Wad2 : IDisposable
     {
         public TombRaiderVersion Version { get; private set; }
+        public bool IsImported { get; set; }
 
         public Dictionary<Hash, WadTexture> Textures { get; private set; }
         public Dictionary<Hash, WadMesh> Meshes { get; private set; }
@@ -64,7 +65,7 @@ namespace TombLib.Wad
             DirectXStatics.Clear();
         }
 
-        public Wad2(TombRaiderVersion version)
+        public Wad2(TombRaiderVersion version, bool imported)
         {
             Version = version;
             Textures = new Dictionary<Hash, WadTexture>();

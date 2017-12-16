@@ -99,6 +99,7 @@
             this.wholeRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureMapBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.soundManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.levelSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1072,6 +1073,7 @@
             this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.textureMapBuilderToolStripMenuItem,
+            this.soundManagerToolStripMenuItem,
             this.levelSettingsToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
@@ -1087,6 +1089,17 @@
             this.textureMapBuilderToolStripMenuItem.Name = "textureMapBuilderToolStripMenuItem";
             this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.textureMapBuilderToolStripMenuItem.Text = "Texture Map builder";
+            // 
+            // soundManagerToolStripMenuItem
+            // 
+            this.soundManagerToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundManagerToolStripMenuItem.Enabled = false;
+            this.soundManagerToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.soundManagerToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_speaker_16;
+            this.soundManagerToolStripMenuItem.Name = "soundManagerToolStripMenuItem";
+            this.soundManagerToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.soundManagerToolStripMenuItem.Text = "Sound manager";
+            this.soundManagerToolStripMenuItem.Click += new System.EventHandler(this.soundManagerToolStripMenuItem_Click);
             // 
             // levelSettingsToolStripMenuItem
             // 
@@ -1583,5 +1596,6 @@
         private System.Windows.Forms.ToolStripMenuItem wholeRoomUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wholeRoomDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel statusLastCompilation;
+        private System.Windows.Forms.ToolStripMenuItem soundManagerToolStripMenuItem;
     }
 }

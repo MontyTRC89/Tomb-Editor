@@ -13,11 +13,11 @@ using TombLib.Wad.Tr4Wad;
 
 namespace TombLib.Forms
 {
-    public partial class FormImportTr4Wad : DarkForm
+    public partial class ImportTr4WadDialog : DarkForm
     {
         public bool IgnoreMissingSamples { get; set; }
 
-        public FormImportTr4Wad()
+        public ImportTr4WadDialog()
         {
             InitializeComponent();
         }
