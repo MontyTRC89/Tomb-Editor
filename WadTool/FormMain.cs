@@ -465,10 +465,7 @@ namespace WadTool
 
             try
             {
-                using (var stream = new FileStream(_tool.DestinationWad.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    Wad2.SaveToStream(_tool.DestinationWad, stream);
-                }
+                Wad2.SaveToFile(_tool.DestinationWad, _tool.DestinationWad.FileName);
             }
             catch (Exception exc)
             {
@@ -489,10 +486,7 @@ namespace WadTool
 
             try
             {
-                using (var stream = new FileStream(saveFileDialogWad2.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    Wad2.SaveToStream(_tool.DestinationWad, stream);
-                }
+                Wad2.SaveToFile(_tool.DestinationWad, saveFileDialogWad2.FileName);
             }
             catch (Exception exc)
             {
@@ -583,10 +577,7 @@ namespace WadTool
             if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel)
                 return;
 
-            using (var stream = new FileStream(saveFileDialogWad2.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                Wad2.SaveToStream(_tool.SourceWad, stream);
-            }
+            Wad2.SaveToFile(_tool.SourceWad, saveFileDialogWad2.FileName);
         }
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
