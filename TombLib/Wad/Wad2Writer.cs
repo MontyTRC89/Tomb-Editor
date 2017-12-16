@@ -21,14 +21,17 @@ namespace TombLib.Wad
         public static void SaveToFile(Wad2 wad, string filename)
         {
             using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-                SaveToStream(wad, fileStream);
+            {
+                using (var chunkIO = new ChunkWriter(Wad2Chunks.MagicNumber, fileStream, ChunkWriter.Compression.None))
+                    WriteWad2(chunkIO, wad);
+            }
         }
 
-        public static void SaveToStream(Wad2 wad, Stream stream)
+        /*public static void SaveToStream(Wad2 wad, Stream stream)
         {
             using (var chunkIO = new ChunkWriter(Wad2Chunks.MagicNumber, stream, ChunkWriter.Compression.None))
                 WriteWad2(chunkIO, wad);
-        }
+        }*/
 
         private static void WriteWad2(ChunkWriter chunkIO, Wad2 wad)
         {
