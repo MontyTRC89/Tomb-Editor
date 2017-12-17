@@ -160,6 +160,7 @@
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="EditorAction.cs" />
     <Compile Include="Geometry\BumpMappingInfo.cs" />
     <Compile Include="Geometry\ScriptID.cs" />
     <Compile Include="Highlight.cs" />
@@ -363,7 +364,6 @@
     <Compile Include="ToolWindows\SectorOptions.Designer.cs">
       <DependentUpon>SectorOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils.cs" />
     <Compile Include="Controls\Panel2DMap.cs">
       <SubType>Component</SubType>
     </Compile>

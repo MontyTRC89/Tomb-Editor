@@ -276,7 +276,7 @@ namespace TombEditor.Geometry.IO
                     return false;
 
                 // Read room
-                Room room = new Room(level, LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                Room room = new Room(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
                 long roomIndex = long.MinValue;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {

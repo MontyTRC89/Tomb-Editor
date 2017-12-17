@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DarkUI.Docking;
 using TombEditor.Geometry;
 using SharpDX;
+using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
 {
@@ -107,7 +108,7 @@ namespace TombEditor.ToolWindows
             Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
             if (selectedRoom == null)
             {
-                selectedRoom = new Room(_editor.Level, Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room " + comboRoom.SelectedIndex);
+                selectedRoom = new Room(Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room " + comboRoom.SelectedIndex);
                 _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
                 _editor.RoomListChange();
             }
@@ -353,14 +354,12 @@ namespace TombEditor.ToolWindows
 
         private void butRoomUp_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f),
-                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
+            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f), _editor.SelectedRoom.Versions);
         }
 
         private void butRoomDown_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f),
-                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
+            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f), _editor.SelectedRoom.Versions);
         }
 
         private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)

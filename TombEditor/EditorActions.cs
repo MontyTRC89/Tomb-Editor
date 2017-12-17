@@ -224,7 +224,7 @@ namespace TombEditor
                                             continue;
                                     }
                                     else if (autoSwitchDiagonals && currentSplit == splits[0] && currentFaces[corners[0]] == currentFaces[corners[1]] && !incrementInvalid)
-                                        block.Rotate(floor, 2);
+                                        block.Transform(new RectTransformation { QuadrantRotation = 2 }, floor);
                                     else
                                         continue;
                                 }
@@ -255,7 +255,7 @@ namespace TombEditor
             var floor = (v % 2 == 0);
             var currBlock = room.GetBlockTryThroughPortal(x, z);
 
-            if (currBlock == null || currBlock.Room != room || (floor && currBlock.Block.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.Block.CeilingDiagonalSplit != DiagonalSplit.None))
+            if (currBlock.Room != room || (floor && currBlock.Block.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.Block.CeilingDiagonalSplit != DiagonalSplit.None))
                 return;
 
             Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
@@ -276,25 +276,25 @@ namespace TombEditor
 
             short[] newFaces = new short[4];
 
-                int validBlockCnt = (Convert.ToInt32(lookupBlocks[7] != null) + Convert.ToInt32(lookupBlocks[0] != null) + Convert.ToInt32(lookupBlocks[1] != null));
-                newFaces[0] = (short)(((lookupBlocks[7]?.Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[7] +
-                                       (lookupBlocks[0]?.Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[0] +
-                                       (lookupBlocks[1]?.Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[1]) / (validBlockCnt));
+                int validBlockCnt = ((lookupBlocks[7].Room != null ? 1 : 0) + (lookupBlocks[0].Room != null ? 1 : 0) + (lookupBlocks[1].Room != null ? 1 : 0));
+                newFaces[0] = (short)(((lookupBlocks[7].Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[7] +
+                                       (lookupBlocks[0].Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[0] +
+                                       (lookupBlocks[1].Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[1]) / (validBlockCnt));
 
-                validBlockCnt = (Convert.ToInt32(lookupBlocks[1] != null) + Convert.ToInt32(lookupBlocks[2] != null) + Convert.ToInt32(lookupBlocks[3] != null));
-                newFaces[1] = (short)(((lookupBlocks[1]?.Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2] +
-                                       (lookupBlocks[2]?.Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
-                                       (lookupBlocks[3]?.Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0]) / (validBlockCnt));
+                validBlockCnt = ((lookupBlocks[1].Room != null ? 1 : 0) + (lookupBlocks[2].Room != null ? 1 : 0) + (lookupBlocks[3].Room != null ? 1 : 0));
+                newFaces[1] = (short)(((lookupBlocks[1].Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2] +
+                                       (lookupBlocks[2].Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
+                                       (lookupBlocks[3].Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0]) / (validBlockCnt));
 
-                validBlockCnt = (Convert.ToInt32(lookupBlocks[3] != null) + Convert.ToInt32(lookupBlocks[4] != null) + Convert.ToInt32(lookupBlocks[5] != null));
-                newFaces[2] = (short)(((lookupBlocks[3]?.Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
-                                       (lookupBlocks[4]?.Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
-                                       (lookupBlocks[5]?.Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1]) / (validBlockCnt));
+                validBlockCnt = ((lookupBlocks[3].Room != null ? 1 : 0) + (lookupBlocks[4].Room != null ? 1 : 0) + (lookupBlocks[5].Room != null ? 1 : 0));
+                newFaces[2] = (short)(((lookupBlocks[3].Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
+                                       (lookupBlocks[4].Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
+                                       (lookupBlocks[5].Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1]) / (validBlockCnt));
 
-                validBlockCnt = (Convert.ToInt32(lookupBlocks[5] != null) + Convert.ToInt32(lookupBlocks[6] != null) + Convert.ToInt32(lookupBlocks[7] != null));
-                newFaces[3] = (short)(((lookupBlocks[5]?.Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
-                                       (lookupBlocks[6]?.Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1] +
-                                       (lookupBlocks[7]?.Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2]) / (validBlockCnt));
+                validBlockCnt = ((lookupBlocks[5].Room != null ? 1 : 0) + (lookupBlocks[6].Room != null ? 1 : 0) + (lookupBlocks[7].Room != null ? 1 : 0));
+                newFaces[3] = (short)(((lookupBlocks[5].Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
+                                       (lookupBlocks[6].Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1] +
+                                       (lookupBlocks[7].Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2]) / (validBlockCnt));
 
                 currBlock.Block.GetVerticalSubdivision(v)[0] += (short)Math.Sign(newFaces[0] - currBlock.Block.GetVerticalSubdivision(v)[0]);
                 currBlock.Block.GetVerticalSubdivision(v)[1] += (short)Math.Sign(newFaces[1] - currBlock.Block.GetVerticalSubdivision(v)[1]);
@@ -614,13 +614,7 @@ namespace TombEditor
 
         public static void PasteObject(DrawingPoint pos)
         {
-            var instance = Clipboard.Paste(_editor.Level, _editor.SelectedRoom, pos);
-            if (instance != null)
-            {
-                _editor.ObjectChange(instance, ObjectChangeType.Add);
-                _editor.SelectedObject = instance;
-                _editor.Action = EditorAction.None;
-            }
+            PlaceObject(_editor.SelectedRoom, pos, Clipboard.Retrieve());
         }
 
         public static void SnapObjectToGrid(PositionBasedObjectInstance instance, IWin32Window owner)
@@ -699,13 +693,13 @@ namespace TombEditor
             TextureArea textureArea = blocks.GetFaceTexture(face);
             if (room.GetFaceVertexRange(pos.X, pos.Y, face).Count == 3)
             {
-                Utils.Swap(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
+                Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
                 textureArea.TexCoord3 = textureArea.TexCoord2;
             }
             else
             {
-                Utils.Swap(ref textureArea.TexCoord0, ref textureArea.TexCoord1);
-                Utils.Swap(ref textureArea.TexCoord2, ref textureArea.TexCoord3);
+                Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord1);
+                Swap.Do(ref textureArea.TexCoord2, ref textureArea.TexCoord3);
             }
             blocks.SetFaceTexture(face, textureArea);
 
@@ -735,8 +729,8 @@ namespace TombEditor
         public static void MirrorSelectedTexture()
         {
             TextureArea textureArea = _editor.SelectedTexture;
-            Utils.Swap(ref textureArea.TexCoord0, ref textureArea.TexCoord3);
-            Utils.Swap(ref textureArea.TexCoord1, ref textureArea.TexCoord2);
+            Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord3);
+            Swap.Do(ref textureArea.TexCoord1, ref textureArea.TexCoord2);
             _editor.SelectedTexture = textureArea;
         }
 
@@ -757,7 +751,7 @@ namespace TombEditor
                         {
                             if (block.FloorSplitDirectionIsXEqualsZ)
                             {
-                                Utils.Swap(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                                Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
                                 processedTexture.TexCoord1 = processedTexture.TexCoord3;
                                 processedTexture.TexCoord3 = processedTexture.TexCoord2;
                             }
@@ -795,7 +789,7 @@ namespace TombEditor
                         {
                             if (block.CeilingSplitDirectionIsXEqualsZ)
                             {
-                                Utils.Swap(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
+                                Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
                                 processedTexture.TexCoord1 = processedTexture.TexCoord3;
                                 processedTexture.TexCoord3 = processedTexture.TexCoord2;
                             }
@@ -1346,11 +1340,12 @@ namespace TombEditor
             if (instance is LightInstance)
                 room.UpdateCompletely(); // Rebuild lighting!
             _editor.ObjectChange(instance, ObjectChangeType.Add);
+            _editor.SelectedObject = instance;
         }
 
         public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner)
         {
-            rooms_ = rooms_.Select(room => room.AlternateBaseRoom ?? room).Distinct();
+            rooms_ = rooms_.SelectMany(room => room.Versions).Distinct();
             HashSet<Room> rooms = new HashSet<Room>(rooms_);
 
             // Check if is the last room
@@ -1403,11 +1398,13 @@ namespace TombEditor
                 return;
 
             // Resize room
-            if (room.AlternateRoom != null)
-                room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
-            else if (room.AlternateBaseRoom != null)
-                room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
+            if (room.AlternateVersion != null)
+            {
+                room.AlternateVersion.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
+                room.AlternateVersion.UpdateCompletely();
+            }
             room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
+            room.UpdateCompletely();
 
             // Fix selection if necessary
             if ((_editor.SelectedRoom == room) && _editor.SelectedSectors.Valid)
@@ -1430,7 +1427,7 @@ namespace TombEditor
 
                     if (room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                     {
-                        room.Blocks[x, z].Rotate(true);
+                        room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, false);
                     }
                     else
                     {
@@ -1517,7 +1514,7 @@ namespace TombEditor
 
                     if (room.Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None)
                     {
-                        room.Blocks[x, z].Rotate(false);
+                        room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, true);
                     }
                     else
                     {
@@ -1602,7 +1599,7 @@ namespace TombEditor
                         continue;
 
                     if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                        room.Blocks[x, z].Rotate(true);
+                        room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, false);
                     else
                     {
                         // Now try to guess the floor split
@@ -1679,7 +1676,7 @@ namespace TombEditor
                 {
                     if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
-                    room.Blocks[x, z].Rotate(floor);
+                    room.Blocks[x, z].Transform(new RectTransformation { QuadrantRotation = 1 }, floor);
 
                     if (room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None && room.Blocks[x, z].IsAnyWall)
                         wallsRotated = true;
@@ -2045,7 +2042,7 @@ namespace TombEditor
         public static void CreateRoomAboveOrBelow(Room room, Func<Room, float> GetYOffset, short newRoomHeight)
         {
             // Create room
-            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "", newRoomHeight);
+            var newRoom = new Room(room.NumXSectors, room.NumZSectors, "", newRoomHeight);
             newRoom.Position = room.Position + new Vector3(0, GetYOffset(newRoom), 0);
             newRoom.Name = "Room " + (newRoom.Position.Y > room.Position.Y ? "above " : "below ") + room.Name;
             _editor.Level.AssignRoomToFree(newRoom);
@@ -2096,10 +2093,16 @@ namespace TombEditor
             }
         }
 
+        public static void SelectConnectedRooms()
+        {
+            _editor.SelectRooms(_editor.Level.GetConnectedRooms(_editor.SelectedRooms).ToList());
+        }
+
         public static void DuplicateRooms(IWin32Window owner)
         {
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
             newRoom.Name = _editor.SelectedRoom.Name + " (copy)";
+            newRoom.UpdateCompletely();
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
             _editor.SelectedRoom = newRoom;
@@ -2183,6 +2186,35 @@ namespace TombEditor
             _editor.LoadedWadsChange(null);
         }
 
+        public static bool EnsureNoOutsidePortalsInSelecton(IWin32Window owner)
+        {
+            return Room.RemoveOutsidePortals(_editor.Level, _editor.SelectedRooms, (list) =>
+            {
+                StringBuilder portalsToRemoveList = list.Aggregate(new StringBuilder(), (str, room) => str.Append(room).Append("\n"), str => str.Remove(str.Length - 1, 1));
+                return DarkMessageBox.Show(owner, "The rooms can't have portals to the outside. Do you want to continue by removing all portals to the outside? " +
+                    " Portals to remove: " + portalsToRemoveList.ToString(),
+                    "Outside portals", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes;
+            });
+        }
+
+        public static bool TransformRooms(RectTransformation transformation, IWin32Window owner)
+        {
+            if (!EnsureNoOutsidePortalsInSelecton(owner))
+                return false;
+            var newRooms = _editor.Level.TransformRooms(_editor.SelectedRooms, transformation);
+            foreach (Room room in newRooms)
+                room.UpdateCompletely();
+            _editor.SelectRoomsAndResetCamera(newRooms);
+
+            _editor.RoomListChange();
+            foreach (Room room in newRooms)
+            {
+                _editor.RoomGeometryChange(room);
+                _editor.RoomSectorPropertiesChange(room);
+            }
+            return true;
+        }
+
         public static void Copy(IWin32Window owner)
         {
             var instance = _editor.SelectedObject as PositionBasedObjectInstance;
@@ -2194,10 +2226,10 @@ namespace TombEditor
             Clipboard.Copy(instance);
         }
 
-        public static void Clone(IWin32Window owner)
+        public static void Stamp(IWin32Window owner)
         {
             Copy(owner);
-            _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
+            _editor.Action = new EditorActionPlace(true, (r, l) => Clipboard.Retrieve());
         }
 
         public static bool DragDropFileSupported(DragEventArgs e, bool allow3DImport = false)
@@ -2550,7 +2582,6 @@ namespace TombEditor
         public static void SwitchMode(EditorMode mode)
         {
             _editor.Mode = mode;
-            _editor.Action = EditorAction.None;
 
             if(_editor.Configuration.Editor_DiscardSelectionOnModeSwitch)
                 _editor.SelectedSectors = SectorSelection.None;
@@ -2559,7 +2590,6 @@ namespace TombEditor
         public static void SwitchTool(EditorTool tool)
         {
             _editor.Tool = tool;
-            _editor.Action = EditorAction.None;
         }
     }
 }

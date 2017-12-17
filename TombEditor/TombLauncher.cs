@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Geometry;
+using TombLib.Utils;
 
 namespace TombEditor
 {
@@ -73,7 +74,7 @@ namespace TombEditor
 
                 // Show message
                 string message = "Go to tools, level settings, game paths to set a valid executable path.";
-                if (Utils.IsFileNotFoundException(exc) || !File.Exists(executablePath))
+                if (FileSystemUtils.IsFileNotFoundException(exc) || !File.Exists(executablePath))
                     message = "Unable to find '" + executablePath + "'. " + message;
                 else
                     message = "Unable to start '" + executablePath + "' because a " + exc.GetType().Name + " occurred (" + exc.Message + "). " + message;

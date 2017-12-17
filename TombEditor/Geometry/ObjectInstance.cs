@@ -1,6 +1,7 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
+using TombLib.Utils;
 
 namespace TombEditor.Geometry
 {
@@ -26,8 +27,8 @@ namespace TombEditor.Geometry
 
     public abstract class ObjectInstance : ICloneable
     {
-        public delegate void RemovedFromRoomDelegate(Level level, Room room, ObjectInstance instance);
-        public event RemovedFromRoomDelegate RemovedFromRoomEvent;
+        public delegate void RemovedFromRoomDelegate(ObjectInstance instance);
+        public event RemovedFromRoomDelegate DeletedEvent;
         public Room Room { get; private set; } = null;
 
         public virtual ObjectInstance Clone()
@@ -44,6 +45,8 @@ namespace TombEditor.Geometry
 
         public virtual void AddToRoom(Level level, Room room)
         {
+            if (room == null)
+                throw new NullReferenceException("room was null");
             if (Room != null)
                 throw new ArgumentException("An object can only be part of 1 room. The object '" + this + "' already belongs to room '" +
                     Room + "', it can not be added again to room '" + room + "'");
@@ -52,19 +55,56 @@ namespace TombEditor.Geometry
 
         public virtual void RemoveFromRoom(Level level, Room room)
         {
+            if (room == null)
+                throw new NullReferenceException("room was null");
             if (Room != room)
                 throw new ArgumentException("An object can't be removed from a room it not part of. The object '" + this + "' belongs to room '" +
                     (Room == null ? "<none>" : Room.ToString()) + "', it can not be removed from room '" + room + "'");
             Room = null;
-            RemovedFromRoomEvent?.Invoke(level, room, this);
         }
+
+        /// <summary>
+        /// This methode should be invoked after the object was added to a room and the object will go out of scope.
+        /// </summary>
+        public virtual void Delete()
+        {
+            if (Room != null)
+                throw new NullReferenceException("An object can't be deleted if it's still part of a room.");
+            DeletedEvent?.Invoke(this);
+        }
+
+        public virtual void Transform(RectTransformation transformation, DrawingPoint oldRoomSize)
+        {
+            IRotateableY rotateableObject = this as IRotateableY;
+            if (rotateableObject != null)
+            {
+                float newRotation = rotateableObject.RotationY;
+                if (transformation.MirrorX)
+                    newRotation = -newRotation;
+                newRotation -= transformation.QuadrantRotation * 90;
+                rotateableObject.RotationY = newRotation;
+            }
+        }
+
+        public virtual void TransformRoomReferences(Func<Room, Room> transformRoom)
+        {}
 
         public virtual bool CopyToFlipRooms => true;
     }
 
     public abstract class SectorBasedObjectInstance : ObjectInstance
     {
-        public Rectangle Area { get; private set; }
+        private Rectangle _area;
+        public Rectangle Area
+        {
+            get { return _area; }
+            set
+            {
+                if (Room != null)
+                    throw new InvalidOperationException("Sector based objects may not change in size while they are assigned to a room.");
+                _area = value;
+            }
+        }
 
         public SectorBasedObjectInstance(Rectangle area)
         {
@@ -76,6 +116,12 @@ namespace TombEditor.Geometry
             var result = (SectorBasedObjectInstance)Clone();
             result.Area = area;
             return result;
+        }
+
+        public override void Transform(RectTransformation transformation, DrawingPoint oldRoomSize)
+        {
+            base.Transform(transformation, oldRoomSize);
+            _area = transformation.TransformRect(_area, oldRoomSize);
         }
     }
 
@@ -128,6 +174,12 @@ namespace TombEditor.Geometry
                     Matrix.Scaling((this as IScaleable)?.Scale ?? 1.0f) *
                     Matrix.Translation(Position);
             }
+        }
+
+        public override void Transform(RectTransformation transformation, DrawingPoint oldRoomSize)
+        {
+            base.Transform(transformation, oldRoomSize);
+            Position = transformation.TransformVec3(Position, oldRoomSize.X * 1024.0f, oldRoomSize.Y * 1024.0f);
         }
     }
 

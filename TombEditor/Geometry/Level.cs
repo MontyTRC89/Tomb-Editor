@@ -1,4 +1,5 @@
 ﻿using NLog;
+using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,18 @@ namespace TombEditor.Geometry
 
             Level result = new Level();
             if (result.Rooms[0] == null)
-                result.Rooms[0] = new Room(result, Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room 0");
+                result.Rooms[0] = new Room(Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room 0");
+            return result;
+        }
+
+        public HashSet<Room> GetConnectedRooms(IEnumerable<Room> startingRooms)
+        {
+            var result = new HashSet<Room>();
+            foreach (Room startingRoom in startingRooms)
+            {
+                GetConnectedRoomsRecursively(result, startingRoom);
+                GetConnectedRoomsRecursively(result, startingRoom.AlternateVersion);
+            }
             return result;
         }
 
@@ -43,15 +55,14 @@ namespace TombEditor.Geometry
         public List<TriggerInstance> GetAllTriggersPointingToObject(ObjectInstance instance)
         {
             var triggers = new List<TriggerInstance>();
-            foreach (var room in Rooms)
-                if (room != null)
-                    foreach (var trigger in room.Triggers)
-                        if (trigger.TargetObj == instance)
-                            triggers.Add(trigger);
+            foreach (var room in Rooms.Where(room => room != null))
+                foreach (var trigger in room.Triggers)
+                    if (trigger.TargetObj == instance)
+                        triggers.Add(trigger);
             return triggers;
         }
 
-        private void GetConnectedRoomsRecursively(ISet<Room> result, Room startingRoom)
+        private void GetConnectedRoomsRecursively(HashSet<Room> result, Room startingRoom)
         {
             if ((startingRoom == null) || result.Contains(startingRoom))
                 return;
@@ -195,6 +206,92 @@ namespace TombEditor.Geometry
             DeleteAlternateRoom(room);
             if (room.AlternateVersion != null)
                 DeleteAlternateRoom(room.AlternateVersion);
+        }
+
+        public IReadOnlyList<Room> TransformRooms(IEnumerable<Room> roomsToRotate, RectTransformation transformation, DrawingPoint center)
+        {
+            roomsToRotate = roomsToRotate.SelectMany(room => room.Versions).Distinct();
+            Room[] oldRooms = roomsToRotate.ToArray();
+            Vector3 worldCenter = new Vector3(center.X, 0, center.Y) * 1024.0f;
+
+            // Copy rooms and sectors
+            var newRooms = new Room[oldRooms.Length];
+            for (int i = 0; i < oldRooms.Length; ++i)
+            {
+                Room oldRoom = oldRooms[i];
+
+                // Create room
+                DrawingPoint newSize = (transformation.QuadrantRotation % 2 == 0) ? oldRoom.SectorSize : new DrawingPoint(oldRoom.NumZSectors, oldRoom.NumXSectors);
+                Room newRoom = oldRoom.Clone(this, obj => false); // This is a waste of computing power: All sectors are copied and immediately afterwards thrown away because the room needs to get resized.
+                newRoom.Resize(this, new Rectangle(0, 0, newSize.X - 1, newSize.Y - 1));
+
+                // Assign position
+                Vector3 roomCenter = oldRoom.WorldPos + new Vector3(oldRoom.NumXSectors, 0, oldRoom.NumZSectors) * (1024.0f * 0.5f);
+                roomCenter -= worldCenter;
+                roomCenter = transformation.TransformVec3(roomCenter, oldRoom.NumXSectors, oldRoom.NumZSectors);
+                roomCenter += worldCenter;
+                newRoom.WorldPos = roomCenter - new Vector3(newSize.X, 0, newSize.Y) * (1024.0f * 0.5f);
+
+                // Copy sectors
+                for (int z = 0; z < oldRoom.NumZSectors; ++z)
+                    for (int x = 0; x < oldRoom.NumXSectors; ++x)
+                    {
+                        DrawingPoint newSectorPosition = transformation.TransformIVec2(new DrawingPoint(x, z), oldRoom.SectorSize);
+                        newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y] = oldRoom.Blocks[x, z].Clone();
+                        newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y].Transform(transformation);
+                    }
+
+                newRooms[i] = newRoom;
+            }
+
+            // Move objects to new rooms
+            for (int i = 0; i < oldRooms.Length; ++i)
+            {
+                Room oldRoom = oldRooms[i];
+                Room newRoom = newRooms[i];
+
+                // Copy objects
+                List<ObjectInstance> objects = oldRoom.AnyObjects.ToList();
+                foreach (ObjectInstance @object in objects)
+                {
+                    oldRoom.RemoveObjectAndSingularPortalAndKeepAlive(this, @object);
+                    @object.Transform(transformation, oldRoom.SectorSize);
+                    @object.TransformRoomReferences(room =>
+                    {
+                        int index = Array.IndexOf<Room>(oldRooms, room);
+                        if (index == -1)
+                            return room;
+                        else
+                            return newRooms[index];
+                    });
+                    newRoom.AddObjectAndSingularPortal(this, @object);
+                }
+            }
+
+            // Assign new rooms
+            for (int i = 0; i < oldRooms.Length; ++i)
+            {
+                if (oldRooms[i].AlternateRoom != null)
+                    newRooms[i].AlternateRoom = newRooms[Array.IndexOf<Room>(oldRooms, oldRooms[i].AlternateRoom)];
+                if (oldRooms[i].AlternateBaseRoom != null)
+                    newRooms[i].AlternateBaseRoom = newRooms[Array.IndexOf<Room>(oldRooms, oldRooms[i].AlternateBaseRoom)];
+            }
+            for (int i = 0; i < oldRooms.Length; ++i)
+            {
+                int roomIndex = Array.IndexOf<Room>(Rooms, oldRooms[i]);
+                Rooms[roomIndex] = newRooms[i];
+            }
+
+            return newRooms;
+        }
+
+        public IReadOnlyList<Room> TransformRooms(IEnumerable<Room> roomsToRotate, RectTransformation transformation)
+        {
+            IReadOnlyList<Room> rooms = roomsToRotate as IReadOnlyList<Room> ?? roomsToRotate.ToList();
+            Rectangle coveredArea = new Rectangle(int.MaxValue, int.MaxValue, int.MinValue, int.MinValue);
+            foreach (Room room in rooms)
+                coveredArea = coveredArea.Union(room.WorldArea);
+            return TransformRooms(rooms, transformation, new DrawingPoint((coveredArea.Left + coveredArea.Right) / 2, (coveredArea.Top + coveredArea.Bottom) / 2));
         }
 
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)

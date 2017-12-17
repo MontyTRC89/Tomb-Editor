@@ -93,9 +93,7 @@ namespace TombLib.Utils
         }
 
         public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
-
         public bool TextureIsInvisble => (Texture == null) || (Texture == TextureInvisible.Instance) || (Texture.IsUnavailable);
-
         public bool TextureIsRectangle => ((TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length());
 
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
@@ -150,6 +148,13 @@ namespace TombLib.Utils
         private static float CalculateArea(Vector2 texCoord0, Vector2 texCoord1)
         {
             return (texCoord1.X - texCoord0.X) * (texCoord1.Y + texCoord0.Y);
+        }
+
+        public TextureArea Transform(RectTransformation transformation)
+        {
+            TextureArea result = this;
+            transformation.TransformValueDiagonalQuad(ref result.TexCoord0, ref result.TexCoord1, ref result.TexCoord2, ref result.TexCoord3);
+            return result;
         }
 
         public float TriangleArea

@@ -135,6 +135,7 @@ namespace TombEditor
             {
                 bool validSectorSelection = _editor.SelectedSectors.Valid;
                 transformToolStripMenuItem.Enabled = validSectorSelection;
+                smoothRandomCeilingDownToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomCeilingUpToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomFloorDownToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomFloorUpToolStripMenuItem.Enabled = validSectorSelection;
@@ -213,7 +214,7 @@ namespace TombEditor
             if ((obj is Editor.LevelFileNameChangedEvent) || (obj is Editor.HasUnsavedChangesChangedEvent))
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
-                    Utils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
+                    FileSystemUtils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
 
                 Text = "Tomb Editor " + Application.ProductVersion + " - " + LevelName + (_editor.HasUnsavedChanges ? "*" : "");
             }
@@ -286,7 +287,7 @@ namespace TombEditor
             switch (keyData & ~(Keys.Alt | Keys.Shift | Keys.Control))
             {
                 case Keys.Escape: // End any action
-                    _editor.Action = EditorAction.None;
+                    _editor.Action = null;
                     _editor.SelectedSectors = SectorSelection.None;
                     _editor.SelectedObject = null;
                     break;
@@ -512,9 +513,7 @@ namespace TombEditor
             // Set camera relocation mode based on previous inputs
             if (alt && _pressedMoveCameraKey)
             {
-                EditorAction action = _editor.Action;
-                action.RelocateCameraActive = true;
-                _editor.Action = action;
+                _editor.Action = new EditorActionRelocateCamera();
             }
 
             // Don't open menus with the alt key
@@ -555,11 +554,8 @@ namespace TombEditor
 
             // Check camera move key state
             if ((e.KeyCode == Keys.Menu) || keyCodeIsMoveCameraKey)
-            {
-                EditorAction action = _editor.Action;
-                action.RelocateCameraActive = false;
-                _editor.Action = action;
-            }
+                if (_editor.Action is EditorActionRelocateCamera)
+                    _editor.Action = null;
             if (keyCodeIsMoveCameraKey)
                 _pressedMoveCameraKey = false;
         }
@@ -568,10 +564,9 @@ namespace TombEditor
         {
             base.OnLostFocus(e);
 
-            EditorAction action = _editor.Action;
-            action.RelocateCameraActive = false;
-            _editor.Action = action;
             _pressedMoveCameraKey = false;
+            if (_editor.Action is IEditorActionDisableOnLostFocus)
+                _editor.Action = null;
         }
 
         private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
@@ -656,27 +651,27 @@ namespace TombEditor
 
         private void addCameraToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceCamera };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new CameraInstance());
         }
 
         private void addImportedGeometryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
         }
 
         private void addFlybyCameraToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceFlyByCamera };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance());
         }
 
         private void addSinkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new SinkInstance());
         }
 
         private void addSoundSourceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new SoundSourceInstance());
         }
 
         private void addPortalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -846,14 +841,12 @@ namespace TombEditor
 
         private void wholeRoomUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f),
-                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
+            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f), _editor.SelectedRoom.Versions);
         }
 
         private void wholeRoomDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f),
-                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
+            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f), _editor.SelectedRoom.Versions);
         }
 
         private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -874,16 +867,6 @@ namespace TombEditor
             EditorActions.MoveLara(this, _editor.SelectedSectors.Start);
         }
 
-        private void cropRoomToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-        }
-
-        private void splitRoomToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.SplitRoom(this);
-        }
-
         private void duplicateRoomsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             EditorActions.DuplicateRooms(this);
@@ -895,6 +878,41 @@ namespace TombEditor
                 EditorActions.DeleteRooms(_editor.SelectedRooms, this);
             else
                 EditorActions.DeleteRooms(new Room[] { _editor.SelectedRoom }, this);
+        }
+
+        private void selectConnectedRoomsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.SelectConnectedRooms();
+        }
+
+        private void rotateRoomsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.TransformRooms(new RectTransformation { QuadrantRotation = -1 }, this);
+        }
+
+        private void rotateRoomsCountercockwiseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.TransformRooms(new RectTransformation { QuadrantRotation = 1 }, this);
+        }
+
+        private void mirrorRoomsOnXAxisToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.TransformRooms(new RectTransformation { MirrorX = true }, this);
+        }
+
+        private void mirrorRoomsOnZAxisToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.TransformRooms(new RectTransformation { MirrorX = true, QuadrantRotation = 2 }, this);
+        }
+
+        private void cropRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
+        }
+
+        private void splitRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.SplitRoom(this);
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -942,12 +960,12 @@ namespace TombEditor
 
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.Paste };
+            _editor.Action = new EditorActionPlace(false, (l, r) => Clipboard.Retrieve());
         }
 
         private void stampToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.Clone(this);
+            EditorActions.Stamp(this);
         }
 
         private void newRoomUpToolStripMenuItem_Click(object sender, EventArgs e)

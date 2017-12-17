@@ -121,9 +121,9 @@ namespace TombEditor.Geometry
                     return MakeAbsolute(GameDirectory ?? VariableCreate(VariableType.LevelDirectory), VariableType.GameDirectory);
                 case VariableType.LevelName:
                     if (!string.IsNullOrEmpty(LevelFilePath))
-                        return Utils.GetFileNameWithoutExtensionTry(LevelFilePath);
+                        return FileSystemUtils.GetFileNameWithoutExtensionTry(LevelFilePath);
                     if (!string.IsNullOrEmpty(WadFilePath))
-                        return Utils.GetFileNameWithoutExtensionTry(WadFilePath);
+                        return FileSystemUtils.GetFileNameWithoutExtensionTry(WadFilePath);
                     return "Default";
                 default:
                     throw new ArgumentException();

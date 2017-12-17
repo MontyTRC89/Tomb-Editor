@@ -230,7 +230,7 @@ namespace TombEditor.Compilers.Util
                         ((a2.X - a3.X) * (a2.Y + a3.Y) + (a3.X - a0.X) * (a3.Y + a0.Y)));
                     bool animationUVsAreClockwise = animationArea > 0.0f;
                     if (animationUVsAreClockwise)
-                        Utils.Swap(ref a1, ref a3);
+                        Swap.Do(ref a1, ref a3);
 
                     Vector4 pX = new Vector4(
                         animation.Value._textureArea.TexCoord0.X,
@@ -287,10 +287,10 @@ namespace TombEditor.Compilers.Util
                     // Correct texture coordinates
                     if (animationUVsAreClockwise)
                     {
-                        Utils.Swap(ref texCoord0.X, ref texCoord0.Y);
-                        Utils.Swap(ref texCoord1.X, ref texCoord1.Y);
-                        Utils.Swap(ref texCoord2.X, ref texCoord2.Y);
-                        Utils.Swap(ref texCoord3.X, ref texCoord3.Y);
+                        Swap.Do(ref texCoord0.X, ref texCoord0.Y);
+                        Swap.Do(ref texCoord1.X, ref texCoord1.Y);
+                        Swap.Do(ref texCoord2.X, ref texCoord2.Y);
+                        Swap.Do(ref texCoord3.X, ref texCoord3.Y);
                     }
                 }
 

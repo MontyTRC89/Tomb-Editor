@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombEditor.Geometry;
+using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 

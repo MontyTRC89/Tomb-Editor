@@ -11,6 +11,7 @@ using DarkUI.Docking;
 using TombEditor.Geometry;
 using TombLib.Wad;
 using DarkUI.Forms;
+using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
 {
@@ -148,7 +149,7 @@ namespace TombEditor.ToolWindows
                 return;
             }
 
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceItem, ItemType = currentItem.Value };
+            _editor.Action = new EditorActionPlace(false, (r, l) => ItemInstance.FromItemType(currentItem.Value));
         }
 
         private void panelStaticMeshColor_Click(object sender, EventArgs e)
