@@ -56,9 +56,9 @@ namespace TombEditor.Geometry
                 if (value == this)
                     throw new ArgumentException("The \"TargetObj\" may not be the trigger itself.");
                 if (value != null)
-                    value.RemovedFromRoomEvent += _targetObj_RemovedFromRoomEvent;
+                    value.DeletedEvent += _targetObj_DeletedEvent;
                 if (_targetObj != null)
-                    _targetObj.RemovedFromRoomEvent -= _targetObj_RemovedFromRoomEvent;
+                    _targetObj.DeletedEvent -= _targetObj_DeletedEvent;
                 _targetObj = value;
             }
         }
@@ -117,7 +117,7 @@ namespace TombEditor.Geometry
                     room.Blocks[x, z].Triggers.Remove(this);
         }
 
-        private void _targetObj_RemovedFromRoomEvent(Level level, Room room, ObjectInstance instance)
+        private void _targetObj_DeletedEvent(ObjectInstance instance)
         {
             if (instance == TargetObj)
                 TargetObj = null;

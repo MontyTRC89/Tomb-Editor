@@ -68,11 +68,15 @@ namespace TombEditor.Geometry
         private List<EditorVertex> _allVertices = new List<EditorVertex>();
         private List<int>[,,] _sectorFaceIndices;
 
-        public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
+        public Room(int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {
             Name = name;
-            Resize(level, new Rectangle(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
+            Resize(null, new Rectangle(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
         }
+
+        public Room(DrawingPoint sectorSize, string name = "Unnamed", short ceiling = DefaultHeight)
+            : this(sectorSize.X, sectorSize.Y, name, ceiling)
+        {}
 
         public void Resize(Level level, Rectangle area, short floor = 0, short ceiling = DefaultHeight)
         {
@@ -236,8 +240,6 @@ namespace TombEditor.Geometry
             foreach (var instance in AnyObjects)
                 if (decideToCopy(instance))
                     result.AddObjectAndSingularPortal(level, instance.Clone());
-
-            result.UpdateCompletely();
             return result;
         }
 
@@ -251,6 +253,16 @@ namespace TombEditor.Geometry
         public DrawingPoint SectorSize => new DrawingPoint(NumXSectors, NumZSectors);
         public Rectangle WorldArea => new Rectangle((int)Position.X, (int)Position.Z, (int)Position.X + NumXSectors - 1, (int)Position.Z + NumZSectors - 1);
         public Rectangle LocalArea => new Rectangle(0, 0, NumXSectors - 1, NumZSectors - 1);
+        public IEnumerable<Room> Versions
+        {
+            get
+            {
+                yield return this;
+                Room alternateVersion = AlternateVersion;
+                if (alternateVersion != null)
+                    yield return alternateVersion;
+            }
+        }
 
         public DrawingPoint SectorPos
         {
@@ -327,72 +339,46 @@ namespace TombEditor.Geometry
             return GetBlockTry(pos.X, pos.Y);
         }
 
-        public class RoomBlockPair
+        public struct RoomBlockPair
         {
-            public Room Room { get; private set; }
-            public Block Block { get; private set; }
-            public DrawingPoint Pos { get; private set; }
-
-            public RoomBlockPair(Room room, Block block, DrawingPoint pos)
-            {
-                Room = room;
-                Block = block;
-                Pos = pos;
-            }
-        }
-
-        public RoomBlockPair ProbeLowestBlock(int x, int z, bool doProbe = true)
-        {
-            Block block = GetBlockTry(x, z);
-
-            if (block == null)
-                return null;
-            else if(!doProbe || block.WallPortal != null)
-                return new RoomBlockPair(this, block, new DrawingPoint(x, z));
-
-            RoomBlockPair sector = GetBlockTryThroughPortal(x, z);
-            Room adjoiningRoom;
-            DrawingPoint adjoiningSectorCoordinate;
-
-            if (sector?.Block.FloorPortal != null)
-            {
-                adjoiningRoom = sector.Block.FloorPortal.AdjoiningRoom;
-                adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
-                sector = adjoiningRoom.ProbeLowestBlock(adjoiningSectorCoordinate);
-            }
-
-            return sector;
+            public Room Room { get; set; }
+            public Block Block { get; set; }
+            public DrawingPoint Pos { get; set; }
         }
 
         public RoomBlockPair ProbeLowestBlock(DrawingPoint pos, bool doProbe = true)
         {
-            return ProbeLowestBlock(pos.X, pos.Y, doProbe);
-        }
+            Block block = GetBlockTry(pos);
+            if (block == null)
+                return new RoomBlockPair();
+            else if (!doProbe || block.WallPortal != null)
+                return new RoomBlockPair { Room = this, Block = block, Pos = pos };
 
-        public RoomBlockPair GetBlockTryThroughPortal(int x, int z)
+            RoomBlockPair result = GetBlockTryThroughPortal(pos);
+            if (result.Block?.FloorPortal == null)
+                return result;
+
+            Room adjoiningRoom = result.Block.FloorPortal.AdjoiningRoom;
+            DrawingPoint adjoiningSectorCoordinate = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+            return adjoiningRoom.ProbeLowestBlock(adjoiningSectorCoordinate);
+        }
+        public RoomBlockPair ProbeLowestBlock(int x, int z, bool doProbe = true) => ProbeLowestBlock(new DrawingPoint(x, z), doProbe);
+
+        public RoomBlockPair GetBlockTryThroughPortal(DrawingPoint pos)
         {
-            Block sector = GetBlockTry(x, z);
-
+            Block sector = GetBlockTry(pos);
             if (sector == null)
-                return null;
+                return new RoomBlockPair();
 
-            Room adjoiningRoom;
-            DrawingPoint adjoiningSectorCoordinate;
+            if (sector?.WallPortal == null)
+                return new RoomBlockPair { Room = this, Block = sector, Pos = pos };
 
-            if (sector?.WallPortal != null)
-            {
-                adjoiningRoom = sector.WallPortal.AdjoiningRoom;
-                adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
-                sector = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
-            }
-            else
-            {
-                adjoiningRoom = this;
-                adjoiningSectorCoordinate = new DrawingPoint(x, z);
-            }
-
-            return new RoomBlockPair(adjoiningRoom, sector, adjoiningSectorCoordinate);
+            Room adjoiningRoom = sector.WallPortal.AdjoiningRoom;
+            DrawingPoint adjoiningSectorCoordinate = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+            Block sector2 = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
+            return new RoomBlockPair { Room = adjoiningRoom, Block = sector2, Pos = adjoiningSectorCoordinate };
         }
+        public RoomBlockPair GetBlockTryThroughPortal(int x, int z) => GetBlockTryThroughPortal(new DrawingPoint(x, z));
 
         public void ModifyPoint(int x, int z, int verticalSubdivision, short increment, Rectangle area)
         {
@@ -491,29 +477,25 @@ namespace TombEditor.Geometry
 
             for (int i = 0; i < 2; i++)
             {
-                if (slopeDirections[i] == Direction.None || slopeIsIllegal)
+                if (slopeIsIllegal)
                     continue;
 
-                RoomBlockPair lookupBlock = null;
-                short[] heightsToCompare = new short[2];
-                short[] heightsToCheck = new short[2];
+                RoomBlockPair lookupBlock;
+                short[] heightsToCompare;
+                short[] heightsToCheck;
 
                 switch (slopeDirections[i])
                 {
                     case Direction.PositiveZ:
                         lookupBlock = GetBlockTryThroughPortal(x, z + 1);
-                        heightsToCompare[0] = 0;
-                        heightsToCompare[1] = 1;
-                        heightsToCheck[0] = 3;
-                        heightsToCheck[1] = 2;
+                        heightsToCompare = new short[2] { 0, 1 };
+                        heightsToCheck = new short[2] { 3, 2 };
                         break;
 
                     case Direction.NegativeZ:
                         lookupBlock = GetBlockTryThroughPortal(x, z - 1);
-                        heightsToCompare[0] = 2;
-                        heightsToCompare[1] = 3;
-                        heightsToCheck[0] = 1;
-                        heightsToCheck[1] = 0;
+                        heightsToCompare = new short[2] { 2, 3 };
+                        heightsToCheck = new short[2] { 1, 0 };
                         break;
 
                     // We only need to override east and west diagonal split HeightsToCompare[1] cases, because
@@ -521,19 +503,17 @@ namespace TombEditor.Geometry
 
                     case Direction.PositiveX:
                         lookupBlock = GetBlockTryThroughPortal(x + 1, z);
-                        heightsToCompare[0] = 1;
-                        heightsToCompare[1] = (short)(sector.FloorDiagonalSplit == DiagonalSplit.XnZp ? 1 : 2);
-                        heightsToCheck[0] = 0;
-                        heightsToCheck[1] = 3;
+                        heightsToCompare = new short[2] { 1, (short)(sector.FloorDiagonalSplit == DiagonalSplit.XnZp ? 1 : 2) };
+                        heightsToCheck = new short[2] { 0, 3 };
                         break;
 
                     case Direction.NegativeX:
                         lookupBlock = GetBlockTryThroughPortal(x - 1, z);
-                        heightsToCompare[0] = 3;
-                        heightsToCompare[1] = (short)(sector.FloorDiagonalSplit == DiagonalSplit.XpZn ? 3 : 0);
-                        heightsToCheck[0] = 2;
-                        heightsToCheck[1] = 1;
+                        heightsToCompare = new short[2] { 3, (short)(sector.FloorDiagonalSplit == DiagonalSplit.XpZn ? 3 : 0) };
+                        heightsToCheck = new short[2] { 2, 1 };
                         break;
+                    default:
+                        continue;
                 }
 
                 // Diagonal split resolver
@@ -919,11 +899,11 @@ namespace TombEditor.Geometry
                             }
 
                             int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
-
-                            if (adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].Type == BlockType.Wall &&
-                                (adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.XnZp ||
-                                 adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.XpZp))
+                            var block = adjoiningRoom.GetBlockTry(facingX, adjoiningRoom.NumZSectors - 2) ?? Block.Empty;
+                            if (block.Type == BlockType.Wall &&
+                                (block.FloorDiagonalSplit == DiagonalSplit.None ||
+                                 block.FloorDiagonalSplit == DiagonalSplit.XnZp ||
+                                 block.FloorDiagonalSplit == DiagonalSplit.XpZp))
                             {
                                 addMiddle = true;
                             }
@@ -954,11 +934,11 @@ namespace TombEditor.Geometry
                             }
 
                             int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
-
-                            if (adjoiningRoom.Blocks[facingX, 1].Type == BlockType.Wall &&
-                                (adjoiningRoom.Blocks[facingX, 1].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[facingX, 1].FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                 adjoiningRoom.Blocks[facingX, 1].FloorDiagonalSplit == DiagonalSplit.XpZn))
+                            var block = adjoiningRoom.GetBlockTry(facingX, 1) ?? Block.Empty;
+                            if (block.Type == BlockType.Wall &&
+                                (block.FloorDiagonalSplit == DiagonalSplit.None ||
+                                 block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                 block.FloorDiagonalSplit == DiagonalSplit.XpZn))
                             {
                                 addMiddle = true;
                             }
@@ -988,11 +968,11 @@ namespace TombEditor.Geometry
                             }
 
                             int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
-
-                            if (adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].Type == BlockType.Wall &&
-                                (adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.XpZn ||
-                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.XpZp))
+                            var block = adjoiningRoom.GetBlockTry(adjoiningRoom.NumXSectors - 2, facingZ) ?? Block.Empty;
+                            if (block.Type == BlockType.Wall &&
+                                (block.FloorDiagonalSplit == DiagonalSplit.None ||
+                                 block.FloorDiagonalSplit == DiagonalSplit.XpZn ||
+                                 block.FloorDiagonalSplit == DiagonalSplit.XpZp))
                             {
                                 addMiddle = true;
                             }
@@ -1022,11 +1002,11 @@ namespace TombEditor.Geometry
                             }
 
                             int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
-
-                            if (adjoiningRoom.Blocks[1, facingZ].Type == BlockType.Wall &&
-                                (adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.XnZp))
+                            var block = adjoiningRoom.GetBlockTry(1, facingZ) ?? Block.Empty;
+                            if (block.Type == BlockType.Wall &&
+                                (block.FloorDiagonalSplit == DiagonalSplit.None ||
+                                 block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                 block.FloorDiagonalSplit == DiagonalSplit.XnZp))
                             {
                                 addMiddle = true;
                             }
@@ -1396,7 +1376,7 @@ namespace TombEditor.Geometry
                         // Now get the facing block on the adjoining room and calculate the correct heights
                         int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
 
-                        var adjoiningBlock = adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2];
+                        var adjoiningBlock = adjoiningRoom.GetBlockTry(facingX, adjoiningRoom.NumZSectors - 2) ?? Block.Empty;
 
                         int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[1];
                         int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[0];
@@ -1614,7 +1594,7 @@ namespace TombEditor.Geometry
                         // Now get the facing block on the adjoining room and calculate the correct heights
                         int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
 
-                        var adjoiningBlock = adjoiningRoom.Blocks[facingX, 1];
+                        var adjoiningBlock = adjoiningRoom.GetBlockTry(facingX, 1) ?? Block.Empty;
 
                         int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[3];
                         int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[2];
@@ -1832,7 +1812,7 @@ namespace TombEditor.Geometry
                         // Now get the facing block on the adjoining room and calculate the correct heights
                         int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
 
-                        var adjoiningBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ];
+                        var adjoiningBlock = adjoiningRoom.GetBlockTry(adjoiningRoom.NumXSectors - 2, facingZ) ?? Block.Empty;
 
                         int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[2];
                         int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[1];
@@ -2248,7 +2228,7 @@ namespace TombEditor.Geometry
                         // Now get the facing block on the adjoining room and calculate the correct heights
                         int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
 
-                        var adjoiningBlock = adjoiningRoom.Blocks[1, facingZ];
+                        var adjoiningBlock = adjoiningRoom.GetBlockTry(1, facingZ) ?? Block.Empty;
 
                         int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[0];
                         int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[3];
@@ -3340,7 +3320,11 @@ namespace TombEditor.Geometry
             return GetLowestCorner(new Rectangle(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
 
-        public Vector3 WorldPos => new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f);
+        public Vector3 WorldPos
+        {
+            get { return new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f); }
+            set { Position = new Vector3(value.X * (1.0f / 1024.0f), value.Y * (1.0f / 256.0f), value.Z * (1.0f / 1024.0f)); }
+        }
 
         public Vector3 GetLocalCenter()
         {
@@ -3504,6 +3488,27 @@ namespace TombEditor.Geometry
                 instance.Position -= new Vector3(0, lowest * 256, 0);
         }
 
+        public static bool RemoveOutsidePortals(Level level, IEnumerable<Room> rooms, Func<IReadOnlyList<PortalInstance>, bool> beforeRemovePortals)
+        {
+            HashSet<Room> roomLookup = new HashSet<Room>(rooms);
+
+            List<PortalInstance> portalsToRemove = new List<PortalInstance>();
+            foreach (Room room in roomLookup)
+                foreach (PortalInstance portal in room.Portals)
+                    if (!roomLookup.Contains(portal.AdjoiningRoom))
+                        portalsToRemove.Add(portal);
+
+            if (portalsToRemove.Count == 0)
+                return true;
+            if (!beforeRemovePortals(portalsToRemove))
+                return false;
+
+            foreach (PortalInstance instance in portalsToRemove)
+                if (instance.Room != null)
+                    instance.Room.RemoveObject(level, instance);
+            return true;
+        }
+
         public bool AddObjectCutSectors(Level level, Rectangle newArea, SectorBasedObjectInstance instance)
         {
             // Determine area
@@ -3550,11 +3555,19 @@ namespace TombEditor.Geometry
             return instance;
         }
 
-        public void RemoveObjectAndSingularPortal(Level level, ObjectInstance instance)
+        public ObjectInstance RemoveObjectAndSingularPortalAndKeepAlive(Level level, ObjectInstance instance)
         {
             instance.RemoveFromRoom(level, this);
             if (instance is PositionBasedObjectInstance)
                 _objects.Remove((PositionBasedObjectInstance)instance);
+            return instance;
+        }
+
+        public ObjectInstance RemoveObjectAndSingularPortal(Level level, ObjectInstance instance)
+        {
+            instance = RemoveObjectAndSingularPortalAndKeepAlive(level, instance);
+            instance.Delete();
+            return instance;
         }
 
         public IEnumerable<ObjectInstance> AddObject(Level level, ObjectInstance instance)
@@ -3592,9 +3605,10 @@ namespace TombEditor.Geometry
             return new ObjectInstance[] { instance };
         }
 
-        public void RemoveObject(Level level, ObjectInstance instance)
+        public IEnumerable<ObjectInstance> RemoveObjectAndKeepAlive(Level level, ObjectInstance instance)
         {
-            RemoveObjectAndSingularPortal(level, instance);
+            List<ObjectInstance> result = new List<ObjectInstance>();
+            result.Add(RemoveObjectAndSingularPortal(level, instance));
 
             // Delete the corresponding other portals if necessary.
             var portal = instance as PortalInstance;
@@ -3602,16 +3616,25 @@ namespace TombEditor.Geometry
             {
                 var alternatePortal = portal.FindAlternatePortal(this?.AlternateVersion);
                 if (alternatePortal != null)
-                    AlternateVersion.RemoveObjectAndSingularPortal(level, alternatePortal);
+                    result.Add(AlternateVersion.RemoveObjectAndSingularPortal(level, alternatePortal));
 
                 var oppositePortal = portal.FindOppositePortal(this);
                 if (oppositePortal != null)
-                    portal.AdjoiningRoom.RemoveObjectAndSingularPortal(level, oppositePortal);
+                    result.Add(portal.AdjoiningRoom.RemoveObjectAndSingularPortal(level, oppositePortal));
 
                 var oppositeAlternatePortal = oppositePortal?.FindAlternatePortal(portal.AdjoiningRoom?.AlternateVersion);
                 if (oppositeAlternatePortal != null)
-                    oppositeAlternatePortal.Room.RemoveObjectAndSingularPortal(level, oppositeAlternatePortal);
+                    result.Add(oppositeAlternatePortal.Room.RemoveObjectAndSingularPortal(level, oppositeAlternatePortal));
             }
+            return result;
+        }
+
+        public IEnumerable<ObjectInstance> RemoveObject(Level level, ObjectInstance instance)
+        {
+            IEnumerable<ObjectInstance> result = RemoveObjectAndKeepAlive(level, instance);
+            foreach (ObjectInstance resultInstance in result)
+                resultInstance.Delete();
+            return result;
         }
 
         public void MoveObjectFrom(Level level, Room from, PositionBasedObjectInstance instance)

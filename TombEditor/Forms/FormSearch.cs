@@ -12,6 +12,7 @@ using ObjectType = System.Object;
 using TombEditor.Geometry;
 using TombLib.Wad;
 using System.Runtime.CompilerServices;
+using TombLib.Utils;
 
 namespace TombEditor
 {

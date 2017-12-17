@@ -174,32 +174,32 @@ namespace TombEditor.ToolWindows
 
         private void butAddPointLight_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Point };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Point));
         }
 
         private void butAddShadow_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Shadow };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Shadow));
         }
 
         private void butAddSun_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Sun };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Sun));
         }
 
         private void butAddSpotLight_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Spot };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Spot));
         }
 
         private void butAddEffectLight_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Effect };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Effect));
         }
 
         private void butAddFogBulb_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.FogBulb };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb));
         }
 
         private static bool Compare(float firstValue, float secondValue, NumericUpDown control)

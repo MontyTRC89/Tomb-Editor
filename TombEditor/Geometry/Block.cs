@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using TombEditor.Geometry.IO;
 using TombLib.Utils;
+using TombLib;
 
 namespace TombEditor.Geometry
 {
@@ -62,6 +63,8 @@ namespace TombEditor.Geometry
 
     public class Block : ICloneable
     {
+        public static Block Empty { get; } = new Block();
+
         public const BlockFace FaceCount = (BlockFace)29;
         /// <summary> Index of faces on the negative X and positive Z direction </summary>
         public const int FaceXnZp = 0;
@@ -271,7 +274,7 @@ namespace TombEditor.Geometry
                     {
                         if (autoSwitch)
                         {
-                            Rotate(floor, 2);
+                            Transform(new RectTransformation { QuadrantRotation = 2 }, floor);
                             Raise(verticalSubdivision, !diagonalStep, increment);
                         }
                         return;
@@ -281,87 +284,149 @@ namespace TombEditor.Geometry
             Raise(verticalSubdivision, diagonalStep, increment);
         }
 
-        public void Rotate(bool floor, int iterations = 1)
+        private static DiagonalSplit TransformDiagonalSplit(DiagonalSplit split, RectTransformation transformation)
         {
-            if (iterations < 1 || iterations > 3)
-                return;
+            if (transformation.MirrorX)
+                switch (split)
+                {
+                    case DiagonalSplit.XnZn:
+                        split = DiagonalSplit.XpZn;
+                        break;
+                    case DiagonalSplit.XpZn:
+                        split = DiagonalSplit.XnZn;
+                        break;
+                    case DiagonalSplit.XnZp:
+                        split = DiagonalSplit.XpZp;
+                        break;
+                    case DiagonalSplit.XpZp:
+                        split = DiagonalSplit.XnZp;
+                        break;
+                }
 
-            for (int i = 0; i < iterations; i++)
+            for (int i = 0; i < transformation.QuadrantRotation; ++i)
+                switch (split)
+                {
+                    case DiagonalSplit.XpZp:
+                        split = DiagonalSplit.XnZp;
+                        break;
+                    case DiagonalSplit.XnZp:
+                        split = DiagonalSplit.XnZn;
+                        break;
+                    case DiagonalSplit.XnZn:
+                        split = DiagonalSplit.XpZn;
+                        break;
+                    case DiagonalSplit.XpZn:
+                        split = DiagonalSplit.XpZp;
+                        break;
+                }
+
+            return split;
+        }
+
+        public void Transform(RectTransformation transformation, bool? onlyFloor = null)
+        {
+            // Rotate sector flags
+            if (onlyFloor != null)
             {
-                if ((floor || Type == BlockType.Wall) &&
-                     FloorDiagonalSplit != DiagonalSplit.None)
-                {
-                    if (FloorDiagonalSplit == DiagonalSplit.XnZp)
-                        FloorDiagonalSplit = DiagonalSplit.XpZp;
-                    else if (FloorDiagonalSplit == DiagonalSplit.XpZp)
-                        FloorDiagonalSplit = DiagonalSplit.XpZn;
-                    else if (FloorDiagonalSplit == DiagonalSplit.XpZn)
-                        FloorDiagonalSplit = DiagonalSplit.XnZn;
-                    else if (FloorDiagonalSplit == DiagonalSplit.XnZn)
-                        FloorDiagonalSplit = DiagonalSplit.XnZp;
-                }
+                if (transformation.MirrorX)
+                    Flags =
+                        (Flags & ~(BlockFlags.ClimbPositiveX | BlockFlags.ClimbNegativeX)) |
+                        ((Flags & BlockFlags.ClimbPositiveX) != BlockFlags.None ? BlockFlags.ClimbNegativeX : BlockFlags.None) |
+                        ((Flags & BlockFlags.ClimbNegativeX) != BlockFlags.None ? BlockFlags.ClimbPositiveX : BlockFlags.None);
 
-                if ((!floor || Type == BlockType.Wall) &&
-                     CeilingDiagonalSplit != DiagonalSplit.None)
-                {
-                    if (CeilingDiagonalSplit == DiagonalSplit.XnZp)
-                        CeilingDiagonalSplit = DiagonalSplit.XpZp;
-                    else if (CeilingDiagonalSplit == DiagonalSplit.XpZp)
-                        CeilingDiagonalSplit = DiagonalSplit.XpZn;
-                    else if (CeilingDiagonalSplit == DiagonalSplit.XpZn)
-                        CeilingDiagonalSplit = DiagonalSplit.XnZn;
-                    else if (CeilingDiagonalSplit == DiagonalSplit.XnZn)
-                        CeilingDiagonalSplit = DiagonalSplit.XnZp;
-                }
-
-                short[] swapFace = new short[4];
-
-                if (floor || Type == BlockType.Wall)
-                {
-                    swapFace[0] = QAFaces[3];
-                    swapFace[1] = QAFaces[0];
-                    swapFace[2] = QAFaces[1];
-                    swapFace[3] = QAFaces[2];
-
-                    QAFaces[0] = swapFace[0];
-                    QAFaces[1] = swapFace[1];
-                    QAFaces[2] = swapFace[2];
-                    QAFaces[3] = swapFace[3];
-
-                    swapFace[0] = EDFaces[3];
-                    swapFace[1] = EDFaces[0];
-                    swapFace[2] = EDFaces[1];
-                    swapFace[3] = EDFaces[2];
-
-                    EDFaces[0] = swapFace[0];
-                    EDFaces[1] = swapFace[1];
-                    EDFaces[2] = swapFace[2];
-                    EDFaces[3] = swapFace[3];
-                }
-                if (!floor || Type == BlockType.Wall)
-                {
-                    swapFace[0] = WSFaces[3];
-                    swapFace[1] = WSFaces[0];
-                    swapFace[2] = WSFaces[1];
-                    swapFace[3] = WSFaces[2];
-
-                    WSFaces[0] = swapFace[0];
-                    WSFaces[1] = swapFace[1];
-                    WSFaces[2] = swapFace[2];
-                    WSFaces[3] = swapFace[3];
-
-                    swapFace[0] = RFFaces[3];
-                    swapFace[1] = RFFaces[0];
-                    swapFace[2] = RFFaces[1];
-                    swapFace[3] = RFFaces[2];
-
-                    RFFaces[0] = swapFace[0];
-                    RFFaces[1] = swapFace[1];
-                    RFFaces[2] = swapFace[2];
-                    RFFaces[3] = swapFace[3];
-                }
-                FixHeights(floor ? 1 : 0);
+                for (int i = 0; i < transformation.QuadrantRotation; ++i)
+                    Flags =
+                        (Flags & ~(BlockFlags.ClimbPositiveX | BlockFlags.ClimbPositiveZ | BlockFlags.ClimbNegativeX | BlockFlags.ClimbNegativeZ)) |
+                        ((Flags & BlockFlags.ClimbPositiveX) != BlockFlags.None ? BlockFlags.ClimbPositiveZ : BlockFlags.None) |
+                        ((Flags & BlockFlags.ClimbPositiveZ) != BlockFlags.None ? BlockFlags.ClimbNegativeX : BlockFlags.None) |
+                        ((Flags & BlockFlags.ClimbNegativeX) != BlockFlags.None ? BlockFlags.ClimbNegativeZ : BlockFlags.None) |
+                        ((Flags & BlockFlags.ClimbNegativeZ) != BlockFlags.None ? BlockFlags.ClimbPositiveX : BlockFlags.None);
             }
+
+            // Rotate sector geometry
+            bool diagonalChange = transformation.MirrorX != ((transformation.QuadrantRotation % 2) != 0);
+            bool floorDiagonalChange = false;
+            if (onlyFloor != false)
+            {
+                bool requiredFloorSplitDirectionIsXEqualsZ = FloorSplitDirectionIsXEqualsZ != diagonalChange;
+                FloorDiagonalSplit = TransformDiagonalSplit(FloorDiagonalSplit, transformation);
+                transformation.TransformValueDiagonalQuad(ref QAFaces[FaceXpZp], ref QAFaces[FaceXnZp], ref QAFaces[FaceXnZn], ref QAFaces[FaceXpZn]);
+                transformation.TransformValueDiagonalQuad(ref EDFaces[FaceXpZp], ref EDFaces[FaceXnZp], ref EDFaces[FaceXnZn], ref EDFaces[FaceXpZn]);
+                if (requiredFloorSplitDirectionIsXEqualsZ != FloorSplitDirectionIsXEqualsZ)
+                {
+                    floorDiagonalChange = true;
+                    FloorSplitDirectionToggled = !FloorSplitDirectionToggled;
+                }
+            }
+            bool ceilingDiagonalChange = false;
+            if (onlyFloor != true)
+            {
+                bool requiredCeilingSplitDirectionIsXEqualsZ = CeilingSplitDirectionIsXEqualsZ != diagonalChange;
+                CeilingDiagonalSplit = TransformDiagonalSplit(CeilingDiagonalSplit, transformation);
+                transformation.TransformValueDiagonalQuad(ref WSFaces[FaceXpZp], ref WSFaces[FaceXnZp], ref WSFaces[FaceXnZn], ref WSFaces[FaceXpZn]);
+                transformation.TransformValueDiagonalQuad(ref RFFaces[FaceXpZp], ref RFFaces[FaceXnZp], ref RFFaces[FaceXnZn], ref RFFaces[FaceXpZn]);
+                if (requiredCeilingSplitDirectionIsXEqualsZ != CeilingSplitDirectionIsXEqualsZ)
+                {
+                    ceilingDiagonalChange = true;
+                    CeilingSplitDirectionToggled = !CeilingSplitDirectionToggled;
+                }
+            }
+
+            // Rotate applied textures
+            if (onlyFloor != false)
+            {
+                transformation.TransformValueQuad(
+                    ref _faceTextures[(int)BlockFace.PositiveX_QA],
+                    ref _faceTextures[(int)BlockFace.PositiveZ_QA],
+                    ref _faceTextures[(int)BlockFace.NegativeX_QA],
+                    ref _faceTextures[(int)BlockFace.NegativeZ_QA]);
+                transformation.TransformValueQuad(
+                    ref _faceTextures[(int)BlockFace.PositiveX_ED],
+                    ref _faceTextures[(int)BlockFace.PositiveZ_ED],
+                    ref _faceTextures[(int)BlockFace.NegativeX_ED],
+                    ref _faceTextures[(int)BlockFace.NegativeZ_ED]);
+
+                if (FloorIsQuad)
+                {
+                    _faceTextures[(int)BlockFace.Floor] = _faceTextures[(int)BlockFace.Floor].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
+                }
+                else
+                {
+                    if (floorDiagonalChange)
+                        Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.FloorTriangle2]);
+                    int TODO_FIX_TRIANGLE_TEXTURE_ROTATION;
+                }
+            }
+            if (onlyFloor != true)
+            {
+                transformation.TransformValueQuad(
+                    ref _faceTextures[(int)BlockFace.PositiveX_WS],
+                    ref _faceTextures[(int)BlockFace.PositiveZ_WS],
+                    ref _faceTextures[(int)BlockFace.NegativeX_WS],
+                    ref _faceTextures[(int)BlockFace.NegativeZ_WS]);
+                transformation.TransformValueQuad(
+                    ref _faceTextures[(int)BlockFace.PositiveX_RF],
+                    ref _faceTextures[(int)BlockFace.PositiveZ_RF],
+                    ref _faceTextures[(int)BlockFace.NegativeX_RF],
+                    ref _faceTextures[(int)BlockFace.NegativeZ_RF]);
+
+                if (CeilingIsQuad)
+                {
+                    _faceTextures[(int)BlockFace.Ceiling] = _faceTextures[(int)BlockFace.Ceiling].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
+                    int TODO_FIX_TRIANGLE_TEXTURE_ROTATION;
+                }
+                else
+                {
+                    if (ceilingDiagonalChange)
+                        Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.CeilingTriangle2]);
+                }
+            }
+            if (onlyFloor == null)
+                transformation.TransformValueQuad(
+                    ref _faceTextures[(int)BlockFace.PositiveX_Middle],
+                    ref _faceTextures[(int)BlockFace.PositiveZ_Middle],
+                    ref _faceTextures[(int)BlockFace.NegativeX_Middle],
+                    ref _faceTextures[(int)BlockFace.NegativeZ_Middle]);
         }
 
         public void FixHeights(int verticalSubdivision = -1)
@@ -623,10 +688,10 @@ namespace TombEditor.Geometry
                     default:
                         int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
                         int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
-                        
+
                         if (h1 == h3 && h2 == h4 && h2 != h3)
                             return FloorSplitDirectionToggled;
-                           
+
                         if (min == h1 && min == h3)
                             return FloorSplitDirectionToggled;
                         if (min == h2 && min == h4)

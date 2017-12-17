@@ -33,7 +33,7 @@ namespace TombEditor.Controls.ContextMenus
 
             _itemClone = new ToolStripMenuItem("Clone", global::TombEditor.Properties.Resources.actions_rubber_stamp_16, (o, e) =>
             {
-                EditorActions.Clone(panel3D);
+                EditorActions.Stamp(panel3D);
             });
 
             _itemDelete = new ToolStripMenuItem("Delete", global::TombEditor.Properties.Resources.toolbox_Eraser_16, (o, e) =>

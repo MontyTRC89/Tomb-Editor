@@ -10,6 +10,7 @@ using TombLib.Graphics;
 using TombEditor.Geometry;
 using System.Drawing.Drawing2D;
 using Vector4 = SharpDX.Vector4;
+using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
@@ -64,8 +65,8 @@ namespace TombEditor.Controls
             // Update curser
             if (obj is Editor.ActionChangedEvent)
             {
-                EditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
-                Cursor = currentAction.RelocateCameraActive ? Cursors.Cross : Cursors.Arrow;
+                IEditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
+                Cursor = currentAction is EditorActionRelocateCamera ? Cursors.Cross : Cursors.Arrow;
             }
         }
 
@@ -126,7 +127,7 @@ namespace TombEditor.Controls
                 return;
 
             // Move camera to selected sector
-            if (_editor.Action.RelocateCameraActive)
+            if (_editor.Action is EditorActionRelocateCamera)
             {
                 _editor.MoveCameraToSector(FromVisualCoord(e.Location));
                 return;
@@ -187,7 +188,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
-            if ((_editor?.SelectedRoom == null) || _editor.Action.RelocateCameraActive)
+            if ((_editor?.SelectedRoom == null) || (_editor.Action is EditorActionRelocateCamera))
                 return;
 
             if ((e.Button == MouseButtons.Left) && _doSectorSelection)
@@ -271,7 +272,7 @@ namespace TombEditor.Controls
                                     case HighlightShape.TriangleXpZn:
                                     case HighlightShape.TriangleXpZp:
                                         PointF[] points = new PointF[3];
-                                        if(currentHighlights[i].Shape == HighlightShape.TriangleXnZn)
+                                        if (currentHighlights[i].Shape == HighlightShape.TriangleXnZn)
                                         {
                                             points[0] = new PointF(rectangle.Left, rectangle.Top);
                                             points[1] = new PointF(rectangle.Left, rectangle.Bottom);

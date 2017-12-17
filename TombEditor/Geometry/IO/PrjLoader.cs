@@ -165,7 +165,7 @@ namespace TombEditor.Geometry.IO
                         reader.ReadBytes(2);
 
                         // Create room
-                        var room = new Room(level, numXBlocks, numZBlocks, roomName);
+                        var room = new Room(numXBlocks, numZBlocks, roomName);
                         room.Position = new Vector3(posXBlocks, yPos / -256.0f, posZBlocks);
                         var tempRoom = new PrjRoom();
 

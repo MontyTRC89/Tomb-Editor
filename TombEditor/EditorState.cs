@@ -44,50 +44,6 @@ namespace TombEditor
         }
     }
 
-    public enum EditorActionType
-    {
-        None,
-        PlaceItem,
-        PlaceLight,
-        PlaceCamera,
-        PlaceImportedGeometry,
-        PlaceFlyByCamera,
-        PlaceSoundSource,
-        PlaceSink,
-        Paste,
-        Stamp
-    }
-
-    public struct EditorAction
-    {
-        public EditorActionType Action { get; set; }
-        public LightType LightType { get; set; }
-        public ItemType ItemType { get; set; }
-        public bool RelocateCameraActive { get; set; }
-
-        public static readonly EditorAction None = new EditorAction();
-
-        public static bool operator ==(EditorAction first, EditorAction second)
-        {
-            return (first.Action == second.Action) && (first.LightType == second.LightType) && (first.ItemType == second.ItemType) && (first.RelocateCameraActive == second.RelocateCameraActive);
-        }
-
-        public static bool operator !=(EditorAction first, EditorAction second)
-        {
-            return (first.Action != second.Action) || (first.LightType != second.LightType) || (first.ItemType != second.ItemType) || (first.RelocateCameraActive != second.RelocateCameraActive);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this == (EditorAction)obj;
-        }
-
-        public override int GetHashCode()
-        {
-            return Action.GetHashCode() ^ (LightType.GetHashCode() * unchecked((int)3062904283)) ^ (ItemType.GetHashCode() * 1334740973) ^ (RelocateCameraActive ? 0 : 0x3ce0dc8f);
-        }
-    };
-
     public enum EditorArrowType
     {
         EntireFace,

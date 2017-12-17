@@ -21,7 +21,6 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Vector2 ViewPosition { get; set; } = new Vector2(60.0f, 60.0f);
 
-
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public float ViewScale
         {
@@ -71,7 +70,6 @@ namespace TombEditor.Controls
         private static readonly Brush _roomsNormalAboveBrush = new SolidBrush(Color.FromArgb(120, 50, 50, 200));
         private static readonly Brush _roomsNormalBelowBrush = new SolidBrush(Color.FromArgb(180, 85, 85, 85));
         private static readonly SolidBrush _roomsSelectedBrush = new SolidBrush(Color.FromArgb(180, 230, 20, 20));
-        private static readonly Brush _roomsMovedMainBrush = new SolidBrush(Color.FromArgb(40, 220, 20, 20));
         private static readonly Brush _roomsMovedBrush = new SolidBrush(Color.FromArgb(70, 230, 230, 20));
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(185, 255, 255, 255));
         private static readonly Brush _selectionAreaBrush = new HatchBrush(HatchStyle.SmallConfetti, Color.FromArgb(90, 20, 20, 190), Color.FromArgb(50, 20, 20, 190));
@@ -239,9 +237,13 @@ namespace TombEditor.Controls
                         _roomMouseClicked = DoPicking(clickPos);
                         if (_roomMouseClicked == null)
                             break;
-                        _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms,
-                            new Room[] { _roomMouseClicked }, ModifierKeys));
-                        _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
+                        if (ModifierKeys != Keys.None || !_editor.SelectedRooms.Contains(_roomMouseClicked))
+                        {
+                            _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms,
+                                new Room[] { _roomMouseClicked }, ModifierKeys));
+                        }
+
+                        _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new Room[] { _roomMouseClicked }));
                         _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos.ToVec2();
                     }
                     break;
@@ -284,21 +286,31 @@ namespace TombEditor.Controls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    // Remove depth probe closest to mouse pointer
                     if (!ModifierKeys.HasFlag(Keys.Shift))
                     {
                         int? currentProbeIndex = FindClosestProbe(clickPos);
                         if (currentProbeIndex.HasValue)
-                        {
                             _depthBar.DepthProbes.RemoveAt(currentProbeIndex.Value);
-                        }
                         else
-                        {
-                            // Add depth probe under mouse pointer
                             _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar) { Position = clickPos });
-                        }
                         Invalidate();
                     }
+                    break;
+
+                case MouseButtons.Middle:
+                    Room clickedRoom = DoPicking(clickPos);
+                    Keys modifierKeys = ModifierKeys;
+                    if (clickedRoom != null)
+                    {
+                        IEnumerable<Room> connectedRooms = _editor.Level.GetConnectedRooms(clickedRoom);
+                        connectedRooms = WinFormsUtils.BoolCombine(_editor.SelectedRooms, _editor.Level.GetConnectedRooms(clickedRoom), ModifierKeys);
+                        connectedRooms = // Don't use the currently clicked room because it was already processed with the previous single click.
+                            _editor.SelectedRooms.Where(room => (room == clickedRoom) || (room == clickedRoom.AlternateVersion))
+                            .Concat(
+                                connectedRooms.Where(room => (room != clickedRoom) && (room != clickedRoom.AlternateVersion)));
+                        _editor.SelectRoomsAndResetCamera(connectedRooms);
+                    }
+                    _selectionArea = null;
                     break;
             }
         }
@@ -319,56 +331,55 @@ namespace TombEditor.Controls
             RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the cursor.
             Invalidate(new Rectangle((int)area.X, (int)area.Y, (int)area.Width, (int)area.Height));
 
-            if (!_editor.Action.RelocateCameraActive)
-                switch (e.Button)
-                {
-                    case MouseButtons.Left:
-                        if (_currentlyEditedDepthProbeIndex.HasValue)
-                        {// Move depth probe around
-                            _depthBar.DepthProbes[(_currentlyEditedDepthProbeIndex.Value)].Position = FromVisualCoord(e.Location);
-                            Invalidate();
-                        }
-                        else if (_roomsToMove != null)
-                        { // Move room around
-                            if (!_roomsToMoveMoved)
-                            {
-                                if (DepthBar.CheckForLockedRooms(this, _roomsToMove))
-                                {
-                                    _roomsToMove = null;
-                                    break;
-                                }
-                                _roomsToMoveMoved = true;
-                                Invalidate();
-                            }
-                            UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
-                        }
-                        break;
-
-                    case MouseButtons.Middle:
-                        if (_selectionArea != null)
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    if (_currentlyEditedDepthProbeIndex.HasValue)
+                    {// Move depth probe around
+                        _depthBar.DepthProbes[(_currentlyEditedDepthProbeIndex.Value)].Position = FromVisualCoord(e.Location);
+                        Invalidate();
+                    }
+                    else if (_roomsToMove != null)
+                    { // Move room around
+                        if (!_roomsToMoveMoved)
                         {
-                            RectangleF oldArea = ToVisualCoord(_selectionArea._area);
-                            _selectionArea._area.End = FromVisualCoord(e.Location);
-                            RectangleF newArea = ToVisualCoord(_selectionArea._area);
-                            _selectionArea._roomSelectionCache = null;
+                            if (DepthBar.CheckForLockedRooms(this, _roomsToMove))
+                            {
+                                _roomsToMove = null;
+                                break;
+                            }
+                            _roomsToMoveMoved = true;
                             Invalidate();
                         }
-                        break;
+                        UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
+                    }
+                    break;
 
-                    case MouseButtons.Right:
-                        if (_viewMoveMouseWorldCoord != null)
-                            if (ModifierKeys.HasFlag(Keys.Control))
-                            { // Zoom
-                                float relativeDeltaY = (e.Location.Y - _lastMousePosition.Y) / (float)Height;
-                                ViewScale *= (float)Math.Exp(_editor.Configuration.Map2D_NavigationSpeedMouseZoom * relativeDeltaY);
-                                Invalidate();
-                            }
-                            else
-                            { // Panning
-                                MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value, true);
-                            }
-                        break;
-                }
+                case MouseButtons.Middle:
+                    if (_selectionArea != null)
+                    {
+                        RectangleF oldArea = ToVisualCoord(_selectionArea._area);
+                        _selectionArea._area.End = FromVisualCoord(e.Location);
+                        RectangleF newArea = ToVisualCoord(_selectionArea._area);
+                        _selectionArea._roomSelectionCache = null;
+                        Invalidate();
+                    }
+                    break;
+
+                case MouseButtons.Right:
+                    if (_viewMoveMouseWorldCoord != null)
+                        if (ModifierKeys.HasFlag(Keys.Control))
+                        { // Zoom
+                            float relativeDeltaY = (e.Location.Y - _lastMousePosition.Y) / (float)Height;
+                            ViewScale *= (float)Math.Exp(_editor.Configuration.Map2D_NavigationSpeedMouseZoom * relativeDeltaY);
+                            Invalidate();
+                        }
+                        else
+                        { // Panning
+                            MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value, true);
+                        }
+                    break;
+            }
 
             _lastMousePosition = e.Location;
         }
@@ -701,7 +712,7 @@ namespace TombEditor.Controls
                 (_roomsToMoveMoved && (_roomsToMove != null) && _roomsToMove.Contains(room)) ||
                 (_depthBar.RoomsToMoveMoved && (_depthBar.RoomsToMove != null) && _depthBar.RoomsToMove.Contains(room));
             if (isBeingMoved)
-                baseBrush = room == _editor.SelectedRoom ? _roomsMovedMainBrush : _roomsMovedBrush;
+                baseBrush = _roomsMovedBrush;
 
             // Handle room selection
             HashSet<Room> currentlySelectedRooms = _selectionArea?.GetRoomSelection(this);

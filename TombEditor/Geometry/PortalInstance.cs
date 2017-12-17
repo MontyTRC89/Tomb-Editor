@@ -1,5 +1,6 @@
 ﻿using SharpDX;
 using System;
+using TombLib.Utils;
 
 namespace TombEditor.Geometry
 {
@@ -28,8 +29,17 @@ namespace TombEditor.Geometry
                 _adjoiningRoom = value.AlternateBaseRoom ?? value;
             }
         }
-
-        public PortalDirection Direction { get; }
+        private PortalDirection _direction;
+        public PortalDirection Direction
+        {
+            get { return _direction; }
+            set
+            {
+                if (Room != null)
+                    throw new InvalidOperationException("Portal objects may not change in direction while they are assigned to a room.");
+                _direction = value;
+            }
+        }
         public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
@@ -44,10 +54,27 @@ namespace TombEditor.Geometry
         public override string ToString()
         {
             string text = "Portal ";
-            if (Direction == PortalDirection.Floor)
-                text += "(On Floor) ";
-            if (Direction == PortalDirection.Ceiling)
-                text += "(On Ceiling) ";
+            switch (Direction)
+            {
+                case PortalDirection.Ceiling:
+                    text += "(On Ceiling) ";
+                    break;
+                case PortalDirection.Floor:
+                    text += "(On Floor) ";
+                    break;
+                case PortalDirection.WallNegativeX:
+                    text += "(Towards -X) ";
+                    break;
+                case PortalDirection.WallNegativeZ:
+                    text += "(Towards -Z) ";
+                    break;
+                case PortalDirection.WallPositiveX:
+                    text += "(Towards +X) ";
+                    break;
+                case PortalDirection.WallPositiveZ:
+                    text += "(Towards +Z) ";
+                    break;
+            }
             text += "in room '" + (Room?.ToString() ?? "NULL") + "' ";
             text += "on sectors [" + Area.X + ", " + Area.Y + " to " + Area.Right + ", " + Area.Bottom + "] ";
             text += "to Room " + AdjoiningRoom;
@@ -201,6 +228,45 @@ namespace TombEditor.Geometry
                             room.Blocks[x, z].WallPortal = null;
                     break;
             }
+        }
+
+        public override void Transform(RectTransformation transformation, DrawingPoint oldRoomSize)
+        {
+            base.Transform(transformation, oldRoomSize);
+
+            if (transformation.MirrorX)
+                switch (Direction)
+                {
+                    case PortalDirection.WallNegativeX:
+                        Direction = PortalDirection.WallPositiveX;
+                        break;
+                    case PortalDirection.WallPositiveX:
+                        Direction = PortalDirection.WallNegativeX;
+                        break;
+                }
+
+            for (int i = 0; i < transformation.QuadrantRotation; ++i)
+                switch (Direction)
+                {
+                    case PortalDirection.WallPositiveX:
+                        Direction = PortalDirection.WallPositiveZ;
+                        break;
+                    case PortalDirection.WallPositiveZ:
+                        Direction = PortalDirection.WallNegativeX;
+                        break;
+                    case PortalDirection.WallNegativeX:
+                        Direction = PortalDirection.WallNegativeZ;
+                        break;
+                    case PortalDirection.WallNegativeZ:
+                        Direction = PortalDirection.WallPositiveX;
+                        break;
+                }
+        }
+
+        public override void TransformRoomReferences(Func<Room, Room> transformRoom)
+        {
+            base.TransformRoomReferences(transformRoom);
+            AdjoiningRoom = transformRoom(AdjoiningRoom);
         }
     }
 }

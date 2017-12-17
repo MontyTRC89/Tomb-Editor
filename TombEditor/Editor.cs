@@ -86,13 +86,13 @@ namespace TombEditor
                 // Validate level
                 int roomCount = value.Rooms.Count((room) => room != null);
                 if (roomCount <= 0)
-                    value.Rooms[0] = new Room(value, Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room 0");
+                    value.Rooms[0] = new Room(Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room 0");
 
                 // Reset state that was related to the old level
                 SelectedObject = null;
                 ChosenItem = null;
                 SelectedSectors = SectorSelection.None;
-                Action = EditorAction.None;
+                Action = null;
                 SelectedTexture = TextureArea.None;
 
                 // Delete old level after the new level is set
@@ -114,16 +114,18 @@ namespace TombEditor
 
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
-            public EditorAction Previous { get; internal set; }
-            public EditorAction Current { get; internal set; }
+            public IEditorAction Previous { get; internal set; }
+            public IEditorAction Current { get; internal set; }
         }
-        private EditorAction _action;
-        public EditorAction Action
+        private IEditorAction _action;
+        public IEditorAction Action
         {
             get { return _action; }
             set
             {
                 if (value == _action)
+                    return;
+                if (value != null && _action != null && value.Equals(_action))
                     return;
                 var previous = _action;
                 _action = value;
@@ -262,6 +264,15 @@ namespace TombEditor
             {
                 if (value == _selectedObject)
                     return;
+
+                // Check that selected object is a valid choice
+                if (value != null)
+                {
+                    if (value.Room == null)
+                        throw new ArgumentException("The object to be selected is not inside a room.");
+                    if (Array.IndexOf<Room>(Level.Rooms, value.Room) == -1)
+                        throw new ArgumentException("The object to be selected is not part of the level.");
+                }
                 var previous = _selectedObject;
                 _selectedObject = value;
                 RaiseEvent(new SelectedObjectChangedEvent { Previous = previous, Current = value });
@@ -572,7 +583,7 @@ namespace TombEditor
             if (Path.GetFullPath(e.FullPath) == Path.GetFullPath(Configuration.FilePath))
             {
                 Configuration configuration = Configuration;
-                if (!Utils.RetryFor(500, () => configuration = Configuration.Load(Configuration.FilePath)))
+                if (!FileSystemUtils.RetryFor(500, () => configuration = Configuration.Load(Configuration.FilePath)))
                     logger.Warn("Unable to load configuration from '" + Path.GetFullPath(Configuration.FilePath) + "' after it changed.");
 
                 // Update configuration
@@ -619,13 +630,16 @@ namespace TombEditor
             // Update room selection so that no deleted rooms are selected
             if (obj is RoomListChangedEvent)
             {
-                IEnumerable<Room> newSelection = SelectedRooms.Intersect(_level.Rooms.Where(room => room != null));
+                List<Room> newSelection = SelectedRooms.Intersect(_level.Rooms.Where(room => room != null)).ToList();
                 if (newSelection.FirstOrDefault() == null)
                     SelectRoomAndResetCamera(_level.Rooms.Where(room => room != null).First());
                 else if (newSelection.Contains(SelectedRoom))
-                    SelectRooms(newSelection.ToList());
+                    SelectRooms(newSelection);
                 else
-                    SelectRoomsAndResetCamera(newSelection.ToList());
+                    SelectRoomsAndResetCamera(newSelection);
+
+                if (SelectedObject != null && !newSelection.Contains(SelectedObject.Room))
+                    SelectedObject = null;
             }
 
             // Update unsaved changes state
@@ -637,7 +651,8 @@ namespace TombEditor
             // Make sure an object that was removed isn't selected
             if ((obj as IEditorObjectChangedEvent)?.ChangeType == ObjectChangeType.Remove)
             {
-                SelectedObject = null;
+                if (((IEditorObjectChangedEvent)obj).Object == SelectedObject)
+                    SelectedObject = null;
             }
         }
 

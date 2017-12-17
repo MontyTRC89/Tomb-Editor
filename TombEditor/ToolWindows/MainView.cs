@@ -210,22 +210,27 @@ namespace TombEditor.ToolWindows
 
         private void butAddCamera_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceCamera };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new CameraInstance());
         }
 
         private void butAddFlybyCamera_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceFlyByCamera };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance());
         }
 
         private void butAddSoundSource_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new SoundSourceInstance());
         }
 
         private void butAddSink_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new SinkInstance());
+        }
+
+        private void butAddImportedGeometry_Click(object sender, EventArgs e)
+        {
+            _editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
         }
 
         private void butCompileLevel_Click(object sender, EventArgs e)
@@ -261,17 +266,12 @@ namespace TombEditor.ToolWindows
 
         private void butPaste_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.Paste };
+            _editor.Action = new EditorActionPlace(false, (l, r) => Clipboard.Retrieve());
         }
 
         private void butStamp_Click(object sender, EventArgs e)
         {
-            EditorActions.Clone(this.ParentForm);
-        }
-
-        private void butAddImportedGeometry_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
+            EditorActions.Stamp(this.ParentForm);
         }
 
         private void butDrawPortals_Click(object sender, EventArgs e)

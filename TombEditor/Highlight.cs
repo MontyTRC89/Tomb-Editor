@@ -84,7 +84,7 @@ namespace TombEditor
 
             bool checkIgnored = (typesToIgnore != null);
 
-            Block bottomBlock = room.ProbeLowestBlock(x, z, probeThroughPortals).Block;
+            Block bottomBlock = room.ProbeLowestBlock(x, z, probeThroughPortals).Block ?? Block.Empty;
             for(int i = 0; i < _priorityList.Count; i++)
             {
                 if (checkIgnored && typesToIgnore.Contains(_priorityList[i]))

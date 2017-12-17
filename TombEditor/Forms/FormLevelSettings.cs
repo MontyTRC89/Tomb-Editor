@@ -181,11 +181,11 @@ namespace TombEditor
             string gameLevelFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameLevelFilePath);
             string gameExecutableFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameExecutableFilePath);
 
-            levelFilePathTxt.BackColor = Directory.Exists(Utils.GetDirectoryNameTry(levelFilePath)) ? _correctColor : _wrongColor;
+            levelFilePathTxt.BackColor = Directory.Exists(FileSystemUtils.GetDirectoryNameTry(levelFilePath)) ? _correctColor : _wrongColor;
             textureFilePathTxt.BackColor = File.Exists(textureFilePath) ? _correctColor : _wrongColor;
             wadFilePathTxt.BackColor = File.Exists(wadFilePath) ? _correctColor : _wrongColor;
             gameDirectoryTxt.BackColor = Directory.Exists(gameDirectory) ? _correctColor : _wrongColor;
-            gameLevelFilePathTxt.BackColor = Directory.Exists(Utils.GetDirectoryNameTry(gameLevelFilePath)) ? _correctColor : _wrongColor;
+            gameLevelFilePathTxt.BackColor = Directory.Exists(FileSystemUtils.GetDirectoryNameTry(gameLevelFilePath)) ? _correctColor : _wrongColor;
             gameExecutableFilePathTxt.BackColor = File.Exists(gameExecutableFilePath) ? _correctColor : _wrongColor;
 
             pathToolTip.SetToolTip(levelFilePathTxt, levelFilePath);
