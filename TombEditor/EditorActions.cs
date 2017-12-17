@@ -614,7 +614,7 @@ namespace TombEditor
 
         public static void PasteObject(DrawingPoint pos)
         {
-            PlaceObject(_editor.SelectedRoom, pos, Clipboard.Retrieve());
+            PlaceObject(_editor.SelectedRoom, pos, ClipboardC.Retrieve());
         }
 
         public static void SnapObjectToGrid(PositionBasedObjectInstance instance, IWin32Window owner)
@@ -2215,21 +2215,20 @@ namespace TombEditor
             return true;
         }
 
-        public static void Copy(IWin32Window owner)
+        public static void TryCopyObject(ObjectInstance instance, IWin32Window owner)
         {
-            var instance = _editor.SelectedObject as PositionBasedObjectInstance;
-            if (instance == null)
+            if (!(instance is PositionBasedObjectInstance))
             {
                 DarkMessageBox.Show(owner, "You have to select an object before you can copy it.", "No object selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            Clipboard.Copy(instance);
+            ClipboardC.Copy((PositionBasedObjectInstance)instance);
         }
 
-        public static void Stamp(IWin32Window owner)
+        public static void TryStampObject(ObjectInstance instance, IWin32Window owner)
         {
-            Copy(owner);
-            _editor.Action = new EditorActionPlace(true, (r, l) => Clipboard.Retrieve());
+            TryCopyObject(instance, owner);
+            _editor.Action = new EditorActionPlace(true, (r, l) => ClipboardC.Retrieve());
         }
 
         public static bool DragDropFileSupported(DragEventArgs e, bool allow3DImport = false)

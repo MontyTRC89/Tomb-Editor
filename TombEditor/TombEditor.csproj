@@ -112,7 +112,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clipboard.cs" />
+    <Compile Include="ClipboardC.cs" />
     <Compile Include="Compilers\FloorData.cs" />
     <Compile Include="Compilers\LevelCompiler.cs" />
     <Compile Include="Compilers\LevelCompilerTR4.cs" />
@@ -294,6 +294,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RoomClipboardData.cs" />
     <Compile Include="ToolWindows\Lighting.cs">
       <SubType>UserControl</SubType>
     </Compile>

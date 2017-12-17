@@ -74,10 +74,15 @@ namespace TombEditor
             LoadWindowLayout(_editor.Configuration);
 
             logger.Info("Tomb Editor is ready :)");
+
+            // Retrieve clipboard change notifications
+            ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
+            ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
         }
 
         protected override void Dispose(bool disposing)
         {
+            ClipboardEvents.ClipboardChanged -= ClipboardEvents_ClipboardChanged;
             if (disposing)
             {
                 Application.RemoveMessageFilter(dockArea.DockContentDragFilter);
@@ -125,8 +130,10 @@ namespace TombEditor
             if (obj is Editor.SelectedObjectChangedEvent || obj is Editor.ModeChangedEvent)
             {
                 ObjectInstance selectedObject = _editor.SelectedObject;
-                copyToolStripMenuItem.Enabled = selectedObject is PositionBasedObjectInstance;
+                copyToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject is PositionBasedObjectInstance;
                 stampToolStripMenuItem.Enabled = selectedObject is PositionBasedObjectInstance;
+                if (obj is Editor.ModeChangedEvent)
+                    ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
                 deleteToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject != null;
                 rotateToolStripMenuItem.Enabled = selectedObject is IRotateableY;
@@ -233,6 +240,14 @@ namespace TombEditor
                     (@event.Current.Window_Layout != @event.Previous.Window_Layout))
                     LoadWindowLayout(_editor.Configuration);
             }
+        }
+
+        private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
+        {
+            if (_editor.Mode != EditorMode.Map2D)
+                pasteToolStripMenuItem.Enabled = true;
+            else
+                pasteToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(RoomClipboardData).FullName);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -915,11 +930,6 @@ namespace TombEditor
             EditorActions.SplitRoom(this);
         }
 
-        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.Copy(this);
-        }
-
         private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.Mode == EditorMode.Map2D)
@@ -958,14 +968,31 @@ namespace TombEditor
                 EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 45);
         }
 
-        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorActionPlace(false, (l, r) => Clipboard.Retrieve());
+            if (_editor.Mode != EditorMode.Map2D)
+                EditorActions.TryCopyObject(_editor.SelectedObject, this);
+            else
+                Clipboard.SetDataObject(new RoomClipboardData(_editor), true);
         }
 
         private void stampToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.Stamp(this);
+            EditorActions.TryStampObject(_editor.SelectedObject, this);
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editor.Mode != EditorMode.Map2D)
+                _editor.Action = new EditorActionPlace(false, (l, r) => ClipboardC.Retrieve());
+            else
+            {
+                var roomClipboardData = Clipboard.GetDataObject().GetData(typeof(RoomClipboardData)) as RoomClipboardData;
+                if (roomClipboardData == null)
+                    MessageBox.Show("Clipboard contains no room data.");
+                else
+                    roomClipboardData.MergeLevelInto(_editor, new Vector2());
+            }
         }
 
         private void newRoomUpToolStripMenuItem_Click(object sender, EventArgs e)

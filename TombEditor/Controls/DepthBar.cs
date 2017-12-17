@@ -38,9 +38,8 @@ namespace TombEditor.Controls
 
         private float _selectedLimit0 { get; set; } = MinDepth;
         private float _selectedLimit1 { get; set; } = MaxDepth;
-        private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
-        private bool _roomsToMoveMoved;
         private Room _roomMouseClicked;
+        private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private float _roomMouseOffset; // Relative depth difference to where it was clicked.
         private float _barMouseOffset;
 
@@ -150,7 +149,6 @@ namespace TombEditor.Controls
         /// <returns>true, if the selection should continue in the background of the bar.</returns>
         public bool MouseDown(MouseEventArgs e, Size parentControlSize, Level level, Vector2 clickPos)
         {
-            _roomsToMoveMoved = false;
             _selectionMode = SelectionMode.None;
 
             // check if the mouse click was in the bar area
@@ -197,7 +195,6 @@ namespace TombEditor.Controls
                                             if ((mouseDepth <= roomSequences[i][j].MaxDepth) && (mouseDepth >= roomSequences[i][j].MinDepth))
                                             {
                                                 _roomMouseClicked = roomSequences[i][j].Room;
-                                                _roomsToMove = level.GetConnectedRooms(_roomMouseClicked);
                                                 _roomMouseOffset = mouseDepth - _roomMouseClicked.Position.Y;
                                                 SelectedRoom?.Invoke(new Room[] { _roomMouseClicked });
                                                 InvalidateParent?.Invoke();
@@ -239,7 +236,7 @@ namespace TombEditor.Controls
             return false;
         }
 
-        public void MouseMove(MouseEventArgs e, Size parentControlSize)
+        public void MouseMove(MouseEventArgs e, Size parentControlSize, Level level)
         {
             RectangleF barArea = getBarArea(parentControlSize);
 
@@ -265,15 +262,16 @@ namespace TombEditor.Controls
                 case SelectionMode.RoomMove:
                     float destinationHeight = ((float)Math.Round(FromVisualY(barArea, e.Y) - _roomMouseOffset));
 
-                    if (!_roomsToMoveMoved)
+                    if (_roomsToMove == null)
                     {
-                        if (CheckForLockedRooms(GetParent?.Invoke(), _roomsToMove))
+                        HashSet<Room> roomsToMove = level.GetConnectedRooms(_roomMouseClicked);
+                        if (CheckForLockedRooms(GetParent?.Invoke(), roomsToMove))
                         {
                             _roomsToMove = null;
                             _selectionMode = SelectionMode.None;
                             break;
                         }
-                        _roomsToMoveMoved = true;
+                        _roomsToMove = roomsToMove;
                         InvalidateParent?.Invoke();
                     }
 
@@ -295,14 +293,13 @@ namespace TombEditor.Controls
             }
         }
 
-        public void MouseUp(MouseEventArgs e, Size parentControlSize)
+        public void MouseUp(MouseEventArgs e, Size parentControlSize, Level level)
         {
             _selectionMode = SelectionMode.None;
             if (_roomsToMove != null)
                 InvalidateParent?.Invoke();
             _roomsToMove = null;
             _roomMouseClicked = null;
-            _roomsToMoveMoved = false;
         }
 
         public void Draw(PaintEventArgs e, Size parentControlSize, Level level, Vector2 cursorPos, Func<Room, Brush, ConditionallyOwned<Brush>> getRoomBrush)
@@ -492,7 +489,7 @@ namespace TombEditor.Controls
         {
             // Decide what bar is at the given index
             Vector2 probePos = groupIndex == DepthProbes.Count ? cursorPos : DepthProbes[groupIndex].Position;
-            bool shouldCheckRoomsToMove = (groupIndex == DepthProbes.Count) && (_roomsToMove != null) && _roomsToMoveMoved;
+            bool shouldCheckRoomsToMove = (groupIndex == DepthProbes.Count) && (_roomsToMove != null);
 
             // Iterate over all rooms under the curser and add them to the room sequences
             IEnumerable<Room> sortedRoomList = level.GetVerticallyAscendingRoomList(room =>
@@ -589,7 +586,6 @@ namespace TombEditor.Controls
         public float SelectedMin => Math.Min(_selectedLimit0, _selectedLimit1);
         public float SelectedMax => Math.Max(_selectedLimit0, _selectedLimit1);
         public HashSet<Room> RoomsToMove => _roomsToMove;
-        public bool RoomsToMoveMoved => _roomsToMoveMoved;
         public bool CheckRoom(float roomMinDepth, float roomMaxDepth) => (roomMinDepth >= SelectedMin) && (roomMaxDepth <= SelectedMax);
         public bool CheckRoom(Room room) => CheckRoom(room.Position.Y + room.GetLowestCorner(), room.Position.Y + room.GetHighestCorner());
     };

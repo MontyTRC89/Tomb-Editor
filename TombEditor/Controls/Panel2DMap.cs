@@ -13,6 +13,7 @@ using RectangleF = System.Drawing.RectangleF;
 using System.ComponentModel;
 using TombLib;
 using TombLib.Utils;
+using TombLib.IO;
 
 namespace TombEditor.Controls
 {
@@ -36,14 +37,16 @@ namespace TombEditor.Controls
 
         private readonly DepthBar _depthBar = new DepthBar();
         private Editor _editor;
-        private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
-        private bool _roomsToMoveMoved;
         private Room _roomMouseClicked;
+        private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private Vector2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
         private Vector2? _viewMoveMouseWorldCoord;
         private int? _currentlyEditedDepthProbeIndex;
         private Point _lastMousePosition;
         private MovementTimer _movementTimer;
+        private IReadOnlyList<RoomClipboardData.ContourLine> _insertionContourLineData;
+        private Vector2 _insertionDropPosition;
+        private Vector2 _insertionCurrentOffset;
 
         private class SelectionArea
         {
@@ -89,6 +92,7 @@ namespace TombEditor.Controls
         public Panel2DMap()
         {
             DoubleBuffered = true;
+            AllowDrop = true;
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.Selectable, true);
             UpdateStyles();
 
@@ -112,6 +116,7 @@ namespace TombEditor.Controls
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
             _movementTimer.Dispose();
+            _insertionContourLineData = null;
             base.Dispose(disposing);
         }
 
@@ -201,7 +206,6 @@ namespace TombEditor.Controls
                 return;
 
             _lastMousePosition = e.Location;
-            _roomsToMoveMoved = false;
 
             //https://stackoverflow.com/questions/14191219/receive-mouse-move-even-cursor-is-outside-control
             Capture = true; // Capture mouse for zoom and panning
@@ -242,8 +246,6 @@ namespace TombEditor.Controls
                             _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms,
                                 new Room[] { _roomMouseClicked }, ModifierKeys));
                         }
-
-                        _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new Room[] { _roomMouseClicked }));
                         _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos.ToVec2();
                     }
                     break;
@@ -327,7 +329,7 @@ namespace TombEditor.Controls
             base.OnMouseMove(e);
 
             // Update depth bar...
-            _depthBar.MouseMove(e, Size);
+            _depthBar.MouseMove(e, Size, _editor.Level);
             RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the cursor.
             Invalidate(new Rectangle((int)area.X, (int)area.Y, (int)area.Width, (int)area.Height));
 
@@ -339,16 +341,24 @@ namespace TombEditor.Controls
                         _depthBar.DepthProbes[(_currentlyEditedDepthProbeIndex.Value)].Position = FromVisualCoord(e.Location);
                         Invalidate();
                     }
-                    else if (_roomsToMove != null)
+                    else if (_roomMouseClicked != null)
                     { // Move room around
-                        if (!_roomsToMoveMoved)
+                        if (ModifierKeys.HasFlag(Keys.Control))
                         {
-                            if (DepthBar.CheckForLockedRooms(this, _roomsToMove))
+                            _roomsToMove = null;
+                            DoDragDrop(new RoomClipboardData(_editor, FromVisualCoord(e.Location)), DragDropEffects.Copy);
+                            break;
+                        }
+
+                        if (_roomsToMove == null)
+                        {
+                            HashSet<Room> roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new Room[] { _roomMouseClicked }));
+                            if (DepthBar.CheckForLockedRooms(this, roomsToMove))
                             {
-                                _roomsToMove = null;
+                                _roomMouseClicked = null;
                                 break;
                             }
-                            _roomsToMoveMoved = true;
+                            _roomsToMove = roomsToMove;
                             Invalidate();
                         }
                         UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
@@ -388,15 +398,15 @@ namespace TombEditor.Controls
         {
             base.OnMouseUp(e);
             Capture = false;
-            _depthBar.MouseUp(e, Size);
+            _depthBar.MouseUp(e, Size, _editor.Level);
 
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if (_roomsToMove != null)
+                    if (_roomMouseClicked != null)
                     {
-                        _roomsToMove = null;
                         _roomMouseClicked = null;
+                        _roomsToMove = null;
                         Invalidate();
                     }
                     break;
@@ -405,7 +415,8 @@ namespace TombEditor.Controls
                     break;
             }
             _currentlyEditedDepthProbeIndex = null;
-            _roomsToMoveMoved = false;
+            _roomMouseClicked = null;
+            _roomsToMove = null;
 
             if (_selectionArea != null)
             { // Change room selection
@@ -468,6 +479,7 @@ namespace TombEditor.Controls
         {
             base.OnLostFocus(e);
             _movementTimer.Stop();
+            _insertionContourLineData = null;
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -569,6 +581,15 @@ namespace TombEditor.Controls
                     e.Graphics.DrawRectangle(_selectionAreaPen, ToVisualCoord(_selectionArea._area));
                 }
             }
+
+            // Draw insertion contour data
+            if (_insertionContourLineData != null)
+                foreach (var contourLineSegment in _insertionContourLineData)
+                {
+                    e.Graphics.DrawLine(_roomBorderPen,
+                        ToVisualCoord(contourLineSegment.Start + _insertionCurrentOffset),
+                        ToVisualCoord(contourLineSegment.End + _insertionCurrentOffset));
+                }
 
             // Draw depth bar
             Vector2 cursorPos = FromVisualCoord(PointToClient(MousePosition));
@@ -690,14 +711,11 @@ namespace TombEditor.Controls
                         Block thisBlock = room.Blocks[x, z];
                         Block aboveBlock = room.Blocks[x, z - 1];
                         Block leftBlock = room.Blocks[x - 1, z];
-                        bool wallThis = thisBlock.Type != BlockType.Floor;
-                        bool wallAbove = aboveBlock.Type != BlockType.Floor;
-                        bool wallLeft = leftBlock.Type != BlockType.Floor;
-                        if (wallAbove != wallThis)
+                        if (aboveBlock.IsAnyWall != thisBlock.IsAnyWall)
                             e.Graphics.DrawLine((aboveBlock.WallPortal != null) || (thisBlock.WallPortal != null) ? _roomPortalPen : _roomBorderPen,
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
                                 ToVisualCoord(new Vector2(x + 1 + room.SectorPos.X, z + room.SectorPos.Y)));
-                        if (wallLeft != wallThis)
+                        if (leftBlock.IsAnyWall != thisBlock.IsAnyWall)
                             e.Graphics.DrawLine((leftBlock.WallPortal != null) || (thisBlock.WallPortal != null) ? _roomPortalPen : _roomBorderPen,
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + 1 + room.SectorPos.Y)));
@@ -709,8 +727,8 @@ namespace TombEditor.Controls
         {
             // Handle room movement
             bool isBeingMoved =
-                (_roomsToMoveMoved && (_roomsToMove != null) && _roomsToMove.Contains(room)) ||
-                (_depthBar.RoomsToMoveMoved && (_depthBar.RoomsToMove != null) && _depthBar.RoomsToMove.Contains(room));
+                ((_roomsToMove != null) && _roomsToMove.Contains(room)) ||
+                ((_depthBar.RoomsToMove != null) && _depthBar.RoomsToMove.Contains(room));
             if (isBeingMoved)
                 baseBrush = _roomsMovedBrush;
 
@@ -736,6 +754,7 @@ namespace TombEditor.Controls
             newRoomPos = new Vector2((float)Math.Round(newRoomPos.X), (float)Math.Round(newRoomPos.Y));
             Vector2 roomMovement = newRoomPos - roomReference.SectorPos.ToVec2();
             EditorActions.MoveRooms(new Vector3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
+            _editor.ResetCamera();
         }
 
         private Room DoPicking(Vector2 pos)
@@ -761,6 +780,71 @@ namespace TombEditor.Controls
         {
             base.OnResize(eventargs);
             Invalidate();
+        }
+
+        protected override void OnDragEnter(DragEventArgs drgevent)
+        {
+            base.OnDragEnter(drgevent);
+
+            RoomClipboardData clipboardData = drgevent.Data.GetData(typeof(RoomClipboardData)) as RoomClipboardData;
+            if (clipboardData != null)
+            {
+                drgevent.Effect = DragDropEffects.Copy;
+                _insertionContourLineData = clipboardData.ContourLines;
+                _insertionDropPosition = clipboardData.DropPosition;
+                _insertionCurrentOffset = GetDragDropOffset(drgevent);
+                Invalidate();
+            }
+        }
+
+        protected override void OnDragOver(DragEventArgs drgevent)
+        {
+            base.OnDragOver(drgevent);
+
+            if (_insertionContourLineData != null)
+            {
+                Vector2 newCurrentOffset = GetDragDropOffset(drgevent);
+                if (newCurrentOffset != _insertionCurrentOffset)
+                {
+                    _insertionCurrentOffset = newCurrentOffset;
+                    Invalidate();
+                }
+            }
+        }
+
+        protected override void OnDragLeave(EventArgs e)
+        {
+            base.OnDragLeave(e);
+
+            if (_insertionContourLineData != null)
+            {
+                _insertionContourLineData = null;
+                Invalidate();
+            }
+        }
+
+        protected override void OnDragDrop(DragEventArgs drgevent)
+        {
+            base.OnDragDrop(drgevent);
+
+            _insertionContourLineData = null;
+            RoomClipboardData clipboardData = drgevent.Data.GetData(typeof(RoomClipboardData)) as RoomClipboardData;
+            if (clipboardData != null)
+                clipboardData.MergeLevelInto(_editor, GetDragDropOffset(drgevent));
+        }
+
+        private Vector2 GetDragDropOffset(DragEventArgs drgevent)
+        {
+            Vector2 newPos = FromVisualCoord(PointToClient(new Point(drgevent.X, drgevent.Y)));
+            Vector2 result = newPos - _insertionDropPosition;
+            return new Vector2((float)Math.Round(result.X), (float)Math.Round(result.Y));
+        }
+
+        [DefaultValue(true)]
+        public override bool AllowDrop
+        {
+            get { return base.AllowDrop; }
+            set { base.AllowDrop = value; }
         }
     }
 }

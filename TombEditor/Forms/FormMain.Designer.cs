@@ -144,6 +144,17 @@
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
+            this.projectManagementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.titlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.level0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.level1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.level2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.level3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.level4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.level5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.level6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -163,11 +174,12 @@
             this.toolsToolStripMenuItem,
             this.debugToolStripMenuItem,
             this.windowToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.projectManagementToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(883, 24);
+            this.menuStrip.Size = new System.Drawing.Size(913, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "darkMenuStrip1";
             // 
@@ -1184,7 +1196,7 @@
             this.soundManagerToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.soundManagerToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_speaker_16;
             this.soundManagerToolStripMenuItem.Name = "soundManagerToolStripMenuItem";
-            this.soundManagerToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.soundManagerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.soundManagerToolStripMenuItem.Text = "Sound manager";
             this.soundManagerToolStripMenuItem.Click += new System.EventHandler(this.soundManagerToolStripMenuItem_Click);
             // 
@@ -1472,10 +1484,10 @@
             this.statusStripGlobalSelectionArea,
             this.statusStripLocalSelectionArea,
             this.statusLastCompilation});
-            this.statusStrip.Location = new System.Drawing.Point(0, 214);
+            this.statusStrip.Location = new System.Drawing.Point(0, 440);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.statusStrip.Size = new System.Drawing.Size(883, 29);
+            this.statusStrip.Size = new System.Drawing.Size(913, 29);
             this.statusStrip.TabIndex = 29;
             this.statusStrip.Text = "statusStrip";
             // 
@@ -1524,7 +1536,7 @@
             this.dockArea.MinimumSize = new System.Drawing.Size(274, 274);
             this.dockArea.Name = "dockArea";
             this.dockArea.Padding = new System.Windows.Forms.Padding(2);
-            this.dockArea.Size = new System.Drawing.Size(883, 274);
+            this.dockArea.Size = new System.Drawing.Size(913, 416);
             this.dockArea.TabIndex = 90;
             // 
             // panelDockArea
@@ -1533,15 +1545,114 @@
             this.panelDockArea.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDockArea.Location = new System.Drawing.Point(0, 24);
             this.panelDockArea.Name = "panelDockArea";
-            this.panelDockArea.Size = new System.Drawing.Size(883, 190);
+            this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
+            // 
+            // projectManagementToolStripMenuItem
+            // 
+            this.projectManagementToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.projectManagementToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optionsToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.titlToolStripMenuItem,
+            this.level0ToolStripMenuItem,
+            this.level1ToolStripMenuItem,
+            this.level2ToolStripMenuItem,
+            this.level3ToolStripMenuItem,
+            this.level4ToolStripMenuItem,
+            this.level5ToolStripMenuItem,
+            this.level6ToolStripMenuItem});
+            this.projectManagementToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.projectManagementToolStripMenuItem.Name = "projectManagementToolStripMenuItem";
+            this.projectManagementToolStripMenuItem.Size = new System.Drawing.Size(130, 20);
+            this.projectManagementToolStripMenuItem.Text = "Project Management";
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.optionsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optionsToolStripMenuItem.Text = "Options";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+            // 
+            // titlToolStripMenuItem
+            // 
+            this.titlToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.titlToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.titlToolStripMenuItem.Name = "titlToolStripMenuItem";
+            this.titlToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.titlToolStripMenuItem.Text = "Title";
+            // 
+            // level0ToolStripMenuItem
+            // 
+            this.level0ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.level0ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.level0ToolStripMenuItem.Name = "level0ToolStripMenuItem";
+            this.level0ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.level0ToolStripMenuItem.Text = "Level 0";
+            // 
+            // level1ToolStripMenuItem
+            // 
+            this.level1ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.level1ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.level1ToolStripMenuItem.Name = "level1ToolStripMenuItem";
+            this.level1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.level1ToolStripMenuItem.Text = "Level 1";
+            // 
+            // level2ToolStripMenuItem
+            // 
+            this.level2ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.level2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.level2ToolStripMenuItem.Name = "level2ToolStripMenuItem";
+            this.level2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.level2ToolStripMenuItem.Text = "Level 2";
+            // 
+            // level3ToolStripMenuItem
+            // 
+            this.level3ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.level3ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.level3ToolStripMenuItem.Name = "level3ToolStripMenuItem";
+            this.level3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.level3ToolStripMenuItem.Text = "Level 3";
+            // 
+            // level4ToolStripMenuItem
+            // 
+            this.level4ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.level4ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.level4ToolStripMenuItem.Name = "level4ToolStripMenuItem";
+            this.level4ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.level4ToolStripMenuItem.Text = "Level 4";
+            // 
+            // level5ToolStripMenuItem
+            // 
+            this.level5ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.level5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.level5ToolStripMenuItem.Name = "level5ToolStripMenuItem";
+            this.level5ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.level5ToolStripMenuItem.Text = "Level 5";
+            // 
+            // level6ToolStripMenuItem
+            // 
+            this.level6ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.level6ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.level6ToolStripMenuItem.Name = "level6ToolStripMenuItem";
+            this.level6ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.level6ToolStripMenuItem.Text = "Level 6";
             // 
             // FormMain
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(883, 243);
+            this.ClientSize = new System.Drawing.Size(913, 469);
             this.Controls.Add(this.panelDockArea);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
@@ -1691,5 +1802,16 @@
         private System.Windows.Forms.ToolStripMenuItem mirrorRoomsOnXAxisToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mirrorRoomsOnZAxisToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem projectManagementToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem titlToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem level0ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem level1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem level2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem level3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem level4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem level5ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem level6ToolStripMenuItem;
     }
 }

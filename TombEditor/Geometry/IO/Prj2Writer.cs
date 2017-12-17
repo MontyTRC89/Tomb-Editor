@@ -12,11 +12,21 @@ namespace TombEditor.Geometry.IO
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static void SaveToPrj2(string filename, Level level)
+        public class Filter
+        {
+            public Predicate<Room> RoomPredicate;
+        };
+
+        public static void SaveToPrj2(string filename, Level level, Filter filter = null)
         {
             using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-                using (var chunkIO = new ChunkWriter(Prj2Chunks.MagicNumber, fileStream, ChunkWriter.Compression.None))
-                    WriteLevel(chunkIO, level);
+                SaveToPrj2(fileStream, level, filter);
+        }
+
+        public static void SaveToPrj2(Stream stream, Level level, Filter filter = null)
+        {
+            using (var chunkIO = new ChunkWriter(Prj2Chunks.MagicNumber, stream, ChunkWriter.Compression.None))
+                WriteLevel(chunkIO, level, filter);
         }
 
         private class LevelSettingsIds
@@ -25,7 +35,7 @@ namespace TombEditor.Geometry.IO
             public Dictionary<LevelTexture, int> LevelTextures { get; } = new Dictionary<LevelTexture, int>();
         };
 
-        private static void WriteLevel(ChunkWriter chunkIO, Level level)
+        private static void WriteLevel(ChunkWriter chunkIO, Level level, Filter filter)
         {
             // Write settings
             LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, level.Settings);
@@ -33,7 +43,7 @@ namespace TombEditor.Geometry.IO
             // Collect rooms to save
             var rooms = new Dictionary<Room, int>();
             for (int i = 0; i < level.Rooms.Length; ++i)
-                if (level.Rooms[i] != null)
+                if (level.Rooms[i] != null && (filter?.RoomPredicate(level.Rooms[i]) ?? true))
                     rooms.Add(level.Rooms[i], i);
 
             // Write rooms
