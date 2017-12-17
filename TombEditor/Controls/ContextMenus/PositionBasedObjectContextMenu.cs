@@ -28,12 +28,12 @@ namespace TombEditor.Controls.ContextMenus
 
             _itemCopy = new ToolStripMenuItem("Copy", global::TombEditor.Properties.Resources.general_copy_link_16, (o, e) =>
             {
-                EditorActions.Copy(panel3D);
+                EditorActions.TryCopyObject(_editor.SelectedObject, panel3D);
             });
 
             _itemClone = new ToolStripMenuItem("Clone", global::TombEditor.Properties.Resources.actions_rubber_stamp_16, (o, e) =>
             {
-                EditorActions.Stamp(panel3D);
+                EditorActions.TryStampObject(_editor.SelectedObject, panel3D);
             });
 
             _itemDelete = new ToolStripMenuItem("Delete", global::TombEditor.Properties.Resources.toolbox_Eraser_16, (o, e) =>
@@ -74,7 +74,7 @@ namespace TombEditor.Controls.ContextMenus
                 foreach (var trigger in triggers)
                 {
                     var triggerItem = new ToolStripMenuItem("Trigger in room " + trigger.Room.Name,
-                        null, 
+                        null,
                         (o, e) =>
                     {
                         _editor.SelectRoomAndResetCamera(trigger.Room);

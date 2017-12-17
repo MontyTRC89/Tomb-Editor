@@ -14,11 +14,23 @@ namespace TombEditor.Geometry.IO
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
+        public class Settings
+        {
+            public bool IgnoreWads = false;
+            public bool IgnoreTextures = false;
+        }
+
+        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter) => LoadFromPrj2(filename, progressReporter, new Settings());
+        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter, Settings loadSettings)
         {
             using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, fileStream))
-                return LoadLevel(chunkIO, filename);
+                return LoadFromPrj2(filename, fileStream, progressReporter, loadSettings);
+        }
+        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter) => LoadFromPrj2(filename, progressReporter, new Settings());
+        public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter, Settings loadSettings)
+        {
+            using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream))
+                return LoadLevel(chunkIO, filename, loadSettings);
         }
 
         private class LevelSettingsIds
@@ -27,13 +39,13 @@ namespace TombEditor.Geometry.IO
             public Dictionary<long, LevelTexture> LevelTextures { get; set; } = new Dictionary<long, LevelTexture>();
         }
 
-        private static Level LoadLevel(ChunkReader chunkIO, string thisPath)
+        private static Level LoadLevel(ChunkReader chunkIO, string thisPath, Settings loadSettings)
         {
             LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
             Level level = new Level();
             chunkIO.ReadChunks((id, chunkSize) =>
             {
-                if (LoadLevelSettings(chunkIO, id, level, thisPath, ref levelSettingsIds))
+                if (LoadLevelSettings(chunkIO, id, level, thisPath, ref levelSettingsIds, loadSettings))
                     return true;
                 else if (LoadRooms(chunkIO, id, level, levelSettingsIds))
                     return true;
@@ -42,7 +54,7 @@ namespace TombEditor.Geometry.IO
             return level;
         }
 
-        private static bool LoadLevelSettings(ChunkReader chunkIO, ChunkId idOuter, Level level, string thisPath, ref LevelSettingsIds levelSettingsIdsOuter)
+        private static bool LoadLevelSettings(ChunkReader chunkIO, ChunkId idOuter, Level level, string thisPath, ref LevelSettingsIds levelSettingsIdsOuter, Settings loadingSettings)
         {
             if (idOuter != Prj2Chunks.Settings)
                 return false;
@@ -245,10 +257,14 @@ namespace TombEditor.Geometry.IO
                 return true;
             });
 
+            // Load wads
+            if (loadingSettings.IgnoreWads)
+                settings.WadFilePath = "";
 
             // Load level textures
-            foreach (var levelTexture in LevelTexturesToLoad)
-                levelTexture.Key.SetPath(settings, levelTexture.Value);
+            if (!loadingSettings.IgnoreTextures)
+                foreach (var levelTexture in LevelTexturesToLoad)
+                    levelTexture.Key.SetPath(settings, levelTexture.Value);
 
             // Load imported geoemtries
             settings.ImportedGeometryUpdate(ImportedGeometriesToLoad);

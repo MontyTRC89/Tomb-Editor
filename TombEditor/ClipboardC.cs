@@ -3,7 +3,7 @@ using TombEditor.Geometry;
 
 namespace TombEditor
 {
-    public class Clipboard
+    public class ClipboardC
     {
         private static PositionBasedObjectInstance _instance;
 

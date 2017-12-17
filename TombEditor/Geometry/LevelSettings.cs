@@ -269,6 +269,8 @@ namespace TombEditor.Geometry
             // Add level textures to lookup
             foreach (LevelTexture levelTexture in Textures)
             {
+                if (string.IsNullOrEmpty(levelTexture.Path))
+                    continue;
                 string absolutePath = MakeAbsolute(levelTexture.Path);
                 if (!absolutePathTextureLookup.ContainsKey(absolutePath))
                     absolutePathTextureLookup.Add(absolutePath, levelTexture);

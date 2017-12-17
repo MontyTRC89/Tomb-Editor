@@ -25,6 +25,11 @@ namespace TombLib.Utils
                 Math.Max(area.Bottom, other.Bottom));
         }
 
+        public static Vector2 GetMid(this SharpDX.Rectangle rect)
+        {
+            return new Vector2(rect.Left + rect.Right, rect.Top + rect.Bottom) * 0.5f;
+        }
+
         public static bool Contains(this SharpDX.Rectangle area, SharpDX.Rectangle other)
         {
             return ((area.X <= other.X) && (area.Right >= other.Right)) &&

@@ -261,17 +261,17 @@ namespace TombEditor.ToolWindows
 
         private void butCopy_Click(object sender, EventArgs e)
         {
-            EditorActions.Copy(this.ParentForm);
-        }
-
-        private void butPaste_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => Clipboard.Retrieve());
+            EditorActions.TryCopyObject(_editor.SelectedObject, this.ParentForm);
         }
 
         private void butStamp_Click(object sender, EventArgs e)
         {
-            EditorActions.Stamp(this.ParentForm);
+            EditorActions.TryStampObject(_editor.SelectedObject, this.ParentForm);
+        }
+
+        private void butPaste_Click(object sender, EventArgs e)
+        {
+            _editor.Action = new EditorActionPlace(false, (l, r) => ClipboardC.Retrieve());
         }
 
         private void butDrawPortals_Click(object sender, EventArgs e)

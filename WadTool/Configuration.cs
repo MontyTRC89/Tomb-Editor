@@ -24,7 +24,7 @@ namespace WadTool
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
-            
+
         public float Gizmo_Size { get; set; } = 1536.0f;
         public float Gizmo_TranslationConeSize { get; set; } = 220.0f;
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;

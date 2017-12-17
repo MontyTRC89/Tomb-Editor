@@ -69,7 +69,7 @@ namespace TombEditor.Controls.ContextMenus
         {
             Items.Clear();
 
-            if (Clipboard.HasObjectToPaste)
+            if (ClipboardC.HasObjectToPaste)
             {
                 Items.Add(_itemPaste);
                 Items.Add(new ToolStripSeparator());
