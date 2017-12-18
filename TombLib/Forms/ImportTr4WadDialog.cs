@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,12 +43,17 @@ namespace TombLib.Forms
         {
             dgvSamples.Rows.Clear();
 
+            foreach (var info in Tr4WadOperations.Samples)
+                dgvSamples.Rows.Add(info.Sample, info.Path, "Search", info.Found);
+
+            UpdateStatus();
+        }
+
+        private void UpdateStatus()
+        {
             var foundSamples = 0;
             foreach (var info in Tr4WadOperations.Samples)
-            {
-                dgvSamples.Rows.Add(info.Sample, info.Path, info.Found);
                 if (info.Found) foundSamples++;
-            }
 
             var numSamples = Tr4WadOperations.Samples.Count;
             var missingSamples = numSamples - foundSamples;
@@ -71,7 +77,7 @@ namespace TombLib.Forms
         {
             if (!Tr4WadOperations.FindTr4Samples())
             {
-                var result = DarkMessageBox.Show(this, "Warning: some samples are still missing. " + Environment.NewLine + 
+                var result = DarkMessageBox.Show(this, "Warning: some samples are still missing. " + Environment.NewLine +
                                                  "If you continue, you'll have to fix them manually with sound manager. " + Environment.NewLine +
                                                  "Do you want to continue and ignore missing files? You can also abort the importing process",
                                                  "Missing samples",
@@ -120,6 +126,29 @@ namespace TombLib.Forms
         private void lstPaths_Click(object sender, EventArgs e)
         {
             butDeletePath.Enabled = lstPaths.SelectedIndex != -1 && lstPaths.Items.Count != 0;
+        }
+
+        private void dgvSamples_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if ((e.RowIndex < 0) || (e.RowIndex >= dgvSamples.Rows.Count))
+                return;
+
+            if (e.ColumnIndex == 2)
+            {
+                using (var dialog = new OpenFileDialog())
+                {
+                    dialog.Title = "Search WAV sample";
+                    dialog.Filter = "WAV sample (*.wav)|*.wav";
+                    if (dialog.ShowDialog() == DialogResult.OK && File.Exists(dialog.FileName))
+                    {
+                        Tr4WadOperations.Samples[e.RowIndex].Path = dialog.FileName;
+                        dgvSamples.Rows[e.RowIndex].Cells[1].Value = dialog.FileName;
+                        dgvSamples.Rows[e.RowIndex].Cells[3].Value = true;
+
+                        UpdateStatus();
+                    }
+                }
+            }
         }
     }
 }
