@@ -16,6 +16,7 @@ namespace TombEditor.Controls.ContextMenus
         private ToolStripMenuItem _itemCopy;
         private ToolStripMenuItem _itemClone;
         private ToolStripMenuItem _itemDelete;
+        private ToolStripMenuItem _itemId;
 
         public PositionBasedObjectContextMenu(PanelRendering3D panel3D)
             : base()
@@ -39,6 +40,9 @@ namespace TombEditor.Controls.ContextMenus
             {
                 EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, panel3D);
             });
+
+            _itemId = new ToolStripMenuItem("");
+            _itemId.Enabled = false;
         }
 
         public override void OpenMenu(Control control, Point p)
@@ -47,6 +51,12 @@ namespace TombEditor.Controls.ContextMenus
 
             if (!(_editor.SelectedObject is LightInstance))
             {
+                if (_editor.SelectedObject is IHasScriptID)
+                {
+                    _itemId.Text = "ID = " + (_editor.SelectedObject as IHasScriptID).ScriptId;
+                    Items.Add(_itemId);
+                    Items.Add(new ToolStripSeparator());
+                }
                 Items.Add(_itemProperties);
                 Items.Add(new ToolStripSeparator());
             }
