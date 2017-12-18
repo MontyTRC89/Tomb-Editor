@@ -35,9 +35,6 @@ namespace TombLib.Forms
             this.butOK = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.dgvSamples = new DarkUI.Controls.DarkDataGridView();
-            this.columnSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnSamplePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnFound = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.lstPaths = new DarkUI.Controls.DarkListBox(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
@@ -46,6 +43,10 @@ namespace TombLib.Forms
             this.butReloadSamples = new DarkUI.Controls.DarkButton();
             this.butDeletePath = new DarkUI.Controls.DarkButton();
             this.butAddPath = new DarkUI.Controls.DarkButton();
+            this.columnSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnSamplePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.columnFound = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).BeginInit();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -87,31 +88,14 @@ namespace TombLib.Forms
             this.dgvSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.columnSampleName,
             this.columnSamplePath,
+            this.columnSearch,
             this.columnFound});
             this.dgvSamples.Location = new System.Drawing.Point(12, 38);
             this.dgvSamples.Name = "dgvSamples";
             this.dgvSamples.RowHeadersWidth = 41;
             this.dgvSamples.Size = new System.Drawing.Size(645, 303);
             this.dgvSamples.TabIndex = 5;
-            // 
-            // columnSampleName
-            // 
-            this.columnSampleName.HeaderText = "Sample";
-            this.columnSampleName.Name = "columnSampleName";
-            this.columnSampleName.Width = 150;
-            // 
-            // columnSamplePath
-            // 
-            this.columnSamplePath.HeaderText = "Path";
-            this.columnSamplePath.Name = "columnSamplePath";
-            this.columnSamplePath.Width = 400;
-            // 
-            // columnFound
-            // 
-            this.columnFound.HeaderText = "Found";
-            this.columnFound.Name = "columnFound";
-            this.columnFound.ReadOnly = true;
-            this.columnFound.Width = 50;
+            this.dgvSamples.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSamples_CellContentClick);
             // 
             // darkLabel2
             // 
@@ -142,10 +126,10 @@ namespace TombLib.Forms
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusSamples});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 504);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 500);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(662, 26);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(658, 26);
             this.darkStatusStrip1.TabIndex = 12;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -188,11 +172,38 @@ namespace TombLib.Forms
             this.butAddPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddPath.Click += new System.EventHandler(this.butAddPath_Click);
             // 
+            // columnSampleName
+            // 
+            this.columnSampleName.HeaderText = "Sample";
+            this.columnSampleName.Name = "columnSampleName";
+            this.columnSampleName.Width = 150;
+            // 
+            // columnSamplePath
+            // 
+            this.columnSamplePath.HeaderText = "Path";
+            this.columnSamplePath.Name = "columnSamplePath";
+            this.columnSamplePath.Width = 340;
+            // 
+            // columnSearch
+            // 
+            this.columnSearch.HeaderText = "";
+            this.columnSearch.Name = "columnSearch";
+            this.columnSearch.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.columnSearch.Text = "Search";
+            this.columnSearch.Width = 60;
+            // 
+            // columnFound
+            // 
+            this.columnFound.HeaderText = "Found";
+            this.columnFound.Name = "columnFound";
+            this.columnFound.ReadOnly = true;
+            this.columnFound.Width = 50;
+            // 
             // ImportTr4WadDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(662, 530);
+            this.ClientSize = new System.Drawing.Size(658, 526);
             this.ControlBox = false;
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.lstPaths);
@@ -227,9 +238,6 @@ namespace TombLib.Forms
         private DarkUI.Controls.DarkButton butOK;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkDataGridView dgvSamples;
-        private System.Windows.Forms.DataGridViewTextBoxColumn columnSampleName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn columnSamplePath;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn columnFound;
         private DarkUI.Controls.DarkButton butAddPath;
         private DarkUI.Controls.DarkButton butDeletePath;
         private DarkUI.Controls.DarkLabel darkLabel2;
@@ -238,5 +246,9 @@ namespace TombLib.Forms
         private System.Windows.Forms.FolderBrowserDialog folderBrowser;
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel statusSamples;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnSampleName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnSamplePath;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn columnSearch;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn columnFound;
     }
 }
