@@ -35,7 +35,7 @@ namespace TombEditor.Geometry.IO
                         rooms.Add(level.Rooms[i], i);
 
                 LevelSettings settingsToSave = level.Settings;
-                if (filter.FilterLevelSettings)
+                if (filter != null && filter.FilterLevelSettings)
                 {
                     settingsToSave = new LevelSettings();
                     foreach (Room room in rooms.Keys)
