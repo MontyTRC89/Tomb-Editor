@@ -933,10 +933,9 @@ namespace TombEditor
         private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.Mode == EditorMode.Map2D)
-            {
-                //_editor.SelectedRooms(_editor.Level.Rooms.Where(room => room != null));
+                _editor.SelectRooms(_editor.Level.Rooms.Where(room => room != null));
+            else
                 _editor.SelectedSectors = new SectorSelection { Area = _editor.SelectedRoom.LocalArea };
-            }
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)

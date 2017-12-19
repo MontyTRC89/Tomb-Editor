@@ -105,7 +105,7 @@ namespace TombEditor.Geometry
         public PortalInstance CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
 
         private Block()
-        {}
+        { }
 
         public Block(int floor, int ceiling)
         {
@@ -147,7 +147,7 @@ namespace TombEditor.Geometry
 
         public bool SetFaceTexture(BlockFace face, TextureArea texture)
         {
-            if(_faceTextures[(int)face] != texture)
+            if (_faceTextures[(int)face] != texture)
             {
                 _faceTextures[(int)face] = texture;
                 return true;
@@ -204,10 +204,10 @@ namespace TombEditor.Geometry
 
         public void ChangeEdge(int verticalSubdivision, int edge, short increment, SmoothGeometryEditingType editingType = SmoothGeometryEditingType.Any)
         {
-            if(((verticalSubdivision == 0 || verticalSubdivision == 2) && FloorDiagonalSplit == DiagonalSplit.None) ||
+            if (((verticalSubdivision == 0 || verticalSubdivision == 2) && FloorDiagonalSplit == DiagonalSplit.None) ||
                ((verticalSubdivision == 1 || verticalSubdivision == 3) && CeilingDiagonalSplit == DiagonalSplit.None))
             {
-                if(editingType == SmoothGeometryEditingType.Any ||
+                if (editingType == SmoothGeometryEditingType.Any ||
                    (Type == BlockType.Floor && editingType == SmoothGeometryEditingType.Floor) ||
                    (Type != BlockType.Floor && editingType == SmoothGeometryEditingType.Wall))
                 {
@@ -241,12 +241,12 @@ namespace TombEditor.Geometry
             }
             else
             {
-                for(int i = 0; i < 4; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     if ((i == 0 && split == DiagonalSplit.XpZn) ||
                         (i == 1 && split == DiagonalSplit.XnZn) ||
                         (i == 2 && split == DiagonalSplit.XnZp) ||
-                        (i == 3 && split == DiagonalSplit.XpZp) )
+                        (i == 3 && split == DiagonalSplit.XpZp))
                         continue;
                     faces[i] += increment;
                 }
@@ -282,6 +282,13 @@ namespace TombEditor.Geometry
                 }
             }
             Raise(verticalSubdivision, diagonalStep, increment);
+        }
+
+        public enum FaceShape
+        {
+            Unknown,
+            Triangle,
+            Quad
         }
 
         private static DiagonalSplit TransformDiagonalSplit(DiagonalSplit split, RectTransformation transformation)
@@ -323,7 +330,21 @@ namespace TombEditor.Geometry
             return split;
         }
 
-        public void Transform(RectTransformation transformation, bool? onlyFloor = null)
+        private void MirrorWallTexture(BlockFace oldFace, Func<BlockFace, FaceShape> oldFaceIsTriangle)
+        {
+            switch (oldFaceIsTriangle(oldFace))
+            {
+                case FaceShape.Triangle:
+                    Swap.Do(ref _faceTextures[(int)oldFace].TexCoord0, ref _faceTextures[(int)oldFace].TexCoord1);
+                    break;
+                case FaceShape.Quad:
+                    Swap.Do(ref _faceTextures[(int)oldFace].TexCoord0, ref _faceTextures[(int)oldFace].TexCoord3);
+                    Swap.Do(ref _faceTextures[(int)oldFace].TexCoord1, ref _faceTextures[(int)oldFace].TexCoord2);
+                    break;
+            }
+        }
+
+        public void Transform(RectTransformation transformation, bool? onlyFloor = null, Func<BlockFace, FaceShape> oldFaceIsTriangle = null)
         {
             // Rotate sector flags
             if (onlyFloor != null)
@@ -345,7 +366,7 @@ namespace TombEditor.Geometry
 
             // Rotate sector geometry
             bool diagonalChange = transformation.MirrorX != ((transformation.QuadrantRotation % 2) != 0);
-            bool floorDiagonalChange = false;
+            bool oldFloorSplitDirectionIsXEqualsZReal = FloorSplitDirectionIsXEqualsZReal;
             if (onlyFloor != false)
             {
                 bool requiredFloorSplitDirectionIsXEqualsZ = FloorSplitDirectionIsXEqualsZ != diagonalChange;
@@ -353,12 +374,9 @@ namespace TombEditor.Geometry
                 transformation.TransformValueDiagonalQuad(ref QAFaces[FaceXpZp], ref QAFaces[FaceXnZp], ref QAFaces[FaceXnZn], ref QAFaces[FaceXpZn]);
                 transformation.TransformValueDiagonalQuad(ref EDFaces[FaceXpZp], ref EDFaces[FaceXnZp], ref EDFaces[FaceXnZn], ref EDFaces[FaceXpZn]);
                 if (requiredFloorSplitDirectionIsXEqualsZ != FloorSplitDirectionIsXEqualsZ)
-                {
-                    floorDiagonalChange = true;
                     FloorSplitDirectionToggled = !FloorSplitDirectionToggled;
-                }
             }
-            bool ceilingDiagonalChange = false;
+            bool oldCeilingSplitDirectionIsXEqualsZReal = CeilingSplitDirectionIsXEqualsZReal;
             if (onlyFloor != true)
             {
                 bool requiredCeilingSplitDirectionIsXEqualsZ = CeilingSplitDirectionIsXEqualsZ != diagonalChange;
@@ -366,15 +384,27 @@ namespace TombEditor.Geometry
                 transformation.TransformValueDiagonalQuad(ref WSFaces[FaceXpZp], ref WSFaces[FaceXnZp], ref WSFaces[FaceXnZn], ref WSFaces[FaceXpZn]);
                 transformation.TransformValueDiagonalQuad(ref RFFaces[FaceXpZp], ref RFFaces[FaceXnZp], ref RFFaces[FaceXnZn], ref RFFaces[FaceXpZn]);
                 if (requiredCeilingSplitDirectionIsXEqualsZ != CeilingSplitDirectionIsXEqualsZ)
-                {
-                    ceilingDiagonalChange = true;
                     CeilingSplitDirectionToggled = !CeilingSplitDirectionToggled;
-                }
             }
 
             // Rotate applied textures
             if (onlyFloor != false)
             {
+                // Fix lower wall textures
+                if (transformation.MirrorX)
+                {
+                    MirrorWallTexture(BlockFace.PositiveX_QA, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.PositiveZ_QA, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeX_QA, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeZ_QA, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.DiagonalQA, oldFaceIsTriangle);
+
+                    MirrorWallTexture(BlockFace.PositiveX_ED, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.PositiveZ_ED, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeX_ED, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeZ_ED, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.DiagonalED, oldFaceIsTriangle);
+                }
                 transformation.TransformValueQuad(
                     ref _faceTextures[(int)BlockFace.PositiveX_QA],
                     ref _faceTextures[(int)BlockFace.PositiveZ_QA],
@@ -386,19 +416,47 @@ namespace TombEditor.Geometry
                     ref _faceTextures[(int)BlockFace.NegativeX_ED],
                     ref _faceTextures[(int)BlockFace.NegativeZ_ED]);
 
+                // Fix floor textures
                 if (FloorIsQuad)
                 {
                     _faceTextures[(int)BlockFace.Floor] = _faceTextures[(int)BlockFace.Floor].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
                 }
                 else
                 {
-                    if (floorDiagonalChange)
+                    // Mirror
+                    if (transformation.MirrorX)
+                    {
                         Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.FloorTriangle2]);
-                    int TODO_FIX_TRIANGLE_TEXTURE_ROTATION;
+                        Swap.Do(ref _faceTextures[(int)BlockFace.Floor].TexCoord0, ref _faceTextures[(int)BlockFace.Floor].TexCoord2);
+                        Swap.Do(ref _faceTextures[(int)BlockFace.FloorTriangle2].TexCoord0, ref _faceTextures[(int)BlockFace.FloorTriangle2].TexCoord2);
+                    }
+
+                    // Rotation
+                    for (int i = 0; i < transformation.QuadrantRotation; ++i)
+                    {
+                        if (!oldFloorSplitDirectionIsXEqualsZReal)
+                            Swap.Do(ref _faceTextures[(int)BlockFace.Floor], ref _faceTextures[(int)BlockFace.FloorTriangle2]);
+                        oldFloorSplitDirectionIsXEqualsZReal = !oldFloorSplitDirectionIsXEqualsZReal;
+                    }
                 }
             }
             if (onlyFloor != true)
             {
+                // Fix upper wall textures
+                if (transformation.MirrorX)
+                {
+                    MirrorWallTexture(BlockFace.PositiveX_WS, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.PositiveZ_WS, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeX_WS, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeZ_WS, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.DiagonalWS, oldFaceIsTriangle);
+
+                    MirrorWallTexture(BlockFace.PositiveX_RF, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.PositiveZ_RF, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeX_RF, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeZ_RF, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.DiagonalRF, oldFaceIsTriangle);
+                }
                 transformation.TransformValueQuad(
                     ref _faceTextures[(int)BlockFace.PositiveX_WS],
                     ref _faceTextures[(int)BlockFace.PositiveZ_WS],
@@ -410,23 +468,47 @@ namespace TombEditor.Geometry
                     ref _faceTextures[(int)BlockFace.NegativeX_RF],
                     ref _faceTextures[(int)BlockFace.NegativeZ_RF]);
 
+                // Fix ceiling textures
                 if (CeilingIsQuad)
                 {
                     _faceTextures[(int)BlockFace.Ceiling] = _faceTextures[(int)BlockFace.Ceiling].Transform(transformation * new RectTransformation { QuadrantRotation = 2 });
-                    int TODO_FIX_TRIANGLE_TEXTURE_ROTATION;
                 }
                 else
                 {
-                    if (ceilingDiagonalChange)
+                    // Mirror
+                    if (transformation.MirrorX)
+                    {
                         Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.CeilingTriangle2]);
+                        Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling].TexCoord0, ref _faceTextures[(int)BlockFace.Ceiling].TexCoord2);
+                        Swap.Do(ref _faceTextures[(int)BlockFace.CeilingTriangle2].TexCoord0, ref _faceTextures[(int)BlockFace.CeilingTriangle2].TexCoord2);
+                    }
+
+                    // Rotation
+                    for (int i = 0; i < transformation.QuadrantRotation; ++i)
+                    {
+                        if (!oldCeilingSplitDirectionIsXEqualsZReal)
+                            Swap.Do(ref _faceTextures[(int)BlockFace.Ceiling], ref _faceTextures[(int)BlockFace.CeilingTriangle2]);
+                        oldCeilingSplitDirectionIsXEqualsZReal = !oldCeilingSplitDirectionIsXEqualsZReal;
+                    }
                 }
             }
             if (onlyFloor == null)
+            {
+                if (transformation.MirrorX)
+                {
+                    MirrorWallTexture(BlockFace.PositiveX_Middle, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.PositiveZ_Middle, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeX_Middle, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.NegativeZ_Middle, oldFaceIsTriangle);
+                    MirrorWallTexture(BlockFace.DiagonalMiddle, oldFaceIsTriangle);
+                }
+
                 transformation.TransformValueQuad(
                     ref _faceTextures[(int)BlockFace.PositiveX_Middle],
                     ref _faceTextures[(int)BlockFace.PositiveZ_Middle],
                     ref _faceTextures[(int)BlockFace.NegativeX_Middle],
                     ref _faceTextures[(int)BlockFace.NegativeZ_Middle]);
+            }
         }
 
         public void FixHeights(int verticalSubdivision = -1)
@@ -437,13 +519,13 @@ namespace TombEditor.Geometry
                 RFFaces[i] = Math.Max(RFFaces[i], WSFaces[i]);
 
                 if (verticalSubdivision == 0 || verticalSubdivision == 2 || verticalSubdivision == -1)
-                    if(FloorDiagonalSplit != DiagonalSplit.None)
+                    if (FloorDiagonalSplit != DiagonalSplit.None)
                         QAFaces[i] = Math.Min(QAFaces[i], CeilingMin);
                     else
                         QAFaces[i] = Math.Min(QAFaces[i], WSFaces[i]);
 
                 if (verticalSubdivision == 1 || verticalSubdivision == 3 || verticalSubdivision == -1)
-                    if(CeilingDiagonalSplit != DiagonalSplit.None)
+                    if (CeilingDiagonalSplit != DiagonalSplit.None)
                         WSFaces[i] = Math.Max(WSFaces[i], FloorMax);
                     else
                         WSFaces[i] = Math.Max(WSFaces[i], QAFaces[i]);
@@ -530,7 +612,7 @@ namespace TombEditor.Geometry
 
             Direction[] slopeDirections = new Direction[2] { Direction.None, Direction.None };
 
-            if(FloorHasSlope)
+            if (FloorHasSlope)
             {
                 for (int i = 0; i < (FloorIsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
                 {
@@ -584,7 +666,7 @@ namespace TombEditor.Geometry
 
                 if (FloorDiagonalSplit != DiagonalSplit.None)
                 {
-                    switch(FloorDiagonalSplit)
+                    switch (FloorDiagonalSplit)
                     {
                         case DiagonalSplit.XpZn:
                             slopeDirections[1] = slopeDirections[0];
@@ -592,7 +674,7 @@ namespace TombEditor.Geometry
                             break;
 
                         case DiagonalSplit.XnZp:
-                            if(!FloorIsQuad)
+                            if (!FloorIsQuad)
                             {
                                 slopeDirections[0] = slopeDirections[1];
                                 slopeDirections[1] = Direction.None;
@@ -624,7 +706,7 @@ namespace TombEditor.Geometry
         {
             var faces = GetVerticalSubdivision(verticalSubdivision);
 
-            if(direction == Direction.None)
+            if (direction == Direction.None)
                 return Math.Min(Math.Min(faces[0], faces[1]), Math.Min(faces[2], faces[3]));
             else
             {

@@ -744,6 +744,19 @@ namespace TombEditor.Geometry
             return new VertexRange { Start = range.Start + offset, Count = range.Count };
         }
 
+        public Block.FaceShape GetFaceShape(int x, int z, BlockFace face)
+        {
+            switch (GetFaceVertexRange(x, z, face).Count)
+            {
+                case 3:
+                    return Block.FaceShape.Triangle;
+                case 6:
+                    return Block.FaceShape.Quad;
+                default:
+                    return Block.FaceShape.Unknown;
+            }
+        }
+
         public List<int> GetFaceIndices(int x, int z, BlockFace face)
         {
             var range = _sectorFaceIndices[x, z, (int)face];
