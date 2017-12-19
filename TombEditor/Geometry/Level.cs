@@ -262,9 +262,9 @@ namespace TombEditor.Geometry
                     {
                         DrawingPoint newSectorPosition = transformation.TransformIVec2(new DrawingPoint(x, z), oldRoom.SectorSize);
                         newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y] = oldRoom.Blocks[x, z].Clone();
-                        newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y].Transform(transformation);
+                        newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y].Transform(transformation, null,
+                            (oldFace) => oldRoom.GetFaceShape(x, z, oldFace));
                     }
-
                 newRooms[i] = newRoom;
             }
 
