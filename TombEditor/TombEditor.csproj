@@ -112,7 +112,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClipboardC.cs" />
     <Compile Include="Compilers\FloorData.cs" />
     <Compile Include="Compilers\LevelCompiler.cs" />
     <Compile Include="Compilers\LevelCompilerTR4.cs" />
@@ -289,6 +288,7 @@
     <Compile Include="Geometry\SinkInstance.cs" />
     <Compile Include="Geometry\SoundSourceInstance.cs" />
     <Compile Include="ListExtensions.cs" />
+    <Compile Include="ObjectClipboardData.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

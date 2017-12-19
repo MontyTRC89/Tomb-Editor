@@ -3857,6 +3857,41 @@ namespace TombEditor.Geometry
             foreach (var room in roomsToProcess)
                 room.UpdateBuffers();
         }
+
+        public void CopyDependentLevelSettings(LevelSettings destinationLevelSettings, LevelSettings sourceLevelSettings, bool unifyData)
+        {
+            foreach (ObjectInstance instance in AnyObjects)
+                instance.CopyDependentLevelSettings(destinationLevelSettings, sourceLevelSettings, unifyData);
+
+            if (destinationLevelSettings.Textures.Count == 0)
+                destinationLevelSettings.Textures.AddRange(sourceLevelSettings.Textures);
+            else
+            {
+                int TODO_Merge_Textures_Once_We_Support_More_Than_One_Texture;
+                if (unifyData)
+                {
+                    for (int z = 0; z < NumZSectors; ++z)
+                        for (int x = 0; x < NumXSectors; ++x)
+                        {
+                            Block block = Blocks[x, z];
+                            for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                            {
+                                TextureArea textureArea = block.GetFaceTexture(face);
+                                if (textureArea.Texture is LevelTexture)
+                                {
+                                    Vector2 maxSize = destinationLevelSettings.Textures[0].Image.Size;
+                                    textureArea.Texture = destinationLevelSettings.Textures[0];
+                                    textureArea.TexCoord0 = Vector2.Min(textureArea.TexCoord0, maxSize);
+                                    textureArea.TexCoord1 = Vector2.Min(textureArea.TexCoord1, maxSize);
+                                    textureArea.TexCoord2 = Vector2.Min(textureArea.TexCoord2, maxSize);
+                                    textureArea.TexCoord3 = Vector2.Min(textureArea.TexCoord3, maxSize);
+                                    block.SetFaceTexture(face, textureArea);
+                                }
+                            }
+                        }
+                }
+            }
+        }
     }
 
     public struct VerticalSpace

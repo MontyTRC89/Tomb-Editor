@@ -830,7 +830,7 @@ namespace TombEditor.Controls
             _insertionContourLineData = null;
             RoomClipboardData clipboardData = drgevent.Data.GetData(typeof(RoomClipboardData)) as RoomClipboardData;
             if (clipboardData != null)
-                clipboardData.MergeLevelInto(_editor, GetDragDropOffset(drgevent));
+                clipboardData.MergeInto(_editor, GetDragDropOffset(drgevent));
         }
 
         private Vector2 GetDragDropOffset(DragEventArgs drgevent)

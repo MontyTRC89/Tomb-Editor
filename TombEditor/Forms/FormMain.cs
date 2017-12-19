@@ -245,7 +245,7 @@ namespace TombEditor
         private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
         {
             if (_editor.Mode != EditorMode.Map2D)
-                pasteToolStripMenuItem.Enabled = true;
+                pasteToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(ObjectClipboardData).FullName);
             else
                 pasteToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(RoomClipboardData).FullName);
         }
@@ -984,14 +984,20 @@ namespace TombEditor
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.Mode != EditorMode.Map2D)
-                _editor.Action = new EditorActionPlace(false, (l, r) => ClipboardC.Retrieve());
+            {
+                var data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
+                if (data == null)
+                    MessageBox.Show("Clipboard contains no object data.");
+                else
+                    _editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(_editor));
+            }
             else
             {
                 var roomClipboardData = Clipboard.GetDataObject().GetData(typeof(RoomClipboardData)) as RoomClipboardData;
                 if (roomClipboardData == null)
                     MessageBox.Show("Clipboard contains no room data.");
                 else
-                    roomClipboardData.MergeLevelInto(_editor, new Vector2());
+                    roomClipboardData.MergeInto(_editor, new Vector2());
             }
         }
 

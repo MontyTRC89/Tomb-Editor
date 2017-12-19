@@ -614,7 +614,11 @@ namespace TombEditor
 
         public static void PasteObject(DrawingPoint pos)
         {
-            PlaceObject(_editor.SelectedRoom, pos, ClipboardC.Retrieve());
+            ObjectClipboardData data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
+            if (data == null)
+                MessageBox.Show("Clipboard contains no object data.");
+            else
+                PlaceObject(_editor.SelectedRoom, pos, data.MergeGetSingleObject(_editor));
         }
 
         public static void SnapObjectToGrid(PositionBasedObjectInstance instance, IWin32Window owner)
@@ -2219,16 +2223,20 @@ namespace TombEditor
         {
             if (!(instance is PositionBasedObjectInstance))
             {
-                DarkMessageBox.Show(owner, "You have to select an object before you can copy it.", "No object selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DarkMessageBox.Show(owner, "You have to select an position based object before you can copy it.", "No object selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            ClipboardC.Copy((PositionBasedObjectInstance)instance);
+            Clipboard.SetDataObject(new ObjectClipboardData(_editor));
         }
 
         public static void TryStampObject(ObjectInstance instance, IWin32Window owner)
         {
-            TryCopyObject(instance, owner);
-            _editor.Action = new EditorActionPlace(true, (r, l) => ClipboardC.Retrieve());
+            if (!(instance is PositionBasedObjectInstance))
+            {
+                DarkMessageBox.Show(owner, "You have to select a position based object before you can stamp it.", "No object selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            _editor.Action = new EditorActionPlace(false, (level, room) => (PositionBasedObjectInstance)instance.Clone());
         }
 
         public static bool DragDropFileSupported(DragEventArgs e, bool allow3DImport = false)

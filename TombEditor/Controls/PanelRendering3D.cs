@@ -570,12 +570,7 @@ namespace TombEditor.Controls
         private RasterizerState _rasterizerStateDepthBias;
 
         // Context menus
-        private DrawingPoint _lastBlock;
-        private PositionBasedObjectContextMenu _contextMenuObject;
-        private BlockContextMenu _contextMenuSolidGeometry;
-        private SelectedGeometryContextMenu _contextSelectedSectors;
-
-        public DrawingPoint LastSelectedBlock { get { return _lastBlock; } }
+        private BaseContextMenu _currentContextMenu;
 
         private static readonly HashSet<HighlightType> _ignoredHighlights = new HashSet<HighlightType>
         {
@@ -633,10 +628,6 @@ namespace TombEditor.Controls
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
             }
-
-            _contextMenuObject = new PositionBasedObjectContextMenu(this);
-            _contextMenuSolidGeometry = new BlockContextMenu(this);
-            _contextSelectedSectors = new SelectedGeometryContextMenu(this);
         }
 
         protected override void Dispose(bool disposing)
@@ -657,6 +648,7 @@ namespace TombEditor.Controls
             _littleSphere?.Dispose();
             _movementTimer?.Dispose();
             _rasterizerStateDepthBias?.Dispose();
+            _currentContextMenu?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -1413,21 +1405,25 @@ namespace TombEditor.Controls
                     // EXPERIMENTAL: show context menus here
                     if (distance.Length() < 4.0f)
                     {
-                        var newPicking = DoPicking(GetRay(e.X, e.Y));
+                        _currentContextMenu?.Dispose();
+                        _currentContextMenu = null;
+
+                        PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
                         if (newPicking is PickingResultObject)
                         {
-                            _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
-                            _contextMenuObject.OpenMenu(this, e.Location);
+                            ObjectInstance target = ((PickingResultObject)newPicking).ObjectInstance;
+                            if (target is PositionBasedObjectInstance)
+                                _currentContextMenu = new PositionBasedObjectContextMenu(_editor, (PositionBasedObjectInstance)target);
                         }
                         else if (newPicking is PickingResultBlock)
                         {
                             var pickedBlock = (newPicking as PickingResultBlock);
-                            _lastBlock = pickedBlock.Pos;
-                            if (_editor.SelectedSectors != null && _editor.SelectedSectors.Area.Contains(_lastBlock))
-                                _contextSelectedSectors.OpenMenu(this, e.Location);
-                            else
-                                _contextMenuSolidGeometry.OpenMenu(this, e.Location);
+                            if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pickedBlock.Pos))
+                                _currentContextMenu = new BlockContextMenu(_editor, _editor.SelectedRoom, pickedBlock.Pos);
+                            else if (_editor.SelectedSectors.Valid)
+                                _currentContextMenu = new SelectedGeometryContextMenu(_editor, _editor.SelectedRoom, _editor.SelectedSectors.Area);
                         }
+                        _currentContextMenu?.Show(PointToScreen(e.Location));
                     }
                     break;
             }

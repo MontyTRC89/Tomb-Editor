@@ -9,15 +9,13 @@ using System.Windows.Forms;
 
 namespace TombEditor.Controls.ContextMenus
 {
-    abstract class BaseContextMenu : DarkContextMenu
+    public abstract class BaseContextMenu : DarkContextMenu
     {
         protected Editor _editor;
 
-        public BaseContextMenu()
+        public BaseContextMenu(Editor editor)
         {
-            _editor = Editor.Instance;
+            _editor = editor;
         }
-
-        public abstract void OpenMenu(Control c, Point p);
     }
 }

@@ -169,8 +169,8 @@ namespace TombEditor.Geometry
                     {
                         return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
                     });
-                }                    
-               
+                }
+
                 var tmpModel = importer.ImportFromFile(importedGeometryPath);
 
                 // Create a new static model
@@ -218,7 +218,7 @@ namespace TombEditor.Geometry
                                 currentIndex++;
                             }
                         }
-                        
+
                         currPoly++;
                     }
 

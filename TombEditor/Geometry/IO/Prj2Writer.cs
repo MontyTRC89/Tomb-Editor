@@ -15,6 +15,7 @@ namespace TombEditor.Geometry.IO
         public class Filter
         {
             public Predicate<Room> RoomPredicate;
+            public bool FilterLevelSettings;
         };
 
         public static void SaveToPrj2(string filename, Level level, Filter filter = null)
@@ -26,7 +27,51 @@ namespace TombEditor.Geometry.IO
         public static void SaveToPrj2(Stream stream, Level level, Filter filter = null)
         {
             using (var chunkIO = new ChunkWriter(Prj2Chunks.MagicNumber, stream, ChunkWriter.Compression.None))
-                WriteLevel(chunkIO, level, filter);
+            {
+                // Index rooms
+                var rooms = new Dictionary<Room, int>();
+                for (int i = 0; i < level.Rooms.Length; ++i)
+                    if (level.Rooms[i] != null && (filter?.RoomPredicate(level.Rooms[i]) ?? true))
+                        rooms.Add(level.Rooms[i], i);
+
+                LevelSettings settingsToSave = level.Settings;
+                if (filter.FilterLevelSettings)
+                {
+                    settingsToSave = new LevelSettings();
+                    foreach (Room room in rooms.Keys)
+                        room.CopyDependentLevelSettings(settingsToSave, level.Settings, false);
+                }
+
+                // Write settings
+                LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
+
+                // Write rooms
+                WriteRooms(chunkIO, rooms, levelSettingIds);
+
+                chunkIO.WriteChunkEnd();
+            }
+        }
+
+        public static void SaveToPrj2OnlyObjects(Stream stream, Level level, IEnumerable<ObjectInstance> objects)
+        {
+            using (var chunkIO = new ChunkWriter(Prj2Chunks.MagicNumber, stream, ChunkWriter.Compression.None))
+            {
+                // Index objects
+                var objectInstanceLookup = new Dictionary<ObjectInstance, int>();
+                foreach (ObjectInstance objectInstance in objects)
+                    objectInstanceLookup.Add(objectInstance, objectInstanceLookup.Count);
+
+                // Write settings
+                LevelSettings settingsToSave = new LevelSettings();
+                foreach (ObjectInstance instance in objects)
+                    instance.CopyDependentLevelSettings(settingsToSave, level.Settings, false);
+                LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
+
+                // Write objects
+                WriteObjects(chunkIO, objects, new Dictionary<Room, int>(), levelSettingIds, objectInstanceLookup);
+
+                chunkIO.WriteChunkEnd();
+            }
         }
 
         private class LevelSettingsIds
@@ -34,23 +79,6 @@ namespace TombEditor.Geometry.IO
             public Dictionary<ImportedGeometry, int> ImportedGeometries { get; } = new Dictionary<ImportedGeometry, int>();
             public Dictionary<LevelTexture, int> LevelTextures { get; } = new Dictionary<LevelTexture, int>();
         };
-
-        private static void WriteLevel(ChunkWriter chunkIO, Level level, Filter filter)
-        {
-            // Write settings
-            LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, level.Settings);
-
-            // Collect rooms to save
-            var rooms = new Dictionary<Room, int>();
-            for (int i = 0; i < level.Rooms.Length; ++i)
-                if (level.Rooms[i] != null && (filter?.RoomPredicate(level.Rooms[i]) ?? true))
-                    rooms.Add(level.Rooms[i], i);
-
-            // Write rooms
-            WriteRooms(chunkIO, rooms, levelSettingIds);
-
-            chunkIO.WriteChunkEnd();
-        }
 
         private static LevelSettingsIds WriteLevelSettings(ChunkWriter chunkIO, LevelSettings settings)
         {
@@ -254,150 +282,156 @@ namespace TombEditor.Geometry.IO
                             }, LEB128.MaximumSize1Byte);
 
                         // Write room objects
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.Objects, () =>
-                        {
-                            foreach (var o in room.AnyObjects)
-                            {
-                                if (o is MoveableInstance)
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectMovable, () =>
-                                    {
-                                        var instance = (MoveableInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        chunkIO.Raw.Write(instance.Position);
-                                        chunkIO.Raw.Write(instance.RotationY);
-                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                                        chunkIO.Raw.Write(instance.WadObjectId);
-                                        chunkIO.Raw.Write(instance.Ocb);
-                                        chunkIO.Raw.Write(instance.Invisible);
-                                        chunkIO.Raw.Write(instance.ClearBody);
-                                        chunkIO.Raw.Write(instance.CodeBits);
-                                        chunkIO.Raw.Write(instance.Color);
-                                    }, LEB128.MaximumSize1Byte);
-                                else if (o is StaticInstance)
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectStatic, () =>
-                                    {
-                                        var instance = (StaticInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        chunkIO.Raw.Write(instance.Position);
-                                        chunkIO.Raw.Write(instance.RotationY);
-                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                                        chunkIO.Raw.Write(instance.WadObjectId);
-                                        chunkIO.Raw.Write(instance.Color);
-                                        chunkIO.Raw.Write(instance.Ocb);
-                                    }, LEB128.MaximumSize1Byte);
-                                else if (o is CameraInstance)
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectCamera, () =>
-                                    {
-                                        var instance = (CameraInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        chunkIO.Raw.Write(instance.Position);
-                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                                        chunkIO.Raw.Write(instance.Fixed);
-                                    });
-                                else if (o is FlybyCameraInstance)
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectFlyBy, () =>
-                                    {
-                                        var instance = (FlybyCameraInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        chunkIO.Raw.Write(instance.Position);
-                                        chunkIO.Raw.Write(instance.RotationY);
-                                        chunkIO.Raw.Write(instance.RotationX);
-                                        chunkIO.Raw.Write(instance.Roll);
-                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                                        chunkIO.Raw.Write(instance.Speed);
-                                        chunkIO.Raw.Write(instance.Fov);
-                                        LEB128.Write(chunkIO.Raw, instance.Flags);
-                                        LEB128.Write(chunkIO.Raw, instance.Number);
-                                        LEB128.Write(chunkIO.Raw, instance.Sequence);
-                                        LEB128.Write(chunkIO.Raw, instance.Timer);
-                                    });
-                                else if (o is SinkInstance)
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectSink, () =>
-                                    {
-                                        var instance = (SinkInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        chunkIO.Raw.Write(instance.Position);
-                                        LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                                        chunkIO.Raw.Write(instance.Strength);
-                                    });
-                                else if (o is SoundSourceInstance)
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource, () =>
-                                    {
-                                        var instance = (SoundSourceInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        chunkIO.Raw.Write(instance.Position);
-                                        chunkIO.Raw.Write(instance.SoundId);
-                                        chunkIO.Raw.Write(instance.Flags);
-                                        chunkIO.Raw.Write(instance.CodeBits);
-                                    });
-                                else if (o is LightInstance)
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectLight, () =>
-                                    {
-                                        var instance = (LightInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        LEB128.Write(chunkIO.Raw, (long)instance.Type);
-                                        chunkIO.Raw.Write(instance.Position);
-                                        chunkIO.Raw.Write(instance.RotationY);
-                                        chunkIO.Raw.Write(instance.RotationX);
-                                        chunkIO.Raw.Write(instance.Intensity);
-                                        chunkIO.Raw.Write(instance.Color);
-                                        chunkIO.Raw.Write(instance.InnerRange);
-                                        chunkIO.Raw.Write(instance.OuterRange);
-                                        chunkIO.Raw.Write(instance.InnerAngle);
-                                        chunkIO.Raw.Write(instance.OuterAngle);
-                                        chunkIO.Raw.Write(instance.Enabled);
-                                        chunkIO.Raw.Write(instance.IsObstructedByRoomGeometry);
-                                        chunkIO.Raw.Write(instance.IsDynamicallyUsed);
-                                        chunkIO.Raw.Write(instance.IsStaticallyUsed);
-                                    });
-                                else if (o is PortalInstance && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectPortal, () =>
-                                    {
-                                        var instance = (PortalInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        LEB128.Write(chunkIO.Raw, instance.Area.Left);
-                                        LEB128.Write(chunkIO.Raw, instance.Area.Top);
-                                        LEB128.Write(chunkIO.Raw, instance.Area.Right);
-                                        LEB128.Write(chunkIO.Raw, instance.Area.Bottom);
-                                        LEB128.Write(chunkIO.Raw, rooms[instance.AdjoiningRoom]);
-                                        chunkIO.Raw.Write((byte)instance.Direction);
-                                        chunkIO.Raw.Write((byte)instance.Opacity);
-                                    });
-                                else if (o is TriggerInstance)
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger, () =>
-                                    {
-                                        var instance = (TriggerInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        LEB128.Write(chunkIO.Raw, instance.Area.Left);
-                                        LEB128.Write(chunkIO.Raw, instance.Area.Top);
-                                        LEB128.Write(chunkIO.Raw, instance.Area.Right);
-                                        LEB128.Write(chunkIO.Raw, instance.Area.Bottom);
-                                        LEB128.Write(chunkIO.Raw, (long)instance.TriggerType);
-                                        LEB128.Write(chunkIO.Raw, (long)instance.TargetType);
-                                        LEB128.Write(chunkIO.Raw, instance.TargetData);
-                                        LEB128.Write(chunkIO.Raw, instance.TargetObj == null ? -1 : objectInstanceLookup.TryGetOrDefault(instance.TargetObj, -1));
-                                        LEB128.Write(chunkIO.Raw, instance.Timer);
-                                        LEB128.Write(chunkIO.Raw, instance.CodeBits);
-                                        chunkIO.Raw.Write(instance.OneShot);
-                                        chunkIO.WriteChunkInt(Prj2Chunks.ObjectTriggerExtra, instance.ExtraData);
-                                    });
-                                else if (o is ImportedGeometryInstance)
-                                    chunkIO.WriteChunk(Prj2Chunks.ObjectImportedGeometry, () =>
-                                    {
-                                        var instance = (ImportedGeometryInstance)o;
-                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                                        chunkIO.Raw.Write(instance.Position);
-                                        chunkIO.Raw.Write(instance.RotationY);
-                                        chunkIO.Raw.Write(instance.RotationX);
-                                        chunkIO.Raw.Write(instance.Roll);
-                                        chunkIO.Raw.Write(instance.Scale);
-                                        LEB128.Write(chunkIO.Raw, instance.Model == null ? -1 : levelSettingIds.ImportedGeometries[instance.Model]);
-                                    });
-                                else
-                                    logger.Warn("Object " + o + " not supported.");
-                            }
-                        }, long.MaxValue);
+                        WriteObjects(chunkIO, room.AnyObjects, rooms, levelSettingIds, objectInstanceLookup);
                     }, long.MaxValue);
+            }, long.MaxValue);
+        }
+
+        private static void WriteObjects(ChunkWriter chunkIO, IEnumerable<ObjectInstance> objects,
+            Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds, Dictionary<ObjectInstance, int> objectInstanceLookup)
+        {
+            chunkIO.WriteChunkWithChildren(Prj2Chunks.Objects, () =>
+            {
+                foreach (var o in objects)
+                {
+                    if (o is MoveableInstance)
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectMovable, () =>
+                        {
+                            var instance = (MoveableInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write(instance.RotationY);
+                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                            chunkIO.Raw.Write(instance.WadObjectId);
+                            chunkIO.Raw.Write(instance.Ocb);
+                            chunkIO.Raw.Write(instance.Invisible);
+                            chunkIO.Raw.Write(instance.ClearBody);
+                            chunkIO.Raw.Write(instance.CodeBits);
+                            chunkIO.Raw.Write(instance.Color);
+                        }, LEB128.MaximumSize1Byte);
+                    else if (o is StaticInstance)
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectStatic, () =>
+                        {
+                            var instance = (StaticInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write(instance.RotationY);
+                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                            chunkIO.Raw.Write(instance.WadObjectId);
+                            chunkIO.Raw.Write(instance.Color);
+                            chunkIO.Raw.Write(instance.Ocb);
+                        }, LEB128.MaximumSize1Byte);
+                    else if (o is CameraInstance)
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectCamera, () =>
+                        {
+                            var instance = (CameraInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                            chunkIO.Raw.Write(instance.Fixed);
+                        });
+                    else if (o is FlybyCameraInstance)
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectFlyBy, () =>
+                        {
+                            var instance = (FlybyCameraInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write(instance.RotationY);
+                            chunkIO.Raw.Write(instance.RotationX);
+                            chunkIO.Raw.Write(instance.Roll);
+                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                            chunkIO.Raw.Write(instance.Speed);
+                            chunkIO.Raw.Write(instance.Fov);
+                            LEB128.Write(chunkIO.Raw, instance.Flags);
+                            LEB128.Write(chunkIO.Raw, instance.Number);
+                            LEB128.Write(chunkIO.Raw, instance.Sequence);
+                            LEB128.Write(chunkIO.Raw, instance.Timer);
+                        });
+                    else if (o is SinkInstance)
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectSink, () =>
+                        {
+                            var instance = (SinkInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                            chunkIO.Raw.Write(instance.Strength);
+                        });
+                    else if (o is SoundSourceInstance)
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource, () =>
+                        {
+                            var instance = (SoundSourceInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write(instance.SoundId);
+                            chunkIO.Raw.Write(instance.Flags);
+                            chunkIO.Raw.Write(instance.CodeBits);
+                        });
+                    else if (o is LightInstance)
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectLight, () =>
+                        {
+                            var instance = (LightInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            LEB128.Write(chunkIO.Raw, (long)instance.Type);
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write(instance.RotationY);
+                            chunkIO.Raw.Write(instance.RotationX);
+                            chunkIO.Raw.Write(instance.Intensity);
+                            chunkIO.Raw.Write(instance.Color);
+                            chunkIO.Raw.Write(instance.InnerRange);
+                            chunkIO.Raw.Write(instance.OuterRange);
+                            chunkIO.Raw.Write(instance.InnerAngle);
+                            chunkIO.Raw.Write(instance.OuterAngle);
+                            chunkIO.Raw.Write(instance.Enabled);
+                            chunkIO.Raw.Write(instance.IsObstructedByRoomGeometry);
+                            chunkIO.Raw.Write(instance.IsDynamicallyUsed);
+                            chunkIO.Raw.Write(instance.IsStaticallyUsed);
+                        });
+                    else if (o is PortalInstance && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectPortal, () =>
+                        {
+                            var instance = (PortalInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            LEB128.Write(chunkIO.Raw, instance.Area.Left);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Top);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Right);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Bottom);
+                            LEB128.Write(chunkIO.Raw, rooms[instance.AdjoiningRoom]);
+                            chunkIO.Raw.Write((byte)instance.Direction);
+                            chunkIO.Raw.Write((byte)instance.Opacity);
+                        });
+                    else if (o is TriggerInstance)
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger, () =>
+                        {
+                            var instance = (TriggerInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            LEB128.Write(chunkIO.Raw, instance.Area.Left);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Top);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Right);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Bottom);
+                            LEB128.Write(chunkIO.Raw, (long)instance.TriggerType);
+                            LEB128.Write(chunkIO.Raw, (long)instance.TargetType);
+                            LEB128.Write(chunkIO.Raw, instance.TargetData);
+                            LEB128.Write(chunkIO.Raw, instance.TargetObj == null ? -1 : objectInstanceLookup.TryGetOrDefault(instance.TargetObj, -1));
+                            LEB128.Write(chunkIO.Raw, instance.Timer);
+                            LEB128.Write(chunkIO.Raw, instance.CodeBits);
+                            chunkIO.Raw.Write(instance.OneShot);
+                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectTriggerExtra, instance.ExtraData);
+                        });
+                    else if (o is ImportedGeometryInstance)
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectImportedGeometry, () =>
+                        {
+                            var instance = (ImportedGeometryInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write(instance.RotationY);
+                            chunkIO.Raw.Write(instance.RotationX);
+                            chunkIO.Raw.Write(instance.Roll);
+                            chunkIO.Raw.Write(instance.Scale);
+                            LEB128.Write(chunkIO.Raw, instance.Model == null ? -1 : levelSettingIds.ImportedGeometries[instance.Model]);
+                        });
+                    else
+                        logger.Warn("Object " + o + " not supported.");
+                }
             }, long.MaxValue);
         }
     }

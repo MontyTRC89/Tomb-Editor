@@ -208,11 +208,11 @@ namespace TombEditor.Geometry
                 DeleteAlternateRoom(room.AlternateVersion);
         }
 
-        public void MergeFrom(Level otherLevel)
+        public void MergeFrom(Level otherLevel, bool unifyData, Action<LevelSettings> applyLevelSettings = null)
         {
             IReadOnlyList<Room> otherRooms = otherLevel.Rooms.Where(room => room != null).ToList();
 
-            // Merge roos
+            // Merge rooms
             for (int i = 0; i < otherRooms.Count; ++i)
                 try
                 {
@@ -225,37 +225,11 @@ namespace TombEditor.Geometry
                     throw;
                 }
 
-            // Merge wads?
-            // TODO Think about merging wads once we support loading multiple wads.
-            // otherLevel.WadFilePath;
-
-            // Merge textures
-            int TODO_Merge_used_texture_once_multiple_textures_are_supported;
-            // otherLevel.Textures;
-            // otherLevel.AnimatedTextureSets;
+            // Merge dependencies like imported geometries, textures (and wads in the future?)
+            LevelSettings newSettings = applyLevelSettings == null ? Settings : Settings.Clone();
             foreach (Room room in otherRooms)
-                for (int z = 0; z < room.NumZSectors; ++z)
-                    for (int x = 0; x < room.NumXSectors; ++x)
-                    {
-                        Block block = room.Blocks[x, z];
-                        for (BlockFace face = 0; face < Block.FaceCount; ++face)
-                        {
-                            TextureArea textureArea = block.GetFaceTexture(face);
-                            if (textureArea.Texture is LevelTexture)
-                            {
-                                Vector2 maxSize = Settings.Textures[0].Image.Size;
-                                textureArea.Texture = Settings.Textures[0];
-                                textureArea.TexCoord0 = Vector2.Min(textureArea.TexCoord0, maxSize);
-                                textureArea.TexCoord1 = Vector2.Min(textureArea.TexCoord1, maxSize);
-                                textureArea.TexCoord2 = Vector2.Min(textureArea.TexCoord2, maxSize);
-                                textureArea.TexCoord3 = Vector2.Min(textureArea.TexCoord3, maxSize);
-                                block.SetFaceTexture(face, textureArea);
-                            }
-                        }
-                    }
-
-            // Merge imported geometries
-            Settings.ImportedGeometries.AddRange(otherLevel.Settings.ImportedGeometries);
+                room.CopyDependentLevelSettings(newSettings, otherLevel.Settings, unifyData);
+            applyLevelSettings?.Invoke(newSettings);
         }
 
         public IReadOnlyList<Room> TransformRooms(IEnumerable<Room> roomsToRotate, RectTransformation transformation, DrawingPoint center)

@@ -90,6 +90,9 @@ namespace TombEditor.Geometry
         {}
 
         public virtual bool CopyToFlipRooms => true;
+
+        public virtual void CopyDependentLevelSettings(LevelSettings destinationLevelSettings, LevelSettings sourceLevelSettings, bool unifyData)
+        { }
     }
 
     public abstract class SectorBasedObjectInstance : ObjectInstance

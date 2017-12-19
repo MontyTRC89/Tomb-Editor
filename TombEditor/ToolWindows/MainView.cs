@@ -25,6 +25,9 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
+
+            ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
+            ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
         }
 
         public void Initialize(DeviceManager _deviceManager)
@@ -61,7 +64,10 @@ namespace TombEditor.ToolWindows
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 _editor.EditorEventRaised -= EditorEventRaised;
+                ClipboardEvents.ClipboardChanged -= ClipboardEvents_ClipboardChanged;
+            }
             if (disposing && (components != null))
                 components.Dispose();
             base.Dispose(disposing);
@@ -76,6 +82,9 @@ namespace TombEditor.ToolWindows
                 butCopy.Enabled = selectedObject is PositionBasedObjectInstance;
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
             }
+
+            if (obj is Editor.ModeChangedEvent)
+                ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
@@ -135,6 +144,11 @@ namespace TombEditor.ToolWindows
                 butOpacitySolidFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.SolidFaces;
                 butOpacityTraversableFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.TraversableFaces;
             }
+        }
+
+        private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
+        {
+            butPaste.Enabled = _editor.Mode != EditorMode.Map2D && Clipboard.ContainsData(typeof(ObjectClipboardData).FullName);
         }
 
         // Opens editor's 3D view
@@ -271,7 +285,11 @@ namespace TombEditor.ToolWindows
 
         private void butPaste_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorActionPlace(false, (l, r) => ClipboardC.Retrieve());
+            ObjectClipboardData data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
+            if (data == null)
+                MessageBox.Show("Clipboard contains no object data.");
+            else
+                _editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(_editor));
         }
 
         private void butDrawPortals_Click(object sender, EventArgs e)

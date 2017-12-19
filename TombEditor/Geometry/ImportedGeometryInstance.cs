@@ -48,5 +48,27 @@ namespace TombEditor.Geometry
             }
             return result;
         }
+
+        public override void CopyDependentLevelSettings(LevelSettings destinationLevelSettings, LevelSettings sourceLevelSettings, bool unify)
+        {
+            if (unify)
+            {
+                foreach (ImportedGeometry importedGeometry in destinationLevelSettings.ImportedGeometries)
+                    if (importedGeometry.Info.Equals(Model.Info))
+                    {
+                        Model = importedGeometry;
+                        return;
+                    }
+
+                // Add imported geometry
+                destinationLevelSettings.ImportedGeometries.Add(Model);
+            }
+            else
+            {
+                if (destinationLevelSettings.ImportedGeometries.Contains(Model))
+                    return;
+                destinationLevelSettings.ImportedGeometries.Add(Model);
+            }
+        }
     }
 }
