@@ -45,6 +45,21 @@ namespace TombEditor
             LevelSettings newLevelSettings = editor.Level.Settings.Clone();
             obj.CopyDependentLevelSettings(newLevelSettings, loadedObjects.Settings, true);
             editor.UpdateLevelSettings(newLevelSettings);
+
+            // A little workaround to detect script id collisions already
+            if (obj is IHasScriptID)
+            {
+                Room testRoom = editor.SelectedRoom;
+                try
+                {
+                    testRoom.AddObject(editor.Level, obj);
+                    testRoom.RemoveObject(editor.Level, obj);
+                }
+                catch (ScriptIdCollisionException)
+                {
+                    ((IHasScriptID)obj).ScriptId = null;
+                }
+            }
             return obj;
         }
     }

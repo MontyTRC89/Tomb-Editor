@@ -208,6 +208,14 @@ namespace TombEditor.Geometry
             _scriptId = _scriptTable?.UpdateWithNewId(this, _scriptId);
         }
 
+        public bool TrySetScriptId(uint? newScriptId)
+        {
+            if (_scriptTable != null && !_scriptTable.TryUpdate(this, _scriptId, newScriptId))
+                return false;
+            _scriptId = newScriptId;
+            return true;
+        }
+
         public override ObjectInstance Clone()
         {
             ObjectInstance result = base.Clone();

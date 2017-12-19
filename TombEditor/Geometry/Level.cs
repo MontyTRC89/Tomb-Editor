@@ -230,6 +230,7 @@ namespace TombEditor.Geometry
             foreach (Room room in otherRooms)
                 room.CopyDependentLevelSettings(newSettings, otherLevel.Settings, unifyData);
             applyLevelSettings?.Invoke(newSettings);
+            GlobalScriptingIdsTable.MergeFrom(otherLevel.GlobalScriptingIdsTable);
         }
 
         public IReadOnlyList<Room> TransformRooms(IEnumerable<Room> roomsToRotate, RectTransformation transformation, DrawingPoint center)
