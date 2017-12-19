@@ -64,5 +64,6 @@ namespace TombEditor.Geometry
     public interface IHasScriptID
     {
         uint? ScriptId { get; }
+        void AllocateNewScriptId();
     }
 }

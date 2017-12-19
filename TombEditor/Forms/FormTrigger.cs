@@ -807,8 +807,6 @@ namespace TombEditor
 
         private void FormTrigger_Load(object sender, EventArgs e)
         {
-            this.Visible = true;
-
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MaximumSize = new Size(32000, Size.Height);
@@ -999,6 +997,8 @@ namespace TombEditor
             _loaded = true;
         }
 
+        private const string _noScriptIdStr = "<NoScriptID>";
+
         private void UpdateExportToTrigger()
         {
             var output = "";
@@ -1042,7 +1042,7 @@ namespace TombEditor
                         return;
                     }
 
-                    var target = (selectedObject as IHasScriptID).ScriptId;
+                    string target = (selectedObject as IHasScriptID)?.ScriptId?.ToString() ?? _noScriptIdStr;
                     var timer = condition;
                     if (conditionTrigger.HasExtraList)
                     {
@@ -1105,7 +1105,7 @@ namespace TombEditor
                         timer += (short)(extra << 8);
                     }
 
-                    var target = (selectedObject as IHasScriptID).ScriptId;
+                    string target = (selectedObject as IHasScriptID)?.ScriptId?.ToString() ?? _noScriptIdStr;
 
                     output = "$5000," + target + ",$" + timer.ToString("X4");
                 }
@@ -1116,7 +1116,23 @@ namespace TombEditor
 
         private void butCopyToClipboard_Click(object sender, EventArgs e)
         {
-            System.Windows.Forms.Clipboard.SetText(tbScript.Text);
+            (comboParameter.SelectedItem as IHasScriptID)?.AllocateNewScriptId();
+            UpdateExportToTrigger();
+            Clipboard.SetText(tbScript.Text);
+        }
+
+        private void FormTrigger_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (tbScript.Bounds.Contains(e.Location))
+            {
+                (comboParameter.SelectedItem as IHasScriptID)?.AllocateNewScriptId();
+                UpdateExportToTrigger();
+            }
+        }
+
+        private void tbScript_TextChanged(object sender, EventArgs e)
+        {
+            tbScript.Enabled = tbScript.Text.IndexOf(_noScriptIdStr, StringComparison.InvariantCulture) == -1;
         }
     }
 }
