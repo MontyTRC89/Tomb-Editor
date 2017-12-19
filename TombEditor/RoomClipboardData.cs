@@ -1,12 +1,10 @@
-﻿using NLog;
-using SharpDX;
+﻿using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Geometry;
 using TombLib.IO;
@@ -93,13 +91,14 @@ namespace TombEditor
             }
         }
 
-        public void MergeLevelInto(Editor editor, Vector2 offset)
+        public void MergeInto(Editor editor, Vector2 offset)
         {
             Level level = CreateLevel();
             List<Room> newRooms = level.Rooms.Where(room => room != null).ToList();
             foreach (Room room in newRooms)
                 room.Position += new Vector3(offset.X, 0, offset.Y);
-            editor.Level.MergeFrom(level);
+            LevelSettings newLevelSettings = editor.Level.Settings.Clone();
+            editor.Level.MergeFrom(level, true, newSettings => editor.UpdateLevelSettings(newSettings));
             editor.RoomListChange();
             editor.SelectRoomsAndResetCamera(newRooms);
         }

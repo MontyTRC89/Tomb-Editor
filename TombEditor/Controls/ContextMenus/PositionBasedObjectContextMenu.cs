@@ -12,61 +12,37 @@ namespace TombEditor.Controls.ContextMenus
 {
     class PositionBasedObjectContextMenu : BaseContextMenu
     {
-        private ToolStripMenuItem _itemProperties;
-        private ToolStripMenuItem _itemCopy;
-        private ToolStripMenuItem _itemClone;
-        private ToolStripMenuItem _itemDelete;
-        private ToolStripMenuItem _itemId;
-
-        public PositionBasedObjectContextMenu(PanelRendering3D panel3D)
-            : base()
+        public PositionBasedObjectContextMenu(Editor editor, PositionBasedObjectInstance targetObject)
+            : base(editor)
         {
-            _itemProperties = new ToolStripMenuItem("Edit object", global::TombEditor.Properties.Resources.general_edit_16, (o, e) =>
+            if (targetObject is IHasScriptID)
             {
-              EditorActions.EditObject(_editor.SelectedObject, panel3D);
-            });
-
-            _itemCopy = new ToolStripMenuItem("Copy", global::TombEditor.Properties.Resources.general_copy_link_16, (o, e) =>
-            {
-                EditorActions.TryCopyObject(_editor.SelectedObject, panel3D);
-            });
-
-            _itemClone = new ToolStripMenuItem("Clone", global::TombEditor.Properties.Resources.actions_rubber_stamp_16, (o, e) =>
-            {
-                EditorActions.TryStampObject(_editor.SelectedObject, panel3D);
-            });
-
-            _itemDelete = new ToolStripMenuItem("Delete", global::TombEditor.Properties.Resources.toolbox_Eraser_16, (o, e) =>
-            {
-                EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, panel3D);
-            });
-
-            _itemId = new ToolStripMenuItem("");
-            _itemId.Enabled = false;
-        }
-
-        public override void OpenMenu(Control control, Point p)
-        {
-            Items.Clear();
-
-            if (!(_editor.SelectedObject is LightInstance))
-            {
-                if (_editor.SelectedObject is IHasScriptID)
-                {
-                    _itemId.Text = "ID = " + (_editor.SelectedObject as IHasScriptID).ScriptId;
-                    Items.Add(_itemId);
-                    Items.Add(new ToolStripSeparator());
-                }
-                Items.Add(_itemProperties);
+                Items.Add(new ToolStripMenuItem("ScriptID = " + ((targetObject as IHasScriptID).ScriptId?.ToString() ?? "<None>")) { Enabled = false });
                 Items.Add(new ToolStripSeparator());
             }
 
-            Items.Add(_itemCopy);
-            Items.Add(_itemClone);
-            Items.Add(_itemDelete);
+            Items.Add(new ToolStripMenuItem("Edit object", global::TombEditor.Properties.Resources.general_edit_16, (o, e) =>
+            {
+                EditorActions.EditObject(targetObject, this);
+            }) { Enabled = !(targetObject is LightInstance) });
+
+            Items.Add(new ToolStripMenuItem("Copy", global::TombEditor.Properties.Resources.general_copy_link_16, (o, e) =>
+            {
+                EditorActions.TryCopyObject(targetObject, this);
+            }));
+
+            Items.Add(new ToolStripMenuItem("Clone", global::TombEditor.Properties.Resources.actions_rubber_stamp_16, (o, e) =>
+            {
+                EditorActions.TryStampObject(targetObject, this);
+            }));
+
+            Items.Add(new ToolStripMenuItem("Delete", global::TombEditor.Properties.Resources.toolbox_Eraser_16, (o, e) =>
+            {
+                EditorActions.DeleteObjectWithWarning(targetObject, this);
+            }));
 
             // Get all triggers pointing to selected object
-            var triggers = _editor.Level.GetAllTriggersPointingToObject(_editor.SelectedObject);
+            var triggers = _editor.Level.GetAllTriggersPointingToObject(targetObject);
             if (triggers.Count != 0)
             {
                 Items.Add(new ToolStripSeparator());
@@ -76,14 +52,12 @@ namespace TombEditor.Controls.ContextMenus
                     var triggerItem = new ToolStripMenuItem("Trigger in room " + trigger.Room.Name,
                         null,
                         (o, e) =>
-                    {
-                        _editor.SelectRoomAndResetCamera(trigger.Room);
-                    });
+                        {
+                            _editor.SelectRoomAndResetCamera(trigger.Room);
+                        });
                     Items.Add(triggerItem);
                 }
             }
-
-            Show(control, p);
         }
     }
 }

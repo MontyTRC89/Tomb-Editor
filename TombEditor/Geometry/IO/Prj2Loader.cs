@@ -30,7 +30,50 @@ namespace TombEditor.Geometry.IO
         public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter, Settings loadSettings)
         {
             using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream))
-                return LoadLevel(chunkIO, filename, loadSettings);
+            {
+                LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
+                Level level = new Level();
+                chunkIO.ReadChunks((id, chunkSize) =>
+                {
+                    LevelSettings settings = null;
+                    if (LoadLevelSettings(chunkIO, id, filename, ref levelSettingsIds, ref settings, loadSettings))
+                    {
+                        level.ApplyNewLevelSettings(settings);
+                        return true;
+                    }
+                    else if (LoadRooms(chunkIO, id, level, levelSettingsIds))
+                        return true;
+                    return false;
+                });
+
+                return level;
+            }
+        }
+
+        public struct LoadedObjects
+        {
+            public LevelSettings Settings;
+            public List<ObjectInstance> Objects;
+        }
+        public static LoadedObjects LoadFromPrj2OnlyObjects(string filename, Stream stream) => LoadFromPrj2OnlyObjects(filename, stream, new Settings());
+        public static LoadedObjects LoadFromPrj2OnlyObjects(string filename, Stream stream, Settings loadSettings)
+        {
+            using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream))
+            {
+                LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
+                LoadedObjects loadedObjects = new LoadedObjects { Settings = new LevelSettings(), Objects = new List<ObjectInstance>() };
+                Dictionary<long, ObjectInstance> newObjects = new Dictionary<long, ObjectInstance>();
+                chunkIO.ReadChunks((id, chunkSize) =>
+                {
+                    if (LoadLevelSettings(chunkIO, id, filename, ref levelSettingsIds, ref loadedObjects.Settings, loadSettings))
+                        return true;
+                    else if (LoadObjects(chunkIO, id, levelSettingsIds, (obj) => loadedObjects.Objects.Add(obj), newObjects, null, null, null))
+                        return true;
+                    return false;
+                });
+
+                return loadedObjects;
+            }
         }
 
         private class LevelSettingsIds
@@ -39,27 +82,12 @@ namespace TombEditor.Geometry.IO
             public Dictionary<long, LevelTexture> LevelTextures { get; set; } = new Dictionary<long, LevelTexture>();
         }
 
-        private static Level LoadLevel(ChunkReader chunkIO, string thisPath, Settings loadSettings)
-        {
-            LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
-            Level level = new Level();
-            chunkIO.ReadChunks((id, chunkSize) =>
-            {
-                if (LoadLevelSettings(chunkIO, id, level, thisPath, ref levelSettingsIds, loadSettings))
-                    return true;
-                else if (LoadRooms(chunkIO, id, level, levelSettingsIds))
-                    return true;
-                return false;
-            });
-            return level;
-        }
-
-        private static bool LoadLevelSettings(ChunkReader chunkIO, ChunkId idOuter, Level level, string thisPath, ref LevelSettingsIds levelSettingsIdsOuter, Settings loadingSettings)
+        private static bool LoadLevelSettings(ChunkReader chunkIO, ChunkId idOuter, string thisPath, ref LevelSettingsIds levelSettingsIdsOuter, ref LevelSettings settingsOuter, Settings loadingSettings)
         {
             if (idOuter != Prj2Chunks.Settings)
                 return false;
 
-            var settings = new LevelSettings { LevelFilePath = thisPath };
+            LevelSettings settings = new LevelSettings { LevelFilePath = thisPath };
             var levelSettingsIds = new LevelSettingsIds();
             var ImportedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>();
             var LevelTexturesToLoad = new Dictionary<LevelTexture, string>();
@@ -271,7 +299,7 @@ namespace TombEditor.Geometry.IO
 
             // Apply settings
             levelSettingsIdsOuter = levelSettingsIds;
-            level.ApplyNewLevelSettings(settings);
+            settingsOuter = settings;
             return true;
         }
 
@@ -434,158 +462,8 @@ namespace TombEditor.Geometry.IO
                                 }
                             }));
                     }
-
-                    // Read objects
-                    else if (id2 == Prj2Chunks.Objects)
-                    {
-                        chunkIO.ReadChunks((id3, chunkSize3) =>
-                        {
-                            var objectID = LEB128.ReadLong(chunkIO.Raw);
-                            if (id3 == Prj2Chunks.ObjectMovable)
-                            {
-                                var instance = new MoveableInstance();
-                                instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.RotationY = chunkIO.Raw.ReadSingle();
-                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                                instance.WadObjectId = chunkIO.Raw.ReadUInt32();
-                                instance.Ocb = chunkIO.Raw.ReadInt16();
-                                instance.Invisible = chunkIO.Raw.ReadBoolean();
-                                instance.ClearBody = chunkIO.Raw.ReadBoolean();
-                                instance.CodeBits = chunkIO.Raw.ReadByte();
-                                instance.Color = chunkIO.Raw.ReadVector4();
-                                room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.TryAdd(objectID, instance);
-                            }
-                            else if (id3 == Prj2Chunks.ObjectStatic)
-                            {
-                                var instance = new StaticInstance();
-                                newObjects.TryAdd(objectID, instance);
-                                instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.RotationY = chunkIO.Raw.ReadSingle();
-                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                                instance.WadObjectId = chunkIO.Raw.ReadUInt32();
-                                instance.Color = chunkIO.Raw.ReadVector4();
-                                instance.Ocb = chunkIO.Raw.ReadUInt16();
-                                room.AddObjectAndSingularPortal(level, instance);
-                            }
-                            else if (id3 == Prj2Chunks.ObjectCamera)
-                            {
-                                var instance = new CameraInstance();
-                                instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                                instance.Fixed = chunkIO.Raw.ReadBoolean();
-                                room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.TryAdd(objectID, instance);
-                            }
-                            else if (id3 == Prj2Chunks.ObjectFlyBy)
-                            {
-                                var instance = new FlybyCameraInstance();
-                                instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
-                                instance.Roll = chunkIO.Raw.ReadSingle();
-                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                                instance.Speed = chunkIO.Raw.ReadSingle();
-                                instance.Fov = chunkIO.Raw.ReadSingle();
-                                instance.Flags = LEB128.ReadUShort(chunkIO.Raw);
-                                instance.Number = LEB128.ReadUShort(chunkIO.Raw);
-                                instance.Sequence = LEB128.ReadUShort(chunkIO.Raw);
-                                instance.Timer = LEB128.ReadShort(chunkIO.Raw);
-                                room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.TryAdd(objectID, instance);
-                            }
-                            else if (id3 == Prj2Chunks.ObjectSink)
-                            {
-                                var instance = new SinkInstance();
-                                instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                                instance.Strength = chunkIO.Raw.ReadInt16();
-                                room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.TryAdd(objectID, instance);
-                            }
-                            else if (id3 == Prj2Chunks.ObjectSoundSource)
-                            {
-                                var instance = new SoundSourceInstance();
-                                instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.SoundId = chunkIO.Raw.ReadUInt16();
-                                instance.Flags = chunkIO.Raw.ReadInt16();
-                                instance.CodeBits = chunkIO.Raw.ReadByte();
-                                room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.TryAdd(objectID, instance);
-                            }
-                            else if (id3 == Prj2Chunks.ObjectImportedGeometry)
-                            {
-                                var instance = new ImportedGeometryInstance();
-                                instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
-                                instance.Roll = chunkIO.Raw.ReadSingle();
-                                instance.Scale = chunkIO.Raw.ReadSingle();
-                                instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
-                                room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.TryAdd(objectID, instance);
-                            }
-                            else if (id3 == Prj2Chunks.ObjectLight)
-                            {
-                                var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
-                                instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
-                                instance.Intensity = chunkIO.Raw.ReadSingle();
-                                instance.Color = chunkIO.Raw.ReadVector3();
-                                instance.InnerRange = chunkIO.Raw.ReadSingle();
-                                instance.OuterRange = chunkIO.Raw.ReadSingle();
-                                instance.InnerAngle = chunkIO.Raw.ReadSingle();
-                                instance.OuterAngle = chunkIO.Raw.ReadSingle();
-                                instance.Enabled = chunkIO.Raw.ReadBoolean();
-                                instance.IsObstructedByRoomGeometry = chunkIO.Raw.ReadBoolean();
-                                instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
-                                instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
-                                room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.TryAdd(objectID, instance);
-                            }
-                            else if (id3 == Prj2Chunks.ObjectPortal)
-                            {
-                                var area = new Rectangle(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
-                                var adjoiningRoomIndex = LEB128.ReadLong(chunkIO.Raw);
-                                var direction = (PortalDirection)chunkIO.Raw.ReadByte();
-
-                                // Create a replacement portal that uses the source room as a temporary placeholder
-                                // If an issue comes up that prevents loading the second room, this placeholder will be used permanently.
-                                var instance = new PortalInstance(area, direction, room);
-                                instance.Opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
-                                roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, (adjoiningRoom) => instance.AdjoiningRoom = adjoiningRoom ?? room));
-
-                                room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.TryAdd(objectID, instance);
-                            }
-                            else if (id3 == Prj2Chunks.ObjectTrigger)
-                            {
-                                var area = new Rectangle(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
-                                var instance = new TriggerInstance(area);
-                                instance.TriggerType = (TriggerType)LEB128.ReadLong(chunkIO.Raw);
-                                instance.TargetType = (TriggerTargetType)LEB128.ReadLong(chunkIO.Raw);
-                                instance.TargetData = LEB128.ReadShort(chunkIO.Raw);
-                                long targetObjectId = LEB128.ReadLong(chunkIO.Raw);
-                                instance.Timer = LEB128.ReadShort(chunkIO.Raw);
-                                instance.CodeBits = (byte)(LEB128.ReadLong(chunkIO.Raw) & 0x1f);
-                                instance.OneShot = chunkIO.Raw.ReadBoolean();
-                                objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, (targetObj) => instance.TargetObj = targetObj));
-
-                                chunkIO.ReadChunks((id4, chunkSize4) =>
-                                {
-                                    if (id4 == Prj2Chunks.ObjectTriggerExtra)
-                                        instance.ExtraData = (short)chunkIO.ReadChunkShort(chunkSize4);
-                                    else
-                                        return false;
-                                    return true;
-                                });
-
-                                room.AddObjectAndSingularPortal(level, instance);
-                                newObjects.TryAdd(objectID, instance);
-                            }
-                            else
-                                return false;
-                            return true;
-                        });
-                    }
+                    else if (LoadObjects(chunkIO, id2, levelSettingsIds, (obj) => room.AddObjectAndSingularPortal(level, obj), newObjects, room, roomLinkActions, objectLinkActions))
+                        return true;
                     else
                         return false;
                     return true;
@@ -627,6 +505,163 @@ namespace TombEditor.Geometry.IO
             // Now build the real geometry and update geometry buffers
             Parallel.ForEach(level.Rooms.Where(room => room != null), (room) => room.UpdateCompletely());
 
+            return true;
+        }
+
+        private static bool LoadObjects(ChunkReader chunkIO, ChunkId idOuter, LevelSettingsIds levelSettingsIds,
+            Action<ObjectInstance> addObject, Dictionary<long, ObjectInstance> newObjects,
+            Room room, List<KeyValuePair<long, Action<Room>>> roomLinkActions, List<KeyValuePair<long, Action<ObjectInstance>>> objectLinkActions)
+        {
+            if (idOuter != Prj2Chunks.Objects)
+                return false;
+
+            chunkIO.ReadChunks((id3, chunkSize3) =>
+            {
+                var objectID = LEB128.ReadLong(chunkIO.Raw);
+                if (id3 == Prj2Chunks.ObjectMovable)
+                {
+                    var instance = new MoveableInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.WadObjectId = chunkIO.Raw.ReadUInt32();
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    instance.Invisible = chunkIO.Raw.ReadBoolean();
+                    instance.ClearBody = chunkIO.Raw.ReadBoolean();
+                    instance.CodeBits = chunkIO.Raw.ReadByte();
+                    instance.Color = chunkIO.Raw.ReadVector4();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectStatic)
+                {
+                    var instance = new StaticInstance();
+                    newObjects.TryAdd(objectID, instance);
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.WadObjectId = chunkIO.Raw.ReadUInt32();
+                    instance.Color = chunkIO.Raw.ReadVector4();
+                    instance.Ocb = chunkIO.Raw.ReadUInt16();
+                    addObject(instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectCamera)
+                {
+                    var instance = new CameraInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.Fixed = chunkIO.Raw.ReadBoolean();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectFlyBy)
+                {
+                    var instance = new FlybyCameraInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                    instance.Roll = chunkIO.Raw.ReadSingle();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.Speed = chunkIO.Raw.ReadSingle();
+                    instance.Fov = chunkIO.Raw.ReadSingle();
+                    instance.Flags = LEB128.ReadUShort(chunkIO.Raw);
+                    instance.Number = LEB128.ReadUShort(chunkIO.Raw);
+                    instance.Sequence = LEB128.ReadUShort(chunkIO.Raw);
+                    instance.Timer = LEB128.ReadShort(chunkIO.Raw);
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectSink)
+                {
+                    var instance = new SinkInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.Strength = chunkIO.Raw.ReadInt16();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectSoundSource)
+                {
+                    var instance = new SoundSourceInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SoundId = chunkIO.Raw.ReadUInt16();
+                    instance.Flags = chunkIO.Raw.ReadInt16();
+                    instance.CodeBits = chunkIO.Raw.ReadByte();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectImportedGeometry)
+                {
+                    var instance = new ImportedGeometryInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                    instance.Roll = chunkIO.Raw.ReadSingle();
+                    instance.Scale = chunkIO.Raw.ReadSingle();
+                    instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectLight)
+                {
+                    var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                    instance.Intensity = chunkIO.Raw.ReadSingle();
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    instance.InnerRange = chunkIO.Raw.ReadSingle();
+                    instance.OuterRange = chunkIO.Raw.ReadSingle();
+                    instance.InnerAngle = chunkIO.Raw.ReadSingle();
+                    instance.OuterAngle = chunkIO.Raw.ReadSingle();
+                    instance.Enabled = chunkIO.Raw.ReadBoolean();
+                    instance.IsObstructedByRoomGeometry = chunkIO.Raw.ReadBoolean();
+                    instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
+                    instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectPortal)
+                {
+                    var area = new Rectangle(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                    var adjoiningRoomIndex = LEB128.ReadLong(chunkIO.Raw);
+                    var direction = (PortalDirection)chunkIO.Raw.ReadByte();
+
+                    // Create a replacement portal that uses the source room as a temporary placeholder
+                    // If an issue comes up that prevents loading the second room, this placeholder will be used permanently.
+                    var instance = new PortalInstance(area, direction, room);
+                    instance.Opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
+                    roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, (adjoiningRoom) => instance.AdjoiningRoom = adjoiningRoom ?? room));
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectTrigger)
+                {
+                    var area = new Rectangle(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                    var instance = new TriggerInstance(area);
+                    instance.TriggerType = (TriggerType)LEB128.ReadLong(chunkIO.Raw);
+                    instance.TargetType = (TriggerTargetType)LEB128.ReadLong(chunkIO.Raw);
+                    instance.TargetData = LEB128.ReadShort(chunkIO.Raw);
+                    long targetObjectId = LEB128.ReadLong(chunkIO.Raw);
+                    instance.Timer = LEB128.ReadShort(chunkIO.Raw);
+                    instance.CodeBits = (byte)(LEB128.ReadLong(chunkIO.Raw) & 0x1f);
+                    instance.OneShot = chunkIO.Raw.ReadBoolean();
+                    objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, (targetObj) => instance.TargetObj = targetObj));
+
+                    chunkIO.ReadChunks((id4, chunkSize4) =>
+                    {
+                        if (id4 == Prj2Chunks.ObjectTriggerExtra)
+                            instance.ExtraData = (short)chunkIO.ReadChunkShort(chunkSize4);
+                        else
+                            return false;
+                        return true;
+                    });
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else
+                    return false;
+                return true;
+            });
             return true;
         }
 
