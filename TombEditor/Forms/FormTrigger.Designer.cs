@@ -66,7 +66,7 @@ namespace TombEditor
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label1.Location = new System.Drawing.Point(9, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Trigger Type:";
             // 
@@ -291,13 +291,13 @@ namespace TombEditor
             // 
             // tbScript
             // 
-            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbScript.Location = new System.Drawing.Point(491, 148);
             this.tbScript.Name = "tbScript";
             this.tbScript.ReadOnly = true;
             this.tbScript.Size = new System.Drawing.Size(152, 22);
             this.tbScript.TabIndex = 74;
+            this.tbScript.TextChanged += new System.EventHandler(this.tbScript_TextChanged);
             // 
             // labelScript
             // 
@@ -359,6 +359,7 @@ namespace TombEditor
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Trigger editor";
             this.Load += new System.EventHandler(this.FormTrigger_Load);
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.FormTrigger_MouseDoubleClick);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
