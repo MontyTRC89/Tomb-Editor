@@ -2092,6 +2092,72 @@ namespace TombEditor.Controls
 
             if (_editor.SelectedRoom != null)
             {
+                foreach (var instance in room.Objects.OfType<MoveableInstance>())
+                {
+                    if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false)
+                        continue;
+                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                    if (_editor.SelectedObject == instance)
+                    {
+                        color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
+                        _device.SetRasterizerState(_rasterizerWireframe);
+
+                        string message = instance.ToString();
+                        message += "\nUnavailable " + instance.ItemType.ToString();
+
+                        // Object position
+                        message += "\n" + GetObjectPositionString(room, instance);
+
+                        Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
+                            _device.Viewport.MinDepth,
+                            _device.Viewport.MaxDepth, instance.RotationPositionMatrix * viewProjection);
+
+                        BuildTriggeredByMessage(ref message, instance);
+
+                        _debug.AddString(message, screenPos);
+
+                        // Add the line height of the object
+                        AddObjectHeightLine(viewProjection, room, instance.Position);
+                    }
+
+                    effect.Parameters["ModelViewProjection"].SetValue(instance.RotationPositionMatrix * viewProjection);
+                    effect.Parameters["Color"].SetValue(color);
+
+                    effect.Techniques[0].Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                }
+
+                foreach (var instance in room.Objects.OfType<StaticInstance>())
+                {
+                    if (_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(instance.WadObjectId) ?? false)
+                        continue;
+
+                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                    if (_editor.SelectedObject == instance)
+                    {
+                        color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
+                        _device.SetRasterizerState(_rasterizerWireframe);
+
+                        string message = instance.ToString();
+                        message += "\nUnavailable " + instance.ItemType.ToString();
+
+                        DrawDebugString(message, instance.RotationPositionMatrix * viewProjection);
+
+                        // Add the line height of the object
+                        AddObjectHeightLine(viewProjection, room, instance.Position);
+                    }
+
+                    effect.Parameters["ModelViewProjection"].SetValue(instance.RotationPositionMatrix * viewProjection);
+                    effect.Parameters["Color"].SetValue(color);
+
+                    effect.Techniques[0].Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                }
+
                 foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (instance.Model?.DirectXModel != null)
