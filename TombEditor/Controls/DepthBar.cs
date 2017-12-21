@@ -494,7 +494,7 @@ namespace TombEditor.Controls
             // Iterate over all rooms under the curser and add them to the room sequences
             IEnumerable<Room> sortedRoomList = level.GetVerticallyAscendingRoomList(room =>
             {
-                Vector2 roomLocal = probePos - room.SectorPos.ToVec2();
+                Vector2 roomLocal = probePos - room.SectorPos;
                 bool CollidesWithProbe = (roomLocal.X >= 1) && (roomLocal.Y >= 1) && (roomLocal.X < (room.NumXSectors - 1)) && (roomLocal.Y < (room.NumZSectors - 1));
                 return (shouldCheckRoomsToMove ? _roomsToMove.Contains(room) : CollidesWithProbe);
             });
@@ -502,7 +502,7 @@ namespace TombEditor.Controls
             var roomSequences = new List<List<RelevantRoom>>();
             foreach (Room room in sortedRoomList)
             {
-                Vector2 roomLocal = probePos - room.SectorPos.ToVec2();
+                Vector2 roomLocal = probePos - room.SectorPos;
                 bool CollidesWithProbe = (roomLocal.X >= 1) && (roomLocal.Y >= 1) && (roomLocal.X < (room.NumXSectors - 1)) && (roomLocal.Y < (room.NumZSectors - 1));
 
                 Block block = CollidesWithProbe ? room.Blocks[(int)(roomLocal.X), (int)(roomLocal.Y)] : null;

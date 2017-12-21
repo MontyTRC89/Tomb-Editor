@@ -10,6 +10,7 @@ using TombLib.LevelData;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.LevelData.IO;
+using TombLib;
 
 namespace TombEditor
 {
@@ -73,7 +74,7 @@ namespace TombEditor
 
         public RoomClipboardData(Editor editor)
             : this(editor, editor.SelectedRooms.Aggregate(
-                new Rectangle(int.MaxValue, int.MaxValue, int.MinValue, int.MinValue),
+                RectangleInt2.MaxMin,
                 (area, room) => room.WorldArea.Union(area),
                 (area) => area.GetMid()))
         { }

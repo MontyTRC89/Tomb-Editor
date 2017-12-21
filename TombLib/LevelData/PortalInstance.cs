@@ -44,7 +44,7 @@ namespace TombLib.LevelData
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
 
-        public PortalInstance(Rectangle area, PortalDirection direction, Room adjoiningRoom = null)
+        public PortalInstance(RectangleInt2 area, PortalDirection direction, Room adjoiningRoom = null)
             : base(area)
         {
             AdjoiningRoom = adjoiningRoom;
@@ -76,7 +76,7 @@ namespace TombLib.LevelData
                     break;
             }
             text += "in room '" + (Room?.ToString() ?? "NULL") + "' ";
-            text += "on sectors [" + Area.X + ", " + Area.Y + " to " + Area.Right + ", " + Area.Bottom + "] ";
+            text += "on sectors [" + Area.X0 + ", " + Area.Y0 + " to " + Area.X1 + ", " + Area.Y1 + "] ";
             text += "to Room " + AdjoiningRoom;
             return text;
         }
@@ -102,18 +102,18 @@ namespace TombLib.LevelData
             }
         }
 
-        public static Rectangle GetOppositePortalArea(PortalDirection direction, Rectangle area)
+        public static RectangleInt2 GetOppositePortalArea(PortalDirection direction, RectangleInt2 area)
         {
             switch (direction)
             {
                 case PortalDirection.WallPositiveX:
-                    return area.Offset(new DrawingPoint(-1, 0));
+                    return area + new VectorInt2(-1, 0);
                 case PortalDirection.WallPositiveZ:
-                    return area.Offset(new DrawingPoint(0, -1));
+                    return area + new VectorInt2(0, -1);
                 case PortalDirection.WallNegativeZ:
-                    return area.Offset(new DrawingPoint(0, 1));
+                    return area + new VectorInt2(0, 1);
                 case PortalDirection.WallNegativeX:
-                    return area.Offset(new DrawingPoint(1, 0));
+                    return area + new VectorInt2(1, 0);
                 default:
                     return area;
             }
@@ -122,12 +122,12 @@ namespace TombLib.LevelData
         // Usually this should return a portal, but be prepared for the situation that this returns null because in case of problems this might happen.
         public PortalInstance FindOppositePortal(Room room)
         {
-            var adjoiningRoomArea = GetOppositePortalArea(Direction, Area).Offset(room.SectorPos).OffsetNeg(AdjoiningRoom.SectorPos);
-            if (!new Rectangle(0, 0, AdjoiningRoom.NumXSectors, AdjoiningRoom.NumZSectors).Contains(adjoiningRoomArea.X, adjoiningRoomArea.Y))
+            var adjoiningRoomArea = GetOppositePortalArea(Direction, Area) + (room.SectorPos - AdjoiningRoom.SectorPos);
+            if (!new RectangleInt2(0, 0, AdjoiningRoom.NumXSectors, AdjoiningRoom.NumZSectors).Contains(adjoiningRoomArea.Start))
                 return null;
 
             // Check sectors
-            var sector = AdjoiningRoom.GetBlockTry(adjoiningRoomArea.X, adjoiningRoomArea.Y);
+            var sector = AdjoiningRoom.GetBlockTry(adjoiningRoomArea.Start);
             switch (Direction)
             {
                 case PortalDirection.Floor:
@@ -141,7 +141,7 @@ namespace TombLib.LevelData
 
         public PortalInstance FindAlternatePortal(Room alternateRoom)
         {
-            var sector = alternateRoom?.GetBlockTry(Area.X, Area.Y);
+            var sector = alternateRoom?.GetBlockTry(Area.X0, Area.Y0);
             switch (Direction)
             {
                 case PortalDirection.Floor:
@@ -161,48 +161,48 @@ namespace TombLib.LevelData
             switch (Direction)
             {
                 case PortalDirection.Floor:
-                    for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        for (int x = Area.X; x <= Area.Right; ++x)
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
                             if (room.Blocks[x, z].FloorPortal != null)
                                 throw new ApplicationException("The new floor portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
 
-                    for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        for (int x = Area.X; x <= Area.Right; ++x)
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].FloorPortal = this;
                     break;
 
                 case PortalDirection.Ceiling:
-                    for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        for (int x = Area.X; x <= Area.Right; ++x)
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
                             if (room.Blocks[x, z].CeilingPortal != null)
                                 throw new ApplicationException("The new ceiling portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].CeilingPortal + "'!");
 
-                    for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        for (int x = Area.X; x <= Area.Right; ++x)
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].CeilingPortal = this;
                     break;
 
                 default:
-                    for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        for (int x = Area.X; x <= Area.Right; ++x)
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
                             if (room.Blocks[x, z].WallPortal != null)
                                 throw new ApplicationException("The new wall portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].WallPortal + "'!");
 
-                    for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        for (int x = Area.X; x <= Area.Right; ++x)
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].WallPortal = this;
                     break;
             }
         }
 
-        public bool ContainsPoint(DrawingPoint point)
+        public bool ContainsPoint(VectorInt2 point)
         {
             return ContainsPoint(point.X, point.Y);
         }
 
         public bool ContainsPoint(int x, int z)
         {
-            return (x >= Area.X && z >= Area.Y && x <= Area.X + Area.Width && z <= Area.Y + Area.Height);
+            return (x >= Area.X0 && z >= Area.Y0 && x <= Area.X0 + Area.Width && z <= Area.Y0 + Area.Height);
         }
 
         public override void RemoveFromRoom(Level level, Room room)
@@ -213,24 +213,24 @@ namespace TombLib.LevelData
             switch (Direction)
             {
                 case PortalDirection.Floor:
-                    for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        for (int x = Area.X; x <= Area.Right; ++x)
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].FloorPortal = null;
                     break;
                 case PortalDirection.Ceiling:
-                    for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        for (int x = Area.X; x <= Area.Right; ++x)
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].CeilingPortal = null;
                     break;
                 default:
-                    for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        for (int x = Area.X; x <= Area.Right; ++x)
+                    for (int z = Area.Y0; z <= Area.Y1; ++z)
+                        for (int x = Area.X0; x <= Area.X1; ++x)
                             room.Blocks[x, z].WallPortal = null;
                     break;
             }
         }
 
-        public override void Transform(RectTransformation transformation, DrawingPoint oldRoomSize)
+        public override void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
             base.Transform(transformation, oldRoomSize);
 

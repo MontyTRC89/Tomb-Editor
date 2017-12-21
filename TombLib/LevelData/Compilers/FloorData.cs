@@ -47,8 +47,8 @@ namespace TombLib.LevelData.Compilers
                     {
                         var sector = GetSector(tempRoom, x, z);
                         var block = room.Blocks[x, z];
-                        Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
-                        Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z));
+                        Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z));
+                        Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
 
                         var baseFloorData = (ushort)_floorData.Count;
 
@@ -59,10 +59,10 @@ namespace TombLib.LevelData.Compilers
                         foreach (var portal in ceilingPortals)
                         {
                             // Check if x, z is inside the portal
-                            if (!(x >= portal.Area.X - 1 && 
-                                  z >= portal.Area.Y - 1 && 
-                                  x <= portal.Area.X + portal.Area.Width + 1 && 
-                                  z <= portal.Area.Y + portal.Area.Height + 1)) continue;
+                            if (!(x >= portal.Area.X0 - 1 && 
+                                  z >= portal.Area.Y0 - 1 && 
+                                  x <= portal.Area.X0 + portal.Area.Width + 1 && 
+                                  z <= portal.Area.Y0 + portal.Area.Height + 1)) continue;
 
                             // Check if this is a wall
                             if (!block.IsAnyWall) continue;

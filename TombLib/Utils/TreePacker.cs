@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,20 +12,20 @@ namespace TombLib.Utils
         {
             public TreePackerNode Left { get; set; }
             public TreePackerNode Right { get; set; }
-            public Rectangle Rectangle { get; set; }
+            public RectangleInt2 RectangleInt2 { get; set; }
             public bool Filled { get; set; } = false;
 
-            private bool RectangleFitsIn(Rectangle rect)
+            private bool RectangleFitsIn(RectangleInt2 rect)
             {
-                return Rectangle.Width >= rect.Width && Rectangle.Height >= rect.Height;
+                return RectangleInt2.Width >= rect.Width && RectangleInt2.Height >= rect.Height;
             }
 
-            private bool RectangleSameSizeOf(Rectangle rect)
+            private bool RectangleSameSizeOf(RectangleInt2 rect)
             {
-                return Rectangle.Width == rect.Width && Rectangle.Height == rect.Height;
+                return RectangleInt2.Width == rect.Width && RectangleInt2.Height == rect.Height;
             }
 
-            public TreePackerNode InsertNode(Rectangle rect)
+            public TreePackerNode InsertNode(RectangleInt2 rect)
             {
                 if (Left != null)
                 {
@@ -52,20 +51,18 @@ namespace TombLib.Utils
                 Left = new TreePackerNode();
                 Right = new TreePackerNode();
 
-                var widthDifference = Rectangle.Width - rect.Width;
-                var heightDifference = Rectangle.Height - rect.Height;
+                var widthDifference = RectangleInt2.Width - rect.Width;
+                var heightDifference = RectangleInt2.Height - rect.Height;
 
                 if (widthDifference > heightDifference)
                 {
-                    Left.Rectangle = new Rectangle(Rectangle.X, Rectangle.Y, rect.Width, Rectangle.Height);
-                    Right.Rectangle = new Rectangle(Rectangle.X + rect.Width, Rectangle.Y,
-                                                    Rectangle.Width - rect.Width, Rectangle.Height);
+                    Left.RectangleInt2 = RectangleInt2.FromLTRB(RectangleInt2.X0,  RectangleInt2.Y0, RectangleInt2.X0 + rect.Width, RectangleInt2.Y0 + RectangleInt2.Height);
+                    Right.RectangleInt2 = RectangleInt2.FromLTRB(RectangleInt2.X0 + rect.Width, RectangleInt2.Y0, RectangleInt2.Width - rect.Width, RectangleInt2.Height);
                 }
                 else
                 {
-                    Left.Rectangle = new Rectangle(Rectangle.X, Rectangle.Y, Rectangle.Width, rect.Height);
-                    Right.Rectangle = new Rectangle(Rectangle.X, Rectangle.Y + rect.Height,
-                                                    Rectangle.Width, Rectangle.Height - rect.Height);
+                    Left.RectangleInt2 = RectangleInt2.FromLTRB(RectangleInt2.X0, RectangleInt2.Y0, RectangleInt2.Width, rect.Height);
+                    Right.RectangleInt2 = RectangleInt2.FromLTRB(RectangleInt2.X0, RectangleInt2.Y0 + rect.Height, RectangleInt2.Width, RectangleInt2.Height - rect.Height);
                 }
 
                 return Left.InsertNode(rect);
@@ -81,17 +78,17 @@ namespace TombLib.Utils
             : base(width, height)
         {
             _startNode = new TreePackerNode();
-            _startNode.Rectangle = new Rectangle(0, 0, width, height);
+            _startNode.RectangleInt2 = new RectangleInt2(0, 0, width, height);
             _maxHeight = 0;
         }
 
         public override Point? TryAdd(int width, int height)
         {
-            var rect = new Rectangle(0, 0, width, height);
+            var rect = new RectangleInt2(0, 0, width, height);
             var node = _startNode.InsertNode(rect);
             if (node == null) return null;
-            var result = new Point(node.Rectangle.X, node.Rectangle.Y);
-            var newHeight = node.Rectangle.Y + node.Rectangle.Height;
+            var result = new Point(node.RectangleInt2.X0, node.RectangleInt2.Y0);
+            var newHeight = node.RectangleInt2.Y0 + node.RectangleInt2.Height;
             if (newHeight > _maxHeight) _maxHeight = newHeight;
             return result;
         }

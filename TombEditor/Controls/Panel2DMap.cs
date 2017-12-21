@@ -50,7 +50,7 @@ namespace TombEditor.Controls
 
         private class SelectionArea
         {
-            public Space2 _area;
+            public TombLib.Rectangle2 _area;
             public HashSet<Room> _roomSelectionCache;
             public HashSet<Room> GetRoomSelection(Panel2DMap parent)
             {
@@ -146,11 +146,11 @@ namespace TombEditor.Controls
             return new Vector2((pos.X - Width * 0.5f) / _viewScale + ViewPosition.X, (Height * 0.5f - pos.Y) / _viewScale + ViewPosition.Y);
         }
 
-        public Space2 FromVisualCoord(RectangleF area)
+        public Rectangle2 FromVisualCoord(RectangleF area)
         {
             Vector2 visibleAreaStart = FromVisualCoord(new PointF(area.Left, area.Top));
             Vector2 visibleAreaEnd = FromVisualCoord(new PointF(area.Right, area.Bottom));
-            return new Space2(Vector2.Min(visibleAreaStart, visibleAreaEnd), Vector2.Max(visibleAreaStart, visibleAreaEnd));
+            return new Rectangle2(Vector2.Min(visibleAreaStart, visibleAreaEnd), Vector2.Max(visibleAreaStart, visibleAreaEnd));
         }
 
         public PointF ToVisualCoord(Vector2 pos)
@@ -158,7 +158,7 @@ namespace TombEditor.Controls
             return new PointF((pos.X - ViewPosition.X) * _viewScale + Width * 0.5f, Height * 0.5f - (pos.Y - ViewPosition.Y) * _viewScale);
         }
 
-        public RectangleF ToVisualCoord(Space2 area)
+        public RectangleF ToVisualCoord(Rectangle2 area)
         {
             PointF start = ToVisualCoord(area.Start);
             PointF end = ToVisualCoord(area.End);
@@ -246,12 +246,12 @@ namespace TombEditor.Controls
                             _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms,
                                 new Room[] { _roomMouseClicked }, ModifierKeys));
                         }
-                        _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos.ToVec2();
+                        _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
                     }
                     break;
 
                 case MouseButtons.Middle:
-                    _selectionArea = new SelectionArea { _area = new Space2(clickPos, clickPos) };
+                    _selectionArea = new SelectionArea { _area = new TombLib.Rectangle2(clickPos, clickPos) };
                     break;
 
                 case MouseButtons.Right:
@@ -502,7 +502,7 @@ namespace TombEditor.Controls
             // Draw 2d map if necessary and not occluded by 2d bar
             if (!barArea.Contains(e.ClipRectangle))
             {
-                Space2 visibleArea = FromVisualCoord(e.ClipRectangle);
+                TombLib.Rectangle2 visibleArea = FromVisualCoord(e.ClipRectangle);
                 e.Graphics.Clear(Color.White);
 
                 // Draw hidden rooms
@@ -752,7 +752,7 @@ namespace TombEditor.Controls
         private void UpdateRoomPosition(Vector2 newRoomPos, Room roomReference, HashSet<Room> roomsToMove)
         {
             newRoomPos = new Vector2((float)Math.Round(newRoomPos.X), (float)Math.Round(newRoomPos.Y));
-            Vector2 roomMovement = newRoomPos - roomReference.SectorPos.ToVec2();
+            Vector2 roomMovement = newRoomPos - roomReference.SectorPos;
             EditorActions.MoveRooms(new Vector3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
             _editor.ResetCamera();
         }

@@ -7,6 +7,7 @@ using TombLib.Utils;
 using System.IO;
 using System.Threading;
 using NLog;
+using TombLib;
 
 namespace TombEditor
 {
@@ -457,9 +458,9 @@ namespace TombEditor
         // Move the camera to the center of a specific sector.
         public class MoveCameraToSectorEvent : IEditorCameraEvent
         {
-            public DrawingPoint Sector { get; set; }
+            public VectorInt2 Sector { get; set; }
         }
-        public void MoveCameraToSector(DrawingPoint sector)
+        public void MoveCameraToSector(VectorInt2 sector)
         {
             RaiseEvent(new MoveCameraToSectorEvent { Sector = sector });
         }

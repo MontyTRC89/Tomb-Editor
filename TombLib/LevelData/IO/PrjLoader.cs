@@ -71,7 +71,7 @@ namespace TombLib.LevelData.IO
         private struct PrjPortal
         {
             //public Room _room;
-            public Rectangle _area;
+            public RectangleInt2 _area;
             public PortalDirection _direction;
             public short _thisRoomIndex;
             public short _loopRoomIndex;
@@ -790,7 +790,7 @@ namespace TombLib.LevelData.IO
 
                             var basePortalLinks = new KeyValuePair<Room, PortalDirection>[room.NumXSectors, room.NumZSectors];
                             var alternatePortalLinks = room.Flipped ? new KeyValuePair<Room, PortalDirection>[room.NumXSectors, room.NumZSectors] : null;
-                            List<Rectangle> portalAreaSuggestions = new List<Rectangle>();
+                            List<RectangleInt2> portalAreaSuggestions = new List<RectangleInt2>();
 
                             // Collect portal data
                             Action<int, bool> processPortal = (int portalId, bool isAlternate) =>
@@ -823,8 +823,8 @@ namespace TombLib.LevelData.IO
                                 // Add portal link information to sectors
                                 string errorMessage = null;
                                 var collidingLinks = new List<KeyValuePair<Room, PortalDirection>>();
-                                for (int z = prjPortal._area.Y; z <= prjPortal._area.Bottom; ++z)
-                                    for (int x = prjPortal._area.X; x <= prjPortal._area.Right; ++x)
+                                for (int z = prjPortal._area.Y0; z <= prjPortal._area.Y1; ++z)
+                                    for (int x = prjPortal._area.X0; x <= prjPortal._area.X1; ++x)
                                     {
                                         var existingLink = linkArray[x, z];
                                         if ((existingLink.Key != null) && (existingLink.Key != currentLink.Key || existingLink.Value != currentLink.Value))
@@ -905,7 +905,7 @@ namespace TombLib.LevelData.IO
                             {
                                 // Portals must have a positive area
                                 for (int i = portalAreaSuggestions.Count - 1; i >= 0; --i)
-                                    if (portalAreaSuggestions[i].X <= 0 || portalAreaSuggestions[i].Y <= 0)
+                                    if (portalAreaSuggestions[i].X0 <= 0 || portalAreaSuggestions[i].Y0 <= 0)
                                         portalAreaSuggestions.RemoveAt(i);
 
                                 // Portals areas must be disjunct
@@ -932,15 +932,15 @@ namespace TombLib.LevelData.IO
                                 // Suggested areas must only contain identical links
                                 for (int i = portalAreaSuggestions.Count - 1; i >= 0; --i)
                                 {
-                                    Rectangle portalAreaSuggestion = portalAreaSuggestions[i];
-                                    var startLink = basePortalLinks[portalAreaSuggestion.X, portalAreaSuggestion.Y];
+                                    RectangleInt2 portalAreaSuggestion = portalAreaSuggestions[i];
+                                    var startLink = basePortalLinks[portalAreaSuggestion.X0, portalAreaSuggestion.Y0];
                                     if (startLink.Key == null)
                                     {
                                         portalAreaSuggestions.RemoveAt(i);
                                         continue;
                                     }
-                                    for (int z = portalAreaSuggestion.Y; z <= portalAreaSuggestion.Bottom; ++z)
-                                        for (int x = portalAreaSuggestion.X; x <= portalAreaSuggestion.Right; ++x)
+                                    for (int z = portalAreaSuggestion.Y0; z <= portalAreaSuggestion.Y1; ++z)
+                                        for (int x = portalAreaSuggestion.X0; x <= portalAreaSuggestion.X1; ++x)
                                             if ((basePortalLinks[x, z].Key != startLink.Key) || (basePortalLinks[x, z].Value != startLink.Value))
                                             {
                                                 portalAreaSuggestions.RemoveAt(i);
@@ -956,12 +956,12 @@ namespace TombLib.LevelData.IO
                             var portals = new List<PortalInstance>();
                             {
                                 // Use the suggestions
-                                foreach (Rectangle portalAreaSuggestion in portalAreaSuggestions)
+                                foreach (RectangleInt2 portalAreaSuggestion in portalAreaSuggestions)
                                 {
-                                    var link = basePortalLinks[portalAreaSuggestion.X, portalAreaSuggestion.Y];
+                                    var link = basePortalLinks[portalAreaSuggestion.X0, portalAreaSuggestion.Y0];
                                     portals.Add(new PortalInstance(portalAreaSuggestion, link.Value, link.Key));
-                                    for (int z = portalAreaSuggestion.Y; z <= portalAreaSuggestion.Bottom; ++z)
-                                        for (int x = portalAreaSuggestion.X; x <= portalAreaSuggestion.Right; ++x)
+                                    for (int z = portalAreaSuggestion.Y0; z <= portalAreaSuggestion.Y1; ++z)
+                                        for (int x = portalAreaSuggestion.X0; x <= portalAreaSuggestion.X1; ++x)
                                             basePortalLinks[x, z] = new KeyValuePair<Room, PortalDirection>();
                                 }
 
@@ -986,7 +986,7 @@ namespace TombLib.LevelData.IO
                                         FoundEndX:
 
                                         // Create portal
-                                        portals.Add(new PortalInstance(new Rectangle(x, z, endX - 1, endZ - 1), link.Value, link.Key));
+                                        portals.Add(new PortalInstance(new RectangleInt2(x, z, endX - 1, endZ - 1), link.Value, link.Key));
                                         for (int z2 = z; z < endZ; ++z)
                                             for (int x2 = x; x < endX; ++x)
                                                 basePortalLinks[x2, z2] = new KeyValuePair<Room, PortalDirection>();
@@ -1021,8 +1021,8 @@ namespace TombLib.LevelData.IO
                             {
                                 // Figure out opacity of the portal
                                 portal.Opacity = PortalOpacity.None;
-                                for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                                    for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                                for (int z = portal.Area.Y0; z <= portal.Area.Y1; z++)
+                                    for (int x = portal.Area.X0; x <= portal.Area.X1; x++)
                                         if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) > portal.Opacity)
                                             portal.Opacity = tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction);
 
@@ -1030,20 +1030,20 @@ namespace TombLib.LevelData.IO
                                 // If a portal needs to have a higher type of opacity than indivual sectors
                                 // those individual sectors need manual fixup.
                                 if (portal.Opacity != PortalOpacity.None)
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                                    for (int z = portal.Area.Y0; z <= portal.Area.Y1; z++)
+                                        for (int x = portal.Area.X0; x <= portal.Area.X1; x++)
                                             if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) <= PortalOpacity.None)
                                                 switch (portal.Direction)
                                                 {
                                                     case PortalDirection.Floor:
-                                                        if (room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z)).AnyType == Room.RoomConnectionType.FullPortal)
+                                                        if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).AnyType == Room.RoomConnectionType.FullPortal)
                                                         {
                                                             tempRoom.Value._blocks[x, z]._faces[0]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                             tempRoom.Value._blocks[x, z]._faces[8]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                         }
                                                         break;
                                                     case PortalDirection.Ceiling:
-                                                        if (room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z)).AnyType == Room.RoomConnectionType.FullPortal)
+                                                        if (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)).AnyType == Room.RoomConnectionType.FullPortal)
                                                         {
                                                             tempRoom.Value._blocks[x, z]._faces[1]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
                                                             tempRoom.Value._blocks[x, z]._faces[9]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
@@ -1060,8 +1060,8 @@ namespace TombLib.LevelData.IO
                                                 }
 
                                 if (portal.Opacity != PortalOpacity.SolidFaces && portal.Direction != PortalDirection.Ceiling)
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                                        for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                                    for (int z = portal.Area.Y0; z <= portal.Area.Y1; z++)
+                                        for (int x = portal.Area.X0; x <= portal.Area.X1; x++)
                                             if (tempRoom.Value._blocks[x, z].GetOpacity(portal.Direction) == PortalOpacity.SolidFaces)
                                                 room.Blocks[x, z].ForceFloorSolid = true;
 
@@ -1108,7 +1108,7 @@ namespace TombLib.LevelData.IO
                             for (int z = 0; z < room.NumZSectors; ++z)
                                 for (int x = 0; x < room.NumXSectors; ++x)
                                 {
-                                    Room.RoomConnectionInfo connectionInfo = room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
+                                    Room.RoomConnectionInfo connectionInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z));
                                     switch (connectionInfo.AnyType)
                                     {
                                         case Room.RoomConnectionType.TriangularPortalXnZn:
@@ -1141,8 +1141,8 @@ namespace TombLib.LevelData.IO
                                     (alternateOppositePortal?.IsTraversable ?? false))
                                     continue;
 
-                                for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
-                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
+                                for (int x = portal.Area.X0; x <= portal.Area.X1; ++x)
+                                    for (int z = portal.Area.Y0; z <= portal.Area.Y1; ++z)
                                         room.Blocks[x, z].ForceFloorSolid = false;
                             }
                         }
@@ -1867,16 +1867,16 @@ namespace TombLib.LevelData.IO
         private static void ProcessTexturedNoCollisions(PortalInstance portal, Room room, PrjRoom tempRoom, int triangle1FaceTexIndex,
             int triangle2FaceTexIndex, Predicate<PrjBlock> isNoCollision, Func<Room, Room, Block, Block, Room.RoomConnectionType> getRoomConnectionType)
         {
-            for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+            for (int z = portal.Area.Y0; z <= portal.Area.Y1; z++)
+                for (int x = portal.Area.X0; x <= portal.Area.X1; x++)
                 {
                     PrjBlock prjBlock = tempRoom._blocks[x, z];
                     if (!isNoCollision(prjBlock)) // If the tile is isn't no collision, then a triangle face will be available anyway due to 'ForceFloorSolid'
                         continue;
 
-                    var pos = new DrawingPoint(x, z);
+                    var pos = new VectorInt2(x, z);
                     var connectionType = getRoomConnectionType(room, portal.AdjoiningRoom,
-                        room.GetBlock(pos), portal.AdjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos)));
+                        room.GetBlock(pos), portal.AdjoiningRoom.GetBlock(pos + (room.SectorPos - portal.AdjoiningRoom.SectorPos)));
 
                     switch (connectionType)
                     {
@@ -1899,12 +1899,12 @@ namespace TombLib.LevelData.IO
 
             //Set portal to texturable but reset all full faces since they weren't visible in winroomedit either.
             portal.Opacity = PortalOpacity.TraversableFaces;
-            for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
-                for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+            for (int z = portal.Area.Y0; z <= portal.Area.Y1; z++)
+                for (int x = portal.Area.X0; x <= portal.Area.X1; x++)
                 {
-                    var pos = new DrawingPoint(x, z);
+                    var pos = new VectorInt2(x, z);
                     var connectionType = getRoomConnectionType(room, portal.AdjoiningRoom,
-                        room.GetBlock(pos), portal.AdjoiningRoom.GetBlock(pos.Offset(room.SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos)));
+                        room.GetBlock(pos), portal.AdjoiningRoom.GetBlock(pos + (room.SectorPos - portal.AdjoiningRoom.SectorPos)));
                     if (connectionType == Room.RoomConnectionType.FullPortal)
                     {
                         tempRoom._blocks[x, z]._faces[triangle1FaceTexIndex]._txtType = 0x0003; // TYPE_TEXTURE_COLOR
@@ -2071,13 +2071,13 @@ namespace TombLib.LevelData.IO
             }
         }
 
-        private static Rectangle GetArea(Room room, int roomBorder, int objPosX, int objPosZ, int objSizeX, int objSizeZ)
+        private static RectangleInt2 GetArea(Room room, int roomBorder, int objPosX, int objPosZ, int objSizeX, int objSizeZ)
         {
             int startX = Math.Max(roomBorder, Math.Min(room.NumXSectors - 1 - roomBorder, objPosX));
             int startZ = Math.Max(roomBorder, Math.Min(room.NumZSectors - 1 - roomBorder, objPosZ));
             int endX = Math.Max(startX, Math.Min(room.NumXSectors - 1 - roomBorder, objPosX + objSizeX - 1));
             int endZ = Math.Max(startZ, Math.Min(room.NumZSectors - 1 - roomBorder, objPosZ + objSizeZ - 1));
-            return new Rectangle(startX, startZ, endX, endZ);
+            return new RectangleInt2(startX, startZ, endX, endZ);
         }
 
         private static string FindGameDirectory(string filename, IProgressReporter progressReporter)

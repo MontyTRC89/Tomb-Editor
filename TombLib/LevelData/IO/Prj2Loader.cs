@@ -620,7 +620,7 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id3 == Prj2Chunks.ObjectPortal)
                 {
-                    var area = new Rectangle(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                    var area = new RectangleInt2(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
                     var adjoiningRoomIndex = LEB128.ReadLong(chunkIO.Raw);
                     var direction = (PortalDirection)chunkIO.Raw.ReadByte();
 
@@ -635,7 +635,7 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id3 == Prj2Chunks.ObjectTrigger)
                 {
-                    var area = new Rectangle(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                    var area = new RectangleInt2(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
                     var instance = new TriggerInstance(area);
                     instance.TriggerType = (TriggerType)LEB128.ReadLong(chunkIO.Raw);
                     instance.TargetType = (TriggerTargetType)LEB128.ReadLong(chunkIO.Raw);

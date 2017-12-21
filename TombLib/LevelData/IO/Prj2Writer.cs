@@ -391,10 +391,10 @@ namespace TombLib.LevelData.IO
                         {
                             var instance = (PortalInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            LEB128.Write(chunkIO.Raw, instance.Area.Left);
-                            LEB128.Write(chunkIO.Raw, instance.Area.Top);
-                            LEB128.Write(chunkIO.Raw, instance.Area.Right);
-                            LEB128.Write(chunkIO.Raw, instance.Area.Bottom);
+                            LEB128.Write(chunkIO.Raw, instance.Area.X0);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Y0);
+                            LEB128.Write(chunkIO.Raw, instance.Area.X1);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Y1);
                             LEB128.Write(chunkIO.Raw, rooms[instance.AdjoiningRoom]);
                             chunkIO.Raw.Write((byte)instance.Direction);
                             chunkIO.Raw.Write((byte)instance.Opacity);
@@ -404,10 +404,10 @@ namespace TombLib.LevelData.IO
                         {
                             var instance = (TriggerInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            LEB128.Write(chunkIO.Raw, instance.Area.Left);
-                            LEB128.Write(chunkIO.Raw, instance.Area.Top);
-                            LEB128.Write(chunkIO.Raw, instance.Area.Right);
-                            LEB128.Write(chunkIO.Raw, instance.Area.Bottom);
+                            LEB128.Write(chunkIO.Raw, instance.Area.X0);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Y0);
+                            LEB128.Write(chunkIO.Raw, instance.Area.X1);
+                            LEB128.Write(chunkIO.Raw, instance.Area.Y1);
                             LEB128.Write(chunkIO.Raw, (long)instance.TriggerType);
                             LEB128.Write(chunkIO.Raw, (long)instance.TargetType);
                             LEB128.Write(chunkIO.Raw, instance.TargetData);

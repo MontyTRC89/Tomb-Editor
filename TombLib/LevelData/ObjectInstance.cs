@@ -73,7 +73,7 @@ namespace TombLib.LevelData
             DeletedEvent?.Invoke(this);
         }
 
-        public virtual void Transform(RectTransformation transformation, DrawingPoint oldRoomSize)
+        public virtual void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
             IRotateableY rotateableObject = this as IRotateableY;
             if (rotateableObject != null)
@@ -97,8 +97,8 @@ namespace TombLib.LevelData
 
     public abstract class SectorBasedObjectInstance : ObjectInstance
     {
-        private Rectangle _area;
-        public Rectangle Area
+        private RectangleInt2 _area;
+        public RectangleInt2 Area
         {
             get { return _area; }
             set
@@ -109,19 +109,19 @@ namespace TombLib.LevelData
             }
         }
 
-        public SectorBasedObjectInstance(Rectangle area)
+        public SectorBasedObjectInstance(RectangleInt2 area)
         {
             Area = area;
         }
 
-        public SectorBasedObjectInstance Clone(Rectangle area)
+        public SectorBasedObjectInstance Clone(RectangleInt2 area)
         {
             var result = (SectorBasedObjectInstance)Clone();
             result.Area = area;
             return result;
         }
 
-        public override void Transform(RectTransformation transformation, DrawingPoint oldRoomSize)
+        public override void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
             base.Transform(transformation, oldRoomSize);
             _area = transformation.TransformRect(_area, oldRoomSize);
@@ -179,7 +179,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public override void Transform(RectTransformation transformation, DrawingPoint oldRoomSize)
+        public override void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
             base.Transform(transformation, oldRoomSize);
             Position = transformation.TransformVec3(Position, oldRoomSize.X * 1024.0f, oldRoomSize.Y * 1024.0f);

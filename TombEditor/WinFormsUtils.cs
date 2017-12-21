@@ -11,31 +11,6 @@ namespace TombEditor
 {
     internal static class WinFormsUtils
     {
-        public static bool Contains(this SharpDX.Rectangle This, Point point)
-        {
-            return This.Contains(point.X, point.Y);
-        }
-
-        public static Point Max(this Point point0, Point point1)
-        {
-            return new Point(Math.Max(point0.X, point1.X), Math.Max(point0.Y, point1.Y));
-        }
-
-        public static PointF Max(this PointF point0, PointF point1)
-        {
-            return new PointF(Math.Max(point0.X, point1.X), Math.Max(point0.Y, point1.Y));
-        }
-
-        public static Point Min(this Point point0, Point point1)
-        {
-            return new Point(Math.Min(point0.X, point1.X), Math.Min(point0.Y, point1.Y));
-        }
-
-        public static PointF Min(this PointF point0, PointF point1)
-        {
-            return new PointF(Math.Min(point0.X, point1.X), Math.Min(point0.Y, point1.Y));
-        }
-
         public static Color MixWith(this Color firstColor, Color secondColor, double mixFactor)
         {
             if (mixFactor > 1)

@@ -283,17 +283,17 @@ namespace TombLib.LevelData.Compilers
                         var trVertex = roomVertices[i];
                         foreach (var portal in waterPortals)
                         {
-                            if (trVertex.Position.X > portal.Area.X * 1024 && trVertex.Position.X <= portal.Area.Right * 1024 &&
-                                trVertex.Position.Z > portal.Area.Y * 1024 && trVertex.Position.Z <= portal.Area.Bottom * 1024 &&
+                            if (trVertex.Position.X > portal.Area.X0 * 1024 && trVertex.Position.X <= portal.Area.X1 * 1024 &&
+                                trVertex.Position.Z > portal.Area.Y0 * 1024 && trVertex.Position.Z <= portal.Area.Y1 * 1024 &&
                                 trVertex.Position.Y == -(room.GetLowestCorner() * 256 + room.WorldPos.Y))
                             {
                                 var xv = trVertex.Position.X / 1024;
                                 var zv = trVertex.Position.Z / 1024;
 
-                                if ((room.GetFloorRoomConnectionInfo(new DrawingPoint(xv, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv].IsAnyWall) &&
-                                    (room.GetFloorRoomConnectionInfo(new DrawingPoint(xv - 1, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv].IsAnyWall) &&
-                                    (room.GetFloorRoomConnectionInfo(new DrawingPoint(xv, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv - 1].IsAnyWall) &&
-                                    (room.GetFloorRoomConnectionInfo(new DrawingPoint(xv - 1, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv - 1].IsAnyWall))
+                                if ((room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv].IsAnyWall) &&
+                                    (room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv].IsAnyWall) &&
+                                    (room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv - 1].IsAnyWall) &&
+                                    (room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv - 1].IsAnyWall))
                                 {
                                     trVertex.Attributes = 0x6000;
                                 }
@@ -303,8 +303,8 @@ namespace TombLib.LevelData.Compilers
                                 if (room.ReflectionLevel == 0)
                                     continue;
 
-                                if (trVertex.Position.X >= (portal.Area.X - 1) * 1024 && trVertex.Position.X <= (portal.Area.Right + 1) * 1024 &&
-                                    trVertex.Position.Z >= (portal.Area.Y - 1) * 1024 && trVertex.Position.Z <= (portal.Area.Bottom + 1) * 1024 &&
+                                if (trVertex.Position.X >= (portal.Area.X0 - 1) * 1024 && trVertex.Position.X <= (portal.Area.X1 + 1) * 1024 &&
+                                    trVertex.Position.Z >= (portal.Area.Y0 - 1) * 1024 && trVertex.Position.Z <= (portal.Area.Y1 + 1) * 1024 &&
                                     -(room.GetLowestCorner() * 256 + room.WorldPos.Y) - 512.0f <= trVertex.Position.Y)
                                 {
                                     trVertex.Attributes = 0x4000;
@@ -486,7 +486,7 @@ namespace TombLib.LevelData.Compilers
                     sector.FloorDataIndex = 0;
 
                     // Setup portals
-                    if (room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
+                    if (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
                     {
                         sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
                         aux.Portal = true;
@@ -498,7 +498,7 @@ namespace TombLib.LevelData.Compilers
                         aux.FloorPortal = null;
                     }
 
-                    if (room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
+                    if (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
                         sector.RoomAbove = (byte)_roomsRemappingDictionary[block.CeilingPortal.AdjoiningRoom];
                     else
                         sector.RoomAbove = 255;
@@ -613,24 +613,24 @@ namespace TombLib.LevelData.Compilers
                 case PortalDirection.WallNegativeX:
                     startX = 1;
                     endX = 1;
-                    startZ = Math.Min(portal.Area.Top, portal.Area.Bottom);
-                    endZ = Math.Max(portal.Area.Top, portal.Area.Bottom);
+                    startZ = Math.Min(portal.Area.Y0, portal.Area.Y1);
+                    endZ = Math.Max(portal.Area.Y0, portal.Area.Y1);
                     break;
                 case PortalDirection.WallPositiveX:
                     startX = room.NumXSectors - 2;
                     endX = room.NumXSectors - 2;
-                    startZ = Math.Min(portal.Area.Top, portal.Area.Bottom);
-                    endZ = Math.Max(portal.Area.Top, portal.Area.Bottom);
+                    startZ = Math.Min(portal.Area.Y0, portal.Area.Y1);
+                    endZ = Math.Max(portal.Area.Y0, portal.Area.Y1);
                     break;
                 case PortalDirection.WallNegativeZ:
-                    startX = Math.Min(portal.Area.Left, portal.Area.Right);
-                    endX = Math.Max(portal.Area.Left, portal.Area.Right);
+                    startX = Math.Min(portal.Area.X0, portal.Area.X1);
+                    endX = Math.Max(portal.Area.X0, portal.Area.X1);
                     startZ = 1;
                     endZ = 1;
                     break;
                 case PortalDirection.WallPositiveZ:
-                    startX = Math.Min(portal.Area.Left, portal.Area.Right);
-                    endX = Math.Max(portal.Area.Left, portal.Area.Right);
+                    startX = Math.Min(portal.Area.X0, portal.Area.X1);
+                    endX = Math.Max(portal.Area.X0, portal.Area.X1);
                     startZ = room.NumZSectors - 2;
                     endZ = room.NumZSectors - 2;
                     break;
@@ -651,10 +651,10 @@ namespace TombLib.LevelData.Compilers
             yMin = (float)Math.Floor(yMin);
             yMax = (float)Math.Ceiling(yMax);
 
-            var xMin = portal.Area.X * 1024.0f;
-            var xMax = (portal.Area.Right + 1) * 1024.0f;
-            var zMin = portal.Area.Y * 1024.0f;
-            var zMax = (portal.Area.Bottom + 1) * 1024.0f;
+            var xMin = portal.Area.X0 * 1024.0f;
+            var xMax = (portal.Area.X1 + 1) * 1024.0f;
+            var zMin = portal.Area.Y0 * 1024.0f;
+            var zMax = (portal.Area.Y1 + 1) * 1024.0f;
 
             // Determine normal and portal vertices
             tr_vertex[] portalVertices = new tr_vertex[4];
@@ -727,38 +727,38 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void AddPortalPlane(List<PortalPlane> portalPlanes, List<SharpDX.Rectangle> portalAreas, int x, int z, PortalPlane portalPlane)
+        private void AddPortalPlane(List<PortalPlane> portalPlanes, List<RectangleInt2> portalAreas, int x, int z, PortalPlane portalPlane)
         {
             // Try to extend an existing portal plane
             for (int i = 0; i < portalPlanes.Count; ++i)
                 if (PortalPlane.FastEquals(portalPlanes[i], portalPlane))
                 {
                     var area = portalAreas[i];
-                    area.Left = Math.Min(area.Left, x);
-                    area.Right = Math.Max(area.Right, x);
-                    area.Top = Math.Min(area.Top, z);
-                    area.Bottom = Math.Max(area.Bottom, z);
+                    area.X0 = Math.Min(area.X0, x);
+                    area.X1 = Math.Max(area.X1, x);
+                    area.Y0 = Math.Min(area.Y0, z);
+                    area.Y1 = Math.Max(area.Y1, z);
                     portalAreas[i] = area;
                     return;
                 }
 
             // Add new portal plane
             portalPlanes.Add(portalPlane);
-            portalAreas.Add(new SharpDX.Rectangle(x, z, x, z));
+            portalAreas.Add(new RectangleInt2(x, z, x, z));
         }
 
         private void ConvertFloorCeilingPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, bool isCeiling)
         {
             // Construct planes that contain all portal sectors
             List<PortalPlane> portalPlanes = new List<PortalPlane>();
-            List<SharpDX.Rectangle> portalAreas = new List<SharpDX.Rectangle>();
-            for (int z = portal.Area.Top; z <= portal.Area.Bottom; ++z)
-                for (int x = portal.Area.Left; x <= portal.Area.Right; ++x)
+            List<RectangleInt2> portalAreas = new List<RectangleInt2>();
+            for (int z = portal.Area.Y0; z <= portal.Area.Y1; ++z)
+                for (int x = portal.Area.X0; x <= portal.Area.X1; ++x)
                 {
                     Block block = room.Blocks[x, z];
                     Room.RoomConnectionInfo roomConnectionInfo = isCeiling ?
-                        room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z)) :
-                        room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
+                        room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)) :
+                        room.GetFloorRoomConnectionInfo(new VectorInt2(x, z));
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
@@ -792,17 +792,17 @@ namespace TombLib.LevelData.Compilers
             for (int i = 0; i < portalPlanes.Count; ++i)
             {
                 PortalPlane portalPlane = portalPlanes[i];
-                SharpDX.Rectangle portalArea = portalAreas[i];
+                RectangleInt2 portalArea = portalAreas[i];
 
-                float xMin = portalArea.X * 1024.0f;
-                float xMax = (portalArea.Right + 1) * 1024.0f;
-                float zMin = portalArea.Y * 1024.0f;
-                float zMax = (portalArea.Bottom + 1) * 1024.0f;
+                float xMin = portalArea.X0 * 1024.0f;
+                float xMax = (portalArea.X1 + 1) * 1024.0f;
+                float zMin = portalArea.Y0 * 1024.0f;
+                float zMax = (portalArea.Y1 + 1) * 1024.0f;
 
-                float yAtXMinZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X, portalArea.Y)) * 256;
-                float yAtXMaxZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.Right + 1, portalArea.Y)) * 256;
-                float yAtXMinZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X, portalArea.Bottom + 1)) * 256;
-                float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.Right + 1, portalArea.Bottom + 1)) * 256;
+                float yAtXMinZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y0)) * 256;
+                float yAtXMaxZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y0)) * 256;
+                float yAtXMinZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X0, portalArea.Y1 + 1)) * 256;
+                float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X1 + 1, portalArea.Y1 + 1)) * 256;
 
                 // Choose portal coordinates
                 tr_vertex[] portalVertices = new tr_vertex[4];

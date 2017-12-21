@@ -18,7 +18,7 @@ namespace TombLib.LevelData
 
     public enum BlockFaceShape : byte
     {
-        Rectangle, Triangle
+        RectangleInt2, Triangle
     }
 
     public enum BlockFaceType
@@ -72,18 +72,18 @@ namespace TombLib.LevelData
         public Room(int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {
             Name = name;
-            Resize(null, new Rectangle(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
+            Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
         }
 
-        public Room(DrawingPoint sectorSize, string name = "Unnamed", short ceiling = DefaultHeight)
+        public Room(VectorInt2 sectorSize, string name = "Unnamed", short ceiling = DefaultHeight)
             : this(sectorSize.X, sectorSize.Y, name, ceiling)
         {}
 
-        public void Resize(Level level, Rectangle area, short floor = 0, short ceiling = DefaultHeight)
+        public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight)
         {
             int numXSectors = area.Width + 1;
             int numZSectors = area.Height + 1;
-            DrawingPoint offset = new DrawingPoint(area.X, area.Y);
+            VectorInt2 offset = area.Start;
 
             if ((numXSectors < 3) || (numZSectors < 3))
                 throw new ArgumentOutOfRangeException("area", area, "Provided area for resizing the room is too small. The area must span at least 3 sectors in X and Z dimension.");
@@ -98,7 +98,7 @@ namespace TombLib.LevelData
             for (int x = 0; x < numXSectors; x++)
                 for (int z = 0; z < numZSectors; z++)
                 {
-                    Block oldBlock = GetBlockTry(new DrawingPoint(x, z).Offset(offset));
+                    Block oldBlock = GetBlockTry(new VectorInt2(x, z) + (offset));
                     newBlocks[x, z] = oldBlock ?? new Block(floor, ceiling);
                     if (newBlocks[x, z].Type == BlockType.BorderWall)
                         newBlocks[x, z].Type = BlockType.Wall;
@@ -118,12 +118,12 @@ namespace TombLib.LevelData
             Blocks = newBlocks;
 
             // Move objects
-            SectorPos = SectorPos.Offset(offset);
+            SectorPos = SectorPos + offset;
             foreach (var instance in _objects)
                 instance.Position -= new Vector3(offset.X * 1024, 0, offset.Y * 1024);
 
             // Add sector based objects again
-            Rectangle newArea = new Rectangle(offset.X, offset.Y, offset.X + numXSectors - 1, offset.Y + numZSectors - 1);
+            RectangleInt2 newArea = new RectangleInt2(offset.X, offset.Y, offset.X + numXSectors - 1, offset.Y + numZSectors - 1);
             foreach (var instance in sectorObjects)
                 AddObjectCutSectors(level, newArea, instance);
 
@@ -131,7 +131,7 @@ namespace TombLib.LevelData
             UpdateCompletely();
         }
 
-        public Room Split(Level level, Rectangle area)
+        public Room Split(Level level, RectangleInt2 area)
         {
             var newRoom = Clone(level, (instance) => !(instance is PositionBasedObjectInstance) && !(instance is PortalInstance));
             newRoom.Name = "Split from " + Name;
@@ -140,10 +140,10 @@ namespace TombLib.LevelData
 
             // Detect if the room was split by a straight line
             // If this is the case, resize the original room
-            if ((area.X == 0) && (area.Y == 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom < (NumZSectors - 1)))
+            if ((area.X0 == 0) && (area.Y0 == 0) && (area.X1 == (NumXSectors - 1)) && (area.Y1 < (NumZSectors - 1)))
             {
-                Resize(level, new Rectangle(area.X, area.Bottom - 1, area.Right, NumZSectors - 1));
-                AddObject(level, new PortalInstance(new Rectangle(area.X + 1, 0, area.Right - 1, 0), PortalDirection.WallNegativeZ, newRoom));
+                Resize(level, new RectangleInt2(area.X0, area.Y1 - 1, area.X1, NumZSectors - 1));
+                AddObject(level, new PortalInstance(new RectangleInt2(area.X0 + 1, 0, area.X1 - 1, 0), PortalDirection.WallNegativeZ, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -152,10 +152,10 @@ namespace TombLib.LevelData
                     if (instance.Position.Z < 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
             }
-            else if ((area.X == 0) && (area.Y == 0) && (area.Right < (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
+            else if ((area.X0 == 0) && (area.Y0 == 0) && (area.X1 < (NumXSectors - 1)) && (area.Y1 == (NumZSectors - 1)))
             {
-                Resize(level, new Rectangle(area.Right - 1, area.Y, NumXSectors - 1, area.Bottom));
-                AddObject(level, new PortalInstance(new Rectangle(0, area.Y + 1, 0, area.Bottom - 1), PortalDirection.WallNegativeX, newRoom));
+                Resize(level, new RectangleInt2(area.X1 - 1, area.Y0, NumXSectors - 1, area.Y1));
+                AddObject(level, new PortalInstance(new RectangleInt2(0, area.Y0 + 1, 0, area.Y1 - 1), PortalDirection.WallNegativeX, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -164,10 +164,10 @@ namespace TombLib.LevelData
                     if (instance.Position.X < 1024)
                         newRoom.MoveObjectFrom(level, this, instance);
             }
-            else if ((area.X == 0) && (area.Y > 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
+            else if ((area.X0 == 0) && (area.Y0 > 0) && (area.X1 == (NumXSectors - 1)) && (area.Y1 == (NumZSectors - 1)))
             {
-                Resize(level, new Rectangle(area.X, 0, area.Right, area.Y + 1));
-                AddObject(level, new PortalInstance(new Rectangle(area.X + 1, NumZSectors - 1, area.Right - 1, NumZSectors - 1), PortalDirection.WallPositiveZ, newRoom));
+                Resize(level, new RectangleInt2(area.X0, 0, area.X1, area.Y0 + 1));
+                AddObject(level, new PortalInstance(new RectangleInt2(area.X0 + 1, NumZSectors - 1, area.X1 - 1, NumZSectors - 1), PortalDirection.WallPositiveZ, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -176,10 +176,10 @@ namespace TombLib.LevelData
                     if (instance.Position.Z > ((NumZSectors - 2) * 1024))
                         newRoom.MoveObjectFrom(level, this, instance);
             }
-            else if ((area.X > 0) && (area.Y == 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
+            else if ((area.X0 > 0) && (area.Y0 == 0) && (area.X1 == (NumXSectors - 1)) && (area.Y1 == (NumZSectors - 1)))
             {
-                Resize(level, new Rectangle(0, area.Y, area.X + 1, area.Bottom));
-                AddObject(level, new PortalInstance(new Rectangle(NumXSectors - 1, area.Y + 1, NumXSectors - 1, area.Bottom - 1), PortalDirection.WallPositiveX, newRoom));
+                Resize(level, new RectangleInt2(0, area.Y0, area.X0 + 1, area.Y1));
+                AddObject(level, new PortalInstance(new RectangleInt2(NumXSectors - 1, area.Y0 + 1, NumXSectors - 1, area.Y1 - 1), PortalDirection.WallPositiveX, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -191,13 +191,13 @@ namespace TombLib.LevelData
             else
             {
                 // Resize area
-                for (int z = area.Y + 1; z < area.Bottom; ++z)
-                    for (int x = area.X + 1; x < area.Right; ++x)
+                for (int z = area.Y0 + 1; z < area.Y1; ++z)
+                    for (int x = area.X0 + 1; x < area.X1; ++x)
                         Blocks[x, z].Type = BlockType.Wall;
 
                 // Move objects
-                Vector2 start = new Vector2(area.X, area.Y) * 1024.0f;
-                Vector2 end = new Vector2(area.Left + 1, area.Bottom + 1) * 1024.0f;
+                Vector2 start = new Vector2(area.X0, area.Y0) * 1024.0f;
+                Vector2 end = new Vector2(area.X0 + 1, area.Y1 + 1) * 1024.0f;
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
                     if ((instance.Position.X > start.X) && (instance.Position.Z > start.Y) &&
                         (instance.Position.X < end.X) && (instance.Position.Z < end.Y))
@@ -251,9 +251,9 @@ namespace TombLib.LevelData
 
         public bool Flipped => (AlternateRoom != null) || (AlternateBaseRoom != null);
         public Room AlternateVersion => AlternateRoom ?? AlternateBaseRoom;
-        public DrawingPoint SectorSize => new DrawingPoint(NumXSectors, NumZSectors);
-        public Rectangle WorldArea => new Rectangle((int)Position.X, (int)Position.Z, (int)Position.X + NumXSectors - 1, (int)Position.Z + NumZSectors - 1);
-        public Rectangle LocalArea => new Rectangle(0, 0, NumXSectors - 1, NumZSectors - 1);
+        public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
+        public RectangleInt2 WorldArea => new RectangleInt2((int)Position.X, (int)Position.Z, (int)Position.X + NumXSectors - 1, (int)Position.Z + NumZSectors - 1);
+        public RectangleInt2 LocalArea => new RectangleInt2(0, 0, NumXSectors - 1, NumZSectors - 1);
         public IEnumerable<Room> Versions
         {
             get
@@ -265,9 +265,9 @@ namespace TombLib.LevelData
             }
         }
 
-        public DrawingPoint SectorPos
+        public VectorInt2 SectorPos
         {
-            get { return new DrawingPoint((int)Position.X, (int)Position.Z); }
+            get { return new VectorInt2((int)Position.X, (int)Position.Z); }
             set { Position = new Vector3(value.X, Position.Y, value.Y); }
         }
 
@@ -321,7 +321,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public Block GetBlock(DrawingPoint pos)
+        public Block GetBlock(VectorInt2 pos)
         {
             return Blocks[pos.X, pos.Y];
         }
@@ -335,7 +335,7 @@ namespace TombLib.LevelData
             return null;
         }
 
-        public Block GetBlockTry(DrawingPoint pos)
+        public Block GetBlockTry(VectorInt2 pos)
         {
             return GetBlockTry(pos.X, pos.Y);
         }
@@ -344,10 +344,10 @@ namespace TombLib.LevelData
         {
             public Room Room { get; set; }
             public Block Block { get; set; }
-            public DrawingPoint Pos { get; set; }
+            public VectorInt2 Pos { get; set; }
         }
 
-        public RoomBlockPair ProbeLowestBlock(DrawingPoint pos, bool doProbe = true)
+        public RoomBlockPair ProbeLowestBlock(VectorInt2 pos, bool doProbe = true)
         {
             Block block = GetBlockTry(pos);
             if (block == null)
@@ -360,12 +360,12 @@ namespace TombLib.LevelData
                 return result;
 
             Room adjoiningRoom = result.Block.FloorPortal.AdjoiningRoom;
-            DrawingPoint adjoiningSectorCoordinate = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+            VectorInt2 adjoiningSectorCoordinate = pos + (SectorPos - adjoiningRoom.SectorPos);
             return adjoiningRoom.ProbeLowestBlock(adjoiningSectorCoordinate);
         }
-        public RoomBlockPair ProbeLowestBlock(int x, int z, bool doProbe = true) => ProbeLowestBlock(new DrawingPoint(x, z), doProbe);
+        public RoomBlockPair ProbeLowestBlock(int x, int z, bool doProbe = true) => ProbeLowestBlock(new VectorInt2(x, z), doProbe);
 
-        public RoomBlockPair GetBlockTryThroughPortal(DrawingPoint pos)
+        public RoomBlockPair GetBlockTryThroughPortal(VectorInt2 pos)
         {
             Block sector = GetBlockTry(pos);
             if (sector == null)
@@ -375,20 +375,20 @@ namespace TombLib.LevelData
                 return new RoomBlockPair { Room = this, Block = sector, Pos = pos };
 
             Room adjoiningRoom = sector.WallPortal.AdjoiningRoom;
-            DrawingPoint adjoiningSectorCoordinate = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+            VectorInt2 adjoiningSectorCoordinate = pos + (SectorPos - adjoiningRoom.SectorPos);
             Block sector2 = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
             return new RoomBlockPair { Room = adjoiningRoom, Block = sector2, Pos = adjoiningSectorCoordinate };
         }
-        public RoomBlockPair GetBlockTryThroughPortal(int x, int z) => GetBlockTryThroughPortal(new DrawingPoint(x, z));
+        public RoomBlockPair GetBlockTryThroughPortal(int x, int z) => GetBlockTryThroughPortal(new VectorInt2(x, z));
 
-        public void ModifyPoint(int x, int z, int verticalSubdivision, short increment, Rectangle area)
+        public void ModifyPoint(int x, int z, int verticalSubdivision, short increment, RectangleInt2 area)
         {
             bool floor = (verticalSubdivision % 2 == 0);
 
             if (x <= 0 || z <= 0 || x >= NumXSectors || z >= NumZSectors)
                 return;
             {
-                if (area.Contains(x, z))
+                if (area.Contains(new VectorInt2(x, z)))
                 {
                     if ((floor && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None) || (!floor && Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None))
                     {
@@ -396,7 +396,7 @@ namespace TombLib.LevelData
                         Blocks[x, z].FixHeights(verticalSubdivision);
                     }
                 }
-                if (area.Contains(x - 1, z))
+                if (area.Contains(new VectorInt2(x - 1, z)))
                 {
                     var adjacentLeftBlock = GetBlockTry(x - 1, z);
                     if (adjacentLeftBlock != null && ((floor && adjacentLeftBlock.FloorDiagonalSplit == DiagonalSplit.None) || (!floor && adjacentLeftBlock.CeilingDiagonalSplit == DiagonalSplit.None)))
@@ -405,7 +405,7 @@ namespace TombLib.LevelData
                         adjacentLeftBlock.FixHeights(verticalSubdivision);
                     }
                 }
-                if (area.Contains(x, z - 1))
+                if (area.Contains(new VectorInt2(x, z - 1)))
                 {
                     var adjacentBottomBlock = GetBlockTry(x, z - 1);
                     if (adjacentBottomBlock != null && ((floor && adjacentBottomBlock.FloorDiagonalSplit == DiagonalSplit.None) || (!floor && adjacentBottomBlock.CeilingDiagonalSplit == DiagonalSplit.None)))
@@ -414,7 +414,7 @@ namespace TombLib.LevelData
                         adjacentBottomBlock.FixHeights(verticalSubdivision);
                     }
                 }
-                if (area.Contains(x - 1, z - 1))
+                if (area.Contains(new VectorInt2(x - 1, z - 1)))
                 {
                     var adjacentBottomLeftBlock = GetBlockTry(x - 1, z - 1);
                     if (adjacentBottomLeftBlock != null && ((floor && adjacentBottomLeftBlock.FloorDiagonalSplit == DiagonalSplit.None) || (!floor && adjacentBottomLeftBlock.CeilingDiagonalSplit == DiagonalSplit.None)))
@@ -426,23 +426,23 @@ namespace TombLib.LevelData
             }
         }
 
-        public short GetMinHeight(Rectangle area, int verticalSubdivision)
+        public short GetMinHeight(RectangleInt2 area, int verticalSubdivision)
         {
             short minimum = short.MaxValue;
 
-            for (int x = area.X; x <= area.Right; x++)
-                for (int z = area.Y; z <= area.Bottom; z++)
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
                     minimum = Math.Min(minimum, Blocks[x, z].GetFaceMin(verticalSubdivision));
 
             return minimum;
         }
 
-        public short GetMaxHeight(Rectangle area, int verticalSubdivision)
+        public short GetMaxHeight(RectangleInt2 area, int verticalSubdivision)
         {
             short maximum = short.MinValue;
 
-            for (int x = area.X; x <= area.Right; x++)
-                for (int z = area.Y; z <= area.Bottom; z++)
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
                     maximum = Math.Max(maximum, Blocks[x, z].GetFaceMin(verticalSubdivision));
 
             return maximum;
@@ -783,16 +783,16 @@ namespace TombLib.LevelData
 
         public void BuildGeometry()
         {
-            BuildGeometry(new Rectangle(0, 0, NumXSectors - 1, NumZSectors - 1));
+            BuildGeometry(new RectangleInt2(0, 0, NumXSectors - 1, NumZSectors - 1));
         }
 
-        public void BuildGeometry(Rectangle area)
+        public void BuildGeometry(RectangleInt2 area)
         {
             // Adjust ranges
-            int xMin = Math.Max(0, area.X);
-            int xMax = Math.Min(NumXSectors - 1, area.Right);
-            int zMin = Math.Max(0, area.Y);
-            int zMax = Math.Min(NumZSectors - 1, area.Bottom);
+            int xMin = Math.Max(0, area.X0);
+            int xMax = Math.Min(NumXSectors - 1, area.X1);
+            int zMin = Math.Max(0, area.Y0);
+            int zMax = Math.Min(NumZSectors - 1, area.Y1);
 
             // Build face polygons
             for (int x = xMin; x <= xMax; x++)
@@ -1033,7 +1033,7 @@ namespace TombLib.LevelData
                     }
 
                     // Floor polygons
-                    RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
+                    RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new VectorInt2(x, z));
                     BuildFloorOrCeilingFace(x, z, qa0, qa1, qa2, qa3, Blocks[x, z].FloorDiagonalSplit, Blocks[x, z].FloorSplitDirectionIsXEqualsZ,
                         BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType, false);
 
@@ -1041,7 +1041,7 @@ namespace TombLib.LevelData
                     var sectorVertices = _sectorVertices[x, z];
                     int startCeilingPolygons = sectorVertices.Count;
 
-                    RoomConnectionInfo ceilingPortalInfo = GetCeilingRoomConnectionInfo(new DrawingPoint(x, z));
+                    RoomConnectionInfo ceilingPortalInfo = GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
                     BuildFloorOrCeilingFace(x, z, ws0, ws1, ws2, ws3, Blocks[x, z].CeilingDiagonalSplit, Blocks[x, z].CeilingSplitDirectionIsXEqualsZ,
                         BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType, true);
 
@@ -2573,7 +2573,7 @@ namespace TombLib.LevelData
 
         public struct IntersectionInfo
         {
-            public DrawingPoint Pos;
+            public VectorInt2 Pos;
             public BlockFace Face;
             public float Distance;
             public float VerticalCoord;
@@ -2604,7 +2604,7 @@ namespace TombLib.LevelData
                                 var normal = Vector3.Cross(p1 - p0, p2 - p0);
                                 if (Vector3.Dot(ray.Direction, normal) <= 0)
                                     if (!(distance > result.Distance))
-                                        result = new IntersectionInfo() { Distance = distance, Face = face, Pos = new DrawingPoint(x, z), VerticalCoord = position.Y };
+                                        result = new IntersectionInfo() { Distance = distance, Face = face, Pos = new VectorInt2(x, z), VerticalCoord = position.Y };
                             }
                         }
                     }
@@ -3300,13 +3300,13 @@ namespace TombLib.LevelData
 
         public Matrix Transform => Matrix.Translation(new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f));
 
-        public int GetHighestCorner(Rectangle area)
+        public int GetHighestCorner(RectangleInt2 area)
         {
             area = area.Intersect(LocalArea);
 
             int max = int.MinValue;
-            for (int x = area.X; x <= area.Right; x++)
-                for (int z = area.Y; z <= area.Bottom; z++)
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
                         max = Math.Max(max, Blocks[x, z].CeilingMax);
             return max;
@@ -3314,16 +3314,16 @@ namespace TombLib.LevelData
 
         public int GetHighestCorner()
         {
-            return GetHighestCorner(new Rectangle(1, 1, NumXSectors - 2, NumZSectors - 2));
+            return GetHighestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
 
-        public int GetLowestCorner(Rectangle area)
+        public int GetLowestCorner(RectangleInt2 area)
         {
             area = area.Intersect(LocalArea);
 
             int min = int.MaxValue;
-            for (int x = area.X; x <= area.Right; x++)
-                for (int z = area.Y; z <= area.Bottom; z++)
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
                         min = Math.Min(min, Blocks[x, z].FloorMin);
             return min;
@@ -3331,7 +3331,7 @@ namespace TombLib.LevelData
 
         public int GetLowestCorner()
         {
-            return GetLowestCorner(new Rectangle(1, 1, NumXSectors - 2, NumZSectors - 2));
+            return GetLowestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
 
         public Vector3 WorldPos
@@ -3384,11 +3384,11 @@ namespace TombLib.LevelData
             };
         }
 
-        public VerticalSpace? GetHeightInArea(Rectangle area, Func<float?, float?, float?, float?, float> combineFloor, Func<float?, float?, float?, float?, float> combineCeiling)
+        public VerticalSpace? GetHeightInArea(RectangleInt2 area, Func<float?, float?, float?, float?, float> combineFloor, Func<float?, float?, float?, float?, float> combineCeiling)
         {
             VerticalSpace? result = null;
-            for (int x = area.X; x <= area.Right; x++)
-                for (int z = area.Y; z <= area.Bottom; z++)
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
                 {
                     VerticalSpace? verticalSpace = GetHeightAtPoint(x, z, combineFloor, combineCeiling);
                     if (verticalSpace == null)
@@ -3437,17 +3437,17 @@ namespace TombLib.LevelData
             return GetHeightAtPoint(x, z, Min, Max);
         }
 
-        public VerticalSpace? GetHeightInAreaAverage(Rectangle area)
+        public VerticalSpace? GetHeightInAreaAverage(RectangleInt2 area)
         {
             return GetHeightInArea(area, Average, Average);
         }
 
-        public VerticalSpace? GetHeightInAreaMinSpace(Rectangle area)
+        public VerticalSpace? GetHeightInAreaMinSpace(RectangleInt2 area)
         {
             return GetHeightInArea(area, Max, Min);
         }
 
-        public VerticalSpace? GetHeightInAreaMaxSpace(Rectangle area)
+        public VerticalSpace? GetHeightInAreaMaxSpace(RectangleInt2 area)
         {
             return GetHeightInArea(area, Min, Max);
         }
@@ -3523,10 +3523,10 @@ namespace TombLib.LevelData
             return true;
         }
 
-        public bool AddObjectCutSectors(Level level, Rectangle newArea, SectorBasedObjectInstance instance)
+        public bool AddObjectCutSectors(Level level, RectangleInt2 newArea, SectorBasedObjectInstance instance)
         {
             // Determine area
-            Rectangle instanceNewAreaConstraint = newArea.Inflate(-1);
+            RectangleInt2 instanceNewAreaConstraint = newArea.Inflate(-1);
             if (instance is PortalInstance)
                 switch (((PortalInstance)instance).Direction) // Special constraints for portals on walls
                 {
@@ -3545,7 +3545,7 @@ namespace TombLib.LevelData
                 }
             if (!instance.Area.Intersects(instanceNewAreaConstraint))
                 return false;
-            Rectangle instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint).OffsetNeg(new DrawingPoint(newArea.X, newArea.Y));
+            RectangleInt2 instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint) - newArea.Start;
 
             // Add object
             AddObject(level, instance.Clone(instanceNewArea));
@@ -3590,7 +3590,7 @@ namespace TombLib.LevelData
             var portal = instance as PortalInstance;
             if (portal != null)
             {
-                Rectangle oppositeArea = PortalInstance.GetOppositePortalArea(portal.Direction, portal.Area).Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
+                RectangleInt2 oppositeArea = PortalInstance.GetOppositePortalArea(portal.Direction, portal.Area) + (SectorPos - portal.AdjoiningRoom.SectorPos);
                 var oppositePortal = new PortalInstance(oppositeArea, PortalInstance.GetOppositeDirection(portal.Direction), this);
 
                 // Add portals
@@ -3780,7 +3780,7 @@ namespace TombLib.LevelData
             return RoomConnectionType.NoPortal;
         }
 
-        public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, DrawingPoint posBelow, DrawingPoint posAbove, bool lookingFromAbove)
+        public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, VectorInt2 posBelow, VectorInt2 posAbove, bool lookingFromAbove)
         {
             // Checkout all possible alternate room combinations and combine the results
             RoomConnectionType result = RoomConnectionType.FullPortal;
@@ -3791,13 +3791,13 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public RoomConnectionInfo GetFloorRoomConnectionInfo(DrawingPoint pos)
+        public RoomConnectionInfo GetFloorRoomConnectionInfo(VectorInt2 pos)
         {
             Block block = GetBlock(pos);
             if (block.FloorPortal != null)
             {
                 Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
-                DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+                VectorInt2 adjoiningPos = pos + (SectorPos - adjoiningRoom.SectorPos);
                 Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
                 if (adjoiningBlock.CeilingPortal != null)
                     return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, this, adjoiningPos, pos, true));
@@ -3805,13 +3805,13 @@ namespace TombLib.LevelData
             return new RoomConnectionInfo();
         }
 
-        public RoomConnectionInfo GetCeilingRoomConnectionInfo(DrawingPoint pos)
+        public RoomConnectionInfo GetCeilingRoomConnectionInfo(VectorInt2 pos)
         {
             Block block = GetBlock(pos);
             if (block.CeilingPortal != null)
             {
                 Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
-                DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+                VectorInt2 adjoiningPos = pos + (SectorPos - adjoiningRoom.SectorPos);
                 Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
                 if (adjoiningBlock.FloorPortal != null)
                     return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(this, adjoiningRoom, pos, adjoiningPos, false));
@@ -3819,22 +3819,21 @@ namespace TombLib.LevelData
             return new RoomConnectionInfo();
         }
 
-        public void SmartBuildGeometry(Rectangle area)
+        public void SmartBuildGeometry(RectangleInt2 area)
         {
             area = area.Inflate(1); // Add margin
 
             // Update adjoining rooms
             var roomsToProcess = new List<Room> { this };
-            var areaToProcess = new List<Rectangle> { area };
+            var areaToProcess = new List<RectangleInt2> { area };
             List<PortalInstance> listOfPortals = Portals.ToList();
             foreach (var portal in listOfPortals)
             {
                 if (!portal.Area.Intersects(area))
                     continue; // This portal is irrelavant since no changes happend in its area
 
-                Rectangle portalArea = portal.Area.Intersect(area);
-                Rectangle otherRoomPortalArea = PortalInstance.GetOppositePortalArea(portal.Direction, portalArea)
-                    .Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
+                RectangleInt2 portalArea = portal.Area.Intersect(area);
+                RectangleInt2 otherRoomPortalArea = PortalInstance.GetOppositePortalArea(portal.Direction, portalArea) + (SectorPos - portal.AdjoiningRoom.SectorPos);
 
                 // Find all related rooms or alternate rooms around the portals
                 foreach (var roomPairs in GetPossibleAlternateRoomPairs(this, portal.AdjoiningRoom))
