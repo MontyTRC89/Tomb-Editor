@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SharpDX;
 using TombLib.Graphics;
 using SharpDX.Toolkit.Graphics;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using System.Windows.Forms;
 
 namespace TombEditor

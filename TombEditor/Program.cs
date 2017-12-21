@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading;
 using TombLib.Wad.Catalog;
 using TombLib.NG;
+using TombLib.Graphics;
 
 namespace TombEditor
 {

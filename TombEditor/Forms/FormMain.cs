@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using SharpDX;
 using System.IO;
 using TombEngine;
@@ -15,6 +15,7 @@ using DarkUI.Docking;
 using DarkUI.Forms;
 using TombLib.GeometryIO.Importers;
 using TombLib.Forms;
+using TombLib.Graphics;
 
 namespace TombEditor
 {
@@ -168,7 +169,7 @@ namespace TombEditor
             if (obj is Editor.LevelCompilationCompletedEvent)
             {
                 var evt = obj as Editor.LevelCompilationCompletedEvent;
-                statusLastCompilation.Text = "Boxes = " + evt.Boxes + " | Overlaps = " + evt.Overlaps + " | Textures = " + evt.Textures;
+                statusLastCompilation.Text = "Last level output { " + evt.InfoString + " }";
             }
 
             // Update room information on the status strip

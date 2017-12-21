@@ -3,6 +3,7 @@ using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TombLib.Graphics;
 
 namespace TombEditor
 {

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;

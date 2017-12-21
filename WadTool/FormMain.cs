@@ -843,7 +843,7 @@ namespace WadTool
         private void butNewWad2_Click(object sender, EventArgs e)
         {
             if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
-            var wad = new Wad2(TombRaiderVersion.TR4, false);
+            var wad = new Wad2(WadTombRaiderVersion.TR4, false);
             wad.GraphicsDevice = _tool.Device;
             wad.PrepareDataForDirectX();
             _tool.DestinationWad = wad;

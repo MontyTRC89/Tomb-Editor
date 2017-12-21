@@ -6,9 +6,10 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.LevelData.IO;
 
 namespace TombEditor
 {
@@ -62,7 +63,7 @@ namespace TombEditor
             using (var stream = new MemoryStream())
             {
                 var writer = new BinaryWriterEx(stream);
-                Geometry.IO.Prj2Writer.SaveToPrj2(stream, editor.Level, new Geometry.IO.Prj2Writer.Filter
+                Prj2Writer.SaveToPrj2(stream, editor.Level, new Prj2Writer.Filter
                 {
                     RoomPredicate = (room) => editor.SelectedRoomsContains(room)
                 });
@@ -85,8 +86,8 @@ namespace TombEditor
         {
             using (var stream = new MemoryStream(_data, false))
             {
-                Level level = Geometry.IO.Prj2Loader.LoadFromPrj2(_levelPath, stream, new ProgressReporterSimple(),
-                    new Geometry.IO.Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+                Level level = Prj2Loader.LoadFromPrj2(_levelPath, stream, new ProgressReporterSimple(),
+                    new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
                 return level;
             }
         }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SharpDX;
 using SharpDX.Toolkit.Graphics;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.Graphics;
 using TombLib.IO;
 using TombLib.Utils;

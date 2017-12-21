@@ -30,7 +30,7 @@ namespace TombLib.Wad
 
         private static Wad2 LoadWad2(ChunkReader chunkIO, string fileName)
         {
-            var wad = new Wad2((TombRaiderVersion)LEB128.ReadUInt(chunkIO.Raw), false);
+            var wad = new Wad2((WadTombRaiderVersion)LEB128.ReadUInt(chunkIO.Raw), false);
             wad.FileName = fileName;
 
             chunkIO.ReadChunks((id, chunkSize) =>

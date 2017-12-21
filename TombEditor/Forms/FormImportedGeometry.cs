@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Forms;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 
 namespace TombEditor
 {
