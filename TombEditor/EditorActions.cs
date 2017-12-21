@@ -1376,7 +1376,7 @@ namespace TombEditor
                 .Except(rooms)
                 .ToList();
             foreach (Room room in rooms)
-                _editor.Level.DeleteRoom(room);
+                _editor.Level.DeleteAlternateRoom(room);
 
             // Update selection
             foreach (Room adjoiningRoom in adjoiningRooms)
