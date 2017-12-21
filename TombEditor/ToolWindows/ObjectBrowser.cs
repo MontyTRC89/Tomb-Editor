@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Docking;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.Wad;
 using DarkUI.Forms;
 using TombLib.Utils;
+using TombLib.Graphics;
 
 namespace TombEditor.ToolWindows
 {
@@ -182,9 +183,9 @@ namespace TombEditor.ToolWindows
             if ((comboItems.SelectedItem == null) || (_editor?.Level?.Wad == null))
                 _editor.ChosenItem = null;
             if (comboItems.SelectedItem is WadMoveable)
-                _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID);
+                _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID, _editor.Level.Wad.Version);
             else if (comboItems.SelectedItem is WadStatic)
-                _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID);
+                _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID, _editor.Level.Wad.Version);
         }
     }
 }

@@ -5,16 +5,13 @@ using System.Text;
 
 namespace TombLib.Wad
 {
-    public enum TombRaiderVersion : short
+    public enum WadTombRaiderVersion : short
     {
         TR1,
         TR2,
         TR3,
         TR4,
-        TR5,
-        OpenLara,
-        EdisonEngine,
-        OpenTomb
+        TR5
     }
 
     public enum WadLinkOpcode : ushort

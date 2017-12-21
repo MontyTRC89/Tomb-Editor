@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.Utils;
 using System.IO;
-using System.Diagnostics;
 using System.Threading;
 using NLog;
 
@@ -58,20 +57,6 @@ namespace TombEditor
         {
             public Level Previous { get; internal set; }
             public Level Current { get; internal set; }
-        }
-
-        public class LevelCompilationCompletedEvent : IEditorEvent
-        {
-            public int Boxes { get; set; }
-            public int Overlaps { get; set; }
-            public int Textures { get; set; }
-
-            public LevelCompilationCompletedEvent(int boxes, int overlaps, int textures)
-            {
-                Boxes = boxes;
-                Overlaps = overlaps;
-                Textures = textures;
-            }
         }
 
         private Level _level;
@@ -654,6 +639,11 @@ namespace TombEditor
                 if (((IEditorObjectChangedEvent)obj).Object == SelectedObject)
                     SelectedObject = null;
             }
+        }
+
+        public class LevelCompilationCompletedEvent : IEditorEvent
+        {
+            public string InfoString { get; set; }
         }
 
         public void Dispose()

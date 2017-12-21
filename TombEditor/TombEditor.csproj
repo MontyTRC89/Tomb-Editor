@@ -112,20 +112,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compilers\FloorData.cs" />
-    <Compile Include="Compilers\LevelCompiler.cs" />
-    <Compile Include="Compilers\LevelCompilerTR4.cs" />
-    <Compile Include="Compilers\Ng.cs" />
-    <Compile Include="Compilers\Pathfinding.cs" />
-    <Compile Include="Compilers\PathfindingDecompiled.cs" />
-    <Compile Include="Compilers\Rooms.cs" />
-    <Compile Include="Compilers\Structs.cs" />
-    <Compile Include="Compilers\Textures.cs" />
-    <Compile Include="Compilers\Util\ObjectTextureManager.cs" />
-    <Compile Include="Compilers\Util\ObjectTextureManagerWithAnimations.cs" />
-    <Compile Include="Compilers\Util\TextureAllocator.cs" />
-    <Compile Include="Compilers\Wad.cs" />
-    <Compile Include="Compilers\Writer.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
       <SubType>Component</SubType>
@@ -160,8 +146,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EditorAction.cs" />
-    <Compile Include="Geometry\BumpMappingInfo.cs" />
-    <Compile Include="Geometry\ScriptID.cs" />
     <Compile Include="Highlight.cs" />
     <Compile Include="KeyboardLayout.cs" />
     <Compile Include="Controls\PanelRenderingItem.cs">
@@ -171,7 +155,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Debug.cs" />
-    <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
     <Compile Include="Forms\FormAbout.cs">
@@ -270,23 +253,7 @@
     <Compile Include="Forms\FormSink.Designer.cs">
       <DependentUpon>FormSink.cs</DependentUpon>
     </Compile>
-    <Compile Include="Geometry\AnimatedTextureSet.cs" />
-    <Compile Include="Geometry\CameraInstance.cs" />
-    <Compile Include="Geometry\FlybyCameraInstance.cs" />
-    <Compile Include="Geometry\ImportedGeometry.cs" />
-    <Compile Include="Geometry\IO\Prj2Chunks.cs" />
-    <Compile Include="Geometry\LevelSettings.cs" />
-    <Compile Include="Geometry\ImportedGeometryInstance.cs" />
-    <Compile Include="Geometry\TextureSound.cs" />
     <Compile Include="Gizmo.cs" />
-    <Compile Include="Geometry\IO\ResourceLoader.cs" />
-    <Compile Include="Geometry\IO\Prj2Loader.cs" />
-    <Compile Include="Geometry\IO\Prj2Writer.cs" />
-    <Compile Include="Geometry\IO\PrjLoader.cs" />
-    <Compile Include="Geometry\ItemInstance.cs" />
-    <Compile Include="Geometry\ObjectInstance.cs" />
-    <Compile Include="Geometry\SinkInstance.cs" />
-    <Compile Include="Geometry\SoundSourceInstance.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="ObjectClipboardData.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -385,11 +352,6 @@
     <Compile Include="Forms\FormTrigger.Designer.cs">
       <DependentUpon>FormTrigger.cs</DependentUpon>
     </Compile>
-    <Compile Include="Geometry\LevelTexture.cs" />
-    <Compile Include="Geometry\LightInstance.cs" />
-    <Compile Include="Geometry\MoveableInstance.cs" />
-    <Compile Include="Geometry\StaticInstance.cs" />
-    <Compile Include="Geometry\TriggerInstance.cs" />
     <Compile Include="TexturePackerTest.cs" />
     <Compile Include="WinFormsUtils.cs" />
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
@@ -437,11 +399,6 @@
     <None Include="Editor\Misc\Palette.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Compile Include="Geometry\Block.cs" />
-    <Compile Include="Geometry\Level.cs" />
-    <Compile Include="Geometry\PortalInstance.cs" />
-    <Compile Include="Geometry\Room.cs" />
-    <Compile Include="Geometry\EditorVertex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">

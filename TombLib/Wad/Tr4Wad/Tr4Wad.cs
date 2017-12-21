@@ -470,7 +470,7 @@ namespace TombLib.Wad.Tr4Wad
 
             // Read sounds
             logger.Info("Reading sound (sfx/sam) files associated with wad.");
-            var soundMapSize = TrCatalog.GetSoundMapSize(TombRaiderVersion.TR4, Version == 130);
+            var soundMapSize = TrCatalog.GetSoundMapSize(WadTombRaiderVersion.TR4, Version == 130);
             using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
                     while (!readerSounds.EndOfStream)
                         Sounds.Add(readerSounds.ReadLine());

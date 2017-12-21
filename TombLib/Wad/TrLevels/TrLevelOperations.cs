@@ -797,18 +797,18 @@ namespace TombLib.Wad.TrLevels
             return moveable;
         }
 
-        internal static TombRaiderVersion GetTrVersion(TrVersion version)
+        internal static WadTombRaiderVersion GetTrVersion(TrVersion version)
         {
             if (version == TrVersion.TR1)
-                return TombRaiderVersion.TR1;
+                return WadTombRaiderVersion.TR1;
             else if (version == TrVersion.TR2)
-                return TombRaiderVersion.TR2;
+                return WadTombRaiderVersion.TR2;
             else if (version == TrVersion.TR3)
-                return TombRaiderVersion.TR3;
+                return WadTombRaiderVersion.TR3;
             else if (version == TrVersion.TR4)
-                return TombRaiderVersion.TR4;
+                return WadTombRaiderVersion.TR4;
             else
-                return TombRaiderVersion.TR5;
+                return WadTombRaiderVersion.TR5;
         }
 
         public static WadStatic ConvertTrLevelStaticMeshToWadStatic(Wad2 wad, TrLevel oldLevel, int staticIndex,

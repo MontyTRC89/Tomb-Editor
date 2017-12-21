@@ -9,7 +9,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
 

@@ -157,7 +157,7 @@ namespace SharpDX.Toolkit.Graphics
                          var normal = new Vector3(dx, dy, dz);
                          var textureCoordinate = new Vector2(u, v);
 
-                         SolidVertex vertex = new TombEditor.Geometry.SolidVertex();
+                         SolidVertex vertex = new TombLib.LevelData.SolidVertex();
                          vertex.Position = new Vector4(normal * radius, 1);
                          vertex.Normal = normal;
                          vertex.UV = textureCoordinate;

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
 using Color = System.Drawing.Color;

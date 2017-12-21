@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
-using TombEditor.Compilers;
-using TombEditor.Geometry;
-using TombEditor.Geometry.IO;
+using TombLib.LevelData.Compilers;
+using TombLib.LevelData;
+using TombLib.LevelData.IO;
 using TombLib.Utils;
 using DarkUI.Forms;
 using TombLib.IO;
@@ -16,6 +16,7 @@ using System.IO;
 using TombLib.GeometryIO;
 using TombLib.GeometryIO.Exporters;
 using TombLib.Wad;
+using System.Diagnostics;
 
 namespace TombEditor
 {
@@ -63,6 +64,14 @@ namespace TombEditor
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
             _editor.RoomGeometryChange(room);
+        }
+
+        private enum SmoothGeometryEditingType
+        {
+            None,
+            Floor,
+            Wall,
+            Any
         }
 
         public static void EditSectorGeometry(Room room, Rectangle area, EditorArrowType arrow, int verticalSubdivision, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true)
@@ -124,29 +133,48 @@ namespace TombEditor
                 }
                 arrow = EditorArrowType.EntireFace;
 
+                Action<Block, int> smoothEdit = (Block block, int edge) =>
+                {
+                    if (block == null)
+                        return;
+
+                    if (((verticalSubdivision == 0 || verticalSubdivision == 2) && block.FloorDiagonalSplit == DiagonalSplit.None) ||
+                       ((verticalSubdivision == 1 || verticalSubdivision == 3) && block.CeilingDiagonalSplit == DiagonalSplit.None))
+                    {
+                        if (smoothEditingType == SmoothGeometryEditingType.Any ||
+                           (!block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor) ||
+                           (!block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall))
+                        {
+                            block.ChangeEdge(verticalSubdivision, edge, increment);
+                            block.FixHeights(verticalSubdivision);
+                        }
+                    }
+                };
+
+
                 // Smoothly change sectors on the corners
-                room.GetBlockTry(area.X - 1, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment, smoothEditingType);
-                room.GetBlockTry(area.Right + 1, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment, smoothEditingType);
-                room.GetBlockTry(area.Right + 1, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZp, increment, smoothEditingType);
-                room.GetBlockTry(area.X - 1, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment, smoothEditingType);
+                smoothEdit(room.GetBlockTry(area.X - 1, area.Bottom + 1), Block.FaceXpZn);
+                smoothEdit(room.GetBlockTry(area.Right + 1, area.Bottom + 1), Block.FaceXnZn);
+                smoothEdit(room.GetBlockTry(area.Right + 1, area.Y - 1), Block.FaceXnZp);
+                smoothEdit(room.GetBlockTry(area.X - 1, area.Y - 1), Block.FaceXpZp);
 
                 // Smoothly change sectors on the sides
                 for (int x = area.X; x <= area.Right; x++)
                 {
-                    room.GetBlockTry(x, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZp, increment, smoothEditingType);
-                    room.GetBlockTry(x, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment, smoothEditingType);
+                    smoothEdit(room.GetBlockTry(x, area.Y - 1), Block.FaceXnZp);
+                    smoothEdit(room.GetBlockTry(x, area.Y - 1), Block.FaceXpZp);
 
-                    room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment, smoothEditingType);
-                    room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment, smoothEditingType);
+                    smoothEdit(room.GetBlockTry(x, area.Bottom + 1), Block.FaceXnZn);
+                    smoothEdit(room.GetBlockTry(x, area.Bottom + 1), Block.FaceXpZn);
                 }
 
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    room.GetBlockTry(area.X - 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment, smoothEditingType);
-                    room.GetBlockTry(area.X - 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment, smoothEditingType);
+                    smoothEdit(room.GetBlockTry(area.X - 1, z), Block.FaceXpZp);
+                    smoothEdit(room.GetBlockTry(area.X - 1, z), Block.FaceXpZn);
 
-                    room.GetBlockTry(area.Right + 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXnZp, increment, smoothEditingType);
-                    room.GetBlockTry(area.Right + 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment, smoothEditingType);
+                    smoothEdit(room.GetBlockTry(area.Right + 1, z), Block.FaceXnZp);
+                    smoothEdit(room.GetBlockTry(area.Right + 1, z), Block.FaceXnZn);
                 }
             }
 
@@ -2127,8 +2155,22 @@ namespace TombEditor
             Level level = _editor.Level;
             string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
 
-            using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone, (progressReporter) =>
-                new LevelCompilerTr4(level, fileName, progressReporter).CompileLevel()))
+            using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone,
+                (progressReporter) =>
+                {
+                    var watch = new Stopwatch();
+                    watch.Start();
+                    LevelCompilerTr4 compiler = new LevelCompilerTr4(level, fileName, progressReporter);
+                    LevelCompilerTr4.CompilerStatistics statistics = compiler.CompileLevel();
+                    watch.Stop();
+                    progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+
+                    // Raise an event for statistics update
+                    Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent { InfoString = statistics.ToString() });
+
+                    // Force garbage collector to compact memory
+                    GC.Collect();
+                }))
             {
                 form.ShowDialog();
                 return form.DialogResult != DialogResult.Cancel;
@@ -2141,7 +2183,7 @@ namespace TombEditor
                  _editor.Level.Rooms
                 .Where(room => room != null)
                 .SelectMany(room => room.Objects)
-                .Any((obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == new ItemType(false, 0)))
+                .Any((obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == new ItemType(false, 0, _editor.Level.Wad.Version)))
             {
                 if (BuildLevel(true))
                     TombLauncher.Launch(_editor.Level.Settings, owner);

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 using DarkUI.Docking;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using DarkUI.Forms;
 using DarkUI.Controls;
 

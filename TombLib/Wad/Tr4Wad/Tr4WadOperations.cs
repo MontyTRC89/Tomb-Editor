@@ -290,7 +290,7 @@ namespace TombLib.Wad.Tr4Wad
         public static Wad2 ConvertTr4Wad(Tr4Wad old, List<string> soundPaths, IProgressReporter progressReporter)
         {
             _oldWad = old;
-            _wad = new Wad2(TombRaiderVersion.TR4, true);
+            _wad = new Wad2(WadTombRaiderVersion.TR4, true);
             _soundPaths = soundPaths;
             _progressReporter = progressReporter;
 
@@ -349,7 +349,7 @@ namespace TombLib.Wad.Tr4Wad
 
                 var newSequence = new WadSpriteSequence();
                 newSequence.ObjectID = (uint)oldSequence.ObjectID;
-                newSequence.Name = TrCatalog.GetSpriteName(TombRaiderVersion.TR4, (uint)oldSequence.ObjectID);
+                newSequence.Name = TrCatalog.GetSpriteName(WadTombRaiderVersion.TR4, (uint)oldSequence.ObjectID);
 
                 for (int i = startIndex; i < startIndex + lengthOfSequence; i++)
                 {
@@ -397,7 +397,7 @@ namespace TombLib.Wad.Tr4Wad
 
         internal static void ConvertTr4Sounds()
         {
-            _wad.SoundMapSize = TrCatalog.GetSoundMapSize(TombRaiderVersion.TR4, _oldWad.Version == 130);
+            _wad.SoundMapSize = TrCatalog.GetSoundMapSize(WadTombRaiderVersion.TR4, _oldWad.Version == 130);
 
             // Read all samples with multithreading
             var loadedSamples = new ConcurrentDictionary<int, WadSample>();
@@ -430,7 +430,7 @@ namespace TombLib.Wad.Tr4Wad
                 var newInfo = new WadSoundInfo();
 
                 // Fill the new sound info
-                newInfo.Name = TrCatalog.GetSoundName(TombRaiderVersion.TR4, (uint)i);
+                newInfo.Name = TrCatalog.GetSoundName(WadTombRaiderVersion.TR4, (uint)i);
                 newInfo.Volume = oldInfo.Volume;
                 newInfo.Range = oldInfo.Range;
                 newInfo.Chance = oldInfo.Chance;
@@ -483,7 +483,7 @@ namespace TombLib.Wad.Tr4Wad
             wad_moveable m = _oldWad.Moveables[moveableIndex];
 
             moveable.ObjectID = m.ObjectID;
-            //moveable.Name = TrCatalog.GetMoveableName(TombRaiderVersion.TR4, m.ObjectID);
+            //moveable.Name = TrCatalog.GetMoveableName(WadTombRaiderVersion.TR4, m.ObjectID);
 
             for (int j = 0; j < m.NumPointers; j++)
             {
@@ -793,7 +793,7 @@ namespace TombLib.Wad.Tr4Wad
             var staticMesh = new WadStatic(_wad);
             var oldStaticMesh = _oldWad.StaticMeshes[staticIndex];
 
-            //staticMesh.Name = TrCatalog.GetStaticName(TombRaiderVersion.TR4, oldStaticMesh.ObjectId);
+            //staticMesh.Name = TrCatalog.GetStaticName(WadTombRaiderVersion.TR4, oldStaticMesh.ObjectId);
 
             // First setup collisional and visibility bounding boxes
             staticMesh.CollisionBox = new BoundingBox(new Vector3(oldStaticMesh.CollisionX1,

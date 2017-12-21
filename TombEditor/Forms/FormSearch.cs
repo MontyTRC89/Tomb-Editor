@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using RateType = System.UInt64;
 using ObjectType = System.Object;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.Wad;
 using System.Runtime.CompilerServices;
 using TombLib.Utils;
@@ -411,9 +411,9 @@ namespace TombEditor
                 if (_editor.Level.Wad != null)
                 {
                     foreach (KeyValuePair<uint, WadStatic> obj in _editor.Level.Wad.Statics)
-                        yield return new ItemType(true, obj.Key);
+                        yield return new ItemType(true, obj.Key, _editor.Level.Wad.Version);
                     foreach (KeyValuePair<uint, WadMoveable> obj in _editor.Level.Wad.Moveables)
-                        yield return new ItemType(false, obj.Key);
+                        yield return new ItemType(false, obj.Key, _editor.Level.Wad.Version);
                 }
             }
         }

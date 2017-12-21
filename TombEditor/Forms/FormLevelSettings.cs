@@ -9,8 +9,8 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TombEditor.Geometry;
-using TombEditor.Geometry.IO;
+using TombLib.LevelData;
+using TombLib.LevelData.IO;
 using TombLib.Utils;
 using TombLib.IO;
 

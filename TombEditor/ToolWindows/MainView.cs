@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Docking;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.Utils;
 using DarkUI.Controls;
 using SharpDX;
+using TombLib.Graphics;
 
 namespace TombEditor.ToolWindows
 {

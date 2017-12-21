@@ -1,7 +1,7 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 
 namespace TombEditor
 {
@@ -55,11 +55,6 @@ namespace TombEditor
         CornerNE,
         CornerSE,
         CornerSW
-    }
-
-    public enum SmoothGeometryEditingType
-    {
-        None, Floor, Wall, Any
     }
 
     public struct SectorSelection

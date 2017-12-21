@@ -7,7 +7,7 @@ using System.Drawing;
 using System.ComponentModel;
 using NLog;
 using TombLib.Graphics;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using System.Drawing.Drawing2D;
 using Vector4 = SharpDX.Vector4;
 using TombLib.Utils;

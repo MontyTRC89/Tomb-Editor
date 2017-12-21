@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Wad.Catalog;
 
@@ -360,7 +360,7 @@ namespace TombEditor
             }
             else if (kind == NgListKind.SoundEffectsB)
             {
-                var soundMapSize = (_editor.Level.Wad != null ? _editor.Level.Wad.SoundMapSize : TrCatalog.GetSoundMapSize(TombLib.Wad.TombRaiderVersion.TR4, false));
+                var soundMapSize = (_editor.Level.Wad != null ? _editor.Level.Wad.SoundMapSize : TrCatalog.GetSoundMapSize(TombLib.Wad.WadTombRaiderVersion.TR4, false));
                 for (var i = 256; i < soundMapSize; i++)
                 {
                     if (_editor.Level.Wad != null && _editor.Level.Wad.SoundInfo.ContainsKey((ushort)i))
@@ -385,7 +385,7 @@ namespace TombEditor
             {
                 var soundMapSize = (_editor.Level.Wad != null ?
                                     _editor.Level.Wad.SoundMapSize :
-                                    TrCatalog.GetSoundMapSize(TombLib.Wad.TombRaiderVersion.TR4, false));
+                                    TrCatalog.GetSoundMapSize(TombLib.Wad.WadTombRaiderVersion.TR4, false));
                 soundMapSize = Math.Min(soundMapSize, 1024);
                 for (var i = 0; i < soundMapSize; i++)
                 {
