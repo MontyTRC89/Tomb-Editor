@@ -54,42 +54,52 @@ namespace TombLib.Utils
             }
         }
 
-        public Vector2 TransformVec2(Vector2 position, float oldWidth, float oldHeight)
+        public Vector2 Transform(Vector2 position, Vector2 oldSize)
         {
             if (MirrorX)
-                position.X = oldWidth - position.X;
+                position.X = oldSize.X - position.X;
             switch (QuadrantRotation)
             {
                 case 0:
                     return position;
                 case 1:
-                    return new Vector2(oldHeight - position.Y, position.X);
+                    return new Vector2(oldSize.Y - position.Y, position.X);
                 case 2:
-                    return new Vector2(oldWidth - position.X, oldHeight - position.Y);
+                    return new Vector2(oldSize.X - position.X, oldSize.Y - position.Y);
                 case 3:
-                    return new Vector2(position.Y, oldWidth - position.X);
+                    return new Vector2(position.Y, oldSize.X - position.X);
                 default:
                     throw new InvalidOperationException();
             }
         }
 
+        public VectorInt2 Transform(VectorInt2 position, VectorInt2 oldSize)
+        {
+            Vector2 result = Transform((Vector2)position, oldSize - new Vector2(1, 1));
+            return new VectorInt2((int)result.X, (int)result.Y);
+        }
+
+        public RectangleInt2 TransformRect(RectangleInt2 area, VectorInt2 oldSize)
+        {
+            VectorInt2 first = Transform(area.Start, oldSize);
+            VectorInt2 second = Transform(area.End, oldSize);
+            return new RectangleInt2(VectorInt2.Min(first, second), VectorInt2.Max(first, second));
+        }
+
+        public Rectangle2 Transform(Rectangle2 area, Vector2 oldSize)
+        {
+            Vector2 first = Transform(area.Start, oldSize);
+            Vector2 second = Transform(area.End, oldSize);
+            return new Rectangle2(Vector2.Min(first, second), Vector2.Max(first, second));
+        }
+
+
+
+
         public Vector3 TransformVec3(Vector3 position, float oldWidth, float oldHeight)
         {
-            Vector2 result = TransformVec2(new Vector2(position.X, position.Z), oldWidth, oldHeight);
+            Vector2 result = Transform(new Vector2(position.X, position.Z), new Vector2(oldWidth, oldHeight));
             return new Vector3(result.X, position.Y, result.Y);
-        }
-
-        public DrawingPoint TransformIVec2(DrawingPoint position, DrawingPoint oldSize)
-        {
-            Vector2 result = TransformVec2(new Vector2(position.X, position.Y), oldSize.X - 1, oldSize.Y - 1);
-            return new DrawingPoint((int)result.X, (int)result.Y);
-        }
-
-        public Rectangle TransformRect(Rectangle area, DrawingPoint oldSize)
-        {
-            DrawingPoint first = TransformIVec2(new DrawingPoint(area.Left, area.Top), oldSize);
-            DrawingPoint second = TransformIVec2(new DrawingPoint(area.Right, area.Bottom), oldSize);
-            return new Rectangle(Math.Min(first.X, second.X), Math.Min(first.Y, second.Y), Math.Max(first.X, second.X), Math.Max(first.Y, second.Y));
         }
 
         public static RectTransformation operator *(RectTransformation first, RectTransformation second)

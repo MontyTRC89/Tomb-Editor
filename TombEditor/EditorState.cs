@@ -1,6 +1,7 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
+using TombLib;
 using TombLib.LevelData;
 
 namespace TombEditor
@@ -59,11 +60,11 @@ namespace TombEditor
 
     public struct SectorSelection
     {
-        public DrawingPoint Start { get; set; }
-        public DrawingPoint End { get; set; }
+        public VectorInt2 Start { get; set; }
+        public VectorInt2 End { get; set; }
         public EditorArrowType Arrow { get; set; }
 
-        public static readonly SectorSelection None = new SectorSelection { Start = new DrawingPoint(-1, 1), End = new DrawingPoint(-1, 1) };
+        public static readonly SectorSelection None = new SectorSelection { Start = new VectorInt2(-1, 1), End = new VectorInt2(-1, 1) };
 
         public static bool operator ==(SectorSelection first, SectorSelection second)
         {
@@ -87,18 +88,16 @@ namespace TombEditor
 
         // The rectangle is (-1, -1, -1, 1) when nothing is selected.
         // The "Right" and "Bottom" point of the rectangle is inclusive.
-        public SharpDX.Rectangle Area
+        public RectangleInt2 Area
         {
             get
             {
-                return new SharpDX.Rectangle(
-                    Math.Min(Start.X, End.X), Math.Min(Start.Y, End.Y),
-                    Math.Max(Start.X, End.X), Math.Max(Start.Y, End.Y));
+                return new RectangleInt2(VectorInt2.Min(Start, End), VectorInt2.Max(Start, End));
             }
             set
             {
-                Start = new SharpDX.DrawingPoint(value.X, value.Y);
-                End = new SharpDX.DrawingPoint(value.Right, value.Bottom);
+                Start = value.Start;
+                End = value.End;
             }
         }
 

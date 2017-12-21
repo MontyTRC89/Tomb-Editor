@@ -48,8 +48,8 @@ namespace TombEditor.ToolWindows
                     // Search for unique triggers inside the selected area
                     var triggers = new List<TriggerInstance>();
                     var area = _editor.SelectedSectors.Area;
-                    for (int x = area.X; x <= area.Right; x++)
-                        for (int z = area.Y; z <= area.Bottom; z++)
+                    for (int x = area.X0; x <= area.X1; x++)
+                        for (int z = area.Y0; z <= area.Y1; z++)
                             foreach (var trigger in _editor.SelectedRoom.GetBlockTry(x, z)?.Triggers ?? new List<TriggerInstance>())
                                 if (!triggers.Contains(trigger))
                                     triggers.Add(trigger);

@@ -349,7 +349,7 @@ namespace TombLib.LevelData.Compilers
 
         private void FindBottomFloor(ref Room room, ref int x, ref int z)
         {
-            while (room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z)).TraversableType == Room.RoomConnectionType.FullPortal)
+            while (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
                 var sector = room.Blocks[x, z];
                 x += (int)(room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X);

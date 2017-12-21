@@ -671,7 +671,7 @@ namespace TombLib.LevelData.Compilers
                 block = room.Blocks[xInRoom, zInRoom];
 
                 // After having probed that we can reach X, Z from the original room, do the following
-                while (room.GetFloorRoomConnectionInfo(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
+                while (room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
                 {
                     Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
                     if ((room.WaterLevel != 0) != (adjoiningRoom.WaterLevel != 0))
@@ -761,7 +761,7 @@ namespace TombLib.LevelData.Compilers
 
             Room oldRoom = adjoiningRoom;
 
-            while (room.GetFloorRoomConnectionInfo(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
+            while (room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
 

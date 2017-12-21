@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -15,7 +16,7 @@ namespace TombEditor.Controls.ContextMenus
     class BlockContextMenu : BaseContextMenu
     {
         private ToolStripMenuItem _itemPaste;
-        public BlockContextMenu(Editor editor, Room targetRoom, DrawingPoint targetBlock)
+        public BlockContextMenu(Editor editor, Room targetRoom, VectorInt2 targetBlock)
             : base(editor)
         {
             Items.Add(_itemPaste = new ToolStripMenuItem("Paste", global::TombEditor.Properties.Resources.general_clipboard_16, (o, e) =>

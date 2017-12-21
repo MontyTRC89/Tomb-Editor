@@ -1,15 +1,14 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Drawing;
-using System.ComponentModel;
-using NLog;
-using TombLib.Graphics;
+using TombLib;
 using TombLib.LevelData;
-using System.Drawing.Drawing2D;
-using Vector4 = SharpDX.Vector4;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
@@ -96,25 +95,25 @@ namespace TombEditor.Controls
                 _gridStep * currentRoom.NumZSectors);
         }
 
-        public PointF toVisualCoord(SharpDX.DrawingPoint sectorCoord)
+        public PointF toVisualCoord(VectorInt2 sectorCoord)
         {
             RectangleF roomArea = getVisualAreaRoom();
             return new PointF(sectorCoord.X * _gridStep + roomArea.X, roomArea.Bottom - (sectorCoord.Y + 1) * _gridStep);
         }
 
-        public RectangleF ToVisualCoord(SharpDX.Rectangle sectorArea)
+        public RectangleF ToVisualCoord(RectangleInt2 sectorArea)
         {
-            PointF convertedPoint0 = toVisualCoord(new SharpDX.DrawingPoint(sectorArea.Left, sectorArea.Top));
-            PointF convertedPoint1 = toVisualCoord(new SharpDX.DrawingPoint(sectorArea.Right, sectorArea.Bottom));
+            PointF convertedPoint0 = toVisualCoord(sectorArea.Start);
+            PointF convertedPoint1 = toVisualCoord(sectorArea.End);
             return RectangleF.FromLTRB(
                 Math.Min(convertedPoint0.X, convertedPoint1.X), Math.Min(convertedPoint0.Y, convertedPoint1.Y),
                 Math.Max(convertedPoint0.X, convertedPoint1.X) + _gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + _gridStep);
         }
 
-        public SharpDX.DrawingPoint FromVisualCoord(PointF point)
+        public VectorInt2 FromVisualCoord(PointF point)
         {
             RectangleF roomArea = getVisualAreaRoom();
-            return new SharpDX.DrawingPoint(
+            return new VectorInt2(
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / _gridStep)),
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / _gridStep)));
         }
@@ -132,7 +131,7 @@ namespace TombEditor.Controls
                 _editor.MoveCameraToSector(FromVisualCoord(e.Location));
                 return;
             }
-            SharpDX.DrawingPoint sectorPos = FromVisualCoord(e.Location);
+            VectorInt2 sectorPos = FromVisualCoord(e.Location);
 
             // Find existing sector based object (eg portal or trigger)
             SectorBasedObjectInstance selectedSectorObject = _editor.SelectedObject as SectorBasedObjectInstance;

@@ -497,7 +497,7 @@ namespace TombEditor
             else if (texturesDataGridView.Columns[e.ColumnIndex].Name == texturesDataGridViewColumnArea.Name)
             {
                 var area = frame.Area;
-                e.Value = "(" + area.X + ", " + area.Y + ")-> (" + area.Right + ", " + area.Bottom + ")";
+                e.Value = "(" + area.X0 + ", " + area.Y1 + ")-> (" + area.X1 + ", " + area.Y1 + ")";
                 e.FormattingApplied = true;
             }
         }

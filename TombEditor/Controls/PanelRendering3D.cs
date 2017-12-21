@@ -17,6 +17,7 @@ using NLog;
 using DarkUI.Controls;
 using DarkUI.Forms;
 using TombEditor.Controls.ContextMenus;
+using TombLib;
 
 namespace TombEditor.Controls
 {
@@ -98,7 +99,7 @@ namespace TombEditor.Controls
         private class PickingResultBlock : PickingResult
         {
             public float VerticalCoord { get; set; }
-            public DrawingPoint Pos { get; set; }
+            public VectorInt2 Pos { get; set; }
             public BlockFace Face { get; set; }
 
             public bool IsFloorHorizontalPlane => (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2);
@@ -106,7 +107,7 @@ namespace TombEditor.Controls
             public bool IsVerticalPlane => (!IsFloorHorizontalPlane && !IsCeilingHorizontalPlane);
             public bool BelongsToFloor => (IsFloorHorizontalPlane || Face <= BlockFace.DiagonalMiddle);
             public bool BelongsToCeiling => (IsCeilingHorizontalPlane || Face > BlockFace.DiagonalMiddle);
-            public PickingResultBlock(float distance, float verticalCoord, DrawingPoint pos, BlockFace face)
+            public PickingResultBlock(float distance, float verticalCoord, VectorInt2 pos, BlockFace face)
             {
                 Distance = distance;
                 VerticalCoord = verticalCoord;
@@ -464,11 +465,11 @@ namespace TombEditor.Controls
                 }
             }
 
-            public bool Process(int X, int Y)
+            public bool Process(int x, int y)
             {
-                if (((_parent._editor.SelectedSectors.Valid && _parent._editor.SelectedSectors.Area.Contains(X, Y)) || _parent._editor.SelectedSectors == SectorSelection.None) && !_actionGrid[X, Y].Processed)
+                if (((_parent._editor.SelectedSectors.Valid && _parent._editor.SelectedSectors.Area.Contains(new VectorInt2(x, y))) || _parent._editor.SelectedSectors == SectorSelection.None) && !_actionGrid[x, y].Processed)
                 {
-                    _actionGrid[X, Y].Processed = true;
+                    _actionGrid[x, y].Processed = true;
                     return true;
                 }
                 else
@@ -1018,7 +1019,7 @@ namespace TombEditor.Controls
                     }
 
                     // Act based on editor mode
-                    DrawingPoint pos = newBlockPicking.Pos;
+                    VectorInt2 pos = newBlockPicking.Pos;
                     bool belongsToFloor = newBlockPicking.BelongsToFloor;
                     switch (_editor.Mode)
                     {
@@ -1033,7 +1034,7 @@ namespace TombEditor.Controls
                                         EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, (belongsToFloor ? 0 : 1));
                                     else if (_editor.Tool.Tool < EditorToolType.Flatten)
                                         EditorActions.EditSectorGeometry(_editor.SelectedRoom,
-                                            new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y),
+                                            new RectangleInt2(pos, pos),
                                             EditorArrowType.EntireFace,
                                             (belongsToFloor ? 0 : 1),
                                             (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor ? 1 : -1),
@@ -1253,7 +1254,7 @@ namespace TombEditor.Controls
 
                         if (newBlockPicking != null)
                         {
-                            DrawingPoint pos = newBlockPicking.Pos;
+                            VectorInt2 pos = newBlockPicking.Pos;
                             bool belongsToFloor = newBlockPicking.BelongsToFloor;
 
                             if ((_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool == EditorToolType.Group || _editor.Tool.Tool >= EditorToolType.Drag) && _doSectorSelection)
@@ -1261,7 +1262,7 @@ namespace TombEditor.Controls
                                 var newSelection = new SectorSelection
                                 {
                                     Start = _editor.SelectedSectors.Start,
-                                    End = new DrawingPoint(pos.X, pos.Y)
+                                    End = new VectorInt2(pos.X, pos.Y)
                                 };
 
                                 if (_editor.SelectedSectors != newSelection)
@@ -1292,7 +1293,7 @@ namespace TombEditor.Controls
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolHandler.ReferenceBlock.RFFaces.Min();
                                                     }
                                                 }
-                                                EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                                EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new RectangleInt2(pos, pos));
                                                 break;
 
                                             case EditorToolType.Smooth:
@@ -1305,7 +1306,7 @@ namespace TombEditor.Controls
 
                                             default:
                                                 EditorActions.EditSectorGeometry(_editor.SelectedRoom,
-                                                    new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y),
+                                                    new RectangleInt2(pos, pos),
                                                     EditorArrowType.EntireFace,
                                                     (belongsToFloor ? 0 : 1),
                                                     (short)((_editor.Tool.Tool == EditorToolType.Shovel || (_editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control))) ^ belongsToFloor ? 1 : -1),
@@ -1349,22 +1350,22 @@ namespace TombEditor.Controls
                         PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null && !_toolHandler.Dragged)
                         {
-                            DrawingPoint pos = newBlockPicking.Pos;
+                            VectorInt2 pos = newBlockPicking.Pos;
                             bool belongsToFloor = newBlockPicking.BelongsToFloor;
 
                             if (ModifierKeys.HasFlag(Keys.Alt))
                             {
                                 // Split the faces
                                 if (belongsToFloor)
-                                    EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                    EditorActions.FlipFloorSplit(_editor.SelectedRoom, new RectangleInt2(pos, pos));
                                 else
-                                    EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                    EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new RectangleInt2(pos, pos));
                                 return;
                             }
                             else if (ModifierKeys.HasFlag(Keys.Shift))
                             {
                                 // Rotate sector
-                                EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
+                                EditorActions.RotateSectors(_editor.SelectedRoom, new RectangleInt2(pos, pos), belongsToFloor);
                                 return;
                             }
                             else if (_editor.Tool.Tool == EditorToolType.Selection || _editor.Tool.Tool >= EditorToolType.Drag)
@@ -1801,7 +1802,7 @@ namespace TombEditor.Controls
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 foreach (var trigger in room.Triggers)
                     if (trigger.TargetObj == instance)
-                        message += "\nTriggered in Room " + trigger.Room + " on sectors [" + trigger.Area.X + ", " + trigger.Area.Y + " to " + trigger.Area.Right + ", " + trigger.Area.Bottom + "]";
+                        message += "\nTriggered in Room " + trigger.Room + " on sectors " + trigger.Area;
         }
 
         private void DrawLights(Matrix viewProjection, Room room)

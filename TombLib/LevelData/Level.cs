@@ -233,7 +233,7 @@ namespace TombLib.LevelData
             GlobalScriptingIdsTable.MergeFrom(otherLevel.GlobalScriptingIdsTable);
         }
 
-        public IReadOnlyList<Room> TransformRooms(IEnumerable<Room> roomsToRotate, RectTransformation transformation, DrawingPoint center)
+        public IReadOnlyList<Room> TransformRooms(IEnumerable<Room> roomsToRotate, RectTransformation transformation, VectorInt2 center)
         {
             roomsToRotate = roomsToRotate.SelectMany(room => room.Versions).Distinct();
             Room[] oldRooms = roomsToRotate.ToArray();
@@ -246,9 +246,9 @@ namespace TombLib.LevelData
                 Room oldRoom = oldRooms[i];
 
                 // Create room
-                DrawingPoint newSize = (transformation.QuadrantRotation % 2 == 0) ? oldRoom.SectorSize : new DrawingPoint(oldRoom.NumZSectors, oldRoom.NumXSectors);
+                VectorInt2 newSize = (transformation.QuadrantRotation % 2 == 0) ? oldRoom.SectorSize : new VectorInt2(oldRoom.NumZSectors, oldRoom.NumXSectors);
                 Room newRoom = oldRoom.Clone(this, obj => false); // This is a waste of computing power: All sectors are copied and immediately afterwards thrown away because the room needs to get resized.
-                newRoom.Resize(this, new Rectangle(0, 0, newSize.X - 1, newSize.Y - 1));
+                newRoom.Resize(this, new RectangleInt2(0, 0, newSize.X - 1, newSize.Y - 1));
 
                 // Assign position
                 Vector3 roomCenter = oldRoom.WorldPos + new Vector3(oldRoom.NumXSectors, 0, oldRoom.NumZSectors) * (1024.0f * 0.5f);
@@ -261,7 +261,7 @@ namespace TombLib.LevelData
                 for (int z = 0; z < oldRoom.NumZSectors; ++z)
                     for (int x = 0; x < oldRoom.NumXSectors; ++x)
                     {
-                        DrawingPoint newSectorPosition = transformation.TransformIVec2(new DrawingPoint(x, z), oldRoom.SectorSize);
+                        VectorInt2 newSectorPosition = transformation.Transform(new VectorInt2(x, z), oldRoom.SectorSize);
                         newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y] = oldRoom.Blocks[x, z].Clone();
                         newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y].Transform(transformation, null,
                             (oldFace) => oldRoom.GetFaceShape(x, z, oldFace));
@@ -313,10 +313,10 @@ namespace TombLib.LevelData
         public IReadOnlyList<Room> TransformRooms(IEnumerable<Room> roomsToRotate, RectTransformation transformation)
         {
             IReadOnlyList<Room> rooms = roomsToRotate as IReadOnlyList<Room> ?? roomsToRotate.ToList();
-            Rectangle coveredArea = new Rectangle(int.MaxValue, int.MaxValue, int.MinValue, int.MinValue);
+            RectangleInt2 coveredArea = new RectangleInt2(int.MaxValue, int.MaxValue, int.MinValue, int.MinValue);
             foreach (Room room in rooms)
                 coveredArea = coveredArea.Union(room.WorldArea);
-            return TransformRooms(rooms, transformation, new DrawingPoint((coveredArea.Left + coveredArea.Right) / 2, (coveredArea.Top + coveredArea.Bottom) / 2));
+            return TransformRooms(rooms, transformation, new VectorInt2((coveredArea.X0 + coveredArea.X1) / 2, (coveredArea.Y0 + coveredArea.Y1) / 2));
         }
 
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)

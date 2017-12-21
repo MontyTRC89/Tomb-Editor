@@ -522,7 +522,7 @@ namespace TombLib.LevelData.Compilers.Util
                         {
                             ColorC color = texture.Texture.Image.GetPixel(x, y);
                             using (var brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B)))
-                                e.Graphics.FillRectangle(brush, new System.Drawing.Rectangle(x, y, 1, 1));
+                                e.Graphics.FillRectangle(brush, new System.Drawing.RectangleInt2(x, y, 1, 1));
                         }
 
                     // Draw virtual coordinates

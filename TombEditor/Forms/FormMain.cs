@@ -207,13 +207,13 @@ namespace TombEditor
                     int maxHeight = room.GetHighestCorner(_editor.SelectedSectors.Area);
 
                     statusStripGlobalSelectionArea.Text = "Global area = " +
-                        "(" + (room.Position.X + _editor.SelectedSectors.Area.X) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y) + ") \u2192 " +
-                        "(" + (room.Position.X + _editor.SelectedSectors.Area.Right) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Bottom) + ")" +
+                        "(" + (room.Position.X + _editor.SelectedSectors.Area.X0) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y0) + ") \u2192 " +
+                        "(" + (room.Position.X + _editor.SelectedSectors.Area.X1) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y1) + ")" +
                         " | y = [" + ((minHeight == int.MaxValue || maxHeight == int.MinValue) ? "N/A" : ((room.Position.Y + minHeight) + ", " + (room.Position.Y + maxHeight))) + "]";
 
                     statusStripLocalSelectionArea.Text = "Local area = " +
-                        "(" + _editor.SelectedSectors.Area.X + ", " + _editor.SelectedSectors.Area.Y + ") \u2192 " +
-                        "(" + _editor.SelectedSectors.Area.Right + ", " + _editor.SelectedSectors.Area.Bottom + ")" +
+                        "(" + _editor.SelectedSectors.Area.X0 + ", " + _editor.SelectedSectors.Area.Y0 + ") \u2192 " +
+                        "(" + _editor.SelectedSectors.Area.X1 + ", " + _editor.SelectedSectors.Area.Y1 + ")" +
                         " | y = [" + ((minHeight == int.MaxValue || maxHeight == int.MinValue) ? "N/A" : (minHeight + ", " + maxHeight)) + "]";
                 }
             }

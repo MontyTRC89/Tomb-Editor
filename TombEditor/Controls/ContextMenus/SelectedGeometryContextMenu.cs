@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.LevelData;
 
 namespace TombEditor.Controls.ContextMenus
 {
     class SelectedGeometryContextMenu : BaseContextMenu
     {
-        public SelectedGeometryContextMenu(Editor editor, Room targetRoom, SharpDX.Rectangle targetArea)
+        public SelectedGeometryContextMenu(Editor editor, Room targetRoom, RectangleInt2 targetArea)
             : base(editor)
         {
             Items.Add(new ToolStripMenuItem("Add trigger", null, (o, e) =>

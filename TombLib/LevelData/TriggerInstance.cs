@@ -69,7 +69,7 @@ namespace TombLib.LevelData
         public byte CodeBits { get; set; } = 0x1f; // Only the lower 5 bits are used.
         public short ExtraData { get; set; } = 0;
 
-        public TriggerInstance(Rectangle area)
+        public TriggerInstance(RectangleInt2 area)
             : base(area)
         { }
 
@@ -81,7 +81,7 @@ namespace TombLib.LevelData
             if (output.IndexOf("trigger", StringComparison.OrdinalIgnoreCase) == -1)
                 output += "Trigger ";
             output += "in room '" + (Room?.ToString() ?? "NULL") + "' ";
-            output += "on sectors [" + Area.X + ", " + Area.Y + " to " + Area.Right + ", " + Area.Bottom + "] ";
+            output += "on sectors [" + Area.X0 + ", " + Area.Y0 + " to " + Area.X1 + ", " + Area.Y1 + "] ";
             output += "for " + TargetType.ToString() + " ";
             switch (TargetType)
             {
@@ -103,8 +103,8 @@ namespace TombLib.LevelData
         {
             base.AddToRoom(level, room);
 
-            for (int x = Area.X; x <= Area.Right; x++)
-                for (int z = Area.Y; z <= Area.Bottom; z++)
+            for (int x = Area.X0; x <= Area.X1; x++)
+                for (int z = Area.Y0; z <= Area.Y1; z++)
                     room.Blocks[x, z].Triggers.Add(this);
         }
 
@@ -112,8 +112,8 @@ namespace TombLib.LevelData
         {
             base.RemoveFromRoom(level, room);
 
-            for (int x = Area.X; x <= Area.Right; x++)
-                for (int z = Area.Y; z <= Area.Bottom; z++)
+            for (int x = Area.X0; x <= Area.X1; x++)
+                for (int z = Area.Y0; z <= Area.Y1; z++)
                     room.Blocks[x, z].Triggers.Remove(this);
         }
 

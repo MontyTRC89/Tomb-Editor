@@ -23,13 +23,13 @@ namespace TombLib.LevelData
         public Vector2 TexCoord1 { get; set; }
         public Vector2 TexCoord2 { get; set; }
         public Vector2 TexCoord3 { get; set; }
-        public Rectangle Area
+        public RectangleInt2 Area
         {
             get
             {
                 Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
                 Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
-                return new Rectangle((int)Math.Floor(min.X), (int)Math.Floor(min.Y), (int)Math.Ceiling(max.X), (int)Math.Ceiling(max.Y));
+                return new RectangleInt2((int)Math.Floor(min.X), (int)Math.Floor(min.Y), (int)Math.Ceiling(max.X), (int)Math.Ceiling(max.Y));
             }
         }
         private int _repeat = 1;
