@@ -84,8 +84,12 @@ namespace TombEditor.Controls
         private static readonly Font _explanationStringFont = new Font("Segoe UI", 12.0f, FontStyle.Regular, GraphicsUnit.Pixel);
         private static readonly StringFormat _explanationStringLayout = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far };
         private static readonly Brush _explanationStringBrush = new SolidBrush(Color.Black);
-        private const string _explanationString = "Double click or press Alt + left click on the map to add a depth probe.\n" +
-            "Double click or press CTRL + left click on a depth probe to remove it.";
+        private const string _explanationString =
+            "Double click or press Alt + left click on the map to add a depth probe.\n" +
+            "Double click or press Ctrl + left click on a depth probe to remove it.\n" +
+            "\n" +
+            "Press the middle mouse button to select multiple rooms or select connected rooms by double clicking.\n" +
+            "The selection can be modified using Ctrl, Shift, Alt. To copy rooms, press Ctrl while moving.";
         private const float _explanationStringMargin = 4.0f;
         private const float _probeRadius = 18;
 

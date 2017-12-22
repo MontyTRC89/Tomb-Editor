@@ -24,7 +24,8 @@ namespace TombEditor.Controls
         public event Action<IEnumerable<Room>> SelectedRoom;
 
         private const float _marginX = 10.0f;
-        private const float _marginY = 48.0f;
+        private const float _marginYUp = 32.0f;
+        private const float _marginYDown = 110.0f;
         private const float _barWidth = 36.0f;
         private const int _heightStringCount = 16;
         private const float _heightStringLineLength = 4.0f;
@@ -101,8 +102,8 @@ namespace TombEditor.Controls
         {
             float barsWidth = _barWidth * (DepthProbes.Count + 1);
             return new RectangleF(
-                parentControlSize.Width - barsWidth - _marginX, _marginY,
-                barsWidth, Math.Max(parentControlSize.Height - 2 * _marginY, 64.0f));
+                parentControlSize.Width - barsWidth - _marginX, _marginYUp,
+                barsWidth, Math.Max(parentControlSize.Height - (_marginYUp + _marginYDown), 64.0f));
         }
 
         private Color getProbeColor()
