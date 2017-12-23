@@ -1,15 +1,11 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Graphics;
-using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -28,7 +24,7 @@ namespace WadTool
         {
             InitializeComponent();
 
-            openFileDialogSprites.Filter = SupportedFormats.GetFilter(FileFormatType.Texture);
+            openFileDialogSprites.Filter = ImageC.FromFileFileExtensions.GetFilter();
 
             _tool = WadToolClass.Instance;
 

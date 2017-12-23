@@ -1,14 +1,13 @@
-﻿using System;
+﻿using SharpDX;
+using SharpDX.Toolkit.Graphics;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SharpDX;
-using TombLib.Utils;
-using TombLib.Graphics;
-using SharpDX.Toolkit.Graphics;
-using System.Drawing;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
+using TombLib.Graphics;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
@@ -101,7 +100,7 @@ namespace TombLib.Wad
                 texture.PositionInPackedTextureMap = new Vector2(point.Value.X, point.Value.Y);
             }
 
-            // Copy the page in a temp bitmap. 
+            // Copy the page in a temp bitmap.
             var tempBitmap = ImageC.CreateNew(512, packer.MaxHeight);
 
             foreach (var texture in PackedTextures)
@@ -136,7 +135,7 @@ namespace TombLib.Wad
                 texture.PositionInTextureAtlas = new Vector2(point.Value.X, point.Value.Y);
             }
 
-            // Copy the page in a temp bitmap. 
+            // Copy the page in a temp bitmap.
             // I generate a texture atlas, putting all texture pages inside 2048x2048 pixel textures.
             var tempBitmap = ImageC.CreateNew(TextureAtlasSize, TextureAtlasSize);
 
@@ -188,5 +187,21 @@ namespace TombLib.Wad
                 sprite.DirectXTexture = TextureLoad.Load(GraphicsDevice, sprite.Image);
             }
         }
+
+        public static IReadOnlyList<FileFormat> WadFormatExtensions { get; } = new List<FileFormat>()
+        {
+            new FileFormat("Winroomedit WAD", "wad"),
+            new FileFormat("TombEditor WAD2", "wad2")
+        };
+
+        public static IReadOnlyList<FileFormat> WadFormatImportExtensions { get; } = new List<FileFormat>()
+        {
+            new FileFormat("Winroomedit WAD", "wad"),
+            new FileFormat("TombEditor WAD2", "wad2"),
+            new FileFormat("Tomb Raider I level", "phd"),
+            new FileFormat("Tomb Raider II/III level", "tr2"),
+            new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
+            new FileFormat("Tomb Raider Chronicles level", "trc")
+        };
     }
 }

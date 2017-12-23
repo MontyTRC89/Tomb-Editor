@@ -1,15 +1,13 @@
-﻿using NLog;
+﻿using DarkUI.Docking;
+using NLog;
 using SharpDX;
-using DarkUI.Docking;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-
-using System.Xml.Serialization;
 using System.Xml;
-using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace TombEditor
 {

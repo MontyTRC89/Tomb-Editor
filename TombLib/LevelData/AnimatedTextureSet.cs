@@ -73,7 +73,7 @@ namespace TombLib.LevelData
             {
                 return AnimationType == AnimatedTextureAnimationType.FullRotate ||
                        AnimationType == AnimatedTextureAnimationType.HalfRotate ||
-                       AnimationType == AnimatedTextureAnimationType.RiverRotate; 
+                       AnimationType == AnimatedTextureAnimationType.RiverRotate;
             }
         }
 

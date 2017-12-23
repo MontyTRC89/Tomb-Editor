@@ -1,7 +1,7 @@
-﻿using System;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SharpDX;
 using TombLib.LevelData;
 
 namespace TombLib.LevelData.Compilers

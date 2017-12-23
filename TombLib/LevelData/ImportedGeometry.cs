@@ -122,6 +122,7 @@ namespace TombLib.LevelData
             public override void BuildBuffers() { }
         }
 
+        public static IReadOnlyList<FileFormat> FileExtensions => BaseGeometryImporter.FileExtensions;
         public UniqueIDType UniqueID { get; } = new UniqueIDType();
         public Exception LoadException { get; private set; } = null;
         public ImportedGeometryInfo Info { get; private set; } = ImportedGeometryInfo.Default;

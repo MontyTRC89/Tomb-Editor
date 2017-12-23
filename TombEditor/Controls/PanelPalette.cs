@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using TombLib.LevelData;
 
 namespace TombEditor.Controls
 {
@@ -19,7 +17,7 @@ namespace TombEditor.Controls
             get { return getColorFromPalette(_selectedColorCoord); }
         }
         public event EventHandler SelectedColorChanged;
-        
+
         private Point _selectedColorCoord = new Point(-1, -1);
         private static Pen _selectionPen = Pens.White;
         private static Pen _gridPen = Pens.Black;
@@ -39,7 +37,7 @@ namespace TombEditor.Controls
                     while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
                         _palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
         }
-        
+
         private Color getColorFromPalette(Point point)
         {
             if (_palette == null)
@@ -71,7 +69,7 @@ namespace TombEditor.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            
+
             for (int y = 0; y < _paletteHeight; y++)
                 for (int x = 0; x < _paletteWidth; x++)
                 {
@@ -82,7 +80,7 @@ namespace TombEditor.Controls
                 }
 
             if ((_selectedColorCoord.X >= 0) && (_selectedColorCoord.Y >= 0))
-                e.Graphics.DrawRectangle(_selectionPen, _selectedColorCoord.X * _paletteCellWidth, 
+                e.Graphics.DrawRectangle(_selectionPen, _selectedColorCoord.X * _paletteCellWidth,
                     _selectedColorCoord.Y * _paletteCellHeight, _paletteCellWidth, _paletteCellHeight);
         }
     }

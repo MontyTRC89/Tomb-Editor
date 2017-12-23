@@ -1,12 +1,12 @@
-﻿using System;
+﻿using SharpDX;
+using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SharpDX.Toolkit.Graphics;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
-using SharpDX;
 
 namespace TombLib.Graphics
 {

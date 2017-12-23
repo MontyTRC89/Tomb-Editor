@@ -1,16 +1,14 @@
-﻿using System;
+﻿using NLog;
+using SharpDX;
+using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using NLog;
-using SharpDX;
-using SharpDX.Toolkit.Graphics;
-using TombLib.IO;
-using Color = System.Drawing.Color;
-using TombLib.Utils;
 using System.Threading.Tasks;
+using TombLib.IO;
+using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.LevelData.IO
@@ -1181,7 +1179,8 @@ namespace TombLib.LevelData.IO
                         if (texture.Image.Width != 256)
                             texture.SetConvert512PixelsToDoubleRows(level.Settings, false); // Only use this compatibility thing if actually needed
                         level.Settings.Textures.Add(texture);
-                        ResourceLoader.CheckLoadedTexture(level.Settings, texture, progressReporter);
+                        if (texture.ImageLoadException != null)
+                            progressReporter.RaiseDialog(new DialogDescriptonTextureUnloadable { Settings = level.Settings, Texture = texture});
                         progressReporter.ReportProgress(50, "Loaded texture '" + texture.Path + "'");
                     }
 
@@ -1243,7 +1242,10 @@ namespace TombLib.LevelData.IO
                     }
 
                     // Read WAD file
-                    ResourceLoader.TryLoadingObjects(level, progressReporter);
+                    level.ReloadWad(progressReporter);
+                    if (level.WadLoadingException != null)
+                        progressReporter.RaiseDialog(new DialogDescriptonWadUnloadable { Level = level });
+
                     progressReporter.ReportProgress(60, "Loaded WAD '" + level.Settings.WadFilePath + "'");
 
                     // Write slots

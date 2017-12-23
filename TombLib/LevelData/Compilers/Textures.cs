@@ -1,15 +1,11 @@
-﻿using System;
+﻿using NLog;
+using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using NLog;
-using TombLib.LevelData;
-using TombLib.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
-using TombLib.Utils;
-using SharpDX;
-using TombLib.Wad;
 using System.Linq;
+using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -69,12 +65,12 @@ namespace TombLib.LevelData.Compilers
             // Read font texture
             string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
             ReportProgress(19, "Reading font texture: " + fontFileName);
-            image.CopyFrom(0, 0, IO.ResourceLoader.LoadRawExtraTexture(fontFileName));
+            image.CopyFrom(0, 0, LevelSettings.LoadRawExtraTexture(fontFileName));
 
             // Read sky texture
             string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
             ReportProgress(18, "Reading sky texture: " + skyFileName);
-            image.CopyFrom(0, 256, IO.ResourceLoader.LoadRawExtraTexture(skyFileName));
+            image.CopyFrom(0, 256, LevelSettings.LoadRawExtraTexture(skyFileName));
 
             return image.ToRawStream();
         }

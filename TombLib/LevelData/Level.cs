@@ -21,6 +21,7 @@ namespace TombLib.LevelData
         public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
         public Wad2 Wad { get; private set; }
+        public Exception WadLoadingException { get; private set; }
         public LevelSettings Settings { get; private set; } = new LevelSettings();
         public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
 
@@ -91,28 +92,27 @@ namespace TombLib.LevelData
 
         public void Dispose()
         {
-            UnloadWad();
-        }
-
-        private void UnloadWad()
-        {
-            logger.Info("Reseting wad");
             Wad?.Dispose();
             Wad = null;
+            WadLoadingException = null;
         }
 
-        public void ReloadWad(IProgressReporter progressReporter)
+        public void ReloadWad() => ReloadWad(new ProgressReporterSimple());
+        public void ReloadWad(IDialogHandler progressReporter)
         {
             string path = Settings.MakeAbsolute(Settings.WadFilePath);
             if (string.IsNullOrEmpty(path))
             {
-                UnloadWad();
+                logger.Info("Reseting wad");
+                Wad?.Dispose();
+                Wad = null;
+                WadLoadingException = null;
                 return;
             }
 
-            using (var wad = Wad)
+            try
             {
-                var isWad2 = path.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase);
+                bool isWad2 = path.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase);
                 var newWad = new Wad2(WadTombRaiderVersion.TR4, !isWad2);
                 try
                 {
@@ -143,21 +143,16 @@ namespace TombLib.LevelData
                     newWad?.Dispose();
                     throw;
                 }
-
+                Wad?.Dispose();
                 Wad = newWad;
-            }
-        }
-
-        public void ReloadObjectsTry()
-        {
-            try
-            {
-                ReloadWad(null);
+                WadLoadingException = null;
             }
             catch (Exception exc)
             {
-                UnloadWad();
-                logger.Warn(exc, "Unable to load objects from '" + Settings.MakeAbsolute(Settings.WadFilePath) + "'");
+                logger.Error(exc, "Loading *.wad failed.");
+                Wad?.Dispose();
+                Wad = null;
+                WadLoadingException = exc;
             }
         }
 
@@ -379,7 +374,7 @@ namespace TombLib.LevelData
 
             // Update wads if necessary
             if (newSettings.MakeAbsolute(newSettings.WadFilePath) != oldSettings.MakeAbsolute(oldSettings.WadFilePath))
-                ReloadObjectsTry();
+                ReloadWad();
         }
         public void ApplyNewLevelSettings(LevelSettings newSettings) => ApplyNewLevelSettings(newSettings, s => { });
     }

@@ -16,10 +16,11 @@ namespace TombLib.Forms
 {
     public partial class ImportTr4WadDialog : DarkForm
     {
-        public bool IgnoreMissingSamples { get; set; }
+        private DialogDescriptonMissingSounds _dialogInfo;
 
-        public ImportTr4WadDialog()
+        public ImportTr4WadDialog(DialogDescriptonMissingSounds dialogInfo)
         {
+            _dialogInfo = dialogInfo;
             InitializeComponent();
         }
 
@@ -35,7 +36,7 @@ namespace TombLib.Forms
         private void ReloadSoundPaths()
         {
             lstPaths.Items.Clear();
-            foreach (var path in Tr4WadOperations.SoundPaths)
+            foreach (var path in _dialogInfo.SoundPaths)
                 lstPaths.Items.Add(path);
         }
 
@@ -43,7 +44,7 @@ namespace TombLib.Forms
         {
             dgvSamples.Rows.Clear();
 
-            foreach (var info in Tr4WadOperations.Samples)
+            foreach (var info in _dialogInfo.Samples)
                 dgvSamples.Rows.Add(info.Sample, info.Path, "Search", info.Found);
 
             UpdateStatus();
@@ -52,10 +53,10 @@ namespace TombLib.Forms
         private void UpdateStatus()
         {
             var foundSamples = 0;
-            foreach (var info in Tr4WadOperations.Samples)
+            foreach (var info in _dialogInfo.Samples)
                 if (info.Found) foundSamples++;
 
-            var numSamples = Tr4WadOperations.Samples.Count;
+            var numSamples = _dialogInfo.Samples.Count;
             var missingSamples = numSamples - foundSamples;
 
             statusSamples.Text = "Samples = " + numSamples + " | Found = " + foundSamples + " | Missing = " + missingSamples;
@@ -69,13 +70,13 @@ namespace TombLib.Forms
 
         private void butReloadSamples_Click(object sender, EventArgs e)
         {
-            Tr4WadOperations.FindTr4Samples();
+            _dialogInfo.FindTr4Samples();
             ReloadSamples();
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (!Tr4WadOperations.FindTr4Samples())
+            if (!_dialogInfo.FindTr4Samples())
             {
                 var result = DarkMessageBox.Show(this, "Warning: some samples are still missing. " + Environment.NewLine +
                                                  "If you continue, you'll have to fix them manually with sound manager. " + Environment.NewLine +
@@ -103,8 +104,8 @@ namespace TombLib.Forms
                 dialog.Title = "Select a new sound folder (should contain *.wav audio files)";
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    Tr4WadOperations.SoundPaths.Add(dialog.Folder);
-                    Tr4WadOperations.FindTr4Samples();
+                    _dialogInfo.SoundPaths.Add(dialog.Folder);
+                    _dialogInfo.FindTr4Samples();
                     ReloadSoundPaths();
                     ReloadSamples();
                 }
@@ -116,8 +117,8 @@ namespace TombLib.Forms
             if (DarkMessageBox.Show(this, "Are you really sure to delete selected path?", "Delete sound path",
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                Tr4WadOperations.SoundPaths.RemoveAt(lstPaths.SelectedIndex);
-                Tr4WadOperations.FindTr4Samples();
+                _dialogInfo.SoundPaths.RemoveAt(lstPaths.SelectedIndex);
+                _dialogInfo.FindTr4Samples();
                 ReloadSoundPaths();
                 ReloadSamples();
             }
@@ -138,10 +139,10 @@ namespace TombLib.Forms
                 using (var dialog = new OpenFileDialog())
                 {
                     dialog.Title = "Search WAV sample";
-                    dialog.Filter = "WAV sample (*.wav)|*.wav";
+                    dialog.Filter = "WAV sample (*.wav)|*.wav|All files (*.*)|*.*";
                     if (dialog.ShowDialog() == DialogResult.OK && File.Exists(dialog.FileName))
                     {
-                        Tr4WadOperations.Samples[e.RowIndex].Path = dialog.FileName;
+                        _dialogInfo.Samples[e.RowIndex].Path = dialog.FileName;
                         dgvSamples.Rows[e.RowIndex].Cells[1].Value = dialog.FileName;
                         dgvSamples.Rows[e.RowIndex].Cells[3].Value = true;
 

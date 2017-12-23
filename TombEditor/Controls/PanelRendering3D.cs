@@ -1,4 +1,8 @@
-﻿using System;
+﻿using DarkUI.Controls;
+using NLog;
+using SharpDX;
+using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,17 +11,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SharpDX;
-using SharpDX.Toolkit.Graphics;
-using TombLib.LevelData;
-using TombLib.Graphics;
-using TombLib.IO;
-using TombLib.Utils;
-using NLog;
-using DarkUI.Controls;
-using DarkUI.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
+using TombLib.Graphics;
+using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
@@ -1500,25 +1498,25 @@ namespace TombEditor.Controls
 
                     foreach (var file in files)
                     {
-                        if (!SupportedFormats.IsExtensionPresent(FileFormatType.GeometryImport, file))
+                        if (!ImportedGeometry.FileExtensions.Matches(file))
                             continue;
 
-                        var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
-                        var info = ImportedGeometryInfo.Default;
-                        info.Path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
-                        info.Name = Path.GetFileNameWithoutExtension(file);
-
+                        ImportedGeometry geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(
+                            item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
                         if (geometryToDrop == null)
                         {
+                            var info = ImportedGeometryInfo.Default;
+                            info.Path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+                            info.Name = Path.GetFileNameWithoutExtension(file);
+
                             geometryToDrop = new ImportedGeometry();
                             _editor.Level.Settings.ImportedGeometryUpdate(geometryToDrop, info);
                             _editor.Level.Settings.ImportedGeometries.Add(geometryToDrop);
                             _editor.LoadedImportedGeometriesChange();
                         }
 
-                        var instance = new ImportedGeometryInstance();
-                        instance.Model = geometryToDrop;
-                        EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos, instance);
+                        EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos,
+                            new ImportedGeometryInstance { Model = geometryToDrop });
                     }
                 }
             }

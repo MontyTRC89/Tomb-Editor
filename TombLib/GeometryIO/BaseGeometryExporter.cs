@@ -75,5 +75,13 @@ namespace TombLib.GeometryIO
         {
             return color;
         }
+
+        public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
+        {
+            new FileFormat("Stanford Polygon Library", "ply"),
+            new FileFormat("Wavefront Object", "obj"),
+            new FileFormat("Metasequoia", "mqo"),
+            new FileFormat("Collada", "dae")
+        };
     }
 }

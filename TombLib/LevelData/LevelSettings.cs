@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using TombLib.Utils;
-using TombLib.Wad;
 using ImportedGeometryUpdateInfo = System.Collections.Generic.KeyValuePair<TombLib.LevelData.ImportedGeometry, TombLib.LevelData.ImportedGeometryInfo>;
 
 namespace TombLib.LevelData
@@ -109,9 +108,9 @@ namespace TombLib.LevelData
                 case VariableType.None:
                     return "";
                 case VariableType.EditorDirectory:
-                    return System.Windows.Forms.Application.StartupPath;
+                    return System.Reflection.Assembly.GetCallingAssembly().Location;
                 case VariableType.ScriptDirectory:
-                    return System.Windows.Forms.Application.StartupPath + Dir + "Script";
+                    return System.Reflection.Assembly.GetCallingAssembly().Location + Dir + "Script";
                 case VariableType.LevelDirectory:
                     if (!string.IsNullOrEmpty(LevelFilePath))
                         return Path.GetDirectoryName(LevelFilePath);
@@ -228,10 +227,50 @@ namespace TombLib.LevelData
         }
 
         public string FontTextureFileNameAbsoluteOrDefault => MakeAbsolute(FontTextureFilePath) ??
-            Path.Combine(System.Windows.Forms.Application.StartupPath, "Editor/Textures/Font.pc.png");
+            Path.Combine(System.Reflection.Assembly.GetCallingAssembly().Location, "Editor/Textures/Font.pc.png");
 
         public string SkyTextureFileNameAbsoluteOrDefault => MakeAbsolute(SkyTextureFilePath) ??
-            Path.Combine(System.Windows.Forms.Application.StartupPath, "Editor/Textures/pcsky.raw.png");
+            Path.Combine(System.Reflection.Assembly.GetCallingAssembly().Location, "Editor/Textures/pcsky.raw.png");
+
+        public static ImageC LoadRawExtraTexture(string path)
+        {
+            using (FileStream reader = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                ImageC image;
+
+                if (path.EndsWith(".raw"))
+                {
+                    // Raw file: 256² pixels with 24 bpp
+                    byte[] data = new byte[256 * 256 * 3];
+                    reader.Read(data, 0, data.Length);
+
+                    image = ImageC.CreateNew(256, 256);
+                    for (int i = 0; i < 256 * 256; ++i)
+                        image.Set(i, data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
+                }
+                else if (path.EndsWith(".pc"))
+                {
+                    // Raw file: 256² pixels with 32 bpp
+                    byte[] data = new byte[256 * 256 * 4];
+                    reader.Read(data, 0, data.Length);
+
+                    image = ImageC.CreateNew(256, 256);
+                    for (int i = 0; i < 256 * 256; ++i)
+                        image.Set(i, data[i * 4 + 2], data[i * 4 + 1], data[i * 4], data[i * 4 + 3]);
+                }
+                else
+                    image = ImageC.FromStream(reader);
+
+                if ((image.Width != 256) || (image.Height != 256))
+                    throw new NotSupportedException("The texture's size must be 256 by 256 pixels. " +
+                        "(The current texture '" + path + "' is " + image.Width + " by " + image.Height + " pixels)");
+                return image;
+            }
+        }
+
+        public static IEnumerable<FileFormat> LoadRawExtraTextureFileFormats =>
+            new FileFormat[1] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
+
 
         public string LookupSound(string soundName, bool ignoreMissingSounds)
         {

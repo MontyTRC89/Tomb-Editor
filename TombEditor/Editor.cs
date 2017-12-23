@@ -1,13 +1,12 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using SharpDX;
+using System.Threading;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
-using System.IO;
-using System.Threading;
-using NLog;
-using TombLib;
 
 namespace TombEditor
 {

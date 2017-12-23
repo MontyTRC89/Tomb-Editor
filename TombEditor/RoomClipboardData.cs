@@ -6,11 +6,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using TombLib.LevelData;
-using TombLib.IO;
-using TombLib.Utils;
-using TombLib.LevelData.IO;
 using TombLib;
+using TombLib.IO;
+using TombLib.LevelData;
+using TombLib.LevelData.IO;
+using TombLib.Utils;
 
 namespace TombEditor
 {

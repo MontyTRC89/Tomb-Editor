@@ -10,9 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib;
+using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.GeometryIO.Exporters;
-using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
 using TombLib.LevelData.IO;
@@ -21,15 +21,6 @@ using TombLib.Wad;
 
 namespace TombEditor
 {
-    public enum RoomImportExportFormat
-    {
-        Obj,
-        Metasequoia,
-        Fbx,
-        Ply,
-        Collada
-    }
-
     public static class EditorActions
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -2201,7 +2192,7 @@ namespace TombEditor
         public static void LoadTextures(IWin32Window owner)
         {
             var settings = _editor.Level.Settings;
-            string path = ResourceLoader.BrowseTextureFile(settings, settings.TextureFilePath, owner);
+            string path = GraphicalDialogHandler.BrowseTextureFile(settings, settings.TextureFilePath, owner);
             if (settings.TextureFilePath == path)
                 return;
 
@@ -2212,25 +2203,25 @@ namespace TombEditor
         public static void LoadWad(IWin32Window owner)
         {
             var settings = _editor.Level.Settings;
-            string path = ResourceLoader.BrowseObjectFile(settings, settings.WadFilePath, owner);
+            string path = GraphicalDialogHandler.BrowseObjectFile(settings, settings.WadFilePath, owner);
             if (path == settings.WadFilePath)
                 return;
 
             settings.WadFilePath = path;
-            _editor.Level.ReloadWad(null);
+            _editor.Level.ReloadWad(new GraphicalDialogHandler(owner));
             _editor.LoadedWadsChange(_editor.Level.Wad);
         }
 
         public static void UnloadWad()
         {
             _editor.Level.Settings.WadFilePath = null;
-            _editor.Level.ReloadWad(null);
+            _editor.Level.ReloadWad();
             _editor.LoadedWadsChange(null);
         }
 
         public static void ReloadWad()
         {
-            _editor.Level.ReloadWad(null);
+            _editor.Level.ReloadWad();
             _editor.LoadedWadsChange(null);
         }
 
@@ -2285,20 +2276,17 @@ namespace TombEditor
 
         public static bool DragDropFileSupported(DragEventArgs e, bool allow3DImport = false)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                int fileCount = files.Count();
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                return false;
 
-                foreach (var file in files)
-                    if (SupportedFormats.IsExtensionPresent(FileFormatType.Object, file) ||
-                        SupportedFormats.IsExtensionPresent(FileFormatType.Texture, file) ||
-                        (allow3DImport && SupportedFormats.IsExtensionPresent(FileFormatType.GeometryImport, file)) ||
-                        file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase) ||
-                        file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
-                        return true;
-            }
-
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string file in files)
+                if (Wad2.WadFormatExtensions.Matches(file) ||
+                    LevelTexture.FileExtensions.Matches(file) ||
+                    (allow3DImport && ImportedGeometry.FileExtensions.Matches(file)) ||
+                    file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase) ||
+                    file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
+                    return true;
             return false;
         }
 
@@ -2327,20 +2315,18 @@ namespace TombEditor
         public static int DragDropCommonFiles(DragEventArgs e, IWin32Window owner)
         {
             int unsupportedFileCount = 0;
-
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                foreach (var file in files)
+                foreach (string file in files)
                 {
-                    if (SupportedFormats.IsExtensionPresent(FileFormatType.Object, file))
+                    if (Wad2.WadFormatExtensions.Matches(file))
                     {
                         _editor.Level.Settings.WadFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
-                        _editor.Level.ReloadWad(null);
+                        _editor.Level.ReloadWad(new GraphicalDialogHandler(owner));
                         _editor.LoadedWadsChange(_editor.Level.Wad);
                     }
-                    else if (SupportedFormats.IsExtensionPresent(FileFormatType.Texture, file))
+                    else if (LevelTexture.FileExtensions.Matches(file))
                     {
                         _editor.Level.Settings.TextureFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
                         _editor.LoadedTexturesChange();
@@ -2434,9 +2420,9 @@ namespace TombEditor
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Title = "Export current room";
-                saveFileDialog.Filter = SupportedFormats.GetFilter(FileFormatType.GeometryExport, false, false);
+                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter();
                 saveFileDialog.AddExtension = true;
-                saveFileDialog.DefaultExt = SupportedFormats.GetExtensionFromIndex(FileFormatType.GeometryExport);
+                saveFileDialog.DefaultExt = "obj";
                 saveFileDialog.FileName = _editor.SelectedRoom.Name;
 
                 if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
@@ -2549,7 +2535,7 @@ namespace TombEditor
             Level newLevel = null;
             try
             {
-                newLevel = Prj2Loader.LoadFromPrj2(_fileName, new ProgressReporterSimple(owner));
+                newLevel = Prj2Loader.LoadFromPrj2(_fileName, new ProgressReporterSimple());
             }
             catch (Exception exc)
             {

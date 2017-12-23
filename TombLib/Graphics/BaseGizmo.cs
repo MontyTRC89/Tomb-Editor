@@ -1,8 +1,6 @@
 ﻿using SharpDX;
 using SharpDX.Toolkit.Graphics;
-using System.Windows.Forms;
 using System;
-using Buffer = SharpDX.Toolkit.Graphics;
 
 namespace TombLib.Graphics
 {

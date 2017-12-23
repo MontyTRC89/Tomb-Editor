@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using SharpDX;
 
 namespace TombLib.Utils
 {
@@ -271,6 +271,15 @@ namespace TombLib.Utils
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 return FromStream(stream);
         }
+
+        public static IReadOnlyList<FileFormat> FromFileFileExtensions { get; } = new List<FileFormat>()
+        {
+            new FileFormat("Portable Network Graphics", "png"),
+            new FileFormat("Truevision Targa", "tga"),
+            new FileFormat("Windows Bitmap", "bmp", "dib"),
+            new FileFormat("Jpeg Image (Not recommended)", "jpg", "jpeg", "jpe", "jif", "jfif", "jfi"),
+            new FileFormat("Graphics Interchange Format (Not recommended)", "gif")
+        };
 
         private static ImageC FromSystemDrawingBitmapMatchingPixelFormat(Bitmap bitmap)
         {

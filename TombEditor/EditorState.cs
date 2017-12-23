@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using TombLib;
-using TombLib.LevelData;
 
 namespace TombEditor
 {

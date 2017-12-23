@@ -3,19 +3,16 @@ using SharpDX;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using TombLib.Forms;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.Tr4Wad
 {
-    internal class SamplePathInfo
+    public class SamplePathInfo
     {
         public string Sample { get; }
         public string Path { get; set; }
@@ -32,32 +29,22 @@ namespace TombLib.Wad.Tr4Wad
     public static class Tr4WadOperations
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private static Tr4Wad _oldWad;
-        private static Wad2 _wad;
-        private static List<string> _soundPaths;
-        private static Dictionary<int, WadTexture> _convertedTextures;
-        private static List<WadMesh> _meshes;
-        private static List<SamplePathInfo> _samples;
-        private static IProgressReporter _progressReporter;
 
-        internal static List<SamplePathInfo> Samples { get { return _samples; } }
-        internal static List<string> SoundPaths { get { return _soundPaths; } }
-
-        internal static bool FindTr4Samples()
+        private static bool FindTr4Samples(Wad2 wad, Tr4Wad oldWad, List<SamplePathInfo> samples, List<string> soundPaths)
         {
-            if (_samples.Count == 0)
+            if (samples.Count == 0)
             {
-                for (var i = 0; i < _oldWad.Sounds.Count; i++)
-                    _samples.Add(new SamplePathInfo(i, _oldWad.Sounds[i]));
+                for (var i = 0; i < oldWad.Sounds.Count; i++)
+                    samples.Add(new SamplePathInfo(i, oldWad.Sounds[i]));
             }
 
             var foundSamples = 0;
-            for (var i = 0; i < _oldWad.Sounds.Count; i++)
+            for (var i = 0; i < oldWad.Sounds.Count; i++)
             {
-                if (_samples[i].Path != "")
+                if (samples[i].Path != "")
                 {
                     // If wave sound exists, then load it in memory
-                    if (File.Exists(_samples[i].Path))
+                    if (File.Exists(samples[i].Path))
                     {
                         foundSamples++;
                         break;
@@ -65,33 +52,33 @@ namespace TombLib.Wad.Tr4Wad
                 }
                 else
                 {
-                    _samples[i].Path = "";
+                    samples[i].Path = "";
                 }
 
-                foreach (string soundPath in _soundPaths)
+                foreach (string soundPath in soundPaths)
                 {
-                    string fileName = Path.Combine(_oldWad.BasePath, soundPath, _oldWad.Sounds[i]);
+                    string fileName = Path.Combine(oldWad.BasePath, soundPath, oldWad.Sounds[i]);
 
                     // If wave sound exists, then load it in memory
                     if (File.Exists(fileName))
                     {
-                        _samples[i].Path = fileName;
+                        samples[i].Path = fileName;
                         foundSamples++;
                         break;
                     }
                 }
             }
 
-            return (foundSamples == _oldWad.Sounds.Count);
+            return (foundSamples == oldWad.Sounds.Count);
         }
 
-        internal static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture()
+        private static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad, Wad2 wad)
         {
             var textures = new ConcurrentDictionary<int, WadTexture>();
 
-            Parallel.For(0, _oldWad.Textures.Count, i =>
+            Parallel.For(0, oldWad.Textures.Count, i =>
               {
-                  var oldTexture = _oldWad.Textures[i];
+                  var oldTexture = oldWad.Textures[i];
                   var texture = new WadTexture();
 
                   var startX = (short)(oldTexture.X);
@@ -105,11 +92,11 @@ namespace TombLib.Wad.Tr4Wad
                       for (var x = 0; x < textureData.Width; x++)
                       {
                           var baseIndex = (startY + y) * 768 + (startX + x) * 3;
-                          var r = _oldWad.TexturePages[baseIndex];
-                          var g = _oldWad.TexturePages[baseIndex + 1];
-                          var b = _oldWad.TexturePages[baseIndex + 2];
+                          var r = oldWad.TexturePages[baseIndex];
+                          var g = oldWad.TexturePages[baseIndex + 1];
+                          var b = oldWad.TexturePages[baseIndex + 2];
                           var a = (byte)255;
-                          
+
                           //var color = new ColorC(r, g, b, a);
                           textureData.SetPixel(x, y, r, g, b, a);
                       }
@@ -131,13 +118,14 @@ namespace TombLib.Wad.Tr4Wad
             return new Dictionary<int, WadTexture>(textures);
         }
 
-        internal static int GetTr4TextureIdFromPolygon(wad_polygon polygon)
+        private static int GetTr4TextureIdFromPolygon(wad_polygon polygon)
         {
             short textureId = (short)(polygon.Texture);
             if (polygon.Shape == 8)
             {
                 textureId = (short)(polygon.Texture & 0xFFF);
-                if ((polygon.Texture & 0x8000) != 0) textureId = (short)(-textureId);
+                if ((polygon.Texture & 0x8000) != 0)
+                    textureId = (short)(-textureId);
             }
             else
             {
@@ -153,7 +141,7 @@ namespace TombLib.Wad.Tr4Wad
             return textureId;
         }
 
-        internal static WadMesh ConvertTr4MeshToWadMesh(wad_mesh oldMesh)
+        private static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> convertedTextures, wad_mesh oldMesh)
         {
             WadMesh mesh = new WadMesh();
 
@@ -212,13 +200,14 @@ namespace TombLib.Wad.Tr4Wad
                 poly.Indices.Add(oldPoly.V1);
                 poly.Indices.Add(oldPoly.V2);
                 poly.Indices.Add(oldPoly.V3);
-                if (poly.Shape == WadPolygonShape.Quad) poly.Indices.Add(oldPoly.V4);
+                if (poly.Shape == WadPolygonShape.Quad)
+                    poly.Indices.Add(oldPoly.V4);
 
                 // Polygon special effects
                 poly.ShineStrength = (byte)((oldPoly.Attributes & 0x7c) >> 2);
 
                 // Add the texture
-                poly.Texture = CalculateTr4UVCoordinates(oldPoly);
+                poly.Texture = CalculateTr4UVCoordinates(wad, oldWad, oldPoly, convertedTextures);
 
                 mesh.Polys.Add(poly);
             }
@@ -229,120 +218,88 @@ namespace TombLib.Wad.Tr4Wad
             mesh.UpdateHash();
 
             // Now add to the dictionary only if it doesn't contain a mesh with this hash
-            if (_wad.Meshes.ContainsKey(mesh.Hash))
+            if (wad.Meshes.ContainsKey(mesh.Hash))
             {
-                return _wad.Meshes[mesh.Hash];
+                return wad.Meshes[mesh.Hash];
             }
             else
             {
-                _wad.Meshes.Add(mesh.Hash, mesh);
+                wad.Meshes.Add(mesh.Hash, mesh);
                 return mesh;
             }
         }
 
-        private static void TaskMoveablesAndStatics()
+        public static Wad2 ConvertTr4Wad(Tr4Wad oldWad, List<string> soundPaths, IDialogHandler progressReporter)
         {
-            // Then convert moveables and static meshes
-            ConvertTr4Meshes();
-
-            for (int i = 0; i < _oldWad.Moveables.Count; i++)
-            {
-                ConvertTr4MoveableToWadMoveable(i);
-                _wad.LegacyNames.Add(_oldWad.LegacyNames[i], _wad.Moveables.ElementAt(i).Value);
-            }
-            _logger.Info("Moveable conversion complete.");
-
-            for (int i = 0; i < _oldWad.StaticMeshes.Count; i++)
-            {
-                ConvertTr4StaticMeshToWadStatic(i);
-                _wad.LegacyNames.Add(_oldWad.LegacyNames[i + _oldWad.Moveables.Count + _oldWad.SpriteSequences.Count], 
-                                     _wad.Statics.ElementAt(i).Value);
-            }
-            _logger.Info("Static mesh conversion complete.");
-        }
-
-        private static void TaskSpritesAndSounds()
-        {
-            // Convert sounds
-            ConvertTr4Sounds();
-            _logger.Info("Sound conversion complete.");
-
-            // Convert sprites
-            ConvertTr4Sprites();
-            _logger.Info("Sprite conversion complete.");
-        }
-
-        private static bool ShowImportTr4WadForm()
-        {
-            /// Ask the help of the user
-            using (var form = new ImportTr4WadDialog())
-            {
-                if (form.ShowDialog() == DialogResult.Cancel) return false;
-
-                // At this point, the user is warned if there are missing files,
-                // and if he accepts then we continue adding NullSample.wav for each missing sample
-                FindTr4Samples();
-
-                return true;
-            }
-        }
-
-        public static Wad2 ConvertTr4Wad(Tr4Wad old, List<string> soundPaths, IProgressReporter progressReporter)
-        {
-            _oldWad = old;
-            _wad = new Wad2(WadTombRaiderVersion.TR4, true);
-            _soundPaths = soundPaths;
-            _progressReporter = progressReporter;
+            var wad = new Wad2(WadTombRaiderVersion.TR4, true);
 
             _logger.Info("Converting TR4 WAD to WAD2");
 
             // Try to find all samples
-            _samples = new List<SamplePathInfo>();
-            var result = FindTr4Samples();
+            var samples = new List<SamplePathInfo>();
+            bool result = FindTr4Samples(wad, oldWad, samples, soundPaths);
             if (!result)
             {
-                // In multithreading context, we must use this for not raising exceptions
-                if (_progressReporter != null)
-                {
-                    _progressReporter.InvokeGui(delegate (IWin32Window owner)
-                    {
-                        result = ShowImportTr4WadForm();
-                    });
-                }
-                else
-                {
-                    result = ShowImportTr4WadForm();
-                }
-
-                if (!result) return null;
+                var soundPathInformation = new DialogDescriptonMissingSounds { Samples = samples, SoundPaths = soundPaths.ToList() };
+                soundPathInformation.FindTr4Samples = () => FindTr4Samples(wad, oldWad, soundPathInformation.Samples, soundPathInformation.SoundPaths);
+                progressReporter.RaiseDialog(soundPathInformation);
+                samples = soundPathInformation.Samples;
             }
 
             // First convert all textures
-            _convertedTextures = ConvertTr4TexturesToWadTexture();
-            for (int i = 0; i < _convertedTextures.Count; i++)
+            Dictionary<int, WadTexture> convertedTextures = ConvertTr4TexturesToWadTexture(oldWad, wad);
+            for (int i = 0; i < convertedTextures.Count; i++)
             {
-                if (!_wad.Textures.ContainsKey(_convertedTextures.ElementAt(i).Value.Hash))
-                    _wad.Textures.Add(_convertedTextures.ElementAt(i).Value.Hash, _convertedTextures.ElementAt(i).Value);
+                if (!wad.Textures.ContainsKey(convertedTextures.ElementAt(i).Value.Hash))
+                    wad.Textures.Add(convertedTextures.ElementAt(i).Value.Hash, convertedTextures.ElementAt(i).Value);
             }
             _logger.Info("Texture conversion complete.");
 
-            using (Task task1 = Task.Factory.StartNew(TaskMoveablesAndStatics))
-                using (Task task2 = Task.Factory.StartNew(TaskSpritesAndSounds))
-                    Task.WaitAll(task1, task2);
+            using (Task task1 = Task.Factory.StartNew(() =>
+            {
+                // Then convert moveables and static meshes
+                List<WadMesh> meshes = ConvertTr4Meshes(wad, oldWad, convertedTextures);
 
-            return _wad;
+                for (int i = 0; i < oldWad.Moveables.Count; i++)
+                {
+                    ConvertTr4MoveableToWadMoveable(wad, oldWad, i, meshes);
+                    wad.LegacyNames.Add(oldWad.LegacyNames[i], wad.Moveables.ElementAt(i).Value);
+                }
+                _logger.Info("Moveable conversion complete.");
+
+                for (int i = 0; i < oldWad.StaticMeshes.Count; i++)
+                {
+                    ConvertTr4StaticMeshToWadStatic(wad, oldWad, i, meshes);
+                    wad.LegacyNames.Add(oldWad.LegacyNames[i + oldWad.Moveables.Count + oldWad.SpriteSequences.Count],
+                                         wad.Statics.ElementAt(i).Value);
+                }
+                _logger.Info("Static mesh conversion complete.");
+            }))
+            using (Task task2 = Task.Factory.StartNew(() =>
+            {
+                // Convert sounds
+                ConvertTr4Sounds(wad, oldWad, samples);
+                _logger.Info("Sound conversion complete.");
+
+                // Convert sprites
+                ConvertTr4Sprites(wad, oldWad);
+                _logger.Info("Sprite conversion complete.");
+            }))
+                Task.WaitAll(task1, task2);
+
+            return wad;
         }
 
-        internal static void ConvertTr4Sprites()
+        internal static void ConvertTr4Sprites(Wad2 wad, Tr4Wad oldWad)
         {
-            int spriteDataSize = _oldWad.SpriteData.Length;
+            int spriteDataSize = oldWad.SpriteData.Length;
 
             // Load the real sprite texture data
             int numSpriteTexturePages = spriteDataSize / 196608;
             if ((spriteDataSize % 196608) != 0)
                 numSpriteTexturePages++;
 
-            foreach (var oldSequence in _oldWad.SpriteSequences)
+            foreach (var oldSequence in oldWad.SpriteSequences)
             {
                 int lengthOfSequence = -oldSequence.NegativeLength;
                 int startIndex = oldSequence.Offset;
@@ -353,7 +310,7 @@ namespace TombLib.Wad.Tr4Wad
 
                 for (int i = startIndex; i < startIndex + lengthOfSequence; i++)
                 {
-                    var oldSpriteTexture = _oldWad.SpriteTextures[i];
+                    var oldSpriteTexture = oldWad.SpriteTextures[i];
 
                     var spriteWidth = oldSpriteTexture.Width + 1;
                     var spriteHeight = oldSpriteTexture.Height + 1;
@@ -366,9 +323,9 @@ namespace TombLib.Wad.Tr4Wad
                         {
                             int baseIndex = oldSpriteTexture.Tile * 196608 + 768 * (y + spriteY) + 3 * (x + spriteX);
 
-                            byte b = _oldWad.SpriteData[baseIndex + 0];
-                            byte g = _oldWad.SpriteData[baseIndex + 1];
-                            byte r = _oldWad.SpriteData[baseIndex + 2];
+                            byte b = oldWad.SpriteData[baseIndex + 0];
+                            byte g = oldWad.SpriteData[baseIndex + 1];
+                            byte r = oldWad.SpriteData[baseIndex + 2];
 
                             if (r == 255 & g == 0 && b == 255)
                                 spritePage.SetPixel(x, y, 0, 0, 0, 0);
@@ -382,28 +339,28 @@ namespace TombLib.Wad.Tr4Wad
                     texture.UpdateHash();
 
                     // Check if texture already exists in Wad2 and eventually add it
-                    if (_wad.SpriteTextures.ContainsKey(texture.Hash))
-                        texture = _wad.SpriteTextures[texture.Hash];
+                    if (wad.SpriteTextures.ContainsKey(texture.Hash))
+                        texture = wad.SpriteTextures[texture.Hash];
                     else
-                        _wad.SpriteTextures.Add(texture.Hash, texture);
+                        wad.SpriteTextures.Add(texture.Hash, texture);
 
                     // Add current sprite to the sequence
                     newSequence.Sprites.Add(texture);
                 }
 
-                _wad.SpriteSequences.Add(newSequence);
+                wad.SpriteSequences.Add(newSequence);
             }
         }
 
-        internal static void ConvertTr4Sounds()
+        internal static void ConvertTr4Sounds(Wad2 wad, Tr4Wad oldWad, List<SamplePathInfo> samples)
         {
-            _wad.SoundMapSize = TrCatalog.GetSoundMapSize(WadTombRaiderVersion.TR4, _oldWad.Version == 130);
+            wad.SoundMapSize = TrCatalog.GetSoundMapSize(WadTombRaiderVersion.TR4, oldWad.Version == 130);
 
             // Read all samples with multithreading
             var loadedSamples = new ConcurrentDictionary<int, WadSample>();
-            Parallel.For(0, _oldWad.Sounds.Count, i =>
+            Parallel.For(0, oldWad.Sounds.Count, i =>
               {
-                  var info = _samples[i];
+                  var info = samples[i];
                   var sampleName = info.Sample;
                   var sampleFileName = info.Path;
                   if (!info.Found)
@@ -424,9 +381,10 @@ namespace TombLib.Wad.Tr4Wad
             for (int i = 0; i < 370; i++)
             {
                 // Check if sound was used
-                if (_oldWad.SoundMap[i] == -1) continue;
+                if (oldWad.SoundMap[i] == -1)
+                    continue;
 
-                var oldInfo = _oldWad.SoundInfo[_oldWad.SoundMap[i]];
+                var oldInfo = oldWad.SoundInfo[oldWad.SoundMap[i]];
                 var newInfo = new WadSoundInfo();
 
                 // Fill the new sound info
@@ -448,47 +406,48 @@ namespace TombLib.Wad.Tr4Wad
                     if (loadedSamples.ContainsKey(j))
                     {
                         var sound = loadedSamples[j];
-                        if (_wad.Samples.ContainsKey(sound.Hash))
+                        if (wad.Samples.ContainsKey(sound.Hash))
                         {
-                            newInfo.Samples.Add(_wad.Samples[sound.Hash]);
+                            newInfo.Samples.Add(wad.Samples[sound.Hash]);
                         }
                         else
                         {
-                            _wad.Samples.Add(sound.Hash, sound);
+                            wad.Samples.Add(sound.Hash, sound);
                             newInfo.Samples.Add(sound);
                         }
                     }
                     else
                     {
-                        _logger.Warn("Unable to find sample '" + _oldWad.Sounds[j] + "' at any of the defined sound paths");
+                        _logger.Warn("Unable to find sample '" + oldWad.Sounds[j] + "' at any of the defined sound paths");
                     }
                 }
 
                 newInfo.UpdateHash();
 
-                _wad.SoundInfo.Add((ushort)i, newInfo);
+                wad.SoundInfo.Add((ushort)i, newInfo);
             }
         }
 
-        internal static void ConvertTr4Meshes()
+        internal static List<WadMesh> ConvertTr4Meshes(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> convertedTextures)
         {
-            _meshes = new List<WadMesh>();
-            foreach (var mesh in _oldWad.Meshes)
-                _meshes.Add(ConvertTr4MeshToWadMesh(mesh));
+            List<WadMesh> meshes = new List<WadMesh>();
+            foreach (var mesh in oldWad.Meshes)
+                meshes.Add(ConvertTr4MeshToWadMesh(wad, oldWad, convertedTextures, mesh));
+            return meshes;
         }
 
-        internal static WadMoveable ConvertTr4MoveableToWadMoveable(int moveableIndex)
+        internal static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex, List<WadMesh> meshes)
         {
-            WadMoveable moveable = new WadMoveable(_wad);
-            wad_moveable m = _oldWad.Moveables[moveableIndex];
+            WadMoveable moveable = new WadMoveable(wad);
+            wad_moveable m = oldWad.Moveables[moveableIndex];
 
             moveable.ObjectID = m.ObjectID;
             //moveable.Name = TrCatalog.GetMoveableName(WadTombRaiderVersion.TR4, m.ObjectID);
 
             for (int j = 0; j < m.NumPointers; j++)
             {
-                var realPointer = (int)_oldWad.RealPointers[(int)(m.PointerIndex + j)];
-                moveable.Meshes.Add(_wad.Meshes[_meshes[realPointer].Hash]);
+                var realPointer = (int)oldWad.RealPointers[(int)(m.PointerIndex + j)];
+                moveable.Meshes.Add(wad.Meshes[meshes[realPointer].Hash]);
             }
 
             int currentLink = (int)m.LinksIndex;
@@ -498,10 +457,10 @@ namespace TombLib.Wad.Tr4Wad
             // Build the skeleton
             for (int j = 0; j < m.NumPointers - 1; j++)
             {
-                WadLink link = new WadLink((WadLinkOpcode)_oldWad.Links[currentLink],
-                                           new Vector3(_oldWad.Links[currentLink + 1],
-                                                       -_oldWad.Links[currentLink + 2],
-                                                       _oldWad.Links[currentLink + 3]));
+                WadLink link = new WadLink((WadLinkOpcode)oldWad.Links[currentLink],
+                                           new Vector3(oldWad.Links[currentLink + 1],
+                                                       -oldWad.Links[currentLink + 2],
+                                                       oldWad.Links[currentLink + 3]));
 
                 currentLink += 4;
 
@@ -510,12 +469,12 @@ namespace TombLib.Wad.Tr4Wad
 
             // Convert animations
             int numAnimations = 0;
-            int nextMoveable = _oldWad.GetNextMoveableWithAnimations(moveableIndex);
+            int nextMoveable = oldWad.GetNextMoveableWithAnimations(moveableIndex);
 
             if (nextMoveable == -1)
-                numAnimations = _oldWad.Animations.Count - m.AnimationIndex;
+                numAnimations = oldWad.Animations.Count - m.AnimationIndex;
             else
-                numAnimations = _oldWad.Moveables[nextMoveable].AnimationIndex - m.AnimationIndex;
+                numAnimations = oldWad.Moveables[nextMoveable].AnimationIndex - m.AnimationIndex;
 
             for (int j = 0; j < numAnimations; j++)
             {
@@ -523,7 +482,7 @@ namespace TombLib.Wad.Tr4Wad
                     break;
 
                 WadAnimation animation = new WadAnimation();
-                wad_animation anim = _oldWad.Animations[j + m.AnimationIndex];
+                wad_animation anim = oldWad.Animations[j + m.AnimationIndex];
                 animation.Acceleration = anim.Accel;
                 animation.Speed = anim.Speed;
                 animation.LateralSpeed = anim.SpeedLateral;
@@ -540,13 +499,13 @@ namespace TombLib.Wad.Tr4Wad
                 for (int k = 0; k < anim.NumStateChanges; k++)
                 {
                     WadStateChange sc = new WadStateChange();
-                    wad_state_change wadSc = _oldWad.Changes[(int)anim.ChangesIndex + k];
+                    wad_state_change wadSc = oldWad.Changes[(int)anim.ChangesIndex + k];
                     sc.StateId = (ushort)wadSc.StateId;
 
                     for (int n = 0; n < wadSc.NumDispatches; n++)
                     {
                         WadAnimDispatch ad = new WadAnimDispatch();
-                        wad_anim_dispatch wadAd = _oldWad.Dispatches[(int)wadSc.DispatchesIndex + n];
+                        wad_anim_dispatch wadAd = oldWad.Dispatches[(int)wadSc.DispatchesIndex + n];
 
                         ad.InFrame = (ushort)(wadAd.Low - anim.FrameStart);
                         ad.OutFrame = (ushort)(wadAd.High - anim.FrameStart);
@@ -559,32 +518,33 @@ namespace TombLib.Wad.Tr4Wad
                     animation.StateChanges.Add(sc);
                 }
 
-                if (anim.NumCommands < _oldWad.Commands.Count)
+                if (anim.NumCommands < oldWad.Commands.Count)
                 {
                     int lastCommand = anim.CommandOffset;
 
                     for (int k = 0; k < anim.NumCommands; k++)
                     {
-                        short commandType = _oldWad.Commands[lastCommand + 0];
+                        short commandType = oldWad.Commands[lastCommand + 0];
 
                         // Ignore invalid anim commands (see for example karnak.wad)
-                        if (commandType < 1 || commandType > 6) continue;
+                        if (commandType < 1 || commandType > 6)
+                            continue;
 
                         WadAnimCommand command = new WadAnimCommand((WadAnimCommandType)commandType);
 
                         switch (commandType)
                         {
                             case 1:
-                                command.Parameter1 = (ushort)_oldWad.Commands[lastCommand + 1];
-                                command.Parameter2 = (ushort)_oldWad.Commands[lastCommand + 2];
-                                command.Parameter3 = (ushort)_oldWad.Commands[lastCommand + 3];
+                                command.Parameter1 = (ushort)oldWad.Commands[lastCommand + 1];
+                                command.Parameter2 = (ushort)oldWad.Commands[lastCommand + 2];
+                                command.Parameter3 = (ushort)oldWad.Commands[lastCommand + 3];
 
                                 lastCommand += 4;
                                 break;
 
                             case 2:
-                                command.Parameter1 = (ushort)_oldWad.Commands[lastCommand + 1];
-                                command.Parameter2 = (ushort)_oldWad.Commands[lastCommand + 2];
+                                command.Parameter1 = (ushort)oldWad.Commands[lastCommand + 1];
+                                command.Parameter2 = (ushort)oldWad.Commands[lastCommand + 2];
 
                                 lastCommand += 3;
                                 break;
@@ -598,14 +558,14 @@ namespace TombLib.Wad.Tr4Wad
                                 break;
 
                             case 5:
-                                command.Parameter1 = (ushort)(_oldWad.Commands[lastCommand + 1] - anim.FrameStart);
-                                command.Parameter2 = (ushort)_oldWad.Commands[lastCommand + 2];
+                                command.Parameter1 = (ushort)(oldWad.Commands[lastCommand + 1] - anim.FrameStart);
+                                command.Parameter2 = (ushort)oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
 
                             case 6:
-                                command.Parameter1 = (ushort)(_oldWad.Commands[lastCommand + 1] - anim.FrameStart);
-                                command.Parameter2 = (ushort)_oldWad.Commands[lastCommand + 2];
+                                command.Parameter1 = (ushort)(oldWad.Commands[lastCommand + 1] - anim.FrameStart);
+                                command.Parameter2 = (ushort)oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
                         }
@@ -617,12 +577,12 @@ namespace TombLib.Wad.Tr4Wad
                 int frames = (int)anim.KeyFrameOffset / 2;
                 uint numFrames;
 
-                if (j + m.AnimationIndex == _oldWad.Animations.Count - 1)
+                if (j + m.AnimationIndex == oldWad.Animations.Count - 1)
                 {
                     if (anim.KeyFrameSize == 0)
                         numFrames = 0;
                     else
-                        numFrames = ((uint)(2 * _oldWad.KeyFrames.Count) - anim.KeyFrameOffset) / (uint)(2 * anim.KeyFrameSize);
+                        numFrames = ((uint)(2 * oldWad.KeyFrames.Count) - anim.KeyFrameOffset) / (uint)(2 * anim.KeyFrameSize);
                 }
                 else
                 {
@@ -632,7 +592,7 @@ namespace TombLib.Wad.Tr4Wad
                     }
                     else
                     {
-                        numFrames = (_oldWad.Animations[m.AnimationIndex + j + 1].KeyFrameOffset - anim.KeyFrameOffset) / (uint)(2 * anim.KeyFrameSize);
+                        numFrames = (oldWad.Animations[m.AnimationIndex + j + 1].KeyFrameOffset - anim.KeyFrameOffset) / (uint)(2 * anim.KeyFrameSize);
                     }
                 }
 
@@ -641,31 +601,31 @@ namespace TombLib.Wad.Tr4Wad
                     WadKeyFrame frame = new WadKeyFrame();
                     int startOfFrame = frames;
 
-                    frame.BoundingBox = new BoundingBox(new Vector3(_oldWad.KeyFrames[frames],
-                                                                    -_oldWad.KeyFrames[frames + 2],
-                                                                    _oldWad.KeyFrames[frames + 4]),
-                                                        new Vector3(_oldWad.KeyFrames[frames + 1],
-                                                                    -_oldWad.KeyFrames[frames + 3],
-                                                                    _oldWad.KeyFrames[frames + 5]));
+                    frame.BoundingBox = new BoundingBox(new Vector3(oldWad.KeyFrames[frames],
+                                                                    -oldWad.KeyFrames[frames + 2],
+                                                                    oldWad.KeyFrames[frames + 4]),
+                                                        new Vector3(oldWad.KeyFrames[frames + 1],
+                                                                    -oldWad.KeyFrames[frames + 3],
+                                                                    oldWad.KeyFrames[frames + 5]));
 
                     frames += 6;
 
-                    frame.Offset = new Vector3(_oldWad.KeyFrames[frames],
-                                               (short)(-_oldWad.KeyFrames[frames + 1]),
-                                               _oldWad.KeyFrames[frames + 2]);
+                    frame.Offset = new Vector3(oldWad.KeyFrames[frames],
+                                               (short)(-oldWad.KeyFrames[frames + 1]),
+                                               oldWad.KeyFrames[frames + 2]);
 
                     frames += 3;
 
                     for (int n = 0; n < m.NumPointers; n++)
                     {
-                        short rot = _oldWad.KeyFrames[frames];
+                        short rot = oldWad.KeyFrames[frames];
                         WadKeyFrameRotation kfAngle = new WadKeyFrameRotation();
 
                         switch (rot & 0xc000)
                         {
                             case 0:
                                 int rotation = rot;
-                                int rotation2 = _oldWad.KeyFrames[frames + 1];
+                                int rotation2 = oldWad.KeyFrames[frames + 1];
 
                                 frames += 2;
 
@@ -733,7 +693,8 @@ namespace TombLib.Wad.Tr4Wad
             {
                 var animation = moveable.Animations[i];
 
-                if (animation.KeyFrames.Count == 0) animation.RealNumberOfFrames = 0;
+                if (animation.KeyFrames.Count == 0)
+                    animation.RealNumberOfFrames = 0;
 
                 // HACK: this fixes some invalid NextAnimations values
                 animation.NextAnimation %= (ushort)moveable.Animations.Count;
@@ -773,7 +734,8 @@ namespace TombLib.Wad.Tr4Wad
 
                             // HACK: In some cases dispatches have invalid NextFrame.
                             // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to zero.
-                            if (newFrame > moveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames) newFrame = 0;
+                            if (newFrame > moveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames)
+                                newFrame = 0;
 
                             animDispatch.NextFrame = newFrame;
                         }
@@ -783,15 +745,15 @@ namespace TombLib.Wad.Tr4Wad
                 moveable.Animations[i] = animation;
             }
 
-            _wad.Moveables.Add(m.ObjectID, moveable);
+            wad.Moveables.Add(m.ObjectID, moveable);
 
             return moveable;
         }
 
-        internal static WadStatic ConvertTr4StaticMeshToWadStatic(int staticIndex)
+        internal static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex, List<WadMesh> meshes)
         {
-            var staticMesh = new WadStatic(_wad);
-            var oldStaticMesh = _oldWad.StaticMeshes[staticIndex];
+            var staticMesh = new WadStatic(wad);
+            var oldStaticMesh = oldWad.StaticMeshes[staticIndex];
 
             //staticMesh.Name = TrCatalog.GetStaticName(WadTombRaiderVersion.TR4, oldStaticMesh.ObjectId);
 
@@ -811,31 +773,31 @@ namespace TombLib.Wad.Tr4Wad
                                                                    oldStaticMesh.VisibilityZ2));
 
             // Then import the mesh. If it was already added, the mesh will not be added to the dictionary.
-            staticMesh.Mesh = _wad.Meshes[_meshes[(int)_oldWad.RealPointers[oldStaticMesh.PointersIndex]].Hash];
+            staticMesh.Mesh = wad.Meshes[meshes[(int)oldWad.RealPointers[oldStaticMesh.PointersIndex]].Hash];
 
             staticMesh.ObjectID = oldStaticMesh.ObjectId;
 
-            _wad.Statics.Add(staticMesh.ObjectID, staticMesh);
+            wad.Statics.Add(staticMesh.ObjectID, staticMesh);
 
             return staticMesh;
         }
 
-        private static TextureArea CalculateTr4UVCoordinates(wad_polygon poly)
+        private static TextureArea CalculateTr4UVCoordinates(Wad2 wad, Tr4Wad oldWad, wad_polygon poly, Dictionary<int, WadTexture> convertedTextures)
         {
             TextureArea textureArea;
             textureArea.BlendMode = (poly.Attributes & 0x01) != 0 ? BlendMode.Additive : BlendMode.Normal;
             textureArea.DoubleSided = false;
 
             int textureId = GetTr4TextureIdFromPolygon(poly);
-            WadTexture newTexture = _convertedTextures[textureId];
+            WadTexture newTexture = convertedTextures[textureId];
 
-            if (_wad.Textures.ContainsKey(newTexture.Hash))
+            if (wad.Textures.ContainsKey(newTexture.Hash))
             {
-                textureArea.Texture = _wad.Textures[newTexture.Hash];
+                textureArea.Texture = wad.Textures[newTexture.Hash];
             }
             else
             {
-                _wad.Textures.Add(newTexture.Hash, newTexture);
+                wad.Textures.Add(newTexture.Hash, newTexture);
                 textureArea.Texture = newTexture;
             }
 
@@ -843,7 +805,7 @@ namespace TombLib.Wad.Tr4Wad
             int shape = (poly.Texture & 0x7000) >> 12;
             int flipped = (poly.Texture & 0x8000) >> 15;
 
-            wad_object_texture texture = _oldWad.Textures[textureId];
+            wad_object_texture texture = oldWad.Textures[textureId];
 
             Vector2 nw = new Vector2(0.5f, 0.5f);
             Vector2 ne = new Vector2(texture.Width - 0.5f, 0.5f);

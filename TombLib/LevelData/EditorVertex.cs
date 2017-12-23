@@ -1,8 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using SharpDX;
 using SharpDX.Toolkit.Graphics;
-using SharpDX;
-using TombLib.Graphics;
 using System;
+using System.Runtime.InteropServices;
+using TombLib.Graphics;
 
 namespace TombLib.LevelData
 {

@@ -8,6 +8,8 @@ namespace TombLib.LevelData
 {
     public class LevelTexture : Texture, IEquatable<LevelTexture>
     {
+        public static IReadOnlyList<FileFormat> FileExtensions => ImageC.FromFileFileExtensions;
+
         public class UniqueIDType { };
         public UniqueIDType UniqueID { get; private set; } = new UniqueIDType();
 

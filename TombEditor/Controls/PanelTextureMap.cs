@@ -3,19 +3,15 @@ using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
-using RectangleF = System.Drawing.RectangleF;
 using Color = System.Drawing.Color;
-using System.IO;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace TombEditor.Controls
 {

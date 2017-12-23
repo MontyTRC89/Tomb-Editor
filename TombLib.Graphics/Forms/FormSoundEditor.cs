@@ -28,10 +28,7 @@ namespace TombLib.Forms
             _saveWadOnExit = saveWadOnExit;
             butSave.Visible = _saveWadOnExit;
             butClose.Visible = _saveWadOnExit;
-        }
 
-        private void FormSoundEditor_Load(object sender, EventArgs e)
-        {
             for (int i = 0; i < 370; i++)
                 comboId.Items.Add(i.ToString());
 
@@ -40,8 +37,8 @@ namespace TombLib.Forms
 
         private void UpdateStatistics()
         {
-            string message = "Sound Infos: " + _wad.SoundInfo.Count + " of " + 
-                             _wad.SoundMapSize + "    " + 
+            string message = "Sound Infos: " + _wad.SoundInfo.Count + " of " +
+                             _wad.SoundMapSize + "    " +
                              "Embedded WAV samples: " + _wad.Samples.Count;
             labelStatus.Text = message;
         }
@@ -296,11 +293,6 @@ namespace TombLib.Forms
 
             ReloadSoundInfos();
             _currentSound = -1;
-        }
-
-        private void FormSoundEditor_FormClosing(object sender, FormClosingEventArgs e)
-        {
-
         }
 
         private void butClose_Click(object sender, EventArgs e)

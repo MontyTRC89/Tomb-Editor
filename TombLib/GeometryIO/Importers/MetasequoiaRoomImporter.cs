@@ -14,7 +14,7 @@ namespace TombLib.GeometryIO.Importers
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public MetasequoiaRoomImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback) 
+        public MetasequoiaRoomImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
             : base(settings, getTextureCallback)
         {
 
@@ -26,7 +26,7 @@ namespace TombLib.GeometryIO.Importers
             var materials = new List<string>();
             var positions = new List<Vector3>();
             var textures = new Dictionary<int, Texture>();
-            
+
             // TODO: to remove after presets refactoring
             _settings = new IOGeometrySettings
             {
@@ -49,7 +49,8 @@ namespace TombLib.GeometryIO.Importers
                 while (!reader.EndOfStream)
                 {
                     line = reader.ReadLine().Trim();
-                    if (line == "" || line == "}") continue;
+                    if (line == "" || line == "}")
+                        continue;
 
                     // Parse chunks
                     var chunk = line.Split(' ')[0];
@@ -70,19 +71,21 @@ namespace TombLib.GeometryIO.Importers
                     else if (chunk == "Material")
                     {
                         var numMaterials = int.Parse(line.Split(' ')[1]);
-                        if (numMaterials == 0) return null;
+                        if (numMaterials == 0)
+                            return null;
                         for (var i = 0; i < numMaterials; i++)
                         {
                             var materialString = reader.ReadLine().Trim();
                             var tokensMaterial = materialString.Split(' ');
-                            
+
                             for (var j = 0; j < tokensMaterial.Length; j++)
                             {
                                 var texturePath = "";
                                 if (tokensMaterial[j].StartsWith("tex"))
                                 {
                                     texturePath = tokensMaterial[j].Substring(5, tokensMaterial[j].Length - 7);
-                                    if (texturePath != "") textures.Add(i, GetTexture(Path.GetDirectoryName(filename), texturePath));
+                                    if (texturePath != "")
+                                        textures.Add(i, GetTexture(Path.GetDirectoryName(filename), texturePath));
                                     break;
                                 }
                             }
@@ -124,7 +127,8 @@ namespace TombLib.GeometryIO.Importers
 
                                     // We MUST have vertices
                                     var stringVertices = GetSubBlock(line, "V");
-                                    if (stringVertices == "") return null;
+                                    if (stringVertices == "")
+                                        return null;
                                     var tokensVertices = stringVertices.Split(' ');
                                     for (var k = 0; k < numVerticesInFace; k++)
                                     {
@@ -172,15 +176,16 @@ namespace TombLib.GeometryIO.Importers
                         mesh.Texture = textures[0];
                         model.Meshes.Add(mesh);
                     }
-                }                
-            }        
+                }
+            }
 
             return model;
         }
 
         private string GetSubBlock(string line, string pattern)
         {
-            if (!line.Contains(" " + pattern + "(")) return "";
+            if (!line.Contains(" " + pattern + "("))
+                return "";
             var s = line.Substring(line.IndexOf(" " + pattern + "(") + 2 + pattern.Length);
             s = s.Substring(0, s.IndexOf(")"));
             return s;
@@ -204,10 +209,13 @@ namespace TombLib.GeometryIO.Importers
             var depth = 1;
             while (!reader.EndOfStream)
             {
-                if (depth == 0) return;
+                if (depth == 0)
+                    return;
                 var line = reader.ReadLine();
-                if (line.Contains("{")) { depth++; continue; }
-                if (line.Contains("}")) { depth--; continue; }
+                if (line.Contains("{"))
+                { depth++; continue; }
+                if (line.Contains("}"))
+                { depth--; continue; }
             }
         }
     }

@@ -1,16 +1,19 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Drawing.Imaging;
-using TombLib.IO;
+using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad;
 
-namespace TombLib.LevelData.IO
+namespace TombLib.Forms
 {
-    public static class ResourceLoader
+    public class GraphicalDialogHandler : IDialogHandler
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -29,7 +32,7 @@ namespace TombLib.LevelData.IO
                 else
                     dialog.InitialDirectory = path;
 
-                dialog.Filter = SupportedFormats.GetFilter(FileFormatType.Texture);
+                dialog.Filter = LevelTexture.FileExtensions.GetFilter();
                 dialog.Title = "Load texture map";
 
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
@@ -53,7 +56,7 @@ namespace TombLib.LevelData.IO
                 else
                     dialog.InitialDirectory = path;
 
-                dialog.Filter = SupportedFormats.GetFilter(FileFormatType.Object);
+                dialog.Filter = Wad2.WadFormatExtensions.GetFilter();
                 dialog.Title = "Load object file (WAD)";
 
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
@@ -62,19 +65,23 @@ namespace TombLib.LevelData.IO
             }
         }
 
-        public static void CheckLoadedTexture(LevelSettings settings, LevelTexture texture, IProgressReporter progressReporter)
+        public static void HandleDialog(IDialogDescription dialogDescription_, IWin32Window owner)
         {
-            bool ignoreError = false;
-            while ((texture.ImageLoadException != null) && !ignoreError)
-                progressReporter.InvokeGui(delegate (IWin32Window owner)
+            if (dialogDescription_ is DialogDescriptonTextureUnloadable)
+            {
+                var dialogDescription = (DialogDescriptonTextureUnloadable)dialogDescription_;
+
+                bool ignoreError = false;
+                while ((dialogDescription.Texture.ImageLoadException != null) && !ignoreError)
+                    owner.InvokeIfNecessary(() =>
                     {
-                        switch (MessageBox.Show(owner, "The texture file '" + settings.MakeAbsolute(texture.Path) +
-                            " could not be loaded: " + texture.ImageLoadException.Message + ". \n" +
-                            "Do you want to load a substituting file now?\nError: " + (texture.ImageLoadException?.Message ?? "null"), "Open project",
+                        switch (MessageBox.Show(owner, "The texture file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Texture.Path) +
+                            " could not be loaded: " + dialogDescription.Texture.ImageLoadException.Message + ". \n" +
+                            "Do you want to load a substituting file now?\nError: " + (dialogDescription.Texture.ImageLoadException?.Message ?? "null"), "Open project",
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                         {
                             case DialogResult.Yes:
-                                texture.SetPath(settings, BrowseTextureFile(settings, texture.Path, owner));
+                                dialogDescription.Texture.SetPath(dialogDescription.Settings, BrowseTextureFile(dialogDescription.Settings, dialogDescription.Texture.Path, owner));
                                 break;
                             case DialogResult.No:
                                 ignoreError = true;
@@ -83,28 +90,30 @@ namespace TombLib.LevelData.IO
                                 throw new OperationCanceledException("Canceled because texture was not loadable");
                         }
                     });
-        }
-
-        public static void TryLoadingObjects(Level level, IProgressReporter progressReporter)
-        {
-            if (string.IsNullOrEmpty(level.Settings.WadFilePath))
-                return;
-
-            do
+            }
+            else if (dialogDescription_ is DialogDescriptonWadUnloadable)
             {
-                // Try loading the file
-                try
-                {
-                    level.ReloadWad(progressReporter);
-                    return;
-                }
-                catch (Exception exc)
-                {
-                    string path = level.Settings.MakeAbsolute(level.Settings.WadFilePath);
-                    logger.Warn(exc, "Unable to load object file \"" + path + "\".");
+                var dialogDescription = (DialogDescriptonWadUnloadable)dialogDescription_;
+                Level level = dialogDescription.Level;
 
-                    bool retry = false;
-                    progressReporter.InvokeGui(delegate (IWin32Window owner)
+                if (string.IsNullOrEmpty(level.Settings.WadFilePath))
+                    return;
+
+                do
+                {
+                    // Try loading the file
+                    try
+                    {
+                        level.ReloadWad(new GraphicalDialogHandler(owner));
+                        return;
+                    }
+                    catch (Exception exc)
+                    {
+                        string path = level.Settings.MakeAbsolute(level.Settings.WadFilePath);
+                        logger.Warn(exc, "Unable to load object file \"" + path + "\".");
+
+                        bool retry = false;
+                        owner.InvokeIfNecessary(() =>
                         {
                             switch (MessageBox.Show(owner, "The objects file '" + path + " could not be loaded. " +
                                 "Do you want to load a substituting file now?\nError: " + (exc?.Message ?? "null"), "Open project",
@@ -121,46 +130,41 @@ namespace TombLib.LevelData.IO
                                     throw new OperationCanceledException("Canceled because *.wad was not loadable");
                             }
                         });
-                    if (!retry)
-                        return;
-                }
-            } while (true);
+                        if (!retry)
+                            return;
+                    }
+                } while (true);
+            }
+            else if (dialogDescription_ is DialogDescriptonMissingSounds)
+            {
+                var dialogDescription = (DialogDescriptonMissingSounds)dialogDescription_;
+
+                DialogResult result = DialogResult.Cancel;
+                owner.InvokeIfNecessary(() =>
+                {
+                    using (var form = new ImportTr4WadDialog(dialogDescription))
+                        result = form.ShowDialog(owner);
+                });
+
+                if (result != DialogResult.OK)
+                    throw new OperationCanceledException("Canceled because sounds are missing.");
+            }
+            else
+            {
+                logger.Info("Ignored dialog event of type " + dialogDescription_.GetType().FullName + ".");
+            }
         }
 
-        public static ImageC LoadRawExtraTexture(string path)
+        private IWin32Window _owner;
+
+        public GraphicalDialogHandler(IWin32Window owner)
         {
-            using (FileStream reader = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                ImageC image;
+            _owner = owner;
+        }
 
-                if (path.EndsWith(".raw"))
-                {
-                    // Raw file: 256² pixels with 24 bpp
-                    byte[] data = new byte[256 * 256 * 3];
-                    reader.Read(data, 0, data.Length);
-
-                    image = ImageC.CreateNew(256, 256);
-                    for (int i = 0; i < 256 * 256; ++i)
-                        image.Set(i, data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
-                }
-                else if (path.EndsWith(".pc"))
-                {
-                    // Raw file: 256² pixels with 32 bpp
-                    byte[] data = new byte[256 * 256 * 4];
-                    reader.Read(data, 0, data.Length);
-
-                    image = ImageC.CreateNew(256, 256);
-                    for (int i = 0; i < 256 * 256; ++i)
-                        image.Set(i, data[i * 4 + 2], data[i * 4 + 1], data[i * 4], data[i * 4 + 3]);
-                }
-                else
-                    image = ImageC.FromStream(reader);
-
-                if ((image.Width != 256) || (image.Height != 256))
-                    throw new NotSupportedException("The texture's size must be 256 by 256 pixels. " +
-                        "(The current texture '" + path + "' is " + image.Width + " by " + image.Height + " pixels)");
-                return image;
-            }
+        void IDialogHandler.RaiseDialog(IDialogDescription description)
+        {
+            HandleDialog(description, _owner);
         }
     }
 }
