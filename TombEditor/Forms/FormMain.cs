@@ -974,7 +974,20 @@ namespace TombEditor
             if (_editor.Mode != EditorMode.Map2D)
                 EditorActions.TryCopyObject(_editor.SelectedObject, this);
             else
+            {
+                /*try
+                {
+                    var data = new RoomClipboardData(_editor);
+                    var serializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                    serializer.Serialize(new MemoryStream(), data);
+                    DarkMessageBox.Show(this, "Working");
+                }
+                catch (Exception exc)
+                {
+                    DarkMessageBox.Show(this, "Broken: " + exc.Message);
+                }*/
                 Clipboard.SetDataObject(new RoomClipboardData(_editor), true);
+            }
         }
 
         private void stampToolStripMenuItem_Click(object sender, EventArgs e)
