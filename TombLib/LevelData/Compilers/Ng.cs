@@ -23,16 +23,17 @@ namespace TombLib.LevelData.Compilers
             writer.Write(ngleStartSignature);
 
             // Write chunks
-            WriteNgChunkLevelFlags(writer);
-            //WriteNgChunkExtraRoomFlags(writer);
+            WriteNgChunkExtraRoomFlags(writer);
             WriteNgChunkStaticsTable(writer);
             WriteNgChunkAnimatedTextures(writer);
             WriteNgChunkMoveablesTable(writer);
             WriteNgChunkPluginsNames(writer);
             WriteNgChunkIdFloorTable(writer);
+            WriteNgChunkLevelFlags(writer);
             WriteNgChunkRemapRooms(writer);
-            WriteNgChunkVersion(writer);
-
+            WriteNgChunkTomVersion(writer);
+            WriteNgChunkLevelVersion(writer);
+            
             // Write end signature
             writer.Write(endSignature);
             writer.Write((int)(writer.BaseStream.Position + 4 - startOffset));
@@ -133,17 +134,20 @@ namespace TombLib.LevelData.Compilers
                 var waterLevel = (byte)_tempRooms.ElementAt(i).Key.WaterLevel;
                 if (waterLevel != 0) waterLevel--;
 
-                var buffer = new byte[] { waterLevel, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; // TODO: ask Paolone for water level 
+                var buffer = new byte[] { waterLevel, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; // TODO: ask Paolone for water level 
                 writer.Write(buffer);
             }
         }
 
-        private void WriteNgChunkVersion(BinaryWriter writer)
+        private void WriteNgChunkLevelVersion(BinaryWriter writer)
+        {
+            var buffer = new byte[] { 0x07, 0x00, 0x24, 0x80, 0x01, 0x00, 0x03, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00 };
+            writer.Write(buffer);
+        }
+
+        private void WriteNgChunkTomVersion(BinaryWriter writer)
         {
             var buffer = new byte[] { 0x07, 0x00, 0x25, 0x80, 0x01, 0x00, 0x03, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00 };
-            writer.Write(buffer);
-
-            buffer = new byte[] { 0x07, 0x00, 0x24, 0x80, 0x01, 0x00, 0x03, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00 };
             writer.Write(buffer);
         }
 
