@@ -5,7 +5,6 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Forms;
 using TombLib;
 using TombLib.IO;
 using TombLib.LevelData;
@@ -23,8 +22,12 @@ namespace TombEditor
         [Serializable]
         public struct ContourLine
         {
-            public Vector2 Start;
-            public Vector2 End;
+            public float StartX; // Vector2 can't be serialized for no good reason.
+            public float StartY;
+            public float EndX;
+            public float EndY;
+            public Vector2 Start => new Vector2(StartX, StartY);
+            public Vector2 End => new Vector2(EndX, EndY);
         }
 
         private byte[] _data;
@@ -48,14 +51,14 @@ namespace TombEditor
                         if (aboveBlock.IsAnyWall != thisBlock.IsAnyWall)
                             _contourLines.Add(new ContourLine
                             {
-                                Start = new Vector2(x + room.Position.X, z + room.Position.Z),
-                                End = new Vector2(x + room.Position.X + 1, z + room.Position.Z)
+                                StartX = x + room.Position.X, StartY = z + room.Position.Z,
+                                EndX = x + room.Position.X + 1, EndY = z + room.Position.Z
                             });
                         if (leftBlock.IsAnyWall != thisBlock.IsAnyWall)
                             _contourLines.Add(new ContourLine
                             {
-                                Start = new Vector2(x + room.Position.X, z + room.Position.Z),
-                                End = new Vector2(x + room.Position.X, z + room.Position.Z + 1)
+                                StartX = x + room.Position.X, StartY = z + room.Position.Z,
+                                EndX = x + room.Position.X, EndY = z + room.Position.Z + 1
                             });
                     }
 
