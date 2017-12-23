@@ -262,13 +262,13 @@ namespace TombEditor.Controls
                         {
                             if (_referencePicking.BelongsToFloor)
                             {
-                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].QAFaces[i];
-                                _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].EDFaces[i];
+                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].QA[i];
+                                _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].ED[i];
                             }
                             else
                             {
-                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].WSFaces[i];
-                                _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].RFFaces[i];
+                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].WS[i];
+                                _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].RF[i];
                             }
                         }
                     }
@@ -502,13 +502,13 @@ namespace TombEditor.Controls
                         {
                             if (_referencePicking.BelongsToFloor)
                             {
-                                _referenceRoom.Blocks[x, z].QAFaces[i] = _actionGrid[x, z].Heights[0, i];
-                                _referenceRoom.Blocks[x, z].EDFaces[i] = _actionGrid[x, z].Heights[1, i];
+                                _referenceRoom.Blocks[x, z].QA[i] = _actionGrid[x, z].Heights[0, i];
+                                _referenceRoom.Blocks[x, z].ED[i] = _actionGrid[x, z].Heights[1, i];
                             }
                             else
                             {
-                                _referenceRoom.Blocks[x, z].WSFaces[i] = _actionGrid[x, z].Heights[0, i];
-                                _referenceRoom.Blocks[x, z].RFFaces[i] = _actionGrid[x, z].Heights[1, i];
+                                _referenceRoom.Blocks[x, z].WS[i] = _actionGrid[x, z].Heights[0, i];
+                                _referenceRoom.Blocks[x, z].RF[i] = _actionGrid[x, z].Heights[1, i];
                             }
                         }
                     }
@@ -1282,13 +1282,13 @@ namespace TombEditor.Controls
                                                 {
                                                     if (belongsToFloor && _toolHandler.ReferenceIsFloor)
                                                     {
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].QAFaces[i] = _toolHandler.ReferenceBlock.QAFaces.Min();
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].EDFaces[i] = _toolHandler.ReferenceBlock.EDFaces.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].QA[i] = _toolHandler.ReferenceBlock.QA.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].ED[i] = _toolHandler.ReferenceBlock.ED.Min();
                                                     }
                                                     else if (!belongsToFloor && !_toolHandler.ReferenceIsFloor)
                                                     {
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].WSFaces[i] = _toolHandler.ReferenceBlock.WSFaces.Min();
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].RFFaces[i] = _toolHandler.ReferenceBlock.RFFaces.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].WS[i] = _toolHandler.ReferenceBlock.WS.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].RF[i] = _toolHandler.ReferenceBlock.RF.Min();
                                                     }
                                                 }
                                                 EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new RectangleInt2(pos, pos));
@@ -1418,9 +1418,9 @@ namespace TombEditor.Controls
                         {
                             var pickedBlock = (newPicking as PickingResultBlock);
                             if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pickedBlock.Pos))
-                                _currentContextMenu = new BlockContextMenu(_editor, _editor.SelectedRoom, pickedBlock.Pos);
-                            else if (_editor.SelectedSectors.Valid)
                                 _currentContextMenu = new SelectedGeometryContextMenu(_editor, _editor.SelectedRoom, _editor.SelectedSectors.Area);
+                            else
+                                _currentContextMenu = new BlockContextMenu(_editor, _editor.SelectedRoom, pickedBlock.Pos);
                         }
                         _currentContextMenu?.Show(PointToScreen(e.Location));
                     }

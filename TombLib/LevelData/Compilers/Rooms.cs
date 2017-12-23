@@ -538,23 +538,23 @@ namespace TombLib.LevelData.Compilers
                     }
 
                     aux.LowestFloor = (sbyte)(-room.Position.Y - block.FloorMin);
-                    var q0 = block.QAFaces[Block.FaceXnZp];
-                    var q1 = block.QAFaces[Block.FaceXpZp];
-                    var q2 = block.QAFaces[Block.FaceXpZn];
-                    var q3 = block.QAFaces[Block.FaceXnZn];
+                    var q0 = block.QA[Block.FaceXnZp];
+                    var q1 = block.QA[Block.FaceXpZp];
+                    var q2 = block.QA[Block.FaceXpZn];
+                    var q3 = block.QA[Block.FaceXnZn];
 
                     if (!Block.IsQuad(q0, q1, q2, q3) && block.FloorIfQuadSlopeX == 0 &&
                         block.FloorIfQuadSlopeZ == 0)
                     {
                         if (!block.FloorSplitDirectionIsXEqualsZ)
                         {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QAFaces[Block.FaceXnZp],
-                                                           block.QAFaces[Block.FaceXpZn]));
+                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QA[Block.FaceXnZp],
+                                                           block.QA[Block.FaceXpZn]));
                         }
                         else
                         {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QAFaces[Block.FaceXpZp],
-                                                           block.QAFaces[Block.FaceXnZn]));
+                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QA[Block.FaceXpZp],
+                                                           block.QA[Block.FaceXnZn]));
                         }
                     }
 
@@ -639,8 +639,8 @@ namespace TombLib.LevelData.Compilers
                     Block block = room.Blocks[x, z];
                     foreach (var relevantDirection in relevantDirections)
                     {
-                        var floor = 256.0f * block.QAFaces[relevantDirection] + room.WorldPos.Y;
-                        var ceiling = 256.0f * block.WSFaces[relevantDirection] + room.WorldPos.Y;
+                        var floor = 256.0f * block.QA[relevantDirection] + room.WorldPos.Y;
+                        var ceiling = 256.0f * block.WS[relevantDirection] + room.WorldPos.Y;
                         yMin = Math.Min(yMin, Math.Min(floor, ceiling));
                         yMax = Math.Max(yMax, Math.Max(floor, ceiling));
                     }
@@ -759,7 +759,7 @@ namespace TombLib.LevelData.Compilers
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
-                        short[] heights = isCeiling ? block.WSFaces : block.QAFaces;
+                        short[] heights = isCeiling ? block.WS : block.QA;
                         short XnZn = heights[Block.FaceXnZn];
                         short XpZn = heights[Block.FaceXpZn];
                         short XnZp = heights[Block.FaceXnZp];

@@ -216,18 +216,18 @@ namespace TombLib.LevelData.IO
                                             long flag = (b.FloorSplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.FloorDiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.QAFaces[n]);
+                                                LEB128.Write(chunkIO.Raw, b.QA[n]);
                                             for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.EDFaces[n]);
+                                                LEB128.Write(chunkIO.Raw, b.ED[n]);
                                         }, LEB128.MaximumSize1Byte);
                                         chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, () =>
                                         {
                                             long flag = (b.CeilingSplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.CeilingDiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.WSFaces[n]);
+                                                LEB128.Write(chunkIO.Raw, b.WS[n]);
                                             for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.RFFaces[n]);
+                                                LEB128.Write(chunkIO.Raw, b.RF[n]);
                                         }, LEB128.MaximumSize1Byte);
                                         for (BlockFace face = 0; face < Block.FaceCount; face++)
                                         {

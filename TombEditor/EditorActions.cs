@@ -1358,7 +1358,7 @@ namespace TombEditor
         public static void PlaceObject(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
         {
             Block block = room.GetBlock(pos);
-            int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
+            int y = (block.QA[0] + block.QA[1] + block.QA[2] + block.QA[3]) / 4;
 
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
@@ -1460,34 +1460,34 @@ namespace TombEditor
                         short maxHeight = -32767;
                         byte theCorner = 0;
 
-                        if (room.Blocks[x, z].QAFaces[0] > maxHeight)
+                        if (room.Blocks[x, z].QA[0] > maxHeight)
                         {
-                            maxHeight = room.Blocks[x, z].QAFaces[0];
+                            maxHeight = room.Blocks[x, z].QA[0];
                             theCorner = 0;
                         }
 
-                        if (room.Blocks[x, z].QAFaces[1] > maxHeight)
+                        if (room.Blocks[x, z].QA[1] > maxHeight)
                         {
-                            maxHeight = room.Blocks[x, z].QAFaces[1];
+                            maxHeight = room.Blocks[x, z].QA[1];
                             theCorner = 1;
                         }
 
-                        if (room.Blocks[x, z].QAFaces[2] > maxHeight)
+                        if (room.Blocks[x, z].QA[2] > maxHeight)
                         {
-                            maxHeight = room.Blocks[x, z].QAFaces[2];
+                            maxHeight = room.Blocks[x, z].QA[2];
                             theCorner = 2;
                         }
 
-                        if (room.Blocks[x, z].QAFaces[3] > maxHeight)
+                        if (room.Blocks[x, z].QA[3] > maxHeight)
                         {
-                            maxHeight = room.Blocks[x, z].QAFaces[3];
+                            maxHeight = room.Blocks[x, z].QA[3];
                             theCorner = 3;
                         }
 
                         if (theCorner == 0)
                         {
-                            room.Blocks[x, z].QAFaces[1] = maxHeight;
-                            room.Blocks[x, z].QAFaces[3] = maxHeight;
+                            room.Blocks[x, z].QA[1] = maxHeight;
+                            room.Blocks[x, z].QA[3] = maxHeight;
                             room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
                             if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
@@ -1495,8 +1495,8 @@ namespace TombEditor
 
                         if (theCorner == 1)
                         {
-                            room.Blocks[x, z].QAFaces[0] = maxHeight;
-                            room.Blocks[x, z].QAFaces[2] = maxHeight;
+                            room.Blocks[x, z].QA[0] = maxHeight;
+                            room.Blocks[x, z].QA[2] = maxHeight;
                             room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
                             if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
@@ -1504,8 +1504,8 @@ namespace TombEditor
 
                         if (theCorner == 2)
                         {
-                            room.Blocks[x, z].QAFaces[1] = maxHeight;
-                            room.Blocks[x, z].QAFaces[3] = maxHeight;
+                            room.Blocks[x, z].QA[1] = maxHeight;
+                            room.Blocks[x, z].QA[3] = maxHeight;
                             room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
                             if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
@@ -1513,8 +1513,8 @@ namespace TombEditor
 
                         if (theCorner == 3)
                         {
-                            room.Blocks[x, z].QAFaces[0] = maxHeight;
-                            room.Blocks[x, z].QAFaces[2] = maxHeight;
+                            room.Blocks[x, z].QA[0] = maxHeight;
+                            room.Blocks[x, z].QA[2] = maxHeight;
                             room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
                             if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
@@ -1547,34 +1547,34 @@ namespace TombEditor
                         short minHeight = 32767;
                         byte theCorner = 0;
 
-                        if (room.Blocks[x, z].WSFaces[0] < minHeight)
+                        if (room.Blocks[x, z].WS[0] < minHeight)
                         {
-                            minHeight = room.Blocks[x, z].WSFaces[0];
+                            minHeight = room.Blocks[x, z].WS[0];
                             theCorner = 0;
                         }
 
-                        if (room.Blocks[x, z].WSFaces[1] < minHeight)
+                        if (room.Blocks[x, z].WS[1] < minHeight)
                         {
-                            minHeight = room.Blocks[x, z].WSFaces[1];
+                            minHeight = room.Blocks[x, z].WS[1];
                             theCorner = 1;
                         }
 
-                        if (room.Blocks[x, z].WSFaces[2] < minHeight)
+                        if (room.Blocks[x, z].WS[2] < minHeight)
                         {
-                            minHeight = room.Blocks[x, z].WSFaces[2];
+                            minHeight = room.Blocks[x, z].WS[2];
                             theCorner = 2;
                         }
 
-                        if (room.Blocks[x, z].WSFaces[3] < minHeight)
+                        if (room.Blocks[x, z].WS[3] < minHeight)
                         {
-                            minHeight = room.Blocks[x, z].WSFaces[3];
+                            minHeight = room.Blocks[x, z].WS[3];
                             theCorner = 3;
                         }
 
                         if (theCorner == 0)
                         {
-                            room.Blocks[x, z].WSFaces[1] = minHeight;
-                            room.Blocks[x, z].WSFaces[3] = minHeight;
+                            room.Blocks[x, z].WS[1] = minHeight;
+                            room.Blocks[x, z].WS[3] = minHeight;
                             room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
                             if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
@@ -1582,8 +1582,8 @@ namespace TombEditor
 
                         if (theCorner == 1)
                         {
-                            room.Blocks[x, z].WSFaces[0] = minHeight;
-                            room.Blocks[x, z].WSFaces[2] = minHeight;
+                            room.Blocks[x, z].WS[0] = minHeight;
+                            room.Blocks[x, z].WS[2] = minHeight;
                             room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
                             if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
@@ -1591,8 +1591,8 @@ namespace TombEditor
 
                         if (theCorner == 2)
                         {
-                            room.Blocks[x, z].WSFaces[1] = minHeight;
-                            room.Blocks[x, z].WSFaces[3] = minHeight;
+                            room.Blocks[x, z].WS[1] = minHeight;
+                            room.Blocks[x, z].WS[3] = minHeight;
                             room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
                             if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
@@ -1600,8 +1600,8 @@ namespace TombEditor
 
                         if (theCorner == 3)
                         {
-                            room.Blocks[x, z].WSFaces[0] = minHeight;
-                            room.Blocks[x, z].WSFaces[2] = minHeight;
+                            room.Blocks[x, z].WS[0] = minHeight;
+                            room.Blocks[x, z].WS[2] = minHeight;
                             room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
                             if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                                 room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
@@ -1631,55 +1631,55 @@ namespace TombEditor
                         short maxHeight = -32767;
                         byte theCorner = 0;
 
-                        if (room.Blocks[x, z].QAFaces[0] > maxHeight)
+                        if (room.Blocks[x, z].QA[0] > maxHeight)
                         {
-                            maxHeight = room.Blocks[x, z].QAFaces[0];
+                            maxHeight = room.Blocks[x, z].QA[0];
                             theCorner = 0;
                         }
 
-                        if (room.Blocks[x, z].QAFaces[1] > maxHeight)
+                        if (room.Blocks[x, z].QA[1] > maxHeight)
                         {
-                            maxHeight = room.Blocks[x, z].QAFaces[1];
+                            maxHeight = room.Blocks[x, z].QA[1];
                             theCorner = 1;
                         }
 
-                        if (room.Blocks[x, z].QAFaces[2] > maxHeight)
+                        if (room.Blocks[x, z].QA[2] > maxHeight)
                         {
-                            maxHeight = room.Blocks[x, z].QAFaces[2];
+                            maxHeight = room.Blocks[x, z].QA[2];
                             theCorner = 2;
                         }
 
-                        if (room.Blocks[x, z].QAFaces[3] > maxHeight)
+                        if (room.Blocks[x, z].QA[3] > maxHeight)
                         {
-                            maxHeight = room.Blocks[x, z].QAFaces[3];
+                            maxHeight = room.Blocks[x, z].QA[3];
                             theCorner = 3;
                         }
 
                         if (theCorner == 0)
                         {
-                            room.Blocks[x, z].QAFaces[1] = maxHeight;
-                            room.Blocks[x, z].QAFaces[3] = maxHeight;
+                            room.Blocks[x, z].QA[1] = maxHeight;
+                            room.Blocks[x, z].QA[3] = maxHeight;
                             room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
                             room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
                         }
                         else if (theCorner == 1)
                         {
-                            room.Blocks[x, z].QAFaces[0] = maxHeight;
-                            room.Blocks[x, z].QAFaces[2] = maxHeight;
+                            room.Blocks[x, z].QA[0] = maxHeight;
+                            room.Blocks[x, z].QA[2] = maxHeight;
                             room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
                             room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
                         }
                         else if (theCorner == 2)
                         {
-                            room.Blocks[x, z].QAFaces[1] = maxHeight;
-                            room.Blocks[x, z].QAFaces[3] = maxHeight;
+                            room.Blocks[x, z].QA[1] = maxHeight;
+                            room.Blocks[x, z].QA[3] = maxHeight;
                             room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
                             room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
                         }
                         else
                         {
-                            room.Blocks[x, z].QAFaces[0] = maxHeight;
-                            room.Blocks[x, z].QAFaces[2] = maxHeight;
+                            room.Blocks[x, z].QA[0] = maxHeight;
+                            room.Blocks[x, z].QA[2] = maxHeight;
                             room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
                             room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
                         }
@@ -1932,7 +1932,7 @@ namespace TombEditor
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
                     for (int i = 0; i < 4; ++i)
-                        room.Blocks[area.X0 + x, area.Y0 + z].QAFaces[i] +=
+                        room.Blocks[area.X0 + x, area.Y0 + z].QA[i] +=
                             (short)Math.Round(changes[x + Block.FaceX[i], z + Block.FaceZ[i]]);
 
             SmartBuildGeometry(room, area);
@@ -1949,7 +1949,7 @@ namespace TombEditor
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
                     for (int i = 0; i < 4; ++i)
-                        room.Blocks[area.X0 + x, area.Y0 + z].WSFaces[i] +=
+                        room.Blocks[area.X0 + x, area.Y0 + z].WS[i] +=
                             (short)Math.Round(changes[x + Block.FaceX[i], z + Block.FaceZ[i]]);
 
             SmartBuildGeometry(room, area);
@@ -1961,7 +1961,7 @@ namespace TombEditor
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
                     for (int i = 0; i < 4; ++i)
-                        room.Blocks[area.X0 + x, area.Y0 + z].QAFaces[i] +=
+                        room.Blocks[area.X0 + x, area.Y0 + z].QA[i] +=
                             (short)Math.Round(rng.NextFloat(0, 1) * strengthDirection);
 
             SmartBuildGeometry(room, area);
@@ -1973,7 +1973,7 @@ namespace TombEditor
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
                     for (int i = 0; i < 4; ++i)
-                        room.Blocks[area.X0 + x, area.Y0 + z].WSFaces[i] +=
+                        room.Blocks[area.X0 + x, area.Y0 + z].WS[i] +=
                             (short)Math.Round(rng.NextFloat(0, 1) * strengthDirection);
 
             SmartBuildGeometry(room, area);
@@ -1986,11 +1986,11 @@ namespace TombEditor
                 {
                     Block b = room.Blocks[x, z];
 
-                    short mean = (short)((b.QAFaces[0] + b.QAFaces[1] + b.QAFaces[2] + b.QAFaces[3]) / 4);
+                    short mean = (short)((b.QA[0] + b.QA[1] + b.QA[2] + b.QA[3]) / 4);
 
                     for (int i = 0; i < 4; i++)
                     {
-                        room.Blocks[x, z].QAFaces[i] = mean;
+                        room.Blocks[x, z].QA[i] = mean;
                     }
                 }
 
@@ -2004,11 +2004,11 @@ namespace TombEditor
                 {
                     Block b = room.Blocks[x, z];
 
-                    short mean = (short)((b.WSFaces[0] + b.WSFaces[1] + b.WSFaces[2] + b.WSFaces[3]) / 4);
+                    short mean = (short)((b.WS[0] + b.WS[1] + b.WS[2] + b.WS[3]) / 4);
 
                     for (int i = 0; i < 4; i++)
                     {
-                        room.Blocks[x, z].WSFaces[i] = mean;
+                        room.Blocks[x, z].WS[i] = mean;
                     }
                 }
 
@@ -2053,10 +2053,10 @@ namespace TombEditor
 
                                 // Use the closest available vertical area information and divide it equally
                                 VerticalSpace verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
-                                block.EDFaces[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 4.0f + verticalArea.CeilingY * 1.0f) / 5.0f) : verticalArea.FloorY);
-                                block.QAFaces[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 3.0f + verticalArea.CeilingY * 2.0f) / 5.0f) : ((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 1.0f) / 3.0f));
-                                block.WSFaces[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f) : ((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f));
-                                block.RFFaces[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 4.0f) / 5.0f) : verticalArea.CeilingY);
+                                block.ED[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 4.0f + verticalArea.CeilingY * 1.0f) / 5.0f) : verticalArea.FloorY);
+                                block.QA[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 3.0f + verticalArea.CeilingY * 2.0f) / 5.0f) : ((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 1.0f) / 3.0f));
+                                block.WS[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f) : ((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f));
+                                block.RF[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 4.0f) / 5.0f) : verticalArea.CeilingY);
                             }
                     }
                 }

@@ -85,13 +85,13 @@ namespace TombLib.LevelData
         public BlockFlags Flags { get; set; } = BlockFlags.None;
         public bool ForceFloorSolid { get; set; } = false; // If this is set to true, portals are overwritten for this sector.
         // ReSharper disable once InconsistentNaming
-        public short[] EDFaces { get; } = new short[4];
+        public short[] ED { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
-        public short[] QAFaces { get; } = new short[4];
+        public short[] QA { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
-        public short[] WSFaces { get; } = new short[4];
+        public short[] WS { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
-        public short[] RFFaces { get; } = new short[4];
+        public short[] RF { get; } = new short[4];
         private TextureArea[] _faceTextures { get; } = new TextureArea[(int)FaceCount];
 
         public bool FloorSplitDirectionToggled { get; set; } = false;
@@ -111,10 +111,10 @@ namespace TombLib.LevelData
         {
             for (int i = 0; i < 4; i++)
             {
-                QAFaces[i] = (short)floor;
-                EDFaces[i] = (short)floor;
-                WSFaces[i] = (short)ceiling;
-                RFFaces[i] = (short)ceiling;
+                QA[i] = (short)floor;
+                ED[i] = (short)floor;
+                WS[i] = (short)ceiling;
+                RF[i] = (short)ceiling;
             }
         }
 
@@ -126,13 +126,13 @@ namespace TombLib.LevelData
             result.ForceFloorSolid = ForceFloorSolid;
 
             for (int i = 0; i < 4; i++)
-                result.QAFaces[i] = QAFaces[i];
+                result.QA[i] = QA[i];
             for (int i = 0; i < 4; i++)
-                result.EDFaces[i] = EDFaces[i];
+                result.ED[i] = ED[i];
             for (int i = 0; i < 4; i++)
-                result.WSFaces[i] = WSFaces[i];
+                result.WS[i] = WS[i];
             for (int i = 0; i < 4; i++)
-                result.RFFaces[i] = RFFaces[i];
+                result.RF[i] = RF[i];
             for (int i = 0; i < (int)FaceCount; i++)
                 result._faceTextures[i] = _faceTextures[i];
 
@@ -179,13 +179,13 @@ namespace TombLib.LevelData
             switch (verticalSubdivision)
             {
                 case 0:
-                    return QAFaces;
+                    return QA;
                 case 1:
-                    return WSFaces;
+                    return WS;
                 case 2:
-                    return EDFaces;
+                    return ED;
                 case 3:
-                    return RFFaces;
+                    return RF;
                 default:
                     throw new NotSupportedException();
             }
@@ -362,8 +362,8 @@ namespace TombLib.LevelData
             {
                 bool requiredFloorSplitDirectionIsXEqualsZ = FloorSplitDirectionIsXEqualsZ != diagonalChange;
                 FloorDiagonalSplit = TransformDiagonalSplit(FloorDiagonalSplit, transformation);
-                transformation.TransformValueDiagonalQuad(ref QAFaces[FaceXpZp], ref QAFaces[FaceXnZp], ref QAFaces[FaceXnZn], ref QAFaces[FaceXpZn]);
-                transformation.TransformValueDiagonalQuad(ref EDFaces[FaceXpZp], ref EDFaces[FaceXnZp], ref EDFaces[FaceXnZn], ref EDFaces[FaceXpZn]);
+                transformation.TransformValueDiagonalQuad(ref QA[FaceXpZp], ref QA[FaceXnZp], ref QA[FaceXnZn], ref QA[FaceXpZn]);
+                transformation.TransformValueDiagonalQuad(ref ED[FaceXpZp], ref ED[FaceXnZp], ref ED[FaceXnZn], ref ED[FaceXpZn]);
                 if (requiredFloorSplitDirectionIsXEqualsZ != FloorSplitDirectionIsXEqualsZ)
                     FloorSplitDirectionToggled = !FloorSplitDirectionToggled;
             }
@@ -372,8 +372,8 @@ namespace TombLib.LevelData
             {
                 bool requiredCeilingSplitDirectionIsXEqualsZ = CeilingSplitDirectionIsXEqualsZ != diagonalChange;
                 CeilingDiagonalSplit = TransformDiagonalSplit(CeilingDiagonalSplit, transformation);
-                transformation.TransformValueDiagonalQuad(ref WSFaces[FaceXpZp], ref WSFaces[FaceXnZp], ref WSFaces[FaceXnZn], ref WSFaces[FaceXpZn]);
-                transformation.TransformValueDiagonalQuad(ref RFFaces[FaceXpZp], ref RFFaces[FaceXnZp], ref RFFaces[FaceXnZn], ref RFFaces[FaceXpZn]);
+                transformation.TransformValueDiagonalQuad(ref WS[FaceXpZp], ref WS[FaceXnZp], ref WS[FaceXnZn], ref WS[FaceXpZn]);
+                transformation.TransformValueDiagonalQuad(ref RF[FaceXpZp], ref RF[FaceXnZp], ref RF[FaceXnZn], ref RF[FaceXpZn]);
                 if (requiredCeilingSplitDirectionIsXEqualsZ != CeilingSplitDirectionIsXEqualsZ)
                     CeilingSplitDirectionToggled = !CeilingSplitDirectionToggled;
             }
@@ -506,20 +506,20 @@ namespace TombLib.LevelData
         {
             for (int i = 0; i < 4; i++)
             {
-                EDFaces[i] = Math.Min(EDFaces[i], QAFaces[i]);
-                RFFaces[i] = Math.Max(RFFaces[i], WSFaces[i]);
+                ED[i] = Math.Min(ED[i], QA[i]);
+                RF[i] = Math.Max(RF[i], WS[i]);
 
                 if (verticalSubdivision == 0 || verticalSubdivision == 2 || verticalSubdivision == -1)
                     if (FloorDiagonalSplit != DiagonalSplit.None)
-                        QAFaces[i] = Math.Min(QAFaces[i], CeilingMin);
+                        QA[i] = Math.Min(QA[i], CeilingMin);
                     else
-                        QAFaces[i] = Math.Min(QAFaces[i], WSFaces[i]);
+                        QA[i] = Math.Min(QA[i], WS[i]);
 
                 if (verticalSubdivision == 1 || verticalSubdivision == 3 || verticalSubdivision == -1)
                     if (CeilingDiagonalSplit != DiagonalSplit.None)
-                        WSFaces[i] = Math.Max(WSFaces[i], FloorMax);
+                        WS[i] = Math.Max(WS[i], FloorMax);
                     else
-                        WSFaces[i] = Math.Max(WSFaces[i], QAFaces[i]);
+                        WS[i] = Math.Max(WS[i], QA[i]);
             }
         }
 
@@ -553,10 +553,10 @@ namespace TombLib.LevelData
         {
             Plane[] tri = new Plane[2];
 
-            var p0 = new Vector3(0, QAFaces[0], 0);
-            var p1 = new Vector3(4, QAFaces[1], 0);
-            var p2 = new Vector3(4, QAFaces[2], -4);
-            var p3 = new Vector3(0, QAFaces[3], -4);
+            var p0 = new Vector3(0, QA[0], 0);
+            var p1 = new Vector3(4, QA[1], 0);
+            var p2 = new Vector3(4, QA[2], -4);
+            var p3 = new Vector3(0, QA[3], -4);
 
             // Create planes based on floor split direction
 
@@ -582,16 +582,16 @@ namespace TombLib.LevelData
             if (FloorSplitDirectionIsXEqualsZ)
             {
                 if (triangle == 0)
-                    return Math.Min(Math.Min(QAFaces[1], QAFaces[2]), QAFaces[3]);
+                    return Math.Min(Math.Min(QA[1], QA[2]), QA[3]);
                 else
-                    return Math.Min(Math.Min(QAFaces[1], QAFaces[3]), QAFaces[0]);
+                    return Math.Min(Math.Min(QA[1], QA[3]), QA[0]);
             }
             else
             {
                 if (triangle == 0)
-                    return Math.Min(Math.Min(QAFaces[0], QAFaces[1]), QAFaces[2]);
+                    return Math.Min(Math.Min(QA[0], QA[1]), QA[2]);
                 else
-                    return Math.Min(Math.Min(QAFaces[0], QAFaces[2]), QAFaces[3]);
+                    return Math.Min(Math.Min(QA[0], QA[2]), QA[3]);
             }
         }
 
@@ -745,7 +745,7 @@ namespace TombLib.LevelData
         {
             get
             {
-                int h1 = QAFaces[0], h2 = QAFaces[1], h3 = QAFaces[2], h4 = QAFaces[3];
+                int h1 = QA[0], h2 = QA[1], h3 = QA[2], h4 = QA[3];
                 int horizontalTriangle = FindHorizontalTriangle(h1, h2, h3, h4);
 
                 switch (horizontalTriangle)
@@ -793,7 +793,7 @@ namespace TombLib.LevelData
         {
             get
             {
-                int h1 = WSFaces[0], h2 = WSFaces[1], h3 = WSFaces[2], h4 = WSFaces[3];
+                int h1 = WS[0], h2 = WS[1], h3 = WS[2], h4 = WS[3];
                 int horizontalTriangle = FindHorizontalTriangle(h1, h2, h3, h4);
 
                 switch (horizontalTriangle)
@@ -893,14 +893,14 @@ namespace TombLib.LevelData
 
         public bool IsAnyWall => Type != BlockType.Floor;
         public bool IsAnyPortal => FloorPortal != null || CeilingPortal != null || WallPortal != null;
-        public bool FloorIsQuad => FloorDiagonalSplit == DiagonalSplit.None && IsQuad(QAFaces[FaceXnZp], QAFaces[FaceXpZp], QAFaces[FaceXpZn], QAFaces[FaceXnZn]);
-        public bool CeilingIsQuad => CeilingDiagonalSplit == DiagonalSplit.None && IsQuad(WSFaces[FaceXnZp], WSFaces[FaceXpZp], WSFaces[FaceXpZn], WSFaces[FaceXnZn]);
+        public bool FloorIsQuad => FloorDiagonalSplit == DiagonalSplit.None && IsQuad(QA[FaceXnZp], QA[FaceXpZp], QA[FaceXpZn], QA[FaceXnZn]);
+        public bool CeilingIsQuad => CeilingDiagonalSplit == DiagonalSplit.None && IsQuad(WS[FaceXnZp], WS[FaceXpZp], WS[FaceXpZn], WS[FaceXnZn]);
         public bool FloorHasSlope => FloorMax - FloorMin > 2;
         public bool CeilingHasSlope => CeilingMax - CeilingMin > 2;
-        public int FloorIfQuadSlopeX => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXnZp] : 0;
-        public int FloorIfQuadSlopeZ => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXpZn] : 0;
-        public int CeilingIfQuadSlopeX => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXnZp] : 0;
-        public int CeilingIfQuadSlopeZ => CeilingIsQuad ? WSFaces[FaceXpZn] - WSFaces[FaceXpZp] : 0;
+        public int FloorIfQuadSlopeX => FloorIsQuad ? QA[FaceXpZp] - QA[FaceXnZp] : 0;
+        public int FloorIfQuadSlopeZ => FloorIsQuad ? QA[FaceXpZp] - QA[FaceXpZn] : 0;
+        public int CeilingIfQuadSlopeX => CeilingIsQuad ? WS[FaceXpZp] - WS[FaceXnZp] : 0;
+        public int CeilingIfQuadSlopeZ => CeilingIsQuad ? WS[FaceXpZn] - WS[FaceXpZp] : 0;
         public short FloorMax => GetFaceMax(0);
         public short FloorMin => GetFaceMin(0);
         public short CeilingMax => GetFaceMax(1);
