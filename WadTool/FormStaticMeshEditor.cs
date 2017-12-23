@@ -1,13 +1,14 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
 
@@ -44,17 +45,17 @@ namespace WadTool
         {
             // Check if we need to transform mesh
             var transform = panelRendering.GizmoTransform;
-            if (transform != Matrix.Identity)
+            if (transform != Matrix4x4.Identity)
             {
                 for (int i = 0; i < _workingStaticMesh.Mesh.VerticesPositions.Count; i++)
                 {
-                    var position = Vector3.Transform(_workingStaticMesh.Mesh.VerticesPositions[i], transform);
+                    var position = MathC.HomogenousTransform(_workingStaticMesh.Mesh.VerticesPositions[i], transform);
                     _workingStaticMesh.Mesh.VerticesPositions[i] = new Vector3(position.X, position.Y, position.Z);
                 }
 
                 for (int i = 0; i < _workingStaticMesh.Mesh.VerticesNormals.Count; i++)
                 {
-                    var normal = Vector3.Transform(_workingStaticMesh.Mesh.VerticesNormals[i], transform);
+                    var normal = MathC.HomogenousTransform(_workingStaticMesh.Mesh.VerticesNormals[i], transform);
                     _workingStaticMesh.Mesh.VerticesNormals[i] = new Vector3(normal.X, normal.Y, normal.Z);
                 }
 

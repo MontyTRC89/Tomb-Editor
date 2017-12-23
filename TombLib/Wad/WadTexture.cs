@@ -1,18 +1,18 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
-using TombLib.Utils;
 using TombLib.Graphics;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
     public class WadTexture : Texture, IRenderableObject, IEquatable<WadTexture>
     {
         private Hash _hash;
-        
+
         public override bool ReplaceMagentaWithTransparency => true;
 
         public new ImageC Image
@@ -34,8 +34,8 @@ namespace TombLib.Wad
             using (var ms = new MemoryStream())
             {
                 var writer = new BinaryWriter(ms);
-                writer.Write(Width);
-                writer.Write(Height);
+                writer.Write(Size.X);
+                writer.Write(Size.Y);
 
                 Image.WriteToStreamRaw(ms);
                 return ms.ToArray();
@@ -54,13 +54,14 @@ namespace TombLib.Wad
         }
 
         public Hash Hash { get { return _hash; } }
+        public VectorInt2 Size { get { return Image.Size; } }
         public int Width { get { return Image.Width; } }
         public int Height { get { return Image.Height; } }
 
         // Helper data
-        public Vector2 PositionInTextureAtlas { get; set; }
-        public Vector2 PositionInPackedTextureMap { get; set; }
-        public Vector2 PositionInOriginalTexturePage { get; set; }
+        public VectorInt2 PositionInTextureAtlas { get; set; }
+        public VectorInt2 PositionInPackedTextureMap { get; set; }
+        public VectorInt2 PositionInOriginalTexturePage { get; set; }
         public ushort Tile { get; set; }
     }
 }

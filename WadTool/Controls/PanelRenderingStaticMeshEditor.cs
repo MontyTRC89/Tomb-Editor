@@ -1,12 +1,13 @@
-﻿using SharpDX;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
 
@@ -22,13 +23,13 @@ namespace WadTool.Controls
         public bool DrawGrid { get; set; }
         public bool DrawGizmo { get; set; }
 
-        public Matrix GizmoTransform
+        public Matrix4x4 GizmoTransform
         {
             get
             {
-                return Matrix.Scaling(StaticScale) *
-                       Matrix.RotationYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
-                       Matrix.Translation(StaticPosition);
+                return Matrix4x4.CreateScale(StaticScale) *
+                       Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
+                       Matrix4x4.CreateTranslation(StaticPosition);
             }
         }
 
@@ -48,9 +49,9 @@ namespace WadTool.Controls
         public Vector3 StaticRotation { get; set; } = Vector3.Zero;
         public float StaticScale { get; set; } = 1.0f;
 
-        private static readonly Color4 _red = new Color4(1.0f, 0.0f, 0.0f, 1.0f);
-        private static readonly Color4 _green = new Color4(0.0f, 1.0f, 0.0f, 1.0f);
-        private static readonly Color4 _blu = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
+        private static readonly Vector4 _red = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+        private static readonly Vector4 _green = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+        private static readonly Vector4 _blue = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
         private Buffer<SolidVertex> _vertexBufferVisibility;
         private Buffer<SolidVertex> _vertexBufferCollision;
@@ -63,8 +64,8 @@ namespace WadTool.Controls
             var pp = new PresentationParameters
             {
                 BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm,
-                BackBufferWidth = Width,
-                BackBufferHeight = Height,
+                BackBufferWidth = ClientSize.Width,
+                BackBufferHeight = ClientSize.Height,
                 DepthStencilFormat = DepthFormat.Depth24Stencil8,
                 DeviceWindowHandle = this,
                 IsFullScreen = false,
@@ -76,7 +77,7 @@ namespace WadTool.Controls
 
             _presenter = new SwapChainGraphicsPresenter(_device, pp);
 
-            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
+            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
 
             // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
             new BasicEffect(_device);
@@ -109,13 +110,13 @@ namespace WadTool.Controls
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             if (_device == null || _presenter == null)
-                e.Graphics.FillRectangle(Brushes.White, new System.Drawing.Rectangle(0, 0, Width, Height));
+                e.Graphics.FillRectangle(Brushes.White, new Rectangle(0, 0, ClientSize.Width, ClientSize.Height));
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             if (_device == null || _presenter == null)
-                e.Graphics.FillRectangle(Brushes.White, new System.Drawing.Rectangle(0, 0, Width, Height));
+                e.Graphics.FillRectangle(Brushes.White, new Rectangle(0, 0, ClientSize.Width, ClientSize.Height));
             else
                 Draw();
         }
@@ -150,7 +151,7 @@ namespace WadTool.Controls
                 return;
 
             _device.Presenter = _presenter;
-            _device.SetViewports(new ViewportF(0, 0, Width, Height));
+            _device.SetViewports(new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer,
                 _device.Presenter.BackBuffer);
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, SharpDX.Color.CornflowerBlue, 1.0f, 0);
@@ -158,7 +159,7 @@ namespace WadTool.Controls
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
             _device.SetBlendState(_device.BlendStates.Opaque);
 
-            Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
+            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
 
             Effect solidEffect = _tool.Effects["Solid"];
 
@@ -170,7 +171,7 @@ namespace WadTool.Controls
 
                 var world = GizmoTransform;
 
-                mioEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
+                mioEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
 
                 mioEffect.Parameters["Color"].SetValue(Vector4.One);
 
@@ -187,7 +188,7 @@ namespace WadTool.Controls
                     _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
                     _device.SetVertexInputLayout(_layout);
 
-                    mioEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
+                    mioEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                     mioEffect.Techniques[0].Passes[0].Apply();
 
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
@@ -196,7 +197,7 @@ namespace WadTool.Controls
                 // Draw boxes
                 if (DrawVisibilityBox || DrawCollisionBox)
                 {
-                    
+
                     if (DrawVisibilityBox)
                     {
                         if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
@@ -206,7 +207,7 @@ namespace WadTool.Controls
                         _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
                         _device.SetIndexBuffer(null, false);
 
-                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                         solidEffect.Parameters["Color"].SetValue(_green);
                         solidEffect.CurrentTechnique.Passes[0].Apply();
 
@@ -222,7 +223,7 @@ namespace WadTool.Controls
                         _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferCollision));
                         _device.SetIndexBuffer(null, false);
 
-                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                         solidEffect.Parameters["Color"].SetValue(_red);
                         solidEffect.CurrentTechnique.Passes[0].Apply();
 
@@ -238,7 +239,7 @@ namespace WadTool.Controls
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SolidVertex>(0, _plane.VertexBuffer));
                 _device.SetIndexBuffer(_plane.IndexBuffer, true);
 
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                 solidEffect.Parameters["Color"].SetValue(Vector4.One);
                 solidEffect.Techniques[0].Passes[0].Apply();
 
@@ -255,18 +256,16 @@ namespace WadTool.Controls
             _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
             _spriteBatch.DrawString(_tool.Font,
-                                    "Position: [" + StaticPosition.X + ", " + StaticPosition.Y + ", " + StaticPosition.Z + "]",
-                                    new Vector2(0, 0),
+                                    "Position: " + StaticPosition,
+                                    new SharpDX.Vector2(0, 0),
                                     SharpDX.Color.White);
             _spriteBatch.DrawString(_tool.Font,
-                                    "Rotation: [" + MathUtil.RadiansToDegrees(StaticRotation.X) + ", " +
-                                                    MathUtil.RadiansToDegrees(StaticRotation.Y) + ", " +
-                                                    MathUtil.RadiansToDegrees(StaticRotation.Z) + "]",
-                                    new Vector2(0, 18),
+                                    "Rotation: " + (StaticRotation.X * (180 / Math.PI)),
+                                    new SharpDX.Vector2(0, 18),
                                     SharpDX.Color.White);
             _spriteBatch.DrawString(_tool.Font,
                                     "Scale: " + StaticScale,
-                                    new Vector2(0, 36),
+                                    new SharpDX.Vector2(0, 36),
                                     SharpDX.Color.White);
 
             _spriteBatch.End();
@@ -291,8 +290,8 @@ namespace WadTool.Controls
 
         private Ray GetRay(float x, float y)
         {
-            return Ray.GetPickRay((int)Math.Round(x), (int)Math.Round(y),
-                new ViewportF(0, 0, Width, Height), Camera.GetViewProjectionMatrix(Width, Height));
+            return new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height).GetPickRay(new Vector2(x, y),
+                Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height));
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -320,7 +319,7 @@ namespace WadTool.Controls
 
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
                 Invalidate();
-            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), (int)e.X, (int)e.Y))
+            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), e.X, e.Y))
                 Invalidate();
 
             if (e.Button == MouseButtons.Right)

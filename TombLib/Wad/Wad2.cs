@@ -1,9 +1,9 @@
-﻿using SharpDX;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.Graphics;
@@ -92,16 +92,17 @@ namespace TombLib.Wad
             PackedTextures.Sort(new ComparerWadTextures());
             var factor = TextureAtlasSize / 512;
             var height = TextureAtlasSize * factor;
-            var packer = new RectPackerSimpleStack(512, height);
+            var packer = new RectPackerSimpleStack(new VectorInt2(512, height));
+            VectorInt2 maxSize = new VectorInt2();
 
             foreach (var texture in PackedTextures)
             {
-                var point = packer.TryAdd(texture.Width, texture.Height);
-                texture.PositionInPackedTextureMap = new Vector2(point.Value.X, point.Value.Y);
+                texture.PositionInPackedTextureMap = packer.TryAdd(texture.Size).Value;
+                maxSize = VectorInt2.Max(maxSize, texture.PositionInPackedTextureMap + texture.Size);
             }
 
             // Copy the page in a temp bitmap.
-            var tempBitmap = ImageC.CreateNew(512, packer.MaxHeight);
+            var tempBitmap = ImageC.CreateNew(maxSize.X, maxSize.Y);
 
             foreach (var texture in PackedTextures)
             {
@@ -127,12 +128,11 @@ namespace TombLib.Wad
 
             PackedTextures.Sort(new ComparerWadTextures());
 
-            var packer = new RectPackerSimpleStack(TextureAtlasSize, TextureAtlasSize);
+            var packer = new RectPackerSimpleStack(new VectorInt2(TextureAtlasSize, TextureAtlasSize));
 
             foreach (var texture in PackedTextures)
             {
-                var point = packer.TryAdd(texture.Width, texture.Height);
-                texture.PositionInTextureAtlas = new Vector2(point.Value.X, point.Value.Y);
+                texture.PositionInTextureAtlas = packer.TryAdd(texture.Size).Value;
             }
 
             // Copy the page in a temp bitmap.

@@ -1,16 +1,13 @@
 ﻿using NLog;
-using SharpDX;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
-using TombLib.Wad.TrLevels;
 
 namespace TombLib.Wad.TrLevels
 {
@@ -38,7 +35,7 @@ namespace TombLib.Wad.TrLevels
                 var maxY = Math.Max(Math.Max(oldTexture.Vertices[0].Yp, oldTexture.Vertices[1].Yp), oldTexture.Vertices[2].Yp);
                 if (oldTexture.Vertices[3].Yc != 0) maxY = Math.Max(maxY, oldTexture.Vertices[3].Yp);
 
-                texture.PositionInOriginalTexturePage = new Vector2(minX, minY);
+                texture.PositionInOriginalTexturePage = new VectorInt2(minX, minY);
 
                 var width = (int)(maxX - minX + 1);
                 var height = (int)(maxY - minY + 1);
@@ -157,7 +154,7 @@ namespace TombLib.Wad.TrLevels
                     wad.Textures.Add(newTexture.Hash, newTexture);
                     textureArea.Texture = newTexture;
                 }
-                textureArea.TexCoord0 = new Vector2(oldTexture.Vertices[0].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f, 
+                textureArea.TexCoord0 = new Vector2(oldTexture.Vertices[0].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
                                                     oldTexture.Vertices[0].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
                 textureArea.TexCoord1 = new Vector2(oldTexture.Vertices[1].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
                                                     oldTexture.Vertices[1].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
@@ -217,7 +214,7 @@ namespace TombLib.Wad.TrLevels
                 poly.Indices.Add(oldPoly.Vertices[1]);
                 poly.Indices.Add(oldPoly.Vertices[2]);
                 poly.Indices.Add(oldPoly.Vertices[3]);
-                
+
                 // Add the colored surface
                 TextureArea textureArea = new TextureArea();
                 var paletteIndex8 = oldPoly.Texture & 0xff;

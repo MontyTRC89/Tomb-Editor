@@ -1,9 +1,9 @@
 ﻿using NLog;
-using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.GeometryIO;
 using TombLib.GeometryIO.Importers;

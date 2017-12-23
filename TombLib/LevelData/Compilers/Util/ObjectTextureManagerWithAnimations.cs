@@ -1,12 +1,12 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using TombLib.LevelData;
 using TombLib.IO;
+using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
@@ -98,10 +98,10 @@ namespace TombLib.LevelData.Compilers.Util
                         _frame = frame,
                         _frameIndex = i,
                         _textureSpaceIdentifier = GetNewTextureSpaceIdentifier(),
-                        _texCoord0 = frame.TexCoord0 + (frame.TexCoord0 - mid).Normalize_() * _marginFactor,
-                        _texCoord1 = frame.TexCoord1 + (frame.TexCoord1 - mid).Normalize_() * _marginFactor,
-                        _texCoord2 = frame.TexCoord2 + (frame.TexCoord2 - mid).Normalize_() * _marginFactor,
-                        _texCoord3 = frame.TexCoord3 + (frame.TexCoord3 - mid).Normalize_() * _marginFactor
+                        _texCoord0 = frame.TexCoord0 + Vector2.Normalize(frame.TexCoord0 - mid) * _marginFactor,
+                        _texCoord1 = frame.TexCoord1 + Vector2.Normalize(frame.TexCoord1 - mid) * _marginFactor,
+                        _texCoord2 = frame.TexCoord2 + Vector2.Normalize(frame.TexCoord2 - mid) * _marginFactor,
+                        _texCoord3 = frame.TexCoord3 + Vector2.Normalize(frame.TexCoord3 - mid) * _marginFactor
                     };
                     _animationTextureSpaceIdentifierLookup.Add(frame, entry._textureSpaceIdentifier);
 

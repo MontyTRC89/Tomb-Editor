@@ -71,10 +71,14 @@
 // particular purpose and non-infringement.
 
 using System;
+using System.Numerics;
 using TombLib.Graphics;
 
 namespace SharpDX.Toolkit.Graphics
 {
+    using Vector3 = System.Numerics.Vector3;
+    using Vector4 = System.Numerics.Vector4;
+
     public partial class GeometricPrimitive
     {
         /// <summary>

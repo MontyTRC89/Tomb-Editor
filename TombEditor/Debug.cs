@@ -1,7 +1,7 @@
-﻿using SharpDX;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using TombLib.Graphics;
 
@@ -39,14 +39,14 @@ namespace TombEditor
             {
                 batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.AlphaBlend);
 
-                batch.DrawStringOnOldSharpDx(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), new Color(textColor));
-                batch.DrawStringOnOldSharpDx(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), new Color(textColor));
+                batch.DrawStringOnOldSharpDx(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), new SharpDX.Color(textColor.ToSharpDX()));
+                batch.DrawStringOnOldSharpDx(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), new SharpDX.Color(textColor.ToSharpDX()));
                 if (!string.IsNullOrEmpty(selectedItem))
-                    batch.DrawStringOnOldSharpDx(deviceManager.Font, "Selected Object: " + selectedItem, new Vector2(0, 36), new Color(textColor));
+                    batch.DrawStringOnOldSharpDx(deviceManager.Font, "Selected Object: " + selectedItem, new Vector2(0, 36), new SharpDX.Color(textColor.ToSharpDX()));
 
                 for (int i = 0; i < Strings.Count; i++)
                 {
-                    batch.DrawStringOnOldSharpDx(deviceManager.Font, Strings[i].Content, Strings[i].Position, new Color(textColor));
+                    batch.DrawStringOnOldSharpDx(deviceManager.Font, Strings[i].Content, Strings[i].Position, new SharpDX.Color(textColor.ToSharpDX()));
                 }
 
                 batch.End();
@@ -62,14 +62,14 @@ namespace TombEditor
         // There seems to be a bug in the old version of SharpDx we are currently using
         // that makes 'DrawString' crash the application when unknown characters are encountered
         // even though 'SpriteFont' is setup to use a 'DefaultCharacter' as a replacement.
-        public static void DrawStringOnOldSharpDx(this SpriteBatch spriteBatch, SpriteFont spriteFont, string text, Vector2 position, Color color)
+        public static void DrawStringOnOldSharpDx(this SpriteBatch spriteBatch, SpriteFont spriteFont, string text, Vector2 position, SharpDX.Color color)
         {
             var text2 = new StringBuilder(text);
             if (spriteFont.DefaultCharacter.HasValue)
                 for (int i = 0; i < text2.Length; ++i)
                     if (!spriteFont.Characters.Contains(text2[i]))
                         text2[i] = spriteFont.DefaultCharacter.Value;
-            spriteBatch.DrawString(spriteFont, text2, position, color);
+            spriteBatch.DrawString(spriteFont, text2.ToString(), position.ToSharpDX(), color);
         }
     }
 }

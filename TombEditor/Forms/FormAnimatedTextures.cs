@@ -2,12 +2,12 @@
 using DarkUI.Extensions;
 using DarkUI.Forms;
 using NLog;
-using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -186,7 +186,7 @@ namespace TombEditor
                 _editor.AnimatedTexturesChange();
             }
         }
-        
+
         private void UpdateCurrentAnimationDisplay()
         {
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;

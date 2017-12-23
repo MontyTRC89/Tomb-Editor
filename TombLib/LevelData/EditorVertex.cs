@@ -1,6 +1,6 @@
-﻿using SharpDX;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.Graphics;
 

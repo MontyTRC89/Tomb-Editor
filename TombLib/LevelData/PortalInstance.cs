@@ -1,5 +1,5 @@
-﻿using SharpDX;
-using System;
+﻿using System;
+using System.Numerics;
 using TombLib.Utils;
 
 namespace TombLib.LevelData

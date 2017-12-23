@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using TombLib.Forms;
+using TombLib.GeometryIO;
+using TombLib.LevelData;
+using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Wad.Tr4Wad;
 using TombLib.Wad.TrLevels;
-using TombLib.Forms;
-using TombLib.Utils;
-using TombLib.LevelData;
-using TombLib.GeometryIO;
 
 namespace WadTool
 {

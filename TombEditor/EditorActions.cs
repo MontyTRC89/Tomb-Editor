@@ -1,11 +1,11 @@
 ﻿using DarkUI.Forms;
 using NLog;
-using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -389,8 +389,8 @@ namespace TombEditor
             bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW);
             bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE);
 
-            float smoothGrainX = (float)(allFace || (step90 && !turn90) ? Math.PI : MathUtilEx.PiOverTwo) / (area.Width + 1);
-            float smoothGrainZ = (float)(allFace || (step90 && turn90) ? Math.PI : MathUtilEx.PiOverTwo) / (area.Height + 1);
+            float smoothGrainX = (float)(allFace || (step90 && !turn90) ? Math.PI : (Math.PI * 0.5f)) / (area.Width + 1);
+            float smoothGrainZ = (float)(allFace || (step90 && turn90) ? Math.PI : (Math.PI * 0.5f)) / (area.Height + 1);
 
             for (int w = area.X0, x = 0; w < area.X1 + 2; w++, x++)
                 for (int h = area.Y0, z = 0; h != area.Y1 + 2; h++, z++)
@@ -505,9 +505,12 @@ namespace TombEditor
                 return;
 
             // Limit movement precision
-            for (int i = 0; i < 3; ++i)
-                if (precision[i] != 0)
-                    pos[i] = ((float)Math.Round(pos[i] / precision[i])) * precision[i];
+            if (precision.X > 0.0f)
+                pos.X = ((float)Math.Round(pos.X / precision.X)) * precision.X;
+            if (precision.Y > 0.0f)
+                pos.Y = ((float)Math.Round(pos.Y / precision.Y)) * precision.Y;
+            if (precision.Z > 0.0f)
+                pos.Z = ((float)Math.Round(pos.Z / precision.Z)) * precision.Z;
 
             // Limit movement area
             if (!canGoOutsideRoom)
@@ -640,15 +643,6 @@ namespace TombEditor
                 MessageBox.Show("Clipboard contains no object data.");
             else
                 PlaceObject(_editor.SelectedRoom, pos, data.MergeGetSingleObject(_editor));
-        }
-
-        public static void SnapObjectToGrid(PositionBasedObjectInstance instance, IWin32Window owner)
-        {
-            var newPosition = new Vector3(instance.Position.X, instance.Position.Y, instance.Position.Z);
-            for (int i = 0; i < 3; ++i)
-                newPosition[i] = ((float)Math.Round(newPosition[i] / 64)) * 64;
-
-            _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
         public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
@@ -1927,7 +1921,7 @@ namespace TombEditor
             Random rng = new Random();
             for (int x = 1; x <= area.Width; x++)
                 for (int z = 1; z <= area.Height; z++)
-                    changes[x, z] = rng.NextFloat(0, 1) * strengthDirection;
+                    changes[x, z] = ((float)rng.NextDouble()) * strengthDirection;
 
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
@@ -1944,7 +1938,7 @@ namespace TombEditor
             Random rng = new Random();
             for (int x = 1; x <= area.Width; x++)
                 for (int z = 1; z <= area.Height; z++)
-                    changes[x, z] = rng.NextFloat(0, 1) * strengthDirection;
+                    changes[x, z] = ((float)rng.NextDouble()) * strengthDirection;
 
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
@@ -1962,7 +1956,7 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (int i = 0; i < 4; ++i)
                         room.Blocks[area.X0 + x, area.Y0 + z].QA[i] +=
-                            (short)Math.Round(rng.NextFloat(0, 1) * strengthDirection);
+                            (short)Math.Round(((float)rng.NextDouble()) * strengthDirection);
 
             SmartBuildGeometry(room, area);
         }
@@ -1974,7 +1968,7 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (int i = 0; i < 4; ++i)
                         room.Blocks[area.X0 + x, area.Y0 + z].WS[i] +=
-                            (short)Math.Round(rng.NextFloat(0, 1) * strengthDirection);
+                            (short)Math.Round(((float)rng.NextDouble()) * strengthDirection);
 
             SmartBuildGeometry(room, area);
         }

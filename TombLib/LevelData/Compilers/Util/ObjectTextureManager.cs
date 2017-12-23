@@ -1,14 +1,14 @@
 ﻿using NLog;
-using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using TombLib.LevelData;
 using TombLib.IO;
+using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
@@ -300,9 +300,9 @@ namespace TombLib.LevelData.Compilers.Util
                 //Save UV coordinates...
                 int edgeCount = isTriangular ? 3 : 4;
                 Vector2 lowerBound = new Vector2(127.0f / 256.0f);
-                Vector2 upperBound = new Vector2(view.Width, view.Height) - new Vector2(129.0f / 256.0f);
+                Vector2 upperBound = new Vector2(view.Area.Width, view.Area.Height) - new Vector2(129.0f / 256.0f);
                 Vector2 lowerBountUint16 = new Vector2(0.0f);
-                Vector2 upperBoundUint16 = new Vector2(view.Width, view.Height) * 256.0f - new Vector2(1.0f);
+                Vector2 upperBoundUint16 = new Vector2(view.Area.Width, view.Area.Height) * 256.0f - new Vector2(1.0f);
                 Vector2[] texCoordModification = GetTexCoordModificationFromNewFlags(NewFlags, isTriangular);
                 for (int i = 0; i < edgeCount; ++i)
                 {
@@ -444,10 +444,10 @@ namespace TombLib.LevelData.Compilers.Util
                 // To simplify the test just use the rectangular region around. (We could do a polygonal thing but I am not sure its worth it)
                 Vector2 minTexCoord, maxTexCoord;
                 objectTexture.GetRealTexRect(out minTexCoord, out maxTexCoord);
-                int startX = textureView.PosX + (int)Math.Floor(minTexCoord.X);
-                int startY = textureView.PosY + (int)Math.Floor(minTexCoord.Y);
-                int endX = textureView.PosX + (int)Math.Ceiling(maxTexCoord.X);
-                int endY = textureView.PosY + (int)Math.Ceiling(maxTexCoord.Y);
+                int startX = textureView.Area.X0 + (int)Math.Floor(minTexCoord.X);
+                int startY = textureView.Area.Y0 + (int)Math.Floor(minTexCoord.Y);
+                int endX = textureView.Area.X0 + (int)Math.Ceiling(maxTexCoord.X);
+                int endY = textureView.Area.Y0 + (int)Math.Ceiling(maxTexCoord.Y);
 
                 // Check for alpha
                 bool hasAlpha = textureView.Texture.Image.HasAlpha(startX, startY, endX - startX, endY - startY);

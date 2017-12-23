@@ -1,6 +1,6 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using TombLib.Wad;
 
 namespace TombLib.LevelData

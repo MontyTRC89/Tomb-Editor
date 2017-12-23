@@ -1,13 +1,13 @@
-﻿using System;
+﻿using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SharpDX;
-using SharpDX.Toolkit.Graphics;
-using TombLib.LevelData.Compilers;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
-using TombLib.Utils;
+using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.Graphics;
+using TombLib.LevelData.Compilers;
+using TombLib.Utils;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.LevelData
 {
@@ -2275,12 +2275,10 @@ namespace TombLib.LevelData
                             var p1 = sectorVertices[vertexRange.Start + i + 1].Position;
                             var p2 = sectorVertices[vertexRange.Start + i + 2].Position;
 
-                            float distance;
-                            if (ray.Intersects(ref p0, ref p1, ref p2, out distance))
+                            Vector3 position;
+                            if (Collision.RayIntersectsTriangle(ray, p0, p1, p2, out position))
                             {
-                                Vector3 position;
-                                ray.Intersects(ref p0, ref p1, ref p2, out position);
-
+                                float distance = (position - ray.Position).Length();
                                 var normal = Vector3.Cross(p1 - p0, p2 - p0);
                                 if (Vector3.Dot(ray.Direction, normal) <= 0)
                                     if (!(distance > result.Distance))
@@ -2588,7 +2586,7 @@ namespace TombLib.LevelData
             var normal = Vector3.Cross(
                 _allVertices[range.Start + 1].Position - _allVertices[range.Start].Position,
                 _allVertices[range.Start + 2].Position - _allVertices[range.Start].Position);
-            normal = normal.Normalize_();
+            normal = Vector3.Normalize(normal);
 
             for (int i = 0; i < range.Count; ++i)
             {
@@ -2633,7 +2631,7 @@ namespace TombLib.LevelData
                                 }
 
                                 // Calculate the attenuation
-                                var attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
+                                float attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
                                 if (attenuaton > 1.0f)
                                     attenuaton = 1.0f;
                                 if (attenuaton <= 0.0f)
@@ -2681,7 +2679,7 @@ namespace TombLib.LevelData
                                 }
 
                                 // Calculate the light direction
-                                var lightDirection = light.GetDirection();
+                                Vector3 lightDirection = light.GetDirection();
 
                                 // calcolo la luce diffusa
                                 float diffuse = -Vector3.Dot(lightDirection, normal);
@@ -2706,8 +2704,7 @@ namespace TombLib.LevelData
                             if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
                             {
                                 // Calculate the ray from light to vertex
-                                var lightVector = position - light.Position;
-                                lightVector = lightVector.Normalize_();
+                                Vector3 lightVector = Vector3.Normalize((position - light.Position));
 
                                 // Get the distance between light and vertex
                                 float distance = Math.Abs((position - light.Position).Length());
@@ -2717,12 +2714,12 @@ namespace TombLib.LevelData
                                     continue;
 
                                 // Calculate the light direction
-                                var lightDirection = light.GetDirection();
+                                Vector3 lightDirection = light.GetDirection();
 
                                 // Calculate the cosines values for In, Out
                                 double d = Vector3.Dot(lightVector, lightDirection);
-                                double cosI2 = Math.Cos(MathUtil.DegreesToRadians(light.InnerAngle));
-                                double cosO2 = Math.Cos(MathUtil.DegreesToRadians(light.OuterAngle));
+                                double cosI2 = Math.Cos(light.InnerAngle * (Math.PI / 180));
+                                double cosO2 = Math.Cos(light.OuterAngle * (Math.PI / 180));
 
                                 if (d < cosO2)
                                     continue;
@@ -2891,7 +2888,7 @@ namespace TombLib.LevelData
                         {
                             // Calculate the ray from light to vertex
                             var lightVector = position - light.Position;
-                            lightVector = lightVector.Normalize_();
+                            lightVector = lightVector.Normalize();
 
                             // Get the distance between light and vertex
                             float distance = Math.Abs((position - light.Position).Length());
@@ -2978,7 +2975,7 @@ namespace TombLib.LevelData
 
         public Buffer<EditorVertex> VertexBuffer => _vertexBuffer;
 
-        public Matrix Transform => Matrix.Translation(new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f));
+        public Matrix4x4 Transform => Matrix4x4.CreateTranslation(new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f));
 
         public int GetHighestCorner(RectangleInt2 area)
         {

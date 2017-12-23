@@ -1,10 +1,10 @@
 ﻿using DarkUI.Docking;
 using NLog;
-using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Numerics;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;

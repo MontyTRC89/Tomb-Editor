@@ -8,7 +8,7 @@ namespace TombLib.GeometryIO.Importers
 {
     public class PlyRoomImporter : BaseGeometryImporter
     {
-        public PlyRoomImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback) 
+        public PlyRoomImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
             : base(settings, getTextureCallback)
         {
         }

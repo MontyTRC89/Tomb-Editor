@@ -19,11 +19,15 @@
 // THE SOFTWARE.
 
 using System;
+using System.Numerics;
 using SharpDX.Direct3D;
 using TombLib.Graphics;
 
 namespace SharpDX.Toolkit.Graphics
 {
+    using Vector3 = System.Numerics.Vector3;
+    using Vector4 = System.Numerics.Vector4;
+
     /// <summary>
     /// A geometric primitive used to draw a simple model built from a set of vertices and indices.
     /// </summary>

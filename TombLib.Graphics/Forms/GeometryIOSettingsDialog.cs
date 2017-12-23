@@ -23,7 +23,7 @@ namespace TombLib.GeometryIO
 
         protected override void Dispose(bool disposing)
         {
-            if(disposing)
+            if (disposing)
                 SuspendControlListening();
 
             if (disposing && (components != null))
@@ -41,16 +41,16 @@ namespace TombLib.GeometryIO
 
         public void AddPreset(string name, IOGeometrySettings settings)
         {
-            if(!_presets.Any((item) => item.Name == name))
+            if (!_presets.Any((item) => item.Name == name))
             {
                 _presets.Add(new IOGeometrySettingsPreset() { Name = name, Settings = settings });
                 PopulatePresetList();
             }
         }
-        
+
         public void AddPreset(List<IOGeometrySettingsPreset> presetList)
         {
-            foreach(var preset in presetList)
+            foreach (var preset in presetList)
                 if (!_presets.Any((item => item.Name == preset.Name)))
                     _presets.Add(preset);
 
@@ -68,7 +68,7 @@ namespace TombLib.GeometryIO
 
         public void RemovePreset(string name = null)
         {
-            if(string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
                 _presets.Clear();
             else
                 _presets.RemoveAll((item) => item.Name == name);
@@ -88,14 +88,14 @@ namespace TombLib.GeometryIO
 
         private void SelectNullPreset()
         {
-            if(cmbPresetList.SelectedIndex != -1)
+            if (cmbPresetList.SelectedIndex != -1)
                 cmbPresetList.SelectedIndex = -1;
         }
 
         private void PopulatePresetList()
         {
             cmbPresetList.Items.Clear();
-            foreach(var preset in _presets)
+            foreach (var preset in _presets)
                 cmbPresetList.Items.Add(preset.Name);
 
             if (cmbPresetList.Items.Count == 0)
@@ -147,7 +147,7 @@ namespace TombLib.GeometryIO
 
         private void cmbPresetList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(cmbPresetList.SelectedIndex != -1)
+            if (cmbPresetList.SelectedIndex != -1)
             {
                 // We need to suspend control listening to prevent combobox setting
                 // back to modified state.
