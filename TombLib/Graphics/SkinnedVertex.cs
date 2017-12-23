@@ -1,5 +1,5 @@
-﻿using SharpDX;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace TombLib.Graphics

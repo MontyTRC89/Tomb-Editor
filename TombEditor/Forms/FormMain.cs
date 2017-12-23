@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.LevelData;
-using SharpDX;
+using System.Numerics;
 using System.IO;
 using TombEngine;
 using NLog;

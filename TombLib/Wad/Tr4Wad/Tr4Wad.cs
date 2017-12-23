@@ -1,15 +1,11 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TombLib.IO;
 using System.IO;
+using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
-using TombLib.Wad;
-using SharpDX;
-using TombLib.Graphics;
-using TombLib.Utils;
+using TombLib.IO;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.Tr4Wad

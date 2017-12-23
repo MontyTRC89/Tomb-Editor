@@ -1,10 +1,7 @@
-﻿using Assimp;
-using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.GeometryIO;
@@ -1002,7 +999,7 @@ namespace TombLib.Wad
             return Meshes[newMesh.Hash];
         }*/
 
-        public static BoundingBox CalculateBoundingBox(WadMesh mesh, Matrix transform)
+        public static BoundingBox CalculateBoundingBox(WadMesh mesh, Matrix4x4 transform)
         {
             float xMin = float.MaxValue;
             float yMin = float.MaxValue;
@@ -1014,7 +1011,7 @@ namespace TombLib.Wad
             // Add positions
             foreach (var oldVertex in mesh.VerticesPositions)
             {
-                var transformedVertex = Vector3.Transform(oldVertex, transform);
+                var transformedVertex = MathC.HomogenousTransform(oldVertex, transform);
 
                 if (transformedVertex.X < xMin)
                     xMin = transformedVertex.X;

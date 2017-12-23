@@ -1,7 +1,7 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -16,11 +16,11 @@ namespace TombLib.Wad
 
         // I store angles in the old way because passing between int and floats cause a loss of precision
         // This property builds the DirectX rotation matrix from these angles
-        public Matrix RotationMatrix
+        public Matrix4x4 RotationMatrix
         {
             get
             {
-                Matrix matrix = Matrix.Identity;
+                Matrix4x4 matrix = Matrix4x4.Identity;
 
                 float rotX = 0;
                 float rotY = 0;
@@ -33,22 +33,22 @@ namespace TombLib.Wad
                         rotY = Y / 1024.0f * 2 * (float)Math.PI;
                         rotZ = -Z / 1024.0f * 2 * (float)Math.PI;
 
-                        matrix = Matrix.RotationYawPitchRoll((float)rotY, (float)rotX, (float)rotZ);
+                        matrix = Matrix4x4.CreateFromYawPitchRoll((float)rotY, (float)rotX, (float)rotZ);
                         break;
 
                     case WadKeyFrameRotationAxis.AxisX:
                         rotX = -X / 4096.0f * 2 * (float)Math.PI;
-                        matrix = Matrix.RotationX((float)rotX);
+                        matrix = Matrix4x4.CreateRotationX((float)rotX);
                         break;
 
                     case WadKeyFrameRotationAxis.AxisY:
                         rotY = Y / 4096.0f * 2 * (float)Math.PI;
-                        matrix = Matrix.RotationY((float)rotY);
+                        matrix = Matrix4x4.CreateRotationY((float)rotY);
                         break;
 
                     case WadKeyFrameRotationAxis.AxisZ:
                         rotZ = -Z / 4096.0f * 2 * (float)Math.PI;
-                        matrix = Matrix.RotationZ((float)rotZ);
+                        matrix = Matrix4x4.CreateRotationZ((float)rotZ);
                         break;
                 }
 

@@ -1,11 +1,11 @@
 ﻿using NLog;
-using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;

@@ -1,14 +1,9 @@
-﻿using SharpDX;
-using DarkUI.Docking;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
+using System.Numerics;
 using System.Windows.Forms;
-
 using System.Xml.Serialization;
-using System.Xml;
-using System.Xml.Schema;
 
 namespace WadTool
 {

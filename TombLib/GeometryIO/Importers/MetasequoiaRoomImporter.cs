@@ -1,9 +1,10 @@
 ﻿using NLog;
-using SharpDX;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
@@ -109,9 +110,9 @@ namespace TombLib.GeometryIO.Importers
                                 for (var i = 0; i < numVertices; i++)
                                 {
                                     var tokensPosition = reader.ReadLine().Trim().Split(' ');
-                                    positions.Add(ApplyAxesTransforms(new Vector3(MathUtilEx.ParseFloatCultureInvariant(tokensPosition[0]),
-                                                                                  MathUtilEx.ParseFloatCultureInvariant(tokensPosition[1]),
-                                                                                  MathUtilEx.ParseFloatCultureInvariant(tokensPosition[2]))));
+                                    positions.Add(ApplyAxesTransforms(new Vector3(ParseFloatCultureInvariant(tokensPosition[0]),
+                                                                                  ParseFloatCultureInvariant(tokensPosition[1]),
+                                                                                  ParseFloatCultureInvariant(tokensPosition[2]))));
                                 }
                                 line = reader.ReadLine().Trim();
                             }
@@ -145,8 +146,8 @@ namespace TombLib.GeometryIO.Importers
                                         var tokensUV = stringUV.Split(' ');
                                         for (var k = 0; k < numVerticesInFace; k++)
                                         {
-                                            var uv = ApplyUVTransform(new Vector2(MathUtilEx.ParseFloatCultureInvariant(tokensUV[2 * k]),
-                                                                                  MathUtilEx.ParseFloatCultureInvariant(tokensUV[2 * k + 1])),
+                                            var uv = ApplyUVTransform(new Vector2(ParseFloatCultureInvariant(tokensUV[2 * k]),
+                                                                                  ParseFloatCultureInvariant(tokensUV[2 * k + 1])),
                                                                       textures[0].Image.Width,
                                                                       textures[0].Image.Height);
                                             mesh.UV.Add(uv);
@@ -180,6 +181,20 @@ namespace TombLib.GeometryIO.Importers
             }
 
             return model;
+        }
+
+        private static float ParseFloatCultureInvariant(string num)
+        {
+            if (string.IsNullOrEmpty(num))
+            { throw new ArgumentNullException("input"); }
+
+            float res;
+            if (float.TryParse(num, NumberStyles.Float, CultureInfo.InvariantCulture, out res))
+            {
+                return res;
+            }
+
+            return 0.0f;
         }
 
         private string GetSubBlock(string line, string pattern)

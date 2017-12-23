@@ -1,15 +1,15 @@
-﻿using NLog;
+﻿using DarkUI.Win32;
+using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
-using System.Windows.Forms;
-using DarkUI.Win32;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
-using TombLib.Wad.Catalog;
-using TombLib.NG;
+using System.Windows.Forms;
 using TombLib.Graphics;
+using TombLib.NG;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {

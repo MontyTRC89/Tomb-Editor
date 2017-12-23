@@ -1,9 +1,9 @@
 ﻿using DarkUI.Docking;
-using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.LevelData;
@@ -27,7 +27,8 @@ namespace TombEditor.ToolWindows
                 LightInstance light = _editor.SelectedObject as LightInstance;
                 if (light == null)
                     return;
-                light.Color = (Vector3)lightPalette.SelectedColor.ToFloatColor() * 2.0f;
+                Vector4 result = lightPalette.SelectedColor.ToFloatColor();
+                light.Color = new Vector3(result.X, result.Y, result.Z) * 2.0f;
                 _editor.SelectedRoom.UpdateCompletely();
                 _editor.ObjectChange(light, ObjectChangeType.Change);
             };

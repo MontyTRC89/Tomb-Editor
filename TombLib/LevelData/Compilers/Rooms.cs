@@ -1,7 +1,7 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TombLib.Utils;
@@ -115,7 +115,7 @@ namespace TombLib.LevelData.Compilers
                     if (effectiveReflectionLevel > 4)
                         effectiveReflectionLevel = 4;
 
-                    int effectiveWaterLevel = MathUtilEx.Clamp(room.WaterLevel, 1, 4);
+                    int effectiveWaterLevel = Math.Min(Math.Max(room.WaterLevel, (byte)1), (byte)4);
                     newRoom.WaterScheme = (byte)(effectiveWaterLevel * 4 + effectiveReflectionLevel);
                 }
             }
@@ -208,14 +208,14 @@ namespace TombLib.LevelData.Compilers
                         continue;
 
                     var transform = geometry.RotationMatrix *
-                                    Matrix.Scaling(geometry.Scale) *
-                                    Matrix.Translation(geometry.Position);
+                                    Matrix4x4.CreateScale(geometry.Scale) *
+                                    Matrix4x4.CreateTranslation(geometry.Position);
                     foreach (var mesh in geometry.Model.DirectXModel.Meshes)
                     {
                         for (int j = 0; j < mesh.Vertices.Count; j++)
                         {
                             // Apply the transform to the vertex
-                            Vector3 position = Vector3.TransformCoordinate(mesh.Vertices[j].Position, transform);
+                            Vector3 position = MathC.HomogenousTransform(mesh.Vertices[j].Position, transform);
 
                             var trVertex = new tr_room_vertex
                             {
@@ -426,8 +426,8 @@ namespace TombLib.LevelData.Compilers
                         break;
                     case LightType.Spot:
                         newLight.LightType = 2;
-                        newLight.In = (float)Math.Cos(MathUtil.DegreesToRadians(light.InnerAngle));
-                        newLight.Out = (float)Math.Cos(MathUtil.DegreesToRadians(light.OuterAngle));
+                        newLight.In = (float)Math.Cos(light.InnerAngle * (Math.PI / 180));
+                        newLight.Out = (float)Math.Cos(light.OuterAngle * (Math.PI / 180));
                         newLight.Length = light.InnerRange * 1024.0f;
                         newLight.CutOff = light.OuterRange * 1024.0f;
                         Vector3 spotDirection = light.GetDirection();

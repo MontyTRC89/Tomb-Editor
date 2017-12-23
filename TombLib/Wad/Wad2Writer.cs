@@ -52,7 +52,7 @@ namespace TombLib.Wad
                 _texturesTable.Add(texture.Value);
 
             LEB128.Write(chunkIO.Raw, (uint)wad.Version);
-            
+
             WriteTextures(chunkIO, wad);
             WriteSprites(chunkIO, wad);
             WriteMeshes(chunkIO, wad);

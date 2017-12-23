@@ -1,8 +1,8 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TombLib.LevelData;
+using System.Numerics;
+using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -59,9 +59,9 @@ namespace TombLib.LevelData.Compilers
                         foreach (var portal in ceilingPortals)
                         {
                             // Check if x, z is inside the portal
-                            if (!(x >= portal.Area.X0 - 1 && 
-                                  z >= portal.Area.Y0 - 1 && 
-                                  x <= portal.Area.X0 + portal.Area.Width + 1 && 
+                            if (!(x >= portal.Area.X0 - 1 &&
+                                  z >= portal.Area.Y0 - 1 &&
+                                  x <= portal.Area.X0 + portal.Area.Width + 1 &&
                                   z <= portal.Area.Y0 + portal.Area.Height + 1)) continue;
 
                             // Check if this is a wall
@@ -454,13 +454,13 @@ namespace TombLib.LevelData.Compilers
                                         if (h00 < Math.Min(h10, h01) && h11 < Math.Min(h10, h01))
                                         {
                                             // Case 1: both triangles have their right angles below the diagonal ( /D\ )
-                                            var pl1 = new Plane(p01, p10, p00);
+                                            var pl1 = Plane.CreateFromVertices(p01, p10, p00);
 
                                             float distance1;
 
                                             // Find the 4th point
                                             var ray1 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                            pl1.Intersects(ref ray1, out distance1);
+                                            Collision.RayIntersectsPlane(ray1, pl1, out distance1);
                                             distance1 = 32768 - (float)Math.Round(distance1);
                                             distance1 /= 256;
 
@@ -469,13 +469,13 @@ namespace TombLib.LevelData.Compilers
                                             // Correction is the max height of the sector minus the height of the fourth point
                                             t2 = (int)(maxHeight - distance1) & 0x1f;
 
-                                            var pl2 = new Plane(p10, p01, p11);
+                                            var pl2 = Plane.CreateFromVertices(p10, p01, p11);
 
                                             float distance2;
 
                                             // Find the 4th point
                                             var ray2 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                            pl2.Intersects(ref ray2, out distance2);
+                                            Collision.RayIntersectsPlane(ray2, pl2, out distance2);
                                             distance2 = 32768 - (float)Math.Round(distance2);
                                             distance2 /= 256;
 
@@ -489,13 +489,13 @@ namespace TombLib.LevelData.Compilers
                                         {
                                             // Case 2: h00 is highest corner and h11 is lower than h00. Typical example, when you raise of one click
                                             // one corner of a sector (simplest case)
-                                            var p = new Plane(p01, p11, p10);
+                                            var p = Plane.CreateFromVertices(p01, p11, p10);
 
                                             float distance;
 
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                            p.Intersects(ref ray, out distance);
+                                            Collision.RayIntersectsPlane(ray, p, out distance);
                                             distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
@@ -518,13 +518,13 @@ namespace TombLib.LevelData.Compilers
                                                  h00 < h11)
                                         {
                                             // Case 3: similar to case 2, but the opposite
-                                            var p = new Plane(p01, p10, p00);
+                                            var p = Plane.CreateFromVertices(p01, p10, p00);
 
                                             float distance;
 
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                            p.Intersects(ref ray, out distance);
+                                            Collision.RayIntersectsPlane(ray, p, out distance);
                                             distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
@@ -570,25 +570,25 @@ namespace TombLib.LevelData.Compilers
                                         // Choose which triangle to adjust
                                         if (h01 < Math.Min(h00, h11) && h10 < Math.Min(h00, h11))
                                         {
-                                            var pl1 = new Plane(p11, p10, p00);
+                                            var pl1 = Plane.CreateFromVertices(p11, p10, p00);
 
                                             float distance1;
 
                                             // Find the 4th point
                                             var ray1 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                            pl1.Intersects(ref ray1, out distance1);
+                                            Collision.RayIntersectsPlane(ray1, pl1, out distance1);
                                             distance1 = 32768 - (float)Math.Round(distance1);
                                             distance1 /= 256;
 
                                             t2 = (int)(maxHeight - distance1) & 0x1f;
 
-                                            var pl2 = new Plane(p00, p01, p11);
+                                            var pl2 = Plane.CreateFromVertices(p00, p01, p11);
 
                                             float distance2;
 
                                             // Find the 4th point
                                             var ray2 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                            pl2.Intersects(ref ray2, out distance2);
+                                            Collision.RayIntersectsPlane(ray2, pl2, out distance2);
                                             distance2 = 32768 - (float)Math.Round(distance2);
                                             distance2 /= 256;
 
@@ -597,13 +597,13 @@ namespace TombLib.LevelData.Compilers
                                         else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
                                                  h01 < h10)
                                         {
-                                            var p = new Plane(p01, p11, p00);
+                                            var p = Plane.CreateFromVertices(p01, p11, p00);
 
                                             float distance;
 
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                            p.Intersects(ref ray, out distance);
+                                            Collision.RayIntersectsPlane(ray, p, out distance);
                                             distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
@@ -623,13 +623,13 @@ namespace TombLib.LevelData.Compilers
                                         else if ((h11 == maxHeight || h00 == maxHeight || h01 == maxHeight) &&
                                                  h10 < h01)
                                         {
-                                            var p = new Plane(p11, p10, p00);
+                                            var p = Plane.CreateFromVertices(p11, p10, p00);
 
                                             float distance;
 
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                            p.Intersects(ref ray, out distance);
+                                            Collision.RayIntersectsPlane(ray, p, out distance);
                                             distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
@@ -848,25 +848,25 @@ namespace TombLib.LevelData.Compilers
                                         // Choose which triangle to adjust
                                         if (h00 < Math.Min(h10, h01) && h11 < Math.Min(h10, h01))
                                         {
-                                            var pl1 = new Plane(p01, p00, p10);
+                                            var pl1 = Plane.CreateFromVertices(p01, p00, p10);
 
                                             float distance1;
 
                                             // Find the 4th point
                                             var ray1 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                            pl1.Intersects(ref ray1, out distance1);
+                                            Collision.RayIntersectsPlane(ray1, pl1, out distance1);
                                             distance1 = 32768 - (float)Math.Round(distance1);
                                             distance1 /= 256;
 
                                             t2 = (int)(-maxHeight + distance1) & 0x1f;
 
-                                            var pl2 = new Plane(p10, p11, p01);
+                                            var pl2 = Plane.CreateFromVertices(p10, p11, p01);
 
                                             float distance2;
 
                                             // Find the 4th point
                                             var ray2 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                            pl2.Intersects(ref ray2, out distance2);
+                                            Collision.RayIntersectsPlane(ray2, pl2, out distance2);
                                             distance2 = 32768 - (float)Math.Round(distance2);
                                             distance2 /= 256;
 
@@ -875,13 +875,13 @@ namespace TombLib.LevelData.Compilers
                                         else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
                                                  h11 < h00)
                                         {
-                                            var p = new Plane(p01, p10, p11);
+                                            var p = Plane.CreateFromVertices(p01, p10, p11);
 
                                             float distance;
 
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                            p.Intersects(ref ray, out distance);
+                                            Collision.RayIntersectsPlane(ray, p, out distance);
                                             distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
@@ -901,13 +901,13 @@ namespace TombLib.LevelData.Compilers
                                         else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
                                                  h00 < h11)
                                         {
-                                            var p = new Plane(p01, p00, p10);
+                                            var p = Plane.CreateFromVertices(p01, p00, p10);
 
                                             float distance;
 
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                            p.Intersects(ref ray, out distance);
+                                            Collision.RayIntersectsPlane(ray, p, out distance);
                                             distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
@@ -953,25 +953,25 @@ namespace TombLib.LevelData.Compilers
                                         // Choose which triangle to adjust
                                         if (h01 < Math.Min(h00, h11) && h10 < Math.Min(h00, h11))
                                         {
-                                            var pl1 = new Plane(p11, p00, p10);
+                                            var pl1 = Plane.CreateFromVertices(p11, p00, p10);
 
                                             float distance1;
 
                                             // Find the 4th point
                                             var ray1 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                            pl1.Intersects(ref ray1, out distance1);
+                                            Collision.RayIntersectsPlane(ray1, pl1, out distance1);
                                             distance1 = 32768 - (float)Math.Round(distance1);
                                             distance1 /= 256;
 
                                             t2 = (int)(-maxHeight + distance1) & 0x1f;
 
-                                            var pl2 = new Plane(p00, p11, p01);
+                                            var pl2 = Plane.CreateFromVertices(p00, p11, p01);
 
                                             float distance2;
 
                                             // Find the 4th point
                                             var ray2 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                            pl2.Intersects(ref ray2, out distance2);
+                                            Collision.RayIntersectsPlane(ray2, pl2, out distance2);
                                             distance2 = 32768 - (float)Math.Round(distance2);
                                             distance2 /= 256;
 
@@ -980,13 +980,13 @@ namespace TombLib.LevelData.Compilers
                                         else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
                                                  h01 < h10)
                                         {
-                                            var p = new Plane(p01, p00, p11);
+                                            var p = Plane.CreateFromVertices(p01, p00, p11);
 
                                             float distance;
 
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                            p.Intersects(ref ray, out distance);
+                                            Collision.RayIntersectsPlane(ray, p, out distance);
                                             distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
@@ -1006,13 +1006,13 @@ namespace TombLib.LevelData.Compilers
                                         else if ((h11 == maxHeight || h00 == maxHeight || h01 == maxHeight) &&
                                                  h10 < h01)
                                         {
-                                            var p = new Plane(p11, p00, p10);
+                                            var p = Plane.CreateFromVertices(p11, p00, p10);
 
                                             float distance;
 
                                             // Find the 4th point
                                             var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                            p.Intersects(ref ray, out distance);
+                                            Collision.RayIntersectsPlane(ray, p, out distance);
                                             distance = 32768 - (float)Math.Round(distance);
                                             distance /= 256;
 
@@ -1333,7 +1333,7 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
             }
-            
+
             ReportProgress(80, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }
     }

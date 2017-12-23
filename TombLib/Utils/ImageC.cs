@@ -1,10 +1,10 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace TombLib.Utils
@@ -135,7 +135,7 @@ namespace TombLib.Utils
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
 
-        public Vector2 Size => new Vector2(Width, Height);
+        public VectorInt2 Size => new VectorInt2(Width, Height);
 
         public int DataSize => Width * Height * PixelSize;
 

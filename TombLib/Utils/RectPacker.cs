@@ -8,29 +8,13 @@ namespace TombLib.Utils
 {
     public abstract class RectPacker
     {
-        public struct Point
+        public VectorInt2 Size { get; protected set; }
+
+        protected RectPacker(VectorInt2 size)
         {
-            public int X;
-            public int Y;
-
-            public Point(int x, int y)
-            {
-                X = x;
-                Y = y;
-            }
+            Size = size;
         }
-
-        public int Width { get; protected set; }
-        public int Height { get; protected set; }
-
-        public abstract int MaxHeight { get; }
-
-        protected RectPacker(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
-        public abstract Point? TryAdd(int width, int height);
+        public abstract VectorInt2? TryAdd(VectorInt2 size);
     }
 
     public class RectPackerSimpleStack : RectPacker
@@ -39,22 +23,20 @@ namespace TombLib.Utils
         private int _currentY = 0;
         private int _stackHeight = 0;
 
-        public RectPackerSimpleStack(int width, int height)
-            : base(width, height)
+        public RectPackerSimpleStack(VectorInt2 size)
+            : base(size)
         { }
 
-        public override int MaxHeight { get { return _currentY + _stackHeight; } }
-
-        public override Point? TryAdd(int width, int height)
+        public override VectorInt2? TryAdd(VectorInt2 size)
         {
-            if ((_currentY + height) > Height)
+            if ((_currentY + size.Y) > Size.Y)
                 return null;
 
-            if ((_currentX + width) > Width)
+            if ((_currentX + size.X) > Size.X)
             { // Does not fit in that row, but maybe in a new row
-                if (width > Width)
+                if (size.X > Size.X)
                     return null;
-                if ((_currentY + _stackHeight + height) > Height)
+                if ((_currentY + _stackHeight + size.Y) > Size.Y)
                     return null;
                 _currentX = 0;
                 _currentY = _currentY + _stackHeight;
@@ -62,9 +44,9 @@ namespace TombLib.Utils
             }
 
             // Pack and adjust coordinates
-            Point result = new Point(_currentX, _currentY);
-            _stackHeight = Math.Max(_stackHeight, height);
-            _currentX += width;
+            VectorInt2 result = new VectorInt2(_currentX, _currentY);
+            _stackHeight = Math.Max(_stackHeight, size.Y);
+            _currentX += size.X;
             return result;
         }
     }

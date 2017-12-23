@@ -1,10 +1,10 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;

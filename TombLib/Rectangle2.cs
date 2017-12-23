@@ -1,7 +1,7 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,6 +47,8 @@ namespace TombLib
             get { return End.Y; }
             set { End.Y = value; }
         }
+
+        public Vector2 Size => End - Start;
         public float Width => End.X - Start.X;
         public float Height => End.Y - Start.Y;
 

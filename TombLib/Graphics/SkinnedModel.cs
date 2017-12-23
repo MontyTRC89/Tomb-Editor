@@ -1,9 +1,9 @@
-﻿using SharpDX;
-using SharpDX.Toolkit;
+﻿using SharpDX.Toolkit;
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.Graphics;
@@ -18,9 +18,8 @@ namespace TombLib.Graphics
         public Bone Root { get; set; }
         public List<Animation> Animations { get; set; } = new List<Animation>();
         public List<Bone> Bones { get; set; } = new List<Bone>();
-        public List<Matrix> Transforms { get; set; } = new List<Matrix>();
-        public List<Matrix> InverseTransforms { get; set; } = new List<Matrix>();
-        public List<Matrix> AnimationTransforms { get; set; } = new List<Matrix>();
+        public List<Matrix4x4> Transforms { get; set; } = new List<Matrix4x4>();
+        public List<Matrix4x4> AnimationTransforms { get; set; } = new List<Matrix4x4>();
 
         public SkinnedModel(GraphicsDevice device)
             : base(device, ModelType.Skinned)
@@ -33,8 +32,6 @@ namespace TombLib.Graphics
         {
             this.Root.GlobalTransform = Root.Transform;
             Transforms[Root.Index] = Root.GlobalTransform;
-            InverseTransforms[Root.Index] = new Matrix(Root.GlobalTransform.ToArray());
-            InverseTransforms[Root.Index].Invert();
 
             foreach (var node in this.Root.Children)
             {
@@ -42,11 +39,10 @@ namespace TombLib.Graphics
             }
         }
 
-        private void BuildHierarchy(Bone node, Matrix parentTransform, int level)
+        private void BuildHierarchy(Bone node, Matrix4x4 parentTransform, int level)
         {
             node.GlobalTransform = node.Transform * parentTransform;
             Transforms[node.Index] = node.GlobalTransform;
-            InverseTransforms[node.Index] = Matrix.Invert(node.GlobalTransform);
 
             foreach (var child in node.Children)
             {
@@ -56,7 +52,7 @@ namespace TombLib.Graphics
 
         public void BuildAnimationPose(KeyFrame frame)
         {
-            var globalScale = Matrix.Translation(Offset) * frame.Translations[0];
+            var globalScale = Matrix4x4.CreateTranslation(Offset) * frame.Translations[0];
             AnimationTransforms[0] = frame.Rotations[0] * globalScale;
 
             foreach (var node in this.Root.Children)
@@ -65,7 +61,7 @@ namespace TombLib.Graphics
             }
         }
 
-        private void BuildAnimationPose(Bone node, Matrix parentTransform, int level, KeyFrame frame)
+        private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, int level, KeyFrame frame)
         {
             AnimationTransforms[node.Index] = (frame.Rotations[node.Index] * node.Transform) * parentTransform;
 
@@ -157,24 +153,22 @@ namespace TombLib.Graphics
             Bone root = new Bone();
             root.Name = "root_bone";
             root.Parent = null;
-            root.Transform = Matrix.Identity;
+            root.Transform = Matrix4x4.Identity;
             root.Index = 0;
             model.Bones.Add(root);
             model.Root = root;
-            model.Transforms.Add(Matrix.Translation(Vector3.Zero));
-            model.InverseTransforms.Add(Matrix.Translation(Vector3.Zero));
-            model.AnimationTransforms.Add(Matrix.Translation(Vector3.Zero));
+            model.Transforms.Add(Matrix4x4.CreateTranslation(Vector3.Zero));
+            model.AnimationTransforms.Add(Matrix4x4.CreateTranslation(Vector3.Zero));
 
             for (int j = 0; j < mov.Meshes.Count - 1; j++)
             {
                 Bone bone = new Bone();
                 bone.Name = "bone_" + (j + 1).ToString();
                 bone.Parent = null;
-                bone.Transform = Matrix.Translation(Vector3.Zero);
+                bone.Transform = Matrix4x4.CreateTranslation(Vector3.Zero);
                 bone.Index = (short)(j + 1);
-                model.Transforms.Add(Matrix.Translation(Vector3.Zero));
-                model.InverseTransforms.Add(Matrix.Translation(Vector3.Zero));
-                model.AnimationTransforms.Add(Matrix.Translation(Vector3.Zero));
+                model.Transforms.Add(Matrix4x4.CreateTranslation(Vector3.Zero));
+                model.AnimationTransforms.Add(Matrix4x4.CreateTranslation(Vector3.Zero));
                 model.Bones.Add(bone);
             }
 
@@ -190,7 +184,7 @@ namespace TombLib.Graphics
                 switch (link.Opcode)
                 {
                     case WadLinkOpcode.NotUseStack:
-                        model.Bones[j].Transform = Matrix.Translation(link.Offset);
+                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(link.Offset);
                         model.Bones[j].Parent = currentBone;
                         currentBone.Children.Add(model.Bones[j]);
                         currentBone = model.Bones[j];
@@ -201,7 +195,7 @@ namespace TombLib.Graphics
                             continue;
                         currentBone = stack.Pop();
 
-                        model.Bones[j].Transform = Matrix.Translation(link.Offset);
+                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(link.Offset);
                         model.Bones[j].Parent = currentBone;
                         currentBone.Children.Add(model.Bones[j]);
                         currentBone = model.Bones[j];
@@ -210,7 +204,7 @@ namespace TombLib.Graphics
                     case WadLinkOpcode.Pop:
                         stack.Push(currentBone);
 
-                        model.Bones[j].Transform = Matrix.Translation(link.Offset);
+                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(link.Offset);
                         model.Bones[j].Parent = currentBone;
                         currentBone.Children.Add(model.Bones[j]);
                         currentBone = model.Bones[j];
@@ -220,7 +214,7 @@ namespace TombLib.Graphics
                         if (stack.Count <= 0)
                             continue;
                         Bone bone = stack.Pop();
-                        model.Bones[j].Transform = Matrix.Translation(link.Offset);
+                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(link.Offset);
                         model.Bones[j].Parent = bone;
                         bone.Children.Add(model.Bones[j]);
                         currentBone = model.Bones[j];
@@ -248,14 +242,14 @@ namespace TombLib.Graphics
 
                     for (int k = 0; k < mov.Meshes.Count; k++)
                     {
-                        frame.Rotations.Add(Matrix.Identity);
-                        frame.Translations.Add(Matrix.Identity);
+                        frame.Rotations.Add(Matrix4x4.Identity);
+                        frame.Translations.Add(Matrix4x4.Identity);
                     }
 
-                    frame.Translations[0] = Matrix.Translation(new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z));
+                    frame.Translations[0] = Matrix4x4.CreateTranslation(new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z));
 
                     for (int k = 1; k < frame.Translations.Count; k++)
-                        frame.Translations[k] = Matrix.Translation(Vector3.Zero);
+                        frame.Translations[k] = Matrix4x4.CreateTranslation(Vector3.Zero);
 
                     for (int n = 0; n < frame.Rotations.Count; n++)
                     {

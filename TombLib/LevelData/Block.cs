@@ -1,8 +1,8 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using TombLib;
@@ -530,19 +530,19 @@ namespace TombLib.LevelData
             var p3 = new Vector3(1, h3, 1);
             var p4 = new Vector3(0, h4, 1);
 
-            var plane = new Plane(p1, p2, p4);
+            var plane = Plane.CreateFromVertices(p1, p2, p4);
             if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
                 return 0;
 
-            plane = new Plane(p1, p2, p3);
+            plane = Plane.CreateFromVertices(p1, p2, p3);
             if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
                 return 1;
 
-            plane = new Plane(p2, p3, p4);
+            plane = Plane.CreateFromVertices(p2, p3, p4);
             if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
                 return 2;
 
-            plane = new Plane(p3, p4, p1);
+            plane = Plane.CreateFromVertices(p3, p4, p1);
             if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
                 return 3;
 
@@ -562,13 +562,13 @@ namespace TombLib.LevelData
 
             if (FloorSplitDirectionIsXEqualsZ)
             {
-                tri[0] = new Plane(p1, p2, p3);
-                tri[1] = new Plane(p1, p3, p0);
+                tri[0] = Plane.CreateFromVertices(p1, p2, p3);
+                tri[1] = Plane.CreateFromVertices(p1, p3, p0);
             }
             else
             {
-                tri[0] = new Plane(p0, p1, p2);
-                tri[1] = new Plane(p0, p2, p3);
+                tri[0] = Plane.CreateFromVertices(p0, p1, p2);
+                tri[1] = Plane.CreateFromVertices(p0, p2, p3);
             }
 
             return new Vector3[2] { tri[0].Normal, tri[1].Normal };
@@ -610,7 +610,7 @@ namespace TombLib.LevelData
                     if (Math.Abs(normals[i].Y) <= CriticalSlantComponent) // Triangle is slidable
                     {
                         bool angleNotDefined = true;
-                        var angle = MathUtilEx.RadiansToDegrees((float)Math.Atan2(normals[i].X, normals[i].Z));
+                        var angle = (float)(Math.Atan2(normals[i].X, normals[i].Z) * (180 / Math.PI));
                         angle = angle < 0 ? angle + 360.0f : angle;
 
                         // Note about 45, 135, 225 and 315 degree steps:

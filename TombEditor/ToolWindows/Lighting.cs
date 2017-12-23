@@ -1,11 +1,11 @@
 ﻿using DarkUI.Docking;
-using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -144,7 +144,8 @@ namespace TombEditor.ToolWindows
                     colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
                     if (colorDialog.ShowDialog(this) != DialogResult.OK)
                         return null;
-                    return (Vector3)colorDialog.Color.ToFloatColor() * 2.0f;
+                    Vector4 result = colorDialog.Color.ToFloatColor() * 2.0f;
+                    return new Vector3(result.X, result.Y, result.Z);
                 });
         }
 

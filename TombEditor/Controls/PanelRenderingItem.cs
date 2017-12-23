@@ -1,10 +1,10 @@
-﻿using SharpDX;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Windows.Forms;
 using TombLib.Graphics;
@@ -93,7 +93,7 @@ namespace TombEditor.Controls
 
         public void ResetCamera()
         {
-            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000, _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180));
+            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180));
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -112,10 +112,11 @@ namespace TombEditor.Controls
                 return;
 
             _device.Presenter = Presenter;
-            _device.SetViewports(new ViewportF(0, 0, Width, Height));
+            _device.SetViewports(new SharpDX.ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
+            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, _editor.Configuration.Rendering3D_BackgroundColor, 1.0f, 0);
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, _editor.Configuration.Rendering3D_BackgroundColor.ToSharpDX(), 1.0f, 0);
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
@@ -126,13 +127,13 @@ namespace TombEditor.Controls
             }
             ItemType chosenItem = _editor.ChosenItem.Value;
 
-            Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
+            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (chosenItem.IsStatic)
             {
                 StaticModel model = _editor.Level.Wad.DirectXStatics[chosenItem.Id];
 
                 Effect mioEffect = _deviceManager.Effects["StaticModel"];
-                mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
 
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
@@ -154,7 +155,7 @@ namespace TombEditor.Controls
                         _device.SetVertexInputLayout(_layout);
                     }
 
-                    mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                    mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                     mioEffect.Techniques[0].Passes[0].Apply();
 
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
@@ -183,12 +184,12 @@ namespace TombEditor.Controls
                     if (skin.Vertices.Count == 0)
                         continue;
 
-                    Matrix modelMatrix;
+                    Matrix4x4 modelMatrix;
                     if (model.AnimationTransforms != null)
                         modelMatrix = model.AnimationTransforms[i];
                     else
                         modelMatrix = model.Bones[i].GlobalTransform;
-                    mioEffect.Parameters["ModelViewProjection"].SetValue(modelMatrix * viewProjection);
+                    mioEffect.Parameters["ModelViewProjection"].SetValue((modelMatrix * viewProjection).ToSharpDX());
 
                     mioEffect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);

@@ -1,6 +1,6 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -139,43 +139,43 @@ namespace TombLib.LevelData
             Position = Position + new Vector3(deltaX, deltaY, deltaZ);
         }
 
-        public Matrix RotationMatrix
+        public Matrix4x4 RotationMatrix
         {
             get
             {
-                return Matrix.RotationYawPitchRoll(
+                return Matrix4x4.CreateFromYawPitchRoll(
                     (this as IRotateableY)?.GetRotationYRadians() ?? 0.0f,
                     -(this as IRotateableYX)?.GetRotationXRadians() ?? 0.0f,
                     (this as IRotateableYXRoll)?.GetRotationRollRadians() ?? 0.0f);
             }
         }
 
-        public Matrix RotationPositionMatrix
+        public Matrix4x4 RotationPositionMatrix
         {
             get
             {
                 return RotationMatrix *
-                    Matrix.Translation((Room?.WorldPos ?? new Vector3()) + Position);
+                    Matrix4x4.CreateTranslation((Room?.WorldPos ?? new Vector3()) + Position);
             }
         }
 
-        public Matrix ObjectMatrix
+        public Matrix4x4 ObjectMatrix
         {
             get
             {
                 return RotationMatrix *
-                    Matrix.Scaling((this as IScaleable)?.Scale ?? 1.0f) *
-                    Matrix.Translation((Room?.WorldPos ?? new Vector3()) + Position);
+                    Matrix4x4.CreateScale((this as IScaleable)?.Scale ?? 1.0f) *
+                    Matrix4x4.CreateTranslation((Room?.WorldPos ?? new Vector3()) + Position);
             }
         }
 
-        public Matrix LocalObjectMatrix
+        public Matrix4x4 LocalObjectMatrix
         {
             get
             {
                 return RotationMatrix *
-                    Matrix.Scaling((this as IScaleable)?.Scale ?? 1.0f) *
-                    Matrix.Translation(Position);
+                    Matrix4x4.CreateScale((this as IScaleable)?.Scale ?? 1.0f) *
+                    Matrix4x4.CreateTranslation(Position);
             }
         }
 

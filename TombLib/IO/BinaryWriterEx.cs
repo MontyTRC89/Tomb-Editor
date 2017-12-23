@@ -1,8 +1,8 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -35,7 +35,7 @@ namespace TombLib.IO
             Write(value.W);
         }
 
-        public void Write(Matrix value)
+        public void Write(Matrix4x4 value)
         {
             Write(value.M11);
             Write(value.M12);

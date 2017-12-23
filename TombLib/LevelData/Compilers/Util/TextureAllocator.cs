@@ -1,7 +1,7 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -19,32 +19,24 @@ namespace TombLib.LevelData.Compilers.Util
         public struct TextureView : IEquatable<TextureView>
         {
             public Texture Texture;
-            public int PosX;
-            public int PosY;
-            public int Width;
-            public int Height;
+            public RectangleInt2 Area;
 
-            public TextureView(Texture texture, int posX, int posY, int width, int height)
+            public TextureView(Texture texture, RectangleInt2 area)
             {
                 Texture = texture;
-                PosX = posX;
-                PosY = posY;
-                Width = width;
-                Height = height;
+                Area = area;
             }
 
             public static implicit operator TextureView(Texture texture)
             {
-                return new TextureView(texture, 0, 0, texture.Image.Width, texture.Image.Height);
+                return new TextureView(texture, new RectangleInt2(new VectorInt2(), texture.Image.Size));
             }
 
             // Custom implementation of these because default implementation is *insanely* slow.
             // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
             public static unsafe bool operator ==(TextureView first, TextureView second)
             {
-                return (first.Texture == second.Texture) &&
-                    (*(ulong*)(&first.PosX) == *(ulong*)(&second.PosX)) &&
-                    (*(ulong*)(&first.Width) == *(ulong*)(&second.Width));
+                return (first.Texture == second.Texture) && (first.Area == second.Area);
             }
             public static bool operator !=(TextureView first, TextureView second) => !(first == second);
             public bool Equals(TextureView other) => this == other;
@@ -55,7 +47,7 @@ namespace TombLib.LevelData.Compilers.Util
         public struct Result
         {
             public ushort OutputTextureID;
-            public RectPacker.Point Pos;
+            public VectorInt2 Pos;
             public void TransformTexCoord(ref ushort TexCoordX, ref ushort TexCoordY)
             {
                 TexCoordX += (ushort)(256 * Pos.X);
@@ -80,14 +72,14 @@ namespace TombLib.LevelData.Compilers.Util
                 TextureView second = _usedTextures[secondIndex];
 
                 // Compare height
-                int firstMaxHeight = Math.Max(first.Width, first.Height); //Because of flipping, the bigger dimension is the height.
-                int secondMaxHeight = Math.Max(second.Width, second.Height);
+                int firstMaxHeight = Math.Max(first.Area.Width, first.Area.Height); //Because of flipping, the bigger dimension is the height.
+                int secondMaxHeight = Math.Max(second.Area.Width, second.Area.Height);
                 if (firstMaxHeight != secondMaxHeight)
                     return (firstMaxHeight > secondMaxHeight) ? 1 : -1; //Heigher textures first!
 
                 // Compare area
-                int firstArea = first.Width * first.Height;
-                int secondArea = second.Width * second.Height;
+                int firstArea = first.Area.Width * first.Area.Height;
+                int secondArea = second.Area.Width * second.Area.Height;
                 if (firstArea != secondArea)
                     return (firstArea > secondArea) ? 1 : -1; //Bigger textures first!
 
@@ -102,7 +94,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         public int GetOrAllocateTextureID(TextureView texture, int priorityClass = 0)
         {
-            if ((texture.Width > 256) || (texture.Height > 256))
+            if ((texture.Area.Width > 256) || (texture.Area.Height > 256))
                 throw new NotSupportedException("Texture page too big!");
 
             int textureID;
@@ -149,7 +141,7 @@ namespace TombLib.LevelData.Compilers.Util
                 Result usedTexturePackInfo;
                 for (ushort i = 0; i < resultingTextures.Count; ++i)
                 {
-                    RectPacker.Point? packingPosition = resultingTexturesPacker[i].TryAdd(usedTexture.Width, usedTexture.Height);
+                    VectorInt2? packingPosition = resultingTexturesPacker[i].TryAdd(usedTexture.Area.Size);
                     if (packingPosition.HasValue)
                     {
                         usedTexturePackInfo = new Result { OutputTextureID = i, Pos = packingPosition.Value };
@@ -159,15 +151,15 @@ namespace TombLib.LevelData.Compilers.Util
 
                 if (resultingTextures.Count >= 65535)
                     throw new NotSupportedException("More then 65536 textures are not supported. That is A LOT (exactly 16GB of texture data), so its probably some other bug if you see this message.");
-                var packer = new TreePacker(OutputTextureWidth, OutputTextureHeight);
-                usedTexturePackInfo = new Result { OutputTextureID = (ushort)resultingTextures.Count, Pos = packer.TryAdd(usedTexture.Width, usedTexture.Height).Value };
+                var packer = new TreePacker(new VectorInt2(OutputTextureWidth, OutputTextureHeight));
+                usedTexturePackInfo = new Result { OutputTextureID = (ushort)resultingTextures.Count, Pos = packer.TryAdd(usedTexture.Area.Size).Value };
                 resultingTextures.Add(ImageC.CreateNew(OutputTextureWidth, OutputTextureHeight));
                 resultingTexturesPacker.Add(packer);
 
                 //Write texture data...
                 PackNextUsedTexture:
                 resultingTextures[usedTexturePackInfo.OutputTextureID].CopyFrom(usedTexturePackInfo.Pos.X, usedTexturePackInfo.Pos.Y,
-                    usedTexture.Texture.Image, usedTexture.PosX, usedTexture.PosY, usedTexture.Width, usedTexture.Height);
+                    usedTexture.Texture.Image, usedTexture.Area.X0, usedTexture.Area.Y0, usedTexture.Area.Width, usedTexture.Area.Height);
                 _usedTexturePackInfos[UsedTextureIndex] = usedTexturePackInfo;
             }
 
@@ -186,7 +178,7 @@ namespace TombLib.LevelData.Compilers.Util
             pageWidth = Math.Min(texture.Texture.Image.Width - pageX, pageWidth);
             pageHeight = Math.Min(texture.Texture.Image.Height - pageY, pageHeight);
 
-            return GetOrAllocateTextureID(new TextureView(texture.Texture, pageX, pageY, pageWidth, pageHeight), priorityClass);
+            return GetOrAllocateTextureID(new TextureView(texture.Texture, RectangleInt2.FromLTRB(pageX, pageY, pageWidth, pageHeight)), priorityClass);
         }
 
         public int GetOrAllocateTextureID(ref TextureArea texture, bool isTriangle, int priorityClass = 0)

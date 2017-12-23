@@ -1,9 +1,9 @@
-﻿using SharpDX;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -30,12 +30,13 @@ namespace TombLib.IO
             return new Vector4(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
         }
 
-        public Matrix ReadMatrix()
+        public Matrix4x4 ReadMatrix()
         {
-            float[] values = new float[16];
-            for (int i = 0; i < 16; i++)
-                values[i] = ReadSingle();
-            return new Matrix(values);
+            return new Matrix4x4(
+                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
+                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
+                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
+                ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
         }
 
         public BoundingSphere ReadBoundingSphere()

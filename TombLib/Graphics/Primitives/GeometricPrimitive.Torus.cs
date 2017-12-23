@@ -72,10 +72,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using TombLib.Graphics;
 
 namespace SharpDX.Toolkit.Graphics
 {
+    using Vector3 = System.Numerics.Vector3;
+    using Vector4 = System.Numerics.Vector4;
+
     public partial class GeometricPrimitive
     {
         /// <summary>
@@ -116,7 +120,7 @@ namespace SharpDX.Toolkit.Graphics
 
                     // Create a transform matrix that will align geometry to
                     // slice perpendicularly though the current ring position.
-                    var transform = Matrix.Translation(diameter / 2, 0, 0) * Matrix.RotationY(outerAngle);
+                    var transform = Matrix4x4.CreateTranslation(diameter / 2, 0, 0) * Matrix4x4.CreateRotationY(outerAngle);
 
                     // Now we loop along the other axis, around the side of the tube.
                     for (int j = 0; j <= tessellationInnerRing; j++)
@@ -131,8 +135,8 @@ namespace SharpDX.Toolkit.Graphics
                         var position = normal * thickness / 2;
                         var textureCoordinate = new Vector2(u, v);
 
-                        Vector3.TransformCoordinate(ref position, ref transform, out position);
-                        Vector3.TransformNormal(ref normal, ref transform, out normal);
+                        position = Vector3.Transform(position, transform);
+                        normal = Vector3.TransformNormal(position, transform);
 
                         vertices.Add(new SolidVertex(position));
 

@@ -229,21 +229,6 @@ namespace TombLib.Wad.Catalog
                     if (node.Name != "sounds")
                         continue;
 
-                    // Size of the soundmap
-                    var soundMapSize = 0;
-                    if (version == WadTombRaiderVersion.TR1)
-                        soundMapSize = 256;
-                    else if (version == WadTombRaiderVersion.TR2)
-                        soundMapSize = 370;
-                    else if (version == WadTombRaiderVersion.TR3)
-                        soundMapSize = 370;
-                    else if (version == WadTombRaiderVersion.TR4)
-                        soundMapSize = 370;
-                    else if (version == WadTombRaiderVersion.TR5)
-                        soundMapSize = 450;
-
-                    //game.SoundMapSize = soundMapSize;
-
                     // Parse sounds
                     foreach (XmlNode soundNode in node.ChildNodes)
                     {

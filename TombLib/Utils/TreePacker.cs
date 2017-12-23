@@ -12,26 +12,26 @@ namespace TombLib.Utils
         {
             public TreePackerNode Left { get; set; }
             public TreePackerNode Right { get; set; }
-            public RectangleInt2 RectangleInt2 { get; set; }
+            public RectangleInt2 Rectangle { get; set; }
             public bool Filled { get; set; } = false;
 
-            private bool RectangleFitsIn(RectangleInt2 rect)
+            private bool RectangleFitsIn(VectorInt2 size)
             {
-                return RectangleInt2.Width >= rect.Width && RectangleInt2.Height >= rect.Height;
+                return Rectangle.Width >= size.X && Rectangle.Height >= size.Y;
             }
 
-            private bool RectangleSameSizeOf(RectangleInt2 rect)
+            private bool RectangleSameSizeOf(VectorInt2 size)
             {
-                return RectangleInt2.Width == rect.Width && RectangleInt2.Height == rect.Height;
+                return Rectangle.Width == size.X && Rectangle.Height == size.Y;
             }
 
-            public TreePackerNode InsertNode(RectangleInt2 rect)
+            public TreePackerNode InsertNode(VectorInt2 size)
             {
                 if (Left != null)
                 {
-                    var node = Left.InsertNode(rect);
+                    var node = Left.InsertNode(size);
                     if (node == null)
-                        return Right.InsertNode(rect);
+                        return Right.InsertNode(size);
                     else
                         return node;
                 }
@@ -39,10 +39,10 @@ namespace TombLib.Utils
                 if (Filled)
                     return null;
 
-                if (!RectangleFitsIn(rect))
+                if (!RectangleFitsIn(size))
                     return null;
 
-                if (RectangleSameSizeOf(rect))
+                if (RectangleSameSizeOf(size))
                 {
                     Filled = true;
                     return this;
@@ -51,46 +51,38 @@ namespace TombLib.Utils
                 Left = new TreePackerNode();
                 Right = new TreePackerNode();
 
-                var widthDifference = RectangleInt2.Width - rect.Width;
-                var heightDifference = RectangleInt2.Height - rect.Height;
-
+                var widthDifference = Rectangle.Width - size.X;
+                var heightDifference = Rectangle.Height - size.Y;
                 if (widthDifference > heightDifference)
                 {
-                    Left.RectangleInt2 = RectangleInt2.FromLTRB(RectangleInt2.X0,  RectangleInt2.Y0, RectangleInt2.X0 + rect.Width, RectangleInt2.Y0 + RectangleInt2.Height);
-                    Right.RectangleInt2 = RectangleInt2.FromLTRB(RectangleInt2.X0 + rect.Width, RectangleInt2.Y0, RectangleInt2.Width - rect.Width, RectangleInt2.Height);
+                    Left.Rectangle = new RectangleInt2(Rectangle.X0, Rectangle.Y0, Rectangle.X0 + size.X, Rectangle.Y1);
+                    Right.Rectangle = new RectangleInt2(Rectangle.X0 + size.X, Rectangle.Y0, Rectangle.X1, Rectangle.Y1);
                 }
                 else
                 {
-                    Left.RectangleInt2 = RectangleInt2.FromLTRB(RectangleInt2.X0, RectangleInt2.Y0, RectangleInt2.Width, rect.Height);
-                    Right.RectangleInt2 = RectangleInt2.FromLTRB(RectangleInt2.X0, RectangleInt2.Y0 + rect.Height, RectangleInt2.Width, RectangleInt2.Height - rect.Height);
+                    Left.Rectangle = new RectangleInt2(Rectangle.X0, Rectangle.Y0, Rectangle.X1, Rectangle.Y0 + size.Y);
+                    Right.Rectangle = new RectangleInt2(Rectangle.X0, Rectangle.Y0 + size.Y, Rectangle.X1, Rectangle.Y1);
                 }
 
-                return Left.InsertNode(rect);
+                return Left.InsertNode(size);
             }
         }
 
         private TreePackerNode _startNode;
-        private int _maxHeight = 0;
 
-        public override int MaxHeight { get { return _maxHeight; } }
-
-        public TreePacker(int width, int height)
-            : base(width, height)
+        public TreePacker(VectorInt2 size)
+            : base(size)
         {
             _startNode = new TreePackerNode();
-            _startNode.RectangleInt2 = new RectangleInt2(0, 0, width, height);
-            _maxHeight = 0;
+            _startNode.Rectangle = new RectangleInt2(new VectorInt2(), size);
         }
 
-        public override Point? TryAdd(int width, int height)
+        public override VectorInt2? TryAdd(VectorInt2 size)
         {
-            var rect = new RectangleInt2(0, 0, width, height);
-            var node = _startNode.InsertNode(rect);
-            if (node == null) return null;
-            var result = new Point(node.RectangleInt2.X0, node.RectangleInt2.Y0);
-            var newHeight = node.RectangleInt2.Y0 + node.RectangleInt2.Height;
-            if (newHeight > _maxHeight) _maxHeight = newHeight;
-            return result;
+            var node = _startNode.InsertNode(size);
+            if (node == null)
+                return null;
+            return node.Rectangle.Start;
         }
     }
 }
