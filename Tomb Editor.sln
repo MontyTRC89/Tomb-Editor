@@ -19,6 +19,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NgXmlBuilder", "NgXmlBuilde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Forms", "TombLib.Graphics\TombLib.Forms.csproj", "{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Rendering", "TombLib.Rendering\TombLib.Rendering.csproj", "{E2F6F614-5007-471A-A22C-39B7D840376C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A0421DCD-80D1-44D8-8243-6A33F83A692C} = {A0421DCD-80D1-44D8-8243-6A33F83A692C}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +58,10 @@ Global
 		{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2F6F614-5007-471A-A22C-39B7D840376C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2F6F614-5007-471A-A22C-39B7D840376C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2F6F614-5007-471A-A22C-39B7D840376C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2F6F614-5007-471A-A22C-39B7D840376C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
