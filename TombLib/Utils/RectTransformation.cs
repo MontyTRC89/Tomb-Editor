@@ -92,14 +92,17 @@ namespace TombLib.Utils
             Vector2 second = Transform(area.End, oldSize);
             return new Rectangle2(Vector2.Min(first, second), Vector2.Max(first, second));
         }
-
-
-
-
+        
         public Vector3 TransformVec3(Vector3 position, float oldWidth, float oldHeight)
         {
             Vector2 result = Transform(new Vector2(position.X, position.Z), new Vector2(oldWidth, oldHeight));
             return new Vector3(result.X, position.Y, result.Y);
+        }
+
+        public VectorInt3 TransformVecInt3(VectorInt3 position, int oldWidth, int oldHeight)
+        {
+            VectorInt2 result = Transform(new VectorInt2(position.X, position.Z), new VectorInt2(oldWidth, oldHeight));
+            return new VectorInt3(result.X, position.Y, result.Y);
         }
 
         public static RectTransformation operator *(RectTransformation first, RectTransformation second)

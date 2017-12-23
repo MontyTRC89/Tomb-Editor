@@ -330,7 +330,7 @@ namespace TombLib.LevelData.IO
                     else if (id2 == Prj2Chunks.RoomName)
                         room.Name = chunkIO.ReadChunkString(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomPosition)
-                        room.Position = chunkIO.ReadChunkVector3(chunkSize2);
+                        room.Position = VectorInt3.FromRounded(chunkIO.ReadChunkVector3(chunkSize2));
 
                     // Read sectors
                     else if (id2 == Prj2Chunks.RoomSectors)

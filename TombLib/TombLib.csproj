@@ -216,6 +216,7 @@
     <Compile Include="Utils\TreePacker.cs" />
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="VectorInt2.cs" />
+    <Compile Include="VectorInt3.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
     <Compile Include="Wad\OriginalSoundsDefinitions.cs" />
     <Compile Include="Wad\OriginalSound.cs" />

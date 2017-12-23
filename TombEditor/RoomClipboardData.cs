@@ -29,10 +29,10 @@ namespace TombEditor
 
         private byte[] _data;
         private List<ContourLine> _contourLines;
-        private Vector2 _dropPosition;
+        private VectorInt2 _dropPosition;
         private string _levelPath;
 
-        public RoomClipboardData(Editor editor, Vector2 dropPosition)
+        public RoomClipboardData(Editor editor, VectorInt2 dropPosition)
         {
             _dropPosition = dropPosition;
 
@@ -81,7 +81,7 @@ namespace TombEditor
 
         public IReadOnlyList<ContourLine> ContourLines => _contourLines;
 
-        public Vector2 DropPosition => _dropPosition;
+        public VectorInt2 DropPosition => _dropPosition;
 
         public Level CreateLevel()
         {
@@ -93,12 +93,12 @@ namespace TombEditor
             }
         }
 
-        public void MergeInto(Editor editor, Vector2 offset)
+        public void MergeInto(Editor editor, VectorInt2 offset)
         {
             Level level = CreateLevel();
             List<Room> newRooms = level.Rooms.Where(room => room != null).ToList();
             foreach (Room room in newRooms)
-                room.Position += new Vector3(offset.X, 0, offset.Y);
+                room.Position += new VectorInt3(offset.X, 0, offset.Y);
             LevelSettings newLevelSettings = editor.Level.Settings.Clone();
             editor.Level.MergeFrom(level, true, newSettings => editor.UpdateLevelSettings(newSettings));
             editor.RoomListChange();

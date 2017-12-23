@@ -16,6 +16,7 @@ using DarkUI.Forms;
 using TombLib.GeometryIO.Importers;
 using TombLib.Forms;
 using TombLib.Graphics;
+using TombLib;
 
 namespace TombEditor
 {
@@ -857,12 +858,12 @@ namespace TombEditor
 
         private void wholeRoomUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f), _editor.SelectedRoom.Versions);
+            EditorActions.MoveRooms(new VectorInt3(0, 1, 0), _editor.SelectedRoom.Versions);
         }
 
         private void wholeRoomDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f), _editor.SelectedRoom.Versions);
+            EditorActions.MoveRooms(new VectorInt3(0, -1, 0), _editor.SelectedRoom.Versions);
         }
 
         private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -997,7 +998,7 @@ namespace TombEditor
                 if (roomClipboardData == null)
                     MessageBox.Show("Clipboard contains no room data.");
                 else
-                    roomClipboardData.MergeInto(_editor, new Vector2());
+                    roomClipboardData.MergeInto(_editor, new VectorInt2());
             }
         }
 
