@@ -10,6 +10,8 @@ using TombLib.Wad.Tr4Wad;
 using TombLib.Wad.TrLevels;
 using TombLib.Forms;
 using TombLib.Utils;
+using TombLib.LevelData;
+using TombLib.GeometryIO;
 
 namespace WadTool
 {
