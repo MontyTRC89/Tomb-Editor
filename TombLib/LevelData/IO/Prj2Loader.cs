@@ -358,9 +358,9 @@ namespace TombLib.LevelData.IO
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (int j = 0; j < 4; j++)
-                                            block.QAFaces[j] = LEB128.ReadShort(chunkIO.Raw);
+                                            block.QA[j] = LEB128.ReadShort(chunkIO.Raw);
                                         for (int j = 0; j < 4; j++)
-                                            block.EDFaces[j] = LEB128.ReadShort(chunkIO.Raw);
+                                            block.ED[j] = LEB128.ReadShort(chunkIO.Raw);
                                         block.FloorSplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.FloorDiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
@@ -368,9 +368,9 @@ namespace TombLib.LevelData.IO
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (int j = 0; j < 4; j++)
-                                            block.WSFaces[j] = LEB128.ReadShort(chunkIO.Raw);
+                                            block.WS[j] = LEB128.ReadShort(chunkIO.Raw);
                                         for (int j = 0; j < 4; j++)
-                                            block.RFFaces[j] = LEB128.ReadShort(chunkIO.Raw);
+                                            block.RF[j] = LEB128.ReadShort(chunkIO.Raw);
                                         block.CeilingSplitDirectionIsXEqualsZ = (flag & 1) != 0;
                                         block.CeilingDiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }

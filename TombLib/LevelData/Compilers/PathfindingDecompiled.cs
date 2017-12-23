@@ -290,10 +290,10 @@ namespace TombLib.LevelData.Compilers
                 return false;
             }
 
-            dec_q0 = block.QAFaces[0];
-            dec_q1 = block.QAFaces[1];
-            dec_q2 = block.QAFaces[2];
-            dec_q3 = block.QAFaces[3];
+            dec_q0 = block.QA[0];
+            dec_q1 = block.QA[1];
+            dec_q2 = block.QA[2];
+            dec_q3 = block.QA[3];
 
             int currentX = (int)room.Position.X + x;
             int currentZ = (int)room.Position.Z + z;
@@ -782,13 +782,13 @@ namespace TombLib.LevelData.Compilers
 
             if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
 
-            int sumHeights = block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3];
+            int sumHeights = block.QA[0] + block.QA[1] + block.QA[2] + block.QA[3];
             int meanFloorCornerHeight = sumHeights >> 2;
 
-            dec_q0 = block.QAFaces[0];
-            dec_q1 = block.QAFaces[1];
-            dec_q2 = block.QAFaces[2];
-            dec_q3 = block.QAFaces[3];
+            dec_q0 = block.QA[0];
+            dec_q1 = block.QA[1];
+            dec_q2 = block.QA[2];
+            dec_q3 = block.QA[3];
 
             int slope1 = (Math.Abs(dec_q0 - dec_q1) >= 3 ? 1 : 0);
             int slope2 = (Math.Abs(dec_q1 - dec_q2) >= 3 ? 1 : 0);
@@ -797,18 +797,18 @@ namespace TombLib.LevelData.Compilers
 
             bool someFlag = false;
 
-            if (block.QAFaces[0] == block.QAFaces[2])
+            if (block.QA[0] == block.QA[2])
             {
                 someFlag = false;
             }
             else
             {
-                if (block.QAFaces[1] != block.QAFaces[3])
+                if (block.QA[1] != block.QA[3])
                 {
-                    if (block.QAFaces[0] < block.QAFaces[1] && block.QAFaces[0] < block.QAFaces[3] ||
-                        block.QAFaces[2] < block.QAFaces[1] && block.QAFaces[2] < block.QAFaces[3] ||
-                        block.QAFaces[0] > block.QAFaces[1] && block.QAFaces[0] > block.QAFaces[3] ||
-                        block.QAFaces[2] > block.QAFaces[1] && block.QAFaces[2] > block.QAFaces[3])
+                    if (block.QA[0] < block.QA[1] && block.QA[0] < block.QA[3] ||
+                        block.QA[2] < block.QA[1] && block.QA[2] < block.QA[3] ||
+                        block.QA[0] > block.QA[1] && block.QA[0] > block.QA[3] ||
+                        block.QA[2] > block.QA[1] && block.QA[2] > block.QA[3])
                     {
                         someFlag = true;
                     }

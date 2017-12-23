@@ -662,25 +662,25 @@ namespace TombLib.LevelData.IO
                                         break;
                                 }
 
-                                block.QAFaces[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYfloor);
-                                block.QAFaces[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYfloor);
-                                block.QAFaces[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYfloor);
-                                block.QAFaces[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.QA[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.QA[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.QA[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.QA[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYfloor);
 
-                                block.WSFaces[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYceiling);
-                                block.WSFaces[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYceiling);
-                                block.WSFaces[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYceiling);
-                                block.WSFaces[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.WS[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.WS[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.WS[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.WS[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYceiling);
 
-                                block.EDFaces[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYfloor);
-                                block.EDFaces[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYfloor);
-                                block.EDFaces[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYfloor);
-                                block.EDFaces[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.ED[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.ED[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.ED[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.ED[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYfloor);
 
-                                block.RFFaces[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYceiling);
-                                block.RFFaces[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYceiling);
-                                block.RFFaces[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYceiling);
-                                block.RFFaces[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.RF[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.RF[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.RF[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.RF[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYceiling);
 
                                 if ((blockFlags1 & 0x4000) != 0)
                                     block.Flags |= BlockFlags.Monkey;
@@ -1844,23 +1844,23 @@ namespace TombLib.LevelData.IO
             {
                 case BlockFace.PositiveZ_QA:
                     return (!room.IsFaceDefined(x, z, face) &&
-                            (b.QAFaces[0] >= b.EDFaces[0] && b.QAFaces[1] >= b.EDFaces[1]) &&
-                            !(b.QAFaces[0] == b.EDFaces[0] && b.QAFaces[1] == b.EDFaces[1]));
+                            (b.QA[0] >= b.ED[0] && b.QA[1] >= b.ED[1]) &&
+                            !(b.QA[0] == b.ED[0] && b.QA[1] == b.ED[1]));
 
                 case BlockFace.NegativeZ_QA:
                     return (!room.IsFaceDefined(x, z, face) &&
-                            (b.QAFaces[3] >= b.EDFaces[3] && b.QAFaces[2] >= b.EDFaces[2]) &&
-                            !(b.QAFaces[3] == b.EDFaces[3] && b.QAFaces[2] == b.EDFaces[2]));
+                            (b.QA[3] >= b.ED[3] && b.QA[2] >= b.ED[2]) &&
+                            !(b.QA[3] == b.ED[3] && b.QA[2] == b.ED[2]));
 
                 case BlockFace.NegativeX_QA:
                     return (!room.IsFaceDefined(x, z, face) &&
-                            (b.QAFaces[3] >= b.EDFaces[3] && b.QAFaces[0] >= b.EDFaces[0]) &&
-                            !(b.QAFaces[3] == b.EDFaces[3] && b.QAFaces[0] == b.EDFaces[0]));
+                            (b.QA[3] >= b.ED[3] && b.QA[0] >= b.ED[0]) &&
+                            !(b.QA[3] == b.ED[3] && b.QA[0] == b.ED[0]));
 
                 case BlockFace.PositiveX_QA:
                     return (!room.IsFaceDefined(x, z, face) &&
-                               (b.QAFaces[1] >= b.EDFaces[1] && b.QAFaces[2] >= b.EDFaces[2]) &&
-                               !(b.QAFaces[1] == b.EDFaces[1] && b.QAFaces[2] == b.EDFaces[2]));
+                               (b.QA[1] >= b.ED[1] && b.QA[2] >= b.ED[2]) &&
+                               !(b.QA[1] == b.ED[1] && b.QA[2] == b.ED[2]));
             }
 
             return false;

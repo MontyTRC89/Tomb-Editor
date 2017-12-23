@@ -220,10 +220,10 @@ namespace TombLib.LevelData.Compilers
                         // It's a very long and hard task
                         if (block.FloorDiagonalSplit != DiagonalSplit.None)
                         {
-                            int q0 = block.QAFaces[0];
-                            int q1 = block.QAFaces[1];
-                            int q2 = block.QAFaces[2];
-                            int q3 = block.QAFaces[3];
+                            int q0 = block.QA[0];
+                            int q1 = block.QA[1];
+                            int q2 = block.QA[2];
+                            int q3 = block.QA[3];
 
                             // The real floor split of the sector
                             int function;
@@ -267,7 +267,7 @@ namespace TombLib.LevelData.Compilers
                                     if (block.Type == BlockType.Wall)
                                     {
                                         t1 = 0;
-                                        t2 = 15 - block.QAFaces[
+                                        t2 = 15 - block.QA[
                                                  1]; // Diagonal wall max height minus the height of the lower right angle
 
                                         h00 = 0;
@@ -293,7 +293,7 @@ namespace TombLib.LevelData.Compilers
 
                                     if (block.Type == BlockType.Wall)
                                     {
-                                        t1 = 15 - block.QAFaces[3];
+                                        t1 = 15 - block.QA[3];
                                         t2 = 0;
 
                                         h00 = 0;
@@ -333,7 +333,7 @@ namespace TombLib.LevelData.Compilers
 
                                     if (block.Type == BlockType.Wall)
                                     {
-                                        t1 = 15 - block.QAFaces[0];
+                                        t1 = 15 - block.QA[0];
                                         t2 = 0;
 
                                         h00 = 0;
@@ -360,7 +360,7 @@ namespace TombLib.LevelData.Compilers
                                     if (block.Type == BlockType.Wall)
                                     {
                                         t1 = 0;
-                                        t2 = 15 - block.QAFaces[2];
+                                        t2 = 15 - block.QA[2];
 
                                         h00 = 0;
                                         h10 = 0;
@@ -390,10 +390,10 @@ namespace TombLib.LevelData.Compilers
                         {
                             if (block.FloorIfQuadSlopeX == 0 && block.FloorIfQuadSlopeZ == 0)
                             {
-                                int q0 = block.QAFaces[0];
-                                int q1 = block.QAFaces[1];
-                                int q2 = block.QAFaces[2];
-                                int q3 = block.QAFaces[3];
+                                int q0 = block.QA[0];
+                                int q1 = block.QA[1];
+                                int q2 = block.QA[2];
+                                int q3 = block.QA[3];
 
                                 // We have not a slope, so if this is not a horizontal square then we have triangulation
                                 if (!Block.IsQuad(q0, q1, q2, q3))
@@ -673,10 +673,10 @@ namespace TombLib.LevelData.Compilers
                         {
                             if (block.Type != BlockType.Wall)
                             {
-                                int w0 = block.WSFaces[0];
-                                int w1 = block.WSFaces[1];
-                                int w2 = block.WSFaces[2];
-                                int w3 = block.WSFaces[3];
+                                int w0 = block.WS[0];
+                                int w1 = block.WS[1];
+                                int w2 = block.WS[2];
+                                int w3 = block.WS[3];
 
                                 // The real floor split of the sector
                                 int function;
@@ -790,10 +790,10 @@ namespace TombLib.LevelData.Compilers
                         {
                             if (block.CeilingIfQuadSlopeX == 0 && block.CeilingIfQuadSlopeZ == 0)
                             {
-                                int w0 = block.WSFaces[0];
-                                int w1 = block.WSFaces[1];
-                                int w2 = block.WSFaces[2];
-                                int w3 = block.WSFaces[3];
+                                int w0 = block.WS[0];
+                                int w1 = block.WS[1];
+                                int w2 = block.WS[2];
+                                int w3 = block.WS[3];
 
                                 // We have not a slope, so if this is not a horizontal square then we have triangulation
                                 if (!Block.IsQuad(w0, w1, w2, w3))

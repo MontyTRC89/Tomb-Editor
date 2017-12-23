@@ -610,8 +610,8 @@ namespace TombLib.LevelData
 
                 if (lookupBlock.Block.FloorPortal == null)
                 {
-                    if (lookupBlock.Block.QAFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] > absoluteLowestPassableStep ||
-                        lookupBlock.Block.QAFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] > absoluteLowestPassableStep)
+                    if (lookupBlock.Block.QA[heightsToCheck[0]] - sector.QA[heightsToCompare[0]] > absoluteLowestPassableStep ||
+                        lookupBlock.Block.QA[heightsToCheck[1]] - sector.QA[heightsToCompare[1]] > absoluteLowestPassableStep)
                         slopeIsIllegal = true;
                     else
                     {
@@ -673,10 +673,10 @@ namespace TombLib.LevelData
 
                 if(lookupBlock.Block.CeilingPortal == null)
                 {
-                    if (lookupBlock.Block.WSFaces[heightsToCheck[0]] - sector.QAFaces[heightsToCompare[0]] < absoluteLowestPassableHeight ||
-                        lookupBlock.Block.WSFaces[heightsToCheck[1]] - sector.QAFaces[heightsToCompare[1]] < absoluteLowestPassableHeight ||
-                        lookupBlock.Block.WSFaces[heightsToCheck[0]] - lookupBlock.Block.QAFaces[heightsToCheck[0]] < lowestPassableHeight ||
-                        lookupBlock.Block.WSFaces[heightsToCheck[1]] - lookupBlock.Block.QAFaces[heightsToCheck[1]] < lowestPassableHeight)
+                    if (lookupBlock.Block.WS[heightsToCheck[0]] - sector.QA[heightsToCompare[0]] < absoluteLowestPassableHeight ||
+                        lookupBlock.Block.WS[heightsToCheck[1]] - sector.QA[heightsToCompare[1]] < absoluteLowestPassableHeight ||
+                        lookupBlock.Block.WS[heightsToCheck[0]] - lookupBlock.Block.QA[heightsToCheck[0]] < lowestPassableHeight ||
+                        lookupBlock.Block.WS[heightsToCheck[1]] - lookupBlock.Block.QA[heightsToCheck[1]] < lowestPassableHeight)
                         slopeIsIllegal = true;
                 }
             }
@@ -808,14 +808,14 @@ namespace TombLib.LevelData
                     }
 
                     // Save the height of the faces
-                    int qa0 = Blocks[x, z].QAFaces[0];
-                    int qa1 = Blocks[x, z].QAFaces[1];
-                    int qa2 = Blocks[x, z].QAFaces[2];
-                    int qa3 = Blocks[x, z].QAFaces[3];
-                    int ws0 = Blocks[x, z].WSFaces[0];
-                    int ws1 = Blocks[x, z].WSFaces[1];
-                    int ws2 = Blocks[x, z].WSFaces[2];
-                    int ws3 = Blocks[x, z].WSFaces[3];
+                    int qa0 = Blocks[x, z].QA[0];
+                    int qa1 = Blocks[x, z].QA[1];
+                    int qa2 = Blocks[x, z].QA[2];
+                    int qa3 = Blocks[x, z].QA[3];
+                    int ws0 = Blocks[x, z].WS[0];
+                    int ws1 = Blocks[x, z].WS[1];
+                    int ws2 = Blocks[x, z].WS[2];
+                    int ws3 = Blocks[x, z].WS[3];
 
                     // If x, z is one of the four corner then nothing has to be done
                     if ((x == 0 && z == 0) || (x == 0 && z == NumZSectors - 1) ||
@@ -1251,15 +1251,14 @@ namespace TombLib.LevelData
         private void AddVerticalFaces(int x, int z, FaceDirection direction, bool floor, bool ceiling, bool middle)
         {
             int xA, xB, zA, zB, yA, yB;
-
-            Block otherBlock;
-            TextureArea face;
-
-            BlockFace qaFace, edFace, wsFace, rfFace, middleFace;
             int qA, qB, eA, eB, rA, rB, wA, wB, fA, fB, cA, cB;
 
-            bool isOtherFloorDiagonal = false;
-            bool isOtherCeilingDiagonal = false;
+            Block b = Blocks[x, z];
+            Block ob;
+
+            BlockFace qaFace, edFace, wsFace, rfFace, middleFace;
+
+            TextureArea face;
 
             switch (direction)
             {
@@ -1268,102 +1267,26 @@ namespace TombLib.LevelData
                     xB = x;
                     zA = z + 1;
                     zB = z + 1;
-                    otherBlock = Blocks[x, z + 1];
-                    qA = Blocks[x, z].QAFaces[1];
-                    qB = Blocks[x, z].QAFaces[0];
-                    eA = Blocks[x, z].EDFaces[1];
-                    eB = Blocks[x, z].EDFaces[0];
-                    rA = Blocks[x, z].RFFaces[1];
-                    rB = Blocks[x, z].RFFaces[0];
-                    wA = Blocks[x, z].WSFaces[1];
-                    wB = Blocks[x, z].WSFaces[0];
-                    fA = otherBlock.QAFaces[2];
-                    fB = otherBlock.QAFaces[3];
-                    cA = otherBlock.WSFaces[2];
-                    cB = otherBlock.WSFaces[3];
+                    ob = Blocks[x, z + 1];
+                    qA = b.QA[1];
+                    qB = b.QA[0];
+                    eA = b.ED[1];
+                    eB = b.ED[0];
+                    rA = b.RF[1];
+                    rB = b.RF[0];
+                    wA = b.WS[1];
+                    wB = b.WS[0];
+                    fA = ob.QA[2];
+                    fB = ob.QA[3];
+                    cA = ob.WS[2];
+                    cB = ob.WS[3];
                     qaFace = BlockFace.PositiveZ_QA;
                     edFace = BlockFace.PositiveZ_ED;
                     middleFace = BlockFace.PositiveZ_Middle;
                     rfFace = BlockFace.PositiveZ_RF;
                     wsFace = BlockFace.PositiveZ_WS;
 
-                    isOtherFloorDiagonal = otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZp || otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZp;
-                    isOtherCeilingDiagonal = otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp || otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp;
-
-                    // Try to adjust illegal combinations of heights
-                    if (!isOtherFloorDiagonal)
-                    {
-                        if (qA < fA && qB > fB || qA > fA && qB < fB)
-                        {
-                            qA = fA;
-                            qB = fB;
-                        }
-
-                        if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
-                        {
-                            qA = cA;
-                            qB = cB;
-                        }
-
-                        if (eA < qA && eB > qB || eA > qA && eB < qB)
-                        {
-                            eA = qA;
-                            eB = qB;
-                        }
-
-                        if (eA < cA && eB > cB || eA > cA && eB < cB)
-                        {
-                            eA = cA;
-                            eB = cB;
-                        }
-                    }
-
-                    if (!isOtherCeilingDiagonal)
-                    {
-                        if (wA < cA && wB > cB || wA > cA && wB < cB)
-                        {
-                            wA = cA;
-                            wB = cB;
-                        }
-
-                        if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
-                        {
-                            wA = fA;
-                            wB = fB;
-                        }
-
-                        if (rA < wA && rB > wB || rA > wA && rB < wB)
-                        {
-                            rA = wA;
-                            rB = wB;
-                        }
-
-                        if (rA < fA && rB > fB || rA > fA && rB < fB)
-                        {
-                            rA = fA;
-                            rB = fB;
-                        }
-                    }
-
-                    if (!isOtherFloorDiagonal)
-                    {
-                        if (qA < fA) qA = fA;
-                        if (qB < fB) qB = fB;
-
-                        if (wA < fA) wA = fA;
-                        if (wB < fB) wB = fB;
-                    }
-
-                    if (!isOtherCeilingDiagonal)
-                    {
-                        if (qA > cA) qA = cA;
-                        if (qB > cB) qB = cB;
-
-                        if (wA > cA) wA = cA;
-                        if (wB > cB) wB = cB;
-                    }
-
-                    if (Blocks[x, z].WallPortal != null)
+                    if (b.WallPortal != null)
                     {
                         // Get the adjoining room of the portal
                         var portal = FindPortal(x, z, PortalDirection.WallNegativeZ);
@@ -1377,13 +1300,13 @@ namespace TombLib.LevelData
                         // Get the near block in current room
                         var nearBlock = Blocks[x, 1];
 
-                        var qaNearA = nearBlock.QAFaces[2];
-                        var qaNearB = nearBlock.QAFaces[3];
+                        var qaNearA = nearBlock.QA[2];
+                        var qaNearB = nearBlock.QA[3];
                         if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qaNearA = qaNearB;
                         if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qaNearB = qaNearA;
 
-                        var wsNearA = nearBlock.WSFaces[2];
-                        var wsNearB = nearBlock.WSFaces[3];
+                        var wsNearA = nearBlock.WS[2];
+                        var wsNearB = nearBlock.WS[3];
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wsNearA = wsNearB;
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wsNearB = wsNearA;
 
@@ -1392,8 +1315,8 @@ namespace TombLib.LevelData
 
                         var adjoiningBlock = adjoiningRoom.GetBlockTry(facingX, adjoiningRoom.NumZSectors - 2) ?? Block.Empty;
 
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[1];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[0];
+                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[1];
+                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[0];
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qBportal = qAportal;
 
@@ -1402,8 +1325,8 @@ namespace TombLib.LevelData
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[1];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[0];
+                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[1];
+                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[0];
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wBportal = wAportal;
 
@@ -1412,71 +1335,58 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[1];
-                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[0];
-                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[1];
-                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[0];
+                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[1];
+                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[0];
+                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[1];
+                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[0];
                     }
 
-                    if (Blocks[x, z].Type == BlockType.BorderWall)
+                    if (b.FloorDiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        if (Blocks[x, 1].WSFaces[2] < Blocks[x, z].QAFaces[1])
-                        {
-                            qA = Blocks[x, 1].WSFaces[2];
-                        }
-
-                        if (Blocks[x, 1].WSFaces[3] < Blocks[x, z].QAFaces[0])
-                        {
-                            qB = Blocks[x, 1].WSFaces[3];
-                        }
+                        qA = b.QA[0];
+                        qB = b.QA[0];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZn)
+                    if (b.FloorDiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        qA = Blocks[x, z].QAFaces[0];
-                        qB = Blocks[x, z].QAFaces[0];
+                        qA = b.QA[1];
+                        qB = b.QA[1];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZn)
+                    if (ob.FloorDiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        qA = Blocks[x, z].QAFaces[1];
-                        qB = Blocks[x, z].QAFaces[1];
+                        fA = ob.QA[2];
+                        fB = ob.QA[2];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                    if (ob.FloorDiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        fA = otherBlock.QAFaces[2];
-                        fB = otherBlock.QAFaces[2];
+                        fA = ob.QA[3];
+                        fB = ob.QA[3];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                    if (b.CeilingDiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        fA = otherBlock.QAFaces[3];
-                        fB = otherBlock.QAFaces[3];
+                        wA = b.WS[0];
+                        wB = b.WS[0];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                    if (b.CeilingDiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        wA = Blocks[x, z].WSFaces[0];
-                        wB = Blocks[x, z].WSFaces[0];
+                        wA = b.WS[1];
+                        wB = b.WS[1];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                    if (ob.CeilingDiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        wA = Blocks[x, z].WSFaces[1];
-                        wB = Blocks[x, z].WSFaces[1];
+                        cA = ob.WS[2];
+                        cB = ob.WS[2];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp)
+                    if (ob.CeilingDiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        cA = otherBlock.WSFaces[2];
-                        cB = otherBlock.WSFaces[2];
-                    }
-
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp)
-                    {
-                        cA = otherBlock.WSFaces[3];
-                        cB = otherBlock.WSFaces[3];
+                        cA = ob.WS[3];
+                        cB = ob.WS[3];
                     }
 
                     break;
@@ -1486,102 +1396,26 @@ namespace TombLib.LevelData
                     xB = x + 1;
                     zA = z;
                     zB = z;
-                    otherBlock = Blocks[x, z - 1];
-                    qA = Blocks[x, z].QAFaces[3];
-                    qB = Blocks[x, z].QAFaces[2];
-                    eA = Blocks[x, z].EDFaces[3];
-                    eB = Blocks[x, z].EDFaces[2];
-                    rA = Blocks[x, z].RFFaces[3];
-                    rB = Blocks[x, z].RFFaces[2];
-                    wA = Blocks[x, z].WSFaces[3];
-                    wB = Blocks[x, z].WSFaces[2];
-                    fA = otherBlock.QAFaces[0];
-                    fB = otherBlock.QAFaces[1];
-                    cA = otherBlock.WSFaces[0];
-                    cB = otherBlock.WSFaces[1];
+                    ob = Blocks[x, z - 1];
+                    qA = b.QA[3];
+                    qB = b.QA[2];
+                    eA = b.ED[3];
+                    eB = b.ED[2];
+                    rA = b.RF[3];
+                    rB = b.RF[2];
+                    wA = b.WS[3];
+                    wB = b.WS[2];
+                    fA = ob.QA[0];
+                    fB = ob.QA[1];
+                    cA = ob.WS[0];
+                    cB = ob.WS[1];
                     qaFace = BlockFace.NegativeZ_QA;
                     edFace = BlockFace.NegativeZ_ED;
                     middleFace = BlockFace.NegativeZ_Middle;
                     rfFace = BlockFace.NegativeZ_RF;
                     wsFace = BlockFace.NegativeZ_WS;
 
-                    isOtherFloorDiagonal = otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZn || otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZn;
-                    isOtherCeilingDiagonal = otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn || otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn;
-
-                    // Try to adjust illegal combinations of heights
-                    if (!isOtherFloorDiagonal)
-                    {
-                        if (qA < fA && qB > fB || qA > fA && qB < fB)
-                        {
-                            qA = fA;
-                            qB = fB;
-                        }
-
-                        if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
-                        {
-                            qA = cA;
-                            qB = cB;
-                        }
-
-                        if (eA < qA && eB > qB || eA > qA && eB < qB)
-                        {
-                            eA = qA;
-                            eB = qB;
-                        }
-
-                        if (eA < cA && eB > cB || eA > cA && eB < cB)
-                        {
-                            eA = cA;
-                            eB = cB;
-                        }
-                    }
-
-                    if (!isOtherCeilingDiagonal)
-                    {
-                        if (wA < cA && wB > cB || wA > cA && wB < cB)
-                        {
-                            wA = cA;
-                            wB = cB;
-                        }
-
-                        if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
-                        {
-                            wA = fA;
-                            wB = fB;
-                        }
-
-                        if (rA < wA && rB > wB || rA > wA && rB < wB)
-                        {
-                            rA = wA;
-                            rB = wB;
-                        }
-
-                        if (rA < fA && rB > fB || rA > fA && rB < fB)
-                        {
-                            rA = fA;
-                            rB = fB;
-                        }
-                    }
-
-                    if (!isOtherFloorDiagonal)
-                    {
-                        if (qA < fA) qA = fA;
-                        if (qB < fB) qB = fB;
-
-                        if (wA < fA) wA = fA;
-                        if (wB < fB) wB = fB;
-                    }
-
-                    if (!isOtherCeilingDiagonal)
-                    {
-                        if (qA > cA) qA = cA;
-                        if (qB > cB) qB = cB;
-
-                        if (wA > cA) wA = cA;
-                        if (wB > cB) wB = cB;
-                    }
-
-                    if (Blocks[x, z].WallPortal != null)
+                    if (b.WallPortal != null)
                     {
                         // Get the adjoining room of the portal
                         var portal = FindPortal(x, z, PortalDirection.WallPositiveZ);
@@ -1595,13 +1429,13 @@ namespace TombLib.LevelData
                         // Get the near block in current room
                         var nearBlock = Blocks[x, NumZSectors - 2];
 
-                        var qaNearA = nearBlock.QAFaces[0];
-                        var qaNearB = nearBlock.QAFaces[1];
+                        var qaNearA = nearBlock.QA[0];
+                        var qaNearB = nearBlock.QA[1];
                         if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qaNearA = qaNearB;
                         if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qaNearB = qaNearA;
 
-                        var wsNearA = nearBlock.WSFaces[0];
-                        var wsNearB = nearBlock.WSFaces[1];
+                        var wsNearA = nearBlock.WS[0];
+                        var wsNearB = nearBlock.WS[1];
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wsNearA = wsNearB;
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wsNearB = wsNearA;
 
@@ -1610,8 +1444,8 @@ namespace TombLib.LevelData
 
                         var adjoiningBlock = adjoiningRoom.GetBlockTry(facingX, 1) ?? Block.Empty;
 
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[3];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[2];
+                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[3];
+                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[2];
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qBportal = qAportal;
 
@@ -1620,8 +1454,8 @@ namespace TombLib.LevelData
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[3];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[2];
+                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[3];
+                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[2];
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wBportal = wAportal;
 
@@ -1630,71 +1464,58 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[3];
-                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[2];
-                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[3];
-                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[2];
+                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[3];
+                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[2];
+                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[3];
+                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[2];
                     }
 
-                    if (Blocks[x, z].Type == BlockType.BorderWall)
+                    if (b.FloorDiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        if (Blocks[x, NumZSectors - 2].WSFaces[0] < Blocks[x, z].QAFaces[3])
-                        {
-                            qA = Blocks[x, NumZSectors - 2].WSFaces[0];
-                        }
-
-                        if (Blocks[x, NumZSectors - 2].WSFaces[1] < Blocks[x, z].QAFaces[2])
-                        {
-                            qB = Blocks[x, NumZSectors - 2].WSFaces[1];
-                        }
+                        qA = b.QA[3];
+                        qB = b.QA[3];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZp)
+                    if (b.FloorDiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        qA = Blocks[x, z].QAFaces[3];
-                        qB = Blocks[x, z].QAFaces[3];
+                        qA = b.QA[2];
+                        qB = b.QA[2];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZp)
+                    if (ob.FloorDiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        qA = Blocks[x, z].QAFaces[2];
-                        qB = Blocks[x, z].QAFaces[2];
+                        fA = ob.QA[0];
+                        fB = ob.QA[0];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                    if (ob.FloorDiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        fA = otherBlock.QAFaces[0];
-                        fB = otherBlock.QAFaces[0];
+                        fA = ob.QA[1];
+                        fB = ob.QA[1];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                    if (b.CeilingDiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        fA = otherBlock.QAFaces[1];
-                        fB = otherBlock.QAFaces[1];
+                        wA = b.WS[3];
+                        wB = b.WS[3];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                    if (b.CeilingDiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        wA = Blocks[x, z].WSFaces[3];
-                        wB = Blocks[x, z].WSFaces[3];
+                        wA = b.WS[2];
+                        wB = b.WS[2];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XnZp)
+                    if (ob.CeilingDiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        wA = Blocks[x, z].WSFaces[2];
-                        wB = Blocks[x, z].WSFaces[2];
+                        cA = ob.WS[0];
+                        cB = ob.WS[0];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                    if (ob.CeilingDiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        cA = otherBlock.WSFaces[0];
-                        cB = otherBlock.WSFaces[0];
-                    }
-
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn)
-                    {
-                        cA = otherBlock.WSFaces[1];
-                        cB = otherBlock.WSFaces[1];
+                        cA = ob.WS[1];
+                        cB = ob.WS[1];
                     }
 
                     break;
@@ -1704,102 +1525,26 @@ namespace TombLib.LevelData
                     xB = x + 1;
                     zA = z;
                     zB = z + 1;
-                    otherBlock = Blocks[x + 1, z];
-                    qA = Blocks[x, z].QAFaces[2];
-                    qB = Blocks[x, z].QAFaces[1];
-                    eA = Blocks[x, z].EDFaces[2];
-                    eB = Blocks[x, z].EDFaces[1];
-                    rA = Blocks[x, z].RFFaces[2];
-                    rB = Blocks[x, z].RFFaces[1];
-                    wA = Blocks[x, z].WSFaces[2];
-                    wB = Blocks[x, z].WSFaces[1];
-                    fA = otherBlock.QAFaces[3];
-                    fB = otherBlock.QAFaces[0];
-                    cA = otherBlock.WSFaces[3];
-                    cB = otherBlock.WSFaces[0];
+                    ob = Blocks[x + 1, z];
+                    qA = b.QA[2];
+                    qB = b.QA[1];
+                    eA = b.ED[2];
+                    eB = b.ED[1];
+                    rA = b.RF[2];
+                    rB = b.RF[1];
+                    wA = b.WS[2];
+                    wB = b.WS[1];
+                    fA = ob.QA[3];
+                    fB = ob.QA[0];
+                    cA = ob.WS[3];
+                    cB = ob.WS[0];
                     qaFace = BlockFace.PositiveX_QA;
                     edFace = BlockFace.PositiveX_ED;
                     middleFace = BlockFace.PositiveX_Middle;
                     rfFace = BlockFace.PositiveX_RF;
                     wsFace = BlockFace.PositiveX_WS;
 
-                    isOtherFloorDiagonal = otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZp || otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZn;
-                    isOtherCeilingDiagonal = otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp || otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn;
-
-                    // Try to adjust illegal combinations of heights
-                    if (!isOtherFloorDiagonal)
-                    {
-                        if (qA < fA && qB > fB || qA > fA && qB < fB)
-                        {
-                            qA = fA;
-                            qB = fB;
-                        }
-
-                        if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
-                        {
-                            qA = cA;
-                            qB = cB;
-                        }
-
-                        if (eA < qA && eB > qB || eA > qA && eB < qB)
-                        {
-                            eA = qA;
-                            eB = qB;
-                        }
-
-                        if (eA < cA && eB > cB || eA > cA && eB < cB)
-                        {
-                            eA = cA;
-                            eB = cB;
-                        }
-                    }
-
-                    if (!isOtherCeilingDiagonal)
-                    {
-                        if (wA < cA && wB > cB || wA > cA && wB < cB)
-                        {
-                            wA = cA;
-                            wB = cB;
-                        }
-
-                        if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
-                        {
-                            wA = fA;
-                            wB = fB;
-                        }
-
-                        if (rA < wA && rB > wB || rA > wA && rB < wB)
-                        {
-                            rA = wA;
-                            rB = wB;
-                        }
-
-                        if (rA < fA && rB > fB || rA > fA && rB < fB)
-                        {
-                            rA = fA;
-                            rB = fB;
-                        }
-                    }
-
-                    if (!isOtherFloorDiagonal)
-                    {
-                        if (qA < fA) qA = fA;
-                        if (qB < fB) qB = fB;
-
-                        if (wA < fA) wA = fA;
-                        if (wB < fB) wB = fB;
-                    }
-
-                    if (!isOtherCeilingDiagonal)
-                    {
-                        if (qA > cA) qA = cA;
-                        if (qB > cB) qB = cB;
-
-                        if (wA > cA) wA = cA;
-                        if (wB > cB) wB = cB;
-                    }
-
-                    if (Blocks[x, z].WallPortal != null)
+                    if (b.WallPortal != null)
                     {
                         // Get the adjoining room of the portal
                         var portal = FindPortal(x, z, PortalDirection.WallNegativeX);
@@ -1813,13 +1558,13 @@ namespace TombLib.LevelData
                         // Get the near block in current room
                         var nearBlock = Blocks[1, z];
 
-                        var qaNearA = nearBlock.QAFaces[3];
-                        var qaNearB = nearBlock.QAFaces[0];
+                        var qaNearA = nearBlock.QA[3];
+                        var qaNearB = nearBlock.QA[0];
                         if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qaNearA = qaNearB;
                         if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qaNearB = qaNearA;
 
-                        var wsNearA = nearBlock.WSFaces[3];
-                        var wsNearB = nearBlock.WSFaces[0];
+                        var wsNearA = nearBlock.WS[3];
+                        var wsNearB = nearBlock.WS[0];
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wsNearA = wsNearB;
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wsNearB = wsNearA;
 
@@ -1828,8 +1573,8 @@ namespace TombLib.LevelData
 
                         var adjoiningBlock = adjoiningRoom.GetBlockTry(adjoiningRoom.NumXSectors - 2, facingZ) ?? Block.Empty;
 
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[2];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[1];
+                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[2];
+                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[1];
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qBportal = qAportal;
 
@@ -1838,8 +1583,8 @@ namespace TombLib.LevelData
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[2];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[1];
+                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[2];
+                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[1];
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wBportal = wAportal;
 
@@ -1848,95 +1593,82 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[2];
-                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[1];
-                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[2];
-                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[1];
+                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[2];
+                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[1];
+                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[2];
+                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[1];
                     }
 
-                    if (Blocks[x, z].Type == BlockType.BorderWall)
+                    if (b.FloorDiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        if (Blocks[1, z].WSFaces[3] < Blocks[x, z].QAFaces[2])
-                        {
-                            qA = Blocks[1, z].WSFaces[3];
-                        }
-
-                        if (Blocks[1, z].WSFaces[0] < Blocks[x, z].QAFaces[1])
-                        {
-                            qB = Blocks[1, z].WSFaces[0];
-                        }
+                        qA = b.QA[1];
+                        qB = b.QA[1];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZn)
+                    if (b.FloorDiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        qA = Blocks[x, z].QAFaces[1];
-                        qB = Blocks[x, z].QAFaces[1];
+                        qA = b.QA[2];
+                        qB = b.QA[2];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZp)
+                    if (ob.FloorDiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        qA = Blocks[x, z].QAFaces[2];
-                        qB = Blocks[x, z].QAFaces[2];
+                        fA = ob.QA[0];
+                        fB = ob.QA[0];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                    if (ob.FloorDiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        fA = otherBlock.QAFaces[0];
-                        fB = otherBlock.QAFaces[0];
+                        fA = ob.QA[3];
+                        fB = ob.QA[3];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                    if (b.CeilingDiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        fA = otherBlock.QAFaces[3];
-                        fB = otherBlock.QAFaces[3];
+                        wA = b.WS[1];
+                        wB = b.WS[1];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                    if (b.CeilingDiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        wA = Blocks[x, z].WSFaces[1];
-                        wB = Blocks[x, z].WSFaces[1];
+                        wA = b.WS[2];
+                        wB = b.WS[2];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XnZp)
+                    if (ob.CeilingDiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        wA = Blocks[x, z].WSFaces[2];
-                        wB = Blocks[x, z].WSFaces[2];
+                        cA = ob.WS[0];
+                        cB = ob.WS[0];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                    if (ob.CeilingDiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        cA = otherBlock.WSFaces[0];
-                        cB = otherBlock.WSFaces[0];
-                    }
-
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp)
-                    {
-                        cA = otherBlock.WSFaces[3];
-                        cB = otherBlock.WSFaces[3];
+                        cA = ob.WS[3];
+                        cB = ob.WS[3];
                     }
 
                     break;
 
                 case FaceDirection.DiagonalFloor:
-                    switch (Blocks[x, z].FloorDiagonalSplit)
+                    switch (b.FloorDiagonalSplit)
                     {
                         case DiagonalSplit.XpZn:
                             xA = x + 1;
                             xB = x;
                             zA = z + 1;
                             zB = z;
-                            qA = Blocks[x, z].QAFaces[1];
-                            qB = Blocks[x, z].QAFaces[3];
-                            eA = Blocks[x, z].EDFaces[1];
-                            eB = Blocks[x, z].EDFaces[3];
-                            rA = Blocks[x, z].RFFaces[1];
-                            rB = Blocks[x, z].RFFaces[3];
-                            wA = Blocks[x, z].WSFaces[1];
-                            wB = Blocks[x, z].WSFaces[3];
-                            fA = Blocks[x, z].QAFaces[0];
-                            fB = Blocks[x, z].QAFaces[0];
-                            cA = Blocks[x, z].WSFaces[0];
-                            cB = Blocks[x, z].WSFaces[0];
+                            qA = b.QA[1];
+                            qB = b.QA[3];
+                            eA = b.ED[1];
+                            eB = b.ED[3];
+                            rA = b.RF[1];
+                            rB = b.RF[3];
+                            wA = b.WS[1];
+                            wB = b.WS[3];
+                            fA = b.QA[0];
+                            fB = b.QA[0];
+                            cA = b.WS[0];
+                            cB = b.WS[0];
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -1948,18 +1680,18 @@ namespace TombLib.LevelData
                             xB = x;
                             zA = z;
                             zB = z + 1;
-                            qA = Blocks[x, z].QAFaces[2];
-                            qB = Blocks[x, z].QAFaces[0];
-                            eA = Blocks[x, z].EDFaces[2];
-                            eB = Blocks[x, z].EDFaces[0];
-                            rA = Blocks[x, z].RFFaces[2];
-                            rB = Blocks[x, z].RFFaces[0];
-                            wA = Blocks[x, z].WSFaces[2];
-                            wB = Blocks[x, z].WSFaces[0];
-                            fA = Blocks[x, z].QAFaces[1];
-                            fB = Blocks[x, z].QAFaces[1];
-                            cA = Blocks[x, z].WSFaces[1];
-                            cB = Blocks[x, z].WSFaces[1];
+                            qA = b.QA[2];
+                            qB = b.QA[0];
+                            eA = b.ED[2];
+                            eB = b.ED[0];
+                            rA = b.RF[2];
+                            rB = b.RF[0];
+                            wA = b.WS[2];
+                            wB = b.WS[0];
+                            fA = b.QA[1];
+                            fB = b.QA[1];
+                            cA = b.WS[1];
+                            cB = b.WS[1];
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -1971,18 +1703,18 @@ namespace TombLib.LevelData
                             xB = x + 1;
                             zA = z;
                             zB = z + 1;
-                            qA = Blocks[x, z].QAFaces[3];
-                            qB = Blocks[x, z].QAFaces[1];
-                            eA = Blocks[x, z].EDFaces[3];
-                            eB = Blocks[x, z].EDFaces[1];
-                            rA = Blocks[x, z].RFFaces[3];
-                            rB = Blocks[x, z].RFFaces[1];
-                            wA = Blocks[x, z].WSFaces[3];
-                            wB = Blocks[x, z].WSFaces[1];
-                            fA = Blocks[x, z].QAFaces[2];
-                            fB = Blocks[x, z].QAFaces[2];
-                            cA = Blocks[x, z].WSFaces[2];
-                            cB = Blocks[x, z].WSFaces[2];
+                            qA = b.QA[3];
+                            qB = b.QA[1];
+                            eA = b.ED[3];
+                            eB = b.ED[1];
+                            rA = b.RF[3];
+                            rB = b.RF[1];
+                            wA = b.WS[3];
+                            wB = b.WS[1];
+                            fA = b.QA[2];
+                            fB = b.QA[2];
+                            cA = b.WS[2];
+                            cB = b.WS[2];
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -1994,18 +1726,18 @@ namespace TombLib.LevelData
                             xB = x + 1;
                             zA = z + 1;
                             zB = z;
-                            qA = Blocks[x, z].QAFaces[0];
-                            qB = Blocks[x, z].QAFaces[2];
-                            eA = Blocks[x, z].EDFaces[0];
-                            eB = Blocks[x, z].EDFaces[2];
-                            rA = Blocks[x, z].RFFaces[0];
-                            rB = Blocks[x, z].RFFaces[2];
-                            wA = Blocks[x, z].WSFaces[0];
-                            wB = Blocks[x, z].WSFaces[2];
-                            fA = Blocks[x, z].QAFaces[3];
-                            fB = Blocks[x, z].QAFaces[3];
-                            cA = Blocks[x, z].WSFaces[3];
-                            cB = Blocks[x, z].WSFaces[3];
+                            qA = b.QA[0];
+                            qB = b.QA[2];
+                            eA = b.ED[0];
+                            eB = b.ED[2];
+                            rA = b.RF[0];
+                            rB = b.RF[2];
+                            wA = b.WS[0];
+                            wB = b.WS[2];
+                            fA = b.QA[3];
+                            fB = b.QA[3];
+                            cA = b.WS[3];
+                            cB = b.WS[3];
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -2017,25 +1749,25 @@ namespace TombLib.LevelData
                     break;
 
                 case FaceDirection.DiagonalCeiling:
-                    switch (Blocks[x, z].CeilingDiagonalSplit)
+                    switch (b.CeilingDiagonalSplit)
                     {
                         case DiagonalSplit.XpZn:
                             xA = x + 1;
                             xB = x;
                             zA = z + 1;
                             zB = z;
-                            qA = Blocks[x, z].QAFaces[1];
-                            qB = Blocks[x, z].QAFaces[3];
-                            eA = Blocks[x, z].EDFaces[1];
-                            eB = Blocks[x, z].EDFaces[3];
-                            rA = Blocks[x, z].RFFaces[1];
-                            rB = Blocks[x, z].RFFaces[3];
-                            wA = Blocks[x, z].WSFaces[1];
-                            wB = Blocks[x, z].WSFaces[3];
-                            fA = Blocks[x, z].QAFaces[0];
-                            fB = Blocks[x, z].QAFaces[0];
-                            cA = Blocks[x, z].WSFaces[0];
-                            cB = Blocks[x, z].WSFaces[0];
+                            qA = b.QA[1];
+                            qB = b.QA[3];
+                            eA = b.ED[1];
+                            eB = b.ED[3];
+                            rA = b.RF[1];
+                            rB = b.RF[3];
+                            wA = b.WS[1];
+                            wB = b.WS[3];
+                            fA = b.QA[0];
+                            fB = b.QA[0];
+                            cA = b.WS[0];
+                            cB = b.WS[0];
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -2047,18 +1779,18 @@ namespace TombLib.LevelData
                             xB = x;
                             zA = z;
                             zB = z + 1;
-                            qA = Blocks[x, z].QAFaces[2];
-                            qB = Blocks[x, z].QAFaces[0];
-                            eA = Blocks[x, z].EDFaces[2];
-                            eB = Blocks[x, z].EDFaces[0];
-                            rA = Blocks[x, z].RFFaces[2];
-                            rB = Blocks[x, z].RFFaces[0];
-                            wA = Blocks[x, z].WSFaces[2];
-                            wB = Blocks[x, z].WSFaces[0];
-                            fA = Blocks[x, z].QAFaces[1];
-                            fB = Blocks[x, z].QAFaces[1];
-                            cA = Blocks[x, z].WSFaces[1];
-                            cB = Blocks[x, z].WSFaces[1];
+                            qA = b.QA[2];
+                            qB = b.QA[0];
+                            eA = b.ED[2];
+                            eB = b.ED[0];
+                            rA = b.RF[2];
+                            rB = b.RF[0];
+                            wA = b.WS[2];
+                            wB = b.WS[0];
+                            fA = b.QA[1];
+                            fB = b.QA[1];
+                            cA = b.WS[1];
+                            cB = b.WS[1];
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -2070,18 +1802,18 @@ namespace TombLib.LevelData
                             xB = x + 1;
                             zA = z;
                             zB = z + 1;
-                            qA = Blocks[x, z].QAFaces[3];
-                            qB = Blocks[x, z].QAFaces[1];
-                            eA = Blocks[x, z].EDFaces[3];
-                            eB = Blocks[x, z].EDFaces[1];
-                            rA = Blocks[x, z].RFFaces[3];
-                            rB = Blocks[x, z].RFFaces[1];
-                            wA = Blocks[x, z].WSFaces[3];
-                            wB = Blocks[x, z].WSFaces[1];
-                            fA = Blocks[x, z].QAFaces[2];
-                            fB = Blocks[x, z].QAFaces[2];
-                            cA = Blocks[x, z].WSFaces[2];
-                            cB = Blocks[x, z].WSFaces[2];
+                            qA = b.QA[3];
+                            qB = b.QA[1];
+                            eA = b.ED[3];
+                            eB = b.ED[1];
+                            rA = b.RF[3];
+                            rB = b.RF[1];
+                            wA = b.WS[3];
+                            wB = b.WS[1];
+                            fA = b.QA[2];
+                            fB = b.QA[2];
+                            cA = b.WS[2];
+                            cB = b.WS[2];
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -2093,18 +1825,18 @@ namespace TombLib.LevelData
                             xB = x + 1;
                             zA = z + 1;
                             zB = z;
-                            qA = Blocks[x, z].QAFaces[0];
-                            qB = Blocks[x, z].QAFaces[2];
-                            eA = Blocks[x, z].EDFaces[0];
-                            eB = Blocks[x, z].EDFaces[2];
-                            rA = Blocks[x, z].RFFaces[0];
-                            rB = Blocks[x, z].RFFaces[2];
-                            wA = Blocks[x, z].WSFaces[0];
-                            wB = Blocks[x, z].WSFaces[2];
-                            fA = Blocks[x, z].QAFaces[3];
-                            fB = Blocks[x, z].QAFaces[3];
-                            cA = Blocks[x, z].WSFaces[3];
-                            cB = Blocks[x, z].WSFaces[3];
+                            qA = b.QA[0];
+                            qB = b.QA[2];
+                            eA = b.ED[0];
+                            eB = b.ED[2];
+                            rA = b.RF[0];
+                            rB = b.RF[2];
+                            wA = b.WS[0];
+                            wB = b.WS[2];
+                            fA = b.QA[3];
+                            fB = b.QA[3];
+                            cA = b.WS[3];
+                            cB = b.WS[3];
                             qaFace = BlockFace.DiagonalQA;
                             edFace = BlockFace.DiagonalED;
                             middleFace = BlockFace.DiagonalMiddle;
@@ -2120,102 +1852,26 @@ namespace TombLib.LevelData
                     xB = x;
                     zA = z + 1;
                     zB = z;
-                    otherBlock = Blocks[x - 1, z];
-                    qA = Blocks[x, z].QAFaces[0];
-                    qB = Blocks[x, z].QAFaces[3];
-                    eA = Blocks[x, z].EDFaces[0];
-                    eB = Blocks[x, z].EDFaces[3];
-                    rA = Blocks[x, z].RFFaces[0];
-                    rB = Blocks[x, z].RFFaces[3];
-                    wA = Blocks[x, z].WSFaces[0];
-                    wB = Blocks[x, z].WSFaces[3];
-                    fA = otherBlock.QAFaces[1];
-                    fB = otherBlock.QAFaces[2];
-                    cA = otherBlock.WSFaces[1];
-                    cB = otherBlock.WSFaces[2];
+                    ob = Blocks[x - 1, z];
+                    qA = b.QA[0];
+                    qB = b.QA[3];
+                    eA = b.ED[0];
+                    eB = b.ED[3];
+                    rA = b.RF[0];
+                    rB = b.RF[3];
+                    wA = b.WS[0];
+                    wB = b.WS[3];
+                    fA = ob.QA[1];
+                    fB = ob.QA[2];
+                    cA = ob.WS[1];
+                    cB = ob.WS[2];
                     qaFace = BlockFace.NegativeX_QA;
                     edFace = BlockFace.NegativeX_ED;
                     middleFace = BlockFace.NegativeX_Middle;
                     rfFace = BlockFace.NegativeX_RF;
                     wsFace = BlockFace.NegativeX_WS;
 
-                    isOtherFloorDiagonal = otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZp || otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZn;
-                    isOtherCeilingDiagonal = otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp || otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn;
-
-                    // Try to adjust illegal combinations of heights
-                    if (!isOtherFloorDiagonal)
-                    {
-                        if (qA < fA && qB > fB || qA > fA && qB < fB)
-                        {
-                            qA = fA;
-                            qB = fB;
-                        }
-
-                        if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
-                        {
-                            qA = cA;
-                            qB = cB;
-                        }
-
-                        if (eA < qA && eB > qB || eA > qA && eB < qB)
-                        {
-                            eA = qA;
-                            eB = qB;
-                        }
-
-                        if (eA < cA && eB > cB || eA > cA && eB < cB)
-                        {
-                            eA = cA;
-                            eB = cB;
-                        }
-                    }
-
-                    if (!isOtherCeilingDiagonal)
-                    {
-                        if (wA < cA && wB > cB || wA > cA && wB < cB)
-                        {
-                            wA = cA;
-                            wB = cB;
-                        }
-
-                        if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
-                        {
-                            wA = fA;
-                            wB = fB;
-                        }
-
-                        if (rA < wA && rB > wB || rA > wA && rB < wB)
-                        {
-                            rA = wA;
-                            rB = wB;
-                        }
-
-                        if (rA < fA && rB > fB || rA > fA && rB < fB)
-                        {
-                            rA = fA;
-                            rB = fB;
-                        }
-                    }
-
-                    if (!isOtherFloorDiagonal)
-                    {
-                        if (qA < fA) qA = fA;
-                        if (qB < fB) qB = fB;
-
-                        if (wA < fA) wA = fA;
-                        if (wB < fB) wB = fB;
-                    }
-
-                    if (!isOtherCeilingDiagonal)
-                    {
-                        if (qA > cA) qA = cA;
-                        if (qB > cB) qB = cB;
-
-                        if (wA > cA) wA = cA;
-                        if (wB > cB) wB = cB;
-                    }
-
-                    if (Blocks[x, z].WallPortal != null)
+                    if (b.WallPortal != null)
                     {
                         // Get the adjoining room of the portal
                         var portal = FindPortal(x, z, PortalDirection.WallNegativeX);
@@ -2229,13 +1885,13 @@ namespace TombLib.LevelData
                         // Get the near block in current room
                         var nearBlock = Blocks[NumXSectors - 2, z];
 
-                        var qaNearA = nearBlock.QAFaces[1];
-                        var qaNearB = nearBlock.QAFaces[2];
+                        var qaNearA = nearBlock.QA[1];
+                        var qaNearB = nearBlock.QA[2];
                         if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qaNearA = qaNearB;
                         if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qaNearB = qaNearA;
 
-                        var wsNearA = nearBlock.WSFaces[1];
-                        var wsNearB = nearBlock.WSFaces[2];
+                        var wsNearA = nearBlock.WS[1];
+                        var wsNearB = nearBlock.WS[2];
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wsNearA = wsNearB;
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wsNearB = wsNearA;
 
@@ -2244,8 +1900,8 @@ namespace TombLib.LevelData
 
                         var adjoiningBlock = adjoiningRoom.GetBlockTry(1, facingZ) ?? Block.Empty;
 
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[0];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[3];
+                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[0];
+                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[3];
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qBportal = qAportal;
 
@@ -2254,8 +1910,8 @@ namespace TombLib.LevelData
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[0];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[3];
+                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[0];
+                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[3];
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wBportal = wAportal;
 
@@ -2264,79 +1920,108 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[1];
-                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.EDFaces[2];
-                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[1];
-                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RFFaces[2];
+                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[1];
+                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[2];
+                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[1];
+                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[2];
                     }
 
-                    if (Blocks[x, z].Type == BlockType.BorderWall)
+                    if (b.FloorDiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        if (Blocks[NumXSectors - 2, z].WSFaces[1] < Blocks[x, z].QAFaces[0])
-                        {
-                            qA = Blocks[NumXSectors - 2, z].WSFaces[1];
-                        }
-
-                        if (Blocks[NumXSectors - 2, z].WSFaces[2] < Blocks[x, z].QAFaces[3])
-                        {
-                            qB = Blocks[NumXSectors - 2, z].WSFaces[2];
-                        }
+                        qA = b.QA[0];
+                        qB = b.QA[0];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZn)
+                    if (b.FloorDiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        qA = Blocks[x, z].QAFaces[0];
-                        qB = Blocks[x, z].QAFaces[0];
+                        qA = b.QA[3];
+                        qB = b.QA[3];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZp)
+                    if (ob.FloorDiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        qA = Blocks[x, z].QAFaces[3];
-                        qB = Blocks[x, z].QAFaces[3];
+                        fA = ob.QA[1];
+                        fB = ob.QA[1];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                    if (ob.FloorDiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        fA = otherBlock.QAFaces[1];
-                        fB = otherBlock.QAFaces[1];
+                        fA = ob.QA[2];
+                        fB = ob.QA[2];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                    if (b.CeilingDiagonalSplit == DiagonalSplit.XpZn)
                     {
-                        fA = otherBlock.QAFaces[2];
-                        fB = otherBlock.QAFaces[2];
+                        wA = b.WS[0];
+                        wB = b.WS[0];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                    if (b.CeilingDiagonalSplit == DiagonalSplit.XpZp)
                     {
-                        wA = Blocks[x, z].WSFaces[0];
-                        wB = Blocks[x, z].WSFaces[0];
+                        wA = b.WS[3];
+                        wB = b.WS[3];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                    if (ob.CeilingDiagonalSplit == DiagonalSplit.XnZn)
                     {
-                        wA = Blocks[x, z].WSFaces[3];
-                        wB = Blocks[x, z].WSFaces[3];
+                        cA = ob.WS[1];
+                        cB = ob.WS[1];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                    if (ob.CeilingDiagonalSplit == DiagonalSplit.XnZp)
                     {
-                        cA = otherBlock.WSFaces[1];
-                        cB = otherBlock.WSFaces[1];
-                    }
-
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp)
-                    {
-                        cA = otherBlock.WSFaces[2];
-                        cB = otherBlock.WSFaces[2];
+                        cA = ob.WS[2];
+                        cB = ob.WS[2];
                     }
 
                     break;
             }
 
-            bool subdivide = false;
+            var subdivide = false;
 
-            if (qA >= fA && qB >= fB && !(qA == fA && qB == fB) && floor)
+            // Always check these
+            if (qA >= cA && qB >= cB)
+            {
+                qA = cA;
+                qB = cB;
+            }
+
+            if (wA <= fA && wB <= fB)
+            {
+                wA = fA;
+                wB = fB;
+            }
+
+            // Following checks are only for wall's faces
+            if (b.IsAnyWall)
+            {
+
+                if (qA > fA && qB < fB || qA < fA && qB > fB)
+                {
+                    qA = fA;
+                    qB = fB;
+                }
+
+                if (qA > cA && qB < cB || qA < cA && qB > cB)
+                {
+                    qA = cA;
+                    qB = cB;
+                }
+                
+                if (wA > cA && wB < cB || wA < cA && wB > cB)
+                {
+                    wA = cA;
+                    wB = cB;
+                }
+
+                if (wA > fA && wB < fB || wA < fA && wB > fB)
+                {
+                    wA = fA;
+                    wB = fB;
+                }
+            }
+
+            if (!(qA == fA && qB == fB) && floor)
             {
                 // Check for subdivision
                 yA = fA;
@@ -2350,31 +2035,28 @@ namespace TombLib.LevelData
                 }
 
                 // QA and ED
-                face = Blocks[x, z].GetFaceTexture(qaFace);
+                face = b.GetFaceTexture(qaFace);
 
                 // QA
-                if (qA <= cA && qB <= cB)
-                {
-                    if (qA > yA && qB > yB)
-                        AddQuad(x, z, qaFace,
-                            new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
-                    else if (qA == yA && qB > yB)
-                        AddTriangle(x, z, qaFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
-                    else if (qA > yA && qB == yB)
-                        AddTriangle(x, z, qaFace,
-                            new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
-                }
+                if (qA > yA && qB > yB)
+                    AddQuad(x, z, qaFace,
+                        new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                        face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                else if (qA == yA && qB > yB)
+                    AddTriangle(x, z, qaFace,
+                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
+                else if (qA > yA && qB == yB)
+                    AddTriangle(x, z, qaFace,
+                        new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                        face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
 
                 // ED
                 if (subdivide)
@@ -2382,7 +2064,7 @@ namespace TombLib.LevelData
                     yA = fA;
                     yB = fB;
 
-                    face = Blocks[x, z].GetFaceTexture(edFace);
+                    face = b.GetFaceTexture(edFace);
 
                     if (eA > yA && eB > yB)
                         AddQuad(x, z, edFace,
@@ -2408,7 +2090,7 @@ namespace TombLib.LevelData
 
             subdivide = false;
 
-            if (cA >= wA && cB >= wB && !(wA == cA && wB == cB) && ceiling)
+            if (!(wA == cA && wB == cB) && ceiling)
             {
                 // Check for subdivision
                 yA = cA;
@@ -2422,31 +2104,28 @@ namespace TombLib.LevelData
                 }
 
                 // WS and RF
-                face = Blocks[x, z].GetFaceTexture(wsFace);
+                face = b.GetFaceTexture(wsFace);
 
                 // WS
-                if (wA >= fA && wB >= fB)
-                {
-                    if (wA < yA && wB < yB)
-                        AddQuad(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
-                            face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
-                    else if (wA < yA && wB == yB)
-                        AddTriangle(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
-                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
-                    else if (wA == yA && wB < yB)
-                        AddTriangle(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
-                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
-                }
+                if (wA < yA && wB < yB)
+                    AddQuad(x, z, wsFace,
+                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                        new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
+                        face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                else if (wA < yA && wB == yB)
+                    AddTriangle(x, z, wsFace,
+                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
+                        face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                else if (wA == yA && wB < yB)
+                    AddTriangle(x, z, wsFace,
+                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                        face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
 
                 // RF
                 if (subdivide)
@@ -2454,7 +2133,7 @@ namespace TombLib.LevelData
                     yA = cA;
                     yB = cB;
 
-                    face = Blocks[x, z].GetFaceTexture(rfFace);
+                    face = b.GetFaceTexture(rfFace);
 
                     if (rA < yA && rB < yB)
                         AddQuad(x, z, rfFace,
@@ -2481,13 +2160,14 @@ namespace TombLib.LevelData
             if (!middle)
                 return;
 
-            face = Blocks[x, z].GetFaceTexture(middleFace);
+            face = b.GetFaceTexture(middleFace);
 
-            yA = wA > cA ? cA : wA;
-            yB = wB > cB ? cB : wB;
-            int yD = qA < fA ? fA : qA;
-            int yC = qB < fB ? fB : qB;
-            // middle
+            yA = wA >= cA ? cA : wA;
+            yB = wB >= cB ? cB : wB;
+            int yD = qA <= fA ? fA : qA;
+            int yC = qB <= fB ? fB : qB;
+
+            // Middle
             if (yA != yD && yB != yC)
                 AddQuad(x, z, middleFace,
                     new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
@@ -2696,8 +2376,8 @@ namespace TombLib.LevelData
                     {
                         Block currentBlock = Blocks[currentXblock - 1, currentZblock];
 
-                        if (((currentBlock.QAFaces[0] + currentBlock.QAFaces[3]) / 2 > currentYclick) ||
-                            ((currentBlock.WSFaces[0] + currentBlock.WSFaces[3]) / 2 < currentYclick) ||
+                        if (((currentBlock.QA[0] + currentBlock.QA[3]) / 2 > currentYclick) ||
+                            ((currentBlock.WS[0] + currentBlock.WS[3]) / 2 < currentYclick) ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2714,11 +2394,11 @@ namespace TombLib.LevelData
                         var currentBlock = Blocks[currentXblock - 1, currentZblock];
                         var nextBlock = Blocks[currentXblock, currentZblock];
 
-                        if (((currentBlock.QAFaces[2] + currentBlock.QAFaces[1]) / 2 > currentYclick) ||
-                            ((currentBlock.WSFaces[2] + currentBlock.WSFaces[1]) / 2 < currentYclick) ||
+                        if (((currentBlock.QA[2] + currentBlock.QA[1]) / 2 > currentYclick) ||
+                            ((currentBlock.WS[2] + currentBlock.WS[1]) / 2 < currentYclick) ||
                             currentBlock.Type == BlockType.Wall ||
-                            ((nextBlock.QAFaces[0] + nextBlock.QAFaces[3]) / 2 > currentYclick) ||
-                            ((nextBlock.WSFaces[0] + nextBlock.WSFaces[3]) / 2 < currentYclick) ||
+                            ((nextBlock.QA[0] + nextBlock.QA[3]) / 2 > currentYclick) ||
+                            ((nextBlock.WS[0] + nextBlock.WS[3]) / 2 < currentYclick) ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2803,8 +2483,8 @@ namespace TombLib.LevelData
                     {
                         var currentBlock = Blocks[currentXblock, currentZblock - 1];
 
-                        if (((currentBlock.QAFaces[2] + currentBlock.QAFaces[3]) / 2 > currentYclick) ||
-                            ((currentBlock.WSFaces[2] + currentBlock.WSFaces[3]) / 2 < currentYclick) ||
+                        if (((currentBlock.QA[2] + currentBlock.QA[3]) / 2 > currentYclick) ||
+                            ((currentBlock.WS[2] + currentBlock.WS[3]) / 2 < currentYclick) ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2821,11 +2501,11 @@ namespace TombLib.LevelData
                         var currentBlock = Blocks[currentXblock, currentZblock - 1];
                         var nextBlock = Blocks[currentXblock, currentZblock];
 
-                        if (((currentBlock.QAFaces[0] + currentBlock.QAFaces[1]) / 2 > currentYclick) ||
-                            ((currentBlock.WSFaces[0] + currentBlock.WSFaces[1]) / 2 < currentYclick) ||
+                        if (((currentBlock.QA[0] + currentBlock.QA[1]) / 2 > currentYclick) ||
+                            ((currentBlock.WS[0] + currentBlock.WS[1]) / 2 < currentYclick) ||
                             currentBlock.Type == BlockType.Wall ||
-                            ((nextBlock.QAFaces[2] + nextBlock.QAFaces[3]) / 2 > currentYclick) ||
-                            ((nextBlock.WSFaces[2] + nextBlock.WSFaces[3]) / 2 < currentYclick) ||
+                            ((nextBlock.QA[2] + nextBlock.QA[3]) / 2 > currentYclick) ||
+                            ((nextBlock.WS[2] + nextBlock.WS[3]) / 2 < currentYclick) ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -3372,15 +3052,15 @@ namespace TombLib.LevelData
             return new VerticalSpace
             {
                 FloorY = combineFloor(
-                    blockXnZn?.QAFaces[Block.FaceXpZp],
-                    blockXnZp?.QAFaces[Block.FaceXpZn],
-                    blockXpZn?.QAFaces[Block.FaceXnZp],
-                    blockXpZp?.QAFaces[Block.FaceXnZn]),
+                    blockXnZn?.QA[Block.FaceXpZp],
+                    blockXnZp?.QA[Block.FaceXpZn],
+                    blockXpZn?.QA[Block.FaceXnZp],
+                    blockXpZp?.QA[Block.FaceXnZn]),
                 CeilingY = combineCeiling(
-                    blockXnZn?.WSFaces[Block.FaceXpZp],
-                    blockXnZp?.WSFaces[Block.FaceXpZn],
-                    blockXpZn?.WSFaces[Block.FaceXnZp],
-                    blockXpZp?.WSFaces[Block.FaceXnZn])
+                    blockXnZn?.WS[Block.FaceXpZp],
+                    blockXnZp?.WS[Block.FaceXpZn],
+                    blockXpZn?.WS[Block.FaceXnZp],
+                    blockXpZp?.WS[Block.FaceXnZn])
             };
         }
 
@@ -3478,7 +3158,7 @@ namespace TombLib.LevelData
                     var b = Blocks[x, z];
                     if (!b.IsAnyWall)
                         for (int i = 0; i < 4; i++)
-                            lowest = Math.Min(lowest, b.QAFaces[i]);
+                            lowest = Math.Min(lowest, b.QA[i]);
                 }
 
             // Move room to new position
@@ -3491,10 +3171,10 @@ namespace TombLib.LevelData
                     var b = Blocks[x, z];
                     for (int i = 0; i < 4; i++)
                     {
-                        b.QAFaces[i] -= lowest;
-                        b.EDFaces[i] -= lowest;
-                        b.WSFaces[i] -= lowest;
-                        b.RFFaces[i] -= lowest;
+                        b.QA[i] -= lowest;
+                        b.ED[i] -= lowest;
+                        b.WS[i] -= lowest;
+                        b.RF[i] -= lowest;
                     }
                 }
 
@@ -3755,10 +3435,10 @@ namespace TombLib.LevelData
             // Check where the geometry matches to create a portal
             if (belowIsQuad || aboveIsQuad || (belowSplitXEqualsZ == aboveSplitXEqualsZ))
             {
-                bool matchesAtXnYn = (roomBelow.Position.Y + blockBelow.WSFaces[Block.FaceXnZn]) == (roomAbove.Position.Y + blockAbove.QAFaces[Block.FaceXnZn]);
-                bool matchesAtXpYn = (roomBelow.Position.Y + blockBelow.WSFaces[Block.FaceXpZn]) == (roomAbove.Position.Y + blockAbove.QAFaces[Block.FaceXpZn]);
-                bool matchesAtXnYp = (roomBelow.Position.Y + blockBelow.WSFaces[Block.FaceXnZp]) == (roomAbove.Position.Y + blockAbove.QAFaces[Block.FaceXnZp]);
-                bool matchesAtXpYp = (roomBelow.Position.Y + blockBelow.WSFaces[Block.FaceXpZp]) == (roomAbove.Position.Y + blockAbove.QAFaces[Block.FaceXpZp]);
+                bool matchesAtXnYn = (roomBelow.Position.Y + blockBelow.WS[Block.FaceXnZn]) == (roomAbove.Position.Y + blockAbove.QA[Block.FaceXnZn]);
+                bool matchesAtXpYn = (roomBelow.Position.Y + blockBelow.WS[Block.FaceXpZn]) == (roomAbove.Position.Y + blockAbove.QA[Block.FaceXpZn]);
+                bool matchesAtXnYp = (roomBelow.Position.Y + blockBelow.WS[Block.FaceXnZp]) == (roomAbove.Position.Y + blockAbove.QA[Block.FaceXnZp]);
+                bool matchesAtXpYp = (roomBelow.Position.Y + blockBelow.WS[Block.FaceXpZp]) == (roomAbove.Position.Y + blockAbove.QA[Block.FaceXpZp]);
 
                 if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && !(blockAbove.IsAnyWall || blockBelow.IsAnyWall))
                     return RoomConnectionType.FullPortal;
