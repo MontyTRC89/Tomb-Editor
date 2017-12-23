@@ -32,7 +32,7 @@ namespace TombLib.LevelData
         public const short MaxRoomDimensions = 20;
 
         public string Name { get; set; }
-        public Vector3 Position { get; set; }
+        public VectorInt3 Position { get; set; }
         public Block[,] Blocks { get; private set; }
         private List<PositionBasedObjectInstance> _objects = new List<PositionBasedObjectInstance>();
 
@@ -268,7 +268,7 @@ namespace TombLib.LevelData
         public VectorInt2 SectorPos
         {
             get { return new VectorInt2((int)Position.X, (int)Position.Z); }
-            set { Position = new Vector3(value.X, Position.Y, value.Y); }
+            set { Position = new VectorInt3(value.X, Position.Y, value.Y); }
         }
 
         public IEnumerable<PortalInstance> Portals
@@ -602,7 +602,7 @@ namespace TombLib.LevelData
                     }
                 }
 
-                int heightAdjust = (int)Math.Round(Position.Y - lookupBlock.Room.Position.Y);
+                int heightAdjust = (Position.Y - lookupBlock.Room.Position.Y);
                 int absoluteLowestPassableHeight = lowestPassableHeight + heightAdjust;
                 int absoluteLowestPassableStep = lowestPassableStep + heightAdjust;
 
@@ -3011,20 +3011,20 @@ namespace TombLib.LevelData
             return GetLowestCorner(new RectangleInt2(1, 1, NumXSectors - 2, NumZSectors - 2));
         }
 
-        public Vector3 WorldPos
+        public VectorInt3 WorldPos
         {
-            get { return new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f); }
-            set { Position = new Vector3(value.X * (1.0f / 1024.0f), value.Y * (1.0f / 256.0f), value.Z * (1.0f / 1024.0f)); }
+            get { return new VectorInt3(Position.X * 1024, Position.Y * 256, Position.Z * 1024); }
+            set { Position = new VectorInt3(value.X / 1024, value.Y / 1024, value.Z / 1024); }
         }
 
-        public Vector3 GetLocalCenter()
+        public VectorInt3 GetLocalCenter()
         {
             float ceilingHeight = GetHighestCorner();
             float floorHeight = GetLowestCorner();
-            float posX = NumXSectors * (0.5f * 1024.0f);
-            float posY = (floorHeight + ceilingHeight) * (0.5f * 256.0f);
-            float posZ = NumZSectors * (0.5f * 1024.0f);
-            return new Vector3(posX, posY, posZ);
+            var posX = (int)(NumXSectors * (0.5f * 1024.0f));
+            var posY = (int)((floorHeight + ceilingHeight) * (0.5f * 256.0f));
+            var posZ = (int)(NumZSectors * (0.5f * 1024.0f));
+            return new VectorInt3(posX, posY, posZ);
         }
 
         private Block GetBlockIfFloor(int x, int z)
@@ -3159,7 +3159,7 @@ namespace TombLib.LevelData
                 }
 
             // Move room to new position
-            Position += new Vector3(0, lowest, 0);
+            Position += new VectorInt3(0, lowest, 0);
 
             // Transform room content in such a way, their world position is identical to before even though the room position changed
             for (int z = 0; z < NumZSectors; z++)

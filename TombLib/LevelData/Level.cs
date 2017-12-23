@@ -232,25 +232,25 @@ namespace TombLib.LevelData
         {
             roomsToRotate = roomsToRotate.SelectMany(room => room.Versions).Distinct();
             Room[] oldRooms = roomsToRotate.ToArray();
-            Vector3 worldCenter = new Vector3(center.X, 0, center.Y) * 1024.0f;
+            var worldCenter = new VectorInt3(center.X, 0, center.Y) * 1024;
 
             // Copy rooms and sectors
             var newRooms = new Room[oldRooms.Length];
             for (int i = 0; i < oldRooms.Length; ++i)
             {
-                Room oldRoom = oldRooms[i];
+                var oldRoom = oldRooms[i];
 
                 // Create room
-                VectorInt2 newSize = (transformation.QuadrantRotation % 2 == 0) ? oldRoom.SectorSize : new VectorInt2(oldRoom.NumZSectors, oldRoom.NumXSectors);
-                Room newRoom = oldRoom.Clone(this, obj => false); // This is a waste of computing power: All sectors are copied and immediately afterwards thrown away because the room needs to get resized.
+                var newSize = (transformation.QuadrantRotation % 2 == 0) ? oldRoom.SectorSize : new VectorInt2(oldRoom.NumZSectors, oldRoom.NumXSectors);
+                var newRoom = oldRoom.Clone(this, obj => false); // This is a waste of computing power: All sectors are copied and immediately afterwards thrown away because the room needs to get resized.
                 newRoom.Resize(this, new RectangleInt2(0, 0, newSize.X - 1, newSize.Y - 1));
 
                 // Assign position
-                Vector3 roomCenter = oldRoom.WorldPos + new Vector3(oldRoom.NumXSectors, 0, oldRoom.NumZSectors) * (1024.0f * 0.5f);
+                var roomCenter = oldRoom.WorldPos + new VectorInt3(oldRoom.NumXSectors, 0, oldRoom.NumZSectors) * 512;
                 roomCenter -= worldCenter;
-                roomCenter = transformation.TransformVec3(roomCenter, oldRoom.NumXSectors, oldRoom.NumZSectors);
+                roomCenter = transformation.TransformVecInt3(roomCenter, oldRoom.NumXSectors, oldRoom.NumZSectors);
                 roomCenter += worldCenter;
-                newRoom.WorldPos = roomCenter - new Vector3(newSize.X, 0, newSize.Y) * (1024.0f * 0.5f);
+                newRoom.WorldPos = roomCenter - new VectorInt3(newSize.X, 0, newSize.Y) * 512;
 
                 // Copy sectors
                 for (int z = 0; z < oldRoom.NumZSectors; ++z)

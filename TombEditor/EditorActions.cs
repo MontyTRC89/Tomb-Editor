@@ -292,7 +292,7 @@ namespace TombEditor
 
             int[] adj = new int[8];
             for (int i = 0; i < 8; i++)
-                adj[i] = (int)Math.Round(currBlock.Room.Position.Y - lookupBlocks[i].Room.Position.Y);
+                adj[i] = currBlock.Room.Position.Y - lookupBlocks[i].Room.Position.Y;
 
             short[] newFaces = new short[4];
 
@@ -2058,11 +2058,11 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void CreateRoomAboveOrBelow(Room room, Func<Room, float> GetYOffset, short newRoomHeight)
+        public static void CreateRoomAboveOrBelow(Room room, Func<Room, int> GetYOffset, short newRoomHeight)
         {
             // Create room
             var newRoom = new Room(room.NumXSectors, room.NumZSectors, "", newRoomHeight);
-            newRoom.Position = room.Position + new Vector3(0, GetYOffset(newRoom), 0);
+            newRoom.Position = room.Position + new VectorInt3(0, GetYOffset(newRoom), 0);
             newRoom.Name = "Room " + (newRoom.Position.Y > room.Position.Y ? "above " : "below ") + room.Name;
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
@@ -2575,7 +2575,7 @@ namespace TombEditor
             }
         }
 
-        public static void MoveRooms(Vector3 positionDelta, IEnumerable<Room> rooms)
+        public static void MoveRooms(VectorInt3 positionDelta, IEnumerable<Room> rooms)
         {
             HashSet<Room> roomsToMove = new HashSet<Room>(rooms);
 

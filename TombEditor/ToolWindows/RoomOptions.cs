@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -353,12 +354,12 @@ namespace TombEditor.ToolWindows
 
         private void butRoomUp_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f), _editor.SelectedRoom.Versions);
+            EditorActions.MoveRooms(new VectorInt3(0, 1, 0), _editor.SelectedRoom.Versions);
         }
 
         private void butRoomDown_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f), _editor.SelectedRoom.Versions);
+            EditorActions.MoveRooms(new VectorInt3(0, -1, 0), _editor.SelectedRoom.Versions);
         }
 
         private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)

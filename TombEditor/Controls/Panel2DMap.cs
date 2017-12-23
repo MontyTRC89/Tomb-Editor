@@ -37,14 +37,14 @@ namespace TombEditor.Controls
         private Editor _editor;
         private Room _roomMouseClicked;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
-        private Vector2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
-        private Vector2? _viewMoveMouseWorldCoord;
+        private VectorInt2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
+        private VectorInt2? _viewMoveMouseWorldCoord;
         private int? _currentlyEditedDepthProbeIndex;
         private Point _lastMousePosition;
         private MovementTimer _movementTimer;
         private IReadOnlyList<RoomClipboardData.ContourLine> _insertionContourLineData;
-        private Vector2 _insertionDropPosition;
-        private Vector2 _insertionCurrentOffset;
+        private VectorInt2 _insertionDropPosition;
+        private VectorInt2 _insertionCurrentOffset;
 
         private class SelectionArea
         {
@@ -143,9 +143,9 @@ namespace TombEditor.Controls
             ViewPosition = (new Vector2(Width, Height) * 0.5f - new Vector2(16.0f)) / _viewScale;
         }
 
-        public Vector2 FromVisualCoord(PointF pos)
+        public VectorInt2 FromVisualCoord(PointF pos)
         {
-            return new Vector2((pos.X - Width * 0.5f) / _viewScale + ViewPosition.X, (Height * 0.5f - pos.Y) / _viewScale + ViewPosition.Y);
+            return VectorInt2.FromRounded(new Vector2((pos.X - Width * 0.5f) / _viewScale + ViewPosition.X, (Height * 0.5f - pos.Y) / _viewScale + ViewPosition.Y));
         }
 
         public Rectangle2 FromVisualCoord(RectangleF area)
@@ -203,7 +203,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            Vector2 clickPos = FromVisualCoord(e.Location);
+            var clickPos = FromVisualCoord(e.Location);
             if (!_depthBar.MouseDown(e, Size, _editor.Level, clickPos))
                 return;
 
@@ -751,11 +751,11 @@ namespace TombEditor.Controls
                 return baseBrush;
         }
 
-        private void UpdateRoomPosition(Vector2 newRoomPos, Room roomReference, HashSet<Room> roomsToMove)
+        private void UpdateRoomPosition(VectorInt2 newRoomPos, Room roomReference, HashSet<Room> roomsToMove)
         {
-            newRoomPos = new Vector2((float)Math.Round(newRoomPos.X), (float)Math.Round(newRoomPos.Y));
-            Vector2 roomMovement = newRoomPos - roomReference.SectorPos;
-            EditorActions.MoveRooms(new Vector3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
+            newRoomPos = new VectorInt2(newRoomPos.X, newRoomPos.Y);
+            VectorInt2 roomMovement = newRoomPos - roomReference.SectorPos;
+            EditorActions.MoveRooms(new VectorInt3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
             _editor.ResetCamera();
         }
 
@@ -805,7 +805,7 @@ namespace TombEditor.Controls
 
             if (_insertionContourLineData != null)
             {
-                Vector2 newCurrentOffset = GetDragDropOffset(drgevent);
+                VectorInt2 newCurrentOffset = GetDragDropOffset(drgevent);
                 if (newCurrentOffset != _insertionCurrentOffset)
                 {
                     _insertionCurrentOffset = newCurrentOffset;
@@ -835,11 +835,11 @@ namespace TombEditor.Controls
                 clipboardData.MergeInto(_editor, GetDragDropOffset(drgevent));
         }
 
-        private Vector2 GetDragDropOffset(DragEventArgs drgevent)
+        private VectorInt2 GetDragDropOffset(DragEventArgs drgevent)
         {
-            Vector2 newPos = FromVisualCoord(PointToClient(new Point(drgevent.X, drgevent.Y)));
-            Vector2 result = newPos - _insertionDropPosition;
-            return new Vector2((float)Math.Round(result.X), (float)Math.Round(result.Y));
+            var newPos = FromVisualCoord(PointToClient(new Point(drgevent.X, drgevent.Y)));
+            var result = newPos - _insertionDropPosition;
+            return new VectorInt2(result.X, result.Y);
         }
 
         [DefaultValue(true)]

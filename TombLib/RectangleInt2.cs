@@ -58,7 +58,7 @@ namespace TombLib
         public RectangleInt2 Union(RectangleInt2 other) =>
             new RectangleInt2(VectorInt2.Min(Start, other.Start), VectorInt2.Max(End, other.End));
 
-        public Vector2 GetMid() => (Vector2)(Start + End) * 0.5f;
+        public VectorInt2 GetMid() => (Start + End) / 2;
 
         public bool Contains(RectangleInt2 other) =>
             ((Start.X <= other.Start.X) && (End.X >= other.End.X)) &&

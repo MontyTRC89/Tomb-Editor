@@ -164,7 +164,7 @@ namespace TombLib.LevelData.IO
 
                         // Create room
                         var room = new Room(numXBlocks, numZBlocks, roomName);
-                        room.Position = new Vector3(posXBlocks, yPos / -256.0f, posZBlocks);
+                        room.Position = new VectorInt3(posXBlocks, yPos / -256, posZBlocks);
                         var tempRoom = new PrjRoom();
 
                         // Read portals
@@ -767,7 +767,7 @@ namespace TombLib.LevelData.IO
                                 room.AlternateGroup = tempRoom.Value._flipGroup;
                                 alternateRoom.AlternateBaseRoom = room;
                                 alternateRoom.AlternateGroup = tempRoom.Value._flipGroup;
-                                alternateRoom.Position = new Vector3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
+                                alternateRoom.Position = new VectorInt3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
                             }
                         }
                         progressReporter.ReportProgress(31, "Alternate rooms linked");
