@@ -23,6 +23,9 @@ namespace TombEditor
         [STAThread]
         public static void Main()
         {
+            System.Globalization.CultureInfo.DefaultThreadCurrentCulture =
+                System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("en-US");
+
             // Load configuration
             var configurationLoadExceptions = new List<LogEventInfo>();
             var configuration = Configuration.LoadOrUseDefault(configurationLoadExceptions);
