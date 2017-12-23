@@ -14,6 +14,9 @@ namespace WadTool
         [STAThread]
         static void Main()
         {
+            System.Globalization.CultureInfo.DefaultThreadCurrentCulture =
+                System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("en-US");
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());
