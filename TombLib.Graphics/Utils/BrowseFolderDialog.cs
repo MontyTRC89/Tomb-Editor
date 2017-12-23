@@ -35,13 +35,17 @@ namespace TombLib.Utils
 
         public DialogResult ShowDialog(IWin32Window owner)
         {
-            if (Environment.OSVersion.Version.Major >= 6)
+            switch (Environment.OSVersion.Platform)
             {
-                return ShowVistaDialog(owner);
-            }
-            else
-            {
-                return ShowLegacyDialog(owner);
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.Win32Windows:
+                case PlatformID.WinCE:
+                    if (Environment.OSVersion.Version.Major >= 6)
+                        return ShowVistaDialog(owner);
+                    return ShowLegacyDialog(owner);
+                default:
+                    return ShowLegacyDialog(owner);
             }
         }
 
@@ -155,7 +159,7 @@ namespace TombLib.Utils
         {
             [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
             [PreserveSig()]
-            uint Show([In, Optional] IntPtr hwndOwner); //IModalWindow 
+            uint Show([In, Optional] IntPtr hwndOwner); //IModalWindow
 
 
             [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]

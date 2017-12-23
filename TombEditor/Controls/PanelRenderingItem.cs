@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using TombLib.LevelData;
 using TombLib.Graphics;
+using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
@@ -212,7 +212,11 @@ namespace TombEditor.Controls
                     notifyMessage = "Click here to load a new WAD file.";
                 else
                 {
-                    notifyMessage = "Unable to load WAD file '" + (Path.GetFileName(_editor.Level.Settings.WadFilePath) ?? "") + "'.\n";
+                    string fileName = FileSystemUtils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.WadFilePath) ?? "";
+                    if (FileSystemUtils.IsFileNotFoundException(_editor.Level.WadLoadingException))
+                        notifyMessage = "Wad file '" + fileName + "' was not found!\n";
+                    else
+                        notifyMessage = "Unable to load wad from file '" + fileName + "'.\n";
                     notifyMessage += "Click here to choose a replacement.\n\n";
                     notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.WadFilePath) ?? "");
                 }

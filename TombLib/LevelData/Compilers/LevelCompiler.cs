@@ -1,6 +1,4 @@
-﻿using System.IO;
-using TombLib.LevelData;
-using TombLib.Utils;
+﻿using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
 {

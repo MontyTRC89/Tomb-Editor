@@ -1,13 +1,10 @@
-﻿using System;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SharpDX;
-using TombLib.LevelData;
-using System.Drawing;
-using System.Drawing.Imaging;
-using TombLib.Utils;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
 {

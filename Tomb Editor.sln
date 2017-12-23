@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor", "TombEditor\TombEditor.csproj", "{330CCD5E-D061-4C40-B568-BF367213C525}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "DarkUI\Example\Example.csproj", "{FA334815-6D78-4E9A-9F4D-6C8A58222A57}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NgXmlBuilder", "NgXmlBuilder\NgXmlBuilder.csproj", "{EFC2A02B-1138-46EA-A496-F94D58AC6B3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Forms", "TombLib.Graphics\TombLib.Forms.csproj", "{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{EFC2A02B-1138-46EA-A496-F94D58AC6B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFC2A02B-1138-46EA-A496-F94D58AC6B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFC2A02B-1138-46EA-A496-F94D58AC6B3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

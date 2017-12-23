@@ -1,12 +1,11 @@
-﻿using System;
+﻿using SharpDX.Direct3D;
+using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SharpDX.Toolkit.Graphics;
-using SharpDX.Direct3D;
-using System.IO;
-using System.Windows.Forms;
 
 namespace TombLib.Graphics
 {
@@ -24,7 +23,7 @@ namespace TombLib.Graphics
         {
             Device = GraphicsDevice.New(DriverType.Hardware, SharpDX.Direct3D11.DeviceCreationFlags.None, FeatureLevel.Level_10_0);
 
-            string resourcePath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+            string resourcePath = Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);
 
             // Load effects
             IEnumerable<string> effectFiles = Directory.EnumerateFiles(resourcePath + "\\Editor\\Shaders", "*.fx");
@@ -43,7 +42,7 @@ namespace TombLib.Graphics
             foreach (string fileName in textureFiles)
             {
                 string textureName = Path.GetFileNameWithoutExtension(fileName);
-                Textures.Add(textureName, TombLib.Graphics.TextureLoad.Load(Device, fileName));
+                Textures.Add(textureName, TextureLoad.Load(Device, fileName));
             }
 
             // Load default font

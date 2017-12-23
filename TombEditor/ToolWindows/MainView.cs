@@ -1,18 +1,18 @@
-﻿using System;
+﻿using DarkUI.Controls;
+using DarkUI.Docking;
+using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DarkUI.Docking;
+using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
-using DarkUI.Controls;
-using SharpDX;
-using TombLib.Graphics;
 
 namespace TombEditor.ToolWindows
 {

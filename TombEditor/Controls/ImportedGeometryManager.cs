@@ -1,17 +1,16 @@
-﻿using System;
+﻿using DarkUI.Collections;
+using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.LevelData;
-using TombLib.IO;
-using System.IO;
-using DarkUI.Collections;
-using DarkUI.Forms;
+using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
@@ -186,7 +185,7 @@ namespace TombEditor.Controls
             path = LevelSettings.MakeAbsolute(path);
             using (FileDialog dialog = new OpenFileDialog())
             {
-                dialog.Filter = SupportedFormats.GetFilter(FileFormatType.GeometryImport);
+                dialog.Filter = ImportedGeometry.FileExtensions.GetFilter();
                 dialog.Title = "Select a 3D file that you want to see imported.";
                 dialog.FileName = string.IsNullOrEmpty(path) ? "" : Path.GetFileName(path);
                 dialog.InitialDirectory = string.IsNullOrEmpty(path) ? path : Path.GetDirectoryName(path);

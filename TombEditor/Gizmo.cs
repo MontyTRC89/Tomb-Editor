@@ -1,13 +1,13 @@
-﻿using System;
+﻿using SharpDX;
+using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SharpDX;
-using TombLib.Graphics;
-using SharpDX.Toolkit.Graphics;
-using TombLib.LevelData;
 using System.Windows.Forms;
+using TombLib.Graphics;
+using TombLib.LevelData;
 
 namespace TombEditor
 {

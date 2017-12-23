@@ -1,19 +1,17 @@
-﻿using System;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Windows.Forms;
+using TombLib;
 using TombLib.LevelData;
-using SharpDX;
+using TombLib.Utils;
 using Color = System.Drawing.Color;
 using Rectangle = System.Drawing.Rectangle;
 using RectangleF = System.Drawing.RectangleF;
-using System.ComponentModel;
-using TombLib;
-using TombLib.Utils;
-using TombLib.IO;
 
 namespace TombEditor.Controls
 {

@@ -5,6 +5,7 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.Utils;
 
 namespace TombEditor
@@ -130,12 +131,9 @@ namespace TombEditor
             AddMessage(progress, message, false);
         }
 
-        void IProgressReporter.InvokeGui(Action<IWin32Window> action)
+        void IDialogHandler.RaiseDialog(IDialogDescription description)
         {
-            if (InvokeRequired)
-                Invoke(action, this);
-            else
-                action(this);
+            GraphicalDialogHandler.HandleDialog(description, this);
         }
 
         private void butCancel_Click(object sender, EventArgs e)

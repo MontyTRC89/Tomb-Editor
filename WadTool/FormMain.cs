@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using TombLib.GeometryIO;
-using TombLib.IO;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Wad.Tr4Wad;
 using TombLib.Wad.TrLevels;
 using TombLib.Forms;
+using TombLib.Utils;
 
 namespace WadTool
 {
@@ -145,7 +144,7 @@ namespace WadTool
                     var nodeAnimation = new DarkUI.Controls.DarkTreeNode(moveable.Animations[i].Name);
                     nodeAnimation.Tag = i;
                     animationsNodes.Add(nodeAnimation);
-                }               
+                }
                 treeAnimations.Nodes.AddRange(animationsNodes);
 
                 groupSelectedMoveable.Enabled = true;
@@ -220,7 +219,7 @@ namespace WadTool
             panel3D.CurrentObject = null;
             panel3D.CurrentWad = null;
             panel3D.Invalidate();
-            
+
             treeDestWad.Nodes.Clear();
 
             var nodeMoveables = new DarkUI.Controls.DarkTreeNode("Moveables");
@@ -273,7 +272,7 @@ namespace WadTool
         private void butOpenSourceWad_Click(object sender, EventArgs e)
         {
             // Open the file dialog
-            openFileDialogWad.Filter = SupportedFormats.GetFilter(FileFormatType.ObjectForWadTool);
+            openFileDialogWad.Filter = Wad2.WadFormatImportExtensions.GetFilter();
             openFileDialogWad.Title = "Open source WAD - Wad2 - Level";
             if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
                 return;
@@ -285,9 +284,21 @@ namespace WadTool
                 var originalWad = new Tr4Wad();
                 originalWad.LoadWad(fileName);
 
-                var newWad = Tr4WadOperations.ConvertTr4Wad(originalWad, wadSoundPaths, null);
-                if (newWad == null)
+                Wad2 newWad;
+                try
+                {
+                    newWad = Tr4WadOperations.ConvertTr4Wad(originalWad, wadSoundPaths, new GraphicalDialogHandler(this));
+                }
+                catch (OperationCanceledException)
+                {
                     return;
+                }
+                catch (Exception exc)
+                {
+                    // logger.Info(exc, "Unable to load *.wad");
+                    DarkMessageBox.Show(this, "Loading the *.wad file failed! \n" + exc.Message, "Loading failed", MessageBoxIcon.Error);
+                    return;
+                }
 
                 if (_tool.SourceWad != null)
                     _tool.SourceWad.Dispose();
@@ -825,7 +836,7 @@ namespace WadTool
 
         private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
 
             //tempBitmap.Save("testpack.png");
         }
@@ -939,7 +950,7 @@ namespace WadTool
         {
             using (FileDialog dialog = new OpenFileDialog())
             {
-                dialog.Filter = SupportedFormats.GetFilter(FileFormatType.GeometryImport);
+                dialog.Filter = ImportedGeometry.FileExtensions.GetFilter();
                 dialog.Title = "Select a 3D file that you want to see imported.";
                 if (dialog.ShowDialog(this) != DialogResult.OK) return;
 
@@ -950,7 +961,7 @@ namespace WadTool
                     _tool.DestinationWad.CreateNewStaticMeshFromExternalModel(dialog.FileName, form.Settings);
                     UpdateDestinationWad2UI();
                 }
-                    
+
             }
         }
     }

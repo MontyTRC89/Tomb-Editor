@@ -65,5 +65,53 @@ namespace TombLib.GeometryIO
         {
             return color;
         }
+
+        public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
+        {
+            new FileFormat("Autodesk", "fbx"),
+            new FileFormat("Collada", "dae"),
+            new FileFormat("glTF", "gltf", "glb"),
+            new FileFormat("Blender 3D", "blend"),
+            new FileFormat("3ds Max", "3ds", "ase"),
+            new FileFormat("Wavefront Object", "obj"),
+            new FileFormat("Industry Foundation Classes (IFC / Step),", "ifc"),
+            new FileFormat("XGL", "xgl", "zgl"),
+            new FileFormat("Stanford Polygon Library", "ply"),
+            new FileFormat("AutoCAD DXF", "dxf"),
+            new FileFormat("LightWave", "lwo"),
+            new FileFormat("LightWave Scene", "lws"),
+            new FileFormat("Modo", "lxo"),
+            new FileFormat("Stereolithography", "stl"),
+            new FileFormat("DirectX X", "x"),
+            new FileFormat("AC3D", "ac"),
+            new FileFormat("Milkshape 3D", "ms3d"),
+            new FileFormat("TrueSpace", "cob", "scn"),
+            new FileFormat("OpenGEX", "ogex"),
+            new FileFormat("X3D", "x3d"),
+            new FileFormat("3MF", "3mf"),
+            new FileFormat("Biovision BVH", "bvh"),
+            new FileFormat("CharacterStudio Motion", "csm"),
+            new FileFormat("Ogre XML", "xml"),
+            new FileFormat("Irrlicht Mesh", "irrmesh"),
+            new FileFormat("Irrlicht Scene", "irr"),
+            new FileFormat("Quake I", "mdl"),
+            new FileFormat("Quake II", "md2"),
+            new FileFormat("Quake III Mesh", "md3"),
+            new FileFormat("Quake III Map / BSP", "pk3"),
+            new FileFormat("Return to Castle Wolfenstein", "mdc"),
+            new FileFormat("Doom 3", "md5"),
+            new FileFormat("Valve Model", "smd", "vta"),
+            new FileFormat("Open Game Engine Exchange", "ogex"),
+            new FileFormat("Unreal", "3d"),
+            new FileFormat("BlitzBasic 3D", "b3d"),
+            new FileFormat("Quick3D", "q3d", "q3s"),
+            new FileFormat("Neutral File Format", "nff"),
+            new FileFormat("Object File Format", "off"),
+            new FileFormat("PovRAY Raw", "raw"),
+            new FileFormat("Terragen Terrain", "ter"),
+            new FileFormat("3D GameStudio(3DGS),", "mdl"),
+            new FileFormat("3D GameStudio(3DGS), Terrain", "hmp"),
+            new FileFormat("Izware Nendo", "ndo")
+        };
     }
 }

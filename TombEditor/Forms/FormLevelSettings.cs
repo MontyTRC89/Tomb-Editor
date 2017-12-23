@@ -9,10 +9,11 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.Forms;
+using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.Utils;
-using TombLib.IO;
 
 namespace TombEditor
 {
@@ -204,7 +205,7 @@ namespace TombEditor
                 try
                 {
                     fontTextureFilePathPicPreview.Image?.Dispose();
-                    fontTextureFilePathPicPreview.Image = ResourceLoader.LoadRawExtraTexture(fontPath).ToBitmap();
+                    fontTextureFilePathPicPreview.Image = LevelSettings.LoadRawExtraTexture(fontPath).ToBitmap();
                     fontTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     fontTextureFilePathPicPreview.Tag = null;
                     fontTextureFilePathTxt.BackColor = _correctColor;
@@ -227,7 +228,7 @@ namespace TombEditor
                 try
                 {
                     skyTextureFilePathPicPreview.Image?.Dispose();
-                    skyTextureFilePathPicPreview.Image = ResourceLoader.LoadRawExtraTexture(skyPath).ToBitmap();
+                    skyTextureFilePathPicPreview.Image = LevelSettings.LoadRawExtraTexture(skyPath).ToBitmap();
                     skyTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     skyTextureFilePathPicPreview.Tag = null;
                     skyTextureFilePathTxt.BackColor = _correctColor;
@@ -313,7 +314,7 @@ namespace TombEditor
 
         private void textureFilePathBut_Click(object sender, EventArgs e)
         {
-            string path = ResourceLoader.BrowseTextureFile(_levelSettings, _levelSettings.TextureFilePath, this);
+            string path = GraphicalDialogHandler.BrowseTextureFile(_levelSettings, _levelSettings.TextureFilePath, this);
             if (path != _levelSettings.TextureFilePath)
             {
                 _levelSettings.TextureFilePath = path;
@@ -333,7 +334,7 @@ namespace TombEditor
 
         private void wadFilePathBut_Click(object sender, EventArgs e)
         {
-            string path = ResourceLoader.BrowseObjectFile(_levelSettings, _levelSettings.WadFilePath, this);
+            string path = GraphicalDialogHandler.BrowseObjectFile(_levelSettings, _levelSettings.WadFilePath, this);
             if (path != _levelSettings.WadFilePath)
             {
                 _levelSettings.WadFilePath = path;
@@ -362,7 +363,7 @@ namespace TombEditor
 
         private void fontTextureFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.FontTextureFilePath, "Select a font texture", SupportedFormats.GetFilter(FileFormatType.SpecialTexture), VariableType.LevelDirectory, false);
+            string result = BrowseFile(_levelSettings.FontTextureFilePath, "Select a font texture", LevelSettings.LoadRawExtraTextureFileFormats.GetFilter(), VariableType.LevelDirectory, false);
             if (result != null)
             {
                 _levelSettings.FontTextureFilePath = result;
@@ -391,7 +392,7 @@ namespace TombEditor
 
         private void skyTextureFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.SkyTextureFilePath, "Select a sky texture", SupportedFormats.GetFilter(FileFormatType.SpecialTexture), VariableType.LevelDirectory, false);
+            string result = BrowseFile(_levelSettings.SkyTextureFilePath, "Select a sky texture", LevelSettings.LoadRawExtraTextureFileFormats.GetFilter(), VariableType.LevelDirectory, false);
             if (result != null)
             {
                 _levelSettings.SkyTextureFilePath = result;
