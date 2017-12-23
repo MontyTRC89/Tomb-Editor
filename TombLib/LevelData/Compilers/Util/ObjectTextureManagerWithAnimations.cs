@@ -36,8 +36,10 @@ namespace TombLib.LevelData.Compilers.Util
         {
             public int Compare(CompiledAnimatedTexture x, CompiledAnimatedTexture y)
             {
-                if (x.IsUvRotate == y.IsUvRotate) return 0;
-                if (x.IsUvRotate && !y.IsUvRotate) return -1;
+                if (x.IsUvRotate == y.IsUvRotate)
+                    return 0;
+                if (x.IsUvRotate && !y.IsUvRotate)
+                    return -1;
                 return 1;
             }
         }
@@ -182,18 +184,6 @@ namespace TombLib.LevelData.Compilers.Util
             return AddTexture(texture, isTriangle, isUsedInRoomMesh, 0, supportsUpTo65536, canRotate);
         }
 
-        private static Vector4 ComponentWiseDivide(Vector4 a, Vector4 b)
-        {
-            // TODO Remove this methode when we use System.Numerics vectors
-            return new Vector4(a.X / b.X, a.Y / b.Y, a.Z / b.Z, a.W / b.W);
-        }
-
-        private static Vector4 ComponentWiseSqrt(Vector4 a)
-        {
-            // TODO Remove this methode when we use System.Numerics vectors
-            return new Vector4((float)Math.Sqrt(a.X), (float)Math.Sqrt(a.Y), (float)Math.Sqrt(a.Z), (float)Math.Sqrt(a.Z));
-        }
-
         protected override void OnPackingTextures(IProgressReporter progressReporter)
         {
             // Complete prevent animated textures
@@ -258,8 +248,8 @@ namespace TombLib.LevelData.Compilers.Util
                     // If edges are parallel, this is a linear equation
                     if (Math.Abs(k2) < 0.00001)
                     { // Linear case (needs specialication to avoid division by 0!)
-                        Vector4 sx = -ComponentWiseDivide(k0, k1);
-                        Vector4 sy = ComponentWiseDivide(hX - f.X * sx, new Vector4(e.X) + g.X * sx);
+                        Vector4 sx = -k0 / k1;
+                        Vector4 sy = (hX - f.X * sx) / (new Vector4(e.X) + g.X * sx);
                         // TODO INVESTIGATE If sy is NaN it seems, we should swap the assignment of a1 and a3 back and also swap x and y of the texture coordinates
                         texCoord0 = new Vector2(sx.X, sy.X);
                         texCoord1 = new Vector2(sx.Y, sy.Y);
@@ -269,12 +259,12 @@ namespace TombLib.LevelData.Compilers.Util
                     else
                     { // Quadratic case
                         Vector4 w = k1 * k1 - 4.0f * k0 * k2;
-                        w = ComponentWiseSqrt(w);
+                        w = Vector4.SquareRoot(w);
 
                         Vector4 v1 = (-k1 - w) / (k2 + k2);
                         Vector4 v2 = (-k1 + w) / (k2 + k2);
-                        Vector4 u1 = ComponentWiseDivide(hX - f.X * v1, new Vector4(e.X) + g.X * v1);
-                        Vector4 u2 = ComponentWiseDivide(hX - f.X * v2, new Vector4(e.X) + g.X * v2);
+                        Vector4 u1 = (hX - f.X * v1) / (new Vector4(e.X) + g.X * v1);
+                        Vector4 u2 = (hX - f.X * v2) / (new Vector4(e.X) + g.X * v2);
 
                         Vector4 maxOvershoot = Vector4.Min(Vector4.Min(v1, new Vector4(1.0f) - v1), Vector4.Min(u1, new Vector4(1.0f) - u1));
                         texCoord0 = (maxOvershoot.X >= 0) ? new Vector2(v1.X, u1.X) : new Vector2(v2.X, u2.X);
