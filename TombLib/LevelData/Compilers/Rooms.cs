@@ -273,6 +273,21 @@ namespace TombLib.LevelData.Compilers
                         roomVertices[i] = trVertex;
                     }
                 }
+                if (room.MistLevel != 0)
+                {
+                    for (int i = 0; i < roomVertices.Count; ++i)
+                    {
+                        var trVertex = roomVertices[i];
+                        var xv = trVertex.Position.X / 1024;
+                        var zv = trVertex.Position.Z / 1024;
+
+                        // For a better effect (see City of the dead) I don't set this effect to border walls (TODO: tune this)
+                        //if (xv > 1 && zv > 1 && xv < room.NumXSectors - 2 && zv < room.NumZSectors - 2)
+                        trVertex.Attributes = 0x4000;
+
+                        roomVertices[i] = trVertex;
+                    }
+                }
                 else if (waterPortals.Count > 0)
                 {
                     for (int i = 0; i < roomVertices.Count; ++i)
