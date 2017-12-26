@@ -303,22 +303,22 @@ namespace TombLib.LevelData.Compilers
                                 var zv = trVertex.Position.Z / 1024;
 
                                 var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
-                                var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv-1, zv));
-                                var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv-1));
-                                var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv-1, zv-1));
+                                var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
+                                var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
+                                var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
 
                                 // A ccandidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
-                                if ((connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal && 
-                                     !room.Blocks[xv, zv].IsAnyWall && 
+                                if ((connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
+                                     !room.Blocks[xv, zv].IsAnyWall &&
                                      connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal) &&
-                                    (connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal && 
-                                     !room.Blocks[xv-1, zv].IsAnyWall && 
+                                    (connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal &&
+                                     !room.Blocks[xv - 1, zv].IsAnyWall &&
                                      connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal) &&
-                                    (connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal && 
-                                     !room.Blocks[xv, zv-1].IsAnyWall && 
+                                    (connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal &&
+                                     !room.Blocks[xv, zv - 1].IsAnyWall &&
                                      connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal) &&
-                                    (connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal && 
-                                     !room.Blocks[xv-1, zv-1].IsAnyWall && 
+                                    (connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal &&
+                                     !room.Blocks[xv - 1, zv - 1].IsAnyWall &&
                                      connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal))
                                 {
                                     trVertex.Attributes = 0xE000;
