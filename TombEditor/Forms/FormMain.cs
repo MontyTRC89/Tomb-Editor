@@ -1282,5 +1282,16 @@ namespace TombEditor
                     EditorActions.ReloadWad();
             }
         }
+
+        private void applyCurrentAmbientLightToAllRoomsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DarkMessageBox.Show(this,"Do you really want to apply the ambient light of the current room to all rooms?",
+                                    "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question)== DialogResult.Yes)
+            {
+                EditorActions.ApplyCurrentAmbientLightToAllRooms();
+                MessageBox.Show(this, "Ambient light was applied to all rooms", "Apply ambient light",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
     }
 }
