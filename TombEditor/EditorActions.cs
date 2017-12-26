@@ -2137,6 +2137,21 @@ namespace TombEditor
             return true;
         }
 
+        public static void ApplyCurrentAmbientLightToAllRooms()
+        {
+            foreach (var room in _editor.Level.Rooms)
+                if (room != null && room != _editor.SelectedRoom)
+                {
+                    room.AmbientLight = new Vector4(_editor.SelectedRoom.AmbientLight.X,
+                                                    _editor.SelectedRoom.AmbientLight.Y,
+                                                    _editor.SelectedRoom.AmbientLight.Z,
+                                                    _editor.SelectedRoom.AmbientLight.W);
+                    room.CalculateLightingForThisRoom();
+                    room.UpdateBuffers();
+                }
+            Editor.Instance.RaiseEvent(new Editor.ModeChangedEvent());
+        }
+
         public static bool BuildLevel(bool autoCloseWhenDone)
         {
             Level level = _editor.Level;
