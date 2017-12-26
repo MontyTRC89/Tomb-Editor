@@ -1244,15 +1244,25 @@ namespace TombEditor
               RoomGeometryInstance instance = new RoomGeometryInstance();
               instance.Model = GeometryImporterExporter.Models["room.obj"];
               instance.Position = new Vector3(4096, 512, 4096);
-              _editor.SelectedRoom.AddObject(_editor.Level, instance);*/
+              _editor.SelectedRoom.AddObject(_editor.Leel, instance);*/
         }
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
-            var importer = new MetasequoiaRoomImporter(new TombLib.GeometryIO.IOGeometrySettings(), null);
-            importer.ImportFromFile("Room0saved.mqo");
-
+            foreach (var room in _editor.Level.Rooms)
+            {
+                for (var x=0;x<room.NumXSectors;x++)
+                {
+                    for (var z=0;z<room.NumZSectors;z++)
+                    {
+                        foreach (BlockFace faceId in Enum.GetValues(typeof(BlockFace)))
+                        {
+                            var face = room.Blocks[x, z].GetFaceTexture(faceId);
+                            //if (face.)
+                        }
+                    }
+                }
+            }
         }
 
         private void soundManagerToolStripMenuItem_Click(object sender, EventArgs e)
