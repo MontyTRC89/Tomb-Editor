@@ -45,7 +45,7 @@ namespace TombEditor
 
         public void RaiseEvent(IEditorEvent eventObj)
         {
-            EditorEventRaised?.Invoke(eventObj);
+            SynchronizationContext.Send((eventObj_) => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
         }
 
         // --- State of the editor ---
