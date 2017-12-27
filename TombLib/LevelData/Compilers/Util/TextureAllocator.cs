@@ -94,6 +94,8 @@ namespace TombLib.LevelData.Compilers.Util
 
         public int GetOrAllocateTextureID(TextureView texture, int priorityClass = 0)
         {
+            if (!new Rectangle2(new Vector2(), texture.Texture.Image.Size).Contains(texture.Area))
+                throw new ArgumentOutOfRangeException("texture.Area");
             if ((texture.Area.Width > 256) || (texture.Area.Height > 256))
                 throw new NotSupportedException("Texture page too big!");
 
@@ -205,27 +207,6 @@ namespace TombLib.LevelData.Compilers.Util
                     return GetOrAllocateTextureIDForPageAt(ref texture,
                         (startX / pageWidth) * pageWidth,
                         (startY / pageHeight) * pageHeight, pageWidth, pageHeight, priorityClass);
-                }
-                else if (((startY - pageHeight / 2) / pageHeight) == ((endY - pageHeight / 2) / pageHeight))
-                { // Try to pack into a page that is at multiple of 256 on Y + 128
-                    return GetOrAllocateTextureIDForPageAt(ref texture,
-                        (startX / pageWidth) * pageWidth,
-                        ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight, priorityClass);
-                }
-            }
-            else if (((startX - pageWidth / 2) / pageWidth) == ((endX - pageWidth / 2) / pageWidth))
-            { // Try to pack into a page that is at multiple of 256 on X + 128
-                if ((startY / pageHeight) == (endY / pageHeight))
-                { // Try to pack into a page that is at multiple of 256 on Y
-                    return GetOrAllocateTextureIDForPageAt(ref texture,
-                        ((startX - pageWidth / 2) / pageWidth) * pageWidth - pageWidth / 2,
-                        (startY / pageHeight) * pageHeight, pageWidth, pageHeight, priorityClass);
-                }
-                else if (((startY - pageHeight / 2) / pageHeight) == ((endY - pageHeight / 2) / pageHeight))
-                { // Try to pack into a page that is at multiple of 256 on Y + 128
-                    return GetOrAllocateTextureIDForPageAt(ref texture,
-                        ((startX - pageWidth / 2) / pageWidth) * pageWidth - pageWidth / 2,
-                        ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight, priorityClass);
                 }
             }
 
