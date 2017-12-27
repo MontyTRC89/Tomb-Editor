@@ -2482,7 +2482,7 @@ namespace TombEditor.Controls
 
         public void DrawDebugString(string message, Matrix4x4 transformation, Vector3 offset = new Vector3())
         {
-            Vector3 screenPos = _device.Viewport.Project(new Vector3(), transformation);
+            Vector3 screenPos = _device.Viewport.Project(Vector3.Zero, transformation);
             screenPos += offset; // Offset text a little bit
             _debug.AddString(message, screenPos);
         }
@@ -2913,8 +2913,9 @@ namespace TombEditor.Controls
             {
                 string message = _roomsToDraw[i].Name;
 
-                Vector3 pos = _roomsToDraw[i].WorldPos;
-                Matrix4x4 wvp = Matrix4x4.CreateTranslation(pos) * viewProjection;
+                var pos = _roomsToDraw[i].WorldPos;
+                var world = Matrix4x4.CreateTranslation(pos);
+                Matrix4x4 wvp = world * viewProjection;
                 Vector3 screenPos = _device.Viewport.Project(_roomsToDraw[i].GetLocalCenter(), wvp);
                 _debug.AddString(message, screenPos);
             }
