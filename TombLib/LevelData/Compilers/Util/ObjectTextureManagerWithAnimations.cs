@@ -62,7 +62,7 @@ namespace TombLib.LevelData.Compilers.Util
         // Animation expansion is delayed to allow to allow them to use really big object texture indices.
         private readonly Dictionary<Result, AnimationVersion> _delayAddedAnimationVersions = new Dictionary<Result, AnimationVersion>();
 
-        private List<CompiledAnimatedTexture> _compiledAnimatedTextures;
+        private List<CompiledAnimatedTexture> _compiledAnimatedTextures = new List<CompiledAnimatedTexture>();
 
         private const float _marginFactor = 1.0f / 512.0f;
 
