@@ -38,8 +38,9 @@ namespace TombLib.LevelData.IO
                 if (filter != null && filter.FilterLevelSettings)
                 {
                     settingsToSave = new LevelSettings();
+                    var copyInstance = new Room.CopyDependentLevelSettingsArgs(null, settingsToSave, level.Settings, false);
                     foreach (Room room in rooms.Keys)
-                        room.CopyDependentLevelSettings(settingsToSave, level.Settings, false);
+                        room.CopyDependentLevelSettings(copyInstance);
                 }
 
                 // Write settings
@@ -63,8 +64,9 @@ namespace TombLib.LevelData.IO
 
                 // Write settings
                 LevelSettings settingsToSave = new LevelSettings();
+                Room.CopyDependentLevelSettingsArgs copyInstance = new Room.CopyDependentLevelSettingsArgs(null, settingsToSave, level.Settings, false);
                 foreach (ObjectInstance instance in objects)
-                    instance.CopyDependentLevelSettings(settingsToSave, level.Settings, false);
+                    instance.CopyDependentLevelSettings(copyInstance);
                 LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
 
                 // Write objects

@@ -91,7 +91,7 @@ namespace TombLib.LevelData
 
         public virtual bool CopyToFlipRooms => true;
 
-        public virtual void CopyDependentLevelSettings(LevelSettings destinationLevelSettings, LevelSettings sourceLevelSettings, bool unifyData)
+        public virtual void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)
         { }
     }
 

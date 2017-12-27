@@ -65,5 +65,11 @@ namespace TombLib.LevelData
                 ", Y = " + SectorPosition.Y +
                 ", Z = " + SectorPosition.Z;
         }
+
+        public override void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)
+        {
+            base.CopyDependentLevelSettings(args);
+            Sequence = args.ReassociateFlyBySequence(Sequence);
+        }
     }
 }

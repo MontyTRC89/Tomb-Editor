@@ -49,11 +49,12 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public override void CopyDependentLevelSettings(LevelSettings destinationLevelSettings, LevelSettings sourceLevelSettings, bool unify)
+        public override void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)
         {
-            if (unify)
+            base.CopyDependentLevelSettings(args);
+            if (args.UnifyData)
             {
-                foreach (ImportedGeometry importedGeometry in destinationLevelSettings.ImportedGeometries)
+                foreach (ImportedGeometry importedGeometry in args.DestinationLevelSettings.ImportedGeometries)
                     if (importedGeometry.Info.Equals(Model.Info))
                     {
                         Model = importedGeometry;
@@ -61,13 +62,13 @@ namespace TombLib.LevelData
                     }
 
                 // Add imported geometry
-                destinationLevelSettings.ImportedGeometries.Add(Model);
+                args.DestinationLevelSettings.ImportedGeometries.Add(Model);
             }
             else
             {
-                if (destinationLevelSettings.ImportedGeometries.Contains(Model))
+                if (args.DestinationLevelSettings.ImportedGeometries.Contains(Model))
                     return;
-                destinationLevelSettings.ImportedGeometries.Add(Model);
+                args.DestinationLevelSettings.ImportedGeometries.Add(Model);
             }
         }
     }
