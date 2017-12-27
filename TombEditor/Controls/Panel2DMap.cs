@@ -37,13 +37,13 @@ namespace TombEditor.Controls
         private Editor _editor;
         private Room _roomMouseClicked;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
-        private VectorInt2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
-        private VectorInt2? _viewMoveMouseWorldCoord;
+        private Vector2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
+        private Vector2? _viewMoveMouseWorldCoord;
         private int? _currentlyEditedDepthProbeIndex;
         private Point _lastMousePosition;
         private MovementTimer _movementTimer;
         private IReadOnlyList<RoomClipboardData.ContourLine> _insertionContourLineData;
-        private VectorInt2 _insertionDropPosition;
+        private Vector2 _insertionDropPosition;
         private VectorInt2 _insertionCurrentOffset;
 
         private class SelectionArea
@@ -143,9 +143,9 @@ namespace TombEditor.Controls
             ViewPosition = (new Vector2(Width, Height) * 0.5f - new Vector2(16.0f)) / _viewScale;
         }
 
-        public VectorInt2 FromVisualCoord(PointF pos)
+        public Vector2 FromVisualCoord(PointF pos)
         {
-            return VectorInt2.FromRounded(new Vector2((pos.X - Width * 0.5f) / _viewScale + ViewPosition.X, (Height * 0.5f - pos.Y) / _viewScale + ViewPosition.Y));
+            return new Vector2((pos.X - Width * 0.5f) / _viewScale + ViewPosition.X, (Height * 0.5f - pos.Y) / _viewScale + ViewPosition.Y);
         }
 
         public Rectangle2 FromVisualCoord(RectangleF area)
@@ -751,12 +751,15 @@ namespace TombEditor.Controls
                 return baseBrush;
         }
 
-        private void UpdateRoomPosition(VectorInt2 newRoomPos, Room roomReference, HashSet<Room> roomsToMove)
+        private void UpdateRoomPosition(Vector2 newRoomPos, Room roomReference, HashSet<Room> roomsToMove)
         {
-            newRoomPos = new VectorInt2(newRoomPos.X, newRoomPos.Y);
-            VectorInt2 roomMovement = newRoomPos - roomReference.SectorPos;
-            EditorActions.MoveRooms(new VectorInt3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
-            _editor.ResetCamera();
+            VectorInt2 newRoomPosInt = VectorInt2.FromRounded(newRoomPos);
+            VectorInt2 roomMovement = newRoomPosInt - roomReference.SectorPos;
+            if (roomMovement != new VectorInt2())
+            {
+                EditorActions.MoveRooms(new VectorInt3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
+                _editor.ResetCamera();
+            }
         }
 
         private Room DoPicking(Vector2 pos)
@@ -839,7 +842,7 @@ namespace TombEditor.Controls
         {
             var newPos = FromVisualCoord(PointToClient(new Point(drgevent.X, drgevent.Y)));
             var result = newPos - _insertionDropPosition;
-            return new VectorInt2(result.X, result.Y);
+            return VectorInt2.FromRounded(result);
         }
 
         [DefaultValue(true)]

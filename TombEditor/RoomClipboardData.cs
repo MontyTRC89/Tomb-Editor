@@ -32,12 +32,14 @@ namespace TombEditor
 
         private byte[] _data;
         private List<ContourLine> _contourLines;
-        private VectorInt2 _dropPosition;
+        private float _dropPositionX; // Vector2 can't be serialized for no good reason.
+        private float _dropPositionY;
         private string _levelPath;
 
-        public RoomClipboardData(Editor editor, VectorInt2 dropPosition)
+        public RoomClipboardData(Editor editor, Vector2 dropPosition)
         {
-            _dropPosition = dropPosition;
+            _dropPositionX = dropPosition.X;
+            _dropPositionY = dropPosition.Y;
 
             // Collect contour lines
             _contourLines = new List<ContourLine>();
@@ -84,7 +86,7 @@ namespace TombEditor
 
         public IReadOnlyList<ContourLine> ContourLines => _contourLines;
 
-        public VectorInt2 DropPosition => _dropPosition;
+        public Vector2 DropPosition => new Vector2(_dropPositionX, _dropPositionY);
 
         public Level CreateLevel()
         {
