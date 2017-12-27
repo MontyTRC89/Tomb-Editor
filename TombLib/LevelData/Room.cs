@@ -2007,7 +2007,7 @@ namespace TombLib.LevelData
                     qA = cA;
                     qB = cB;
                 }
-                
+
                 if (wA > cA && wB < cB || wA < cA && wB > cB)
                 {
                     wA = cA;
@@ -3014,7 +3014,7 @@ namespace TombLib.LevelData
         public VectorInt3 WorldPos
         {
             get { return new VectorInt3(Position.X * 1024, Position.Y * 256, Position.Z * 1024); }
-            set { Position = new VectorInt3(value.X / 1024, value.Y / 1024, value.Z / 1024); }
+            set { Position = new VectorInt3(value.X / 1024, value.Y / 256, value.Z / 1024); }
         }
 
         public VectorInt3 GetLocalCenter()
