@@ -380,8 +380,7 @@ namespace TombLib.Utils
             if ((toX < 0) || (toY < 0) || (fromX < 0) || (fromY < 0) || (width < 0) || (height < 0) ||
                 (toX + width > Width) || (toY + height > Height) ||
                 (fromX + width > fromImage.Width) || (fromY + height > fromImage.Height))
-                return;
-             //   throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException();
 
             // Copy data quickly
             fixed (void* toPtr = _data)
