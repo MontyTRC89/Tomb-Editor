@@ -70,7 +70,7 @@ namespace TombLib.LevelData
             {
                 new OldWadSoundPath("Sounds"),
                 new OldWadSoundPath(""),
-                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "Sounds\\Samples"),
+                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound\\Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds\\Samples")
             };
 
