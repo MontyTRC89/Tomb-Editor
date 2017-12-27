@@ -307,6 +307,7 @@ namespace TombEditor
                     _editor.Action = null;
                     _editor.SelectedSectors = SectorSelection.None;
                     _editor.SelectedObject = null;
+                    _editor.SelectedRooms = new Room[] { _editor.SelectedRoom };
                     break;
 
                 case Keys.F1: // 2D map mode
