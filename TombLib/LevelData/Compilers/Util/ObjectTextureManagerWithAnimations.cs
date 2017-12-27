@@ -32,18 +32,6 @@ namespace TombLib.LevelData.Compilers.Util
 
     public class ObjectTextureManagerWithAnimations : ObjectTextureManager
     {
-        private class ComparerAnimatedTextureSets : IComparer<CompiledAnimatedTexture>
-        {
-            public int Compare(CompiledAnimatedTexture x, CompiledAnimatedTexture y)
-            {
-                if (x.IsUvRotate == y.IsUvRotate)
-                    return 0;
-                if (x.IsUvRotate && !y.IsUvRotate)
-                    return -1;
-                return 1;
-            }
-        }
-
         public const int AnimationLookupGranularityX = 64;
         public const int AnimationLookupGranularityY = 64;
         public static readonly Vector2 AnimationLookupFactor = new Vector2(1.0f / AnimationLookupGranularityX, 1.0f / AnimationLookupGranularityY);
@@ -74,11 +62,11 @@ namespace TombLib.LevelData.Compilers.Util
         // Animation expansion is delayed to allow to allow them to use really big object texture indices.
         private readonly Dictionary<Result, AnimationVersion> _delayAddedAnimationVersions = new Dictionary<Result, AnimationVersion>();
 
-        private readonly List<CompiledAnimatedTexture> _compiledAnimatedTextures = new List<CompiledAnimatedTexture>();
+        private List<CompiledAnimatedTexture> _compiledAnimatedTextures;
 
         private const float _marginFactor = 1.0f / 512.0f;
 
-        public List<CompiledAnimatedTexture> CompiledAnimatedTextures { get { return _compiledAnimatedTextures; } }
+        public IReadOnlyList<CompiledAnimatedTexture> CompiledAnimatedTextures { get { return _compiledAnimatedTextures; } }
 
         public ObjectTextureManagerWithAnimations(IEnumerable<AnimatedTextureSet> animatedTextureSets)
         {
@@ -376,6 +364,9 @@ namespace TombLib.LevelData.Compilers.Util
                 _compiledAnimatedTextures.Add(compiledAnimatedTexture);
             }
 
+            // Sort sets for keeping UVRotate ranges first (stable sort)
+            _compiledAnimatedTextures = _compiledAnimatedTextures.OrderBy(x => x.UvRotate == 0).ToList();
+
             // Continue
             base.OnPackingTextures(progressReporter);
         }
@@ -420,9 +411,6 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void WriteAnimatedTexturesForTr4(BinaryWriterEx stream)
         {
-            // Sort sets for keeping UVRotate ranges first
-            _compiledAnimatedTextures.Sort(new ComparerAnimatedTextureSets());
-
             int numAnimatedTexture = 1;
             foreach (var compiledAnimatedTexture in _compiledAnimatedTextures)
                 numAnimatedTexture += compiledAnimatedTexture._objectTextureIndices.Count + 1;
