@@ -208,7 +208,7 @@ namespace TombLib.Forms
         private void butAddNewWave_Click(object sender, EventArgs e)
         {
             var form = new FormSelectWave(_wad);
-            if (form.ShowDialog() == DialogResult.Cancel) return;
+            if (form.ShowDialog(this) == DialogResult.Cancel) return;
 
             // Search for already existing sample
             for (int i = 0; i < lstWaves.Items.Count; i++)
