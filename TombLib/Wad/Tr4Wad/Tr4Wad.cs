@@ -548,7 +548,7 @@ namespace TombLib.Wad.Tr4Wad
             using (var reader = new StreamReader(File.OpenRead(BasePath + Path.DirectorySeparatorChar + BaseName + ".was")))
             {
                 while (!reader.EndOfStream)
-                    LegacyNames.Add(reader.ReadLine().Split(':')[0].Replace(" ", ""));
+                    LegacyNames.Add(reader.ReadLine().Split(':')[0].Replace(" ", "").Replace("EXTRA0", "EXTRA"));
             }
         }
 
