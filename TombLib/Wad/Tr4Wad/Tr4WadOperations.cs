@@ -41,18 +41,14 @@ namespace TombLib.Wad.Tr4Wad
             var foundSamples = 0;
             for (var i = 0; i < oldWad.Sounds.Count; i++)
             {
-                if (samples[i].Path != "")
+                if (!string.IsNullOrEmpty(samples[i].Path))
                 {
                     // If wave sound exists, then load it in memory
-                    if (File.Exists(samples[i].Path))
+                    if (File.Exists(samples[i].Sample))
                     {
                         foundSamples++;
                         break;
                     }
-                }
-                else
-                {
-                    samples[i].Path = "";
                 }
 
                 foreach (string soundPath in soundPaths)
