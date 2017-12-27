@@ -959,7 +959,7 @@ namespace WadTool
                 using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                 {
                     form.AddPreset(IOSettingsPresets.SettingsPresets);
-                    if (form.ShowDialog() == DialogResult.Cancel) return;
+                    if (form.ShowDialog(this) == DialogResult.Cancel) return;
                     _tool.DestinationWad.CreateNewStaticMeshFromExternalModel(dialog.FileName, form.Settings);
                     UpdateDestinationWad2UI();
                 }

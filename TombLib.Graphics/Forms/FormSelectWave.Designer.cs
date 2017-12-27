@@ -51,6 +51,9 @@
             // 
             // lstWaves
             // 
+            this.lstWaves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstWaves.Location = new System.Drawing.Point(13, 39);
             this.lstWaves.Name = "lstWaves";
             this.lstWaves.Size = new System.Drawing.Size(314, 317);
@@ -59,6 +62,7 @@
             // 
             // butCancel
             // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butCancel.Location = new System.Drawing.Point(82, 379);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(65, 23);
@@ -68,6 +72,7 @@
             // 
             // butOK
             // 
+            this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butOK.Location = new System.Drawing.Point(13, 379);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(63, 23);
@@ -82,6 +87,7 @@
             // 
             // butPlaySound
             // 
+            this.butPlaySound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butPlaySound.Image = global::TombLib.Properties.Resources.actions_play_16;
             this.butPlaySound.Location = new System.Drawing.Point(270, 379);
             this.butPlaySound.Name = "butPlaySound";
@@ -93,6 +99,7 @@
             // 
             // butAddNewWave
             // 
+            this.butAddNewWave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddNewWave.Image = global::TombLib.Properties.Resources.general_plus_math_16;
             this.butAddNewWave.Location = new System.Drawing.Point(153, 379);
             this.butAddNewWave.Name = "butAddNewWave";
@@ -104,6 +111,8 @@
             // 
             // tbSearch
             // 
+            this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSearch.Location = new System.Drawing.Point(13, 12);
             this.tbSearch.Name = "tbSearch";
             this.tbSearch.Size = new System.Drawing.Size(313, 20);
@@ -122,12 +131,11 @@
             this.Controls.Add(this.butOK);
             this.Controls.Add(this.lstWaves);
             this.Controls.Add(this.darkStatusStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormSelectWave";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select WAV sample";
             this.Load += new System.EventHandler(this.FormSelectWave_Load);
             this.ResumeLayout(false);
