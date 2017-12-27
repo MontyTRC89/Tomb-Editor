@@ -62,8 +62,14 @@
     <Reference Include="SharpDX">
       <HintPath>..\Libs\SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX.D3DCompiler">
+      <HintPath>..\Libs\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX.Direct3D11">
       <HintPath>..\Libs\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11.Effects">
+      <HintPath>..\Libs\SharpDX.Direct3D11.Effects.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DXGI">
       <HintPath>..\Libs\SharpDX.DXGI.dll</HintPath>
@@ -71,9 +77,8 @@
     <Reference Include="SharpDX.Toolkit">
       <HintPath>..\Libs\SharpDX.Toolkit.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Toolkit.Compiler, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\SharpDX.Toolkit.Compiler.dll</HintPath>
+    <Reference Include="SharpDX.Toolkit.Compiler">
+      <HintPath>..\Libs\SharpDX.Toolkit.Compiler.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Toolkit.Graphics">
       <HintPath>..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
