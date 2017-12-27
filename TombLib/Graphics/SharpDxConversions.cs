@@ -31,12 +31,12 @@ namespace TombLib.Graphics
 
         public static Vector3 Project(this SharpDX.ViewportF viewport, Vector3 vector, Matrix4x4 worldViewProjection)
         {
-            Vector3 result = Vector3.Transform(vector, worldViewProjection);
+            var result = Vector3.Transform(vector, worldViewProjection);
             float a = (((vector.X * worldViewProjection.M14) + (vector.Y * worldViewProjection.M24)) + (vector.Z * worldViewProjection.M34)) + worldViewProjection.M44;
 
             if (!MathC.IsOne(a))
             {
-                vector = (vector / a);
+                result = (result / a);
             }
 
             result.X = (((result.X + 1f) * 0.5f) * viewport.Width) + viewport.X;
