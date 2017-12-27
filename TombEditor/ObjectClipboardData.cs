@@ -44,7 +44,7 @@ namespace TombEditor
             Prj2Loader.LoadedObjects loadedObjects = CreateObjects();
             PositionBasedObjectInstance obj = (PositionBasedObjectInstance)(loadedObjects.Objects[0]);
             LevelSettings newLevelSettings = editor.Level.Settings.Clone();
-            obj.CopyDependentLevelSettings(newLevelSettings, loadedObjects.Settings, true);
+            obj.CopyDependentLevelSettings(new Room.CopyDependentLevelSettingsArgs(null, newLevelSettings, loadedObjects.Settings, true));
             editor.UpdateLevelSettings(newLevelSettings);
 
             // A little workaround to detect script id collisions already

@@ -205,7 +205,8 @@ namespace TombLib.LevelData
 
         public void MergeFrom(Level otherLevel, bool unifyData, Action<LevelSettings> applyLevelSettings = null)
         {
-            IReadOnlyList<Room> otherRooms = otherLevel.Rooms.Where(room => room != null).ToList();
+            IReadOnlyList<ObjectInstance> oldObjects = Rooms.Where(room => room != null).SelectMany(room => room.AnyObjects).ToList();
+            IReadOnlyList <Room> otherRooms = otherLevel.Rooms.Where(room => room != null).ToList();
 
             // Merge rooms
             for (int i = 0; i < otherRooms.Count; ++i)
@@ -222,8 +223,11 @@ namespace TombLib.LevelData
 
             // Merge dependencies like imported geometries, textures (and wads in the future?)
             LevelSettings newSettings = applyLevelSettings == null ? Settings : Settings.Clone();
+            newSettings.Textures = Settings.Textures.ToList(); // Make sure the same references are used.
+            newSettings.ImportedGeometries = Settings.ImportedGeometries.ToList();
+            var copyInstance = new Room.CopyDependentLevelSettingsArgs(oldObjects, newSettings, otherLevel.Settings, unifyData);
             foreach (Room room in otherRooms)
-                room.CopyDependentLevelSettings(newSettings, otherLevel.Settings, unifyData);
+                room.CopyDependentLevelSettings(copyInstance);
             applyLevelSettings?.Invoke(newSettings);
             GlobalScriptingIdsTable.MergeFrom(otherLevel.GlobalScriptingIdsTable);
         }

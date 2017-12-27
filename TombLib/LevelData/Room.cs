@@ -1,5 +1,6 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -8,6 +9,7 @@ using TombLib.Graphics;
 using TombLib.LevelData.Compilers;
 using TombLib.Utils;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
+using Texture = TombLib.Utils.Texture;
 
 namespace TombLib.LevelData
 {
@@ -3548,17 +3550,59 @@ namespace TombLib.LevelData
                 room.UpdateBuffers();
         }
 
-        public void CopyDependentLevelSettings(LevelSettings destinationLevelSettings, LevelSettings sourceLevelSettings, bool unifyData)
+        public class CopyDependentLevelSettingsArgs
+        {
+            public LevelSettings DestinationLevelSettings { get; }
+            public LevelSettings SourceLevelSettings { get; }
+            public bool UnifyData { get; }
+            private Dictionary<ushort, ushort> FlyBySequenceReassociation { get; } = new Dictionary<ushort, ushort>();
+            private HashSet<ushort> UsedFlyBySequences = new HashSet<ushort>();
+            public CopyDependentLevelSettingsArgs(IEnumerable<ObjectInstance> oldInstances, LevelSettings destinationLevelSettings, LevelSettings sourceLevelSettings, bool unifyData)
+            {
+                DestinationLevelSettings = destinationLevelSettings;
+                SourceLevelSettings = sourceLevelSettings;
+                UnifyData = unifyData;
+
+                if (oldInstances != null)
+                    foreach (var flyBys in oldInstances.OfType<FlybyCameraInstance>())
+                        UsedFlyBySequences.Add(flyBys.Sequence);
+            }
+
+            public ushort ReassociateFlyBySequence(ushort sequenceId)
+            {
+                // Is that sequence already assigned to a new sequence Id?
+                ushort result;
+                if (FlyBySequenceReassociation.TryGetValue(sequenceId, out result))
+                    return result;
+
+                // Find unused sequence ID
+                if (!UsedFlyBySequences.Contains(sequenceId))
+                    result = sequenceId;
+                else
+                {
+                    result = 0;
+                    while (UsedFlyBySequences.Contains(result))
+                        result = checked((ushort)(result + 1));
+                }
+
+                // Assign and return ID
+                UsedFlyBySequences.Add(result);
+                FlyBySequenceReassociation.Add(sequenceId, result);
+                return result;
+            }
+        }
+
+        public void CopyDependentLevelSettings(CopyDependentLevelSettingsArgs args)
         {
             foreach (ObjectInstance instance in AnyObjects)
-                instance.CopyDependentLevelSettings(destinationLevelSettings, sourceLevelSettings, unifyData);
+                instance.CopyDependentLevelSettings(args);
 
-            if (destinationLevelSettings.Textures.Count == 0)
-                destinationLevelSettings.Textures.AddRange(sourceLevelSettings.Textures);
+            if (args.DestinationLevelSettings.Textures.Count == 0)
+                args.DestinationLevelSettings.Textures.AddRange(args.SourceLevelSettings.Textures);
             else
             {
                 int TODO_Merge_Textures_Once_We_Support_More_Than_One_Texture;
-                if (unifyData)
+                if (args.UnifyData)
                 {
                     for (int z = 0; z < NumZSectors; ++z)
                         for (int x = 0; x < NumXSectors; ++x)
@@ -3569,8 +3613,8 @@ namespace TombLib.LevelData
                                 TextureArea textureArea = block.GetFaceTexture(face);
                                 if (textureArea.Texture is LevelTexture)
                                 {
-                                    Vector2 maxSize = destinationLevelSettings.Textures[0].Image.Size;
-                                    textureArea.Texture = destinationLevelSettings.Textures[0];
+                                    Vector2 maxSize = args.DestinationLevelSettings.Textures[0].Image.Size;
+                                    textureArea.Texture = args.DestinationLevelSettings.Textures[0];
                                     textureArea.TexCoord0 = Vector2.Min(textureArea.TexCoord0, maxSize);
                                     textureArea.TexCoord1 = Vector2.Min(textureArea.TexCoord1, maxSize);
                                     textureArea.TexCoord2 = Vector2.Min(textureArea.TexCoord2, maxSize);
@@ -3581,6 +3625,19 @@ namespace TombLib.LevelData
                         }
                 }
             }
+        }
+
+        public HashSet<Texture> GetTextures()
+        {
+            HashSet<Texture> result = new HashSet<Texture>();
+            for (int z = 0; z < NumZSectors; ++z)
+                for (int x = 0; x < NumXSectors; ++x)
+                {
+                    Block block = Blocks[x, z];
+                    for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                        result.Add(block.GetFaceTexture(face).Texture);
+                }
+            return result;
         }
     }
 
