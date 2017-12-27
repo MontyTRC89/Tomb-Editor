@@ -1281,7 +1281,7 @@ namespace TombLib.LevelData.IO
 
                             int objectId = reader.ReadInt32();
 
-                            slots.Add(i, slotName);
+                            slots.Add(i, slotName.Replace(" ", "").Replace("EXTRA0", "EXTRA"));
 
                             reader.ReadBytes(108);
                             writerSlots?.WriteLine(i + "\t" + slotName + "\t" + slotType + "\t" + objectId);
