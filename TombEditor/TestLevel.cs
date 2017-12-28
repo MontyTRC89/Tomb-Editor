@@ -812,7 +812,7 @@ namespace TombEngine
             BinaryWriterEx bwex = new BinaryWriterEx(new FileStream("sounds" + ind + ".sfx", FileMode.Create, FileAccess.Write, FileShare.None));
 
             var numDemo = reader.ReadInt16();
-            byte[] soundmap = reader.ReadBytes(370 * 2);
+            byte[] soundmap = reader.ReadBytes(numDemo * 2);
             int numSoundDetails = reader.ReadInt32();
             byte[] details = reader.ReadBytes(8 * numSoundDetails);
             int numIndices = reader.ReadInt32();
