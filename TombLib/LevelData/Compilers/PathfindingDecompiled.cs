@@ -145,7 +145,7 @@ namespace TombLib.LevelData.Compilers
             do
             {
                 dec_tr_box_aux box1 = dec_boxes[i];
-                dec_boxes[i].OverlapIndex = 0x4000;  
+                dec_boxes[i].OverlapIndex = 0x3FFF;  
 
                 int numOverlapsAdded = 0;
 
@@ -167,8 +167,8 @@ namespace TombLib.LevelData.Compilers
                             {
                                 if (Dec_BoxesOverlap(ref box1, ref box2))
                                 {
-                                    if (dec_numOverlaps == 16384) return false;
-                                    if (dec_boxes[i].OverlapIndex == 0x4000) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+                                    if (dec_numOverlaps == 16382) return false;
+                                    if (dec_boxes[i].OverlapIndex == 0x3FFF) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
                                     dec_overlaps[dec_numOverlaps] = (ushort)j;
 
@@ -206,8 +206,8 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     if (Dec_BoxesOverlap(ref box1, ref box2))
                                     {
-                                        if (dec_numOverlaps == 16384) return false;
-                                        if (dec_boxes[i].OverlapIndex == 0x4000) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+                                        if (dec_numOverlaps == 16382) return false;
+                                        if (dec_boxes[i].OverlapIndex == 0x3FFF) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
                                         dec_overlaps[dec_numOverlaps] = (ushort)j;
 
@@ -261,7 +261,7 @@ namespace TombLib.LevelData.Compilers
             if (boxIndex == -1)
             {
                 boxIndex = dec_numBoxes;
-                box.OverlapIndex = 0x4000;
+                box.OverlapIndex = 0x3FFF;
                 dec_boxes[dec_numBoxes] = box;
                 dec_numBoxes++;
             }
