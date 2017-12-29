@@ -250,7 +250,7 @@ namespace TombEditor.ToolWindows
 
         private void butCompileLevel_Click(object sender, EventArgs e)
         {
-            EditorActions.BuildLevel(false);
+            EditorActions.BuildLevel(false, this);
         }
 
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)

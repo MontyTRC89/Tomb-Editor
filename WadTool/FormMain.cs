@@ -193,7 +193,7 @@ namespace WadTool
             // Open the file dialog
             openFileDialogWad.Filter = "Tomb Editor Wad2 (*.wad2)|*.wad2";
             openFileDialogWad.Title = "Open destination Wad2";
-            if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
+            if (openFileDialogWad.ShowDialog(this) == DialogResult.Cancel)
                 return;
 
             // Load the Wad2
@@ -276,7 +276,7 @@ namespace WadTool
             // Open the file dialog
             openFileDialogWad.Filter = Wad2.WadFormatImportExtensions.GetFilter();
             openFileDialogWad.Title = "Open source WAD - Wad2 - Level";
-            if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
+            if (openFileDialogWad.ShowDialog(this) == DialogResult.Cancel)
                 return;
 
             // Load the WAD/Wad2
@@ -494,7 +494,7 @@ namespace WadTool
                 return;
             }
 
-            if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialogWad2.ShowDialog(this) == DialogResult.Cancel)
                 return;
 
             try
@@ -533,7 +533,7 @@ namespace WadTool
             // Ask for the new slot
             var form = new FormSelectSlot();
             form.IsMoveable = isMoveable;
-            if (form.ShowDialog() != DialogResult.OK)
+            if (form.ShowDialog(this) != DialogResult.OK)
                 return;
 
             var objectId = (uint)form.ObjectId;
@@ -587,7 +587,7 @@ namespace WadTool
                 return;
             }
 
-            if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel)
+            if (saveFileDialogWad2.ShowDialog(this) == DialogResult.Cancel)
                 return;
 
             Wad2.SaveToFile(_tool.SourceWad, saveFileDialogWad2.FileName);
@@ -608,7 +608,7 @@ namespace WadTool
             }
 
             var form = new FormSoundEditor(_tool.DestinationWad, false);
-            form.ShowDialog();
+            form.ShowDialog(this);
         }
 
         private void spriteEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -625,7 +625,7 @@ namespace WadTool
             }
 
             var form = new FormSpriteSequencesEditor();
-            form.ShowDialog();
+            form.ShowDialog(this);
 
             UpdateDestinationWad2UI();
         }
@@ -642,7 +642,7 @@ namespace WadTool
 
             var form = new FormSpriteEditor();
             form.SpriteSequence = sequence;
-            if (form.ShowDialog() == DialogResult.Cancel)
+            if (form.ShowDialog(this) == DialogResult.Cancel)
                 return;
 
             _tool.DestinationWad.SpriteSequences.Add(form.SpriteSequence);
@@ -687,7 +687,7 @@ namespace WadTool
 
             using (var form = new FormStaticMeshEditor(staticMesh))
             {
-                if (form.ShowDialog() == DialogResult.Cancel) return;
+                if (form.ShowDialog(this) == DialogResult.Cancel) return;
 
                 UpdateDestinationWad2UI();
             }
@@ -903,7 +903,7 @@ namespace WadTool
             // Ask for the new slot
             var form = new FormSelectSlot();
             form.IsMoveable = isMoveable;
-            if (form.ShowDialog() != DialogResult.OK)
+            if (form.ShowDialog(this) != DialogResult.OK)
                 return;
 
             var objectId = (uint)form.ObjectId;

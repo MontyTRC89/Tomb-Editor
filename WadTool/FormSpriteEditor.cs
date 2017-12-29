@@ -96,7 +96,7 @@ namespace WadTool
 
         private void butAddNewTexture_Click(object sender, EventArgs e)
         {
-            if (openFileDialogSprites.ShowDialog() == DialogResult.Cancel) return;
+            if (openFileDialogSprites.ShowDialog(this) == DialogResult.Cancel) return;
 
             var sprite = new WadSprite();
             var image = ImageC.FromFile(openFileDialogSprites.FileName);

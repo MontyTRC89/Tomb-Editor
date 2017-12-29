@@ -742,7 +742,7 @@ namespace TombEditor
 
         private void buildLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.BuildLevel(false);
+            EditorActions.BuildLevel(false, this);
         }
 
         private void buildLevelPlayToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1270,7 +1270,7 @@ namespace TombEditor
         {
             using (var form = new FormSoundEditor(_editor.Level.Wad, true))
             {
-                if (form.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog(this) == DialogResult.OK)
                 {
                     if (DarkMessageBox.Show(this, "Do you want to save changes to original Wad2 file?", "Save changes",
                                             MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)

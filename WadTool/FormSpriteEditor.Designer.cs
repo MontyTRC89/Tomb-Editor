@@ -162,7 +162,7 @@
             this.MinimizeBox = false;
             this.Name = "FormSpriteEditor";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sprite editor";
             this.Load += new System.EventHandler(this.FormSpriteEditor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picSprite)).EndInit();

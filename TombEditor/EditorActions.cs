@@ -2152,7 +2152,7 @@ namespace TombEditor
             Editor.Instance.RaiseEvent(new Editor.ModeChangedEvent());
         }
 
-        public static bool BuildLevel(bool autoCloseWhenDone)
+        public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner)
         {
             Level level = _editor.Level;
             string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
@@ -2174,7 +2174,7 @@ namespace TombEditor
                     GC.Collect();
                 }))
             {
-                form.ShowDialog();
+                form.ShowDialog(owner);
                 return form.DialogResult != DialogResult.Cancel;
             }
         }
@@ -2187,7 +2187,7 @@ namespace TombEditor
                 .SelectMany(room => room.Objects)
                 .Any((obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == new ItemType(false, 0, _editor.Level.Wad.Version)))
             {
-                if (BuildLevel(true))
+                if (BuildLevel(true, owner))
                     TombLauncher.Launch(_editor.Level.Settings, owner);
             }
             else

@@ -450,7 +450,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormStaticMeshEditor";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Static mesh editor";
             this.Load += new System.EventHandler(this.FormStaticMeshEditor_Load);
             this.ResumeLayout(false);
