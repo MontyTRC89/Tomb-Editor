@@ -276,6 +276,9 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomReflectionLevel, room.ReflectionLevel);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomReverberation, (int)room.Reverberation);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomLocked, room.Locked);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomRainLevel, room.RainLevel);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomSnowLevel, room.SnowLevel);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomQuicksandLevel, room.QuickSandLevel);
                         if ((room.AlternateRoom != null) && rooms.ContainsKey(room.AlternateRoom))
                             chunkIO.WriteChunkWithChildren(Prj2Chunks.RoomAlternate, () =>
                             {

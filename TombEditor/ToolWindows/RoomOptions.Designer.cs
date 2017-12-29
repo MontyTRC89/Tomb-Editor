@@ -243,9 +243,18 @@
             "Water 2",
             "Water 3",
             "Water 4",
-            "Rain",
-            "Snow",
-            "Quicksand"});
+            "Rain 1",
+            "Rain 2",
+            "Rain 3",
+            "Rain 4",
+            "Snow 1",
+            "Snow 2",
+            "Snow 3",
+            "Snow 4",
+            "Quicksand 1",
+            "Quicksand 2",
+            "Quicksand 3",
+            "Quicksand 4"});
             this.comboRoomType.Location = new System.Drawing.Point(3, 115);
             this.comboRoomType.Name = "comboRoomType";
             this.comboRoomType.Size = new System.Drawing.Size(99, 23);
