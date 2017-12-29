@@ -386,7 +386,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormSoundEditor";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sound editor";
             this.darkStatusStrip1.ResumeLayout(false);
             this.darkStatusStrip1.PerformLayout();

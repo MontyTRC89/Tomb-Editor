@@ -140,7 +140,7 @@ namespace TombLib.Forms
                 {
                     dialog.Title = "Search WAV sample";
                     dialog.Filter = "WAV sample (*.wav)|*.wav|All files (*.*)|*.*";
-                    if (dialog.ShowDialog() == DialogResult.OK && File.Exists(dialog.FileName))
+                    if (dialog.ShowDialog(this) == DialogResult.OK && File.Exists(dialog.FileName))
                     {
                         _dialogInfo.Samples[e.RowIndex].Path = dialog.FileName;
                         dgvSamples.Rows[e.RowIndex].Cells[1].Value = dialog.FileName;

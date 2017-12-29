@@ -52,7 +52,7 @@ namespace TombLib.Forms
 
         private void butAddNewWave_Click(object sender, EventArgs e)
         {
-            if (openFileDialogWave.ShowDialog() == DialogResult.Cancel) return;
+            if (openFileDialogWave.ShowDialog(this) == DialogResult.Cancel) return;
 
             // Create the new sample
             WadSample sound;
@@ -86,7 +86,7 @@ namespace TombLib.Forms
 
                 var item = new DarkUI.Controls.DarkListItem(wave.Value.Name);
                 item.Tag = wave.Value;
-                lstWaves.Items.Add(item); 
+                lstWaves.Items.Add(item);
             }
         }
 

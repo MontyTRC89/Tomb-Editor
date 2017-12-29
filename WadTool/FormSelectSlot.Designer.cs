@@ -100,7 +100,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormSelectSlot";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select slot";
             this.Load += new System.EventHandler(this.FormSelectSlot_Load);
             this.ResumeLayout(false);

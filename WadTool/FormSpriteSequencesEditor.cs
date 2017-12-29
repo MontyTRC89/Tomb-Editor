@@ -52,7 +52,7 @@ namespace WadTool
             var sequence = (WadSpriteSequence)item.Tag;
 
             // Ask to the user the permission to delete sprite
-            if (DarkMessageBox.Show(this, 
+            if (DarkMessageBox.Show(this,
                    "Are you really sure to delete '" + sequence.ToString() + "'?",
                    "Delete sequence", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
@@ -68,7 +68,7 @@ namespace WadTool
 
             var form = new FormSpriteEditor();
             form.SpriteSequence = sequence;
-            if (form.ShowDialog() == DialogResult.Cancel) return;
+            if (form.ShowDialog(this) == DialogResult.Cancel) return;
 
             _tool.DestinationWad.SpriteSequences.Add(form.SpriteSequence);
 
@@ -90,7 +90,7 @@ namespace WadTool
 
             var form = new FormSpriteEditor();
             form.SpriteSequence = sequence;
-            if (form.ShowDialog() == DialogResult.Cancel) return;
+            if (form.ShowDialog(this) == DialogResult.Cancel) return;
 
             ReloadSpriteSequences();
         }
