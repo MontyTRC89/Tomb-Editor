@@ -76,6 +76,9 @@ namespace TombLib.LevelData.IO
         /******/public static readonly ChunkId RoomReflectionLevel = ChunkId.FromString("TeReflect");
         /******/public static readonly ChunkId RoomReverberation = ChunkId.FromString("TeReverb");
         /******/public static readonly ChunkId RoomLocked = ChunkId.FromString("TeLocked");
+        /******/public static readonly ChunkId RoomRainLevel = ChunkId.FromString("TeRainLev");
+        /******/public static readonly ChunkId RoomSnowLevel = ChunkId.FromString("TeSnowLev");
+        /******/public static readonly ChunkId RoomQuicksandLevel = ChunkId.FromString("TeQuickSandLev");
         /******/public static readonly ChunkId Objects = ChunkId.FromString("TeObjects");
         /**********/public static readonly ChunkId ObjectMovable = ChunkId.FromString("TeMov");
         /**********/public static readonly ChunkId ObjectStatic = ChunkId.FromString("TeSta");

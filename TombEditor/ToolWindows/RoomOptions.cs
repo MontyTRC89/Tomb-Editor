@@ -67,11 +67,11 @@ namespace TombEditor.ToolWindows
 
                 // Update the state of other controls
                 if (room.FlagQuickSand)
-                    comboRoomType.SelectedIndex = 7;
+                    comboRoomType.SelectedIndex = 12 + room.QuickSandLevel;
                 else if (room.FlagSnow)
-                    comboRoomType.SelectedIndex = 6;
+                    comboRoomType.SelectedIndex = 8 + room.SnowLevel;
                 else if (room.FlagRain)
-                    comboRoomType.SelectedIndex = 5;
+                    comboRoomType.SelectedIndex = 4 + room.RainLevel;
                 else
                     comboRoomType.SelectedIndex = room.WaterLevel;
 
@@ -215,76 +215,79 @@ namespace TombEditor.ToolWindows
             bool flagSnow = false;
             bool flagQuicksand = false;
             byte waterLevel = 0;
+            byte rainLevel = 0;
+            byte snowLevel = 0;
+            byte quicksandLevel = 0;
 
-            switch (comboRoomType.SelectedIndex)
+            var i = (byte)comboRoomType.SelectedIndex;
+
+            if (i == 0)
             {
-                case 0:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 0;
-                    break;
-
-                case 1:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 1;
-                    break;
-
-                case 2:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 2;
-                    break;
-
-                case 3:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 3;
-                    break;
-
-                case 4:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 4;
-                    break;
-
-                case 5:
-                    flagRain = true;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 0;
-                    break;
-
-                case 6:
-                    flagRain = false;
-                    flagSnow = true;
-                    flagQuicksand = false;
-                    waterLevel = 0;
-                    break;
-
-                case 7:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = true;
-                    waterLevel = 0;
-                    break;
+                flagRain = false;
+                flagSnow = false;
+                flagQuicksand = false;
+                waterLevel = 0;
+                rainLevel = 0;
+                snowLevel = 0;
+                quicksandLevel = 0;
+            }
+            else if (i >= 1 && i <= 4)
+            {
+                flagRain = false;
+                flagSnow = false;
+                flagQuicksand = false;
+                waterLevel = i;
+                rainLevel = 0;
+                snowLevel = 0;
+                quicksandLevel = 0;
+            }
+            else if (i >= 5 && i <= 8)
+            {
+                flagRain = true;
+                flagSnow = false;
+                flagQuicksand = false;
+                waterLevel = 0;
+                rainLevel = (byte)(i - 4);
+                snowLevel = 0;
+                quicksandLevel = 0;
+            }
+            else if (i >= 9 && i <= 12)
+            {
+                flagRain = false;
+                flagSnow = true;
+                flagQuicksand = false;
+                waterLevel = 0;
+                rainLevel = 0;
+                snowLevel = (byte)(i - 8);
+                quicksandLevel = 0;
+            }
+            else if (i >= 13 && i <= 16)
+            {
+                flagRain = false;
+                flagSnow = false;
+                flagQuicksand = true;
+                waterLevel = 0;
+                rainLevel = 0;
+                snowLevel = 0;
+                quicksandLevel = (byte)(i - 12);
             }
 
             if ((_editor.SelectedRoom.FlagRain == flagRain) &&
                 (_editor.SelectedRoom.FlagSnow == flagSnow) &&
                 (_editor.SelectedRoom.FlagQuickSand == flagQuicksand) &&
-                (_editor.SelectedRoom.WaterLevel == waterLevel))
+                (_editor.SelectedRoom.WaterLevel == waterLevel) &&
+                (_editor.SelectedRoom.RainLevel == rainLevel) &&
+                (_editor.SelectedRoom.SnowLevel == snowLevel) &&
+                (_editor.SelectedRoom.QuickSandLevel == quicksandLevel))
                 return;
 
             _editor.SelectedRoom.FlagRain = flagRain;
             _editor.SelectedRoom.FlagSnow = flagSnow;
             _editor.SelectedRoom.FlagQuickSand = flagQuicksand;
             _editor.SelectedRoom.WaterLevel = waterLevel;
+            _editor.SelectedRoom.RainLevel = rainLevel;
+            _editor.SelectedRoom.SnowLevel = snowLevel;
+            _editor.SelectedRoom.QuickSandLevel = quicksandLevel;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 

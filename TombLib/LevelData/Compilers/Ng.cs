@@ -131,10 +131,18 @@ namespace TombLib.LevelData.Compilers
             writer.Write((ushort)_tempRooms.Count);
             for (var i = 0; i < _tempRooms.Count; i++)
             {
-                var waterLevel = (byte)_tempRooms.ElementAt(i).Key.WaterLevel;
-                if (waterLevel != 0) waterLevel--;
+                var room = _tempRooms.ElementAt(i).Key;
+                var waterLevel = (byte)0;
 
-                var buffer = new byte[] { waterLevel, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; // TODO: ask Paolone for water level 
+                if (room.FlagRain)
+                    waterLevel = (byte)(room.RainLevel - 1);
+                else if (room.FlagSnow)
+                    waterLevel = (byte)(room.SnowLevel - 1);
+                else if (room.FlagQuickSand)
+                    waterLevel = (byte)(room.QuickSandLevel - 1);
+                else if (room.WaterLevel != 0) waterLevel = (byte)(room.WaterLevel - 1);
+
+                var buffer = new byte[] { waterLevel, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
                 writer.Write(buffer);
             }
         }

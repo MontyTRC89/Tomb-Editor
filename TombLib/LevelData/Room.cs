@@ -46,6 +46,9 @@ namespace TombLib.LevelData
         public byte WaterLevel { get; set; }
         public byte MistLevel { get; set; }
         public byte ReflectionLevel { get; set; }
+        public byte RainLevel { get; set; }
+        public byte SnowLevel { get; set; }
+        public byte QuickSandLevel { get; set; }
         public bool FlagSnow { get; set; }
         public bool FlagRain { get; set; }
         public bool FlagCold { get; set; }
