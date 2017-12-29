@@ -54,6 +54,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -81,6 +84,10 @@
     <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TombLib.Graphics\TombLib.Forms.csproj">
+      <Project>{eb61dfac-51a6-44e3-869c-9bbde830a40e}</Project>
+      <Name>TombLib.Forms</Name>
     </ProjectReference>
     <ProjectReference Include="..\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
