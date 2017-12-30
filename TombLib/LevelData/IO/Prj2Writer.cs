@@ -267,9 +267,6 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagHorizon, room.FlagHorizon);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagOutside, room.FlagOutside);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagNoLensflare, room.FlagNoLensflare);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagRain, room.FlagRain);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagSnow, room.FlagSnow);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagQuickSand, room.FlagQuickSand);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagExcludeFromPathFinding, room.FlagExcludeFromPathFinding);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomWaterLevel, room.WaterLevel);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomMistLevel, room.MistLevel);
@@ -278,7 +275,7 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomLocked, room.Locked);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomRainLevel, room.RainLevel);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomSnowLevel, room.SnowLevel);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomQuicksandLevel, room.QuickSandLevel);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomQuickSandLevel, room.QuickSandLevel);
                         if ((room.AlternateRoom != null) && rooms.ContainsKey(room.AlternateRoom))
                             chunkIO.WriteChunkWithChildren(Prj2Chunks.RoomAlternate, () =>
                             {
