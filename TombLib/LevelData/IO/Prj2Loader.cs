@@ -415,16 +415,16 @@ namespace TombLib.LevelData.IO
                         room.FlagOutside = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagNoLensflare)
                         room.FlagNoLensflare = chunkIO.ReadChunkBool(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomFlagRain)
-                        room.FlagRain = chunkIO.ReadChunkBool(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomFlagSnow)
-                        room.FlagSnow = chunkIO.ReadChunkBool(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomFlagQuickSand)
-                        room.FlagQuickSand = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagExcludeFromPathFinding)
                         room.FlagExcludeFromPathFinding = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomWaterLevel)
                         room.WaterLevel = chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomRainLevel)
+                        room.RainLevel = chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomSnowLevel)
+                        room.SnowLevel = chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomQuickSandLevel)
+                        room.QuickSandLevel = chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomMistLevel)
                         room.MistLevel = chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomReflectionLevel)
@@ -433,12 +433,6 @@ namespace TombLib.LevelData.IO
                         room.Reverberation = (Reverberation)chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLocked)
                         room.Locked = chunkIO.ReadChunkBool(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomRainLevel)
-                        room.RainLevel = chunkIO.ReadChunkByte(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomSnowLevel)
-                        room.SnowLevel = chunkIO.ReadChunkByte(chunkSize2);
-                    else if (id2 == Prj2Chunks.RoomQuicksandLevel)
-                        room.QuickSandLevel = chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomAlternate)
                     {
                         short alternateGroup = 1;
@@ -474,11 +468,6 @@ namespace TombLib.LevelData.IO
                         return false;
                     return true;
                 });
-
-                // Fix those because intensities were introduced in 1.0.5
-                if (room.FlagRain && room.RainLevel == 0) room.RainLevel = 1;
-                if (room.FlagSnow && room.SnowLevel == 0) room.SnowLevel = 1;
-                if (room.FlagQuickSand && room.QuickSandLevel == 0) room.QuickSandLevel = 1;
 
                 // Add room
                 if ((roomIndex > 0) && (roomIndex < level.Rooms.Length) && (level.Rooms[roomIndex] == null))

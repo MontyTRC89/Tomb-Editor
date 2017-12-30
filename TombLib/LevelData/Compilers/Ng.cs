@@ -33,7 +33,7 @@ namespace TombLib.LevelData.Compilers
             WriteNgChunkRemapRooms(writer);
             WriteNgChunkTomVersion(writer);
             WriteNgChunkLevelVersion(writer);
-            
+
             // Write end signature
             writer.Write(endSignature);
             writer.Write((int)(writer.BaseStream.Position + 4 - startOffset));
@@ -134,13 +134,14 @@ namespace TombLib.LevelData.Compilers
                 var room = _tempRooms.ElementAt(i).Key;
                 var waterLevel = (byte)0;
 
-                if (room.FlagRain)
+                if (room.RainLevel != 0)
                     waterLevel = (byte)(room.RainLevel - 1);
-                else if (room.FlagSnow)
+                else if (room.SnowLevel != 0)
                     waterLevel = (byte)(room.SnowLevel - 1);
-                else if (room.FlagQuickSand)
+                else if (room.QuickSandLevel != 0)
                     waterLevel = (byte)(room.QuickSandLevel - 1);
-                else if (room.WaterLevel != 0) waterLevel = (byte)(room.WaterLevel - 1);
+                else if (room.WaterLevel != 0)
+                    waterLevel = (byte)(room.WaterLevel - 1);
 
                 var buffer = new byte[] { waterLevel, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
                 writer.Write(buffer);

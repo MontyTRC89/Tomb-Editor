@@ -75,7 +75,7 @@ namespace TombLib.LevelData.Compilers
             };
 
             // Room flags
-            if (room.FlagQuickSand)
+            if (room.QuickSandLevel > 0)
                 newRoom.Flags |= 0x0004;
             if (room.FlagHorizon)
                 newRoom.Flags |= 0x0008;
@@ -85,9 +85,9 @@ namespace TombLib.LevelData.Compilers
                 newRoom.Flags |= 0x0020;
             if (room.FlagNoLensflare)
                 newRoom.Flags |= 0x0080;
-            if (room.FlagSnow)
+            if (room.SnowLevel > 0)
                 newRoom.Flags |= 0x0400;
-            if (room.FlagRain)
+            if (room.RainLevel > 0)
                 newRoom.Flags |= 0x0800;
 
             // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of

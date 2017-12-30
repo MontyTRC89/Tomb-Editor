@@ -617,17 +617,17 @@ namespace TombLib.LevelData.IO
                         byte reverb = reader.ReadByte();
                         tempRoom._flipGroup = (short)(reader.ReadInt16() & 0xff);
 
-                        room.WaterLevel = (byte)((flags1 & 0x0001) != 0 ? waterLevel + 1 : 0);
+                        room.WaterLevel = (flags1 & 0x0001) != 0 ? (byte)(waterLevel + 1) : (byte)0;
                         room.Reverberation = (Reverberation)reverb;
                         room.ReflectionLevel = (flags1 & 0x0200) != 0 ? (byte)(mistOrReflectionLevel + 1) : (byte)0;
                         room.MistLevel = (flags1 & 0x0100) != 0 ? mistOrReflectionLevel : (byte)0;
-                        room.FlagQuickSand = (flags1 & 0x0004) != 0;
+                        room.QuickSandLevel = (flags1 & 0x0004) != 0 ? (byte)(waterLevel + 1) : (byte)0;
                         room.FlagHorizon = (flags1 & 0x0008) != 0;
                         room.FlagDamage = (flags1 & 0x0010) != 0;
                         room.FlagOutside = (flags1 & 0x0020) != 0;
                         room.FlagNoLensflare = (flags1 & 0x0080) != 0;
-                        room.FlagSnow = (flags1 & 0x0400) != 0;
-                        room.FlagRain = (flags1 & 0x0800) != 0;
+                        room.SnowLevel = (flags1 & 0x0400) != 0 ? (byte)(waterLevel + 1) : (byte)0;
+                        room.RainLevel = (flags1 & 0x0800) != 0 ? (byte)(waterLevel + 1) : (byte)0;
 
                         // Read blocks
                         tempRoom._blocks = new PrjBlock[numXBlocks, numZBlocks];
