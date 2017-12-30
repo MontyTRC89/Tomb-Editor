@@ -66,11 +66,11 @@ namespace TombEditor.ToolWindows
                     comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
                 // Update the state of other controls
-                if (room.FlagQuickSand)
+                if (room.QuickSandLevel > 0)
                     comboRoomType.SelectedIndex = 12 + room.QuickSandLevel;
-                else if (room.FlagSnow)
+                else if (room.SnowLevel > 0)
                     comboRoomType.SelectedIndex = 8 + room.SnowLevel;
-                else if (room.FlagRain)
+                else if (room.RainLevel > 0)
                     comboRoomType.SelectedIndex = 4 + room.RainLevel;
                 else
                     comboRoomType.SelectedIndex = room.WaterLevel;
@@ -211,21 +211,12 @@ namespace TombEditor.ToolWindows
 
         private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool flagRain = false;
-            bool flagSnow = false;
-            bool flagQuicksand = false;
-            byte waterLevel = 0;
-            byte rainLevel = 0;
-            byte snowLevel = 0;
-            byte quicksandLevel = 0;
+            byte waterLevel, rainLevel, snowLevel, quicksandLevel;
 
             var i = (byte)comboRoomType.SelectedIndex;
 
             if (i == 0)
             {
-                flagRain = false;
-                flagSnow = false;
-                flagQuicksand = false;
                 waterLevel = 0;
                 rainLevel = 0;
                 snowLevel = 0;
@@ -233,9 +224,6 @@ namespace TombEditor.ToolWindows
             }
             else if (i >= 1 && i <= 4)
             {
-                flagRain = false;
-                flagSnow = false;
-                flagQuicksand = false;
                 waterLevel = i;
                 rainLevel = 0;
                 snowLevel = 0;
@@ -243,9 +231,6 @@ namespace TombEditor.ToolWindows
             }
             else if (i >= 5 && i <= 8)
             {
-                flagRain = true;
-                flagSnow = false;
-                flagQuicksand = false;
                 waterLevel = 0;
                 rainLevel = (byte)(i - 4);
                 snowLevel = 0;
@@ -253,37 +238,25 @@ namespace TombEditor.ToolWindows
             }
             else if (i >= 9 && i <= 12)
             {
-                flagRain = false;
-                flagSnow = true;
-                flagQuicksand = false;
                 waterLevel = 0;
                 rainLevel = 0;
                 snowLevel = (byte)(i - 8);
                 quicksandLevel = 0;
             }
-            else if (i >= 13 && i <= 16)
+            else
             {
-                flagRain = false;
-                flagSnow = false;
-                flagQuicksand = true;
                 waterLevel = 0;
                 rainLevel = 0;
                 snowLevel = 0;
                 quicksandLevel = (byte)(i - 12);
             }
 
-            if ((_editor.SelectedRoom.FlagRain == flagRain) &&
-                (_editor.SelectedRoom.FlagSnow == flagSnow) &&
-                (_editor.SelectedRoom.FlagQuickSand == flagQuicksand) &&
-                (_editor.SelectedRoom.WaterLevel == waterLevel) &&
+            if ((_editor.SelectedRoom.WaterLevel == waterLevel) &&
                 (_editor.SelectedRoom.RainLevel == rainLevel) &&
                 (_editor.SelectedRoom.SnowLevel == snowLevel) &&
                 (_editor.SelectedRoom.QuickSandLevel == quicksandLevel))
                 return;
 
-            _editor.SelectedRoom.FlagRain = flagRain;
-            _editor.SelectedRoom.FlagSnow = flagSnow;
-            _editor.SelectedRoom.FlagQuickSand = flagQuicksand;
             _editor.SelectedRoom.WaterLevel = waterLevel;
             _editor.SelectedRoom.RainLevel = rainLevel;
             _editor.SelectedRoom.SnowLevel = snowLevel;
