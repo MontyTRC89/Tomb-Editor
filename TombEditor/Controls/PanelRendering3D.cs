@@ -1801,7 +1801,7 @@ namespace TombEditor.Controls
         {
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 foreach (var trigger in room.Triggers)
-                    if (trigger.TargetObj == instance)
+                    if (trigger.Target == instance)
                         message += "\nTriggered in Room " + trigger.Room + " on sectors " + trigger.Area;
         }
 
@@ -2325,7 +2325,7 @@ namespace TombEditor.Controls
                     geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                     if (_editor.SelectedObject == instance)
                         geometryEffect.Parameters["Color"].SetValue(_selectionColor);
-                        
+
                     foreach (var submesh in mesh.Submeshes)
                     {
                         var texture = submesh.Value.Material.Texture;
@@ -2415,7 +2415,7 @@ namespace TombEditor.Controls
                     staticMeshEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
 
                     staticMeshEffect.Techniques[0].Passes[0].Apply();
-                    
+
                     foreach (var submesh in mesh.Submeshes)
                     {
                         _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);

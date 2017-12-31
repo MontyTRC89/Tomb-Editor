@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
+using TombLib.NG;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -10,10 +11,14 @@ namespace TombLib.LevelData.Compilers
     {
         private bool IsWallSurroundedByWalls(int x, int z, Room room)
         {
-            if (x > 0 && !room.Blocks[x - 1, z].IsAnyWall) return false;
-            if (z > 0 && !room.Blocks[x, z - 1].IsAnyWall) return false;
-            if (x < room.NumXSectors - 1 && !room.Blocks[x + 1, z].IsAnyWall) return false;
-            if (z < room.NumZSectors - 1 && !room.Blocks[x, z + 1].IsAnyWall) return false;
+            if (x > 0 && !room.Blocks[x - 1, z].IsAnyWall)
+                return false;
+            if (z > 0 && !room.Blocks[x, z - 1].IsAnyWall)
+                return false;
+            if (x < room.NumXSectors - 1 && !room.Blocks[x + 1, z].IsAnyWall)
+                return false;
+            if (z < room.NumZSectors - 1 && !room.Blocks[x, z + 1].IsAnyWall)
+                return false;
             return true;
         }
 
@@ -62,17 +67,21 @@ namespace TombLib.LevelData.Compilers
                             if (!(x >= portal.Area.X0 - 1 &&
                                   z >= portal.Area.Y0 - 1 &&
                                   x <= portal.Area.X0 + portal.Area.Width + 1 &&
-                                  z <= portal.Area.Y0 + portal.Area.Height + 1)) continue;
+                                  z <= portal.Area.Y0 + portal.Area.Height + 1))
+                                continue;
 
                             // Check if this is a wall
-                            if (!block.IsAnyWall) continue;
+                            if (!block.IsAnyWall)
+                                continue;
 
                             // Check if ceiling is traversable or not
                             var connectionInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
-                            if (connectionInfo.TraversableType == Room.RoomConnectionType.NoPortal) continue;
+                            if (connectionInfo.TraversableType == Room.RoomConnectionType.NoPortal)
+                                continue;
 
                             // Check if current wall is surrounded by walls
-                            if (IsWallSurroundedByWalls(x, z, room)) continue;
+                            if (IsWallSurroundedByWalls(x, z, room))
+                                continue;
 
                             // Get new coordinates
                             var adjoining = portal.AdjoiningRoom;
@@ -80,7 +89,8 @@ namespace TombLib.LevelData.Compilers
                             var z2 = (int)(room.Position.Z + z - adjoining.Position.Z);
 
                             // Check if we are outside the boundaries of adjoining room
-                            if (x2 < 0 || z2 < 0 || x2 > adjoining.NumXSectors - 1 || z2 > adjoining.NumZSectors - 1) continue;
+                            if (x2 < 0 || z2 < 0 || x2 > adjoining.NumXSectors - 1 || z2 > adjoining.NumZSectors - 1)
+                                continue;
 
                             var adjoiningBlock = adjoining.Blocks[x2, z2];
 
@@ -1050,10 +1060,14 @@ namespace TombLib.LevelData.Compilers
                         {
                             ushort climb = 0x06;
 
-                            if (block.HasFlag(BlockFlags.ClimbPositiveZ)) climb |= (ushort)(0x01 << 8);
-                            if (block.HasFlag(BlockFlags.ClimbPositiveX)) climb |= (ushort)(0x02 << 8);
-                            if (block.HasFlag(BlockFlags.ClimbNegativeZ)) climb |= (ushort)(0x04 << 8);
-                            if (block.HasFlag(BlockFlags.ClimbNegativeX)) climb |= (ushort)(0x08 << 8);
+                            if (block.HasFlag(BlockFlags.ClimbPositiveZ))
+                                climb |= (ushort)(0x01 << 8);
+                            if (block.HasFlag(BlockFlags.ClimbPositiveX))
+                                climb |= (ushort)(0x02 << 8);
+                            if (block.HasFlag(BlockFlags.ClimbNegativeZ))
+                                climb |= (ushort)(0x04 << 8);
+                            if (block.HasFlag(BlockFlags.ClimbNegativeX))
+                                climb |= (ushort)(0x08 << 8);
 
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(climb);
@@ -1088,30 +1102,14 @@ namespace TombLib.LevelData.Compilers
                         }
 
                         // Triggers
-                        if (room.Blocks[x, z].Triggers.Count > 0)
+                        var triggers = room.Blocks[x, z].Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t));
+                        var firstTrigger = triggers.FirstOrDefault();
+                        if (firstTrigger != null)
                         {
-                            TriggerInstance found = null;
-
-                            // First, I search a special trigger, if exists
-                            foreach (var trigger in room.Blocks[x, z].Triggers)
-                            {
-                                if (trigger.TriggerType == TriggerType.Trigger && found == null)
-                                {
-                                    // Normal trigger can be used only if in the sector there aren't special triggers
-                                    found = trigger;
-                                    continue;
-                                }
-
-                                if (trigger.TriggerType == TriggerType.Trigger)
-                                    continue;
-
-                                // For now I use the first special trigger of the chain, ignoring the following triggers
-                                found = trigger;
-                                break;
-                            }
-
-                            var tempTriggers = new List<TriggerInstance> { found };
-                            tempTriggers.AddRange(room.Blocks[x, z].Triggers.Where(trigger => trigger != found));
+                            // First, we search if a special trigger exists
+                            TriggerInstance found = triggers.FirstOrDefault(t => t.TriggerType != TriggerType.Trigger) ?? firstTrigger;
+                            var sortedTriggers = new List<TriggerInstance> { found };
+                            sortedTriggers.AddRange(triggers.Where(trigger => trigger != found));
 
                             {
                                 lastFloorDataFunction = (ushort)tempCodes.Count;
@@ -1160,24 +1158,24 @@ namespace TombLib.LevelData.Compilers
                                         trigger1 |= 0x0c << 8;
                                         break;
                                     default:
-                                        throw new Exception("Unknown trigger type found '" + found.TriggerType + "' room '" + room + "' at trigger '" + found + "'");
+                                        throw new Exception("Unknown trigger type found '" + found + "'");
                                 }
 
-                                ushort triggerSetup = 0;
+                                ushort triggerSetup;
                                 if (_level.Settings.GameVersion == GameVersion.TRNG)
                                 {
                                     // NG flipeffects store timer and extra in additional ushort
                                     if (found.TargetType == TriggerTargetType.FlipEffect)
-                                        triggerSetup |= (ushort)0;
+                                        triggerSetup = 0;
                                     // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
                                     else if (found.TriggerType == TriggerType.ConditionNg)
-                                        triggerSetup |= (ushort)found.Timer;
+                                        triggerSetup = GetTriggerRealTimer(found, 0xffff);
                                     // all other triggers work as usual
                                     else
-                                        triggerSetup |= (ushort)(found.Timer & 0xff);
+                                        triggerSetup = GetTriggerRealTimer(found, 0xff);
                                 }
                                 else
-                                    triggerSetup |= (ushort)(found.Timer & 0xff);
+                                    triggerSetup = GetTriggerParameter(found.Timer, found, 0xff);
                                 triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
                                 triggerSetup |= (ushort)((found.CodeBits & 0x1f) << 9);
 
@@ -1185,7 +1183,7 @@ namespace TombLib.LevelData.Compilers
                                 tempCodes.Add(triggerSetup);
                             }
 
-                            foreach (var trigger in tempTriggers)
+                            foreach (var trigger in sortedTriggers)
                             {
                                 ushort trigger2;
 
@@ -1193,110 +1191,91 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     case TriggerTargetType.Object:
                                         // Trigger for object
-                                        if (trigger.TargetObj == null)
-                                            break;
-                                        var object_ = trigger.CastTargetType<MoveableInstance>(room);
-                                        bool isAI = object_.WadObjectId >= 398 && object_.WadObjectId <= 406;
-                                        int item = (isAI ? _aiObjectsTable : _moveablesTable)[object_];
-                                        trigger2 = (ushort)(item & 0x3ff | (0 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (0 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.Camera:
                                         // Trigger for camera
-                                        if (trigger.TargetObj == null)
-                                            break;
-                                        var camera = trigger.CastTargetType<CameraInstance>(room);
-                                         trigger2 = (ushort)(_cameraTable[camera] & 0x3ff | (1 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (1 << 10));
                                         tempCodes.Add(trigger2);
 
                                         // Additional short
                                         ushort trigger3 = 0;
-                                        trigger3 |= (ushort)(trigger.Timer & 0xff);
+                                        trigger3 |= (ushort)(GetTriggerParameter(trigger.Timer, trigger, 0xff));
                                         trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
                                         tempCodes.Add(trigger3);
                                         break;
                                     case TriggerTargetType.Sink:
                                         // Trigger for sink
-                                        if (trigger.TargetObj == null)
-                                            break;
-                                        var sink = trigger.CastTargetType<SinkInstance>(room);
-                                        trigger2 = (ushort)(_sinkTable[sink] & 0x3ff | (2 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (2 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipMap:
                                         // Trigger for flip map
-                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (3 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (3 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipOn:
                                         // Trigger for flip map on
-                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (4 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (4 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipOff:
                                         // Trigger for flip map off
-                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (5 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (5 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.Target:
                                         // Trigger for look at item
-                                        if (trigger.TargetObj == null)
-                                            break;
-                                        var target = trigger.CastTargetType<MoveableInstance>(room);
-                                        trigger2 = (ushort)(_moveablesTable[target] & 0x3ff | (6 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (6 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FinishLevel:
                                         // Trigger for finish level
-                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (7 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (7 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.PlayAudio:
                                         // Trigger for play soundtrack
-                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (8 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (8 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipEffect:
                                         // Trigger for flip effect
-                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (9 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (9 << 10));
                                         tempCodes.Add(trigger2);
 
                                         // TRNG stores flipeffect timer as an extra ushort
                                         if (_level.Settings.GameVersion == GameVersion.TRNG)
                                         {
-                                            trigger2 = (ushort)(trigger.Timer & 0x7fff);
-                                            tempCodes.Add(trigger2);
+                                            trigger3 = GetTriggerRealTimer(trigger, 0xffff);
+                                            tempCodes.Add(trigger3);
                                         }
 
                                         break;
                                     case TriggerTargetType.Secret:
                                         // Trigger for secret found
-                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (10 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (10 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.ActionNg:
                                         // Trigger for action
-                                        if (trigger.TargetObj == null)
-                                            break;
                                         if (_level.Settings.GameVersion == GameVersion.TRNG)
                                         {
-                                            var objectAction = trigger.CastTargetType<MoveableInstance>(room);
-                                            bool isAIaction = objectAction.WadObjectId >= 398 && objectAction.WadObjectId <= 406;
-                                            int itemAction = (isAIaction ? _aiObjectsTable : _moveablesTable)[objectAction];
-                                            trigger2 = (ushort)(itemAction & 0x3ff | (11 << 10));
+                                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (11 << 10));
                                             tempCodes.Add(trigger2);
 
-                                            trigger2 = (ushort)(trigger.Timer & 0x7fff);
+                                            trigger2 = (ushort)(GetTriggerRealTimer(trigger, 0xffff));
                                             tempCodes.Add(trigger2);
                                         }
                                         else
-                                            _progressReporter.ReportWarn("Level uses action trigger which is not supported in this game engine.");
+                                            _progressReporter.ReportWarn("Level uses action trigger '" + trigger + "' which is not supported in this game engine.");
                                         break;
                                     case TriggerTargetType.FlyByCamera:
                                         // Trigger for fly by
-                                        if (trigger.TargetObj == null)
-                                            break;
-                                        var flyByCamera = trigger.CastTargetType<FlybyCameraInstance>(room);
+                                        if (!(trigger.Target is FlybyCameraInstance))
+                                            throw new Exception("A Flyby trigger must point to a flyby camera! ('" + trigger + "')");
+                                        var flyByCamera = (FlybyCameraInstance)(trigger.Target);
                                         trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
                                         tempCodes.Add(trigger2);
 
@@ -1305,16 +1284,17 @@ namespace TombLib.LevelData.Compilers
                                         break;
                                     case TriggerTargetType.ParameterNg:
                                         // Trigger for secret found
-                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (13 << 10));
+                                        ushort targetTypeBits = (trigger.Target is ObjectInstance) ? (ushort)(0 << 10) : (ushort)(13 << 10);
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | targetTypeBits);
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FmvNg:
                                         // Trigger for secret found
-                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (14 << 10));
+                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (14 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     default:
-                                        throw new Exception("Unknown trigger type found '" + trigger.TargetType + "' in room '" + room + "' at trigger '" + trigger + "'");
+                                        throw new Exception("Unknown trigger type found '" + trigger + "'");
                                 }
                             }
 
@@ -1339,6 +1319,56 @@ namespace TombLib.LevelData.Compilers
             }
 
             ReportProgress(80, "    Floordata size: " + _floorData.Count * 2 + " bytes");
+        }
+
+        private ushort GetTriggerRealTimer(TriggerInstance trigger, ushort upperBound)
+        {
+            return NgParameterInfo.EncodeNGRealTimer(trigger.TargetType, trigger.TriggerType,
+                (trigger.Target as TriggerParameterUshort)?.Key ?? ushort.MaxValue, ushort.MaxValue,
+                (upperBoundInner) => GetTriggerParameter(trigger.Timer, trigger, upperBoundInner),
+                (upperBoundInner) => GetTriggerParameter(trigger.Extra, trigger, upperBoundInner));
+        }
+
+        private ushort GetTriggerParameter(ITriggerParameter parameter, TriggerInstance triggerDiagnostic, ushort upperBound)
+        {
+            int index;
+            if (parameter == null)
+                index = 0;
+            else if (parameter is Room)
+                index = _roomsRemappingDictionary[(Room)parameter];
+            else if (parameter is ObjectInstance)
+            {
+                if (parameter is MoveableInstance)
+                {
+                    MoveableInstance @object = (MoveableInstance)parameter;
+                    bool isAI = @object.WadObjectId >= 398 && @object.WadObjectId <= 406;
+                    index = (isAI ? _aiObjectsTable : _moveablesTable)[@object];
+                }
+                else if (parameter is CameraInstance)
+                    index = _cameraTable[(CameraInstance)parameter];
+                else if (parameter is SinkInstance)
+                    index = _sinkTable[(SinkInstance)parameter];
+                else if (parameter is FlybyCameraInstance)
+                    index = _flybyTable[(FlybyCameraInstance)parameter];
+                else if (parameter is StaticInstance)
+                {
+                    StaticInstance @object = (StaticInstance)parameter;
+                    if (@object.ScriptId == null) // Create temporary script ID if necessary
+                        index = unchecked((int)_scriptingIdsTable.UpdateWithNewId(@object, null));
+                    else
+                        index = unchecked((int)@object.ScriptId.Value);
+                }
+                else
+                    throw new ArgumentException("Triggering an object of type " + parameter.GetType().Name + " is not supported ('" + triggerDiagnostic + "').");
+            }
+            else if (parameter is TriggerParameterUshort)
+                index = ((TriggerParameterUshort)parameter).Key;
+            else
+                throw new Exception("Trigger has unrecognized parameter! ('" + triggerDiagnostic + "')");
+
+            if (index > upperBound)
+                throw new ArgumentException("Trigger parameter is too big ('" + triggerDiagnostic + "').");
+            return (ushort)index;
         }
     }
 }

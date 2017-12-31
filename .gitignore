@@ -9,3 +9,4 @@ bin/
 .vs/
 packages/
 *.vspx
+/BuildNgXmlBuilder

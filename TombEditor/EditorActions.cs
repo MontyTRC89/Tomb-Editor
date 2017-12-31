@@ -452,22 +452,28 @@ namespace TombEditor
             if (_editor.SelectedObject is MoveableInstance)
             {
                 trigger.TargetType = TriggerTargetType.Object;
-                trigger.TargetObj = _editor.SelectedObject;
+                trigger.Target = _editor.SelectedObject;
             }
             else if (_editor.SelectedObject is FlybyCameraInstance)
             {
                 trigger.TargetType = TriggerTargetType.FlyByCamera;
-                trigger.TargetObj = _editor.SelectedObject;
+                trigger.Target = _editor.SelectedObject;
             }
             else if (_editor.SelectedObject is CameraInstance)
             {
                 trigger.TargetType = TriggerTargetType.Camera;
-                trigger.TargetObj = _editor.SelectedObject;
+                trigger.Target = _editor.SelectedObject;
             }
             else if (_editor.SelectedObject is SinkInstance)
             {
                 trigger.TargetType = TriggerTargetType.Sink;
-                trigger.TargetObj = _editor.SelectedObject;
+                trigger.Target = _editor.SelectedObject;
+            }
+            else if (_editor.SelectedObject is StaticInstance && (_editor.Level.Settings.GameVersion == GameVersion.TRNG))
+            {
+                trigger.TargetType = TriggerTargetType.FlipEffect;
+                trigger.Target = new TriggerParameterUshort(160);
+                trigger.Timer = _editor.SelectedObject;
             }
 
             // Display form
@@ -608,51 +614,61 @@ namespace TombEditor
             if (instance is MoveableInstance)
             {
                 using (var formMoveable = new FormMoveable((MoveableInstance)instance))
-                    formMoveable.ShowDialog(owner);
+                    if (formMoveable.ShowDialog(owner) != DialogResult.OK)
+                        return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is StaticInstance)
             {
                 using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
-                    formStaticMesh.ShowDialog(owner);
+                    if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
+                        return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is FlybyCameraInstance)
             {
                 using (var formFlyby = new FormFlybyCamera((FlybyCameraInstance)instance))
-                    formFlyby.ShowDialog(owner);
+                    if (formFlyby.ShowDialog(owner) != DialogResult.OK)
+                        return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is CameraInstance)
             {
                 using (var formCamera = new FormCamera((CameraInstance)instance))
-                    formCamera.ShowDialog(owner);
+                    if (formCamera.ShowDialog(owner) != DialogResult.OK)
+                        return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SinkInstance)
             {
                 using (var formSink = new FormSink((SinkInstance)instance))
-                    formSink.ShowDialog(owner);
+                    if (formSink.ShowDialog(owner) != DialogResult.OK)
+                        return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SoundSourceInstance)
             {
                 using (var formSoundSource = new FormSound((SoundSourceInstance)instance, _editor.Level.Wad))
-                    formSoundSource.ShowDialog(owner);
+                    if (formSoundSource.ShowDialog(owner) != DialogResult.OK)
+                        return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is TriggerInstance)
             {
                 using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance, obj => _editor.ShowObject(obj),
                                                          r => _editor.SelectRoomAndResetCamera(r)))
-                    formTrigger.ShowDialog(owner);
+                    if (formTrigger.ShowDialog(owner) != DialogResult.OK)
+                        return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is ImportedGeometryInstance)
             {
                 using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
-                    if (formImportedGeometry.ShowDialog(owner) != DialogResult.Cancel)
-                        _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
+                {
+                    if (formImportedGeometry.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                    _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
+                }
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
         }
@@ -2552,7 +2568,7 @@ namespace TombEditor
                                                 if (textureArea.DoubleSided)
                                                     submesh = mesh.Submeshes[materialOpaqueDoubleSided];
                                             }
-                                                
+
                                             submesh.Polygons.Add(poly);
 
                                             foreach (var index in indices)

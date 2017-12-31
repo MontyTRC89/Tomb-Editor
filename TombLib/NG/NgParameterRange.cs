@@ -1,0 +1,282 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TombLib.LevelData;
+
+namespace TombLib.NG
+{
+    public enum NgParameterKind
+    {
+        Empty,
+        AnyNumber,
+        Fixed,
+        MoveablesInLevel, // MOVEABLES
+        StaticsInLevel, // STATIC_LIST
+        CamerasInLevel, // CAMERA_EFFECTS
+        SinksInLevel, // SINK_LIST
+        FlybyCamerasInLevel, // FLYBY_LIST
+        Rooms255, // ROOMS_255
+        SoundEffectsA, // SOUND_EFFECT_A
+        SoundEffectsB, // SOUND_EFFECT_B
+        Sfx1024, // SFX_1024
+        PcStringsList, // PC_STRING_LIST
+        PsxStringsList, // PSX_STRING_LIST
+        NgStringsList255, // NG_STRING_LIST_255
+        NgStringsAll, // NG_STRING_LIST_ALL
+        StringsList255, // STRING_LIST_255
+        WadSlots, // WAD-SLOTS
+        StaticsSlots, // STATIC_SLOTS
+        LaraStartPosOcb // LARA_POS_OCB
+    }
+
+    public struct NgParameterRange : IEquatable<NgParameterRange>
+    {
+        public NgParameterKind Kind { get; }
+        public IDictionary<ushort, TriggerParameterUshort> FixedList { get; }
+
+        public NgParameterRange(NgParameterKind kind)
+        {
+            if (kind == NgParameterKind.Fixed)
+                kind = NgParameterKind.Empty;
+            Kind = kind;
+            FixedList = null;
+        }
+
+        public NgParameterRange(IDictionary<ushort, TriggerParameterUshort> fixedList)
+        {
+            if (fixedList == null || fixedList.Count == 0)
+            {
+                Kind = NgParameterKind.Empty;
+                FixedList = null;
+            }
+            else
+            {
+                Kind = NgParameterKind.Fixed;
+                FixedList = fixedList;
+            }
+        }
+
+        public bool IsObject
+        {
+            get
+            {
+                switch (Kind)
+                {
+                    case NgParameterKind.MoveablesInLevel:
+                    case NgParameterKind.StaticsInLevel:
+                    case NgParameterKind.CamerasInLevel:
+                    case NgParameterKind.SinksInLevel:
+                    case NgParameterKind.FlybyCamerasInLevel:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool IsRoom
+        {
+            get
+            {
+                switch (Kind)
+                {
+                    case NgParameterKind.Rooms255:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public bool IsEmpty => Kind == NgParameterKind.Empty;
+
+        public bool IsNumber => !(IsEmpty || IsObject || IsRoom);
+
+        public bool ParameterMatches(ITriggerParameter parameter, bool nullResult)
+        {
+            switch (Kind)
+            {
+                case NgParameterKind.Empty:
+                    return parameter == null;
+
+                case NgParameterKind.MoveablesInLevel:
+                    return parameter is MoveableInstance || (nullResult && parameter == null);
+                case NgParameterKind.StaticsInLevel:
+                    return parameter is StaticInstance || (nullResult && parameter == null);
+                case NgParameterKind.CamerasInLevel:
+                    return parameter is CameraInstance || (nullResult && parameter == null);
+                case NgParameterKind.SinksInLevel:
+                    return parameter is SinkInstance || (nullResult && parameter == null);
+                case NgParameterKind.FlybyCamerasInLevel:
+                    return parameter is FlybyCameraInstance || (nullResult && parameter == null);
+
+                case NgParameterKind.Rooms255:
+                    return parameter is Room || (nullResult && parameter == null);
+
+                default:
+                    if (IsNumber)
+                        return parameter is TriggerParameterUshort || (nullResult && parameter == null);
+                    else
+                        return false;
+            }
+        }
+
+        public static bool operator ==(NgParameterRange first, NgParameterRange second)
+        {
+            if (first.Kind != second.Kind)
+                return false;
+            if ((first.FixedList == null) != (second.FixedList == null))
+                return false;
+            if (first.FixedList != null && !first.FixedList.SequenceEqual(second.FixedList))
+                return false;
+            return true;
+        }
+        public static bool operator !=(NgParameterRange first, NgParameterRange second) => !(first == second);
+        public bool Equals(NgParameterRange other) => this == (NgParameterRange)other;
+        public override bool Equals(object other)
+        {
+            if (!(other is NgParameterRange))
+                return false;
+            return this == (NgParameterRange)other;
+        }
+        public override int GetHashCode() => base.GetHashCode();
+
+        public IEnumerable<ITriggerParameter> BuildList(Level level)
+        {
+            Func<int, TriggerParameterUshort> formatSounds = i =>
+            {
+                Wad.WadSoundInfo soundInfo;
+                if (level?.Wad?.SoundInfo != null && level.Wad.SoundInfo.TryGetValue((ushort)i, out soundInfo))
+                    return new TriggerParameterUshort((ushort)i, i + ": " + soundInfo.Name);
+                else
+                    return new TriggerParameterUshort((ushort)i, i + ": --- Not present ---");
+            };
+
+            switch (Kind)
+            {
+                case NgParameterKind.AnyNumber:
+                    return null;
+
+                case NgParameterKind.Empty:
+                    return new ITriggerParameter[0];
+
+                case NgParameterKind.Fixed:
+                    return FixedList.Values;
+
+                case NgParameterKind.MoveablesInLevel:
+                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<MoveableInstance>();
+
+                case NgParameterKind.StaticsInLevel:
+                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<StaticInstance>();
+
+                case NgParameterKind.CamerasInLevel:
+                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<CameraInstance>();
+
+                case NgParameterKind.SinksInLevel:
+                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<SinkInstance>();
+
+                case NgParameterKind.FlybyCamerasInLevel:
+                    return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<FlybyCameraInstance>();
+
+                case NgParameterKind.Rooms255:
+                    return level.Rooms.Where(room => room != null);
+
+                case NgParameterKind.SoundEffectsA:
+                    return Enumerable.Range(0, 256).Select(formatSounds);
+
+                case NgParameterKind.SoundEffectsB:
+                    {
+                        int soundMapSize = (level.Wad != null ? level.Wad.SoundMapSize : Wad.Catalog.TrCatalog.GetSoundMapSize(Wad.WadTombRaiderVersion.TR4, false));
+                        soundMapSize = Math.Min(soundMapSize, 512);
+                        return Enumerable.Range(256, Math.Min(soundMapSize, 512)).Select(formatSounds);
+                    }
+                case NgParameterKind.Sfx1024:
+                    {
+                        int soundMapSize = (level.Wad != null ? level.Wad.SoundMapSize : Wad.Catalog.TrCatalog.GetSoundMapSize(Wad.WadTombRaiderVersion.TR4, false));
+                        soundMapSize = Math.Min(soundMapSize, 1024);
+                        return Enumerable.Range(0, Math.Min(soundMapSize, 1024)).Select(formatSounds);
+                    }
+
+                case NgParameterKind.PcStringsList:
+                    return LoadStringsFromTxt(level, "PCStrings");
+
+                case NgParameterKind.PsxStringsList:
+                    return LoadStringsFromTxt(level, "PSXStrings");
+
+                case NgParameterKind.NgStringsList255:
+                    return LoadStringsFromTxt(level, "ExtraNG", 256);
+
+                case NgParameterKind.NgStringsAll:
+                    return LoadStringsFromTxt(level, "ExtraNG");
+
+                case NgParameterKind.StringsList255:
+                    return LoadStringsFromTxt(level, "Strings", 256);
+
+                case NgParameterKind.WadSlots:
+                    if (level.Wad == null)
+                        return new ITriggerParameter[0];
+                    return level.Wad.Moveables.Select(p => new TriggerParameterUshort(checked((ushort)p.Key), p.Value.ToString()));
+
+                case NgParameterKind.StaticsSlots:
+                    if (level.Wad == null)
+                        return new ITriggerParameter[0];
+                    return level.Wad.Statics.Select(p => new TriggerParameterUshort(checked((ushort)p.Key), p.Value.ToString()));
+
+                case NgParameterKind.LaraStartPosOcb:
+                    return level.Rooms.Where(room => room != null)
+                        .SelectMany(room => room.Objects)
+                        .OfType<MoveableInstance>().Where(obj => obj.WadObjectId == 406) // Lara start pos
+                        .Select(obj => new TriggerParameterUshort(unchecked((ushort)obj.Ocb), obj));
+
+                default:
+                    throw new ArgumentException("Unknown NgListKind \"" + Kind + "\"");
+            }
+        }
+
+        private static IEnumerable<TriggerParameterUshort> LoadStringsFromTxt(Level level, string block, int max = 1024)
+        {
+            var path = Path.Combine(level.Settings.MakeAbsolute(level.Settings.ScriptDirectory), "english.txt");
+            try
+            {
+                using (var reader = new StreamReader(path))
+                {
+                    var foundBlock = false;
+                    while (!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine().Trim();
+                        if (line.StartsWith("["))
+                        {
+                            line = line.Replace("[", "").Replace("]", "");
+                            if (line == block)
+                            {
+                                foundBlock = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!foundBlock)
+                        throw new Exception("Block \"" + block + "\" not found in language file \"" + path + "\"");
+
+                    // Read strings of block until end of stream or next block or limit reached
+                    var result = new SortedList<int, TriggerParameterUshort>();
+                    while (!reader.EndOfStream && result.Count <= max)
+                    {
+                        var line = reader.ReadLine().Trim();
+                        if (line.StartsWith("["))
+                            break;
+                        result.Add(result.Count, new TriggerParameterUshort(checked((ushort)result.Count), line));
+                    }
+                    return result.Values;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to open language file \"" + path + "\" for block \"" + block + "\"", e);
+            }
+        }
+    }
+}

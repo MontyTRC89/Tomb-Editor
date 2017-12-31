@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TombLib.LevelData
 {
-    public class ScriptIdTable<T> where T : class, IHasScriptID
+    public class ScriptIdTable<T> : ICloneable where T : class
     {
         private T[] _table = new T[6000];
 
@@ -76,7 +76,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public void MergeFrom(ScriptIdTable<T> otherTable)
+        public void MergeFrom(ScriptIdTable<T> otherTable, Action<T> resetScriptId)
         {
             if (Length != otherTable.Length)
                 throw new ArgumentException();
@@ -86,16 +86,19 @@ namespace TombLib.LevelData
                     if (_table[i] == null)
                         _table[i] = otherTable._table[i];
                     else
-                        otherTable._table[i].ScriptId = null;
+                        resetScriptId(otherTable._table[i]);
             otherTable._table = null; // Prevent accidental accesses to the old table.
         }
+
+        public ScriptIdTable<T> Clone() => new ScriptIdTable<T> { _table = (T[])_table.Clone() };
+        object ICloneable.Clone() => Clone();
     }
 
     public class ScriptIdCollisionException : ApplicationException
     {
         public uint ScriptId { get; set; }
-        public IHasScriptID OldObject { get; set; }
-        public IHasScriptID NewObject { get; set; }
+        public object OldObject { get; set; }
+        public object NewObject { get; set; }
         public override string Message => "Global scripting id table slot " + ScriptId + " is already full! " +
             "(Currently occupied by " + (OldObject.ToString() ?? "<NULL>") + ", needed for " + (NewObject.ToString() ?? "<NULL>") + ")";
     }
