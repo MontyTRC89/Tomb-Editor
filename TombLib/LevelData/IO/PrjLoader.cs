@@ -100,9 +100,6 @@ namespace TombLib.LevelData.IO
             progressReporter.ReportProgress(0, "Game directory: " + gameDirectory);
             level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.LevelDirectory);
 
-            int TODO_TEMPORARY_SCRIPTID_DEBUGGER_TO_BE_REMOVED;
-            var logIds = new SortedDictionary<int, string>();
-
             try
             {
                 // Open file
@@ -309,8 +306,8 @@ namespace TombLib.LevelData.IO
 
                                 case 0x0010:
                                     short triggerType = reader.ReadInt16();
-                                    short triggerItemNumber = reader.ReadInt16();
-                                    short triggerTimer = reader.ReadInt16();
+                                    ushort triggerItemNumber = reader.ReadUInt16();
+                                    ushort triggerRealTimer = reader.ReadUInt16();
                                     short triggerFlags = reader.ReadInt16();
                                     short triggerItemType = reader.ReadInt16();
 
@@ -421,15 +418,23 @@ namespace TombLib.LevelData.IO
                                             continue;
                                     }
 
+                                    if (triggerTypeEnum == TriggerType.ConditionNg)
+                                        triggerTargetTypeEnum = TriggerTargetType.ParameterNg;
+
+                                    ushort? triggerTimer, triggerExtra;
+                                    NG.NgParameterInfo.DecodeNGRealTimer(triggerTargetTypeEnum, triggerTypeEnum, triggerItemNumber, triggerRealTimer, out triggerTimer, out triggerExtra);
+
                                     var trigger = new TriggerInstance(GetArea(room, 1, objPosX, objPosZ, objSizeX, objSizeZ))
                                     {
                                         TriggerType = triggerTypeEnum,
                                         TargetType = triggerTargetTypeEnum,
                                         CodeBits = (byte)((~triggerFlags >> 1) & 0x1f),
                                         OneShot = (triggerFlags & 0x0001) != 0,
-                                        Timer = (short)(triggerTimer),
-                                        TargetData = triggerItemNumber
+                                        Target = new TriggerParameterUshort(triggerItemNumber),
+                                        Timer = triggerTimer == null ? null : new TriggerParameterUshort(triggerTimer.Value),
+                                        Extra = triggerExtra == null ? null : new TriggerParameterUshort(triggerExtra.Value)
                                     };
+
                                     room.AddObject(level, trigger);
                                     break;
 
@@ -552,7 +557,6 @@ namespace TombLib.LevelData.IO
                                         light.OuterAngle = lightOut;
                                         light.InnerAngle = lightIn;
                                     }
-                                    // TODO: logIds.Add(objectsThings2[j], "LIGHT");
                                     room.AddObject(level, light);
                                     break;
                                 case 0x4c00:
@@ -562,7 +566,6 @@ namespace TombLib.LevelData.IO
                                         SoundId = unchecked((ushort)objSlot),
                                         Position = position
                                     };
-                                    // TODO: logIds.Add(objectsThings2[j], "SOUND");
                                     room.AddObject(level, sound);
                                     break;
                                 case 0x4400:
@@ -572,7 +575,6 @@ namespace TombLib.LevelData.IO
                                         Strength = (short)(objTimer / 2),
                                         Position = position
                                     };
-                                    // TODO: logIds.Add(objectsThings2[j], "SINK");
                                     room.AddObject(level, sink);
                                     break;
                                 case 0x4800:
@@ -583,7 +585,6 @@ namespace TombLib.LevelData.IO
                                         Fixed = (objectType == 0x4080),
                                         Position = position
                                     };
-                                    // TODO: logIds.Add(objectsThings2[j], "CAM");
                                     room.AddObject(level, camera);
                                     break;
                                 case 0x4040:
@@ -601,7 +602,6 @@ namespace TombLib.LevelData.IO
                                         RotationY = objFacing + 180,
                                         Flags = unchecked((ushort)objOcb)
                                     };
-                                    // TODO: logIds.Add(objectsThings2[j], "FLYBY");
                                     room.AddObject(level, flybyCamera);
                                     break;
                                 default:
@@ -1314,7 +1314,6 @@ namespace TombLib.LevelData.IO
                                     RotationY = currentObj.RotationY,
                                     Color = currentObj.Color
                                 };
-                                // TODO: logIds.Add(currentObj.ScriptId, "MOVEABLE");
                                 level.Rooms[i].AddObject(level, instance);
                             }
                             else
@@ -1327,15 +1326,10 @@ namespace TombLib.LevelData.IO
                                     RotationY = currentObj.RotationY,
                                     Color = currentObj.Color
                                 };
-                                // TODO: logIds.Add(currentObj.ScriptId, "STATIC " + j + ", " + instance.WadObjectId + " in " + level.Rooms[i].ToString());
                                 level.Rooms[i].AddObject(level, instance);
                             }
                         }
                     }
-
-                   /* using (var wrt = new StreamWriter(File.OpenWrite("scriptids.txt")))
-                        foreach (var item in // TODO: logIds)
-                            wrt.WriteLine(item.Key + ": " + item.Value);*/
 
                     // Link triggers
                     {
@@ -1349,6 +1343,7 @@ namespace TombLib.LevelData.IO
                             .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
 
                         // Lookup objects from IDs for all triggers
+                        List<FlybyCameraInstance> flyByLookup = null;
                         foreach (Room room in level.Rooms.Where(room => room != null))
                             foreach (var instance in room.Triggers.ToList())
                                 switch (instance.TargetType)
@@ -1359,25 +1354,69 @@ namespace TombLib.LevelData.IO
                                     case TriggerTargetType.FlyByCamera:
                                     case TriggerTargetType.Sink:
                                     case TriggerTargetType.ActionNg:
-                                        ushort triggerTargetId = unchecked((ushort)(instance.TargetData));
-                                        if (!objectLookup.ContainsKey(triggerTargetId))
+                                        Func<ITriggerParameter, NG.NgParameterRange, ITriggerParameter> FixTriggerParameter = (ITriggerParameter parameter, NG.NgParameterRange range) =>
                                         {
-                                            progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + triggerTargetId + " that is unavailable.");
-                                            room.RemoveObject(level, instance);
-                                            continue;
-                                        }
+                                            if (!(parameter is TriggerParameterUshort))
+                                                return parameter;
+                                            ushort index = ((TriggerParameterUshort)parameter).Key;
+                                            if (range.IsObject)
+                                            {
+                                                // Special lookup for flybys.
+                                                // Triggers marked as flyby can point to a sequence directly instead an object ID
+                                                if (instance.TargetType == TriggerTargetType.FlyByCamera)
+                                                {
+                                                    if (flyByLookup == null)
+                                                        flyByLookup = objectLookup.Values
+                                                            .OfType<FlybyCameraInstance>()
+                                                            .GroupBy(flyBy => flyBy.Sequence)
+                                                            .Select(flyByGroup => flyByGroup.OrderBy(flyBy => flyBy.Number).First())
+                                                            .ToList();
+                                                    FlybyCameraInstance foundFlyBy = flyByLookup.FirstOrDefault(flyBy => flyBy.Sequence == index);
+                                                    if (foundFlyBy != null)
+                                                        return foundFlyBy;
+                                                }
 
-                                        instance.TargetObj = objectLookup[triggerTargetId];
-                                        instance.TargetData = 0;
+                                                // Undo object indexing
+                                                PositionBasedObjectInstance @object;
+                                                if (!objectLookup.TryGetValue(index, out @object))
+                                                {
+                                                    progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + index + " that is unavailable.");
+                                                    return null;
+                                                }
+                                                return @object;
+                                            }
+                                            else if (range.IsRoom)
+                                            {
+                                                // Undo room indexing
+                                                Room room3 = level.Rooms.Where(room2 => room2 != null).ElementAtOrDefault(index);
+                                                if (room3 == null)
+                                                {
+                                                    progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to a room with ID " + index + " that is unavailable.");
+                                                    return parameter;
+                                                }
+                                                return room3;
+                                            }
+                                            else
+                                                return parameter;
+                                        };
+                                        instance.Target = FixTriggerParameter(instance.Target,
+                                            NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer));
+                                        instance.Timer = FixTriggerParameter(instance.Timer,
+                                            NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target));
+                                        instance.Target = FixTriggerParameter(instance.Target,
+                                            NG.NgParameterInfo.GetExtraRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Timer));
 
                                         // Sinks and cameras are classified as 'object's most of time for some reason.
                                         // We have to fix that.
-                                        if (instance.TargetObj is FlybyCameraInstance)
-                                            instance.TargetType = TriggerTargetType.FlyByCamera;
-                                        if (instance.TargetObj is SinkInstance)
-                                            instance.TargetType = TriggerTargetType.Sink;
-                                        if (instance.TargetObj is CameraInstance)
-                                            instance.TargetType = TriggerTargetType.Camera;
+                                        if (instance.TargetType == TriggerTargetType.Object)
+                                        {
+                                            if (instance.Target is FlybyCameraInstance)
+                                                instance.TargetType = TriggerTargetType.FlyByCamera;
+                                            if (instance.Target is SinkInstance)
+                                                instance.TargetType = TriggerTargetType.Sink;
+                                            if (instance.Target is CameraInstance)
+                                                instance.TargetType = TriggerTargetType.Camera;
+                                        }
                                         break;
                                 }
                         progressReporter.ReportProgress(35, "Triggers linked");

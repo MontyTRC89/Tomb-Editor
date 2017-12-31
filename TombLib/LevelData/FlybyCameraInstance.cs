@@ -57,7 +57,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "FlyBy " +
+            return "Flyby " +
                 ", Sequence = " + Sequence +
                 ", Number = " + Number +
                 ", Room = " + (Room?.ToString() ?? "NULL") +

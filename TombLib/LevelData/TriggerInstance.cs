@@ -1,12 +1,15 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using TombLib.NG;
 
 namespace TombLib.LevelData
 {
-    public enum TriggerType : byte
+    public enum TriggerType : ushort
     {
         Trigger = 0,
         Pad = 1,
@@ -23,7 +26,7 @@ namespace TombLib.LevelData
         ConditionNg = 12
     }
 
-    public enum TriggerTargetType : byte
+    public enum TriggerTargetType : ushort
     {
         Object = 0,
         Camera = 1,
@@ -43,37 +46,72 @@ namespace TombLib.LevelData
         TimerfieldNg = 15,
     }
 
+    public interface ITriggerParameter : IEquatable<ITriggerParameter>
+    { }
+    public class TriggerParameterUshort : IEquatable<TriggerParameterUshort>, ITriggerParameter
+    {
+        public ushort Key { get; }
+        public object NameObject { get; }
+        public TriggerParameterUshort(ushort key, object nameObject = null)
+        {
+            Key = key;
+            NameObject = nameObject;
+        }
+        public string Name => NameObject?.ToString();
+        public override string ToString() => Name ?? Key.ToString();
+
+        public static bool operator ==(TriggerParameterUshort first, TriggerParameterUshort second)
+        {
+            if (ReferenceEquals(first, null))
+                return ReferenceEquals(second, null);
+            else if (ReferenceEquals(second, null))
+                return false;
+            return first.Key == second.Key;
+        }
+        public static bool operator !=(TriggerParameterUshort first, TriggerParameterUshort second) => !(first == second);
+        public override int GetHashCode() => Key;
+        public override bool Equals(object other)
+        {
+            if (!(other is TriggerParameterUshort))
+                return false;
+            return this == (TriggerParameterUshort)other;
+        }
+        public bool Equals(TriggerParameterUshort other) => this == other;
+        bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => Equals(other);
+    }
+
     public class TriggerInstance : SectorBasedObjectInstance
     {
         public TriggerType TriggerType { get; set; } = TriggerType.Trigger;
         public TriggerTargetType TargetType { get; set; } = TriggerTargetType.FlipEffect;
-        private ObjectInstance _targetObj = null;
-        public ObjectInstance TargetObj //Used for following old trigger types: "Camera", "FlyByCamera", "Object", "Sink", "Target"
+
+        private ITriggerParameter _target = null;
+        public ITriggerParameter Target
         {
-            get { return _targetObj; }
-            set
-            {
-                if (value == this)
-                    throw new ArgumentException("The \"TargetObj\" may not be the trigger itself.");
-                if (value != null)
-                    value.DeletedEvent += _targetObj_DeletedEvent;
-                if (_targetObj != null)
-                    _targetObj.DeletedEvent -= _targetObj_DeletedEvent;
-                _targetObj = value;
-            }
+            get { return _target; }
+            set { UpdateEvents(ref _target, value); }
         }
 
-        public short TargetData { get; set; } = 0;
-        public short Timer { get; set; } = 0;
+        private ITriggerParameter _timer = null;
+        public ITriggerParameter Timer
+        {
+            get { return _timer; }
+            set { UpdateEvents(ref _timer, value); }
+        }
+
+        private ITriggerParameter _extra = null;
+        public ITriggerParameter Extra
+        {
+            get { return _extra; }
+            set { UpdateEvents(ref _extra, value); }
+        }
+
         public bool OneShot { get; set; } = false;
         public byte CodeBits { get; set; } = 0x1f; // Only the lower 5 bits are used.
-        public short ExtraData { get; set; } = 0;
 
         public TriggerInstance(RectangleInt2 area)
             : base(area)
         { }
-
-        public string TargetObjString => TargetObj?.ToString() ?? "NULL";
 
         public override string ToString()
         {
@@ -83,19 +121,7 @@ namespace TombLib.LevelData
             output += "in room '" + (Room?.ToString() ?? "NULL") + "' ";
             output += "on sectors [" + Area.X0 + ", " + Area.Y0 + " to " + Area.X1 + ", " + Area.Y1 + "] ";
             output += "for " + TargetType.ToString() + " ";
-            switch (TargetType)
-            {
-                case TriggerTargetType.Camera:
-                case TriggerTargetType.Target:
-                case TriggerTargetType.Sink:
-                case TriggerTargetType.FlyByCamera:
-                case TriggerTargetType.Object:
-                    output += "(" + TargetObjString + ") ";
-                    break;
-                default:
-                    output += "(" + TargetData + ") ";
-                    break;
-            }
+            output += "(Target: " + Target + ", Timer: " + Timer + ", Extra: " + Extra + ")";
             return output;
         }
 
@@ -117,35 +143,62 @@ namespace TombLib.LevelData
                     room.Blocks[x, z].Triggers.Remove(this);
         }
 
-        private void _targetObj_DeletedEvent(ObjectInstance instance)
+        private void ParameterDeletedEvent(ITriggerParameter parameter)
         {
-            if (instance == TargetObj)
-                TargetObj = null;
+            if (_target == parameter)
+                _target = null;
+            if (_timer == parameter)
+                _timer = null;
+            if (_extra == parameter)
+                _extra = null;
+        }
+        private void ObjectParameterDeletedEvent(ObjectInstance instance)
+        {
+            ParameterDeletedEvent(instance);
         }
 
-        public T CastTargetType<T>(Room room) where T : ObjectInstance
+        private void RoomParameterDeletedEvent(Room instance)
         {
-            var castedObject = TargetObj as T;
-            if (castedObject == null)
-                throw new Exception("Object trigger target of trigger does mistakenly point to '" + TargetObjString +
-                    "' instead of an " + typeof(T).ToString().Replace("Instance", "") + ". Trigger (Room: " + room + ") information: '" + this + "'");
-            return castedObject;
+            ParameterDeletedEvent(instance);
         }
 
-        public static bool UsesTargetObj(TriggerTargetType targetType)
+        private void UpdateEvents(ref ITriggerParameter oldValue, ITriggerParameter newValue)
         {
-            switch (targetType)
-            {
-                case TriggerTargetType.Object:
-                case TriggerTargetType.Camera:
-                case TriggerTargetType.Target:
-                case TriggerTargetType.FlyByCamera:
-                case TriggerTargetType.Sink:
-                case TriggerTargetType.ActionNg:
-                    return true;
-                default:
-                    return false;
-            }
+            if (oldValue == newValue)
+                return;
+
+            if (newValue is ObjectInstance)
+                ((ObjectInstance)newValue).DeletedEvent += ObjectParameterDeletedEvent;
+            if (newValue is Room)
+                ((Room)newValue).DeletedEvent += RoomParameterDeletedEvent;
+
+            if (newValue is ObjectInstance)
+                ((ObjectInstance)newValue).DeletedEvent -= ObjectParameterDeletedEvent;
+            if (newValue is Room)
+                ((Room)newValue).DeletedEvent -= RoomParameterDeletedEvent;
+
+            oldValue = newValue;
+        }
+
+        public bool IsPointingTo(ITriggerParameter value)
+        {
+            if (Target != null && Target.Equals(value))
+                return true;
+            if (Timer != null && Timer.Equals(value))
+                return true;
+            if (Extra != null && Extra.Equals(value))
+                return true;
+            return false;
+        }
+
+        public override void TransformRoomReferences(Func<Room, Room> transformRoom)
+        {
+            if (_target is Room)
+                _target = transformRoom((Room)_target);
+            if (_timer is Room)
+                _timer = transformRoom((Room)_timer);
+            if (_extra is Room)
+                _extra = transformRoom((Room)_extra);
         }
     }
 }

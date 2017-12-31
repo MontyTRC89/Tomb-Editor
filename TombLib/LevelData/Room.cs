@@ -28,8 +28,11 @@ namespace TombLib.LevelData
         Floor, Ceiling, Wall
     }
 
-    public class Room
+    public class Room : ITriggerParameter
     {
+        public delegate void RemovedFromRoomDelegate(Room instance);
+        public event RemovedFromRoomDelegate DeletedEvent;
+
         public const short DefaultHeight = 12;
         public const short MaxRoomDimensions = 20;
 
@@ -249,6 +252,23 @@ namespace TombLib.LevelData
         public Room Clone(Level level)
         {
             return Clone(level, instance => !(instance is PortalInstance));
+        }
+
+        /// <summary>
+        /// This methode should be invoked after the object was added to a room and the object will go out of scope.
+        /// </summary>
+        public void Delete(Level level)
+        {
+            // Remove all objects in the room
+            var objectsToRemove = AnyObjects.ToList();
+            foreach (var instance in objectsToRemove)
+                if (AlternateBaseRoom != null)
+                    RemoveObjectAndSingularPortal(level, instance);
+                else
+                    RemoveObject(level, instance);
+
+            // Inform of room removal
+            DeletedEvent?.Invoke(this);
         }
 
         public bool Flipped => (AlternateRoom != null) || (AlternateBaseRoom != null);
@@ -3639,6 +3659,8 @@ namespace TombLib.LevelData
                 }
             return result;
         }
+
+        bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
     }
 
     public struct VerticalSpace

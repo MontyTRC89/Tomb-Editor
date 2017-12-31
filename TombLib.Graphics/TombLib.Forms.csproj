@@ -51,6 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\TriggerParameterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TriggerParameterControl.designer.cs">
+      <DependentUpon>TriggerParameterControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GraphicalDialogHandler.cs" />
     <Compile Include="Forms\FormSelectWave.cs">
       <SubType>Form</SubType>
@@ -87,6 +93,9 @@
     <Compile Include="Utils\ISynchronizeInvokeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
+      <DependentUpon>TriggerParameterControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSelectWave.resx">
       <DependentUpon>FormSelectWave.cs</DependentUpon>
     </EmbeddedResource>

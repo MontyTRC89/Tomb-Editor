@@ -25,7 +25,7 @@ namespace TombLib.LevelData
         float Roll { get; set; }
     };
 
-    public abstract class ObjectInstance : ICloneable
+    public abstract class ObjectInstance : ICloneable, ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(ObjectInstance instance);
         public event RemovedFromRoomDelegate DeletedEvent;
@@ -93,6 +93,8 @@ namespace TombLib.LevelData
 
         public virtual void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)
         { }
+
+        bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
     }
 
     public abstract class SectorBasedObjectInstance : ObjectInstance

@@ -59,7 +59,7 @@ namespace TombLib.LevelData
             var triggers = new List<TriggerInstance>();
             foreach (var room in Rooms.Where(room => room != null))
                 foreach (var trigger in room.Triggers)
-                    if (trigger.TargetObj == instance)
+                    if (trigger.IsPointingTo(instance))
                         triggers.Add(trigger);
             return triggers;
         }
@@ -181,15 +181,7 @@ namespace TombLib.LevelData
             for (int i = 0; i < Rooms.Length; ++i)
                 if (Rooms[i] == room)
                 {
-                    // Remove all objects in the room
-                    var objectsToRemove = room.AnyObjects.ToList();
-                    foreach (var instance in objectsToRemove)
-                        if (room.AlternateBaseRoom != null)
-                            room.RemoveObjectAndSingularPortal(this, instance);
-                        else
-                            room.RemoveObject(this, instance);
-
-                    // Remove all references to this room
+                    room.Delete(this);
                     Rooms[i] = null;
                     return;
                 }
@@ -229,7 +221,7 @@ namespace TombLib.LevelData
             foreach (Room room in otherRooms)
                 room.CopyDependentLevelSettings(copyInstance);
             applyLevelSettings?.Invoke(newSettings);
-            GlobalScriptingIdsTable.MergeFrom(otherLevel.GlobalScriptingIdsTable);
+            GlobalScriptingIdsTable.MergeFrom(otherLevel.GlobalScriptingIdsTable, @object => @object.ScriptId = null);
         }
 
         public IReadOnlyList<Room> TransformRooms(IEnumerable<Room> roomsToRotate, RectTransformation transformation, VectorInt2 center)

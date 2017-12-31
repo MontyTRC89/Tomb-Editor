@@ -183,16 +183,16 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkMoveablesTable(BinaryWriter writer)
         {
-            writer.Write((ushort)(2 + _level.GlobalScriptingIdsTable.Length));
+            writer.Write((ushort)(2 + _scriptingIdsTable.Length));
             writer.Write((ushort)0x8005);
 
-            for (var i = 0; i < _level.GlobalScriptingIdsTable.Length; i++)
+            for (var i = 0; i < _scriptingIdsTable.Length; i++)
             {
-                if (_level.GlobalScriptingIdsTable[i] == null)
+                if (_scriptingIdsTable[i] == null)
                     writer.Write((short)-1);
                 else
                 {
-                    var instance = _level.GlobalScriptingIdsTable[i];
+                    var instance = _scriptingIdsTable[i];
                     if (instance is MoveableInstance && _moveablesTable.ContainsKey(instance as MoveableInstance))
                         writer.Write((short)_moveablesTable[instance as MoveableInstance]);
                     else if (instance is CameraInstance && _cameraTable.ContainsKey(instance as CameraInstance))
@@ -211,19 +211,19 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkStaticsTable(BinaryWriter writer)
         {
-            writer.Write((ushort)(2 + _level.GlobalScriptingIdsTable.Length * 2));
+            writer.Write((ushort)(2 + _scriptingIdsTable.Length * 2));
             writer.Write((ushort)0x8021);
 
-            for (var i = 0; i < _level.GlobalScriptingIdsTable.Length; i++)
+            for (var i = 0; i < _scriptingIdsTable.Length; i++)
             {
-                if (_level.GlobalScriptingIdsTable[i] == null)
+                if (_scriptingIdsTable[i] == null)
                 {
                     writer.Write((short)0);
                     writer.Write((short)-1);
                 }
                 else
                 {
-                    var instance = _level.GlobalScriptingIdsTable[i];
+                    var instance = _scriptingIdsTable[i];
                     if (instance is StaticInstance)
                     {
                         var staticMesh = instance as StaticInstance;

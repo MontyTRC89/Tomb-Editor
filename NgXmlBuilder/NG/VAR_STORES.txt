@@ -1,0 +1,112 @@
+﻿ 64: Store Byte A1
+ 65: Store Byte A2
+ 66: Store Byte A3
+ 67: Store Byte A4
+ 68: Store Byte B1
+ 69: Store Byte B2
+ 70: Store Byte B3
+ 71: Store Byte B4
+ 72: Store Byte C1
+ 73: Store Byte C2
+ 74: Store Byte C3
+ 75: Store Byte C4
+ 76: Store Byte D1
+ 77: Store Byte D2
+ 78: Store Byte D3
+ 79: Store Byte D4
+ 80: Store Byte E1
+ 81: Store Byte E2
+ 82: Store Byte E3
+ 83: Store Byte E4
+ 84: Store Byte F1
+ 85: Store Byte F2
+ 86: Store Byte F3
+ 87: Store Byte F4
+ 88: Store Byte G1
+ 89: Store Byte G2
+ 90: Store Byte G3
+ 91: Store Byte G4
+ 92: Store Byte H1
+ 93: Store Byte H2
+ 94: Store Byte H3
+ 95: Store Byte H4
+ 96: Store Byte I1
+ 97: Store Byte I2
+ 98: Store Byte I3
+ 99: Store Byte I4
+100: Store Byte J1
+101: Store Byte J2
+102: Store Byte J3
+103: Store Byte J4
+104: Store Byte K1
+105: Store Byte K2
+106: Store Byte K3
+107: Store Byte K4
+108: Store Byte L1
+109: Store Byte L2
+110: Store Byte L3
+111: Store Byte L4
+112: Store Byte M1
+113: Store Byte M2
+114: Store Byte M3
+115: Store Byte M4
+116: Store Byte N1
+117: Store Byte N2
+118: Store Byte N3
+119: Store Byte N4
+120: Store Byte O1
+121: Store Byte O2
+122: Store Byte O3
+123: Store Byte O4
+124: Store Byte P1
+125: Store Byte P2
+126: Store Byte P3
+127: Store Byte P4
+192: Store Long A
+193: Store Long B
+194: Store Long C
+195: Store Long D
+196: Store Long E
+197: Store Long F
+198: Store Long G
+199: Store Long H
+200: Store Long I
+201: Store Long J
+202: Store Long K
+203: Store Long L
+204: Store Long M
+205: Store Long N
+206: Store Long O
+207: Store Long P
+128: Store Short A1
+129: Store Short A2
+130: Store Short B1
+131: Store Short B2
+132: Store Short C1
+133: Store Short C2
+134: Store Short D1
+135: Store Short D2
+136: Store Short E1
+137: Store Short E2
+138: Store Short F1
+139: Store Short F2
+140: Store Short G1
+141: Store Short G2
+142: Store Short H1
+143: Store Short H2
+144: Store Short I1
+145: Store Short I2
+146: Store Short J1
+147: Store Short J2
+148: Store Short K1
+149: Store Short K2
+150: Store Short L1
+151: Store Short L2
+152: Store Short M1
+153: Store Short M2
+154: Store Short N1
+155: Store Short N2
+156: Store Short O1
+157: Store Short O2
+158: Store Short P1
+159: Store Short P2

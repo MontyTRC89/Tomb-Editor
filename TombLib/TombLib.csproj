@@ -179,12 +179,11 @@
     <Compile Include="LevelData\TextureSound.cs" />
     <Compile Include="LevelData\TriggerInstance.cs" />
     <Compile Include="MathC.cs" />
-    <Compile Include="NG\NgParameterType.cs" />
-    <Compile Include="NG\NgTrigger.cs" />
+    <Compile Include="NG\NgParameterInfo.cs" />
+    <Compile Include="NG\NgParameterRange.cs" />
+    <Compile Include="NG\NgTriggerSubtypes.cs" />
     <Compile Include="NG\NgCatalog.cs" />
-    <Compile Include="NG\NgListKind.cs" />
-    <Compile Include="NG\NgTriggerKeyValuePair.cs" />
-    <Compile Include="NG\NgTriggerMainKeyValuePair.cs" />
+    <Compile Include="NG\NgTriggerSubtype.cs" />
     <Compile Include="Ray.cs" />
     <Compile Include="RectangleInt2.cs" />
     <Compile Include="Rectangle2.cs" />
@@ -192,6 +191,8 @@
     <Compile Include="Utils\CollectionUtils.cs" />
     <Compile Include="Utils\Collision.cs" />
     <Compile Include="Utils\ConditionallyOwned.cs" />
+    <Compile Include="Utils\DictionaryWhere.cs" />
+    <Compile Include="Utils\DictionarySelect.cs" />
     <Compile Include="Utils\FileFormat.cs" />
     <Compile Include="Utils\FileSystemUtils.cs" />
     <Compile Include="Utils\Hash.cs" />

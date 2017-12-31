@@ -589,17 +589,6 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectImportedGeometry)
-                {
-                    var instance = new ImportedGeometryInstance();
-                    instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
-                    instance.Roll = chunkIO.Raw.ReadSingle();
-                    instance.Scale = chunkIO.Raw.ReadSingle();
-                    instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
-                    addObject(instance);
-                    newObjects.TryAdd(objectID, instance);
-                }
                 else if (id3 == Prj2Chunks.ObjectLight)
                 {
                     var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
@@ -639,22 +628,86 @@ namespace TombLib.LevelData.IO
                     var instance = new TriggerInstance(area);
                     instance.TriggerType = (TriggerType)LEB128.ReadLong(chunkIO.Raw);
                     instance.TargetType = (TriggerTargetType)LEB128.ReadLong(chunkIO.Raw);
-                    instance.TargetData = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Target = new TriggerParameterUshort(unchecked((ushort)LEB128.ReadShort(chunkIO.Raw)));
                     long targetObjectId = LEB128.ReadLong(chunkIO.Raw);
-                    instance.Timer = LEB128.ReadShort(chunkIO.Raw);
+                    instance.Timer = new TriggerParameterUshort(unchecked((ushort)LEB128.ReadShort(chunkIO.Raw)));
                     instance.CodeBits = (byte)(LEB128.ReadLong(chunkIO.Raw) & 0x1f);
                     instance.OneShot = chunkIO.Raw.ReadBoolean();
-                    objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, (targetObj) => instance.TargetObj = targetObj));
+                    objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, (targetObj) => instance.Target = targetObj));
 
                     chunkIO.ReadChunks((id4, chunkSize4) =>
                     {
                         if (id4 == Prj2Chunks.ObjectTriggerExtra)
-                            instance.ExtraData = (short)chunkIO.ReadChunkShort(chunkSize4);
+                            instance.Extra = new TriggerParameterUshort(unchecked((ushort)chunkIO.ReadChunkShort(chunkSize4)));
                         else
                             return false;
                         return true;
                     });
 
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectTrigger2)
+                {
+                    var area = new RectangleInt2(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                    var instance = new TriggerInstance(area);
+
+                    Action<Action<ITriggerParameter>> readParameter = (setTriggerParameter) =>
+                    {
+                        long type = LEB128.ReadLong(chunkIO.Raw);
+                        switch (type)
+                        {
+                            case 0:
+                                setTriggerParameter(new TriggerParameterUshort(LEB128.ReadUShort(chunkIO.Raw)));
+                                return;
+                            case 1:
+                                long objectId = LEB128.ReadLong(chunkIO.Raw);
+                                objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(objectId, targetObj => setTriggerParameter(targetObj)));
+                                return;
+                            case 2:
+                                long roomId = LEB128.ReadLong(chunkIO.Raw);
+                                roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(roomId, targetRoom => setTriggerParameter(targetRoom)));
+                                return;
+                            case -1:
+                                setTriggerParameter(null);
+                                return;
+                            default:
+                                throw new Exception("Unknown trigger target for '" + instance + "'");
+                        }
+                    };
+
+                    chunkIO.ReadChunks((id4, chunkSize4) =>
+                    {
+                        if (id4 == Prj2Chunks.ObjectTrigger2Type)
+                            instance.TriggerType = (TriggerType)chunkIO.ReadChunkLong(chunkSize4);
+                        else if (id4 == Prj2Chunks.ObjectTrigger2TargetType)
+                            instance.TargetType = (TriggerTargetType)chunkIO.ReadChunkLong(chunkSize4);
+                        else if (id4 == Prj2Chunks.ObjectTrigger2Target)
+                            readParameter(parameter => instance.Target = parameter);
+                        else if (id4 == Prj2Chunks.ObjectTrigger2Timer)
+                            readParameter(parameter => instance.Timer = parameter);
+                        else if (id4 == Prj2Chunks.ObjectTrigger2Extra)
+                            readParameter(parameter => instance.Extra = parameter);
+                        else if (id4 == Prj2Chunks.ObjectTrigger2CodeBits)
+                            instance.CodeBits = unchecked((byte)chunkIO.ReadChunkLong(chunkSize4));
+                        else if (id4 == Prj2Chunks.ObjectTrigger2OneShot)
+                            instance.OneShot = chunkIO.ReadChunkBool(chunkSize4);
+                        else
+                            return false;
+                        return true;
+                    });
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectImportedGeometry)
+                {
+                    var instance = new ImportedGeometryInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                    instance.Roll = chunkIO.Raw.ReadSingle();
+                    instance.Scale = chunkIO.Raw.ReadSingle();
+                    instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

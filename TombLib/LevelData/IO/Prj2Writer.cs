@@ -402,22 +402,44 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write((byte)instance.Opacity);
                         });
                     else if (o is TriggerInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger, () =>
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, () =>
                         {
+                            Action<ITriggerParameter> writeTriggerParameter = (ITriggerParameter parameter) =>
+                            {
+                                if (parameter is TriggerParameterUshort)
+                                {
+                                    LEB128.Write(chunkIO.Raw, 0);
+                                    LEB128.Write(chunkIO.Raw, ((TriggerParameterUshort)parameter).Key);
+                                }
+                                else if (parameter is ObjectInstance)
+                                {
+                                    LEB128.Write(chunkIO.Raw, 1);
+                                    LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault((ObjectInstance)parameter));
+                                }
+                                else if (parameter is Room)
+                                {
+                                    LEB128.Write(chunkIO.Raw, 2);
+                                    LEB128.Write(chunkIO.Raw, rooms.TryGetOrDefault((Room)parameter));
+                                }
+                                else
+                                {
+                                    LEB128.Write(chunkIO.Raw, -1);
+                                };
+                            };
+
                             var instance = (TriggerInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             LEB128.Write(chunkIO.Raw, instance.Area.X0);
                             LEB128.Write(chunkIO.Raw, instance.Area.Y0);
                             LEB128.Write(chunkIO.Raw, instance.Area.X1);
                             LEB128.Write(chunkIO.Raw, instance.Area.Y1);
-                            LEB128.Write(chunkIO.Raw, (long)instance.TriggerType);
-                            LEB128.Write(chunkIO.Raw, (long)instance.TargetType);
-                            LEB128.Write(chunkIO.Raw, instance.TargetData);
-                            LEB128.Write(chunkIO.Raw, instance.TargetObj == null ? -1 : objectInstanceLookup.TryGetOrDefault(instance.TargetObj, -1));
-                            LEB128.Write(chunkIO.Raw, instance.Timer);
-                            LEB128.Write(chunkIO.Raw, instance.CodeBits);
-                            chunkIO.Raw.Write(instance.OneShot);
-                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectTriggerExtra, instance.ExtraData);
+                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectTrigger2Type, (long)instance.TriggerType);
+                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectTrigger2TargetType, (long)instance.TargetType);
+                            chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2Target, () => writeTriggerParameter(instance.Target), 32);
+                            chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2Timer, () => writeTriggerParameter(instance.Timer), 32);
+                            chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2Extra, () => writeTriggerParameter(instance.Extra), 32);
+                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectTrigger2CodeBits, instance.CodeBits);
+                            chunkIO.WriteChunkBool(Prj2Chunks.ObjectTrigger2OneShot, instance.OneShot);
                             chunkIO.WriteChunkEnd();
                         });
                     else if (o is ImportedGeometryInstance)

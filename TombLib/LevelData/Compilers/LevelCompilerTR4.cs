@@ -40,6 +40,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
+        public ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private byte[] _texture32Data;
         private List<ushort> _floorData = new List<ushort>();
         private List<tr_mesh> _meshes = new List<tr_mesh>();
@@ -83,6 +84,7 @@ namespace TombLib.LevelData.Compilers
             : base(level, dest, progressReporter)
         {
             _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(level.Settings.AnimatedTextureSets);
+            _scriptingIdsTable = level.GlobalScriptingIdsTable.Clone();
         }
 
         private void PrepareLevelData()

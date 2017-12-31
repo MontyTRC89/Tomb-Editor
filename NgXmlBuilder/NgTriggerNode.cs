@@ -9,27 +9,24 @@ namespace NgXmlBuilder
 {
     public class NgTriggerNode
     {
-        public int Id { get; internal set; }
+        public ushort Id { get; internal set; }
         public string Value { get; internal set; }
 
-        public Dictionary<int, NgTriggerNode> ObjectList { get; set; }
-        public Dictionary<int, NgTriggerNode> TimerList { get; set; }
-        public Dictionary<int, NgTriggerNode> ExtraList { get; set; }
-        public Dictionary<int, NgTriggerNode> ButtonList { get; set; }
+        public Dictionary<ushort, NgTriggerNode> TargetList { get; set; }
+        public Dictionary<ushort, NgTriggerNode> TimerList { get; set; }
+        public Dictionary<ushort, NgTriggerNode> ExtraList { get; set; }
 
-        public NgListKind ObjectListKind { get; set; }
-        public NgListKind TimerListKind { get; set; }
-        public NgListKind ExtraListKind { get; set; }
-        public NgListKind ButtonListKind { get; set; }
+        public NgParameterKind TargetListKind { get; set; }
+        public NgParameterKind TimerListKind { get; set; }
+        public NgParameterKind ExtraListKind { get; set; }
 
-        public NgTriggerNode(int id, string value)
+        public NgTriggerNode(ushort id, string value)
         {
             Id = id;
             Value = value;
-            ObjectList = new Dictionary<int, NgTriggerNode>();
-            TimerList = new Dictionary<int, NgTriggerNode>();
-            ExtraList = new Dictionary<int, NgTriggerNode>();
-            ButtonList = new Dictionary<int, NgTriggerNode>();
+            TargetList = new Dictionary<ushort, NgTriggerNode>();
+            TimerList = new Dictionary<ushort, NgTriggerNode>();
+            ExtraList = new Dictionary<ushort, NgTriggerNode>();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace TombLib.Utils
             return -1;
         }
 
-        public static TValue TryGetOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> rooms, TKey key, TValue @default = default(TValue))
+        public static TValue TryGetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> rooms, TKey key, TValue @default = default(TValue))
         {
             TValue result;
             if (rooms.TryGetValue(key, out result))

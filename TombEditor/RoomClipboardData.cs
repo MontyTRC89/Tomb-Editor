@@ -103,7 +103,10 @@ namespace TombEditor
             Level level = CreateLevel();
             List<Room> newRooms = level.Rooms.Where(room => room != null).ToList();
             foreach (Room room in newRooms)
+            {
+                room.Name += " (Copy)";
                 room.Position += new VectorInt3(offset.X, 0, offset.Y);
+            }
             LevelSettings newLevelSettings = editor.Level.Settings.Clone();
             editor.Level.MergeFrom(level, true, newSettings => editor.UpdateLevelSettings(newSettings));
             editor.RoomListChange();
