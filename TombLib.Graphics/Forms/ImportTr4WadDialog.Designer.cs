@@ -35,6 +35,10 @@ namespace TombLib.Forms
             this.butOK = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.dgvSamples = new DarkUI.Controls.DarkDataGridView();
+            this.columnSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnSamplePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.columnFound = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.lstPaths = new DarkUI.Controls.DarkListBox(this.components);
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
@@ -43,10 +47,6 @@ namespace TombLib.Forms
             this.butReloadSamples = new DarkUI.Controls.DarkButton();
             this.butDeletePath = new DarkUI.Controls.DarkButton();
             this.butAddPath = new DarkUI.Controls.DarkButton();
-            this.columnSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnSamplePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.columnFound = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).BeginInit();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -104,6 +104,33 @@ namespace TombLib.Forms
             this.dgvSamples.TabIndex = 5;
             this.dgvSamples.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSamples_CellContentClick);
             // 
+            // columnSampleName
+            // 
+            this.columnSampleName.HeaderText = "Sample";
+            this.columnSampleName.Name = "columnSampleName";
+            this.columnSampleName.Width = 150;
+            // 
+            // columnSamplePath
+            // 
+            this.columnSamplePath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnSamplePath.HeaderText = "Path";
+            this.columnSamplePath.Name = "columnSamplePath";
+            // 
+            // columnSearch
+            // 
+            this.columnSearch.HeaderText = "";
+            this.columnSearch.Name = "columnSearch";
+            this.columnSearch.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.columnSearch.Text = "Search";
+            this.columnSearch.Width = 60;
+            // 
+            // columnFound
+            // 
+            this.columnFound.HeaderText = "Found";
+            this.columnFound.Name = "columnFound";
+            this.columnFound.ReadOnly = true;
+            this.columnFound.Width = 50;
+            // 
             // darkLabel2
             // 
             this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -131,6 +158,7 @@ namespace TombLib.Forms
             this.lstPaths.Size = new System.Drawing.Size(647, 88);
             this.lstPaths.TabIndex = 11;
             this.lstPaths.Click += new System.EventHandler(this.lstPaths_Click);
+            this.lstPaths.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstPaths_KeyDown);
             // 
             // darkStatusStrip1
             // 
@@ -186,33 +214,6 @@ namespace TombLib.Forms
             this.butAddPath.Text = "Add path";
             this.butAddPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddPath.Click += new System.EventHandler(this.butAddPath_Click);
-            // 
-            // columnSampleName
-            // 
-            this.columnSampleName.HeaderText = "Sample";
-            this.columnSampleName.Name = "columnSampleName";
-            this.columnSampleName.Width = 150;
-            // 
-            // columnSamplePath
-            // 
-            this.columnSamplePath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.columnSamplePath.HeaderText = "Path";
-            this.columnSamplePath.Name = "columnSamplePath";
-            // 
-            // columnSearch
-            // 
-            this.columnSearch.HeaderText = "";
-            this.columnSearch.Name = "columnSearch";
-            this.columnSearch.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.columnSearch.Text = "Search";
-            this.columnSearch.Width = 60;
-            // 
-            // columnFound
-            // 
-            this.columnFound.HeaderText = "Found";
-            this.columnFound.Name = "columnFound";
-            this.columnFound.ReadOnly = true;
-            this.columnFound.Width = 50;
             // 
             // ImportTr4WadDialog
             // 

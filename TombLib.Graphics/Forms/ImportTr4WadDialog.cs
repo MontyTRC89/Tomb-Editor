@@ -151,5 +151,11 @@ namespace TombLib.Forms
                 }
             }
         }
+
+        private void lstPaths_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.C && e.Modifiers.HasFlag(Keys.Control))
+                Clipboard.SetText(lstPaths.SelectedItem?.ToString() ?? "");
+        }
     }
 }
