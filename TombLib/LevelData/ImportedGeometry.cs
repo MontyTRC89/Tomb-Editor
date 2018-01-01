@@ -119,7 +119,34 @@ namespace TombLib.LevelData
                 Scale = scale;
             }
 
-            public override void BuildBuffers() { }
+            public override void BuildBuffers()
+            {
+                int lastBaseIndex = 0;
+
+                Vertices = new List<ImportedGeometryVertex>();
+                Indices = new List<int>();
+
+                for (int i = 0; i < Meshes.Count; i++)
+                {
+                    Vertices.AddRange(Meshes[i].Vertices);
+
+                    Meshes[i].BaseIndex = lastBaseIndex;
+                    Meshes[i].NumIndices = Meshes[i].Indices.Count;
+
+                    for (int j = 0; j < Meshes[i].Indices.Count; j++)
+                    {
+                        Indices.Add((ushort)(lastBaseIndex + Meshes[i].Indices[j]));
+                    }
+
+                    lastBaseIndex += Meshes[i].Vertices.Count;
+                }
+
+                if (Vertices.Count == 0)
+                    return;
+
+                VertexBuffer = Buffer.Vertex.New<ImportedGeometryVertex>(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+                IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            }
         }
 
         public static IReadOnlyList<FileFormat> FileExtensions => BaseGeometryImporter.FileExtensions;

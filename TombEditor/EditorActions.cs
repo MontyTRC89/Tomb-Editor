@@ -270,6 +270,26 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
+        public static void ResetObjectRotation(RotationAxis axis = RotationAxis.None)
+        {
+            if (_editor.SelectedObject is IRotateableYX)
+            {
+                if (axis == RotationAxis.X || axis == RotationAxis.None) (_editor.SelectedObject as IRotateableYX).RotationX = 0;
+            }
+
+            if (_editor.SelectedObject is IRotateableY)
+            {
+                if (axis == RotationAxis.Y || axis == RotationAxis.None) (_editor.SelectedObject as IRotateableY).RotationY = 0;
+            }
+
+            if (_editor.SelectedObject is IRotateableYXRoll)
+            {
+                if (axis == RotationAxis.Roll || axis == RotationAxis.None) (_editor.SelectedObject as IRotateableYXRoll).Roll = 0;
+            }
+
+            _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
+        }
+
         public static void SmoothSector(Room room, int x, int z, int v)
         {
             var floor = (v % 2 == 0);
@@ -548,7 +568,8 @@ namespace TombEditor
         {
             Y,
             X,
-            Roll
+            Roll,
+            None
         };
 
         public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees, float quantization = 0.0f, bool delta = true)

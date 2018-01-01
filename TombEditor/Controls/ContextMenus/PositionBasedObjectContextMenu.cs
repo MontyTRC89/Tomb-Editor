@@ -41,6 +41,39 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.DeleteObjectWithWarning(targetObject, this);
             }));
 
+            if (_editor.SelectedObject is IRotateableY || _editor.SelectedObject is IRotateableYX || _editor.SelectedObject is IRotateableYXRoll)
+            {
+                Items.Add(new ToolStripSeparator());
+                Items.Add(new ToolStripMenuItem("Reset rotation (all axes)", global::TombEditor.Properties.Resources.actions_center_direction_16, (o, e) =>
+                {
+                    EditorActions.ResetObjectRotation();
+                }));
+
+                if (_editor.SelectedObject is IRotateableYX)
+                {
+                    Items.Add(new ToolStripMenuItem("Reset rotation (X axis)", null, (o, e) =>
+                    {
+                        EditorActions.ResetObjectRotation(EditorActions.RotationAxis.X);
+                    }));
+                }
+
+                if (_editor.SelectedObject is IRotateableY)
+                {
+                    Items.Add(new ToolStripMenuItem("Reset rotation (Y axis)", null, (o, e) =>
+                    {
+                        EditorActions.ResetObjectRotation(EditorActions.RotationAxis.Y);
+                    }));
+                }
+
+                if (_editor.SelectedObject is IRotateableYXRoll)
+                {
+                    Items.Add(new ToolStripMenuItem("Reset rotation (Roll axis)", null, (o, e) =>
+                    {
+                        EditorActions.ResetObjectRotation(EditorActions.RotationAxis.Roll);
+                    }));
+                }
+            }
+
             // Get all triggers pointing to selected object
             var triggers = _editor.Level.GetAllTriggersPointingToObject(targetObject);
             if (triggers.Count != 0)
