@@ -108,9 +108,9 @@ namespace TombLib.LevelData
                 case VariableType.None:
                     return "";
                 case VariableType.EditorDirectory:
-                    return System.Reflection.Assembly.GetCallingAssembly().Location;
+                    return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);
                 case VariableType.ScriptDirectory:
-                    return System.Reflection.Assembly.GetCallingAssembly().Location + Dir + "Script";
+                    return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location) + Dir + "Script";
                 case VariableType.LevelDirectory:
                     if (!string.IsNullOrEmpty(LevelFilePath))
                         return Path.GetDirectoryName(LevelFilePath);
