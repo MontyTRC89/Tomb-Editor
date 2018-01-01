@@ -2502,10 +2502,10 @@ namespace TombEditor
                             var texture = _editor.Level.Settings.Textures[0];
 
                             // Create various materials
-                            var materialOpaque = new IOMaterial(IOMaterial.Material_Opaque, texture, false, false);
-                            var materialOpaqueDoubleSided = new IOMaterial(IOMaterial.Material_OpaqueDoubleSided, texture, false, true);
-                            var materialAdditiveBlending = new IOMaterial(IOMaterial.Material_AdditiveBlending, texture, true, false);
-                            var materialAdditiveBlendingDoubleSided = new IOMaterial(IOMaterial.Material_AdditiveBlendingDoubleSided, texture, true, true);
+                            var materialOpaque = new IOMaterial("TeMat_0_0_0_0", texture, false, false, 0);
+                            var materialOpaqueDoubleSided = new IOMaterial("TeMat_0_0_1_0", texture, false, true, 0);
+                            var materialAdditiveBlending = new IOMaterial("TeMat_0_1_0_0", texture, true, false, 0);
+                            var materialAdditiveBlendingDoubleSided = new IOMaterial("TeMat_0_1_1_0", texture, true, true, 0);
 
                             model.Materials.Add(materialOpaque);
                             model.Materials.Add(materialOpaqueDoubleSided);
