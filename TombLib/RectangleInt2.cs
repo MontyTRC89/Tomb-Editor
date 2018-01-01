@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace TombLib
 {
     [Serializable]
-    public class RectangleInt2 : IEquatable<RectangleInt2>
+    public struct RectangleInt2 : IEquatable<RectangleInt2>
     {
         public static readonly RectangleInt2 MaxMin = new RectangleInt2(int.MaxValue, int.MaxValue, int.MinValue, int.MinValue);
 
