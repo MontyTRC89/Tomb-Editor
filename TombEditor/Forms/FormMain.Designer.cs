@@ -1463,6 +1463,7 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.aboutToolStripMenuItem.Text = "About Tomb Editor...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            
             // 
             // butRoomDown
             // 

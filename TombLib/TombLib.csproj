@@ -98,10 +98,10 @@
     <Compile Include="BoundingSphere.cs" />
     <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
     <Compile Include="GeometryIO\BaseGeometryImporter.cs" />
-    <Compile Include="GeometryIO\Exporters\RoomExporterCollada.cs" />
+    <None Include="GeometryIO\Exporters\RoomExporterCollada.cs" />
     <Compile Include="GeometryIO\Exporters\RoomExporterMetasequoia.cs" />
-    <Compile Include="GeometryIO\Exporters\RoomExporterObj.cs" />
-    <Compile Include="GeometryIO\Exporters\RoomExporterPly.cs" />
+    <None Include="GeometryIO\Exporters\RoomExporterObj.cs" />
+    <None Include="GeometryIO\Exporters\RoomExporterPly.cs" />
     <Compile Include="GeometryIO\Importers\AssimpImporter.cs" />
     <Compile Include="GeometryIO\Importers\MetasequoiaRoomImporter.cs" />
     <Compile Include="GeometryIO\Importers\PlyRoomImporter.cs" />
@@ -111,8 +111,11 @@
     <Compile Include="GeometryIO\IOModel.cs" />
     <Compile Include="GeometryIO\IOPolygon.cs" />
     <Compile Include="GeometryIO\IOSettingsPresets.cs" />
+    <Compile Include="GeometryIO\IOSubmesh.cs" />
     <Compile Include="Graphics\DeviceManager.cs" />
+    <Compile Include="Graphics\Material.cs" />
     <Compile Include="Graphics\SharpDxConversions.cs" />
+    <Compile Include="Graphics\Submesh.cs" />
     <Compile Include="LevelData\AnimatedTextureSet.cs" />
     <Compile Include="LevelData\Block.cs" />
     <Compile Include="LevelData\BumpMappingInfo.cs" />

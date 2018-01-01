@@ -185,13 +185,14 @@ namespace WadTool.Controls
                 {
                     StaticMesh mesh = model.Meshes[i];
 
-                    _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
+                    _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
                     _device.SetVertexInputLayout(_layout);
 
                     mioEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                     mioEffect.Techniques[0].Passes[0].Apply();
 
-                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+                    foreach (var submesh in mesh.Submeshes)
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                 }
 
                 // Draw boxes

@@ -56,13 +56,13 @@ namespace TombLib.LevelData
 
     public class ImportedGeometryMesh : Mesh<ImportedGeometryVertex>
     {
-        public Texture Texture { get; set; }
+        //public Texture Texture { get; set; }
 
         public ImportedGeometryMesh(GraphicsDevice device, string name)
             : base(device, name)
         { }
 
-        public override void BuildBuffers()
+        /*public override void BuildBuffers()
         {
             BaseIndex = 0;
             NumIndices = Indices.Count;
@@ -81,7 +81,7 @@ namespace TombLib.LevelData
 
             VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Default);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Default);
-        }
+        }*/
     }
 
     public struct ImportedGeometryInfo
@@ -126,19 +126,19 @@ namespace TombLib.LevelData
                 Vertices = new List<ImportedGeometryVertex>();
                 Indices = new List<int>();
 
-                for (int i = 0; i < Meshes.Count; i++)
+                foreach (var mesh in Meshes)
                 {
-                    Vertices.AddRange(Meshes[i].Vertices);
+                    Vertices.AddRange(mesh.Vertices);
 
-                    Meshes[i].BaseIndex = lastBaseIndex;
-                    Meshes[i].NumIndices = Meshes[i].Indices.Count;
-
-                    for (int j = 0; j < Meshes[i].Indices.Count; j++)
+                    foreach (var submesh in mesh.Submeshes)
                     {
-                        Indices.Add((ushort)(lastBaseIndex + Meshes[i].Indices[j]));
+                        submesh.Value.BaseIndex = lastBaseIndex;
+                        foreach (var index in submesh.Value.Indices)
+                            Indices.Add((ushort)(index));
+                        lastBaseIndex += submesh.Value.NumIndices;
                     }
 
-                    lastBaseIndex += Meshes[i].Vertices.Count;
+                    mesh.UpdateBoundingBox();
                 }
 
                 if (Vertices.Count == 0)
@@ -205,6 +205,16 @@ namespace TombLib.LevelData
                 DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
                 DirectXModel.BoundingBox = tmpModel.BoundingBox;
 
+                // Create materials
+                foreach (var tmpMaterial in tmpModel.Materials)
+                {
+                    var material = new Material(tmpMaterial.Name);
+                    material.Texture = tmpMaterial.Texture;
+                    material.AdditiveBlending = tmpMaterial.AdditiveBlending;
+                    material.DoubleSided = tmpMaterial.DoubleSided;
+                    DirectXModel.Materials.Add(material);
+                }
+
                 // Loop for each mesh loaded in scene
                 foreach (var mesh in tmpModel.Meshes)
                 {
@@ -212,50 +222,58 @@ namespace TombLib.LevelData
 
                     var currentIndex = 0;
                     var currPoly = 0;
-                    foreach (var tmpPoly in mesh.Polygons)
+                    foreach (var tmpSubmesh in mesh.Submeshes)
                     {
-                        if (tmpPoly.Shape == IOPolygonShape.Quad)
+                        var material = DirectXModel.Materials[tmpModel.Materials.IndexOf(tmpSubmesh.Value.Material)];
+                        var submesh = new Submesh(material);
+
+                        foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
                         {
-                            for (var i = 0; i < 4; i++)
+                            if (tmpPoly.Shape == IOPolygonShape.Quad)
                             {
-                                var vertex = new ImportedGeometryVertex();
-                                vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
-                                modelMesh.Vertices.Add(vertex);
+                                for (var i = 0; i < 4; i++)
+                                {
+                                    var vertex = new ImportedGeometryVertex();
+                                    vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                    vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
+                                    modelMesh.Vertices.Add(vertex);
+                                }
+
+                                submesh.Indices.Add(currentIndex);
+                                submesh.Indices.Add(currentIndex + 1);
+                                submesh.Indices.Add(currentIndex + 2);
+
+                                submesh.Indices.Add(currentIndex);
+                                submesh.Indices.Add(currentIndex + 2);
+                                submesh.Indices.Add(currentIndex + 3);
+
+                                currentIndex += 4;
+                            }
+                            else
+                            {
+                                for (var i = 0; i < 3; i++)
+                                {
+                                    var vertex = new ImportedGeometryVertex();
+                                    vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                    vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
+                                    modelMesh.Vertices.Add(vertex);
+                                    submesh.Indices.Add(currentIndex);
+                                    currentIndex++;
+                                }
                             }
 
-                            modelMesh.Indices.Add(currentIndex);
-                            modelMesh.Indices.Add(currentIndex + 1);
-                            modelMesh.Indices.Add(currentIndex + 2);
-
-                            modelMesh.Indices.Add(currentIndex);
-                            modelMesh.Indices.Add(currentIndex + 2);
-                            modelMesh.Indices.Add(currentIndex + 3);
-
-                            currentIndex += 4;
-                        }
-                        else
-                        {
-                            for (var i = 0; i < 3; i++)
-                            {
-                                var vertex = new ImportedGeometryVertex();
-                                vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
-                                modelMesh.Vertices.Add(vertex);
-                                modelMesh.Indices.Add(currentIndex);
-                                currentIndex++;
-                            }
+                            currPoly++;
                         }
 
-                        currPoly++;
+                        modelMesh.Submeshes.Add(material, submesh);
                     }
-
-                    modelMesh.Texture = mesh.Texture;
-                    modelMesh.BuildBuffers();
+                    //modelMesh.Texture = mesh.Texture;
 
                     // Add mesh to the model
                     DirectXModel.Meshes.Add(modelMesh);
                 }
+
+                DirectXModel.BuildBuffers();
             }
             catch (OperationCanceledException)
             {

@@ -32,38 +32,51 @@ namespace TombLib.GeometryIO.Importers
             var newModel = new IOModel();
             var textures = new Dictionary<int, Texture>();
 
-            // Create the list of textures to load
+            // Create the list of materials to load
             for (int i = 0; i < scene.Materials.Count; i++)
             {
                 var mat = scene.Materials[i];
+                var material = new IOMaterial(mat.HasName ? mat.Name : "Material_" + i);
 
                 var diffusePath = (mat.HasTextureDiffuse ? mat.TextureDiffuse.FilePath : null);
                 if (string.IsNullOrWhiteSpace(diffusePath))
                     continue;
 
                 textures.Add(i, GetTexture(path, diffusePath));
+
+                // Create the new material
+                material.Texture = textures[i];
+                material.AdditiveBlending = mat.HasBlendMode && mat.BlendMode == Assimp.BlendMode.Additive;
+                material.DoubleSided = mat.HasTwoSided && mat.IsTwoSided;
+                newModel.Materials.Add(material);
             }
 
-            foreach (var text in textures)
-                newModel.Textures.Add(text.Value);
+            /*foreach (var text in textures)
+                newModel.Textures.Add(text.Value);*/
 
             var lastBaseVertex = 0;
 
             // Loop for each mesh loaded in scene
             foreach (var mesh in scene.Meshes)
             {
-                var newMesh = new IOMesh();
-
+                // Import only textured meshes with valid materials
                 Texture faceTexture;
                 if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
                 {
                     logger.Warn("Mesh '" + (mesh.Name ?? "") + "' does have material index " + mesh.MaterialIndex + " which can't be found.");
                     continue;
                 }
+
+                // Assimp's mesh is our IOSubmesh so we import meshes with just one submesh
+                var material = newModel.Materials[mesh.MaterialIndex];
+                var newMesh = new IOMesh();
+                var newSubmesh = new IOSubmesh(material);
+                newMesh.Submeshes.Add(material, newSubmesh);
+
                 var hasTexCoords = mesh.HasTextureCoords(0);
                 var hasColors = mesh.HasVertexColors(0);
 
-                newMesh.Texture = faceTexture;
+                //newMesh.Texture = faceTexture;
 
                 // Source data
                 var positions = mesh.Vertices;
@@ -104,7 +117,7 @@ namespace TombLib.GeometryIO.Importers
                         if (_settings.InvertFaces)
                             poly.Indices.Reverse();
 
-                        newMesh.Polygons.Add(poly);
+                        newSubmesh.Polygons.Add(poly);
                     }
                     else if (face.IndexCount == 4)
                     {
@@ -118,7 +131,7 @@ namespace TombLib.GeometryIO.Importers
                         if (_settings.InvertFaces)
                             poly.Indices.Reverse();
 
-                        newMesh.Polygons.Add(poly);
+                        newSubmesh.Polygons.Add(poly);
                     }
                 }
 
