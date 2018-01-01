@@ -78,6 +78,7 @@ namespace TombLib.GeometryIO.Importers
                         {
                             var materialString = reader.ReadLine().Trim();
                             var tokensMaterial = materialString.Split(' ');
+                            var material = new IOMaterial(tokensMaterial[0]);
 
                             for (var j = 0; j < tokensMaterial.Length; j++)
                             {
@@ -87,9 +88,12 @@ namespace TombLib.GeometryIO.Importers
                                     texturePath = tokensMaterial[j].Substring(5, tokensMaterial[j].Length - 7);
                                     if (texturePath != "")
                                         textures.Add(i, GetTexture(Path.GetDirectoryName(filename), texturePath));
+                                    material.Texture = textures[i];
                                     break;
                                 }
                             }
+
+                            model.Materials.Add(material);
                         }
                         continue;
                     }
@@ -166,7 +170,18 @@ namespace TombLib.GeometryIO.Importers
                                         }
                                     }
 
-                                    mesh.Polygons.Add(poly);
+                                    // Material index
+                                    var stringMaterialIndex = GetSubBlock(line, "M");
+                                    var materialIndex = 0;
+                                    if (stringMaterialIndex != "")
+                                        materialIndex = int.Parse(stringMaterialIndex);
+
+                                    // Add polygon to the submesh (and add submesh if not existing yet)
+                                    var material = model.Materials[materialIndex];
+                                    if (!mesh.Submeshes.ContainsKey(material))
+                                        mesh.Submeshes.Add(material, new IOSubmesh(material));
+
+                                    mesh.Submeshes[material].Polygons.Add(poly);
                                 }
                                 line = reader.ReadLine().Trim();
                             }
@@ -174,7 +189,7 @@ namespace TombLib.GeometryIO.Importers
                                 break;
                         }
 
-                        mesh.Texture = textures[0];
+                        //mesh.Texture = textures[0];
                         model.Meshes.Add(mesh);
                     }
                 }

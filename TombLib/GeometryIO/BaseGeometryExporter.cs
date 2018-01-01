@@ -25,9 +25,10 @@ namespace TombLib.GeometryIO
 
         protected string GetTexturePath(string baseDirectory, Texture texture)
         {
-            string texturePath = _getTexturePathCallback(texture);
-            texturePath = PathC.GetRelativePath(baseDirectory, texturePath);
-            return texturePath;
+            var texturePath = _getTexturePathCallback(texture);
+            var relativeTexturePath = PathC.GetRelativePath(baseDirectory, texturePath);
+            if (relativeTexturePath == null || relativeTexturePath == "") return texturePath;
+            return relativeTexturePath;
         }
 
         protected Vector3 ApplyAxesTransforms(Vector3 position)
@@ -78,10 +79,10 @@ namespace TombLib.GeometryIO
 
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
-            new FileFormat("Stanford Polygon Library", "ply"),
-            new FileFormat("Wavefront Object", "obj"),
             new FileFormat("Metasequoia", "mqo"),
-            new FileFormat("Collada", "dae")
+            /*new FileFormat("Stanford Polygon Library", "ply"),
+            new FileFormat("Wavefront Object", "obj"),
+            new FileFormat("Collada", "dae")*/
         };
     }
 }

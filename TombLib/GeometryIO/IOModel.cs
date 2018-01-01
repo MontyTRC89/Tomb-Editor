@@ -11,7 +11,7 @@ namespace TombLib.GeometryIO
     public class IOModel
     {
         public List<IOMesh> Meshes { get; private set; } = new List<IOMesh>();
-        public List<Texture> Textures { get; private set; } = new List<Texture>();
+        public List<IOMaterial> Materials { get; private set; } = new List<IOMaterial>();
 
         public BoundingBox BoundingBox
         {

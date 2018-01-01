@@ -212,54 +212,57 @@ namespace TombLib.LevelData.Compilers
                                     Matrix4x4.CreateTranslation(geometry.Position);
                     foreach (var mesh in geometry.Model.DirectXModel.Meshes)
                     {
-                        for (int j = 0; j < mesh.Vertices.Count; j++)
+                        foreach (var submesh in mesh.Submeshes)
                         {
-                            // Apply the transform to the vertex
-                            Vector3 position = MathC.HomogenousTransform(mesh.Vertices[j].Position, transform);
-
-                            var trVertex = new tr_room_vertex
+                            for (int j = 0; j < mesh.Vertices.Count; j++)
                             {
-                                Position = new tr_vertex
+                                // Apply the transform to the vertex
+                                Vector3 position = MathC.HomogenousTransform(mesh.Vertices[j].Position, transform);
+
+                                var trVertex = new tr_room_vertex
                                 {
-                                    X = (short)(position.X),
-                                    Y = (short)-(position.Y + room.WorldPos.Y),
-                                    Z = (short)(position.Z)
-                                },
-                                Lighting1 = 0,
-                                Lighting2 = 0x4210, // TODO: apply light calculations also to imported geometry
-                                Attributes = 0
-                            };
+                                    Position = new tr_vertex
+                                    {
+                                        X = (short)(position.X),
+                                        Y = (short)-(position.Y + room.WorldPos.Y),
+                                        Z = (short)(position.Z)
+                                    },
+                                    Lighting1 = 0,
+                                    Lighting2 = 0x4210, // TODO: apply light calculations also to imported geometry
+                                    Attributes = 0
+                                };
 
-                            roomVertices.Add(trVertex);
+                                roomVertices.Add(trVertex);
+                            }
+
+                            for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
+                            {
+                                var triangle = new tr_face3();
+
+                                ushort index0 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 0]);
+                                ushort index1 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 1]);
+                                ushort index2 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 2]);
+
+                                triangle.Texture = 20;
+
+                                // TODO Move texture area into the mesh
+                                TextureArea texture;
+                                texture.DoubleSided = false;
+                                texture.BlendMode = BlendMode.Normal;
+                                texture.Texture = submesh.Value.Material.Texture;
+                                texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
+                                texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
+                                texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
+                                texture.TexCoord3 = new Vector2();
+
+                                Util.ObjectTextureManager.Result result;
+                                lock (_objectTextureManager)
+                                    result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
+                                roomTriangles.Add(result.CreateFace3(index0, index1, index2, 0));
+                            }
+
+                            geometryVertexIndexBase += mesh.Vertices.Count;
                         }
-
-                        for (int j = 0; j < mesh.Indices.Count; j += 3)
-                        {
-                            var triangle = new tr_face3();
-
-                            ushort index0 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 0]);
-                            ushort index1 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 1]);
-                            ushort index2 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 2]);
-
-                            triangle.Texture = 20;
-
-                            // TODO Move texture area into the mesh
-                            TextureArea texture;
-                            texture.DoubleSided = false;
-                            texture.BlendMode = BlendMode.Normal;
-                            texture.Texture = mesh.Texture;
-                            texture.TexCoord0 = mesh.Vertices[mesh.Indices[j + 0]].UV;
-                            texture.TexCoord1 = mesh.Vertices[mesh.Indices[j + 1]].UV;
-                            texture.TexCoord2 = mesh.Vertices[mesh.Indices[j + 2]].UV;
-                            texture.TexCoord3 = new Vector2();
-
-                            Util.ObjectTextureManager.Result result;
-                            lock (_objectTextureManager)
-                                result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
-                            roomTriangles.Add(result.CreateFace3(index0, index1, index2, 0));
-                        }
-
-                        geometryVertexIndexBase += mesh.Vertices.Count;
                     }
                 }
 

@@ -122,13 +122,14 @@ namespace WadTool.Controls
                     for (int i = 0; i < model.Meshes.Count; i++)
                     {
                         StaticMesh mesh = model.Meshes[i];
-                        _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
+                        _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
                         _device.SetVertexInputLayout(_layout);
 
                         mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                         mioEffect.Techniques[0].Passes[0].Apply();
 
-                        _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+                        foreach (var submesh in mesh.Submeshes)
+                            _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
                 }
                 else if (CurrentObject.GetType() == typeof(SkinnedModel))
@@ -208,7 +209,9 @@ namespace WadTool.Controls
                         mioEffect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
 
                         mioEffect.Techniques[0].Passes[0].Apply();
-                        _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+
+                        foreach (var submesh in mesh.Submeshes)
+                            _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
                 }
                 else if (CurrentObject.GetType() == typeof(WadSprite))

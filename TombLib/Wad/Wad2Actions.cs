@@ -825,42 +825,43 @@ namespace TombLib.Wad
             foreach (var tmpMesh in tmpModel.Meshes)
             {
                 mesh.VerticesPositions.AddRange(tmpMesh.Positions);
-                foreach (var tmpPoly in tmpMesh.Polygons)
-                {
-                    if (tmpPoly.Shape == IOPolygonShape.Quad)
+                foreach (var tmpSubmesh in tmpMesh.Submeshes)
+                    foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
                     {
-                        var poly = new WadPolygon(WadPolygonShape.Quad);
+                        if (tmpPoly.Shape == IOPolygonShape.Quad)
+                        {
+                            var poly = new WadPolygon(WadPolygonShape.Quad);
 
-                        foreach (var index in tmpPoly.Indices)
-                            poly.Indices.Add(index + lastBaseVertex);
+                            foreach (var index in tmpPoly.Indices)
+                                poly.Indices.Add(index + lastBaseVertex);
 
-                        var area = new TextureArea();
-                        area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
-                        area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
-                        area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
-                        area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
-                        area.Texture = tmpMesh.Texture;
-                        poly.Texture = area;
+                            var area = new TextureArea();
+                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
+                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
+                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
+                            area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
+                            area.Texture = tmpSubmesh.Value.Material.Texture;
+                            poly.Texture = area;
 
-                        mesh.Polys.Add(poly);
+                            mesh.Polys.Add(poly);
+                        }
+                        else
+                        {
+                            var poly = new WadPolygon(WadPolygonShape.Triangle);
+
+                            foreach (var index in tmpPoly.Indices)
+                                poly.Indices.Add(index + lastBaseVertex);
+
+                            var area = new TextureArea();
+                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
+                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
+                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
+                            area.Texture = tmpSubmesh.Value.Material.Texture;
+                            poly.Texture = area;
+
+                            mesh.Polys.Add(poly);
+                        }
                     }
-                    else
-                    {
-                        var poly = new WadPolygon(WadPolygonShape.Triangle);
-
-                        foreach (var index in tmpPoly.Indices)
-                            poly.Indices.Add(index + lastBaseVertex);
-
-                        var area = new TextureArea();
-                        area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
-                        area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
-                        area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
-                        area.Texture = tmpMesh.Texture;
-                        poly.Texture = area;
-
-                        mesh.Polys.Add(poly);
-                    }
-                }
 
                 lastBaseVertex = mesh.VerticesPositions.Count;
             }

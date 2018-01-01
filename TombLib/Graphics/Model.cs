@@ -29,6 +29,7 @@ namespace TombLib.Graphics
         public List<U> Vertices { get; set; }
         public List<int> Indices { get; set; }
         public string Name { get; set; }
+        public List<Material> Materials { get; private set; } = new List<Material>();
 
         public Model(GraphicsDevice device, ModelType type)
         {
@@ -45,7 +46,7 @@ namespace TombLib.Graphics
 
         public abstract void BuildBuffers();
 
-        protected static void PutSkinnedVertexAndIndex(Vector3 v, SkinnedMesh mesh, Vector2 uv,
+        protected static void PutSkinnedVertexAndIndex(Vector3 v, SkinnedMesh mesh, Submesh submesh, Vector2 uv,
                                                        int submeshIndex, int boneIndex, Vector2 positionInAtlas)
         {
             SkinnedVertex newVertex = new SkinnedVertex();
@@ -58,10 +59,10 @@ namespace TombLib.Graphics
                                        (positionInAtlas.Y + uv.Y) / (float)Wad2.TextureAtlasSize);
 
             mesh.Vertices.Add(newVertex);
-            mesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
+            submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
         }
 
-        protected static void PutStaticVertexAndIndex(Vector3 v, StaticMesh mesh, Vector2 uv, int submeshIndex,
+        protected static void PutStaticVertexAndIndex(Vector3 v, StaticMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
                                                       short color, Vector2 positionInAtlas)
         {
             StaticVertex newVertex = new StaticVertex();
@@ -75,7 +76,7 @@ namespace TombLib.Graphics
             newVertex.Shade = new Vector2(shade, 0.0f);
 
             mesh.Vertices.Add(newVertex);
-            mesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
+            submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
         }
     }
 }

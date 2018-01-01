@@ -34,11 +34,14 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("amb 0.250 0.250 0.250");
                 writer.WriteLine("}");
 
-                // Write material
-                writer.WriteLine("Material 1 {");
-                writer.Write("\"Room\" col(1.000 1.000 1.000 1.000) dif(0.000) amb(1.000) emi(1.000) spc(0.000) power(5.00) ");
-                writer.Write("tex(\"" + GetTexturePath(path, mesh.Texture) + "\") ");
-                writer.WriteLine("shader(4) vcol(1) ");
+                // Write materials
+                writer.WriteLine("Material " + model.Materials.Count + " {");
+                foreach (var material in model.Materials)
+                {
+                    writer.Write("\"" + material.Name + "\" col(1.000 1.000 1.000 1.000) dif(0.000) amb(1.000) emi(1.000) spc(0.000) power(5.00) ");
+                    writer.Write("tex(\"" + GetTexturePath(path, material.Texture) + "\") ");
+                    writer.WriteLine("shader(4) vcol(1) ");
+                }
 
                 writer.WriteLine("}");
 
@@ -57,49 +60,53 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("}");
 
                 // Save faces
-                writer.WriteLine("face " + mesh.Polygons.Count + " { ");
-                foreach (var poly in mesh.Polygons)
-                {
-                    var indices = new List<int>();
-                    indices.Add(poly.Indices[0]);
-                    indices.Add(poly.Indices[1]);
-                    indices.Add(poly.Indices[2]);
-                    if (poly.Shape == IOPolygonShape.Quad) indices.Add(poly.Indices[3]);
+                writer.WriteLine("face " + mesh.NumPolygons + " { ");
 
-                    // Change vertex winding
-                    if (_settings.InvertFaces) indices.Reverse();
-
-                    var v1 = indices[0];
-                    var v2 = indices[1];
-                    var v3 = indices[2];
-                    var v4 = (poly.Shape == IOPolygonShape.Quad ? indices[3] : 0);
-
-                    var uv1 = GetUV(ApplyUVTransform(mesh.UV[v1], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
-                    var uv2 = GetUV(ApplyUVTransform(mesh.UV[v2], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
-                    var uv3 = GetUV(ApplyUVTransform(mesh.UV[v3], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
-
-                    var color1 = GetColor(ApplyColorTransform(mesh.Colors[v1]));
-                    var color2 = GetColor(ApplyColorTransform(mesh.Colors[v2]));
-                    var color3 = GetColor(ApplyColorTransform(mesh.Colors[v3]));
-
-                    if (poly.Shape == IOPolygonShape.Triangle)
+                foreach (var submesh in mesh.Submeshes)
+                    foreach (var poly in submesh.Value.Polygons)
                     {
-                        writer.Write("3 V(" + v1 + " " + v2 + " " + v3 + ") ");
-                        writer.Write("M(0) ");
-                        writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + ") ");
-                        writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + ") ");
-                    }
-                    else
-                    {
-                        var uv4 = GetUV(ApplyUVTransform(mesh.UV[v4], mesh.Texture.Image.Width, mesh.Texture.Image.Height));
-                        var color4 = GetColor(ApplyColorTransform(mesh.Colors[v4]));
+                        var indices = new List<int>();
+                        indices.Add(poly.Indices[0]);
+                        indices.Add(poly.Indices[1]);
+                        indices.Add(poly.Indices[2]);
+                        if (poly.Shape == IOPolygonShape.Quad) indices.Add(poly.Indices[3]);
 
-                        writer.Write("4 V(" + v1 + " " + v2 + " " + v3 + " " + v4 + ") ");
-                        writer.Write("M(0) ");
-                        writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + " " + uv4 + ") ");
-                        writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + " " + color4 + ") ");
+                        // Change vertex winding
+                        if (_settings.InvertFaces) indices.Reverse();
+
+                        var v1 = indices[0];
+                        var v2 = indices[1];
+                        var v3 = indices[2];
+                        var v4 = (poly.Shape == IOPolygonShape.Quad ? indices[3] : 0);
+
+                        var texture = submesh.Value.Material.Texture;
+                        var uv1 = GetUV(ApplyUVTransform(mesh.UV[v1], texture.Image.Width, texture.Image.Height));
+                        var uv2 = GetUV(ApplyUVTransform(mesh.UV[v2], texture.Image.Width, texture.Image.Height));
+                        var uv3 = GetUV(ApplyUVTransform(mesh.UV[v3], texture.Image.Width, texture.Image.Height));
+
+                        var color1 = GetColor(ApplyColorTransform(mesh.Colors[v1]));
+                        var color2 = GetColor(ApplyColorTransform(mesh.Colors[v2]));
+                        var color3 = GetColor(ApplyColorTransform(mesh.Colors[v3]));
+
+                        if (poly.Shape == IOPolygonShape.Triangle)
+                        {
+                            writer.Write("3 V(" + v1 + " " + v2 + " " + v3 + ") ");
+                            writer.Write("M(" + model.Materials.IndexOf(submesh.Value.Material) + ") ");
+                            writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + ") ");
+                            writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + ") ");
+                        }
+                        else
+                        {
+                            var uv4 = GetUV(ApplyUVTransform(mesh.UV[v4], texture.Image.Width, texture.Image.Height));
+                            var color4 = GetColor(ApplyColorTransform(mesh.Colors[v4]));
+
+                            writer.Write("4 V(" + v1 + " " + v2 + " " + v3 + " " + v4 + ") ");
+                            writer.Write("M(" + model.Materials.IndexOf(submesh.Value.Material) + ") ");
+                            writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + " " + uv4 + ") ");
+                            writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + " " + color4 + ") ");
+                        }
                     }
-                }
+
                 writer.WriteLine("}");
                 writer.WriteLine("}");
                 writer.WriteLine("Eof");

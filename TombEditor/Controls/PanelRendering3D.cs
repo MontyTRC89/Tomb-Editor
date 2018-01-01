@@ -1592,19 +1592,20 @@ namespace TombEditor.Controls
 
             // Now do a ray - triangle intersection test
             bool hit = false;
-            for (int k = 0; k < mesh.Indices.Count; k += 3)
-            {
-                Vector3 p1 = mesh.Vertices[mesh.Indices[k]].Position;
-                Vector3 p2 = mesh.Vertices[mesh.Indices[k + 1]].Position;
-                Vector3 p3 = mesh.Vertices[mesh.Indices[k + 2]].Position;
-
-                float distance;
-                if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && (distance < minDistance))
+            foreach (var submesh in mesh.Submeshes)
+                for (int k = 0; k < submesh.Value.Indices.Count; k += 3)
                 {
-                    minDistance = distance;
-                    hit = true;
+                    Vector3 p1 = mesh.Vertices[submesh.Value.Indices[k]].Position;
+                    Vector3 p2 = mesh.Vertices[submesh.Value.Indices[k + 1]].Position;
+                    Vector3 p3 = mesh.Vertices[submesh.Value.Indices[k + 2]].Position;
+
+                    float distance;
+                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && (distance < minDistance))
+                    {
+                        minDistance = distance;
+                        hit = true;
+                    }
                 }
-            }
 
             if (hit)
                 result = new PickingResultObject(TransformRayDistance(ref transformedRay, ref objectMatrix, ref ray, minDistance), objectPtr);
@@ -2257,10 +2258,14 @@ namespace TombEditor.Controls
                     skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
 
                     skinnedModelEffect.Techniques[0].Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
 
-                    _debug.NumVerticesObjects += mesh.NumIndices;
-                    _debug.NumTrianglesObjects += mesh.NumIndices / 3;
+                    foreach (var submesh in mesh.Submeshes)
+                    {
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+
+                        _debug.NumVerticesObjects += submesh.Value.NumIndices;
+                        _debug.NumTrianglesObjects += submesh.Value.NumIndices / 3;
+                    }
                 }
 
                 if (_editor.SelectedObject == instance)
@@ -2309,43 +2314,47 @@ namespace TombEditor.Controls
 
                     if (k == 0 && i == 0)
                     {
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
                     }
 
-                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
-                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _device.SetVertexBuffer(0, model.VertexBuffer);
+                    _device.SetIndexBuffer(model.IndexBuffer, true);
 
                     geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
 
                     geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                     if (_editor.SelectedObject == instance)
                         geometryEffect.Parameters["Color"].SetValue(_selectionColor);
-
-                    if (mesh.Texture != null)
+                        
+                    foreach (var submesh in mesh.Submeshes)
                     {
-                        geometryEffect.Parameters["TextureEnabled"].SetValue(true);
-                        if (mesh.Texture is ImportedGeometryTexture)
+                        var texture = submesh.Value.Material.Texture;
+                        if (texture != null)
                         {
-                            geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)mesh.Texture).DirectXTexture);
-                            geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / mesh.Texture.Image.Width, 1.0f / mesh.Texture.Image.Height));
+                            geometryEffect.Parameters["TextureEnabled"].SetValue(true);
+                            if (texture is ImportedGeometryTexture)
+                            {
+                                geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
+                                geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
+                            }
+                            else
+                            {
+                                geometryEffect.Parameters["Texture"].SetResource(_textureAtlas);
+                                geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
+                            }
+                            geometryEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
                         }
                         else
                         {
-                            geometryEffect.Parameters["Texture"].SetResource(_textureAtlas);
-                            geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
+                            geometryEffect.Parameters["TextureEnabled"].SetValue(false);
                         }
-                        geometryEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
-                    }
-                    else
-                    {
-                        geometryEffect.Parameters["TextureEnabled"].SetValue(false);
-                    }
 
-                    geometryEffect.Techniques[0].Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.Indices.Count, mesh.BaseIndex);
+                        geometryEffect.Techniques[0].Passes[0].Apply();
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
 
-                    _debug.NumVerticesRooms += mesh.NumIndices;
-                    _debug.NumTrianglesRooms += mesh.NumIndices / 3;
+                        _debug.NumVerticesRooms += submesh.Value.NumIndices;
+                        _debug.NumTrianglesRooms += submesh.Value.NumIndices / 3;
+                    }
                 }
 
                 if (_editor.SelectedObject == instance)
@@ -2406,10 +2415,14 @@ namespace TombEditor.Controls
                     staticMeshEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
 
                     staticMeshEffect.Techniques[0].Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+                    
+                    foreach (var submesh in mesh.Submeshes)
+                    {
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
 
-                    _debug.NumVerticesObjects += mesh.NumIndices;
-                    _debug.NumTrianglesObjects += mesh.NumIndices / 3;
+                        _debug.NumVerticesObjects += submesh.Value.NumIndices;
+                        _debug.NumTrianglesObjects += submesh.Value.NumIndices / 3;
+                    }
                 }
 
                 if (_editor.SelectedObject == instance)
@@ -2473,10 +2486,14 @@ namespace TombEditor.Controls
                 skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((modelMatrix * viewProjection).ToSharpDX());
 
                 skinnedModelEffect.Techniques[0].Passes[0].Apply();
-                _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
 
-                _debug.NumVerticesObjects += mesh.NumIndices;
-                _debug.NumTrianglesObjects += mesh.NumIndices / 3;
+                foreach (var submesh in mesh.Submeshes)
+                {
+                    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+
+                    _debug.NumVerticesObjects += submesh.Value.NumIndices;
+                    _debug.NumTrianglesObjects += submesh.Value.NumIndices / 3;
+                }
             }
         }
 

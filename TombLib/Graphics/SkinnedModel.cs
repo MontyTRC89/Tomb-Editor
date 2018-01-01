@@ -78,19 +78,19 @@ namespace TombLib.Graphics
             Vertices = new List<SkinnedVertex>();
             Indices = new List<int>();
 
-            for (int i = 0; i < Meshes.Count; i++)
+            foreach (var mesh in Meshes)
             {
-                Vertices.AddRange(Meshes[i].Vertices);
+                Vertices.AddRange(mesh.Vertices);
 
-                Meshes[i].BaseIndex = lastBaseIndex;
-                Meshes[i].NumIndices = Meshes[i].Indices.Count;
-
-                for (int j = 0; j < Meshes[i].Indices.Count; j++)
+                foreach (var submesh in mesh.Submeshes)
                 {
-                    Indices.Add((ushort)(lastBaseIndex + Meshes[i].Indices[j]));
+                    submesh.Value.BaseIndex = lastBaseIndex;
+                    foreach (var index in submesh.Value.Indices)
+                        Indices.Add((ushort)(lastBaseIndex + index));
+                    lastBaseIndex += submesh.Value.NumIndices;
                 }
 
-                lastBaseIndex += Meshes[i].Vertices.Count;
+                mesh.UpdateBoundingBox();
             }
 
             if (Vertices.Count == 0)
@@ -105,11 +105,16 @@ namespace TombLib.Graphics
             SkinnedModel model = new SkinnedModel(device);
             model.Offset = mov.Offset;
 
+            // TODO: with new renderer add support for other materials and maybe multiple textures
+            var material = new Material("Wad2Mat");
+
             // Initialize the mesh
             for (int m = 0; m < mov.Meshes.Count; m++)
             {
                 WadMesh msh = mov.Meshes[m];
-                SkinnedMesh mesh = new SkinnedMesh(device, mov.ToString() + "_mesh_" + m.ToString());
+                var mesh = new SkinnedMesh(device, mov.ToString() + "_mesh_" + m.ToString());
+                var submesh = new Submesh(material);
+                mesh.Submeshes.Add(material, submesh);
 
                 mesh.BoundingBox = msh.BoundingBox;
                 mesh.BoundingSphere = msh.BoundingSphere;
@@ -125,9 +130,9 @@ namespace TombLib.Graphics
                         int v2 = poly.Indices[1];
                         int v3 = poly.Indices[2];
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.Texture.TexCoord2, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, m, positionInPackedTexture);
                     }
                     else
                     {
@@ -136,13 +141,13 @@ namespace TombLib.Graphics
                         int v3 = poly.Indices[2];
                         int v4 = poly.Indices[3];
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.Texture.TexCoord3, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, m, positionInPackedTexture);
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.Texture.TexCoord3, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.Texture.TexCoord2, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, m, positionInPackedTexture);
                     }
                 }
 

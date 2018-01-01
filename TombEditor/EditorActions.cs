@@ -2467,10 +2467,10 @@ namespace TombEditor
 
                         if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
                         {
-                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = (texture) =>
+                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = (txt) =>
                             {
-                                if (texture is LevelTexture)
-                                    return _editor.Level.Settings.MakeAbsolute(((LevelTexture)texture).Path);
+                                if (txt is LevelTexture)
+                                    return _editor.Level.Settings.MakeAbsolute(((LevelTexture)txt).Path);
                                 else
                                     return "";
                             };
@@ -2479,18 +2479,18 @@ namespace TombEditor
                             switch (resultingExtension)
                             {
                                 default:
-                                case ".obj":
-                                    exporter = new RoomExporterObj(settingsDialog.Settings, getTextureCallback);
-                                    break;
                                 case ".mqo":
                                     exporter = new RoomExporterMetasequoia(settingsDialog.Settings, getTextureCallback);
+                                    break;
+                                /*case ".obj":
+                                    exporter = new RoomExporterObj(settingsDialog.Settings, getTextureCallback);
                                     break;
                                 case ".ply":
                                     exporter = new RoomExporterPly(settingsDialog.Settings, getTextureCallback);
                                     break;
                                 case ".dae":
                                     exporter = new RoomExporterCollada(settingsDialog.Settings, getTextureCallback);
-                                    break;
+                                    break;*/
                             }
 
                             // Prepare data for export
@@ -2498,6 +2498,25 @@ namespace TombEditor
                             var mesh = new IOMesh();
                             var room = _editor.SelectedRoom;
                             var deltaPos = new Vector3(room.GetLocalCenter().X, 0, room.GetLocalCenter().Z);
+
+                            var texture = _editor.Level.Settings.Textures[0];
+
+                            // Create various materials
+                            var materialOpaque = new IOMaterial(IOMaterial.Material_Opaque, texture, false, false);
+                            var materialOpaqueDoubleSided = new IOMaterial(IOMaterial.Material_OpaqueDoubleSided, texture, false, true);
+                            var materialAdditiveBlending = new IOMaterial(IOMaterial.Material_AdditiveBlending, texture, true, false);
+                            var materialAdditiveBlendingDoubleSided = new IOMaterial(IOMaterial.Material_AdditiveBlendingDoubleSided, texture, true, true);
+
+                            model.Materials.Add(materialOpaque);
+                            model.Materials.Add(materialOpaqueDoubleSided);
+                            model.Materials.Add(materialAdditiveBlending);
+                            model.Materials.Add(materialAdditiveBlendingDoubleSided);
+
+                            // Add submeshes
+                            mesh.Submeshes.Add(materialOpaque, new IOSubmesh(materialOpaque));
+                            mesh.Submeshes.Add(materialOpaqueDoubleSided, new IOSubmesh(materialOpaqueDoubleSided));
+                            mesh.Submeshes.Add(materialAdditiveBlending, new IOSubmesh(materialAdditiveBlending));
+                            mesh.Submeshes.Add(materialAdditiveBlendingDoubleSided, new IOSubmesh(materialAdditiveBlendingDoubleSided));
 
                             var vertices = room.GetRoomVertices();
                             var lastIndex = 0;
@@ -2507,8 +2526,9 @@ namespace TombEditor
                                 {
                                     for (var f = 0; f < 29; f++)
                                     {
+                                        var textureArea = room.Blocks[x, z].GetFaceTexture((BlockFace)f);
                                         if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
-                                            !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsUnavailable)
+                                            !textureArea.TextureIsUnavailable)
                                         {
                                             var indices = room.GetFaceIndices(x, z, (BlockFace)f);
                                             var poly = new IOPolygon(indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
@@ -2517,7 +2537,23 @@ namespace TombEditor
                                                 poly.Indices.Add(lastIndex);
                                                 lastIndex++;
                                             }
-                                            mesh.Polygons.Add(poly);
+
+                                            // Get the right submesh
+                                            var submesh = mesh.Submeshes[materialOpaque];
+                                            if (textureArea.BlendMode == BlendMode.Additive)
+                                            {
+                                                if (textureArea.DoubleSided)
+                                                    submesh = mesh.Submeshes[materialAdditiveBlendingDoubleSided];
+                                                else
+                                                    submesh = mesh.Submeshes[materialAdditiveBlending];
+                                            }
+                                            else
+                                            {
+                                                if (textureArea.DoubleSided)
+                                                    submesh = mesh.Submeshes[materialOpaqueDoubleSided];
+                                            }
+                                                
+                                            submesh.Polygons.Add(poly);
 
                                             foreach (var index in indices)
                                             {
@@ -2530,7 +2566,7 @@ namespace TombEditor
                                 }
                             }
 
-                            mesh.Texture = _editor.Level.Settings.Textures[0];
+                            //mesh.Texture = _editor.Level.Settings.Textures[0];
                             model.Meshes.Add(mesh);
 
                             if (exporter.ExportToFile(model, saveFileDialog.FileName))

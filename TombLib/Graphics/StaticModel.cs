@@ -20,25 +20,23 @@ namespace TombLib.Graphics
         public override void BuildBuffers()
         {
             int lastBaseIndex = 0;
-            int lastBaseVertex = 0;
 
             Vertices = new List<StaticVertex>();
             Indices = new List<int>();
 
-            for (int i = 0; i < Meshes.Count; i++)
+            foreach (var mesh in Meshes)
             {
-                Vertices.AddRange(Meshes[i].Vertices);
+                Vertices.AddRange(mesh.Vertices);
 
-                Meshes[i].BaseIndex = lastBaseIndex;
-                Meshes[i].NumIndices = Meshes[i].Indices.Count;
-
-                for (int j = 0; j < Meshes[i].Indices.Count; j++)
+                foreach (var submesh in mesh.Submeshes)
                 {
-                    Indices.Add((ushort)(lastBaseVertex + Meshes[i].Indices[j]));
+                    submesh.Value.BaseIndex = lastBaseIndex;
+                    foreach (var index in submesh.Value.Indices)
+                        Indices.Add((ushort)(lastBaseIndex + index));
+                    lastBaseIndex += submesh.Value.NumIndices;
                 }
 
-                lastBaseIndex += Meshes[i].Indices.Count;
-                lastBaseVertex += Meshes[i].Vertices.Count;
+                mesh.UpdateBoundingBox();
             }
 
             if (Vertices.Count == 0) return;
@@ -51,9 +49,14 @@ namespace TombLib.Graphics
         {
             StaticModel model = new StaticModel(device);
 
+            // TODO: with new renderer add support for other materials and maybe multiple textures
+            var material = new Material("Wad2Mat");
+
             // Initialize the mesh
-            WadMesh msh = staticMesh.Mesh;
-            StaticMesh mesh = new StaticMesh(device, staticMesh.ToString() + "_mesh");
+            var msh = staticMesh.Mesh;
+            var mesh = new StaticMesh(device, staticMesh.ToString() + "_mesh");
+            var submesh = new Submesh(material);
+            mesh.Submeshes.Add(material, submesh);
 
             mesh.BoundingBox = msh.BoundingBox;
             mesh.BoundingSphere = msh.BoundingSphere;
@@ -69,9 +72,9 @@ namespace TombLib.Graphics
                     int v2 = poly.Indices[1];
                     int v3 = poly.Indices[2];
 
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.Texture.TexCoord0, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), positionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.Texture.TexCoord2, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), positionInPackedTexture);
                 }
                 else
                 {
@@ -80,14 +83,13 @@ namespace TombLib.Graphics
                     int v3 = poly.Indices[2];
                     int v4 = poly.Indices[3];
 
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.Texture.TexCoord0, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), positionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.Texture.TexCoord3, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), positionInPackedTexture);
 
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.Texture.TexCoord3, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), positionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.Texture.TexCoord2, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), positionInPackedTexture);
-
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), positionInPackedTexture);
                 }
             }
 
