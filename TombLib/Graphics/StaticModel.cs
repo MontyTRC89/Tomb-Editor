@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Utils;
 using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
@@ -49,14 +50,25 @@ namespace TombLib.Graphics
         {
             StaticModel model = new StaticModel(device);
 
-            // TODO: with new renderer add support for other materials and maybe multiple textures
-            var material = new Material("Wad2Mat");
+            // Prepare materials
+            var materialOpaque = new Material("TeMat_0_0_0_0", null, false, false, 0);
+            var materialOpaqueDoubleSided = new Material("TeMat_0_0_1_0", null, false, true, 0);
+            var materialAdditiveBlending = new Material("TeMat_0_1_0_0", null, true, false, 0);
+            var materialAdditiveBlendingDoubleSided = new Material("TeMat_0_1_1_0", null, true, true, 0);
+
+            model.Materials.Add(materialOpaque);
+            model.Materials.Add(materialOpaqueDoubleSided);
+            model.Materials.Add(materialAdditiveBlending);
+            model.Materials.Add(materialAdditiveBlendingDoubleSided);
 
             // Initialize the mesh
             var msh = staticMesh.Mesh;
             var mesh = new StaticMesh(device, staticMesh.ToString() + "_mesh");
-            var submesh = new Submesh(material);
-            mesh.Submeshes.Add(material, submesh);
+
+            mesh.Submeshes.Add(materialOpaque, new Submesh(materialOpaque));
+            mesh.Submeshes.Add(materialOpaqueDoubleSided, new Submesh(materialOpaqueDoubleSided));
+            mesh.Submeshes.Add(materialAdditiveBlending, new Submesh(materialAdditiveBlending));
+            mesh.Submeshes.Add(materialAdditiveBlendingDoubleSided, new Submesh(materialAdditiveBlendingDoubleSided));
 
             mesh.BoundingBox = msh.BoundingBox;
             mesh.BoundingSphere = msh.BoundingSphere;
@@ -65,6 +77,21 @@ namespace TombLib.Graphics
             {
                 WadPolygon poly = msh.Polys[j];
                 Vector2 positionInPackedTexture = ((WadTexture)(poly.Texture.Texture)).PositionInTextureAtlas;
+
+                // Get the right submesh
+                var submesh = mesh.Submeshes[materialOpaque];
+                if (poly.Texture.BlendMode == BlendMode.Additive)
+                {
+                    if (poly.Texture.DoubleSided)
+                        submesh = mesh.Submeshes[materialAdditiveBlendingDoubleSided];
+                    else
+                        submesh = mesh.Submeshes[materialAdditiveBlending];
+                }
+                else
+                {
+                    if (poly.Texture.DoubleSided)
+                        submesh = mesh.Submeshes[materialOpaqueDoubleSided];
+                }
 
                 if (poly.Shape == WadPolygonShape.Triangle)
                 {
