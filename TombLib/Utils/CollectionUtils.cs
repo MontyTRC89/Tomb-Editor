@@ -8,17 +8,31 @@ namespace TombLib.Utils
 {
     public static class CollectionUtils
     {
-        public static int ReferenceIndexOf<T>(this IList<T> list, T needle)
+        public static int IndexOf<T>(this IEnumerable<T> list, Predicate<T> test, int skip = 0, int @default = -1)
         {
-            // This is not implemented for IEnumerable on purpose to avoid abuse of this method on non ordered containers.
-            // (HashSet, Dictionary, ...)
+            int i = 0;
+            foreach (T element in list)
+            {
+                if (i >= skip)
+                    if (test(element))
+                        return i;
+                ++i;
+            }
+            return @default;
+        }
 
+        public static int ReferenceIndexOf<T>(this IEnumerable<T> list, T needle)
+        {
             if (needle == null)
                 return -1;
 
-            for (int i = 0; i < list.Count; ++i)
-                if (ReferenceEquals(list[i], needle))
+            int i = 0;
+            foreach (T element in list)
+            {
+                if (ReferenceEquals(element, needle))
                     return i;
+                ++i;
+            }
 
             return -1;
         }

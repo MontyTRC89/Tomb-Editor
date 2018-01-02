@@ -8,6 +8,9 @@ using System.Xml;
 using System.Xml.Serialization;
 using TombLib.NG;
 using System.Net;
+using TombLib.Utils;
+using TombLib.LevelData;
+using System.Xml.Linq;
 
 namespace NgXmlBuilder
 {
@@ -49,7 +52,7 @@ namespace NgXmlBuilder
             LoadTriggersFromTxt();
 
             Console.WriteLine("Writing XML...");
-            SaveToXml();
+            SaveToXml(outPath);
 
             Console.WriteLine("Done");
 
@@ -57,15 +60,15 @@ namespace NgXmlBuilder
             NgCatalog.LoadCatalog(outPath);
         }
 
-        private static Dictionary<ushort, NgTriggerNode> GetListFromTxt(string name)
+        private static SortedList<ushort, TriggerParameterUshort> GetListFromTxt(string name)
         {
-            var result = new Dictionary<ushort, NgTriggerNode>();
+            var result = new SortedList<ushort, TriggerParameterUshort>();
             using (var reader = new StreamReader(File.OpenRead("NG\\" + name + ".txt")))
             {
                 while (!reader.EndOfStream)
                 {
                     var tokens = reader.ReadLine().Trim().Split(':');
-                    result.Add(ToU16(int.Parse(tokens[0])), new NgTriggerNode(ToU16(int.Parse(tokens[0])), XmlEncodeString(tokens[1].Trim())));
+                    result.Add(ToU16(int.Parse(tokens[0])), new NgTriggerSubtype(ToU16(int.Parse(tokens[0])), XmlEncodeString(tokens[1].Trim())));
                 }
             }
             return result;
@@ -138,34 +141,203 @@ namespace NgXmlBuilder
             return s;
         }
 
-        private static void GetList(NgBlock block, out Dictionary<ushort, NgTriggerNode> result, out NgParameterKind kind)
-        {
-            result = new Dictionary<ushort, NgTriggerNode>();
-            kind = NgParameterKind.AnyNumber;
+        static readonly char[] numberChars = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '+', '-' };
 
+        private struct Parsed
+        {
+            public string String;
+            public decimal? Value;
+        }
+
+        private static bool IsSeperator(char @char, bool start)
+        {
+            if (@char == (start ? ']' : '[') ||
+                @char == (start ? '}' : '{') ||
+                @char == (start ? ')' : '('))
+                return false;
+            if (char.IsSymbol(@char))
+                return true;
+            if (char.IsPunctuation(@char))
+                return true;
+            return false;
+        }
+
+        private static List<Parsed> SplitIntoNumbers(string str, int startPos = 0)
+        {
+            str = str.Trim();
+            List<Parsed> list = new List<Parsed>();
+            while (startPos < str.Length)
+            {
+                int nextStart = str.IndexOfAny(numberChars, startPos);
+                if (nextStart == -1)
+                    break;
+
+                int nextEnd = str.IndexOf(c => !numberChars.Contains(c), nextStart + 1, str.Length);
+                string numberSubstring = str.Substring(nextStart, nextEnd - nextStart);
+                decimal number;
+                if (!decimal.TryParse(numberSubstring, out number))
+                {
+                    startPos = nextEnd + 1;
+                    continue;
+                }
+
+                // Preserve exactly one whitespace before the number
+                string preStr = str.Substring(0, nextStart);
+                int preStrWhiteSpaceCount = preStr.Reverse().TakeWhile(@char => char.IsWhiteSpace(@char)).Count();
+                if (preStrWhiteSpaceCount > 0)
+                {
+                    if (preStr.Length != preStrWhiteSpaceCount &&
+                        !IsSeperator(preStr[preStr.Length - preStrWhiteSpaceCount - 1], true))
+                        preStrWhiteSpaceCount -= 1;
+                    numberSubstring = preStr.Substring(preStr.Length - preStrWhiteSpaceCount) + numberSubstring;
+                    preStr = preStr.Substring(0, preStr.Length - preStrWhiteSpaceCount);
+                }
+
+                // Preserve exactly one whitespace after the number
+                string postStr = str.Substring(nextEnd);
+                int postStrWhiteSpaceCount = postStr.TakeWhile(@char => char.IsWhiteSpace(@char)).Count();
+                if (postStrWhiteSpaceCount > 0)
+                {
+                    if (postStr.Length != postStrWhiteSpaceCount &&
+                        !IsSeperator(postStr[postStrWhiteSpaceCount], false))
+                        postStrWhiteSpaceCount -= 1;
+                    numberSubstring += postStr.Substring(0, postStrWhiteSpaceCount);
+                    postStr = postStr.Substring(postStrWhiteSpaceCount);
+                }
+
+                // Add parsed values
+                if (!string.IsNullOrEmpty(preStr))
+                    list.Add(new Parsed { String = preStr });
+                list.Add(new Parsed { String = numberSubstring, Value = number });
+                str = postStr;
+                startPos = 0;
+            }
+
+            if (!string.IsNullOrEmpty(str))
+                list.Add(new Parsed { String = str });
+            return list;
+        }
+
+        private static NgParameterRange DetectLinearity(NgParameterRange parameter, NgBlock dbgBlock)
+        {
+            if (parameter.Kind != NgParameterKind.FixedEnumeration)
+                return parameter;
+            if (parameter.FixedEnumeration.Count <= 5) // It's not worth it if there are at most 5 elements
+                return parameter;
+
+            // Parse the numbers inside the strings.
+            // Stop if there is a varying amount of numbers in the strings or if different values are fixed.
+            var firstParsedStr = SplitIntoNumbers(parameter.FixedEnumeration.First().Value.Name);
+            var parsedStrs = new List<KeyValuePair<ushort, List<Parsed>>>(parameter.FixedEnumeration.Count);
+            foreach (var entry in parameter.FixedEnumeration)
+            {
+                var currentParsedStr = SplitIntoNumbers(entry.Value.Name);
+                if (currentParsedStr.Count != firstParsedStr.Count)
+                    return parameter;
+                for (int i = 0; i < currentParsedStr.Count; ++i)
+                    if ((currentParsedStr[i].Value != null) != (firstParsedStr[i].Value != null))
+                        return parameter;
+                for (int i = 0; i < currentParsedStr.Count; ++i)
+                    if (currentParsedStr[i].Value == null)
+                        if (currentParsedStr[i].String != firstParsedStr[i].String)
+                            return parameter;
+                parsedStrs.Add(new KeyValuePair<ushort, List<Parsed>>(entry.Key, currentParsedStr));
+            }
+
+            // Check if there exists a linear run
+            // There can't be missing keys.
+            ushort idStart = parsedStrs.OrderBy(e => e.Key).First().Key;
+            ushort idEnd = parsedStrs.OrderByDescending(e => e.Key).First().Key;
+            var idLookup = new HashSet<ushort>(parsedStrs.Select(e => e.Key));
+            for (ushort i = idStart; i < idEnd; ++i)
+                if (!idLookup.Contains(i))
+                {
+                    Console.WriteLine("Linear holes found. Should be rare with NG trigger definitions.");
+                    return parameter;
+                }
+
+            // String format now is perfectly fine.
+            // We just have to propose some kind of linear pattern
+            ushort firstId = parameter.FixedEnumeration.First().Key;
+            ushort secondId = parameter.FixedEnumeration.ElementAt(1).Key;
+            var secondParsedStr = parsedStrs[1].Value;
+            List<NgLinearParameter> linearParameters = new List<NgLinearParameter>(firstParsedStr.Count);
+            for (int i = 0; i < firstParsedStr.Count; ++i)
+                if (firstParsedStr[i].Value == null)
+                    linearParameters.Add(new NgLinearParameter { FixedStr = firstParsedStr[i].String });
+                else
+                {
+
+                    decimal xDistance = secondId - firstId;
+                    decimal yDistance = secondParsedStr[i].Value.Value - firstParsedStr[i].Value.Value;
+                    decimal factor = yDistance / xDistance;
+                    decimal add = firstParsedStr[i].Value.Value - firstId * factor;
+                    linearParameters.Add(new NgLinearParameter { Factor = factor, Add = add });
+                }
+
+            // Eliminate unnecessary linear parameters
+            // (i.e. linear with 0 slope)
+            for (int i = 0; i < linearParameters.Count; ++i)
+                if (linearParameters[i].FixedStr != null)
+                    if (linearParameters[i].Factor == 0)
+                        linearParameters[i] = new NgLinearParameter { FixedStr = firstParsedStr[i].String };
+            for (int i = linearParameters.Count - 1; i >= 1; --i)
+                if ((linearParameters[i].FixedStr != null) && (linearParameters[i - 1].FixedStr != null))
+                {
+                    linearParameters[i - 1] = new NgLinearParameter { FixedStr = linearParameters[i - 1].FixedStr + linearParameters[i].FixedStr };
+                    linearParameters.RemoveAt(i);
+                    for (int j = 0; j < parsedStrs.Count; ++j)
+                        parsedStrs[j].Value.RemoveAt(i);
+                }
+
+            // Check that the linear pattern is indeed a good fit
+            foreach (var parsedStr in parsedStrs)
+                for (int i = 0; i < linearParameters.Count; ++i)
+                    if (linearParameters[i].FixedStr == null)
+                    {
+                        // Calculate prediction with the linear model
+                        decimal value = linearParameters[i].Factor * parsedStr.Key + linearParameters[i].Add;
+
+                        // Check prediction
+                        if (parsedStr.Value[i].Value.Value != value)
+                        {
+                            Console.WriteLine("Linear modelling failed. Should be rare with NG trigger definitions.");
+                            return parameter;
+                        }
+                    }
+
+            return new NgParameterRange(new NgLinearModel
+            {
+                Start = unchecked((ushort)idStart),
+                End = unchecked((ushort)idEnd),
+                Parameters = linearParameters
+            });
+        }
+
+        private static NgParameterRange GetList(NgBlock block)
+        {
             if (block.Items.Count == 1 && block.Items[0].StartsWith("#"))
             {
                 // Special list
                 var list = block.Items[0];
-
                 // Dynamic list?
-                if (list == "#ROOMS_255#") { kind = NgParameterKind.Rooms255; return; }
-                else if (list == "#SOUND_EFFECT_A#") { kind = NgParameterKind.SoundEffectsA; return; }
-                else if (list == "#SOUND_EFFECT_B#") { kind = NgParameterKind.SoundEffectsB; return; }
-                else if (list == "#SFX_1024#") { kind = NgParameterKind.Sfx1024; return; }
-                else if (list == "#NG_STRING_LIST_255#") { kind = NgParameterKind.NgStringsList255; return; }
-                else if (list == "#NG_STRING_LIST_ALL#") { kind = NgParameterKind.NgStringsAll; return; }
-                else if (list == "#PSX_STRING_LIST#") { kind = NgParameterKind.PsxStringsList; return; }
-                else if (list == "#PC_STRING_LIST#") { kind = NgParameterKind.PcStringsList; return; }
-                else if (list == "#STRING_LIST_255#") { kind = NgParameterKind.StringsList255; return; }
-                else if (list == "#MOVEABLES#") { kind = NgParameterKind.MoveablesInLevel; return; }
-                else if (list == "#SINK_LIST#") { kind = NgParameterKind.SinksInLevel; return; }
-                else if (list == "#STATIC_LIST#") { kind = NgParameterKind.StaticsInLevel; return; }
-                else if (list == "#FLYBY_LIST#") { kind = NgParameterKind.FlybyCamerasInLevel; return; }
-                else if (list == "#CAMERA_EFFECTS#") { kind = NgParameterKind.CamerasInLevel; return; }
-                else if (list == "#WAD-SLOTS#") { kind = NgParameterKind.WadSlots; return; }
-                else if (list == "#STATIC_SLOTS#") { kind = NgParameterKind.StaticsSlots; return; }
-                else if (list == "#LARA_POS_OCB#") { kind = NgParameterKind.LaraStartPosOcb; return; }
+                if (list == "#ROOMS_255#") return new NgParameterRange(NgParameterKind.Rooms255);
+                else if (list == "#SOUND_EFFECT_A#") return new NgParameterRange(NgParameterKind.SoundEffectsA);
+                else if (list == "#SOUND_EFFECT_B#") return new NgParameterRange(NgParameterKind.SoundEffectsB);
+                else if (list == "#SFX_1024#") return new NgParameterRange(NgParameterKind.Sfx1024);
+                else if (list == "#NG_STRING_LIST_255#") return new NgParameterRange(NgParameterKind.NgStringsList255);
+                else if (list == "#NG_STRING_LIST_ALL#") return new NgParameterRange(NgParameterKind.NgStringsAll);
+                else if (list == "#PSX_STRING_LIST#") return new NgParameterRange(NgParameterKind.PsxStringsList);
+                else if (list == "#PC_STRING_LIST#") return new NgParameterRange(NgParameterKind.PcStringsList);
+                else if (list == "#STRING_LIST_255#") return new NgParameterRange(NgParameterKind.StringsList255);
+                else if (list == "#MOVEABLES#") return new NgParameterRange(NgParameterKind.MoveablesInLevel);
+                else if (list == "#SINK_LIST#") return new NgParameterRange(NgParameterKind.SinksInLevel);
+                else if (list == "#STATIC_LIST#") return new NgParameterRange(NgParameterKind.StaticsInLevel);
+                else if (list == "#FLYBY_LIST#") return new NgParameterRange(NgParameterKind.FlybyCamerasInLevel);
+                else if (list == "#CAMERA_EFFECTS#") return new NgParameterRange(NgParameterKind.CamerasInLevel);
+                else if (list == "#WAD-SLOTS#") return new NgParameterRange(NgParameterKind.WadSlots);
+                else if (list == "#STATIC_SLOTS#") return new NgParameterRange(NgParameterKind.StaticsSlots);
+                else if (list == "#LARA_POS_OCB#") return new NgParameterRange(NgParameterKind.LaraStartPosOcb);
 
                 // Repeated strings
                 if (list.StartsWith("#REPEAT#"))
@@ -174,30 +346,26 @@ namespace NgXmlBuilder
                     var radix = tokens[0].Replace("\"", "");
                     var start = int.Parse(tokens[1].Replace(",", ""));
                     var end = int.Parse(tokens[2].Replace(",", ""));
+                    var enumeration = new SortedList<ushort, TriggerParameterUshort>();
                     for (var i = start; i < end; i++)
-                        result.Add(ToU16(i), new NgTriggerNode((ushort)i, XmlEncodeString(radix + i)));
-                    kind = (result.Count != 0 ? NgParameterKind.Fixed : NgParameterKind.Empty);
-                    return;
+                        enumeration.Add(ToU16(i), new TriggerParameterUshort((ushort)i, radix + i));
+                    return DetectLinearity(new NgParameterRange(enumeration), block);
                 }
 
                 // TXT lists
                 var listName = list.Replace("#", "");
                 if (File.Exists("NG\\" + listName + ".txt"))
-                {
-                    result = GetListFromTxt(listName);
-                    kind = (result.Count != 0 ? NgParameterKind.Fixed : NgParameterKind.Empty);
-                    return;
-                }
+                    return DetectLinearity(new NgParameterRange(GetListFromTxt(listName)), block);
                 else
                     throw new Exception("Missing NG file");
             }
             else
             {
                 // Free list
+                var enumeration = new SortedList<ushort, TriggerParameterUshort>();
                 foreach (var item in block.Items)
-                    result.Add(GetItemId(item), new NgTriggerNode(GetItemId(item), XmlEncodeString(GetItemValue(item))));
-                kind = (result.Count != 0 ? NgParameterKind.Fixed : NgParameterKind.Empty);
-                return;
+                    enumeration.Add(GetItemId(item), new TriggerParameterUshort(GetItemId(item), GetItemValue(item)));
+                return DetectLinearity(new NgParameterRange(enumeration), block);
             }
         }
 
@@ -216,270 +384,115 @@ namespace NgXmlBuilder
                         if (block.Id == 15)
                         {
                             // Trigger for timer field
-                            NgTempCatalog.TimerFieldTrigger = new NgTriggerNode(0xffff, "Timer Field");
-                            NgTempCatalog.TimerFieldTrigger.TargetList = GetListFromTxt("TIMER_SIGNED_LONG");
+                            NgCatalog.TimerFieldTrigger = new NgParameterRange(GetListFromTxt("TIMER_SIGNED_LONG"));
                         }
                         else if (block.Id == 9)
                         {
                             // Trigger for flip effect
-                            NgTempCatalog.FlipEffectTrigger = new NgTriggerNode(0xffff, "Flip Effect");
                             foreach (var item in block.Items)
-                            {
-                                NgTempCatalog.FlipEffectTrigger.TargetList.Add(GetItemId(item),
-                                    new NgTriggerNode(GetItemId(item), XmlEncodeString(GetItemValue(item))));
-                            }
+                                NgCatalog.FlipEffectTrigger.MainList.Add(ToU16(GetItemId(item)), new NgTriggerSubtype(ToU16(GetItemId(item)), GetItemValue(item)));
                         }
                         else if (block.Id == 11)
                         {
                             // Trigger for action
-                            NgTempCatalog.ActionTrigger = new NgTriggerNode(0xffff, "Action");
                             foreach (var item in block.Items)
-                            {
-                                NgTempCatalog.ActionTrigger.TimerList.Add(GetItemId(item),
-                                    new NgTriggerNode(GetItemId(item), XmlEncodeString(GetItemValue(item))) { TargetListKind = NgParameterKind.MoveablesInLevel });
-                            }
+                                NgCatalog.ActionTrigger.MainList.Add(ToU16(GetItemId(item)), new NgTriggerSubtype(ToU16(GetItemId(item)), GetItemValue(item))
+                                    { Target = new NgParameterRange(NgParameterKind.MoveablesInLevel) });
                         }
                         else if (block.Id == 12)
                         {
                             // Condition trigger
-                            NgTempCatalog.ConditionTrigger = new NgTriggerNode(0xffff, "Condition");
                             foreach (var item in block.Items)
-                            {
-                                NgTempCatalog.ConditionTrigger.TimerList.Add(GetItemId(item),
-                                    new NgTriggerNode(GetItemId(item), XmlEncodeString(GetItemValue(item))));
-                            }
+                                NgCatalog.ConditionTrigger.MainList.Add(ToU16(GetItemId(item)), new NgTriggerSubtype(ToU16(GetItemId(item)), GetItemValue(item)));
                         }
                     }
                     else if (block.Type == NgBlockType.FlipEffect)
                     {
                         if (block.ParameterType == NgParameterType.Timer)
-                        {
-                            var result = new Dictionary<ushort, NgTriggerNode>();
-                            var kind = NgParameterKind.AnyNumber;
-                            GetList(block, out result, out kind);
-                            NgTempCatalog.FlipEffectTrigger.TargetList[block.Id].TimerList = result;
-                            NgTempCatalog.FlipEffectTrigger.TargetList[block.Id].TimerListKind = kind;
-                        }
+                            NgCatalog.FlipEffectTrigger.MainList[block.Id].Timer = GetList(block);
                         else if (block.ParameterType == NgParameterType.Extra)
-                        {
-                            var result = new Dictionary<ushort, NgTriggerNode>();
-                            var kind = NgParameterKind.AnyNumber;
-                            GetList(block, out result, out kind);
-                            NgTempCatalog.FlipEffectTrigger.TargetList[block.Id].ExtraList = result;
-                            NgTempCatalog.FlipEffectTrigger.TargetList[block.Id].ExtraListKind = kind;
-                        }
+                            NgCatalog.FlipEffectTrigger.MainList[block.Id].Extra = GetList(block);
                     }
                     else if (block.Type == NgBlockType.Action)
                     {
                         if (block.ParameterType == NgParameterType.Object)
-                        {
-                            var result = new Dictionary<ushort, NgTriggerNode>();
-                            var kind = NgParameterKind.AnyNumber;
-                            GetList(block, out result, out kind);
-                            NgTempCatalog.ActionTrigger.TimerList[block.Id].TargetList = result;
-                            NgTempCatalog.ActionTrigger.TimerList[block.Id].TargetListKind = kind;
-                        }
+                            NgCatalog.ActionTrigger.MainList[block.Id].Timer = GetList(block);
                         else if (block.ParameterType == NgParameterType.Extra)
-                        {
-                            var result = new Dictionary<ushort, NgTriggerNode>();
-                            var kind = NgParameterKind.AnyNumber;
-                            GetList(block, out result, out kind);
-                            NgTempCatalog.ActionTrigger.TimerList[block.Id].ExtraList = result;
-                            NgTempCatalog.ActionTrigger.TimerList[block.Id].ExtraListKind = kind;
-                        }
+                            NgCatalog.ActionTrigger.MainList[block.Id].Extra = GetList(block);
                     }
                     else if (block.Type == NgBlockType.Condition)
                     {
                         if (block.ParameterType == NgParameterType.Object)
-                        {
-                            var result = new Dictionary<ushort, NgTriggerNode>();
-                            var kind = NgParameterKind.AnyNumber;
-                            GetList(block, out result, out kind);
-                            NgTempCatalog.ConditionTrigger.TimerList[block.Id].TargetList = result;
-                            NgTempCatalog.ConditionTrigger.TimerList[block.Id].TargetListKind = kind;
-                        }
+                            NgCatalog.ConditionTrigger.MainList[block.Id].Timer = GetList(block);
                         else if (block.ParameterType == NgParameterType.Extra)
-                        {
-                            var result = new Dictionary<ushort, NgTriggerNode>();
-                            var kind = NgParameterKind.AnyNumber;
-                            GetList(block, out result, out kind);
-                            NgTempCatalog.ConditionTrigger.TimerList[block.Id].ExtraList = result;
-                            NgTempCatalog.ConditionTrigger.TimerList[block.Id].ExtraListKind = kind;
-                        }
+                            NgCatalog.ConditionTrigger.MainList[block.Id].Extra = GetList(block);
                         /*else if (block.ParameterType == NgParameterType.Button)
-                        {
-                            var result = new Dictionary<ushort, NgTriggerNode>();
-                            var kind = NgParameterKind.AnyNumber;
-                            GetList(block, out result, out kind);
-                            NgTempCatalog.ConditionTrigger.TimerList[block.Id].ButtonList = result;
-                            NgTempCatalog.ConditionTrigger.TimerList[block.Id].ButtonListKind = kind;
-                        }*/
+                            NgCatalog.ConditionTrigger.MainList[block.Id].ButtonList = GetList(block);
+                        */
                     }
                 }
             }
 
-            {
-                var result = new Dictionary<ushort, NgTriggerNode>();
-                var kind = NgParameterKind.AnyNumber;
-                GetList(new NgBlock { Items = new List<string> { "#COLORS" } }, out result, out kind);
-                NgTempCatalog.FlipEffectTrigger.TargetList[28].TimerList = result;
-                NgTempCatalog.FlipEffectTrigger.TargetList[28].TimerListKind = kind;
-            }
+            NgCatalog.FlipEffectTrigger.MainList[28].Timer =
+                GetList(new NgBlock { Items = new List<string> { "#COLORS" } });
         }
 
-        private static void SaveToXml()
+        private static void SaveToXml(string path)
         {
-            if (File.Exists(outPath)) File.Delete(outPath);
-
-            using (var stream = File.OpenWrite(outPath))
-            {
-                using (var writer = new StreamWriter(stream))
-                {
-                    writer.WriteLine("<xml>");
-                    writer.WriteLine("<Triggers>");
-
-                    // Write timer trigger
-                    writer.WriteLine("<TimerTrigger>");
-                    writer.WriteLine("<TargetList Kind=\"Fixed\">");
-                    for (var i = 0; i < NgTempCatalog.TimerFieldTrigger.TargetList.Count; i++)
-                    {
-                        var current = NgTempCatalog.TimerFieldTrigger.TargetList.ElementAt(i);
-                        writer.WriteLine("<Target K=\"" + current.Key + "\" " +
-                                         "V=\"" + current.Value.Value + "\" />");
-                    }
-                    writer.WriteLine("</TargetList>");
-                    writer.WriteLine("</TimerTrigger>");
-
-                    // Write flip effect trigger
-                    writer.WriteLine("<FlipEffectTrigger>");
-                    writer.WriteLine("<TargetList Kind=\"Fixed\">");
-                    for (var i = 0; i < NgTempCatalog.FlipEffectTrigger.TargetList.Count; i++)
-                    {
-                        var current = NgTempCatalog.FlipEffectTrigger.TargetList.ElementAt(i);
-                        writer.WriteLine("<Target K=\"" + current.Key + "\" " +
-                                         "V=\"" + current.Value.Value + "\">");
-
-                        writer.WriteLine("<TimerList Kind=\"" + current.Value.TimerListKind + "\">");
-                        for (var j = 0; j < current.Value.TimerList.Count; j++)
-                        {
-                            var currentTimer = current.Value.TimerList.ElementAt(j);
-                            writer.WriteLine("<Timer K=\"" + currentTimer.Key + "\" " +
-                                             "V=\"" + currentTimer.Value.Value + "\" />");
-                        }
-                        writer.WriteLine("</TimerList>");
-
-                        writer.WriteLine("<ExtraList Kind=\"" + current.Value.ExtraListKind + "\">");
-                        for (var j = 0; j < current.Value.ExtraList.Count; j++)
-                        {
-                            var currentExtra = current.Value.ExtraList.ElementAt(j);
-                            writer.WriteLine("<Extra K=\"" + currentExtra.Key + "\" " +
-                                             "V=\"" + currentExtra.Value.Value + "\" />");
-                        }
-                        writer.WriteLine("</ExtraList>");
-
-                        writer.WriteLine("</Target>");
-                    }
-                    writer.WriteLine("</TargetList>");
-                    writer.WriteLine("</FlipEffectTrigger>");
-
-                    // Write action trigger
-                    writer.WriteLine("<ActionTrigger>");
-                    writer.WriteLine("<TimerList Kind=\"Fixed\">");
-                    for (var i = 0; i < NgTempCatalog.ActionTrigger.TimerList.Count; i++)
-                    {
-                        var current = NgTempCatalog.ActionTrigger.TimerList.ElementAt(i);
-                        writer.WriteLine("<Timer K=\"" + current.Key + "\" " +
-                                         "V=\"" + current.Value.Value + "\">");
-
-                        writer.WriteLine("<TargetList Kind=\"" + current.Value.TargetListKind + "\">");
-                        for (var j = 0; j < current.Value.TargetList.Count; j++)
-                        {
-                            var currentTarget = current.Value.TargetList.ElementAt(j);
-                            writer.WriteLine("<Target K=\"" + currentTarget.Key + "\" " +
-                                             "V=\"" + currentTarget.Value.Value + "\" />");
-                        }
-                        writer.WriteLine("</TargetList>");
-
-                        writer.WriteLine("<ExtraList Kind=\"" + current.Value.ExtraListKind + "\">");
-                        for (var j = 0; j < current.Value.ExtraList.Count; j++)
-                        {
-                            var currentExtra = current.Value.ExtraList.ElementAt(j);
-                            writer.WriteLine("<Extra K=\"" + currentExtra.Key + "\" " +
-                                             "V=\"" + currentExtra.Value.Value + "\" />");
-                        }
-                        writer.WriteLine("</ExtraList>");
-
-                        writer.WriteLine("</Timer>");
-                    }
-                    writer.WriteLine("</TimerList>");
-                    writer.WriteLine("</ActionTrigger>");
-
-                    // Write condition trigger
-                    writer.WriteLine("<ConditionTrigger>");
-                    writer.WriteLine("<TimerList Kind=\"Fixed\">");
-                    for (var i = 0; i < NgTempCatalog.ConditionTrigger.TimerList.Count; i++)
-                    {
-                        var current = NgTempCatalog.ConditionTrigger.TimerList.ElementAt(i);
-                        writer.WriteLine("<Timer K=\"" + current.Key + "\" " +
-                                         "V=\"" + current.Value.Value + "\">");
-
-                        writer.WriteLine("<TargetList Kind=\"" + current.Value.TargetListKind + "\">");
-                        for (var j = 0; j < current.Value.TargetList.Count; j++)
-                        {
-                            var currentTarget = current.Value.TargetList.ElementAt(j);
-                            writer.WriteLine("<Target K=\"" + currentTarget.Key + "\" " +
-                                             "V=\"" + currentTarget.Value.Value + "\" />");
-                        }
-                        writer.WriteLine("</TargetList>");
-
-                        writer.WriteLine("<ExtraList Kind=\"" + current.Value.ExtraListKind + "\">");
-                        for (var j = 0; j < current.Value.ExtraList.Count; j++)
-                        {
-                            var currentButton = current.Value.ExtraList.ElementAt(j);
-                            writer.WriteLine("<Extra K=\"" + currentButton.Key + "\" " +
-                                             "V=\"" + currentButton.Value.Value + "\" />");
-                        }
-                        writer.WriteLine("</ExtraList>");
-
-                        writer.WriteLine("</Timer>");
-                    }
-                    writer.WriteLine("</TimerList>");
-                    writer.WriteLine("</ConditionTrigger>");
-
-                    writer.WriteLine("</Triggers>");
-                    writer.WriteLine("</xml>");
-                }
-            }
-
-            var xml = new XmlDocument();
-            xml.Load(outPath);
-
-            var xmlWriter = new XmlTextWriter(outPath, Encoding.UTF8);
-            xmlWriter.Formatting = Formatting.Indented;
-
-            // Write the XML into a formatting XmlTextWriter
-            xml.WriteContentTo(xmlWriter);
-            xmlWriter.Flush();
-            xmlWriter.Close();
+            XDocument document = new XDocument();
+            document.Add(new XElement("TriggerDescription",
+                new XElement("TimerFieldTrigger", WriteNgParameterRange(NgCatalog.TimerFieldTrigger)),
+                new XElement("FlipEffectTrigger", WriteNgTriggerSubtype(NgCatalog.FlipEffectTrigger)),
+                new XElement("ActionTrigger", WriteNgTriggerSubtype(NgCatalog.ActionTrigger)),
+                new XElement("ConditionTrigger", WriteNgTriggerSubtype(NgCatalog.ConditionTrigger))));
+            document.Save(path);
         }
 
-        private static XmlElement CreateNodeForListItem(XmlDocument xml, string nodeName, int index, int key, string value)
+        private static XObject[] WriteNgTriggerSubtype(NgTriggerSubtypes triggerSubtypes)
         {
-            var node = xml.CreateElement(nodeName);
+            List<XObject> elements = new List<XObject>();
+            foreach (NgTriggerSubtype triggerSubtype in triggerSubtypes.MainList.Values)
+            {
+                XElement triggerSubtypeElement = new XElement("Subtrigger");
+                triggerSubtypeElement.Add(new XAttribute("K", triggerSubtype.Key));
+                triggerSubtypeElement.Add(new XAttribute("V", triggerSubtype.Name));
 
-            var attribute = xml.CreateAttribute("Index");
-            attribute.Value = index.ToString();
-            node.Attributes.Append(attribute);
+                if (!triggerSubtype.Timer.IsEmpty)
+                    triggerSubtypeElement.Add(new XElement("Timer", WriteNgParameterRange(triggerSubtype.Timer)));
+                if (!triggerSubtype.Target.IsEmpty)
+                    triggerSubtypeElement.Add(new XElement("Target", WriteNgParameterRange(triggerSubtype.Target)));
+                if (!triggerSubtype.Extra.IsEmpty)
+                    triggerSubtypeElement.Add(new XElement("Extra", WriteNgParameterRange(triggerSubtype.Extra)));
+                elements.Add(triggerSubtypeElement);
+            }
 
-            attribute = xml.CreateAttribute("Key");
-            attribute.Value = key.ToString();
-            node.Attributes.Append(attribute);
+            return elements.ToArray();
+        }
 
-            attribute = xml.CreateAttribute("Text");
-            attribute.Value = value;
-            node.Attributes.Append(attribute);
-
-            return node;
+        private static XObject[] WriteNgParameterRange(NgParameterRange parameter)
+        {
+            XElement parameterElement = new XElement(parameter.Kind.ToString());
+            switch (parameter.Kind)
+            {
+                case NgParameterKind.FixedEnumeration:
+                    foreach (TriggerParameterUshort value in parameter.FixedEnumeration.Values)
+                        parameterElement.Add(new XElement("Enum",
+                            new XAttribute("K", value.Key),
+                            new XAttribute("V", value.Name)));
+                    break;
+                case NgParameterKind.LinearModel:
+                    foreach (NgLinearParameter linearParameter in parameter.LinearModel.Value.Parameters)
+                        if (linearParameter.FixedStr != null)
+                            parameterElement.Add(new XElement("Fixed", linearParameter.FixedStr));
+                        else
+                            parameterElement.Add(new XElement("Linear",
+                                new XAttribute("Add", linearParameter.Add),
+                                new XAttribute("Factor", linearParameter.Factor)));
+                    parameterElement.Add(new XAttribute("Start", parameter.LinearModel.Value.Start));
+                    parameterElement.Add(new XAttribute("End", parameter.LinearModel.Value.End));
+                    break;
+            }
+            return new XObject[] { parameterElement };
         }
     }
 }

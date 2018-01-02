@@ -9,31 +9,30 @@ namespace TombLib.NG
 {
     public class NgCatalog
     {
-        public static NgParameterRange TimerFieldTrigger { get; private set; }
-        public static NgTriggerSubtypes FlipEffectTrigger { get; private set; }
-        public static NgTriggerSubtypes ActionTrigger { get; private set; }
-        public static NgTriggerSubtypes ConditionTrigger { get; private set; }
+        public static NgTriggerSubtypes FlipEffectTrigger { get; set; } = new NgTriggerSubtypes();
+        public static NgTriggerSubtypes ActionTrigger { get; set; } = new NgTriggerSubtypes();
+        public static NgTriggerSubtypes ConditionTrigger { get; set; } = new NgTriggerSubtypes();
+        public static NgParameterRange TimerFieldTrigger { get; set; } = new NgParameterRange();
 
         public static void LoadCatalog(string fileName)
         {
-            var xml = new XmlDocument();
-            xml.Load(fileName);
-
-            var triggersNode = xml.ChildNodes[0].ChildNodes[0];
-            foreach (XmlNode triggerNode in triggersNode.ChildNodes)
+            XmlDocument document = new XmlDocument();
+            document.Load(fileName);
+            XmlNode documentElement = document.GetElementsByTagName("TriggerDescription").Item(0);
+            foreach (XmlNode triggerNode in documentElement.ChildNodes)
                 switch (triggerNode.Name)
                 {
-                    case "TimerTrigger":
-                        TimerFieldTrigger = ReadNgParameter(triggerNode.ChildNodes[0]);
+                    case "TimerFieldTrigger":
+                        TimerFieldTrigger = ReadNgParameterRange(triggerNode);
                         break;
                     case "FlipEffectTrigger":
-                        FlipEffectTrigger = ReadNgTriggerSubtypes(triggerNode.ChildNodes[0]);
+                        FlipEffectTrigger = ReadNgTriggerSubtypes(triggerNode);
                         break;
                     case "ActionTrigger":
-                        ActionTrigger = ReadNgTriggerSubtypes(triggerNode.ChildNodes[0]);
+                        ActionTrigger = ReadNgTriggerSubtypes(triggerNode);
                         break;
                     case "ConditionTrigger":
-                        ConditionTrigger = ReadNgTriggerSubtypes(triggerNode.ChildNodes[0]);
+                        ConditionTrigger = ReadNgTriggerSubtypes(triggerNode);
                         break;
                 }
         }
@@ -50,14 +49,14 @@ namespace TombLib.NG
                 foreach (XmlNode nodeList in timerNode.ChildNodes)
                     switch (nodeList.Name)
                     {
-                        case "TargetList":
-                            triggerSubtype.ObjectList = ReadNgParameter(nodeList);
+                        case "Target":
+                            triggerSubtype.Target = ReadNgParameterRange(nodeList);
                             break;
-                        case "ExtraList":
-                            triggerSubtype.ExtraList = ReadNgParameter(nodeList);
+                        case "Extra":
+                            triggerSubtype.Extra = ReadNgParameterRange(nodeList);
                             break;
-                        case "TimerList":
-                            triggerSubtype.TimerList = ReadNgParameter(nodeList);
+                        case "Timer":
+                            triggerSubtype.Timer = ReadNgParameterRange(nodeList);
                             break;
                     }
 
@@ -66,20 +65,48 @@ namespace TombLib.NG
             return result;
         }
 
-        private static NgParameterRange ReadNgParameter(XmlNode parentNode)
+        private static NgParameterRange ReadNgParameterRange(XmlNode parentNode)
         {
-            var listKind = (NgParameterKind)Enum.Parse(typeof(NgParameterKind), parentNode.Attributes["Kind"].Value);
+            XmlNode node = parentNode.ChildNodes[0];
+            var listKind = (NgParameterKind)Enum.Parse(typeof(NgParameterKind), node.Name);
             switch (listKind)
             {
-                case NgParameterKind.Fixed:
-                    var fixedList = new SortedList<ushort, TriggerParameterUshort>(parentNode.ChildNodes.Count);
-                    foreach (XmlNode objectNode in parentNode.ChildNodes)
+                case NgParameterKind.FixedEnumeration:
+                    var fixedList = new SortedList<ushort, TriggerParameterUshort>(node.ChildNodes.Count);
+                    foreach (XmlNode objectNode in node.ChildNodes)
                     {
                         var key = ushort.Parse(objectNode.Attributes["K"].Value, CultureInfo.InvariantCulture);
                         var name = objectNode.Attributes["V"].Value;
                         fixedList.Add(key, new TriggerParameterUshort(key, name));
                     }
                     return new NgParameterRange(fixedList);
+                case NgParameterKind.LinearModel:
+                    var linearParameters = new List<NgLinearParameter>(node.ChildNodes.Count);
+                    foreach (XmlNode objectNode in node.ChildNodes)
+                    {
+                        switch (objectNode.Name)
+                        {
+                            case "Fixed":
+                                linearParameters.Add(new NgLinearParameter { FixedStr = objectNode.InnerText });
+                                break;
+                            case "Linear":
+                                linearParameters.Add(new NgLinearParameter
+                                {
+                                    Add = decimal.Parse(objectNode.Attributes["Add"].Value),
+                                    Factor = decimal.Parse(objectNode.Attributes["Factor"].Value)
+                                });
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                    NgLinearModel linearModel = new NgLinearModel
+                    {
+                        Parameters = linearParameters,
+                        Start = ushort.Parse(node.Attributes["Start"].Value),
+                        End = ushort.Parse(node.Attributes["End"].Value)
+                    };
+                    return new NgParameterRange(linearModel);
                 default:
                     return new NgParameterRange(listKind);
             }
