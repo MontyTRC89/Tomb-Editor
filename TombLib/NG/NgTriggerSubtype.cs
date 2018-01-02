@@ -13,8 +13,8 @@ namespace TombLib.NG
             : base(key, value)
         {}
 
-        public NgParameterRange ObjectList { get; set; }
-        public NgParameterRange TimerList { get; set; }
-        public NgParameterRange ExtraList { get; set; }
+        public NgParameterRange Target { get; set; }
+        public NgParameterRange Timer { get; set; }
+        public NgParameterRange Extra { get; set; }
     }
 }

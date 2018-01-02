@@ -72,7 +72,7 @@ namespace TombLib.NG
                     if (!(timer is TriggerParameterUshort))
                         return new NgParameterRange(NgParameterKind.Empty);
                     NgTriggerSubtype conditionSubtriggerType = NgCatalog.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
-                    return conditionSubtriggerType?.ObjectList ?? new NgParameterRange(NgParameterKind.Empty);
+                    return conditionSubtriggerType?.Target ?? new NgParameterRange(NgParameterKind.Empty);
 
                 default:
                     switch (targetType)
@@ -106,7 +106,7 @@ namespace TombLib.NG
                             if (!(timer is TriggerParameterUshort))
                                 return new NgParameterRange(NgParameterKind.Empty);
                             NgTriggerSubtype actionSubtriggerType = NgCatalog.ActionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
-                            return actionSubtriggerType?.ObjectList ?? new NgParameterRange(NgParameterKind.Empty);
+                            return actionSubtriggerType?.Target ?? new NgParameterRange(NgParameterKind.Empty);
 
                         case TriggerTargetType.TimerfieldNg:
                             return NgCatalog.TimerFieldTrigger;
@@ -131,7 +131,7 @@ namespace TombLib.NG
                             if (!(target is TriggerParameterUshort))
                                 return new NgParameterRange(NgParameterKind.Empty);
                             NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.FlipEffectTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)target).Key);
-                            return flipEffectSubtriggerType?.TimerList ?? new NgParameterRange(NgParameterKind.Empty);
+                            return flipEffectSubtriggerType?.Timer ?? new NgParameterRange(NgParameterKind.Empty);
 
                         case TriggerTargetType.ActionNg:
                             return new NgParameterRange(NgCatalog.ActionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)(e.Value)));
@@ -153,7 +153,7 @@ namespace TombLib.NG
                     if (!(timer is TriggerParameterUshort))
                         return new NgParameterRange(NgParameterKind.Empty);
                     NgTriggerSubtype conditionSubtriggerType = NgCatalog.ConditionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
-                    return conditionSubtriggerType?.ExtraList ?? new NgParameterRange(NgParameterKind.Empty);
+                    return conditionSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
 
                 default:
                     switch (targetType)
@@ -162,13 +162,13 @@ namespace TombLib.NG
                             if (!(target is TriggerParameterUshort))
                                 return new NgParameterRange(NgParameterKind.Empty);
                             NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.FlipEffectTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)target).Key);
-                            return flipEffectSubtriggerType?.ExtraList ?? new NgParameterRange(NgParameterKind.Empty);
+                            return flipEffectSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
 
                         case TriggerTargetType.ActionNg:
                             if (!(timer is TriggerParameterUshort))
                                 return new NgParameterRange(NgParameterKind.Empty);
                             NgTriggerSubtype actionSubtriggerType = NgCatalog.ActionTrigger.MainList.TryGetOrDefault(((TriggerParameterUshort)timer).Key);
-                            return actionSubtriggerType?.ExtraList ?? new NgParameterRange(NgParameterKind.Empty);
+                            return actionSubtriggerType?.Extra ?? new NgParameterRange(NgParameterKind.Empty);
 
                         default:
                             return new NgParameterRange(NgParameterKind.Empty);
@@ -213,7 +213,7 @@ namespace TombLib.NG
 
                         case TriggerTargetType.FlipEffect:
                             NgTriggerSubtype actionSubtriggerType = NgCatalog.ActionTrigger.MainList.TryGetOrDefault(target);
-                            if (actionSubtriggerType != null && actionSubtriggerType.ExtraList.IsEmpty)
+                            if (actionSubtriggerType != null && actionSubtriggerType.Extra.IsEmpty)
                                 return timer(upperBound);
                             else
                                 return (ushort)(timer(timerUpperBound) | (extra(extraUpperBound) << 8));
@@ -231,7 +231,7 @@ namespace TombLib.NG
                 case TriggerType.ConditionNg:
                     timer = (ushort)(realTimer & 255);
                     var conditionTrigger = NgCatalog.ConditionTrigger.MainList.TryGetOrDefault(timer.Value);
-                    if (conditionTrigger != null && conditionTrigger.ExtraList.IsEmpty)
+                    if (conditionTrigger != null && conditionTrigger.Extra.IsEmpty)
                         extra = null;
                     else
                         extra = (ushort)(realTimer >> 8);
@@ -243,7 +243,7 @@ namespace TombLib.NG
                         case TriggerTargetType.ActionNg:
                             timer = (ushort)(realTimer & 255);
                             var actionTrigger = NgCatalog.ActionTrigger.MainList.TryGetOrDefault(timer.Value);
-                            if (actionTrigger != null && actionTrigger.ExtraList.IsEmpty)
+                            if (actionTrigger != null && actionTrigger.Extra.IsEmpty)
                                 extra = null;
                             else
                                 extra = (ushort)(realTimer >> 8);
@@ -256,7 +256,7 @@ namespace TombLib.NG
 
                         case TriggerTargetType.FlipEffect:
                             var flipEffectTrigger = NgCatalog.FlipEffectTrigger.MainList.TryGetOrDefault(target);
-                            if (flipEffectTrigger != null && flipEffectTrigger.ExtraList.IsEmpty)
+                            if (flipEffectTrigger != null && flipEffectTrigger.Extra.IsEmpty)
                             {
                                 timer = realTimer;
                                 extra = null;
@@ -322,7 +322,7 @@ namespace TombLib.NG
 
                             ushort firstValue = GetValue(level, trigger.Target);
                             ushort secondValue = conditionId;
-                            if (!conditionTrigger.ExtraList.IsEmpty)
+                            if (!conditionTrigger.Extra.IsEmpty)
                                 secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
 
                             string result = trigger.Target is ObjectInstance ? "$9000," : "$8000,";
@@ -342,7 +342,7 @@ namespace TombLib.NG
 
                                     ushort firstValue = flipeffectId;
                                     ushort secondValue = GetValue(level, trigger.Timer);
-                                    if (!flipeffectTrigger.ExtraList.IsEmpty)
+                                    if (!flipeffectTrigger.Extra.IsEmpty)
                                         secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
 
                                     string result = "$2000," + firstValue + ",$" + secondValue.ToString("X4");
@@ -359,7 +359,7 @@ namespace TombLib.NG
 
                                     ushort firstValue = GetValue(level, trigger.Target);
                                     ushort secondValue = actionId;
-                                    if (!actionTrigger.ExtraList.IsEmpty)
+                                    if (!actionTrigger.Extra.IsEmpty)
                                         secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
 
                                     string result = "$5000," + firstValue + ",$" + secondValue.ToString("X4");

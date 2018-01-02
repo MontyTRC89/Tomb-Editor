@@ -12,7 +12,8 @@ namespace TombLib.NG
     {
         Empty,
         AnyNumber,
-        Fixed,
+        FixedEnumeration,
+        LinearModel,
         MoveablesInLevel, // MOVEABLES
         StaticsInLevel, // STATIC_LIST
         CamerasInLevel, // CAMERA_EFFECTS
@@ -32,31 +33,65 @@ namespace TombLib.NG
         LaraStartPosOcb // LARA_POS_OCB
     }
 
+    public struct NgLinearParameter
+    {
+        public string FixedStr;
+        public decimal Add;
+        public decimal Factor;
+    };
+    public struct NgLinearModel
+    {
+        public List<NgLinearParameter> Parameters;
+        public ushort Start;
+        public ushort End;
+
+        public string ToString(ushort index)
+        {
+            string result = "";
+            foreach (NgLinearParameter linearParameter in Parameters)
+                if (linearParameter.FixedStr != null)
+                    result += linearParameter.FixedStr;
+                else
+                    result += linearParameter.Factor * index + linearParameter.Add;
+            return result;
+        }
+    }
+
     public struct NgParameterRange : IEquatable<NgParameterRange>
     {
         public NgParameterKind Kind { get; }
-        public IDictionary<ushort, TriggerParameterUshort> FixedList { get; }
+        public IDictionary<ushort, TriggerParameterUshort> FixedEnumeration { get; }
+        public NgLinearModel? LinearModel { get; }
 
         public NgParameterRange(NgParameterKind kind)
         {
-            if (kind == NgParameterKind.Fixed)
+            if (kind == NgParameterKind.FixedEnumeration)
                 kind = NgParameterKind.Empty;
             Kind = kind;
-            FixedList = null;
+            FixedEnumeration = null;
+            LinearModel = null;
         }
 
-        public NgParameterRange(IDictionary<ushort, TriggerParameterUshort> fixedList)
+        public NgParameterRange(IDictionary<ushort, TriggerParameterUshort> fixedEnumeration)
         {
-            if (fixedList == null || fixedList.Count == 0)
+            LinearModel = null;
+            if (fixedEnumeration == null || fixedEnumeration.Count == 0)
             {
                 Kind = NgParameterKind.Empty;
-                FixedList = null;
+                FixedEnumeration = null;
             }
             else
             {
-                Kind = NgParameterKind.Fixed;
-                FixedList = fixedList;
+                Kind = NgParameterKind.FixedEnumeration;
+                FixedEnumeration = fixedEnumeration;
             }
+        }
+
+        public NgParameterRange(NgLinearModel linearModel)
+        {
+            FixedEnumeration = null;
+            Kind = NgParameterKind.LinearModel;
+            LinearModel = linearModel;
         }
 
         public bool IsObject
@@ -128,9 +163,9 @@ namespace TombLib.NG
         {
             if (first.Kind != second.Kind)
                 return false;
-            if ((first.FixedList == null) != (second.FixedList == null))
+            if ((first.FixedEnumeration == null) != (second.FixedEnumeration == null))
                 return false;
-            if (first.FixedList != null && !first.FixedList.SequenceEqual(second.FixedList))
+            if (first.FixedEnumeration != null && !first.FixedEnumeration.SequenceEqual(second.FixedEnumeration))
                 return false;
             return true;
         }
@@ -157,14 +192,19 @@ namespace TombLib.NG
 
             switch (Kind)
             {
-                case NgParameterKind.AnyNumber:
-                    return null;
-
                 case NgParameterKind.Empty:
                     return new ITriggerParameter[0];
 
-                case NgParameterKind.Fixed:
-                    return FixedList.Values;
+                case NgParameterKind.AnyNumber:
+                    return null;
+
+                case NgParameterKind.FixedEnumeration:
+                    return FixedEnumeration.Values;
+
+                case NgParameterKind.LinearModel:
+                    NgLinearModel linearModel = LinearModel.Value;
+                    return Enumerable.Range(linearModel.Start, linearModel.End)
+                        .Select(i => new TriggerParameterUshort((ushort)i, linearModel.ToString((ushort)i)));
 
                 case NgParameterKind.MoveablesInLevel:
                     return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<MoveableInstance>();
