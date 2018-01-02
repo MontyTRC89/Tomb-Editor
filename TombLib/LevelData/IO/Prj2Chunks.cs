@@ -87,7 +87,6 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectLight = ChunkId.FromString("TeLig");
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
         /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri");
-        /************/public static readonly ChunkId ObjectTriggerExtra = ChunkId.FromString("TeTriEx");
         /**********/public static readonly ChunkId ObjectTrigger2 = ChunkId.FromString("TeTri2");
         /************/public static readonly ChunkId ObjectTrigger2Type = ChunkId.FromString("TeTy");
         /************/public static readonly ChunkId ObjectTrigger2TargetType = ChunkId.FromString("TeTaTy");

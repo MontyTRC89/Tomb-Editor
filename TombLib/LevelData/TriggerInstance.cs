@@ -51,12 +51,19 @@ namespace TombLib.LevelData
     public class TriggerParameterUshort : IEquatable<TriggerParameterUshort>, ITriggerParameter
     {
         public ushort Key { get; }
-        public object NameObject { get; }
+        private object _nameObject;
+
         public TriggerParameterUshort(ushort key, object nameObject = null)
         {
             Key = key;
-            NameObject = nameObject;
+
+            // We need to make sure not to keep the target alive forever even if, maybe, it's no longer needed otherwise
+            if (nameObject == null || nameObject is string)
+                _nameObject = nameObject;
+            else
+                _nameObject = new WeakReference(nameObject);
         }
+        public object NameObject => (_nameObject as WeakReference)?.Target ?? _nameObject;
         public string Name => NameObject?.ToString();
         public override string ToString() => Name ?? Key.ToString();
 

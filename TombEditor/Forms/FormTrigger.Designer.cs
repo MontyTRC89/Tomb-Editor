@@ -253,6 +253,8 @@ namespace TombEditor
             // 
             // paramTriggerType
             // 
+            this.paramTriggerType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.paramTriggerType.Level = null;
             this.paramTriggerType.Location = new System.Drawing.Point(82, 12);
             this.paramTriggerType.Name = "paramTriggerType";
@@ -262,6 +264,8 @@ namespace TombEditor
             // 
             // paramTargetType
             // 
+            this.paramTargetType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.paramTargetType.Level = null;
             this.paramTargetType.Location = new System.Drawing.Point(82, 38);
             this.paramTargetType.Name = "paramTargetType";
@@ -271,6 +275,8 @@ namespace TombEditor
             // 
             // paramExtra
             // 
+            this.paramExtra.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.paramExtra.Level = null;
             this.paramExtra.Location = new System.Drawing.Point(82, 116);
             this.paramExtra.Name = "paramExtra";
@@ -280,6 +286,8 @@ namespace TombEditor
             // 
             // paramTimer
             // 
+            this.paramTimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.paramTimer.Level = null;
             this.paramTimer.Location = new System.Drawing.Point(82, 90);
             this.paramTimer.Name = "paramTimer";
@@ -289,6 +297,8 @@ namespace TombEditor
             // 
             // paramTarget
             // 
+            this.paramTarget.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.paramTarget.Level = null;
             this.paramTarget.Location = new System.Drawing.Point(82, 64);
             this.paramTarget.Name = "paramTarget";
