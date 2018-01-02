@@ -3235,7 +3235,9 @@ namespace TombEditor.Controls
                             lookupBlock = room.ProbeLowestBlock(x, z + 1, _editor.Configuration.Editor_ProbeAttributesThroughPortals);
                             break;
                         default:
-                            throw new InvalidOperationException();
+                            climbDirection = BlockFlags.None;
+                            lookupBlock = new Room.RoomBlockPair();
+                            break;
                     }
 
                     if (lookupBlock.Block != null && lookupBlock.Block.HasFlag(climbDirection))
