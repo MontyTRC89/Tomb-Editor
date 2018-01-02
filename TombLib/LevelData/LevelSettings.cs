@@ -227,10 +227,10 @@ namespace TombLib.LevelData
         }
 
         public string FontTextureFileNameAbsoluteOrDefault => MakeAbsolute(FontTextureFilePath) ??
-            Path.Combine(System.Reflection.Assembly.GetCallingAssembly().Location, "Editor/Textures/Font.pc.png");
+            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/Font.pc.png");
 
         public string SkyTextureFileNameAbsoluteOrDefault => MakeAbsolute(SkyTextureFilePath) ??
-            Path.Combine(System.Reflection.Assembly.GetCallingAssembly().Location, "Editor/Textures/pcsky.raw.png");
+            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/pcsky.raw.png");
 
         public static ImageC LoadRawExtraTexture(string path)
         {
