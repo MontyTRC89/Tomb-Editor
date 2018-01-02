@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.0
@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "DarkUI\Example\E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NgXmlBuilder", "NgXmlBuilder\NgXmlBuilder.csproj", "{EFC2A02B-1138-46EA-A496-F94D58AC6B3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Forms", "TombLib.Graphics\TombLib.Forms.csproj", "{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Forms", "TombLib.Forms\TombLib.Forms.csproj", "{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Rendering", "TombLib.Rendering\TombLib.Rendering.csproj", "{E2F6F614-5007-471A-A22C-39B7D840376C}"
 	ProjectSection(ProjectDependencies) = postProject
