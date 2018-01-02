@@ -164,7 +164,16 @@ namespace TombLib.Controls
                     else
                     {
                         if (repopulate)
+                        {
+                            // Sort
+                            // For some reason the sorted property of the combo box does not work.
+                            if (ParameterRange.Kind == NgParameterKind.Fixed)
+                            {
+                                string[] cachedNames = listOfThings.Select(obj => obj?.ToString()).ToArray();
+                                Array.Sort(cachedNames, listOfThings);
+                            }
                             combo.DataSource = listOfThings;
+                        }
                         combo.SelectedItem = listOfThings.FirstOrDefault(item => item.Equals(Parameter)) ?? Parameter;
                         if (combo.SelectedItem == null)
                             combo.Text = "";

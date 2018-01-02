@@ -630,19 +630,17 @@ namespace TombLib.LevelData.IO
                     instance.TargetType = (TriggerTargetType)LEB128.ReadLong(chunkIO.Raw);
                     instance.Target = new TriggerParameterUshort(unchecked((ushort)LEB128.ReadShort(chunkIO.Raw)));
                     long targetObjectId = LEB128.ReadLong(chunkIO.Raw);
-                    instance.Timer = new TriggerParameterUshort(unchecked((ushort)LEB128.ReadShort(chunkIO.Raw)));
+
+                    ushort realTimer = unchecked((ushort)LEB128.ReadShort(chunkIO.Raw));
+                    ushort? timer, extra;
+                    NG.NgParameterInfo.DecodeNGRealTimer(instance.TargetType, instance.TriggerType,
+                        unchecked((ushort)targetObjectId), realTimer, out timer, out extra);
+                    instance.Timer = timer == null ? null : new TriggerParameterUshort(timer.Value);
+                    instance.Extra = timer == null ? null : new TriggerParameterUshort(extra.Value);
+
                     instance.CodeBits = (byte)(LEB128.ReadLong(chunkIO.Raw) & 0x1f);
                     instance.OneShot = chunkIO.Raw.ReadBoolean();
                     objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, (targetObj) => instance.Target = targetObj));
-
-                    chunkIO.ReadChunks((id4, chunkSize4) =>
-                    {
-                        if (id4 == Prj2Chunks.ObjectTriggerExtra)
-                            instance.Extra = new TriggerParameterUshort(unchecked((ushort)chunkIO.ReadChunkShort(chunkSize4)));
-                        else
-                            return false;
-                        return true;
-                    });
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);

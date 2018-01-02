@@ -189,6 +189,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 tbScript.Text = "Check all fields";
+                scriptExportPanel.Enabled = true;
                 logger.Debug(exc, "\"ExportToScriptTrigger\" failed.");
             }
         }

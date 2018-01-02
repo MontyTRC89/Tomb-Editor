@@ -1180,7 +1180,7 @@ namespace TombLib.LevelData.IO
                             texture.SetConvert512PixelsToDoubleRows(level.Settings, false); // Only use this compatibility thing if actually needed
                         level.Settings.Textures.Add(texture);
                         if (texture.ImageLoadException != null)
-                            progressReporter.RaiseDialog(new DialogDescriptonTextureUnloadable { Settings = level.Settings, Texture = texture});
+                            progressReporter.RaiseDialog(new DialogDescriptonTextureUnloadable { Settings = level.Settings, Texture = texture });
                         progressReporter.ReportProgress(50, "Loaded texture '" + texture.Path + "'");
                     }
 
@@ -1291,12 +1291,14 @@ namespace TombLib.LevelData.IO
                     // After loading slots, I compare them to legacy names and I add moveables and statics
                     for (var i = 0; i < numRooms; i++)
                     {
-                        if (level.Rooms[i] == null) continue;
+                        if (level.Rooms[i] == null)
+                            continue;
 
                         for (var j = 0; j < tempObjects[i].Count; j++)
                         {
                             var currentObj = tempObjects[i][j];
-                            if (!level.Wad.LegacyNames.ContainsKey(slots[(int)currentObj.WadObjectId])) continue;
+                            if (!level.Wad.LegacyNames.ContainsKey(slots[(int)currentObj.WadObjectId]))
+                                continue;
 
                             var wadObj = level.Wad.LegacyNames[slots[(int)currentObj.WadObjectId]];
 
@@ -1346,79 +1348,71 @@ namespace TombLib.LevelData.IO
                         List<FlybyCameraInstance> flyByLookup = null;
                         foreach (Room room in level.Rooms.Where(room => room != null))
                             foreach (var instance in room.Triggers.ToList())
-                                switch (instance.TargetType)
+                            {
+                                Func<ITriggerParameter, NG.NgParameterRange, ITriggerParameter> FixTriggerParameter = (ITriggerParameter parameter, NG.NgParameterRange range) =>
                                 {
-                                    case TriggerTargetType.Object:
-                                    case TriggerTargetType.Target:
-                                    case TriggerTargetType.Camera:
-                                    case TriggerTargetType.FlyByCamera:
-                                    case TriggerTargetType.Sink:
-                                    case TriggerTargetType.ActionNg:
-                                        Func<ITriggerParameter, NG.NgParameterRange, ITriggerParameter> FixTriggerParameter = (ITriggerParameter parameter, NG.NgParameterRange range) =>
+                                    if (!(parameter is TriggerParameterUshort))
+                                        return parameter;
+                                    ushort index = ((TriggerParameterUshort)parameter).Key;
+                                    if (range.IsObject)
+                                    {
+                                        // Special lookup for flybys.
+                                        // Triggers marked as flyby can point to a sequence directly instead an object ID
+                                        if (instance.TargetType == TriggerTargetType.FlyByCamera)
                                         {
-                                            if (!(parameter is TriggerParameterUshort))
-                                                return parameter;
-                                            ushort index = ((TriggerParameterUshort)parameter).Key;
-                                            if (range.IsObject)
-                                            {
-                                                // Special lookup for flybys.
-                                                // Triggers marked as flyby can point to a sequence directly instead an object ID
-                                                if (instance.TargetType == TriggerTargetType.FlyByCamera)
-                                                {
-                                                    if (flyByLookup == null)
-                                                        flyByLookup = objectLookup.Values
-                                                            .OfType<FlybyCameraInstance>()
-                                                            .GroupBy(flyBy => flyBy.Sequence)
-                                                            .Select(flyByGroup => flyByGroup.OrderBy(flyBy => flyBy.Number).First())
-                                                            .ToList();
-                                                    FlybyCameraInstance foundFlyBy = flyByLookup.FirstOrDefault(flyBy => flyBy.Sequence == index);
-                                                    if (foundFlyBy != null)
-                                                        return foundFlyBy;
-                                                }
-
-                                                // Undo object indexing
-                                                PositionBasedObjectInstance @object;
-                                                if (!objectLookup.TryGetValue(index, out @object))
-                                                {
-                                                    progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + index + " that is unavailable.");
-                                                    return null;
-                                                }
-                                                return @object;
-                                            }
-                                            else if (range.IsRoom)
-                                            {
-                                                // Undo room indexing
-                                                Room room3 = level.Rooms.Where(room2 => room2 != null).ElementAtOrDefault(index);
-                                                if (room3 == null)
-                                                {
-                                                    progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to a room with ID " + index + " that is unavailable.");
-                                                    return parameter;
-                                                }
-                                                return room3;
-                                            }
-                                            else
-                                                return parameter;
-                                        };
-                                        instance.Target = FixTriggerParameter(instance.Target,
-                                            NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer));
-                                        instance.Timer = FixTriggerParameter(instance.Timer,
-                                            NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target));
-                                        instance.Target = FixTriggerParameter(instance.Target,
-                                            NG.NgParameterInfo.GetExtraRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Timer));
-
-                                        // Sinks and cameras are classified as 'object's most of time for some reason.
-                                        // We have to fix that.
-                                        if (instance.TargetType == TriggerTargetType.Object)
-                                        {
-                                            if (instance.Target is FlybyCameraInstance)
-                                                instance.TargetType = TriggerTargetType.FlyByCamera;
-                                            if (instance.Target is SinkInstance)
-                                                instance.TargetType = TriggerTargetType.Sink;
-                                            if (instance.Target is CameraInstance)
-                                                instance.TargetType = TriggerTargetType.Camera;
+                                            if (flyByLookup == null)
+                                                flyByLookup = objectLookup.Values
+                                                    .OfType<FlybyCameraInstance>()
+                                                    .GroupBy(flyBy => flyBy.Sequence)
+                                                    .Select(flyByGroup => flyByGroup.OrderBy(flyBy => flyBy.Number).First())
+                                                    .ToList();
+                                            FlybyCameraInstance foundFlyBy = flyByLookup.FirstOrDefault(flyBy => flyBy.Sequence == index);
+                                            if (foundFlyBy != null)
+                                                return foundFlyBy;
                                         }
-                                        break;
+
+                                        // Undo object indexing
+                                        PositionBasedObjectInstance @object;
+                                        if (!objectLookup.TryGetValue(index, out @object))
+                                        {
+                                            progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + index + " that is unavailable.");
+                                            return null;
+                                        }
+                                        return @object;
+                                    }
+                                    else if (range.IsRoom)
+                                    {
+                                        // Undo room indexing
+                                        Room room3 = level.Rooms.Where(room2 => room2 != null).ElementAtOrDefault(index);
+                                        if (room3 == null)
+                                        {
+                                            progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to a room with ID " + index + " that is unavailable.");
+                                            return parameter;
+                                        }
+                                        return room3;
+                                    }
+                                    else
+                                        return parameter;
+                                };
+                                instance.Target = FixTriggerParameter(instance.Target,
+                                    NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer));
+                                instance.Timer = FixTriggerParameter(instance.Timer,
+                                    NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target));
+                                instance.Target = FixTriggerParameter(instance.Target,
+                                    NG.NgParameterInfo.GetExtraRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Timer));
+
+                                // Sinks and cameras are classified as 'object's most of time for some reason.
+                                // We have to fix that.
+                                if (instance.TargetType == TriggerTargetType.Object)
+                                {
+                                    if (instance.Target is FlybyCameraInstance)
+                                        instance.TargetType = TriggerTargetType.FlyByCamera;
+                                    if (instance.Target is SinkInstance)
+                                        instance.TargetType = TriggerTargetType.Sink;
+                                    if (instance.Target is CameraInstance)
+                                        instance.TargetType = TriggerTargetType.Camera;
                                 }
+                            }
                         progressReporter.ReportProgress(35, "Triggers linked");
                     }
 
@@ -1493,12 +1487,13 @@ namespace TombLib.LevelData.IO
                                 progressReporter.ReportInfo("NG header found at " + offsetString);
 
                                 // Parse NG chunks
-                                while(reader.BaseStream.Position<reader.BaseStream.Length)
+                                while (reader.BaseStream.Position < reader.BaseStream.Length)
                                 {
                                     var size = reader.ReadUInt16();
                                     var chunkId = reader.ReadUInt16();
 
-                                    if (size == 0x474E && chunkId == 0x454C) break; // NGLE marker found
+                                    if (size == 0x474E && chunkId == 0x454C)
+                                        break; // NGLE marker found
 
                                     if (chunkId == 0x8002)
                                     {
@@ -2155,7 +2150,8 @@ namespace TombLib.LevelData.IO
             while (sb < 255)
             {
                 // If file was not loaded, then here is NA plus a space
-                if (sb == 3 && stringBuffer[0] == 0x4E && stringBuffer[1] == 0x41 && stringBuffer[2] == 0x20) break;
+                if (sb == 3 && stringBuffer[0] == 0x4E && stringBuffer[1] == 0x41 && stringBuffer[2] == 0x20)
+                    break;
 
                 byte s = reader.ReadByte();
 
@@ -2167,8 +2163,10 @@ namespace TombLib.LevelData.IO
                     while (sb < 255)
                     {
                         s = reader.ReadByte();
-                        if (s == 0x00) continue;
-                        if (s == 0x20) break;
+                        if (s == 0x00)
+                            continue;
+                        if (s == 0x20)
+                            break;
                         stringBuffer[sb] = s;
                         sb++;
                     }
@@ -2176,8 +2174,10 @@ namespace TombLib.LevelData.IO
                     break;
                 }
 
-                if (s == 0x00) continue;
-                if (sb == 255) break;
+                if (s == 0x00)
+                    continue;
+                if (sb == 255)
+                    break;
 
                 stringBuffer[sb] = s;
                 sb++;
