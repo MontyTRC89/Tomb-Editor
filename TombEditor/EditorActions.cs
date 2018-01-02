@@ -13,6 +13,7 @@ using TombLib;
 using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.GeometryIO.Exporters;
+using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
 using TombLib.LevelData.IO;
@@ -2463,6 +2464,11 @@ namespace TombEditor
 
         public static void ExportCurrentRoom(IWin32Window owner)
         {
+            ExportRooms(owner, new Room[] { _editor.SelectedRoom });
+        }
+
+        public static void ExportRooms(IWin32Window owner, IEnumerable<Room> rooms)
+        {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Title = "Export current room";
@@ -2498,92 +2504,103 @@ namespace TombEditor
                                 case ".mqo":
                                     exporter = new RoomExporterMetasequoia(settingsDialog.Settings, getTextureCallback);
                                     break;
-                                /*case ".obj":
-                                    exporter = new RoomExporterObj(settingsDialog.Settings, getTextureCallback);
-                                    break;
-                                case ".ply":
-                                    exporter = new RoomExporterPly(settingsDialog.Settings, getTextureCallback);
-                                    break;
-                                case ".dae":
-                                    exporter = new RoomExporterCollada(settingsDialog.Settings, getTextureCallback);
-                                    break;*/
+                                    /*case ".obj":
+                                        exporter = new RoomExporterObj(settingsDialog.Settings, getTextureCallback);
+                                        break;
+                                    case ".ply":
+                                        exporter = new RoomExporterPly(settingsDialog.Settings, getTextureCallback);
+                                        break;
+                                    case ".dae":
+                                        exporter = new RoomExporterCollada(settingsDialog.Settings, getTextureCallback);
+                                        break;*/
                             }
 
                             // Prepare data for export
                             var model = new IOModel();
-                            var mesh = new IOMesh();
-                            var room = _editor.SelectedRoom;
-                            var deltaPos = new Vector3(room.GetLocalCenter().X, 0, room.GetLocalCenter().Z);
 
                             var texture = _editor.Level.Settings.Textures[0];
 
                             // Create various materials
-                            var materialOpaque = new IOMaterial("TeMat_0_0_0_0", texture, false, false, 0);
-                            var materialOpaqueDoubleSided = new IOMaterial("TeMat_0_0_1_0", texture, false, true, 0);
-                            var materialAdditiveBlending = new IOMaterial("TeMat_0_1_0_0", texture, true, false, 0);
-                            var materialAdditiveBlendingDoubleSided = new IOMaterial("TeMat_0_1_1_0", texture, true, true, 0);
+                            var materialOpaque = new IOMaterial(Material.Material_Opaque + "_0_0_0_0", texture, false, false, 0);
+                            var materialOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_0_0_1_0", texture, false, true, 0);
+                            var materialAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_0_1_0_0", texture, true, false, 0);
+                            var materialAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_0_1_1_0", texture, true, true, 0);
 
                             model.Materials.Add(materialOpaque);
                             model.Materials.Add(materialOpaqueDoubleSided);
                             model.Materials.Add(materialAdditiveBlending);
                             model.Materials.Add(materialAdditiveBlendingDoubleSided);
 
-                            // Add submeshes
-                            mesh.Submeshes.Add(materialOpaque, new IOSubmesh(materialOpaque));
-                            mesh.Submeshes.Add(materialOpaqueDoubleSided, new IOSubmesh(materialOpaqueDoubleSided));
-                            mesh.Submeshes.Add(materialAdditiveBlending, new IOSubmesh(materialAdditiveBlending));
-                            mesh.Submeshes.Add(materialAdditiveBlendingDoubleSided, new IOSubmesh(materialAdditiveBlendingDoubleSided));
-
-                            var vertices = room.GetRoomVertices();
-                            var lastIndex = 0;
-                            for (var z = 0; z < room.NumZSectors; z++)
+                            var minPosition = Vector3.One * float.MaxValue;
+                            foreach (var room in rooms)
                             {
-                                for (var x = 0; x < room.NumXSectors; x++)
+                                if (room.WorldPos.X < minPosition.X) minPosition.X = room.WorldPos.X;
+                                if (room.WorldPos.Y < minPosition.Y) minPosition.Y = room.WorldPos.Y;
+                                if (room.WorldPos.Z < minPosition.Z) minPosition.Z = room.WorldPos.Z;
+                            }
+
+                            foreach (var room in rooms)
+                            {
+                                var mesh = new IOMesh();
+                                var deltaPos = new Vector3(room.GetLocalCenter().X, 0, room.GetLocalCenter().Z);
+
+                                // Add submeshes
+                                mesh.Submeshes.Add(materialOpaque, new IOSubmesh(materialOpaque));
+                                mesh.Submeshes.Add(materialOpaqueDoubleSided, new IOSubmesh(materialOpaqueDoubleSided));
+                                mesh.Submeshes.Add(materialAdditiveBlending, new IOSubmesh(materialAdditiveBlending));
+                                mesh.Submeshes.Add(materialAdditiveBlendingDoubleSided, new IOSubmesh(materialAdditiveBlendingDoubleSided));
+
+                                var vertices = room.GetRoomVertices();
+                                var lastIndex = 0;
+                                for (var z = 0; z < room.NumZSectors; z++)
                                 {
-                                    for (var f = 0; f < 29; f++)
+                                    for (var x = 0; x < room.NumXSectors; x++)
                                     {
-                                        var textureArea = room.Blocks[x, z].GetFaceTexture((BlockFace)f);
-                                        if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
-                                            !textureArea.TextureIsUnavailable)
+                                        for (var f = 0; f < 29; f++)
                                         {
-                                            var indices = room.GetFaceIndices(x, z, (BlockFace)f);
-                                            var poly = new IOPolygon(indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
-                                            for (var i = 0; i < indices.Count; i++)
+                                            var textureArea = room.Blocks[x, z].GetFaceTexture((BlockFace)f);
+                                            if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
+                                                !textureArea.TextureIsUnavailable)
                                             {
-                                                poly.Indices.Add(lastIndex);
-                                                lastIndex++;
-                                            }
+                                                var indices = room.GetFaceIndices(x, z, (BlockFace)f);
+                                                var poly = new IOPolygon(indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
+                                                for (var i = 0; i < indices.Count; i++)
+                                                {
+                                                    poly.Indices.Add(lastIndex);
+                                                    lastIndex++;
+                                                }
 
-                                            // Get the right submesh
-                                            var submesh = mesh.Submeshes[materialOpaque];
-                                            if (textureArea.BlendMode == BlendMode.Additive)
-                                            {
-                                                if (textureArea.DoubleSided)
-                                                    submesh = mesh.Submeshes[materialAdditiveBlendingDoubleSided];
+                                                // Get the right submesh
+                                                var submesh = mesh.Submeshes[materialOpaque];
+                                                if (textureArea.BlendMode == BlendMode.Additive)
+                                                {
+                                                    if (textureArea.DoubleSided)
+                                                        submesh = mesh.Submeshes[materialAdditiveBlendingDoubleSided];
+                                                    else
+                                                        submesh = mesh.Submeshes[materialAdditiveBlending];
+                                                }
                                                 else
-                                                    submesh = mesh.Submeshes[materialAdditiveBlending];
-                                            }
-                                            else
-                                            {
-                                                if (textureArea.DoubleSided)
-                                                    submesh = mesh.Submeshes[materialOpaqueDoubleSided];
-                                            }
+                                                {
+                                                    if (textureArea.DoubleSided)
+                                                        submesh = mesh.Submeshes[materialOpaqueDoubleSided];
+                                                }
 
-                                            submesh.Polygons.Add(poly);
+                                                submesh.Polygons.Add(poly);
 
-                                            foreach (var index in indices)
-                                            {
-                                                mesh.Positions.Add(vertices[index].Position - deltaPos);
-                                                mesh.UV.Add(vertices[index].UV);
-                                                mesh.Colors.Add(vertices[index].Color);
+                                                foreach (var index in indices)
+                                                {
+                                                    mesh.Positions.Add(vertices[index].Position /*- deltaPos*/ + room.WorldPos - minPosition);
+                                                    mesh.UV.Add(vertices[index].UV);
+                                                    mesh.Colors.Add(vertices[index].Color);
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
 
-                            //mesh.Texture = _editor.Level.Settings.Textures[0];
-                            model.Meshes.Add(mesh);
+                                //mesh.Texture = _editor.Level.Settings.Textures[0];
+                                model.Meshes.Add(mesh);
+                            }
 
                             if (exporter.ExportToFile(model, saveFileDialog.FileName))
                             {

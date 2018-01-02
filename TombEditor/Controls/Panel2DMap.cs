@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using TombEditor.Controls.ContextMenus;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -45,6 +46,7 @@ namespace TombEditor.Controls
         private IReadOnlyList<RoomClipboardData.ContourLine> _insertionContourLineData;
         private Vector2 _insertionDropPosition;
         private VectorInt2 _insertionCurrentOffset;
+        private System.Drawing.Point _startMousePosition;
 
         private class SelectionArea
         {
@@ -91,6 +93,8 @@ namespace TombEditor.Controls
         private const float _explanationStringMargin = 4.0f;
         private const float _probeRadius = 18;
 
+        private BaseContextMenu _currentContextMenu;
+
         public Panel2DMap()
         {
             DoubleBuffered = true;
@@ -119,6 +123,7 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised -= EditorEventRaised;
             _movementTimer.Dispose();
             _insertionContourLineData = null;
+            _currentContextMenu?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -257,6 +262,8 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Right:
+                    _startMousePosition = e.Location;
+
                     // Move view with mouse curser
                     // Mouse curser is a fixed point
                     _viewMoveMouseWorldCoord = clickPos;
@@ -413,6 +420,16 @@ namespace TombEditor.Controls
                     }
                     break;
                 case MouseButtons.Right:
+                    var distance = new Vector2(_startMousePosition.X, _startMousePosition.Y) - new Vector2(e.Location.X, e.Location.Y);
+                    // EXPERIMENTAL: show context menus here
+                    if (distance.Length() < 4.0f)
+                    {
+                        _currentContextMenu?.Dispose();
+                        _currentContextMenu = null;
+                        _currentContextMenu = new SelectedRoomContextMenu(_editor);
+                        _currentContextMenu.Show(PointToScreen(e.Location));
+                    }
+
                     _viewMoveMouseWorldCoord = null;
                     break;
             }

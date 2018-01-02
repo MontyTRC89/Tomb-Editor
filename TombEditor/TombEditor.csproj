@@ -127,6 +127,9 @@
     <Compile Include="Controls\ContextMenus\BlockContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ContextMenus\SelectedRoomContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\DarkDataGridViewControls.cs">
       <SubType>UserControl</SubType>
     </Compile>

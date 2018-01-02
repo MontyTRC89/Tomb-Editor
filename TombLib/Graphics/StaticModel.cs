@@ -51,10 +51,10 @@ namespace TombLib.Graphics
             StaticModel model = new StaticModel(device);
 
             // Prepare materials
-            var materialOpaque = new Material("TeMat_0_0_0_0", null, false, false, 0);
-            var materialOpaqueDoubleSided = new Material("TeMat_0_0_1_0", null, false, true, 0);
-            var materialAdditiveBlending = new Material("TeMat_0_1_0_0", null, true, false, 0);
-            var materialAdditiveBlendingDoubleSided = new Material("TeMat_0_1_1_0", null, true, true, 0);
+            var materialOpaque = new Material(Material.Material_Opaque + "_0_0_0_0", null, false, false, 0);
+            var materialOpaqueDoubleSided = new Material(Material.Material_OpaqueDoubleSided + "_0_0_1_0", null, false, true, 0);
+            var materialAdditiveBlending = new Material(Material.Material_AdditiveBlending + "_0_1_0_0", null, true, false, 0);
+            var materialAdditiveBlendingDoubleSided = new Material(Material.Material_AdditiveBlendingDoubleSided + "_0_1_1_0", null, true, true, 0);
 
             model.Materials.Add(materialOpaque);
             model.Materials.Add(materialOpaqueDoubleSided);
