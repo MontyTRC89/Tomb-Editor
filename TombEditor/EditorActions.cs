@@ -2541,7 +2541,7 @@ namespace TombEditor
 
                             foreach (var room in rooms)
                             {
-                                var mesh = new IOMesh();
+                                var mesh = new IOMesh("Room_" + _editor.Level.Rooms.ReferenceIndexOf(room));
                                 var deltaPos = new Vector3(room.GetLocalCenter().X, 0, room.GetLocalCenter().Z);
 
                                 // Add submeshes

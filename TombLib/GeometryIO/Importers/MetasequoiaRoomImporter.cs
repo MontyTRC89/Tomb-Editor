@@ -99,7 +99,8 @@ namespace TombLib.GeometryIO.Importers
                     }
                     else if (chunk == "Object")
                     {
-                        var mesh = new IOMesh();
+                        var name = line.Split(' ')[1];
+                        var mesh = new IOMesh(name);
                         positions = new List<Vector3>();
 
                         var lastVertex = 0;

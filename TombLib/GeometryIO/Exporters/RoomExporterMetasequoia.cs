@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
@@ -46,7 +47,7 @@ namespace TombLib.GeometryIO.Exporters
                 // Write mesh
                 foreach (var mesh in model.Meshes)
                 {
-                    writer.WriteLine("Object Room {");
+                    writer.WriteLine("Object " + mesh.Name + " {");
 
                     // Save vertices
                     writer.WriteLine("vertex " + mesh.Positions.Count + " {");

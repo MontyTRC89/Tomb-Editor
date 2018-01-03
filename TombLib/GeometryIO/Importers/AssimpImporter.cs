@@ -69,7 +69,7 @@ namespace TombLib.GeometryIO.Importers
 
                 // Assimp's mesh is our IOSubmesh so we import meshes with just one submesh
                 var material = newModel.Materials[mesh.MaterialIndex];
-                var newMesh = new IOMesh();
+                var newMesh = new IOMesh(mesh.Name);
                 var newSubmesh = new IOSubmesh(material);
                 newMesh.Submeshes.Add(material, newSubmesh);
 
