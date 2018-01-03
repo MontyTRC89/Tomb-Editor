@@ -16,10 +16,12 @@ namespace TombLib.GeometryIO
         public List<Vector2> UV { get; private set; } = new List<Vector2>();
         public List<Vector4> Colors { get; private set; } = new List<Vector4>();
         public Dictionary<IOMaterial, IOSubmesh> Submeshes { get; private set; } = new Dictionary<IOMaterial, IOSubmesh>();
-        
+        public Vector3 Position { get; set; }
+
         public IOMesh(string name)
         {
             Name = name;
+            Position = Vector3.Zero;
         }
 
         public int NumQuads
