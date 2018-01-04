@@ -31,7 +31,7 @@ namespace TombLib.LevelData
 
             Level result = new Level();
             if (result.Rooms[0] == null)
-                result.Rooms[0] = new Room(Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room 0");
+                result.Rooms[0] = new Room(Room.MaxRoomDimensions, Room.MaxRoomDimensions, result.Settings.DefaultAmbientLight, "Room 0");
             return result;
         }
 

@@ -250,6 +250,9 @@ namespace TombEditor
                 if (row.Cells[1].Value.ToString() != value)
                     row.Cells[1].Value = value;
             }
+
+            // Update the default ambient light
+            panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * 0.5f).ToWinFormsColor();
         }
 
         private string GetLevelResourcePath(string file)
@@ -555,6 +558,21 @@ namespace TombEditor
                 _levelSettings.ScriptDirectory = result;
                 UpdateDialog();
             }
+        }
+
+        private void panelRoomAmbientLight_Click(object sender, EventArgs e)
+        {
+            colorDialog.Color = (_levelSettings.DefaultAmbientLight * 0.5f).ToWinFormsColor();
+            if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            _levelSettings.DefaultAmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
+            UpdateDialog();
+        }
+
+        private void panelRoomAmbientLight_Paint(object sender, PaintEventArgs e)
+        {
+
         }
 
         // Target path

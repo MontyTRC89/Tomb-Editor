@@ -34,6 +34,16 @@ namespace TombLib.Utils
             this_ = Vector4.Min(Vector4.Max(this_ * 255.99998f, new Vector4()),  new Vector4(255.0f));
             return new ColorC((byte)(this_.X), (byte)(this_.Y), (byte)(this_.Z), (byte)(this_.W));
         }
+
+        /*public static ColorC FromVector4(Vector4 color)
+        {
+            return new ColorC(
+                    (byte)Math.Max(0, Math.Min(255, Math.Round(color.W * 255.0f))),
+                    (byte)Math.Max(0, Math.Min(255, Math.Round(color.X * 255.0f))),
+                    (byte)Math.Max(0, Math.Min(255, Math.Round(color.Y * 255.0f))),
+                    (byte)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));
+        }*/
+
     }
 
     // A very simple but very efficient image that is independent of GDI+.

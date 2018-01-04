@@ -132,6 +132,8 @@ namespace TombLib.LevelData.IO
                     settings.GameEnableQuickStartFeature = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.GameVersion)
                     settings.GameVersion = (GameVersion)chunkIO.ReadChunkLong(chunkSize);
+                else if (id == Prj2Chunks.DefaultAmbientLight)
+                    settings.DefaultAmbientLight = chunkIO.ReadChunkVector4(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.Textures)
@@ -320,7 +322,7 @@ namespace TombLib.LevelData.IO
                     return false;
 
                 // Read room
-                Room room = new Room(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                Room room = new Room(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), Vector4.One);
                 long roomIndex = long.MinValue;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
