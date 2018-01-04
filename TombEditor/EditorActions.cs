@@ -1904,6 +1904,12 @@ namespace TombEditor
             foreach (PortalInstance portal in portals)
                 _editor.ObjectChange(portal, ObjectChangeType.Add);
 
+            // Reset selection
+            _editor.Action = null;
+            _editor.SelectedSectors = SectorSelection.None;
+            _editor.SelectedObject = null;
+            _editor.SelectedRooms = new Room[] { _editor.SelectedRoom };
+
             _editor.RoomSectorPropertiesChange(room);
             _editor.RoomSectorPropertiesChange(destination);
         }
