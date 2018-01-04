@@ -1,8 +1,10 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -100,6 +102,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.GameExecutableFilePath, settings.GameExecutableFilePath ?? "");
                 chunkIO.WriteChunkBool(Prj2Chunks.GameEnableQuickStartFeature, settings.GameEnableQuickStartFeature);
                 chunkIO.WriteChunkInt(Prj2Chunks.GameVersion, (long)(settings.GameVersion));
+                chunkIO.WriteChunkVector4(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.Textures, () =>
                 {

@@ -2105,7 +2105,8 @@ namespace TombEditor
         public static void CreateRoomAboveOrBelow(Room room, Func<Room, int> GetYOffset, short newRoomHeight)
         {
             // Create room
-            var newRoom = new Room(room.NumXSectors, room.NumZSectors, "", newRoomHeight);
+            var newRoom = new Room(room.NumXSectors, room.NumZSectors, _editor.Level.Settings.DefaultAmbientLight, 
+                                   "", newRoomHeight);
             newRoom.Position = room.Position + new VectorInt3(0, GetYOffset(newRoom), 0);
             newRoom.Name = "Room " + (newRoom.Position.Y > room.Position.Y ? "above " : "below ") + room.Name;
             _editor.Level.AssignRoomToFree(newRoom);

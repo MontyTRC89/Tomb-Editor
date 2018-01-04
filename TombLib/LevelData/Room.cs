@@ -45,7 +45,7 @@ namespace TombLib.LevelData
         public Room AlternateRoom { get; set; } = null;
         public short AlternateGroup { get; set; } = -1;
 
-        public Vector4 AmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
+        public Vector4 AmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 2.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
         public byte WaterLevel { get; set; }
         public byte MistLevel { get; set; }
         public byte ReflectionLevel { get; set; }
@@ -74,14 +74,15 @@ namespace TombLib.LevelData
         private List<EditorVertex> _allVertices = new List<EditorVertex>();
         private List<int>[,,] _sectorFaceIndices;
 
-        public Room(int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
+        public Room(int numXSectors, int numZSectors, Vector4 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
         {
             Name = name;
+            AmbientLight = ambientLight;
             Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
         }
 
-        public Room(VectorInt2 sectorSize, string name = "Unnamed", short ceiling = DefaultHeight)
-            : this(sectorSize.X, sectorSize.Y, name, ceiling)
+        public Room(VectorInt2 sectorSize, Vector4 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
+            : this(sectorSize.X, sectorSize.Y, ambientLight, name, ceiling)
         {}
 
         public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight)
