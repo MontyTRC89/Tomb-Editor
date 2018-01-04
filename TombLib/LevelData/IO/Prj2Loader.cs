@@ -406,7 +406,11 @@ namespace TombLib.LevelData.IO
 
                     // Read room properties
                     else if (id2 == Prj2Chunks.RoomAmbientLight)
+                    {
                         room.AmbientLight = chunkIO.ReadChunkVector4(chunkSize2);
+                        // HACK: fixes old Prj2 versions
+                        room.AmbientLight = new Vector4(room.AmbientLight.X, room.AmbientLight.Y, room.AmbientLight.Z, 2.0f);
+                    }
                     else if (id2 == Prj2Chunks.RoomFlagCold)
                         room.FlagCold = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagDamage)

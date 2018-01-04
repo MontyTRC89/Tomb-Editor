@@ -570,11 +570,6 @@ namespace TombEditor
             UpdateDialog();
         }
 
-        private void panelRoomAmbientLight_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         // Target path
         // Target name
         // Target start
