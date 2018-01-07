@@ -16,6 +16,10 @@ A big thank you to all the authors for making their work publicly available and 
 | OpenFolderDialog       | Copy (OpenFolderDialog.cs) | 2012-02-12 | MIT           | https://www.medo64.com/2011/12/openfolderdialog |
 | CH.SipHash             | NuGet                      | 1.0.2      | Public Domain | https://github.com/tanglebones/ch-siphash |
 
+### Main Software Documentation
+  
+  You can found more information about SharpDX Toolkit reading the source code on www.symbolsource.org/Public/Metadata/NuGet/Project/SharpDX.Toolkit/2.4.2/Release/.NETFramework%2cVersion%3dv4.0
+
 ### Icons
 
   Icons and graphics used under CC-BY ND 3.0 license from http://icons8.com
