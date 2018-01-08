@@ -255,9 +255,12 @@ namespace TombEditor.Controls
                     break;
 
                 case SelectionMode.SelectedLimitBoth:
-                    float barHeight = _selectedLimit0 - _selectedLimit1;
-                    _selectedLimit0 = FromVisualY(barArea, _barMouseOffset + e.Y);
-                    _selectedLimit1 = _selectedLimit0 + barHeight;
+                    float barHeight = _selectedLimit1 - _selectedLimit0;
+                    float newBarPos = FromVisualY(barArea, _barMouseOffset + e.Y);
+                    newBarPos = (float)Math.Max(Math.Min(newBarPos + (double)barHeight, MaxDepth), MinDepth) - barHeight;
+
+                    _selectedLimit0 = newBarPos;
+                    _selectedLimit1 = newBarPos + barHeight;
                     InvalidateParent?.Invoke();
                     break;
 
