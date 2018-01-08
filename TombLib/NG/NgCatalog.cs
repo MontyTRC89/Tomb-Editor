@@ -107,6 +107,13 @@ namespace TombLib.NG
                         End = ushort.Parse(node.Attributes["End"].Value)
                     };
                     return new NgParameterRange(linearModel);
+
+                case NgParameterKind.Choice:
+                    var choices = new List<NgParameterRange>(node.ChildNodes.Count);
+                    foreach (XmlNode objectNode in node.ChildNodes)
+                        choices.Add(ReadNgParameterRange(objectNode));
+                    return new NgParameterRange(choices);
+
                 default:
                     return new NgParameterRange(listKind);
             }

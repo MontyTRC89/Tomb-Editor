@@ -220,6 +220,8 @@ namespace NgXmlBuilder
 
         private static NgParameterRange DetectLinearity(NgParameterRange parameter, NgBlock dbgBlock)
         {
+            // TODO Add support for detecting choice patterns too!
+
             if (parameter.Kind != NgParameterKind.FixedEnumeration)
                 return parameter;
             if (parameter.FixedEnumeration.Count <= 5) // It's not worth it if there are at most 5 elements
@@ -490,6 +492,10 @@ namespace NgXmlBuilder
                                 new XAttribute("Factor", linearParameter.Factor)));
                     parameterElement.Add(new XAttribute("Start", parameter.LinearModel.Value.Start));
                     parameterElement.Add(new XAttribute("End", parameter.LinearModel.Value.End));
+                    break;
+                case NgParameterKind.Choice:
+                    foreach (NgParameterRange choice in parameter.Choices)
+                        parameterElement.Add(WriteNgParameterRange(choice));
                     break;
             }
             return new XObject[] { parameterElement };
