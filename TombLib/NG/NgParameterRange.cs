@@ -14,6 +14,7 @@ namespace TombLib.NG
         AnyNumber,
         FixedEnumeration,
         LinearModel,
+        Choice,
         MoveablesInLevel, // MOVEABLES
         StaticsInLevel, // STATIC_LIST
         CamerasInLevel, // CAMERA_EFFECTS
@@ -39,6 +40,7 @@ namespace TombLib.NG
         public decimal Add;
         public decimal Factor;
     };
+
     public struct NgLinearModel
     {
         public List<NgLinearParameter> Parameters;
@@ -62,6 +64,7 @@ namespace TombLib.NG
         public NgParameterKind Kind { get; }
         public IDictionary<ushort, TriggerParameterUshort> FixedEnumeration { get; }
         public NgLinearModel? LinearModel { get; }
+        public IReadOnlyList<NgParameterRange> Choices { get; }
 
         public NgParameterRange(NgParameterKind kind)
         {
@@ -70,11 +73,13 @@ namespace TombLib.NG
             Kind = kind;
             FixedEnumeration = null;
             LinearModel = null;
+            Choices = null;
         }
 
         public NgParameterRange(IDictionary<ushort, TriggerParameterUshort> fixedEnumeration)
         {
             LinearModel = null;
+            Choices = null;
             if (fixedEnumeration == null || fixedEnumeration.Count == 0)
             {
                 Kind = NgParameterKind.Empty;
@@ -89,9 +94,36 @@ namespace TombLib.NG
 
         public NgParameterRange(NgLinearModel linearModel)
         {
+            Choices = null;
             FixedEnumeration = null;
             Kind = NgParameterKind.LinearModel;
             LinearModel = linearModel;
+        }
+
+        public NgParameterRange(IEnumerable<NgParameterRange> choice)
+        {
+            NgParameterRange[] choice2 = choice.Where(e => !e.IsEmpty).ToArray();
+            if (choice2.Length == 0)
+            {
+                Kind = NgParameterKind.Empty;
+                FixedEnumeration = null;
+                LinearModel = null;
+                Choices = null;
+            }
+            else if (choice2.Length == 1)
+            {
+                Kind = choice2[0].Kind;
+                FixedEnumeration = choice2[0].FixedEnumeration;
+                LinearModel = choice2[0].LinearModel;
+                Choices = choice2[0].Choices;
+            }
+            else
+            {
+                Kind = NgParameterKind.Choice;
+                FixedEnumeration = null;
+                LinearModel = null;
+                Choices = choice2;
+            }
         }
 
         public bool IsObject
@@ -132,28 +164,37 @@ namespace TombLib.NG
 
         public bool ParameterMatches(ITriggerParameter parameter, bool nullResult)
         {
+            if (parameter == null)
+                return nullResult || Kind == NgParameterKind.Empty;
+
             switch (Kind)
             {
                 case NgParameterKind.Empty:
                     return parameter == null;
 
+                case NgParameterKind.Choice:
+                    foreach (NgParameterRange choice in Choices)
+                        if (choice.ParameterMatches(parameter, false))
+                            return true;
+                    return false;
+
                 case NgParameterKind.MoveablesInLevel:
-                    return parameter is MoveableInstance || (nullResult && parameter == null);
+                    return parameter is MoveableInstance;
                 case NgParameterKind.StaticsInLevel:
-                    return parameter is StaticInstance || (nullResult && parameter == null);
+                    return parameter is StaticInstance;
                 case NgParameterKind.CamerasInLevel:
-                    return parameter is CameraInstance || (nullResult && parameter == null);
+                    return parameter is CameraInstance;
                 case NgParameterKind.SinksInLevel:
-                    return parameter is SinkInstance || (nullResult && parameter == null);
+                    return parameter is SinkInstance;
                 case NgParameterKind.FlybyCamerasInLevel:
-                    return parameter is FlybyCameraInstance || (nullResult && parameter == null);
+                    return parameter is FlybyCameraInstance;
 
                 case NgParameterKind.Rooms255:
-                    return parameter is Room || (nullResult && parameter == null);
+                    return parameter is Room;
 
                 default:
                     if (IsNumber)
-                        return parameter is TriggerParameterUshort || (nullResult && parameter == null);
+                        return parameter is TriggerParameterUshort;
                     else
                         return false;
             }
@@ -205,6 +246,11 @@ namespace TombLib.NG
                     NgLinearModel linearModel = LinearModel.Value;
                     return Enumerable.Range(linearModel.Start, linearModel.End)
                         .Select(i => new TriggerParameterUshort((ushort)i, linearModel.ToString((ushort)i)));
+
+                case NgParameterKind.Choice:
+                    return Choices.Aggregate(
+                        Enumerable.Empty<ITriggerParameter>(),
+                        (last, newChoice) => last.Concat(newChoice.BuildList(level)));
 
                 case NgParameterKind.MoveablesInLevel:
                     return level.Rooms.Where(room => room != null).SelectMany(room => room.Objects).OfType<MoveableInstance>();
