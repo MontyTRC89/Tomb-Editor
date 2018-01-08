@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.IO;
@@ -252,7 +253,7 @@ namespace TombEditor
             }
 
             // Update the default ambient light
-            panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * 0.5f).ToWinFormsColor();
+            panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector4(0.5f, 0.5f, 0.5f, 1.0f)).ToWinFormsColor();
         }
 
         private string GetLevelResourcePath(string file)
