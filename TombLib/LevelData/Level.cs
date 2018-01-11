@@ -110,39 +110,32 @@ namespace TombLib.LevelData
                 return;
             }
 
+            bool isWad2 = path.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase);
+            var newWad = new Wad2(WadTombRaiderVersion.TR4, !isWad2);
             try
             {
-                bool isWad2 = path.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase);
-                var newWad = new Wad2(WadTombRaiderVersion.TR4, !isWad2);
-                try
+                if (!isWad2)
                 {
-                    if (!isWad2)
-                    {
-                        List<string> soundPaths = new List<string>();
-                        foreach (OldWadSoundPath path_ in Settings.OldWadSoundPaths)
-                            soundPaths.Add(Settings.ParseVariables(path_.Path));
+                    List<string> soundPaths = new List<string>();
+                    foreach (OldWadSoundPath path_ in Settings.OldWadSoundPaths)
+                        soundPaths.Add(Settings.ParseVariables(path_.Path));
 
-                        var oldWad = new Tr4Wad();
-                        oldWad.LoadWad(path);
-                        newWad = Tr4WadOperations.ConvertTr4Wad(oldWad, soundPaths, progressReporter);
-                        if (newWad == null)
-                        {
-                            newWad?.Dispose();
-                            return;
-                        }
-                    }
-                    else
+                    var oldWad = new Tr4Wad();
+                    oldWad.LoadWad(path);
+                    newWad = Tr4WadOperations.ConvertTr4Wad(oldWad, soundPaths, progressReporter);
+                    if (newWad == null)
                     {
-                        newWad = Wad2.LoadFromFile(path);
+                        newWad?.Dispose();
+                        return;
                     }
-                    newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
-                    newWad.PrepareDataForDirectX();
                 }
-                catch (Exception)
+                else
                 {
-                    newWad?.Dispose();
-                    throw;
+                    newWad = Wad2.LoadFromFile(path);
                 }
+                newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
+                newWad.PrepareDataForDirectX();
+
                 Wad?.Dispose();
                 Wad = newWad;
                 WadLoadingException = null;
@@ -150,6 +143,7 @@ namespace TombLib.LevelData
             catch (Exception exc)
             {
                 logger.Error(exc, "Loading *.wad failed.");
+                newWad?.Dispose();
                 Wad?.Dispose();
                 Wad = null;
                 WadLoadingException = exc;

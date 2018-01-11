@@ -54,10 +54,10 @@ namespace TombLib.GeometryIO.Exporters
                     writer.WriteLine("\tdepth 0");
                     writer.WriteLine("\tfolding 0");
                     /*writer.WriteLine("\tscale 1.000000 1.000000 1.000000");
-                    writer.WriteLine("\trotation 0.000000 0.000000 0.000000");
+                    writer.WriteLine("\trotation 0.000000 0.000000 0.000000");*/
                     writer.WriteLine("\ttranslation " + translation.X.ToString(CultureInfo.InvariantCulture) + " " +
                                                         translation.Y.ToString(CultureInfo.InvariantCulture) + " " +
-                                                        translation.Z.ToString(CultureInfo.InvariantCulture));*/
+                                                        translation.Z.ToString(CultureInfo.InvariantCulture));
                     writer.WriteLine("\tvisible 15");
                     writer.WriteLine("\tlocking 0");
                     writer.WriteLine("\tshading 1");

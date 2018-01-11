@@ -105,6 +105,7 @@ namespace TombLib.Forms
                     try
                     {
                         level.ReloadWad(new GraphicalDialogHandler(owner));
+                        if (level.WadLoadingException != null) throw level.WadLoadingException;
                         return;
                     }
                     catch (Exception exc)

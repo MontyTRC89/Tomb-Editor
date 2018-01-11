@@ -2306,19 +2306,21 @@ namespace TombEditor.Controls
                 var model = instance.Model.DirectXModel;
                 var room = instance.Room;
 
-                for (var i = 0; i < model.Meshes.Count; i++)
+                var meshes = new List<ImportedGeometryMesh>();
+                if (instance.Mesh != null)
+                    meshes.Add(instance.Mesh);
+                else
+                    meshes.AddRange(model.Meshes);
+
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
+                _device.SetVertexBuffer(0, model.VertexBuffer);
+                _device.SetIndexBuffer(model.IndexBuffer, true);
+
+                for (var i = 0; i < meshes.Count; i++)
                 {
-                    var mesh = model.Meshes[i];
+                    var mesh = meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
-
-                    if (k == 0 && i == 0)
-                    {
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
-                    }
-
-                    _device.SetVertexBuffer(0, model.VertexBuffer);
-                    _device.SetIndexBuffer(model.IndexBuffer, true);
 
                     geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
 

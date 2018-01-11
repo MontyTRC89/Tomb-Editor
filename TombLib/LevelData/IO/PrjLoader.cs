@@ -1176,8 +1176,8 @@ namespace TombLib.LevelData.IO
                         else
                             texture = new LevelTexture(level.Settings, level.Settings.MakeRelative(TryFindAbsolutePath(
                                 level.Settings, textureFilename.Trim('\0', ' ')), VariableType.LevelDirectory), true);
-                        if (texture.Image.Width != 256)
-                            texture.SetConvert512PixelsToDoubleRows(level.Settings, false); // Only use this compatibility thing if actually needed
+                        /*if (texture.Image.Width != 256)
+                            texture.SetConvert512PixelsToDoubleRows(level.Settings, false); // Only use this compatibility thing if actually needed*/
                         level.Settings.Textures.Add(texture);
                         if (texture.ImageLoadException != null)
                             progressReporter.RaiseDialog(new DialogDescriptonTextureUnloadable { Settings = level.Settings, Texture = texture });
