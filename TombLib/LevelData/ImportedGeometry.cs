@@ -112,7 +112,7 @@ namespace TombLib.LevelData
         public class Model : Model<ImportedGeometryMesh, ImportedGeometryVertex>
         {
             public float Scale { get; private set; }
-
+            
             public Model(GraphicsDevice device, float scale)
                 : base(device, ModelType.RoomGeometry)
             {

@@ -40,6 +40,7 @@ namespace TombLib.GeometryIO.Importers
 
             using (var reader = new StreamReader(File.OpenRead(filename)))
             {
+                var containsMultipleRooms = false;
                 var line = reader.ReadLine();
                 if (line.Trim() != "Metasequoia Document")
                 {
@@ -103,13 +104,23 @@ namespace TombLib.GeometryIO.Importers
                         var mesh = new IOMesh(name);
                         positions = new List<Vector3>();
 
+                        if (name.Contains("TeRoom_")) containsMultipleRooms = true;
+
                         var lastVertex = 0;
+                        var translation = Vector3.Zero;
+
                         while (!reader.EndOfStream)
                         {
                             line = reader.ReadLine().Trim();
                             var tokens = line.Split(' ');
-
-                            if (tokens[0] == "vertex")
+                            
+                            if (tokens[0] == "translation" && containsMultipleRooms)
+                            {
+                                translation = ApplyAxesTransforms(new Vector3(ParseFloatCultureInvariant(tokens[1]),
+                                                                              ParseFloatCultureInvariant(tokens[2]),
+                                                                              ParseFloatCultureInvariant(tokens[3])));
+                            }
+                            else if (tokens[0] == "vertex")
                             {
                                 var numVertices = int.Parse(tokens[1]);
                                 for (var i = 0; i < numVertices; i++)
@@ -117,7 +128,8 @@ namespace TombLib.GeometryIO.Importers
                                     var tokensPosition = reader.ReadLine().Trim().Split(' ');
                                     positions.Add(ApplyAxesTransforms(new Vector3(ParseFloatCultureInvariant(tokensPosition[0]),
                                                                                   ParseFloatCultureInvariant(tokensPosition[1]),
-                                                                                  ParseFloatCultureInvariant(tokensPosition[2]))));
+                                                                                  ParseFloatCultureInvariant(tokensPosition[2]))
+                                                                      )- translation);
                                 }
                                 line = reader.ReadLine().Trim();
                             }

@@ -13,6 +13,7 @@ using TombLib;
 using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.GeometryIO.Exporters;
+using TombLib.GeometryIO.Importers;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
@@ -2105,7 +2106,7 @@ namespace TombEditor
         public static void CreateRoomAboveOrBelow(Room room, Func<Room, int> GetYOffset, short newRoomHeight)
         {
             // Create room
-            var newRoom = new Room(room.NumXSectors, room.NumZSectors, _editor.Level.Settings.DefaultAmbientLight, 
+            var newRoom = new Room(room.NumXSectors, room.NumZSectors, _editor.Level.Settings.DefaultAmbientLight,
                                    "", newRoomHeight);
             newRoom.Position = room.Position + new VectorInt3(0, GetYOffset(newRoom), 0);
             newRoom.Name = "Room " + (newRoom.Position.Y > room.Position.Y ? "above " : "below ") + room.Name;
@@ -2548,7 +2549,7 @@ namespace TombEditor
 
                             foreach (var room in rooms)
                             {
-                                var mesh = new IOMesh("Room_" + _editor.Level.Rooms.ReferenceIndexOf(room));
+                                var mesh = new IOMesh("TeRoom_" + _editor.Level.Rooms.ReferenceIndexOf(room));
                                 mesh.Position = room.WorldPos;
                                 //var deltaPos = new Vector3(room.GetLocalCenter().X, 0, room.GetLocalCenter().Z);
 
@@ -2620,6 +2621,148 @@ namespace TombEditor
                 }
             }
         }
+
+        /*public static void ImportRooms(IWin32Window owner)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Import rooms";
+                openFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter();
+                openFileDialog.AddExtension = true;
+                openFileDialog.DefaultExt = "mqo";
+                openFileDialog.FileName = _editor.SelectedRoom.Name;
+
+                if (openFileDialog.ShowDialog(owner) == DialogResult.OK)
+                {
+                    var settings = _editor.Level?.Settings;
+
+                    try
+                    {
+                        var info = new ImportedGeometryInfo();
+                        string importedGeometryPath = openFileDialog.FileName;
+                        string importedGeometryDirectory = Path.GetDirectoryName(importedGeometryPath);
+
+                        // Invoke the TombLib geometry import code
+                        var settingsIO = new IOGeometrySettings
+                        {
+                            Scale = info.Scale,
+                            SwapXY = info.SwapXY,
+                            SwapXZ = info.SwapXZ,
+                            SwapYZ = info.SwapYZ,
+                            FlipX = info.FlipX,
+                            FlipY = info.FlipY,
+                            FlipZ = info.FlipZ,
+                            FlipUV_V = info.FlipUV_V,
+                            InvertFaces = info.InvertFaces,
+                            UseVertexColor = info.UseVertexColor
+                        };
+
+                        BaseGeometryImporter importer;
+                        if (importedGeometryPath.ToLower().EndsWith(".mqo"))
+                        {
+                            importer = new MetasequoiaRoomImporter(settingsIO, (absoluteTexturePath) =>
+                            {
+                                return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
+                            });
+                        }
+                        else
+                        {
+                            importer = new AssimpImporter(settingsIO, (absoluteTexturePath) =>
+                            {
+                                return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
+                            });
+                        }
+
+                        var tmpModel = importer.ImportFromFile(importedGeometryPath);
+
+                        // Create a new static model
+                        DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
+                        DirectXModel.BoundingBox = tmpModel.BoundingBox;
+
+                        // Create materials
+                        foreach (var tmpMaterial in tmpModel.Materials)
+                        {
+                            var material = new Material(tmpMaterial.Name);
+                            material.Texture = tmpMaterial.Texture;
+                            material.AdditiveBlending = tmpMaterial.AdditiveBlending;
+                            material.DoubleSided = tmpMaterial.DoubleSided;
+                            DirectXModel.Materials.Add(material);
+                        }
+
+                        // Loop for each mesh loaded in scene
+                        foreach (var mesh in tmpModel.Meshes)
+                        {
+                            var modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, "Imported");
+
+                            var currentIndex = 0;
+                            var currPoly = 0;
+                            foreach (var tmpSubmesh in mesh.Submeshes)
+                            {
+                                var material = DirectXModel.Materials[tmpModel.Materials.IndexOf(tmpSubmesh.Value.Material)];
+                                var submesh = new Submesh(material);
+
+                                foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
+                                {
+                                    if (tmpPoly.Shape == IOPolygonShape.Quad)
+                                    {
+                                        for (var i = 0; i < 4; i++)
+                                        {
+                                            var vertex = new ImportedGeometryVertex();
+                                            vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                            vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
+                                            modelMesh.Vertices.Add(vertex);
+                                        }
+
+                                        submesh.Indices.Add(currentIndex);
+                                        submesh.Indices.Add(currentIndex + 1);
+                                        submesh.Indices.Add(currentIndex + 2);
+
+                                        submesh.Indices.Add(currentIndex);
+                                        submesh.Indices.Add(currentIndex + 2);
+                                        submesh.Indices.Add(currentIndex + 3);
+
+                                        currentIndex += 4;
+                                    }
+                                    else
+                                    {
+                                        for (var i = 0; i < 3; i++)
+                                        {
+                                            var vertex = new ImportedGeometryVertex();
+                                            vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                            vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
+                                            modelMesh.Vertices.Add(vertex);
+                                            submesh.Indices.Add(currentIndex);
+                                            currentIndex++;
+                                        }
+                                    }
+
+                                    currPoly++;
+                                }
+
+                                modelMesh.Submeshes.Add(material, submesh);
+                            }
+                            //modelMesh.Texture = mesh.Texture;
+
+                            // Add mesh to the model
+                            DirectXModel.Meshes.Add(modelMesh);
+                        }
+
+                        DirectXModel.BuildBuffers();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (Exception exc)
+                    {
+                        LoadException = exc;
+                        DirectXModel = null;
+                        logger.Warn(exc, "Unable to load model \"" + info.Name + "\" from \"" + info.Path + "\" because an exception occurred during loading.");
+                    }
+                }
+            }                        
+        }
+        */
 
         public static void OpenLevel(IWin32Window owner, string fileName = null)
         {
