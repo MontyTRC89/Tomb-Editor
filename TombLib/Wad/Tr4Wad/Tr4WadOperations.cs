@@ -804,9 +804,9 @@ namespace TombLib.Wad.Tr4Wad
             wad_object_texture texture = oldWad.Textures[textureId];
 
             Vector2 nw = new Vector2(0.5f, 0.5f);
-            Vector2 ne = new Vector2(texture.Width - 0.5f, 0.5f);
-            Vector2 se = new Vector2(texture.Width - 0.5f, texture.Height - 0.5f);
-            Vector2 sw = new Vector2(0.5f, texture.Height - 0.5f);
+            Vector2 ne = new Vector2(texture.Width + 0.5f, 0.5f);
+            Vector2 se = new Vector2(texture.Width + 0.5f, texture.Height + 0.5f);
+            Vector2 sw = new Vector2(0.5f, texture.Height + 0.5f);
 
             if (poly.Shape == 9)
             {
