@@ -1891,7 +1891,11 @@ namespace TombEditor
                 }
             }
             if (candidates.Count != 1)
-                throw new ApplicationException("No room candidate found to connect to.");
+            {
+                DarkMessageBox.Show(owner, "There aren't possible room candidates for a portal", "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             PortalDirection destinationDirection = candidates[0].Item1;
             Room destination = candidates[0].Item2;
