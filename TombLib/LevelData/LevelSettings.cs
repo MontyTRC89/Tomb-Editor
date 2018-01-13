@@ -53,8 +53,29 @@ namespace TombLib.LevelData
         //TR2 = 2,
         //TR3 = 3,
         TR4 = 4,
-        //TR5 = 5,
+        TR5 = 5,
         TRNG = 16
+    }
+
+    /// <summary>
+    /// Only for TR5
+    /// </summary>
+    public enum Tr5LaraType : byte
+    {
+        Normal = 0,
+        Catsuit = 3,
+        Divesuit = 4,
+        Invisible = 6
+    }
+
+    /// <summary>
+    /// Only for TR5
+    /// </summary>
+    public enum Tr5WeatherType : byte
+    {
+        Normal = 0,
+        Rain = 1,
+        Snow = 2
     }
 
     public class LevelSettings : ICloneable
