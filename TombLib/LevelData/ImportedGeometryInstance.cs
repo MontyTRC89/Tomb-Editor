@@ -7,7 +7,6 @@ namespace TombLib.LevelData
     public class ImportedGeometryInstance : PositionBasedObjectInstance, IScaleable, IRotateableYXRoll
     {
         public ImportedGeometry Model { get; set; }
-        public ImportedGeometryMesh Mesh { get; set; }
 
         public float Scale { get; set; } = 1;
         public bool UseVertexColor { get; set; } = false;
@@ -73,5 +72,10 @@ namespace TombLib.LevelData
                 args.DestinationLevelSettings.ImportedGeometries.Add(Model);
             }
         }
+    }
+
+    public class ImportedRoomInstance : ImportedGeometryInstance
+    {
+        public ImportedGeometryMesh Mesh { get; set; }
     }
 }

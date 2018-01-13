@@ -2539,13 +2539,13 @@ namespace TombEditor
                             model.Materials.Add(materialAdditiveBlending);
                             model.Materials.Add(materialAdditiveBlendingDoubleSided);
 
-                            var minPosition = Vector3.One * float.MaxValue;
+                            /*var minPosition = Vector3.One * float.MaxValue;
                             foreach (var room in rooms)
                             {
                                 if (room.WorldPos.X < minPosition.X) minPosition.X = room.WorldPos.X;
                                 if (room.WorldPos.Y < minPosition.Y) minPosition.Y = room.WorldPos.Y;
                                 if (room.WorldPos.Z < minPosition.Z) minPosition.Z = room.WorldPos.Z;
-                            }
+                            }*/
 
                             foreach (var room in rooms)
                             {
@@ -2598,7 +2598,7 @@ namespace TombEditor
 
                                                 foreach (var index in indices)
                                                 {
-                                                    mesh.Positions.Add(vertices[index].Position /*- deltaPos*/ + room.WorldPos - minPosition);
+                                                    mesh.Positions.Add(vertices[index].Position /*- deltaPos*/ + room.WorldPos /*- minPosition*/);
                                                     mesh.UV.Add(vertices[index].UV);
                                                     mesh.Colors.Add(vertices[index].Color);
                                                 }
@@ -2622,7 +2622,7 @@ namespace TombEditor
             }
         }
 
-        /*public static void ImportRooms(IWin32Window owner)
+        public static void ImportRooms(IWin32Window owner)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -2638,9 +2638,12 @@ namespace TombEditor
 
                     try
                     {
-                        var info = new ImportedGeometryInfo();
                         string importedGeometryPath = openFileDialog.FileName;
                         string importedGeometryDirectory = Path.GetDirectoryName(importedGeometryPath);
+
+                        var info = new ImportedGeometryInfo();
+                        info.Path = importedGeometryPath;
+                        info.Name = Path.GetFileNameWithoutExtension(importedGeometryPath);
 
                         // Invoke the TombLib geometry import code
                         var settingsIO = new IOGeometrySettings
@@ -2654,115 +2657,90 @@ namespace TombEditor
                             FlipZ = info.FlipZ,
                             FlipUV_V = info.FlipUV_V,
                             InvertFaces = info.InvertFaces,
-                            UseVertexColor = info.UseVertexColor
+                            UseVertexColor = info.UseVertexColor,
                         };
 
-                        BaseGeometryImporter importer;
-                        if (importedGeometryPath.ToLower().EndsWith(".mqo"))
+                        ImportedGeometry newObject = new ImportedGeometry();
+                        _editor.Level.Settings.ImportedGeometryUpdate(newObject, info);
+                        _editor.Level.Settings.ImportedGeometries.Add(newObject);
+
+                        // Now assign each imported room to its room
+                        foreach (var pair in newObject.DirectXModel.RoomMeshes)
                         {
-                            importer = new MetasequoiaRoomImporter(settingsIO, (absoluteTexturePath) =>
+                            var roomIndex = pair.Key;
+                            var mesh = pair.Value;
+
+                            if (roomIndex < _editor.Level.Rooms.Length && _editor.Level.Rooms[roomIndex] != null)
                             {
-                                return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
-                            });
-                        }
-                        else
-                        {
-                            importer = new AssimpImporter(settingsIO, (absoluteTexturePath) =>
-                            {
-                                return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
-                            });
-                        }
+                                var room = _editor.Level.Rooms[roomIndex];
 
-                        var tmpModel = importer.ImportFromFile(importedGeometryPath);
+                                // We have found a valid room, now search for a ImportedRoomInstance
+                                var found = false;
+                                foreach (var instance in room.Objects)
+                                    if (instance is ImportedGeometryInstance)
+                                    {
+                                        var imported = instance as ImportedGeometryInstance;
+                                        imported.Model = newObject;
+                                        found = true;
+                                        break;
+                                    }
 
-                        // Create a new static model
-                        DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
-                        DirectXModel.BoundingBox = tmpModel.BoundingBox;
-
-                        // Create materials
-                        foreach (var tmpMaterial in tmpModel.Materials)
-                        {
-                            var material = new Material(tmpMaterial.Name);
-                            material.Texture = tmpMaterial.Texture;
-                            material.AdditiveBlending = tmpMaterial.AdditiveBlending;
-                            material.DoubleSided = tmpMaterial.DoubleSided;
-                            DirectXModel.Materials.Add(material);
-                        }
-
-                        // Loop for each mesh loaded in scene
-                        foreach (var mesh in tmpModel.Meshes)
-                        {
-                            var modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, "Imported");
-
-                            var currentIndex = 0;
-                            var currPoly = 0;
-                            foreach (var tmpSubmesh in mesh.Submeshes)
-                            {
-                                var material = DirectXModel.Materials[tmpModel.Materials.IndexOf(tmpSubmesh.Value.Material)];
-                                var submesh = new Submesh(material);
-
-                                foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
+                                // If no instance is found, then add it
+                                if (!found)
                                 {
-                                    if (tmpPoly.Shape == IOPolygonShape.Quad)
-                                    {
-                                        for (var i = 0; i < 4; i++)
-                                        {
-                                            var vertex = new ImportedGeometryVertex();
-                                            vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                            vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
-                                            modelMesh.Vertices.Add(vertex);
-                                        }
-
-                                        submesh.Indices.Add(currentIndex);
-                                        submesh.Indices.Add(currentIndex + 1);
-                                        submesh.Indices.Add(currentIndex + 2);
-
-                                        submesh.Indices.Add(currentIndex);
-                                        submesh.Indices.Add(currentIndex + 2);
-                                        submesh.Indices.Add(currentIndex + 3);
-
-                                        currentIndex += 4;
-                                    }
-                                    else
-                                    {
-                                        for (var i = 0; i < 3; i++)
-                                        {
-                                            var vertex = new ImportedGeometryVertex();
-                                            vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                            vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
-                                            modelMesh.Vertices.Add(vertex);
-                                            submesh.Indices.Add(currentIndex);
-                                            currentIndex++;
-                                        }
-                                    }
-
-                                    currPoly++;
+                                    var newImported = new ImportedGeometryInstance();
+                                    newImported.Position = Vector3.Zero;
+                                    newImported.Model = newObject;
+                                    room.AddObject(_editor.Level, newImported);
                                 }
-
-                                modelMesh.Submeshes.Add(material, submesh);
                             }
-                            //modelMesh.Texture = mesh.Texture;
-
-                            // Add mesh to the model
-                            DirectXModel.Meshes.Add(modelMesh);
                         }
-
-                        DirectXModel.BuildBuffers();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        throw;
                     }
                     catch (Exception exc)
                     {
-                        LoadException = exc;
-                        DirectXModel = null;
-                        logger.Warn(exc, "Unable to load model \"" + info.Name + "\" from \"" + info.Path + "\" because an exception occurred during loading.");
+                        logger.Error(exc.Message);
                     }
                 }
-            }                        
+            }
         }
-        */
+        
+        public static void UpdateImportedRoomInstance(ImportedGeometry model)
+        {
+            // Now assign each imported room to its room
+            foreach (var mesh in model.DirectXModel.Meshes)
+            {
+                if (mesh.Name.StartsWith("TeRoom_"))
+                {
+                    var roomIndex = int.Parse(mesh.Name.Split('_')[1]);
+                    if (roomIndex < _editor.Level.Rooms.Length && _editor.Level.Rooms[roomIndex] != null)
+                    {
+                        var room = _editor.Level.Rooms[roomIndex];
+
+                        // We have found a valid room, now search for a ImportedRoomInstance
+                        var found = false;
+                        foreach (var instance in room.Objects)
+                            if (instance is ImportedRoomInstance)
+                            {
+                                var imported = instance as ImportedRoomInstance;
+                                imported.Model = model;
+                                imported.Mesh = mesh;
+                                found = true;
+                                break;
+                            }
+
+                        // If no instance is found, then add it
+                        if (!found)
+                        {
+                            var newImported = new ImportedRoomInstance();
+                            newImported.Position = Vector3.Zero;
+                            newImported.Model = model;
+                            newImported.Mesh = mesh;
+                            room.AddObject(_editor.Level, newImported);
+                        }
+                    }
+                }
+            }
+        }
 
         public static void OpenLevel(IWin32Window owner, string fileName = null)
         {

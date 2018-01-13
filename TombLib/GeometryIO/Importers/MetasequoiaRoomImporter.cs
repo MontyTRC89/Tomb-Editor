@@ -40,7 +40,6 @@ namespace TombLib.GeometryIO.Importers
 
             using (var reader = new StreamReader(File.OpenRead(filename)))
             {
-                var containsMultipleRooms = false;
                 var line = reader.ReadLine();
                 if (line.Trim() != "Metasequoia Document")
                 {
@@ -102,9 +101,14 @@ namespace TombLib.GeometryIO.Importers
                     {
                         var name = line.Split(' ')[1];
                         var mesh = new IOMesh(name);
+                        var isRoom = false;
                         positions = new List<Vector3>();
 
-                        if (name.Contains("TeRoom_")) containsMultipleRooms = true;
+                        if (name.Contains("TeRoom_"))
+                        {
+                            model.HasMultipleRooms = true;
+                            isRoom = true;
+                        }
 
                         var lastVertex = 0;
                         var translation = Vector3.Zero;
@@ -114,7 +118,7 @@ namespace TombLib.GeometryIO.Importers
                             line = reader.ReadLine().Trim();
                             var tokens = line.Split(' ');
                             
-                            if (tokens[0] == "translation" && containsMultipleRooms)
+                            if (tokens[0] == "translation" && model.HasMultipleRooms)
                             {
                                 translation = ApplyAxesTransforms(new Vector3(ParseFloatCultureInvariant(tokens[1]),
                                                                               ParseFloatCultureInvariant(tokens[2]),
@@ -202,7 +206,6 @@ namespace TombLib.GeometryIO.Importers
                                 break;
                         }
 
-                        //mesh.Texture = textures[0];
                         model.Meshes.Add(mesh);
                     }
                 }

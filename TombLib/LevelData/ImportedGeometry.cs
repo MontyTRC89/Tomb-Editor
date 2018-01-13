@@ -101,6 +101,8 @@ namespace TombLib.LevelData
         public bool FlipUV_V { get; set; }
         public bool InvertFaces { get; set; }
         public bool UseVertexColor { get; set; }
+
+        public bool HasMultipleRooms { get; set; }
     }
 
     public class ImportedGeometry : ICloneable, IEquatable<ImportedGeometry>
@@ -112,7 +114,11 @@ namespace TombLib.LevelData
         public class Model : Model<ImportedGeometryMesh, ImportedGeometryVertex>
         {
             public float Scale { get; private set; }
-            
+
+            // Used only by Tomb Editor for handling the special case of multiple rooms
+            public bool HasMultipleRooms { get; set; }
+            public Dictionary<int, ImportedGeometryMesh> RoomMeshes { get; private set; } = new Dictionary<int, ImportedGeometryMesh>();
+
             public Model(GraphicsDevice device, float scale)
                 : base(device, ModelType.RoomGeometry)
             {
@@ -121,20 +127,21 @@ namespace TombLib.LevelData
 
             public override void BuildBuffers()
             {
-                int lastBaseIndex = 0;
+                var lastBaseIndex = 0;
 
                 Vertices = new List<ImportedGeometryVertex>();
                 Indices = new List<int>();
 
                 foreach (var mesh in Meshes)
                 {
+                    var meshBaseIndex = Vertices.Count;
                     Vertices.AddRange(mesh.Vertices);
-
+                    
                     foreach (var submesh in mesh.Submeshes)
                     {
                         submesh.Value.BaseIndex = lastBaseIndex;
                         foreach (var index in submesh.Value.Indices)
-                            Indices.Add((ushort)(index));
+                            Indices.Add((ushort)(meshBaseIndex + index));
                         lastBaseIndex += submesh.Value.NumIndices;
                     }
 
@@ -204,6 +211,7 @@ namespace TombLib.LevelData
                 // Create a new static model
                 DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
                 DirectXModel.BoundingBox = tmpModel.BoundingBox;
+                DirectXModel.HasMultipleRooms = tmpModel.HasMultipleRooms;
 
                 // Create materials
                 foreach (var tmpMaterial in tmpModel.Materials)
@@ -218,7 +226,7 @@ namespace TombLib.LevelData
                 // Loop for each mesh loaded in scene
                 foreach (var mesh in tmpModel.Meshes)
                 {
-                    var modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, "Imported");
+                    var modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, mesh.Name);
 
                     var currentIndex = 0;
                     var currPoly = 0;
@@ -271,6 +279,11 @@ namespace TombLib.LevelData
 
                     // Add mesh to the model
                     DirectXModel.Meshes.Add(modelMesh);
+                    if (modelMesh.Name.StartsWith("TeRoom_"))
+                    {
+                        var roomIndex = int.Parse(modelMesh.Name.Split('_')[1]);
+                        DirectXModel.RoomMeshes.Add(roomIndex, modelMesh);
+                    }
                 }
 
                 DirectXModel.BuildBuffers();
