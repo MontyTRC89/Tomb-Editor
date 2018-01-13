@@ -11,7 +11,7 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
-    public sealed partial class LevelCompilerTr4
+    public sealed partial class LevelCompilerClassicTR
     {
         private void WriteNgHeader(BinaryWriter writer)
         {

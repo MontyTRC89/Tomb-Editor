@@ -26,7 +26,7 @@ namespace TombLib.LevelData.Compilers
         public bool Flag0x02;
     }
 
-    public sealed partial class LevelCompilerTr4
+    public sealed partial class LevelCompilerClassicTR
     {
         private bool dec_graybox = false;
         private bool dec_water = true;

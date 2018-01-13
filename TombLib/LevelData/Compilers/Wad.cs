@@ -10,7 +10,7 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers
 {
-    public partial class LevelCompilerTr4
+    public partial class LevelCompilerClassicTR
     {
         private static readonly bool _writeDbgWadTxt = false;
         private Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();

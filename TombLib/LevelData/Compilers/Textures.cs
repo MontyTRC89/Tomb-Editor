@@ -9,7 +9,7 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers
 {
-    public sealed partial class LevelCompilerTr4
+    public sealed partial class LevelCompilerClassicTR
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 

@@ -8,7 +8,7 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
 {
-    public sealed partial class LevelCompilerTr4
+    public sealed partial class LevelCompilerClassicTR
     {
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>();
         private readonly List<Room> _roomsUnmapping = new List<Room>();
