@@ -1294,5 +1294,10 @@ namespace TombEditor
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void importRoomsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.ImportRooms(this);
+        }
     }
 }

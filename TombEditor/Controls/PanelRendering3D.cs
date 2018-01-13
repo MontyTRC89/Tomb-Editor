@@ -2305,10 +2305,11 @@ namespace TombEditor.Controls
 
                 var model = instance.Model.DirectXModel;
                 var room = instance.Room;
+                var roomIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
                 var meshes = new List<ImportedGeometryMesh>();
-                if (instance.Mesh != null)
-                    meshes.Add(instance.Mesh);
+                if (model.HasMultipleRooms && model.RoomMeshes.ContainsKey(roomIndex))
+                    meshes.Add(model.RoomMeshes[roomIndex]);
                 else
                     meshes.AddRange(model.Meshes);
 

@@ -207,10 +207,16 @@ namespace TombLib.LevelData.Compilers
                     if (geometry.Model?.DirectXModel == null)
                         continue;
 
+                    var meshes = new List<ImportedGeometryMesh>();
+                    if (geometry is ImportedRoomInstance)
+                        meshes.Add((geometry as ImportedRoomInstance).Mesh);
+                    else
+                        meshes.AddRange(geometry.Model.DirectXModel.Meshes);
+
                     var transform = geometry.RotationMatrix *
                                     Matrix4x4.CreateScale(geometry.Scale) *
                                     Matrix4x4.CreateTranslation(geometry.Position);
-                    foreach (var mesh in geometry.Model.DirectXModel.Meshes)
+                    foreach (var mesh in meshes)
                     {
                         foreach (var submesh in mesh.Submeshes)
                         {
