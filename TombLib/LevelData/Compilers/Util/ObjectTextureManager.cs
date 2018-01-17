@@ -636,7 +636,10 @@ namespace TombLib.LevelData.Compilers.Util
 
                 stream.Write((ushort)objectTexture.BlendMode);
                 stream.Write((ushort)Tile);
-                stream.Write((ushort)objectTexture.NewFlags);
+
+                if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG ||
+                                    level.Settings.GameVersion == GameVersion.TR5)
+                    stream.Write((ushort)objectTexture.NewFlags);
 
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord0X, ref objectTexture.TexCoord0Y);
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord1X, ref objectTexture.TexCoord1Y);
@@ -666,10 +669,14 @@ namespace TombLib.LevelData.Compilers.Util
                     stream.Write((ushort)objectTexture.TexCoord3Y);
                 }
 
-                stream.Write((uint)0);
-                stream.Write((uint)0);
-                stream.Write((uint)0);
-                stream.Write((uint)0);
+                if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG ||
+                    level.Settings.GameVersion == GameVersion.TR5)
+                {
+                    stream.Write((uint)0);
+                    stream.Write((uint)0);
+                    stream.Write((uint)0);
+                    stream.Write((uint)0);
+                }
 
                 if (level.Settings.GameVersion == GameVersion.TR5) stream.Write((ushort)0);
             }
