@@ -623,7 +623,7 @@ namespace TombLib.LevelData.Compilers.Util
             form.ShowDialog();*/
         }
 
-        public void WriteObjectTexturesForTr4(BinaryWriterEx stream)
+        public void WriteObjectTextures(BinaryWriterEx stream, Level level)
         {
             // Write object textures
             stream.Write((uint)_objectTextures.Count);
@@ -643,19 +643,35 @@ namespace TombLib.LevelData.Compilers.Util
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord2X, ref objectTexture.TexCoord2Y);
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord3X, ref objectTexture.TexCoord3Y);
 
-                stream.Write((ushort)objectTexture.TexCoord0X);
-                stream.Write((ushort)objectTexture.TexCoord0Y);
-                stream.Write((ushort)objectTexture.TexCoord1X);
-                stream.Write((ushort)objectTexture.TexCoord1Y);
-                stream.Write((ushort)objectTexture.TexCoord2X);
-                stream.Write((ushort)objectTexture.TexCoord2Y);
-                stream.Write((ushort)objectTexture.TexCoord3X);
-                stream.Write((ushort)objectTexture.TexCoord3Y);
+                if (level.Settings.GameVersion == GameVersion.TR5)
+                {
+                    stream.Write((ushort)(objectTexture.TexCoord0X & 0xff00));
+                    stream.Write((ushort)(objectTexture.TexCoord0Y & 0xff00));
+                    stream.Write((ushort)(objectTexture.TexCoord1X & 0xff00));
+                    stream.Write((ushort)(objectTexture.TexCoord1Y & 0xff00));
+                    stream.Write((ushort)(objectTexture.TexCoord2X & 0xff00));
+                    stream.Write((ushort)(objectTexture.TexCoord2Y & 0xff00));
+                    stream.Write((ushort)(objectTexture.TexCoord3X & 0xff00));
+                    stream.Write((ushort)(objectTexture.TexCoord3Y & 0xff00));
+                }
+                else
+                {
+                    stream.Write((ushort)objectTexture.TexCoord0X);
+                    stream.Write((ushort)objectTexture.TexCoord0Y);
+                    stream.Write((ushort)objectTexture.TexCoord1X);
+                    stream.Write((ushort)objectTexture.TexCoord1Y);
+                    stream.Write((ushort)objectTexture.TexCoord2X);
+                    stream.Write((ushort)objectTexture.TexCoord2Y);
+                    stream.Write((ushort)objectTexture.TexCoord3X);
+                    stream.Write((ushort)objectTexture.TexCoord3Y);
+                }
 
                 stream.Write((uint)0);
                 stream.Write((uint)0);
                 stream.Write((uint)0);
                 stream.Write((uint)0);
+
+                if (level.Settings.GameVersion == GameVersion.TR5) stream.Write((ushort)0);
             }
         }
     }

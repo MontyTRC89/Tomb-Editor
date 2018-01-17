@@ -1250,19 +1250,19 @@ namespace TombEditor
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (var room in _editor.Level.Rooms)
+            using (var reader = new BinaryReader(File.OpenRead("Font.tr5.pc")))
             {
-                for (var x=0;x<room.NumXSectors;x++)
-                {
-                    for (var z=0;z<room.NumZSectors;z++)
+                var bmp = new Bitmap(256, 768);
+                for (var y=0;y<768;y++)
+                    for (var x=0;x<256;x++)
                     {
-                        foreach (BlockFace faceId in Enum.GetValues(typeof(BlockFace)))
-                        {
-                            var face = room.Blocks[x, z].GetFaceTexture(faceId);
-                            //if (face.)
-                        }
+                        var r = reader.ReadByte();
+                        var g = reader.ReadByte();
+                        var b = reader.ReadByte();
+                        var a = reader.ReadByte();
+                        bmp.SetPixel(x, y, Color.FromArgb(a, r, g, b));
                     }
-                }
+                bmp.Save("Font.Tr5.png");
             }
         }
 

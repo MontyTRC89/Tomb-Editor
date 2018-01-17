@@ -92,6 +92,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.WadFilePath, settings.WadFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.FontTextureFilePath, settings.FontTextureFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.SkyTextureFilePath, settings.SkyTextureFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.Tr5ExtraSpritesFilePath, settings.Tr5ExtraSpritesFilePath ?? "");
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.OldWadSoundPaths, () =>
                 {
                     foreach (OldWadSoundPath soundPath in settings.OldWadSoundPaths)
@@ -102,6 +103,8 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.GameExecutableFilePath, settings.GameExecutableFilePath ?? "");
                 chunkIO.WriteChunkBool(Prj2Chunks.GameEnableQuickStartFeature, settings.GameEnableQuickStartFeature);
                 chunkIO.WriteChunkInt(Prj2Chunks.GameVersion, (long)(settings.GameVersion));
+                chunkIO.WriteChunkInt(Prj2Chunks.Tr5LaraType, (long)(settings.Tr5LaraType));
+                chunkIO.WriteChunkInt(Prj2Chunks.Tr5Weather, (long)(settings.Tr5WeatherType));
                 chunkIO.WriteChunkVector4(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.Textures, () =>

@@ -23,7 +23,7 @@ namespace TombLib.Wad.TrLevels
         internal List<tr_animation> Animations = new List<tr_animation>();
         internal List<tr_state_change> StateChanges = new List<tr_state_change>();
         internal List<tr_anim_dispatch> AnimDispatches = new List<tr_anim_dispatch>();
-        internal List<ushort> AnimCommands = new List<ushort>();
+        internal List<short> AnimCommands = new List<short>();
         internal List<int> MeshTrees = new List<int>();
         internal List<short> Frames = new List<short>();
         internal List<tr_moveable> Moveables = new List<tr_moveable>();
@@ -202,11 +202,133 @@ namespace TombLib.Wad.TrLevels
                             else
                             {
                                 // TR5 is very different, but luckly we have a field with the total size
-
+                                // But I read everything for debugging the new TR5 compiler
                                 // XELA
                                 var xela = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(4));
-
                                 var roomDataSize = levelReader.ReadUInt32();
+                                /*levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                var roomX = levelReader.ReadInt32();
+                                var roomY = levelReader.ReadInt32();
+                                var roomZ = levelReader.ReadInt32();
+                                var roomYbottom = levelReader.ReadInt32();
+                                var roomYtop = levelReader.ReadInt32();
+                                var numZsectors = levelReader.ReadUInt16();
+                                var numXsectors = levelReader.ReadUInt16();
+                                var roomColor = levelReader.ReadUInt32();
+                                var numLights = levelReader.ReadUInt16();
+                                var numStatics = levelReader.ReadUInt16();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                var alternateRoom = levelReader.ReadUInt16();
+                                var flags = levelReader.ReadUInt16();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                var roomXfloat = levelReader.ReadSingle();
+                                var roomYfloat = levelReader.ReadSingle();
+                                var roomZfloat = levelReader.ReadSingle();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                var numQuads = levelReader.ReadUInt32();
+                                var numTriangles = levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                var lightSize = levelReader.ReadUInt32();
+                                var numLights2 = levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                var numLayers = levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                var numVertices = levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadUInt32();
+                                levelReader.ReadBytes(88 * numLights);
+                                levelReader.ReadBytes(8 * numXsectors * numZsectors);
+                                var numPortals = levelReader.ReadUInt16();
+                                levelReader.ReadBytes(32 * numPortals);
+                                var filler = levelReader.ReadUInt16();
+                                var smeshes = new List<tr_room_staticmesh>();
+                                for (var k=0;k<numStatics;k++)
+                                {
+                                    var sm = new tr_room_staticmesh();
+                                    sm.X = levelReader.ReadInt32();
+                                    sm.Y = levelReader.ReadInt32();
+                                    sm.Z = levelReader.ReadInt32();
+                                    // Absolute position in world coordinates
+                                    sm.Rotation= levelReader.ReadUInt16();
+                                    sm.Intensity1 = levelReader.ReadUInt16();
+                                    sm.Intensity2 = levelReader.ReadUInt16();
+                                    sm.ObjectID = levelReader.ReadUInt16();
+                                    smeshes.Add(sm);
+                                }
+                                //levelReader.ReadBytes((int)(20 * numStatics));
+                                var layer = levelReader.ReadBytes((int)(56 * numLayers));
+                                var quads = new List<tr_face4>();
+                                var tris = new List<tr_face4>();
+
+                                for (var k=0;k<numQuads;k++)
+                                {
+                                    var q = new tr_face4();
+                                    q.Vertices = new ushort[4];
+                                    q.Vertices[0] = levelReader.ReadUInt16();
+                                    q.Vertices[1] = levelReader.ReadUInt16();
+                                    q.Vertices[2] = levelReader.ReadUInt16();
+                                    q.Vertices[3] = levelReader.ReadUInt16();
+                                    q.Texture = levelReader.ReadUInt16();
+                                    quads.Add(q);
+
+                                }
+                                //levelReader.ReadBytes((int)(10 * numQuads));
+                                //levelReader.ReadBytes((int)(8 * numTriangles));
+                                for (var k = 0; k < numTriangles; k++)
+                                {
+                                    var q = new tr_face4();
+                                    q.Vertices = new ushort[3];
+                                    q.Vertices[0] = levelReader.ReadUInt16();
+                                    q.Vertices[1] = levelReader.ReadUInt16();
+                                    q.Vertices[2] = levelReader.ReadUInt16();
+                                    q.Texture = levelReader.ReadUInt16();
+                                    tris.Add(q);
+
+                                }
+
+                                if (numTriangles % 2 != 0)
+                                    filler = levelReader.ReadUInt16();
+                                //levelReader.ReadBytes((int)(28 * numVertices));
+                                var vertices = new List<tr_room_vertex>();
+                                for (var k = 0; k < numVertices; k++)
+                                {
+                                    var q = new tr_room_vertex();
+                                    q.Position = new tr_vertex();
+                                    q.Position.X = (short)levelReader.ReadSingle();
+                                    q.Position.Y = (short)levelReader.ReadSingle();
+                                    q.Position.Z = (short)levelReader.ReadSingle();
+                                    levelReader.ReadSingle();
+                                    levelReader.ReadSingle();
+                                    levelReader.ReadSingle();
+                                    levelReader.ReadUInt32();
+
+                                }*/
+
                                 levelReader.BaseStream.Seek(roomDataSize, SeekOrigin.Current);
                             }
                         }
@@ -424,9 +546,9 @@ namespace TombLib.Wad.TrLevels
 
                         // Anim commands
                         var numAnimCommands = levelReader.ReadUInt32();
-                        AnimCommands = new List<ushort>();
+                        AnimCommands = new List<short>();
                         for (var i = 0; i < numAnimCommands; i++)
-                            AnimCommands.Add(levelReader.ReadUInt16());
+                            AnimCommands.Add(levelReader.ReadInt16());
 
                         // Mesh trees
                         var numMeshTrees = levelReader.ReadUInt32();

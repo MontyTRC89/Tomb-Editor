@@ -60,17 +60,37 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(18, "Building font & sky textures");
 
-            var image = ImageC.CreateNew(256, 512);
+            var image = ImageC.CreateNew(256, (_level.Settings.GameVersion == GameVersion.TR5 ? 768 : 512));
 
-            // Read font texture
-            string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
-            ReportProgress(19, "Reading font texture: " + fontFileName);
-            image.CopyFrom(0, 0, LevelSettings.LoadRawExtraTexture(fontFileName));
+            if (_level.Settings.GameVersion == GameVersion.TR5)
+            {
+                // Read extra textures
+                string extraFileName = "Graphics\\Common\\Extra.Tr5.pc"; // _level.Settings.FontTextureFileNameAbsoluteOrDefault;
+                ReportProgress(19, "Reading extra TR5 texture: " + extraFileName);
+                image.CopyFrom(0, 0, LevelSettings.LoadRawExtraTexture(extraFileName));
 
-            // Read sky texture
-            string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
-            ReportProgress(18, "Reading sky texture: " + skyFileName);
-            image.CopyFrom(0, 256, LevelSettings.LoadRawExtraTexture(skyFileName));
+                // Read font texture
+                string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
+                ReportProgress(19, "Reading font texture: " + fontFileName);
+                image.CopyFrom(0, 256, LevelSettings.LoadRawExtraTexture(fontFileName));
+
+                // Read sky texture
+                string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
+                ReportProgress(18, "Reading sky texture: " + skyFileName);
+                image.CopyFrom(0, 512, LevelSettings.LoadRawExtraTexture(skyFileName));
+            }
+            else
+            {
+                // Read font texture
+                string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
+                ReportProgress(19, "Reading font texture: " + fontFileName);
+                image.CopyFrom(0, 0, LevelSettings.LoadRawExtraTexture(fontFileName));
+
+                // Read sky texture
+                string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
+                ReportProgress(18, "Reading sky texture: " + skyFileName);
+                image.CopyFrom(0, 256, LevelSettings.LoadRawExtraTexture(skyFileName));
+            }
 
             return image.ToRawStream();
         }

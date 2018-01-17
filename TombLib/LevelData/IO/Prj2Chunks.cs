@@ -16,6 +16,9 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId WadFilePath = ChunkId.FromString("TeWadFilePath"); // UTF-8 string
         /**/public static readonly ChunkId FontTextureFilePath = ChunkId.FromString("TeFontTextureFilePath"); // UTF-8 string
         /**/public static readonly ChunkId SkyTextureFilePath = ChunkId.FromString("TeSkyTextureFilePath"); // UTF-8 string
+        /**/public static readonly ChunkId Tr5ExtraSpritesFilePath = ChunkId.FromString("TeTr5ExtraSpritesFilePath"); // UTF-8 string
+        /**/public static readonly ChunkId Tr5LaraType = ChunkId.FromString("TeTr5LaraType");  
+        /**/public static readonly ChunkId Tr5Weather = ChunkId.FromString("TeTr5Weather");  
         /**/public static readonly ChunkId OldWadSoundPaths = ChunkId.FromString("TeOldWadSoundPaths");
         /******/public static readonly ChunkId OldWadSoundPath = ChunkId.FromString("TeOldWadSoundPath");
         /**********/public static readonly ChunkId OldWadSoundPathPath = ChunkId.FromString("TePath"); // UTF-8 string

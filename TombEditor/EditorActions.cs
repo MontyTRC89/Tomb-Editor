@@ -2212,8 +2212,8 @@ namespace TombEditor
                 {
                     var watch = new Stopwatch();
                     watch.Start();
-                    LevelCompilerTr4 compiler = new LevelCompilerTr4(level, fileName, progressReporter);
-                    LevelCompilerTr4.CompilerStatistics statistics = compiler.CompileLevel();
+                    var compiler = new LevelCompilerClassicTR(level, fileName, progressReporter);
+                    var statistics = compiler.CompileLevel();
                     watch.Stop();
                     progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
 
