@@ -69,10 +69,15 @@ namespace TombLib.LevelData.Compilers
                 Flipped = room.Flipped,
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
-                AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | (uint)roomAmbientColor.Blue,
                 ReverbInfo = (byte)room.Reverberation,
                 Flags = 0x40
             };
+
+            // Store ambient intensity
+            if (_level.Settings.GameVersion == GameVersion.TR3)
+                newRoom.AmbientIntensity = PackColorTo16Bit(room.AmbientLight);
+            else
+                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | (uint)roomAmbientColor.Blue;
 
             // Room flags
             if (room.QuickSandLevel > 0)
@@ -440,6 +445,12 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
+                // If target game is <= TR4 then ignore all special lights and fog bulbs
+                if (!(_level.Settings.GameVersion == GameVersion.TR4 || _level.Settings.GameVersion == GameVersion.TRNG ||
+                      _level.Settings.GameVersion == GameVersion.TR5) &&
+                      (light.Type == LightType.Spot || light.Type == LightType.Sun || light.Type == LightType.FogBulb))
+                    continue;
+
                 if (!light.Enabled || !light.IsDynamicallyUsed)
                     continue;
                 tr_color color = PackColorTo24Bit(new Vector4(light.Color, 1.0f));

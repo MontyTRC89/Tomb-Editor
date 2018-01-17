@@ -62,7 +62,7 @@ namespace TombLib.Wad.TrLevels
                 //textureData.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
                 texture.Image = textureData;
-
+                
                 // Update the hash of the texture
                 texture.UpdateHash();
 
