@@ -65,7 +65,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.GameVersion == GameVersion.TR5)
             {
                 // Read extra textures
-                string extraFileName = "Graphics\\Common\\Extra.Tr5.pc"; // _level.Settings.FontTextureFileNameAbsoluteOrDefault;
+                string extraFileName = _level.Settings.Tr5ExtraSpritesFileNameAbsoluteOrDefault;
                 ReportProgress(19, "Reading extra TR5 texture: " + extraFileName);
                 image.CopyFrom(0, 0, LevelSettings.LoadRawExtraTexture(extraFileName));
 

@@ -35,13 +35,6 @@
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.optionsList = new DarkUI.Controls.DarkListView();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.butApply = new DarkUI.Controls.DarkButton();
-            this.butOk = new DarkUI.Controls.DarkButton();
-            this.butCancel = new DarkUI.Controls.DarkButton();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.optionsContainer = new TombEditor.Controls.DarkTabbedContainer();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel10 = new System.Windows.Forms.Panel();
@@ -83,6 +76,13 @@
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.panelTr5Sprites = new System.Windows.Forms.Panel();
+            this.tr5SpritesTextureFilePathPicPreview = new System.Windows.Forms.PictureBox();
+            this.tr5SpritesTextureFilePathBut = new DarkUI.Controls.DarkButton();
+            this.tr5SpritesFilePathOptCustom = new DarkUI.Controls.DarkRadioButton();
+            this.darkLabel18 = new DarkUI.Controls.DarkLabel();
+            this.tr5SpritesFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
+            this.tr5SpritesTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.panel8 = new System.Windows.Forms.Panel();
             this.fontTextureFilePathPicPreview = new System.Windows.Forms.PictureBox();
             this.fontTextureFilePathBut = new DarkUI.Controls.DarkButton();
@@ -109,14 +109,25 @@
             this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.panelTr5Weather = new System.Windows.Forms.Panel();
+            this.comboTr5Weather = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel19 = new DarkUI.Controls.DarkLabel();
+            this.panelTr5LaraType = new System.Windows.Forms.Panel();
+            this.comboLaraType = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.panel12 = new System.Windows.Forms.Panel();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.optionsList = new DarkUI.Controls.DarkListView();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.butApply = new DarkUI.Controls.DarkButton();
+            this.butOk = new DarkUI.Controls.DarkButton();
+            this.butCancel = new DarkUI.Controls.DarkButton();
+            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
-            this.darkSectionPanel1.SuspendLayout();
-            this.panel11.SuspendLayout();
             this.optionsContainer.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel10.SuspendLayout();
@@ -130,6 +141,8 @@
             this.panel7.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.panelTr5Sprites.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tr5SpritesTextureFilePathPicPreview)).BeginInit();
             this.panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fontTextureFilePathPicPreview)).BeginInit();
             this.panel9.SuspendLayout();
@@ -139,7 +152,11 @@
             this.tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
             this.tabPage7.SuspendLayout();
+            this.panelTr5Weather.SuspendLayout();
+            this.panelTr5LaraType.SuspendLayout();
             this.panel12.SuspendLayout();
+            this.darkSectionPanel1.SuspendLayout();
+            this.panel11.SuspendLayout();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -196,77 +213,6 @@
             this.darkSectionPanel2.SectionHeader = null;
             this.darkSectionPanel2.Size = new System.Drawing.Size(458, 353);
             this.darkSectionPanel2.TabIndex = 2;
-            // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Controls.Add(this.optionsList);
-            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 353);
-            this.darkSectionPanel1.TabIndex = 7;
-            // 
-            // optionsList
-            // 
-            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.optionsList.Location = new System.Drawing.Point(1, 1);
-            this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 351);
-            this.optionsList.TabIndex = 6;
-            // 
-            // panel11
-            // 
-            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel11.Controls.Add(this.butApply);
-            this.panel11.Controls.Add(this.butOk);
-            this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Location = new System.Drawing.Point(407, 362);
-            this.panel11.Name = "panel11";
-            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panel11.Size = new System.Drawing.Size(260, 28);
-            this.panel11.TabIndex = 5;
-            // 
-            // butApply
-            // 
-            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butApply.Location = new System.Drawing.Point(3, 1);
-            this.butApply.Name = "butApply";
-            this.butApply.Size = new System.Drawing.Size(80, 24);
-            this.butApply.TabIndex = 3;
-            this.butApply.Text = "Apply";
-            this.butApply.Click += new System.EventHandler(this.butApply_Click);
-            // 
-            // butOk
-            // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butOk.Location = new System.Drawing.Point(89, 1);
-            this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(80, 24);
-            this.butOk.TabIndex = 3;
-            this.butOk.Text = "Ok";
-            this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // butCancel
-            // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butCancel.Location = new System.Drawing.Point(175, 1);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 24);
-            this.butCancel.TabIndex = 3;
-            this.butCancel.Text = "Cancel";
-            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
-            // 
-            // colorDialog
-            // 
-            this.colorDialog.AnyColor = true;
-            this.colorDialog.FullOpen = true;
             // 
             // optionsContainer
             // 
@@ -695,6 +641,7 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage2.Controls.Add(this.panelTr5Sprites);
             this.tabPage2.Controls.Add(this.panel8);
             this.tabPage2.Controls.Add(this.panel9);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -703,6 +650,83 @@
             this.tabPage2.Size = new System.Drawing.Size(448, 325);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Sky & Font";
+            // 
+            // panelTr5Sprites
+            // 
+            this.panelTr5Sprites.Controls.Add(this.tr5SpritesTextureFilePathPicPreview);
+            this.panelTr5Sprites.Controls.Add(this.tr5SpritesTextureFilePathBut);
+            this.panelTr5Sprites.Controls.Add(this.tr5SpritesFilePathOptCustom);
+            this.panelTr5Sprites.Controls.Add(this.darkLabel18);
+            this.panelTr5Sprites.Controls.Add(this.tr5SpritesFilePathOptAuto);
+            this.panelTr5Sprites.Controls.Add(this.tr5SpritesTextureFilePathTxt);
+            this.panelTr5Sprites.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTr5Sprites.Location = new System.Drawing.Point(3, 142);
+            this.panelTr5Sprites.Name = "panelTr5Sprites";
+            this.panelTr5Sprites.Size = new System.Drawing.Size(442, 68);
+            this.panelTr5Sprites.TabIndex = 3;
+            // 
+            // tr5SpritesTextureFilePathPicPreview
+            // 
+            this.tr5SpritesTextureFilePathPicPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tr5SpritesTextureFilePathPicPreview.BackColor = System.Drawing.Color.Gray;
+            this.tr5SpritesTextureFilePathPicPreview.BackgroundImage = global::TombEditor.Properties.Resources.misc_TransparentBackground;
+            this.tr5SpritesTextureFilePathPicPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tr5SpritesTextureFilePathPicPreview.Location = new System.Drawing.Point(309, 2);
+            this.tr5SpritesTextureFilePathPicPreview.Name = "tr5SpritesTextureFilePathPicPreview";
+            this.tr5SpritesTextureFilePathPicPreview.Size = new System.Drawing.Size(32, 32);
+            this.tr5SpritesTextureFilePathPicPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tr5SpritesTextureFilePathPicPreview.TabIndex = 6;
+            this.tr5SpritesTextureFilePathPicPreview.TabStop = false;
+            // 
+            // tr5SpritesTextureFilePathBut
+            // 
+            this.tr5SpritesTextureFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tr5SpritesTextureFilePathBut.Location = new System.Drawing.Point(347, 40);
+            this.tr5SpritesTextureFilePathBut.Name = "tr5SpritesTextureFilePathBut";
+            this.tr5SpritesTextureFilePathBut.Size = new System.Drawing.Size(92, 22);
+            this.tr5SpritesTextureFilePathBut.TabIndex = 3;
+            this.tr5SpritesTextureFilePathBut.Text = "Search";
+            this.tr5SpritesTextureFilePathBut.Click += new System.EventHandler(this.tr5SpritesTextureFilePathBut_Click);
+            // 
+            // tr5SpritesFilePathOptCustom
+            // 
+            this.tr5SpritesFilePathOptCustom.Location = new System.Drawing.Point(19, 42);
+            this.tr5SpritesFilePathOptCustom.Name = "tr5SpritesFilePathOptCustom";
+            this.tr5SpritesFilePathOptCustom.Size = new System.Drawing.Size(162, 17);
+            this.tr5SpritesFilePathOptCustom.TabIndex = 5;
+            this.tr5SpritesFilePathOptCustom.TabStop = true;
+            this.tr5SpritesFilePathOptCustom.Text = "Custom file (has to be 256²)";
+            // 
+            // darkLabel18
+            // 
+            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel18.Location = new System.Drawing.Point(0, 0);
+            this.darkLabel18.Name = "darkLabel18";
+            this.darkLabel18.Size = new System.Drawing.Size(381, 17);
+            this.darkLabel18.TabIndex = 1;
+            this.darkLabel18.Text = "TR5 extra sprites texture";
+            // 
+            // tr5SpritesFilePathOptAuto
+            // 
+            this.tr5SpritesFilePathOptAuto.Checked = true;
+            this.tr5SpritesFilePathOptAuto.Location = new System.Drawing.Point(19, 19);
+            this.tr5SpritesFilePathOptAuto.Name = "tr5SpritesFilePathOptAuto";
+            this.tr5SpritesFilePathOptAuto.Size = new System.Drawing.Size(450, 17);
+            this.tr5SpritesFilePathOptAuto.TabIndex = 4;
+            this.tr5SpritesFilePathOptAuto.TabStop = true;
+            this.tr5SpritesFilePathOptAuto.Text = "Use default \'Extra.Tr5.pc\' file";
+            this.tr5SpritesFilePathOptAuto.CheckedChanged += new System.EventHandler(this.tr5SpritesFilePathOptAuto_CheckedChanged);
+            // 
+            // tr5SpritesTextureFilePathTxt
+            // 
+            this.tr5SpritesTextureFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tr5SpritesTextureFilePathTxt.Enabled = false;
+            this.tr5SpritesTextureFilePathTxt.Location = new System.Drawing.Point(187, 40);
+            this.tr5SpritesTextureFilePathTxt.Name = "tr5SpritesTextureFilePathTxt";
+            this.tr5SpritesTextureFilePathTxt.Size = new System.Drawing.Size(154, 22);
+            this.tr5SpritesTextureFilePathTxt.TabIndex = 2;
+            this.tr5SpritesTextureFilePathTxt.TextChanged += new System.EventHandler(this.tr5SpritesTextureFilePathTxt_TextChanged);
             // 
             // panel8
             // 
@@ -990,6 +1014,8 @@
             // tabPage7
             // 
             this.tabPage7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage7.Controls.Add(this.panelTr5Weather);
+            this.tabPage7.Controls.Add(this.panelTr5LaraType);
             this.tabPage7.Controls.Add(this.panel12);
             this.tabPage7.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
@@ -997,6 +1023,68 @@
             this.tabPage7.Size = new System.Drawing.Size(448, 325);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Misc";
+            // 
+            // panelTr5Weather
+            // 
+            this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
+            this.panelTr5Weather.Controls.Add(this.darkLabel19);
+            this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 101);
+            this.panelTr5Weather.Name = "panelTr5Weather";
+            this.panelTr5Weather.Size = new System.Drawing.Size(448, 59);
+            this.panelTr5Weather.TabIndex = 93;
+            // 
+            // comboTr5Weather
+            // 
+            this.comboTr5Weather.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboTr5Weather.FormattingEnabled = true;
+            this.comboTr5Weather.Location = new System.Drawing.Point(20, 23);
+            this.comboTr5Weather.Name = "comboTr5Weather";
+            this.comboTr5Weather.Size = new System.Drawing.Size(322, 23);
+            this.comboTr5Weather.TabIndex = 4;
+            this.comboTr5Weather.Text = null;
+            this.comboTr5Weather.SelectedIndexChanged += new System.EventHandler(this.comboTr5Weather_SelectedIndexChanged);
+            // 
+            // darkLabel19
+            // 
+            this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel19.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel19.Name = "darkLabel19";
+            this.darkLabel19.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel19.TabIndex = 3;
+            this.darkLabel19.Text = "TR5 weather:";
+            // 
+            // panelTr5LaraType
+            // 
+            this.panelTr5LaraType.Controls.Add(this.comboLaraType);
+            this.panelTr5LaraType.Controls.Add(this.darkLabel17);
+            this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 42);
+            this.panelTr5LaraType.Name = "panelTr5LaraType";
+            this.panelTr5LaraType.Size = new System.Drawing.Size(448, 59);
+            this.panelTr5LaraType.TabIndex = 92;
+            // 
+            // comboLaraType
+            // 
+            this.comboLaraType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboLaraType.FormattingEnabled = true;
+            this.comboLaraType.Location = new System.Drawing.Point(20, 23);
+            this.comboLaraType.Name = "comboLaraType";
+            this.comboLaraType.Size = new System.Drawing.Size(322, 23);
+            this.comboLaraType.TabIndex = 4;
+            this.comboLaraType.Text = null;
+            this.comboLaraType.SelectedIndexChanged += new System.EventHandler(this.comboLaraType_SelectedIndexChanged);
+            // 
+            // darkLabel17
+            // 
+            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel17.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel17.Name = "darkLabel17";
+            this.darkLabel17.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel17.TabIndex = 3;
+            this.darkLabel17.Text = "TR5 Lara type:";
             // 
             // panel12
             // 
@@ -1029,6 +1117,77 @@
             this.panelRoomAmbientLight.TabIndex = 89;
             this.panelRoomAmbientLight.Click += new System.EventHandler(this.panelRoomAmbientLight_Click);
             // 
+            // darkSectionPanel1
+            // 
+            this.darkSectionPanel1.Controls.Add(this.optionsList);
+            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 353);
+            this.darkSectionPanel1.TabIndex = 7;
+            // 
+            // optionsList
+            // 
+            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.optionsList.Location = new System.Drawing.Point(1, 1);
+            this.optionsList.Name = "optionsList";
+            this.optionsList.Size = new System.Drawing.Size(198, 351);
+            this.optionsList.TabIndex = 6;
+            // 
+            // panel11
+            // 
+            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel11.Controls.Add(this.butApply);
+            this.panel11.Controls.Add(this.butOk);
+            this.panel11.Controls.Add(this.butCancel);
+            this.panel11.Location = new System.Drawing.Point(407, 362);
+            this.panel11.Name = "panel11";
+            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panel11.Size = new System.Drawing.Size(260, 28);
+            this.panel11.TabIndex = 5;
+            // 
+            // butApply
+            // 
+            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butApply.Location = new System.Drawing.Point(3, 1);
+            this.butApply.Name = "butApply";
+            this.butApply.Size = new System.Drawing.Size(80, 24);
+            this.butApply.TabIndex = 3;
+            this.butApply.Text = "Apply";
+            this.butApply.Click += new System.EventHandler(this.butApply_Click);
+            // 
+            // butOk
+            // 
+            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butOk.Location = new System.Drawing.Point(89, 1);
+            this.butOk.Name = "butOk";
+            this.butOk.Size = new System.Drawing.Size(80, 24);
+            this.butOk.TabIndex = 3;
+            this.butOk.Text = "Ok";
+            this.butOk.Click += new System.EventHandler(this.butOk_Click);
+            // 
+            // butCancel
+            // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butCancel.Location = new System.Drawing.Point(175, 1);
+            this.butCancel.Name = "butCancel";
+            this.butCancel.Size = new System.Drawing.Size(80, 24);
+            this.butCancel.TabIndex = 3;
+            this.butCancel.Text = "Cancel";
+            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
+            // 
+            // colorDialog
+            // 
+            this.colorDialog.AnyColor = true;
+            this.colorDialog.FullOpen = true;
+            // 
             // FormLevelSettings
             // 
             this.AcceptButton = this.butOk;
@@ -1048,8 +1207,6 @@
             this.pathVariablesDataGridViewContextMenu.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.darkSectionPanel2.ResumeLayout(false);
-            this.darkSectionPanel1.ResumeLayout(false);
-            this.panel11.ResumeLayout(false);
             this.optionsContainer.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.panel10.ResumeLayout(false);
@@ -1070,6 +1227,9 @@
             this.panel7.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.panelTr5Sprites.ResumeLayout(false);
+            this.panelTr5Sprites.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tr5SpritesTextureFilePathPicPreview)).EndInit();
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fontTextureFilePathPicPreview)).EndInit();
@@ -1081,8 +1241,12 @@
             this.tabPage6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
             this.tabPage7.ResumeLayout(false);
+            this.panelTr5Weather.ResumeLayout(false);
+            this.panelTr5LaraType.ResumeLayout(false);
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
+            this.darkSectionPanel1.ResumeLayout(false);
+            this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1170,5 +1334,18 @@
         private DarkUI.Controls.DarkLabel darkLabel16;
         private System.Windows.Forms.Panel panelRoomAmbientLight;
         private System.Windows.Forms.ColorDialog colorDialog;
+        private System.Windows.Forms.Panel panelTr5Sprites;
+        private System.Windows.Forms.PictureBox tr5SpritesTextureFilePathPicPreview;
+        private DarkUI.Controls.DarkButton tr5SpritesTextureFilePathBut;
+        private DarkUI.Controls.DarkRadioButton tr5SpritesFilePathOptCustom;
+        private DarkUI.Controls.DarkLabel darkLabel18;
+        private DarkUI.Controls.DarkRadioButton tr5SpritesFilePathOptAuto;
+        private DarkUI.Controls.DarkTextBox tr5SpritesTextureFilePathTxt;
+        private System.Windows.Forms.Panel panelTr5LaraType;
+        private DarkUI.Controls.DarkComboBox comboLaraType;
+        private DarkUI.Controls.DarkLabel darkLabel17;
+        private System.Windows.Forms.Panel panelTr5Weather;
+        private DarkUI.Controls.DarkComboBox comboTr5Weather;
+        private DarkUI.Controls.DarkLabel darkLabel19;
     }
 }
