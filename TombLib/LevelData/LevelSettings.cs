@@ -88,6 +88,7 @@ namespace TombLib.LevelData
         public string WadFilePath { get; set; } = null; // Can be null if no object file is loaded.
         public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
             {
                 new OldWadSoundPath("Sounds"),
@@ -107,6 +108,10 @@ namespace TombLib.LevelData
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
 
         public Vector4 DefaultAmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 2.0f);
+
+        // For TR5 only
+        public Tr5LaraType Tr5LaraType { get; set; }
+        public Tr5WeatherType Tr5WeatherType { get; set; }
 
         public LevelSettings()
         {

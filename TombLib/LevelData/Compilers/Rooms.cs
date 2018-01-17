@@ -414,6 +414,13 @@ namespace TombLib.LevelData.Compilers
             trVertex.Lighting1 = 0;
             trVertex.Lighting2 = PackColorTo16Bit(Color);
             trVertex.Attributes = 0;
+            trVertex.Normal = new tr_vertex
+            {
+                X = 0,
+                Y = 0,
+                Z = 0
+            };
+            trVertex.Color = PackColorTo32Bit(Color);
 
             // Do we need this vertex?
             ushort vertexIndex;
@@ -1044,6 +1051,16 @@ namespace TombLib.LevelData.Compilers
             tmp |= (ushort)((ushort)(color.Y) << 5);
             tmp |= (ushort)(color.Z);
             return tmp;
+        }
+
+        private static uint PackColorTo32Bit(Vector4 color)
+        {
+            color *= 128.0f;
+            color += new Vector4(0.5f); // Round correctly
+            color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color));
+
+            uint result = (uint)(0xff000000 + (((byte)color.X) << 16) + (((byte)color.Y) << 8) + ((byte)color.Z));
+            return result;
         }
 
         private static tr_color PackColorTo24Bit(Vector4 color)

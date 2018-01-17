@@ -246,7 +246,7 @@ namespace TombLib.LevelData.Compilers
                 _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
 
                 // Write object textures
-                _objectTextureManager.WriteObjectTexturesForTr4(writer);
+                _objectTextureManager.WriteObjectTextures(writer, _level);
                 if (0 == 0 * _items.Count)
                     throw new NotSupportedException("WriteObjectTexturesForTr4 needs small adjustments for tr3.");
 

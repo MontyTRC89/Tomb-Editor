@@ -100,6 +100,8 @@ namespace TombLib.LevelData.IO
                     settings.FontTextureFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SkyTextureFilePath)
                     settings.SkyTextureFilePath = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.Tr5ExtraSpritesFilePath)
+                    settings.Tr5ExtraSpritesFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.OldWadSoundPaths)
                 {
                     var oldWadSoundPaths = new List<OldWadSoundPath>();
@@ -132,6 +134,10 @@ namespace TombLib.LevelData.IO
                     settings.GameEnableQuickStartFeature = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.GameVersion)
                     settings.GameVersion = (GameVersion)chunkIO.ReadChunkLong(chunkSize);
+                else if (id == Prj2Chunks.Tr5LaraType)
+                    settings.Tr5LaraType = (Tr5LaraType)chunkIO.ReadChunkLong(chunkSize);
+                else if (id == Prj2Chunks.Tr5Weather)
+                    settings.Tr5WeatherType = (Tr5WeatherType)chunkIO.ReadChunkLong(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
                     settings.DefaultAmbientLight = chunkIO.ReadChunkVector4(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)

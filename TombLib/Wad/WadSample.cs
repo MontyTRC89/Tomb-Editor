@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -48,6 +49,21 @@ namespace TombLib.Wad
                 using (var player = new SoundPlayer(stream))
                 {
                     player.Play();
+                }
+            }
+        }
+
+        public int Duration
+        {
+            get
+            {
+                using (var stream = new MemoryStream(WaveData))
+                {
+                    using (var wfr = new WaveFileReader(stream))
+                    {
+                        TimeSpan totalTime = wfr.TotalTime;
+                        return totalTime.Milliseconds;
+                    }
                 }
             }
         }

@@ -144,6 +144,10 @@ namespace TombLib.LevelData.Compilers
         public ushort Attributes;
         public ushort Lighting2;
 
+        // For TR5 only
+        public tr_vertex Normal;
+        public uint Color;
+
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
         public static unsafe bool operator ==(tr_room_vertex first, tr_room_vertex second)
@@ -216,7 +220,7 @@ namespace TombLib.LevelData.Compilers
         public Room BaseRoom;
         public Room OriginalRoom;
 
-        public void Write(BinaryWriterEx writer)
+        public void WriteTr4(BinaryWriterEx writer)
         {
             writer.WriteBlock(Info);
 
@@ -225,7 +229,15 @@ namespace TombLib.LevelData.Compilers
             writer.Write((int)0);
 
             writer.Write((ushort)Vertices.Count);
-            writer.WriteBlockArray(Vertices);
+            for (var k = 0; k < Vertices.Count; k++)
+            {
+                writer.Write(Vertices[k].Position.X);
+                writer.Write(Vertices[k].Position.Y);
+                writer.Write(Vertices[k].Position.Z);
+                writer.Write(Vertices[k].Lighting1);
+                writer.Write(Vertices[k].Attributes);
+                writer.Write(Vertices[k].Lighting2);
+            }
 
             writer.Write((ushort)Quads.Count);
             for (var k = 0; k < Quads.Count; k++)
@@ -278,6 +290,252 @@ namespace TombLib.LevelData.Compilers
             writer.Write(ReverbInfo);
             writer.Write(AlternateGroup);
         }
+
+        public void WriteTr5(BinaryWriterEx writer)
+        {
+            var roomStartOffset = writer.BaseStream.Position;
+
+            var xela = System.Text.ASCIIEncoding.ASCII.GetBytes("XELA");
+            writer.Write(xela);
+
+            var startOfRoomPosition = writer.BaseStream.Position;
+            var roomDataSize = 0;
+            writer.Write((uint)roomDataSize);
+
+            var separator = 0xcdcdcdcd;
+            writer.Write(separator);
+
+            var EndSDOffsetPosition = writer.BaseStream.Position;
+            var EndSDOffset = (uint)0;
+            writer.Write(EndSDOffset);
+
+            var StartOfSDOffsetPosition = writer.BaseStream.Position;
+            var StartOfSDOffset = (uint)0;
+            writer.Write(StartOfSDOffset);
+
+            writer.Write(separator);
+
+            var EndPortalOffsetPosition = writer.BaseStream.Position;
+            var EndPortalOffset = (uint)0;
+            writer.Write(EndPortalOffset);
+
+            // tr5_room_info
+            writer.Write(Info.X);
+            writer.Write((int)0);
+            writer.Write(Info.Z);
+            writer.Write(Info.YBottom);
+            writer.Write(Info.YTop);
+
+            writer.Write(NumZSectors);
+            writer.Write(NumXSectors);
+
+            writer.Write(AmbientIntensity);
+
+            writer.Write((ushort)Lights.Count);
+            writer.Write((ushort)StaticMeshes.Count);
+
+            writer.Write(ReverbInfo);
+            writer.Write(AlternateGroup);
+            writer.Write(WaterScheme);
+            writer.Write((byte)0);
+
+            writer.Write((uint)0x00007fff);
+            writer.Write((uint)0x00007fff);
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0xffffffff);
+
+            writer.Write(AlternateRoom);
+            writer.Write(Flags);
+            writer.Write((ushort)0x40);
+
+            writer.Write((ushort)0);
+            writer.Write((uint)0);
+            writer.Write((uint)0);
+
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0);
+
+            writer.Write((float)Info.X);
+            writer.Write((float)Info.YBottom);
+            writer.Write((float)Info.Z);
+
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0);
+            writer.Write((uint)0xcdcdcdcd);
+            
+            writer.Write((uint)Triangles.Count);
+            writer.Write((uint)Quads.Count);
+
+            writer.Write((uint)0);
+
+            writer.Write((uint)(Lights.Count * 88));
+            writer.Write((uint)(Lights.Count));
+
+            writer.Write((uint)0);
+
+            writer.Write(Info.YTop);
+            writer.Write(Info.YBottom);
+
+            writer.Write((uint)1);
+
+            var LayerOffsetPosition = writer.BaseStream.Position;
+            var LayerOffset = 0;
+            writer.Write(LayerOffset);
+
+            var VerticesOffsetPosition = writer.BaseStream.Position;
+            var VerticesOffset = 0;
+            writer.Write(VerticesOffset);
+
+            var PolyOffsetPosition = writer.BaseStream.Position;
+            var PolyOffset = 0;
+            writer.Write(PolyOffset);
+            writer.Write(PolyOffset);
+
+            writer.Write((uint)(Vertices.Count * 28));
+
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0xcdcdcdcd);
+            writer.Write((uint)0xcdcdcdcd);
+
+            // Start of room data (after 216 bytes from XELA)
+            foreach (var light in Lights)
+            {
+                writer.Write((float)light.X);
+                writer.Write((float)light.Y);
+                writer.Write((float)light.Z);
+                writer.Write((float)light.Color.Red);
+                writer.Write((float)light.Color.Green);
+                writer.Write((float)light.Color.Blue);
+
+                writer.Write((uint)0xcdcdcdcd);
+
+                writer.Write((float)light.In);
+                writer.Write((float)light.Out);
+
+                writer.Write((float)(light.LightType == 2 ? Math.Acos(light.In) * 2.0f : 0));
+                writer.Write((float)(light.LightType == 2 ? Math.Acos(light.Out) * 2.0f : 0));
+                writer.Write((float)(light.Length - light.CutOff));
+
+                writer.Write((float)light.DirectionX);
+                writer.Write((float)light.DirectionY);
+                writer.Write((float)light.DirectionZ);
+
+                writer.Write((int)light.X);
+                writer.Write((int)light.Y);
+                writer.Write((int)light.Z);
+
+                writer.Write((int)light.DirectionX);
+                writer.Write((int)light.DirectionY);
+                writer.Write((int)light.DirectionZ);
+
+                writer.Write(light.LightType);
+
+                writer.Write((byte)0xcd);
+                writer.Write((byte)0xcd);
+                writer.Write((byte)0xcd);
+            }
+
+            StartOfSDOffset = (uint)(writer.BaseStream.Position - roomStartOffset - 216);
+            writer.WriteBlockArray(Sectors);
+            EndSDOffset = (uint)(StartOfSDOffset + NumXSectors * NumZSectors * 8);
+
+            writer.Write((ushort)Portals.Count);
+            if (Portals.Count != 0)
+                writer.WriteBlockArray(Portals);
+            EndPortalOffset = (uint)(writer.BaseStream.Position - roomStartOffset - 216);
+
+            writer.Write((ushort)0xcdcd);
+
+            if (StaticMeshes.Count != 0)
+                writer.WriteBlockArray(StaticMeshes);
+
+            LayerOffset = (int)(writer.BaseStream.Position - roomStartOffset - 216);
+
+            // Write just one layer
+            writer.Write((uint)Vertices.Count);
+            writer.Write((ushort)0);
+            writer.Write((ushort)Quads.Count);
+            writer.Write((ushort)Triangles.Count);
+            writer.Write((ushort)0);
+
+            writer.Write((ushort)0);
+            writer.Write((ushort)0);
+
+            writer.Write((float)1024.0f);
+            writer.Write((float)Info.YTop);
+            writer.Write((float)1024.0f);
+            writer.Write((float)((NumXSectors - 1) * 1024.0f));
+            writer.Write((float)(Info.YBottom));
+            writer.Write((float)((NumZSectors - 1) * 1024.0f));
+
+            writer.Write((uint)0);
+            var LayerVerticesOffset = writer.BaseStream.Position;
+            writer.Write((uint)0);
+            var LayerPolygonsOffset = writer.BaseStream.Position;
+            writer.Write((uint)0);
+            writer.Write((uint)0);
+
+            PolyOffset = LayerOffset + 56;
+
+            for (var k = 0; k < Quads.Count; k++)
+            {
+                Quads[k].Write(writer);
+                writer.Write((ushort)0);
+            }
+            for (var k = 0; k < Triangles.Count; k++)
+            { 
+                Triangles[k].Write(writer);
+                writer.Write((ushort)0);
+            }
+
+            if (Triangles.Count % 2 != 0)
+                writer.Write((ushort)0xcdcd);
+
+            VerticesOffset = (int)(writer.BaseStream.Position - roomStartOffset - 216);
+
+            foreach (var vertex in Vertices)
+            {
+                writer.Write((float)vertex.Position.X);
+                writer.Write((float)vertex.Position.Y);
+                writer.Write((float)vertex.Position.Z);
+                writer.Write((float)vertex.Normal.X);
+                writer.Write((float)vertex.Normal.Y);
+                writer.Write((float)vertex.Normal.Z);
+                writer.Write(vertex.Color);
+            }
+
+            var endOfRoomOffset = writer.BaseStream.Position;
+            roomDataSize = (int)(endOfRoomOffset - roomStartOffset - 8);
+
+            writer.Seek((int)startOfRoomPosition, SeekOrigin.Begin);
+            writer.Write((int)roomDataSize);
+
+            writer.Seek((int)EndSDOffsetPosition, SeekOrigin.Begin);
+            writer.Write((int)EndSDOffset);
+            writer.Write((int)StartOfSDOffset);
+
+            writer.Seek((int)EndPortalOffsetPosition, SeekOrigin.Begin);
+            writer.Write((int)EndPortalOffset);
+
+            writer.Seek((int)LayerOffsetPosition, SeekOrigin.Begin);
+            writer.Write((int)LayerOffset);
+            writer.Write((int)VerticesOffset);
+            writer.Write((int)PolyOffset);
+            writer.Write((int)PolyOffset);
+
+            writer.Seek((int)LayerVerticesOffset, SeekOrigin.Begin);
+            writer.Write((int)VerticesOffset);
+            writer.Write((int)PolyOffset);
+            writer.Write((int)PolyOffset);
+
+            writer.Seek((int)endOfRoomOffset, SeekOrigin.Begin);
+        }
+
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

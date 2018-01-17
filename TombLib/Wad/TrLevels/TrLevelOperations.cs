@@ -542,10 +542,11 @@ namespace TombLib.Wad.TrLevels
 
                     for (int k = 0; k < anim.NumAnimCommands; k++)
                     {
-                        var commandType = oldLevel.AnimCommands[lastCommand + 0];
+                        short commandType = oldLevel.AnimCommands[lastCommand + 0];
 
                         // Ignore invalid anim commands (see for example karnak.wad)
-                        if (commandType < 1 || commandType > 6) continue;
+                        if (commandType < 1 || commandType > 6)
+                            continue;
 
                         WadAnimCommand command = new WadAnimCommand((WadAnimCommandType)commandType);
 
@@ -575,13 +576,13 @@ namespace TombLib.Wad.TrLevels
                                 break;
 
                             case 5:
-                                command.Parameter1 = (ushort)oldLevel.AnimCommands[lastCommand + 1];
+                                command.Parameter1 = (ushort)(oldLevel.AnimCommands[lastCommand + 1] - anim.FrameStart);
                                 command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
 
                             case 6:
-                                command.Parameter1 = (ushort)oldLevel.AnimCommands[lastCommand + 1];
+                                command.Parameter1 = (ushort)(oldLevel.AnimCommands[lastCommand + 1] - anim.FrameStart);
                                 command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
