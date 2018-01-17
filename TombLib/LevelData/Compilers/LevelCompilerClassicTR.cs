@@ -182,6 +182,9 @@ namespace TombLib.LevelData.Compilers
             //Write the final level
             switch (_level.Settings.GameVersion)
             {
+                case GameVersion.TR3:
+                    WriteLevelTr3();
+                    break;
                 case GameVersion.TR4:
                 case GameVersion.TRNG:
                     WriteLevelTr4();
