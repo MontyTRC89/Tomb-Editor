@@ -84,6 +84,7 @@ namespace TombEditor
         private LevelSettings _levelSettings;
         private string fontTextureFilePathPicPreviewCurrentPath;
         private string skyTextureFilePathPicPreviewCurrentPath;
+        private string tr5ExtraSpritesFilePathPicPreviewCurrentPath;
         private PictureTooltip _pictureTooltip;
         private readonly BindingList<OldWadSoundPath> soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
 
@@ -121,10 +122,12 @@ namespace TombEditor
             _wrongColor = _correctColor.MixWith(Color.DarkRed, 0.55);
             skyTextureFilePathPicPreview.BackColor = _wrongColor;
             fontTextureFilePathPicPreview.BackColor = _wrongColor;
+            tr5SpritesTextureFilePathPicPreview.BackColor = _wrongColor;
 
             _pictureTooltip = new PictureTooltip(this);
             _pictureTooltip.SetToolTip(fontTextureFilePathPicPreview, "Font Preview");
             _pictureTooltip.SetToolTip(skyTextureFilePathPicPreview, "Sky Preview");
+            _pictureTooltip.SetToolTip(tr5SpritesTextureFilePathPicPreview, "TR5 extra sprites Preview");
             components.Add(_pictureTooltip);
 
             // Initialize imported geometry manager
@@ -137,6 +140,10 @@ namespace TombEditor
 
             // Populate game version list
             comboGameVersion.Items.AddRange(Enum.GetValues(typeof(GameVersion)).Cast<object>().ToArray());
+
+            // Popuòate TR5 lists
+            comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
+            comboLaraType.Items.AddRange(Enum.GetValues(typeof(Tr5LaraType)).Cast<object>().ToArray());
 
             // Initialize options list
             optionsContainer.LinkedListView = optionsList;
@@ -156,6 +163,8 @@ namespace TombEditor
             GameEnableQuickStartFeatureCheckBox.Checked = _levelSettings.GameEnableQuickStartFeature;
             comboGameVersion.Text = _levelSettings.GameVersion.ToString(); // Must also accept none enum values.
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
+            comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
+            comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -174,6 +183,15 @@ namespace TombEditor
                 skyTextureFilePathTxt.Text = GetLevelResourcePath("pcsky.raw");
             else
                 skyTextureFilePathTxt.Text = _levelSettings.SkyTextureFilePath;
+
+            tr5SpritesFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath);
+            tr5SpritesFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath);
+            tr5SpritesTextureFilePathTxt.Enabled = !string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath);
+            tr5SpritesTextureFilePathBut.Enabled = !string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath);
+            if (string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath))
+                tr5SpritesTextureFilePathTxt.Text = GetLevelResourcePath("Extra.Tr5.pc");
+            else
+                tr5SpritesTextureFilePathTxt.Text = _levelSettings.Tr5ExtraSpritesFilePath;
 
             // Check correctness of the paths
             string levelFilePath = _levelSettings.LevelFilePath;
@@ -244,6 +262,29 @@ namespace TombEditor
                 }
             }
 
+            string tr5SpritesPath = _levelSettings.Tr5ExtraSpritesFileNameAbsoluteOrDefault;
+            pathToolTip.SetToolTip(tr5SpritesTextureFilePathTxt, tr5SpritesPath);
+            if (tr5ExtraSpritesFilePathPicPreviewCurrentPath != tr5SpritesPath)
+            {
+                tr5ExtraSpritesFilePathPicPreviewCurrentPath = tr5SpritesPath;
+                try
+                {
+                    tr5SpritesTextureFilePathPicPreview.Image?.Dispose();
+                    tr5SpritesTextureFilePathPicPreview.Image = LevelSettings.LoadRawExtraTexture(tr5SpritesPath).ToBitmap();
+                    tr5SpritesTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
+                    tr5SpritesTextureFilePathPicPreview.Tag = null;
+                    tr5SpritesTextureFilePathTxt.BackColor = _correctColor;
+                }
+                catch (Exception exc)
+                {
+                    logger.Info(exc, "Unable to load TR5 extra sprites preview.");
+                    tr5SpritesTextureFilePathPicPreview.Image = null;
+                    tr5SpritesTextureFilePathPicPreview.BackgroundImage = null;
+                    tr5SpritesTextureFilePathPicPreview.Tag = exc;
+                    tr5SpritesTextureFilePathTxt.BackColor = _wrongColor;
+                }
+            }
+
             // Update path variables
             foreach (DataGridViewRow row in pathVariablesDataGridView.Rows)
             {
@@ -254,6 +295,19 @@ namespace TombEditor
 
             // Update the default ambient light
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector4(0.5f, 0.5f, 0.5f, 1.0f)).ToWinFormsColor();
+            
+            if (_levelSettings.GameVersion == GameVersion.TR5)
+            {
+                panelTr5Sprites.Visible = true;
+                panelTr5LaraType.Visible = true;
+                panelTr5Weather.Visible = true;
+            }
+            else
+            {
+                panelTr5Sprites.Visible = false;
+                panelTr5LaraType.Visible = false;
+                panelTr5Weather.Visible = false;
+            }
         }
 
         private string GetLevelResourcePath(string file)
@@ -568,6 +622,52 @@ namespace TombEditor
                 return;
 
             _levelSettings.DefaultAmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
+            UpdateDialog();
+        }
+
+        private void tr5SpritesFilePathOptAuto_CheckedChanged(object sender, EventArgs e)
+        {
+            if (tr5SpritesFilePathOptAuto.Checked == string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath))
+                return;
+            _levelSettings.Tr5ExtraSpritesFilePath = tr5SpritesFilePathOptAuto.Checked ? null : GetLevelResourcePath("Extra.Tr5.pc");
+            UpdateDialog();
+        }
+
+        private void tr5SpritesTextureFilePathTxt_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath) || (_levelSettings.Tr5ExtraSpritesFilePath == tr5SpritesTextureFilePathTxt.Text))
+                return;
+            if (string.IsNullOrEmpty(tr5SpritesTextureFilePathTxt.Text)) // Don't set if it would be empty otherwise.
+                return;
+            _levelSettings.Tr5ExtraSpritesFilePath = tr5SpritesTextureFilePathTxt.Text;
+            UpdateDialog();
+        }
+
+        private void tr5SpritesTextureFilePathBut_Click(object sender, EventArgs e)
+        {
+            string result = BrowseFile(_levelSettings.Tr5ExtraSpritesFilePath, "Select a font texture", LevelSettings.LoadRawExtraTextureFileFormats.GetFilter(), VariableType.LevelDirectory, false);
+            if (result != null)
+            {
+                _levelSettings.Tr5ExtraSpritesFilePath = result;
+                UpdateDialog();
+            }
+        }
+
+        private void comboLaraType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var laraType = (Tr5LaraType)Enum.Parse(typeof(Tr5LaraType), comboLaraType.Text);
+            if (_levelSettings.Tr5LaraType == laraType)
+                return;
+            _levelSettings.Tr5LaraType = laraType; // Must also check none enum values
+            UpdateDialog();
+        }
+
+        private void comboTr5Weather_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var weather = (Tr5WeatherType)Enum.Parse(typeof(Tr5WeatherType), comboTr5Weather.Text);
+            if (_levelSettings.Tr5WeatherType == weather)
+                return;
+            _levelSettings.Tr5WeatherType = weather; // Must also check none enum values
             UpdateDialog();
         }
 

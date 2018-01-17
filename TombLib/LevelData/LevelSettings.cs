@@ -266,6 +266,9 @@ namespace TombLib.LevelData
         public string SkyTextureFileNameAbsoluteOrDefault => MakeAbsolute(SkyTextureFilePath) ??
             Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/pcsky.raw.png");
 
+        public string Tr5ExtraSpritesFileNameAbsoluteOrDefault => MakeAbsolute(Tr5ExtraSpritesFilePath) ??
+            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/Extra.Tr5.pc.png");
+
         public static ImageC LoadRawExtraTexture(string path)
         {
             using (FileStream reader = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
