@@ -58,9 +58,6 @@ namespace TombLib.Wad.TrLevels
                     }
                 }
 
-                // Replace magenta color with alpha transparent black
-                //textureData.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
-
                 texture.Image = textureData;
                 
                 // Update the hash of the texture
@@ -141,10 +138,11 @@ namespace TombLib.Wad.TrLevels
 
                 // Add the texture
                 TextureArea textureArea = new TextureArea();
-                textureArea.DoubleSided = false;
                 var textureId = oldPoly.Texture & 0x7fff;
                 var newTexture = convertedTextures[textureId];
                 var oldTexture = oldLevel.ObjectTextures[textureId];
+                textureArea.DoubleSided = false;
+                textureArea.BlendMode = ((oldPoly.LightingEffect & 0x01) == 0x01 ? BlendMode.Additive : (BlendMode)oldTexture.Attributes);
                 if (wad.Textures.ContainsKey(newTexture.Hash))
                 {
                     textureArea.Texture = wad.Textures[newTexture.Hash];
@@ -163,6 +161,7 @@ namespace TombLib.Wad.TrLevels
                 textureArea.TexCoord3 = new Vector2(oldTexture.Vertices[3].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
                                                     oldTexture.Vertices[3].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
                 poly.Texture = textureArea;
+                poly.BlendMode = (BlendMode)oldTexture.Attributes;
 
                 mesh.Polys.Add(poly);
             }
@@ -180,11 +179,12 @@ namespace TombLib.Wad.TrLevels
                 poly.ShineStrength = (byte)((oldPoly.LightingEffect & 0x7c) >> 2);
 
                 // Add the texture
-                TextureArea textureArea = new TextureArea();
-                textureArea.DoubleSided = false;
                 var textureId = oldPoly.Texture & 0x7fff;
                 var newTexture = convertedTextures[textureId];
                 var oldTexture = oldLevel.ObjectTextures[textureId];
+                TextureArea textureArea = new TextureArea();
+                textureArea.DoubleSided = false;
+                textureArea.BlendMode = ((oldPoly.LightingEffect & 0x01) == 0x01 ? BlendMode.Additive : (BlendMode)oldTexture.Attributes);
                 if (wad.Textures.ContainsKey(newTexture.Hash))
                 {
                     textureArea.Texture = wad.Textures[newTexture.Hash];
@@ -201,7 +201,7 @@ namespace TombLib.Wad.TrLevels
                 textureArea.TexCoord2 = new Vector2(oldTexture.Vertices[2].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
                                                     oldTexture.Vertices[2].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
                 poly.Texture = textureArea;
-
+                
                 mesh.Polys.Add(poly);
             }
 

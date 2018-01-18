@@ -45,10 +45,11 @@ namespace TombLib.Utils
     public enum BlendMode : ushort
     {
         Normal = 0,
+        AlphaTest = 1,
         Additive = 2,
         NoZTest = 4,
-        Wireframe = 6,
-        AlphaTest = 100
+        Wireframe = 6 /*,
+        AlphaTest = 100*/
         // By using FLEP, more BlendMode mode indices can be assigned meaning.
         // We probably want support for those in the future.
     }

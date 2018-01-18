@@ -274,7 +274,7 @@ namespace TombLib.Wad
                                 {
                                     if (id4 == Wad2Chunks.MeshPolygonExtra)
                                     {
-                                        LEB128.ReadInt(chunkIO.Raw);
+                                        polygon.BlendMode = (BlendMode)LEB128.ReadInt(chunkIO.Raw);
                                         return true;
                                     }
                                     else

@@ -201,6 +201,7 @@ namespace TombLib.Wad.Tr4Wad
 
                 // Polygon special effects
                 poly.ShineStrength = (byte)((oldPoly.Attributes & 0x7c) >> 2);
+                poly.BlendMode = ((oldPoly.Attributes & 0x01) == 0x01 ? BlendMode.Additive : BlendMode.Normal);
 
                 // Add the texture
                 poly.Texture = CalculateTr4UVCoordinates(wad, oldWad, oldPoly, convertedTextures);
