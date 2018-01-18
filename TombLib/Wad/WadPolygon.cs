@@ -14,6 +14,7 @@ namespace TombLib.Wad
         public List<int> Indices { get; } = new List<int>();
         public TextureArea Texture { get; set; }
         public byte ShineStrength { get; set; }
+        public BlendMode BlendMode { get; set; }
 
         public WadPolygon(WadPolygonShape shape)
         {

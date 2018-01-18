@@ -162,7 +162,7 @@ namespace TombLib.Wad
 
                                     chunkIO.WriteChunk(Wad2Chunks.MeshPolygonExtra, () =>
                                     {
-                                        LEB128.Write(chunkIO.Raw, (int)0);
+                                        LEB128.Write(chunkIO.Raw, (int)poly.BlendMode);
                                     });
                                 });
                             }
