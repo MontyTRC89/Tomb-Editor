@@ -131,7 +131,7 @@ namespace TombLib.LevelData.Compilers
                         lock (_objectTextureManager)
                             result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
                         newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Indices[0], (ushort)poly.Indices[1], (ushort)poly.Indices[2], (ushort)poly.Indices[3], lightingEffect);
-                        currentMeshSize += 12;
+                        currentMeshSize += (_level.Settings.GameVersion == GameVersion.TR3 ? 10 : 12);
                     }
                     else
                     {
@@ -140,9 +140,11 @@ namespace TombLib.LevelData.Compilers
                             result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
 
                         newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Indices[0], (ushort)poly.Indices[1], (ushort)poly.Indices[2], lightingEffect);
-                        currentMeshSize += 10;
+                        currentMeshSize += (_level.Settings.GameVersion == GameVersion.TR3 ? 8 : 10);
                     }
                 }
+
+                if (_level.Settings.GameVersion == GameVersion.TR3) currentMeshSize += 4; // Num colored quads and triangles
 
                 if (currentMeshSize % 4 != 0)
                 {
@@ -238,10 +240,9 @@ namespace TombLib.LevelData.Compilers
                                 case WadKeyFrameRotationAxis.AxisX:
                                     rotation16 = unchecked((short)0x4000);
                                     rotX = (short)angle.X;
+                                    if (_level.Settings.GameVersion == GameVersion.TR3) rotX = (short)(rotX / 4);
                                     rotation16 |= rotX;
-
                                     _frames.Add(rotation16);
-                                    //Console.WriteLine(rotation16.ToString("X"));
 
                                     currentKeyFrameSize += 1;
 
@@ -250,10 +251,10 @@ namespace TombLib.LevelData.Compilers
                                 case WadKeyFrameRotationAxis.AxisY:
                                     rotation16 = unchecked((short)0x8000);
                                     rotY = (short)angle.Y;
+                                    if (_level.Settings.GameVersion == GameVersion.TR3) rotY = (short)(rotY / 4);
                                     rotation16 |= rotY;
 
                                     _frames.Add(rotation16);
-                                    //Console.WriteLine(rotation16.ToString("X"));
 
                                     currentKeyFrameSize += 1;
 
@@ -262,6 +263,7 @@ namespace TombLib.LevelData.Compilers
                                 case WadKeyFrameRotationAxis.AxisZ:
                                     rotation16 = unchecked((short)0xc000);
                                     rotZ = (short)angle.Z;
+                                    if (_level.Settings.GameVersion == GameVersion.TR3) rotZ = (short)(rotZ / 4);
                                     rotation16 += rotZ;
 
                                     _frames.Add(rotation16);

@@ -64,7 +64,8 @@ namespace TombLib.LevelData.Compilers
 
                     // Write animations' data
                     writer.Write((uint)_animations.Count);
-                    writer.WriteBlockArray(_animations);
+                    foreach (var anim in _animations)
+                        anim.Write(writer, _level);
 
                     writer.Write((uint)_stateChanges.Count);
                     writer.WriteBlockArray(_stateChanges);
