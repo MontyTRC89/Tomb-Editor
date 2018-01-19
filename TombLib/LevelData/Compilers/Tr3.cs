@@ -23,18 +23,22 @@ namespace TombLib.LevelData.Compilers
                 // Write version
                 writer.WriteBlockArray(new byte[] { 0x38, 0x00, 0x18, 0xFF });
 
-                using (var readerPalette = new BinaryReader(new FileStream("Editor\\Misc\\Palette.Tr3.bin", FileMode.Open, FileAccess.Write, FileShare.None)))
+                /*using (var readerPalette = new BinaryReader(new FileStream("Editor\\Misc\\Palette.Tr3.bin", FileMode.Open, FileAccess.Write, FileShare.None)))
                 {
                     var palette = readerPalette.ReadBytes(1792);
                     // Write palette
                     writer.Write(palette);
-                }
+                }*/
 
+                // TODO: for now I write fake palette, they should be needed only for 8 bit textures
+                for (var i = 0; i < 768; i++) writer.Write((byte)0x00);
+                for (var i = 0; i < 1024; i++) writer.Write((byte)0x00);
+                
                 // Write textures
-                int numTextureTiles = _texture32Data.GetLength(0) / (256 * 256 * 4) + 1;
+                int numTextureTiles = _texture32Data.GetLength(0) / (256 * 256 * 4);
                 writer.Write(numTextureTiles);
 
-                // Fake 8 bit textures
+                // Fake 8 bit textures (who uses 8 bit textures in 2018?)
                 var fakeTextures = new byte[256 * 256 * numTextureTiles];
                 writer.Write(fakeTextures);
 
@@ -42,11 +46,12 @@ namespace TombLib.LevelData.Compilers
                 byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, 256, _texture32Data.GetLength(0) / (256 * 4));
                 writer.Write(texture16Data);
 
-                using (var readerRaw = new BinaryReader(new FileStream("Editor\\Misc\\Sprites.Tr3.raw", FileMode.Open, FileAccess.Read, FileShare.Read)))
+                // TODO: old code, Wad2 should contain all sprites
+                /*using (var readerRaw = new BinaryReader(new FileStream("Editor\\Misc\\Sprites.Tr3.raw", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     var raw = readerRaw.ReadBytes(131072);
                     writer.Write(raw);
-                }
+                }*/
 
                 const int filler = 0;
                 writer.Write(filler);
@@ -80,7 +85,6 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 offset2 = writer.BaseStream.Position;
-                // ReSharper disable once SuggestVarOrType_BuiltInTypes
                 uint meshDataSize = (uint)((offset2 - offset - 4) / 2);
 
                 // Save the size of the meshes
@@ -95,9 +99,7 @@ namespace TombLib.LevelData.Compilers
                 // Write animations' data
                 writer.Write((uint)_animations.Count);
                 foreach (var anim in _animations)
-                {
-                    anim.Write(writer);
-                }
+                    anim.Write(writer, _level);
 
                 writer.Write((uint)_stateChanges.Count);
                 writer.WriteBlockArray(_stateChanges);
@@ -120,19 +122,22 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((uint)_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);
 
-                // SPR block
+                // Sprites
+                // TODO: Wad2 should contain all sprites
+                /*
                 using (var readerSprites = new BinaryReader(new FileStream("sprites3.bin", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     var bufferSprites = readerSprites.ReadBytes((int)readerSprites.BaseStream.Length);
                     writer.Write(bufferSprites);
-                }
+                }*/
 
-                /*writer.Write(NumSpriteTextures);
-                writer.WriteBlockArray(SpriteTextures);
-                writer.Write(NumSpriteSequences);
-                writer.WriteBlockArray(SpriteSequences);
-                */
-                // Write camera, flyby and sound sources
+                writer.Write((uint)_spriteTextures.Count);
+                writer.WriteBlockArray(_spriteTextures);
+
+                writer.Write((uint)_spriteSequences.Count);
+                writer.WriteBlockArray(_spriteSequences);
+                
+                // Write camera, sound sources
                 writer.Write((uint)_cameras.Count);
                 writer.WriteBlockArray(_cameras);
 
@@ -172,9 +177,7 @@ namespace TombLib.LevelData.Compilers
 
                 // Write object textures
                 _objectTextureManager.WriteObjectTextures(writer, _level);
-                if (0 == 0 * _items.Count)
-                    throw new NotSupportedException("WriteObjectTexturesForTr4 needs small adjustments for tr3.");
-
+                
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
                 writer.WriteBlockArray(_items);
@@ -186,18 +189,61 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(numDemo);
                 writer.Write(numDemo);
 
-                // Write sound data
-                /*byte[] sfxBuffer;
-                using (var readerSounds = new BinaryReaderEx(new FileStream(
-                        @"Graphics\Wads\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
-                {
-                    sfxBuffer = readerSounds.ReadBytes((int)readerSounds.BaseStream.Length);
-                    readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);
-                    readerSounds.ReadBytes(370 * 2);
-                    _numSoundDetails = (uint)readerSounds.ReadInt16();
-                }*/
+                // Write sounds
 
-                // writer.WriteBlockArray(sfxBuffer);
+                // Write sound map
+                var soundMapSize = GetSoundMapSize();
+                var lastSound = 0;
+                for (int i = 0; i < soundMapSize; i++)
+                {
+                    short soundMapValue = -1;
+                    if (_level.Wad.SoundInfo.ContainsKey((ushort)i))
+                    {
+                        soundMapValue = (short)lastSound;
+                        lastSound++;
+                    }
+
+                    writer.Write(soundMapValue);
+                }
+
+                // Write sound details
+                writer.Write((uint)_level.Wad.SoundInfo.Count);
+
+                short lastSample = 0;
+
+                for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
+                {
+                    var wadInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
+                    var soundInfo = new tr_sound_details();
+
+                    soundInfo.Sample = lastSample;
+                    soundInfo.Volume = wadInfo.Volume;
+                    soundInfo.Range = wadInfo.Range;
+                    soundInfo.Pitch = wadInfo.Pitch;
+                    soundInfo.Chance = wadInfo.Chance;
+
+                    ushort characteristics = (ushort)(wadInfo.Samples.Count << 2);
+                    if (wadInfo.FlagN)
+                        characteristics |= 0x1000;
+                    if (wadInfo.RandomizePitch)
+                        characteristics |= 0x2000;
+                    if (wadInfo.RandomizeGain)
+                        characteristics |= 0x4000;
+                    characteristics |= (byte)wadInfo.Loop;
+
+                    soundInfo.Characteristics = characteristics;
+
+                    writer.WriteBlock<tr_sound_details>(soundInfo);
+
+                    lastSample += (short)wadInfo.Samples.Count;
+                }
+
+                // TODO: samples are in MAIN.SFX so I have to found a way to write samples indices here
+                int numSampleIndices = lastSample;
+                writer.Write(numSampleIndices);
+                int filler3 = 0;
+                for (int i = 0; i < numSampleIndices; i++)
+                    writer.Write(filler3);
 
                 writer.Flush();
             }

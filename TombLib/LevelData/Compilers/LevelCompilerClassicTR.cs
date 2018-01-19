@@ -110,6 +110,7 @@ namespace TombLib.LevelData.Compilers
             {
                 switch (_level.Settings.GameVersion)
                 {
+                    case GameVersion.TR3:
                     case GameVersion.TR4:
                         soundMapSize = 370;
                         break;

@@ -493,9 +493,9 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((float)light.X);
                 writer.Write((float)light.Y);
                 writer.Write((float)light.Z);
-                writer.Write((float)light.Color.Red);
-                writer.Write((float)light.Color.Green);
-                writer.Write((float)light.Color.Blue);
+                writer.Write((float)light.Color.Red / 255.0f);
+                writer.Write((float)light.Color.Green / 255.0f);
+                writer.Write((float)light.Color.Blue / 255.0f);
 
                 writer.Write((uint)0xcdcdcdcd);
 
@@ -824,7 +824,7 @@ namespace TombLib.LevelData.Compilers
         public ushort NumAnimCommands;
         public ushort AnimCommand;
 
-        public void Write(BinaryWriterEx writer)
+        public void Write(BinaryWriterEx writer, Level level)
         {
             writer.Write(FrameOffset);
             writer.Write(FrameRate);
@@ -832,6 +832,12 @@ namespace TombLib.LevelData.Compilers
             writer.Write(StateID);
             writer.Write(Speed);
             writer.Write(Accel);
+            if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG ||
+                level.Settings.GameVersion == GameVersion.TR5)
+            {
+                writer.Write(SpeedLateral);
+                writer.Write(AccelLateral);
+            }
             writer.Write(FrameStart);
             writer.Write(FrameEnd);
             writer.Write(NextAnimation);
