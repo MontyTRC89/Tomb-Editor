@@ -338,7 +338,7 @@ namespace TombLib.LevelData.Compilers
             // Now save current offset and calculate the size of the geometry
             var offset2 = writer.BaseStream.Position;
             // ReSharper disable once SuggestVarOrType_BuiltInTypes
-            ushort roomGeometrySize = (ushort) ((offset2 - offset - 4) / 2);
+            ushort roomGeometrySize = (ushort)((offset2 - offset - 4) / 2);
 
             // Save the size of the geometry
             writer.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -432,7 +432,7 @@ namespace TombLib.LevelData.Compilers
 
             writer.Write(AlternateRoom);
             writer.Write(Flags);
-            writer.Write((ushort)0x40);
+            writer.Write((ushort)0xffff);
 
             writer.Write((ushort)0);
             writer.Write((uint)0);
@@ -451,7 +451,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write((uint)0xcdcdcdcd);
             writer.Write((uint)0);
             writer.Write((uint)0xcdcdcdcd);
-            
+
             writer.Write((uint)Triangles.Count);
             writer.Write((uint)Quads.Count);
 
@@ -532,9 +532,9 @@ namespace TombLib.LevelData.Compilers
             writer.Write((ushort)Portals.Count);
             if (Portals.Count != 0)
                 writer.WriteBlockArray(Portals);
-            EndPortalOffset = (uint)(writer.BaseStream.Position - roomStartOffset - 216);
 
             writer.Write((ushort)0xcdcd);
+            EndPortalOffset = (uint)(writer.BaseStream.Position - roomStartOffset - 216);
 
             if (StaticMeshes.Count != 0)
                 writer.WriteBlockArray(StaticMeshes);
@@ -552,10 +552,10 @@ namespace TombLib.LevelData.Compilers
             writer.Write((ushort)0);
 
             writer.Write((float)1024.0f);
-            writer.Write((float)Info.YTop);
+            writer.Write((float)Info.YBottom);
             writer.Write((float)1024.0f);
             writer.Write((float)((NumXSectors - 1) * 1024.0f));
-            writer.Write((float)(Info.YBottom));
+            writer.Write((float)(Info.YTop));
             writer.Write((float)((NumZSectors - 1) * 1024.0f));
 
             writer.Write((uint)0);
