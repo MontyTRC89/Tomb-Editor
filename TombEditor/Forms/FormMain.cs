@@ -17,6 +17,7 @@ using TombLib.GeometryIO.Importers;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib;
+using System.Diagnostics;
 
 namespace TombEditor
 {
@@ -1298,6 +1299,22 @@ namespace TombEditor
         private void importRoomsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             EditorActions.ImportRooms(this);
+        }
+
+        private void wadToolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (File.Exists("WadTool.exe"))
+            {
+                try
+                {
+                    Process.Start("WadTool.exe");
+                }
+                catch (Exception ex)
+                {
+                    DarkMessageBox.Show(this, "Error while starting Wad Tool", "Error", MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }
