@@ -112,6 +112,13 @@ namespace TombLib.Wad
                 {
                     if (id2 == Wad2Chunks.TextureData)
                         textureData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
+                    else if (id2 == Wad2Chunks.SpriteSides)
+                    {
+                        texture.TopSide = LEB128.ReadInt(chunkIO.Raw);
+                        texture.BottomSide = LEB128.ReadInt(chunkIO.Raw);
+                        texture.LeftSide = LEB128.ReadInt(chunkIO.Raw);
+                        texture.RightSide = LEB128.ReadInt(chunkIO.Raw);
+                    }
                     else
                         return false;
                     return true;

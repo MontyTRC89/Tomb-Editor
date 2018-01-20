@@ -335,28 +335,31 @@ namespace TombLib.Wad.TrLevels
                 for (int i = startIndex; i < startIndex + lengthOfSequence; i++)
                 {
                     var oldSpriteTexture = oldLevel.SpriteTextures[i];
+                    var texture = new WadSprite();
 
-                    int spriteWidth = 0;
-                    int spriteHeight = 0;
-                    int spriteX = 0;
-                    int spriteY = 0;
+                    uint spriteWidth = 0;
+                    uint spriteHeight = 0;
+                    uint spriteX = 0;
+                    uint spriteY = 0;
 
-                    if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                    if (oldLevel.Version == TrVersion.TR1 || 
+                        oldLevel.Version == TrVersion.TR2 || 
+                        oldLevel.Version == TrVersion.TR3)
                     {
                         spriteX = oldSpriteTexture.X;
                         spriteY = oldSpriteTexture.Y;
-                        spriteWidth = (oldSpriteTexture.Width - 255) / 256;
-                        spriteHeight = (oldSpriteTexture.Height - 255) / 256;
+                        spriteWidth = (uint)((oldSpriteTexture.Width - 255) / 256 + 1);
+                        spriteHeight = (uint)((oldSpriteTexture.Height - 255) / 256 + 1);
                     }
                     else
                     {
-                        spriteX = oldSpriteTexture.LeftSide;
-                        spriteY = oldSpriteTexture.TopSide;
-                        spriteWidth = (oldSpriteTexture.Width / 256) + 1;
-                        spriteHeight = (oldSpriteTexture.Height / 256) + 1;
+                        spriteX = (uint)oldSpriteTexture.LeftSide;
+                        spriteY = (uint)oldSpriteTexture.TopSide;
+                        spriteWidth = (uint)((oldSpriteTexture.Width / 256) + 1);
+                        spriteHeight = (uint)((oldSpriteTexture.Height / 256) + 1);
                     }
 
-                    var spriteImage = ImageC.CreateNew(spriteWidth, spriteHeight);
+                    var spriteImage = ImageC.CreateNew((int)spriteWidth, (int)spriteHeight);
 
                     for (int y = 0; y < spriteHeight; y++)
                         for (int x = 0; x < spriteWidth; x++)
@@ -370,9 +373,13 @@ namespace TombLib.Wad.TrLevels
                         }
 
                     // Create the texture
-                    var texture = new WadSprite();
                     texture.Image = spriteImage;
                     texture.UpdateHash();
+
+                    texture.TopSide = oldSpriteTexture.TopSide;
+                    texture.LeftSide = oldSpriteTexture.LeftSide;
+                    texture.BottomSide = oldSpriteTexture.BottomSide;
+                    texture.RightSide = oldSpriteTexture.RightSide;
 
                     // Check if texture already exists in Wad2 and eventually add it
                     if (wad.SpriteTextures.ContainsKey(texture.Hash))

@@ -16,6 +16,7 @@ namespace TombLib.Wad
         /****/public static readonly ChunkId TextureData = ChunkId.FromString("W2TxtData");
         public static readonly ChunkId Sprites = ChunkId.FromString("W2Sprites");
         /**/public static readonly ChunkId Sprite = ChunkId.FromString("W2Spr");
+        /****/public static readonly ChunkId SpriteSides = ChunkId.FromString("W2SprSides");
         /****/public static readonly ChunkId SpriteData = ChunkId.FromString("W2SprData");
         public static readonly ChunkId Meshes = ChunkId.FromString("W2Meshes");
         /**/public static readonly ChunkId Mesh = ChunkId.FromString("W2Mesh");

@@ -55,6 +55,7 @@
             this.newRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.applyCurrentAmbientLightToAllRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.itemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -146,7 +147,7 @@
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.importRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wadToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -614,6 +615,16 @@
             this.exportRoomToolStripMenuItem.Size = new System.Drawing.Size(332, 22);
             this.exportRoomToolStripMenuItem.Text = "Export current room";
             this.exportRoomToolStripMenuItem.Click += new System.EventHandler(this.exportRoomToolStripMenuItem_Click);
+            // 
+            // importRoomsToolStripMenuItem
+            // 
+            this.importRoomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.importRoomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.importRoomsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_Import_16;
+            this.importRoomsToolStripMenuItem.Name = "importRoomsToolStripMenuItem";
+            this.importRoomsToolStripMenuItem.Size = new System.Drawing.Size(332, 22);
+            this.importRoomsToolStripMenuItem.Text = "Import rooms";
+            this.importRoomsToolStripMenuItem.Click += new System.EventHandler(this.importRoomsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -1185,7 +1196,8 @@
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.textureMapBuilderToolStripMenuItem,
             this.soundManagerToolStripMenuItem,
-            this.levelSettingsToolStripMenuItem});
+            this.levelSettingsToolStripMenuItem,
+            this.wadToolToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -1560,15 +1572,14 @@
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
             // 
-            // importRoomsToolStripMenuItem
+            // wadToolToolStripMenuItem
             // 
-            this.importRoomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.importRoomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.importRoomsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_Import_16;
-            this.importRoomsToolStripMenuItem.Name = "importRoomsToolStripMenuItem";
-            this.importRoomsToolStripMenuItem.Size = new System.Drawing.Size(332, 22);
-            this.importRoomsToolStripMenuItem.Text = "Import rooms";
-            this.importRoomsToolStripMenuItem.Click += new System.EventHandler(this.importRoomsToolStripMenuItem_Click);
+            this.wadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.wadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.wadToolToolStripMenuItem.Name = "wadToolToolStripMenuItem";
+            this.wadToolToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.wadToolToolStripMenuItem.Text = "Wad Tool";
+            this.wadToolToolStripMenuItem.Click += new System.EventHandler(this.wadToolToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -1728,5 +1739,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem applyCurrentAmbientLightToAllRoomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importRoomsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wadToolToolStripMenuItem;
     }
 }

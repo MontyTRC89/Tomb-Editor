@@ -126,24 +126,28 @@ namespace TombLib.LevelData.Compilers
                     var packInfo = textureAllocator.GetPackInfo(spriteTextureIDs[oldTexture.Hash]);
                     var newTexture = new tr_sprite_texture();
 
-                    newTexture.TopSide = (short)packInfo.Pos.Y;
-                    newTexture.LeftSide = (short)packInfo.Pos.X;
-                    newTexture.X = (byte)newTexture.LeftSide;
-                    newTexture.Y = (byte)newTexture.TopSide;
-                    if (_level.Settings.GameVersion == GameVersion.TR4 ||
-                        _level.Settings.GameVersion == GameVersion.TRNG ||
-                        _level.Settings.GameVersion == GameVersion.TR5)
+                    if (_level.Settings.GameVersion == GameVersion.TR3)
                     {
-                        newTexture.Width = (ushort)((oldTexture.Width - 1) * 256);
-                        newTexture.Height = (ushort)((oldTexture.Height - 1) * 256);
+                        newTexture.X = (byte)packInfo.Pos.X;
+                        newTexture.Y = (byte)packInfo.Pos.Y;
+                        newTexture.Width = (ushort)(((oldTexture.Width - 1) * 256) + 255);
+                        newTexture.Height = (ushort)(((oldTexture.Height - 1) * 256) + 255);
+                        newTexture.TopSide = (short)oldTexture.TopSide;
+                        newTexture.LeftSide = (short)oldTexture.LeftSide;
+                        newTexture.RightSide = (short)oldTexture.RightSide;
+                        newTexture.BottomSide = (short)oldTexture.BottomSide;
                     }
                     else
                     {
-                        newTexture.Width = (ushort)((oldTexture.Width * 256) + 255);
-                        newTexture.Height = (ushort)((oldTexture.Height * 256) + 255);
-                    }                    
-                    newTexture.RightSide = (short)(newTexture.LeftSide + (oldTexture.Width));
-                    newTexture.BottomSide = (short)(newTexture.TopSide + (oldTexture.Height));
+                        newTexture.TopSide = (short)packInfo.Pos.Y;
+                        newTexture.LeftSide = (short)packInfo.Pos.X;
+                        newTexture.X = (byte)newTexture.LeftSide;
+                        newTexture.Y = (byte)newTexture.TopSide;
+                        newTexture.Width = (ushort)((oldTexture.Width - 1) * 256);
+                        newTexture.Height = (ushort)((oldTexture.Height - 1) * 256);
+                        newTexture.RightSide = (short)(newTexture.LeftSide + (oldTexture.Width));
+                        newTexture.BottomSide = (short)(newTexture.TopSide + (oldTexture.Height));
+                    }
                     newTexture.Tile = (ushort)(pagesBeforeSprites + packInfo.OutputTextureID);
 
                     tempSprites.Add(newTexture);
