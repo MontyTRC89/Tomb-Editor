@@ -535,7 +535,10 @@ namespace TombLib.LevelData.Compilers
                     var sector = new tr_room_sector();
                     var aux = new TrSectorAux();
 
-                    sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (int)GetTextureSound(room, x, z)));
+                    if (_level.Settings.GameVersion >= GameVersion.TR3)
+                        sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (int)GetTextureSound(room, x, z)));
+                    else
+                        sector.BoxIndex = 0xffff;
                     sector.FloorDataIndex = 0;
 
                     // Setup portals

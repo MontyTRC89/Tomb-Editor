@@ -232,465 +232,14 @@ namespace TombLib.LevelData.Compilers
 
                         // Now begins the triangulation for floor and ceiling
                         // It's a very long and hard task
-                        if (block.FloorDiagonalSplit != DiagonalSplit.None)
+                        if (_level.Settings.GameVersion >= GameVersion.TR3)
                         {
-                            int q0 = block.QA[0];
-                            int q1 = block.QA[1];
-                            int q2 = block.QA[2];
-                            int q3 = block.QA[3];
-
-                            // The real floor split of the sector
-                            int function;
-
-                            int t1;
-                            int t2;
-
-                            int h00;
-                            int h01;
-                            int h10;
-                            int h11;
-
-                            // First, we fix the sector height
-                            if (block.Type == BlockType.Wall)
-                                sector.Floor = (sbyte)-(room.Position.Y + 0x0f);
-                            else
-                                sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
-
-                            if (block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                block.FloorDiagonalSplit == DiagonalSplit.XpZp)
-                            {
-                                lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                {
-                                    function = block.FloorDiagonalSplit == DiagonalSplit.XnZn ? 0x0c : 0x0b;
-                                }
-                                else
-                                {
-                                    function = 0x07;
-                                }
-
-                                // Diagonal steps and walls are the simplest case. All corner heights are zero
-                                // except eventually the right angle on the top face. Corrections t1 and t2
-                                // are simple to calculate
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
-                                {
-                                    var lowCorner = q1;
-                                    var highCorner = q3;
-
-                                    if (block.Type == BlockType.Wall)
-                                    {
-                                        t1 = 0;
-                                        t2 = 15 - block.QA[
-                                                 1]; // Diagonal wall max height minus the height of the lower right angle
-
-                                        h00 = 0;
-                                        h10 = 0;
-                                        h01 = 0;
-                                        h11 = 0;
-                                    }
-                                    else
-                                    {
-                                        t1 = q2 > q3 ? q3 - q2 : 0;
-                                        t2 = (highCorner - lowCorner) & 0x1f;
-
-                                        h00 = Math.Abs(q3 - q2);
-                                        h10 = 0;
-                                        h01 = 0;
-                                        h11 = 0;
-                                    }
-                                }
-                                else
-                                {
-                                    var lowCorner = q3;
-                                    var highCorner = q1;
-
-                                    if (block.Type == BlockType.Wall)
-                                    {
-                                        t1 = 15 - block.QA[3];
-                                        t2 = 0;
-
-                                        h00 = 0;
-                                        h10 = 0;
-                                        h01 = 0;
-                                        h11 = 0;
-                                    }
-                                    else
-                                    {
-                                        t1 = (highCorner - lowCorner) & 0x1f;
-                                        t2 = 0;
-
-                                        h00 = 0;
-                                        h10 = 0;
-                                        h01 = 0;
-                                        h11 = q1 - q2;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                {
-                                    function = block.FloorDiagonalSplit == DiagonalSplit.XpZn ? 0x0d : 0x0e;
-                                }
-                                else
-                                {
-                                    function = 0x08;
-                                }
-
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XpZn)
-                                {
-                                    var lowCorner = q0;
-                                    var highCorner = q2;
-
-                                    if (block.Type == BlockType.Wall)
-                                    {
-                                        t1 = 15 - block.QA[0];
-                                        t2 = 0;
-
-                                        h00 = 0;
-                                        h10 = 0;
-                                        h01 = 0;
-                                        h11 = 0;
-                                    }
-                                    else
-                                    {
-                                        t1 = highCorner - lowCorner & 0x1f;
-                                        t2 = 0;
-
-                                        h00 = 0;
-                                        h10 = q2 - q1;
-                                        h01 = 0;
-                                        h11 = 0;
-                                    }
-                                }
-                                else
-                                {
-                                    var lowCorner = q2;
-                                    var highCorner = q0;
-
-                                    if (block.Type == BlockType.Wall)
-                                    {
-                                        t1 = 0;
-                                        t2 = 15 - block.QA[2];
-
-                                        h00 = 0;
-                                        h10 = 0;
-                                        h01 = 0;
-                                        h11 = 0;
-                                    }
-                                    else
-                                    {
-                                        t1 = 0;
-                                        t2 = highCorner - lowCorner & 0x1f;
-
-                                        h00 = 0;
-                                        h10 = 0;
-                                        h01 = q0 - q1;
-                                        h11 = 0;
-                                    }
-                                }
-                            }
-
-                            var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
-                            var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
-
-                            tempCodes.Add(code1);
-                            tempCodes.Add(code2);
-                        }
-                        else
-                        {
-                            if (block.FloorIfQuadSlopeX == 0 && block.FloorIfQuadSlopeZ == 0)
+                            if (block.FloorDiagonalSplit != DiagonalSplit.None)
                             {
                                 int q0 = block.QA[0];
                                 int q1 = block.QA[1];
                                 int q2 = block.QA[2];
                                 int q3 = block.QA[3];
-
-                                // We have not a slope, so if this is not a horizontal square then we have triangulation
-                                if (!Block.IsQuad(q0, q1, q2, q3))
-                                {
-                                    // First, we fix the sector height
-                                    sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
-
-                                    // Then we have to find the axis of the triangulation
-                                    var min = block.FloorMin;
-
-                                    lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                    // Corner heights
-                                    var h10 = q2 - min;
-                                    var h00 = q3 - min;
-                                    var h01 = q0 - min;
-                                    var h11 = q1 - min;
-
-                                    var t1 = 0;
-                                    var t2 = 0;
-
-                                    // The real floor split of the sector
-                                    int function;
-
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                        {
-                                            if (q0 == q1 && q1 == q2 && q2 == q0)
-                                            {
-                                                function = 0x0c;
-                                            }
-                                            else
-                                            {
-                                                function = 0x0b;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            function = 0x07;
-                                        }
-
-                                        // Prepare four vectors that are vertices of a square from 0, 0 to 1024, 1024 and
-                                        // with variable corner heights. For calculating the right t1 and t2 values, we
-                                        // must know also the fourth point of the square that contains the triangle
-                                        // we are trying to correct. I simply intersect a very long ray with the plane
-                                        // passing through the triangle and I can obtain in this way the height of the fourth corner.
-                                        // This height then is used in different ways
-                                        var p00 = new Vector3(0, h00 * 256, 0);
-                                        var p01 = new Vector3(0, h01 * 256, 1024);
-                                        var p10 = new Vector3(1024, h10 * 256, 0);
-                                        var p11 = new Vector3(1024, h11 * 256, 1024);
-
-                                        // In triangle collisions, everything is relative to the highest corner
-                                        var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
-
-                                        // Choose which triangle to adjust
-                                        if (h00 < Math.Min(h10, h01) && h11 < Math.Min(h10, h01))
-                                        {
-                                            // Case 1: both triangles have their right angles below the diagonal ( /D\ )
-                                            var pl1 = Plane.CreateFromVertices(p01, p10, p00);
-
-                                            float distance1;
-
-                                            // Find the 4th point
-                                            var ray1 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray1, pl1, out distance1);
-                                            distance1 = 32768 - (float)Math.Round(distance1);
-                                            distance1 /= 256;
-
-                                            //int maxTriangle1 = Math.Max(Math.Max(h01, h00), h10);
-
-                                            // Correction is the max height of the sector minus the height of the fourth point
-                                            t2 = (int)(maxHeight - distance1) & 0x1f;
-
-                                            var pl2 = Plane.CreateFromVertices(p10, p01, p11);
-
-                                            float distance2;
-
-                                            // Find the 4th point
-                                            var ray2 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray2, pl2, out distance2);
-                                            distance2 = 32768 - (float)Math.Round(distance2);
-                                            distance2 /= 256;
-
-                                            //int maxTriangle2 = Math.Max(Math.Max(h11, h10), h01);
-
-                                            // Correction is the max height of the sector minus the height of the fourth point
-                                            t1 = (int)(maxHeight - distance2) & 0x1f;
-                                        }
-                                        else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
-                                                 h11 < h00)
-                                        {
-                                            // Case 2: h00 is highest corner and h11 is lower than h00. Typical example, when you raise of one click
-                                            // one corner of a sector (simplest case)
-                                            var p = Plane.CreateFromVertices(p01, p11, p10);
-
-                                            float distance;
-
-                                            // Find the 4th point
-                                            var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray, p, out distance);
-                                            distance = 32768 - (float)Math.Round(distance);
-                                            distance /= 256;
-
-                                            var maxTriangle = Math.Max(Math.Max(h01, h11), h10);
-
-                                            // There are two cases (1.jpg and 2.jpg). The fourth point height can be lower than max height
-                                            // of the triangle or higher.
-                                            if (distance <= maxTriangle)
-                                            {
-                                                t1 = 0;
-                                                t2 = maxHeight - maxTriangle & 0x1f;
-                                            }
-                                            else
-                                            {
-                                                t1 = 0;
-                                                t2 = (int)(maxHeight - distance) & 0x1f;
-                                            }
-                                        }
-                                        else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
-                                                 h00 < h11)
-                                        {
-                                            // Case 3: similar to case 2, but the opposite
-                                            var p = Plane.CreateFromVertices(p01, p10, p00);
-
-                                            float distance;
-
-                                            // Find the 4th point
-                                            var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray, p, out distance);
-                                            distance = 32768 - (float)Math.Round(distance);
-                                            distance /= 256;
-
-                                            var maxTriangle = Math.Max(Math.Max(h01, h00), h10);
-
-                                            if (distance <= maxTriangle)
-                                            {
-                                                t2 = 0;
-                                                t1 = maxHeight - maxTriangle & 0x1f;
-                                            }
-                                            else
-                                            {
-                                                t2 = 0;
-                                                t1 = (int)(maxHeight - distance) & 0x1f;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                        {
-                                            if (q3 == q0 && q0 == q1 && q1 == q3)
-                                            {
-                                                function = 0x0d;
-                                            }
-                                            else
-                                            {
-                                                function = 0x0e;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            function = 0x08;
-                                        }
-
-                                        var p00 = new Vector3(0, h00 * 256, 0);
-                                        var p01 = new Vector3(0, h01 * 256, 1024);
-                                        var p10 = new Vector3(1024, h10 * 256, 0);
-                                        var p11 = new Vector3(1024, h11 * 256, 1024);
-
-                                        var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
-
-                                        // Choose which triangle to adjust
-                                        if (h01 < Math.Min(h00, h11) && h10 < Math.Min(h00, h11))
-                                        {
-                                            var pl1 = Plane.CreateFromVertices(p11, p10, p00);
-
-                                            float distance1;
-
-                                            // Find the 4th point
-                                            var ray1 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray1, pl1, out distance1);
-                                            distance1 = 32768 - (float)Math.Round(distance1);
-                                            distance1 /= 256;
-
-                                            t2 = (int)(maxHeight - distance1) & 0x1f;
-
-                                            var pl2 = Plane.CreateFromVertices(p00, p01, p11);
-
-                                            float distance2;
-
-                                            // Find the 4th point
-                                            var ray2 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray2, pl2, out distance2);
-                                            distance2 = 32768 - (float)Math.Round(distance2);
-                                            distance2 /= 256;
-
-                                            t1 = (int)(maxHeight - distance2) & 0x1f;
-                                        }
-                                        else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
-                                                 h01 < h10)
-                                        {
-                                            var p = Plane.CreateFromVertices(p01, p11, p00);
-
-                                            float distance;
-
-                                            // Find the 4th point
-                                            var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray, p, out distance);
-                                            distance = 32768 - (float)Math.Round(distance);
-                                            distance /= 256;
-
-                                            var maxTriangle = Math.Max(Math.Max(h01, h11), h00);
-
-                                            if (distance <= maxTriangle)
-                                            {
-                                                t1 = maxHeight - maxTriangle & 0x1f;
-                                                t2 = 0;
-                                            }
-                                            else
-                                            {
-                                                t1 = (int)(maxHeight - distance) & 0x1f;
-                                                t2 = 0;
-                                            }
-                                        }
-                                        else if ((h11 == maxHeight || h00 == maxHeight || h01 == maxHeight) &&
-                                                 h10 < h01)
-                                        {
-                                            var p = Plane.CreateFromVertices(p11, p10, p00);
-
-                                            float distance;
-
-                                            // Find the 4th point
-                                            var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray, p, out distance);
-                                            distance = 32768 - (float)Math.Round(distance);
-                                            distance /= 256;
-
-                                            var maxTriangle = Math.Max(Math.Max(h11, h00), h10);
-
-                                            if (distance <= maxTriangle)
-                                            {
-                                                t1 = 0;
-                                                t2 = maxHeight - maxTriangle & 0x1f;
-                                            }
-                                            else
-                                            {
-                                                t1 = 0;
-                                                t2 = (int)(maxHeight - distance) & 0x1f;
-                                            }
-                                        }
-                                    }
-
-                                    // Now build the floordata codes
-                                    var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
-                                    var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
-
-                                    tempCodes.Add(code1);
-                                    tempCodes.Add(code2);
-                                }
-                            }
-                        }
-
-                        // If sector has a ceiling slope
-                        if (block.CeilingIfQuadSlopeX != 0 || block.CeilingIfQuadSlopeZ != 0)
-                        {
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(0x03);
-
-                            var slope = (ushort)(((block.CeilingIfQuadSlopeZ) << 8) | ((block.CeilingIfQuadSlopeX) & 0xff));
-
-                            tempCodes.Add(slope);
-                        }
-
-                        if (block.CeilingDiagonalSplit != DiagonalSplit.None)
-                        {
-                            if (block.Type != BlockType.Wall)
-                            {
-                                int w0 = block.WS[0];
-                                int w1 = block.WS[1];
-                                int w2 = block.WS[2];
-                                int w3 = block.WS[3];
 
                                 // The real floor split of the sector
                                 int function;
@@ -709,87 +258,141 @@ namespace TombLib.LevelData.Compilers
                                 else
                                     sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
 
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn ||
-                                    block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                    block.FloorDiagonalSplit == DiagonalSplit.XpZp)
                                 {
                                     lastFloorDataFunction = (ushort)tempCodes.Count;
 
-                                    if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
+                                    if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                     {
-                                        function = block.CeilingDiagonalSplit == DiagonalSplit.XnZn ? 0x10 : 0x0f;
+                                        function = block.FloorDiagonalSplit == DiagonalSplit.XnZn ? 0x0c : 0x0b;
                                     }
                                     else
                                     {
-                                        function = 0x09;
+                                        function = 0x07;
                                     }
 
-                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
+                                    // Diagonal steps and walls are the simplest case. All corner heights are zero
+                                    // except eventually the right angle on the top face. Corrections t1 and t2
+                                    // are simple to calculate
+                                    if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
                                     {
-                                        var lowCorner = w1;
-                                        var highCorner = w3;
+                                        var lowCorner = q1;
+                                        var highCorner = q3;
 
+                                        if (block.Type == BlockType.Wall)
+                                        {
+                                            t1 = 0;
+                                            t2 = 15 - block.QA[
+                                                     1]; // Diagonal wall max height minus the height of the lower right angle
 
-                                        t1 = 0;
-                                        t2 = highCorner - lowCorner & 0x1f;
+                                            h00 = 0;
+                                            h10 = 0;
+                                            h01 = 0;
+                                            h11 = 0;
+                                        }
+                                        else
+                                        {
+                                            t1 = q2 > q3 ? q3 - q2 : 0;
+                                            t2 = (highCorner - lowCorner) & 0x1f;
 
-                                        h00 = w3 - w2;
-                                        h10 = 0;
-                                        h01 = 0;
-                                        h11 = 0;
+                                            h00 = Math.Abs(q3 - q2);
+                                            h10 = 0;
+                                            h01 = 0;
+                                            h11 = 0;
+                                        }
                                     }
                                     else
                                     {
-                                        var lowCorner = w3;
-                                        var highCorner = w1;
+                                        var lowCorner = q3;
+                                        var highCorner = q1;
 
-                                        t1 = highCorner - lowCorner & 0x1f;
-                                        t2 = 0;
+                                        if (block.Type == BlockType.Wall)
+                                        {
+                                            t1 = 15 - block.QA[3];
+                                            t2 = 0;
 
-                                        h00 = 0;
-                                        h10 = 0;
-                                        h01 = 0;
-                                        h11 = w1 - w2;
+                                            h00 = 0;
+                                            h10 = 0;
+                                            h01 = 0;
+                                            h11 = 0;
+                                        }
+                                        else
+                                        {
+                                            t1 = (highCorner - lowCorner) & 0x1f;
+                                            t2 = 0;
+
+                                            h00 = 0;
+                                            h10 = 0;
+                                            h01 = 0;
+                                            h11 = q1 - q2;
+                                        }
                                     }
                                 }
                                 else
                                 {
                                     lastFloorDataFunction = (ushort)tempCodes.Count;
 
-                                    if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
+                                    if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                     {
-                                        function = block.CeilingDiagonalSplit == DiagonalSplit.XpZn ? 0x11 : 0x12;
+                                        function = block.FloorDiagonalSplit == DiagonalSplit.XpZn ? 0x0d : 0x0e;
                                     }
                                     else
                                     {
-                                        function = 0x0a;
+                                        function = 0x08;
                                     }
 
-                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
+                                    if (block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                                     {
-                                        var lowCorner = w0;
-                                        var highCorner = w2;
+                                        var lowCorner = q0;
+                                        var highCorner = q2;
 
+                                        if (block.Type == BlockType.Wall)
+                                        {
+                                            t1 = 15 - block.QA[0];
+                                            t2 = 0;
 
-                                        t1 = highCorner - lowCorner & 0x1f;
-                                        t2 = 0;
+                                            h00 = 0;
+                                            h10 = 0;
+                                            h01 = 0;
+                                            h11 = 0;
+                                        }
+                                        else
+                                        {
+                                            t1 = highCorner - lowCorner & 0x1f;
+                                            t2 = 0;
 
-                                        h00 = 0;
-                                        h10 = w2 - w1;
-                                        h01 = 0;
-                                        h11 = 0;
+                                            h00 = 0;
+                                            h10 = q2 - q1;
+                                            h01 = 0;
+                                            h11 = 0;
+                                        }
                                     }
                                     else
                                     {
-                                        var lowCorner = w2;
-                                        var highCorner = w0;
+                                        var lowCorner = q2;
+                                        var highCorner = q0;
 
-                                        t1 = 0;
-                                        t2 = highCorner - lowCorner & 0x1f;
+                                        if (block.Type == BlockType.Wall)
+                                        {
+                                            t1 = 0;
+                                            t2 = 15 - block.QA[2];
 
-                                        h00 = 0;
-                                        h10 = 0;
-                                        h01 = w0 - w1;
-                                        h11 = 0;
+                                            h00 = 0;
+                                            h10 = 0;
+                                            h01 = 0;
+                                            h11 = 0;
+                                        }
+                                        else
+                                        {
+                                            t1 = 0;
+                                            t2 = highCorner - lowCorner & 0x1f;
+
+                                            h00 = 0;
+                                            h10 = 0;
+                                            h01 = q0 - q1;
+                                            h11 = 0;
+                                        }
                                     }
                                 }
 
@@ -799,264 +402,668 @@ namespace TombLib.LevelData.Compilers
                                 tempCodes.Add(code1);
                                 tempCodes.Add(code2);
                             }
-                        }
-                        else
-                        {
-                            if (block.CeilingIfQuadSlopeX == 0 && block.CeilingIfQuadSlopeZ == 0)
+                            else
                             {
-                                int w0 = block.WS[0];
-                                int w1 = block.WS[1];
-                                int w2 = block.WS[2];
-                                int w3 = block.WS[3];
-
-                                // We have not a slope, so if this is not a horizontal square then we have triangulation
-                                if (!Block.IsQuad(w0, w1, w2, w3))
+                                if (block.FloorIfQuadSlopeX == 0 && block.FloorIfQuadSlopeZ == 0)
                                 {
-                                    // We have to find the axis of the triangulation
-                                    var max = block.CeilingMax;
+                                    int q0 = block.QA[0];
+                                    int q1 = block.QA[1];
+                                    int q2 = block.QA[2];
+                                    int q3 = block.QA[3];
 
-                                    lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                    // Corner heights
-                                    var h10 = max - w2;
-                                    var h00 = max - w3;
-                                    var h01 = max - w0;
-                                    var h11 = max - w1;
-
-                                    var t1 = 0;
-                                    var t2 = 0;
-
-                                    // The real ceiling split of the sector
-                                    int function;
-
-                                    // Now, for each of the two possible splits, apply the algorithm described by meta2tr and
-                                    // TRosettaStone 3. I've simply managed some cases by hand. The difficult task is to
-                                    // decide if apply the height correction to both triangles or just one of them.
-                                    // Function must be decided looking at portals.
-
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
+                                    // We have not a slope, so if this is not a horizontal square then we have triangulation
+                                    if (!Block.IsQuad(q0, q1, q2, q3))
                                     {
-                                        if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
+                                        // First, we fix the sector height
+                                        sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
+
+                                        // Then we have to find the axis of the triangulation
+                                        var min = block.FloorMin;
+
+                                        lastFloorDataFunction = (ushort)tempCodes.Count;
+
+                                        // Corner heights
+                                        var h10 = q2 - min;
+                                        var h00 = q3 - min;
+                                        var h01 = q0 - min;
+                                        var h11 = q1 - min;
+
+                                        var t1 = 0;
+                                        var t2 = 0;
+
+                                        // The real floor split of the sector
+                                        int function;
+
+                                        if (!block.FloorSplitDirectionIsXEqualsZ)
                                         {
-                                            if (w0 == w1 && w1 == w2 && w2 == w0)
+                                            if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                             {
-                                                function = 0x10;
+                                                if (q0 == q1 && q1 == q2 && q2 == q0)
+                                                {
+                                                    function = 0x0c;
+                                                }
+                                                else
+                                                {
+                                                    function = 0x0b;
+                                                }
                                             }
                                             else
                                             {
-                                                function = 0x0f;
+                                                function = 0x07;
                                             }
+
+                                            // Prepare four vectors that are vertices of a square from 0, 0 to 1024, 1024 and
+                                            // with variable corner heights. For calculating the right t1 and t2 values, we
+                                            // must know also the fourth point of the square that contains the triangle
+                                            // we are trying to correct. I simply intersect a very long ray with the plane
+                                            // passing through the triangle and I can obtain in this way the height of the fourth corner.
+                                            // This height then is used in different ways
+                                            var p00 = new Vector3(0, h00 * 256, 0);
+                                            var p01 = new Vector3(0, h01 * 256, 1024);
+                                            var p10 = new Vector3(1024, h10 * 256, 0);
+                                            var p11 = new Vector3(1024, h11 * 256, 1024);
+
+                                            // In triangle collisions, everything is relative to the highest corner
+                                            var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
+
+                                            // Choose which triangle to adjust
+                                            if (h00 < Math.Min(h10, h01) && h11 < Math.Min(h10, h01))
+                                            {
+                                                // Case 1: both triangles have their right angles below the diagonal ( /D\ )
+                                                var pl1 = Plane.CreateFromVertices(p01, p10, p00);
+
+                                                float distance1;
+
+                                                // Find the 4th point
+                                                var ray1 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray1, pl1, out distance1);
+                                                distance1 = 32768 - (float)Math.Round(distance1);
+                                                distance1 /= 256;
+
+                                                //int maxTriangle1 = Math.Max(Math.Max(h01, h00), h10);
+
+                                                // Correction is the max height of the sector minus the height of the fourth point
+                                                t2 = (int)(maxHeight - distance1) & 0x1f;
+
+                                                var pl2 = Plane.CreateFromVertices(p10, p01, p11);
+
+                                                float distance2;
+
+                                                // Find the 4th point
+                                                var ray2 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray2, pl2, out distance2);
+                                                distance2 = 32768 - (float)Math.Round(distance2);
+                                                distance2 /= 256;
+
+                                                //int maxTriangle2 = Math.Max(Math.Max(h11, h10), h01);
+
+                                                // Correction is the max height of the sector minus the height of the fourth point
+                                                t1 = (int)(maxHeight - distance2) & 0x1f;
+                                            }
+                                            else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
+                                                     h11 < h00)
+                                            {
+                                                // Case 2: h00 is highest corner and h11 is lower than h00. Typical example, when you raise of one click
+                                                // one corner of a sector (simplest case)
+                                                var p = Plane.CreateFromVertices(p01, p11, p10);
+
+                                                float distance;
+
+                                                // Find the 4th point
+                                                var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray, p, out distance);
+                                                distance = 32768 - (float)Math.Round(distance);
+                                                distance /= 256;
+
+                                                var maxTriangle = Math.Max(Math.Max(h01, h11), h10);
+
+                                                // There are two cases (1.jpg and 2.jpg). The fourth point height can be lower than max height
+                                                // of the triangle or higher.
+                                                if (distance <= maxTriangle)
+                                                {
+                                                    t1 = 0;
+                                                    t2 = maxHeight - maxTriangle & 0x1f;
+                                                }
+                                                else
+                                                {
+                                                    t1 = 0;
+                                                    t2 = (int)(maxHeight - distance) & 0x1f;
+                                                }
+                                            }
+                                            else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
+                                                     h00 < h11)
+                                            {
+                                                // Case 3: similar to case 2, but the opposite
+                                                var p = Plane.CreateFromVertices(p01, p10, p00);
+
+                                                float distance;
+
+                                                // Find the 4th point
+                                                var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray, p, out distance);
+                                                distance = 32768 - (float)Math.Round(distance);
+                                                distance /= 256;
+
+                                                var maxTriangle = Math.Max(Math.Max(h01, h00), h10);
+
+                                                if (distance <= maxTriangle)
+                                                {
+                                                    t2 = 0;
+                                                    t1 = maxHeight - maxTriangle & 0x1f;
+                                                }
+                                                else
+                                                {
+                                                    t2 = 0;
+                                                    t1 = (int)(maxHeight - distance) & 0x1f;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
+                                            {
+                                                if (q3 == q0 && q0 == q1 && q1 == q3)
+                                                {
+                                                    function = 0x0d;
+                                                }
+                                                else
+                                                {
+                                                    function = 0x0e;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                function = 0x08;
+                                            }
+
+                                            var p00 = new Vector3(0, h00 * 256, 0);
+                                            var p01 = new Vector3(0, h01 * 256, 1024);
+                                            var p10 = new Vector3(1024, h10 * 256, 0);
+                                            var p11 = new Vector3(1024, h11 * 256, 1024);
+
+                                            var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
+
+                                            // Choose which triangle to adjust
+                                            if (h01 < Math.Min(h00, h11) && h10 < Math.Min(h00, h11))
+                                            {
+                                                var pl1 = Plane.CreateFromVertices(p11, p10, p00);
+
+                                                float distance1;
+
+                                                // Find the 4th point
+                                                var ray1 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray1, pl1, out distance1);
+                                                distance1 = 32768 - (float)Math.Round(distance1);
+                                                distance1 /= 256;
+
+                                                t2 = (int)(maxHeight - distance1) & 0x1f;
+
+                                                var pl2 = Plane.CreateFromVertices(p00, p01, p11);
+
+                                                float distance2;
+
+                                                // Find the 4th point
+                                                var ray2 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray2, pl2, out distance2);
+                                                distance2 = 32768 - (float)Math.Round(distance2);
+                                                distance2 /= 256;
+
+                                                t1 = (int)(maxHeight - distance2) & 0x1f;
+                                            }
+                                            else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
+                                                     h01 < h10)
+                                            {
+                                                var p = Plane.CreateFromVertices(p01, p11, p00);
+
+                                                float distance;
+
+                                                // Find the 4th point
+                                                var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray, p, out distance);
+                                                distance = 32768 - (float)Math.Round(distance);
+                                                distance /= 256;
+
+                                                var maxTriangle = Math.Max(Math.Max(h01, h11), h00);
+
+                                                if (distance <= maxTriangle)
+                                                {
+                                                    t1 = maxHeight - maxTriangle & 0x1f;
+                                                    t2 = 0;
+                                                }
+                                                else
+                                                {
+                                                    t1 = (int)(maxHeight - distance) & 0x1f;
+                                                    t2 = 0;
+                                                }
+                                            }
+                                            else if ((h11 == maxHeight || h00 == maxHeight || h01 == maxHeight) &&
+                                                     h10 < h01)
+                                            {
+                                                var p = Plane.CreateFromVertices(p11, p10, p00);
+
+                                                float distance;
+
+                                                // Find the 4th point
+                                                var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray, p, out distance);
+                                                distance = 32768 - (float)Math.Round(distance);
+                                                distance /= 256;
+
+                                                var maxTriangle = Math.Max(Math.Max(h11, h00), h10);
+
+                                                if (distance <= maxTriangle)
+                                                {
+                                                    t1 = 0;
+                                                    t2 = maxHeight - maxTriangle & 0x1f;
+                                                }
+                                                else
+                                                {
+                                                    t1 = 0;
+                                                    t2 = (int)(maxHeight - distance) & 0x1f;
+                                                }
+                                            }
+                                        }
+
+                                        // Now build the floordata codes
+                                        var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
+                                        var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
+
+                                        tempCodes.Add(code1);
+                                        tempCodes.Add(code2);
+                                    }
+                                }
+                            }
+                        }
+
+                        // If sector has a ceiling slope
+                        if (block.CeilingIfQuadSlopeX != 0 || block.CeilingIfQuadSlopeZ != 0)
+                        {
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
+                            tempCodes.Add(0x03);
+
+                            var slope = (ushort)(((block.CeilingIfQuadSlopeZ) << 8) | ((block.CeilingIfQuadSlopeX) & 0xff));
+
+                            tempCodes.Add(slope);
+                        }
+
+                        if (_level.Settings.GameVersion >= GameVersion.TR3)
+                        {
+                            if (block.CeilingDiagonalSplit != DiagonalSplit.None)
+                            {
+                                if (block.Type != BlockType.Wall)
+                                {
+                                    int w0 = block.WS[0];
+                                    int w1 = block.WS[1];
+                                    int w2 = block.WS[2];
+                                    int w3 = block.WS[3];
+
+                                    // The real floor split of the sector
+                                    int function;
+
+                                    int t1;
+                                    int t2;
+
+                                    int h00;
+                                    int h01;
+                                    int h10;
+                                    int h11;
+
+                                    // First, we fix the sector height
+                                    if (block.Type == BlockType.Wall)
+                                        sector.Floor = (sbyte)-(room.Position.Y + 0x0f);
+                                    else
+                                        sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
+
+                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn ||
+                                        block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
+                                    {
+                                        lastFloorDataFunction = (ushort)tempCodes.Count;
+
+                                        if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
+                                        {
+                                            function = block.CeilingDiagonalSplit == DiagonalSplit.XnZn ? 0x10 : 0x0f;
                                         }
                                         else
                                         {
                                             function = 0x09;
                                         }
 
-                                        var p00 = new Vector3(0, h00 * 256, 1024);
-                                        var p01 = new Vector3(0, h01 * 256, 0);
-                                        var p10 = new Vector3(1024, h10 * 256, 1024);
-                                        var p11 = new Vector3(1024, h11 * 256, 0);
-
-                                        var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
-
-                                        // Choose which triangle to adjust
-                                        if (h00 < Math.Min(h10, h01) && h11 < Math.Min(h10, h01))
+                                        if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
                                         {
-                                            var pl1 = Plane.CreateFromVertices(p01, p00, p10);
+                                            var lowCorner = w1;
+                                            var highCorner = w3;
 
-                                            float distance1;
 
-                                            // Find the 4th point
-                                            var ray1 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray1, pl1, out distance1);
-                                            distance1 = 32768 - (float)Math.Round(distance1);
-                                            distance1 /= 256;
+                                            t1 = 0;
+                                            t2 = highCorner - lowCorner & 0x1f;
 
-                                            t2 = (int)(-maxHeight + distance1) & 0x1f;
-
-                                            var pl2 = Plane.CreateFromVertices(p10, p11, p01);
-
-                                            float distance2;
-
-                                            // Find the 4th point
-                                            var ray2 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray2, pl2, out distance2);
-                                            distance2 = 32768 - (float)Math.Round(distance2);
-                                            distance2 /= 256;
-
-                                            t1 = (int)(-maxHeight + distance2) & 0x1f;
+                                            h00 = w3 - w2;
+                                            h10 = 0;
+                                            h01 = 0;
+                                            h11 = 0;
                                         }
-                                        else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
-                                                 h11 < h00)
+                                        else
                                         {
-                                            var p = Plane.CreateFromVertices(p01, p10, p11);
+                                            var lowCorner = w3;
+                                            var highCorner = w1;
 
-                                            float distance;
+                                            t1 = highCorner - lowCorner & 0x1f;
+                                            t2 = 0;
 
-                                            // Find the 4th point
-                                            var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray, p, out distance);
-                                            distance = 32768 - (float)Math.Round(distance);
-                                            distance /= 256;
-
-                                            var maxTriangle = Math.Max(Math.Max(h01, h11), h10);
-
-                                            if (distance <= maxTriangle)
-                                            {
-                                                t1 = 0;
-                                                t2 = -maxHeight + maxTriangle & 0x1f;
-                                            }
-                                            else
-                                            {
-                                                t1 = 0;
-                                                t2 = (int)(-maxHeight + distance) & 0x1f;
-                                            }
-                                        }
-                                        else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
-                                                 h00 < h11)
-                                        {
-                                            var p = Plane.CreateFromVertices(p01, p00, p10);
-
-                                            float distance;
-
-                                            // Find the 4th point
-                                            var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray, p, out distance);
-                                            distance = 32768 - (float)Math.Round(distance);
-                                            distance /= 256;
-
-                                            var maxTriangle = Math.Max(Math.Max(h01, h00), h10);
-
-                                            if (distance <= maxTriangle)
-                                            {
-                                                t2 = 0;
-                                                t1 = -maxHeight + maxTriangle & 0x1f;
-                                            }
-                                            else
-                                            {
-                                                t2 = 0;
-                                                t1 = (int)(-maxHeight + distance) & 0x1f;
-                                            }
+                                            h00 = 0;
+                                            h10 = 0;
+                                            h01 = 0;
+                                            h11 = w1 - w2;
                                         }
                                     }
                                     else
                                     {
+                                        lastFloorDataFunction = (ushort)tempCodes.Count;
+
                                         if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                         {
-                                            if (w3 == w0 && w0 == w1 && w1 == w3)
-                                            {
-                                                function = 0x11;
-                                            }
-                                            else
-                                            {
-                                                function = 0x12;
-                                            }
+                                            function = block.CeilingDiagonalSplit == DiagonalSplit.XpZn ? 0x11 : 0x12;
                                         }
                                         else
                                         {
                                             function = 0x0a;
                                         }
 
-                                        var p00 = new Vector3(0, h00 * 256, 1024);
-                                        var p01 = new Vector3(0, h01 * 256, 0);
-                                        var p10 = new Vector3(1024, h10 * 256, 1024);
-                                        var p11 = new Vector3(1024, h11 * 256, 0);
-
-                                        var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
-
-                                        // Choose which triangle to adjust
-                                        if (h01 < Math.Min(h00, h11) && h10 < Math.Min(h00, h11))
+                                        if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
                                         {
-                                            var pl1 = Plane.CreateFromVertices(p11, p00, p10);
+                                            var lowCorner = w0;
+                                            var highCorner = w2;
 
-                                            float distance1;
 
-                                            // Find the 4th point
-                                            var ray1 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray1, pl1, out distance1);
-                                            distance1 = 32768 - (float)Math.Round(distance1);
-                                            distance1 /= 256;
+                                            t1 = highCorner - lowCorner & 0x1f;
+                                            t2 = 0;
 
-                                            t2 = (int)(-maxHeight + distance1) & 0x1f;
-
-                                            var pl2 = Plane.CreateFromVertices(p00, p11, p01);
-
-                                            float distance2;
-
-                                            // Find the 4th point
-                                            var ray2 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray2, pl2, out distance2);
-                                            distance2 = 32768 - (float)Math.Round(distance2);
-                                            distance2 /= 256;
-
-                                            t1 = (int)(-maxHeight + distance2) & 0x1f;
+                                            h00 = 0;
+                                            h10 = w2 - w1;
+                                            h01 = 0;
+                                            h11 = 0;
                                         }
-                                        else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
-                                                 h01 < h10)
+                                        else
                                         {
-                                            var p = Plane.CreateFromVertices(p01, p00, p11);
+                                            var lowCorner = w2;
+                                            var highCorner = w0;
 
-                                            float distance;
+                                            t1 = 0;
+                                            t2 = highCorner - lowCorner & 0x1f;
 
-                                            // Find the 4th point
-                                            var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray, p, out distance);
-                                            distance = 32768 - (float)Math.Round(distance);
-                                            distance /= 256;
-
-                                            var maxTriangle = Math.Max(Math.Max(h01, h11), h00);
-
-                                            if (distance <= maxTriangle)
-                                            {
-                                                t1 = -maxHeight + maxTriangle & 0x1f;
-                                                t2 = 0;
-                                            }
-                                            else
-                                            {
-                                                t1 = (int)(-maxHeight + distance) & 0x1f;
-                                                t2 = 0;
-                                            }
-                                        }
-                                        else if ((h11 == maxHeight || h00 == maxHeight || h01 == maxHeight) &&
-                                                 h10 < h01)
-                                        {
-                                            var p = Plane.CreateFromVertices(p11, p00, p10);
-
-                                            float distance;
-
-                                            // Find the 4th point
-                                            var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                            Collision.RayIntersectsPlane(ray, p, out distance);
-                                            distance = 32768 - (float)Math.Round(distance);
-                                            distance /= 256;
-
-                                            var maxTriangle = Math.Max(Math.Max(h11, h00), h10);
-
-                                            if (distance <= maxTriangle)
-                                            {
-                                                t1 = 0;
-                                                t2 = -maxHeight + maxTriangle & 0x1f;
-                                            }
-                                            else
-                                            {
-                                                t1 = 0;
-                                                t2 = (int)(-maxHeight + distance) & 0x1f;
-                                            }
+                                            h00 = 0;
+                                            h10 = 0;
+                                            h01 = w0 - w1;
+                                            h11 = 0;
                                         }
                                     }
 
-                                    // Now build the floordata codes
-                                    ushort code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
-                                    ushort code2 = (ushort)((h11) | (h01 << 4) | (h00 << 8) | (h10 << 12));
+                                    var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
+                                    var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
 
                                     tempCodes.Add(code1);
                                     tempCodes.Add(code2);
                                 }
                             }
+                            else
+                            {
+                                if (block.CeilingIfQuadSlopeX == 0 && block.CeilingIfQuadSlopeZ == 0)
+                                {
+                                    int w0 = block.WS[0];
+                                    int w1 = block.WS[1];
+                                    int w2 = block.WS[2];
+                                    int w3 = block.WS[3];
+
+                                    // We have not a slope, so if this is not a horizontal square then we have triangulation
+                                    if (!Block.IsQuad(w0, w1, w2, w3))
+                                    {
+                                        // We have to find the axis of the triangulation
+                                        var max = block.CeilingMax;
+
+                                        lastFloorDataFunction = (ushort)tempCodes.Count;
+
+                                        // Corner heights
+                                        var h10 = max - w2;
+                                        var h00 = max - w3;
+                                        var h01 = max - w0;
+                                        var h11 = max - w1;
+
+                                        var t1 = 0;
+                                        var t2 = 0;
+
+                                        // The real ceiling split of the sector
+                                        int function;
+
+                                        // Now, for each of the two possible splits, apply the algorithm described by meta2tr and
+                                        // TRosettaStone 3. I've simply managed some cases by hand. The difficult task is to
+                                        // decide if apply the height correction to both triangles or just one of them.
+                                        // Function must be decided looking at portals.
+
+                                        if (!block.FloorSplitDirectionIsXEqualsZ)
+                                        {
+                                            if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
+                                            {
+                                                if (w0 == w1 && w1 == w2 && w2 == w0)
+                                                {
+                                                    function = 0x10;
+                                                }
+                                                else
+                                                {
+                                                    function = 0x0f;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                function = 0x09;
+                                            }
+
+                                            var p00 = new Vector3(0, h00 * 256, 1024);
+                                            var p01 = new Vector3(0, h01 * 256, 0);
+                                            var p10 = new Vector3(1024, h10 * 256, 1024);
+                                            var p11 = new Vector3(1024, h11 * 256, 0);
+
+                                            var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
+
+                                            // Choose which triangle to adjust
+                                            if (h00 < Math.Min(h10, h01) && h11 < Math.Min(h10, h01))
+                                            {
+                                                var pl1 = Plane.CreateFromVertices(p01, p00, p10);
+
+                                                float distance1;
+
+                                                // Find the 4th point
+                                                var ray1 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray1, pl1, out distance1);
+                                                distance1 = 32768 - (float)Math.Round(distance1);
+                                                distance1 /= 256;
+
+                                                t2 = (int)(-maxHeight + distance1) & 0x1f;
+
+                                                var pl2 = Plane.CreateFromVertices(p10, p11, p01);
+
+                                                float distance2;
+
+                                                // Find the 4th point
+                                                var ray2 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray2, pl2, out distance2);
+                                                distance2 = 32768 - (float)Math.Round(distance2);
+                                                distance2 /= 256;
+
+                                                t1 = (int)(-maxHeight + distance2) & 0x1f;
+                                            }
+                                            else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
+                                                     h11 < h00)
+                                            {
+                                                var p = Plane.CreateFromVertices(p01, p10, p11);
+
+                                                float distance;
+
+                                                // Find the 4th point
+                                                var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray, p, out distance);
+                                                distance = 32768 - (float)Math.Round(distance);
+                                                distance /= 256;
+
+                                                var maxTriangle = Math.Max(Math.Max(h01, h11), h10);
+
+                                                if (distance <= maxTriangle)
+                                                {
+                                                    t1 = 0;
+                                                    t2 = -maxHeight + maxTriangle & 0x1f;
+                                                }
+                                                else
+                                                {
+                                                    t1 = 0;
+                                                    t2 = (int)(-maxHeight + distance) & 0x1f;
+                                                }
+                                            }
+                                            else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
+                                                     h00 < h11)
+                                            {
+                                                var p = Plane.CreateFromVertices(p01, p00, p10);
+
+                                                float distance;
+
+                                                // Find the 4th point
+                                                var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray, p, out distance);
+                                                distance = 32768 - (float)Math.Round(distance);
+                                                distance /= 256;
+
+                                                var maxTriangle = Math.Max(Math.Max(h01, h00), h10);
+
+                                                if (distance <= maxTriangle)
+                                                {
+                                                    t2 = 0;
+                                                    t1 = -maxHeight + maxTriangle & 0x1f;
+                                                }
+                                                else
+                                                {
+                                                    t2 = 0;
+                                                    t1 = (int)(-maxHeight + distance) & 0x1f;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
+                                            {
+                                                if (w3 == w0 && w0 == w1 && w1 == w3)
+                                                {
+                                                    function = 0x11;
+                                                }
+                                                else
+                                                {
+                                                    function = 0x12;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                function = 0x0a;
+                                            }
+
+                                            var p00 = new Vector3(0, h00 * 256, 1024);
+                                            var p01 = new Vector3(0, h01 * 256, 0);
+                                            var p10 = new Vector3(1024, h10 * 256, 1024);
+                                            var p11 = new Vector3(1024, h11 * 256, 0);
+
+                                            var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
+
+                                            // Choose which triangle to adjust
+                                            if (h01 < Math.Min(h00, h11) && h10 < Math.Min(h00, h11))
+                                            {
+                                                var pl1 = Plane.CreateFromVertices(p11, p00, p10);
+
+                                                float distance1;
+
+                                                // Find the 4th point
+                                                var ray1 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray1, pl1, out distance1);
+                                                distance1 = 32768 - (float)Math.Round(distance1);
+                                                distance1 /= 256;
+
+                                                t2 = (int)(-maxHeight + distance1) & 0x1f;
+
+                                                var pl2 = Plane.CreateFromVertices(p00, p11, p01);
+
+                                                float distance2;
+
+                                                // Find the 4th point
+                                                var ray2 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray2, pl2, out distance2);
+                                                distance2 = 32768 - (float)Math.Round(distance2);
+                                                distance2 /= 256;
+
+                                                t1 = (int)(-maxHeight + distance2) & 0x1f;
+                                            }
+                                            else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
+                                                     h01 < h10)
+                                            {
+                                                var p = Plane.CreateFromVertices(p01, p00, p11);
+
+                                                float distance;
+
+                                                // Find the 4th point
+                                                var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray, p, out distance);
+                                                distance = 32768 - (float)Math.Round(distance);
+                                                distance /= 256;
+
+                                                var maxTriangle = Math.Max(Math.Max(h01, h11), h00);
+
+                                                if (distance <= maxTriangle)
+                                                {
+                                                    t1 = -maxHeight + maxTriangle & 0x1f;
+                                                    t2 = 0;
+                                                }
+                                                else
+                                                {
+                                                    t1 = (int)(-maxHeight + distance) & 0x1f;
+                                                    t2 = 0;
+                                                }
+                                            }
+                                            else if ((h11 == maxHeight || h00 == maxHeight || h01 == maxHeight) &&
+                                                     h10 < h01)
+                                            {
+                                                var p = Plane.CreateFromVertices(p11, p00, p10);
+
+                                                float distance;
+
+                                                // Find the 4th point
+                                                var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
+                                                Collision.RayIntersectsPlane(ray, p, out distance);
+                                                distance = 32768 - (float)Math.Round(distance);
+                                                distance /= 256;
+
+                                                var maxTriangle = Math.Max(Math.Max(h11, h00), h10);
+
+                                                if (distance <= maxTriangle)
+                                                {
+                                                    t1 = 0;
+                                                    t2 = -maxHeight + maxTriangle & 0x1f;
+                                                }
+                                                else
+                                                {
+                                                    t1 = 0;
+                                                    t2 = (int)(-maxHeight + distance) & 0x1f;
+                                                }
+                                            }
+                                        }
+
+                                        // Now build the floordata codes
+                                        ushort code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
+                                        ushort code2 = (ushort)((h11) | (h01 << 4) | (h00 << 8) | (h10 << 12));
+
+                                        tempCodes.Add(code1);
+                                        tempCodes.Add(code2);
+                                    }
+                                }
+                            }
                         }
 
                         // If sector is Climbable
-                        if ((block.Flags & BlockFlags.ClimbAny) != BlockFlags.None)
+                        if (_level.Settings.GameVersion >= GameVersion.TR2 && 
+                            (block.Flags & BlockFlags.ClimbAny) != BlockFlags.None)
                         {
                             ushort climb = 0x06;
 
@@ -1081,21 +1088,24 @@ namespace TombLib.LevelData.Compilers
                         }
 
                         // If sector is Monkey
-                        if ((block.Flags & BlockFlags.Monkey) == BlockFlags.Monkey)
+                        if (_level.Settings.GameVersion >= GameVersion.TR3 &&
+                            (block.Flags & BlockFlags.Monkey) == BlockFlags.Monkey)
                         {
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x13);
                         }
 
                         // If sector is Beetle
-                        if ((block.Flags & BlockFlags.Beetle) == BlockFlags.Beetle)
+                        if (_level.Settings.GameVersion >= GameVersion.TR3 &&
+                            (block.Flags & BlockFlags.Beetle) == BlockFlags.Beetle)
                         {
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x15);
                         }
 
                         // If sector is Trigger triggerer
-                        if ((block.Flags & BlockFlags.TriggerTriggerer) == BlockFlags.TriggerTriggerer)
+                        if (_level.Settings.GameVersion >= GameVersion.TR3 &&
+                            (block.Flags & BlockFlags.TriggerTriggerer) == BlockFlags.TriggerTriggerer)
                         {
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x14);
