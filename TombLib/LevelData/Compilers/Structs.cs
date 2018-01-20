@@ -220,6 +220,89 @@ namespace TombLib.LevelData.Compilers
         public Room BaseRoom;
         public Room OriginalRoom;
 
+        public void WriteTr2(BinaryWriterEx writer)
+        {
+            writer.WriteBlock(Info);
+
+            var offset = writer.BaseStream.Position;
+
+            writer.Write((int)0);
+
+            writer.Write((ushort)Vertices.Count);
+            for (var k = 0; k < Vertices.Count; k++)
+            {
+                writer.Write(Vertices[k].Position.X);
+                writer.Write(Vertices[k].Position.Y);
+                writer.Write(Vertices[k].Position.Z);
+                writer.Write(Vertices[k].Lighting1);
+                writer.Write(Vertices[k].Attributes);
+                writer.Write(Vertices[k].Lighting2);
+            }
+
+            writer.Write((ushort)Quads.Count);
+            for (var k = 0; k < Quads.Count; k++)
+                Quads[k].Write(writer);
+
+            writer.Write((ushort)Triangles.Count);
+            for (var k = 0; k < Triangles.Count; k++)
+                Triangles[k].Write(writer);
+
+            // For sprites, not used
+            writer.Write((ushort)0);
+
+            // Now save current offset and calculate the size of the geometry
+            var offset2 = writer.BaseStream.Position;
+            // ReSharper disable once SuggestVarOrType_BuiltInTypes
+            ushort roomGeometrySize = (ushort)((offset2 - offset - 4) / 2);
+
+            // Save the size of the geometry
+            writer.BaseStream.Seek(offset, SeekOrigin.Begin);
+            writer.Write(roomGeometrySize);
+            writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
+
+            // Write portals
+            writer.WriteBlock((ushort)Portals.Count);
+            if (Portals.Count != 0)
+                writer.WriteBlockArray(Portals);
+
+            // Write sectors
+            writer.Write(NumZSectors);
+            writer.Write(NumXSectors);
+            writer.WriteBlockArray(Sectors);
+
+            // Write room color
+            writer.Write((ushort)AmbientIntensity);
+            writer.Write((ushort)AmbientIntensity);
+
+            // TODO: Light mode
+            writer.Write((ushort)0x00);
+
+            // Write lights
+            writer.WriteBlock((ushort)Lights.Count);
+            if (Lights.Count != 0)
+            {
+                foreach (var light in Lights)
+                {
+                    writer.Write(light.X);
+                    writer.Write(light.Y);
+                    writer.Write(light.Z);
+                    writer.Write((ushort)light.Intensity);
+                    writer.Write((ushort)light.Intensity);
+                    writer.Write((uint)light.Out);
+                    writer.Write((uint)light.Out);
+                }
+            }
+
+            // Write static meshes
+            writer.WriteBlock((ushort)StaticMeshes.Count);
+            if (StaticMeshes.Count != 0)
+                writer.WriteBlockArray(StaticMeshes);
+
+            // Write final data
+            writer.Write(AlternateRoom);
+            writer.Write(Flags);
+        }
+
         public void WriteTr3(BinaryWriterEx writer)
         {
             writer.WriteBlock(Info);

@@ -110,6 +110,7 @@ namespace TombLib.LevelData.Compilers
             {
                 switch (_level.Settings.GameVersion)
                 {
+                    case GameVersion.TR2:
                     case GameVersion.TR3:
                     case GameVersion.TR4:
                         soundMapSize = 370;
@@ -183,6 +184,9 @@ namespace TombLib.LevelData.Compilers
             //Write the final level
             switch (_level.Settings.GameVersion)
             {
+                case GameVersion.TR2:
+                    WriteLevelTr2();
+                    break;
                 case GameVersion.TR3:
                     WriteLevelTr3();
                     break;

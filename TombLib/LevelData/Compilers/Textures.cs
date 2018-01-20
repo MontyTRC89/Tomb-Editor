@@ -126,7 +126,7 @@ namespace TombLib.LevelData.Compilers
                     var packInfo = textureAllocator.GetPackInfo(spriteTextureIDs[oldTexture.Hash]);
                     var newTexture = new tr_sprite_texture();
 
-                    if (_level.Settings.GameVersion == GameVersion.TR3)
+                    if (_level.Settings.GameVersion <= GameVersion.TR3)
                     {
                         newTexture.X = (byte)packInfo.Pos.X;
                         newTexture.Y = (byte)packInfo.Pos.Y;

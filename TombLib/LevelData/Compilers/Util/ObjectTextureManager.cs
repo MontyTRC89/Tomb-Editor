@@ -632,7 +632,8 @@ namespace TombLib.LevelData.Compilers.Util
                 SavedObjectTexture objectTexture = _objectTextures[i];
                 TextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
                 ushort Tile = UsedTexturePackInfo.OutputTextureID;
-                Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
+                if (level.Settings.GameVersion >= GameVersion.TR3)
+                    Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
 
                 stream.Write((ushort)objectTexture.BlendMode);
                 stream.Write((ushort)Tile);
@@ -669,8 +670,7 @@ namespace TombLib.LevelData.Compilers.Util
                     stream.Write((ushort)objectTexture.TexCoord3Y);
                 }
 
-                if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG ||
-                    level.Settings.GameVersion == GameVersion.TR5)
+                if (level.Settings.GameVersion >= GameVersion.TR4)
                 {
                     stream.Write((uint)0);
                     stream.Write((uint)0);
