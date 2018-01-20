@@ -215,7 +215,7 @@ namespace TombLib.LevelData.Compilers
                     soundInfo.Pitch = wadInfo.Pitch;
                     soundInfo.Chance = wadInfo.Chance;
 
-                    ushort characteristics = (ushort)(wadInfo.Samples.Count << 2);
+                    ushort characteristics = (ushort)(/*wadInfo.Samples.Count */ 1 << 2);
                     if (wadInfo.FlagN)
                         characteristics |= 0x1000;
                     if (wadInfo.RandomizePitch)
@@ -236,7 +236,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(numSampleIndices);
                 int filler3 = 0;
                 for (int i = 0; i < numSampleIndices; i++)
-                    writer.Write(filler3);
+                    writer.Write(/*filler3*/ i);
 
                 writer.Flush();
             }

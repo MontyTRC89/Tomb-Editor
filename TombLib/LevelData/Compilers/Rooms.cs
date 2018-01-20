@@ -74,7 +74,9 @@ namespace TombLib.LevelData.Compilers
             };
 
             // Store ambient intensity
-            if (_level.Settings.GameVersion == GameVersion.TR3)
+            if (_level.Settings.GameVersion == GameVersion.TR2)
+                newRoom.AmbientIntensity = 0xFFF; // TODO: correct ambient light
+            else if (_level.Settings.GameVersion == GameVersion.TR3)
                 newRoom.AmbientIntensity = PackColorTo16Bit(room.AmbientLight);
             else
                 newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | (uint)roomAmbientColor.Blue;

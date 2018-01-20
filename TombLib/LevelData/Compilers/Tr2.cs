@@ -56,7 +56,7 @@ namespace TombLib.LevelData.Compilers
                 long offset2;
                 foreach (var r in _level.Rooms.Where(r => r != null))
                 {
-                    _tempRooms[r].WriteTr3(writer);
+                    _tempRooms[r].WriteTr2(writer);
                 }
 
                 // Write floordata
@@ -115,15 +115,10 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((uint)_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);
 
-                // Sprites
-                // TODO: Wad2 should contain all sprites
-                /*
-                using (var readerSprites = new BinaryReader(new FileStream("sprites3.bin", FileMode.Open, FileAccess.Read, FileShare.Read)))
-                {
-                    var bufferSprites = readerSprites.ReadBytes((int)readerSprites.BaseStream.Length);
-                    writer.Write(bufferSprites);
-                }*/
+                // Write object textures
+                _objectTextureManager.WriteObjectTextures(writer, _level);
 
+                // Sprites
                 writer.Write((uint)_spriteTextures.Count);
                 writer.WriteBlockArray(_spriteTextures);
 
@@ -167,10 +162,7 @@ namespace TombLib.LevelData.Compilers
 
                 // Write animated textures
                 _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
-
-                // Write object textures
-                _objectTextureManager.WriteObjectTextures(writer, _level);
-
+                                
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
                 writer.WriteBlockArray(_items);
@@ -211,11 +203,9 @@ namespace TombLib.LevelData.Compilers
 
                     soundInfo.Sample = lastSample;
                     soundInfo.Volume = wadInfo.Volume;
-                    soundInfo.Range = wadInfo.Range;
-                    soundInfo.Pitch = wadInfo.Pitch;
                     soundInfo.Chance = wadInfo.Chance;
 
-                    ushort characteristics = (ushort)(wadInfo.Samples.Count << 2);
+                    ushort characteristics = (ushort)(/*wadInfo.Samples.Count */ 1 << 2);
                     if (wadInfo.FlagN)
                         characteristics |= 0x1000;
                     if (wadInfo.RandomizePitch)
@@ -226,7 +216,10 @@ namespace TombLib.LevelData.Compilers
 
                     soundInfo.Characteristics = characteristics;
 
-                    writer.WriteBlock<tr_sound_details>(soundInfo);
+                    writer.Write(soundInfo.Sample);
+                    writer.Write((short)soundInfo.Volume);
+                    writer.Write((short)soundInfo.Chance);
+                    writer.Write(soundInfo.Characteristics);
 
                     lastSample += (short)wadInfo.Samples.Count;
                 }
@@ -236,7 +229,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(numSampleIndices);
                 int filler3 = 0;
                 for (int i = 0; i < numSampleIndices; i++)
-                    writer.Write(filler3);
+                    writer.Write(/*filler3*/ i);
 
                 writer.Flush();
             }
