@@ -12,7 +12,7 @@ namespace TombLib.LevelData.Compilers
 {
     public partial class LevelCompilerClassicTR
     {
-        private void WriteLevelTr3()
+        private void WriteLevelTr2()
         {
             // Now begin to compile the geometry block in a MemoryStream
             // Now begin to compile the geometry block in a MemoryStream
@@ -21,7 +21,7 @@ namespace TombLib.LevelData.Compilers
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
                 // Write version
-                writer.WriteBlockArray(new byte[] { 0x38, 0x00, 0x18, 0xFF });
+                writer.WriteBlockArray(new byte[] { 0x2D, 0x00, 0x00, 0x00 });
 
                 /*using (var readerPalette = new BinaryReader(new FileStream("Editor\\Misc\\Palette.Tr3.bin", FileMode.Open, FileAccess.Write, FileShare.None)))
                 {
@@ -33,7 +33,7 @@ namespace TombLib.LevelData.Compilers
                 // TODO: for now I write fake palette, they should be needed only for 8 bit textures
                 for (var i = 0; i < 768; i++) writer.Write((byte)0x00);
                 for (var i = 0; i < 1024; i++) writer.Write((byte)0x00);
-                
+
                 // Write textures
                 int numTextureTiles = _texture32Data.GetLength(0) / (256 * 256 * 4);
                 writer.Write(numTextureTiles);
@@ -129,7 +129,7 @@ namespace TombLib.LevelData.Compilers
 
                 writer.Write((uint)_spriteSequences.Count);
                 writer.WriteBlockArray(_spriteSequences);
-                
+
                 // Write camera, sound sources
                 writer.Write((uint)_cameras.Count);
                 writer.WriteBlockArray(_cameras);
@@ -170,7 +170,7 @@ namespace TombLib.LevelData.Compilers
 
                 // Write object textures
                 _objectTextureManager.WriteObjectTextures(writer, _level);
-                
+
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
                 writer.WriteBlockArray(_items);

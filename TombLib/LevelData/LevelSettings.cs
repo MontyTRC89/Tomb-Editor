@@ -50,7 +50,7 @@ namespace TombLib.LevelData
     public enum GameVersion : long
     {
         //TR1 = 1,
-        //TR2 = 2,
+        TR2 = 2,
         TR3 = 3,
         TR4 = 4,
         TR5 = 5,
