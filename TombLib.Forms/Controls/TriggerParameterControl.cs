@@ -158,6 +158,10 @@ namespace TombLib.Controls
                         label.Text = "";
                         combo.Visible = false;
                         numericUpDown.Visible = true;
+                        if (_parameter != null)
+                            numericUpDown.Value = (_parameter as TriggerParameterUshort).Key;
+                        else
+                            Parameter = new TriggerParameterUshort(0);
                         label.Visible = Parameter == null;
                         colorPreview.Visible = false;
                     }
