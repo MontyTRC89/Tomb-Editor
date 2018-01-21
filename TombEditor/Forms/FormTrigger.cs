@@ -48,6 +48,8 @@ namespace TombEditor
             MaximumSize = new Size(32000, Size.Height);
             MinimumSize = new Size(347 + (Size.Height - ClientSize.Height), Size.Height);
 
+            UpdateDialog();
+
             // Set values
             cbBit1.Checked = (_trigger.CodeBits & (1 << 0)) != 0;
             cbBit2.Checked = (_trigger.CodeBits & (1 << 1)) != 0;
@@ -68,8 +70,8 @@ namespace TombEditor
 
         public void UpdateDialog()
         {
-            if (_loading)
-                return;
+            /*if (_loading)
+                return;*/
             paramTriggerType.ParameterRange = NgParameterInfo.GetTriggerTypeRange(_level.Settings).ToParameterRange();
             paramTargetType.ParameterRange = NgParameterInfo.GetTargetTypeRange(_level.Settings, TriggerType).ToParameterRange();
             paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, TriggerType, TargetType, paramTimer.Parameter);
