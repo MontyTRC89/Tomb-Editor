@@ -15,6 +15,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,6 +112,7 @@
             this.textureMapBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.soundManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.levelSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wadToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -147,7 +149,8 @@
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.wadToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusAutosave = new System.Windows.Forms.ToolStripStatusLabel();
+            this.timerAutosave = new System.Windows.Forms.Timer(this.components);
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1234,6 +1237,15 @@
             this.levelSettingsToolStripMenuItem.Text = "Level settings";
             this.levelSettingsToolStripMenuItem.Click += new System.EventHandler(this.levelSettingsToolStripMenuItem_Click);
             // 
+            // wadToolToolStripMenuItem
+            // 
+            this.wadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.wadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.wadToolToolStripMenuItem.Name = "wadToolToolStripMenuItem";
+            this.wadToolToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.wadToolToolStripMenuItem.Text = "Wad Tool";
+            this.wadToolToolStripMenuItem.Click += new System.EventHandler(this.wadToolToolStripMenuItem_Click);
+            // 
             // debugToolStripMenuItem
             // 
             this.debugToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -1507,6 +1519,7 @@
             this.statusStripSelectedRoom,
             this.statusStripGlobalSelectionArea,
             this.statusStripLocalSelectionArea,
+            this.statusAutosave,
             this.statusLastCompilation});
             this.statusStrip.Location = new System.Drawing.Point(0, 440);
             this.statusStrip.Name = "statusStrip";
@@ -1572,14 +1585,16 @@
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
             // 
-            // wadToolToolStripMenuItem
+            // statusAutosave
             // 
-            this.wadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.wadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.wadToolToolStripMenuItem.Name = "wadToolToolStripMenuItem";
-            this.wadToolToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.wadToolToolStripMenuItem.Text = "Wad Tool";
-            this.wadToolToolStripMenuItem.Click += new System.EventHandler(this.wadToolToolStripMenuItem_Click);
+            this.statusAutosave.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
+            this.statusAutosave.Name = "statusAutosave";
+            this.statusAutosave.Size = new System.Drawing.Size(0, 16);
+            // 
+            // timerAutosave
+            // 
+            this.timerAutosave.Interval = 300000;
+            this.timerAutosave.Tick += new System.EventHandler(this.timerAutosave_Tick);
             // 
             // FormMain
             // 
@@ -1740,5 +1755,7 @@
         private System.Windows.Forms.ToolStripMenuItem applyCurrentAmbientLightToAllRoomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importRoomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wadToolToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel statusAutosave;
+        private System.Windows.Forms.Timer timerAutosave;
     }
 }
