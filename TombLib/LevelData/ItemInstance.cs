@@ -12,6 +12,16 @@ namespace TombLib.LevelData
         // can change. It would be unnecesary difficult to update all this references.
         public uint WadObjectId { get; set; }
 
+        public WadTombRaiderVersion WadVersion
+        {
+            get
+            {
+                return (Room != null && Room.Level != null && Room.Level.Wad != null ?
+                        Room.Level.Wad.Version :
+                        WadTombRaiderVersion.TR4);
+            }
+        }
+
         private float _rotation;
         /// <summary> Rotation in radians in the interval [0, 360). The value is range reduced. </summary>
         public float RotationY
@@ -33,10 +43,10 @@ namespace TombLib.LevelData
         public override string ToString()
         {
             return ItemType.ToString() +
-                ", Room = " + (Room?.ToString() ?? "NULL") +
-                ", X = " + SectorPosition.X +
-                ", Y = " + SectorPosition.Y +
-                ", Z = " + SectorPosition.Z;
+                   ", Room = " + (Room?.ToString() ?? "NULL") +
+                   ", X = " + SectorPosition.X +
+                   ", Y = " + SectorPosition.Y +
+                   ", Z = " + SectorPosition.Z;
         }
 
         public static ItemInstance FromItemType(ItemType item)

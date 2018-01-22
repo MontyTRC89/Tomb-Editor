@@ -421,7 +421,6 @@ namespace TombEditor.Controls
                     break;
                 case MouseButtons.Right:
                     var distance = new Vector2(_startMousePosition.X, _startMousePosition.Y) - new Vector2(e.Location.X, e.Location.Y);
-                    // EXPERIMENTAL: show context menus here
                     if (distance.Length() < 4.0f)
                     {
                         _currentContextMenu?.Dispose();

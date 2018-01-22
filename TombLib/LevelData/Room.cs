@@ -61,6 +61,8 @@ namespace TombLib.LevelData
         public Reverberation Reverberation { get; set; }
         public bool Locked { get; set; }
 
+        public Level Level { get; set; }
+
         // Internal data structures
         private Buffer<EditorVertex> _vertexBuffer;
         private List<EditorVertex>[,] _sectorVertices;
@@ -74,15 +76,16 @@ namespace TombLib.LevelData
         private List<EditorVertex> _allVertices = new List<EditorVertex>();
         private List<int>[,,] _sectorFaceIndices;
 
-        public Room(int numXSectors, int numZSectors, Vector4 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
+        public Room(Level level, int numXSectors, int numZSectors, Vector4 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
         {
             Name = name;
+            Level = level;
             AmbientLight = ambientLight;
             Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
         }
 
-        public Room(VectorInt2 sectorSize, Vector4 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
-            : this(sectorSize.X, sectorSize.Y, ambientLight, name, ceiling)
+        public Room(Level level, VectorInt2 sectorSize, Vector4 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
+            : this(level, sectorSize.X, sectorSize.Y, ambientLight, name, ceiling)
         {}
 
         public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight)

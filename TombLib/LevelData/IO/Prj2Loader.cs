@@ -328,7 +328,7 @@ namespace TombLib.LevelData.IO
                     return false;
 
                 // Read room
-                Room room = new Room(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), Vector4.One);
+                Room room = new Room(level, LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), Vector4.One);
                 long roomIndex = long.MinValue;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
