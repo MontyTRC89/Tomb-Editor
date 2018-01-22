@@ -428,15 +428,15 @@ namespace NgXmlBuilder
                             NgCatalog.ConditionTrigger.MainList[block.Id].Timer = GetList(block);
                         else if (block.ParameterType == NgParameterType.Extra)
                             NgCatalog.ConditionTrigger.MainList[block.Id].Extra = GetList(block);
-                        /*else if (block.ParameterType == NgParameterType.Button)
-                            NgCatalog.ConditionTrigger.MainList[block.Id].ButtonList = GetList(block);
-                        */
                     }
                 }
             }
 
+            // Override some information...
             NgCatalog.FlipEffectTrigger.MainList[28].Timer =
                 GetList(new NgBlock { Items = new List<string> { "#COLORS" } });
+            NgCatalog.FlipEffectTrigger.MainList[30].Timer = new NgParameterRange(NgParameterKind.AnyNumber);
+            NgCatalog.FlipEffectTrigger.MainList[45].Timer = new NgParameterRange(NgParameterKind.AnyNumber);
         }
 
         private static void SaveToXml(string path)

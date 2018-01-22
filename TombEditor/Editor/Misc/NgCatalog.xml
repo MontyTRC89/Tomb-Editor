@@ -1109,10 +1109,18 @@
         </FixedEnumeration>
       </Timer>
     </Subtrigger>
-    <Subtrigger K="30" V="OldFlip. (?) Force Von Croy to reach &lt;&amp;&gt;AI_FOLLOW OCB when ???" />
+    <Subtrigger K="30" V="OldFlip. (?) Force Von Croy to reach &lt;&amp;&gt;AI_FOLLOW OCB when ???">
+      <Timer>
+        <AnyNumber />
+      </Timer>
+    </Subtrigger>
     <Subtrigger K="31" V="OldFlip. Kills any swarming scarab beetles that are currently active." />
     <Subtrigger K="44" V="OldFlip. Free left hand of Lara." />
-    <Subtrigger K="45" V="OldFlip. Start screen timer and force Von Croy to reach &lt;&amp;&gt;AI_FOLLOW OCB number" />
+    <Subtrigger K="45" V="OldFlip. Start screen timer and force Von Croy to reach &lt;&amp;&gt;AI_FOLLOW OCB number">
+      <Timer>
+        <AnyNumber />
+      </Timer>
+    </Subtrigger>
     <Subtrigger K="46" V="OldFlip. Kill all enemies. They disappear, no dying animation." />
     <Subtrigger K="47" V="Inventory-Item. Remove &lt;&amp;&gt;inventory-item from inventory">
       <Timer>
