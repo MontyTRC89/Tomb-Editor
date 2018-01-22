@@ -81,6 +81,8 @@ namespace TombEditor
             // Retrieve clipboard change notifications
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
+
+            timerAutosave.Start();
         }
 
         protected override void Dispose(bool disposing)
@@ -172,6 +174,13 @@ namespace TombEditor
             {
                 var evt = obj as Editor.LevelCompilationCompletedEvent;
                 statusLastCompilation.Text = "Last level output { " + evt.InfoString + " }";
+            }
+
+            // Update autosave status
+            if (obj is Editor.AutosaveEvent)
+            {
+                var evt = obj as Editor.AutosaveEvent;
+                statusAutosave.Text = (evt.Result ? "Autosave OK: " + evt.FileName : "Autosave failed!");
             }
 
             // Update room information on the status strip
@@ -1315,6 +1324,12 @@ namespace TombEditor
                                         MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void timerAutosave_Tick(object sender, EventArgs e)
+        {
+            if (_editor != null && _editor.Level != null)
+                EditorActions.AutoSaveLevel();
         }
     }
 }

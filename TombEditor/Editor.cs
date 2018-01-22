@@ -327,6 +327,7 @@ namespace TombEditor
             public bool Previous { get; internal set; }
             public bool Current { get; internal set; }
         }
+
         private bool _hasUnsavedChanges;
         public bool HasUnsavedChanges
         {
@@ -370,6 +371,17 @@ namespace TombEditor
         public void AnimatedTexturesChange()
         {
             RaiseEvent(new AnimatedTexturesChanged { });
+        }
+
+        // This is invoke after an autosave
+        public class AutosaveEvent : IEditorEvent
+        {
+            public string FileName { get; internal set; }
+            public bool Result { get; internal set; }
+        }
+        public void AutoSaveCompleted(bool result, string fileName)
+        {
+            RaiseEvent(new AutosaveEvent { Result = result, FileName = fileName });
         }
 
         // This is invoked when ever the applied textures in a room change.

@@ -1919,6 +1919,61 @@ namespace TombEditor
             _editor.RoomSectorPropertiesChange(destination);
         }
 
+        public static void AutoSaveLevel()
+        {
+            if (_editor.Level == null) return;
+
+            try
+            {
+                var path = Path.GetDirectoryName(Application.ExecutablePath);
+                var fileNameBase = "Level";
+
+                if (_editor.Level.Settings.LevelFilePath != null)
+                {
+                    path = Path.GetDirectoryName(_editor.Level.Settings.LevelFilePath);
+                    fileNameBase = Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath);
+                }
+
+                // Get all compatible projects
+                var directory = new DirectoryInfo(path);
+                var filesOrdered = directory.EnumerateDirectories("*." + fileNameBase + ".prj2")
+                                            .OrderBy(d => d.CreationTime)
+                                            .Select(d => d.Name)
+                                            .ToList();
+
+                var maxProjects = 10;
+
+                // Clean a bit the directory
+                if (filesOrdered.Count >= maxProjects)
+                {
+                    // Delete some of the backups
+                    int numFilesToDelete = filesOrdered.Count - maxProjects + 1;
+
+                    // Delete backups
+                    for (var i = 0; i < numFilesToDelete; i++)
+                        File.Delete(path + "\\" + filesOrdered[i]);
+                }
+
+                // Create the new filename
+                var fileName = path + "\\" +
+                               DateTime.Now.Year + "_" + DateTime.Now.Month + "_" + DateTime.Now.Day + "_" +
+                               DateTime.Now.Hour + "_" + DateTime.Now.Minute + "." + fileNameBase + ".prj2";
+
+                // Eventually delete the file if it exists
+                if (File.Exists(fileName))
+                    File.Delete(fileName);
+
+                // Save the level
+                Prj2Writer.SaveToPrj2(fileName, _editor.Level);
+
+                _editor.AutoSaveCompleted(true, fileName);
+            }
+            catch (Exception ex)
+            {
+                _editor.AutoSaveCompleted(false, "");
+            }
+        }
+
         public static void AlternateRoomEnable(Room room, short AlternateGroup)
         {
             // Create new room
