@@ -56,6 +56,7 @@ namespace TombEditor
             this.paramExtra = new TombLib.Controls.TriggerParameterControl();
             this.paramTimer = new TombLib.Controls.TriggerParameterControl();
             this.paramTarget = new TombLib.Controls.TriggerParameterControl();
+            this.cbRawMode = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.scriptExportPanel.SuspendLayout();
             this.SuspendLayout();
@@ -306,6 +307,17 @@ namespace TombEditor
             this.paramTarget.TabIndex = 3;
             this.paramTarget.ParameterChanged += new System.EventHandler(this.paramTarget_ParameterChanged);
             // 
+            // cbRawMode
+            // 
+            this.cbRawMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbRawMode.AutoSize = true;
+            this.cbRawMode.Location = new System.Drawing.Point(420, 175);
+            this.cbRawMode.Name = "cbRawMode";
+            this.cbRawMode.Size = new System.Drawing.Size(211, 17);
+            this.cbRawMode.TabIndex = 13;
+            this.cbRawMode.Text = "Raw Mode (Displays numeric values)";
+            this.cbRawMode.CheckedChanged += new System.EventHandler(this.cbRawMode_CheckedChanged);
+            // 
             // FormTrigger
             // 
             this.AcceptButton = this.butOK;
@@ -321,6 +333,7 @@ namespace TombEditor
             this.Controls.Add(this.paramTarget);
             this.Controls.Add(this.labelExtra);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.cbRawMode);
             this.Controls.Add(this.cbOneShot);
             this.Controls.Add(this.cbBit4);
             this.Controls.Add(this.cbBit3);
@@ -375,5 +388,6 @@ namespace TombEditor
         private Panel scriptExportPanel;
         private TombLib.Controls.TriggerParameterControl paramTargetType;
         private TombLib.Controls.TriggerParameterControl paramTriggerType;
+        private DarkCheckBox cbRawMode;
     }
 }

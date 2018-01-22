@@ -218,5 +218,11 @@ namespace TombEditor
                 UpdateExportToTrigger();
             }
         }
+
+        private void cbRawMode_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach (var control in Controls.OfType<TriggerParameterControl>())
+                control.RawMode = cbRawMode.Checked;
+        }
     }
 }

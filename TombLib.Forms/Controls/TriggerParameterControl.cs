@@ -45,6 +45,21 @@ namespace TombLib.Controls
             }
         }
 
+        private bool _rawMode = false;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [ReadOnly(true)]
+        public bool RawMode
+        {
+            get { return _rawMode; }
+            set
+            {
+                if (_rawMode == value)
+                    return;
+                _rawMode = value;
+                UpdateVisibleControls(true);
+            }
+        }
+
         private NgParameterRange _parameterRange = new NgParameterRange();
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
@@ -152,7 +167,7 @@ namespace TombLib.Controls
                         label.Visible = true;
                         colorPreview.Visible = false;
                     }
-                    else if (listOfThings == null)
+                    else if (listOfThings == null || (_rawMode && !ParameterRange.IsObject && !ParameterRange.IsRoom))
                     {
                         label.BackColor = numericUpDown.BackColor;
                         label.Text = "";
