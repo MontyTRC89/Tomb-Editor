@@ -31,7 +31,7 @@ namespace TombLib.LevelData
 
             Level result = new Level();
             if (result.Rooms[0] == null)
-                result.Rooms[0] = new Room(Room.MaxRoomDimensions, Room.MaxRoomDimensions, result.Settings.DefaultAmbientLight, "Room 0");
+                result.Rooms[0] = new Room(result, Room.MaxRoomDimensions, Room.MaxRoomDimensions, result.Settings.DefaultAmbientLight, "Room 0");
             return result;
         }
 
@@ -216,6 +216,8 @@ namespace TombLib.LevelData
                 room.CopyDependentLevelSettings(copyInstance);
             applyLevelSettings?.Invoke(newSettings);
             GlobalScriptingIdsTable.MergeFrom(otherLevel.GlobalScriptingIdsTable, @object => @object.ScriptId = null);
+            foreach (Room room in otherRooms)
+                room.Level = this;
         }
 
         public IReadOnlyList<Room> TransformRooms(IEnumerable<Room> roomsToRotate, RectTransformation transformation, VectorInt2 center)

@@ -21,6 +21,6 @@ namespace TombLib.LevelData
     public class StaticInstance : ItemInstance
     {
         public ushort Ocb { get; set; } = 0;
-        public override ItemType ItemType => new ItemType(true, WadObjectId, Wad.WadTombRaiderVersion.TR4);
+        public override ItemType ItemType => new ItemType(true, WadObjectId, WadVersion);
     }
 }

@@ -145,11 +145,11 @@
             this.statusStripSelectedRoom = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStripGlobalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStripLocalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusAutosave = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.statusAutosave = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerAutosave = new System.Windows.Forms.Timer(this.components);
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -1552,6 +1552,12 @@
             this.statusStripLocalSelectionArea.Size = new System.Drawing.Size(0, 16);
             this.statusStripLocalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // statusAutosave
+            // 
+            this.statusAutosave.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
+            this.statusAutosave.Name = "statusAutosave";
+            this.statusAutosave.Size = new System.Drawing.Size(0, 16);
+            // 
             // statusLastCompilation
             // 
             this.statusLastCompilation.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
@@ -1584,12 +1590,6 @@
             this.panelDockArea.Name = "panelDockArea";
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
-            // 
-            // statusAutosave
-            // 
-            this.statusAutosave.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
-            this.statusAutosave.Name = "statusAutosave";
-            this.statusAutosave.Size = new System.Drawing.Size(0, 16);
             // 
             // timerAutosave
             // 

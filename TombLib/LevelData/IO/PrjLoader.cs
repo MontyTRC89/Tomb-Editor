@@ -160,7 +160,7 @@ namespace TombLib.LevelData.IO
                         reader.ReadBytes(2);
 
                         // Create room
-                        var room = new Room(numXBlocks, numZBlocks, Vector4.One, roomName);
+                        var room = new Room(level, numXBlocks, numZBlocks, Vector4.One, roomName);
                         room.Position = new VectorInt3(posXBlocks, yPos / -256, posZBlocks);
                         var tempRoom = new PrjRoom();
 
