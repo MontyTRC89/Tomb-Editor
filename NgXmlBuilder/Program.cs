@@ -143,10 +143,24 @@ namespace NgXmlBuilder
 
         static readonly char[] numberChars = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '+', '-' };
 
-        private struct Parsed
+        private struct ParsedSubstring
         {
             public string String;
             public decimal? Value;
+        }
+        private struct Parsed : IComparable<Parsed>
+        {
+            public List<ParsedSubstring> Substrings;
+            public TriggerParameterUshort Original;
+
+            public int CompareTo(Parsed other)
+            {
+                if (Original.Key < other.Original.Key)
+                    return -1;
+                if (Original.Key > other.Original.Key)
+                    return 1;
+                return 0;
+            }
         }
 
         private static bool IsSeperator(char @char, bool start)
@@ -162,10 +176,10 @@ namespace NgXmlBuilder
             return false;
         }
 
-        private static List<Parsed> SplitIntoNumbers(string str, int startPos = 0)
+        private static List<ParsedSubstring> SplitIntoNumbers(string str, int startPos = 0)
         {
             str = str.Trim();
-            List<Parsed> list = new List<Parsed>();
+            List<ParsedSubstring> list = new List<ParsedSubstring>();
             while (startPos < str.Length)
             {
                 int nextStart = str.IndexOfAny(numberChars, startPos);
@@ -207,73 +221,94 @@ namespace NgXmlBuilder
 
                 // Add parsed values
                 if (!string.IsNullOrEmpty(preStr))
-                    list.Add(new Parsed { String = preStr });
-                list.Add(new Parsed { String = numberSubstring, Value = number });
+                    list.Add(new ParsedSubstring { String = preStr });
+                list.Add(new ParsedSubstring { String = numberSubstring, Value = number });
                 str = postStr;
                 startPos = 0;
             }
 
             if (!string.IsNullOrEmpty(str))
-                list.Add(new Parsed { String = str });
+                list.Add(new ParsedSubstring { String = str });
             return list;
         }
 
-        private static NgParameterRange DetectLinearity(NgParameterRange parameter, NgBlock dbgBlock)
+        private static void AddFixed(List<NgParameterRange> choice, IEnumerable<TriggerParameterUshort> enumsToAdd)
         {
-            // TODO Add support for detecting choice patterns too!
+            if (enumsToAdd.Count() == 0)
+                return;
+            for (int i = 0; i < choice.Count; ++i)
+                if (choice[i].Kind == NgParameterKind.FixedEnumeration)
+                {
+                    choice[i] = new NgParameterRange(choice[i].FixedEnumeration.Values.Concat(enumsToAdd).ToDictionary(e => e.Key));
+                    return;
+                }
+            choice.Add(new NgParameterRange(enumsToAdd.ToDictionary(e => e.Key)));
+        }
 
-            if (parameter.Kind != NgParameterKind.FixedEnumeration)
-                return parameter;
-            if (parameter.FixedEnumeration.Count <= 5) // It's not worth it if there are at most 5 elements
-                return parameter;
-
-            // Parse the numbers inside the strings.
-            // Stop if there is a varying amount of numbers in the strings or if different values are fixed.
-            var firstParsedStr = SplitIntoNumbers(parameter.FixedEnumeration.First().Value.Name);
-            var parsedStrs = new List<KeyValuePair<ushort, List<Parsed>>>(parameter.FixedEnumeration.Count);
-            foreach (var entry in parameter.FixedEnumeration)
+        private static bool DetectLinearity(List<NgParameterRange> outChoice, List<Parsed> unmappedEnumsSorted, NgBlock dbgBlock)
+        {
+            if (unmappedEnumsSorted.Count <= 5) // It's not worth it if there are at most 5 elements
             {
-                var currentParsedStr = SplitIntoNumbers(entry.Value.Name);
-                if (currentParsedStr.Count != firstParsedStr.Count)
-                    return parameter;
-                for (int i = 0; i < currentParsedStr.Count; ++i)
-                    if ((currentParsedStr[i].Value != null) != (firstParsedStr[i].Value != null))
-                        return parameter;
-                for (int i = 0; i < currentParsedStr.Count; ++i)
-                    if (currentParsedStr[i].Value == null)
-                        if (currentParsedStr[i].String != firstParsedStr[i].String)
-                            return parameter;
-                parsedStrs.Add(new KeyValuePair<ushort, List<Parsed>>(entry.Key, currentParsedStr));
+                AddFixed(outChoice, unmappedEnumsSorted.Select(p => p.Original));
+                unmappedEnumsSorted.Clear();
+                return false;
             }
 
-            // Check if there exists a linear run
-            // There can't be missing keys.
-            ushort idStart = parsedStrs.OrderBy(e => e.Key).First().Key;
-            ushort idEnd = parsedStrs.OrderByDescending(e => e.Key).First().Key;
-            var idLookup = new HashSet<ushort>(parsedStrs.Select(e => e.Key));
-            for (ushort i = idStart; i < idEnd; ++i)
-                if (!idLookup.Contains(i))
-                {
-                    Console.WriteLine("Linear holes found. Should be rare with NG trigger definitions.");
-                    return parameter;
-                }
+            Parsed firstEnum = unmappedEnumsSorted.First();
+            ushort idStart = firstEnum.Original.Key;
+            int count = 1;
+
+            // Stop if there is a varying amount of numbers in the strings or if different values are fixed.
+            for (int i = 1; i < unmappedEnumsSorted.Count; ++i)
+            {
+                Parsed entry = unmappedEnumsSorted[i];
+
+                // Don't compress certain strings
+                if (entry.Original.Name.StartsWith("PUZZLE_ITEM", StringComparison.InvariantCulture) ||
+                    entry.Original.Name.StartsWith("KEY_ITEM", StringComparison.InvariantCulture) ||
+                    entry.Original.Name.StartsWith("Send command for ", StringComparison.InvariantCulture) ||
+                    (entry.Original.Name.Length == 2 && entry.Original.Name.StartsWith("F", StringComparison.InvariantCulture)) || // F keys
+                    (entry.Original.Name.Length == 7 && entry.Original.Name.StartsWith("Number", StringComparison.InvariantCulture))) // Number keys
+                    break;
+
+                if (entry.Substrings.Count != firstEnum.Substrings.Count)
+                    break;
+                for (int j = 0; j < entry.Substrings.Count; ++j)
+                    if ((entry.Substrings[j].Value != null) != (firstEnum.Substrings[j].Value != null))
+                        goto ExitLoop0;
+                for (int j = 0; j < entry.Substrings.Count; ++j)
+                    if (entry.Substrings[j].Value == null)
+                        if (entry.Substrings[j].String != firstEnum.Substrings[j].String)
+                            goto ExitLoop0;
+
+                // Check if the run is linear
+                // There can't be missing keys.
+                if ((idStart + count) != entry.Original.Key)
+                    break;
+                ++count;
+            }
+            ExitLoop0:;
+            if (count <= 5) // It's not worth it if there are at most 5 elements
+            {
+                AddFixed(outChoice, unmappedEnumsSorted.Take(count).Select(p => p.Original));
+                unmappedEnumsSorted.RemoveRange(0, count);
+                return true;
+            }
 
             // String format now is perfectly fine.
-            // We just have to propose some kind of linear pattern
-            ushort firstId = parameter.FixedEnumeration.First().Key;
-            ushort secondId = parameter.FixedEnumeration.ElementAt(1).Key;
-            var secondParsedStr = parsedStrs[1].Value;
-            List<NgLinearParameter> linearParameters = new List<NgLinearParameter>(firstParsedStr.Count);
-            for (int i = 0; i < firstParsedStr.Count; ++i)
-                if (firstParsedStr[i].Value == null)
-                    linearParameters.Add(new NgLinearParameter { FixedStr = firstParsedStr[i].String });
+            // We just have to find some kind of linear pattern
+            Parsed secondEnum = unmappedEnumsSorted[1];
+            List<NgLinearParameter> linearParameters = new List<NgLinearParameter>(firstEnum.Substrings.Count);
+            for (int i = 0; i < firstEnum.Substrings.Count; ++i)
+                if (firstEnum.Substrings[i].Value == null)
+                    linearParameters.Add(new NgLinearParameter { FixedStr = firstEnum.Substrings[i].String });
                 else
                 {
 
-                    decimal xDistance = secondId - firstId;
-                    decimal yDistance = secondParsedStr[i].Value.Value - firstParsedStr[i].Value.Value;
+                    decimal xDistance = secondEnum.Original.Key - firstEnum.Original.Key;
+                    decimal yDistance = secondEnum.Substrings[i].Value.Value - firstEnum.Substrings[i].Value.Value;
                     decimal factor = yDistance / xDistance;
-                    decimal add = firstParsedStr[i].Value.Value - firstId * factor;
+                    decimal add = firstEnum.Substrings[i].Value.Value - firstEnum.Original.Key * factor;
                     linearParameters.Add(new NgLinearParameter { Factor = factor, Add = add });
                 }
 
@@ -282,38 +317,67 @@ namespace NgXmlBuilder
             for (int i = 0; i < linearParameters.Count; ++i)
                 if (linearParameters[i].FixedStr != null)
                     if (linearParameters[i].Factor == 0)
-                        linearParameters[i] = new NgLinearParameter { FixedStr = firstParsedStr[i].String };
+                        linearParameters[i] = new NgLinearParameter { FixedStr = firstEnum.Substrings[i].String };
             for (int i = linearParameters.Count - 1; i >= 1; --i)
                 if ((linearParameters[i].FixedStr != null) && (linearParameters[i - 1].FixedStr != null))
                 {
                     linearParameters[i - 1] = new NgLinearParameter { FixedStr = linearParameters[i - 1].FixedStr + linearParameters[i].FixedStr };
                     linearParameters.RemoveAt(i);
-                    for (int j = 0; j < parsedStrs.Count; ++j)
-                        parsedStrs[j].Value.RemoveAt(i);
+                    for (int j = 0; j < count; ++j)
+                        unmappedEnumsSorted[j].Substrings.RemoveAt(i);
                 }
 
             // Check that the linear pattern is indeed a good fit
-            foreach (var parsedStr in parsedStrs)
-                for (int i = 0; i < linearParameters.Count; ++i)
-                    if (linearParameters[i].FixedStr == null)
+            for (int i = 0; i < count; ++i)
+            {
+                var @enum = unmappedEnumsSorted[i];
+                for (int j = 0; j < linearParameters.Count; ++j)
+                    if (linearParameters[j].FixedStr == null)
                     {
                         // Calculate prediction with the linear model
-                        decimal value = linearParameters[i].Factor * parsedStr.Key + linearParameters[i].Add;
+                        decimal value = linearParameters[j].Factor * @enum.Original.Key + linearParameters[j].Add;
 
                         // Check prediction
-                        if (parsedStr.Value[i].Value.Value != value)
+                        if (@enum.Substrings[j].Value.Value != value)
                         {
-                            Console.WriteLine("Linear modelling failed. Should be rare with NG trigger definitions.");
-                            return parameter;
+                            count = i;
+                            goto ExitLoop1;
                         }
                     }
+            }
+            ExitLoop1:;
+            if (count < (2 + linearParameters.Count * 2)) // It's not worth it if there are at most 5 elements
+            {
+                AddFixed(outChoice, unmappedEnumsSorted.Take(count).Select(p => p.Original));
+                unmappedEnumsSorted.RemoveRange(0, count);
+                return true;
+            }
 
-            return new NgParameterRange(new NgLinearModel
+            outChoice.Add(new NgParameterRange(new NgLinearModel
             {
                 Start = unchecked((ushort)idStart),
-                End = unchecked((ushort)idEnd),
+                EndInclusive = unchecked((ushort)(idStart + count - 1)),
                 Parameters = linearParameters
-            });
+            }));
+            unmappedEnumsSorted.RemoveRange(0, count);
+            return true;
+        }
+
+        private static NgParameterRange DetectPattern(NgParameterRange parameter, NgBlock dbgBlock)
+        {
+            if (parameter.Kind != NgParameterKind.FixedEnumeration)
+                return parameter;
+
+            // Parse the numbers inside the strings.
+            var unmappedEnums = new List<Parsed>();
+            foreach (var entry in parameter.FixedEnumeration)
+                unmappedEnums.Add(new Parsed { Original = entry.Value, Substrings = SplitIntoNumbers(entry.Value.Name) });
+            unmappedEnums.Sort();
+
+            var outputChoice = new List<NgParameterRange>();
+            while (DetectLinearity(outputChoice, unmappedEnums, dbgBlock))
+            { }
+            return new NgParameterRange(outputChoice);
         }
 
         private static NgParameterRange GetList(NgBlock block)
@@ -351,13 +415,13 @@ namespace NgXmlBuilder
                     var enumeration = new SortedList<ushort, TriggerParameterUshort>();
                     for (var i = start; i < end; i++)
                         enumeration.Add(ToU16(i), new TriggerParameterUshort((ushort)i, radix + i));
-                    return DetectLinearity(new NgParameterRange(enumeration), block);
+                    return DetectPattern(new NgParameterRange(enumeration), block);
                 }
 
                 // TXT lists
                 var listName = list.Replace("#", "");
                 if (File.Exists("NG\\" + listName + ".txt"))
-                    return DetectLinearity(new NgParameterRange(GetListFromTxt(listName)), block);
+                    return DetectPattern(new NgParameterRange(GetListFromTxt(listName)), block);
                 else
                     throw new Exception("Missing NG file");
             }
@@ -367,7 +431,7 @@ namespace NgXmlBuilder
                 var enumeration = new SortedList<ushort, TriggerParameterUshort>();
                 foreach (var item in block.Items)
                     enumeration.Add(GetItemId(item), new TriggerParameterUshort(GetItemId(item), GetItemValue(item)));
-                return DetectLinearity(new NgParameterRange(enumeration), block);
+                return DetectPattern(new NgParameterRange(enumeration), block);
             }
         }
 
@@ -386,7 +450,7 @@ namespace NgXmlBuilder
                         if (block.Id == 15)
                         {
                             // Trigger for timer field
-                            NgCatalog.TimerFieldTrigger = new NgParameterRange(GetListFromTxt("TIMER_SIGNED_LONG"));
+                            NgCatalog.TimerFieldTrigger = DetectPattern(new NgParameterRange(GetListFromTxt("TIMER_SIGNED_LONG")), block);
                         }
                         else if (block.Id == 9)
                         {
@@ -491,7 +555,7 @@ namespace NgXmlBuilder
                                 new XAttribute("Add", linearParameter.Add),
                                 new XAttribute("Factor", linearParameter.Factor)));
                     parameterElement.Add(new XAttribute("Start", parameter.LinearModel.Value.Start));
-                    parameterElement.Add(new XAttribute("End", parameter.LinearModel.Value.End));
+                    parameterElement.Add(new XAttribute("End", parameter.LinearModel.Value.EndInclusive));
                     break;
                 case NgParameterKind.Choice:
                     foreach (NgParameterRange choice in parameter.Choices)
