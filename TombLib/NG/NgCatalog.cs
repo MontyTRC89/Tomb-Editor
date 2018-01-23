@@ -23,7 +23,7 @@ namespace TombLib.NG
                 switch (triggerNode.Name)
                 {
                     case "TimerFieldTrigger":
-                        TimerFieldTrigger = ReadNgParameterRange(triggerNode);
+                        TimerFieldTrigger = ReadNgParameterRange(triggerNode.ChildNodes[0]);
                         break;
                     case "FlipEffectTrigger":
                         FlipEffectTrigger = ReadNgTriggerSubtypes(triggerNode);
@@ -50,13 +50,13 @@ namespace TombLib.NG
                     switch (nodeList.Name)
                     {
                         case "Target":
-                            triggerSubtype.Target = ReadNgParameterRange(nodeList);
+                            triggerSubtype.Target = ReadNgParameterRange(nodeList.ChildNodes[0]);
                             break;
                         case "Extra":
-                            triggerSubtype.Extra = ReadNgParameterRange(nodeList);
+                            triggerSubtype.Extra = ReadNgParameterRange(nodeList.ChildNodes[0]);
                             break;
                         case "Timer":
-                            triggerSubtype.Timer = ReadNgParameterRange(nodeList);
+                            triggerSubtype.Timer = ReadNgParameterRange(nodeList.ChildNodes[0]);
                             break;
                     }
 
@@ -65,9 +65,8 @@ namespace TombLib.NG
             return result;
         }
 
-        private static NgParameterRange ReadNgParameterRange(XmlNode parentNode)
+        private static NgParameterRange ReadNgParameterRange(XmlNode node)
         {
-            XmlNode node = parentNode.ChildNodes[0];
             var listKind = (NgParameterKind)Enum.Parse(typeof(NgParameterKind), node.Name);
             switch (listKind)
             {
@@ -104,7 +103,7 @@ namespace TombLib.NG
                     {
                         Parameters = linearParameters,
                         Start = ushort.Parse(node.Attributes["Start"].Value),
-                        End = ushort.Parse(node.Attributes["End"].Value)
+                        EndInclusive = ushort.Parse(node.Attributes["End"].Value)
                     };
                     return new NgParameterRange(linearModel);
 

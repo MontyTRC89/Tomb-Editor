@@ -45,7 +45,7 @@ namespace TombLib.NG
     {
         public List<NgLinearParameter> Parameters;
         public ushort Start;
-        public ushort End;
+        public ushort EndInclusive;
 
         public string ToString(ushort index)
         {
@@ -138,6 +138,11 @@ namespace TombLib.NG
                     case NgParameterKind.SinksInLevel:
                     case NgParameterKind.FlybyCamerasInLevel:
                         return true;
+                    case NgParameterKind.Choice:
+                        foreach (var choice in Choices)
+                            if (choice.IsObject)
+                                return true;
+                        return false;
                     default:
                         return false;
                 }
@@ -152,6 +157,11 @@ namespace TombLib.NG
                 {
                     case NgParameterKind.Rooms255:
                         return true;
+                    case NgParameterKind.Choice:
+                        foreach (var choice in Choices)
+                            if (choice.IsRoom)
+                                return true;
+                        return false;
                     default:
                         return false;
                 }
@@ -244,7 +254,7 @@ namespace TombLib.NG
 
                 case NgParameterKind.LinearModel:
                     NgLinearModel linearModel = LinearModel.Value;
-                    return Enumerable.Range(linearModel.Start, linearModel.End)
+                    return Enumerable.Range(linearModel.Start, linearModel.EndInclusive + 1 - linearModel.Start)
                         .Select(i => new TriggerParameterUshort((ushort)i, linearModel.ToString((ushort)i)));
 
                 case NgParameterKind.Choice:
