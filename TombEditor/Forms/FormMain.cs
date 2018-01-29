@@ -82,7 +82,9 @@ namespace TombEditor
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
-            timerAutosave.Start();
+            // Enable autosave?
+            if (_editor.Configuration.Editor_Autosave)
+                timerAutosave.Start();
         }
 
         protected override void Dispose(bool disposing)
@@ -954,7 +956,10 @@ namespace TombEditor
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.Mode == EditorMode.Map2D)
-                EditorActions.DeleteRooms(_editor.SelectedRooms, this);
+                if (_editor.SelectedObject != null && (_editor.SelectedObject is PortalInstance || _editor.SelectedObject is TriggerInstance))
+                    EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
+                else
+                    EditorActions.DeleteRooms(_editor.SelectedRooms, this);
             else
             {
                 if (_editor.SelectedObject != null)

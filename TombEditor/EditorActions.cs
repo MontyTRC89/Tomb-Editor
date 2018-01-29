@@ -1824,6 +1824,23 @@ namespace TombEditor
 
         public static void AddPortal(Room room, RectangleInt2 area, IWin32Window owner)
         {
+            // Check if one of the four corner is selected
+            var cornerSelected = false;
+            if (area.X0 == 0 && area.Y0 == 0 || area.X1 == 0 && area.Y1 == 0)
+                cornerSelected = true;
+            if (area.X0 == 0 && area.Y0 == room.NumZSectors - 1 || area.X1 == 0 && area.Y1 == room.NumZSectors - 1)
+                cornerSelected = true;
+            if (area.X0 == room.NumXSectors - 1 && area.Y0 == 0 || area.X1 == room.NumXSectors - 1 && area.Y1 == 0)
+                cornerSelected = true;
+            if (area.X0 == room.NumXSectors - 1 && area.Y0 == room.NumZSectors - 1 || area.X1 == room.NumXSectors - 1 && area.Y1 == room.NumZSectors - 1)
+                cornerSelected = true;
+
+            if (cornerSelected)
+            {
+                DarkMessageBox.Show(owner, "You have selected one of the four room's corners", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             // Check for possible candidates ...
             VerticalSpace? verticalSpaceLocal = room.GetHeightInAreaMaxSpace(new RectangleInt2(area.X0, area.Y0, area.X1 + 1, area.Y1 + 1));
 
@@ -2188,6 +2205,17 @@ namespace TombEditor
             RectangleInt2 area = _editor.SelectedSectors.Area.Inflate(1);
             var room = _editor.SelectedRoom;
 
+            // Check for gray walls selection
+            if (area.X0 == -1 || area.X1 == -1 ||
+                area.X0 == room.NumXSectors || area.X1 == room.NumXSectors ||
+                area.Y0 == -1 || area.Y1 == -1 ||
+                area.Y0 == room.NumZSectors || area.Y1 == room.NumZSectors)
+            {
+                DarkMessageBox.Show(owner, "You can't select border walls when splitting a room", "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
             if (room.AlternateBaseRoom != null)
             {
                 _editor.Level.AssignRoomToFree(room.AlternateBaseRoom.Split(_editor.Level, area));
