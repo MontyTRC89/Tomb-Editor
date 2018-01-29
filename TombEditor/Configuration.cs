@@ -89,6 +89,8 @@ namespace TombEditor
         public bool Window_Maximized { get; set; } = true;
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 
+        public bool Editor_Autosave { get; set; } = true;
+
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
         {
