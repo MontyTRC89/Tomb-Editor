@@ -102,6 +102,14 @@ namespace TombLib.LevelData.IO
                     settings.SkyTextureFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.Tr5ExtraSpritesFilePath)
                     settings.Tr5ExtraSpritesFilePath = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.Tr2MainSamFilePath)
+                    settings.Tr2MainSamFilePath = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.Tr3MainSamFilePath)
+                    settings.Tr3MainSamFilePath = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.Tr2SoundsXmlFilePath)
+                    settings.Tr2SoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.Tr3SoundsXmlFilePath)
+                    settings.Tr3SoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.OldWadSoundPaths)
                 {
                     var oldWadSoundPaths = new List<OldWadSoundPath>();

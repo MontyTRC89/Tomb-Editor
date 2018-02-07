@@ -184,14 +184,14 @@ namespace TombLib.LevelData.Compilers
                     for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
                     {
                         var wadInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
-                        var soundInfo = new tr_sound_details();
+                        var soundInfo = new tr3_sound_details();
 
                         soundInfo.Sample = lastSample;
-                        soundInfo.Volume = wadInfo.Volume;
-                        soundInfo.Range = wadInfo.Range;
-                        soundInfo.Pitch = wadInfo.Pitch;
-                        soundInfo.Chance = wadInfo.Chance;
 
+                        soundInfo.Volume = (byte)((wadInfo.Volume * 255 / 100) & 0xFF);
+                        soundInfo.Chance = (byte)((wadInfo.Chance * 255 / 100) & 0xFF);
+                        soundInfo.Range = (byte)((wadInfo.Range) & 0xFF);
+                        soundInfo.Pitch = (byte)((wadInfo.Pitch * 127 / 100) & 0xFF);
                         ushort characteristics = (ushort)(wadInfo.Samples.Count << 2);
                         if (wadInfo.FlagN)
                             characteristics |= 0x1000;
@@ -203,7 +203,7 @@ namespace TombLib.LevelData.Compilers
 
                         soundInfo.Characteristics = characteristics;
 
-                        writer.WriteBlock<tr_sound_details>(soundInfo);
+                        writer.WriteBlock<tr3_sound_details>(soundInfo);
 
                         lastSample += (short)wadInfo.Samples.Count;
                     }

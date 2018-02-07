@@ -201,6 +201,8 @@
     <Compile Include="Ray.cs" />
     <Compile Include="RectangleInt2.cs" />
     <Compile Include="Rectangle2.cs" />
+    <Compile Include="Sounds\SoundCatalogInfo.cs" />
+    <Compile Include="Sounds\SoundsCatalog.cs" />
     <Compile Include="Utils\Cache.cs" />
     <Compile Include="Utils\CollectionUtils.cs" />
     <Compile Include="Utils\Collision.cs" />
@@ -241,8 +243,6 @@
     <Compile Include="VectorInt2.cs" />
     <Compile Include="VectorInt3.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
-    <Compile Include="Wad\OriginalSoundsDefinitions.cs" />
-    <Compile Include="Wad\OriginalSound.cs" />
     <Compile Include="Wad\TrLevels\Enumerations.cs" />
     <Compile Include="Wad\TrLevels\Structs.cs" />
     <Compile Include="Wad\TrLevels\TrLevel.cs" />

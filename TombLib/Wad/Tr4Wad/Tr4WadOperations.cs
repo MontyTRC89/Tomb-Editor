@@ -7,6 +7,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Sounds;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -351,7 +352,7 @@ namespace TombLib.Wad.Tr4Wad
 
         internal static void ConvertTr4Sounds(Wad2 wad, Tr4Wad oldWad, List<SamplePathInfo> samples)
         {
-            wad.SoundMapSize = TrCatalog.GetSoundMapSize(WadTombRaiderVersion.TR4, oldWad.Version == 130);
+            wad.SoundMapSize = SoundsCatalog.GetSoundMapSize(WadTombRaiderVersion.TR4, oldWad.Version == 130);
 
             // Read all samples with multithreading
             var loadedSamples = new ConcurrentDictionary<int, WadSample>();
@@ -375,7 +376,7 @@ namespace TombLib.Wad.Tr4Wad
                   }
               });
 
-            for (int i = 0; i < 370; i++)
+            for (int i = 0; i < wad.SoundMapSize; i++)
             {
                 // Check if sound was used
                 if (oldWad.SoundMap[i] == -1)
@@ -385,11 +386,15 @@ namespace TombLib.Wad.Tr4Wad
                 var newInfo = new WadSoundInfo();
 
                 // Fill the new sound info
-                newInfo.Name = TrCatalog.GetSoundName(WadTombRaiderVersion.TR4, (uint)i);
-                newInfo.Volume = oldInfo.Volume;
+                var catalogSound = SoundsCatalog.GetSound(WadTombRaiderVersion.TR4, (uint)i);
+                if (catalogSound == null)
+                    newInfo.Name = "UNKNOWN_" + i;
+                else
+                    newInfo.Name = catalogSound.Name;
+                newInfo.Volume = (short)(oldInfo.Volume * 100 / 255);
                 newInfo.Range = oldInfo.Range;
-                newInfo.Chance = oldInfo.Chance;
-                newInfo.Pitch = oldInfo.Pitch;
+                newInfo.Chance = (short)(oldInfo.Chance * 100 / 255);
+                newInfo.Pitch = (short)(oldInfo.Pitch * 100 / 127);
                 newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
                 newInfo.RandomizeGain = ((oldInfo.Characteristics & 0x4000) != 0);
                 newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);

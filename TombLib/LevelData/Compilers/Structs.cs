@@ -1001,13 +1001,22 @@ namespace TombLib.LevelData.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_sound_details
+    public struct tr3_sound_details
     {
         public short Sample;
         public byte Volume;
         public byte Range;
         public byte Chance;
         public byte Pitch;
+        public ushort Characteristics;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr_sound_details
+    {
+        public short Sample;
+        public short Volume;
+        public short Chance;
         public ushort Characteristics;
     }
 

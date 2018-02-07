@@ -40,6 +40,9 @@
       .allowedextension
     </AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>SoundTool.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -101,6 +104,15 @@
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
       <Name>TombLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\actions_play-16.png" />
+    <None Include="Resources\general_trash-16.png" />
+    <None Include="Resources\general_Save-16.png" />
+    <None Include="Resources\general_plus_math-16.png" />
+    <None Include="Resources\general_Open-16.png" />
+    <None Include="Resources\general_edit-16.png" />
+    <Content Include="SoundTool.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

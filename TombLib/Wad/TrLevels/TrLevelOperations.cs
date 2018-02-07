@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Sounds;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -406,11 +407,27 @@ namespace TombLib.Wad.TrLevels
                 var newInfo = new WadSoundInfo();
 
                 // Fill the new sound info
-                newInfo.Name = TrCatalog.GetSoundName(GetTrVersion(oldLevel.Version), (uint)i);
-                newInfo.Volume = (byte)oldInfo.Volume;
-                newInfo.Range = oldInfo.Range;
-                newInfo.Chance = (byte)oldInfo.Chance;
-                newInfo.Pitch = oldInfo.Pitch;
+                var catalogInfo = SoundsCatalog.GetSound(GetTrVersion(oldLevel.Version), (uint)i);
+                if (catalogInfo == null)
+                    newInfo.Name = "UNKNOWN_" + i;
+                else
+                    newInfo.Name = catalogInfo.Name;
+
+                if (oldLevel.Version >= TrVersion.TR3)
+                {
+                    newInfo.Volume = (short)(oldInfo.Volume * 100 / 255);
+                    newInfo.Range = oldInfo.Range;
+                    newInfo.Chance = (short)(oldInfo.Chance * 100 / 255);
+                    newInfo.Pitch = (short)(oldInfo.Pitch * 100 / 127);
+                }
+                else
+                {
+                    newInfo.Volume = (byte)oldInfo.Volume;
+                    newInfo.Range = oldInfo.Range;
+                    newInfo.Chance = (byte)oldInfo.Chance;
+                    newInfo.Pitch = oldInfo.Pitch;
+                }
+
                 newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0); // TODO: loop meaning changed between TR versions
                 newInfo.RandomizeGain = ((oldInfo.Characteristics & 0x4000) != 0);
                 newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);
@@ -419,9 +436,11 @@ namespace TombLib.Wad.TrLevels
                 int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
 
                 // Read all samples linked to this sound info (for example footstep has 4 samples)
+                // For old TRs, don't load samples, because they are in MAIN.SFX
+                // In theory, sound management for TR2 and TR3 should be done in external tool
                 for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
                 {
-                    var soundName = j + ".wav";
+                    var soundName = "sample" + j;
 
                     if (j < oldLevel.Samples.Count)
                     {

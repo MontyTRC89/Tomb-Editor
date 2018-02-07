@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.NG;
+using TombLib.Sounds;
 using TombLib.Wad.Catalog;
 
 namespace TombEditor
@@ -46,8 +47,12 @@ namespace TombEditor
             configuration.SaveTry();
             Editor editor = new Editor(WindowsFormsSynchronizationContext.Current, configuration);
             Editor.Instance = editor;
+
+            // Load the XML catalogs
             TrCatalog.LoadCatalog("Editor\\Misc\\TRCatalog.xml");
             NgCatalog.LoadCatalog("Editor\\Misc\\NgCatalog.xml");
+            SoundsCatalog.LoadAllCatalogsFromXml("Sounds"); 
+
             Application.Run(new FormMain(editor));
             editor.Configuration.SaveTry();
             logger.Info("The editor has exited cleanly. The configuration has been saved!");

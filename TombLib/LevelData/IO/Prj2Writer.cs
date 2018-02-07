@@ -93,6 +93,10 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.FontTextureFilePath, settings.FontTextureFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.SkyTextureFilePath, settings.SkyTextureFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.Tr5ExtraSpritesFilePath, settings.Tr5ExtraSpritesFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.Tr2MainSamFilePath, settings.Tr2MainSamFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.Tr3MainSamFilePath, settings.Tr3MainSamFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.Tr2SoundsXmlFilePath, settings.Tr2SoundsXmlFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.Tr3SoundsXmlFilePath, settings.Tr3SoundsXmlFilePath ?? "");
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.OldWadSoundPaths, () =>
                 {
                     foreach (OldWadSoundPath soundPath in settings.OldWadSoundPaths)

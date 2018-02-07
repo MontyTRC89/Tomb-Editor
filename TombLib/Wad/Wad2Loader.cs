@@ -588,10 +588,10 @@ namespace TombLib.Wad
 
                 var s = new WadSoundInfo();
                 var soundId = LEB128.ReadUShort(chunkIO.Raw);
-                s.Volume = LEB128.ReadByte(chunkIO.Raw);
-                s.Range = LEB128.ReadByte(chunkIO.Raw);
-                s.Pitch = LEB128.ReadByte(chunkIO.Raw);
-                s.Chance = LEB128.ReadByte(chunkIO.Raw);
+                s.Volume = LEB128.ReadShort(chunkIO.Raw);
+                s.Range = LEB128.ReadShort(chunkIO.Raw);
+                s.Pitch = LEB128.ReadShort(chunkIO.Raw);
+                s.Chance = LEB128.ReadShort(chunkIO.Raw);
                 s.FlagN = (LEB128.ReadByte(chunkIO.Raw) == 1);
                 s.RandomizePitch = (LEB128.ReadByte(chunkIO.Raw) == 1);
                 s.RandomizeGain = (LEB128.ReadByte(chunkIO.Raw) == 1);
@@ -611,6 +611,7 @@ namespace TombLib.Wad
                     {
                         return false;
                     }
+
                     return true;
                 });
 

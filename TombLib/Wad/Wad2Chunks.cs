@@ -83,5 +83,6 @@ namespace TombLib.Wad
         /**/public static readonly ChunkId Sound = ChunkId.FromString("W2Sound");
         /****/public static readonly ChunkId SoundName = ChunkId.FromString("W2SoundName");
         /****/public static readonly ChunkId SoundSample = ChunkId.FromString("W2SamplePtr");
+        /****/public static readonly ChunkId SoundSampleName = ChunkId.FromString("W2SampleName");
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib.Sounds;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
@@ -77,8 +78,9 @@ namespace WadTool
             // Load configuration
             _configuration = Configuration.LoadOrUseDefault();
 
-            // Load items catalog
+            // Load catalogs
             TrCatalog.LoadCatalog("Editor\\Misc\\TRCatalog.xml");
+            SoundsCatalog.LoadAllCatalogsFromXml("Sounds");
         }
 
         private Effect LoadEffect(string fileName)

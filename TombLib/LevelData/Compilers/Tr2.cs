@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.Sounds;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -15,20 +16,12 @@ namespace TombLib.LevelData.Compilers
         private void WriteLevelTr2()
         {
             // Now begin to compile the geometry block in a MemoryStream
-            // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
                 // Write version
                 writer.WriteBlockArray(new byte[] { 0x2D, 0x00, 0x00, 0x00 });
-
-                /*using (var readerPalette = new BinaryReader(new FileStream("Editor\\Misc\\Palette.Tr3.bin", FileMode.Open, FileAccess.Write, FileShare.None)))
-                {
-                    var palette = readerPalette.ReadBytes(1792);
-                    // Write palette
-                    writer.Write(palette);
-                }*/
 
                 // TODO: for now I write fake palette, they should be needed only for 8 bit textures
                 for (var i = 0; i < 768; i++) writer.Write((byte)0x00);
@@ -162,7 +155,7 @@ namespace TombLib.LevelData.Compilers
 
                 // Write animated textures
                 _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
-                                
+
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
                 writer.WriteBlockArray(_items);
@@ -175,14 +168,25 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(numDemo);
 
                 // Write sounds
+                // For TR2 we read sound infos from XML file, then samples indices are loaded from MAIN.SAM that 
+                // is built at the same time with MAIN.SFX
+                if (!File.Exists(_level.Settings.Tr2SoundsXmlFileNameAbsoluteOrDefault))
+                    throw new NotImplementedException("Sounds.xml file was not found");
+
+                if (!File.Exists(_level.Settings.Tr2MainSamFileNameAbsoluteOrDefault))
+                    throw new NotImplementedException("MAIN.SAM file was not found");
+
+                var catalog = SoundsCatalog.LoadCatalogFromXml(_level.Settings.Tr2SoundsXmlFileNameAbsoluteOrDefault);
+                var soundMapSize = SoundsCatalog.GetSoundMapSize(WadTombRaiderVersion.TR2, false);
+                if (catalog == null || catalog.Count != soundMapSize)
+                    throw new InvalidDataException("Sounds.xml was found but is corrupted");
 
                 // Write sound map
-                var soundMapSize = GetSoundMapSize();
                 var lastSound = 0;
                 for (int i = 0; i < soundMapSize; i++)
                 {
                     short soundMapValue = -1;
-                    if (_level.Wad.SoundInfo.ContainsKey((ushort)i))
+                    if (catalog.ContainsKey((ushort)i))
                     {
                         soundMapValue = (short)lastSound;
                         lastSound++;
@@ -191,28 +195,44 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(soundMapValue);
                 }
 
-                // Write sound details
-                writer.Write((uint)_level.Wad.SoundInfo.Count);
+                // Now load MAIN.SAM file, it contains samples indices in MAIN.SFX
+                var samplesIndices = new List<int>();
+                using (var readerSam = new BinaryReader(File.OpenRead(_level.Settings.Tr2MainSamFileNameAbsoluteOrDefault)))
+                {
+                    while (readerSam.BaseStream.Position<readerSam.BaseStream.Length)
+                    {
+                        samplesIndices.Add(readerSam.ReadInt32());
+                    }
+                }
 
+                // Write sound details
+                writer.Write((uint)lastSound);
+                
                 short lastSample = 0;
 
-                for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
+                foreach (var pair in catalog)
                 {
-                    var wadInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
+                    var oldSoundInfo = pair.Value;
                     var soundInfo = new tr_sound_details();
 
                     soundInfo.Sample = lastSample;
-                    soundInfo.Volume = wadInfo.Volume;
-                    soundInfo.Chance = wadInfo.Chance;
+                    soundInfo.Volume = (short)((oldSoundInfo.Volume * 255 / 100) & 0xFFFF);
+                    soundInfo.Chance = (short)((oldSoundInfo.Chance * 255 / 100) & 0xFFFF);
 
-                    ushort characteristics = (ushort)(/*wadInfo.Samples.Count */ 1 << 2);
-                    if (wadInfo.FlagN)
+                    ushort characteristics = (ushort)(oldSoundInfo.Samples.Count);
+                    if (oldSoundInfo.FlagN)
                         characteristics |= 0x1000;
-                    if (wadInfo.RandomizePitch)
+                    if (oldSoundInfo.FlagP)
                         characteristics |= 0x2000;
-                    if (wadInfo.RandomizeGain)
+                    if (oldSoundInfo.FlagV)
                         characteristics |= 0x4000;
-                    characteristics |= (byte)wadInfo.Loop;
+
+                    if (oldSoundInfo.FlagL)
+                        characteristics |= (byte)0x03;
+                    else if (oldSoundInfo.FlagR)
+                        characteristics |= (byte)0x02;
+                    else if (oldSoundInfo.FlagW)
+                        characteristics |= (byte)0x01;
 
                     soundInfo.Characteristics = characteristics;
 
@@ -221,15 +241,14 @@ namespace TombLib.LevelData.Compilers
                     writer.Write((short)soundInfo.Chance);
                     writer.Write(soundInfo.Characteristics);
 
-                    lastSample += (short)wadInfo.Samples.Count;
+                    lastSample += (short)oldSoundInfo.Samples.Count;
                 }
 
-                // TODO: samples are in MAIN.SFX so I have to found a way to write samples indices here
+                // Write samples indices
                 int numSampleIndices = lastSample;
-                writer.Write(numSampleIndices);
-                int filler3 = 0;
+                writer.Write(numSampleIndices);              
                 for (int i = 0; i < numSampleIndices; i++)
-                    writer.Write(/*filler3*/ i);
+                    writer.Write(samplesIndices[i]);
 
                 writer.Flush();
             }

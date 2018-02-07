@@ -66,11 +66,11 @@
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\GraphicalDialogHandler.cs" />
-    <Compile Include="Forms\FormSelectWave.cs">
+    <Compile Include="Forms\FormSelectSample.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormSelectWave.Designer.cs">
-      <DependentUpon>FormSelectWave.cs</DependentUpon>
+    <Compile Include="Forms\FormSelectSample.Designer.cs">
+      <DependentUpon>FormSelectSample.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormSoundEditor.cs">
       <SubType>Form</SubType>
@@ -104,8 +104,8 @@
     <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSelectWave.resx">
-      <DependentUpon>FormSelectWave.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormSelectSample.resx">
+      <DependentUpon>FormSelectSample.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSoundEditor.resx">
       <DependentUpon>FormSoundEditor.cs</DependentUpon>

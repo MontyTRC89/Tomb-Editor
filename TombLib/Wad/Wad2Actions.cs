@@ -143,7 +143,7 @@ namespace TombLib.Wad
                 if (!foundInMoveables && !foundInStatics) textures.Add(texture);
             }
 
-            // Now check for waves
+            // Now check for sounds
             if (isMoveable)
             {
                 var moveable = (WadMoveable)obj;
@@ -173,7 +173,7 @@ namespace TombLib.Wad
                         if (!tempWaves.Contains(wave))
                             tempWaves.Add(wave);
 
-                // Third, from temp waves, identify which waves are not used
+                // Third, from temp samples, identify which waves are not used
                 foreach (var foundWave in tempWaves)
                 {
                     bool isFound = false;
@@ -407,103 +407,153 @@ namespace TombLib.Wad
                 Statics.Add(destination, newStaticMesh);
             }
 
-            // Collect sounds
-            if (isMoveable)
+            if (Version >= WadTombRaiderVersion.TR4)
             {
-                var newMoveable = (WadMoveable)newObject;
-
-                foreach (var animation in newMoveable.Animations)
+                // Collect sounds using the new remap system
+                if (isMoveable)
                 {
-                    foreach (var command in animation.AnimCommands)
+                    var newMoveable = (WadMoveable)newObject;
+
+                    foreach (var animation in newMoveable.Animations)
                     {
-                        if (command.Type == WadAnimCommandType.PlaySound)
+                        foreach (var command in animation.AnimCommands)
                         {
-                            ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                            if (srcWad.SoundInfo.ContainsKey(soundId))
+                            if (command.Type == WadAnimCommandType.PlaySound)
                             {
-                                // First I check if sound was already remapped
-                                if (soundsRemapTable.ContainsKey(soundId))
+                                ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
+                                if (srcWad.SoundInfo.ContainsKey(soundId))
                                 {
-                                    // Remap current sound
-                                    command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + soundsRemapTable[soundId]);
-                                }
-                                else
-                                {
-                                    if (TrCatalog.IsSoundMandatory(Version, soundId))
+                                    // First I check if sound was already remapped
+                                    if (soundsRemapTable.ContainsKey(soundId))
                                     {
-                                        // If this is a mandatory sound, I can add it only if doesn't exist in dest Wad2
-                                        if (!SoundInfo.ContainsKey(soundId))
-                                        {
-                                            // Add this sound in the same slot
-                                            var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
-
-                                            SoundInfo.Add(soundId, newSoundInfo);
-                                            soundsRemapTable.Add(soundId, soundId);
-
-                                            // Add wave files or get them if they exist
-                                            for (int k = 0; k < newSoundInfo.Samples.Count; k++)
-                                            {
-                                                var wave = newSoundInfo.Samples[k];
-
-                                                if (!Samples.ContainsKey(wave.Hash))
-                                                    Samples.Add(wave.Hash, wave);
-                                                else
-                                                    newSoundInfo.Samples[k] = Samples[wave.Hash];
-                                            }
-                                        }
+                                        // Remap current sound
+                                        command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + soundsRemapTable[soundId]);
                                     }
                                     else
                                     {
-                                        bool foundSoundInfo = false;
-
-                                        // Search for an identical WadSoundInfo
-                                        for (int i = 0; i < SoundInfo.Count; i++)
+                                        if (TrCatalog.IsSoundMandatory(Version, soundId))
                                         {
-                                            var currentInfo = SoundInfo.ElementAt(i).Value;
-                                            var currentSoundId = SoundInfo.ElementAt(i).Key;
-
-                                            if (currentInfo.Hash == srcWad.SoundInfo[soundId].Hash)
+                                            // If this is a mandatory sound, I can add it only if doesn't exist in dest Wad2
+                                            if (!SoundInfo.ContainsKey(soundId))
                                             {
-                                                soundsRemapTable.Add(soundId, currentSoundId);
-                                                foundSoundInfo = true;
+                                                // Add this sound in the same slot
+                                                var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
 
-                                                // Remap current sound
-                                                command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + currentSoundId);
+                                                SoundInfo.Add(soundId, newSoundInfo);
+                                                soundsRemapTable.Add(soundId, soundId);
 
-                                                break;
+                                                // Add wave files or get them if they exist
+                                                for (int k = 0; k < newSoundInfo.Samples.Count; k++)
+                                                {
+                                                    var wave = newSoundInfo.Samples[k];
+
+                                                    if (!Samples.ContainsKey(wave.Hash))
+                                                        Samples.Add(wave.Hash, wave);
+                                                    else
+                                                        newSoundInfo.Samples[k] = Samples[wave.Hash];
+                                                }
                                             }
                                         }
-
-                                        if (!foundSoundInfo)
+                                        else
                                         {
-                                            // Get a free sound index
-                                            ushort freeId = 0;
-                                            for (int j = 0; j < 370; j++)
+                                            bool foundSoundInfo = false;
+
+                                            // Search for an identical WadSoundInfo
+                                            for (int i = 0; i < SoundInfo.Count; i++)
                                             {
-                                                if (!SoundInfo.ContainsKey((ushort)j))
+                                                var currentInfo = SoundInfo.ElementAt(i).Value;
+                                                var currentSoundId = SoundInfo.ElementAt(i).Key;
+
+                                                if (currentInfo.Hash == srcWad.SoundInfo[soundId].Hash)
                                                 {
-                                                    freeId = (ushort)j;
+                                                    soundsRemapTable.Add(soundId, currentSoundId);
+                                                    foundSoundInfo = true;
+
+                                                    // Remap current sound
+                                                    command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + currentSoundId);
+
                                                     break;
                                                 }
                                             }
 
-                                            var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
-                                            SoundInfo.Add(freeId, newSoundInfo);
-                                            soundsRemapTable.Add(soundId, freeId);
-
-                                            // Add waves
-                                            for (int k = 0; k < newSoundInfo.Samples.Count; k++)
+                                            if (!foundSoundInfo)
                                             {
-                                                var wave = newSoundInfo.Samples[k];
+                                                // Get a free sound index
+                                                ushort freeId = 0;
+                                                for (int j = 0; j < 370; j++)
+                                                {
+                                                    if (!SoundInfo.ContainsKey((ushort)j))
+                                                    {
+                                                        freeId = (ushort)j;
+                                                        break;
+                                                    }
+                                                }
 
-                                                if (!Samples.ContainsKey(wave.Hash))
-                                                    Samples.Add(wave.Hash, wave);
-                                                else
-                                                    newSoundInfo.Samples[k] = Samples[wave.Hash];
+                                                var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
+                                                SoundInfo.Add(freeId, newSoundInfo);
+                                                soundsRemapTable.Add(soundId, freeId);
+
+                                                // Add waves
+                                                for (int k = 0; k < newSoundInfo.Samples.Count; k++)
+                                                {
+                                                    var wave = newSoundInfo.Samples[k];
+
+                                                    if (!Samples.ContainsKey(wave.Hash))
+                                                        Samples.Add(wave.Hash, wave);
+                                                    else
+                                                        newSoundInfo.Samples[k] = Samples[wave.Hash];
+                                                }
+
+                                                // Remap current sound
+                                                command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + freeId);
                                             }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Add sounds using the old system for TR2 and TR3
+                var soundsToAdd = new List<ushort>();
+                if (isMoveable)
+                {
+                    var newMoveable = (WadMoveable)newObject;
 
-                                            // Remap current sound
-                                            command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + freeId);
+                    foreach (var animation in newMoveable.Animations)
+                    {
+                        foreach (var command in animation.AnimCommands)
+                        {
+                            if (command.Type == WadAnimCommandType.PlaySound)
+                            {
+                                ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
+                                if (srcWad.SoundInfo.ContainsKey(soundId))
+                                {
+                                    if (SoundInfo.ContainsKey(soundId))
+                                    {
+                                        // Don't do anything for now, just use the copy of sound 
+                                        // The user should manually copy the sound
+                                    }
+                                    else
+                                    {
+                                        // Add this sound in the same slot
+                                        var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
+
+                                        SoundInfo.Add(soundId, newSoundInfo);
+                                        soundsRemapTable.Add(soundId, soundId);
+
+                                        // Add wave files or get them if they exist
+                                        for (int k = 0; k < newSoundInfo.Samples.Count; k++)
+                                        {
+                                            var wave = newSoundInfo.Samples[k];
+
+                                            if (!Samples.ContainsKey(wave.Hash))
+                                                Samples.Add(wave.Hash, wave);
+                                            else
+                                                newSoundInfo.Samples[k] = Samples[wave.Hash];
                                         }
                                     }
                                 }
@@ -665,9 +715,9 @@ namespace TombLib.Wad
             return moveables;
         }
 
-        public void CleanUnusedWaveSounds()
+        public void CleanUnusedSamples()
         {
-            var wavesToRemove = new List<WadSample>();
+            var samplesToRemove = new List<WadSample>();
 
             foreach (var wave in Samples)
             {
@@ -683,11 +733,11 @@ namespace TombLib.Wad
                 }
 
                 if (!found)
-                    wavesToRemove.Add(wave.Value);
+                    samplesToRemove.Add(wave.Value);
             }
 
-            foreach (var wave in wavesToRemove)
-                Samples.Remove(wave.Hash);
+            foreach (var sample in samplesToRemove)
+                Samples.Remove(sample.Hash);
         }
 
         public void CleanUnusedSprites()

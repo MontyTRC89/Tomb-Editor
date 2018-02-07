@@ -1,6 +1,6 @@
 ﻿namespace TombLib.Forms
 {
-    partial class FormSelectWave
+    partial class FormSelectSample
     {
         /// <summary>
         /// Required designer variable.
