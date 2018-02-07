@@ -165,6 +165,10 @@ namespace TombEditor
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
+            tbTr2SoundsXml.Text = _levelSettings.Tr2SoundsXmlFilePath;
+            tbTr2MainSam.Text = _levelSettings.Tr2MainSamFilePath;
+            tbTr3SoundsXml.Text = _levelSettings.Tr3SoundsXmlFilePath;
+            tbTr3MainSam.Text = _levelSettings.Tr3MainSamFilePath;
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -296,17 +300,40 @@ namespace TombEditor
             // Update the default ambient light
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector4(0.5f, 0.5f, 0.5f, 1.0f)).ToWinFormsColor();
             
-            if (_levelSettings.GameVersion == GameVersion.TR5)
+            switch (_levelSettings.GameVersion)
             {
-                panelTr5Sprites.Visible = true;
-                panelTr5LaraType.Visible = true;
-                panelTr5Weather.Visible = true;
-            }
-            else
-            {
-                panelTr5Sprites.Visible = false;
-                panelTr5LaraType.Visible = false;
-                panelTr5Weather.Visible = false;
+                case GameVersion.TR2:
+                    panelTr5Sprites.Visible = false;
+                    panelTr5LaraType.Visible = false;
+                    panelTr5Weather.Visible = false;
+                    panelTr2Sounds.Visible = true;
+                    panelTr3Sounds.Visible = false;
+                    break;
+
+                case GameVersion.TR3:
+                    panelTr5Sprites.Visible = false;
+                    panelTr5LaraType.Visible = false;
+                    panelTr5Weather.Visible = false;
+                    panelTr2Sounds.Visible = false;
+                    panelTr3Sounds.Visible = true;
+                    break;
+
+                case GameVersion.TR4:
+                case GameVersion.TRNG:
+                    panelTr5Sprites.Visible = false;
+                    panelTr5LaraType.Visible = false;
+                    panelTr5Weather.Visible = false;
+                    panelTr2Sounds.Visible = false;
+                    panelTr3Sounds.Visible = false;
+                    break;
+
+                case GameVersion.TR5:
+                    panelTr5Sprites.Visible = true;
+                    panelTr5LaraType.Visible = true;
+                    panelTr5Weather.Visible = true;
+                    panelTr2Sounds.Visible = false;
+                    panelTr3Sounds.Visible = false;
+                    break;
             }
         }
 
@@ -669,6 +696,78 @@ namespace TombEditor
                 return;
             _levelSettings.Tr5WeatherType = weather; // Must also check none enum values
             UpdateDialog();
+        }
+
+        private void butTr2SoundsXml_Click(object sender, EventArgs e)
+        {
+            string result = BrowseFile(_levelSettings.Tr2SoundsXmlFilePath, "Select the Sounds.xml file", "XML document (*.xml)|*.xml", VariableType.None, true);
+            if (result != null)
+            {
+                _levelSettings.Tr2SoundsXmlFilePath = result;
+                UpdateDialog();
+            }
+        }
+
+        private void butTr2MainSam_Click(object sender, EventArgs e)
+        {
+            string result = BrowseFile(_levelSettings.Tr2MainSamFilePath, "Select MAIN.SAM file", "Tomb Editor SAM file (*.sam)|*.sam", VariableType.None, true);
+            if (result != null)
+            {
+                _levelSettings.Tr2MainSamFilePath = result;
+                UpdateDialog();
+            }
+        }
+
+        private void tbTr2SoundsXml_TextChanged(object sender, EventArgs e)
+        {
+            if (_levelSettings.Tr2SoundsXmlFilePath == tbTr2SoundsXml.Text)
+                return;
+            _levelSettings.Tr2SoundsXmlFilePath = tbTr2SoundsXml.Text;
+            UpdateDialog();
+        }
+
+        private void tbTr2MainSam_TextChanged(object sender, EventArgs e)
+        {
+            if (_levelSettings.Tr2MainSamFilePath == tbTr2MainSam.Text)
+                return;
+            _levelSettings.Tr2MainSamFilePath = tbTr2MainSam.Text;
+            UpdateDialog();
+        }
+
+        private void tbTr3SoundsXml_TextChanged(object sender, EventArgs e)
+        {
+            if (_levelSettings.Tr3SoundsXmlFilePath == tbTr3SoundsXml.Text)
+                return;
+            _levelSettings.Tr3SoundsXmlFilePath = tbTr3SoundsXml.Text;
+            UpdateDialog();
+        }
+
+        private void tbTr3MainSam_TextChanged(object sender, EventArgs e)
+        {
+            if (_levelSettings.Tr3MainSamFilePath == tbTr3MainSam.Text)
+                return;
+            _levelSettings.Tr3MainSamFilePath = tbTr3MainSam.Text;
+            UpdateDialog();
+        }
+
+        private void butTr3SoundsXml_Click(object sender, EventArgs e)
+        {
+            string result = BrowseFile(_levelSettings.Tr3SoundsXmlFilePath, "Select the Sounds.xml file", "XML document (*.xml)|*.xml", VariableType.None, true);
+            if (result != null)
+            {
+                _levelSettings.Tr3SoundsXmlFilePath = result;
+                UpdateDialog();
+            }
+        }
+
+        private void butTr3MainSam_Click(object sender, EventArgs e)
+        {
+            string result = BrowseFile(_levelSettings.Tr3MainSamFilePath, "Select MAIN.SAM file", "Tomb Editor SAM file (*.sam)|*.sam", VariableType.None, true);
+            if (result != null)
+            {
+                _levelSettings.Tr3MainSamFilePath = result;
+                UpdateDialog();
+            }
         }
 
         // Target path

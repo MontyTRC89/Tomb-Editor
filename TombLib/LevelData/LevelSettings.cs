@@ -89,9 +89,18 @@ namespace TombLib.LevelData
         public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string Tr2MainSamFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string Tr3MainSamFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string Tr2SoundsXmlFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string Tr3SoundsXmlFilePath { get; set; } = null; // Can be null if the default should be used.
+
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
             {
-                new OldWadSoundPath("Sounds"),
+                new OldWadSoundPath("Sounds\\TR1\\Samples"),
+                new OldWadSoundPath("Sounds\\TR2\\Samples"),
+                new OldWadSoundPath("Sounds\\TR3\\Samples"),
+                new OldWadSoundPath("Sounds\\TR4\\Samples"),
+                new OldWadSoundPath("Sounds\\TR5\\Samples"),
                 new OldWadSoundPath(""),
                 new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound\\Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds\\Samples")
@@ -268,6 +277,18 @@ namespace TombLib.LevelData
 
         public string Tr5ExtraSpritesFileNameAbsoluteOrDefault => MakeAbsolute(Tr5ExtraSpritesFilePath) ??
             Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/Extra.Tr5.pc.png");
+
+        public string Tr2MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr2MainSamFilePath) ??
+            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/MAIN.SAM");
+
+        public string Tr3MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr3MainSamFilePath) ??
+            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR3/MAIN.SAM");
+
+        public string Tr2SoundsXmlFileNameAbsoluteOrDefault => MakeAbsolute(Tr2SoundsXmlFilePath) ??
+           Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/Sounds.xml");
+
+        public string Tr3SoundsXmlFileNameAbsoluteOrDefault => MakeAbsolute(Tr3SoundsXmlFilePath) ??
+            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR3/Sounds.xml");
 
         public static ImageC LoadRawExtraTexture(string path)
         {

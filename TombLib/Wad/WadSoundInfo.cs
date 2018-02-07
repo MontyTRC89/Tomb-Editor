@@ -11,13 +11,16 @@ namespace TombLib.Wad
     public class WadSoundInfo
     {
         private List<WadSample> _sound;
+        private List<string> _sampleNames;
 
         public string Name { get; set; }
+
         public List<WadSample> Samples { get { return _sound; } }
-        public byte Volume { get; set; }
-        public byte Range { get; set; }
-        public byte Chance { get; set; }
-        public byte Pitch { get; set; }
+
+        public short Volume { get; set; }
+        public short Range { get; set; }
+        public short Chance { get; set; }
+        public short Pitch { get; set; }
         public bool FlagN { get; set; }
         public bool RandomizePitch { get; set; }
         public bool RandomizeGain { get; set; }
@@ -26,9 +29,13 @@ namespace TombLib.Wad
 
         private Hash _hash;
 
+        // Internally used in tools
+        public bool Enabled { get; set; }
+
         public WadSoundInfo()
         {
             _sound = new List<WadSample>();
+            _sampleNames = new List<string>();
         }
 
         public Hash UpdateHash()
@@ -72,12 +79,12 @@ namespace TombLib.Wad
             soundInfo.Pitch = Pitch;
             soundInfo.RandomizeGain = RandomizeGain;
             soundInfo.RandomizePitch = RandomizePitch;
-
+#if __NEW_SOUNDMAP_SYSTEM__
             foreach (var wave in Samples)
                 soundInfo.Samples.Add(wave.Clone());
-
+#else
             soundInfo.UpdateHash();
-
+#endif
             return soundInfo;
         }
     }

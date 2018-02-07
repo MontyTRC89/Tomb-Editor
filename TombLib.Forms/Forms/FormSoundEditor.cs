@@ -10,6 +10,7 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib.Sounds;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
@@ -20,6 +21,7 @@ namespace TombLib.Forms
         private Wad2 _wad;
         private int _currentSound = -1;
         private bool _saveWadOnExit;
+        private Dictionary<ushort, WadSoundInfo> _sounds;
 
         public FormSoundEditor(Wad2 wad, bool saveWadOnExit)
         {
@@ -46,6 +48,39 @@ namespace TombLib.Forms
         private void ReloadSoundInfos()
         {
             lstSoundInfos.Items.Clear();
+            _sounds = new Dictionary<ushort, WadSoundInfo>();
+
+            var soundMapSize = SoundsCatalog.GetSoundMapSize(_wad.Version, false);
+            for (var i = 0; i < soundMapSize; i++)
+            {
+                /*ushort soundId = (ushort)i;
+
+                if (_wad.SoundInfo.ContainsKey(soundId))
+                {
+                    var sound = _wad.SoundInfo[soundId];
+                    sound.Enabled = true;
+                    _sounds.Add(soundId, sound);
+                }
+                else
+                {
+                    var soundCatalog = SoundsCatalog.GetSound(_wad.Version, soundId);
+                    var info = new WadSoundInfo();
+                    info.Enabled = false;
+                    info.Name = soundCatalog.Name;
+                    info.Volume = soundCatalog.Volume;
+                    info.Chance = soundCatalog.Chance;
+                    info.Pitch = soundCatalog.Pitch;
+                    info.Range = soundCatalog.Range;
+                    info.RandomizeGain = soundCatalog.FlagR;
+                    info.RandomizePitch = soundCatalog.FlagP;
+                    if (soundCatalog.FlagL)
+                        info.Loop = WadSoundLoopType.L;
+                    else if (soundCatalog.FlagR)
+                        info.Loop = WadSoundLoopType.R;
+                    foreach (var sampleName in soundCatalog.Samples)
+                        info.Samples.Add(LoadSample())
+                }*/
+            }
 
             foreach (var soundInfo in _wad.SoundInfo)
             {
@@ -106,7 +141,7 @@ namespace TombLib.Forms
             lstWaves.Items.Clear();
             foreach (var wave in soundInfo.Samples)
             {
-                var itemWave = new DarkUI.Controls.DarkListItem(wave.Name);
+                var itemWave = new DarkUI.Controls.DarkListItem(wave.Name); 
                 itemWave.Tag = wave;
                 lstWaves.Items.Add(itemWave);
             }
@@ -207,7 +242,7 @@ namespace TombLib.Forms
 
         private void butAddNewWave_Click(object sender, EventArgs e)
         {
-            var form = new FormSelectWave(_wad);
+            var form = new FormSelectSample(_wad);
             if (form.ShowDialog(this) == DialogResult.Cancel) return;
 
             // Search for already existing sample

@@ -18,6 +18,7 @@ using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib;
 using System.Diagnostics;
+using TombLib.Wad.TrLevels;
 
 namespace TombEditor
 {
@@ -1265,7 +1266,7 @@ namespace TombEditor
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var reader = new BinaryReader(File.OpenRead("Font.tr5.pc")))
+            /*using (var reader = new BinaryReader(File.OpenRead("Font.tr5.pc")))
             {
                 var bmp = new Bitmap(256, 768);
                 for (var y=0;y<768;y++)
@@ -1278,7 +1279,53 @@ namespace TombEditor
                         bmp.SetPixel(x, y, Color.FromArgb(a, r, g, b));
                     }
                 bmp.Save("Font.Tr5.png");
-            }
+            }*/
+
+            /*for (var j = 3; j <= 5; j++)
+            {
+                var list = OriginalSoundsDefinitions.LoadSounds(File.OpenRead("Sounds\\TR" + j + "\\sounds.txt"));
+
+                using (var writer = new StreamWriter(File.OpenWrite("Sounds\\TR" + j + "\\Samples.Tr" + j + ".xml")))
+                {
+                    writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+                    writer.WriteLine("\t<Sounds>");
+
+                    var i = 0;
+                    foreach (var sound in list)
+                    {
+                        writer.WriteLine("\t\t<Sound Id=\"" + i + "\">");
+
+                        writer.WriteLine("\t\t\t<Name>" + sound.Name.Replace("&", "&amp;") + "</Name>");
+                        writer.WriteLine("\t\t\t<Volume>" + sound.Volume + "</Volume>");
+                        writer.WriteLine("\t\t\t<Pitch>" + sound.Pitch + "</Pitch>");
+                        writer.WriteLine("\t\t\t<Range>" + sound.Range + "</Range>");
+                        writer.WriteLine("\t\t\t<Chance>" + sound.Chance + "</Chance>");
+                        writer.WriteLine("\t\t\t<L>" + sound.FlagL + "</L>");
+                        writer.WriteLine("\t\t\t<N>" + sound.FlagN + "</N>");
+                        writer.WriteLine("\t\t\t<P>" + sound.FlagP + "</P>");
+                        writer.WriteLine("\t\t\t<R>" + sound.FlagR + "</R>");
+                        writer.WriteLine("\t\t\t<V>" + sound.FlagV + "</V>");
+
+                        writer.WriteLine("\t\t\t<Samples>");
+                        foreach (var sample in sound.Samples)
+                        {
+                            writer.WriteLine("\t\t\t\t<Sample>" + sample.Replace("&", "&amp;") + "</Sample>");
+                        }
+                        writer.WriteLine("\t\t\t</Samples>");
+
+                        writer.WriteLine("\t\t</Sound>");
+
+                        i++;
+                    }
+
+                    writer.WriteLine("\t</Sounds>");
+                    writer.WriteLine("</xml>");
+                }
+            }*/
+
+            TrLevel level = new TrLevel();
+            level.LoadLevel("D:\\tr2\\data\\platform.tr2", "", "");
+
         }
 
         private void soundManagerToolStripMenuItem_Click(object sender, EventArgs e)

@@ -11,6 +11,7 @@ namespace TombLib.Wad
         TR2,
         TR3,
         TR4,
+        TRNG,
         TR5
     }
 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Wad;
 
-namespace TombLib.Wad
+namespace TombLib.Sounds
 {
-    public class OriginalSound
+    public class SoundCatalogInfo
     {
         public string Name { get; set; }
         public List<string> Samples { get; set; }
@@ -16,15 +17,19 @@ namespace TombLib.Wad
         public bool FlagR { get; set; }
         public bool FlagL { get; set; }
         public bool FlagN { get; set; }
+        public bool FlagW { get; set; }
         public ushort Flags { get; set; }
         public short Chance { get; set; }
         public short Pitch { get; set; }
         public short Range { get; set; }
-        public List<string> WadLetters { get; set; }
         public bool MandatorySound { get; set; }
         public bool Unused { get; set; }
+        public bool NgLocked { get; set; }
 
-        public OriginalSound()
+        // Used internally
+        internal List<string> WadLetters { get; private set; }
+
+        public SoundCatalogInfo()
         {
             Samples = new List<string>();
             WadLetters = new List<string>();

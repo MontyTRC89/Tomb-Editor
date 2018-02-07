@@ -14,13 +14,13 @@ using TombLib.Wad;
 
 namespace TombLib.Forms
 {
-    public partial class FormSelectWave : DarkForm
+    public partial class FormSelectSample : DarkForm
     {
         public WadSample SelectedWave { get; private set; }
 
         private Wad2 _wad;
 
-        public FormSelectWave(Wad2 wad)
+        public FormSelectSample(Wad2 wad)
         {
             InitializeComponent();
             _wad = wad;

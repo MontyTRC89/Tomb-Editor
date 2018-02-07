@@ -330,7 +330,9 @@ namespace WadTool
             else
             {
                 var originalLevel = new TrLevel();
-                originalLevel.LoadLevel(fileName, _tool.Configuration.Sounds_Tr2MainSfxPath, _tool.Configuration.Sounds_Tr3MainSfxPath);
+                originalLevel.LoadLevel(fileName, 
+                                        _tool.Configuration.Sounds_Path + "\\TR2\\MAIN.SFX", 
+                                        _tool.Configuration.Sounds_Path + "\\TR3\\MAIN.SFX");
 
                 var newWad = TrLevelOperations.ConvertTrLevel(originalLevel);
                 if (newWad == null)

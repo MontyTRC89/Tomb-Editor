@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.Sounds;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -183,14 +184,25 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(numDemo);
 
                 // Write sounds
+                // For TR3 we read sound infos from XML file, then samples indices are loaded from MAIN.SAM that 
+                // is built at the same time with MAIN.SFX
+                if (!File.Exists(_level.Settings.Tr3SoundsXmlFileNameAbsoluteOrDefault))
+                    throw new NotImplementedException("Sounds.xml file was not found");
+
+                if (!File.Exists(_level.Settings.Tr3MainSamFileNameAbsoluteOrDefault))
+                    throw new NotImplementedException("MAIN.SAM file was not found");
+
+                var catalog = SoundsCatalog.LoadCatalogFromXml(_level.Settings.Tr3SoundsXmlFileNameAbsoluteOrDefault);
+                var soundMapSize = SoundsCatalog.GetSoundMapSize(WadTombRaiderVersion.TR3, false);
+                if (catalog == null || catalog.Count != soundMapSize)
+                    throw new InvalidDataException("Sounds.xml was found but is corrupted");
 
                 // Write sound map
-                var soundMapSize = GetSoundMapSize();
                 var lastSound = 0;
                 for (int i = 0; i < soundMapSize; i++)
                 {
                     short soundMapValue = -1;
-                    if (_level.Wad.SoundInfo.ContainsKey((ushort)i))
+                    if (catalog.ContainsKey((ushort)i))
                     {
                         soundMapValue = (short)lastSound;
                         lastSound++;
@@ -199,44 +211,63 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(soundMapValue);
                 }
 
+                // Now load MAIN.SAM file, it contains samples indices in MAIN.SFX
+                var samplesIndices = new List<int>();
+                using (var readerSam = new BinaryReader(File.OpenRead(_level.Settings.Tr3MainSamFileNameAbsoluteOrDefault)))
+                {
+                    while (readerSam.BaseStream.Position < readerSam.BaseStream.Length)
+                    {
+                        samplesIndices.Add(readerSam.ReadInt32());
+                    }
+                }
+
                 // Write sound details
-                writer.Write((uint)_level.Wad.SoundInfo.Count);
+                writer.Write((uint)lastSound);
 
                 short lastSample = 0;
 
-                for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
+                foreach (var pair in catalog)
                 {
-                    var wadInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
-                    var soundInfo = new tr_sound_details();
+                    var oldSoundInfo = pair.Value;
+                    var soundInfo = new tr3_sound_details();
 
                     soundInfo.Sample = lastSample;
-                    soundInfo.Volume = wadInfo.Volume;
-                    soundInfo.Range = wadInfo.Range;
-                    soundInfo.Pitch = wadInfo.Pitch;
-                    soundInfo.Chance = wadInfo.Chance;
 
-                    ushort characteristics = (ushort)(/*wadInfo.Samples.Count */ 1 << 2);
-                    if (wadInfo.FlagN)
+                    soundInfo.Volume = (byte)((oldSoundInfo.Volume * 255 / 100) & 0xFF);
+                    soundInfo.Chance = (byte)((oldSoundInfo.Chance * 255 / 100) & 0xFF);
+                    soundInfo.Range = (byte)((oldSoundInfo.Range) & 0xFF);
+                    soundInfo.Pitch = (byte)((oldSoundInfo.Pitch * 127 / 100) & 0xFF);
+
+                    ushort characteristics = (ushort)(oldSoundInfo.Samples.Count);
+                    if (oldSoundInfo.FlagN)
                         characteristics |= 0x1000;
-                    if (wadInfo.RandomizePitch)
+                    if (oldSoundInfo.FlagP)
                         characteristics |= 0x2000;
-                    if (wadInfo.RandomizeGain)
+                    if (oldSoundInfo.FlagV)
                         characteristics |= 0x4000;
-                    characteristics |= (byte)wadInfo.Loop;
+
+                    if (oldSoundInfo.FlagL)
+                        characteristics |= (byte)0x03;
+                    else if (oldSoundInfo.FlagR)
+                        characteristics |= (byte)0x02;
+                    else if (oldSoundInfo.FlagW)
+                        characteristics |= (byte)0x01;
 
                     soundInfo.Characteristics = characteristics;
 
-                    writer.WriteBlock<tr_sound_details>(soundInfo);
+                    writer.Write(soundInfo.Sample);
+                    writer.Write((short)soundInfo.Volume);
+                    writer.Write((short)soundInfo.Chance);
+                    writer.Write(soundInfo.Characteristics);
 
-                    lastSample += (short)wadInfo.Samples.Count;
+                    lastSample += (short)oldSoundInfo.Samples.Count;
                 }
 
-                // TODO: samples are in MAIN.SFX so I have to found a way to write samples indices here
+                // Write samples indices
                 int numSampleIndices = lastSample;
                 writer.Write(numSampleIndices);
-                int filler3 = 0;
                 for (int i = 0; i < numSampleIndices; i++)
-                    writer.Write(/*filler3*/ i);
+                    writer.Write(samplesIndices[i]);
 
                 writer.Flush();
             }
