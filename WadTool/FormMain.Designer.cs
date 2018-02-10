@@ -31,8 +31,12 @@
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.darkMenuStrip1 = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newEmptyWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newEmptyWad2WithSystemSoundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tR2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tR3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tR4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tRNGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tR5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.openDestinationWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSourceWADToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,6 +100,7 @@
             this.treeAnimations = new DarkUI.Controls.DarkTreeView();
             this.darkButton2 = new DarkUI.Controls.DarkButton();
             this.butEditItem = new DarkUI.Controls.DarkButton();
+            this.labelDestinationVersion = new DarkUI.Controls.DarkLabel();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.groupSelectedMoveable.SuspendLayout();
@@ -133,8 +138,7 @@
             // 
             this.fileToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newEmptyWad2ToolStripMenuItem,
-            this.newEmptyWad2WithSystemSoundsToolStripMenuItem,
+            this.newWad2ToolStripMenuItem,
             this.toolStripMenuItem3,
             this.openDestinationWad2ToolStripMenuItem,
             this.openSourceWADToolStripMenuItem,
@@ -148,23 +152,64 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
-            // newEmptyWad2ToolStripMenuItem
+            // newWad2ToolStripMenuItem
             // 
-            this.newEmptyWad2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newEmptyWad2ToolStripMenuItem.Image = global::WadTool.Properties.Resources.create_new_16;
-            this.newEmptyWad2ToolStripMenuItem.Name = "newEmptyWad2ToolStripMenuItem";
-            this.newEmptyWad2ToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
-            this.newEmptyWad2ToolStripMenuItem.Text = "New empty Wad2";
-            this.newEmptyWad2ToolStripMenuItem.Click += new System.EventHandler(this.newEmptyWad2ToolStripMenuItem_Click);
+            this.newWad2ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.newWad2ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tR2ToolStripMenuItem,
+            this.tR3ToolStripMenuItem,
+            this.tR4ToolStripMenuItem,
+            this.tRNGToolStripMenuItem,
+            this.tR5ToolStripMenuItem});
+            this.newWad2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newWad2ToolStripMenuItem.Name = "newWad2ToolStripMenuItem";
+            this.newWad2ToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.newWad2ToolStripMenuItem.Text = "New Wad2";
             // 
-            // newEmptyWad2WithSystemSoundsToolStripMenuItem
+            // tR2ToolStripMenuItem
             // 
-            this.newEmptyWad2WithSystemSoundsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newEmptyWad2WithSystemSoundsToolStripMenuItem.Image = global::WadTool.Properties.Resources.create_archive_16;
-            this.newEmptyWad2WithSystemSoundsToolStripMenuItem.Name = "newEmptyWad2WithSystemSoundsToolStripMenuItem";
-            this.newEmptyWad2WithSystemSoundsToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
-            this.newEmptyWad2WithSystemSoundsToolStripMenuItem.Text = "New empty Wad2 for level";
-            this.newEmptyWad2WithSystemSoundsToolStripMenuItem.Click += new System.EventHandler(this.newEmptyWad2WithSystemSoundsToolStripMenuItem_Click);
+            this.tR2ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tR2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tR2ToolStripMenuItem.Name = "tR2ToolStripMenuItem";
+            this.tR2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR2ToolStripMenuItem.Text = "TR2";
+            this.tR2ToolStripMenuItem.Click += new System.EventHandler(this.tR2ToolStripMenuItem_Click);
+            // 
+            // tR3ToolStripMenuItem
+            // 
+            this.tR3ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tR3ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tR3ToolStripMenuItem.Name = "tR3ToolStripMenuItem";
+            this.tR3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR3ToolStripMenuItem.Text = "TR3";
+            this.tR3ToolStripMenuItem.Click += new System.EventHandler(this.tR3ToolStripMenuItem_Click);
+            // 
+            // tR4ToolStripMenuItem
+            // 
+            this.tR4ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tR4ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tR4ToolStripMenuItem.Name = "tR4ToolStripMenuItem";
+            this.tR4ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR4ToolStripMenuItem.Text = "TR4";
+            this.tR4ToolStripMenuItem.Click += new System.EventHandler(this.tR4ToolStripMenuItem_Click);
+            // 
+            // tRNGToolStripMenuItem
+            // 
+            this.tRNGToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tRNGToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tRNGToolStripMenuItem.Name = "tRNGToolStripMenuItem";
+            this.tRNGToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tRNGToolStripMenuItem.Text = "TRNG";
+            this.tRNGToolStripMenuItem.Click += new System.EventHandler(this.tRNGToolStripMenuItem_Click);
+            // 
+            // tR5ToolStripMenuItem
+            // 
+            this.tR5ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tR5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tR5ToolStripMenuItem.Name = "tR5ToolStripMenuItem";
+            this.tR5ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR5ToolStripMenuItem.Text = "TR5";
+            this.tR5ToolStripMenuItem.Click += new System.EventHandler(this.tR5ToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
@@ -800,11 +845,22 @@
             this.butEditItem.Text = "Edit";
             this.butEditItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             // 
+            // labelDestinationVersion
+            // 
+            this.labelDestinationVersion.AutoSize = true;
+            this.labelDestinationVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelDestinationVersion.Location = new System.Drawing.Point(12, 80);
+            this.labelDestinationVersion.Name = "labelDestinationVersion";
+            this.labelDestinationVersion.Size = new System.Drawing.Size(19, 13);
+            this.labelDestinationVersion.TabIndex = 23;
+            this.labelDestinationVersion.Text = "---";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 746);
+            this.Controls.Add(this.labelDestinationVersion);
             this.Controls.Add(this.butEditItem);
             this.Controls.Add(this.groupSelectedMoveable);
             this.Controls.Add(this.scrollbarAnimations);
@@ -883,8 +939,6 @@
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction0ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction1ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newEmptyWad2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newEmptyWad2WithSystemSoundsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem spriteEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addNewSpriteSequenceToolStripMenuItem;
@@ -909,6 +963,13 @@
         private DarkUI.Controls.DarkTreeView treeAnimations;
         private DarkUI.Controls.DarkButton darkButton2;
         private DarkUI.Controls.DarkButton butEditItem;
+        private System.Windows.Forms.ToolStripMenuItem newWad2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tR2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tR3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tR4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tRNGToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tR5ToolStripMenuItem;
+        private DarkUI.Controls.DarkLabel labelDestinationVersion;
     }
 }
 

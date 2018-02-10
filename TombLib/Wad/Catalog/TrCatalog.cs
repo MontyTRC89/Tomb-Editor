@@ -124,7 +124,7 @@ namespace TombLib.Wad.Catalog
             return result;
         }
 
-        public static Dictionary<int, string> GetAllSounds(WadTombRaiderVersion version)
+        /*public static Dictionary<int, string> GetAllSounds(WadTombRaiderVersion version)
         {
             var result = new Dictionary<int, string>();
             foreach (var item in Games[version].Sounds)
@@ -148,7 +148,7 @@ namespace TombLib.Wad.Catalog
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
+        }*/
 
         public static string GetVersionString(WadTombRaiderVersion version)
         {

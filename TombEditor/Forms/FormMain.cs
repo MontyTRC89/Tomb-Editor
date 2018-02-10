@@ -19,6 +19,7 @@ using TombLib.Graphics;
 using TombLib;
 using System.Diagnostics;
 using TombLib.Wad.TrLevels;
+using TombLib.Sounds;
 
 namespace TombEditor
 {
@@ -1382,6 +1383,12 @@ namespace TombEditor
         {
             if (_editor != null && _editor.Level != null)
                 EditorActions.AutoSaveLevel();
+        }
+
+        private void soundsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var levels = Directory.EnumerateFiles("D:\\TR2\\data\\test");
+            SoundsCatalog.TestProcedure(levels);
         }
     }
 }

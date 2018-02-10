@@ -36,7 +36,13 @@ namespace SoundTool
         private void tR2CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _version = WadTombRaiderVersion.TR2;
+
             buildMAINSFXToolStripMenuItem.Enabled = true;
+            cbMandatorySound.Visible = false;
+            cbMandatorySound.Checked = false;
+            cbNgLocked.Visible = false;
+            cbNgLocked.Checked = false;
+
             ReloadSounds();
         }
 
@@ -61,21 +67,37 @@ namespace SoundTool
         private void tR3CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _version = WadTombRaiderVersion.TR3;
+
             buildMAINSFXToolStripMenuItem.Enabled = true;
+            cbMandatorySound.Visible = false;
+            cbMandatorySound.Checked = false;
+            cbNgLocked.Visible = false;
+            cbNgLocked.Checked = false;
+
             ReloadSounds();
         }
 
         private void tR4CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _version = WadTombRaiderVersion.TR4;
+
             buildMAINSFXToolStripMenuItem.Enabled = false;
+            cbMandatorySound.Visible = true;
+            //if (_version)
+            cbNgLocked.Visible = true;
+
             ReloadSounds();
         }
 
         private void tR5CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _version = WadTombRaiderVersion.TR5;
+
             buildMAINSFXToolStripMenuItem.Enabled = false;
+            cbMandatorySound.Visible = true;
+            cbNgLocked.Visible = false;
+            cbNgLocked.Checked = false;
+
             ReloadSounds();
         }
 
@@ -103,7 +125,8 @@ namespace SoundTool
                 comboLoop.SelectedIndex = 3;
             cbRandomizeGain.Checked = soundInfo.FlagR;
             cbRandomizePitch.Checked = soundInfo.FlagP;
-            //comboId.SelectedIndex = (ushort)item.Tag;
+            cbMandatorySound.Checked = soundInfo.MandatorySound;
+            cbNgLocked.Checked = soundInfo.NgLocked;
 
             lstSamples.Items.Clear();
             foreach (var sample in soundInfo.Samples)
@@ -138,6 +161,8 @@ namespace SoundTool
             soundInfo.FlagR = cbRandomizeGain.Checked;
             soundInfo.FlagP = cbRandomizePitch.Checked;
             soundInfo.Name = tbName.Text;
+            soundInfo.MandatorySound = cbMandatorySound.Checked;
+            soundInfo.NgLocked = cbNgLocked.Checked;
 
             soundInfo.Samples.Clear();
             foreach (var item in lstSamples.Items)

@@ -151,6 +151,7 @@
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
             this.timerAutosave = new System.Windows.Forms.Timer(this.components);
+            this.soundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1256,7 +1257,8 @@
             this.debugAction2ToolStripMenuItem,
             this.debugAction3ToolStripMenuItem,
             this.debugAction4ToolStripMenuItem,
-            this.debugAction5ToolStripMenuItem});
+            this.debugAction5ToolStripMenuItem,
+            this.soundsToolStripMenuItem});
             this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 0, 120, 0);
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
@@ -1596,6 +1598,15 @@
             this.timerAutosave.Interval = 300000;
             this.timerAutosave.Tick += new System.EventHandler(this.timerAutosave_Tick);
             // 
+            // soundsToolStripMenuItem
+            // 
+            this.soundsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
+            this.soundsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.soundsToolStripMenuItem.Text = "Sounds";
+            this.soundsToolStripMenuItem.Click += new System.EventHandler(this.soundsToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -1757,5 +1768,6 @@
         private System.Windows.Forms.ToolStripMenuItem wadToolToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel statusAutosave;
         private System.Windows.Forms.Timer timerAutosave;
+        private System.Windows.Forms.ToolStripMenuItem soundsToolStripMenuItem;
     }
 }

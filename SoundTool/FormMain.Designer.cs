@@ -31,16 +31,20 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.darkMenuStrip1 = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutSoundToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tR1CatalogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tR2CatalogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tR3CatalogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tR4CatalogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tR5CatalogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertTXTToXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buildMAINSFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutSoundToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.tbChance = new DarkUI.Controls.DarkTextBox();
@@ -60,15 +64,13 @@
             this.lstSoundInfos = new DarkUI.Controls.DarkListView();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.convertTXTToXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tR1CatalogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
             this.butAddNewWave = new DarkUI.Controls.DarkButton();
             this.butDeleteWave = new DarkUI.Controls.DarkButton();
             this.butSaveChanges = new DarkUI.Controls.DarkButton();
             this.comboLoop = new DarkUI.Controls.DarkComboBox();
-            this.buildMAINSFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbMandatorySound = new DarkUI.Controls.DarkCheckBox();
+            this.cbNgLocked = new DarkUI.Controls.DarkCheckBox();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -101,33 +103,6 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // exitToolStripMenuItem
-            // 
-            this.exitToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutSoundToolToolStripMenuItem});
-            this.helpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            // 
-            // aboutSoundToolToolStripMenuItem
-            // 
-            this.aboutSoundToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.aboutSoundToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.aboutSoundToolToolStripMenuItem.Name = "aboutSoundToolToolStripMenuItem";
-            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.aboutSoundToolToolStripMenuItem.Text = "About Sound Tool";
-            // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -143,11 +118,20 @@
             this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Open";
             // 
+            // tR1CatalogToolStripMenuItem
+            // 
+            this.tR1CatalogToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tR1CatalogToolStripMenuItem.Enabled = false;
+            this.tR1CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.tR1CatalogToolStripMenuItem.Name = "tR1CatalogToolStripMenuItem";
+            this.tR1CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR1CatalogToolStripMenuItem.Text = "TR1 Catalog";
+            this.tR1CatalogToolStripMenuItem.Click += new System.EventHandler(this.tR1CatalogToolStripMenuItem_Click);
+            // 
             // tR2CatalogToolStripMenuItem
             // 
             this.tR2CatalogToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tR2CatalogToolStripMenuItem.Enabled = false;
-            this.tR2CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.tR2CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tR2CatalogToolStripMenuItem.Name = "tR2CatalogToolStripMenuItem";
             this.tR2CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tR2CatalogToolStripMenuItem.Text = "TR2 Catalog";
@@ -197,6 +181,63 @@
             this.toolStripMenuItem1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // toolsToolStripMenuItem
+            // 
+            this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.convertTXTToXMLToolStripMenuItem,
+            this.buildMAINSFXToolStripMenuItem});
+            this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.toolsToolStripMenuItem.Text = "Tools";
+            // 
+            // convertTXTToXMLToolStripMenuItem
+            // 
+            this.convertTXTToXMLToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.convertTXTToXMLToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.convertTXTToXMLToolStripMenuItem.Name = "convertTXTToXMLToolStripMenuItem";
+            this.convertTXTToXMLToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.convertTXTToXMLToolStripMenuItem.Text = "Convert TXT to XML";
+            this.convertTXTToXMLToolStripMenuItem.Click += new System.EventHandler(this.convertTXTToXMLToolStripMenuItem_Click);
+            // 
+            // buildMAINSFXToolStripMenuItem
+            // 
+            this.buildMAINSFXToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.buildMAINSFXToolStripMenuItem.Enabled = false;
+            this.buildMAINSFXToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.buildMAINSFXToolStripMenuItem.Name = "buildMAINSFXToolStripMenuItem";
+            this.buildMAINSFXToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.buildMAINSFXToolStripMenuItem.Text = "Build MAIN.SFX";
+            this.buildMAINSFXToolStripMenuItem.Click += new System.EventHandler(this.buildMAINSFXToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutSoundToolToolStripMenuItem});
+            this.helpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // aboutSoundToolToolStripMenuItem
+            // 
+            this.aboutSoundToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.aboutSoundToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.aboutSoundToolToolStripMenuItem.Name = "aboutSoundToolToolStripMenuItem";
+            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.aboutSoundToolToolStripMenuItem.Text = "About Sound Tool";
             // 
             // darkLabel8
             // 
@@ -365,36 +406,6 @@
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.Size = new System.Drawing.Size(0, 0);
             // 
-            // toolsToolStripMenuItem
-            // 
-            this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.convertTXTToXMLToolStripMenuItem,
-            this.buildMAINSFXToolStripMenuItem});
-            this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-            this.toolsToolStripMenuItem.Text = "Tools";
-            // 
-            // convertTXTToXMLToolStripMenuItem
-            // 
-            this.convertTXTToXMLToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.convertTXTToXMLToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.convertTXTToXMLToolStripMenuItem.Name = "convertTXTToXMLToolStripMenuItem";
-            this.convertTXTToXMLToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.convertTXTToXMLToolStripMenuItem.Text = "Convert TXT to XML";
-            this.convertTXTToXMLToolStripMenuItem.Click += new System.EventHandler(this.convertTXTToXMLToolStripMenuItem_Click);
-            // 
-            // tR1CatalogToolStripMenuItem
-            // 
-            this.tR1CatalogToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tR1CatalogToolStripMenuItem.Enabled = false;
-            this.tR1CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.tR1CatalogToolStripMenuItem.Name = "tR1CatalogToolStripMenuItem";
-            this.tR1CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.tR1CatalogToolStripMenuItem.Text = "TR1 Catalog";
-            this.tR1CatalogToolStripMenuItem.Click += new System.EventHandler(this.tR1CatalogToolStripMenuItem_Click);
-            // 
             // butPlaySound
             // 
             this.butPlaySound.Image = global::SoundTool.Properties.Resources.actions_play_16;
@@ -454,21 +465,31 @@
             this.comboLoop.TabIndex = 62;
             this.comboLoop.Text = "None";
             // 
-            // buildMAINSFXToolStripMenuItem
+            // cbMandatorySound
             // 
-            this.buildMAINSFXToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.buildMAINSFXToolStripMenuItem.Enabled = false;
-            this.buildMAINSFXToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.buildMAINSFXToolStripMenuItem.Name = "buildMAINSFXToolStripMenuItem";
-            this.buildMAINSFXToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.buildMAINSFXToolStripMenuItem.Text = "Build MAIN.SFX";
-            this.buildMAINSFXToolStripMenuItem.Click += new System.EventHandler(this.buildMAINSFXToolStripMenuItem_Click);
+            this.cbMandatorySound.AutoSize = true;
+            this.cbMandatorySound.Location = new System.Drawing.Point(276, 30);
+            this.cbMandatorySound.Name = "cbMandatorySound";
+            this.cbMandatorySound.Size = new System.Drawing.Size(108, 17);
+            this.cbMandatorySound.TabIndex = 75;
+            this.cbMandatorySound.Text = "Mandatory sound";
+            // 
+            // cbNgLocked
+            // 
+            this.cbNgLocked.AutoSize = true;
+            this.cbNgLocked.Location = new System.Drawing.Point(276, 53);
+            this.cbNgLocked.Name = "cbNgLocked";
+            this.cbNgLocked.Size = new System.Drawing.Size(92, 17);
+            this.cbNgLocked.TabIndex = 76;
+            this.cbNgLocked.Text = "TRNG locked";
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(581, 554);
+            this.Controls.Add(this.cbNgLocked);
+            this.Controls.Add(this.cbMandatorySound);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.lstSoundInfos);
             this.Controls.Add(this.butPlaySound);
@@ -550,6 +571,8 @@
         private System.Windows.Forms.ToolStripMenuItem convertTXTToXMLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tR1CatalogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buildMAINSFXToolStripMenuItem;
+        private DarkUI.Controls.DarkCheckBox cbMandatorySound;
+        private DarkUI.Controls.DarkCheckBox cbNgLocked;
     }
 }
 
