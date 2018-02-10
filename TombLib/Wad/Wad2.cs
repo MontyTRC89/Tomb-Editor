@@ -38,6 +38,7 @@ namespace TombLib.Wad
         public string FileName { get; set; }
         public int SoundMapSize { get; set; }
         public Dictionary<string, WadObject> LegacyNames { get; private set; }
+        public bool IsNg { get; set; }
 
         // Data for rendering
         public GraphicsDevice GraphicsDevice { get; set; }

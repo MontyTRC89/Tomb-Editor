@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.LevelData;
+using TombLib.Sounds;
 
 namespace TombLib.NG
 {
@@ -285,13 +286,13 @@ namespace TombLib.NG
 
                 case NgParameterKind.SoundEffectsB:
                     {
-                        int soundMapSize = (level.Wad != null ? level.Wad.SoundMapSize : Wad.Catalog.TrCatalog.GetSoundMapSize(Wad.WadTombRaiderVersion.TR4, false));
+                        int soundMapSize = (level.Wad != null ? level.Wad.SoundMapSize : SoundsCatalog.GetSoundMapSize(Wad.WadTombRaiderVersion.TR4, true));
                         soundMapSize = Math.Min(soundMapSize, 512);
                         return Enumerable.Range(256, Math.Min(soundMapSize, 512)).Select(formatSounds);
                     }
                 case NgParameterKind.Sfx1024:
                     {
-                        int soundMapSize = (level.Wad != null ? level.Wad.SoundMapSize : Wad.Catalog.TrCatalog.GetSoundMapSize(Wad.WadTombRaiderVersion.TR4, false));
+                        int soundMapSize = (level.Wad != null ? level.Wad.SoundMapSize : SoundsCatalog.GetSoundMapSize(Wad.WadTombRaiderVersion.TR4, true));
                         soundMapSize = Math.Min(soundMapSize, 1024);
                         return Enumerable.Range(0, Math.Min(soundMapSize, 1024)).Select(formatSounds);
                     }

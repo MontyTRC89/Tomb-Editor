@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.LevelData;
+using TombLib.Sounds;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -175,7 +176,8 @@ namespace TombLib.LevelData.Compilers
         private void WriteNgChunkLevelFlags(BinaryWriter writer)
         {
             var flags = 0x01;
-            if (_level.Wad.SoundMapSize != TrCatalog.GetSoundMapSize(WadTombRaiderVersion.TR4, false)) flags |= 0x02;
+            if (_level.Wad.IsNg)
+                flags |= 0x02;
             var buffer = new byte[] { 0x04, 0x00, 0x0D, 0x80 };
             writer.Write(buffer);
             writer.Write((int)flags);

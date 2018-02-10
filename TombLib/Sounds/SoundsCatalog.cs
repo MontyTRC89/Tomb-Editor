@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
+using TombLib.Wad.TrLevels;
 
 namespace TombLib.Sounds
 {
@@ -16,7 +18,7 @@ namespace TombLib.Sounds
         public static void LoadAllCatalogsFromXml(string path)
         {
             //LoadCatalog(path, WadTombRaiderVersion.TR1);
-            //LoadCatalog(path +  + "\\TR2\\Sounds.xml", WadTombRaiderVersion.TR2);
+            LoadCatalogFromXml(path + "\\TR2\\Sounds.xml", WadTombRaiderVersion.TR2);
             LoadCatalogFromXml(path + "\\TR3\\Sounds.xml", WadTombRaiderVersion.TR3);
             LoadCatalogFromXml(path + "\\TR4\\Sounds.xml", WadTombRaiderVersion.TR4);
             LoadCatalogFromXml(path + "\\TR5\\Sounds.xml", WadTombRaiderVersion.TR5);
@@ -349,6 +351,87 @@ namespace TombLib.Sounds
                 return false;
 
             return true;
+        }
+
+        public static void TestProcedure(IEnumerable<string> levels)
+        {
+            var dictionary = new Dictionary<ushort, SoundCatalogInfo>();
+            var writeSamples = true;
+
+            foreach (var name in levels)
+            {
+                if (!name.ToLower().Contains(".tr2"))
+                    continue;
+
+                var level = new TrLevel();
+                level.LoadLevel(name, "D:\\TR2\\data\\MAIN.SFX", "");
+
+                var k = 0;
+                if (writeSamples)
+                {
+                    foreach (var sample in level.Samples)
+                    {
+                        using (BinaryWriter writer = new BinaryWriter(File.OpenWrite("D:\\tr2\\data\\test\\samples\\sample_" + k + ".wav")))
+                            writer.Write(sample.Data);
+                        k++;
+
+                    }
+                    writeSamples = false;
+                }
+
+                for (var i = 0; i < 370; i++)
+                {
+                    if (!dictionary.ContainsKey((ushort)i) && level.SoundMap[i] != -1)
+                    {
+                        var oldInfo = level.SoundDetails[level.SoundMap[i]];
+                        var newInfo = new SoundCatalogInfo();
+
+                        // Fill the new sound info
+                        newInfo.Name = TrCatalog.GetSoundName(WadTombRaiderVersion.TR2, (uint)i).Replace(" ", "_").ToUpper().Replace("/", "_")
+                            .Replace(";", "_").Replace("(", "").Replace(")", "").Replace("?", "").Replace("!", "");
+
+                        /* if (oldLevel.Version >= TrVersion.TR3)
+                         {
+                             newInfo.Volume = (short)(oldInfo.Volume * 100 / 255);
+                             newInfo.Range = oldInfo.Range;
+                             newInfo.Chance = (short)(oldInfo.Chance * 100 / 255);
+                             newInfo.Pitch = (short)(oldInfo.Pitch * 100 / 127);
+                         }
+                         else
+                         {*/
+                        newInfo.Volume = (byte)oldInfo.Volume;
+                        newInfo.Range = oldInfo.Range;
+                        newInfo.Chance = (byte)oldInfo.Chance;
+                        newInfo.Pitch = oldInfo.Pitch;
+                        // }
+
+                        newInfo.FlagP = ((oldInfo.Characteristics & 0x2000) != 0); // TODO: loop meaning changed between TR versions
+                        newInfo.FlagV = ((oldInfo.Characteristics & 0x4000) != 0);
+                        newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);
+
+                        if ((oldInfo.Characteristics & 0x03) == 0x03)
+                            newInfo.FlagL = true;
+                        else if ((oldInfo.Characteristics & 0x03) == 0x02)
+                            newInfo.FlagR = true;
+                        else if ((oldInfo.Characteristics & 0x03) == 0x01)
+                            newInfo.FlagW = true;
+
+                        int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
+
+                        // Read all samples linked to this sound info (for example footstep has 4 samples)
+                        // For old TRs, don't load samples, because they are in MAIN.SFX
+                        // In theory, sound management for TR2 and TR3 should be done in external tool
+                        for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
+                        {
+                            newInfo.Samples.Add("sample_" + j);
+                        }
+
+                        dictionary.Add((ushort)i, newInfo);
+                    }
+                }
+            }
+
+            SaveToXml("D:\\tr2\\data\\test\\Sounds.xml", dictionary);
         }
     }
 }

@@ -222,6 +222,9 @@ namespace WadTool
             panel3D.CurrentWad = null;
             panel3D.Invalidate();
 
+            labelDestinationVersion.Text = TrCatalog.GetVersionString(_tool.DestinationWad.Version);
+            if (_tool.DestinationWad.IsNg) labelDestinationVersion.Text += " (NG)";
+
             treeDestWad.Nodes.Clear();
 
             var nodeMoveables = new DarkUI.Controls.DarkTreeNode("Moveables");
@@ -967,6 +970,43 @@ namespace WadTool
                 }
 
             }
+        }
+
+        private void NewWad(WadTombRaiderVersion version, bool isNg)
+        {
+            if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
+            var wad = new Wad2(version, false);
+            wad.IsNg = isNg;
+            wad.GraphicsDevice = _tool.Device;
+            wad.PrepareDataForDirectX();
+            _tool.DestinationWad = wad;
+
+            UpdateDestinationWad2UI();
+        }
+
+        private void tR2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewWad(WadTombRaiderVersion.TR2, false);
+        }
+
+        private void tR3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewWad(WadTombRaiderVersion.TR3, false);
+        }
+
+        private void tR4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewWad(WadTombRaiderVersion.TR4, false);
+        }
+
+        private void tRNGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewWad(WadTombRaiderVersion.TR4, true);
+        }
+
+        private void tR5ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewWad(WadTombRaiderVersion.TR5, false);
         }
     }
 }

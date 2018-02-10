@@ -398,7 +398,9 @@ namespace TombLib.Wad.TrLevels
 
         private static void ConvertTrLevelSounds(Wad2 wad, TrLevel oldLevel)
         {
-            for (int i = 0; i < oldLevel.SoundMap.Count; i++)
+            wad.SoundMapSize = SoundsCatalog.GetSoundMapSize(GetTrVersion(oldLevel.Version), oldLevel.IsNg);
+
+            for (int i = 0; i < wad.SoundMapSize; i++)
             {
                 // Check if sound was used
                 if (oldLevel.SoundMap[i] == -1) continue;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.Sounds;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -16,6 +17,7 @@ namespace TombLib.Wad.TrLevels
     public class TrLevel
     {
         internal TrVersion Version;
+        internal bool IsNg;
 
         internal byte[] TextureMap32;
         internal List<tr_mesh> Meshes = new List<tr_mesh>();
@@ -63,6 +65,18 @@ namespace TombLib.Wad.TrLevels
                     return false;
 
                 if (Version == TrVersion.TR4 && fileName.ToLower().Trim().EndsWith(".trc")) Version = TrVersion.TR5;
+
+                // Check for NG header
+                IsNg = false;
+                if (Version == TrVersion.TR4)
+                {
+                    var offset = reader.BaseStream.Position;
+                    reader.BaseStream.Seek(reader.BaseStream.Length - 8, SeekOrigin.Begin);
+                    var ngBuffer = reader.ReadBytes(4);
+                    if (ngBuffer[0] == 0x4E && ngBuffer[1] == 0x47 && ngBuffer[2] == 0x4C && ngBuffer[3] == 0x45)
+                        IsNg = true;
+                    reader.BaseStream.Seek(offset, SeekOrigin.Begin);
+                }
 
                 // Read the palette only for TR2 and TR3, TR1 has the palette near the end of the file
                 if (Version == TrVersion.TR2 || Version == TrVersion.TR3)
@@ -764,10 +778,17 @@ namespace TombLib.Wad.TrLevels
 
                         // Demo data
                         var numDemoData = levelReader.ReadUInt16();
-                        levelReader.ReadBytes(numDemoData);
+                        // NumDemoData in TRNG is used for soundmap length
+                        if (!IsNg)
+                            levelReader.ReadBytes(numDemoData);
 
                         // Sound map
-                        var soundMapSize = TrCatalog.GetSoundMapSize(TrLevelOperations.GetTrVersion(Version), false);
+                        var soundMapSize = 0;
+                        if (Version == TrVersion.TR4 && IsNg)
+                            soundMapSize = (numDemoData != 0 ? numDemoData : 370);
+                        else
+                            soundMapSize = SoundsCatalog.GetSoundMapSize(TrLevelOperations.GetTrVersion(Version), false);
+
                         for (var i = 0; i < soundMapSize; i++)
                             SoundMap.Add(levelReader.ReadInt16());
 
