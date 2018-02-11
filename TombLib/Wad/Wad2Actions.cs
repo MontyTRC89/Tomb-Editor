@@ -407,7 +407,7 @@ namespace TombLib.Wad
                 Statics.Add(destination, newStaticMesh);
             }
 
-            if (Version >= WadTombRaiderVersion.TR4)
+            if (SoundManagementSystem == WadSoundManagementSystem.DynamicSoundMap)
             {
                 // Collect sounds using the new remap system
                 if (isMoveable)
@@ -517,7 +517,7 @@ namespace TombLib.Wad
             }
             else
             {
-                // Add sounds using the old system for TR2 and TR3
+                // Add sounds using the old system
                 var soundsToAdd = new List<ushort>();
                 if (isMoveable)
                 {

@@ -32,11 +32,6 @@
             this.darkMenuStrip1 = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tR2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tR3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tR4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tRNGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tR5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.openDestinationWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSourceWADToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,11 +43,14 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNewStaticMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNewSpriteSequenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.convertWADToWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importModelAsStaticMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.soundManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.spriteEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importModelAsStaticMeshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+            this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertWADToWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,7 +65,6 @@
             this.aboutWadToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
             this.butNewWad2 = new System.Windows.Forms.ToolStripButton();
-            this.butNewWad2ForLevel = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.butOpenDestWad2 = new System.Windows.Forms.ToolStripButton();
             this.butOpenSourceWad = new System.Windows.Forms.ToolStripButton();
@@ -81,7 +78,6 @@
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.treeDestWad = new DarkUI.Controls.DarkTreeView();
             this.treeSourceWad = new DarkUI.Controls.DarkTreeView();
-            this.panel3D = new WadTool.Controls.PanelRendering();
             this.openFileDialogWad = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogWad2 = new System.Windows.Forms.SaveFileDialog();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
@@ -101,6 +97,7 @@
             this.darkButton2 = new DarkUI.Controls.DarkButton();
             this.butEditItem = new DarkUI.Controls.DarkButton();
             this.labelDestinationVersion = new DarkUI.Controls.DarkLabel();
+            this.panel3D = new WadTool.Controls.PanelRendering();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.groupSelectedMoveable.SuspendLayout();
@@ -155,61 +152,11 @@
             // newWad2ToolStripMenuItem
             // 
             this.newWad2ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.newWad2ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tR2ToolStripMenuItem,
-            this.tR3ToolStripMenuItem,
-            this.tR4ToolStripMenuItem,
-            this.tRNGToolStripMenuItem,
-            this.tR5ToolStripMenuItem});
             this.newWad2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newWad2ToolStripMenuItem.Name = "newWad2ToolStripMenuItem";
             this.newWad2ToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
             this.newWad2ToolStripMenuItem.Text = "New Wad2";
-            // 
-            // tR2ToolStripMenuItem
-            // 
-            this.tR2ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tR2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tR2ToolStripMenuItem.Name = "tR2ToolStripMenuItem";
-            this.tR2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.tR2ToolStripMenuItem.Text = "TR2";
-            this.tR2ToolStripMenuItem.Click += new System.EventHandler(this.tR2ToolStripMenuItem_Click);
-            // 
-            // tR3ToolStripMenuItem
-            // 
-            this.tR3ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tR3ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tR3ToolStripMenuItem.Name = "tR3ToolStripMenuItem";
-            this.tR3ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.tR3ToolStripMenuItem.Text = "TR3";
-            this.tR3ToolStripMenuItem.Click += new System.EventHandler(this.tR3ToolStripMenuItem_Click);
-            // 
-            // tR4ToolStripMenuItem
-            // 
-            this.tR4ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tR4ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tR4ToolStripMenuItem.Name = "tR4ToolStripMenuItem";
-            this.tR4ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.tR4ToolStripMenuItem.Text = "TR4";
-            this.tR4ToolStripMenuItem.Click += new System.EventHandler(this.tR4ToolStripMenuItem_Click);
-            // 
-            // tRNGToolStripMenuItem
-            // 
-            this.tRNGToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tRNGToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tRNGToolStripMenuItem.Name = "tRNGToolStripMenuItem";
-            this.tRNGToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.tRNGToolStripMenuItem.Text = "TRNG";
-            this.tRNGToolStripMenuItem.Click += new System.EventHandler(this.tRNGToolStripMenuItem_Click);
-            // 
-            // tR5ToolStripMenuItem
-            // 
-            this.tR5ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tR5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tR5ToolStripMenuItem.Name = "tR5ToolStripMenuItem";
-            this.tR5ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.tR5ToolStripMenuItem.Text = "TR5";
-            this.tR5ToolStripMenuItem.Click += new System.EventHandler(this.tR5ToolStripMenuItem_Click);
+            this.newWad2ToolStripMenuItem.Click += new System.EventHandler(this.newWad2ToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
@@ -280,7 +227,13 @@
             this.editToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addNewStaticMeshToolStripMenuItem,
-            this.addNewSpriteSequenceToolStripMenuItem});
+            this.addNewSpriteSequenceToolStripMenuItem,
+            this.importModelAsStaticMeshToolStripMenuItem,
+            this.toolStripMenuItem4,
+            this.soundManagerToolStripMenuItem,
+            this.spriteEditorToolStripMenuItem,
+            this.toolStripMenuItem5,
+            this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem});
             this.editToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -288,9 +241,10 @@
             // 
             // addNewStaticMeshToolStripMenuItem
             // 
+            this.addNewStaticMeshToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.addNewStaticMeshToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.addNewStaticMeshToolStripMenuItem.Name = "addNewStaticMeshToolStripMenuItem";
-            this.addNewStaticMeshToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.addNewStaticMeshToolStripMenuItem.Size = new System.Drawing.Size(337, 22);
             this.addNewStaticMeshToolStripMenuItem.Text = "Add new static mesh";
             // 
             // addNewSpriteSequenceToolStripMenuItem
@@ -298,18 +252,69 @@
             this.addNewSpriteSequenceToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.addNewSpriteSequenceToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.addNewSpriteSequenceToolStripMenuItem.Name = "addNewSpriteSequenceToolStripMenuItem";
-            this.addNewSpriteSequenceToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.addNewSpriteSequenceToolStripMenuItem.Size = new System.Drawing.Size(337, 22);
             this.addNewSpriteSequenceToolStripMenuItem.Text = "Add new sprite sequence";
             this.addNewSpriteSequenceToolStripMenuItem.Click += new System.EventHandler(this.addNewSpriteSequenceToolStripMenuItem_Click);
+            // 
+            // importModelAsStaticMeshToolStripMenuItem
+            // 
+            this.importModelAsStaticMeshToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.importModelAsStaticMeshToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.importModelAsStaticMeshToolStripMenuItem.Name = "importModelAsStaticMeshToolStripMenuItem";
+            this.importModelAsStaticMeshToolStripMenuItem.Size = new System.Drawing.Size(337, 22);
+            this.importModelAsStaticMeshToolStripMenuItem.Text = "Import model as static mesh";
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(334, 6);
+            // 
+            // soundManagerToolStripMenuItem
+            // 
+            this.soundManagerToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundManagerToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.soundManagerToolStripMenuItem.Image = global::WadTool.Properties.Resources.volume_up_16;
+            this.soundManagerToolStripMenuItem.Name = "soundManagerToolStripMenuItem";
+            this.soundManagerToolStripMenuItem.Size = new System.Drawing.Size(337, 22);
+            this.soundManagerToolStripMenuItem.Text = "Sound editor";
+            this.soundManagerToolStripMenuItem.Click += new System.EventHandler(this.soundManagerToolStripMenuItem_Click);
+            // 
+            // spriteEditorToolStripMenuItem
+            // 
+            this.spriteEditorToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.spriteEditorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.spriteEditorToolStripMenuItem.Image = global::WadTool.Properties.Resources.small_icons_16;
+            this.spriteEditorToolStripMenuItem.Name = "spriteEditorToolStripMenuItem";
+            this.spriteEditorToolStripMenuItem.Size = new System.Drawing.Size(337, 22);
+            this.spriteEditorToolStripMenuItem.Text = "Sprite editor";
+            this.spriteEditorToolStripMenuItem.Click += new System.EventHandler(this.spriteEditorToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripMenuItem5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem5.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(334, 6);
+            // 
+            // convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem
+            // 
+            this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem.Enabled = false;
+            this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem.Name = "convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem";
+            this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem.Size = new System.Drawing.Size(337, 22);
+            this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem.Text = "Convert Wad2 to new dynamic soundmap system";
+            this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem.Click += new System.EventHandler(this.convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.convertWADToWad2ToolStripMenuItem,
-            this.soundManagerToolStripMenuItem,
-            this.spriteEditorToolStripMenuItem,
-            this.importModelAsStaticMeshToolStripMenuItem});
+            this.convertWADToWad2ToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -323,34 +328,6 @@
             this.convertWADToWad2ToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.convertWADToWad2ToolStripMenuItem.Text = "Convert source WAD to Wad2";
             this.convertWADToWad2ToolStripMenuItem.Click += new System.EventHandler(this.convertWADToWad2ToolStripMenuItem_Click);
-            // 
-            // soundManagerToolStripMenuItem
-            // 
-            this.soundManagerToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundManagerToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.soundManagerToolStripMenuItem.Image = global::WadTool.Properties.Resources.volume_up_16;
-            this.soundManagerToolStripMenuItem.Name = "soundManagerToolStripMenuItem";
-            this.soundManagerToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.soundManagerToolStripMenuItem.Text = "Sound editor";
-            this.soundManagerToolStripMenuItem.Click += new System.EventHandler(this.soundManagerToolStripMenuItem_Click);
-            // 
-            // spriteEditorToolStripMenuItem
-            // 
-            this.spriteEditorToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.spriteEditorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.spriteEditorToolStripMenuItem.Image = global::WadTool.Properties.Resources.small_icons_16;
-            this.spriteEditorToolStripMenuItem.Name = "spriteEditorToolStripMenuItem";
-            this.spriteEditorToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.spriteEditorToolStripMenuItem.Text = "Sprite editor";
-            this.spriteEditorToolStripMenuItem.Click += new System.EventHandler(this.spriteEditorToolStripMenuItem_Click);
-            // 
-            // importModelAsStaticMeshToolStripMenuItem
-            // 
-            this.importModelAsStaticMeshToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.importModelAsStaticMeshToolStripMenuItem.Name = "importModelAsStaticMeshToolStripMenuItem";
-            this.importModelAsStaticMeshToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
-            this.importModelAsStaticMeshToolStripMenuItem.Text = "Import model as static mesh";
-            this.importModelAsStaticMeshToolStripMenuItem.Click += new System.EventHandler(this.importModelAsStaticMeshToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem
             // 
@@ -475,7 +452,6 @@
             this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.butNewWad2,
-            this.butNewWad2ForLevel,
             this.toolStripSeparator3,
             this.butOpenDestWad2,
             this.butOpenSourceWad,
@@ -503,18 +479,6 @@
             this.butNewWad2.Size = new System.Drawing.Size(23, 25);
             this.butNewWad2.Text = "New empty Wad2";
             this.butNewWad2.Click += new System.EventHandler(this.butNewWad2_Click);
-            // 
-            // butNewWad2ForLevel
-            // 
-            this.butNewWad2ForLevel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butNewWad2ForLevel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butNewWad2ForLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butNewWad2ForLevel.Image = global::WadTool.Properties.Resources.create_archive_16;
-            this.butNewWad2ForLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butNewWad2ForLevel.Name = "butNewWad2ForLevel";
-            this.butNewWad2ForLevel.Size = new System.Drawing.Size(23, 25);
-            this.butNewWad2ForLevel.Text = "New Wad2 for level";
-            this.butNewWad2ForLevel.Click += new System.EventHandler(this.butNewWad2ForLevel_Click);
             // 
             // toolStripSeparator3
             // 
@@ -654,18 +618,6 @@
             this.treeSourceWad.TabIndex = 8;
             this.treeSourceWad.Text = "darkTreeView1";
             this.treeSourceWad.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeSourceWad_MouseClick);
-            // 
-            // panel3D
-            // 
-            this.panel3D.Animation = 0;
-            this.panel3D.Camera = null;
-            this.panel3D.CurrentObject = null;
-            this.panel3D.CurrentWad = null;
-            this.panel3D.KeyFrame = 0;
-            this.panel3D.Location = new System.Drawing.Point(301, 59);
-            this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(409, 409);
-            this.panel3D.TabIndex = 9;
             // 
             // saveFileDialogWad2
             // 
@@ -855,6 +807,18 @@
             this.labelDestinationVersion.TabIndex = 23;
             this.labelDestinationVersion.Text = "---";
             // 
+            // panel3D
+            // 
+            this.panel3D.Animation = 0;
+            this.panel3D.Camera = null;
+            this.panel3D.CurrentObject = null;
+            this.panel3D.CurrentWad = null;
+            this.panel3D.KeyFrame = 0;
+            this.panel3D.Location = new System.Drawing.Point(301, 59);
+            this.panel3D.Name = "panel3D";
+            this.panel3D.Size = new System.Drawing.Size(409, 409);
+            this.panel3D.TabIndex = 9;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -921,13 +885,11 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton butSoundEditor;
         private System.Windows.Forms.ToolStripMenuItem saveWad2AsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem soundManagerToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butSaveAs;
         private DarkUI.Controls.DarkButton butAddObject;
         private DarkUI.Controls.DarkButton butAddObjectToDifferentSlot;
         private DarkUI.Controls.DarkButton butDeleteObject;
         private System.Windows.Forms.SaveFileDialog saveFileDialogWad2;
-        private System.Windows.Forms.ToolStripMenuItem importModelAsStaticMeshToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton butSpriteEditor;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
@@ -940,7 +902,6 @@
         private System.Windows.Forms.ToolStripMenuItem debugAction0ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction1ToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
-        private System.Windows.Forms.ToolStripMenuItem spriteEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addNewSpriteSequenceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction1ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem debugAction4ToolStripMenuItem;
@@ -952,7 +913,6 @@
         private System.Windows.Forms.ToolStripMenuItem debugAction8ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction9ToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butNewWad2;
-        private System.Windows.Forms.ToolStripButton butNewWad2ForLevel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private DarkUI.Controls.DarkLabel labelType;
         private DarkUI.Controls.DarkButton butChangeSlot;
@@ -964,12 +924,13 @@
         private DarkUI.Controls.DarkButton darkButton2;
         private DarkUI.Controls.DarkButton butEditItem;
         private System.Windows.Forms.ToolStripMenuItem newWad2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tR2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tR3ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tR4ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tRNGToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tR5ToolStripMenuItem;
         private DarkUI.Controls.DarkLabel labelDestinationVersion;
+        private System.Windows.Forms.ToolStripMenuItem importModelAsStaticMeshToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem soundManagerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem spriteEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem;
     }
 }
 

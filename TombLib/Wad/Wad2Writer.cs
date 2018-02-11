@@ -53,6 +53,7 @@ namespace TombLib.Wad
 
             LEB128.Write(chunkIO.Raw, (uint)wad.Version);
             chunkIO.WriteChunkBool(Wad2Chunks.TrNgWad, wad.IsNg);
+            chunkIO.WriteChunkInt(Wad2Chunks.SoundManagementSystem, (int)wad.SoundManagementSystem);
 
             WriteTextures(chunkIO, wad);
             WriteSprites(chunkIO, wad);
