@@ -155,15 +155,15 @@ namespace TombLib.Wad.Catalog
             switch (version)
             {
                 case WadTombRaiderVersion.TR1:
-                    return "Tomb Raider I";
+                    return "Tomb Raider";
                 case WadTombRaiderVersion.TR2:
-                    return "Tomb Raider II";
+                    return "Tomb Raider 2";
                 case WadTombRaiderVersion.TR3:
-                    return "Tomb Raider III";
+                    return "Tomb Raider 3";
                 case WadTombRaiderVersion.TR4:
-                    return "Tomb Raider The Last Revelation";
+                    return "Tomb Raider 4";
                 case WadTombRaiderVersion.TR5:
-                    return "Tomb Raider Chronicles";
+                    return "Tomb Raider 5";
                 default:
                     throw new ArgumentOutOfRangeException();
             }

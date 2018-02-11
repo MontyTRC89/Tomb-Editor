@@ -56,6 +56,11 @@ namespace TombLib.Wad
                     wad.IsNg = chunkIO.ReadChunkBool(chunkSize);
                     return true;
                 }
+                else if (id == Wad2Chunks.SoundManagementSystem)
+                {
+                    wad.SoundManagementSystem = (WadSoundManagementSystem)chunkIO.ReadChunkInt(chunkSize);
+                    return true;
+                }
 
                 return false;
             });

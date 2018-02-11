@@ -26,7 +26,15 @@ namespace WadTool
         public float Gizmo_ScaleCubeSize { get; set; } = 128.0f;
         public float Gizmo_LineThickness { get; set; } = 45.0f;
 
-        public string Sounds_Path { get; set; } = "Sounds";
+        public string Sounds_Path_Tr1 { get; set; } = "Sounds\\TR1";
+        public string Sounds_Path_Tr2 { get; set; } = "Sounds\\TR2";
+        public string Sounds_Path_Tr3 { get; set; } = "Sounds\\TR3";
+        public string Sounds_Path_Tr4 { get; set; } = "Sounds\\TR4";
+        public string Sounds_Path_Tr5 { get; set; } = "Sounds\\TR5";
+        public string Sounds_Path_TrNG { get; set; } = "Sounds\\TRNG";
+
+        public string MainSfx_Path_Tr2 { get; set; } = "Sounds\\TR2\\MAIN.SFX";
+        public string MainSfx_Path_Tr3 { get; set; } = "Sounds\\TR3\\MAIN.SFX";
 
         public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
 

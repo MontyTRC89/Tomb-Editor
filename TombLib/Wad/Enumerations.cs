@@ -65,4 +65,10 @@ namespace TombLib.Wad
         R = 2,
         L = 3
     }
+
+    public enum WadSoundManagementSystem : int
+    {
+        ClassicTrle = 0,
+        DynamicSoundMap = 1
+    }
 }

@@ -224,6 +224,10 @@ namespace WadTool
 
             labelDestinationVersion.Text = TrCatalog.GetVersionString(_tool.DestinationWad.Version);
             if (_tool.DestinationWad.IsNg) labelDestinationVersion.Text += " (NG)";
+            labelDestinationVersion.Text += " (" + _tool.DestinationWad.SoundManagementSystem + ")";
+
+            convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem.Enabled = (_tool.DestinationWad.Version >= WadTombRaiderVersion.TR4 &&
+                                                                              _tool.DestinationWad.SoundManagementSystem != WadSoundManagementSystem.DynamicSoundMap);
 
             treeDestWad.Nodes.Clear();
 
@@ -334,8 +338,8 @@ namespace WadTool
             {
                 var originalLevel = new TrLevel();
                 originalLevel.LoadLevel(fileName, 
-                                        _tool.Configuration.Sounds_Path + "\\TR2\\MAIN.SFX", 
-                                        _tool.Configuration.Sounds_Path + "\\TR3\\MAIN.SFX");
+                                        _tool.Configuration.MainSfx_Path_Tr2, 
+                                        _tool.Configuration.MainSfx_Path_Tr3);
 
                 var newWad = TrLevelOperations.ConvertTrLevel(originalLevel);
                 if (newWad == null)
@@ -848,25 +852,23 @@ namespace WadTool
             //tempBitmap.Save("testpack.png");
         }
 
-        private void newEmptyWad2ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            butNewWad2_Click(null, null);
-        }
-
-        private void newEmptyWad2WithSystemSoundsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            butNewWad2ForLevel_Click(null, null);
-        }
-
         private void butNewWad2_Click(object sender, EventArgs e)
         {
-            if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
-            var wad = new Wad2(WadTombRaiderVersion.TR4, false);
-            wad.GraphicsDevice = _tool.Device;
-            wad.PrepareDataForDirectX();
-            _tool.DestinationWad = wad;
+            using (var form = new FormNewWad2())
+            {
+                if (form.ShowDialog() == DialogResult.Cancel)
+                    return;
 
-            UpdateDestinationWad2UI();
+                if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
+                var wad = new Wad2(form.Version, false);
+                wad.IsNg = form.IsNG;
+                wad.SoundManagementSystem = form.SoundManagementSystem;
+                wad.GraphicsDevice = _tool.Device;
+                wad.PrepareDataForDirectX();
+                _tool.DestinationWad = wad;
+
+                UpdateDestinationWad2UI();
+            }
         }
 
         private void butNewWad2ForLevel_Click(object sender, EventArgs e)
@@ -972,41 +974,21 @@ namespace WadTool
             }
         }
 
-        private void NewWad(WadTombRaiderVersion version, bool isNg)
+        private void newWad2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
-            var wad = new Wad2(version, false);
-            wad.IsNg = isNg;
-            wad.GraphicsDevice = _tool.Device;
-            wad.PrepareDataForDirectX();
-            _tool.DestinationWad = wad;
+            butNewWad2_Click(null, null);
+        }
+
+        private void convertWad2ToNewDynamicSoundmapSystemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DarkMessageBox.Show(this, "Warning: converting this Wad2 to the new dynamic soundmap system " +
+                                    "is definitive and can't be reverted. Do you really want to continue?",
+                                    "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            _tool.DestinationWad.SoundManagementSystem = WadSoundManagementSystem.DynamicSoundMap;
 
             UpdateDestinationWad2UI();
-        }
-
-        private void tR2ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            NewWad(WadTombRaiderVersion.TR2, false);
-        }
-
-        private void tR3ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            NewWad(WadTombRaiderVersion.TR3, false);
-        }
-
-        private void tR4ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            NewWad(WadTombRaiderVersion.TR4, false);
-        }
-
-        private void tRNGToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            NewWad(WadTombRaiderVersion.TR4, true);
-        }
-
-        private void tR5ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            NewWad(WadTombRaiderVersion.TR5, false);
         }
     }
 }
