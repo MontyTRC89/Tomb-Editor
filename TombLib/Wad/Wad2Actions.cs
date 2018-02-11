@@ -543,8 +543,7 @@ namespace TombLib.Wad
                                         var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
 
                                         SoundInfo.Add(soundId, newSoundInfo);
-                                        soundsRemapTable.Add(soundId, soundId);
-
+                                        
                                         // Add wave files or get them if they exist
                                         for (int k = 0; k < newSoundInfo.Samples.Count; k++)
                                         {
