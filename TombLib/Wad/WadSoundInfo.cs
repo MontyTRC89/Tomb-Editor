@@ -79,12 +79,10 @@ namespace TombLib.Wad
             soundInfo.Pitch = Pitch;
             soundInfo.RandomizeGain = RandomizeGain;
             soundInfo.RandomizePitch = RandomizePitch;
-#if __NEW_SOUNDMAP_SYSTEM__
             foreach (var wave in Samples)
                 soundInfo.Samples.Add(wave.Clone());
-#else
             soundInfo.UpdateHash();
-#endif
+
             return soundInfo;
         }
     }

@@ -172,10 +172,28 @@ namespace TombLib.LevelData.Compilers
 
         public CompilerStatistics CompileLevel()
         {
-            ReportProgress(0, "Tomb Raider IV Level Compiler by MontyTRC");
+            ReportProgress(0, "Tomb Raider Level Compiler by MontyTRC");
 
             if (_level.Wad == null)
-                throw new NotSupportedException("A wad must be loaded to compile to *.tr4.");
+                throw new NotSupportedException("A wad must be loaded to compile the final level.");
+
+            // Check for Wad2 - Game version match
+            if (_level.Settings.GameVersion == GameVersion.TR2 && _level.Wad.Version != Wad.WadTombRaiderVersion.TR2)
+                throw new NotSupportedException("You must provide a valid TR2 Wad2 to compile a TR2 level.");
+
+            if (_level.Settings.GameVersion == GameVersion.TR3 && _level.Wad.Version != Wad.WadTombRaiderVersion.TR3)
+                throw new NotSupportedException("You must provide a valid TR3 Wad2 to compile a TR3 level.");
+
+            if (_level.Settings.GameVersion == GameVersion.TR4 && 
+                (_level.Wad.Version != Wad.WadTombRaiderVersion.TR4 || _level.Wad.IsNg))
+                throw new NotSupportedException("You must provide a valid TR4 Wad2 (non NG) to compile a TR4 level.");
+
+            if (_level.Settings.GameVersion == GameVersion.TR4 && 
+                (_level.Wad.Version != Wad.WadTombRaiderVersion.TR4 || !_level.Wad.IsNg))
+                throw new NotSupportedException("You must provide a valid TR4 (NG) Wad2 to compile a TRNG level.");
+
+            if (_level.Settings.GameVersion == GameVersion.TR5 && _level.Wad.Version != Wad.WadTombRaiderVersion.TR5)
+                throw new NotSupportedException("You must provide a valid TR5 Wad2 to compile a TR5 level.");
 
             // Prepare level data in parallel to the sounds
             using (Task task1 = Task.Factory.StartNew(PrepareLevelData))
