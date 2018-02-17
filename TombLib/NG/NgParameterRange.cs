@@ -236,7 +236,7 @@ namespace TombLib.NG
             Func<int, TriggerParameterUshort> formatSounds = i =>
             {
                 Wad.WadSoundInfo soundInfo;
-                if (level?.Wad?.SoundInfo != null && level.Wad.SoundInfo.TryGetValue((ushort)i, out soundInfo))
+                if (level?.Wad?.Sounds != null && level.Wad.Sounds.TryGetValue((ushort)i, out soundInfo))
                     return new TriggerParameterUshort((ushort)i, i + ": " + soundInfo.Name);
                 else
                     return new TriggerParameterUshort((ushort)i, i + ": --- Not present ---");

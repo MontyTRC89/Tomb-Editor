@@ -3343,6 +3343,7 @@ namespace TombLib.LevelData
                 if (oppositeAlternatePortal != null)
                     result.Add(oppositeAlternatePortal.Room.RemoveObjectAndSingularPortal(level, oppositeAlternatePortal));
             }
+
             return result;
         }
 

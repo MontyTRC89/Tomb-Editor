@@ -13,7 +13,7 @@ namespace TombLib.Sounds
 {
     public class SoundsCatalog
     {
-        private static Dictionary<WadTombRaiderVersion, Dictionary<ushort, SoundCatalogInfo>> _catalog = new Dictionary<WadTombRaiderVersion, Dictionary<ushort, SoundCatalogInfo>>();
+        private static Dictionary<WadTombRaiderVersion, SortedDictionary<ushort, SoundCatalogInfo>> _catalog = new Dictionary<WadTombRaiderVersion, SortedDictionary<ushort, SoundCatalogInfo>>();
 
         public static void LoadAllCatalogsFromXml(string path)
         {
@@ -33,9 +33,9 @@ namespace TombLib.Sounds
             return true;
         }
 
-        internal static Dictionary<ushort, SoundCatalogInfo> LoadCatalogFromXml(string fileName)
+        internal static SortedDictionary<ushort, SoundCatalogInfo> LoadCatalogFromXml(string fileName)
         {          
-            var dictionary = new Dictionary<ushort, SoundCatalogInfo>();
+            var dictionary = new SortedDictionary<ushort, SoundCatalogInfo>();
 
             try
             {
@@ -104,7 +104,7 @@ namespace TombLib.Sounds
             return SaveToXml(fileName, _catalog[version]);
         }
 
-        internal static bool SaveToXml(string fileName, Dictionary<ushort, SoundCatalogInfo> catalog)
+        internal static bool SaveToXml(string fileName, SortedDictionary<ushort, SoundCatalogInfo> catalog)
         {
             try
             {
@@ -181,7 +181,7 @@ namespace TombLib.Sounds
             }
         }
 
-        public static Dictionary<ushort, SoundCatalogInfo> GetAllSounds(WadTombRaiderVersion version)
+        public static SortedDictionary<ushort, SoundCatalogInfo> GetAllSounds(WadTombRaiderVersion version)
         {
             return _catalog[version];
         }
@@ -195,9 +195,9 @@ namespace TombLib.Sounds
             return true;
         }
 
-        internal static Dictionary<ushort, SoundCatalogInfo> LoadCatalogFromTxt(string fileName)
+        internal static SortedDictionary<ushort, SoundCatalogInfo> LoadCatalogFromTxt(string fileName)
         {
-            var dictionary = new Dictionary<ushort, SoundCatalogInfo>();
+            var dictionary = new SortedDictionary<ushort, SoundCatalogInfo>();
 
             try
             {
@@ -355,7 +355,7 @@ namespace TombLib.Sounds
 
         public static void TestProcedure(IEnumerable<string> levels)
         {
-            var dictionary = new Dictionary<ushort, SoundCatalogInfo>();
+            var dictionary = new SortedDictionary<ushort, SoundCatalogInfo>();
             var writeSamples = true;
 
             foreach (var name in levels)

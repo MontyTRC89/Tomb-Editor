@@ -41,10 +41,10 @@ namespace TombLib.Wad
                 foreach (var command in animation.AnimCommands)
                 {
                     ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                    if (wad.SoundInfo.ContainsKey(soundId))
+                    if (wad.Sounds.ContainsKey(soundId))
                     {
-                        if (!sounds.Contains(wad.SoundInfo[soundId]))
-                            sounds.Add(wad.SoundInfo[soundId]);
+                        if (!sounds.Contains(wad.Sounds[soundId]))
+                            sounds.Add(wad.Sounds[soundId]);
                     }
                 }
             }

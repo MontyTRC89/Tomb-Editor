@@ -41,6 +41,14 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.DeleteObjectWithWarning(targetObject, this);
             }));
 
+            if (_editor.SelectedObject is ImportedGeometryInstance)
+            {
+                Items.Add(new ToolStripMenuItem("Reload imported geometry", global::TombEditor.Properties.Resources.general_Open_16, (o, e) =>
+                {
+                    EditorActions.ReloadImportedGeometry(_editor.SelectedObject as ImportedGeometryInstance);
+                }));
+            }
+
             if (_editor.SelectedObject is IRotateableY || _editor.SelectedObject is IRotateableYX || _editor.SelectedObject is IRotateableYXRoll)
             {
                 Items.Add(new ToolStripSeparator());

@@ -130,6 +130,12 @@
     <Compile Include="FormStaticMeshEditor.Designer.cs">
       <DependentUpon>FormStaticMeshEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormTr2r3SoundManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTr2r3SoundManager.Designer.cs">
+      <DependentUpon>FormTr2r3SoundManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="GizmoStaticMeshEditor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -154,6 +160,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormStaticMeshEditor.resx">
       <DependentUpon>FormStaticMeshEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTr2r3SoundManager.resx">
+      <DependentUpon>FormTr2r3SoundManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -158,7 +158,7 @@ namespace TombLib.Wad
                         if (command.Type == WadAnimCommandType.PlaySound)
                         {
                             ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                            if (SoundInfo.ContainsKey(soundId))
+                            if (Sounds.ContainsKey(soundId))
                             {
                                 if (!sounds.Contains(soundId))
                                     sounds.Add(soundId);
@@ -190,9 +190,9 @@ namespace TombLib.Wad
                                 if (command.Type == WadAnimCommandType.PlaySound)
                                 {
                                     ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                                    if (SoundInfo.ContainsKey(soundId))
+                                    if (Sounds.ContainsKey(soundId))
                                     {
-                                        var currentSoundInfo = SoundInfo[soundId];
+                                        var currentSoundInfo = Sounds[soundId];
                                         if (currentSoundInfo.Samples.Contains(foundWave))
                                         {
                                             isFound = true;
@@ -230,9 +230,9 @@ namespace TombLib.Wad
                                 if (command.Type == WadAnimCommandType.PlaySound)
                                 {
                                     ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                                    if (SoundInfo.ContainsKey(soundId))
+                                    if (Sounds.ContainsKey(soundId))
                                     {
-                                        var currentInfo = SoundInfo[soundId];
+                                        var currentInfo = Sounds[soundId];
                                         if (currentInfo.Hash == foundSoundInfo.Hash)
                                         {
                                             isFound = true;
@@ -273,7 +273,7 @@ namespace TombLib.Wad
                 Meshes.Remove(mesh.Hash);
 
             foreach (var sound in sounds)
-                SoundInfo.Remove(sound);
+                Sounds.Remove(sound);
 
             foreach (var wave in waves)
                 Samples.Remove(wave.Hash);
@@ -421,7 +421,7 @@ namespace TombLib.Wad
                             if (command.Type == WadAnimCommandType.PlaySound)
                             {
                                 ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                                if (srcWad.SoundInfo.ContainsKey(soundId))
+                                if (srcWad.Sounds.ContainsKey(soundId))
                                 {
                                     // First I check if sound was already remapped
                                     if (soundsRemapTable.ContainsKey(soundId))
@@ -434,12 +434,12 @@ namespace TombLib.Wad
                                         if (TrCatalog.IsSoundMandatory(Version, soundId))
                                         {
                                             // If this is a mandatory sound, I can add it only if doesn't exist in dest Wad2
-                                            if (!SoundInfo.ContainsKey(soundId))
+                                            if (!Sounds.ContainsKey(soundId))
                                             {
                                                 // Add this sound in the same slot
-                                                var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
+                                                var newSoundInfo = srcWad.Sounds[soundId].Clone();
 
-                                                SoundInfo.Add(soundId, newSoundInfo);
+                                                Sounds.Add(soundId, newSoundInfo);
                                                 soundsRemapTable.Add(soundId, soundId);
 
                                                 // Add wave files or get them if they exist
@@ -459,12 +459,12 @@ namespace TombLib.Wad
                                             bool foundSoundInfo = false;
 
                                             // Search for an identical WadSoundInfo
-                                            for (int i = 0; i < SoundInfo.Count; i++)
+                                            for (int i = 0; i < Sounds.Count; i++)
                                             {
-                                                var currentInfo = SoundInfo.ElementAt(i).Value;
-                                                var currentSoundId = SoundInfo.ElementAt(i).Key;
+                                                var currentInfo = Sounds.ElementAt(i).Value;
+                                                var currentSoundId = Sounds.ElementAt(i).Key;
 
-                                                if (currentInfo.Hash == srcWad.SoundInfo[soundId].Hash)
+                                                if (currentInfo.Hash == srcWad.Sounds[soundId].Hash)
                                                 {
                                                     soundsRemapTable.Add(soundId, currentSoundId);
                                                     foundSoundInfo = true;
@@ -482,15 +482,15 @@ namespace TombLib.Wad
                                                 ushort freeId = 0;
                                                 for (int j = 0; j < 370; j++)
                                                 {
-                                                    if (!SoundInfo.ContainsKey((ushort)j))
+                                                    if (!Sounds.ContainsKey((ushort)j))
                                                     {
                                                         freeId = (ushort)j;
                                                         break;
                                                     }
                                                 }
 
-                                                var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
-                                                SoundInfo.Add(freeId, newSoundInfo);
+                                                var newSoundInfo = srcWad.Sounds[soundId].Clone();
+                                                Sounds.Add(freeId, newSoundInfo);
                                                 soundsRemapTable.Add(soundId, freeId);
 
                                                 // Add waves
@@ -530,9 +530,9 @@ namespace TombLib.Wad
                             if (command.Type == WadAnimCommandType.PlaySound)
                             {
                                 ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                                if (srcWad.SoundInfo.ContainsKey(soundId))
+                                if (srcWad.Sounds.ContainsKey(soundId))
                                 {
-                                    if (SoundInfo.ContainsKey(soundId))
+                                    if (Sounds.ContainsKey(soundId))
                                     {
                                         // Don't do anything for now, just use the copy of sound 
                                         // The user should manually copy the sound
@@ -540,9 +540,9 @@ namespace TombLib.Wad
                                     else
                                     {
                                         // Add this sound in the same slot
-                                        var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
+                                        var newSoundInfo = srcWad.Sounds[soundId].Clone();
 
-                                        SoundInfo.Add(soundId, newSoundInfo);
+                                        Sounds.Add(soundId, newSoundInfo);
                                         
                                         // Add wave files or get them if they exist
                                         for (int k = 0; k < newSoundInfo.Samples.Count; k++)
@@ -658,7 +658,7 @@ namespace TombLib.Wad
             // Get the first available sound
             int found = -1;
             for (int i = 0; i < 370; i++)
-                if (i != soundId && SoundInfo.ContainsKey((ushort)i))
+                if (i != soundId && Sounds.ContainsKey((ushort)i))
                 {
                     found = i;
                     break;
@@ -683,7 +683,7 @@ namespace TombLib.Wad
                 }
             }
 
-            SoundInfo.Remove(soundId);
+            Sounds.Remove(soundId);
 
             return true;
         }
@@ -722,7 +722,7 @@ namespace TombLib.Wad
             {
                 bool found = false;
 
-                foreach (var soundInfo in SoundInfo)
+                foreach (var soundInfo in Sounds)
                 {
                     if (soundInfo.Value.Samples.Contains(wave.Value))
                     {
@@ -807,7 +807,7 @@ namespace TombLib.Wad
             // Get the first available sound
             ushort found = UInt16.MaxValue;
             for (int i = 0; i < 370; i++)
-                if (!SoundInfo.ContainsKey((ushort)i))
+                if (!Sounds.ContainsKey((ushort)i))
                 {
                     found = (ushort)i;
                     break;

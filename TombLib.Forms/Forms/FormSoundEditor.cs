@@ -39,7 +39,7 @@ namespace TombLib.Forms
 
         private void UpdateStatistics()
         {
-            string message = "Sound Infos: " + _wad.SoundInfo.Count + " of " +
+            string message = "Sound Infos: " + _wad.Sounds.Count + " of " +
                              _wad.SoundMapSize + "    " +
                              "Embedded WAV samples: " + _wad.Samples.Count;
             labelStatus.Text = message;
@@ -82,7 +82,7 @@ namespace TombLib.Forms
                 }*/
             }
 
-            foreach (var soundInfo in _wad.SoundInfo)
+            foreach (var soundInfo in _wad.Sounds)
             {
                 var item = new DarkUI.Controls.DarkListItem(soundInfo.Key + ": " + soundInfo.Value.Name);
                 item.Tag = soundInfo.Key;
@@ -124,7 +124,7 @@ namespace TombLib.Forms
 
             // Get the selected sound info
             var item = lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]];
-            var soundInfo = _wad.SoundInfo[(ushort)item.Tag];
+            var soundInfo = _wad.Sounds[(ushort)item.Tag];
 
             // Fill the UI
             tbName.Text = soundInfo.Name;
@@ -155,7 +155,7 @@ namespace TombLib.Forms
         {
             // I can't overwrite other sounds
             if (comboId.SelectedIndex != _currentSound &&
-                _wad.SoundInfo.ContainsKey((ushort)comboId.SelectedIndex))
+                _wad.Sounds.ContainsKey((ushort)comboId.SelectedIndex))
             {
                 DarkMessageBox.Show(this, "The selected slot is already assigned to another sound", "Error", MessageBoxIcon.Error);
                 return;
@@ -199,7 +199,7 @@ namespace TombLib.Forms
             if (oldSoundId == -1)
                 soundInfo = new WadSoundInfo();
             else
-                soundInfo = _wad.SoundInfo[(ushort)oldSoundId];
+                soundInfo = _wad.Sounds[(ushort)oldSoundId];
 
             // Save changes
             soundInfo.Chance = Byte.Parse(tbChance.Text);
@@ -218,7 +218,7 @@ namespace TombLib.Forms
 
             if (oldSoundId == -1)
             {
-                _wad.SoundInfo.Add(newSoundId, soundInfo);
+                _wad.Sounds.Add(newSoundId, soundInfo);
 
                 ReloadSoundInfos();
             }
@@ -226,8 +226,8 @@ namespace TombLib.Forms
             {
                 if (oldSoundId != newSoundId)
                 {
-                    _wad.SoundInfo.Remove((ushort)oldSoundId);
-                    _wad.SoundInfo.Add(newSoundId, soundInfo);
+                    _wad.Sounds.Remove((ushort)oldSoundId);
+                    _wad.Sounds.Add(newSoundId, soundInfo);
 
                     ReloadSoundInfos();
                 }
@@ -294,7 +294,7 @@ namespace TombLib.Forms
             if (lstSoundInfos.SelectedIndices.Count == 0) return;
 
             var item = lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]];
-            var soundInfo = _wad.SoundInfo[(ushort)item.Tag];
+            var soundInfo = _wad.Sounds[(ushort)item.Tag];
             var soundIdToRemove = (ushort)item.Tag;
 
             // Get all moveables that are using this sound

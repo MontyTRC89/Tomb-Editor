@@ -31,7 +31,7 @@ namespace TombLib.Wad
         public Dictionary<Hash, WadMesh> Meshes { get; private set; }
         public SortedDictionary<uint, WadMoveable> Moveables { get; private set; }
         public SortedDictionary<uint, WadStatic> Statics { get; private set; }
-        public SortedDictionary<ushort, WadSoundInfo> SoundInfo { get; private set; }
+        public SortedDictionary<ushort, WadSoundInfo> Sounds { get; private set; }
         public Dictionary<Hash, WadSample> Samples { get; private set; }
         public List<WadSpriteSequence> SpriteSequences { get; private set; }
         public Dictionary<Hash, WadSprite> SpriteTextures { get; private set; }
@@ -73,7 +73,7 @@ namespace TombLib.Wad
             Meshes = new Dictionary<Hash, WadMesh>();
             Moveables = new SortedDictionary<uint, WadMoveable>();
             Statics = new SortedDictionary<uint, WadStatic>();
-            SoundInfo = new SortedDictionary<ushort, WadSoundInfo>();
+            Sounds = new SortedDictionary<ushort, WadSoundInfo>();
             SpriteSequences = new List<WadSpriteSequence>();
             SpriteTextures = new Dictionary<Hash, WadSprite>();
             Samples = new Dictionary<Hash, WadSample>();

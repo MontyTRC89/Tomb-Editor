@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib;
@@ -693,11 +694,35 @@ namespace TombEditor
             DeleteObject(instance);
         }
 
+        public static void ReloadImportedGeometry(ImportedGeometryInstance instance)
+        {
+            _editor.Level.Settings.ImportedGeometryUpdate(instance.Model, instance.Model.Info);
+            _editor.ObjectChange(instance, ObjectChangeType.Change);
+        }
+
         public static void DeleteObject(ObjectInstance instance)
         {
-            Room room = instance.Room;
-            Room adjoiningRoom = (instance as PortalInstance)?.AdjoiningRoom;
+            var room = instance.Room;
+            var adjoiningRoom = (instance as PortalInstance)?.AdjoiningRoom;
+            var isTriggerableObject = instance is MoveableInstance || instance is StaticInstance || instance is CameraInstance ||
+                                      instance is FlybyCameraInstance || instance is SinkInstance || instance is SoundSourceInstance;
             room.RemoveObject(_editor.Level, instance);
+
+            // Delete trigger if is necessary
+            if (isTriggerableObject)
+            {
+                var triggersToRemove = new List<TriggerInstance>();
+                foreach (var r in _editor.Level.Rooms)
+                    if (r != null)
+                        foreach (var trigger in r.Triggers)
+                        {
+                            if (trigger.Target == instance)
+                                triggersToRemove.Add(trigger);
+                        }
+
+                foreach (var t in triggersToRemove)
+                    t.Room.RemoveObject(_editor.Level, t);
+            }
 
             // Additional updates
             if (instance is SectorBasedObjectInstance)
@@ -1940,6 +1965,13 @@ namespace TombEditor
         {
             if (_editor.Level == null) return;
 
+            // Start a new thread
+            var threadAutosave = new Thread(new ThreadStart(TaskAutoSave));
+            threadAutosave.Start();            
+        }
+
+        private static void TaskAutoSave()
+        {
             try
             {
                 var path = Path.GetDirectoryName(Application.ExecutablePath);
