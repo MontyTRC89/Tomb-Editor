@@ -472,7 +472,7 @@ namespace TombLib.Wad.TrLevels
 
                 newInfo.UpdateHash();
 
-                wad.SoundInfo.Add((ushort)i, newInfo);
+                wad.Sounds.Add((ushort)i, newInfo);
             }
         }
 

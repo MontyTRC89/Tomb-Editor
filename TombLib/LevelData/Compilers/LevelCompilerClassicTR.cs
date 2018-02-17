@@ -130,9 +130,9 @@ namespace TombLib.LevelData.Compilers
         private void PrepareSoundsData()
         {
             uint numSamples = 0;
-            for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
+            for (int i = 0; i < _level.Wad.Sounds.Count; i++)
             {
-                var soundInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
+                var soundInfo = _level.Wad.Sounds.ElementAt(i).Value;
                 numSamples += (uint)soundInfo.Samples.Count;
             }
 
@@ -144,9 +144,9 @@ namespace TombLib.LevelData.Compilers
                 var soundMapSize = GetSoundMapSize();
                 for (int i = 0; i < soundMapSize; i++)
                 {
-                    if (!_level.Wad.SoundInfo.ContainsKey((ushort)i)) continue;
+                    if (!_level.Wad.Sounds.ContainsKey((ushort)i)) continue;
 
-                    var soundInfo = _level.Wad.SoundInfo[(ushort)i];
+                    var soundInfo = _level.Wad.Sounds[(ushort)i];
 
                     foreach (var sound in soundInfo.Samples)
                     {

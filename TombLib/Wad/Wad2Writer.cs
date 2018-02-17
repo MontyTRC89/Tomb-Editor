@@ -373,7 +373,7 @@ namespace TombLib.Wad
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Sounds, () =>
             {
                 LEB128.Write(chunkIO.Raw, wad.SoundMapSize);
-                foreach (var sound in wad.SoundInfo)
+                foreach (var sound in wad.Sounds)
                 {
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.Sound, () =>
                     {

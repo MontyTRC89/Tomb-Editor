@@ -35,8 +35,11 @@ namespace TombEditor
             cbBit4.Checked = (_soundSource.CodeBits & (1 << 3)) != 0;
             cbBit5.Checked = (_soundSource.CodeBits & (1 << 4)) != 0;
 
-            foreach (var sound in _wad?.SoundInfo ?? Enumerable.Empty<KeyValuePair<ushort, WadSoundInfo>>())
-                lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Value.Name) { Tag = sound.Key });
+            foreach (var sound in _wad?.Sounds ?? Enumerable.Empty<KeyValuePair<ushort, WadSoundInfo>>())
+                lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(
+                    (_wad?.SoundManagementSystem == WadSoundManagementSystem.ClassicTrle ? sound.Key.ToString().PadLeft(3, '0') + ": " : "") + sound.Value.Name
+                    )
+                { Tag = sound.Key });
             SetSound(_soundSource.SoundId);
         }
 
@@ -44,8 +47,8 @@ namespace TombEditor
         {
             _selectedSoundId = soundId;
             tbSound.Text = soundId.ToString();
-            if (_wad?.SoundInfo?.ContainsKey(soundId) ?? false)
-                tbSound.Text = "(" + soundId + ") " + _wad.SoundInfo[soundId].Name;
+            if (_wad?.Sounds?.ContainsKey(soundId) ?? false)
+                tbSound.Text = "(" + soundId + ") " + _wad.Sounds[soundId].Name;
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -72,13 +75,13 @@ namespace TombEditor
 
         private void butPlay_Click(object sender, EventArgs e)
         {
-            if (_wad.SoundInfo == null)
+            if (_wad.Sounds == null)
             {
                 DarkMessageBox.Show(this, "No wad with sounds loaded.", "Unable to play sound.", MessageBoxIcon.Information);
                 return;
             }
 
-            var sound = _wad.SoundInfo[_selectedSoundId];
+            var sound = _wad.Sounds[_selectedSoundId];
 
             if (sound.Samples.Count > 0)
             {

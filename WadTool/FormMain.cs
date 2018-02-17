@@ -616,8 +616,17 @@ namespace WadTool
                 return;
             }
 
-            var form = new FormSoundEditor(_tool.DestinationWad, false);
-            form.ShowDialog(this);
+            if (_tool.DestinationWad.Version == WadTombRaiderVersion.TR2 || 
+                _tool.DestinationWad.Version == WadTombRaiderVersion.TR3)
+            {
+                using (var form1 = new FormTr2r3SoundManager())
+                    form1.ShowDialog();
+            }
+            else
+            {
+                using (var form2 = new FormSoundEditor(_tool.DestinationWad, false))
+                    form2.ShowDialog();
+            }
         }
 
         private void spriteEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -821,7 +830,7 @@ namespace WadTool
 
             var newSounds = new Dictionary<ushort, WadSoundInfo>();
 
-            foreach(var info in wad.SoundInfo)
+            foreach(var info in wad.Sounds)
             {
                 if (TrCatalog.IsSoundMandatory(wad.Version, info.Key))
                 {
@@ -829,12 +838,12 @@ namespace WadTool
                 }
             }
 
-            wad.SoundInfo.Clear();
+            wad.Sounds.Clear();
             wad.Samples.Clear();
 
             foreach (var info in newSounds)
             {
-                wad.SoundInfo.Add(info.Key, info.Value);
+                wad.Sounds.Add(info.Key, info.Value);
 
                 foreach (var sample in info.Value.Samples)
                 {

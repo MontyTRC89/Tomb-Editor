@@ -625,7 +625,7 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                wad.SoundInfo.Add(soundId, s);
+                wad.Sounds.Add(soundId, s);
                 return true;
             });
 

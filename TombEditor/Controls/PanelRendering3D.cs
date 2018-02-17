@@ -2069,8 +2069,8 @@ namespace TombEditor.Controls
 
                     string message = "Sound source [ID = " + instance.ScriptId + "]";
                     if (_editor.Level.Wad != null &&
-                        _editor.Level.Wad.SoundInfo.ContainsKey(instance.SoundId))
-                        message += " (" + _editor.Level.Wad.SoundInfo[instance.SoundId].Name + ") ";
+                        _editor.Level.Wad.Sounds.ContainsKey(instance.SoundId))
+                        message += " (" + _editor.Level.Wad.Sounds[instance.SoundId].Name + ") ";
                     else
                         message += " ( Invalid or missing sound ) ";
 

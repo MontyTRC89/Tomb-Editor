@@ -153,7 +153,7 @@ namespace TombLib.LevelData.Compilers
                     writer.WriteBlockArray(_aiItems);
 
                     short numDemo = (short)(_level.Wad.Version == WadTombRaiderVersion.TR4 &&
-                                            _level.Wad.SoundMapSize != 370 ? _level.Wad.SoundMapSize : 0);
+                                            _level.Wad.IsNg ? _level.Wad.SoundMapSize : 0);
                     writer.Write(numDemo);
 
                     // Write sound data
@@ -164,7 +164,7 @@ namespace TombLib.LevelData.Compilers
                     for (int i = 0; i < soundMapSize; i++)
                     {
                         short soundMapValue = -1;
-                        if (_level.Wad.SoundInfo.ContainsKey((ushort)i))
+                        if (_level.Wad.Sounds.ContainsKey((ushort)i))
                         {
                             soundMapValue = (short)lastSound;
                             lastSound++;
@@ -174,13 +174,13 @@ namespace TombLib.LevelData.Compilers
                     }
 
                     // Write sound details
-                    writer.Write((uint)_level.Wad.SoundInfo.Count);
+                    writer.Write((uint)_level.Wad.Sounds.Count);
 
                     short lastSample = 0;
 
-                    for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
+                    for (int i = 0; i < _level.Wad.Sounds.Count; i++)
                     {
-                        var wadInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
+                        var wadInfo = _level.Wad.Sounds.ElementAt(i).Value;
                         var soundInfo = new tr3_sound_details();
 
                         soundInfo.Sample = lastSample;
