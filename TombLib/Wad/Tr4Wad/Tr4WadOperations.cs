@@ -231,18 +231,22 @@ namespace TombLib.Wad.Tr4Wad
         {
             var wad = new Wad2(WadTombRaiderVersion.TR4, true);
             wad.SoundManagementSystem = WadSoundManagementSystem.ClassicTrle;
+            wad.IsNg = (oldWad.Version == 130);
 
-            _logger.Info("Converting TR4 WAD to WAD2");
+            _logger.Info("Converting TR4 WAD to Wad2");
 
-            // Try to find all samples
+            // Try to find all samples if dynamic sound management
             var samples = new List<SamplePathInfo>();
-            bool result = FindTr4Samples(wad, oldWad, samples, soundPaths);
-            if (!result)
+            if (wad.SoundManagementSystem == WadSoundManagementSystem.DynamicSoundMap)
             {
-                var soundPathInformation = new DialogDescriptonMissingSounds { Samples = samples, SoundPaths = soundPaths.ToList() };
-                soundPathInformation.FindTr4Samples = () => FindTr4Samples(wad, oldWad, soundPathInformation.Samples, soundPathInformation.SoundPaths);
-                progressReporter.RaiseDialog(soundPathInformation);
-                samples = soundPathInformation.Samples;
+                bool result = FindTr4Samples(wad, oldWad, samples, soundPaths);
+                if (!result)
+                {
+                    var soundPathInformation = new DialogDescriptonMissingSounds { Samples = samples, SoundPaths = soundPaths.ToList() };
+                    soundPathInformation.FindTr4Samples = () => FindTr4Samples(wad, oldWad, soundPathInformation.Samples, soundPathInformation.SoundPaths);
+                    progressReporter.RaiseDialog(soundPathInformation);
+                    samples = soundPathInformation.Samples;
+                }
             }
 
             // First convert all textures
@@ -355,27 +359,40 @@ namespace TombLib.Wad.Tr4Wad
         {
             wad.SoundMapSize = SoundsCatalog.GetSoundMapSize(WadTombRaiderVersion.TR4, oldWad.Version == 130);
 
-            // Read all samples with multithreading
+            // Read all samples with multithreading if dynamic sound management
             var loadedSamples = new ConcurrentDictionary<int, WadSample>();
-            Parallel.For(0, oldWad.Sounds.Count, i =>
-              {
-                  var info = samples[i];
-                  var sampleName = info.Sample;
-                  var sampleFileName = info.Path;
-                  if (!info.Found)
-                  {
-                      sampleName = "NullSample.wav";
-                      sampleFileName = "Editor\\Misc\\NullSample.wav";
-                  }
+            if (wad.SoundManagementSystem == WadSoundManagementSystem.DynamicSoundMap)
+            {
+                Parallel.For(0, oldWad.Sounds.Count, i =>
+                {
+                    var info = samples[i];
+                    var sampleName = info.Sample;
+                    var sampleFileName = info.Path;
+                    if (!info.Found)
+                    {
+                        sampleName = "NullSample.wav";
+                        sampleFileName = "Editor\\Misc\\NullSample.wav";
+                    }
 
-                  using (var stream = File.OpenRead(sampleFileName))
-                  {
-                      var buffer = new byte[stream.Length];
-                      stream.Read(buffer, 0, buffer.Length);
-                      var sound = new WadSample(sampleName, buffer);
-                      loadedSamples.TryAdd(i, sound);
-                  }
-              });
+                    using (var stream = File.OpenRead(sampleFileName))
+                    {
+                        var buffer = new byte[stream.Length];
+                        stream.Read(buffer, 0, buffer.Length);
+                        var sound = new WadSample(sampleName, buffer);
+                        loadedSamples.TryAdd(i, sound);
+                    }
+                });
+            }
+            else
+            {
+                // If classic system, just add sounds names
+                for (var i = 0; i < oldWad.Sounds.Count; i++)
+                {
+                    var sample = new WadSample(Path.GetFileNameWithoutExtension(oldWad.Sounds[i]));
+                    sample.UpdateHash();
+                    loadedSamples.TryAdd(i, sample);
+                }
+            }
 
             for (int i = 0; i < wad.SoundMapSize; i++)
             {

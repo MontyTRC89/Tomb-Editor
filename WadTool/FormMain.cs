@@ -419,6 +419,13 @@ namespace WadTool
                 return;
             }
 
+            // Check if same version
+            if (_tool.DestinationWad.Version != _tool.SourceWad.Version)
+            {
+                butAddObjectToDifferentSlot_Click(null, null);
+                return;
+            }
+
             // Get the selected object
             if (treeSourceWad.SelectedNodes.Count == 0)
                 return;

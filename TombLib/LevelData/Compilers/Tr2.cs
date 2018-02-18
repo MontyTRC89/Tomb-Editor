@@ -170,13 +170,16 @@ namespace TombLib.LevelData.Compilers
                 // Write sounds
                 // For TR2 we read sound infos from XML file, then samples indices are loaded from MAIN.SAM that 
                 // is built at the same time with MAIN.SFX
-                if (!File.Exists(_level.Settings.Tr2SoundsXmlFileNameAbsoluteOrDefault))
-                    throw new NotImplementedException("Sounds.xml file was not found");
+                var soundsXmlPath = _level.Settings.SoundsDirectory + "\\TR2\\Sounds.xml";
+                var mainSamPath = _level.Settings.SoundsDirectory + "\\TR2\\MAIN.SAM";
 
-                if (!File.Exists(_level.Settings.Tr2MainSamFileNameAbsoluteOrDefault))
-                    throw new NotImplementedException("MAIN.SAM file was not found");
+                if (!File.Exists(soundsXmlPath))
+                    throw new FileNotFoundException("Sounds.xml file was not found");
 
-                var catalog = SoundsCatalog.LoadCatalogFromXml(_level.Settings.Tr2SoundsXmlFileNameAbsoluteOrDefault);
+                if (!File.Exists(mainSamPath))
+                    throw new FileNotFoundException("MAIN.SAM file was not found");
+
+                var catalog = SoundsCatalog.LoadCatalogFromXml(soundsXmlPath);
                 var soundMapSize = SoundsCatalog.GetSoundMapSize(WadTombRaiderVersion.TR2, false);
                 if (catalog == null || catalog.Count != soundMapSize)
                     throw new InvalidDataException("Sounds.xml was found but is corrupted");
@@ -197,9 +200,9 @@ namespace TombLib.LevelData.Compilers
 
                 // Now load MAIN.SAM file, it contains samples indices in MAIN.SFX
                 var samplesIndices = new List<int>();
-                using (var readerSam = new BinaryReader(File.OpenRead(_level.Settings.Tr2MainSamFileNameAbsoluteOrDefault)))
+                using (var readerSam = new BinaryReader(File.OpenRead(mainSamPath)))
                 {
-                    while (readerSam.BaseStream.Position<readerSam.BaseStream.Length)
+                    while (readerSam.BaseStream.Position < readerSam.BaseStream.Length)
                     {
                         samplesIndices.Add(readerSam.ReadInt32());
                     }

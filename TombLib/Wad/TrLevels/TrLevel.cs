@@ -764,7 +764,7 @@ namespace TombLib.Wad.TrLevels
                                 }
                             }
 
-                            // Cinemtaic frames
+                            // Cinematic frames
                             var numCinematicFrames = levelReader.ReadUInt16();
                             levelReader.ReadBytes(numCinematicFrames * 16);
                         }

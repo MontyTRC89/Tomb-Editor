@@ -357,6 +357,8 @@ namespace TombLib.Sounds
         {
             var dictionary = new SortedDictionary<ushort, SoundCatalogInfo>();
             var writeSamples = true;
+            var samples = new List<tr_sample>();
+            var samplesNames = new List<string>();
 
             foreach (var name in levels)
             {
@@ -371,8 +373,9 @@ namespace TombLib.Sounds
                 {
                     foreach (var sample in level.Samples)
                     {
-                        using (BinaryWriter writer = new BinaryWriter(File.OpenWrite("D:\\tr2\\data\\test\\samples\\sample_" + k + ".wav")))
-                            writer.Write(sample.Data);
+                        samples.Add(sample);
+                        samplesNames.Add("sample" + k);
+
                         k++;
 
                     }
@@ -388,7 +391,11 @@ namespace TombLib.Sounds
 
                         // Fill the new sound info
                         newInfo.Name = TrCatalog.GetSoundName(WadTombRaiderVersion.TR2, (uint)i).Replace(" ", "_").ToUpper().Replace("/", "_")
-                            .Replace(";", "_").Replace("(", "").Replace(")", "").Replace("?", "").Replace("!", "");
+                            .Replace(";", "_").Replace("(", "").Replace(")", "").Replace("?", "").Replace("!", "")
+                            .Replace("-", "_").Replace(":", "").Replace("'", "");
+                        newInfo.Name = newInfo.Name.Replace("__", "_");
+                        newInfo.Name = newInfo.Name.Trim('_');
+                        var sampleName = newInfo.Name.ToLower();
 
                         /* if (oldLevel.Version >= TrVersion.TR3)
                          {
@@ -423,7 +430,10 @@ namespace TombLib.Sounds
                         // In theory, sound management for TR2 and TR3 should be done in external tool
                         for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
                         {
-                            newInfo.Samples.Add("sample_" + j);
+                            var realIndex = (int)level.SamplesIndices[j];
+                            if (samplesNames[realIndex].StartsWith("sample"))
+                                samplesNames[realIndex] = sampleName + (j - oldInfo.Sample);
+                            newInfo.Samples.Add(samplesNames[realIndex]);
                         }
 
                         dictionary.Add((ushort)i, newInfo);
@@ -432,6 +442,13 @@ namespace TombLib.Sounds
             }
 
             SaveToXml("D:\\tr2\\data\\test\\Sounds.xml", dictionary);
+
+            // Write samples
+            for (var i = 0; i < samples.Count; i++)
+            {
+                using (BinaryWriter writer = new BinaryWriter(File.OpenWrite("D:\\tr2\\data\\test\\samples\\" + samplesNames[i] + ".wav")))
+                    writer.Write(samples[i].Data);
+            }
         }
     }
 }
