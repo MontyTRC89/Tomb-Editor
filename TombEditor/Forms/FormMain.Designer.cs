@@ -110,7 +110,6 @@
             this.wholeRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureMapBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.soundManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.levelSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wadToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,6 +119,7 @@
             this.debugAction3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.soundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveCurrentLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -151,7 +151,8 @@
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
             this.timerAutosave = new System.Windows.Forms.Timer(this.components);
-            this.soundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+            this.soundToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1199,9 +1200,10 @@
             this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.textureMapBuilderToolStripMenuItem,
-            this.soundManagerToolStripMenuItem,
             this.levelSettingsToolStripMenuItem,
-            this.wadToolToolStripMenuItem});
+            this.toolStripMenuItem3,
+            this.wadToolToolStripMenuItem,
+            this.soundToolToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -1216,17 +1218,6 @@
             this.textureMapBuilderToolStripMenuItem.Name = "textureMapBuilderToolStripMenuItem";
             this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.textureMapBuilderToolStripMenuItem.Text = "Texture Map builder";
-            // 
-            // soundManagerToolStripMenuItem
-            // 
-            this.soundManagerToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundManagerToolStripMenuItem.Enabled = false;
-            this.soundManagerToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
-            this.soundManagerToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_speaker_16;
-            this.soundManagerToolStripMenuItem.Name = "soundManagerToolStripMenuItem";
-            this.soundManagerToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.soundManagerToolStripMenuItem.Text = "Sound manager";
-            this.soundManagerToolStripMenuItem.Click += new System.EventHandler(this.soundManagerToolStripMenuItem_Click);
             // 
             // levelSettingsToolStripMenuItem
             // 
@@ -1312,6 +1303,15 @@
             this.debugAction5ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.debugAction5ToolStripMenuItem.Text = "Debug Action 5";
             this.debugAction5ToolStripMenuItem.Click += new System.EventHandler(this.debugAction5ToolStripMenuItem_Click);
+            // 
+            // soundsToolStripMenuItem
+            // 
+            this.soundsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
+            this.soundsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.soundsToolStripMenuItem.Text = "Sounds";
+            this.soundsToolStripMenuItem.Click += new System.EventHandler(this.soundsToolStripMenuItem_Click);
             // 
             // windowToolStripMenuItem
             // 
@@ -1598,14 +1598,22 @@
             this.timerAutosave.Interval = 300000;
             this.timerAutosave.Tick += new System.EventHandler(this.timerAutosave_Tick);
             // 
-            // soundsToolStripMenuItem
+            // toolStripMenuItem3
             // 
-            this.soundsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.soundsToolStripMenuItem.Name = "soundsToolStripMenuItem";
-            this.soundsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.soundsToolStripMenuItem.Text = "Sounds";
-            this.soundsToolStripMenuItem.Click += new System.EventHandler(this.soundsToolStripMenuItem_Click);
+            this.toolStripMenuItem3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripMenuItem3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(176, 6);
+            // 
+            // soundToolToolStripMenuItem
+            // 
+            this.soundToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.soundToolToolStripMenuItem.Name = "soundToolToolStripMenuItem";
+            this.soundToolToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.soundToolToolStripMenuItem.Text = "Sound Tool";
+            this.soundToolToolStripMenuItem.Click += new System.EventHandler(this.soundToolToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -1755,7 +1763,6 @@
         private System.Windows.Forms.ToolStripMenuItem wholeRoomDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteRoomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel statusLastCompilation;
-        private System.Windows.Forms.ToolStripMenuItem soundManagerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectConnectedRoomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rotateRoomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rotateRoomsCountercockwiseToolStripMenuItem;
@@ -1769,5 +1776,7 @@
         private System.Windows.Forms.ToolStripStatusLabel statusAutosave;
         private System.Windows.Forms.Timer timerAutosave;
         private System.Windows.Forms.ToolStripMenuItem soundsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem soundToolToolStripMenuItem;
     }
 }
