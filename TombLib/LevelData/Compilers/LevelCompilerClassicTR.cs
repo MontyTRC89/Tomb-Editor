@@ -28,6 +28,7 @@ namespace TombLib.LevelData.Compilers
         };
 
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>();
+        private List<string> _samplesWithErrors = new List<string>();
 
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
         {
@@ -134,6 +135,8 @@ namespace TombLib.LevelData.Compilers
             // Samples are embedded only in TR4 and TR5
             if (_level.Settings.GameVersion <= GameVersion.TR4) return;
 
+            _samplesWithErrors = new List<string>();
+
             uint numSamples = 0;
             for (int i = 0; i < _level.Wad.Sounds.Count; i++)
             {
@@ -149,7 +152,7 @@ namespace TombLib.LevelData.Compilers
                     var samplePath = _level.Settings.MakeAbsolute(_level.Settings.GetSamplesDirectory() + "\\" + sample.Value.Name + ".wav");
                     if (!File.Exists(samplePath))
                     {
-                        ReportProgress(20, "Sample " + sample.Value.Name + ".wav was not found");
+                        _samplesWithErrors.Add(sample.Value.Name);
                         samplePath = "Editor\\Misc\\NullSample.wav";
                     }
 
@@ -160,7 +163,7 @@ namespace TombLib.LevelData.Compilers
                     }
                     catch (Exception ex)
                     {
-                        ReportProgress(20, "There was an error while loading smple " + sample.Value.Name + ".wav");
+                        _samplesWithErrors.Add(sample.Value.Name);
                         sample.Value.SetData(new byte[1]);
                     }
                 });
@@ -247,6 +250,12 @@ namespace TombLib.LevelData.Compilers
                     break;
                 default:
                     throw new NotImplementedException("The selected game engine is not supported yet");
+            }
+
+            if (_level.Settings.GameVersion >= GameVersion.TR4 && _samplesWithErrors.Count != 0)
+            {
+                foreach (var sampleWithError in _samplesWithErrors)
+                    ReportProgress(100, "Missing sample or error while loading: " + sampleWithError); 
             }
 
             // Return statics
