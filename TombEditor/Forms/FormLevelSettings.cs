@@ -310,16 +310,16 @@ namespace TombEditor
                     panelTr5Sprites.Visible = false;
                     panelTr5LaraType.Visible = false;
                     panelTr5Weather.Visible = false;
-                    panelTr2Sounds.Visible = true;
-                    panelTr3Sounds.Visible = false;
+                    //panelTr2Sounds.Visible = true;
+                    //panelTr3Sounds.Visible = false;
                     break;
 
                 case GameVersion.TR3:
                     panelTr5Sprites.Visible = false;
                     panelTr5LaraType.Visible = false;
                     panelTr5Weather.Visible = false;
-                    panelTr2Sounds.Visible = false;
-                    panelTr3Sounds.Visible = true;
+                    //panelTr2Sounds.Visible = false;
+                    //panelTr3Sounds.Visible = true;
                     break;
 
                 case GameVersion.TR4:
@@ -327,16 +327,16 @@ namespace TombEditor
                     panelTr5Sprites.Visible = false;
                     panelTr5LaraType.Visible = false;
                     panelTr5Weather.Visible = false;
-                    panelTr2Sounds.Visible = false;
-                    panelTr3Sounds.Visible = false;
+                    //panelTr2Sounds.Visible = false;
+                    //panelTr3Sounds.Visible = false;
                     break;
 
                 case GameVersion.TR5:
                     panelTr5Sprites.Visible = true;
                     panelTr5LaraType.Visible = true;
                     panelTr5Weather.Visible = true;
-                    panelTr2Sounds.Visible = false;
-                    panelTr3Sounds.Visible = false;
+                    //panelTr2Sounds.Visible = false;
+                    //panelTr3Sounds.Visible = false;
                     break;
             }
         }

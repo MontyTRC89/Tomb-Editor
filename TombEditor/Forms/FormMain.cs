@@ -1391,5 +1391,21 @@ namespace TombEditor
             var levels = Directory.EnumerateFiles("D:\\TR2\\data\\test");
             SoundsCatalog.TestProcedure(levels);
         }
+
+        private void soundToolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (File.Exists("SoundTool.exe"))
+            {
+                try
+                {
+                    Process.Start("SoundTool.exe");
+                }
+                catch (Exception ex)
+                {
+                    DarkMessageBox.Show(this, "Error while starting Sound Tool", "Error", MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                }
+            }
+        }
     }
 }
