@@ -409,10 +409,10 @@ namespace TombLib.Wad.Tr4Wad
                     newInfo.Name = "UNKNOWN_" + i;
                 else
                     newInfo.Name = catalogSound.Name;
-                newInfo.Volume = (short)(oldInfo.Volume * 100 / 255);
+                newInfo.Volume = (short)Math.Round(oldInfo.Volume * 100.0f / 255.0f);
                 newInfo.Range = oldInfo.Range;
-                newInfo.Chance = (short)(oldInfo.Chance * 100 / 255);
-                newInfo.Pitch = (short)(oldInfo.Pitch * 100 / 127);
+                newInfo.Chance = (short)Math.Round(oldInfo.Chance * 100.0f / 255.0f);
+                newInfo.Pitch = (short)Math.Round(oldInfo.Pitch * 100.0f / 127.0f);
                 newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
                 newInfo.RandomizeGain = ((oldInfo.Characteristics & 0x4000) != 0);
                 newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);

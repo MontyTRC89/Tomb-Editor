@@ -418,10 +418,10 @@ namespace TombLib.Wad.TrLevels
 
                 if (oldLevel.Version >= TrVersion.TR3)
                 {
-                    newInfo.Volume = (short)(oldInfo.Volume * 100 / 255);
+                    newInfo.Volume = (short)Math.Round(oldInfo.Volume * 100.0f / 255.0f);
                     newInfo.Range = oldInfo.Range;
-                    newInfo.Chance = (short)(oldInfo.Chance * 100 / 255);
-                    newInfo.Pitch = (short)(oldInfo.Pitch * 100 / 127);
+                    newInfo.Chance = (short)Math.Round(oldInfo.Chance * 100.0f / 255.0f);
+                    newInfo.Pitch = (short)Math.Round(oldInfo.Pitch * 100.0f / 127.0f);
                 }
                 else
                 {
