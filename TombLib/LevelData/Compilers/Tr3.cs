@@ -236,10 +236,10 @@ namespace TombLib.LevelData.Compilers
 
                     soundInfo.Sample = lastSample;
 
-                    soundInfo.Volume = (byte)((oldSoundInfo.Volume * 255 / 100) & 0xFF);
-                    soundInfo.Chance = (byte)((oldSoundInfo.Chance * 255 / 100) & 0xFF);
+                    soundInfo.Volume = (byte)((int)Math.Round(oldSoundInfo.Volume * 255.0f / 100.0f) & 0xFF);
+                    soundInfo.Chance = (byte)((int)Math.Round(oldSoundInfo.Chance * 255.0f / 100.0f) & 0xFF);
                     soundInfo.Range = (byte)((oldSoundInfo.Range) & 0xFF);
-                    soundInfo.Pitch = (byte)((oldSoundInfo.Pitch * 127 / 100) & 0xFF);
+                    soundInfo.Pitch = (byte)((int)Math.Round(oldSoundInfo.Pitch * 127.0f / 100.0f) & 0xFF);
 
                     ushort characteristics = (ushort)(oldSoundInfo.Samples.Count);
                     if (oldSoundInfo.FlagN)
