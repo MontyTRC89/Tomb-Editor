@@ -139,9 +139,12 @@ namespace TombEditor
                     pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
 
             // Populate game version list
-            comboGameVersion.Items.AddRange(Enum.GetValues(typeof(GameVersion)).Cast<object>().ToArray());
+            //comboGameVersion.Items.AddRange(Enum.GetValues(typeof(GameVersion)).Cast<object>().ToArray());
+            comboGameVersion.Items.Add(GameVersion.TR4);
+            comboGameVersion.Items.Add(GameVersion.TRNG);
+            comboGameVersion.Items.Add(GameVersion.TR5);
 
-            // Popuòate TR5 lists
+            // Populate TR5 lists
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
             comboLaraType.Items.AddRange(Enum.GetValues(typeof(Tr5LaraType)).Cast<object>().ToArray());
 
@@ -165,10 +168,11 @@ namespace TombEditor
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
-            tbTr2SoundsXml.Text = _levelSettings.Tr2SoundsXmlFilePath;
+            /*tbTr2SoundsXml.Text = _levelSettings.Tr2SoundsXmlFilePath;
             tbTr2MainSam.Text = _levelSettings.Tr2MainSamFilePath;
             tbTr3SoundsXml.Text = _levelSettings.Tr3SoundsXmlFilePath;
-            tbTr3MainSam.Text = _levelSettings.Tr3MainSamFilePath;
+            tbTr3MainSam.Text = _levelSettings.Tr3MainSamFilePath;*/
+            tbSoundsPath.Text = _levelSettings.SoundsDirectory;
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -700,72 +704,82 @@ namespace TombEditor
 
         private void butTr2SoundsXml_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.Tr2SoundsXmlFilePath, "Select the Sounds.xml file", "XML document (*.xml)|*.xml", VariableType.None, true);
+            /*string result = BrowseFile(_levelSettings.Tr2SoundsXmlFilePath, "Select the Sounds.xml file", "XML document (*.xml)|*.xml", VariableType.None, true);
             if (result != null)
             {
                 _levelSettings.Tr2SoundsXmlFilePath = result;
                 UpdateDialog();
-            }
+            }*/
         }
 
         private void butTr2MainSam_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.Tr2MainSamFilePath, "Select MAIN.SAM file", "Tomb Editor SAM file (*.sam)|*.sam", VariableType.None, true);
+            /* string result = BrowseFile(_levelSettings.Tr2MainSamFilePath, "Select MAIN.SAM file", "Tomb Editor SAM file (*.sam)|*.sam", VariableType.None, true);
             if (result != null)
             {
                 _levelSettings.Tr2MainSamFilePath = result;
                 UpdateDialog();
-            }
+            }*/
         }
 
         private void tbTr2SoundsXml_TextChanged(object sender, EventArgs e)
         {
-            if (_levelSettings.Tr2SoundsXmlFilePath == tbTr2SoundsXml.Text)
+            /*if (_levelSettings.Tr2SoundsXmlFilePath == tbTr2SoundsXml.Text)
                 return;
             _levelSettings.Tr2SoundsXmlFilePath = tbTr2SoundsXml.Text;
-            UpdateDialog();
+            UpdateDialog();*/
         }
 
         private void tbTr2MainSam_TextChanged(object sender, EventArgs e)
         {
-            if (_levelSettings.Tr2MainSamFilePath == tbTr2MainSam.Text)
+            /*if (_levelSettings.Tr2MainSamFilePath == tbTr2MainSam.Text)
                 return;
             _levelSettings.Tr2MainSamFilePath = tbTr2MainSam.Text;
-            UpdateDialog();
+            UpdateDialog();*/
         }
 
         private void tbTr3SoundsXml_TextChanged(object sender, EventArgs e)
         {
-            if (_levelSettings.Tr3SoundsXmlFilePath == tbTr3SoundsXml.Text)
+            /*if (_levelSettings.Tr3SoundsXmlFilePath == tbTr3SoundsXml.Text)
                 return;
             _levelSettings.Tr3SoundsXmlFilePath = tbTr3SoundsXml.Text;
-            UpdateDialog();
+            UpdateDialog();*/
         }
 
         private void tbTr3MainSam_TextChanged(object sender, EventArgs e)
         {
-            if (_levelSettings.Tr3MainSamFilePath == tbTr3MainSam.Text)
+            /*if (_levelSettings.Tr3MainSamFilePath == tbTr3MainSam.Text)
                 return;
             _levelSettings.Tr3MainSamFilePath = tbTr3MainSam.Text;
-            UpdateDialog();
+            UpdateDialog();*/
         }
 
         private void butTr3SoundsXml_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.Tr3SoundsXmlFilePath, "Select the Sounds.xml file", "XML document (*.xml)|*.xml", VariableType.None, true);
+            /*string result = BrowseFile(_levelSettings.Tr3SoundsXmlFilePath, "Select the Sounds.xml file", "XML document (*.xml)|*.xml", VariableType.None, true);
             if (result != null)
             {
                 _levelSettings.Tr3SoundsXmlFilePath = result;
                 UpdateDialog();
-            }
+            }*/
         }
 
         private void butTr3MainSam_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.Tr3MainSamFilePath, "Select MAIN.SAM file", "Tomb Editor SAM file (*.sam)|*.sam", VariableType.None, true);
+            /*string result = BrowseFile(_levelSettings.Tr3MainSamFilePath, "Select MAIN.SAM file", "Tomb Editor SAM file (*.sam)|*.sam", VariableType.None, true);
             if (result != null)
             {
                 _levelSettings.Tr3MainSamFilePath = result;
+                UpdateDialog();
+            }*/
+        }
+
+        private void soundsPathBut_Click(object sender, EventArgs e)
+        {
+            string result = BrowseFolder(_levelSettings.SoundsDirectory, "Select the root folder of sounds files", VariableType.SoundsDirectory);
+            if (result != null)
+            {
+                _levelSettings.SoundsDirectory = result;
                 UpdateDialog();
             }
         }

@@ -159,7 +159,7 @@ namespace TombLib.LevelData.Compilers
                     // Write sound data
 
                     // Write sound map
-                    var soundMapSize = GetSoundMapSize();
+                    var soundMapSize = Sounds.SoundsCatalog.GetSoundMapSize(_level.Wad.Version, _level.Wad.IsNg);
                     var lastSound = 0;
                     for (int i = 0; i < soundMapSize; i++)
                     {
@@ -217,6 +217,9 @@ namespace TombLib.LevelData.Compilers
 
                     writer.Flush();
                 }
+                geometryDataBuffer.Seek(0, SeekOrigin.Begin);
+                using (var tempW = new BinaryWriter(File.OpenWrite("temp.geo")))
+                    tempW.Write(geometryDataBuffer.ToArray(), 0, (int)geometryDataBuffer.Length);
                 geometryDataBuffer.Seek(0, SeekOrigin.Begin);
 
                 using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))

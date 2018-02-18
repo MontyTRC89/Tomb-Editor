@@ -60,7 +60,12 @@ namespace TombLib.Wad
                 writer.Write((byte)Loop);
 
                 foreach (var sample in Samples)
-                    writer.Write(sample.WaveData);
+                {
+                    if (sample.Embedded)
+                        writer.Write(sample.WaveData);
+                    else
+                        writer.Write(System.Text.UTF8Encoding.UTF8.GetBytes(sample.Name));
+                }
 
                 return ms.ToArray();
             }

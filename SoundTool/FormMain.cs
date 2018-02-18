@@ -300,13 +300,13 @@ namespace SoundTool
 
         private void buildMAINSFXToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var path = "";
-            using (var dialog = new FolderBrowserDialog())
+            var path = "Sounds\\" + (_version == WadTombRaiderVersion.TR2 ? "TR2" : "TR3");
+            /*using (var dialog = new FolderBrowserDialog())
             {
                 if (dialog.ShowDialog() == DialogResult.Cancel)
                     return;
                 path = dialog.SelectedPath;
-            }
+            }*/
 
             // Check if MAIN.SFX already exists
             var pathSfx = path + "\\MAIN.SFX";

@@ -8,7 +8,9 @@ using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.LevelData;
+using TombLib.Sounds;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -129,6 +131,9 @@ namespace TombLib.LevelData.Compilers
 
         private void PrepareSoundsData()
         {
+            // Samples are embedded only in TR4 and TR5
+            if (_level.Settings.GameVersion <= GameVersion.TR4) return;
+
             uint numSamples = 0;
             for (int i = 0; i < _level.Wad.Sounds.Count; i++)
             {
@@ -136,12 +141,37 @@ namespace TombLib.LevelData.Compilers
                 numSamples += (uint)soundInfo.Samples.Count;
             }
 
+            // If classic sound mnagement, then fill WadSample objects with data from disk
+            if (_level.Wad.SoundManagementSystem == WadSoundManagementSystem.ClassicTrle)
+            {
+                Parallel.ForEach(_level.Wad.Samples, (sample) =>
+                {
+                    var samplePath = _level.Settings.MakeAbsolute(_level.Settings.GetSamplesDirectory() + "\\" + sample.Value.Name + ".wav");
+                    if (!File.Exists(samplePath))
+                    {
+                        ReportProgress(20, "Sample " + sample.Value.Name + ".wav was not found");
+                        samplePath = "Editor\\Misc\\NullSample.wav";
+                    }
+
+                    try
+                    {
+                        using (var reader = new BinaryReader(File.OpenRead(samplePath)))
+                            sample.Value.SetData(reader.ReadBytes((int)reader.BaseStream.Length));
+                    }
+                    catch (Exception ex)
+                    {
+                        ReportProgress(20, "There was an error while loading smple " + sample.Value.Name + ".wav");
+                        sample.Value.SetData(new byte[1]);
+                    }
+                });
+            }
+
             var stream = new MemoryStream();
             using (var writer = new BinaryWriterEx(stream))
             {
                 writer.Write(numSamples);
 
-                var soundMapSize = GetSoundMapSize();
+                var soundMapSize = SoundsCatalog.GetSoundMapSize(_level.Wad.Version, _level.Wad.IsNg);
                 for (int i = 0; i < soundMapSize; i++)
                 {
                     if (!_level.Wad.Sounds.ContainsKey((ushort)i)) continue;
@@ -188,9 +218,8 @@ namespace TombLib.LevelData.Compilers
                 (_level.Wad.Version != Wad.WadTombRaiderVersion.TR4 || _level.Wad.IsNg))
                 throw new NotSupportedException("You must provide a valid TR4 Wad2 (non NG) to compile a TR4 level.");
 
-            if (_level.Settings.GameVersion == GameVersion.TR4 && 
-                (_level.Wad.Version != Wad.WadTombRaiderVersion.TR4 || !_level.Wad.IsNg))
-                throw new NotSupportedException("You must provide a valid TR4 (NG) Wad2 to compile a TRNG level.");
+            if (_level.Settings.GameVersion == GameVersion.TRNG && (_level.Wad.Version != Wad.WadTombRaiderVersion.TR4))
+                throw new NotSupportedException("You must provide a valid TR4 Wad2 to compile a TRNG level.");
 
             if (_level.Settings.GameVersion == GameVersion.TR5 && _level.Wad.Version != Wad.WadTombRaiderVersion.TR5)
                 throw new NotSupportedException("You must provide a valid TR5 Wad2 to compile a TR5 level.");

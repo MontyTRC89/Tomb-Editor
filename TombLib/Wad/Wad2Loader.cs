@@ -156,7 +156,7 @@ namespace TombLib.Wad
                     return false;
 
                 string name = "";
-                byte[] data = new byte[1];
+                byte[] data = null;
 
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {

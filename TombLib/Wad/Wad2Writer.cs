@@ -185,7 +185,8 @@ namespace TombLib.Wad
                         var wave = sample.Value;
 
                         chunkIO.WriteChunkString(Wad2Chunks.WaveName, wave.Name);
-                        chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.WaveData, wave.WaveData);
+                        if (wave.Embedded)
+                            chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.WaveData, wave.WaveData);
                     });
                 }
             });

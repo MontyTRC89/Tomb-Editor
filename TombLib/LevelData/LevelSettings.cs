@@ -15,6 +15,8 @@ namespace TombLib.LevelData
         LevelDirectory,
         [Description("The directory of the .txt files for script")]
         ScriptDirectory,
+        [Description("The directory of the sounds files")]
+        SoundsDirectory,
         [Description("The directory in which all game components reside.")]
         GameDirectory,
         [Description("The directory of the editor application.")]
@@ -89,10 +91,10 @@ namespace TombLib.LevelData
         public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr2MainSamFilePath { get; set; } = null; // Can be null if the default should be used.
+        /*public string Tr2MainSamFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr3MainSamFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr2SoundsXmlFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr3SoundsXmlFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string Tr3SoundsXmlFilePath { get; set; } = null; // Can be null if the default should be used.*/
 
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
             {
@@ -106,6 +108,7 @@ namespace TombLib.LevelData
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds\\Samples")
             };
 
+        public string SoundsDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds";
         public string ScriptDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Script";
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
@@ -154,6 +157,8 @@ namespace TombLib.LevelData
                     return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);
                 case VariableType.ScriptDirectory:
                     return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location) + Dir + "Script";
+                case VariableType.SoundsDirectory:
+                    return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location) + Dir + "Sounds";
                 case VariableType.LevelDirectory:
                     if (!string.IsNullOrEmpty(LevelFilePath))
                         return Path.GetDirectoryName(LevelFilePath);
@@ -278,7 +283,7 @@ namespace TombLib.LevelData
         public string Tr5ExtraSpritesFileNameAbsoluteOrDefault => MakeAbsolute(Tr5ExtraSpritesFilePath) ??
             Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/Extra.Tr5.pc.png");
 
-        public string Tr2MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr2MainSamFilePath) ??
+        /*public string Tr2MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr2MainSamFilePath) ??
             Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/MAIN.SAM");
 
         public string Tr3MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr3MainSamFilePath) ??
@@ -288,7 +293,21 @@ namespace TombLib.LevelData
            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/Sounds.xml");
 
         public string Tr3SoundsXmlFileNameAbsoluteOrDefault => MakeAbsolute(Tr3SoundsXmlFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR3/Sounds.xml");
+            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR3/Sounds.xml");*/
+
+        public string GetSamplesDirectory()
+        {
+            switch (GameVersion)
+            {
+                case GameVersion.TR2: return SoundsDirectory + "\\TR2\\Samples";
+                case GameVersion.TR3: return SoundsDirectory + "\\TR3\\Samples";
+                case GameVersion.TR4: return SoundsDirectory + "\\TR4\\Samples";
+                case GameVersion.TRNG: return SoundsDirectory + "\\TR4\\Samples";
+                case GameVersion.TR5: return SoundsDirectory + "\\TR5\\Samples";
+                default:
+                    throw new NotSupportedException("Target game engine is not supported");
+            }
+        }
 
         public static ImageC LoadRawExtraTexture(string path)
         {

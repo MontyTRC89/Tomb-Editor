@@ -71,6 +71,7 @@
             this.comboLoop = new DarkUI.Controls.DarkComboBox();
             this.cbMandatorySound = new DarkUI.Controls.DarkCheckBox();
             this.cbNgLocked = new DarkUI.Controls.DarkCheckBox();
+            this.batchEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -131,7 +132,8 @@
             // tR2CatalogToolStripMenuItem
             // 
             this.tR2CatalogToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tR2CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tR2CatalogToolStripMenuItem.Enabled = false;
+            this.tR2CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.tR2CatalogToolStripMenuItem.Name = "tR2CatalogToolStripMenuItem";
             this.tR2CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tR2CatalogToolStripMenuItem.Text = "TR2 Catalog";
@@ -140,7 +142,8 @@
             // tR3CatalogToolStripMenuItem
             // 
             this.tR3CatalogToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tR3CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tR3CatalogToolStripMenuItem.Enabled = false;
+            this.tR3CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.tR3CatalogToolStripMenuItem.Name = "tR3CatalogToolStripMenuItem";
             this.tR3CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tR3CatalogToolStripMenuItem.Text = "TR3 Catalog";
@@ -196,7 +199,8 @@
             this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.convertTXTToXMLToolStripMenuItem,
-            this.buildMAINSFXToolStripMenuItem});
+            this.buildMAINSFXToolStripMenuItem,
+            this.batchEditToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -483,6 +487,14 @@
             this.cbNgLocked.TabIndex = 76;
             this.cbNgLocked.Text = "TRNG locked";
             // 
+            // batchEditToolStripMenuItem
+            // 
+            this.batchEditToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.batchEditToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.batchEditToolStripMenuItem.Name = "batchEditToolStripMenuItem";
+            this.batchEditToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.batchEditToolStripMenuItem.Text = "Batch edit";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -573,6 +585,7 @@
         private System.Windows.Forms.ToolStripMenuItem buildMAINSFXToolStripMenuItem;
         private DarkUI.Controls.DarkCheckBox cbMandatorySound;
         private DarkUI.Controls.DarkCheckBox cbNgLocked;
+        private System.Windows.Forms.ToolStripMenuItem batchEditToolStripMenuItem;
     }
 }
 

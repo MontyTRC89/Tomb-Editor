@@ -441,19 +441,22 @@ namespace TombLib.Wad.TrLevels
                 // Read all samples linked to this sound info (for example footstep has 4 samples)
                 // For old TRs, don't load samples, because they are in MAIN.SFX
                 // In theory, sound management for TR2 and TR3 should be done in external tool
-                for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
+                for (int j = 0; j < numSamplesInGroup; j++)
                 {
-                    var soundName = "sample" + j;
+                    var realIndex = j + oldInfo.Sample;
+                    var soundName = "sample" + realIndex; 
+                    if (catalogInfo != null && j < catalogInfo.Samples.Count)
+                        soundName = catalogInfo.Samples[j];
 
-                    if (j < oldLevel.Samples.Count)
+                    if (realIndex < oldLevel.Samples.Count)
                     {
                         var theSoundIndex = 0;
                         if (oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
-                            theSoundIndex = (int)oldLevel.SamplesIndices[j];
+                            theSoundIndex = (int)oldLevel.SamplesIndices[realIndex];
                         else
-                            theSoundIndex = j;
+                            theSoundIndex = realIndex;
 
-                        var sound = new WadSample(soundName, oldLevel.Samples[theSoundIndex].Data);
+                        var sound = new WadSample(soundName, new byte[1] /*, oldLevel.Samples[theSoundIndex].Data*/);
                         if (wad.Samples.ContainsKey(sound.Hash))
                         {
                             newInfo.Samples.Add(wad.Samples[sound.Hash]);
