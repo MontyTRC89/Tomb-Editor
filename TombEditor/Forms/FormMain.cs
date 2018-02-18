@@ -165,14 +165,6 @@ namespace TombEditor
                 gridWallsIn5ToolStripMenuItem.Enabled = validSectorSelection;
             }
 
-            if (obj is Editor.LoadedWadsChangedEvent)
-            {
-                if (_editor.Level.Wad != null)
-                    soundManagerToolStripMenuItem.Enabled = !_editor.Level.Wad.IsImported;
-                else
-                    soundManagerToolStripMenuItem.Enabled = false;
-            }
-
             // Update compilation statistics
             if (obj is Editor.LevelCompilationCompletedEvent)
             {
