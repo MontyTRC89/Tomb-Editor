@@ -1042,6 +1042,7 @@ namespace TombEditor.Controls
                             }
                             break;
 
+                        case EditorMode.Lighting:
                         case EditorMode.FaceEdit:
                             // Do texturing
                             if (_editor.Tool.Tool != EditorToolType.Group)
@@ -1316,7 +1317,7 @@ namespace TombEditor.Controls
                                     }
                                 }
                             }
-                            else if (_editor.Mode == EditorMode.FaceEdit && _editor.Action == null && ModifierKeys == Keys.None)
+                            else if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && _editor.Action == null && ModifierKeys == Keys.None)
                             {
                                 if (_editor.Tool.Tool == EditorToolType.Brush)
                                 {
@@ -3317,7 +3318,7 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["UseVertexColors"].SetValue(false);
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.998f, 0.0f, 0.0f, 1.0f)); // Selection color
 
-                    //Highlight selection, if current tool is dragging
+                    // Highlight selection, if current tool is dragging
                     _roomEffect.Parameters["Highlight"].SetValue(_toolHandler.Dragged);
 
                     // Apply arrows to floor and ceiling
