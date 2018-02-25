@@ -150,7 +150,6 @@
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.timerAutosave = new System.Windows.Forms.Timer(this.components);
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.soundToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
@@ -1593,11 +1592,6 @@
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
             // 
-            // timerAutosave
-            // 
-            this.timerAutosave.Interval = 300000;
-            this.timerAutosave.Tick += new System.EventHandler(this.timerAutosave_Tick);
-            // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1774,7 +1768,6 @@
         private System.Windows.Forms.ToolStripMenuItem importRoomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wadToolToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel statusAutosave;
-        private System.Windows.Forms.Timer timerAutosave;
         private System.Windows.Forms.ToolStripMenuItem soundsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem soundToolToolStripMenuItem;

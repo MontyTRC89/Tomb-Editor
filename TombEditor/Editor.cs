@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.LevelData.IO;
 using TombLib.Utils;
 
 namespace TombEditor
@@ -71,7 +72,7 @@ namespace TombEditor
                 // Validate level
                 int roomCount = value.Rooms.Count((room) => room != null);
                 if (roomCount <= 0)
-                    value.Rooms[0] = new Room(value, Room.MaxRoomDimensions, Room.MaxRoomDimensions, 
+                    value.Rooms[0] = new Room(value, Room.MaxRoomDimensions, Room.MaxRoomDimensions,
                                               _level.Settings.DefaultAmbientLight, "Room 0");
 
                 // Reset state that was related to the old level
@@ -95,6 +96,7 @@ namespace TombEditor
                 LoadedImportedGeometriesChange();
                 LevelFileNameChange();
                 HasUnsavedChanges = false;
+                AutoSavingTimer?.Stop();
             }
         }
 
@@ -376,12 +378,13 @@ namespace TombEditor
         // This is invoke after an autosave
         public class AutosaveEvent : IEditorEvent
         {
-            public string FileName { get; internal set; }
-            public bool Result { get; internal set; }
+            public string FileName { get; set; }
+            public Exception Exception { get; set; }
+            public DateTime Time { get; set; }
         }
-        public void AutoSaveCompleted(bool result, string fileName)
+        public void AutoSaveCompleted(Exception exception, string fileName, DateTime time)
         {
-            RaiseEvent(new AutosaveEvent { Result = result, FileName = fileName });
+            RaiseEvent(new AutosaveEvent { Exception = exception, FileName = fileName, Time = time });
         }
 
         // This is invoked when ever the applied textures in a room change.
@@ -623,6 +626,10 @@ namespace TombEditor
                 }
                 if (!configurationIsLoadedFromFile)
                     current?.SaveTry();
+                if (previous == null || current.AutoSave_TimeInSeconds != previous.AutoSave_TimeInSeconds)
+                    AutoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
+                if (previous == null || current.AutoSave_Enable != previous.AutoSave_Enable)
+                    AutoSavingTimer.Enabled = current.AutoSave_Enable && HasUnsavedChanges;
             }
 
             // Update room selection so that no deleted rooms are selected
@@ -644,6 +651,8 @@ namespace TombEditor
             if (obj is IEditorEventCausesUnsavedChanges)
             {
                 HasUnsavedChanges = true;
+                if (_Configuration.AutoSave_Enable)
+                    AutoSavingTimer?.Start();
             }
 
             // Make sure an object that was removed isn't selected
@@ -664,6 +673,86 @@ namespace TombEditor
             configurationWatcher?.Dispose();
             HighlightManager?.Dispose();
             Level?.Dispose();
+            AutoSavingTimer?.Dispose();
+        }
+
+        // Auto saving
+        private readonly System.Windows.Forms.Timer AutoSavingTimer;
+        private volatile bool currentlyAutoSaving = false;
+        private void AutoSave()
+        {
+            Level level = Level; // Copy the member variables to local variables so that the we will have slightly higher chance to succeed in the parallel thread.
+            Configuration configuration = Configuration;
+            if (!configuration.AutoSave_Enable)
+                return;
+            if (!HasUnsavedChanges || level == null)
+                return;
+
+            // Start a new thread
+            // This may be a little bit unsafe and produce a corrupt file but let's hope for the best :/
+            var threadAutosave = new Thread(() =>
+            {
+                if (currentlyAutoSaving)
+                    return;
+                try
+                {
+                    currentlyAutoSaving = true;
+
+                    // Figure out data folder
+                    string path;
+                    string fileNameBase;
+                    if (string.IsNullOrEmpty(level.Settings.LevelFilePath))
+                    {
+                        path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                        fileNameBase = "Unnamed";
+                    }
+                    else
+                    {
+                        path = Path.GetDirectoryName(level.Settings.LevelFilePath);
+                        fileNameBase = Path.GetFileNameWithoutExtension(level.Settings.LevelFilePath);
+                    }
+
+                    // Create the new filename
+                    DateTime Now = DateTime.Now;
+                    string fileName;
+                    if (configuration.AutoSave_NamePutDateFirst)
+                        fileName = Now.ToString(configuration.AutoSave_DateTimeFormat, System.Globalization.CultureInfo.CurrentCulture) + configuration.AutoSave_NameSeparator + fileNameBase;
+                    else
+                        fileName = fileNameBase + configuration.AutoSave_NameSeparator + Now.ToString(configuration.AutoSave_DateTimeFormat, System.Globalization.CultureInfo.CurrentCulture);
+                    fileName = Path.Combine(path, fileName + ".prj2");
+
+                    // Save the level
+                    Prj2Writer.SaveToPrj2(fileName, level);
+
+                    // Consider cleaning up directory
+                    if (configuration.AutoSave_CleanupEnable)
+                    {
+                        // Get all compatible projects
+                        var directory = new DirectoryInfo(path);
+                        var filesOrdered = directory.EnumerateFiles(configuration.AutoSave_NamePutDateFirst ? ("*" + configuration.AutoSave_NameSeparator + fileNameBase + ".prj2") : (fileNameBase + configuration.AutoSave_NameSeparator + "*.prj2"))
+                                                    .OrderBy(d => d.Name)
+                                                    .Select(d => d.Name)
+                                                    .ToList();
+
+                        // Clean a bit the directory
+                        int numFilesToDelete = filesOrdered.Count - configuration.AutoSave_CleanupMaxAutoSaves;
+                        for (int i = 0; i < numFilesToDelete; i++)
+                            File.Delete(Path.Combine(path, filesOrdered[i]));
+                    }
+
+                    AutoSaveCompleted(null, fileName, Now);
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "Auto save failed!");
+                    AutoSaveCompleted(exc, "", DateTime.Now);
+                }
+                finally
+                {
+                    currentlyAutoSaving = false;
+                }
+            });
+            threadAutosave.Start();
         }
 
         // Construction
@@ -676,6 +765,9 @@ namespace TombEditor
             Configuration = configuration;
             Level = level;
             HighlightManager = new HighlightManager(this);
+
+            AutoSavingTimer = new System.Windows.Forms.Timer();
+            AutoSavingTimer.Tick += (sender, e) => AutoSave();
 
             EditorEventRaised += Editor_EditorEventRaised;
             Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
