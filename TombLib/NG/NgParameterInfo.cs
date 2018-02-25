@@ -212,8 +212,8 @@ namespace TombLib.NG
                             return timer(upperBound);
 
                         case TriggerTargetType.FlipEffect:
-                            NgTriggerSubtype actionSubtriggerType = NgCatalog.ActionTrigger.MainList.TryGetOrDefault(target);
-                            if (actionSubtriggerType != null && actionSubtriggerType.Extra.IsEmpty)
+                            NgTriggerSubtype flipEffectSubtriggerType = NgCatalog.FlipEffectTrigger.MainList.TryGetOrDefault(target);
+                            if (flipEffectSubtriggerType != null && flipEffectSubtriggerType.Extra.IsEmpty)
                                 return timer(upperBound);
                             else
                                 return (ushort)(timer(timerUpperBound) | (extra(extraUpperBound) << 8));
