@@ -357,7 +357,7 @@ namespace TombLib.LevelData
 
             // Rotate sector geometry
             bool diagonalChange = transformation.MirrorX != ((transformation.QuadrantRotation % 2) != 0);
-            bool oldFloorSplitDirectionIsXEqualsZReal = FloorSplitDirectionIsXEqualsZReal;
+            bool oldFloorSplitDirectionIsXEqualsZReal = FloorSplitDirectionIsXEqualsZWithDiagonalSplit;
             if (onlyFloor != false)
             {
                 bool requiredFloorSplitDirectionIsXEqualsZ = FloorSplitDirectionIsXEqualsZ != diagonalChange;
@@ -367,7 +367,7 @@ namespace TombLib.LevelData
                 if (requiredFloorSplitDirectionIsXEqualsZ != FloorSplitDirectionIsXEqualsZ)
                     FloorSplitDirectionToggled = !FloorSplitDirectionToggled;
             }
-            bool oldCeilingSplitDirectionIsXEqualsZReal = CeilingSplitDirectionIsXEqualsZReal;
+            bool oldCeilingSplitDirectionIsXEqualsZReal = CeilingSplitDirectionIsXEqualsZWithDiagonalSplit;
             if (onlyFloor != true)
             {
                 bool requiredCeilingSplitDirectionIsXEqualsZ = CeilingSplitDirectionIsXEqualsZ != diagonalChange;
@@ -838,7 +838,7 @@ namespace TombLib.LevelData
         }
 
         /// <summary>Checks for FloorDiagonalSplit and takes priority</summary>
-        public bool FloorSplitDirectionIsXEqualsZReal
+        public bool FloorSplitDirectionIsXEqualsZWithDiagonalSplit
         {
             get
             {
@@ -859,7 +859,7 @@ namespace TombLib.LevelData
         }
 
         /// <summary>Checks for CeilingDiagonalSplit and takes priority</summary>
-        public bool CeilingSplitDirectionIsXEqualsZReal
+        public bool CeilingSplitDirectionIsXEqualsZWithDiagonalSplit
         {
             get
             {

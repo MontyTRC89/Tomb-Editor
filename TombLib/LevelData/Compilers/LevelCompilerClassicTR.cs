@@ -194,7 +194,7 @@ namespace TombLib.LevelData.Compilers
                         else
                             // Other engines uses uncompresses WAV samples
                             writer.Write(sound.WaveData.GetLength(0));
-                        writer.Write(sound.WaveData.GetLength(0));  
+                        writer.Write(sound.WaveData.GetLength(0));
                         writer.Write(sound.WaveData);
                     }
                 }
@@ -217,7 +217,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.GameVersion == GameVersion.TR3 && _level.Wad.Version != Wad.WadTombRaiderVersion.TR3)
                 throw new NotSupportedException("You must provide a valid TR3 Wad2 to compile a TR3 level.");
 
-            if (_level.Settings.GameVersion == GameVersion.TR4 && 
+            if (_level.Settings.GameVersion == GameVersion.TR4 &&
                 (_level.Wad.Version != Wad.WadTombRaiderVersion.TR4 || _level.Wad.IsNg))
                 throw new NotSupportedException("You must provide a valid TR4 Wad2 (non NG) to compile a TR4 level.");
 
@@ -255,7 +255,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.GameVersion >= GameVersion.TR4 && _samplesWithErrors.Count != 0)
             {
                 foreach (var sampleWithError in _samplesWithErrors)
-                    ReportProgress(100, "Missing sample or error while loading: " + sampleWithError); 
+                    ReportProgress(100, "Missing sample or error while loading: " + sampleWithError);
             }
 
             // Return statics
