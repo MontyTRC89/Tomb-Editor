@@ -80,7 +80,7 @@ namespace WadTool
                             using (var reader = new BinaryReader(File.OpenRead(path)))
                                 buffer = reader.ReadBytes((int)reader.BaseStream.Length);
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             continue;
                         }

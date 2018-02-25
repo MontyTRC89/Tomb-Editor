@@ -101,13 +101,11 @@ namespace TombLib.GeometryIO.Importers
                     {
                         var name = line.Split(' ')[1];
                         var mesh = new IOMesh(name);
-                        var isRoom = false;
                         positions = new List<Vector3>();
 
                         if (name.Contains("TeRoom_"))
                         {
                             model.HasMultipleRooms = true;
-                            isRoom = true;
                         }
 
                         var lastVertex = 0;
