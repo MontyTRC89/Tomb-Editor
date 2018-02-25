@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TombLib.GeometryIO;
 using TombLib.GeometryIO.Importers;
 using TombLib.Graphics;
+using TombLib.Sounds;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
@@ -285,7 +286,7 @@ namespace TombLib.Wad
                 Statics.Remove(obj.ObjectID);
         }
 
-        public void AddObject(WadObject obj, Wad2 srcWad, uint destination)
+        public void AddObject(WadObject obj, Wad2 srcWad, uint destination, List<ushort> soundsNotCopied)
         {
             bool isMoveable = (obj.GetType() == typeof(WadMoveable));
 
@@ -519,6 +520,7 @@ namespace TombLib.Wad
             {
                 // Add sounds using the old system
                 var soundsToAdd = new List<ushort>();
+                soundsNotCopied = new List<ushort>();
                 if (isMoveable)
                 {
                     var newMoveable = (WadMoveable)newObject;
@@ -536,6 +538,7 @@ namespace TombLib.Wad
                                     {
                                         // Don't do anything for now, just use the copy of sound 
                                         // The user should manually copy the sound
+                                        soundsNotCopied.Add(soundId);
                                     }
                                     else
                                     {

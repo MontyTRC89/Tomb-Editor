@@ -112,6 +112,12 @@
     <Compile Include="FormSelectSlot.Designer.cs">
       <DependentUpon>FormSelectSlot.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormSoundEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSoundEditor.Designer.cs">
+      <DependentUpon>FormSoundEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSpriteEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -151,6 +157,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSelectSlot.resx">
       <DependentUpon>FormSelectSlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSoundEditor.resx">
+      <DependentUpon>FormSoundEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSpriteEditor.resx">
       <DependentUpon>FormSpriteEditor.cs</DependentUpon>

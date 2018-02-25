@@ -133,7 +133,8 @@ namespace TombLib.LevelData.Compilers
         private void PrepareSoundsData()
         {
             // Samples are embedded only in TR4 and TR5
-            if (_level.Settings.GameVersion <= GameVersion.TR4) return;
+            if (_level.Settings.GameVersion <= GameVersion.TR4)
+                return;
 
             _samplesWithErrors = new List<string>();
 
@@ -144,7 +145,7 @@ namespace TombLib.LevelData.Compilers
                 numSamples += (uint)soundInfo.Samples.Count;
             }
 
-            // If classic sound mnagement, then fill WadSample objects with data from disk
+            // If classic sound management, then fill WadSample objects with data from disk
             if (_level.Wad.SoundManagementSystem == WadSoundManagementSystem.ClassicTrle)
             {
                 Parallel.ForEach(_level.Wad.Samples, (sample) =>
