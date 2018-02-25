@@ -83,10 +83,6 @@ namespace TombEditor
             // Retrieve clipboard change notifications
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
-
-            // Enable autosave?
-            if (_editor.Configuration.Editor_Autosave)
-                timerAutosave.Start();
         }
 
         protected override void Dispose(bool disposing)
@@ -176,7 +172,8 @@ namespace TombEditor
             if (obj is Editor.AutosaveEvent)
             {
                 var evt = obj as Editor.AutosaveEvent;
-                statusAutosave.Text = (evt.Result ? "Autosave OK: " + evt.FileName : "Autosave failed!");
+                statusAutosave.Text = (evt.Exception == null ? "Autosave OK: " + evt.Time : "Autosave failed!");
+                statusAutosave.ForeColor = evt.Exception == null ? statusLastCompilation.ForeColor : Color.LightSalmon;
             }
 
             // Update room information on the status strip
@@ -1343,7 +1340,7 @@ namespace TombEditor
         private void applyCurrentAmbientLightToAllRoomsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkMessageBox.Show(this,"Do you really want to apply the ambient light of the current room to all rooms?",
-                                    "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question)== DialogResult.Yes)
+                                    "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 EditorActions.ApplyCurrentAmbientLightToAllRooms();
                 MessageBox.Show(this, "Ambient light was applied to all rooms", "Apply ambient light",
@@ -1358,24 +1355,16 @@ namespace TombEditor
 
         private void wadToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists("WadTool.exe"))
+            try
             {
-                try
-                {
-                    Process.Start("WadTool.exe");
-                }
-                catch (Exception ex)
-                {
-                    DarkMessageBox.Show(this, "Error while starting Wad Tool", "Error", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error);
-                }
+                Process.Start("WadTool.exe");
             }
-        }
-
-        private void timerAutosave_Tick(object sender, EventArgs e)
-        {
-            if (_editor != null && _editor.Level != null)
-                EditorActions.AutoSaveLevel();
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Error while starting Wad Tool.");
+                DarkMessageBox.Show(this, "Error while starting Wad Tool", "Error", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+            }
         }
 
         private void soundsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1386,17 +1375,15 @@ namespace TombEditor
 
         private void soundToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists("SoundTool.exe"))
+            try
             {
-                try
-                {
-                    Process.Start("SoundTool.exe");
-                }
-                catch (Exception ex)
-                {
-                    DarkMessageBox.Show(this, "Error while starting Sound Tool", "Error", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error);
-                }
+                Process.Start("SoundTool.exe");
+            }
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Error while starting Wad Tool.");
+                DarkMessageBox.Show(this, "Error while starting Sound Tool", "Error", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
             }
         }
     }

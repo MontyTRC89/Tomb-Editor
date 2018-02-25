@@ -89,7 +89,13 @@ namespace TombEditor
         public bool Window_Maximized { get; set; } = true;
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 
-        public bool Editor_Autosave { get; set; } = true;
+        public bool AutoSave_Enable { get; set; } = true;
+        public int AutoSave_TimeInSeconds { get; set; } = 500;
+        public string AutoSave_DateTimeFormat { get; set; } = "yyyy-MM-dd HH-mm";
+        public bool AutoSave_CleanupEnable { get; set; } = true;
+        public int AutoSave_CleanupMaxAutoSaves { get; set; } = 10;
+        public bool AutoSave_NamePutDateFirst { get; set; } = true;
+        public string AutoSave_NameSeparator { get; set; } = " ";
 
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
@@ -231,7 +237,8 @@ namespace TombEditor
 
         public static Configuration Load(Stream stream)
         {
-            return (Configuration)(new XmlSerializer(typeof(Configuration)).Deserialize(stream));
+            using (XmlReader reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreWhitespace = false }))
+                return (Configuration)(new XmlSerializer(typeof(Configuration)).Deserialize(reader));
         }
 
         public static Configuration Load(string filePath)
