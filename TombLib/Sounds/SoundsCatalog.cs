@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace TombLib.Sounds
 {
     public class SoundsCatalog
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static Dictionary<WadTombRaiderVersion, SortedDictionary<ushort, SoundCatalogInfo>> _catalog = new Dictionary<WadTombRaiderVersion, SortedDictionary<ushort, SoundCatalogInfo>>();
 
         public static void LoadAllCatalogsFromXml(string path)
@@ -34,7 +36,7 @@ namespace TombLib.Sounds
         }
 
         internal static SortedDictionary<ushort, SoundCatalogInfo> LoadCatalogFromXml(string fileName)
-        {          
+        {
             var dictionary = new SortedDictionary<ushort, SoundCatalogInfo>();
 
             try
@@ -91,8 +93,9 @@ namespace TombLib.Sounds
                     dictionary.Add(soundId, soundInfo);
                 }
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
+                logger.Warn(exc, "'SoundsCatalog.LoadCatalogFromXml' failed.");
                 return null;
             }
 
@@ -148,8 +151,9 @@ namespace TombLib.Sounds
                     writer.Write("\t</Sounds>");
                 }
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
+                logger.Warn(exc, "'SoundsCatalog.SaveToXml' failed.");
                 return false;
             }
 
@@ -334,8 +338,9 @@ namespace TombLib.Sounds
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
+                logger.Warn(exc, "'SoundsCatalog.LoadCatalogFromTxt' failed.");
                 return null;
             }
 

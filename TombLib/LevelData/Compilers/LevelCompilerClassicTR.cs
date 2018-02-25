@@ -161,7 +161,7 @@ namespace TombLib.LevelData.Compilers
                         using (var reader = new BinaryReader(File.OpenRead(samplePath)))
                             sample.Value.SetData(reader.ReadBytes((int)reader.BaseStream.Length));
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         _samplesWithErrors.Add(sample.Value.Name);
                         sample.Value.SetData(new byte[1]);

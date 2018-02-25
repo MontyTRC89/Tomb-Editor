@@ -25,7 +25,6 @@ namespace TombEditor
 
         private Level _level;
         private TriggerInstance _trigger;
-        private bool _loading = true;
 
         public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
                            Action<Room> selectRoom)
@@ -64,7 +63,6 @@ namespace TombEditor
             paramExtra.Parameter = _trigger.Extra;
 
             // Update the dialog
-            _loading = false;
             UpdateDialog();
         }
 
