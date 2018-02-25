@@ -3459,6 +3459,9 @@ namespace TombLib.LevelData
             // Check where the geometry matches to create a portal
             if (belowIsQuad || aboveIsQuad || (belowSplitXEqualsZ == aboveSplitXEqualsZ))
             {
+                DiagonalSplit diagonalSplit = aboveDiagonalSplit != DiagonalSplit.None ? aboveDiagonalSplit : belowDiagonalSplit;
+                bool splitXEqualsZ = belowIsQuad ? aboveSplitXEqualsZ : belowSplitXEqualsZ;
+
                 bool matchesAtXnYn = (roomBelow.Position.Y + blockBelow.WS[Block.FaceXnZn]) == (roomAbove.Position.Y + blockAbove.QA[Block.FaceXnZn]);
                 bool matchesAtXpYn = (roomBelow.Position.Y + blockBelow.WS[Block.FaceXpZn]) == (roomAbove.Position.Y + blockAbove.QA[Block.FaceXpZn]);
                 bool matchesAtXnYp = (roomBelow.Position.Y + blockBelow.WS[Block.FaceXnZp]) == (roomAbove.Position.Y + blockAbove.QA[Block.FaceXnZp]);
@@ -3466,18 +3469,18 @@ namespace TombLib.LevelData
 
                 if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && !(blockAbove.IsAnyWall || blockBelow.IsAnyWall))
                     return RoomConnectionType.FullPortal;
-                if ((belowIsQuad || belowSplitXEqualsZ) && (aboveIsQuad || aboveSplitXEqualsZ))
+                if ((belowIsQuad || belowSplitXEqualsZ) && (aboveIsQuad || splitXEqualsZ))
                 {
-                    if (matchesAtXnYn && matchesAtXnYp && matchesAtXpYp && (aboveDiagonalSplit == DiagonalSplit.XpZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                    if (matchesAtXnYn && matchesAtXnYp && matchesAtXpYp && (diagonalSplit == DiagonalSplit.XpZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
                         return RoomConnectionType.TriangularPortalXnZp;
-                    if (matchesAtXnYn && matchesAtXpYn && matchesAtXpYp && (aboveDiagonalSplit == DiagonalSplit.XnZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                    if (matchesAtXnYn && matchesAtXpYn && matchesAtXpYp && (diagonalSplit == DiagonalSplit.XnZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
                         return RoomConnectionType.TriangularPortalXpZn;
                 }
-                if ((belowIsQuad || !belowSplitXEqualsZ) && (aboveIsQuad || !aboveSplitXEqualsZ))
+                if ((belowIsQuad || !belowSplitXEqualsZ) && (aboveIsQuad || !splitXEqualsZ))
                 {
-                    if (matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && (aboveDiagonalSplit == DiagonalSplit.XnZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                    if (matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && (diagonalSplit == DiagonalSplit.XnZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
                         return RoomConnectionType.TriangularPortalXpZp;
-                    if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && (aboveDiagonalSplit == DiagonalSplit.XpZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                    if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && (diagonalSplit == DiagonalSplit.XpZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
                         return RoomConnectionType.TriangularPortalXnZn;
                 }
             }
