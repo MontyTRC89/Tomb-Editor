@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.LevelData;
+using TombLib.Sounds;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -446,8 +447,25 @@ namespace WadTool
                     return;
             }
 
+            var soundsNotCopied = new List<ushort>();
+
             // Copy the object
-            _tool.DestinationWad.AddObject(currentObject, _tool.SourceWad, currentObject.ObjectID);
+            _tool.DestinationWad.AddObject(currentObject, _tool.SourceWad, currentObject.ObjectID, soundsNotCopied);
+            
+            // Warn the user about not copied sounds
+            if (soundsNotCopied.Count != 0)
+            {
+                var message = "Some sounds were already present in destination Wad2 and they were not copied:" + Environment.NewLine;
+                foreach (var id in soundsNotCopied)
+                {
+                    var info = SoundsCatalog.GetSound(_tool.SourceWad.Version, id);
+                    if (info == null)
+                        message += "UNKNOWN_" + id + Environment.NewLine;
+                    else
+                        message += info.Name + Environment.NewLine;
+                }
+                DarkMessageBox.Show(this, message, "Sounds not copied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
             // Update UI
             UpdateDestinationWad2UI();
@@ -565,8 +583,25 @@ namespace WadTool
                     return;
             }
 
+            var soundsNotCopied = new List<ushort>();
+
             // Copy the object
-            _tool.DestinationWad.AddObject(currentObject, _tool.SourceWad, objectId);
+            _tool.DestinationWad.AddObject(currentObject, _tool.SourceWad, objectId, soundsNotCopied);
+
+            // Warn the user about not copied sounds
+            if (soundsNotCopied.Count != 0)
+            {
+                var message = "Some sounds were already present in destination Wad2 and they were not copied:" + Environment.NewLine;
+                foreach (var id in soundsNotCopied)
+                {
+                    var info = SoundsCatalog.GetSound(_tool.SourceWad.Version, id);
+                    if (info == null)
+                        message += "UNKNOWN_" + id + Environment.NewLine;
+                    else
+                        message += info.Name + Environment.NewLine;
+                }
+                DarkMessageBox.Show(this, message, "Sounds not copied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
             // Update UI
             UpdateDestinationWad2UI();
@@ -631,7 +666,7 @@ namespace WadTool
             }
             else
             {
-                using (var form2 = new FormSoundEditor(_tool.DestinationWad, false))
+                using (var form2 = new FormSoundEditor(_tool.DestinationWad))
                     form2.ShowDialog();
             }
         }
