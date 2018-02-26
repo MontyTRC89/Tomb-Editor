@@ -127,7 +127,7 @@ namespace TombLib.LevelData
 
         public LevelSettings()
         {
-            
+
         }
 
         public LevelSettings Clone()
@@ -274,14 +274,29 @@ namespace TombLib.LevelData
             }
         }
 
-        public string FontTextureFileNameAbsoluteOrDefault => MakeAbsolute(FontTextureFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/Font.pc.png");
+        public ImageC LoadFontTexture()
+        {
+            string absolutePath = MakeAbsolute(FontTextureFilePath);
+            if (string.IsNullOrEmpty(absolutePath))
+                return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Font_pc);
+            return LoadRawExtraTexture(absolutePath);
+        }
 
-        public string SkyTextureFileNameAbsoluteOrDefault => MakeAbsolute(SkyTextureFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/pcsky.raw.png");
+        public ImageC LoadSkyTexture()
+        {
+            string absolutePath = MakeAbsolute(SkyTextureFilePath);
+            if (string.IsNullOrEmpty(absolutePath))
+                return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.pcsky_raw);
+            return LoadRawExtraTexture(absolutePath);
+        }
 
-        public string Tr5ExtraSpritesFileNameAbsoluteOrDefault => MakeAbsolute(Tr5ExtraSpritesFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/Extra.Tr5.pc.png");
+        public ImageC LoadTr5ExtraSprites()
+        {
+            string absolutePath = MakeAbsolute(Tr5ExtraSpritesFilePath);
+            if (string.IsNullOrEmpty(absolutePath))
+                return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Extra_Tr5_pc);
+            return LoadRawExtraTexture(absolutePath);
+        }
 
         /*public string Tr2MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr2MainSamFilePath) ??
             Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/MAIN.SAM");
