@@ -320,7 +320,6 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Invisible);
                             chunkIO.Raw.Write(instance.ClearBody);
                             chunkIO.Raw.Write(instance.CodeBits);
-                            chunkIO.Raw.Write(instance.Color);
                         }, LEB128.MaximumSize1Byte);
                     else if (o is StaticInstance)
                         chunkIO.WriteChunk(Prj2Chunks.ObjectStatic, () =>

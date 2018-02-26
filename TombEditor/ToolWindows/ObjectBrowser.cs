@@ -76,7 +76,7 @@ namespace TombEditor.ToolWindows
             // Update item color control
             if (obj is Editor.SelectedObjectChangedEvent)
             {
-                ItemInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as ItemInstance;
+                StaticInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as StaticInstance;
                 panelStaticMeshColor.BackColor = itemInstance == null ? Color.Black : (itemInstance.Color * new Vector4(0.5f, 0.5f, 0.5f, 1.0f)).ToWinFormsColor();
             }
         }
@@ -156,7 +156,7 @@ namespace TombEditor.ToolWindows
 
         private void panelStaticMeshColor_Click(object sender, EventArgs e)
         {
-            var instance = _editor.SelectedObject as ItemInstance;
+            var instance = _editor.SelectedObject as StaticInstance;
             if (instance == null)
                 return;
 

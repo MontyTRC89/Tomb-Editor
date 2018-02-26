@@ -1313,8 +1313,7 @@ namespace TombLib.LevelData.IO
                                     WadObjectId = wadObj.ObjectID,
                                     Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
                                     Ocb = currentObj.Ocb,
-                                    RotationY = currentObj.RotationY,
-                                    Color = currentObj.Color
+                                    RotationY = currentObj.RotationY
                                 };
                                 level.Rooms[i].AddObject(level, instance);
                             }
