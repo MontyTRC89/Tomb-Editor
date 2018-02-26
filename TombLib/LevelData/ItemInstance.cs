@@ -36,8 +36,6 @@ namespace TombLib.LevelData
             set { RotationY = value * (float)(180 / Math.PI); }
         }
 
-        public Vector4 Color { get; set; } = new Vector4(1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
-
         public abstract ItemType ItemType { get; }
 
         public override string ToString()

@@ -551,7 +551,6 @@ namespace TombLib.LevelData.IO
                     instance.Invisible = chunkIO.Raw.ReadBoolean();
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
                     instance.CodeBits = chunkIO.Raw.ReadByte();
-                    instance.Color = chunkIO.Raw.ReadVector4();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

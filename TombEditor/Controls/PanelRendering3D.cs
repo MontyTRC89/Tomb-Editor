@@ -2244,7 +2244,7 @@ namespace TombEditor.Controls
                         VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
                 }
 
-                skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
+                skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                 if (_editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_selectionColor);
 
