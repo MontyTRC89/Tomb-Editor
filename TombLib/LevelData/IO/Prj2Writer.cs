@@ -100,6 +100,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.Tr3SoundsXmlFilePath, settings.Tr3SoundsXmlFilePath ?? "");*/
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.OldWadSoundPaths, () =>
                 {
+                    chunkIO.WriteChunkEmpty(Prj2Chunks.OldWadSoundUpdateTag1_0_8);
                     foreach (OldWadSoundPath soundPath in settings.OldWadSoundPaths)
                         chunkIO.WriteChunkWithChildren(Prj2Chunks.OldWadSoundPath, () => chunkIO.WriteChunkString(Prj2Chunks.OldWadSoundPathPath, soundPath.Path));
                 });

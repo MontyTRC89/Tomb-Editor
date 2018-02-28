@@ -22,11 +22,12 @@ namespace TombLib.LevelData.IO
         /**///public static readonly ChunkId Tr3MainSamFilePath = ChunkId.FromString("TeTr3MainSamFilePath"); // UTF-8 string
         /**///public static readonly ChunkId Tr2SoundsXmlFilePath = ChunkId.FromString("TeTr2SoundsXmlFilePath"); // UTF-8 string
         /**///public static readonly ChunkId Tr3SoundsXmlFilePath = ChunkId.FromString("TeTr3SoundsXmlFilePath"); // UTF-8 string
-        /**/public static readonly ChunkId Tr5LaraType = ChunkId.FromString("TeTr5LaraType");  
-        /**/public static readonly ChunkId Tr5Weather = ChunkId.FromString("TeTr5Weather");  
+        /**/public static readonly ChunkId Tr5LaraType = ChunkId.FromString("TeTr5LaraType");
+        /**/public static readonly ChunkId Tr5Weather = ChunkId.FromString("TeTr5Weather");
         /**/public static readonly ChunkId OldWadSoundPaths = ChunkId.FromString("TeOldWadSoundPaths");
-        /******/public static readonly ChunkId OldWadSoundPath = ChunkId.FromString("TeOldWadSoundPath");
-        /**********/public static readonly ChunkId OldWadSoundPathPath = ChunkId.FromString("TePath"); // UTF-8 string
+        /****/public static readonly ChunkId OldWadSoundUpdateTag1_0_8 = ChunkId.FromString("TeOldWadSoundUpdateTag1_0_8");
+        /****/public static readonly ChunkId OldWadSoundPath = ChunkId.FromString("TeOldWadSoundPath");
+        /********/public static readonly ChunkId OldWadSoundPathPath = ChunkId.FromString("TePath"); // UTF-8 string
         /**/public static readonly ChunkId ScriptDirectory = ChunkId.FromString("TeScriptDirectory"); // UTF-8 string
         /**/public static readonly ChunkId GameDirectory = ChunkId.FromString("TeGameDirectory"); // UTF-8 string
         /**/public static readonly ChunkId GameLevelFilePath = ChunkId.FromString("TeGameLevelFilePath"); // UTF-8 string
