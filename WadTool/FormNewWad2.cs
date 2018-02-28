@@ -24,13 +24,14 @@ namespace WadTool
             comboSoundSystem.Items.Add(WadSoundManagementSystem.ClassicTrle);
             comboSoundSystem.Items.Add(WadSoundManagementSystem.DynamicSoundMap);
 
-            comboGameVersion.Items.Add(WadTombRaiderVersion.TR2);
-            comboGameVersion.Items.Add(WadTombRaiderVersion.TR3);
+            //comboGameVersion.Items.Add(WadTombRaiderVersion.TR2);
+            //comboGameVersion.Items.Add(WadTombRaiderVersion.TR3);
             comboGameVersion.Items.Add(WadTombRaiderVersion.TR4);
             comboGameVersion.Items.Add(WadTombRaiderVersion.TR5);
 
             comboGameVersion.SelectedItem = WadTombRaiderVersion.TR4;
             comboSoundSystem.SelectedItem = WadSoundManagementSystem.ClassicTrle;
+            comboSoundSystem.Enabled = false;
         }
 
         private void comboGameVersion_SelectedIndexChanged(object sender, EventArgs e)
