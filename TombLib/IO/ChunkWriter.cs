@@ -75,7 +75,7 @@ namespace TombLib.IO
             // Write chunk ID
             chunkID.ToStream(_writer);
 
-            // Write chunk size (reserved for later)
+            // Write chunk size
             long chunkSizePosition = _writer.BaseStream.Position;
             LEB128.Write(_writer, 0, maximumSize);
 
@@ -103,6 +103,12 @@ namespace TombLib.IO
         public void WriteChunkEnd()
         {
             _writer.Write((byte)0);
+        }
+
+        public void WriteChunkEmpty(ChunkId chunkID)
+        {
+            chunkID.ToStream(_writer);
+            LEB128.Write(_writer, 0);
         }
 
         public void WriteChunkBool(ChunkId chunkID, bool value)
