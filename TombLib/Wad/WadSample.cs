@@ -59,7 +59,7 @@ namespace TombLib.Wad
 
         public WadSample Clone()
         {
-            return new WadSample(Name, WaveData);
+            return new WadSample(Name, (byte[])WaveData?.Clone() ?? null);
         }
 
         public void Play()
