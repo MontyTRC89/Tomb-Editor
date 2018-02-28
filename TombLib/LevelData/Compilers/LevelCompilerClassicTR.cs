@@ -133,42 +133,33 @@ namespace TombLib.LevelData.Compilers
         private void PrepareSoundsData()
         {
             // Samples are embedded only in TR4 and TR5
-            if (_level.Settings.GameVersion <= GameVersion.TR4)
+            if (_level.Settings.GameVersion < GameVersion.TR4)
                 return;
 
             _samplesWithErrors = new List<string>();
 
-            uint numSamples = 0;
-            for (int i = 0; i < _level.Wad.Sounds.Count; i++)
-            {
-                var soundInfo = _level.Wad.Sounds.ElementAt(i).Value;
-                numSamples += (uint)soundInfo.Samples.Count;
-            }
+            int numSamples = 0;
+            foreach (var soundInfo in _level.Wad.Sounds)
+                numSamples += soundInfo.Value.Samples.Count;
 
             // If classic sound management, then fill WadSample objects with data from disk
+            var sampleDatas = new Dictionary<WadSample, byte[]>();
             if (_level.Wad.SoundManagementSystem == WadSoundManagementSystem.ClassicTrle)
             {
                 Parallel.ForEach(_level.Wad.Samples, (sample) =>
                 {
-                    var samplePath = _level.Settings.MakeAbsolute(_level.Settings.GetSamplesDirectory() + "\\" + sample.Value.Name + ".wav");
-                    if (!File.Exists(samplePath))
-                    {
-                        _samplesWithErrors.Add(sample.Value.Name);
-                        samplePath = "Editor\\Misc\\NullSample.wav";
-                    }
-
-                    try
-                    {
-                        using (var reader = new BinaryReader(File.OpenRead(samplePath)))
-                            sample.Value.SetData(reader.ReadBytes((int)reader.BaseStream.Length));
-                    }
-                    catch (Exception)
-                    {
-                        _samplesWithErrors.Add(sample.Value.Name);
-                        sample.Value.SetData(new byte[1]);
-                    }
+                    const bool ignoreMissingSounds = true;
+                    byte[] soundData = _level.Settings.ReadSound(sample.Value.Name, ignoreMissingSounds);
+                    if (soundData == LevelSettings.NullSample)
+                        lock (_samplesWithErrors)
+                            _samplesWithErrors.Add(sample.Value.Name);
+                    lock (sampleDatas)
+                        sampleDatas.Add(sample.Value, soundData);
                 });
             }
+            else
+                foreach (var sample in _level.Wad.Samples)
+                    sampleDatas.Add(sample.Value, sample.Value.WaveData);
 
             var stream = new MemoryStream();
             using (var writer = new BinaryWriterEx(stream))
@@ -178,25 +169,33 @@ namespace TombLib.LevelData.Compilers
                 var soundMapSize = SoundsCatalog.GetSoundMapSize(_level.Wad.Version, _level.Wad.IsNg);
                 for (int i = 0; i < soundMapSize; i++)
                 {
-                    if (!_level.Wad.Sounds.ContainsKey((ushort)i)) continue;
+                    if (!_level.Wad.Sounds.ContainsKey((ushort)i))
+                        continue;
 
-                    var soundInfo = _level.Wad.Sounds[(ushort)i];
-
-                    foreach (var sound in soundInfo.Samples)
+                    WadSoundInfo soundInfo = _level.Wad.Sounds[(ushort)i];
+                    foreach (WadSample sample in soundInfo.Samples)
                     {
+                        byte[] sampleData = sampleDatas[sample];
+
                         if (_level.Settings.GameVersion == GameVersion.TR5)
                         {
                             // TR5 uses compressed MS-ADPCM samples
                             // Formula is Size = Length (ms) * Sample rate * 16 bits / 8 bits/sample / 1000
-                            var length = sound.Duration;
+                            int length;
+                            using (var sampleStream = new MemoryStream(sampleData))
+                                using (var wfr = new WaveFileReader(sampleStream))
+                                    length = wfr.TotalTime.Milliseconds;
+
                             var uncompressedSize = length * 22050.0f * 16.0f / 8.0f / 1000.0f;
                             writer.Write((uint)uncompressedSize);
                         }
                         else
+                        {
                             // Other engines uses uncompresses WAV samples
-                            writer.Write(sound.WaveData.GetLength(0));
-                        writer.Write(sound.WaveData.GetLength(0));  
-                        writer.Write(sound.WaveData);
+                            writer.Write(sampleData.GetLength(0));
+                        }
+                        writer.Write(sampleData.GetLength(0));
+                        writer.Write(sampleData);
                     }
                 }
             }
@@ -218,7 +217,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.GameVersion == GameVersion.TR3 && _level.Wad.Version != Wad.WadTombRaiderVersion.TR3)
                 throw new NotSupportedException("You must provide a valid TR3 Wad2 to compile a TR3 level.");
 
-            if (_level.Settings.GameVersion == GameVersion.TR4 && 
+            if (_level.Settings.GameVersion == GameVersion.TR4 &&
                 (_level.Wad.Version != Wad.WadTombRaiderVersion.TR4 || _level.Wad.IsNg))
                 throw new NotSupportedException("You must provide a valid TR4 Wad2 (non NG) to compile a TR4 level.");
 
@@ -256,7 +255,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.GameVersion >= GameVersion.TR4 && _samplesWithErrors.Count != 0)
             {
                 foreach (var sampleWithError in _samplesWithErrors)
-                    ReportProgress(100, "Missing sample or error while loading: " + sampleWithError); 
+                    ReportProgress(100, "Missing sample or error while loading: " + sampleWithError);
             }
 
             // Return statics
