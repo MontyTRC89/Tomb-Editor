@@ -224,7 +224,7 @@ namespace TombEditor
             pathToolTip.SetToolTip(gameExecutableFilePathTxt, gameExecutableFilePath);
 
             // Load previews
-            string fontPath = _levelSettings.FontTextureFileNameAbsoluteOrDefault;
+            string fontPath = _levelSettings.MakeAbsolute(_levelSettings.FontTextureFilePath) ?? "<default>";
             pathToolTip.SetToolTip(fontTextureFilePathTxt, fontPath);
             if (fontTextureFilePathPicPreviewCurrentPath != fontPath)
             {
@@ -232,7 +232,7 @@ namespace TombEditor
                 try
                 {
                     fontTextureFilePathPicPreview.Image?.Dispose();
-                    fontTextureFilePathPicPreview.Image = LevelSettings.LoadRawExtraTexture(fontPath).ToBitmap();
+                    fontTextureFilePathPicPreview.Image = _levelSettings.LoadFontTexture().ToBitmap();
                     fontTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     fontTextureFilePathPicPreview.Tag = null;
                     fontTextureFilePathTxt.BackColor = _correctColor;
@@ -247,7 +247,7 @@ namespace TombEditor
                 }
             }
 
-            string skyPath = _levelSettings.SkyTextureFileNameAbsoluteOrDefault;
+            string skyPath = _levelSettings.MakeAbsolute(_levelSettings.SkyTextureFilePath) ?? "<default>";
             pathToolTip.SetToolTip(skyTextureFilePathTxt, skyPath);
             if (skyTextureFilePathPicPreviewCurrentPath != skyPath)
             {
@@ -255,7 +255,7 @@ namespace TombEditor
                 try
                 {
                     skyTextureFilePathPicPreview.Image?.Dispose();
-                    skyTextureFilePathPicPreview.Image = LevelSettings.LoadRawExtraTexture(skyPath).ToBitmap();
+                    skyTextureFilePathPicPreview.Image = _levelSettings.LoadSkyTexture().ToBitmap();
                     skyTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     skyTextureFilePathPicPreview.Tag = null;
                     skyTextureFilePathTxt.BackColor = _correctColor;
@@ -270,7 +270,7 @@ namespace TombEditor
                 }
             }
 
-            string tr5SpritesPath = _levelSettings.Tr5ExtraSpritesFileNameAbsoluteOrDefault;
+            string tr5SpritesPath = _levelSettings.MakeAbsolute(_levelSettings.Tr5ExtraSpritesFilePath) ?? "<default>";
             pathToolTip.SetToolTip(tr5SpritesTextureFilePathTxt, tr5SpritesPath);
             if (tr5ExtraSpritesFilePathPicPreviewCurrentPath != tr5SpritesPath)
             {
@@ -278,7 +278,7 @@ namespace TombEditor
                 try
                 {
                     tr5SpritesTextureFilePathPicPreview.Image?.Dispose();
-                    tr5SpritesTextureFilePathPicPreview.Image = LevelSettings.LoadRawExtraTexture(tr5SpritesPath).ToBitmap();
+                    tr5SpritesTextureFilePathPicPreview.Image = _levelSettings.LoadTr5ExtraSprites().ToBitmap();
                     tr5SpritesTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
                     tr5SpritesTextureFilePathPicPreview.Tag = null;
                     tr5SpritesTextureFilePathTxt.BackColor = _correctColor;
@@ -303,7 +303,7 @@ namespace TombEditor
 
             // Update the default ambient light
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector4(0.5f, 0.5f, 0.5f, 1.0f)).ToWinFormsColor();
-            
+
             switch (_levelSettings.GameVersion)
             {
                 case GameVersion.TR2:

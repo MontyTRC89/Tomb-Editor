@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace TombLib.LevelData
 {
@@ -21,6 +22,8 @@ namespace TombLib.LevelData
     public class StaticInstance : ItemInstance
     {
         public ushort Ocb { get; set; } = 0;
+        public Vector4 Color { get; set; } = new Vector4(1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
+
         public override ItemType ItemType => new ItemType(true, WadObjectId, WadVersion);
     }
 }

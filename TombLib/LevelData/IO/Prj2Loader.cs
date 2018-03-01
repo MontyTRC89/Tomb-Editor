@@ -114,9 +114,16 @@ namespace TombLib.LevelData.IO
                     settings.Tr3SoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);*/
                 else if (id == Prj2Chunks.OldWadSoundPaths)
                 {
+                    bool Update1_0_8 = false;
+
                     var oldWadSoundPaths = new List<OldWadSoundPath>();
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
+                        if (id2 == Prj2Chunks.OldWadSoundUpdateTag1_0_8)
+                        {
+                            Update1_0_8 = true;
+                            return true;
+                        }
                         if (id2 != Prj2Chunks.OldWadSoundPath)
                             return false;
 
@@ -132,6 +139,21 @@ namespace TombLib.LevelData.IO
                         oldWadSoundPaths.Add(oldWadSoundPath);
                         return true;
                     });
+
+                    // Legacy path update...
+                    if (!Update1_0_8)
+                    {
+                        string oldSamplePath0 = LevelSettings.VariableCreate(VariableType.EditorDirectory) + LevelSettings.Dir + "sound";
+                        string oldSamplePath1 = LevelSettings.VariableCreate(VariableType.EditorDirectory) + LevelSettings.Dir + "sounds";
+                        string oldSamplePath2 = LevelSettings.VariableCreate(VariableType.EditorDirectory) + LevelSettings.Dir + "Sounds" + LevelSettings.Dir + "Samples";
+                        string newSamplePath = LevelSettings.VariableCreate(VariableType.EditorDirectory) + LevelSettings.Dir + "Sounds" + LevelSettings.Dir + LevelSettings.VariableCreate(VariableType.SoundEngineVersion) + LevelSettings.Dir + "Samples";
+                        for (int i = 0; i < oldWadSoundPaths.Count; ++i)
+                            if (oldWadSoundPaths[i].Path.Equals(oldSamplePath0, StringComparison.InvariantCultureIgnoreCase) ||
+                                oldWadSoundPaths[i].Path.Equals(oldSamplePath1, StringComparison.InvariantCultureIgnoreCase) ||
+                                oldWadSoundPaths[i].Path.Equals(oldSamplePath2, StringComparison.InvariantCultureIgnoreCase))
+                                oldWadSoundPaths[i].Path = newSamplePath;
+                    }
+
                     settings.OldWadSoundPaths = oldWadSoundPaths;
                 }
                 else if (id == Prj2Chunks.GameDirectory)
@@ -551,7 +573,6 @@ namespace TombLib.LevelData.IO
                     instance.Invisible = chunkIO.Raw.ReadBoolean();
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
                     instance.CodeBits = chunkIO.Raw.ReadByte();
-                    instance.Color = chunkIO.Raw.ReadVector4();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

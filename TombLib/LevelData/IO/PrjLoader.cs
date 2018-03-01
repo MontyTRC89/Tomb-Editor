@@ -1237,8 +1237,8 @@ namespace TombLib.LevelData.IO
                         else if (File.Exists(genericSkyFilePath))
                             level.Settings.SkyTextureFilePath = level.Settings.MakeRelative(genericSkyFilePath, VariableType.LevelDirectory);
 
-                        string soundPath = Path.Combine(Path.GetDirectoryName(objectFilePath), "../../Sounds/TR4/Samples");
-                        level.Settings.OldWadSoundPaths[2].Path = level.Settings.MakeRelative(soundPath, VariableType.LevelDirectory);
+                        string soundPath = Path.Combine(Path.GetDirectoryName(objectFilePath), "../../sound/Samples");
+                        level.Settings.OldWadSoundPaths[1].Path = level.Settings.MakeRelative(soundPath, VariableType.LevelDirectory);
                     }
 
                     // Read WAD file
@@ -1313,8 +1313,7 @@ namespace TombLib.LevelData.IO
                                     WadObjectId = wadObj.ObjectID,
                                     Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
                                     Ocb = currentObj.Ocb,
-                                    RotationY = currentObj.RotationY,
-                                    Color = currentObj.Color
+                                    RotationY = currentObj.RotationY
                                 };
                                 level.Rooms[i].AddObject(level, instance);
                             }
@@ -1326,7 +1325,8 @@ namespace TombLib.LevelData.IO
                                     WadObjectId = wadObj.ObjectID,
                                     Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
                                     RotationY = currentObj.RotationY,
-                                    Color = currentObj.Color
+                                    Color = currentObj.Color,
+                                    Ocb = unchecked((ushort)currentObj.Ocb)
                                 };
                                 level.Rooms[i].AddObject(level, instance);
                             }

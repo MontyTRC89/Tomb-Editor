@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -23,6 +24,10 @@ namespace TombLib.LevelData
         EditorDirectory,
         [Description("The name of the *.prj2 file.")]
         LevelName,
+        [Description("The engine.")]
+        EngineVersion,
+        [Description("The sound engine (Outputs TR4 for the 'TRNG' engine).")]
+        SoundEngineVersion,
         None,
     }
 
@@ -82,6 +87,8 @@ namespace TombLib.LevelData
 
     public class LevelSettings : ICloneable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public const string VariableBegin = "$(";
         public const string VariableEnd = ")";
         public static readonly char Dir = Path.DirectorySeparatorChar;
@@ -98,14 +105,11 @@ namespace TombLib.LevelData
 
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
             {
-                new OldWadSoundPath("Sounds\\TR1\\Samples"),
-                new OldWadSoundPath("Sounds\\TR2\\Samples"),
-                new OldWadSoundPath("Sounds\\TR3\\Samples"),
-                new OldWadSoundPath("Sounds\\TR4\\Samples"),
-                new OldWadSoundPath("Sounds\\TR5\\Samples"),
+                new OldWadSoundPath("Sounds"),
                 new OldWadSoundPath(""),
-                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound\\Samples"),
-                new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds\\Samples")
+                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound" + Dir + "Samples"),
+                new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
+                new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
 
         public string SoundsDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds";
@@ -122,13 +126,9 @@ namespace TombLib.LevelData
         public Vector4 DefaultAmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 2.0f);
 
         // For TR5 only
-        public Tr5LaraType Tr5LaraType { get; set; }
-        public Tr5WeatherType Tr5WeatherType { get; set; }
+        public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
+        public Tr5WeatherType Tr5WeatherType { get; set; } = Tr5WeatherType.Normal;
 
-        public LevelSettings()
-        {
-            
-        }
 
         public LevelSettings Clone()
         {
@@ -171,6 +171,10 @@ namespace TombLib.LevelData
                     if (!string.IsNullOrEmpty(WadFilePath))
                         return FileSystemUtils.GetFileNameWithoutExtensionTry(WadFilePath);
                     return "Default";
+                case VariableType.EngineVersion:
+                    return GameVersion.ToString();
+                case VariableType.SoundEngineVersion:
+                    return (GameVersion == GameVersion.TRNG ? GameVersion.TR4 : GameVersion).ToString();
                 default:
                     throw new ArgumentException();
             }
@@ -274,14 +278,29 @@ namespace TombLib.LevelData
             }
         }
 
-        public string FontTextureFileNameAbsoluteOrDefault => MakeAbsolute(FontTextureFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/Font.pc.png");
+        public ImageC LoadFontTexture()
+        {
+            string absolutePath = MakeAbsolute(FontTextureFilePath);
+            if (string.IsNullOrEmpty(absolutePath))
+                return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Font_pc);
+            return LoadRawExtraTexture(absolutePath);
+        }
 
-        public string SkyTextureFileNameAbsoluteOrDefault => MakeAbsolute(SkyTextureFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/pcsky.raw.png");
+        public ImageC LoadSkyTexture()
+        {
+            string absolutePath = MakeAbsolute(SkyTextureFilePath);
+            if (string.IsNullOrEmpty(absolutePath))
+                return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.pcsky_raw);
+            return LoadRawExtraTexture(absolutePath);
+        }
 
-        public string Tr5ExtraSpritesFileNameAbsoluteOrDefault => MakeAbsolute(Tr5ExtraSpritesFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Editor/Textures/Extra.Tr5.pc.png");
+        public ImageC LoadTr5ExtraSprites()
+        {
+            string absolutePath = MakeAbsolute(Tr5ExtraSpritesFilePath);
+            if (string.IsNullOrEmpty(absolutePath))
+                return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Extra_Tr5_pc);
+            return LoadRawExtraTexture(absolutePath);
+        }
 
         /*public string Tr2MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr2MainSamFilePath) ??
             Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/MAIN.SAM");
@@ -294,20 +313,6 @@ namespace TombLib.LevelData
 
         public string Tr3SoundsXmlFileNameAbsoluteOrDefault => MakeAbsolute(Tr3SoundsXmlFilePath) ??
             Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR3/Sounds.xml");*/
-
-        public string GetSamplesDirectory()
-        {
-            switch (GameVersion)
-            {
-                case GameVersion.TR2: return SoundsDirectory + "\\TR2\\Samples";
-                case GameVersion.TR3: return SoundsDirectory + "\\TR3\\Samples";
-                case GameVersion.TR4: return SoundsDirectory + "\\TR4\\Samples";
-                case GameVersion.TRNG: return SoundsDirectory + "\\TR4\\Samples";
-                case GameVersion.TR5: return SoundsDirectory + "\\TR5\\Samples";
-                default:
-                    throw new NotSupportedException("Target game engine is not supported");
-            }
-        }
 
         public static ImageC LoadRawExtraTexture(string path)
         {
@@ -351,29 +356,52 @@ namespace TombLib.LevelData
 
         public string LookupSound(string soundName, bool ignoreMissingSounds)
         {
+            soundName += ".wav";
+
             foreach (var soundPath in OldWadSoundPaths)
             {
-                string realPath = Path.Combine(MakeAbsolute(soundPath.Path), soundName);
+                string realPath = Path.Combine(MakeAbsolute(soundPath.Path) ?? "", soundName);
                 if (File.Exists(realPath))
                     return realPath;
             }
+
             if (ignoreMissingSounds)
+            {
+                logger.Warn("Sound '" + soundName + "' not found.");
                 return null;
+            }
             throw new FileNotFoundException("Sound not found", soundName);
         }
 
-        public byte[] ReadSound(string sound, bool ignoreMissingSounds)
+        public static readonly byte[] NullSample = new byte[] {
+            0x52, 0x49, 0x46, 0x46, 0x28, 0x00, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45,
+            0x66, 0x6D, 0x74, 0x20, 0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00,
+            0x22, 0x56, 0x00, 0x00, 0x44, 0xAC, 0x00, 0x00, 0x02, 0x00, 0x10, 0x00,
+            0x64, 0x61, 0x74, 0x61, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+        };
+
+        public byte[] ReadSound(string soundName, bool ignoreMissingSounds)
         {
-            string path = LookupSound(sound, ignoreMissingSounds);
+            string path = LookupSound(soundName, ignoreMissingSounds);
             if (string.IsNullOrEmpty(path))
-                return new byte[0];
+                return NullSample;
 
             // Try opening sound
-            using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            try
             {
-                byte[] result = new byte[checked((int)fileStream.Length)];
-                fileStream.Read(result, 0, result.GetLength(0));
-                return result;
+                using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    byte[] result = new byte[checked((int)fileStream.Length)];
+                    fileStream.Read(result, 0, result.GetLength(0));
+                    return result;
+                }
+            }
+            catch (Exception exc)
+            {
+                logger.Warn(exc, "Unable to load sound '" + soundName + "'.");
+                if (ignoreMissingSounds)
+                    return NullSample;
+                throw;
             }
         }
 

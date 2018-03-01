@@ -870,8 +870,6 @@ namespace TombEditor.Controls
             }
 
             _skyVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_device, vertices.ToArray<EditorVertex>(), SharpDX.Direct3D11.ResourceUsage.Default);
-
-            //_skyTexture = Texture2D.Load(_device, "Editor\\sky.png");
         }
 
         private void RebuildTextureAtlas()
@@ -1976,7 +1974,7 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
 
-                    string message = "Camera " + (instance.Fixed ? "(Fixed)" : "") + " [ID = " + instance.ScriptId + "]";
+                    string message = "Camera " + (instance.Fixed ? "(Fixed)" : "") + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
@@ -2007,7 +2005,7 @@ namespace TombEditor.Controls
 
                     FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
 
-                    string message = "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") [ID = " + instance.ScriptId + "]";
+                    string message = "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
@@ -2039,7 +2037,7 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
 
-                    var message = "Sink [ID = " + instance.ScriptId + "]";
+                    var message = "Sink [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
@@ -2068,7 +2066,7 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
 
-                    string message = "Sound source [ID = " + instance.ScriptId + "]";
+                    string message = "Sound source [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
                     if (_editor.Level.Wad != null &&
                         _editor.Level.Wad.Sounds.ContainsKey(instance.SoundId))
                         message += " (" + _editor.Level.Wad.Sounds[instance.SoundId].Name + ") ";
@@ -2244,7 +2242,7 @@ namespace TombEditor.Controls
                         VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
                 }
 
-                skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
+                skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                 if (_editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_selectionColor);
 
@@ -2271,7 +2269,7 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString() + " [ID = " + instance.ScriptId + "]";
+                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString() + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
@@ -2431,7 +2429,7 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = _editor.Level.Wad.Statics[instance.WadObjectId].ToString() + " [ID = " + instance.ScriptId + "]";
+                    string message = _editor.Level.Wad.Statics[instance.WadObjectId].ToString() + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance);
