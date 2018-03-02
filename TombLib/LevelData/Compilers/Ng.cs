@@ -49,7 +49,7 @@ namespace TombLib.LevelData.Compilers
 
             // Count number of textures with UVRotate
             writer.Write((byte)0x01);
-            writer.Write((byte)_objectTextureManager.UvRotateCount);
+            writer.Write(checked((byte)_objectTextureManager.NgUvRotateCount));
             writer.Write((short)_objectTextureManager.CompiledAnimatedTextures.Count);
 
             // Array VetInfoRangeAnim
