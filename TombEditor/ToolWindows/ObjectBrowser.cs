@@ -52,8 +52,8 @@ namespace TombEditor.ToolWindows
 
                 if (_editor.Level?.Wad != null)
                 {
-                    foreach (var movable in _editor.Level.Wad.Moveables.Values)
-                        comboItems.Items.Add(movable);
+                    foreach (var moveable in _editor.Level.Wad.Moveables.Values)
+                        comboItems.Items.Add(moveable);
                     foreach (var staticMesh in _editor.Level.Wad.Statics.Values)
                         comboItems.Items.Add(staticMesh);
                     if (!(_editor.Level.Wad.Moveables.Count == 0 && _editor.Level.Wad.Statics.Count == 0))
@@ -68,9 +68,9 @@ namespace TombEditor.ToolWindows
                 if (!e.Current.HasValue)
                     comboItems.SelectedIndex = -1;
                 else if (e.Current.Value.IsStatic)
-                    comboItems.SelectedItem = _editor.Level.Wad.Statics[e.Current.Value.Id];
+                    comboItems.SelectedItem = _editor.Level.Wad.Statics[e.Current.Value.StaticId];
                 else
-                    comboItems.SelectedItem = _editor.Level.Wad.Moveables[e.Current.Value.Id];
+                    comboItems.SelectedItem = _editor.Level.Wad.Moveables[e.Current.Value.MoveableId];
             }
 
             // Update item color control
@@ -184,9 +184,17 @@ namespace TombEditor.ToolWindows
             if ((comboItems.SelectedItem == null) || (_editor?.Level?.Wad == null))
                 _editor.ChosenItem = null;
             if (comboItems.SelectedItem is WadMoveable)
-                _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID, _editor.Level.Wad.Version);
+                _editor.ChosenItem = new ItemType(((WadMoveable)(comboItems.SelectedItem)).Id, _editor?.Level?.Settings);
             else if (comboItems.SelectedItem is WadStatic)
-                _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID, _editor.Level.Wad.Version);
+                _editor.ChosenItem = new ItemType(((WadStatic)(comboItems.SelectedItem)).Id, _editor?.Level?.Settings);
+        }
+
+        private void comboItems_Format(object sender, ListControlConvertEventArgs e)
+        {
+            WadGameVersion? gameVersion = _editor?.Level?.Settings?.WadGameVersion;
+            IWadObject listItem = e.ListItem as IWadObject;
+            if (gameVersion != null && listItem != null)
+                e.Value = listItem.ToString(gameVersion.Value);
         }
     }
 }

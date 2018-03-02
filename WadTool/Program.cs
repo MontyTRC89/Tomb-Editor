@@ -1,25 +1,37 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
     static class Program
     {
         /// <summary>
-        /// Punto di ingresso principale dell'applicazione.
+        /// The main entry point of the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        public static void Main()
         {
-            System.Globalization.CultureInfo.DefaultThreadCurrentCulture =
-                System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = new System.Globalization.CultureInfo("en-US");
+            // Load configuration
+            var initialEvents = new List<LogEventInfo>();
+            var configuration = Configuration.LoadOrUseDefault(initialEvents);
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormMain());
+            // Setup logging
+            using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+
+                // Run
+                TrCatalog.LoadCatalog("Catalogs\\TRCatalog.xml");
+                using (WadToolClass tool = new WadToolClass(configuration))
+                    Application.Run(new FormMain(tool));
+            }
         }
     }
 }

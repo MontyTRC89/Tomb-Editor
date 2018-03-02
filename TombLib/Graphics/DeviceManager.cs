@@ -33,10 +33,6 @@ namespace TombLib.Graphics
                 Effects.Add(effectName, LoadEffect(fileName));
             }
 
-            // Load BasicEffect
-            BasicEffect bEffect = new BasicEffect(Device);
-            Effects.Add("Toolkit.BasicEffect", bEffect);
-
             // Load images
             IEnumerable<string> textureFiles = Directory.EnumerateFiles(resourcePath + "\\Editor\\Textures", "*.png");
             foreach (string fileName in textureFiles)
@@ -46,7 +42,7 @@ namespace TombLib.Graphics
             }
 
             // Load default font
-            SpriteFontData fontData = SpriteFontData.Load("Editor\\Misc\\Font.bin");
+            SpriteFontData fontData = SpriteFontData.Load(ResourcesC.ResourcesC.font);
             fontData.DefaultCharacter = '\n'; // Don't crash on uncommon Unicode values
             Font = SpriteFont.New(Device, fontData);
         }

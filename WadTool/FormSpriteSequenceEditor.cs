@@ -12,7 +12,7 @@ using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
-    public partial class FormSpriteEditor : DarkForm
+    public partial class FormSpriteSequenceEditor : DarkForm
     {
         public WadSpriteSequence SpriteSequence { get; set; }
 
@@ -20,25 +20,23 @@ namespace WadTool
         private Dictionary<Hash, WadSprite> _loadedSprites;
         private List<WadSprite> _currentSprites;
 
-        public FormSpriteEditor()
+        public FormSpriteSequenceEditor(WadToolClass tool, Wad2 wad, WadSpriteSequence spriteSequence)
         {
+            _tool = tool;
+            SpriteSequence = spriteSequence;
+
             InitializeComponent();
 
             openFileDialogSprites.Filter = ImageC.FromFileFileExtensions.GetFilter();
 
-            _tool = WadToolClass.Instance;
-
-            foreach (var slot in TrCatalog.GetAllSprites(_tool.DestinationWad.Version))
+            foreach (var slot in TrCatalog.GetAllSpriteSequences(_tool.DestinationWad.SuggestedGameVersion))
                 comboSlot.Items.Add(slot.Value);
-        }
 
-        private void FormSpriteEditor_Load(object sender, EventArgs e)
-        {
-            var spritesCatalog = TrCatalog.GetAllSprites(_tool.DestinationWad.Version);
+            /*var spritesCatalog = TrCatalog.GetAllSprites(_tool.DestinationWad.Version);
 
             for (int i = 0; i < spritesCatalog.Count; i++)
             {
-                if (spritesCatalog.ElementAt(i).Key == SpriteSequence.ObjectID)
+                if (spritesCatalog.ElementAt(i).Key == SpriteSequence.Id)
                 {
                     comboSlot.SelectedIndex = i;
                     break;
@@ -56,12 +54,13 @@ namespace WadTool
                 _currentSprites.Add(sprite);
             }
 
-            ReloadSprites();
+            ReloadSprites();*/
+            int COMMENT;
         }
 
         private void lstSprites_MouseClick(object sender, MouseEventArgs e)
         {
-            if (lstSprites.SelectedIndices.Count == 0) return;
+            /*if (lstSprites.SelectedIndices.Count == 0) return;
 
             // Get the current sprite
             var item = lstSprites.Items[lstSprites.SelectedIndices[0]];
@@ -69,7 +68,8 @@ namespace WadTool
 
             // Dispose old bitmap and set the new one
             UnloadCurrentSprite();
-            picSprite.Image = sprite.Image.ToBitmap();
+            picSprite.Image = sprite.Image.ToBitmap();*/
+            int COMMENT;
         }
 
         private void ReloadSprites()
@@ -96,7 +96,7 @@ namespace WadTool
 
         private void butAddNewTexture_Click(object sender, EventArgs e)
         {
-            if (openFileDialogSprites.ShowDialog(this) == DialogResult.Cancel) return;
+            /*if (openFileDialogSprites.ShowDialog(this) == DialogResult.Cancel) return;
 
             var sprite = new WadSprite();
             var image = ImageC.FromFile(openFileDialogSprites.FileName);
@@ -109,7 +109,8 @@ namespace WadTool
             else
                 _loadedSprites.Add(sprite.Hash, sprite);
 
-            _currentSprites.Add(sprite);
+            _currentSprites.Add(sprite);*/
+            int COMMENT;
 
             ReloadSprites();
         }
@@ -119,7 +120,7 @@ namespace WadTool
             if (lstSprites.SelectedIndices.Count == 0) return;
 
             // Ask to the user the permission to delete sprite
-            if (DarkMessageBox.Show(this,
+            /*if (DarkMessageBox.Show(this,
                    "Are you really sure to delete sprite #" + lstSprites.SelectedIndices[0] + "?",
                    "Delete sprite", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
@@ -141,20 +142,21 @@ namespace WadTool
             }
 
             if (!found)
-                _loadedSprites.Remove(sprite.Hash);
+                _loadedSprites.Remove(sprite.Hash);*/
+            int COMMENTED;
 
             ReloadSprites();
         }
 
         private void butSaveChanges_Click(object sender, EventArgs e)
         {
-            uint objectId = (uint)TrCatalog.GetAllSprites(_tool.DestinationWad.Version).ElementAt(comboSlot.SelectedIndex).Key;
+            /*uint objectId = (uint)TrCatalog.GetAllSprites(_tool.DestinationWad.Version).ElementAt(comboSlot.SelectedIndex).Key;
 
             // Check for already existing sequence
-            if (objectId != SpriteSequence.ObjectID)
+            if (objectId != SpriteSequence.Id)
             {
                 foreach (var seq in _tool.DestinationWad.SpriteSequences)
-                    if (seq.ObjectID == objectId)
+                    if (seq.Id == objectId)
                     {
                         DarkMessageBox.Show(this, "The selected slot is already assigned to another sprite sequence", "Error", MessageBoxIcon.Error);
                         return;
@@ -163,7 +165,7 @@ namespace WadTool
 
             UnloadCurrentSprite();
 
-            SpriteSequence.ObjectID = objectId;
+            SpriteSequence.Id = objectId;
 
             // Add sprites
             SpriteSequence.Sprites.Clear();
@@ -179,7 +181,7 @@ namespace WadTool
                     _tool.DestinationWad.SpriteTextures.Add(sprite.Hash, sprite);
                     SpriteSequence.Sprites.Add(sprite);
                 }
-            }
+            }*/
 
             DialogResult = DialogResult.OK;
             Close();

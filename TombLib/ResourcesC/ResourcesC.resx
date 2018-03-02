@@ -121,6 +121,9 @@
   <data name="Extra_Tr5_pc" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Extra.Tr5.pc.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="font" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>font.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Font_pc" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Font.pc.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

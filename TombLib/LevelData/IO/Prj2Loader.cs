@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.IO
 {
@@ -102,16 +103,6 @@ namespace TombLib.LevelData.IO
                     settings.SkyTextureFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.Tr5ExtraSpritesFilePath)
                     settings.Tr5ExtraSpritesFilePath = chunkIO.ReadChunkString(chunkSize);
-                else if (id == Prj2Chunks.SoundsPath)
-                    settings.SoundsDirectory = chunkIO.ReadChunkString(chunkSize);
-                /*else if (id == Prj2Chunks.Tr2MainSamFilePath)
-                    settings.Tr2MainSamFilePath = chunkIO.ReadChunkString(chunkSize);
-                else if (id == Prj2Chunks.Tr3MainSamFilePath)
-                    settings.Tr3MainSamFilePath = chunkIO.ReadChunkString(chunkSize);
-                else if (id == Prj2Chunks.Tr2SoundsXmlFilePath)
-                    settings.Tr2SoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);
-                else if (id == Prj2Chunks.Tr3SoundsXmlFilePath)
-                    settings.Tr3SoundsXmlFilePath = chunkIO.ReadChunkString(chunkSize);*/
                 else if (id == Prj2Chunks.OldWadSoundPaths)
                 {
                     bool Update1_0_8 = false;
@@ -568,7 +559,7 @@ namespace TombLib.LevelData.IO
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.RotationY = chunkIO.Raw.ReadSingle();
                     instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.WadObjectId = chunkIO.Raw.ReadUInt32();
+                    instance.WadObjectId = new Wad.WadMoveableId(chunkIO.Raw.ReadUInt32());
                     instance.Ocb = chunkIO.Raw.ReadInt16();
                     instance.Invisible = chunkIO.Raw.ReadBoolean();
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
@@ -583,7 +574,7 @@ namespace TombLib.LevelData.IO
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.RotationY = chunkIO.Raw.ReadSingle();
                     instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.WadObjectId = chunkIO.Raw.ReadUInt32();
+                    instance.WadObjectId = new Wad.WadStaticId(chunkIO.Raw.ReadUInt32());
                     instance.Color = chunkIO.Raw.ReadVector4();
                     instance.Ocb = chunkIO.Raw.ReadUInt16();
                     addObject(instance);
@@ -622,11 +613,14 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectSoundSource)
+                else if (id3 == Prj2Chunks.ObjectSoundSource2 || id3 == Prj2Chunks.ObjectSoundSource)
                 {
                     var instance = new SoundSourceInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.SoundId = chunkIO.Raw.ReadUInt16();
+                    if (id3 == Prj2Chunks.ObjectSoundSource2)
+                        instance.SoundName = chunkIO.Raw.ReadStringUTF8();
+                    else
+                        instance.SoundName = TrCatalog.GetOriginalSoundName(Wad.WadGameVersion.TR4_TRNG, chunkIO.Raw.ReadUInt16());
                     instance.Flags = chunkIO.Raw.ReadInt16();
                     instance.CodeBits = chunkIO.Raw.ReadByte();
                     addObject(instance);

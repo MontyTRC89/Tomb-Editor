@@ -135,8 +135,7 @@ namespace TombEditor
 
             // Populate variable list
             foreach (VariableType variableType in Enum.GetValues(typeof(VariableType)))
-                if (variableType != VariableType.None)
-                    pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
+                pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
 
             // Populate game version list
             //comboGameVersion.Items.AddRange(Enum.GetValues(typeof(GameVersion)).Cast<object>().ToArray());
@@ -168,11 +167,6 @@ namespace TombEditor
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
-            /*tbTr2SoundsXml.Text = _levelSettings.Tr2SoundsXmlFilePath;
-            tbTr2MainSam.Text = _levelSettings.Tr2MainSamFilePath;
-            tbTr3SoundsXml.Text = _levelSettings.Tr3SoundsXmlFilePath;
-            tbTr3MainSam.Text = _levelSettings.Tr3MainSamFilePath;*/
-            tbSoundsPath.Text = _levelSettings.SoundsDirectory;
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -303,74 +297,11 @@ namespace TombEditor
 
             // Update the default ambient light
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector4(0.5f, 0.5f, 0.5f, 1.0f)).ToWinFormsColor();
-
-            switch (_levelSettings.GameVersion)
-            {
-                case GameVersion.TR2:
-                    panelTr5Sprites.Visible = false;
-                    panelTr5LaraType.Visible = false;
-                    panelTr5Weather.Visible = false;
-                    //panelTr2Sounds.Visible = true;
-                    //panelTr3Sounds.Visible = false;
-                    break;
-
-                case GameVersion.TR3:
-                    panelTr5Sprites.Visible = false;
-                    panelTr5LaraType.Visible = false;
-                    panelTr5Weather.Visible = false;
-                    //panelTr2Sounds.Visible = false;
-                    //panelTr3Sounds.Visible = true;
-                    break;
-
-                case GameVersion.TR4:
-                case GameVersion.TRNG:
-                    panelTr5Sprites.Visible = false;
-                    panelTr5LaraType.Visible = false;
-                    panelTr5Weather.Visible = false;
-                    //panelTr2Sounds.Visible = false;
-                    //panelTr3Sounds.Visible = false;
-                    break;
-
-                case GameVersion.TR5:
-                    panelTr5Sprites.Visible = true;
-                    panelTr5LaraType.Visible = true;
-                    panelTr5Weather.Visible = true;
-                    //panelTr2Sounds.Visible = false;
-                    //panelTr3Sounds.Visible = false;
-                    break;
-            }
         }
 
         private string GetLevelResourcePath(string file)
         {
             return LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + file;
-        }
-
-        private string BrowseFile(string currentPath, string title, string filter, VariableType baseDirType, bool save)
-        {
-            string path = _levelSettings.MakeAbsolute(currentPath);
-            using (FileDialog dialog = save ? (FileDialog)new SaveFileDialog() : new OpenFileDialog())
-            {
-                dialog.Filter = filter;
-                dialog.Title = title;
-                dialog.FileName = string.IsNullOrEmpty(currentPath) ? "" : Path.GetFileName(path);
-                dialog.InitialDirectory = string.IsNullOrEmpty(currentPath) ? path : Path.GetDirectoryName(path);
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                    return null;
-                return _levelSettings.MakeRelative(dialog.FileName, baseDirType);
-            }
-        }
-
-        private string BrowseFolder(string currentPath, string description, VariableType baseDirType)
-        {
-            using (var dialog = new BrowseFolderDialog())
-            {
-                dialog.Title = description;
-                dialog.InitialFolder = _levelSettings.MakeAbsolute(currentPath);
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                    return null;
-                return _levelSettings.MakeRelative(dialog.Folder, baseDirType);
-            }
         }
 
         // Level path
@@ -384,7 +315,8 @@ namespace TombEditor
 
         private void levelFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.LevelFilePath, "Select the level name", "Tomb Editor Level (*.prj2)|*.prj2", VariableType.None, true);
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
+                "Select the level name", LevelSettings.FileFormatsLevel, true, null);
             if (result != null)
             {
                 _levelSettings.LevelFilePath = result;
@@ -452,7 +384,8 @@ namespace TombEditor
 
         private void fontTextureFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.FontTextureFilePath, "Select a font texture", LevelSettings.LoadRawExtraTextureFileFormats.GetFilter(), VariableType.LevelDirectory, false);
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.FontTextureFilePath,
+                "Select a font texture", LevelSettings.FileFormatsLoadRawExtraTexture, false, VariableType.LevelDirectory);
             if (result != null)
             {
                 _levelSettings.FontTextureFilePath = result;
@@ -481,7 +414,8 @@ namespace TombEditor
 
         private void skyTextureFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.SkyTextureFilePath, "Select a sky texture", LevelSettings.LoadRawExtraTextureFileFormats.GetFilter(), VariableType.LevelDirectory, false);
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.SkyTextureFilePath,
+                "Select a sky texture", LevelSettings.FileFormatsLoadRawExtraTexture, false, VariableType.LevelDirectory);
             if (result != null)
             {
                 _levelSettings.SkyTextureFilePath = result;
@@ -500,7 +434,8 @@ namespace TombEditor
 
         private void GameDirectoryBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFolder(_levelSettings.GameDirectory, "Select the game folder (should contain Tomb4.exe)", VariableType.LevelDirectory);
+            string result = LevelFileDialog.BrowseFolder(this, _levelSettings, _levelSettings.GameDirectory,
+                "Select the game folder (should contain Tomb3.exe/Tomb4.exe/Tomb5.exe/...)", VariableType.LevelDirectory);
             if (result != null)
             {
                 _levelSettings.GameDirectory = result;
@@ -511,7 +446,8 @@ namespace TombEditor
         // Sound list
         private OldWadSoundPath soundDataGridViewCreateNewRow()
         {
-            string result = BrowseFolder(_levelSettings.LevelFilePath, "Select a new sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
+            string result = LevelFileDialog.BrowseFolder(this, _levelSettings, _levelSettings.LevelFilePath,
+                "Select a new sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
             if (result != null)
                 return new OldWadSoundPath(result);
             return null;
@@ -541,7 +477,8 @@ namespace TombEditor
 
             if ((soundDataGridView.Columns[e.ColumnIndex] == soundDataGridViewColumnSearch))
             {
-                string result = BrowseFolder(soundDataGridViewDataSource[e.RowIndex].Path, "Select the sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
+                string result = LevelFileDialog.BrowseFolder(this, _levelSettings, soundDataGridViewDataSource[e.RowIndex].Path,
+                    "Select the sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
                 if (result != null)
                     soundDataGridViewDataSource[e.RowIndex] = new OldWadSoundPath(result);
             }
@@ -569,7 +506,8 @@ namespace TombEditor
 
         private void gameLevelFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.GameLevelFilePath, "Select place for compiled level", "Tomb Raider 4 Levels (*.tr4)|*.tr4", VariableType.GameDirectory, true);
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.GameLevelFilePath,
+                "Select place for compiled level", LevelSettings.FileFormatsLevelCompiled, true, VariableType.GameDirectory);
             if (result != null)
             {
                 _levelSettings.GameLevelFilePath = result;
@@ -588,7 +526,8 @@ namespace TombEditor
 
         private void gameExecutableFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.GameExecutableFilePath, "Select an executable", "Windows executables (*.exe)|*.exe", VariableType.GameDirectory, false);
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.GameExecutableFilePath,
+                "Select an executable", new FileFormat[] { new FileFormat("Windows executables", "exe") }, false, VariableType.GameDirectory);
             if (result != null)
             {
                 _levelSettings.GameExecutableFilePath = result;
@@ -638,7 +577,8 @@ namespace TombEditor
 
         private void scriptPathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFolder(_levelSettings.ScriptDirectory, "Select the folder of TXT sources for script", VariableType.ScriptDirectory);
+            string result = LevelFileDialog.BrowseFolder(this, _levelSettings, _levelSettings.ScriptDirectory,
+                "Select the folder of TXT sources for script", VariableType.ScriptDirectory);
             if (result != null)
             {
                 _levelSettings.ScriptDirectory = result;
@@ -676,7 +616,8 @@ namespace TombEditor
 
         private void tr5SpritesTextureFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.Tr5ExtraSpritesFilePath, "Select a font texture", LevelSettings.LoadRawExtraTextureFileFormats.GetFilter(), VariableType.LevelDirectory, false);
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.Tr5ExtraSpritesFilePath,
+                "Select a font texture", LevelSettings.FileFormatsLoadRawExtraTexture, false, VariableType.LevelDirectory);
             if (result != null)
             {
                 _levelSettings.Tr5ExtraSpritesFilePath = result;
@@ -701,102 +642,5 @@ namespace TombEditor
             _levelSettings.Tr5WeatherType = weather; // Must also check none enum values
             UpdateDialog();
         }
-
-        private void butTr2SoundsXml_Click(object sender, EventArgs e)
-        {
-            /*string result = BrowseFile(_levelSettings.Tr2SoundsXmlFilePath, "Select the Sounds.xml file", "XML document (*.xml)|*.xml", VariableType.None, true);
-            if (result != null)
-            {
-                _levelSettings.Tr2SoundsXmlFilePath = result;
-                UpdateDialog();
-            }*/
-        }
-
-        private void butTr2MainSam_Click(object sender, EventArgs e)
-        {
-            /* string result = BrowseFile(_levelSettings.Tr2MainSamFilePath, "Select MAIN.SAM file", "Tomb Editor SAM file (*.sam)|*.sam", VariableType.None, true);
-            if (result != null)
-            {
-                _levelSettings.Tr2MainSamFilePath = result;
-                UpdateDialog();
-            }*/
-        }
-
-        private void tbTr2SoundsXml_TextChanged(object sender, EventArgs e)
-        {
-            /*if (_levelSettings.Tr2SoundsXmlFilePath == tbTr2SoundsXml.Text)
-                return;
-            _levelSettings.Tr2SoundsXmlFilePath = tbTr2SoundsXml.Text;
-            UpdateDialog();*/
-        }
-
-        private void tbTr2MainSam_TextChanged(object sender, EventArgs e)
-        {
-            /*if (_levelSettings.Tr2MainSamFilePath == tbTr2MainSam.Text)
-                return;
-            _levelSettings.Tr2MainSamFilePath = tbTr2MainSam.Text;
-            UpdateDialog();*/
-        }
-
-        private void tbTr3SoundsXml_TextChanged(object sender, EventArgs e)
-        {
-            /*if (_levelSettings.Tr3SoundsXmlFilePath == tbTr3SoundsXml.Text)
-                return;
-            _levelSettings.Tr3SoundsXmlFilePath = tbTr3SoundsXml.Text;
-            UpdateDialog();*/
-        }
-
-        private void tbTr3MainSam_TextChanged(object sender, EventArgs e)
-        {
-            /*if (_levelSettings.Tr3MainSamFilePath == tbTr3MainSam.Text)
-                return;
-            _levelSettings.Tr3MainSamFilePath = tbTr3MainSam.Text;
-            UpdateDialog();*/
-        }
-
-        private void butTr3SoundsXml_Click(object sender, EventArgs e)
-        {
-            /*string result = BrowseFile(_levelSettings.Tr3SoundsXmlFilePath, "Select the Sounds.xml file", "XML document (*.xml)|*.xml", VariableType.None, true);
-            if (result != null)
-            {
-                _levelSettings.Tr3SoundsXmlFilePath = result;
-                UpdateDialog();
-            }*/
-        }
-
-        private void butTr3MainSam_Click(object sender, EventArgs e)
-        {
-            /*string result = BrowseFile(_levelSettings.Tr3MainSamFilePath, "Select MAIN.SAM file", "Tomb Editor SAM file (*.sam)|*.sam", VariableType.None, true);
-            if (result != null)
-            {
-                _levelSettings.Tr3MainSamFilePath = result;
-                UpdateDialog();
-            }*/
-        }
-
-        private void soundsPathBut_Click(object sender, EventArgs e)
-        {
-            string result = BrowseFolder(_levelSettings.SoundsDirectory, "Select the root folder of sounds files", VariableType.SoundsDirectory);
-            if (result != null)
-            {
-                _levelSettings.SoundsDirectory = result;
-                UpdateDialog();
-            }
-        }
-
-        // Target path
-        // Target name
-        // Target start
-        // wad path
-        // texture path
-        // font.pc
-        // pcsky.raw
-        // Show real path
-        // List possible replacement sequences
-        // Sound paths
-        // Exclude path finding default
-
-        // Remove path finding break
-        // Test build / start
     }
 }

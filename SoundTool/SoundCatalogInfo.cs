@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TombLib.Wad;
 
-namespace TombLib.Sounds
+namespace SoundTool
 {
     public class SoundCatalogInfo
     {

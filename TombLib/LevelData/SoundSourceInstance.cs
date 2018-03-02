@@ -4,7 +4,7 @@ namespace TombLib.LevelData
 {
     public class SoundSourceInstance : PositionAndScriptBasedObjectInstance
     {
-        public ushort SoundId { get; set; } = 0;
+        public string SoundName { get; set; } = "";
         public short Flags { get; set; } = 0;
         public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
 
@@ -12,7 +12,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Sound " + SoundId +
+            return "Sound " + SoundName +
                 ", Room = " + (Room?.ToString() ?? "NULL") +
                 ", X = " + SectorPosition.X +
                 ", Y = " + SectorPosition.Y +

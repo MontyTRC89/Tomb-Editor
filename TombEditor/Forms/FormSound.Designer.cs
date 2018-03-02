@@ -122,7 +122,7 @@
             this.lstSounds.Size = new System.Drawing.Size(593, 386);
             this.lstSounds.TabIndex = 61;
             this.lstSounds.Text = "darkListView1";
-            this.lstSounds.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lstSounds_MouseClick);
+            this.lstSounds.SelectedIndicesChanged += new System.EventHandler(this.lstSounds_SelectedIndicesChanged);
             // 
             // butPlaySound
             // 
@@ -149,6 +149,7 @@
             // butCancel
             // 
             this.butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(310, 495);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(130, 24);

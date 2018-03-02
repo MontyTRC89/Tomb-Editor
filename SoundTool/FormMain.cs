@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TombLib.Sounds;
 using TombLib.Wad;
 using DarkUI.Controls;
 using DarkUI.Forms;
@@ -18,7 +17,7 @@ namespace SoundTool
 {
     public partial class FormMain : DarkUI.Forms.DarkForm
     {
-        private WadTombRaiderVersion _version;
+        private WadGameVersion _version;
         private int _currentSound;
 
         public FormMain()
@@ -35,7 +34,7 @@ namespace SoundTool
 
         private void tR2CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _version = WadTombRaiderVersion.TR2;
+            _version = WadGameVersion.TR2;
 
             buildMAINSFXToolStripMenuItem.Enabled = true;
             cbMandatorySound.Visible = false;
@@ -66,7 +65,7 @@ namespace SoundTool
 
         private void tR3CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _version = WadTombRaiderVersion.TR3;
+            _version = WadGameVersion.TR3;
 
             buildMAINSFXToolStripMenuItem.Enabled = true;
             cbMandatorySound.Visible = false;
@@ -79,7 +78,7 @@ namespace SoundTool
 
         private void tR4CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _version = WadTombRaiderVersion.TR4;
+            _version = WadGameVersion.TR4;
 
             buildMAINSFXToolStripMenuItem.Enabled = false;
             cbMandatorySound.Visible = true;
@@ -91,7 +90,7 @@ namespace SoundTool
 
         private void tR5CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _version = WadTombRaiderVersion.TR5;
+            _version = WadGameVersion.TR5;
 
             buildMAINSFXToolStripMenuItem.Enabled = false;
             cbMandatorySound.Visible = true;
@@ -185,10 +184,10 @@ namespace SoundTool
         {
             switch (_version)
             {
-                case WadTombRaiderVersion.TR2: return "Sounds\\TR2";
-                case WadTombRaiderVersion.TR3: return "Sounds\\TR3";
-                case WadTombRaiderVersion.TR4: return "Sounds\\TR4";
-                case WadTombRaiderVersion.TR5: return "Sounds\\TR5";
+                case WadGameVersion.TR2: return "Sounds\\TR2";
+                case WadGameVersion.TR3: return "Sounds\\TR3";
+                case WadGameVersion.TR4_TRNG: return "Sounds\\TR4";
+                case WadGameVersion.TR5: return "Sounds\\TR5";
                 default:
                     throw new NotSupportedException();
             }
@@ -261,11 +260,11 @@ namespace SoundTool
             string path = "Sounds\\";
             switch (_version)
             {
-                case WadTombRaiderVersion.TR1: path += "TR1"; break;
-                case WadTombRaiderVersion.TR2: path += "TR2"; break;
-                case WadTombRaiderVersion.TR3: path += "TR3"; break;
-                case WadTombRaiderVersion.TR4: path += "TR4"; break;
-                case WadTombRaiderVersion.TR5: path += "TR5"; break;
+                case WadGameVersion.TR1: path += "TR1"; break;
+                case WadGameVersion.TR2: path += "TR2"; break;
+                case WadGameVersion.TR3: path += "TR3"; break;
+                case WadGameVersion.TR4: path += "TR4"; break;
+                case WadGameVersion.TR5: path += "TR5"; break;
             }
             path += "\\Samples\\" + sample + ".wav";
 
@@ -293,14 +292,14 @@ namespace SoundTool
 
         private void tR1CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _version = WadTombRaiderVersion.TR1;
+            _version = WadGameVersion.TR1;
             buildMAINSFXToolStripMenuItem.Enabled = false;
             ReloadSounds();
         }
 
         private void buildMAINSFXToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var path = "Sounds\\" + (_version == WadTombRaiderVersion.TR2 ? "TR2" : "TR3");
+            var path = "Sounds\\" + (_version == WadGameVersion.TR2 ? "TR2" : "TR3");
             /*using (var dialog = new FolderBrowserDialog())
             {
                 if (dialog.ShowDialog() == DialogResult.Cancel)
@@ -340,7 +339,7 @@ namespace SoundTool
                             var sound = pair.Value;
                             foreach (var sample in sound.Samples)
                             {
-                                var samplePath = "Sounds\\" + (_version == WadTombRaiderVersion.TR2 ? "TR2" : "TR3") + "\\Samples\\" +
+                                var samplePath = "Sounds\\" + (_version == WadGameVersion.TR2 ? "TR2" : "TR3") + "\\Samples\\" +
                                                  sample + ".wav";
 
                                 if (!File.Exists(samplePath))
@@ -366,7 +365,7 @@ namespace SoundTool
                 return;
             }
 
-            DarkMessageBox.Show(this, "The MAIN.SFX was built correctly", 
+            DarkMessageBox.Show(this, "The MAIN.SFX was built correctly",
                                 "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }

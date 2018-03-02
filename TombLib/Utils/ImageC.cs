@@ -70,35 +70,13 @@ namespace TombLib.Utils
             _data = data;
         }
 
-        public static bool operator ==(ImageC first, ImageC second)
-        {
-            return (first.Width == second.Width) && (first.Height == second.Height) && (first._data == second._data);
-        }
-
-        public static bool operator !=(ImageC first, ImageC second)
-        {
-            return !(first == second);
-        }
-
-        public bool Equals(ImageC other)
-        {
-            return this == other;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this == (ImageC)obj;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return "Image (Width=" + Width + ", Height=" + Height + ")";
-        }
+        public static bool operator ==(ImageC first, ImageC second) =>
+            (first.Width == second.Width) && (first.Height == second.Height) && (first._data == second._data);
+        public static bool operator !=(ImageC first, ImageC second) => !(first == second);
+        public bool Equals(ImageC other) => this == other;
+        public override bool Equals(object other) => (other is ImageC) && this == (ImageC)other;
+        public override int GetHashCode() => base.GetHashCode();
+        public override string ToString() => "Image (Width=" + Width + ", Height=" + Height + ")";
 
         public static ImageC CreateNew(int width, int height)
         {

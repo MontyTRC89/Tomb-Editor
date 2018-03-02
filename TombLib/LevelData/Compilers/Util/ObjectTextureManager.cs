@@ -75,7 +75,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             public static bool operator !=(Result first, Result second) => !(first == second);
             public bool Equals(Result other) => this == other;
-            public override bool Equals(object obj) => this == (Result)obj;
+            public override bool Equals(object other) => (other is Result) && this == (Result)other;
             public unsafe override int GetHashCode()
             {
                 Result this2 = this;
@@ -95,7 +95,7 @@ namespace TombLib.LevelData.Compilers.Util
         private static readonly Vector2[] _triangle6 = new Vector2[3] { new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(0.5f, 0.5f) };
         private static readonly Vector2[] _triangle7 = new Vector2[3] { new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f), new Vector2(0.5f, -0.5f) };
 
-        private static Vector2[] GetTexCoordModificationFromNewFlags(ushort NewFlags, bool isTriangular)
+        public static Vector2[] GetTexCoordModificationFromNewFlags(ushort NewFlags, bool isTriangular)
         {
             if (isTriangular)
             {
@@ -368,7 +368,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             public static bool operator !=(SavedObjectTexture first, SavedObjectTexture second) => !(first == second);
             public bool Equals(SavedObjectTexture other) => this == other;
-            public override bool Equals(object obj) => this == (SavedObjectTexture)obj;
+            public override bool Equals(object other) => (other is SavedObjectTexture) && this == (SavedObjectTexture)other;
             public override int GetHashCode() => base.GetHashCode();
         };
         private List<SavedObjectTexture> _objectTextures = new List<SavedObjectTexture>();
@@ -632,7 +632,7 @@ namespace TombLib.LevelData.Compilers.Util
                 SavedObjectTexture objectTexture = _objectTextures[i];
                 TextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
                 ushort Tile = UsedTexturePackInfo.OutputTextureID;
-                if (level.Settings.GameVersion >= GameVersion.TR3)
+                if (level.Settings.GameVersion != GameVersion.TR2)
                     Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
 
                 stream.Write((ushort)objectTexture.BlendMode);
@@ -647,38 +647,25 @@ namespace TombLib.LevelData.Compilers.Util
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord2X, ref objectTexture.TexCoord2Y);
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord3X, ref objectTexture.TexCoord3Y);
 
+                stream.Write((ushort)objectTexture.TexCoord0X);
+                stream.Write((ushort)objectTexture.TexCoord0Y);
+                stream.Write((ushort)objectTexture.TexCoord1X);
+                stream.Write((ushort)objectTexture.TexCoord1Y);
+                stream.Write((ushort)objectTexture.TexCoord2X);
+                stream.Write((ushort)objectTexture.TexCoord2Y);
+                stream.Write((ushort)objectTexture.TexCoord3X);
+                stream.Write((ushort)objectTexture.TexCoord3Y);
+
+                if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG || level.Settings.GameVersion == GameVersion.TR5)
+                {
+                    stream.Write((uint)0);
+                    stream.Write((uint)0);
+                    stream.Write((uint)0);
+                    stream.Write((uint)0);
+                }
+
                 if (level.Settings.GameVersion == GameVersion.TR5)
-                {
-                    stream.Write((ushort)(objectTexture.TexCoord0X & 0xff00));
-                    stream.Write((ushort)(objectTexture.TexCoord0Y & 0xff00));
-                    stream.Write((ushort)(objectTexture.TexCoord1X & 0xff00));
-                    stream.Write((ushort)(objectTexture.TexCoord1Y & 0xff00));
-                    stream.Write((ushort)(objectTexture.TexCoord2X & 0xff00));
-                    stream.Write((ushort)(objectTexture.TexCoord2Y & 0xff00));
-                    stream.Write((ushort)(objectTexture.TexCoord3X & 0xff00));
-                    stream.Write((ushort)(objectTexture.TexCoord3Y & 0xff00));
-                }
-                else
-                {
-                    stream.Write((ushort)objectTexture.TexCoord0X);
-                    stream.Write((ushort)objectTexture.TexCoord0Y);
-                    stream.Write((ushort)objectTexture.TexCoord1X);
-                    stream.Write((ushort)objectTexture.TexCoord1Y);
-                    stream.Write((ushort)objectTexture.TexCoord2X);
-                    stream.Write((ushort)objectTexture.TexCoord2Y);
-                    stream.Write((ushort)objectTexture.TexCoord3X);
-                    stream.Write((ushort)objectTexture.TexCoord3Y);
-                }
-
-                if (level.Settings.GameVersion >= GameVersion.TR4)
-                {
-                    stream.Write((uint)0);
-                    stream.Write((uint)0);
-                    stream.Write((uint)0);
-                    stream.Write((uint)0);
-                }
-
-                if (level.Settings.GameVersion == GameVersion.TR5) stream.Write((ushort)0);
+                    stream.Write((ushort)0);
             }
         }
     }

@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.LevelData.Compilers.Util;
+using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers
@@ -18,28 +19,21 @@ namespace TombLib.LevelData.Compilers
         private void ConvertWadMeshes(Wad2 wad)
         {
             // Build a list of meshes used by waterfalls
-            var waterfallMeshes = new List<WadMesh>();
-            foreach (var moveable in wad.Moveables)
-            {
-                var mov = moveable.Value;
-                if ((wad.Version == WadTombRaiderVersion.TR4 && mov.ObjectID >= 423 && mov.ObjectID <= 425) ||
-                    (wad.Version == WadTombRaiderVersion.TR5 && mov.ObjectID >= 410 && mov.ObjectID <= 415))
-                {
-                    foreach (var mesh in mov.Meshes)
-                        if (!waterfallMeshes.Contains(mesh))
-                            waterfallMeshes.Add(mesh);
-                }
-            }
+            var meshes = new List<WadMesh>(wad.MeshesUnique);
+            var waterfallMeshes = new List<WadMesh>(wad.Moveables.Values
+                .Where(moveable => moveable.Id.IsWaterfall(_level.Settings.WadGameVersion))
+                .SelectMany(moveable => moveable.Meshes)
+                .Distinct());
 
             ReportProgress(11, "Converting WAD meshes to TR4 format");
-            ReportProgress(11, "    Number of meshes: " + wad.Meshes.Count);
+            ReportProgress(11, "    Number of meshes: " + meshes.Count);
 
             int currentMeshSize = 0;
             int totalMeshSize = 0;
 
-            for (int i = 0; i < wad.Meshes.Count; i++)
+            for (int i = 0; i < meshes.Count; i++)
             {
-                var oldMesh = wad.Meshes.ElementAt(i).Value;
+                var oldMesh = meshes[i];
 
                 currentMeshSize = 0;
 
@@ -122,7 +116,7 @@ namespace TombLib.LevelData.Compilers
                 int packPriority = waterfallMeshes.Contains(oldMesh) ? 1 : 0;
                 foreach (var poly in oldMesh.Polys)
                 {
-                    ushort lightingEffect = (poly.Texture.BlendMode == TombLib.Utils.BlendMode.Additive) ? (ushort)1 : (ushort)0;
+                    ushort lightingEffect = (poly.Texture.BlendMode == BlendMode.Additive) ? (ushort)1 : (ushort)0;
                     lightingEffect |= (ushort)(poly.ShineStrength << 1);
 
                     if (poly.Shape == WadPolygonShape.Quad)
@@ -130,7 +124,7 @@ namespace TombLib.LevelData.Compilers
                         ObjectTextureManager.Result result;
                         lock (_objectTextureManager)
                             result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
-                        newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Indices[0], (ushort)poly.Indices[1], (ushort)poly.Indices[2], (ushort)poly.Indices[3], lightingEffect);
+                        newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3, lightingEffect);
                         currentMeshSize += (_level.Settings.GameVersion <= GameVersion.TR3 ? 10 : 12);
                     }
                     else
@@ -139,7 +133,7 @@ namespace TombLib.LevelData.Compilers
                         lock (_objectTextureManager)
                             result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
 
-                        newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Indices[0], (ushort)poly.Indices[1], (ushort)poly.Indices[2], lightingEffect);
+                        newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, lightingEffect);
                         currentMeshSize += (_level.Settings.GameVersion <= GameVersion.TR3 ? 8 : 10);
                     }
                 }
@@ -161,22 +155,30 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
+        private class AnimationTr4HelperData
+        {
+            public int KeyFramesOffset { get; set; }
+            public int KeyFramesSize { get; set; }
+        };
+
         public void ConvertWad2DataToTr4(Wad2 wad)
         {
             int lastAnimation = 0;
             int lastAnimDispatch = 0;
 
             // First thing build frames
-            var keyframesDictionary = new Dictionary<WadKeyFrame, uint>();
+            var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>();
+            var keyFramesDictionary = new Dictionary<WadKeyFrame, uint>();
 
             int currentKeyFrameSize = 0;
             int totalKeyFrameSize = 0;
 
-            for (int i = 0; i < wad.Moveables.Count; i++)
+            foreach (WadMoveable moveable in wad.Moveables.Values)
             {
-                foreach (var animation in wad.Moveables.ElementAt(i).Value.Animations)
+                foreach (var animation in moveable.Animations)
                 {
-                    animation.KeyFramesOffset = totalKeyFrameSize * 2;
+                    AnimationTr4HelperData animationHelper = animationDictionary.TryAdd(animation, new AnimationTr4HelperData());
+                    animationHelper.KeyFramesOffset = totalKeyFrameSize * 2;
 
                     // First I need to calculate the max frame size because I will need to pad later with 0x00
                     int maxKeyFrameSize = 0;
@@ -201,12 +203,12 @@ namespace TombLib.LevelData.Compilers
                         currentKeyFrameSize = 0;
                         int baseFrame = _frames.Count;
 
-                        _frames.Add((short)keyframe.BoundingBox.Minimum.X);
-                        _frames.Add((short)keyframe.BoundingBox.Maximum.X);
-                        _frames.Add((short)-keyframe.BoundingBox.Minimum.Y);
-                        _frames.Add((short)-keyframe.BoundingBox.Maximum.Y);
-                        _frames.Add((short)keyframe.BoundingBox.Minimum.Z);
-                        _frames.Add((short)keyframe.BoundingBox.Maximum.Z);
+                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, keyframe.BoundingBox.Minimum.X)));
+                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, keyframe.BoundingBox.Maximum.X)));
+                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -keyframe.BoundingBox.Minimum.Y)));
+                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -keyframe.BoundingBox.Maximum.Y)));
+                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, keyframe.BoundingBox.Minimum.Z)));
+                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, keyframe.BoundingBox.Maximum.Z)));
 
                         currentKeyFrameSize += 6;
 
@@ -286,49 +288,48 @@ namespace TombLib.LevelData.Compilers
                         }
 
                         int endFrame = _frames.Count;
-                        
-                        keyframesDictionary.Add(keyframe, (uint)totalKeyFrameSize);
+
+                        keyFramesDictionary.Add(keyframe, (uint)totalKeyFrameSize);
                         totalKeyFrameSize += currentKeyFrameSize;
                     }
 
-                    animation.KeyFramesSize = maxKeyFrameSize;
+                    animationHelper.KeyFramesSize = maxKeyFrameSize;
                 }
             }
 
-            for (int i = 0; i < wad.Moveables.Count; i++)
+            foreach (WadMoveable oldMoveable in wad.Moveables.Values)
             {
-                var oldMoveable = wad.Moveables.ElementAt(i).Value;
                 var newMoveable = new tr_moveable();
-
-                newMoveable.Animation = (ushort)(oldMoveable.Animations.Count != 0 ? lastAnimation : -1);
+                newMoveable.Animation = checked((ushort)(oldMoveable.Animations.Count != 0 ? lastAnimation : 0xffff));
+                newMoveable.NumMeshes = checked((ushort)oldMoveable.Meshes.Count);
+                newMoveable.ObjectID = oldMoveable.Id.TypeId;
                 newMoveable.FrameOffset = 0;
-                newMoveable.NumMeshes = (ushort)oldMoveable.Meshes.Count;
-                newMoveable.ObjectID = oldMoveable.ObjectID;
-                newMoveable.MeshTree = 0;
-                newMoveable.StartingMesh = 0;
 
                 // Add animations
-                ushort frameBase = 0;
+                uint realFrameBase = 0;
                 for (int j = 0; j < oldMoveable.Animations.Count; ++j)
                 {
                     var oldAnimation = oldMoveable.Animations[j];
                     var newAnimation = new tr_animation();
+                    var animationHelper = animationDictionary[oldAnimation];
 
                     // Setup the final animation
-                    newAnimation.FrameOffset = (uint)oldAnimation.KeyFramesOffset;
+                    if (j == 0)
+                        newMoveable.FrameOffset = checked((uint)animationHelper.KeyFramesOffset);
+                    newAnimation.FrameOffset = checked((uint)animationHelper.KeyFramesOffset);
                     newAnimation.FrameRate = oldAnimation.FrameDuration;
-                    newAnimation.FrameSize = (byte)oldAnimation.KeyFramesSize;
+                    newAnimation.FrameSize = checked((byte)animationHelper.KeyFramesSize);
                     newAnimation.Speed = oldAnimation.Speed;
                     newAnimation.Accel = oldAnimation.Acceleration;
                     newAnimation.SpeedLateral = oldAnimation.LateralSpeed;
                     newAnimation.AccelLateral = oldAnimation.LateralAcceleration;
-                    newAnimation.FrameStart = (ushort)(frameBase + oldAnimation.FrameStart);
-                    newAnimation.FrameEnd = (ushort)(frameBase + oldAnimation.FrameEnd);
-                    newAnimation.AnimCommand = (ushort)(_animCommands.Count);
-                    newAnimation.StateChangeOffset = (ushort)(_stateChanges.Count);
-                    newAnimation.NumAnimCommands = (ushort)oldAnimation.AnimCommands.Count;
-                    newAnimation.NumStateChanges = (ushort)oldAnimation.StateChanges.Count;
-                    newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation + lastAnimation);
+                    newAnimation.FrameStart = unchecked((ushort)(realFrameBase));
+                    newAnimation.FrameEnd = unchecked((ushort)(realFrameBase + (oldAnimation.RealNumberOfFrames == 0 ? 0 : (oldAnimation.RealNumberOfFrames - 1))));
+                    newAnimation.AnimCommand = checked((ushort)(_animCommands.Count));
+                    newAnimation.StateChangeOffset = checked((ushort)(_stateChanges.Count));
+                    newAnimation.NumAnimCommands = checked((ushort)oldAnimation.AnimCommands.Count);
+                    newAnimation.NumStateChanges = checked((ushort)oldAnimation.StateChanges.Count);
+                    newAnimation.NextAnimation = checked((ushort)(oldAnimation.NextAnimation + lastAnimation));
                     newAnimation.NextFrame = oldAnimation.NextFrame;
                     newAnimation.StateID = (oldAnimation.StateId);
 
@@ -367,15 +368,18 @@ namespace TombLib.LevelData.Compilers
                             case WadAnimCommandType.PlaySound:
                                 _animCommands.Add(0x05);
 
-                                _animCommands.Add((ushort)(command.Parameter1 + newAnimation.FrameStart));
-                                _animCommands.Add(command.Parameter2);
+                                ushort soundIndex = _soundManager.AllocateSoundInfo(command.SoundInfo);
+                                if (soundIndex > 0x3FFF)
+                                    throw new IndexOutOfRangeException("Sound index '" + soundIndex+ "' too big.");
+                                _animCommands.Add(checked((ushort)(command.Parameter1 + newAnimation.FrameStart)));
+                                _animCommands.Add(checked((ushort)(soundIndex | (command.Parameter2 & 0xC000))));
 
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
                                 _animCommands.Add(0x06);
 
-                                _animCommands.Add((ushort)(command.Parameter1 + newAnimation.FrameStart));
+                                _animCommands.Add(checked((ushort)(command.Parameter1 + newAnimation.FrameStart)));
                                 _animCommands.Add(command.Parameter2);
 
                                 break;
@@ -387,18 +391,18 @@ namespace TombLib.LevelData.Compilers
                     {
                         var newStateChange = new tr_state_change();
 
-                        newStateChange.AnimDispatch = (ushort)lastAnimDispatch;
+                        newStateChange.AnimDispatch = checked((ushort)lastAnimDispatch);
                         newStateChange.StateID = stateChange.StateId;
-                        newStateChange.NumAnimDispatches = (ushort)(stateChange.Dispatches.Count);
+                        newStateChange.NumAnimDispatches = checked((ushort)(stateChange.Dispatches.Count));
 
                         foreach (var dispatch in stateChange.Dispatches)
                         {
                             var newAnimDispatch = new tr_anim_dispatch();
 
-                            newAnimDispatch.Low = (ushort)(dispatch.InFrame + newAnimation.FrameStart);
-                            newAnimDispatch.High = (ushort)(dispatch.OutFrame + newAnimation.FrameStart);
-                            newAnimDispatch.NextAnimation = (ushort)(dispatch.NextAnimation + lastAnimation);
-                            newAnimDispatch.NextFrame = (ushort)(dispatch.NextFrame);
+                            newAnimDispatch.Low = unchecked((ushort)(dispatch.InFrame + newAnimation.FrameStart));
+                            newAnimDispatch.High = unchecked((ushort)(dispatch.OutFrame + newAnimation.FrameStart));
+                            newAnimDispatch.NextAnimation = checked((ushort)(dispatch.NextAnimation + lastAnimation));
+                            newAnimDispatch.NextFrame = checked((ushort)(dispatch.NextFrame));
 
                             _animDispatches.Add(newAnimDispatch);
                         }
@@ -410,7 +414,7 @@ namespace TombLib.LevelData.Compilers
 
                     _animations.Add(newAnimation);
 
-                    frameBase += oldAnimation.RealNumberOfFrames;
+                    realFrameBase += oldAnimation.RealNumberOfFrames == 0xffff ? (ushort)0 : oldAnimation.RealNumberOfFrames;
                 }
                 lastAnimation += oldMoveable.Animations.Count;
 
@@ -456,26 +460,26 @@ namespace TombLib.LevelData.Compilers
                 var oldStaticMesh = wad.Statics.ElementAt(i).Value;
                 var newStaticMesh = new tr_staticmesh();
 
-                newStaticMesh.ObjectID = oldStaticMesh.ObjectID;
+                newStaticMesh.ObjectID = oldStaticMesh.Id.TypeId;
 
                 newStaticMesh.CollisionBox = new tr_bounding_box
                 {
-                    X1 = (short)oldStaticMesh.CollisionBox.Minimum.X,
-                    X2 = (short)oldStaticMesh.CollisionBox.Maximum.X,
-                    Y1 = (short)-oldStaticMesh.CollisionBox.Minimum.Y,
-                    Y2 = (short)-oldStaticMesh.CollisionBox.Maximum.Y,
-                    Z1 = (short)oldStaticMesh.CollisionBox.Minimum.Z,
-                    Z2 = (short)oldStaticMesh.CollisionBox.Maximum.Z
+                    X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Minimum.X)),
+                    X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Maximum.X)),
+                    Y1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -oldStaticMesh.CollisionBox.Minimum.Y)),
+                    Y2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -oldStaticMesh.CollisionBox.Maximum.Y)),
+                    Z1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Minimum.Z)),
+                    Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Maximum.Z))
                 };
 
                 newStaticMesh.VisibilityBox = new tr_bounding_box
                 {
-                    X1 = (short)oldStaticMesh.VisibilityBox.Minimum.X,
-                    X2 = (short)oldStaticMesh.VisibilityBox.Maximum.X,
-                    Y1 = (short)-oldStaticMesh.VisibilityBox.Minimum.Y,
-                    Y2 = (short)-oldStaticMesh.VisibilityBox.Maximum.Y,
-                    Z1 = (short)oldStaticMesh.VisibilityBox.Minimum.Z,
-                    Z2 = (short)oldStaticMesh.VisibilityBox.Maximum.Z
+                    X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Minimum.X)),
+                    X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.X)),
+                    Y1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -oldStaticMesh.VisibilityBox.Minimum.Y)),
+                    Y2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -oldStaticMesh.VisibilityBox.Maximum.Y)),
+                    Z1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Minimum.Z)),
+                    Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.Z))
                 };
 
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;

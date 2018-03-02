@@ -31,6 +31,7 @@ namespace TombLib.Forms
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImportTr4WadDialog));
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
@@ -54,7 +55,7 @@ namespace TombLib.Forms
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Location = new System.Drawing.Point(575, 480);
+            this.butCancel.Location = new System.Drawing.Point(566, 480);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(84, 23);
             this.butCancel.TabIndex = 3;
@@ -64,7 +65,7 @@ namespace TombLib.Forms
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(485, 480);
+            this.butOK.Location = new System.Drawing.Point(476, 480);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(84, 23);
             this.butOK.TabIndex = 2;
@@ -75,13 +76,15 @@ namespace TombLib.Forms
             // 
             this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel1.BackColor = System.Drawing.Color.DarkGreen;
+            this.darkLabel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(9, 15);
+            this.darkLabel1.Location = new System.Drawing.Point(12, 9);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(541, 20);
+            this.darkLabel1.Size = new System.Drawing.Size(532, 55);
             this.darkLabel1.TabIndex = 4;
-            this.darkLabel1.Text = "Some WAV samples are missing. You can locate them manually and also add new paths" +
-    " where to search.";
+            this.darkLabel1.Text = resources.GetString("darkLabel1.Text");
+            this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // dgvSamples
             // 
@@ -97,10 +100,10 @@ namespace TombLib.Forms
             this.columnSamplePath,
             this.columnSearch,
             this.columnFound});
-            this.dgvSamples.Location = new System.Drawing.Point(12, 38);
+            this.dgvSamples.Location = new System.Drawing.Point(12, 70);
             this.dgvSamples.Name = "dgvSamples";
             this.dgvSamples.RowHeadersWidth = 41;
-            this.dgvSamples.Size = new System.Drawing.Size(647, 314);
+            this.dgvSamples.Size = new System.Drawing.Size(638, 294);
             this.dgvSamples.TabIndex = 5;
             this.dgvSamples.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSamples_CellContentClick);
             // 
@@ -136,7 +139,7 @@ namespace TombLib.Forms
             this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(9, 363);
+            this.darkLabel2.Location = new System.Drawing.Point(9, 369);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(656, 20);
             this.darkLabel2.TabIndex = 8;
@@ -155,7 +158,7 @@ namespace TombLib.Forms
             this.lstPaths.ItemHeight = 18;
             this.lstPaths.Location = new System.Drawing.Point(12, 386);
             this.lstPaths.Name = "lstPaths";
-            this.lstPaths.Size = new System.Drawing.Size(647, 88);
+            this.lstPaths.Size = new System.Drawing.Size(638, 88);
             this.lstPaths.TabIndex = 11;
             this.lstPaths.Click += new System.EventHandler(this.lstPaths_Click);
             this.lstPaths.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstPaths_KeyDown);
@@ -182,12 +185,12 @@ namespace TombLib.Forms
             // 
             this.butReloadSamples.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butReloadSamples.Image = global::TombLib.Properties.Resources.general_redo_16;
-            this.butReloadSamples.Location = new System.Drawing.Point(550, 9);
+            this.butReloadSamples.Location = new System.Drawing.Point(550, 10);
             this.butReloadSamples.Name = "butReloadSamples";
-            this.butReloadSamples.Size = new System.Drawing.Size(109, 23);
+            this.butReloadSamples.Size = new System.Drawing.Size(100, 54);
             this.butReloadSamples.TabIndex = 10;
             this.butReloadSamples.Text = "Reload samples";
-            this.butReloadSamples.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butReloadSamples.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.butReloadSamples.Click += new System.EventHandler(this.butReloadSamples_Click);
             // 
             // butDeletePath
@@ -195,7 +198,8 @@ namespace TombLib.Forms
             this.butDeletePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butDeletePath.Enabled = false;
             this.butDeletePath.Image = global::TombLib.Properties.Resources.general_trash_16;
-            this.butDeletePath.Location = new System.Drawing.Point(102, 480);
+            this.butDeletePath.ImagePadding = 8;
+            this.butDeletePath.Location = new System.Drawing.Point(118, 480);
             this.butDeletePath.Name = "butDeletePath";
             this.butDeletePath.Size = new System.Drawing.Size(100, 23);
             this.butDeletePath.TabIndex = 7;
@@ -207,11 +211,12 @@ namespace TombLib.Forms
             // 
             this.butAddPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butAddPath.Image = global::TombLib.Properties.Resources.general_plus_math_16;
+            this.butAddPath.ImagePadding = 12;
             this.butAddPath.Location = new System.Drawing.Point(12, 480);
             this.butAddPath.Name = "butAddPath";
-            this.butAddPath.Size = new System.Drawing.Size(84, 23);
+            this.butAddPath.Size = new System.Drawing.Size(100, 23);
             this.butAddPath.TabIndex = 6;
-            this.butAddPath.Text = "Add path";
+            this.butAddPath.Text = " Add path";
             this.butAddPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddPath.Click += new System.EventHandler(this.butAddPath_Click);
             // 

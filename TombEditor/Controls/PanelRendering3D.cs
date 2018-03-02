@@ -16,6 +16,7 @@ using TombLib;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
@@ -57,7 +58,7 @@ namespace TombEditor.Controls
             public List<short> Indices { get; set; } = new List<short>();
         }
 
-        private class Comparer : IComparer<RoomRenderBucket>, IComparer<ItemInstance>
+        private class Comparer : IComparer<RoomRenderBucket>, IComparer<StaticInstance>, IComparer<MoveableInstance>
         {
             private readonly Dictionary<Room, int> _rooms = new Dictionary<Room, int>();
 
@@ -85,12 +86,14 @@ namespace TombEditor.Controls
                 return x.Distance.CompareTo(y.Distance);
             }
 
-            public int Compare(ItemInstance x, ItemInstance y)
+            public int Compare(StaticInstance x, StaticInstance y)
             {
-                int result = x.WadObjectId.CompareTo(y.WadObjectId);
-                if (result != 0)
-                    return result;
-                return _rooms[x.Room].CompareTo(_rooms[y.Room]);
+                return x.WadObjectId.TypeId.CompareTo(y.WadObjectId.TypeId);
+            }
+
+            public int Compare(MoveableInstance x, MoveableInstance y)
+            {
+                return x.WadObjectId.TypeId.CompareTo(y.WadObjectId.TypeId);
             }
         }
 
@@ -2067,11 +2070,7 @@ namespace TombEditor.Controls
                     _device.SetRasterizerState(_rasterizerWireframe);
 
                     string message = "Sound source [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
-                    if (_editor.Level.Wad != null &&
-                        _editor.Level.Wad.Sounds.ContainsKey(instance.SoundId))
-                        message += " (" + _editor.Level.Wad.Sounds[instance.SoundId].Name + ") ";
-                    else
-                        message += " ( Invalid or missing sound ) ";
+                    message += " (" + instance.SoundName + ") ";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
@@ -2224,7 +2223,7 @@ namespace TombEditor.Controls
                     continue;
 
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[instance.WadObjectId];
-                SkinnedModel skin = ((instance.WadObjectId == 0 && _editor.Level.Wad.DirectXMoveables.ContainsKey(8)) ? _editor.Level.Wad.DirectXMoveables[8] : model);
+                SkinnedModel skin = ((instance.WadObjectId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin)) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model);
 
                 _debug.NumMoveables++;
 
@@ -2450,14 +2449,14 @@ namespace TombEditor.Controls
         {
             if (_editor?.Level?.Wad == null)
                 return;
-            if (!_editor.Level.Wad.Moveables.ContainsKey(459))
+            if (!_editor.Level.Wad.Moveables.ContainsKey(WadMoveableId.SkyBox))
                 return;
 
             _device.SetBlendState(_device.BlendStates.AlphaBlend);
 
             Effect skinnedModelEffect = _deviceManager.Effects["Model"];
 
-            SkinnedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[459];
+            SkinnedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[WadMoveableId.SkyBox];
 
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skinnedModel.VertexBuffer));
 

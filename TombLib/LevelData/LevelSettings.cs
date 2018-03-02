@@ -12,23 +12,20 @@ namespace TombLib.LevelData
 {
     public enum VariableType
     {
-        [Description("The directory of the *.prj2 file.")]
+        [Description("The directory of the main level file (*.prj2).")]
         LevelDirectory,
         [Description("The directory of the .txt files for script")]
         ScriptDirectory,
-        [Description("The directory of the sounds files")]
-        SoundsDirectory,
         [Description("The directory in which all game components reside.")]
         GameDirectory,
         [Description("The directory of the editor application.")]
         EditorDirectory,
-        [Description("The name of the *.prj2 file.")]
+        [Description("The name of the main level file (*.prj2).")]
         LevelName,
         [Description("The engine.")]
         EngineVersion,
         [Description("The sound engine (Outputs TR4 for the 'TRNG' engine).")]
-        SoundEngineVersion,
-        None,
+        SoundEngineVersion
     }
 
     public class OldWadSoundPath : ICloneable
@@ -105,14 +102,14 @@ namespace TombLib.LevelData
 
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
             {
-                new OldWadSoundPath("Sounds"),
                 new OldWadSoundPath(""),
+                new OldWadSoundPath("Sounds"), // For directly loading wad files.
+                new OldWadSoundPath("Sound"),
                 new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound" + Dir + "Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
 
-        public string SoundsDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds";
         public string ScriptDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Script";
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
@@ -128,7 +125,6 @@ namespace TombLib.LevelData
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
         public Tr5WeatherType Tr5WeatherType { get; set; } = Tr5WeatherType.Normal;
-
 
         public LevelSettings Clone()
         {
@@ -151,14 +147,10 @@ namespace TombLib.LevelData
         {
             switch (type)
             {
-                case VariableType.None:
-                    return "";
                 case VariableType.EditorDirectory:
                     return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);
                 case VariableType.ScriptDirectory:
                     return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location) + Dir + "Script";
-                case VariableType.SoundsDirectory:
-                    return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location) + Dir + "Sounds";
                 case VariableType.LevelDirectory:
                     if (!string.IsNullOrEmpty(LevelFilePath))
                         return Path.GetDirectoryName(LevelFilePath);
@@ -229,6 +221,27 @@ namespace TombLib.LevelData
             }
         }
 
+        public Wad.WadGameVersion WadGameVersion
+        {
+            get
+            {
+                switch (GameVersion)
+                {
+                    case GameVersion.TR2:
+                        return Wad.WadGameVersion.TR2;
+                    case GameVersion.TR3:
+                        return Wad.WadGameVersion.TR3;
+                    case GameVersion.TR4:
+                    case GameVersion.TRNG:
+                        return Wad.WadGameVersion.TR4_TRNG;
+                    case GameVersion.TR5:
+                        return Wad.WadGameVersion.TR5;
+                    default:
+                        throw new NotSupportedException("Not supported game version.");
+                }
+            }
+        }
+
         public string MakeAbsolute(string path, params VariableType[] excluded)
         {
             if (string.IsNullOrEmpty(path))
@@ -258,8 +271,6 @@ namespace TombLib.LevelData
 
                 switch (baseDirType)
                 {
-                    case VariableType.None:
-                        return Path.GetFullPath(path);
                     case VariableType.EditorDirectory:
                     case VariableType.GameDirectory:
                     case VariableType.LevelDirectory:
@@ -350,61 +361,6 @@ namespace TombLib.LevelData
             }
         }
 
-        public static IEnumerable<FileFormat> LoadRawExtraTextureFileFormats =>
-            new FileFormat[1] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
-
-
-        public string LookupSound(string soundName, bool ignoreMissingSounds)
-        {
-            soundName += ".wav";
-
-            foreach (var soundPath in OldWadSoundPaths)
-            {
-                string realPath = Path.Combine(MakeAbsolute(soundPath.Path) ?? "", soundName);
-                if (File.Exists(realPath))
-                    return realPath;
-            }
-
-            if (ignoreMissingSounds)
-            {
-                logger.Warn("Sound '" + soundName + "' not found.");
-                return null;
-            }
-            throw new FileNotFoundException("Sound not found", soundName);
-        }
-
-        public static readonly byte[] NullSample = new byte[] {
-            0x52, 0x49, 0x46, 0x46, 0x28, 0x00, 0x00, 0x00, 0x57, 0x41, 0x56, 0x45,
-            0x66, 0x6D, 0x74, 0x20, 0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00,
-            0x22, 0x56, 0x00, 0x00, 0x44, 0xAC, 0x00, 0x00, 0x02, 0x00, 0x10, 0x00,
-            0x64, 0x61, 0x74, 0x61, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-        };
-
-        public byte[] ReadSound(string soundName, bool ignoreMissingSounds)
-        {
-            string path = LookupSound(soundName, ignoreMissingSounds);
-            if (string.IsNullOrEmpty(path))
-                return NullSample;
-
-            // Try opening sound
-            try
-            {
-                using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    byte[] result = new byte[checked((int)fileStream.Length)];
-                    fileStream.Read(result, 0, result.GetLength(0));
-                    return result;
-                }
-            }
-            catch (Exception exc)
-            {
-                logger.Warn(exc, "Unable to load sound '" + soundName + "'.");
-                if (ignoreMissingSounds)
-                    return NullSample;
-                throw;
-            }
-        }
-
         public void ImportedGeometryUpdate(IEnumerable<ImportedGeometryUpdateInfo> geometriesToUpdate)
         {
             var absolutePathTextureLookup = new Dictionary<string, TombLib.Utils.Texture>();
@@ -442,5 +398,17 @@ namespace TombLib.LevelData
                     return importedGeometry;
             return null;
         }
+
+        public static IEnumerable<FileFormat> FileFormatsLoadRawExtraTexture =>
+            new FileFormat[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevel = new FileFormat[] { new FileFormat("Tomb Editor Level", "prj2") };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelPrj = new FileFormat[] { new FileFormat("Tomb Editor Level", "prj") };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelCompiled = new FileFormat[]
+        {
+            new FileFormat("Tomb Raider I level", "phd"),
+            new FileFormat("Tomb Raider II/III level", "tr2"),
+            new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
+            new FileFormat("Tomb Raider Chronicles level", "trc")
+        };
     }
 }

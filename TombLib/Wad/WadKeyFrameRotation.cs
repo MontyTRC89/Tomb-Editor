@@ -7,7 +7,7 @@ using System.Text;
 
 namespace TombLib.Wad
 {
-    public class WadKeyFrameRotation
+    public struct WadKeyFrameRotation
     {
         public WadKeyFrameRotationAxis Axis { get; set; }
         public int X { get; set; }
@@ -54,18 +54,6 @@ namespace TombLib.Wad
 
                 return matrix;
             }
-        }
-
-        public WadKeyFrameRotation Clone()
-        {
-            var rotation = new WadKeyFrameRotation();
-
-            rotation.Axis = Axis;
-            rotation.X = X;
-            rotation.Y = Y;
-            rotation.Z = Z;
-
-            return rotation;
         }
     }
 }

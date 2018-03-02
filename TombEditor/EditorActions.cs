@@ -2284,11 +2284,11 @@ namespace TombEditor
 
         public static void BuildLevelAndPlay(IWin32Window owner)
         {
-            if ((_editor?.Level?.Wad?.Moveables[0] != null) &&
+            if ((_editor?.Level?.Wad?.Moveables[WadMoveableId.Lara] != null) &&
                  _editor.Level.Rooms
                 .Where(room => room != null)
                 .SelectMany(room => room.Objects)
-                .Any((obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == new ItemType(false, 0, _editor.Level.Wad.Version)))
+                .Any((obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara)))
             {
                 if (BuildLevel(true, owner))
                     TombLauncher.Launch(_editor.Level.Settings, owner);
@@ -2410,18 +2410,18 @@ namespace TombEditor
                 foreach (var instance in room.Objects)
                 {
                     lara = instance as MoveableInstance;
-                    if ((lara != null) && (lara.WadObjectId == 0))
+                    if ((lara != null) && (lara.WadObjectId == WadMoveableId.Lara))
                     {
                         room.RemoveObject(_editor.Level, instance);
                         _editor.ObjectChange(lara, ObjectChangeType.Remove, room);
                         goto FoundLara;
                     }
                 }
-            lara = new MoveableInstance { WadObjectId = 0 }; // Lara
+            lara = new MoveableInstance { WadObjectId = WadMoveableId.Lara }; // Lara
             FoundLara:
 
             // Add lara to current sector
-            EditorActions.PlaceObject(_editor.SelectedRoom, p, lara);
+            PlaceObject(_editor.SelectedRoom, p, lara);
         }
 
         public static int DragDropCommonFiles(DragEventArgs e, IWin32Window owner)
@@ -2492,18 +2492,9 @@ namespace TombEditor
 
             // Show save dialog if necessary
             if (askForPath || string.IsNullOrEmpty(filePath))
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-                {
-                    saveFileDialog.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
-                    if (!string.IsNullOrEmpty(filePath))
-                    {
-                        saveFileDialog.InitialDirectory = Path.GetDirectoryName(filePath);
-                        saveFileDialog.FileName = Path.GetFileName(filePath);
-                    }
-                    if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
-                        return false;
-                    filePath = saveFileDialog.FileName;
-                }
+                filePath = LevelFileDialog.BrowseFile(owner, null, filePath, "Save level", LevelSettings.FileFormatsLevel, true, null);
+            if (string.IsNullOrEmpty(filePath))
+                return false;
 
             // Save level
             try
@@ -2804,27 +2795,19 @@ namespace TombEditor
             if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
-            string _fileName = fileName;
-
-            if (_fileName == null)
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
-                {
-                    openFileDialog.Title = "Open Tomb Editor level";
-                    openFileDialog.Filter = "Tomb Editor level (*.prj2)|*.prj2|All files (*.*)|*.*";
-                    if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
-                        return;
-
-                    _fileName = openFileDialog.FileName;
-                }
+            if (string.IsNullOrEmpty(fileName))
+                fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, false, null);
+            if (string.IsNullOrEmpty(fileName))
+                return;
 
             Level newLevel = null;
             try
             {
-                newLevel = Prj2Loader.LoadFromPrj2(_fileName, new ProgressReporterSimple());
+                newLevel = Prj2Loader.LoadFromPrj2(fileName, new ProgressReporterSimple());
             }
             catch (Exception exc)
             {
-                logger.Error(exc, "Unable to open \"" + _fileName + "\"");
+                logger.Error(exc, "Unable to open \"" + fileName + "\"");
                 DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
             }
             _editor.Level = newLevel;
@@ -2835,24 +2818,17 @@ namespace TombEditor
             if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
-            string _fileName = fileName;
+            if (string.IsNullOrEmpty(fileName))
+                fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevelPrj, false, null);
+            if (string.IsNullOrEmpty(fileName))
+                return;
 
-            if (_fileName == null)
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
-                {
-                    openFileDialog.Title = "Open Tomb Editor level";
-                    openFileDialog.Filter = "Winroomedit level (*.prj)|*.prj|All files (*.*)|*.*";
-                    if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
-                        return;
-
-                    _fileName = openFileDialog.FileName;
-                }
 
             Level newLevel = null;
             try
             {
                 using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
-                    newLevel = PrjLoader.LoadFromPrj(_fileName, progressReporter)))
+                    newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter)))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;

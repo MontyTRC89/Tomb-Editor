@@ -165,12 +165,6 @@
     <Compile Include="Debug.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
-    <Compile Include="Forms\FormAbout.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormAbout.Designer.cs">
-      <DependentUpon>FormAbout.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FormCamera.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -368,9 +362,6 @@
     <EmbeddedResource Include="ToolWindows\ToolPaletteFloating.resx">
       <DependentUpon>ToolPaletteFloating.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormAbout.resx">
-      <DependentUpon>FormAbout.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormCamera.resx">
       <DependentUpon>FormCamera.cs</DependentUpon>
     </EmbeddedResource>
@@ -398,15 +389,6 @@
     <EmbeddedResource Include="ToolWindows\SectorOptions.resx">
       <DependentUpon>SectorOptions.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Editor\BaseWad2\BaseTR4.wad2">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Misc\font.bin">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Misc\Palette.bin">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
@@ -479,6 +461,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\Palette.bin" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -487,16 +470,10 @@
     <None Include="Editor\Textures\illegal_slope.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\Misc\TRCatalog.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Editor\Textures\arrow_ne_se.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Editor\Textures\arrow_nw_sw.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Misc\NgCatalog.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="Editor\Shaders\RoomGeometry.fx">
@@ -536,9 +513,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Editor\Textures\cross.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\Palette.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Editor\Textures\slide_east.png">
@@ -607,7 +581,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del "$(TargetDir)TombEditorConfiguration.xml" 2&gt;NUL</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

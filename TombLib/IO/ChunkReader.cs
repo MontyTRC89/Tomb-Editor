@@ -10,7 +10,6 @@ using TombLib.Utils;
 
 namespace TombLib.IO
 {
-
     public class ChunkReader : IDisposable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

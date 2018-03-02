@@ -8,38 +8,59 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
-    public class WadStatic : WadObject
+    public struct WadStaticId : IWadObjectId, IEquatable<WadStaticId>, IComparable<WadStaticId>, IComparable
     {
-        public WadMesh Mesh { get { return _mesh; } set { _mesh = value; } }
-        public short Flags { get { return _flags; } set { _flags = value; } }
-        public BoundingBox VisibilityBox { get { return _visibilityBox; } set { _visibilityBox = value; } }
-        public BoundingBox CollisionBox { get { return _collisionBox; } set { _collisionBox = value; } }
+        public uint TypeId;
 
-        private BoundingBox _visibilityBox;
-        private BoundingBox _collisionBox;
-        private short _flags;
-        private WadMesh _mesh;
-
-        public WadStatic(Wad2 wad)
-            : base(wad)
+        public WadStaticId(uint objTypeId)
         {
-
+            TypeId = objTypeId;
         }
 
-        public override string ToString()
+        public int CompareTo(WadStaticId other) => TypeId.CompareTo(other.TypeId);
+        public int CompareTo(object other) => CompareTo((WadStaticId)other);
+        public static bool operator <(WadStaticId first, WadStaticId second) => (first.TypeId < second.TypeId);
+        public static bool operator <=(WadStaticId first, WadStaticId second) => (first.TypeId <= second.TypeId);
+        public static bool operator >(WadStaticId first, WadStaticId second) => (first.TypeId > second.TypeId);
+        public static bool operator >=(WadStaticId first, WadStaticId second) => (first.TypeId >= second.TypeId);
+        public static bool operator ==(WadStaticId first, WadStaticId second) => (first.TypeId == second.TypeId);
+        public static bool operator !=(WadStaticId first, WadStaticId second) => !(first == second);
+        public bool Equals(WadStaticId other) => this == other;
+        public override bool Equals(object other) => (other is WadStaticId) && this == (WadStaticId)other;
+        public override int GetHashCode() => unchecked((int)TypeId);
+
+        public string ToString(WadGameVersion gameVersion)
         {
-            return "(" + ObjectID + ") " + TrCatalog.GetStaticName(Wad.Version, ObjectID);
+            return "(" + TypeId + ") " + TrCatalog.GetStaticName(gameVersion, TypeId);
         }
+        public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
+    }
+
+    public class WadStatic : IWadObject, ICloneable
+    {
+        public WadStaticId Id { get; private set; }
+
+        public WadStatic(WadStaticId id)
+        {
+            Id = id;
+        }
+
+        public WadMesh Mesh { get; set; }
+        public short Flags { get; set; }
+        public BoundingBox VisibilityBox { get; set; }
+        public BoundingBox CollisionBox { get; set; }
+
+        public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
+        public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
 
         public WadStatic Clone()
         {
-            var staticMesh = new WadStatic(Wad);
-            staticMesh.VisibilityBox = new BoundingBox(VisibilityBox.Minimum, VisibilityBox.Maximum);
-            staticMesh.CollisionBox = new BoundingBox(CollisionBox.Minimum, CollisionBox.Maximum);
-            staticMesh.Flags = Flags;
-            staticMesh.Mesh = Mesh;
-            staticMesh.ObjectID = ObjectID;
-            return staticMesh;
+            WadStatic clone = (WadStatic)MemberwiseClone();
+            clone.Mesh = Mesh.Clone();
+            return clone;
         }
+        object ICloneable.Clone() => Clone();
+
+        IWadObjectId IWadObject.Id => Id;
     }
 }

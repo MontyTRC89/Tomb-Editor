@@ -48,6 +48,8 @@ namespace TombLib.LevelData.Compilers
 
         public override bool Equals(object obj)
         {
+            if (!(obj is tr_vertex))
+                return false;
             return this == (tr_vertex)obj;
         }
 
@@ -167,6 +169,8 @@ namespace TombLib.LevelData.Compilers
 
         public override bool Equals(object obj)
         {
+            if (!(obj is tr_room_vertex))
+                return false;
             return this == (tr_room_vertex)obj;
         }
 
@@ -656,7 +660,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((ushort)0);
             }
             for (var k = 0; k < Triangles.Count; k++)
-            { 
+            {
                 Triangles[k].Write(writer);
                 writer.Write((ushort)0);
             }
@@ -854,7 +858,7 @@ namespace TombLib.LevelData.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_item
     {
-        public short ObjectID;
+        public ushort ObjectID;
         public short Room;
         public int X;
         public int Y;
@@ -1003,7 +1007,7 @@ namespace TombLib.LevelData.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr3_sound_details
     {
-        public short Sample;
+        public ushort Sample;
         public byte Volume;
         public byte Range;
         public byte Chance;
@@ -1014,9 +1018,9 @@ namespace TombLib.LevelData.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_sound_details
     {
-        public short Sample;
-        public short Volume;
-        public short Chance;
+        public ushort Sample;
+        public ushort Volume;
+        public ushort Chance;
         public ushort Characteristics;
     }
 

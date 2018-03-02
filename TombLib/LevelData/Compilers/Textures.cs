@@ -103,8 +103,9 @@ namespace TombLib.LevelData.Compilers
             // Add all sprites to the texture packer
             var textureAllocator = new Util.TextureAllocator();
             var spriteTextureIDs = new Dictionary<Hash, int>();
-            foreach (var sprite in _level.Wad.SpriteTextures)
-                spriteTextureIDs.Add(sprite.Key, textureAllocator.GetOrAllocateTextureID(sprite.Value));
+            foreach (var sprite in _level.Wad.SpriteSequences.Values.SelectMany(sequence => sequence.Sprites))
+                if (!spriteTextureIDs.ContainsKey(sprite.Texture.Hash))
+                    spriteTextureIDs.Add(sprite.Texture.Hash, textureAllocator.GetOrAllocateTextureID(sprite.Texture));
 
             // Pack textures
             List<ImageC> texturePages = textureAllocator.PackTextures();
@@ -114,28 +115,28 @@ namespace TombLib.LevelData.Compilers
             var tempSprites = new List<tr_sprite_texture>();
             var lastOffset = 0;
 
-            foreach (var oldSequence in _level.Wad.SpriteSequences)
+            foreach (var oldSequence in _level.Wad.SpriteSequences.Values)
             {
                 var newSequence = new tr_sprite_sequence();
                 newSequence.NegativeLength = (short)-oldSequence.Sprites.Count;
-                newSequence.ObjectID = (int)oldSequence.ObjectID;
+                newSequence.ObjectID = (int)oldSequence.Id.TypeId;
                 newSequence.Offset = (short)lastOffset;
 
                 foreach (var oldTexture in oldSequence.Sprites)
                 {
-                    var packInfo = textureAllocator.GetPackInfo(spriteTextureIDs[oldTexture.Hash]);
+                    var packInfo = textureAllocator.GetPackInfo(spriteTextureIDs[oldTexture.Texture.Hash]);
                     var newTexture = new tr_sprite_texture();
 
                     if (_level.Settings.GameVersion <= GameVersion.TR3)
                     {
                         newTexture.X = (byte)packInfo.Pos.X;
                         newTexture.Y = (byte)packInfo.Pos.Y;
-                        newTexture.Width = (ushort)(((oldTexture.Width - 1) * 256) + 255);
-                        newTexture.Height = (ushort)(((oldTexture.Height - 1) * 256) + 255);
-                        newTexture.TopSide = (short)oldTexture.TopSide;
-                        newTexture.LeftSide = (short)oldTexture.LeftSide;
-                        newTexture.RightSide = (short)oldTexture.RightSide;
-                        newTexture.BottomSide = (short)oldTexture.BottomSide;
+                        newTexture.Width = (ushort)(((oldTexture.Texture.Image.Width - 1) * 256) + 255);
+                        newTexture.Height = (ushort)(((oldTexture.Texture.Image.Height - 1) * 256) + 255);
+                        newTexture.TopSide = 0;
+                        newTexture.LeftSide = 0;
+                        newTexture.RightSide = 0;
+                        newTexture.BottomSide = 0;
                     }
                     else
                     {
@@ -143,10 +144,10 @@ namespace TombLib.LevelData.Compilers
                         newTexture.LeftSide = (short)packInfo.Pos.X;
                         newTexture.X = (byte)newTexture.LeftSide;
                         newTexture.Y = (byte)newTexture.TopSide;
-                        newTexture.Width = (ushort)((oldTexture.Width - 1) * 256);
-                        newTexture.Height = (ushort)((oldTexture.Height - 1) * 256);
-                        newTexture.RightSide = (short)(newTexture.LeftSide + (oldTexture.Width));
-                        newTexture.BottomSide = (short)(newTexture.TopSide + (oldTexture.Height));
+                        newTexture.Width = (ushort)((oldTexture.Texture.Image.Width - 1) * 256);
+                        newTexture.Height = (ushort)((oldTexture.Texture.Image.Height - 1) * 256);
+                        newTexture.RightSide = (short)(newTexture.LeftSide + (oldTexture.Texture.Image.Width));
+                        newTexture.BottomSide = (short)(newTexture.TopSide + (oldTexture.Texture.Image.Height));
                     }
                     newTexture.Tile = (ushort)(pagesBeforeSprites + packInfo.OutputTextureID);
 
@@ -163,63 +164,30 @@ namespace TombLib.LevelData.Compilers
             return texturePages;
         }
 
-        private static byte[] PackTextureMap32To16Bit(IReadOnlyList<byte> map, int width, int height)
+        private static byte[] PackTextureMap32To16Bit(byte[] textureData)
         {
-            var newMap = new byte[width * height * 2];
-
-            for (var x = 0; x < width; x++)
+            int pixelCount = textureData.Length / 4;
+            byte[] newTextureData = new byte[pixelCount * 2];
+            for (int i = 0; i < pixelCount; i++)
             {
-                for (var y = 0; y < height; y++)
-                {
-                    ushort a1 = map[y * 256 * 4 + x * 4 + 3];
-                    ushort r1 = map[y * 256 * 4 + x * 4 + 2];
-                    ushort g1 = map[y * 256 * 4 + x * 4 + 1];
-                    ushort b1 = map[y * 256 * 4 + x * 4 + 0];
+                ushort a1 = textureData[i * 4 + 3];
+                ushort r1 = textureData[i * 4 + 2];
+                ushort g1 = textureData[i * 4 + 1];
+                ushort b1 = textureData[i * 4 + 0];
 
-                    var r = (ushort)(r1 / 8);
-                    var g = (ushort)(g1 / 8);
-                    var b = (ushort)(b1 / 8);
-                    ushort a;
+                ushort r = (ushort)((r1 + 4) >> 3);
+                ushort g = (ushort)((g1 + 4) >> 3);
+                ushort b = (ushort)((b1 + 4) >> 3);
 
-                    if (a1 == 0)
-                    {
-                        r = 0;
-                        g = 0;
-                        b = 0;
-                        a = 0;
-                    }
-                    else
-                    {
-                        a = 0x8000;
-                    }
+                ushort tmp = a1 > 127 ? (ushort)0x8000 : (ushort)0;
+                tmp |= (ushort)(r << 10);
+                tmp |= (ushort)(g << 5);
+                tmp |= b;
 
-                    if (r1 < 8)
-                        r = 0;
-                    if (g1 < 8)
-                        g = 0;
-                    if (b1 < 8)
-                        b = 0;
-
-                    ushort tmp = 0;
-
-                    if (r1 == 255 && g1 == 255 && b1 == 255)
-                    {
-                        tmp = 0xffff;
-                    }
-                    else
-                    {
-                        tmp |= a;
-                        tmp |= (ushort)(r << 10);
-                        tmp |= (ushort)(g << 5);
-                        tmp |= b;
-                    }
-
-                    newMap[y * 256 * 2 + 2 * x] = (byte)(tmp & 0xff);
-                    newMap[y * 256 * 2 + 2 * x + 1] = (byte)((tmp & 0xff00) >> 8);
-                }
+                newTextureData[i * 2] = (byte)(tmp & 0xff);
+                newTextureData[i * 2 + 1] = (byte)((tmp & 0xff00) >> 8);
             }
-
-            return newMap;
+            return newTextureData;
         }
     }
 }

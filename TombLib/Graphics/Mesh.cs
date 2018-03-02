@@ -5,8 +5,6 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
-using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
 
 namespace TombLib.Graphics
 {

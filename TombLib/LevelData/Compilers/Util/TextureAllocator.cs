@@ -40,7 +40,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
             public static bool operator !=(TextureView first, TextureView second) => !(first == second);
             public bool Equals(TextureView other) => this == other;
-            public override bool Equals(object obj) => this == (TextureView)obj;
+            public override bool Equals(object other) => (other is TextureView) && this == (TextureView)other;
             public override int GetHashCode() => Texture.GetHashCode();
         }
 
@@ -90,6 +90,7 @@ namespace TombLib.LevelData.Compilers.Util
         private readonly List<int> _priorityClass = new List<int>();
         private readonly List<TextureView> _usedTextures = new List<TextureView>();
         private readonly Dictionary<TextureView, int> _usedTexturesLookup = new Dictionary<TextureView, int>();
+        private readonly Dictionary<Hash, Texture> _hashedTextures = new Dictionary<Hash, Texture>();
         private Result[] _usedTexturePackInfos;
 
         public int GetOrAllocateTextureID(TextureView texture, int priorityClass = 0)
@@ -99,6 +100,20 @@ namespace TombLib.LevelData.Compilers.Util
             if ((texture.Area.Width > 256) || (texture.Area.Height > 256))
                 throw new NotSupportedException("Texture page too big!");
 
+            // Deduplicate hashed textures
+            {
+                TextureHashed textureHashed = texture.Texture as TextureHashed;
+                if (textureHashed != null)
+                {
+                    Texture existingTexture;
+                    if (_hashedTextures.TryGetValue(textureHashed.Hash, out existingTexture))
+                        texture.Texture = existingTexture;
+                    else
+                        _hashedTextures.Add(textureHashed.Hash, texture.Texture);
+                }
+            }
+
+            // Check texture
             int textureID;
             if (_usedTexturesLookup.TryGetValue(texture, out textureID))
             {

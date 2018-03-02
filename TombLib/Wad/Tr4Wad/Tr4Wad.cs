@@ -6,8 +6,6 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.IO;
-using TombLib.Sounds;
-using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.Tr4Wad
 {
@@ -184,8 +182,8 @@ namespace TombLib.Wad.Tr4Wad
         internal List<int> Links = new List<int>();
         internal List<short> KeyFrames = new List<short>();
         internal List<wad_moveable> Moveables = new List<wad_moveable>();
-        internal List<wad_static_mesh> StaticMeshes = new List<wad_static_mesh>();
-        internal short[] SoundMap = new short[370];
+        internal List<wad_static_mesh> Statics = new List<wad_static_mesh>();
+        internal short[] SoundMap;
         internal List<wad_sound_info> SoundInfo = new List<wad_sound_info>();
         internal List<wad_sprite_sequence> SpriteSequences = new List<wad_sprite_sequence>();
         internal List<wad_sprite_texture> SpriteTextures = new List<wad_sprite_texture>();
@@ -458,7 +456,7 @@ namespace TombLib.Wad.Tr4Wad
                     staticMesh.CollisionZ1 = reader.ReadInt16();
                     staticMesh.CollisionZ2 = reader.ReadInt16();
                     staticMesh.Flags = reader.ReadUInt16();
-                    StaticMeshes.Add(staticMesh);
+                    Statics.Add(staticMesh);
                 }
 
                 reader.Close();
@@ -467,7 +465,7 @@ namespace TombLib.Wad.Tr4Wad
 
             // Read sounds
             logger.Info("Reading sound (sfx/sam) files associated with wad.");
-            var soundMapSize = SoundsCatalog.GetSoundMapSize(WadTombRaiderVersion.TR4, Version == 130);
+            int soundMapSize = Version == 130 ? 4096 : 370;
             using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
                     while (!readerSounds.EndOfStream)
                         Sounds.Add(readerSounds.ReadLine());

@@ -93,11 +93,6 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.FontTextureFilePath, settings.FontTextureFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.SkyTextureFilePath, settings.SkyTextureFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.Tr5ExtraSpritesFilePath, settings.Tr5ExtraSpritesFilePath ?? "");
-                chunkIO.WriteChunkString(Prj2Chunks.SoundsPath, settings.SoundsDirectory ?? "");
-                /*chunkIO.WriteChunkString(Prj2Chunks.Tr2MainSamFilePath, settings.Tr2MainSamFilePath ?? "");
-                chunkIO.WriteChunkString(Prj2Chunks.Tr3MainSamFilePath, settings.Tr3MainSamFilePath ?? "");
-                chunkIO.WriteChunkString(Prj2Chunks.Tr2SoundsXmlFilePath, settings.Tr2SoundsXmlFilePath ?? "");
-                chunkIO.WriteChunkString(Prj2Chunks.Tr3SoundsXmlFilePath, settings.Tr3SoundsXmlFilePath ?? "");*/
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.OldWadSoundPaths, () =>
                 {
                     chunkIO.WriteChunkEmpty(Prj2Chunks.OldWadSoundUpdateTag1_0_8);
@@ -316,7 +311,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Position);
                             chunkIO.Raw.Write(instance.RotationY);
                             LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                            chunkIO.Raw.Write(instance.WadObjectId);
+                            chunkIO.Raw.Write(instance.WadObjectId.TypeId);
                             chunkIO.Raw.Write(instance.Ocb);
                             chunkIO.Raw.Write(instance.Invisible);
                             chunkIO.Raw.Write(instance.ClearBody);
@@ -330,7 +325,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Position);
                             chunkIO.Raw.Write(instance.RotationY);
                             LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                            chunkIO.Raw.Write(instance.WadObjectId);
+                            chunkIO.Raw.Write(instance.WadObjectId.TypeId);
                             chunkIO.Raw.Write(instance.Color);
                             chunkIO.Raw.Write(instance.Ocb);
                         }, LEB128.MaximumSize1Byte);
@@ -370,12 +365,12 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Strength);
                         });
                     else if (o is SoundSourceInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource, () =>
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource2, () =>
                         {
                             var instance = (SoundSourceInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.Write(instance.SoundId);
+                            chunkIO.Raw.Write(instance.SoundName);
                             chunkIO.Raw.Write(instance.Flags);
                             chunkIO.Raw.Write(instance.CodeBits);
                         });

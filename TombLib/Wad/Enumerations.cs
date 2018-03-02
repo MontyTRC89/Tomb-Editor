@@ -5,14 +5,13 @@ using System.Text;
 
 namespace TombLib.Wad
 {
-    public enum WadTombRaiderVersion : short
+    public enum WadGameVersion : long
     {
-        TR1,
-        TR2,
-        TR3,
-        TR4,
-        TRNG,
-        TR5
+        TR1 = 1,
+        TR2 = 2,
+        TR3 = 3,
+        TR4_TRNG = 4,
+        TR5 = 5
     }
 
     public enum WadLinkOpcode : ushort
@@ -56,19 +55,5 @@ namespace TombLib.Wad
     {
         Normals,
         PrecalculatedGrayShades
-    }
-
-    public enum WadSoundLoopType : byte
-    {
-        None = 0,
-        W = 1,
-        R = 2,
-        L = 3
-    }
-
-    public enum WadSoundManagementSystem : int
-    {
-        ClassicTrle = 0,
-        DynamicSoundMap = 1
     }
 }

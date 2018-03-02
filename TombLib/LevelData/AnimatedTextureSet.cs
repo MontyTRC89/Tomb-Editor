@@ -55,7 +55,7 @@ namespace TombLib.LevelData
                 (TexCoord2.Equals(other.TexCoord2)) &&
                 (TexCoord3.Equals(other.TexCoord3));
         }
-        public override bool Equals(object other) => Equals((AnimatedTextureFrame)other);
+        public override bool Equals(object other) => (other is AnimatedTextureFrame) && Equals((AnimatedTextureFrame)other);
         public override int GetHashCode() => base.GetHashCode();
     }
 
@@ -89,7 +89,7 @@ namespace TombLib.LevelData
         public bool AnimationIsTrivial => Frames.Count < 1;
 
         public bool Equals(AnimatedTextureSet other) => Frames.SequenceEqual(other.Frames);
-        public override bool Equals(object other) => Equals((AnimatedTextureSet)other);
+        public override bool Equals(object other) => (other is AnimatedTextureSet) && Equals((AnimatedTextureSet)other);
         public override int GetHashCode() => base.GetHashCode();
 
         public override string ToString()

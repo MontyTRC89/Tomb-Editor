@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
+using TombLib.Utils;
 
 namespace TombLib.IO
 {
@@ -59,6 +60,12 @@ namespace TombLib.IO
         {
             Write(value.Minimum);
             Write(value.Maximum);
+        }
+
+        public void Write(Hash hash)
+        {
+            Write(hash.HashLow);
+            Write(hash.HashHigh);
         }
 
         public void WriteFiller(byte value, int sizeInBytes)

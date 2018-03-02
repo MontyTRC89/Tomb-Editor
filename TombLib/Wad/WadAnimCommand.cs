@@ -6,32 +6,12 @@ using System.Threading.Tasks;
 
 namespace TombLib.Wad
 {
-    public class WadAnimCommand
+    public struct WadAnimCommand
     {
-        public WadAnimCommandType Type { get { return _type; } }
-        public ushort Parameter1 { get { return _parameter1; } set { _parameter1 = value; } }
-        public ushort Parameter2 { get { return _parameter2; } set { _parameter2 = value; } }
-        public ushort Parameter3 { get { return _parameter3; } set { _parameter3 = value; } }
-
-        private WadAnimCommandType _type;
-        private ushort _parameter1;
-        private ushort _parameter2;
-        private ushort _parameter3;
-
-        public WadAnimCommand(WadAnimCommandType type)
-        {
-            _type = type;
-        }
-
-        public WadAnimCommand Clone()
-        {
-            var command = new WadAnimCommand(Type);
-
-            command.Parameter1 = Parameter1;
-            command.Parameter2 = Parameter2;
-            command.Parameter3 = Parameter3;
-
-            return command;
-        }
+        public WadAnimCommandType Type { get; set; }
+        public WadSoundInfo SoundInfo { get; set; }
+        public ushort Parameter1 { get; set; }
+        public ushort Parameter2 { get; set; }
+        public ushort Parameter3 { get; set; }
     }
 }

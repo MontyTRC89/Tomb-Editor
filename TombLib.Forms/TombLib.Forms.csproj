@@ -65,13 +65,13 @@
     <Compile Include="Controls\TriggerParameterControl.designer.cs">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\GraphicalDialogHandler.cs" />
-    <Compile Include="Forms\FormSelectSample.cs">
+    <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormSelectSample.Designer.cs">
-      <DependentUpon>FormSelectSample.cs</DependentUpon>
+    <Compile Include="Forms\FormAbout.designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\GraphicalDialogHandler.cs" />
     <Compile Include="Forms\FormSoundEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,13 +99,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utils\ISynchronizeInvokeExtensions.cs" />
+    <Compile Include="Utils\LevelFileDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSelectSample.resx">
-      <DependentUpon>FormSelectSample.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSoundEditor.resx">
       <DependentUpon>FormSoundEditor.cs</DependentUpon>

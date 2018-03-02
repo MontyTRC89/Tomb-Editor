@@ -6,20 +6,14 @@ using System.Windows.Forms;
 using TombLib.LevelData;
 using System.Numerics;
 using System.IO;
-using TombEngine;
 using NLog;
-using TombLib.Wad;
 using TombLib.Utils;
-using TombLib.NG;
 using DarkUI.Docking;
 using DarkUI.Forms;
-using TombLib.GeometryIO.Importers;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib;
 using System.Diagnostics;
-using TombLib.Wad.TrLevels;
-using TombLib.Sounds;
 
 namespace TombEditor
 {
@@ -57,7 +51,7 @@ namespace TombEditor
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             // Only how debug menu when a debugger is attached...
-            debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
+            debugToolStripMenuItem.Visible = Debugger.IsAttached;
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
@@ -1162,7 +1156,7 @@ namespace TombEditor
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (FormAbout form = new FormAbout())
+            using (FormAbout form = new FormAbout(Properties.Resources.misc_AboutScreen_800))
                 form.ShowDialog(this);
         }
 
@@ -1176,6 +1170,51 @@ namespace TombEditor
             ToolBox_Show(floatingToolStripMenuItem.Checked);
         }
 
+        private void applyCurrentAmbientLightToAllRoomsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DarkMessageBox.Show(this,"Do you really want to apply the ambient light of the current room to all rooms?",
+                                    "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                EditorActions.ApplyCurrentAmbientLightToAllRooms();
+                MessageBox.Show(this, "Ambient light was applied to all rooms", "Apply ambient light",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void importRoomsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.ImportRooms(this);
+        }
+
+        private void wadToolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start("WadTool.exe");
+            }
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Error while starting Wad Tool.");
+                DarkMessageBox.Show(this, "Error while starting Wad Tool", "Error", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void soundToolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start("SoundTool.exe");
+            }
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Error while starting Wad Tool.");
+                DarkMessageBox.Show(this, "Error while starting Sound Tool", "Error", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+            }
+        }
+
+
         // Only for debugging purposes...
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1183,10 +1222,10 @@ namespace TombEditor
             //level.Load("");
             //var level = new TombRaider4Level("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
             //level.Load("originale");
-            var level = new TrLevel();
-            level.LoadLevel("Game\\data\\title.tr4", "", "");
-           // level = new TombRaider4Level("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
-           // level.Load("editor");
+            //var level = new TrLevel();
+            //level.LoadLevel("Game\\data\\title.tr4", "", "");
+            // level = new TombRaider4Level("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
+            // level.Load("editor");
 
             //level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
             //level.Load("originale");
@@ -1196,8 +1235,8 @@ namespace TombEditor
         {
             //level.Load("");
 
-            var level = new TombRaider4Level("e:\\trle\\data\\city130.tr4");
-            level.Load("crash");
+            //var level = new TestLevel("e:\\trle\\data\\city130.tr4");
+            //level.Load("crash");
 
             //level = new TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
             //level.Load("jungle");
@@ -1205,7 +1244,7 @@ namespace TombEditor
 
         private void debugAction2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var tempColors = new List<int>();
+            /*var tempColors = new List<int>();
 
             var bmp = (Bitmap)System.Drawing.Image.FromFile("Editor\\Palette.png");
             for (int y = 2; y < bmp.Height; y += 14)
@@ -1215,7 +1254,7 @@ namespace TombEditor
                     var col = bmp.GetPixel(x, y);
                     if (col.A == 0)
                         continue;
-                    /* if (!tempColors.Contains(col.ToArgb()))*/
+                    // if (!tempColors.Contains(col.ToArgb()))
                     tempColors.Add(col.ToArgb());
                 }
             }
@@ -1229,7 +1268,7 @@ namespace TombEditor
                     writer.Write(col2.G);
                     writer.Write(col2.B);
                 }
-            }
+            }*/
         }
 
         private void debugAction3ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1313,78 +1352,6 @@ namespace TombEditor
                     writer.WriteLine("</xml>");
                 }
             }*/
-
-            TrLevel level = new TrLevel();
-            level.LoadLevel("D:\\tr2\\data\\platform.tr2", "", "");
-
-        }
-
-        private void soundManagerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (var form = new FormSoundEditor(_editor.Level.Wad, true))
-            {
-                if (form.ShowDialog(this) == DialogResult.OK)
-                {
-                    if (DarkMessageBox.Show(this, "Do you want to save changes to original Wad2 file?", "Save changes",
-                                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        Wad2.SaveToFile(_editor.Level.Wad, _editor.Level.Wad.FileName);
-                    else
-                        EditorActions.ReloadWad();
-
-                }
-                else
-                    EditorActions.ReloadWad();
-            }
-        }
-
-        private void applyCurrentAmbientLightToAllRoomsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (DarkMessageBox.Show(this,"Do you really want to apply the ambient light of the current room to all rooms?",
-                                    "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                EditorActions.ApplyCurrentAmbientLightToAllRooms();
-                MessageBox.Show(this, "Ambient light was applied to all rooms", "Apply ambient light",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-
-        private void importRoomsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ImportRooms(this);
-        }
-
-        private void wadToolToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process.Start("WadTool.exe");
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "Error while starting Wad Tool.");
-                DarkMessageBox.Show(this, "Error while starting Wad Tool", "Error", MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
-            }
-        }
-
-        private void soundsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var levels = Directory.EnumerateFiles("D:\\TR2\\data\\test");
-            SoundsCatalog.TestProcedure(levels);
-        }
-
-        private void soundToolToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process.Start("SoundTool.exe");
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "Error while starting Wad Tool.");
-                DarkMessageBox.Show(this, "Error while starting Sound Tool", "Error", MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
-            }
         }
     }
 }

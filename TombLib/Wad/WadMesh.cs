@@ -12,68 +12,21 @@ namespace TombLib.Wad
 {
     public class WadMesh : IEquatable<WadMesh>
     {
-        private BoundingSphere _boundingSphere;
-        private List<Vector3> _verticesPositions;
-        private List<Vector3> _verticesNormals;
-        private List<short> _verticesShades;
-        private List<WadPolygon> _polygons;
-        private Hash _hash;
-        private BoundingBox _boundingBox;
-
-        public BoundingSphere BoundingSphere { get { return _boundingSphere; } set { _boundingSphere = value; } }
-        public List<Vector3> VerticesPositions { get { return _verticesPositions; } }
-        public List<Vector3> VerticesNormals { get { return _verticesNormals; } }
-        public List<short> VerticesShades { get { return _verticesShades; } }
-        public List<WadPolygon> Polys { get { return _polygons; } }
-        public Hash Hash { get { return _hash; } }
-        public BoundingBox BoundingBox { get { return _boundingBox; } set { _boundingBox = value; } }
-
-        public WadMesh()
-        {
-            _verticesPositions = new List<Vector3>();
-            _verticesNormals = new List<Vector3>();
-            _verticesShades = new List<short>();
-            _polygons = new List<WadPolygon>();
-        }
+        public List<Vector3> VerticesPositions { get; set; } = new List<Vector3>();
+        public List<Vector3> VerticesNormals { get; set; } = new List<Vector3>();
+        public List<short> VerticesShades { get; set; } = new List<short>();
+        public List<WadPolygon> Polys { get; set; } = new List<WadPolygon>();
+        public Hash Hash { get; private set; }
+        public BoundingSphere BoundingSphere { get; set; }
+        public BoundingBox BoundingBox { get; set; }
 
         public WadMesh Clone()
         {
-            var mesh = new WadMesh();
-
-            mesh.BoundingBox = new BoundingBox(new Vector3(BoundingBox.Minimum.X,
-                                                           BoundingBox.Minimum.Y,
-                                                           BoundingBox.Minimum.Z),
-                                               new Vector3(BoundingBox.Maximum.X,
-                                                           BoundingBox.Maximum.Y,
-                                                           BoundingBox.Maximum.Z));
-
-            mesh.BoundingSphere = new BoundingSphere(new Vector3(BoundingSphere.Center.X,
-                                                                 BoundingSphere.Center.Y,
-                                                                 BoundingSphere.Center.Z),
-                                                     BoundingSphere.Radius);
-
-            foreach (var position in VerticesPositions)
-                mesh.VerticesPositions.Add(new Vector3(position.X, position.Y, position.Z));
-
-            foreach (var normal in VerticesNormals)
-                mesh.VerticesNormals.Add(new Vector3(normal.X, normal.Y, normal.Z));
-
-            foreach (var shade in VerticesShades)
-                mesh.VerticesShades.Add(shade);
-
-            foreach (var poly in Polys)
-            {
-                var newPoly = new WadPolygon(poly.Shape);
-
-                newPoly.Indices.AddRange(poly.Indices.ToArray());
-                newPoly.Texture = poly.Texture;
-                newPoly.ShineStrength = poly.ShineStrength;
-
-                mesh.Polys.Add(newPoly);
-            }
-
-            mesh.UpdateHash();
-
+            var mesh = (WadMesh)MemberwiseClone();
+            mesh.VerticesPositions = new List<Vector3>(VerticesPositions);
+            mesh.VerticesNormals = new List<Vector3>(VerticesNormals);
+            mesh.VerticesShades = new List<short>(VerticesShades);
+            mesh.Polys = new List<WadPolygon>(Polys);
             return mesh;
         }
 
@@ -82,58 +35,45 @@ namespace TombLib.Wad
             using (var ms = new MemoryStream())
             {
                 var writer = new BinaryWriterEx(ms);
-                writer.Write(_boundingSphere.Center.X);
-                writer.Write(_boundingSphere.Center.Y);
-                writer.Write(_boundingSphere.Center.Z);
-                writer.Write(_boundingSphere.Radius);
+                writer.Write(BoundingSphere.Center.X);
+                writer.Write(BoundingSphere.Center.Y);
+                writer.Write(BoundingSphere.Center.Z);
+                writer.Write(BoundingSphere.Radius);
 
-                int numVertices = _verticesPositions.Count;
+                int numVertices = VerticesPositions.Count;
                 writer.Write(numVertices);
 
-                for (int i = 0; i < _verticesPositions.Count; i++)
-                {
-                    writer.Write(_verticesPositions[i].X);
-                    writer.Write(_verticesPositions[i].Y);
-                    writer.Write(_verticesPositions[i].Z);
-                }
+                for (int i = 0; i < VerticesPositions.Count; i++)
+                    writer.Write(VerticesPositions[i]);
 
-                if (_verticesNormals.Count > 0)
-                {
-                    for (int i = 0; i < _verticesNormals.Count; i++)
-                    {
-                        writer.Write(_verticesNormals[i].X);
-                        writer.Write(_verticesNormals[i].Y);
-                        writer.Write(_verticesNormals[i].Z);
-                    }
-                }
+                if (VerticesNormals.Count > 0)
+                    for (int i = 0; i < VerticesNormals.Count; i++)
+                        writer.Write(VerticesNormals[i]);
 
-                if (_verticesShades.Count > 0)
-                {
-                    for (int i = 0; i < _verticesShades.Count; i++)
-                    {
-                        writer.Write(_verticesShades[i]);
-                    }
-                }
+                if (VerticesShades.Count > 0)
+                    for (int i = 0; i < VerticesShades.Count; i++)
+                        writer.Write(VerticesShades[i]);
 
-                int numPolygons = _polygons.Count;
-
-                for (int i = 0; i < _polygons.Count; i++)
+                int numPolygons = Polys.Count;
+                writer.Write(numPolygons);
+                for (int i = 0; i < Polys.Count; i++)
                 {
-                    writer.Write((short)_polygons[i].Shape);
-                    writer.Write(_polygons[i].Indices[0]);
-                    writer.Write(_polygons[i].Indices[1]);
-                    writer.Write(_polygons[i].Indices[2]);
-                    if (_polygons[i].Shape == WadPolygonShape.Quad)
-                        writer.Write(_polygons[i].Indices[3]);
-                    writer.Write(((WadTexture)(_polygons[i].Texture.Texture)).Hash.Hash1);
-                    writer.Write(_polygons[i].Texture.DoubleSided);
-                    writer.Write((short)_polygons[i].Texture.BlendMode);
-                    writer.Write(_polygons[i].Texture.TexCoord0);
-                    writer.Write(_polygons[i].Texture.TexCoord1);
-                    writer.Write(_polygons[i].Texture.TexCoord2);
-                    if (_polygons[i].Shape == WadPolygonShape.Quad)
-                        writer.Write(_polygons[i].Texture.TexCoord3);
-                    writer.Write(_polygons[i].ShineStrength);
+                    WadPolygon poly = Polys[i];
+                    writer.Write((ushort)Polys[i].Shape);
+                    writer.Write(Polys[i].Index0);
+                    writer.Write(Polys[i].Index1);
+                    writer.Write(Polys[i].Index2);
+                    if (Polys[i].Shape == WadPolygonShape.Quad)
+                        writer.Write(Polys[i].Index3);
+                    writer.Write(((WadTexture)(Polys[i].Texture.Texture)).Hash);
+                    writer.Write(Polys[i].Texture.DoubleSided);
+                    writer.Write((short)Polys[i].Texture.BlendMode);
+                    writer.Write(Polys[i].Texture.TexCoord0);
+                    writer.Write(Polys[i].Texture.TexCoord1);
+                    writer.Write(Polys[i].Texture.TexCoord2);
+                    if (Polys[i].Shape == WadPolygonShape.Quad)
+                        writer.Write(Polys[i].Texture.TexCoord3);
+                    writer.Write(Polys[i].ShineStrength);
                 }
 
                 return ms.ToArray();
@@ -142,14 +82,47 @@ namespace TombLib.Wad
 
         public Hash UpdateHash()
         {
-            _hash = Hash.FromByteArray(this.ToByteArray());
-            return _hash;
+            return Hash = Hash.FromByteArray(this.ToByteArray());
         }
 
-        public bool Equals(WadMesh other)
+        public BoundingBox CalculateBoundingBox(Matrix4x4 transform)
         {
-            return (Hash == other.Hash);
+            Vector3 min = new Vector3(float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue);
+            foreach (Vector3 oldVertex in VerticesPositions)
+            {
+                var transformedVertex = MathC.HomogenousTransform(oldVertex, transform);
+                min = Vector3.Min(transformedVertex, min);
+                max = Vector3.Min(transformedVertex, max);
+            }
+            return new BoundingBox(min, max);
         }
+
+        public BoundingBox CalculateBoundingBox()
+        {
+            Vector3 min = new Vector3(float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue);
+            foreach (Vector3 oldVertex in VerticesPositions)
+            {
+                min = Vector3.Min(oldVertex, min);
+                max = Vector3.Min(oldVertex, max);
+            }
+            return new BoundingBox(min, max);
+        }
+
+        public BoundingSphere CalculateBoundingSphere()
+        {
+            BoundingBox boundingBox = CalculateBoundingBox();
+            return new BoundingSphere(
+                (boundingBox.Maximum + boundingBox.Minimum) * 0.5f,
+                Vector3.Distance(boundingBox.Minimum, boundingBox.Maximum) * 0.5f);
+        }
+
+        public static bool operator ==(WadMesh first, WadMesh second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : (first.Hash == second.Hash));
+        public static bool operator !=(WadMesh first, WadMesh second) => !(first == second);
+        public bool Equals(WadMesh other) => (Hash == other.Hash);
+        public override bool Equals(object other) => (other is WadMesh) && (Hash == ((WadMesh)other).Hash);
+        public override int GetHashCode() => Hash.GetHashCode();
     }
 }
 
