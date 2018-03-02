@@ -42,6 +42,11 @@ namespace TombLib.Utils
         }
     }
 
+    public interface TextureHashed
+    {
+        Hash Hash { get; }
+    }
+
     public enum BlendMode : ushort
     {
         Normal = 0,
@@ -54,7 +59,7 @@ namespace TombLib.Utils
         // We probably want support for those in the future.
     }
 
-    public struct TextureArea
+    public struct TextureArea : IEquatable<TextureArea>
     {
         public static readonly TextureArea None;
 
@@ -78,20 +83,10 @@ namespace TombLib.Utils
                 (first.DoubleSided == second.DoubleSided);
         }
 
-        public static bool operator !=(TextureArea first, TextureArea second)
-        {
-            return !(first == second);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this == (TextureArea)obj;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public static bool operator !=(TextureArea first, TextureArea second) => !(first == second);
+        public bool Equals(TextureArea other) => this == other;
+        public override bool Equals(object other) => (other is TextureArea) && this == (TextureArea)other;
+        public override int GetHashCode() => base.GetHashCode();
 
         public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
         public bool TextureIsInvisble => (Texture == null) || (Texture == TextureInvisible.Instance) || (Texture.IsUnavailable);

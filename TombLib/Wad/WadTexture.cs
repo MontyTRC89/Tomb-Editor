@@ -9,59 +9,34 @@ using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class WadTexture : Texture, IRenderableObject, IEquatable<WadTexture>
+    public class WadTexture : Texture, IRenderableObject, IEquatable<WadTexture>, TextureHashed
     {
-        private Hash _hash;
+        public Hash Hash { get; }
 
-        public override bool ReplaceMagentaWithTransparency => true;
-
-        public new ImageC Image
+        public WadTexture(ImageC image)
         {
-            get { return base.Image; }
-            set { base.Image = value; }
-        }
+            Image = image;
 
-        public override Texture Clone()
-        {
-            var texture = new WadTexture { Image = Image };
-            texture.UpdateHash();
-
-            return texture;
-        }
-
-        public byte[] ToByteArray()
-        {
             using (var ms = new MemoryStream())
             {
                 var writer = new BinaryWriter(ms);
-                writer.Write(Size.X);
-                writer.Write(Size.Y);
-
+                writer.Write(Image.Size.X);
+                writer.Write(Image.Size.Y);
                 Image.WriteToStreamRaw(ms);
-                return ms.ToArray();
+                Hash = Hash.FromByteArray(ms.ToArray());
             }
         }
 
-        public Hash UpdateHash()
-        {
-            _hash = Hash.FromByteArray(this.ToByteArray());
-            return _hash;
-        }
+        public override Texture Clone() => this;
 
-        public bool Equals(WadTexture other)
-        {
-            return (Hash == other.Hash);
-        }
-
-        public Hash Hash { get { return _hash; } }
-        public VectorInt2 Size { get { return Image.Size; } }
-        public int Width { get { return Image.Width; } }
-        public int Height { get { return Image.Height; } }
+        public static bool operator==(WadTexture first, WadTexture second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : (first.Hash == second.Hash));
+        public static bool operator!=(WadTexture first, WadTexture second) => !(first == second);
+        public bool Equals(WadTexture other) => (Hash == other.Hash);
+        public override bool Equals(object other) => (other is WadTexture) && (Hash == ((WadTexture)other).Hash);
+        public override int GetHashCode() => Hash.GetHashCode();
 
         // Helper data
+        // TODO Remove this from here.
         public VectorInt2 PositionInTextureAtlas { get; set; }
-        public VectorInt2 PositionInPackedTextureMap { get; set; }
-        public VectorInt2 PositionInOriginalTexturePage { get; set; }
-        public ushort Tile { get; set; }
     }
 }

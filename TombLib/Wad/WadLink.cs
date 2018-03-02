@@ -9,21 +9,13 @@ namespace TombLib.Wad
 {
     public struct WadLink
     {
-        public WadLinkOpcode Opcode { get { return _opcode; } }
-        public Vector3 Offset { get { return _offset; } set { _offset = value; } }
-
-        private WadLinkOpcode _opcode;
-        private Vector3 _offset;
+        public WadLinkOpcode Opcode { get; }
+        public Vector3 Offset { get; set; }
 
         public WadLink(WadLinkOpcode opcode, Vector3 offset)
         {
-            _opcode = opcode;
-            _offset = offset;
-        }
-
-        public WadLink Clone()
-        {
-            return new WadLink(Opcode, new Vector3(Offset.X, Offset.Y, Offset.Z));
+            Opcode = opcode;
+            Offset = offset;
         }
     }
 }

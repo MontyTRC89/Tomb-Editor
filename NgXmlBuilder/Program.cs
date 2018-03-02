@@ -44,7 +44,7 @@ namespace NgXmlBuilder
 
     class Program
     {
-        private const string outPath = "..\\TombEditor\\Editor\\Misc\\NgCatalog.xml";
+        private const string outPath = "..\\TombLib\\Catalogs\\NgCatalog.xml";
 
         static void Main(string[] args)
         {

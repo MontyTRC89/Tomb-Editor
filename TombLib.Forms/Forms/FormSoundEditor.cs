@@ -10,9 +10,7 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TombLib.Sounds;
 using TombLib.Wad;
-using TombLib.Wad.Catalog;
 
 namespace TombLib.Forms
 {
@@ -39,10 +37,11 @@ namespace TombLib.Forms
 
         private void UpdateStatistics()
         {
-            string message = "Sound Infos: " + _wad.Sounds.Count + " of " +
-                             _wad.SoundMapSize + "    " +
-                             "Embedded WAV samples: " + _wad.Samples.Count;
-            labelStatus.Text = message;
+            // We don't actually know how many sound infos there are going to be in the final level
+            // Maybe some sounds won't be used
+            var soundInfos = _wad.SoundInfosUnique;
+            var samples = new HashSet<WadSample>(soundInfos.SelectMany(soundInfo => soundInfo.Data.Samples));
+            labelStatus.Text = "Sound Infos: " + soundInfos + " Embedded WAV samples: " + samples.Count;
         }
 
         private void ReloadSoundInfos()
@@ -50,14 +49,14 @@ namespace TombLib.Forms
             lstSoundInfos.Items.Clear();
             _sounds = new Dictionary<ushort, WadSoundInfo>();
 
-            var soundMapSize = SoundsCatalog.GetSoundMapSize(_wad.Version, false);
+            /*var soundMapSize = SoundsCatalog.GetSoundMapSize(_wad.Version, false);
             for (var i = 0; i < soundMapSize; i++)
             {
-                /*ushort soundId = (ushort)i;
+                ushort soundId = (ushort)i;
 
-                if (_wad.SoundInfo.ContainsKey(soundId))
+                if (_wad.SoundInfos.ContainsKey(soundId))
                 {
-                    var sound = _wad.SoundInfo[soundId];
+                    var sound = _wad.SoundInfos[soundId];
                     sound.Enabled = true;
                     _sounds.Add(soundId, sound);
                 }
@@ -79,20 +78,20 @@ namespace TombLib.Forms
                         info.Loop = WadSoundLoopType.R;
                     foreach (var sampleName in soundCatalog.Samples)
                         info.Samples.Add(LoadSample())
-                }*/
+                }
             }
 
-            foreach (var soundInfo in _wad.Sounds)
+            foreach (var soundInfo in _wad.SoundInfos)
             {
                 var item = new DarkUI.Controls.DarkListItem(soundInfo.Key + ": " + soundInfo.Value.Name);
                 item.Tag = soundInfo.Key;
                 lstSoundInfos.Items.Add(item);
-            }
+            }*/
 
             UpdateStatistics();
         }
 
-        private void butAddNewSound_Click(object sender, EventArgs e)
+        /*private void butAddNewSound_Click(object sender, EventArgs e)
         {
             ushort newSoundId = _wad.GetFirstFreeSoundSlot();
             if (newSoundId == ushort.MaxValue)
@@ -124,7 +123,7 @@ namespace TombLib.Forms
 
             // Get the selected sound info
             var item = lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]];
-            var soundInfo = _wad.Sounds[(ushort)item.Tag];
+            var soundInfo = _wad.SoundInfos[(ushort)item.Tag];
 
             // Fill the UI
             tbName.Text = soundInfo.Name;
@@ -141,7 +140,7 @@ namespace TombLib.Forms
             lstWaves.Items.Clear();
             foreach (var wave in soundInfo.Samples)
             {
-                var itemWave = new DarkUI.Controls.DarkListItem(wave.Name); 
+                var itemWave = new DarkUI.Controls.DarkListItem(wave.Name);
                 itemWave.Tag = wave;
                 lstWaves.Items.Add(itemWave);
             }
@@ -155,7 +154,7 @@ namespace TombLib.Forms
         {
             // I can't overwrite other sounds
             if (comboId.SelectedIndex != _currentSound &&
-                _wad.Sounds.ContainsKey((ushort)comboId.SelectedIndex))
+                _wad.SoundInfos.ContainsKey((ushort)comboId.SelectedIndex))
             {
                 DarkMessageBox.Show(this, "The selected slot is already assigned to another sound", "Error", MessageBoxIcon.Error);
                 return;
@@ -199,7 +198,7 @@ namespace TombLib.Forms
             if (oldSoundId == -1)
                 soundInfo = new WadSoundInfo();
             else
-                soundInfo = _wad.Sounds[(ushort)oldSoundId];
+                soundInfo = _wad.SoundInfos[(ushort)oldSoundId];
 
             // Save changes
             soundInfo.Chance = Byte.Parse(tbChance.Text);
@@ -218,7 +217,7 @@ namespace TombLib.Forms
 
             if (oldSoundId == -1)
             {
-                _wad.Sounds.Add(newSoundId, soundInfo);
+                _wad.SoundInfos.Add(newSoundId, soundInfo);
 
                 ReloadSoundInfos();
             }
@@ -226,8 +225,8 @@ namespace TombLib.Forms
             {
                 if (oldSoundId != newSoundId)
                 {
-                    _wad.Sounds.Remove((ushort)oldSoundId);
-                    _wad.Sounds.Add(newSoundId, soundInfo);
+                    _wad.SoundInfos.Remove((ushort)oldSoundId);
+                    _wad.SoundInfos.Add(newSoundId, soundInfo);
 
                     ReloadSoundInfos();
                 }
@@ -294,7 +293,7 @@ namespace TombLib.Forms
             if (lstSoundInfos.SelectedIndices.Count == 0) return;
 
             var item = lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]];
-            var soundInfo = _wad.Sounds[(ushort)item.Tag];
+            var soundInfo = _wad.SoundInfos[(ushort)item.Tag];
             var soundIdToRemove = (ushort)item.Tag;
 
             // Get all moveables that are using this sound
@@ -328,7 +327,15 @@ namespace TombLib.Forms
 
             ReloadSoundInfos();
             _currentSound = -1;
-        }
+        }*/
+
+        private void butSaveChanges_Click(object sender, EventArgs e) { }
+        private void lstSoundInfos_MouseClick(object sender, MouseEventArgs e) { }
+        private void butAddNewSound_Click(object sender, EventArgs e) { }
+        private void butAddNewWave_Click(object sender, EventArgs e) { }
+        private void butDeleteWave_Click(object sender, EventArgs e) { }
+        private void butPlaySound_Click(object sender, EventArgs e) { }
+        private void butDeleteSound_Click(object sender, EventArgs e) { }
 
         private void butClose_Click(object sender, EventArgs e)
         {

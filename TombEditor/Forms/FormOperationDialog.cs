@@ -174,7 +174,8 @@ namespace TombEditor
             lstLog.SelectionBackColor = Color.Tomato;
             lstLog.AppendText("Forcefully stopping process.\n");
             _thread.Abort();
-            _thread.Join();
+            while ((_thread.ThreadState & (ThreadState.Stopped | ThreadState.Aborted)) != 0)
+                Thread.Sleep(5);
         }
     }
 }

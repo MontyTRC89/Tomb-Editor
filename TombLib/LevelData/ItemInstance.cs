@@ -1,27 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
     public abstract class ItemInstance : PositionAndScriptBasedObjectInstance, IRotateableY
     {
-        // Don't use a reference here because the loaded Wad might not
-        // contain each required object. Additionally the loaded Wads
-        // can change. It would be unnecesary difficult to update all this references.
-        public uint WadObjectId { get; set; }
-
-        public WadTombRaiderVersion WadVersion
-        {
-            get
-            {
-                return (Room != null && Room.Level != null && Room.Level.Wad != null ?
-                        Room.Level.Wad.Version :
-                        WadTombRaiderVersion.TR4);
-            }
-        }
-
         private float _rotation;
         /// <summary> Rotation in radians in the interval [0, 360). The value is range reduced. </summary>
         public float RotationY
@@ -50,51 +36,67 @@ namespace TombLib.LevelData
         public static ItemInstance FromItemType(ItemType item)
         {
             if (item.IsStatic)
-                return new StaticInstance() { WadObjectId = item.Id };
+                return new StaticInstance() { WadObjectId = item.StaticId };
             else
-                return new MoveableInstance() { WadObjectId = item.Id };
+                return new MoveableInstance() { WadObjectId = item.MoveableId };
         }
     }
 
     public struct ItemType
     {
-        public bool IsStatic { get; set; }
-        public uint Id { get; set; }
-        public WadTombRaiderVersion GameVersion { get; set; }
+        public bool IsStatic { get; }
+        public WadMoveableId MoveableId { get; }
+        public WadStaticId StaticId { get; }
+        private WadGameVersion _wadGameVersion;
 
-        public ItemType(bool isStatic, uint id, WadTombRaiderVersion gameVersion)
+        public ItemType(WadStaticId staticId, WadGameVersion wadGameVersion = WadGameVersion.TR4_TRNG)
         {
-            IsStatic = isStatic;
-            Id = id;
-            GameVersion = gameVersion;
+            IsStatic = true;
+            MoveableId = new WadMoveableId();
+            _wadGameVersion = wadGameVersion;
+            StaticId = staticId;
         }
+
+        public ItemType(WadMoveableId moveableId, WadGameVersion wadGameVersion = WadGameVersion.TR4_TRNG)
+        {
+            IsStatic = false;
+            MoveableId = moveableId;
+            _wadGameVersion = wadGameVersion;
+            StaticId = new WadStaticId();
+        }
+
+        public ItemType(WadStaticId staticId, LevelSettings levelSettings) // wad can be null
+            : this(staticId, levelSettings?.WadGameVersion ?? WadGameVersion.TR4_TRNG)
+        { }
+
+        public ItemType(WadMoveableId moveableId, LevelSettings levelSettings) // wad can be null
+            : this(moveableId, levelSettings?.WadGameVersion ?? WadGameVersion.TR4_TRNG)
+        { }
 
         public static bool operator ==(ItemType first, ItemType second)
         {
-            return (first.IsStatic == second.IsStatic) && (first.Id == second.Id);
+            // Don't compare _gameVersion because nobody really cares about that, it's only there to make ToString work.
+            return (first.IsStatic == second.IsStatic) && (first.MoveableId == second.MoveableId) && (first.StaticId == second.StaticId);
         }
 
-        public static bool operator !=(ItemType first, ItemType second)
-        {
-            return (first.IsStatic != second.IsStatic) || (first.Id != second.Id);
-        }
+        public static bool operator !=(ItemType first, ItemType second) => !(first == second);
 
-        public override bool Equals(object obj)
-        {
-            return this == (ItemType)obj;
-        }
+        public override bool Equals(object other) => (other is ItemType) && this == (ItemType)other;
 
         public override int GetHashCode()
         {
-            return unchecked((int)Id) ^ (IsStatic ? unchecked((int)0xdcbc635b) : 0);
+            int hashCode = IsStatic ? StaticId.GetHashCode() : MoveableId.GetHashCode();
+            if (IsStatic)
+                hashCode ^= unchecked((int)0xdcbc635b);
+            return hashCode;
         }
 
         public override string ToString()
         {
             if (IsStatic)
-                return TombLib.Wad.Catalog.TrCatalog.GetStaticName(GameVersion, Id);
+                return StaticId.ToString(_wadGameVersion);
             else
-                return TombLib.Wad.Catalog.TrCatalog.GetMoveableName(GameVersion, Id);
+                return MoveableId.ToString(_wadGameVersion);
         }
     };
 

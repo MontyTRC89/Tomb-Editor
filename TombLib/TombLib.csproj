@@ -146,6 +146,7 @@
     <Compile Include="LevelData\Compilers\Tr5.cs" />
     <Compile Include="LevelData\Compilers\Util\ObjectTextureManager.cs" />
     <Compile Include="LevelData\Compilers\Util\ObjectTextureManagerWithAnimations.cs" />
+    <Compile Include="LevelData\Compilers\Util\SoundManager.cs" />
     <Compile Include="LevelData\Compilers\Util\TextureAllocator.cs" />
     <Compile Include="LevelData\Compilers\Wad.cs" />
     <Compile Include="LevelData\EditorVertex.cs" />
@@ -206,8 +207,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ResourcesC.resx</DependentUpon>
     </Compile>
-    <Compile Include="Sounds\SoundCatalogInfo.cs" />
-    <Compile Include="Sounds\SoundsCatalog.cs" />
     <Compile Include="Utils\Cache.cs" />
     <Compile Include="Utils\CollectionUtils.cs" />
     <Compile Include="Utils\Collision.cs" />
@@ -237,6 +236,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\IProgressReporter.cs" />
     <Compile Include="Utils\ConservativeRasterizer.cs" />
+    <Compile Include="Utils\Logging.cs" />
     <Compile Include="Utils\PathC.cs" />
     <Compile Include="Utils\PolygonFunctions.cs" />
     <Compile Include="Utils\RectTransformation.cs" />
@@ -248,16 +248,17 @@
     <Compile Include="VectorInt2.cs" />
     <Compile Include="VectorInt3.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
+    <Compile Include="Wad\IWadObject.cs" />
     <Compile Include="Wad\TrLevels\Enumerations.cs" />
     <Compile Include="Wad\TrLevels\Structs.cs" />
     <Compile Include="Wad\TrLevels\TrLevel.cs" />
     <Compile Include="Wad\TrLevels\TrLevelOperations.cs" />
-    <Compile Include="Wad\Wad2Actions.cs" />
     <Compile Include="Wad\Wad2Chunks.cs" />
     <Compile Include="Wad\Wad2Loader.cs" />
     <Compile Include="Wad\Wad2Writer.cs" />
     <Compile Include="Wad\WadAnimCommand.cs" />
     <Compile Include="Wad\Tr4Wad\Tr4WadOperations.cs" />
+    <Compile Include="Wad\WadFixedSoundInfo.cs" />
     <Compile Include="Wad\WadSample.cs" />
     <Compile Include="Wad\WadSoundInfo.cs" />
     <Compile Include="Wad\WadSprite.cs" />
@@ -265,7 +266,6 @@
     <Compile Include="Wad\Enumerations.cs" />
     <Compile Include="Wad\Tr4Wad\Tr4Wad.cs" />
     <Compile Include="Wad\Wad2.cs" />
-    <Compile Include="Wad\WadObject.cs" />
     <Compile Include="Wad\WadTexture.cs" />
     <Compile Include="Wad\WadAnimation.cs" />
     <Compile Include="Wad\WadAnimDispatch.cs" />
@@ -285,6 +285,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourcesC\Extra.Tr5.pc.png" />
+    <None Include="ResourcesC\font.bin" />
     <None Include="ResourcesC\Font.pc.png" />
     <None Include="ResourcesC\pcsky.raw.png" />
   </ItemGroup>
@@ -293,6 +294,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcesC.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Catalogs\TrCatalog.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Catalogs\NgCatalog.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

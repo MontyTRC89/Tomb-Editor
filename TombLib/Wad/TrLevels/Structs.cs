@@ -60,9 +60,11 @@ namespace TombLib.Wad.TrLevels
             return this == other;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object other)
         {
-            return this == (tr_vertex)obj;
+            if (!(other is tr_vertex))
+                return false;
+            return this == (tr_vertex)other;
         }
 
         public override int GetHashCode()
@@ -74,16 +76,19 @@ namespace TombLib.Wad.TrLevels
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct tr_face4
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public ushort[] Vertices;
+        public ushort Index0;
+        public ushort Index1;
+        public ushort Index2;
+        public ushort Index3;
         public ushort Texture;
         public ushort LightingEffect;
 
         public void Write(BinaryWriterEx writer)
         {
-            writer.Write(Vertices[0]);
-            writer.Write(Vertices[1]);
-            writer.Write(Vertices[2]);
-            writer.Write(Vertices[3]);
+            writer.Write(Index0);
+            writer.Write(Index1);
+            writer.Write(Index2);
+            writer.Write(Index3);
             writer.Write(Texture);
         }
     }
@@ -91,15 +96,17 @@ namespace TombLib.Wad.TrLevels
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct tr_face3
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public ushort[] Vertices;
+        public ushort Index0;
+        public ushort Index1;
+        public ushort Index2;
         public ushort Texture;
         public ushort LightingEffect;
 
         public void Write(BinaryWriterEx writer)
         {
-            writer.Write(Vertices[0]);
-            writer.Write(Vertices[1]);
-            writer.Write(Vertices[2]);
+            writer.Write(Index0);
+            writer.Write(Index1);
+            writer.Write(Index2);
             writer.Write(Texture);
         }
     }
@@ -175,9 +182,11 @@ namespace TombLib.Wad.TrLevels
             return this == other;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object other)
         {
-            return this == (tr_room_vertex)obj;
+            if (!(other is tr_room_vertex))
+                return false;
+            return this == (tr_room_vertex)other;
         }
 
         public override int GetHashCode()
@@ -349,10 +358,8 @@ namespace TombLib.Wad.TrLevels
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct tr_object_texture_vert
     {
-        public byte Xc;
-        public byte Xp;
-        public byte Yc;
-        public byte Yp;
+        public ushort X;
+        public ushort Y;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

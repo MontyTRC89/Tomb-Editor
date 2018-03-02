@@ -1,13 +1,16 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor", "TombEditor\TombEditor.csproj", "{330CCD5E-D061-4C40-B568-BF367213C525}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib", "TombLib\TombLib.csproj", "{A0421DCD-80D1-44D8-8243-6A33F83A692C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WadTool", "WadTool\WadTool.csproj", "{FA212817-73AF-453A-9F34-A59BEABFF916}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EB61DFAC-51A6-44E3-869C-9BBDE830A40E} = {EB61DFAC-51A6-44E3-869C-9BBDE830A40E}
+		{A0421DCD-80D1-44D8-8243-6A33F83A692C} = {A0421DCD-80D1-44D8-8243-6A33F83A692C}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DarkUI", "DarkUI", "{5FED724C-4009-411F-BA19-FEC3642B956D}"
 EndProject

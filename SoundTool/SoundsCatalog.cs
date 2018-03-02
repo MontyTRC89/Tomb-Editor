@@ -10,23 +10,23 @@ using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.Wad.TrLevels;
 
-namespace TombLib.Sounds
+namespace SoundTool
 {
     public class SoundsCatalog
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static Dictionary<WadTombRaiderVersion, SortedDictionary<ushort, SoundCatalogInfo>> _catalog = new Dictionary<WadTombRaiderVersion, SortedDictionary<ushort, SoundCatalogInfo>>();
+        private static Dictionary<WadGameVersion, SortedDictionary<ushort, SoundCatalogInfo>> _catalog = new Dictionary<WadGameVersion, SortedDictionary<ushort, SoundCatalogInfo>>();
 
         public static void LoadAllCatalogsFromXml(string path)
         {
-            //LoadCatalog(path, WadTombRaiderVersion.TR1);
-            LoadCatalogFromXml(path + "\\TR2\\Sounds.xml", WadTombRaiderVersion.TR2);
-            LoadCatalogFromXml(path + "\\TR3\\Sounds.xml", WadTombRaiderVersion.TR3);
-            LoadCatalogFromXml(path + "\\TR4\\Sounds.xml", WadTombRaiderVersion.TR4);
-            LoadCatalogFromXml(path + "\\TR5\\Sounds.xml", WadTombRaiderVersion.TR5);
+            //LoadCatalog(path, WadGameVersion.TR1);
+            LoadCatalogFromXml(path + "\\TR2\\Sounds.xml", WadGameVersion.TR2);
+            LoadCatalogFromXml(path + "\\TR3\\Sounds.xml", WadGameVersion.TR3);
+            LoadCatalogFromXml(path + "\\TR4\\Sounds.xml", WadGameVersion.TR4);
+            LoadCatalogFromXml(path + "\\TR5\\Sounds.xml", WadGameVersion.TR5);
         }
 
-        public static bool LoadCatalogFromXml(string fileName, WadTombRaiderVersion version)
+        public static bool LoadCatalogFromXml(string fileName, WadGameVersion version)
         {
             var catalog = LoadCatalogFromXml(fileName);
             if (catalog == null)
@@ -102,7 +102,7 @@ namespace TombLib.Sounds
             return dictionary;
         }
 
-        public static bool SaveToXml(string fileName, WadTombRaiderVersion version)
+        public static bool SaveToXml(string fileName, WadGameVersion version)
         {
             return SaveToXml(fileName, _catalog[version]);
         }
@@ -160,7 +160,7 @@ namespace TombLib.Sounds
             return true;
         }
 
-        public static SoundCatalogInfo GetSound(WadTombRaiderVersion version, uint id)
+        public static SoundCatalogInfo GetSound(WadGameVersion version, uint id)
         {
             if (!_catalog.ContainsKey(version))
                 return null;
@@ -169,28 +169,28 @@ namespace TombLib.Sounds
             return _catalog[version][(ushort)id];
         }
 
-        public static int GetSoundMapSize(WadTombRaiderVersion version, bool isNg)
+        public static int GetSoundMapSize(WadGameVersion version, bool isNg)
         {
             switch (version)
             {
-                case WadTombRaiderVersion.TR1:
+                case WadGameVersion.TR1:
                     return 256;
-                case WadTombRaiderVersion.TR2:
-                case WadTombRaiderVersion.TR3:
+                case WadGameVersion.TR2:
+                case WadGameVersion.TR3:
                     return 370;
-                case WadTombRaiderVersion.TR4:
+                case WadGameVersion.TR4:
                     return (isNg ? 4096 : 370);
                 default:
                     return 450;
             }
         }
 
-        public static SortedDictionary<ushort, SoundCatalogInfo> GetAllSounds(WadTombRaiderVersion version)
+        public static SortedDictionary<ushort, SoundCatalogInfo> GetAllSounds(WadGameVersion version)
         {
             return _catalog[version];
         }
 
-        public static bool LoadCatalogFromTxt(string fileName, WadTombRaiderVersion version)
+        public static bool LoadCatalogFromTxt(string fileName, WadGameVersion version)
         {
             var catalog = LoadCatalogFromTxt(fileName);
             if (catalog == null)
@@ -395,7 +395,7 @@ namespace TombLib.Sounds
                         var newInfo = new SoundCatalogInfo();
 
                         // Fill the new sound info
-                        newInfo.Name = TrCatalog.GetSoundName(WadTombRaiderVersion.TR2, (uint)i).Replace(" ", "_").ToUpper().Replace("/", "_")
+                        newInfo.Name = TrCatalog.GetSoundName(WadGameVersion.TR2, (uint)i).Replace(" ", "_").ToUpper().Replace("/", "_")
                             .Replace(";", "_").Replace("(", "").Replace(")", "").Replace("?", "").Replace("!", "")
                             .Replace("-", "_").Replace(":", "").Replace("'", "");
                         newInfo.Name = newInfo.Name.Replace("__", "_");

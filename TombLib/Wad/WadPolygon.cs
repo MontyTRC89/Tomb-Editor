@@ -8,17 +8,14 @@ using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class WadPolygon
+    public struct WadPolygon
     {
-        public WadPolygonShape Shape { get; }
-        public List<int> Indices { get; } = new List<int>();
-        public TextureArea Texture { get; set; }
-        public byte ShineStrength { get; set; }
-        public BlendMode BlendMode { get; set; }
-
-        public WadPolygon(WadPolygonShape shape)
-        {
-            Shape = shape;
-        }
+        public WadPolygonShape Shape;
+        public int Index0;
+        public int Index1;
+        public int Index2;
+        public int Index3;
+        public TextureArea Texture;
+        public byte ShineStrength;
     }
 }

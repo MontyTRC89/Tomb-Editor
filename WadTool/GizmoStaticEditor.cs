@@ -10,15 +10,15 @@ using WadTool.Controls;
 
 namespace WadTool
 {
-    public class GizmoStaticMeshEditor : BaseGizmo
+    public class GizmoStaticEditor : BaseGizmo
     {
-        private WadToolClass _tool;
-        private PanelRenderingStaticMeshEditor _control;
+        private Configuration _configuration;
+        private PanelRenderingStaticEditor _control;
 
-        public GizmoStaticMeshEditor(GraphicsDevice device, Effect effect, PanelRenderingStaticMeshEditor control)
+        public GizmoStaticEditor(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingStaticEditor control)
             : base(device, effect)
         {
-            _tool = WadToolClass.Instance;
+            _configuration = configuration;
             _control = control;
         }
 
@@ -44,11 +44,11 @@ namespace WadTool
         protected override float RotationZ => _control.StaticRotation.Z;
         protected override float Scale => _control.StaticScale;
 
-        protected override float CentreCubeSize => _tool.Configuration.Gizmo_CenterCubeSize;
-        protected override float TranslationConeSize => _tool.Configuration.Gizmo_TranslationConeSize;
-        protected override float Size => _tool.Configuration.Gizmo_Size;
-        protected override float ScaleCubeSize => _tool.Configuration.Gizmo_ScaleCubeSize;
-        protected override float LineThickness => _tool.Configuration.Gizmo_LineThickness;
+        protected override float CentreCubeSize => _configuration.Gizmo_CenterCubeSize;
+        protected override float TranslationConeSize => _configuration.Gizmo_TranslationConeSize;
+        protected override float Size => _configuration.Gizmo_Size;
+        protected override float ScaleCubeSize => _configuration.Gizmo_ScaleCubeSize;
+        protected override float LineThickness => _configuration.Gizmo_LineThickness;
 
         protected override bool SupportScale => true;
         protected override bool SupportTranslate => true;

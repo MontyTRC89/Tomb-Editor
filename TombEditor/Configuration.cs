@@ -257,14 +257,21 @@ namespace TombEditor
 
         public static Configuration LoadOrUseDefault(ICollection<LogEventInfo> log = null)
         {
+            string path = GetDefaultPath();
+            if (!File.Exists(path))
+            {
+                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
+                return new Configuration { FilePath = path };
+            }
+
             try
             {
                 return Load();
             }
             catch (Exception exc)
             {
-                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + GetDefaultPath() + "\"", null, exc));
-                return new Configuration { FilePath = GetDefaultPath() };
+                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
+                return new Configuration { FilePath = path };
             }
         }
     }

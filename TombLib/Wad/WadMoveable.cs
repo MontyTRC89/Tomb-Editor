@@ -7,49 +7,76 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
-    public class WadMoveable : WadObject
+    public struct WadMoveableId : IWadObjectId, IEquatable<WadMoveableId>, IComparable<WadMoveableId>, IComparable
     {
-        public List<WadMesh> Meshes {  get { return _meshes; } }
-        public List<WadLink> Links {  get { return _links; } }
-        public Vector3 Offset { get { return _offset; } set { _offset = value; } }
-        public List<WadAnimation> Animations { get { return _animations; } }
+        public uint TypeId;
 
-        private List<WadMesh> _meshes;
-        private List<WadLink> _links;
-        private Vector3 _offset;
-        private List<WadAnimation> _animations;
-
-        public WadMoveable(Wad2 wad)
-            : base (wad)
+        public WadMoveableId(uint objTypeId)
         {
-            _meshes = new List<WadMesh>();
-            _links = new List<WadLink>();
-            _animations = new List<WadAnimation>();
+            TypeId = objTypeId;
         }
 
-        public override string ToString()
+        public int CompareTo(WadMoveableId other) => TypeId.CompareTo(other.TypeId);
+        public int CompareTo(object other) => CompareTo((WadMoveableId)other);
+        public static bool operator <(WadMoveableId first, WadMoveableId second) => (first.TypeId < second.TypeId);
+        public static bool operator <=(WadMoveableId first, WadMoveableId second) => (first.TypeId <= second.TypeId);
+        public static bool operator >(WadMoveableId first, WadMoveableId second) => (first.TypeId > second.TypeId);
+        public static bool operator >=(WadMoveableId first, WadMoveableId second) => (first.TypeId >= second.TypeId);
+        public static bool operator ==(WadMoveableId first, WadMoveableId second) => (first.TypeId == second.TypeId);
+        public static bool operator !=(WadMoveableId first, WadMoveableId second) => !(first == second);
+        public bool Equals(WadMoveableId other) => this == other;
+        public override bool Equals(object other) => (other is WadMoveableId) && this == (WadMoveableId)other;
+        public override int GetHashCode() => unchecked((int)TypeId);
+
+        public string ToString(WadGameVersion gameVersion)
         {
-            return "(" + ObjectID + ") " + TrCatalog.GetMoveableName(Wad.Version, ObjectID);
+            return "(" + TypeId + ") " + TrCatalog.GetMoveableName(gameVersion, TypeId);
+        }
+        public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
+
+        public static WadMoveableId Lara = new WadMoveableId(0);
+        public static WadMoveableId LaraSkin = new WadMoveableId(8);
+        public static WadMoveableId SkyBox = new WadMoveableId(459);
+
+        public bool IsWaterfall(WadGameVersion gameVersion)
+        {
+            return ((gameVersion == WadGameVersion.TR4_TRNG && TypeId >= 423 && TypeId <= 425) ||
+                (gameVersion == WadGameVersion.TR5 && TypeId >= 410 && TypeId <= 415));
         }
 
-        public List<WadSoundInfo> GetSounds(Wad2 wad)
+        public bool IsAI(WadGameVersion gameVersion)
         {
-            var sounds = new List<WadSoundInfo>();
+            return TypeId >= 398 && TypeId <= 406;
+        }
+    }
 
-            foreach (var animation in Animations)
+    public class WadMoveable : IWadObject
+    {
+        public WadMoveableId Id { get; private set; }
+        //public string Name { get; set; }
+        public List<WadMesh> Meshes { get; } = new List<WadMesh>();
+        public List<WadLink> Links { get; } = new List<WadLink>();
+        public Vector3 Offset { get; set; }
+        public List<WadAnimation> Animations { get; } = new List<WadAnimation>();
+
+        public WadMoveable(WadMoveableId id)
+        {
+            Id = id;
+        }
+
+        public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
+        public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
+        IWadObjectId IWadObject.Id => Id;
+
+        public IEnumerable<WadSoundInfo> Sounds
+        {
+            get
             {
-                foreach (var command in animation.AnimCommands)
-                {
-                    ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                    if (wad.Sounds.ContainsKey(soundId))
-                    {
-                        if (!sounds.Contains(wad.Sounds[soundId]))
-                            sounds.Add(wad.Sounds[soundId]);
-                    }
-                }
+                foreach (var animation in Animations)
+                    foreach (var command in animation.AnimCommands)
+                        if (command.Type == WadAnimCommandType.PlaySound)
+                            yield return command.SoundInfo;
             }
-
-            return sounds;
         }
     }
 }

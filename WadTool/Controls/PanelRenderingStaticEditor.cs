@@ -1,6 +1,7 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -13,14 +14,20 @@ using TombLib.Wad;
 
 namespace WadTool.Controls
 {
-    public class PanelRenderingStaticMeshEditor : Panel
+    public class PanelRenderingStaticEditor : Panel
     {
-        public WadStatic StaticMesh { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public WadStatic Static { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawVisibilityBox { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawCollisionBox { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawGrid { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawGizmo { get; set; }
 
         public Matrix4x4 GizmoTransform
@@ -34,6 +41,7 @@ namespace WadTool.Controls
         }
 
         private GraphicsDevice _device;
+        private DeviceManager _deviceManager;
         private SwapChainGraphicsPresenter _presenter;
         private RasterizerState _rasterizerWireframe;
         private WadToolClass _tool;
@@ -41,7 +49,7 @@ namespace WadTool.Controls
         private float _lastX;
         private float _lastY;
         private SpriteBatch _spriteBatch;
-        private GizmoStaticMeshEditor _gizmo;
+        private GizmoStaticEditor _gizmo;
         private GeometricPrimitive _plane;
         private GeometricPrimitive _cube;
 
@@ -56,9 +64,11 @@ namespace WadTool.Controls
         private Buffer<SolidVertex> _vertexBufferVisibility;
         private Buffer<SolidVertex> _vertexBufferCollision;
 
-        public void InitializePanel(GraphicsDevice device)
+        public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
         {
-            _device = device;
+            _tool = tool;
+            _device = deviceManager.Device;
+            _deviceManager = deviceManager;
 
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
@@ -100,25 +110,22 @@ namespace WadTool.Controls
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
 
-            _tool = WadToolClass.Instance;
-            _spriteBatch = new SpriteBatch(_tool.Device);
-            _gizmo = new GizmoStaticMeshEditor(_tool.Device, _tool.Effects["Solid"], this);
-            _plane = GeometricPrimitive.GridPlane.New(_tool.Device, 8, 4);
-            _cube = GeometricPrimitive.LinesCube.New(_tool.Device, 1024.0f, 1024.0f, 1024.0f);
+            _spriteBatch = new SpriteBatch(_device);
+            _gizmo = new GizmoStaticEditor(_tool.Configuration, _device, _deviceManager.Effects["Solid"], this);
+            _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
+            _cube = GeometricPrimitive.LinesCube.New(_device, 1024.0f, 1024.0f, 1024.0f);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             if (_device == null || _presenter == null)
-                e.Graphics.FillRectangle(Brushes.White, new Rectangle(0, 0, ClientSize.Width, ClientSize.Height));
+                e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
+            // Don't paint the background
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_device == null || _presenter == null)
-                e.Graphics.FillRectangle(Brushes.White, new Rectangle(0, 0, ClientSize.Width, ClientSize.Height));
-            else
-                Draw();
+            Draw();
         }
 
         private Buffer<SolidVertex> GetVertexBufferFromBoundingBox(BoundingBox box)
@@ -142,7 +149,7 @@ namespace WadTool.Controls
                     p0, p1, p1, p2, p2, p3, p3, p0
             };
 
-            return Buffer<SolidVertex>.New(_tool.Device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
+            return Buffer<SolidVertex>.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
         }
 
         public void Draw()
@@ -161,13 +168,13 @@ namespace WadTool.Controls
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
 
-            Effect solidEffect = _tool.Effects["Solid"];
+            Effect solidEffect = _deviceManager.Effects["Solid"];
 
-            if (StaticMesh != null)
+            if (Static != null)
             {
-                var model = _tool.DestinationWad.DirectXStatics[StaticMesh.ObjectID];
+                var model = _tool.DestinationWad.DirectXStatics[Static.Id];
 
-                Effect mioEffect = _tool.Effects["StaticModel"];
+                Effect mioEffect = _deviceManager.Effects["StaticModel"];
 
                 var world = GizmoTransform;
 
@@ -202,7 +209,7 @@ namespace WadTool.Controls
                     if (DrawVisibilityBox)
                     {
                         if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
-                        _vertexBufferVisibility = GetVertexBufferFromBoundingBox(StaticMesh.VisibilityBox);
+                        _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Static.VisibilityBox);
 
                         _device.SetVertexBuffer(_vertexBufferVisibility);
                         _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
@@ -218,7 +225,7 @@ namespace WadTool.Controls
                     if (DrawCollisionBox)
                     {
                         if (_vertexBufferCollision != null) _vertexBufferCollision.Dispose();
-                        _vertexBufferCollision = GetVertexBufferFromBoundingBox(StaticMesh.CollisionBox);
+                        _vertexBufferCollision = GetVertexBufferFromBoundingBox(Static.CollisionBox);
 
                         _device.SetVertexBuffer(_vertexBufferCollision);
                         _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferCollision));
@@ -256,15 +263,15 @@ namespace WadTool.Controls
             // Draw debug strings
             _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
-            _spriteBatch.DrawString(_tool.Font,
+            _spriteBatch.DrawString(_deviceManager.Font,
                                     "Position: " + StaticPosition,
                                     new SharpDX.Vector2(0, 0),
                                     SharpDX.Color.White);
-            _spriteBatch.DrawString(_tool.Font,
+            _spriteBatch.DrawString(_deviceManager.Font,
                                     "Rotation: " + (StaticRotation.X * (180 / Math.PI)),
                                     new SharpDX.Vector2(0, 18),
                                     SharpDX.Color.White);
-            _spriteBatch.DrawString(_tool.Font,
+            _spriteBatch.DrawString(_deviceManager.Font,
                                     "Scale: " + StaticScale,
                                     new SharpDX.Vector2(0, 36),
                                     SharpDX.Color.White);
@@ -272,6 +279,16 @@ namespace WadTool.Controls
             _spriteBatch.End();
 
             _device.Present();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (_presenter != null)
+            {
+                _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
+                Invalidate();
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)

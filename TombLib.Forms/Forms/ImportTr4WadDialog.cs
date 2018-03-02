@@ -37,7 +37,7 @@ namespace TombLib.Forms
         {
             lstPaths.Items.Clear();
             foreach (var path in _dialogInfo.SoundPaths)
-                lstPaths.Items.Add(path);
+                lstPaths.Items.Add(Path.Combine(_dialogInfo.WadBasePath, path));
         }
 
         private void ReloadSamples()
@@ -45,7 +45,7 @@ namespace TombLib.Forms
             dgvSamples.Rows.Clear();
 
             foreach (var info in _dialogInfo.Samples)
-                dgvSamples.Rows.Add(info.Sample, info.Path, "Search", info.Found);
+                dgvSamples.Rows.Add(info.Name, info.FullPath, "Search", info.Found);
 
             UpdateStatus();
         }
@@ -142,7 +142,7 @@ namespace TombLib.Forms
                     dialog.Filter = "WAV sample (*.wav)|*.wav|All files (*.*)|*.*";
                     if (dialog.ShowDialog(this) == DialogResult.OK && File.Exists(dialog.FileName))
                     {
-                        _dialogInfo.Samples[e.RowIndex].Path = dialog.FileName;
+                        _dialogInfo.Samples[e.RowIndex].FullPath = dialog.FileName;
                         dgvSamples.Rows[e.RowIndex].Cells[1].Value = dialog.FileName;
                         dgvSamples.Rows[e.RowIndex].Cells[3].Value = true;
 

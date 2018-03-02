@@ -123,14 +123,16 @@
             // comboItems
             // 
             this.comboItems.Dock = System.Windows.Forms.DockStyle.Top;
-            this.comboItems.ItemHeight = 18;
             this.comboItems.DropDownHeight = 400;
+            this.comboItems.IntegralHeight = false;
+            this.comboItems.ItemHeight = 18;
             this.comboItems.Location = new System.Drawing.Point(29, 2);
             this.comboItems.Name = "comboItems";
             this.comboItems.Size = new System.Drawing.Size(196, 24);
             this.comboItems.TabIndex = 1;
             this.comboItems.Text = null;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
+            this.comboItems.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.comboItems_Format);
             // 
             // panelHeaderRight
             // 

@@ -17,56 +17,22 @@ namespace TombLib.Wad
         public int LateralAcceleration { get; set; }
         public ushort NextAnimation { get; set; }
         public ushort NextFrame { get; set; }
-        public ushort FrameStart { get; set; }
         public ushort FrameEnd { get; set; }
-        public string Name { get; set; }
-
-        public List<WadKeyFrame> KeyFrames { get; private set; }
-        public List<WadStateChange> StateChanges { get; private set; }
-        public List<WadAnimCommand> AnimCommands { get; private set; }
-
-        // Helper fields for level compiler
-        public int KeyFramesOffset { get; set; }
-        public int KeyFramesSize { get; set; }
         public ushort RealNumberOfFrames { get; set; }
-        public ushort FrameBase { get; set; }
+        public string Name { get; set; } = "Animation";
 
-        public WadAnimation()
-        {
-            KeyFrames = new List<WadKeyFrame>();
-            StateChanges = new List<WadStateChange>();
-            AnimCommands = new List<WadAnimCommand>();
-            Name = "Animation";
-        }
+        public List<WadKeyFrame> KeyFrames { get; private set; } = new List<WadKeyFrame>();
+        public List<WadStateChange> StateChanges { get; private set; } = new List<WadStateChange>();
+        public List<WadAnimCommand> AnimCommands { get; private set; } = new List<WadAnimCommand>();
 
         public WadAnimation Clone()
         {
-            var animation = new WadAnimation();
+            // TODO Investigate if we actually need 'RealNumberOfFrames'.
 
-            animation.FrameDuration = FrameDuration;
-            animation.StateId = StateId;
-            animation.Speed = Speed;
-            animation.Acceleration = Acceleration;
-            animation.LateralSpeed = LateralSpeed;
-            animation.LateralAcceleration = LateralAcceleration;
-            animation.NextAnimation = NextAnimation;
-            animation.NextFrame = NextFrame;
-            animation.FrameStart = FrameStart;
-            animation.FrameEnd = FrameEnd;
-            animation.Name = Name;
-
-            animation.RealNumberOfFrames = RealNumberOfFrames;
-            animation.FrameBase = FrameBase;
-            
-            foreach (var keyframe in KeyFrames)
-                animation.KeyFrames.Add(keyframe.Clone());
-
-            foreach (var change in StateChanges)
-                animation.StateChanges.Add(change.Clone());
-
-            foreach (var command in AnimCommands)
-                animation.AnimCommands.Add(command.Clone());
-
+            var animation = (WadAnimation)MemberwiseClone();
+            animation.KeyFrames = KeyFrames.ConvertAll(keyFrame => keyFrame.Clone());
+            animation.StateChanges = new List<WadStateChange>(StateChanges);
+            animation.AnimCommands = new List<WadAnimCommand>(AnimCommands);
             return animation;
         }
     }

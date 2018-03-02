@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
@@ -112,7 +113,7 @@ namespace TombEditor.Controls
                 return;
 
             _device.Presenter = Presenter;
-            _device.SetViewports(new SharpDX.ViewportF(0, 0, Width, Height));
+            _device.SetViewports(new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
@@ -130,7 +131,7 @@ namespace TombEditor.Controls
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (chosenItem.IsStatic)
             {
-                StaticModel model = _editor.Level.Wad.DirectXStatics[chosenItem.Id];
+                StaticModel model = _editor.Level.Wad.DirectXStatics[chosenItem.StaticId];
 
                 Effect mioEffect = _deviceManager.Effects["StaticModel"];
                 mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
@@ -164,8 +165,8 @@ namespace TombEditor.Controls
             }
             else
             {
-                SkinnedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.Id];
-                SkinnedModel skin = ((chosenItem.Id == 0 && _editor.Level.Wad.DirectXMoveables.ContainsKey(8)) ? _editor.Level.Wad.DirectXMoveables[8] : model);
+                SkinnedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.MoveableId];
+                SkinnedModel skin = ((chosenItem.MoveableId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin)) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model);
 
                 Effect mioEffect = _deviceManager.Effects["Model"];
 

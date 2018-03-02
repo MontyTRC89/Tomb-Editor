@@ -45,6 +45,10 @@
     <ApplicationIcon>wad_tool.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\SharpDX.dll</HintPath>
@@ -85,14 +89,11 @@
     <Compile Include="Controls\PanelRendering.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelRenderingStaticMeshEditor.cs">
+    <Compile Include="Controls\PanelRenderingStaticEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FormAbout.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormAbout.designer.cs">
-      <DependentUpon>FormAbout.cs</DependentUpon>
+    <Compile Include="Controls\WadTreeControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -112,42 +113,25 @@
     <Compile Include="FormSelectSlot.Designer.cs">
       <DependentUpon>FormSelectSlot.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSoundEditor.cs">
+    <Compile Include="FormSpriteSequenceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSoundEditor.Designer.cs">
-      <DependentUpon>FormSoundEditor.cs</DependentUpon>
+    <Compile Include="FormSpriteSequenceEditor.Designer.cs">
+      <DependentUpon>FormSpriteSequenceEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSpriteEditor.cs">
+    <Compile Include="FormStaticEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSpriteEditor.Designer.cs">
-      <DependentUpon>FormSpriteEditor.cs</DependentUpon>
+    <Compile Include="FormStaticEditor.Designer.cs">
+      <DependentUpon>FormStaticEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSpriteSequencesEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSpriteSequencesEditor.Designer.cs">
-      <DependentUpon>FormSpriteSequencesEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormStaticMeshEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormStaticMeshEditor.Designer.cs">
-      <DependentUpon>FormStaticMeshEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormTr2r3SoundManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormTr2r3SoundManager.Designer.cs">
-      <DependentUpon>FormTr2r3SoundManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GizmoStaticMeshEditor.cs" />
+    <Compile Include="GizmoStaticEditor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WadActions.cs" />
     <Compile Include="WadToolClass.cs" />
-    <EmbeddedResource Include="FormAbout.resx">
-      <DependentUpon>FormAbout.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\WadTreeControl.resx">
+      <DependentUpon>WadTreeControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
@@ -158,20 +142,11 @@
     <EmbeddedResource Include="FormSelectSlot.resx">
       <DependentUpon>FormSelectSlot.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSoundEditor.resx">
-      <DependentUpon>FormSoundEditor.cs</DependentUpon>
+    <EmbeddedResource Include="FormSpriteSequenceEditor.resx">
+      <DependentUpon>FormSpriteSequenceEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSpriteEditor.resx">
-      <DependentUpon>FormSpriteEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSpriteSequencesEditor.resx">
-      <DependentUpon>FormSpriteSequencesEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormStaticMeshEditor.resx">
-      <DependentUpon>FormStaticMeshEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormTr2r3SoundManager.resx">
-      <DependentUpon>FormTr2r3SoundManager.cs</DependentUpon>
+    <EmbeddedResource Include="FormStaticEditor.resx">
+      <DependentUpon>FormStaticEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

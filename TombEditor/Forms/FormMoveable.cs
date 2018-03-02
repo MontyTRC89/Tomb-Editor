@@ -15,9 +15,9 @@ namespace TombEditor
     {
         private MoveableInstance _movable;
 
-        public FormMoveable(MoveableInstance movable)
+        public FormMoveable(MoveableInstance moveable)
         {
-            _movable = movable;
+            _movable = moveable;
             InitializeComponent();
         }
 

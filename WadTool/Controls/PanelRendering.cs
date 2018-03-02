@@ -1,25 +1,34 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Graphics;
+using TombLib.Utils;
 using TombLib.Wad;
 
 namespace WadTool.Controls
 {
     public class PanelRendering : Panel
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Wad2 CurrentWad { get; set; }
-        public IRenderableObject CurrentObject { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IWadObjectId CurrentObjectId { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int Animation { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int KeyFrame { get; set; }
 
         private GraphicsDevice _device;
+        private DeviceManager _deviceManager;
         private SwapChainGraphicsPresenter _presenter;
         private RasterizerState _rasterizerWireframe;
         private WadToolClass _tool;
@@ -28,9 +37,11 @@ namespace WadTool.Controls
         private float _lastY;
         private SpriteBatch _spriteBatch;
 
-        public void InitializePanel(GraphicsDevice device)
+        public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
         {
-            _device = device;
+            _tool = tool;
+            _device = deviceManager.Device;
+            _deviceManager = deviceManager;
 
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
@@ -72,13 +83,15 @@ namespace WadTool.Controls
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
 
-            _tool = WadToolClass.Instance;
-
-            _spriteBatch = new SpriteBatch(_tool.Device);
+            _spriteBatch = new SpriteBatch(_device);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
-        { }
+        {
+            if (_device == null || _presenter == null)
+                e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
+            // Don't paint the background
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -91,7 +104,7 @@ namespace WadTool.Controls
                 return;
 
             _device.Presenter = _presenter;
-            _device.SetViewports(new SharpDX.ViewportF(0, 0, Width, Height));
+            _device.SetViewports(new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target,
                          _tool.Configuration.Rendering3D_BackgroundColor.ToSharpDX(),
@@ -101,66 +114,40 @@ namespace WadTool.Controls
             _device.SetBlendState(_device.BlendStates.Opaque);
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
-            if (CurrentWad != null && CurrentObject != null)
+            if (CurrentWad != null && CurrentObjectId != null)
             {
                 Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-                if (CurrentObject.GetType() == typeof(StaticModel))
+                if (CurrentObjectId is WadMoveableId)
                 {
-                    var model = (StaticModel)CurrentObject;
-
-                    Effect mioEffect = _tool.Effects["StaticModel"];
-                    mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-
-                    mioEffect.Parameters["Color"].SetValue(Vector4.One);
-
-                    mioEffect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
-                    mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                    _device.SetVertexBuffer(0, model.VertexBuffer);
-                    _device.SetIndexBuffer(model.IndexBuffer, true);
-
-                    for (int i = 0; i < model.Meshes.Count; i++)
+                    SkinnedModel model;
+                    if (CurrentWad.DirectXMoveables.TryGetValue((WadMoveableId)CurrentObjectId, out model))
                     {
-                        StaticMesh mesh = model.Meshes[i];
-                        _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
-                        _device.SetVertexInputLayout(_layout);
+                        var skin = model;
 
-                        mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                        mioEffect.Techniques[0].Passes[0].Apply();
+                        Effect mioEffect = _deviceManager.Effects["Model"];
 
-                        foreach (var submesh in mesh.Submeshes)
-                            _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                    }
-                }
-                else if (CurrentObject.GetType() == typeof(SkinnedModel))
-                {
-                    var model = (SkinnedModel)CurrentObject;
-                    var skin = model;
+                        _device.SetVertexBuffer(0, model.VertexBuffer);
+                        _device.SetIndexBuffer(model.IndexBuffer, true);
 
-                    Effect mioEffect = _tool.Effects["Model"];
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
 
-                    _device.SetVertexBuffer(0, model.VertexBuffer);
-                    _device.SetIndexBuffer(model.IndexBuffer, true);
+                        mioEffect.Parameters["Color"].SetValue(Vector4.One);
 
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                        mioEffect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
+                        mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
-                    mioEffect.Parameters["Color"].SetValue(Vector4.One);
-
-                    mioEffect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
-                    mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                    // Build animation transforms
-                    var matrices = new List<Matrix4x4>();
-                    if (model.Animations.Count != 0)
-                    {
-                        var animation = model.Animations[Animation];
-                        /*if (KeyFrame % animation.Framerate == 0)
-                        {*/
-                        model.BuildAnimationPose(model.Animations[Animation].KeyFrames[KeyFrame/* / animation.Framerate*/]);
-                        for (var b = 0; b < model.Meshes.Count; b++)
-                            matrices.Add(model.AnimationTransforms[b]);
-                        /*}
-                        else
+                        // Build animation transforms
+                        var matrices = new List<Matrix4x4>();
+                        if (model.Animations.Count != 0)
+                        {
+                            var animation = model.Animations[Animation];
+                            /*if (KeyFrame % animation.Framerate == 0)
+                            {*/
+                            model.BuildAnimationPose(model.Animations[Animation].KeyFrames[KeyFrame / animation.Framerate]);
+                            for (var b = 0; b < model.Meshes.Count; b++)
+                                matrices.Add(model.AnimationTransforms[b]);
+                        }
+                        /*else
                         {
 
                             var transforms1 = new List<Matrix4x4>();
@@ -193,45 +180,87 @@ namespace WadTool.Controls
                                     matrices.Add(Matrix4x4.Lerp(transforms1[b], transforms2[2], amount));
                             }
                         }    */
-                    }
-                    else
-                    {
-                        foreach (var bone in model.Bones)
-                            matrices.Add(bone.GlobalTransform);
-                    }
+                        else
+                        {
+                            foreach (var bone in model.Bones)
+                                matrices.Add(bone.GlobalTransform);
+                        }
 
-                    for (int i = 0; i < model.Meshes.Count; i++)
-                    {
-                        SkinnedMesh mesh = skin.Meshes[i];
-                        if (mesh.Vertices.Count == 0)
-                            continue;
+                        for (int i = 0; i < model.Meshes.Count; i++)
+                        {
+                            SkinnedMesh mesh = skin.Meshes[i];
+                            if (mesh.Vertices.Count == 0)
+                                continue;
 
-                        mioEffect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
+                            mioEffect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
 
-                        mioEffect.Techniques[0].Passes[0].Apply();
+                            mioEffect.Techniques[0].Passes[0].Apply();
 
-                        foreach (var submesh in mesh.Submeshes)
-                            _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                            foreach (var submesh in mesh.Submeshes)
+                                _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                        }
                     }
                 }
-                else if (CurrentObject.GetType() == typeof(WadSprite))
+                else if (CurrentObjectId is WadStaticId)
                 {
-                    var sprite = (WadSprite)CurrentObject;
+                    StaticModel model;
+                    if (CurrentWad.DirectXStatics.TryGetValue((WadStaticId)CurrentObjectId, out model))
+                    {
+
+                        Effect mioEffect = _deviceManager.Effects["StaticModel"];
+                        mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+
+                        mioEffect.Parameters["Color"].SetValue(Vector4.One);
+
+                        mioEffect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
+                        mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+
+                        _device.SetVertexBuffer(0, model.VertexBuffer);
+                        _device.SetIndexBuffer(model.IndexBuffer, true);
+
+                        for (int i = 0; i < model.Meshes.Count; i++)
+                        {
+                            StaticMesh mesh = model.Meshes[i];
+                            _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
+                            _device.SetVertexInputLayout(_layout);
+
+                            mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                            mioEffect.Techniques[0].Passes[0].Apply();
+
+                            foreach (var submesh in mesh.Submeshes)
+                                _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                        }
+                    }
+                }
+                else if (CurrentObjectId is WadSpriteSequenceId)
+                {
+                    /*var sprite = (WadSpriteSequence)CurrentObject;
 
                     int x = (Width - sprite.Width) / 2;
                     int y = (Height - sprite.Height) / 2;
 
                     _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
                     _spriteBatch.Draw(sprite.DirectXTexture, new SharpDX.DrawingRectangle(x, y, sprite.Width, sprite.Height), SharpDX.Color.White);
-                    _spriteBatch.End();
+                    _spriteBatch.End();*/
+                    int IMPLEMENT_SHOW_SPRITES;
                 }
-                else
+                else if (CurrentObjectId is WadFixedSoundInfoId)
                 {
-
+                    int IMPLEMENT_SHOW_FIXED_SOUND_INFOl;
                 }
-            }
 
-            _device.Present();
+                _device.Present();
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (_presenter != null)
+            {
+                _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
+                Invalidate();
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)

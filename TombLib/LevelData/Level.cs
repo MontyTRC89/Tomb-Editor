@@ -110,35 +110,12 @@ namespace TombLib.LevelData
                 return;
             }
 
-            bool isWad2 = path.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase);
-            var newWad = new Wad2(WadTombRaiderVersion.TR4, !isWad2);
+            Wad2 newWad = null;
             try
             {
-                if (!isWad2)
-                {
-                    List<string> soundPaths = new List<string>();
-                    foreach (OldWadSoundPath path_ in Settings.OldWadSoundPaths)
-                        soundPaths.Add(Settings.ParseVariables(path_.Path));
-
-                    var oldWad = new Tr4Wad();
-                    oldWad.LoadWad(path);
-                    newWad = Tr4WadOperations.ConvertTr4Wad(oldWad, soundPaths, progressReporter);
-                    if (newWad == null)
-                    {
-                        newWad?.Dispose();
-                        return;
-                    }
-                }
-                else
-                {
-                    newWad = Wad2.LoadFromFile(path);
-                }
+                newWad = Wad2.ImportFromFile(path, Settings.OldWadSoundPaths.Select(soundPath => Settings.ParseVariables(soundPath.Path)), progressReporter);
                 newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
                 newWad.PrepareDataForDirectX();
-
-                Wad?.Dispose();
-                Wad = newWad;
-                WadLoadingException = null;
             }
             catch (Exception exc)
             {
@@ -147,7 +124,11 @@ namespace TombLib.LevelData
                 Wad?.Dispose();
                 Wad = null;
                 WadLoadingException = exc;
+                return;
             }
+            Wad?.Dispose();
+            Wad = newWad;
+            WadLoadingException = null;
         }
 
         public void ReloadLevelTextures()

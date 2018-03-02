@@ -102,6 +102,8 @@ namespace TombLib.IO
 
         public override bool Equals(object obj)
         {
+            if (!(obj is ChunkId))
+                return false;
             return this == (ChunkId)obj;
         }
 

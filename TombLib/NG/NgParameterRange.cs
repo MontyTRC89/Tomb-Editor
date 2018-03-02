@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.LevelData;
-using TombLib.Sounds;
 
 namespace TombLib.NG
 {
@@ -235,9 +234,9 @@ namespace TombLib.NG
         {
             Func<int, TriggerParameterUshort> formatSounds = i =>
             {
-                Wad.WadSoundInfo soundInfo;
-                if (level?.Wad?.Sounds != null && level.Wad.Sounds.TryGetValue((ushort)i, out soundInfo))
-                    return new TriggerParameterUshort((ushort)i, i + ": " + soundInfo.Name);
+                Wad.WadFixedSoundInfo fixedSoundInfo;
+                if (level?.Wad?.FixedSoundInfos != null && level.Wad.FixedSoundInfos.TryGetValue(new Wad.WadFixedSoundInfoId((ushort)i), out fixedSoundInfo))
+                    return new TriggerParameterUshort((ushort)i, i + ": " + fixedSoundInfo.SoundInfo.Name);
                 else
                     return new TriggerParameterUshort((ushort)i, i + ": --- Not present ---");
             };
@@ -285,17 +284,10 @@ namespace TombLib.NG
                     return Enumerable.Range(0, 256).Select(formatSounds);
 
                 case NgParameterKind.SoundEffectsB:
-                    {
-                        int soundMapSize = (level.Wad != null ? level.Wad.SoundMapSize : SoundsCatalog.GetSoundMapSize(Wad.WadTombRaiderVersion.TR4, true));
-                        soundMapSize = Math.Min(soundMapSize, 512);
-                        return Enumerable.Range(256, Math.Min(soundMapSize, 512)).Select(formatSounds);
-                    }
+                    return Enumerable.Range(256, 512).Select(formatSounds);
+
                 case NgParameterKind.Sfx1024:
-                    {
-                        int soundMapSize = (level.Wad != null ? level.Wad.SoundMapSize : SoundsCatalog.GetSoundMapSize(Wad.WadTombRaiderVersion.TR4, true));
-                        soundMapSize = Math.Min(soundMapSize, 1024);
-                        return Enumerable.Range(0, Math.Min(soundMapSize, 1024)).Select(formatSounds);
-                    }
+                    return Enumerable.Range(0, 1024).Select(formatSounds);
 
                 case NgParameterKind.PcStringsList:
                     return LoadStringsFromTxt(level, "PCStrings");
@@ -315,17 +307,17 @@ namespace TombLib.NG
                 case NgParameterKind.WadSlots:
                     if (level.Wad == null)
                         return new ITriggerParameter[0];
-                    return level.Wad.Moveables.Select(p => new TriggerParameterUshort(checked((ushort)p.Key), p.Value.ToString()));
+                    return level.Wad.Moveables.Select(p => new TriggerParameterUshort(checked((ushort)p.Key.TypeId), p.Value.ToString()));
 
                 case NgParameterKind.StaticsSlots:
                     if (level.Wad == null)
                         return new ITriggerParameter[0];
-                    return level.Wad.Statics.Select(p => new TriggerParameterUshort(checked((ushort)p.Key), p.Value.ToString()));
+                    return level.Wad.Statics.Select(p => new TriggerParameterUshort(checked((ushort)p.Key.TypeId), p.Value.ToString()));
 
                 case NgParameterKind.LaraStartPosOcb:
                     return level.Rooms.Where(room => room != null)
                         .SelectMany(room => room.Objects)
-                        .OfType<MoveableInstance>().Where(obj => obj.WadObjectId == 406) // Lara start pos
+                        .OfType<MoveableInstance>().Where(obj => obj.WadObjectId.TypeId == 406) // Lara start pos
                         .Select(obj => new TriggerParameterUshort(unchecked((ushort)obj.Ocb), obj));
 
                 default:

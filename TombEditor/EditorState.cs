@@ -35,6 +35,8 @@ namespace TombEditor
 
         public override bool Equals(object obj)
         {
+            if (!(obj is EditorTool))
+                return false;
             return this == (EditorTool)obj;
         }
 
@@ -77,6 +79,8 @@ namespace TombEditor
 
         public override bool Equals(object obj)
         {
+            if (!(obj is SectorSelection))
+                return false;
             return this == (SectorSelection)obj;
         }
 
@@ -134,6 +138,8 @@ namespace TombEditor
 
         public override bool Equals(object obj)
         {
+            if (!(obj is TextureSelection))
+                return false;
             return this == (TextureSelection)obj;
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace WadTool
 {
-    partial class FormStaticMeshEditor
+    partial class FormStaticEditor
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
-            this.panelRendering = new WadTool.Controls.PanelRenderingStaticMeshEditor();
             this.cbVisibilityBox = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.tbVisibilityBoxMinX = new DarkUI.Controls.DarkTextBox();
@@ -43,9 +42,6 @@
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.tbVisibilityBoxMaxX = new DarkUI.Controls.DarkTextBox();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
-            this.butCalculateVisibilityBox = new DarkUI.Controls.DarkButton();
-            this.butSaveChanges = new DarkUI.Controls.DarkButton();
-            this.butCalculateCollisionBox = new DarkUI.Controls.DarkButton();
             this.tbCollisionBoxMaxZ = new DarkUI.Controls.DarkTextBox();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.tbCollisionBoxMaxY = new DarkUI.Controls.DarkTextBox();
@@ -61,6 +57,10 @@
             this.cbCollisionBox = new DarkUI.Controls.DarkCheckBox();
             this.cbDrawGrid = new DarkUI.Controls.DarkCheckBox();
             this.cbDrawGizmo = new DarkUI.Controls.DarkCheckBox();
+            this.butCalculateCollisionBox = new DarkUI.Controls.DarkButton();
+            this.butCalculateVisibilityBox = new DarkUI.Controls.DarkButton();
+            this.butSaveChanges = new DarkUI.Controls.DarkButton();
+            this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             this.SuspendLayout();
             // 
             // darkStatusStrip1
@@ -74,21 +74,9 @@
             this.darkStatusStrip1.TabIndex = 0;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
-            // panelRendering
-            // 
-            this.panelRendering.Camera = null;
-            this.panelRendering.DrawCollisionBox = false;
-            this.panelRendering.DrawGrid = false;
-            this.panelRendering.DrawVisibilityBox = false;
-            this.panelRendering.Location = new System.Drawing.Point(13, 13);
-            this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(564, 513);
-            this.panelRendering.StaticMesh = null;
-            this.panelRendering.StaticScale = 1F;
-            this.panelRendering.TabIndex = 1;
-            // 
             // cbVisibilityBox
             // 
+            this.cbVisibilityBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbVisibilityBox.AutoSize = true;
             this.cbVisibilityBox.Location = new System.Drawing.Point(587, 14);
             this.cbVisibilityBox.Name = "cbVisibilityBox";
@@ -99,6 +87,7 @@
             // 
             // darkLabel2
             // 
+            this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(584, 40);
@@ -109,9 +98,7 @@
             // 
             // tbVisibilityBoxMinX
             // 
-            this.tbVisibilityBoxMinX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbVisibilityBoxMinX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbVisibilityBoxMinX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbVisibilityBoxMinX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbVisibilityBoxMinX.Location = new System.Drawing.Point(587, 57);
             this.tbVisibilityBoxMinX.Name = "tbVisibilityBoxMinX";
             this.tbVisibilityBoxMinX.Size = new System.Drawing.Size(73, 22);
@@ -119,9 +106,7 @@
             // 
             // tbVisibilityBoxMinY
             // 
-            this.tbVisibilityBoxMinY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbVisibilityBoxMinY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbVisibilityBoxMinY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbVisibilityBoxMinY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbVisibilityBoxMinY.Location = new System.Drawing.Point(666, 57);
             this.tbVisibilityBoxMinY.Name = "tbVisibilityBoxMinY";
             this.tbVisibilityBoxMinY.Size = new System.Drawing.Size(73, 22);
@@ -129,6 +114,7 @@
             // 
             // darkLabel3
             // 
+            this.darkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(663, 40);
@@ -139,9 +125,7 @@
             // 
             // tbVisibilityBoxMinZ
             // 
-            this.tbVisibilityBoxMinZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbVisibilityBoxMinZ.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbVisibilityBoxMinZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbVisibilityBoxMinZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbVisibilityBoxMinZ.Location = new System.Drawing.Point(745, 57);
             this.tbVisibilityBoxMinZ.Name = "tbVisibilityBoxMinZ";
             this.tbVisibilityBoxMinZ.Size = new System.Drawing.Size(72, 22);
@@ -149,6 +133,7 @@
             // 
             // darkLabel4
             // 
+            this.darkLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel4.AutoSize = true;
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(742, 40);
@@ -159,9 +144,7 @@
             // 
             // tbVisibilityBoxMaxZ
             // 
-            this.tbVisibilityBoxMaxZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbVisibilityBoxMaxZ.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbVisibilityBoxMaxZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbVisibilityBoxMaxZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbVisibilityBoxMaxZ.Location = new System.Drawing.Point(745, 105);
             this.tbVisibilityBoxMaxZ.Name = "tbVisibilityBoxMaxZ";
             this.tbVisibilityBoxMaxZ.Size = new System.Drawing.Size(72, 22);
@@ -169,6 +152,7 @@
             // 
             // darkLabel5
             // 
+            this.darkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel5.AutoSize = true;
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel5.Location = new System.Drawing.Point(742, 88);
@@ -179,9 +163,7 @@
             // 
             // tbVisibilityBoxMaxY
             // 
-            this.tbVisibilityBoxMaxY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbVisibilityBoxMaxY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbVisibilityBoxMaxY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbVisibilityBoxMaxY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbVisibilityBoxMaxY.Location = new System.Drawing.Point(666, 105);
             this.tbVisibilityBoxMaxY.Name = "tbVisibilityBoxMaxY";
             this.tbVisibilityBoxMaxY.Size = new System.Drawing.Size(73, 22);
@@ -189,6 +171,7 @@
             // 
             // darkLabel6
             // 
+            this.darkLabel6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel6.AutoSize = true;
             this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel6.Location = new System.Drawing.Point(663, 88);
@@ -199,9 +182,7 @@
             // 
             // tbVisibilityBoxMaxX
             // 
-            this.tbVisibilityBoxMaxX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbVisibilityBoxMaxX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbVisibilityBoxMaxX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbVisibilityBoxMaxX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbVisibilityBoxMaxX.Location = new System.Drawing.Point(587, 105);
             this.tbVisibilityBoxMaxX.Name = "tbVisibilityBoxMaxX";
             this.tbVisibilityBoxMaxX.Size = new System.Drawing.Size(73, 22);
@@ -209,6 +190,7 @@
             // 
             // darkLabel7
             // 
+            this.darkLabel7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel7.AutoSize = true;
             this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel7.Location = new System.Drawing.Point(584, 88);
@@ -217,47 +199,9 @@
             this.darkLabel7.TabIndex = 57;
             this.darkLabel7.Text = "X max:";
             // 
-            // butCalculateVisibilityBox
-            // 
-            this.butCalculateVisibilityBox.Image = global::WadTool.Properties.Resources.resize_16;
-            this.butCalculateVisibilityBox.Location = new System.Drawing.Point(587, 143);
-            this.butCalculateVisibilityBox.Name = "butCalculateVisibilityBox";
-            this.butCalculateVisibilityBox.Padding = new System.Windows.Forms.Padding(5);
-            this.butCalculateVisibilityBox.Size = new System.Drawing.Size(230, 23);
-            this.butCalculateVisibilityBox.TabIndex = 63;
-            this.butCalculateVisibilityBox.Text = "Calculate visibility box";
-            this.butCalculateVisibilityBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butCalculateVisibilityBox.Click += new System.EventHandler(this.butCalculateVisibilityBox_Click);
-            // 
-            // butSaveChanges
-            // 
-            this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
-            this.butSaveChanges.Location = new System.Drawing.Point(705, 503);
-            this.butSaveChanges.Name = "butSaveChanges";
-            this.butSaveChanges.Padding = new System.Windows.Forms.Padding(5);
-            this.butSaveChanges.Size = new System.Drawing.Size(112, 23);
-            this.butSaveChanges.TabIndex = 46;
-            this.butSaveChanges.Text = "Save changes";
-            this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butSaveChanges.Click += new System.EventHandler(this.butSaveChanges_Click);
-            // 
-            // butCalculateCollisionBox
-            // 
-            this.butCalculateCollisionBox.Image = global::WadTool.Properties.Resources.resize_16;
-            this.butCalculateCollisionBox.Location = new System.Drawing.Point(587, 317);
-            this.butCalculateCollisionBox.Name = "butCalculateCollisionBox";
-            this.butCalculateCollisionBox.Padding = new System.Windows.Forms.Padding(5);
-            this.butCalculateCollisionBox.Size = new System.Drawing.Size(230, 23);
-            this.butCalculateCollisionBox.TabIndex = 77;
-            this.butCalculateCollisionBox.Text = "Calculate collision box";
-            this.butCalculateCollisionBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butCalculateCollisionBox.Click += new System.EventHandler(this.butCalculateCollisionBox_Click);
-            // 
             // tbCollisionBoxMaxZ
             // 
-            this.tbCollisionBoxMaxZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbCollisionBoxMaxZ.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbCollisionBoxMaxZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbCollisionBoxMaxZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbCollisionBoxMaxZ.Location = new System.Drawing.Point(745, 279);
             this.tbCollisionBoxMaxZ.Name = "tbCollisionBoxMaxZ";
             this.tbCollisionBoxMaxZ.Size = new System.Drawing.Size(72, 22);
@@ -265,6 +209,7 @@
             // 
             // darkLabel8
             // 
+            this.darkLabel8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel8.AutoSize = true;
             this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel8.Location = new System.Drawing.Point(742, 262);
@@ -275,9 +220,7 @@
             // 
             // tbCollisionBoxMaxY
             // 
-            this.tbCollisionBoxMaxY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbCollisionBoxMaxY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbCollisionBoxMaxY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbCollisionBoxMaxY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbCollisionBoxMaxY.Location = new System.Drawing.Point(666, 279);
             this.tbCollisionBoxMaxY.Name = "tbCollisionBoxMaxY";
             this.tbCollisionBoxMaxY.Size = new System.Drawing.Size(73, 22);
@@ -285,6 +228,7 @@
             // 
             // darkLabel9
             // 
+            this.darkLabel9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel9.AutoSize = true;
             this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel9.Location = new System.Drawing.Point(663, 262);
@@ -295,9 +239,7 @@
             // 
             // tbCollisionBoxMaxX
             // 
-            this.tbCollisionBoxMaxX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbCollisionBoxMaxX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbCollisionBoxMaxX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbCollisionBoxMaxX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbCollisionBoxMaxX.Location = new System.Drawing.Point(587, 279);
             this.tbCollisionBoxMaxX.Name = "tbCollisionBoxMaxX";
             this.tbCollisionBoxMaxX.Size = new System.Drawing.Size(73, 22);
@@ -305,6 +247,7 @@
             // 
             // darkLabel10
             // 
+            this.darkLabel10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel10.AutoSize = true;
             this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel10.Location = new System.Drawing.Point(584, 262);
@@ -315,9 +258,7 @@
             // 
             // tbCollisionBoxMinZ
             // 
-            this.tbCollisionBoxMinZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbCollisionBoxMinZ.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbCollisionBoxMinZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbCollisionBoxMinZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbCollisionBoxMinZ.Location = new System.Drawing.Point(745, 231);
             this.tbCollisionBoxMinZ.Name = "tbCollisionBoxMinZ";
             this.tbCollisionBoxMinZ.Size = new System.Drawing.Size(72, 22);
@@ -325,6 +266,7 @@
             // 
             // darkLabel11
             // 
+            this.darkLabel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel11.AutoSize = true;
             this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel11.Location = new System.Drawing.Point(742, 214);
@@ -335,9 +277,7 @@
             // 
             // tbCollisionBoxMinY
             // 
-            this.tbCollisionBoxMinY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbCollisionBoxMinY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbCollisionBoxMinY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbCollisionBoxMinY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbCollisionBoxMinY.Location = new System.Drawing.Point(666, 231);
             this.tbCollisionBoxMinY.Name = "tbCollisionBoxMinY";
             this.tbCollisionBoxMinY.Size = new System.Drawing.Size(73, 22);
@@ -345,6 +285,7 @@
             // 
             // darkLabel12
             // 
+            this.darkLabel12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel12.AutoSize = true;
             this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel12.Location = new System.Drawing.Point(663, 214);
@@ -355,9 +296,7 @@
             // 
             // tbCollisionBoxMinX
             // 
-            this.tbCollisionBoxMinX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbCollisionBoxMinX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbCollisionBoxMinX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbCollisionBoxMinX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbCollisionBoxMinX.Location = new System.Drawing.Point(587, 231);
             this.tbCollisionBoxMinX.Name = "tbCollisionBoxMinX";
             this.tbCollisionBoxMinX.Size = new System.Drawing.Size(73, 22);
@@ -365,6 +304,7 @@
             // 
             // darkLabel13
             // 
+            this.darkLabel13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel13.AutoSize = true;
             this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel13.Location = new System.Drawing.Point(584, 214);
@@ -375,6 +315,7 @@
             // 
             // cbCollisionBox
             // 
+            this.cbCollisionBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbCollisionBox.AutoSize = true;
             this.cbCollisionBox.Location = new System.Drawing.Point(587, 188);
             this.cbCollisionBox.Name = "cbCollisionBox";
@@ -385,6 +326,7 @@
             // 
             // cbDrawGrid
             // 
+            this.cbDrawGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cbDrawGrid.AutoSize = true;
             this.cbDrawGrid.Checked = true;
             this.cbDrawGrid.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -397,6 +339,7 @@
             // 
             // cbDrawGizmo
             // 
+            this.cbDrawGizmo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cbDrawGizmo.AutoSize = true;
             this.cbDrawGizmo.Checked = true;
             this.cbDrawGizmo.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -407,7 +350,54 @@
             this.cbDrawGizmo.Text = "Draw gizmo";
             this.cbDrawGizmo.CheckedChanged += new System.EventHandler(this.cbDrawGizmo_CheckedChanged);
             // 
-            // FormStaticMeshEditor
+            // butCalculateCollisionBox
+            // 
+            this.butCalculateCollisionBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCalculateCollisionBox.Image = global::WadTool.Properties.Resources.resize_16;
+            this.butCalculateCollisionBox.Location = new System.Drawing.Point(587, 317);
+            this.butCalculateCollisionBox.Name = "butCalculateCollisionBox";
+            this.butCalculateCollisionBox.Size = new System.Drawing.Size(230, 23);
+            this.butCalculateCollisionBox.TabIndex = 77;
+            this.butCalculateCollisionBox.Text = "Calculate collision box";
+            this.butCalculateCollisionBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butCalculateCollisionBox.Click += new System.EventHandler(this.butCalculateCollisionBox_Click);
+            // 
+            // butCalculateVisibilityBox
+            // 
+            this.butCalculateVisibilityBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCalculateVisibilityBox.Image = global::WadTool.Properties.Resources.resize_16;
+            this.butCalculateVisibilityBox.Location = new System.Drawing.Point(587, 143);
+            this.butCalculateVisibilityBox.Name = "butCalculateVisibilityBox";
+            this.butCalculateVisibilityBox.Size = new System.Drawing.Size(230, 23);
+            this.butCalculateVisibilityBox.TabIndex = 63;
+            this.butCalculateVisibilityBox.Text = "Calculate visibility box";
+            this.butCalculateVisibilityBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butCalculateVisibilityBox.Click += new System.EventHandler(this.butCalculateVisibilityBox_Click);
+            // 
+            // butSaveChanges
+            // 
+            this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
+            this.butSaveChanges.Location = new System.Drawing.Point(705, 503);
+            this.butSaveChanges.Name = "butSaveChanges";
+            this.butSaveChanges.Size = new System.Drawing.Size(112, 23);
+            this.butSaveChanges.TabIndex = 46;
+            this.butSaveChanges.Text = "Save changes";
+            this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butSaveChanges.Click += new System.EventHandler(this.butSaveChanges_Click);
+            // 
+            // panelRendering
+            // 
+            this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRendering.Location = new System.Drawing.Point(13, 13);
+            this.panelRendering.Name = "panelRendering";
+            this.panelRendering.Size = new System.Drawing.Size(564, 513);
+            this.panelRendering.StaticScale = 1F;
+            this.panelRendering.TabIndex = 1;
+            // 
+            // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -446,13 +436,11 @@
             this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.darkStatusStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormStaticMeshEditor";
+            this.MinimumSize = new System.Drawing.Size(837, 595);
+            this.Name = "FormStaticEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Static mesh editor";
-            this.Load += new System.EventHandler(this.FormStaticMeshEditor_Load);
+            this.Text = "Static editor";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -461,7 +449,7 @@
         #endregion
 
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
-        private Controls.PanelRenderingStaticMeshEditor panelRendering;
+        private Controls.PanelRenderingStaticEditor panelRendering;
         private DarkUI.Controls.DarkButton butSaveChanges;
         private DarkUI.Controls.DarkCheckBox cbVisibilityBox;
         private DarkUI.Controls.DarkLabel darkLabel2;

@@ -489,8 +489,13 @@ namespace TombLib.LevelData.Compilers
                 if (parameter is MoveableInstance)
                 {
                     MoveableInstance @object = (MoveableInstance)parameter;
-                    bool isAI = @object.WadObjectId >= 398 && @object.WadObjectId <= 406;
-                    index = (isAI ? _aiObjectsTable : _moveablesTable)[@object];
+                    bool isAI = @object.WadObjectId.TypeId >= 398 && @object.WadObjectId.TypeId <= 406;
+                    var table = isAI ? _aiObjectsTable : _moveablesTable;
+                    if (!table.TryGetValue(@object, out index))
+                    {
+                        _progressReporter.ReportWarn("Trigger '" + triggerDiagnostic + "') referring to illegal moveable '" + @object + "'.");
+                        index = 0;
+                    }
                 }
                 else if (parameter is CameraInstance)
                     index = _cameraTable[(CameraInstance)parameter];

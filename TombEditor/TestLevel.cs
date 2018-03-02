@@ -9,8 +9,8 @@ using TombLib.IO;
 using TombEditor;
 using TombLib.Utils;
 
-namespace TombEngine
-{   
+namespace TombEditor
+{
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_color
     {
@@ -354,7 +354,7 @@ namespace TombEngine
         public int Angle;
     }
 
-    class TombRaider4Level
+    internal class TestLevel
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -440,14 +440,11 @@ namespace TombEngine
         public tr_ai_item[] AiItems;
 
         string fileName;
-        
-        public TombRaider4Level(string fileName)
+
+        public TestLevel(string fileName, string outFileName = "")
         {
             this.fileName = fileName;
-        }
 
-        public void Load(string ind)
-        {
             FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryReaderEx reader = new BinaryReaderEx(fileStream);
             byte[] buffer;
@@ -463,30 +460,30 @@ namespace TombEngine
             Texture32 = new byte[Texture32CompressedSize];
             reader.ReadBlockArray(out Texture32, Texture32CompressedSize);
             Texture32 = ZLib.DecompressData(Texture32);
-            
+
             BinaryWriterEx wrttext = new BinaryWriterEx(new FileStream("textures.raw", FileMode.Create, FileAccess.Write, FileShare.None));
             wrttext.WriteBlockArray(Texture32);
             wrttext.Flush();
             wrttext.Close();
-            
+
             reader.ReadBlock(out Texture16UncompressedSize);
             reader.ReadBlock(out Texture16CompressedSize);
             Texture16 = new byte[Texture16CompressedSize];
             reader.ReadBlockArray(out Texture16, Texture16CompressedSize);
             Texture16 = ZLib.DecompressData(Texture16);
-            
+
             reader.ReadBlock(out MiscTextureUncompressedSize);
             reader.ReadBlock(out MiscTextureCompressedSize);
             MiscTexture = new byte[MiscTextureCompressedSize];
             reader.ReadBlockArray(out MiscTexture, MiscTextureCompressedSize);
             MiscTexture = ZLib.DecompressData(MiscTexture);
-            
+
             reader.ReadBlock(out LevelUncompressedSize);
             reader.ReadBlock(out LevelCompressedSize);
             buffer = new byte[LevelCompressedSize];
             reader.ReadBlockArray(out buffer, LevelCompressedSize);
             buffer = ZLib.DecompressData(buffer);
-            
+
             var stream = new MemoryStream();
             stream.Write(buffer, 0, (int)LevelUncompressedSize);
             stream.Seek(0, SeekOrigin.Begin);
@@ -495,8 +492,8 @@ namespace TombEngine
             wrt.Write(buffer, 0, (int)LevelUncompressedSize);
             wrt.Flush();
             wrt.Close();
-            
-            BinaryWriterEx wrs = new BinaryWriterEx(new FileStream("samples." + ind + ".bin", FileMode.Create, FileAccess.Write, FileShare.None));
+
+            BinaryWriterEx wrs = new BinaryWriterEx(new FileStream("samples." + outFileName + ".bin", FileMode.Create, FileAccess.Write, FileShare.None));
             byte[] samples = reader.ReadBytes((int)(reader.BaseStream.Length - reader.BaseStream.Position));
             wrs.Write(samples);
             wrs.Flush();
@@ -510,7 +507,7 @@ namespace TombEngine
 
             int max = 0;
 
-            StreamWriter wp = new StreamWriter(new FileStream("portals" + ind + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
+            StreamWriter wp = new StreamWriter(new FileStream("portals" + outFileName + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
 
             Rooms = new tr_room[NumRooms];
             for (int i = 0; i < NumRooms; i++)
@@ -731,16 +728,16 @@ namespace TombEngine
             reader.ReadBlockArray(out animTextures, NumAnimatedTextures);
 
             string fn = Path.GetFileNameWithoutExtension(fileName);
-            if (File.Exists("pathfinding." + fn + "." + ind + ".txt"))
-                File.Delete("pathfinding." + fn + "." + ind + ".txt");
-            StreamWriter writer = new StreamWriter(new FileStream("pathfinding." + fn + "." + ind + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
+            if (File.Exists("pathfinding." + fn + "." + outFileName + ".txt"))
+                File.Delete("pathfinding." + fn + "." + outFileName + ".txt");
+            StreamWriter writer = new StreamWriter(new FileStream("pathfinding." + fn + "." + outFileName + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
 
             writer.WriteLine("BOXES");
 
             for (int n = 0; n < Boxes.Length; n++)
             {
                 writer.WriteLine("[" + n + "] " + "Xmin: " + Boxes[n].Xmin + ", " + "Xmax: " + Boxes[n].Xmax + ", " +
-                                 "Zmin: " + Boxes[n].Zmin + ", " + "Zmax: " + Boxes[n].Zmax + ", " + 
+                                 "Zmin: " + Boxes[n].Zmin + ", " + "Zmax: " + Boxes[n].Zmax + ", " +
                                  "Floor: " + Boxes[n].TrueFloor + ", Overlap Index: " + Boxes[n].OverlapIndex);
             }
 
@@ -793,7 +790,7 @@ namespace TombEngine
             reader.ReadBlock(out NumAiItems);
             reader.ReadBlockArray(out AiItems, NumAiItems);
 
-            StreamWriter aiw = new StreamWriter(new FileStream("AI" + ind + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
+            StreamWriter aiw = new StreamWriter(new FileStream("AI" + outFileName + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
 
             for (int n = 0; n < NumAiItems; n++)
             {
@@ -809,7 +806,7 @@ namespace TombEngine
             aiw.Flush();
             aiw.Close();
 
-            BinaryWriterEx bwex = new BinaryWriterEx(new FileStream("sounds" + ind + ".sfx", FileMode.Create, FileAccess.Write, FileShare.None));
+            BinaryWriterEx bwex = new BinaryWriterEx(new FileStream("sounds" + outFileName + ".sfx", FileMode.Create, FileAccess.Write, FileShare.None));
 
             var numDemo = reader.ReadInt16();
             byte[] soundmap = reader.ReadBytes(numDemo * 2);

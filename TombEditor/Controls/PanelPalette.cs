@@ -32,8 +32,8 @@ namespace TombEditor.Controls
             if (DesignMode || (LicenseManager.UsageMode == LicenseUsageMode.Designtime))
                 return;
 
-            using (FileStream stream = new FileStream("Editor\\Misc\\Palette.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
-                using (BinaryReader readerPalette = new BinaryReader(stream))
+            using (var stream = new MemoryStream(Properties.Resources.Palette, false))
+                using (var readerPalette = new BinaryReader(stream))
                     while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
                         _palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
         }

@@ -13,47 +13,15 @@ namespace WadTool
 {
     public partial class FormNewWad2 : DarkUI.Forms.DarkForm
     {
-        public WadTombRaiderVersion Version { get; set; }
-        public WadSoundManagementSystem SoundManagementSystem { get; set; }
-        public bool IsNG { get; set; }
+        public WadGameVersion Version { get; set; }
 
         public FormNewWad2()
         {
             InitializeComponent();
+            foreach (WadGameVersion version in Enum.GetValues(typeof(WadGameVersion)))
+                comboGameVersion.Items.Add(version);
 
-            comboSoundSystem.Items.Add(WadSoundManagementSystem.ClassicTrle);
-            comboSoundSystem.Items.Add(WadSoundManagementSystem.DynamicSoundMap);
-
-            //comboGameVersion.Items.Add(WadTombRaiderVersion.TR2);
-            //comboGameVersion.Items.Add(WadTombRaiderVersion.TR3);
-            comboGameVersion.Items.Add(WadTombRaiderVersion.TR4);
-            comboGameVersion.Items.Add(WadTombRaiderVersion.TR5);
-
-            comboGameVersion.SelectedItem = WadTombRaiderVersion.TR4;
-            comboSoundSystem.SelectedItem = WadSoundManagementSystem.ClassicTrle;
-            comboSoundSystem.Enabled = false;
-        }
-
-        private void comboGameVersion_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboGameVersion.SelectedItem == null)
-                return;
-            var version = (WadTombRaiderVersion)comboGameVersion.SelectedItem;
-            if (version == WadTombRaiderVersion.TR4)
-                cbNG.Visible = true;
-            else
-            {
-                cbNG.Visible = false;
-                cbNG.Checked = false;
-            }
-
-            if (version >= WadTombRaiderVersion.TR4)
-            {
-                panelSoundManagement.Visible = true;
-                comboSoundSystem.SelectedIndex = 0;
-            }
-            else
-                panelSoundManagement.Visible = false;
+            comboGameVersion.SelectedItem = WadGameVersion.TR4_TRNG;
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -64,26 +32,10 @@ namespace WadTool
 
         private void butCreate_Click(object sender, EventArgs e)
         {
-            Version = (WadTombRaiderVersion)comboGameVersion.SelectedItem;
-            if (Version >= WadTombRaiderVersion.TR4)
-                SoundManagementSystem = (WadSoundManagementSystem)comboSoundSystem.SelectedItem;
-            else
-                SoundManagementSystem = WadSoundManagementSystem.ClassicTrle;
-            if (Version == WadTombRaiderVersion.TR4)
-                IsNG = cbNG.Checked;
-            else
-                IsNG = false;
+            Version = (WadGameVersion)comboGameVersion.SelectedItem;
 
             DialogResult = DialogResult.OK;
             Close();
-        }
-
-        private void comboSoundSystem_SelectedValueChanged(object sender, EventArgs e)
-        {
-            if (comboSoundSystem.SelectedItem == null)
-                return;
-            var system = (WadSoundManagementSystem)comboSoundSystem.SelectedItem;
-            labelSoundSystem.Visible = (system == WadSoundManagementSystem.DynamicSoundMap);
         }
     }
 }

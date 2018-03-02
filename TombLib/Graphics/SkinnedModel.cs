@@ -116,7 +116,7 @@ namespace TombLib.Graphics
             model.Materials.Add(materialOpaqueDoubleSided);
             model.Materials.Add(materialAdditiveBlending);
             model.Materials.Add(materialAdditiveBlendingDoubleSided);
-            
+
             // Initialize the mesh
             for (int m = 0; m < mov.Meshes.Count; m++)
             {
@@ -127,7 +127,7 @@ namespace TombLib.Graphics
                 mesh.Submeshes.Add(materialOpaqueDoubleSided, new Submesh(materialOpaqueDoubleSided));
                 mesh.Submeshes.Add(materialAdditiveBlending, new Submesh(materialAdditiveBlending));
                 mesh.Submeshes.Add(materialAdditiveBlendingDoubleSided, new Submesh(materialAdditiveBlendingDoubleSided));
-                
+
                 mesh.BoundingBox = msh.BoundingBox;
                 mesh.BoundingSphere = msh.BoundingSphere;
 
@@ -153,9 +153,9 @@ namespace TombLib.Graphics
 
                     if (poly.Shape == WadPolygonShape.Triangle)
                     {
-                        int v1 = poly.Indices[0];
-                        int v2 = poly.Indices[1];
-                        int v3 = poly.Indices[2];
+                        int v1 = poly.Index0;
+                        int v2 = poly.Index1;
+                        int v3 = poly.Index2;
 
                         PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
                         PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
@@ -163,10 +163,10 @@ namespace TombLib.Graphics
                     }
                     else
                     {
-                        int v1 = poly.Indices[0];
-                        int v2 = poly.Indices[1];
-                        int v3 = poly.Indices[2];
-                        int v4 = poly.Indices[3];
+                        int v1 = poly.Index0;
+                        int v2 = poly.Index1;
+                        int v3 = poly.Index2;
+                        int v4 = poly.Index3;
 
                         PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
                         PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
@@ -263,7 +263,6 @@ namespace TombLib.Graphics
                 WadAnimation wadAnim = mov.Animations[j];
 
                 animation.Framerate = wadAnim.FrameDuration;
-                animation.RealNumberOfFrames = (short)wadAnim.RealNumberOfFrames;
 
                 animation.KeyFrames = new List<KeyFrame>();
 

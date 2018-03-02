@@ -9,18 +9,21 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Forms;
 
-namespace WadTool
+namespace TombLib.Forms
 {
     public partial class FormAbout : DarkForm
     {
-        public FormAbout()
+        public FormAbout(Image image)
         {
+            Text = "About " + Application.ProductName;
+
             InitializeComponent();
+            pictureBox.BackgroundImage = image;
         }
 
         private void btnLink_Click(object sender, EventArgs e)
         {
-            var control = sender as LinkLabel;
+            var control = (LinkLabel)sender;
 
             try
             {

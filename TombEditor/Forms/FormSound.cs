@@ -21,7 +21,7 @@ namespace TombEditor
 
         private SoundSourceInstance _soundSource;
         private Wad2 _wad;
-        private ushort _selectedSoundId = 0;
+        private Random rng = new Random();
 
         public FormSound(SoundSourceInstance soundSource, Wad2 wad)
         {
@@ -35,91 +35,78 @@ namespace TombEditor
             cbBit4.Checked = (_soundSource.CodeBits & (1 << 3)) != 0;
             cbBit5.Checked = (_soundSource.CodeBits & (1 << 4)) != 0;
 
-            foreach (var sound in _wad?.Sounds ?? Enumerable.Empty<KeyValuePair<ushort, WadSoundInfo>>())
-                lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(
-                    (_wad?.SoundManagementSystem == WadSoundManagementSystem.ClassicTrle ? sound.Key.ToString().PadLeft(3, '0') + ": " : "") + sound.Value.Name
-                    )
-                { Tag = sound.Key });
-            SetSound(_soundSource.SoundId);
+            foreach (var sound in _wad?.SoundInfosUnique ?? Enumerable.Empty<WadSoundInfo>())
+                lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Name) { Tag = sound });
+            SetSound(_soundSource.SoundName);
         }
 
-        private void SetSound(ushort soundId)
+        private void SetSound(string soundName)
         {
-            _selectedSoundId = soundId;
-            tbSound.Text = soundId.ToString();
-            if (_wad?.Sounds?.ContainsKey(soundId) ?? false)
-                tbSound.Text = "(" + soundId + ") " + _wad.Sounds[soundId].Name;
+            if (tbSound.Text != soundName)
+                tbSound.Text = soundName;
+
+            for (int i = 0; i < lstSounds.Items.Count; ++i)
+                if (((WadSoundInfo)lstSounds.Items[i].Tag).Name.Equals(tbSound.Text, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    lstSounds.SelectItem(i);
+                    tbSound.BackColor = BackColor;
+                    goto SeletectedSound;
+                }
+            lstSounds.SelectedIndices.Clear();
+            tbSound.BackColor = Color.DarkRed;
+            SeletectedSound:
+            ;
         }
 
         private void butCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            this.Close();
+            Close();
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            _soundSource.SoundId = _selectedSoundId;
-
             byte codeBits = 0;
             codeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
             codeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
             codeBits |= (byte)(cbBit3.Checked ? (1 << 2) : 0);
             codeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
             codeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
+            _soundSource.SoundName = tbSound.Text;
             _soundSource.CodeBits = codeBits;
 
             DialogResult = DialogResult.OK;
-            this.Close();
+            Close();
         }
 
         private void butPlay_Click(object sender, EventArgs e)
         {
-            if (_wad.Sounds == null)
+            var soundInfo = _wad?.TryGetSound(tbSound.Text);
+            if (soundInfo == null)
             {
-                DarkMessageBox.Show(this, "No wad with sounds loaded.", "Unable to play sound.", MessageBoxIcon.Information);
+                DarkMessageBox.Show(this, "This sound is missing.", "Unable to play sound.", MessageBoxIcon.Information);
                 return;
             }
-
-            var sound = _wad.Sounds[_selectedSoundId];
-
-            if (sound.Samples.Count > 0)
+            try
             {
-                try
-                {
-                    sound.Samples[0].Play();
-                }
-                catch (Exception exc)
-                {
-                    logger.Warn(exc, "Unable to play sample");
-                }
+                soundInfo.Play();
             }
-        }
-
-        private void lstSounds_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (lstSounds.SelectedIndices.Count == 0)
-                return;
-            SetSound((ushort)lstSounds.Items[lstSounds.SelectedIndices[0]].Tag);
+            catch (Exception exc)
+            {
+                logger.Warn(exc, "Unable to play sample");
+                DarkMessageBox.Show(this, "Playing sound failed. " + exc.ToString(), "Unable to play sound.", MessageBoxIcon.Information);
+            }
         }
 
         private void tbSound_TextChanged(object sender, EventArgs e)
         {
-            string text = tbSound.Text;
-            if (text.StartsWith("(") && text.Contains(")"))
-                text = text.Substring(1, text.IndexOf(")") - 1);
+            SetSound(tbSound.Text);
+        }
 
-            ushort soundId;
-            if (!ushort.TryParse(tbSound.Text, out soundId))
-            {
-                tbSound.BackColor = BackColor.MixWith(Color.DarkRed, 0.55);
-                return;
-            }
-
-            tbSound.BackColor = BackColor;
-            if (soundId == _selectedSoundId)
-                return;
-            SetSound(soundId);
+        private void lstSounds_SelectedIndicesChanged(object sender, EventArgs e)
+        {
+            if (lstSounds.SelectedIndices.Count == 1)
+                SetSound(((WadSoundInfo)lstSounds.Items[lstSounds.SelectedIndices[0]].Tag).Name);
         }
     }
 }

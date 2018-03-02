@@ -4,91 +4,97 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class WadSoundInfo
+    public enum WadSoundLoopBehaviour : byte
     {
-        private List<WadSample> _sound;
-        private List<string> _sampleNames;
+        None = 0,
+        OneShotRewound = 1, // The sound will be rewound if triggered again
+        OneShotWait = 2, // The same sound will be ignored until current one stops
+        Looped = 3 // The sound will be looped until strictly stopped by an engine event
+    }
 
+    public struct WadSoundInfoMetaData
+    {
         public string Name { get; set; }
-
-        public List<WadSample> Samples { get { return _sound; } }
-
-        public short Volume { get; set; }
-        public short Range { get; set; }
-        public short Chance { get; set; }
-        public short Pitch { get; set; }
+        public List<WadSample> Samples { get; set; }
+        public byte VolumeDiv255 { get; set; }
+        public byte RangeInSectors { get; set; }
+        public byte ChanceDiv255 { get; set; }
+        public byte PitchFactorDiv128 { get; set; } // 128 here will keep the pitch identical, 255 will *almost* double it.
         public bool FlagN { get; set; }
         public bool RandomizePitch { get; set; }
         public bool RandomizeGain { get; set; }
-        public WadSoundLoopType Loop { get; set; }
-        public Hash Hash { get { return _hash; } }
+        public WadSoundLoopBehaviour LoopBehaviour { get; set; }
 
-        private Hash _hash;
-
-        // Internally used in tools
-        public bool Enabled { get; set; }
-
-        public WadSoundInfo()
+        public WadSoundInfoMetaData(string name)
         {
-            _sound = new List<WadSample>();
-            _sampleNames = new List<string>();
+            Name = name;
+            Samples = new List<WadSample>();
+            VolumeDiv255 = 128;
+            RangeInSectors = 8;
+            ChanceDiv255 = 255;
+            PitchFactorDiv128 = 128;
+            FlagN = false;
+            RandomizePitch = false;
+            RandomizeGain = false;
+            LoopBehaviour = WadSoundLoopBehaviour.None;
         }
 
-        public Hash UpdateHash()
+        private static Random PlayRng = new Random();
+        public void Play()
         {
-            _hash = Hash.FromByteArray(this.ToByteArray());
-            return _hash;
-        }
+            if (Samples.Count < 0)
+                return;
 
-        public byte[] ToByteArray()
+            int rngSampleIndex;
+            lock (PlayRng)
+                rngSampleIndex = PlayRng.Next(0, Samples.Count - 1);
+
+            // TODO How about the other parameters?
+            Samples[rngSampleIndex].Play();
+        }
+    }
+
+    public class WadSoundInfo
+    {
+        public WadSoundInfoMetaData Data { get; }
+        public Hash Hash { get; }
+
+        public WadSoundInfo(WadSoundInfoMetaData data)
         {
+            if (data.Samples == null)
+                throw new ArgumentNullException("data.Samples");
+            Data = data;
+
             using (var ms = new MemoryStream())
             {
-                var writer = new BinaryWriter(ms);
+                var writer = new BinaryWriterEx(ms);
+                writer.Write(data.VolumeDiv255);
+                writer.Write(data.RangeInSectors);
+                writer.Write(data.ChanceDiv255);
+                writer.Write(data.PitchFactorDiv128);
+                writer.Write(data.FlagN);
+                writer.Write(data.RandomizePitch);
+                writer.Write(data.RandomizeGain);
+                writer.Write((byte)data.LoopBehaviour);
+                foreach (var sample in data.Samples)
+                    writer.Write(sample.Hash);
 
-                writer.Write(Volume);
-                writer.Write(Range);
-                writer.Write(Chance);
-                writer.Write(Pitch);
-                writer.Write(FlagN);
-                writer.Write(RandomizePitch);
-                writer.Write(RandomizeGain);
-                writer.Write((byte)Loop);
-
-                foreach (var sample in Samples)
-                {
-                    if (sample.Embedded)
-                        writer.Write(sample.WaveData);
-                    else
-                        writer.Write(System.Text.UTF8Encoding.UTF8.GetBytes(sample.Name));
-                }
-
-                return ms.ToArray();
+                Hash = Hash.FromByteArray(ms.ToArray());
             }
         }
 
-        public WadSoundInfo Clone()
-        {
-            var soundInfo = new WadSoundInfo();
+        public string Name => Data.Name;
+        public void Play() => Data.Play();
 
-            soundInfo.Volume = Volume;
-            soundInfo.Chance = Chance;
-            soundInfo.FlagN = FlagN;
-            soundInfo.Loop = Loop;
-            soundInfo.Name = Name;
-            soundInfo.Range = Range;
-            soundInfo.Pitch = Pitch;
-            soundInfo.RandomizeGain = RandomizeGain;
-            soundInfo.RandomizePitch = RandomizePitch;
-            foreach (var wave in Samples)
-                soundInfo.Samples.Add(wave.Clone());
-            soundInfo.UpdateHash();
-
-            return soundInfo;
-        }
+        public static bool operator ==(WadSoundInfo first, WadSoundInfo second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : (first.Hash == second.Hash));
+        public static bool operator !=(WadSoundInfo first, WadSoundInfo second) => !(first == second);
+        public bool Equals(WadSoundInfo other) => Hash == other.Hash;
+        public override bool Equals(object other) => (other is WadSoundInfo) && Hash == ((WadSoundInfo)other).Hash;
+        public override int GetHashCode() { return Hash.GetHashCode(); }
     }
 }

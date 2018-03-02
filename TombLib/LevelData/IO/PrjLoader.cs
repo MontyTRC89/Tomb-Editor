@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.IO
 {
@@ -563,7 +564,7 @@ namespace TombLib.LevelData.IO
                                     var sound = new SoundSourceInstance()
                                     {
                                         ScriptId = unchecked((ushort)(objectsThings2[j])),
-                                        SoundId = unchecked((ushort)objSlot),
+                                        SoundName = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, unchecked((ushort)objSlot)),
                                         Position = position
                                     };
                                     room.AddObject(level, sound);
@@ -1174,8 +1175,10 @@ namespace TombLib.LevelData.IO
                         if (string.IsNullOrEmpty(textureFilename) || isTextureNA)
                             texture = new LevelTexture();
                         else
-                            texture = new LevelTexture(level.Settings, level.Settings.MakeRelative(TryFindAbsolutePath(
-                                level.Settings, textureFilename.Trim('\0', ' ')), VariableType.LevelDirectory), true);
+                            texture = new LevelTexture(level.Settings, level.Settings.MakeRelative(
+                                PathC.TryFindFile(level.Settings.GetVariable(VariableType.LevelDirectory),
+                                textureFilename.Trim('\0', ' '),
+                                3, 2), VariableType.LevelDirectory), true);
                         /*if (texture.Image.Width != 256)
                             texture.SetConvert512PixelsToDoubleRows(level.Settings, false); // Only use this compatibility thing if actually needed*/
                         level.Settings.Textures.Add(texture);
@@ -1217,8 +1220,10 @@ namespace TombLib.LevelData.IO
                         if (string.IsNullOrEmpty(wadName) || wadName.StartsWith("NA"))
                             level.Settings.WadFilePath = "";
                         else
-                            level.Settings.WadFilePath = level.Settings.MakeRelative(TryFindAbsolutePath(
-                                level.Settings, Path.ChangeExtension(wadName.Trim('\0', ' '), "wad")), VariableType.LevelDirectory);
+                            level.Settings.WadFilePath = level.Settings.MakeRelative(
+                                PathC.TryFindFile(level.Settings.GetVariable(VariableType.LevelDirectory),
+                                Path.ChangeExtension(wadName.Trim('\0', ' '), "wad"),
+                                3, 2), VariableType.LevelDirectory);
                     }
 
                     // Setup paths to customized fonts and the skys
@@ -1248,44 +1253,31 @@ namespace TombLib.LevelData.IO
 
                     progressReporter.ReportProgress(60, "Loaded WAD '" + level.Settings.WadFilePath + "'");
 
-                    // Write slots
-                    const bool writeSlots = false;
-                    var slots = new Dictionary<int, string>();
-                    using (var writerSlots = writeSlots ? new StreamWriter("slots.txt") : null)
+                    // Read *.prj slots
+                    var slots = new Dictionary<uint, string>();
+                    int numSlots = reader.ReadInt32();
+                    for (int i = 0; i < numSlots; i++)
                     {
-                        int numSlots = reader.ReadInt32();
-                        for (int i = 0; i < numSlots; i++)
+                        short slotType = reader.ReadInt16();
+                        if (slotType == 0x00)
+                            continue;
+
+                        var stringBuffer = new byte[255];
+                        for (int sb = 0; true; ++sb)
                         {
-                            short slotType = reader.ReadInt16();
-                            if (slotType == 0x00)
-                            {
-                                writerSlots?.WriteLine(i + "\t" + "NOT DEFINED");
+                            byte s = reader.ReadByte();
+                            if (s == 0x20)
+                                break;
+                            if (s == 0x00)
                                 continue;
-                            }
-
-                            var stringBuffer = new byte[255];
-                            int sb = 0;
-                            while (true)
-                            {
-                                byte s = reader.ReadByte();
-                                if (s == 0x20)
-                                    break;
-                                if (s == 0x00)
-                                    continue;
-                                stringBuffer[sb] = s;
-                                sb++;
-                            }
-
-                            string slotName = _encodingCodepageWindows.GetString(stringBuffer);
-                            slotName = slotName.Replace('\0', ' ').Trim();
-
-                            int objectId = reader.ReadInt32();
-
-                            slots.Add(i, slotName.Replace(" ", "").Replace("EXTRA0", "EXTRA"));
-
-                            reader.ReadBytes(108);
-                            writerSlots?.WriteLine(i + "\t" + slotName + "\t" + slotType + "\t" + objectId);
+                            stringBuffer[sb] = s;
                         }
+
+                        string slotName = _encodingCodepageWindows.GetString(stringBuffer);
+                        slotName = slotName.Replace('\0', ' ').Trim();
+                        uint objectId = reader.ReadUInt32();
+                        slots.Add((uint)i, slotName.Replace(" ", ""));
+                        reader.ReadBytes(108);
                     }
 
                     // After loading slots, I compare them to legacy names and I add moveables and statics
@@ -1296,13 +1288,31 @@ namespace TombLib.LevelData.IO
 
                         for (var j = 0; j < tempObjects[i].Count; j++)
                         {
-                            var currentObj = tempObjects[i][j];
-                            if (!level.Wad.LegacyNames.ContainsKey(slots[(int)currentObj.WadObjectId]))
+                            PrjObject currentObj = tempObjects[i][j];
+                            string slotName;
+                            if (!slots.TryGetValue(currentObj.WadObjectId, out slotName))
+                                slotName = "Unknown " + currentObj.WadObjectId;
+                            TrCatalog.OriginalNameInfo? slotInfo = TrCatalog.GetSlotFromOriginalName(WadGameVersion.TR4_TRNG, slotName);
+                            if (slotInfo == null)
+                            {
+                                progressReporter.ReportWarn("Unknown slot name '" + slotName + "' used for object with id '" + currentObj.ScriptId + "' in room '" + level.Rooms[i] + "' at " + currentObj.Position + ". It was removed.");
                                 continue;
+                            }
 
-                            var wadObj = level.Wad.LegacyNames[slots[(int)currentObj.WadObjectId]];
-
-                            if (wadObj is WadMoveable)
+                            if (slotInfo.Value.IsStatic)
+                            {
+                                var instance = new StaticInstance()
+                                {
+                                    ScriptId = currentObj.ScriptId,
+                                    WadObjectId = new WadStaticId(slotInfo.Value.Id),
+                                    Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
+                                    RotationY = currentObj.RotationY,
+                                    Color = currentObj.Color,
+                                    Ocb = unchecked((ushort)currentObj.Ocb)
+                                };
+                                level.Rooms[i].AddObject(level, instance);
+                            }
+                            else
                             {
                                 var instance = new MoveableInstance()
                                 {
@@ -1310,23 +1320,10 @@ namespace TombLib.LevelData.IO
                                     CodeBits = currentObj.CodeBits,
                                     Invisible = currentObj.Invisible,
                                     ClearBody = currentObj.ClearBody,
-                                    WadObjectId = wadObj.ObjectID,
+                                    WadObjectId = new WadMoveableId(slotInfo.Value.Id),
                                     Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
                                     Ocb = currentObj.Ocb,
                                     RotationY = currentObj.RotationY
-                                };
-                                level.Rooms[i].AddObject(level, instance);
-                            }
-                            else
-                            {
-                                var instance = new StaticInstance()
-                                {
-                                    ScriptId = currentObj.ScriptId,
-                                    WadObjectId = wadObj.ObjectID,
-                                    Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
-                                    RotationY = currentObj.RotationY,
-                                    Color = currentObj.Color,
-                                    Ocb = unchecked((ushort)currentObj.Ocb)
                                 };
                                 level.Rooms[i].AddObject(level, instance);
                             }
@@ -2184,41 +2181,6 @@ namespace TombLib.LevelData.IO
             }
 
             return stringBuffer;
-        }
-
-        private static string TryFindAbsolutePath(LevelSettings levelSettings, string filename)
-        {
-            try
-            {
-                // Is the file easily found?
-                if (File.Exists(filename))
-                    return filename;
-
-                string[] filePathComponents = filename.Split(new char[] { '\\', '/' });
-                string[] levelPathComponents = levelSettings.GetVariable(VariableType.LevelDirectory).Split(new char[] { '\\', '/' });
-
-                // Try to go up 2 directories to find file (works in original levels)
-                // If it turns out that many people have directory structures incompatible to this assumptions
-                // we can add more suffisticated options here in the future.
-                int filePathCheckDepth = Math.Min(3, filePathComponents.GetLength(0) - 1);
-                int levelPathCheckDepth = Math.Min(2, levelPathComponents.GetLength(0) - 1);
-                for (int levelPathUntil = 0; levelPathUntil <= levelPathCheckDepth; ++levelPathUntil)
-                    for (int filePathAfter = 1; filePathAfter <= filePathCheckDepth; ++filePathAfter)
-                    {
-                        var basePath = levelPathComponents.Take(levelPathComponents.GetLength(0) - levelPathUntil);
-                        var filePath = filePathComponents.Skip(filePathComponents.GetLength(0) - filePathAfter);
-                        string filepathSuggestion = string.Join(LevelSettings.Dir.ToString(), basePath.Union(filePath));
-                        if (File.Exists(filepathSuggestion))
-                            return filepathSuggestion;
-                    }
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "TryFindAbsolutePath failed");
-                // In cas of an error we can just give up to find the absolute path alreasy
-                // and prompt the user for the file path.
-            }
-            return filename;
         }
     }
 }

@@ -1,14 +1,11 @@
 ﻿using NAudio.Wave;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.IO;
-using TombLib.LevelData;
-using TombLib.Sounds;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -28,7 +25,6 @@ namespace TombLib.LevelData.Compilers
         };
 
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>();
-        private List<string> _samplesWithErrors = new List<string>();
 
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
         {
@@ -44,7 +40,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        public ScriptIdTable<IHasScriptID> _scriptingIdsTable;
+        private ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private byte[] _texture32Data;
         private List<ushort> _floorData = new List<ushort>();
         private List<tr_mesh> _meshes = new List<tr_mesh>();
@@ -70,7 +66,7 @@ namespace TombLib.LevelData.Compilers
         private List<tr_item> _items = new List<tr_item>();
         private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
 
-        // texture data
+        private Util.SoundManager _soundManager;
         private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
 
         // Temporary dictionaries for mapping editor IDs to level IDs
@@ -82,157 +78,38 @@ namespace TombLib.LevelData.Compilers
         private Dictionary<FlybyCameraInstance, int> _flybyTable;
         private Dictionary<StaticInstance, int> _staticsTable;
 
-        private byte[] _bufferSamples;
-
         public LevelCompilerClassicTR(Level level, string dest, IProgressReporter progressReporter)
             : base(level, dest, progressReporter)
         {
-            _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(level.Settings.AnimatedTextureSets);
             _scriptingIdsTable = level.GlobalScriptingIdsTable.Clone();
         }
 
-        private void PrepareLevelData()
+        public CompilerStatistics CompileLevel()
         {
+            ReportProgress(0, "Tomb Raider Level Compiler");
+
+            if (_level.Wad == null)
+                throw new NotSupportedException("A wad must be loaded to compile the final level.");
+
+            _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
+            _soundManager = new Util.SoundManager(_level.Settings, _level.Wad);
+
+            // Prepare level data in parallel to the sounds
             ConvertWadMeshes(_level.Wad);
             ConvertWad2DataToTr4(_level.Wad);
             BuildRooms();
-            PrepareItems();
             PrepareSoundSources();
+            PrepareItems();
             BuildCamerasAndSinks();
             GetAllReachableRooms();
             BuildPathFindingData();
             BuildFloorData();
 
-            // Combine all texture data in the final texture map
+            // Combine the data collected
             PrepareTextures();
-        }
+            _soundManager.PrepareSoundsData(_progressReporter);
 
-        private int GetSoundMapSize()
-        {
-            var soundMapSize = _level.Wad.SoundMapSize;
-            if (soundMapSize == 0)
-            {
-                switch (_level.Settings.GameVersion)
-                {
-                    case GameVersion.TR2:
-                    case GameVersion.TR3:
-                    case GameVersion.TR4:
-                        soundMapSize = 370;
-                        break;
-                    case GameVersion.TRNG:
-                        soundMapSize = _level.Wad.SoundMapSize;
-                        break;
-                    case GameVersion.TR5:
-                        soundMapSize = 450;
-                        break;
-                }
-            }
-            return soundMapSize;
-        }
-
-        private void PrepareSoundsData()
-        {
-            // Samples are embedded only in TR4 and TR5
-            if (_level.Settings.GameVersion < GameVersion.TR4)
-                return;
-
-            _samplesWithErrors = new List<string>();
-
-            int numSamples = 0;
-            foreach (var soundInfo in _level.Wad.Sounds)
-                numSamples += soundInfo.Value.Samples.Count;
-
-            // If classic sound management, then fill WadSample objects with data from disk
-            var sampleDatas = new Dictionary<WadSample, byte[]>();
-            if (_level.Wad.SoundManagementSystem == WadSoundManagementSystem.ClassicTrle)
-            {
-                Parallel.ForEach(_level.Wad.Samples, (sample) =>
-                {
-                    const bool ignoreMissingSounds = true;
-                    byte[] soundData = _level.Settings.ReadSound(sample.Value.Name, ignoreMissingSounds);
-                    if (soundData == LevelSettings.NullSample)
-                        lock (_samplesWithErrors)
-                            _samplesWithErrors.Add(sample.Value.Name);
-                    lock (sampleDatas)
-                        sampleDatas.Add(sample.Value, soundData);
-                });
-            }
-            else
-                foreach (var sample in _level.Wad.Samples)
-                    sampleDatas.Add(sample.Value, sample.Value.WaveData);
-
-            var stream = new MemoryStream();
-            using (var writer = new BinaryWriterEx(stream))
-            {
-                writer.Write(numSamples);
-
-                var soundMapSize = SoundsCatalog.GetSoundMapSize(_level.Wad.Version, _level.Wad.IsNg);
-                for (int i = 0; i < soundMapSize; i++)
-                {
-                    if (!_level.Wad.Sounds.ContainsKey((ushort)i))
-                        continue;
-
-                    WadSoundInfo soundInfo = _level.Wad.Sounds[(ushort)i];
-                    foreach (WadSample sample in soundInfo.Samples)
-                    {
-                        byte[] sampleData = sampleDatas[sample];
-
-                        if (_level.Settings.GameVersion == GameVersion.TR5)
-                        {
-                            // TR5 uses compressed MS-ADPCM samples
-                            // Formula is Size = Length (ms) * Sample rate * 16 bits / 8 bits/sample / 1000
-                            int length;
-                            using (var sampleStream = new MemoryStream(sampleData))
-                                using (var wfr = new WaveFileReader(sampleStream))
-                                    length = wfr.TotalTime.Milliseconds;
-
-                            var uncompressedSize = length * 22050.0f * 16.0f / 8.0f / 1000.0f;
-                            writer.Write((uint)uncompressedSize);
-                        }
-                        else
-                        {
-                            // Other engines uses uncompresses WAV samples
-                            writer.Write(sampleData.GetLength(0));
-                        }
-                        writer.Write(sampleData.GetLength(0));
-                        writer.Write(sampleData);
-                    }
-                }
-            }
-
-            _bufferSamples = stream.ToArray();
-        }
-
-        public CompilerStatistics CompileLevel()
-        {
-            ReportProgress(0, "Tomb Raider Level Compiler by MontyTRC");
-
-            if (_level.Wad == null)
-                throw new NotSupportedException("A wad must be loaded to compile the final level.");
-
-            // Check for Wad2 - Game version match
-            if (_level.Settings.GameVersion == GameVersion.TR2 && _level.Wad.Version != Wad.WadTombRaiderVersion.TR2)
-                throw new NotSupportedException("You must provide a valid TR2 Wad2 to compile a TR2 level.");
-
-            if (_level.Settings.GameVersion == GameVersion.TR3 && _level.Wad.Version != Wad.WadTombRaiderVersion.TR3)
-                throw new NotSupportedException("You must provide a valid TR3 Wad2 to compile a TR3 level.");
-
-            if (_level.Settings.GameVersion == GameVersion.TR4 &&
-                (_level.Wad.Version != Wad.WadTombRaiderVersion.TR4 || _level.Wad.IsNg))
-                throw new NotSupportedException("You must provide a valid TR4 Wad2 (non NG) to compile a TR4 level.");
-
-            if (_level.Settings.GameVersion == GameVersion.TRNG && (_level.Wad.Version != Wad.WadTombRaiderVersion.TR4))
-                throw new NotSupportedException("You must provide a valid TR4 Wad2 to compile a TRNG level.");
-
-            if (_level.Settings.GameVersion == GameVersion.TR5 && _level.Wad.Version != Wad.WadTombRaiderVersion.TR5)
-                throw new NotSupportedException("You must provide a valid TR5 Wad2 to compile a TR5 level.");
-
-            // Prepare level data in parallel to the sounds
-            using (Task task1 = Task.Factory.StartNew(PrepareLevelData))
-                using (Task task2 = Task.Factory.StartNew(PrepareSoundsData))
-                    Task.WaitAll(task1, task2);
-
-            //Write the final level
+            //Write the level
             switch (_level.Settings.GameVersion)
             {
                 case GameVersion.TR2:
@@ -250,12 +127,6 @@ namespace TombLib.LevelData.Compilers
                     break;
                 default:
                     throw new NotImplementedException("The selected game engine is not supported yet");
-            }
-
-            if (_level.Settings.GameVersion >= GameVersion.TR4 && _samplesWithErrors.Count != 0)
-            {
-                foreach (var sampleWithError in _samplesWithErrors)
-                    ReportProgress(100, "Missing sample or error while loading: " + sampleWithError);
             }
 
             // Return statics
@@ -280,13 +151,19 @@ namespace TombLib.LevelData.Compilers
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var instance in _soundSourcesTable.Keys)
             {
+                WadSoundInfo soundInfo = _level.Wad.TryGetSound(instance.SoundName);
+                if (soundInfo == null)
+                {
+                    _progressReporter.ReportWarn("Sound '" + instance.SoundName + "' for sound source in room '" + instance.Room + "' at '" + instance.Position + "' is missing.");
+                    continue;
+                }
                 Vector3 position = instance.Room.WorldPos + instance.Position;
                 _soundSources.Add(new tr_sound_source
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
-                    SoundID = instance.SoundId,
+                    SoundID = _soundManager.AllocateSoundInfo(soundInfo),
                     Flags = 0x80
                 });
             }
@@ -490,18 +367,24 @@ namespace TombLib.LevelData.Compilers
             foreach (Room room in _level.Rooms.Where(room => room != null))
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
+                    WadMoveable wadMoveable;
+                    if (!_level.Wad.Moveables.TryGetValue(instance.WadObjectId, out wadMoveable))
+                    {
+                        _progressReporter.ReportWarn("Moveable '" + instance + "' was not included in the level because it is missing the *.wad file.");
+                        continue;
+                    }
+
                     Vector3 position = instance.Room.WorldPos + instance.Position;
                     double angle = Math.Round(instance.RotationY * (65536.0 / 360.0));
                     ushort angleInt = unchecked((ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle))));
-
-                    if (instance.WadObjectId >= 398 && instance.WadObjectId <= 406)
+                    if (wadMoveable.Id.IsAI(_level.Settings.WadGameVersion))
                     {
                         _aiItems.Add(new tr_ai_item
                         {
                             X = (int)Math.Round(position.X),
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
-                            ObjectID = (ushort)instance.WadObjectId,
+                            ObjectID = checked((ushort)(instance.WadObjectId.TypeId)),
                             Room = (ushort)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             OCB = instance.Ocb,
@@ -518,7 +401,7 @@ namespace TombLib.LevelData.Compilers
                             X = (int)Math.Round(position.X),
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
-                            ObjectID = (short)instance.WadObjectId,
+                            ObjectID = checked((ushort)(instance.WadObjectId.TypeId)),
                             Room = (short)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             Intensity1 = -1,
@@ -528,6 +411,7 @@ namespace TombLib.LevelData.Compilers
                         _moveablesTable.Add(instance, _moveablesTable.Count);
                     }
                 }
+
             ReportProgress(30, "    Number of items: " + _items.Count);
             ReportProgress(30, "    Number of AI objects: " + _aiItems.Count);
         }

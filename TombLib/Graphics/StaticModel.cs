@@ -95,9 +95,9 @@ namespace TombLib.Graphics
 
                 if (poly.Shape == WadPolygonShape.Triangle)
                 {
-                    int v1 = poly.Indices[0];
-                    int v2 = poly.Indices[1];
-                    int v3 = poly.Indices[2];
+                    int v1 = poly.Index0;
+                    int v2 = poly.Index1;
+                    int v3 = poly.Index2;
 
                     PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), positionInPackedTexture);
                     PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
@@ -105,10 +105,10 @@ namespace TombLib.Graphics
                 }
                 else
                 {
-                    int v1 = poly.Indices[0];
-                    int v2 = poly.Indices[1];
-                    int v3 = poly.Indices[2];
-                    int v4 = poly.Indices[3];
+                    int v1 = poly.Index0;
+                    int v2 = poly.Index1;
+                    int v3 = poly.Index2;
+                    int v4 = poly.Index3;
 
                     PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), positionInPackedTexture);
                     PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);

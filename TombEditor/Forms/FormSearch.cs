@@ -410,10 +410,10 @@ namespace TombEditor
             {
                 if (_editor.Level.Wad != null)
                 {
-                    foreach (KeyValuePair<uint, WadStatic> obj in _editor.Level.Wad.Statics)
-                        yield return new ItemType(true, obj.Key, _editor.Level.Wad.Version);
-                    foreach (KeyValuePair<uint, WadMoveable> obj in _editor.Level.Wad.Moveables)
-                        yield return new ItemType(false, obj.Key, _editor.Level.Wad.Version);
+                    foreach (WadStatic obj in _editor.Level.Wad.Statics.Values)
+                        yield return new ItemType(obj.Id, _editor?.Level?.Settings);
+                    foreach (WadMoveable obj in _editor.Level.Wad.Moveables.Values)
+                        yield return new ItemType(obj.Id, _editor?.Level?.Settings);
                 }
             }
         }

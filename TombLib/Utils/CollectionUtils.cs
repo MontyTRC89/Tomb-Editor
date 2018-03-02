@@ -37,12 +37,31 @@ namespace TombLib.Utils
             return -1;
         }
 
-        public static TValue TryGetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> rooms, TKey key, TValue @default = default(TValue))
+        public static TValue TryAdd<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue @default = default(TValue))
         {
             TValue result;
-            if (rooms.TryGetValue(key, out result))
+            if (@this.TryGetValue(key, out result))
+                return result;
+            @this.Add(key, @default);
+            return @default;
+        }
+
+        public static TValue TryGetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> @this, TKey key, TValue @default = default(TValue))
+        {
+            TValue result;
+            if (@this.TryGetValue(key, out result))
                 return result;
             return @default;
+        }
+
+
+        public static void Resize<T>(this List<T> list, int newCount, T newElement = default(T))
+        {
+            int oldCount = list.Count;
+            if (newCount < oldCount)
+                list.RemoveRange(newCount, oldCount - newCount);
+            else if (newCount > oldCount)
+                list.AddRange(Enumerable.Repeat(newElement, newCount - oldCount));
         }
 
         public static IEnumerable<T> Unwrap<T>(this T[,] array)

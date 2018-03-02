@@ -49,8 +49,6 @@
             this.butSaveChanges = new DarkUI.Controls.DarkButton();
             this.comboId = new DarkUI.Controls.DarkComboBox();
             this.comboLoop = new DarkUI.Controls.DarkComboBox();
-            this.butAddNewSound = new DarkUI.Controls.DarkButton();
-            this.butDeleteSound = new DarkUI.Controls.DarkButton();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.butAddNewWave = new DarkUI.Controls.DarkButton();
             this.butDeleteWave = new DarkUI.Controls.DarkButton();
@@ -59,6 +57,8 @@
             this.butSave = new DarkUI.Controls.DarkButton();
             this.cbEnableSound = new DarkUI.Controls.DarkCheckBox();
             this.lstSoundInfos = new DarkUI.Controls.DarkListView();
+            this.butAddNewSound = new DarkUI.Controls.DarkButton();
+            this.butDeleteSound = new DarkUI.Controls.DarkButton();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -255,28 +255,6 @@
             this.comboLoop.TabIndex = 33;
             this.comboLoop.Text = "None";
             // 
-            // butAddNewSound
-            // 
-            this.butAddNewSound.Image = global::TombLib.Properties.Resources.general_plus_math_16;
-            this.butAddNewSound.Location = new System.Drawing.Point(12, 470);
-            this.butAddNewSound.Name = "butAddNewSound";
-            this.butAddNewSound.Size = new System.Drawing.Size(123, 23);
-            this.butAddNewSound.TabIndex = 14;
-            this.butAddNewSound.Text = "Add new sound";
-            this.butAddNewSound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddNewSound.Click += new System.EventHandler(this.butAddNewSound_Click);
-            // 
-            // butDeleteSound
-            // 
-            this.butDeleteSound.Image = global::TombLib.Properties.Resources.general_trash_16;
-            this.butDeleteSound.Location = new System.Drawing.Point(141, 470);
-            this.butDeleteSound.Name = "butDeleteSound";
-            this.butDeleteSound.Size = new System.Drawing.Size(112, 23);
-            this.butDeleteSound.TabIndex = 13;
-            this.butDeleteSound.Text = "Delete sound";
-            this.butDeleteSound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDeleteSound.Click += new System.EventHandler(this.butDeleteSound_Click);
-            // 
             // darkLabel8
             // 
             this.darkLabel8.AutoSize = true;
@@ -358,6 +336,28 @@
             this.lstSoundInfos.TabIndex = 74;
             this.lstSoundInfos.Text = "darkListView1";
             // 
+            // butAddNewSound
+            // 
+            this.butAddNewSound.Image = global::TombLib.Properties.Resources.general_plus_math_16;
+            this.butAddNewSound.Location = new System.Drawing.Point(12, 470);
+            this.butAddNewSound.Name = "butAddNewSound";
+            this.butAddNewSound.Size = new System.Drawing.Size(123, 23);
+            this.butAddNewSound.TabIndex = 14;
+            this.butAddNewSound.Text = "Add new sound";
+            this.butAddNewSound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAddNewSound.Click += new System.EventHandler(this.butAddNewSound_Click);
+            // 
+            // butDeleteSound
+            // 
+            this.butDeleteSound.Image = global::TombLib.Properties.Resources.general_trash_16;
+            this.butDeleteSound.Location = new System.Drawing.Point(141, 470);
+            this.butDeleteSound.Name = "butDeleteSound";
+            this.butDeleteSound.Size = new System.Drawing.Size(112, 23);
+            this.butDeleteSound.TabIndex = 13;
+            this.butDeleteSound.Text = "Delete sound";
+            this.butDeleteSound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDeleteSound.Click += new System.EventHandler(this.butDeleteSound_Click);
+            // 
             // FormSoundEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -409,8 +409,6 @@
         #endregion
 
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
-        private DarkUI.Controls.DarkButton butDeleteSound;
-        private DarkUI.Controls.DarkButton butAddNewSound;
         private DarkUI.Controls.DarkListView lstWaves;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkTextBox tbName;
@@ -439,5 +437,7 @@
         private DarkUI.Controls.DarkButton butSave;
         private DarkUI.Controls.DarkCheckBox cbEnableSound;
         private DarkUI.Controls.DarkListView lstSoundInfos;
+        private DarkUI.Controls.DarkButton butAddNewSound;
+        private DarkUI.Controls.DarkButton butDeleteSound;
     }
 }
