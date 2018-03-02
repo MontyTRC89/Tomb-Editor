@@ -11,13 +11,13 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
 {
-    public struct CompiledAnimatedTexture
+    public struct NgAnimatedTextureInfo
     {
         public AnimatedTextureAnimationType AnimationType;
         public sbyte Fps;
         public sbyte UvRotate;
         public short Delay;
-        public List<ushort> _objectTextureIndices;
+        public List<ushort> ObjectTextureIndices;
 
         public bool IsUvRotate
         {
@@ -62,11 +62,11 @@ namespace TombLib.LevelData.Compilers.Util
         // Animation expansion is delayed to allow to allow them to use really big object texture indices.
         private readonly Dictionary<Result, AnimationVersion> _delayAddedAnimationVersions = new Dictionary<Result, AnimationVersion>();
 
-        private List<CompiledAnimatedTexture> _compiledAnimatedTextures = new List<CompiledAnimatedTexture>();
+        private List<NgAnimatedTextureInfo> _compiledAnimatedTextures = new List<NgAnimatedTextureInfo>();
 
         private const float _marginFactor = 1.0f / 512.0f;
 
-        public IReadOnlyList<CompiledAnimatedTexture> CompiledAnimatedTextures { get { return _compiledAnimatedTextures; } }
+        public IReadOnlyList<NgAnimatedTextureInfo> CompiledAnimatedTextures { get { return _compiledAnimatedTextures; } }
 
         public ObjectTextureManagerWithAnimations(IEnumerable<AnimatedTextureSet> animatedTextureSets)
         {
@@ -274,8 +274,8 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // Create compiled animated texture
                 // TODO: remove test values when UI will be ready
-                CompiledAnimatedTexture compiledAnimatedTexture = new CompiledAnimatedTexture();
-                compiledAnimatedTexture._objectTextureIndices = new List<ushort>();
+                NgAnimatedTextureInfo compiledAnimatedTexture = new NgAnimatedTextureInfo();
+                compiledAnimatedTexture.ObjectTextureIndices = new List<ushort>();
                 compiledAnimatedTexture.AnimationType = set.AnimationType;
                 if (set.AnimationType == AnimatedTextureAnimationType.Frames)
                 {
@@ -351,13 +351,13 @@ namespace TombLib.LevelData.Compilers.Util
                         objectTextureIndex = result.ObjectTextureIndex;
                     }
 
-                    compiledAnimatedTexture._objectTextureIndices.Add(objectTextureIndex);
+                    compiledAnimatedTexture.ObjectTextureIndices.Add(objectTextureIndex);
 
                     // Add repeats of the frame
                     for (int j = 1; j < frame.Repeat; ++j)
                     {
                         var result = AddTexture(currentArea, animation.Value._isTriangle, animation.Value._isUsedInRoomMesh, 0, true, false, GetNewTextureSpaceIdentifier());
-                        compiledAnimatedTexture._objectTextureIndices.Add(result.ObjectTextureIndex);
+                        compiledAnimatedTexture.ObjectTextureIndices.Add(result.ObjectTextureIndex);
                     }
                 }
 
@@ -395,7 +395,7 @@ namespace TombLib.LevelData.Compilers.Util
                 }
         }
 
-        public byte UvRotateCount
+        public int NgUvRotateCount
         {
             get
             {
@@ -405,7 +405,7 @@ namespace TombLib.LevelData.Compilers.Util
                         set.AnimationType == AnimatedTextureAnimationType.HalfRotate ||
                         set.AnimationType == AnimatedTextureAnimationType.RiverRotate)
                         num++;
-                return (byte)num;
+                return (int)num;
             }
         }
 
@@ -413,14 +413,14 @@ namespace TombLib.LevelData.Compilers.Util
         {
             int numAnimatedTexture = 1;
             foreach (var compiledAnimatedTexture in _compiledAnimatedTextures)
-                numAnimatedTexture += compiledAnimatedTexture._objectTextureIndices.Count + 1;
+                numAnimatedTexture += compiledAnimatedTexture.ObjectTextureIndices.Count + 1;
             stream.Write((uint)numAnimatedTexture);
 
             stream.Write((ushort)_compiledAnimatedTextures.Count);
             foreach (var compiledAnimatedTexture in _compiledAnimatedTextures)
             {
-                stream.Write((ushort)(compiledAnimatedTexture._objectTextureIndices.Count - 1));
-                foreach (var objectTextureIndex in compiledAnimatedTexture._objectTextureIndices)
+                stream.Write((ushort)(compiledAnimatedTexture.ObjectTextureIndices.Count - 1));
+                foreach (var objectTextureIndex in compiledAnimatedTexture.ObjectTextureIndices)
                     stream.Write((ushort)objectTextureIndex);
             }
         }
