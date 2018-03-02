@@ -74,10 +74,13 @@ namespace TombLib.LevelData.Compilers
                             if (!block.IsAnyWall)
                                 continue;
 
-                            // Check if ceiling is traversable or not
-                            var connectionInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
-                            if (connectionInfo.TraversableType == Room.RoomConnectionType.NoPortal)
-                                continue;
+                            // Check if ceiling is traversable or not (now I check only for walls inside rooms)
+                            if (x != 0 && z != 0 && x != room.NumXSectors - 1 && z != room.NumZSectors - 1)
+                            {
+                                var connectionInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
+                                if (connectionInfo.TraversableType == Room.RoomConnectionType.NoPortal)
+                                    continue;
+                            }
 
                             // Check if current wall is surrounded by walls
                             if (IsWallSurroundedByWalls(x, z, room))
