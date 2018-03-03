@@ -634,7 +634,7 @@ namespace TombLib.LevelData.Compilers
             if ((Value < -16) || (Value > 15))
             {
                 _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos);
-                return 0;
+                Value = Math.Max(Math.Min(Value, 15), -16);
             }
             ushort Result = (ushort)Value;
             Result &= 0x1f;
@@ -646,7 +646,7 @@ namespace TombLib.LevelData.Compilers
             if ((Value < 0) || (Value > 15))
             {
                 _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos);
-                return 0;
+                Value = Math.Max(Math.Min(Value, 0), 15);
             }
             return (ushort)Value;
         }
@@ -807,7 +807,6 @@ namespace TombLib.LevelData.Compilers
             {
                 // Extend approximately a little over half the sector height from both the ceiling and the floor.
                 int proposal = Math.Max(Math.Abs(shape.Min - oppositeExtreme), Math.Abs(shape.Max - oppositeExtreme)) / 2 + 1;
-                proposal = Math.Min(proposal, 30); // Maximize the diagonal step height (Maximum diagonal step height is 31, 1 safety margin)
                 if (shape.SplitWallFirst)
                     out_t01 = out_t00 - proposal;
                 else if (shape.SplitWallSecond)
