@@ -633,7 +633,7 @@ namespace TombLib.LevelData.Compilers
         {
             if ((Value < -16) || (Value > 15))
             {
-                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos);
+                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The triangle is too steep, the collision is inaccurate.");
                 Value = Math.Max(Math.Min(Value, 15), -16);
             }
             ushort Result = (ushort)Value;
@@ -645,7 +645,7 @@ namespace TombLib.LevelData.Compilers
         {
             if ((Value < 0) || (Value > 15))
             {
-                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos);
+                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The triangle is too steep, the collision is inaccurate.");
                 Value = Math.Max(Math.Min(Value, 0), 15);
             }
             return (ushort)Value;
@@ -733,15 +733,15 @@ namespace TombLib.LevelData.Compilers
             { // Build a quad slope
                 int heightDiffX = shape.HeightXnZp - shape.HeightXnZn;
                 int heightDiffY = shape.HeightXpZn - shape.HeightXnZn;
-                if (Math.Abs(heightDiffX) > 127 || Math.Abs(heightDiffY) > 127)
-                {
-                    _progressReporter.ReportWarn("Quad slope collision value outside range in room '" + reportRoom + "' at " + reportPos);
-                    heightDiffX = 0;
-                    heightDiffY = 0;
-                }
-
                 if (isCeiling)
                     heightDiffX = -heightDiffX;
+
+                if (Math.Abs(heightDiffX) > 127 || Math.Abs(heightDiffY) > 127)
+                {
+                    _progressReporter.ReportWarn("Quad slope collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The quad is too steep, the collision is inaccurate.");
+                    heightDiffX = Math.Min(Math.Max(heightDiffX, -127), 127);
+                    heightDiffY = Math.Min(Math.Max(heightDiffY, -127), 127);
+                }
 
                 ushort result = 0;
                 result |= (ushort)((ushort)(heightDiffY) & 0xff);
