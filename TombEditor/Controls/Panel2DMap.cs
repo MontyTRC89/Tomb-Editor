@@ -46,11 +46,11 @@ namespace TombEditor.Controls
         private IReadOnlyList<RoomClipboardData.ContourLine> _insertionContourLineData;
         private Vector2 _insertionDropPosition;
         private VectorInt2 _insertionCurrentOffset;
-        private System.Drawing.Point _startMousePosition;
+        private Point _startMousePosition;
 
         private class SelectionArea
         {
-            public TombLib.Rectangle2 _area;
+            public Rectangle2 _area;
             public HashSet<Room> _roomSelectionCache;
             public HashSet<Room> GetRoomSelection(Panel2DMap parent)
             {
@@ -258,7 +258,7 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Middle:
-                    _selectionArea = new SelectionArea { _area = new TombLib.Rectangle2(clickPos, clickPos) };
+                    _selectionArea = new SelectionArea { _area = new Rectangle2(clickPos, clickPos) };
                     break;
 
                 case MouseButtons.Right:
@@ -340,7 +340,7 @@ namespace TombEditor.Controls
             // Update depth bar...
             _depthBar.MouseMove(e, Size, _editor.Level);
             RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the cursor.
-            Invalidate(new Rectangle((int)area.X, (int)area.Y, (int)area.Width, (int)area.Height));
+            Invalidate(Rectangle.FromLTRB((int)Math.Floor(area.X), (int)Math.Floor(area.Y), (int)Math.Ceiling(area.Right) - 1, (int)Math.Ceiling(area.Bottom) - 1));
 
             switch (e.Button)
             {
@@ -520,7 +520,7 @@ namespace TombEditor.Controls
             // Draw 2d map if necessary and not occluded by 2d bar
             if (!barArea.Contains(e.ClipRectangle))
             {
-                TombLib.Rectangle2 visibleArea = FromVisualCoord(e.ClipRectangle);
+                Rectangle2 visibleArea = FromVisualCoord(e.ClipRectangle);
                 e.Graphics.Clear(Color.White);
 
                 // Draw hidden rooms
