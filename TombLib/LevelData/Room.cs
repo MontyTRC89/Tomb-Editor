@@ -3451,8 +3451,8 @@ namespace TombLib.LevelData
                 return RoomConnectionType.NoPortal;
 
             // Gather split data
-            bool belowSplitXEqualsZ = blockBelow.CeilingSplitDirectionIsXEqualsZReal;
-            bool aboveSplitXEqualsZ = blockAbove.FloorSplitDirectionIsXEqualsZReal;
+            bool belowSplitXEqualsZ = blockBelow.CeilingSplitDirectionIsXEqualsZWithDiagonalSplit;
+            bool aboveSplitXEqualsZ = blockAbove.FloorSplitDirectionIsXEqualsZWithDiagonalSplit;
             bool belowIsQuad = blockBelow.CeilingIsQuad;
             bool aboveIsQuad = blockAbove.FloorIsQuad;
 
