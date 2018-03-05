@@ -75,13 +75,13 @@ namespace TombLib.LevelData.Compilers.Util
                 int firstMaxHeight = Math.Max(first.Area.Width, first.Area.Height); //Because of flipping, the bigger dimension is the height.
                 int secondMaxHeight = Math.Max(second.Area.Width, second.Area.Height);
                 if (firstMaxHeight != secondMaxHeight)
-                    return (firstMaxHeight > secondMaxHeight) ? 1 : -1; //Heigher textures first!
+                    return (firstMaxHeight > secondMaxHeight) ? -1 : 1; //Heigher textures first!
 
                 // Compare area
                 int firstArea = first.Area.Width * first.Area.Height;
                 int secondArea = second.Area.Width * second.Area.Height;
                 if (firstArea != secondArea)
-                    return (firstArea > secondArea) ? 1 : -1; //Bigger textures first!
+                    return (firstArea > secondArea) ? -1 : 1; //Bigger textures first!
 
                 return 0;
             }
