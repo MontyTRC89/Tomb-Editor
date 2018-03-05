@@ -126,15 +126,15 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkExtraRoomFlags(BinaryWriter writer)
         {
-            writer.Write((ushort)(3 + _tempRooms.Count * 4));
+            writer.Write((ushort)(3 + _roomsUnmapping.Count * 4));
             writer.Write((ushort)0x8009);
 
-            writer.Write((ushort)_tempRooms.Count);
-            for (var i = 0; i < _tempRooms.Count; i++)
+            writer.Write((ushort)_roomsUnmapping.Count);
+            for (var i = 0; i < _roomsUnmapping.Count; i++)
             {
-                var room = _tempRooms.ElementAt(i).Key;
-                var waterLevel = (byte)0;
+                Room room = _roomsUnmapping[i];
 
+                byte waterLevel = 0;
                 if (room.RainLevel != 0)
                     waterLevel = (byte)(room.RainLevel - 1);
                 else if (room.SnowLevel != 0)
