@@ -46,16 +46,12 @@ namespace TombLib.LevelData.Compilers
                             ceilingPortals.Add(ceilingPortal);
                     }
 
+                var tempFloorData = new List<ushort>();
                 for (var z = 0; z < room.NumZSectors; z++)
                 {
                     for (var x = 0; x < room.NumXSectors; x++)
                     {
-                        var sector = GetSector(tempRoom, x, z);
-                        var block = room.Blocks[x, z];
-                        Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z));
-                        Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
-
-                        var baseFloorData = (ushort)_floorData.Count;
+                        Block block = room.Blocks[x, z];
 
                         // If a sector is a wall and this room is a water room,
                         // It must be checked before if on the neighbour sector if there's a ceiling portal
@@ -87,9 +83,9 @@ namespace TombLib.LevelData.Compilers
                                 continue;
 
                             // Get new coordinates
-                            var adjoining = portal.AdjoiningRoom;
-                            var x2 = (int)(room.Position.X + x - adjoining.Position.X);
-                            var z2 = (int)(room.Position.Z + z - adjoining.Position.Z);
+                            Room adjoining = portal.AdjoiningRoom;
+                            int x2 = room.Position.X + x - adjoining.Position.X;
+                            int z2 = room.Position.Z + z - adjoining.Position.Z;
 
                             // Check if we are outside the boundaries of adjoining room
                             if (x2 < 0 || z2 < 0 || x2 > adjoining.NumXSectors - 1 || z2 > adjoining.NumZSectors - 1)
@@ -123,1206 +119,81 @@ namespace TombLib.LevelData.Compilers
                             }
                         }
 
-                        // If sector is a wall with a ceiling portal on it or near it
-                        if (block.WallPortal == null && isWallWithCeilingPortal != null &&
-                            ((block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.None) ||
-                             room.Blocks[x, z].Type == BlockType.BorderWall))
-                        {
-                            const ushort data1 = 0x8001;
-                            var data2 = (ushort)_roomsRemappingDictionary[isWallWithCeilingPortal];
+                        // Build sector info
+                        var sector = GetSector(tempRoom, x, z);
+                        sector.Floor = -127;
+                        sector.Ceiling = -127;
+                        sector.FloorDataIndex = 0;
+                        sector.RoomBelow = 255;
+                        sector.RoomAbove = 255;
 
-                            _floorData.Add(data1);
-                            _floorData.Add(data2);
+                        if ((block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.None) || block.Type == BlockType.BorderWall)
+                        { // Sector is a complete wall
+                            if (block.WallPortal != null)
+                            { // Sector is a wall portal
+                                if (block.WallPortal.Opacity != PortalOpacity.SolidFaces)
+                                { // Only if the portal is not a Toggle Opacity 1
+                                    const ushort data1 = 0x8001;
+                                    var data2 = (ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom];
 
-                            // Update current sector
-                            sector.FloorDataIndex = baseFloorData;
-
-                            SaveSector(tempRoom, x, z, sector);
-
-                            continue;
-                        }
-
-                        // If sector is a border wall without portals or a normal wall
-                        if ((block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.None) ||
-                            (block.Type == BlockType.BorderWall && block.WallPortal == null))
-                        {
-                            sector.FloorDataIndex = 0;
-                            sector.Floor = -127;
-                            sector.Ceiling = -127;
-
-                            SaveSector(tempRoom, x, z, sector);
-                            continue;
-                        }
-
-                        // If sector is a floor portal
-                        if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                        {
-                            var portal = block.FloorPortal;
-                            int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                            if (roomIndex >= 254)
-                                throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
-                            sector.RoomBelow = checked((byte)roomIndex);
-                        }
-                        else
-                        {
-                            sector.RoomBelow = 255;
-                        }
-
-                        // If sector is a ceiling portal
-                        if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                        {
-                            var portal = block.CeilingPortal;
-                            int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                            if (roomIndex >= 254)
-                                throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
-                            sector.RoomAbove = checked((byte)roomIndex);
-                        }
-                        else
-                        {
-                            sector.RoomAbove = 255;
-                        }
-
-                        // If sector is a wall portal
-                        if (block.WallPortal != null)
-                        {
-                            // Only if the portal is not a Toggle Opacity 1
-                            if (block.WallPortal.Opacity != PortalOpacity.SolidFaces)
-                            {
+                                    sector.FloorDataIndex = checked((ushort)_floorData.Count);
+                                    _floorData.Add(data1);
+                                    _floorData.Add(data2);
+                                }
+                            }
+                            else if (isWallWithCeilingPortal != null)
+                            { // Sector has a ceiling portal on it or near it
                                 const ushort data1 = 0x8001;
-                                var data2 = (ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom];
+                                var data2 = (ushort)_roomsRemappingDictionary[isWallWithCeilingPortal];
 
+                                sector.FloorDataIndex = checked((ushort)_floorData.Count);
                                 _floorData.Add(data1);
                                 _floorData.Add(data2);
-
-                                if (block.WallPortal.Opacity == PortalOpacity.TraversableFaces)
-                                {
-                                    sector.Floor = -127;
-                                    sector.Ceiling = -127;
-                                }
-
-                                // Update current sector
-                                sector.FloorDataIndex = baseFloorData;
-                                SaveSector(tempRoom, x, z, sector);
                             }
-                            else
-                            {
-                                sector.Floor = -127;
-                                sector.Ceiling = -127;
-                                SaveSector(tempRoom, x, z, sector);
-                            }
-
-                            continue;
-                        }
-
-                        // From this point, the loop will never be bypassed, so surely add at least one
-                        // floordata value
-                        sector.FloorDataIndex = baseFloorData;
-                        var tempCodes = new List<ushort>();
-                        var lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                        // If sector has a floor slope
-                        if (block.FloorIfQuadSlopeX != 0 || block.FloorIfQuadSlopeZ != 0)
-                        {
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(0x02);
-
-                            sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
-
-                            var slope = (ushort)(((block.FloorIfQuadSlopeZ) << 8) | ((block.FloorIfQuadSlopeX) & 0xff));
-
-                            tempCodes.Add(slope);
-                        }
-
-                        // Now begins the triangulation for floor and ceiling
-                        // It's a very long and hard task
-                        if (_level.Settings.GameVersion >= GameVersion.TR3)
-                        {
-                            if (block.FloorDiagonalSplit != DiagonalSplit.None)
-                            {
-                                int q0 = block.QA[0];
-                                int q1 = block.QA[1];
-                                int q2 = block.QA[2];
-                                int q3 = block.QA[3];
-
-                                // The real floor split of the sector
-                                int function;
-
-                                int t1;
-                                int t2;
-
-                                int h00;
-                                int h01;
-                                int h10;
-                                int h11;
-
-                                // First, we fix the sector height
-                                if (block.Type == BlockType.Wall)
-                                    sector.Floor = (sbyte)-(room.Position.Y + 0x0f);
-                                else
-                                    sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
-
-                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                    block.FloorDiagonalSplit == DiagonalSplit.XpZp)
-                                {
-                                    lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                    if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                    {
-                                        function = block.FloorDiagonalSplit == DiagonalSplit.XnZn ? 0x0c : 0x0b;
-                                    }
-                                    else
-                                    {
-                                        function = 0x07;
-                                    }
-
-                                    // Diagonal steps and walls are the simplest case. All corner heights are zero
-                                    // except eventually the right angle on the top face. Corrections t1 and t2
-                                    // are simple to calculate
-                                    if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
-                                    {
-                                        var lowCorner = q1;
-                                        var highCorner = q3;
-
-                                        if (block.Type == BlockType.Wall)
-                                        {
-                                            t1 = 0;
-                                            t2 = 15 - block.QA[
-                                                     1]; // Diagonal wall max height minus the height of the lower right angle
-
-                                            h00 = 0;
-                                            h10 = 0;
-                                            h01 = 0;
-                                            h11 = 0;
-                                        }
-                                        else
-                                        {
-                                            t1 = q2 > q3 ? q3 - q2 : 0;
-                                            t2 = (highCorner - lowCorner) & 0x1f;
-
-                                            h00 = Math.Abs(q3 - q2);
-                                            h10 = 0;
-                                            h01 = 0;
-                                            h11 = 0;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        var lowCorner = q3;
-                                        var highCorner = q1;
-
-                                        if (block.Type == BlockType.Wall)
-                                        {
-                                            t1 = 15 - block.QA[3];
-                                            t2 = 0;
-
-                                            h00 = 0;
-                                            h10 = 0;
-                                            h01 = 0;
-                                            h11 = 0;
-                                        }
-                                        else
-                                        {
-                                            t1 = (highCorner - lowCorner) & 0x1f;
-                                            t2 = 0;
-
-                                            h00 = 0;
-                                            h10 = 0;
-                                            h01 = 0;
-                                            h11 = q1 - q2;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                    if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                    {
-                                        function = block.FloorDiagonalSplit == DiagonalSplit.XpZn ? 0x0d : 0x0e;
-                                    }
-                                    else
-                                    {
-                                        function = 0x08;
-                                    }
-
-                                    if (block.FloorDiagonalSplit == DiagonalSplit.XpZn)
-                                    {
-                                        var lowCorner = q0;
-                                        var highCorner = q2;
-
-                                        if (block.Type == BlockType.Wall)
-                                        {
-                                            t1 = 15 - block.QA[0];
-                                            t2 = 0;
-
-                                            h00 = 0;
-                                            h10 = 0;
-                                            h01 = 0;
-                                            h11 = 0;
-                                        }
-                                        else
-                                        {
-                                            t1 = highCorner - lowCorner & 0x1f;
-                                            t2 = 0;
-
-                                            h00 = 0;
-                                            h10 = q2 - q1;
-                                            h01 = 0;
-                                            h11 = 0;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        var lowCorner = q2;
-                                        var highCorner = q0;
-
-                                        if (block.Type == BlockType.Wall)
-                                        {
-                                            t1 = 0;
-                                            t2 = 15 - block.QA[2];
-
-                                            h00 = 0;
-                                            h10 = 0;
-                                            h01 = 0;
-                                            h11 = 0;
-                                        }
-                                        else
-                                        {
-                                            t1 = 0;
-                                            t2 = highCorner - lowCorner & 0x1f;
-
-                                            h00 = 0;
-                                            h10 = 0;
-                                            h01 = q0 - q1;
-                                            h11 = 0;
-                                        }
-                                    }
-                                }
-
-                                var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
-                                var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
-
-                                tempCodes.Add(code1);
-                                tempCodes.Add(code2);
-                            }
-                            else
-                            {
-                                if (block.FloorIfQuadSlopeX == 0 && block.FloorIfQuadSlopeZ == 0)
-                                {
-                                    int q0 = block.QA[0];
-                                    int q1 = block.QA[1];
-                                    int q2 = block.QA[2];
-                                    int q3 = block.QA[3];
-
-                                    // We have not a slope, so if this is not a horizontal square then we have triangulation
-                                    if (!Block.IsQuad(q0, q1, q2, q3))
-                                    {
-                                        // First, we fix the sector height
-                                        sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
-
-                                        // Then we have to find the axis of the triangulation
-                                        var min = block.FloorMin;
-
-                                        lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                        // Corner heights
-                                        var h10 = q2 - min;
-                                        var h00 = q3 - min;
-                                        var h01 = q0 - min;
-                                        var h11 = q1 - min;
-
-                                        var t1 = 0;
-                                        var t2 = 0;
-
-                                        // The real floor split of the sector
-                                        int function;
-
-                                        if (!block.FloorSplitDirectionIsXEqualsZ)
-                                        {
-                                            if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                            {
-                                                if (q0 == q1 && q1 == q2 && q2 == q0)
-                                                {
-                                                    function = 0x0c;
-                                                }
-                                                else
-                                                {
-                                                    function = 0x0b;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                function = 0x07;
-                                            }
-
-                                            // Prepare four vectors that are vertices of a square from 0, 0 to 1024, 1024 and
-                                            // with variable corner heights. For calculating the right t1 and t2 values, we
-                                            // must know also the fourth point of the square that contains the triangle
-                                            // we are trying to correct. I simply intersect a very long ray with the plane
-                                            // passing through the triangle and I can obtain in this way the height of the fourth corner.
-                                            // This height then is used in different ways
-                                            var p00 = new Vector3(0, h00 * 256, 0);
-                                            var p01 = new Vector3(0, h01 * 256, 1024);
-                                            var p10 = new Vector3(1024, h10 * 256, 0);
-                                            var p11 = new Vector3(1024, h11 * 256, 1024);
-
-                                            // In triangle collisions, everything is relative to the highest corner
-                                            var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
-
-                                            // Choose which triangle to adjust
-                                            if (h00 < Math.Min(h10, h01) && h11 < Math.Min(h10, h01))
-                                            {
-                                                // Case 1: both triangles have their right angles below the diagonal ( /D\ )
-                                                var pl1 = Plane.CreateFromVertices(p01, p10, p00);
-
-                                                float distance1;
-
-                                                // Find the 4th point
-                                                var ray1 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray1, pl1, out distance1);
-                                                distance1 = 32768 - (float)Math.Round(distance1);
-                                                distance1 /= 256;
-
-                                                //int maxTriangle1 = Math.Max(Math.Max(h01, h00), h10);
-
-                                                // Correction is the max height of the sector minus the height of the fourth point
-                                                t2 = (int)(maxHeight - distance1) & 0x1f;
-
-                                                var pl2 = Plane.CreateFromVertices(p10, p01, p11);
-
-                                                float distance2;
-
-                                                // Find the 4th point
-                                                var ray2 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray2, pl2, out distance2);
-                                                distance2 = 32768 - (float)Math.Round(distance2);
-                                                distance2 /= 256;
-
-                                                //int maxTriangle2 = Math.Max(Math.Max(h11, h10), h01);
-
-                                                // Correction is the max height of the sector minus the height of the fourth point
-                                                t1 = (int)(maxHeight - distance2) & 0x1f;
-                                            }
-                                            else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
-                                                     h11 < h00)
-                                            {
-                                                // Case 2: h00 is highest corner and h11 is lower than h00. Typical example, when you raise of one click
-                                                // one corner of a sector (simplest case)
-                                                var p = Plane.CreateFromVertices(p01, p11, p10);
-
-                                                float distance;
-
-                                                // Find the 4th point
-                                                var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray, p, out distance);
-                                                distance = 32768 - (float)Math.Round(distance);
-                                                distance /= 256;
-
-                                                var maxTriangle = Math.Max(Math.Max(h01, h11), h10);
-
-                                                // There are two cases (1.jpg and 2.jpg). The fourth point height can be lower than max height
-                                                // of the triangle or higher.
-                                                if (distance <= maxTriangle)
-                                                {
-                                                    t1 = 0;
-                                                    t2 = maxHeight - maxTriangle & 0x1f;
-                                                }
-                                                else
-                                                {
-                                                    t1 = 0;
-                                                    t2 = (int)(maxHeight - distance) & 0x1f;
-                                                }
-                                            }
-                                            else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
-                                                     h00 < h11)
-                                            {
-                                                // Case 3: similar to case 2, but the opposite
-                                                var p = Plane.CreateFromVertices(p01, p10, p00);
-
-                                                float distance;
-
-                                                // Find the 4th point
-                                                var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray, p, out distance);
-                                                distance = 32768 - (float)Math.Round(distance);
-                                                distance /= 256;
-
-                                                var maxTriangle = Math.Max(Math.Max(h01, h00), h10);
-
-                                                if (distance <= maxTriangle)
-                                                {
-                                                    t2 = 0;
-                                                    t1 = maxHeight - maxTriangle & 0x1f;
-                                                }
-                                                else
-                                                {
-                                                    t2 = 0;
-                                                    t1 = (int)(maxHeight - distance) & 0x1f;
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                            {
-                                                if (q3 == q0 && q0 == q1 && q1 == q3)
-                                                {
-                                                    function = 0x0d;
-                                                }
-                                                else
-                                                {
-                                                    function = 0x0e;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                function = 0x08;
-                                            }
-
-                                            var p00 = new Vector3(0, h00 * 256, 0);
-                                            var p01 = new Vector3(0, h01 * 256, 1024);
-                                            var p10 = new Vector3(1024, h10 * 256, 0);
-                                            var p11 = new Vector3(1024, h11 * 256, 1024);
-
-                                            var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
-
-                                            // Choose which triangle to adjust
-                                            if (h01 < Math.Min(h00, h11) && h10 < Math.Min(h00, h11))
-                                            {
-                                                var pl1 = Plane.CreateFromVertices(p11, p10, p00);
-
-                                                float distance1;
-
-                                                // Find the 4th point
-                                                var ray1 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray1, pl1, out distance1);
-                                                distance1 = 32768 - (float)Math.Round(distance1);
-                                                distance1 /= 256;
-
-                                                t2 = (int)(maxHeight - distance1) & 0x1f;
-
-                                                var pl2 = Plane.CreateFromVertices(p00, p01, p11);
-
-                                                float distance2;
-
-                                                // Find the 4th point
-                                                var ray2 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray2, pl2, out distance2);
-                                                distance2 = 32768 - (float)Math.Round(distance2);
-                                                distance2 /= 256;
-
-                                                t1 = (int)(maxHeight - distance2) & 0x1f;
-                                            }
-                                            else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
-                                                     h01 < h10)
-                                            {
-                                                var p = Plane.CreateFromVertices(p01, p11, p00);
-
-                                                float distance;
-
-                                                // Find the 4th point
-                                                var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray, p, out distance);
-                                                distance = 32768 - (float)Math.Round(distance);
-                                                distance /= 256;
-
-                                                var maxTriangle = Math.Max(Math.Max(h01, h11), h00);
-
-                                                if (distance <= maxTriangle)
-                                                {
-                                                    t1 = maxHeight - maxTriangle & 0x1f;
-                                                    t2 = 0;
-                                                }
-                                                else
-                                                {
-                                                    t1 = (int)(maxHeight - distance) & 0x1f;
-                                                    t2 = 0;
-                                                }
-                                            }
-                                            else if ((h11 == maxHeight || h00 == maxHeight || h01 == maxHeight) &&
-                                                     h10 < h01)
-                                            {
-                                                var p = Plane.CreateFromVertices(p11, p10, p00);
-
-                                                float distance;
-
-                                                // Find the 4th point
-                                                var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray, p, out distance);
-                                                distance = 32768 - (float)Math.Round(distance);
-                                                distance /= 256;
-
-                                                var maxTriangle = Math.Max(Math.Max(h11, h00), h10);
-
-                                                if (distance <= maxTriangle)
-                                                {
-                                                    t1 = 0;
-                                                    t2 = maxHeight - maxTriangle & 0x1f;
-                                                }
-                                                else
-                                                {
-                                                    t1 = 0;
-                                                    t2 = (int)(maxHeight - distance) & 0x1f;
-                                                }
-                                            }
-                                        }
-
-                                        // Now build the floordata codes
-                                        var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
-                                        var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
-
-                                        tempCodes.Add(code1);
-                                        tempCodes.Add(code2);
-                                    }
-                                }
-                            }
-                        }
-
-                        // If sector has a ceiling slope
-                        if (block.CeilingIfQuadSlopeX != 0 || block.CeilingIfQuadSlopeZ != 0)
-                        {
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(0x03);
-
-                            var slope = (ushort)(((block.CeilingIfQuadSlopeZ) << 8) | ((block.CeilingIfQuadSlopeX) & 0xff));
-
-                            tempCodes.Add(slope);
-                        }
-
-                        if (_level.Settings.GameVersion >= GameVersion.TR3)
-                        {
-                            if (block.CeilingDiagonalSplit != DiagonalSplit.None)
-                            {
-                                if (block.Type != BlockType.Wall)
-                                {
-                                    int w0 = block.WS[0];
-                                    int w1 = block.WS[1];
-                                    int w2 = block.WS[2];
-                                    int w3 = block.WS[3];
-
-                                    // The real floor split of the sector
-                                    int function;
-
-                                    int t1;
-                                    int t2;
-
-                                    int h00;
-                                    int h01;
-                                    int h10;
-                                    int h11;
-
-                                    // First, we fix the sector height
-                                    if (block.Type == BlockType.Wall)
-                                        sector.Floor = (sbyte)-(room.Position.Y + 0x0f);
-                                    else
-                                        sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
-
-                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn ||
-                                        block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
-                                    {
-                                        lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                        if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                        {
-                                            function = block.CeilingDiagonalSplit == DiagonalSplit.XnZn ? 0x10 : 0x0f;
-                                        }
-                                        else
-                                        {
-                                            function = 0x09;
-                                        }
-
-                                        if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
-                                        {
-                                            var lowCorner = w1;
-                                            var highCorner = w3;
-
-
-                                            t1 = 0;
-                                            t2 = highCorner - lowCorner & 0x1f;
-
-                                            h00 = w3 - w2;
-                                            h10 = 0;
-                                            h01 = 0;
-                                            h11 = 0;
-                                        }
-                                        else
-                                        {
-                                            var lowCorner = w3;
-                                            var highCorner = w1;
-
-                                            t1 = highCorner - lowCorner & 0x1f;
-                                            t2 = 0;
-
-                                            h00 = 0;
-                                            h10 = 0;
-                                            h01 = 0;
-                                            h11 = w1 - w2;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                        if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                        {
-                                            function = block.CeilingDiagonalSplit == DiagonalSplit.XpZn ? 0x11 : 0x12;
-                                        }
-                                        else
-                                        {
-                                            function = 0x0a;
-                                        }
-
-                                        if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
-                                        {
-                                            var lowCorner = w0;
-                                            var highCorner = w2;
-
-
-                                            t1 = highCorner - lowCorner & 0x1f;
-                                            t2 = 0;
-
-                                            h00 = 0;
-                                            h10 = w2 - w1;
-                                            h01 = 0;
-                                            h11 = 0;
-                                        }
-                                        else
-                                        {
-                                            var lowCorner = w2;
-                                            var highCorner = w0;
-
-                                            t1 = 0;
-                                            t2 = highCorner - lowCorner & 0x1f;
-
-                                            h00 = 0;
-                                            h10 = 0;
-                                            h01 = w0 - w1;
-                                            h11 = 0;
-                                        }
-                                    }
-
-                                    var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
-                                    var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
-
-                                    tempCodes.Add(code1);
-                                    tempCodes.Add(code2);
-                                }
-                            }
-                            else
-                            {
-                                if (block.CeilingIfQuadSlopeX == 0 && block.CeilingIfQuadSlopeZ == 0)
-                                {
-                                    int w0 = block.WS[0];
-                                    int w1 = block.WS[1];
-                                    int w2 = block.WS[2];
-                                    int w3 = block.WS[3];
-
-                                    // We have not a slope, so if this is not a horizontal square then we have triangulation
-                                    if (!Block.IsQuad(w0, w1, w2, w3))
-                                    {
-                                        // We have to find the axis of the triangulation
-                                        var max = block.CeilingMax;
-
-                                        lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                        // Corner heights
-                                        var h10 = max - w2;
-                                        var h00 = max - w3;
-                                        var h01 = max - w0;
-                                        var h11 = max - w1;
-
-                                        var t1 = 0;
-                                        var t2 = 0;
-
-                                        // The real ceiling split of the sector
-                                        int function;
-
-                                        // Now, for each of the two possible splits, apply the algorithm described by meta2tr and
-                                        // TRosettaStone 3. I've simply managed some cases by hand. The difficult task is to
-                                        // decide if apply the height correction to both triangles or just one of them.
-                                        // Function must be decided looking at portals.
-
-                                        if (!block.FloorSplitDirectionIsXEqualsZ)
-                                        {
-                                            if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                            {
-                                                if (w0 == w1 && w1 == w2 && w2 == w0)
-                                                {
-                                                    function = 0x10;
-                                                }
-                                                else
-                                                {
-                                                    function = 0x0f;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                function = 0x09;
-                                            }
-
-                                            var p00 = new Vector3(0, h00 * 256, 1024);
-                                            var p01 = new Vector3(0, h01 * 256, 0);
-                                            var p10 = new Vector3(1024, h10 * 256, 1024);
-                                            var p11 = new Vector3(1024, h11 * 256, 0);
-
-                                            var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
-
-                                            // Choose which triangle to adjust
-                                            if (h00 < Math.Min(h10, h01) && h11 < Math.Min(h10, h01))
-                                            {
-                                                var pl1 = Plane.CreateFromVertices(p01, p00, p10);
-
-                                                float distance1;
-
-                                                // Find the 4th point
-                                                var ray1 = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray1, pl1, out distance1);
-                                                distance1 = 32768 - (float)Math.Round(distance1);
-                                                distance1 /= 256;
-
-                                                t2 = (int)(-maxHeight + distance1) & 0x1f;
-
-                                                var pl2 = Plane.CreateFromVertices(p10, p11, p01);
-
-                                                float distance2;
-
-                                                // Find the 4th point
-                                                var ray2 = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray2, pl2, out distance2);
-                                                distance2 = 32768 - (float)Math.Round(distance2);
-                                                distance2 /= 256;
-
-                                                t1 = (int)(-maxHeight + distance2) & 0x1f;
-                                            }
-                                            else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
-                                                     h11 < h00)
-                                            {
-                                                var p = Plane.CreateFromVertices(p01, p10, p11);
-
-                                                float distance;
-
-                                                // Find the 4th point
-                                                var ray = new Ray(new Vector3(0, 32768, 1024), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray, p, out distance);
-                                                distance = 32768 - (float)Math.Round(distance);
-                                                distance /= 256;
-
-                                                var maxTriangle = Math.Max(Math.Max(h01, h11), h10);
-
-                                                if (distance <= maxTriangle)
-                                                {
-                                                    t1 = 0;
-                                                    t2 = -maxHeight + maxTriangle & 0x1f;
-                                                }
-                                                else
-                                                {
-                                                    t1 = 0;
-                                                    t2 = (int)(-maxHeight + distance) & 0x1f;
-                                                }
-                                            }
-                                            else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
-                                                     h00 < h11)
-                                            {
-                                                var p = Plane.CreateFromVertices(p01, p00, p10);
-
-                                                float distance;
-
-                                                // Find the 4th point
-                                                var ray = new Ray(new Vector3(1024, 32768, 0), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray, p, out distance);
-                                                distance = 32768 - (float)Math.Round(distance);
-                                                distance /= 256;
-
-                                                var maxTriangle = Math.Max(Math.Max(h01, h00), h10);
-
-                                                if (distance <= maxTriangle)
-                                                {
-                                                    t2 = 0;
-                                                    t1 = -maxHeight + maxTriangle & 0x1f;
-                                                }
-                                                else
-                                                {
-                                                    t2 = 0;
-                                                    t1 = (int)(-maxHeight + distance) & 0x1f;
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                                            {
-                                                if (w3 == w0 && w0 == w1 && w1 == w3)
-                                                {
-                                                    function = 0x11;
-                                                }
-                                                else
-                                                {
-                                                    function = 0x12;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                function = 0x0a;
-                                            }
-
-                                            var p00 = new Vector3(0, h00 * 256, 1024);
-                                            var p01 = new Vector3(0, h01 * 256, 0);
-                                            var p10 = new Vector3(1024, h10 * 256, 1024);
-                                            var p11 = new Vector3(1024, h11 * 256, 0);
-
-                                            var maxHeight = Math.Max(Math.Max(Math.Max(h01, h11), h00), h10);
-
-                                            // Choose which triangle to adjust
-                                            if (h01 < Math.Min(h00, h11) && h10 < Math.Min(h00, h11))
-                                            {
-                                                var pl1 = Plane.CreateFromVertices(p11, p00, p10);
-
-                                                float distance1;
-
-                                                // Find the 4th point
-                                                var ray1 = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray1, pl1, out distance1);
-                                                distance1 = 32768 - (float)Math.Round(distance1);
-                                                distance1 /= 256;
-
-                                                t2 = (int)(-maxHeight + distance1) & 0x1f;
-
-                                                var pl2 = Plane.CreateFromVertices(p00, p11, p01);
-
-                                                float distance2;
-
-                                                // Find the 4th point
-                                                var ray2 = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray2, pl2, out distance2);
-                                                distance2 = 32768 - (float)Math.Round(distance2);
-                                                distance2 /= 256;
-
-                                                t1 = (int)(-maxHeight + distance2) & 0x1f;
-                                            }
-                                            else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
-                                                     h01 < h10)
-                                            {
-                                                var p = Plane.CreateFromVertices(p01, p00, p11);
-
-                                                float distance;
-
-                                                // Find the 4th point
-                                                var ray = new Ray(new Vector3(1024, 32768, 1024), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray, p, out distance);
-                                                distance = 32768 - (float)Math.Round(distance);
-                                                distance /= 256;
-
-                                                var maxTriangle = Math.Max(Math.Max(h01, h11), h00);
-
-                                                if (distance <= maxTriangle)
-                                                {
-                                                    t1 = -maxHeight + maxTriangle & 0x1f;
-                                                    t2 = 0;
-                                                }
-                                                else
-                                                {
-                                                    t1 = (int)(-maxHeight + distance) & 0x1f;
-                                                    t2 = 0;
-                                                }
-                                            }
-                                            else if ((h11 == maxHeight || h00 == maxHeight || h01 == maxHeight) &&
-                                                     h10 < h01)
-                                            {
-                                                var p = Plane.CreateFromVertices(p11, p00, p10);
-
-                                                float distance;
-
-                                                // Find the 4th point
-                                                var ray = new Ray(new Vector3(0, 32768, 0), -Vector3.UnitY);
-                                                Collision.RayIntersectsPlane(ray, p, out distance);
-                                                distance = 32768 - (float)Math.Round(distance);
-                                                distance /= 256;
-
-                                                var maxTriangle = Math.Max(Math.Max(h11, h00), h10);
-
-                                                if (distance <= maxTriangle)
-                                                {
-                                                    t1 = 0;
-                                                    t2 = -maxHeight + maxTriangle & 0x1f;
-                                                }
-                                                else
-                                                {
-                                                    t1 = 0;
-                                                    t2 = (int)(-maxHeight + distance) & 0x1f;
-                                                }
-                                            }
-                                        }
-
-                                        // Now build the floordata codes
-                                        ushort code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
-                                        ushort code2 = (ushort)((h11) | (h01 << 4) | (h00 << 8) | (h10 << 12));
-
-                                        tempCodes.Add(code1);
-                                        tempCodes.Add(code2);
-                                    }
-                                }
-                            }
-                        }
-
-                        // If sector is Climbable
-                        if (_level.Settings.GameVersion >= GameVersion.TR2 && 
-                            (block.Flags & BlockFlags.ClimbAny) != BlockFlags.None)
-                        {
-                            ushort climb = 0x06;
-
-                            if (block.HasFlag(BlockFlags.ClimbPositiveZ))
-                                climb |= (ushort)(0x01 << 8);
-                            if (block.HasFlag(BlockFlags.ClimbPositiveX))
-                                climb |= (ushort)(0x02 << 8);
-                            if (block.HasFlag(BlockFlags.ClimbNegativeZ))
-                                climb |= (ushort)(0x04 << 8);
-                            if (block.HasFlag(BlockFlags.ClimbNegativeX))
-                                climb |= (ushort)(0x08 << 8);
-
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(climb);
-                        }
-
-                        // If sector is Death
-                        if (block.HasFlag(BlockFlags.DeathFire))
-                        {
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(0x05);
-                        }
-
-                        // If sector is Monkey
-                        if (_level.Settings.GameVersion >= GameVersion.TR3 &&
-                            (block.Flags & BlockFlags.Monkey) == BlockFlags.Monkey)
-                        {
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(0x13);
-                        }
-
-                        // If sector is Beetle
-                        if (_level.Settings.GameVersion >= GameVersion.TR3 &&
-                            (block.Flags & BlockFlags.Beetle) == BlockFlags.Beetle)
-                        {
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(0x15);
-                        }
-
-                        // If sector is Trigger triggerer
-                        if (_level.Settings.GameVersion >= GameVersion.TR3 &&
-                            (block.Flags & BlockFlags.TriggerTriggerer) == BlockFlags.TriggerTriggerer)
-                        {
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(0x14);
-                        }
-
-                        // Triggers
-                        var triggers = room.Blocks[x, z].Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t));
-                        var firstTrigger = triggers.FirstOrDefault();
-                        if (firstTrigger != null)
-                        {
-                            // First, we search if a special trigger exists
-                            TriggerInstance found = triggers.FirstOrDefault(t => t.TriggerType != TriggerType.Trigger) ?? firstTrigger;
-                            var sortedTriggers = new List<TriggerInstance> { found };
-                            sortedTriggers.AddRange(triggers.Where(trigger => trigger != found));
-
-                            {
-                                lastFloorDataFunction = (ushort)tempCodes.Count;
-
-                                // Trigger type and setup are coming from the found trigger. Other triggers are needed only for action.
-                                ushort trigger1 = 0x04;
-                                switch (found.TriggerType)
-                                {
-                                    case TriggerType.Trigger:
-                                        trigger1 |= 0x00 << 8;
-                                        break;
-                                    case TriggerType.Pad:
-                                        trigger1 |= 0x01 << 8;
-                                        break;
-                                    case TriggerType.Switch:
-                                        trigger1 |= 0x02 << 8;
-                                        break;
-                                    case TriggerType.Key:
-                                        trigger1 |= 0x03 << 8;
-                                        break;
-                                    case TriggerType.Pickup:
-                                        trigger1 |= 0x04 << 8;
-                                        break;
-                                    case TriggerType.Heavy:
-                                        trigger1 |= 0x05 << 8;
-                                        break;
-                                    case TriggerType.Antipad:
-                                        trigger1 |= 0x06 << 8;
-                                        break;
-                                    case TriggerType.Combat:
-                                        trigger1 |= 0x07 << 8;
-                                        break;
-                                    case TriggerType.Dummy:
-                                        trigger1 |= 0x08 << 8;
-                                        break;
-                                    case TriggerType.Antitrigger:
-                                        trigger1 |= 0x09 << 8;
-                                        break;
-                                    case TriggerType.HeavySwitch:
-                                        trigger1 |= 0x0a << 8;
-                                        break;
-                                    case TriggerType.HeavyAntritrigger:
-                                        trigger1 |= 0x0b << 8;
-                                        break;
-                                    case TriggerType.ConditionNg:
-                                        trigger1 |= 0x0c << 8;
-                                        break;
-                                    default:
-                                        throw new Exception("Unknown trigger type found '" + found + "'");
-                                }
-
-                                ushort triggerSetup;
-                                if (_level.Settings.GameVersion == GameVersion.TRNG)
-                                {
-                                    // NG flipeffects store timer and extra in additional ushort
-                                    if (found.TargetType == TriggerTargetType.FlipEffect)
-                                        triggerSetup = 0;
-                                    // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
-                                    else if (found.TriggerType == TriggerType.ConditionNg)
-                                        triggerSetup = GetTriggerRealTimer(found, 0xffff);
-                                    // all other triggers work as usual
-                                    else
-                                        triggerSetup = GetTriggerRealTimer(found, 0xff);
-                                }
-                                else
-                                    triggerSetup = GetTriggerParameter(found.Timer, found, 0xff);
-                                triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
-                                triggerSetup |= (ushort)((found.CodeBits & 0x1f) << 9);
-
-                                tempCodes.Add(trigger1);
-                                tempCodes.Add(triggerSetup);
-                            }
-
-                            foreach (var trigger in sortedTriggers)
-                            {
-                                ushort trigger2;
-
-                                switch (trigger.TargetType)
-                                {
-                                    case TriggerTargetType.Object:
-                                        // Trigger for object
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (0 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.Camera:
-                                        // Trigger for camera
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (1 << 10));
-                                        tempCodes.Add(trigger2);
-
-                                        // Additional short
-                                        ushort trigger3 = 0;
-                                        trigger3 |= (ushort)(GetTriggerParameter(trigger.Timer, trigger, 0xff));
-                                        trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
-                                        tempCodes.Add(trigger3);
-                                        break;
-                                    case TriggerTargetType.Sink:
-                                        // Trigger for sink
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (2 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.FlipMap:
-                                        // Trigger for flip map
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (3 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.FlipOn:
-                                        // Trigger for flip map on
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (4 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.FlipOff:
-                                        // Trigger for flip map off
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (5 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.Target:
-                                        // Trigger for look at item
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (6 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.FinishLevel:
-                                        // Trigger for finish level
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (7 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.PlayAudio:
-                                        // Trigger for play soundtrack
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (8 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.FlipEffect:
-                                        // Trigger for flip effect
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (9 << 10));
-                                        tempCodes.Add(trigger2);
-
-                                        // TRNG stores flipeffect timer as an extra ushort
-                                        if (_level.Settings.GameVersion == GameVersion.TRNG)
-                                        {
-                                            trigger3 = GetTriggerRealTimer(trigger, 0xffff);
-                                            tempCodes.Add(trigger3);
-                                        }
-
-                                        break;
-                                    case TriggerTargetType.Secret:
-                                        // Trigger for secret found
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (10 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.ActionNg:
-                                        // Trigger for action
-                                        if (_level.Settings.GameVersion == GameVersion.TRNG)
-                                        {
-                                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (11 << 10));
-                                            tempCodes.Add(trigger2);
-
-                                            trigger2 = (ushort)(GetTriggerRealTimer(trigger, 0xffff));
-                                            tempCodes.Add(trigger2);
-                                        }
-                                        else
-                                            _progressReporter.ReportWarn("Level uses action trigger '" + trigger + "' which is not supported in this game engine.");
-                                        break;
-                                    case TriggerTargetType.FlyByCamera:
-                                        // Trigger for fly by
-                                        if (!(trigger.Target is FlybyCameraInstance))
-                                            throw new Exception("A Flyby trigger must point to a flyby camera! ('" + trigger + "')");
-                                        var flyByCamera = (FlybyCameraInstance)(trigger.Target);
-                                        trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
-                                        tempCodes.Add(trigger2);
-
-                                        trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.ParameterNg:
-                                        // Trigger for secret found
-                                        ushort targetTypeBits = (trigger.Target is ObjectInstance) ? (ushort)(0 << 10) : (ushort)(13 << 10);
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | targetTypeBits);
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    case TriggerTargetType.FmvNg:
-                                        // Trigger for secret found
-                                        trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (14 << 10));
-                                        tempCodes.Add(trigger2);
-                                        break;
-                                    default:
-                                        throw new Exception("Unknown trigger type found '" + trigger + "'");
-                                }
-                            }
-
-                            tempCodes[tempCodes.Count - 1] |= 0x8000; // End of the action list
-                        }
-
-                        if (tempCodes.Count == 0)
-                        {
-                            sector.FloorDataIndex = 0;
                         }
                         else
-                        {
-                            // Mark the end of the list
-                            tempCodes[lastFloorDataFunction] |= 0x8000;
-                            _floorData.AddRange(tempCodes);
+                        { // Sector is not a complete wall
+                            Room.RoomConnectionType floorPortalType = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType;
+                            Room.RoomConnectionType ceilingPortalType = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)).TraversableType;
+                            var floorShape = new RoomSectorShape(block.QA, floorPortalType, block.FloorSplitDirectionIsXEqualsZWithDiagonalSplit, block.FloorDiagonalSplit, block.IsAnyWall);
+                            var ceilingShape = new RoomSectorShape(block.WS, ceilingPortalType, block.CeilingSplitDirectionIsXEqualsZWithDiagonalSplit, block.CeilingDiagonalSplit, block.IsAnyWall);
+
+                            // Floor
+                            int floorHeight = -room.Position.Y - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
+                            if (floorHeight < -127 || floorHeight > 127)
+                                throw new ApplicationException("Floor height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
+                            sector.Floor = (sbyte)floorHeight;
+                            if (floorPortalType != Room.RoomConnectionType.NoPortal)
+                            {
+                                var portal = block.FloorPortal;
+                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                                if (roomIndex >= 254)
+                                    throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                                sector.RoomBelow = (byte)roomIndex;
+                            }
+
+                            // Ceiling
+                            int ceilingHeight = -room.Position.Y - GetBalancedRealHeight(ceilingShape, floorShape.Min, true);
+                            if (ceilingHeight < -127 || ceilingHeight > 127)
+                                throw new ApplicationException("Ceiling height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
+                            sector.Ceiling = (sbyte)ceilingHeight;
+                            if (ceilingPortalType != Room.RoomConnectionType.NoPortal)
+                            {
+                                var portal = block.CeilingPortal;
+                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                                if (roomIndex >= 254)
+                                    throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                                sector.RoomAbove = (byte)roomIndex;
+                            }
+
+                            // Calculate the floordata now
+                            tempFloorData.Clear();
+                            BuildFloorDataForSector(room, block, new VectorInt2(x, z), floorShape, ceilingShape, tempFloorData);
+                            if (tempFloorData.Count != 0)
+                            {
+                                sector.FloorDataIndex = checked((ushort)_floorData.Count);
+                                _floorData.AddRange(tempFloorData);
+                            }
                         }
 
                         // Update the sector
@@ -1332,6 +203,270 @@ namespace TombLib.LevelData.Compilers
             }
 
             ReportProgress(80, "    Floordata size: " + _floorData.Count * 2 + " bytes");
+        }
+
+        private void BuildFloorDataForSector(Room room, Block block, VectorInt2 pos, RoomSectorShape floorShape, RoomSectorShape ceilingShape, List<ushort> outFloorData)
+        {
+            int lastFloorDataFunction = -1;
+
+            // Floor collision
+            BuildFloorDataCollision(floorShape, ceilingShape.Max, false, outFloorData, ref lastFloorDataFunction, room, pos);
+
+            // Ceiling collision
+            BuildFloorDataCollision(ceilingShape, floorShape.Min, true, outFloorData, ref lastFloorDataFunction, room, pos);
+
+            // If sector is Climbable
+            if (_level.Settings.GameVersion >= GameVersion.TR2 &&
+                (block.Flags & BlockFlags.ClimbAny) != BlockFlags.None)
+            {
+                ushort climb = 0x06;
+                if ((block.Flags & BlockFlags.ClimbPositiveZ) != BlockFlags.None)
+                    climb |= 0x0100;
+                if ((block.Flags & BlockFlags.ClimbPositiveX) != BlockFlags.None)
+                    climb |= 0x0200;
+                if ((block.Flags & BlockFlags.ClimbNegativeZ) != BlockFlags.None)
+                    climb |= 0x0400;
+                if ((block.Flags & BlockFlags.ClimbNegativeX) != BlockFlags.None)
+                    climb |= 0x0800;
+
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add(climb);
+            }
+
+            // If sector is Death
+            if (block.HasFlag(BlockFlags.DeathFire))
+            {
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add(0x05);
+            }
+
+            // If sector is Monkey
+            if (_level.Settings.GameVersion >= GameVersion.TR3 &&
+                (block.Flags & BlockFlags.Monkey) != BlockFlags.None)
+            {
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add(0x13);
+            }
+
+            // If sector is Beetle
+            if (_level.Settings.GameVersion >= GameVersion.TR3 &&
+                (block.Flags & BlockFlags.Beetle) != BlockFlags.None)
+            {
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add(0x15);
+            }
+
+            // If sector is Trigger triggerer
+            if (_level.Settings.GameVersion >= GameVersion.TR3 &&
+                (block.Flags & BlockFlags.TriggerTriggerer) != BlockFlags.None)
+            {
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add(0x14);
+            }
+
+            // Triggers
+            var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t));
+            var firstTrigger = triggers.FirstOrDefault();
+            if (firstTrigger != null)
+            {
+                // First, we search if a special trigger exists
+                TriggerInstance found = triggers.FirstOrDefault(t => t.TriggerType != TriggerType.Trigger) ?? firstTrigger;
+                var sortedTriggers = new List<TriggerInstance> { found };
+                sortedTriggers.AddRange(triggers.Where(trigger => trigger != found));
+
+                {
+                    lastFloorDataFunction = outFloorData.Count;
+
+                    // Trigger type and setup are coming from the found trigger. Other triggers are needed only for action.
+                    ushort trigger1 = 0x04;
+                    switch (found.TriggerType)
+                    {
+                        case TriggerType.Trigger:
+                            trigger1 |= 0x00 << 8;
+                            break;
+                        case TriggerType.Pad:
+                            trigger1 |= 0x01 << 8;
+                            break;
+                        case TriggerType.Switch:
+                            trigger1 |= 0x02 << 8;
+                            break;
+                        case TriggerType.Key:
+                            trigger1 |= 0x03 << 8;
+                            break;
+                        case TriggerType.Pickup:
+                            trigger1 |= 0x04 << 8;
+                            break;
+                        case TriggerType.Heavy:
+                            trigger1 |= 0x05 << 8;
+                            break;
+                        case TriggerType.Antipad:
+                            trigger1 |= 0x06 << 8;
+                            break;
+                        case TriggerType.Combat:
+                            trigger1 |= 0x07 << 8;
+                            break;
+                        case TriggerType.Dummy:
+                            trigger1 |= 0x08 << 8;
+                            break;
+                        case TriggerType.Antitrigger:
+                            trigger1 |= 0x09 << 8;
+                            break;
+                        case TriggerType.HeavySwitch:
+                            trigger1 |= 0x0a << 8;
+                            break;
+                        case TriggerType.HeavyAntritrigger:
+                            trigger1 |= 0x0b << 8;
+                            break;
+                        case TriggerType.ConditionNg:
+                            trigger1 |= 0x0c << 8;
+                            break;
+                        default:
+                            throw new Exception("Unknown trigger type found '" + found + "'");
+                    }
+
+                    ushort triggerSetup;
+                    if (_level.Settings.GameVersion == GameVersion.TRNG)
+                    {
+                        // NG flipeffects store timer and extra in additional ushort
+                        if (found.TargetType == TriggerTargetType.FlipEffect)
+                            triggerSetup = 0;
+                        // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
+                        else if (found.TriggerType == TriggerType.ConditionNg)
+                            triggerSetup = GetTriggerRealTimer(found, 0xffff);
+                        // all other triggers work as usual
+                        else
+                            triggerSetup = GetTriggerRealTimer(found, 0xff);
+                    }
+                    else
+                        triggerSetup = GetTriggerParameter(found.Timer, found, 0xff);
+                    triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
+                    triggerSetup |= (ushort)((found.CodeBits & 0x1f) << 9);
+
+                    outFloorData.Add(trigger1);
+                    outFloorData.Add(triggerSetup);
+                }
+
+                foreach (var trigger in sortedTriggers)
+                {
+                    ushort trigger2;
+
+                    switch (trigger.TargetType)
+                    {
+                        case TriggerTargetType.Object:
+                            // Trigger for object
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (0 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.Camera:
+                            // Trigger for camera
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (1 << 10));
+                            outFloorData.Add(trigger2);
+
+                            // Additional short
+                            ushort trigger3 = 0;
+                            trigger3 |= (ushort)(GetTriggerParameter(trigger.Timer, trigger, 0xff));
+                            trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
+                            outFloorData.Add(trigger3);
+                            break;
+                        case TriggerTargetType.Sink:
+                            // Trigger for sink
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (2 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.FlipMap:
+                            // Trigger for flip map
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (3 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.FlipOn:
+                            // Trigger for flip map on
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (4 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.FlipOff:
+                            // Trigger for flip map off
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (5 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.Target:
+                            // Trigger for look at item
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (6 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.FinishLevel:
+                            // Trigger for finish level
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (7 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.PlayAudio:
+                            // Trigger for play soundtrack
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (8 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.FlipEffect:
+                            // Trigger for flip effect
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (9 << 10));
+                            outFloorData.Add(trigger2);
+
+                            // TRNG stores flipeffect timer as an extra ushort
+                            if (_level.Settings.GameVersion == GameVersion.TRNG)
+                            {
+                                trigger3 = GetTriggerRealTimer(trigger, 0xffff);
+                                outFloorData.Add(trigger3);
+                            }
+
+                            break;
+                        case TriggerTargetType.Secret:
+                            // Trigger for secret found
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (10 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.ActionNg:
+                            // Trigger for action
+                            if (_level.Settings.GameVersion == GameVersion.TRNG)
+                            {
+                                trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (11 << 10));
+                                outFloorData.Add(trigger2);
+
+                                trigger2 = (ushort)(GetTriggerRealTimer(trigger, 0xffff));
+                                outFloorData.Add(trigger2);
+                            }
+                            else
+                                _progressReporter.ReportWarn("Level uses action trigger '" + trigger + "' which is not supported in this game engine.");
+                            break;
+                        case TriggerTargetType.FlyByCamera:
+                            // Trigger for fly by
+                            if (!(trigger.Target is FlybyCameraInstance))
+                                throw new Exception("A Flyby trigger must point to a flyby camera! ('" + trigger + "')");
+                            var flyByCamera = (FlybyCameraInstance)(trigger.Target);
+                            trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
+                            outFloorData.Add(trigger2);
+
+                            trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.ParameterNg:
+                            // Trigger for secret found
+                            ushort targetTypeBits = (trigger.Target is ObjectInstance) ? (ushort)(0 << 10) : (ushort)(13 << 10);
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | targetTypeBits);
+                            outFloorData.Add(trigger2);
+                            break;
+                        case TriggerTargetType.FmvNg:
+                            // Trigger for secret found
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (14 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
+                        default:
+                            throw new Exception("Unknown trigger type found '" + trigger + "'");
+                    }
+                }
+
+                outFloorData[outFloorData.Count - 1] |= 0x8000; // End of the action list
+            }
+
+            // Set end of floor data function
+            if (lastFloorDataFunction != -1)
+                outFloorData[lastFloorDataFunction] |= 0x8000;
         }
 
         private ushort GetTriggerRealTimer(TriggerInstance trigger, ushort upperBound)
@@ -1382,6 +517,327 @@ namespace TombLib.LevelData.Compilers
             if (index > upperBound)
                 throw new ArgumentException("Trigger parameter is too big ('" + triggerDiagnostic + "').");
             return (ushort)index;
+        }
+
+        private struct RoomSectorShape
+        {
+            public bool SplitDirectionIsXEqualsZ;
+            public bool SplitPortalFirst;
+            public bool SplitPortalSecond;
+            public bool SplitWallFirst;
+            public bool SplitWallSecond;
+            public int HeightXnZn;
+            public int HeightXnZp;
+            public int HeightXpZn;
+            public int HeightXpZp;
+            public int DiagonalStep;
+
+            public RoomSectorShape(short[] edgeArray, Room.RoomConnectionType portalType, bool splitDirectionWithDiagonalSplit, DiagonalSplit diagonalSplitType, bool wall)
+            {
+                HeightXnZn = edgeArray[Block.FaceXnZn];
+                HeightXpZn = edgeArray[Block.FaceXpZn];
+                HeightXnZp = edgeArray[Block.FaceXnZp];
+                HeightXpZp = edgeArray[Block.FaceXpZp];
+                SplitDirectionIsXEqualsZ = splitDirectionWithDiagonalSplit;
+
+                switch (portalType)
+                {
+                    case Room.RoomConnectionType.NoPortal:
+                        SplitPortalFirst = false;
+                        SplitPortalSecond = false;
+                        break;
+                    case Room.RoomConnectionType.FullPortal:
+                        SplitPortalFirst = true;
+                        SplitPortalSecond = true;
+                        break;
+                    case Room.RoomConnectionType.TriangularPortalXnZn:
+                        SplitPortalFirst = true;
+                        SplitPortalSecond = false;
+                        SplitDirectionIsXEqualsZ = false;
+                        break;
+                    case Room.RoomConnectionType.TriangularPortalXnZp:
+                        SplitPortalFirst = true;
+                        SplitPortalSecond = false;
+                        SplitDirectionIsXEqualsZ = true;
+                        break;
+                    case Room.RoomConnectionType.TriangularPortalXpZp:
+                        SplitPortalFirst = false;
+                        SplitPortalSecond = true;
+                        SplitDirectionIsXEqualsZ = false;
+                        break;
+                    case Room.RoomConnectionType.TriangularPortalXpZn:
+                        SplitPortalFirst = false;
+                        SplitPortalSecond = true;
+                        SplitDirectionIsXEqualsZ = true;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                switch (diagonalSplitType)
+                {
+                    case DiagonalSplit.None:
+                        DiagonalStep = 0;
+                        SplitWallFirst = wall;
+                        SplitWallSecond = wall;
+                        break;
+                    case DiagonalSplit.XnZn:
+                        DiagonalStep = edgeArray[Block.FaceXpZp] - edgeArray[Block.FaceXnZp];
+                        SplitWallFirst = wall;
+                        SplitWallSecond = false;
+                        break;
+                    case DiagonalSplit.XnZp:
+                        DiagonalStep = edgeArray[Block.FaceXpZn] - edgeArray[Block.FaceXpZp];
+
+                        SplitWallFirst = wall;
+                        SplitWallSecond = false;
+                        break;
+                    case DiagonalSplit.XpZn:
+                        DiagonalStep = edgeArray[Block.FaceXnZp] - edgeArray[Block.FaceXnZn];
+                        HeightXnZn += DiagonalStep;
+                        HeightXpZp += DiagonalStep;
+                        DiagonalStep = -DiagonalStep;
+
+                        SplitWallFirst = false;
+                        SplitWallSecond = wall;
+                        break;
+                    case DiagonalSplit.XpZp:
+                        DiagonalStep = edgeArray[Block.FaceXnZn] - edgeArray[Block.FaceXpZn];
+                        HeightXpZn += DiagonalStep;
+                        HeightXnZp += DiagonalStep;
+                        DiagonalStep = -DiagonalStep;
+
+                        SplitWallFirst = false;
+                        SplitWallSecond = wall;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            public int Max => Math.Max(Math.Max(HeightXnZn, HeightXnZp), Math.Max(HeightXpZn, HeightXpZp));
+            public int Min => Math.Min(Math.Min(HeightXnZn, HeightXnZp), Math.Min(HeightXpZn, HeightXpZp));
+            public bool IsFlat => (HeightXnZp == HeightXnZn) && (HeightXpZn == HeightXnZn) && (HeightXpZp == HeightXnZn) &&
+                DiagonalStep == 0 && (SplitPortalSecond == SplitPortalFirst) && (SplitWallFirst == SplitWallSecond);
+            public bool IsSplit => ((HeightXnZn - HeightXnZp) != (HeightXpZn - HeightXpZp)) || ((HeightXnZn - HeightXpZn) != (HeightXnZp - HeightXpZp)) ||
+                DiagonalStep != 0 || (SplitPortalSecond != SplitPortalFirst) || (SplitWallFirst != SplitWallSecond);
+        }
+
+        // Portal type {no, first, second}, {Floor, Ceiling}, {Bisecting, NotBisecting}
+        private static readonly byte[,,] FunctionTriangleLookUp = new byte[3, 2, 2] {
+                        {{0x07, 0x08}, {0x09, 0x0a}},
+                        {{0x0b, 0x0d}, {0x0f, 0x11}},
+                        {{0x0c, 0x0e}, {0x10, 0x12}}};
+
+        private ushort TriangleCollisionGetSigned(int Value, Room reportRoom, VectorInt2 reportPos)
+        {
+            if ((Value < -16) || (Value > 15))
+            {
+                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The triangle is too steep, the collision is inaccurate.");
+                Value = Math.Max(Math.Min(Value, 15), -16);
+            }
+            ushort Result = (ushort)Value;
+            Result &= 0x1f;
+            return Result;
+        }
+
+        private ushort TriangleCollisionGetUnsigned(int Value, Room reportRoom, VectorInt2 reportPos)
+        {
+            if ((Value < 0) || (Value > 15))
+            {
+                _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The triangle is too steep, the collision is inaccurate.");
+                Value = Math.Max(Math.Min(Value, 0), 15);
+            }
+            return (ushort)Value;
+        }
+
+        private void BuildFloorDataCollision(RoomSectorShape shape, int oppositeExtreme, bool isCeiling, List<ushort> outFloorData, ref int lastFloorDataFunction, Room reportRoom, VectorInt2 reportPos)
+        {
+            if (shape.IsSplit && _level.Settings.GameVersion >= GameVersion.TR3)
+            { // Build a triangulated slope
+                int bisectingIndex = shape.SplitDirectionIsXEqualsZ ? 1 : 0;
+                int portalIndex;
+                if (shape.SplitPortalFirst && !shape.SplitPortalSecond)
+                    portalIndex = 1;
+                else if (!shape.SplitPortalFirst && shape.SplitPortalSecond)
+                    portalIndex = 2;
+                else
+                    portalIndex = 0;
+
+                ushort data0 = FunctionTriangleLookUp[portalIndex, isCeiling ? 1 : 0, bisectingIndex];
+                ushort data1 = 0;
+
+                int heightXnZn = shape.HeightXnZn;
+                int heightXnZp = shape.HeightXnZp;
+                int heightXpZn = shape.HeightXpZn;
+                int heightXpZp = shape.HeightXpZp;
+                if (shape.SplitDirectionIsXEqualsZ)
+                    heightXpZn -= shape.DiagonalStep;
+                else
+                    heightXpZp -= shape.DiagonalStep;
+                if (!isCeiling)
+                {
+                    heightXnZn = -heightXnZn;
+                    heightXnZp = -heightXnZp;
+                    heightXpZn = -heightXpZn;
+                    heightXpZp = -heightXpZp;
+                }
+
+                // https://s18.postimg.org/i66wjol2h/Calculating_t1x.gif
+                int lowestY = Math.Max(Math.Max(heightXnZn, heightXpZn), Math.Max(heightXnZp, heightXpZp));
+
+                int t00;
+                int t01;
+                BuildRoomSectorShape_t00_t01(shape, oppositeExtreme, isCeiling, out t00, out t01);
+
+                // Equalize height for maximum step size
+                {
+                    int average = (t00 + t01) / 2;
+                    t00 -= average;
+                    t01 -= average;
+                }
+
+                int t10;
+                int t11;
+                int t12;
+                int t13;
+                if (isCeiling)
+                {
+                    t00 = -t00;
+                    t01 = -t01;
+                    t10 = lowestY - heightXpZp;
+                    t11 = lowestY - heightXnZp;
+                    t12 = lowestY - heightXnZn;
+                    t13 = lowestY - heightXpZn;
+                }
+                else
+                {
+                    t10 = lowestY - heightXpZn;
+                    t11 = lowestY - heightXnZn;
+                    t12 = lowestY - heightXnZp;
+                    t13 = lowestY - heightXpZp;
+                }
+
+                data0 |= (ushort)(TriangleCollisionGetSigned(t00, reportRoom, reportPos) << 5);
+                data0 |= (ushort)(TriangleCollisionGetSigned(t01, reportRoom, reportPos) << 10);
+                data1 |= (ushort)(TriangleCollisionGetUnsigned(t10, reportRoom, reportPos));
+                data1 |= (ushort)(TriangleCollisionGetUnsigned(t11, reportRoom, reportPos) << 4);
+                data1 |= (ushort)(TriangleCollisionGetUnsigned(t12, reportRoom, reportPos) << 8);
+                data1 |= (ushort)(TriangleCollisionGetUnsigned(t13, reportRoom, reportPos) << 12);
+
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add(data0);
+                outFloorData.Add(data1);
+            }
+            else if (!shape.IsFlat)
+            { // Build a quad slope
+                int heightDiffX = shape.HeightXnZp - shape.HeightXnZn;
+                int heightDiffY = shape.HeightXpZn - shape.HeightXnZn;
+                if (isCeiling)
+                    heightDiffX = -heightDiffX;
+
+                if (Math.Abs(heightDiffX) > 127 || Math.Abs(heightDiffY) > 127)
+                {
+                    _progressReporter.ReportWarn("Quad slope collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The quad is too steep, the collision is inaccurate.");
+                    heightDiffX = Math.Min(Math.Max(heightDiffX, -127), 127);
+                    heightDiffY = Math.Min(Math.Max(heightDiffY, -127), 127);
+                }
+
+                ushort result = 0;
+                result |= (ushort)((ushort)(heightDiffY) & 0xff);
+                result |= (ushort)(((ushort)(heightDiffX) & 0xff) << 8);
+
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add((ushort)(isCeiling ? 0x03 : 0x02));
+                outFloorData.Add(result);
+            }
+        }
+
+        private void BuildRoomSectorShape_t00_t01(RoomSectorShape shape, int oppositeExtreme, bool isCeiling, out int out_t00, out int out_t01)
+        {
+            int heightXnZn = shape.HeightXnZn;
+            int heightXnZp = shape.HeightXnZp;
+            int heightXpZn = shape.HeightXpZn;
+            int heightXpZp = shape.HeightXpZp;
+            if (shape.SplitDirectionIsXEqualsZ)
+                heightXpZn -= shape.DiagonalStep;
+            else
+                heightXpZp -= shape.DiagonalStep;
+            if (!isCeiling)
+            {
+                heightXnZn = -heightXnZn;
+                heightXnZp = -heightXnZp;
+                heightXpZn = -heightXpZn;
+                heightXpZp = -heightXpZp;
+            }
+
+            // https://s18.postimg.org/u82adt75l/Calculating_t0x.gif
+            int highestY = Math.Min(Math.Min(heightXnZn, heightXpZn), Math.Min(heightXnZp, heightXpZp));
+
+            // Extend triangle as an flat quad that covers the sector. Heighest point of this.
+            int highestY_Extended00;
+            int highestY_Extended01;
+            if (shape.SplitDirectionIsXEqualsZ)
+            {
+                int extended00 = heightXnZn + heightXpZp - heightXpZn;
+                int extended01 = heightXnZn + heightXpZp - heightXnZp;
+                highestY_Extended00 = Math.Min
+                    (Math.Min(heightXnZn, heightXpZp),
+                    Math.Min(heightXpZn, extended00));
+                highestY_Extended01 = Math.Min
+                    (Math.Min(heightXnZn, heightXpZp),
+                    Math.Min(heightXnZp, extended01));
+            }
+            else
+            {
+                int extended00 = heightXnZp + heightXpZn - heightXpZp;
+                int extended01 = heightXnZp + heightXpZn - heightXnZn;
+                highestY_Extended00 = Math.Min
+                    (Math.Min(heightXnZp, heightXpZn),
+                    Math.Min(heightXpZp, extended00));
+                highestY_Extended01 = Math.Min
+                    (Math.Min(heightXnZp, heightXpZn),
+                    Math.Min(heightXnZn, extended01));
+            }
+            out_t00 = highestY_Extended00 - highestY + (isCeiling ? shape.DiagonalStep : -shape.DiagonalStep);
+            out_t01 = highestY_Extended01 - highestY;
+
+            // Handle walls
+            if (shape.SplitWallFirst || shape.SplitWallSecond)
+            {
+                // Extend approximately a little over half the sector height from both the ceiling and the floor.
+                int proposal = Math.Max(Math.Abs(shape.Min - oppositeExtreme), Math.Abs(shape.Max - oppositeExtreme)) / 2 + 1;
+                if (shape.SplitWallFirst)
+                    out_t01 = out_t00 - proposal;
+                else if (shape.SplitWallSecond)
+                    out_t00 = out_t01 - proposal;
+            }
+        }
+
+        private int GetBalancedRealHeight(RoomSectorShape shape, int oppositeExtreme, bool isCeiling)
+        {
+            int heightXnZn = shape.HeightXnZn;
+            int heightXnZp = shape.HeightXnZp;
+            int heightXpZn = shape.HeightXpZn;
+            int heightXpZp = shape.HeightXpZp;
+            if (shape.SplitDirectionIsXEqualsZ)
+                heightXpZn -= shape.DiagonalStep;
+            else
+                heightXpZp -= shape.DiagonalStep;
+            int result = isCeiling ?
+                Math.Min(Math.Min(heightXnZn, heightXnZp), Math.Min(heightXpZn, heightXpZp)) :
+                Math.Max(Math.Max(heightXnZn, heightXnZp), Math.Max(heightXpZn, heightXpZp));
+
+            // Equalize height for maximum step size
+            if (shape.IsSplit)
+            {
+                int t00;
+                int t01;
+                BuildRoomSectorShape_t00_t01(shape, oppositeExtreme, isCeiling, out t00, out t01);
+                int average = (t00 + t01) / 2;
+                result += isCeiling ? average : -average;
+            }
+            return result;
         }
     }
 }
