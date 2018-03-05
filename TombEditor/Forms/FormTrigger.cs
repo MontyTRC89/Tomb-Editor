@@ -42,6 +42,10 @@ namespace TombEditor
                 control.Level = level;
             }
 
+            foreach (Control control in scriptExportPanel.Controls)
+                control.Click += scriptExportPanel_Click;
+            scriptExportPanel.Click += scriptExportPanel_Click;
+
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MaximumSize = new Size(32000, Size.Height);
@@ -174,22 +178,22 @@ namespace TombEditor
             try
             {
                 tbScript.Text = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger);
-                scriptExportPanel.Enabled = true;
+                tbScript.Enabled = true;
             }
             catch (NgParameterInfo.ExceptionScriptNotSupported)
             {
                 tbScript.Text = "Not supported";
-                scriptExportPanel.Enabled = false;
+                tbScript.Enabled = false;
             }
             catch (NgParameterInfo.ExceptionScriptIdMissing)
             {
                 tbScript.Text = "Click to generate";
-                scriptExportPanel.Enabled = false;
+                tbScript.Enabled = false;
             }
             catch (Exception exc)
             {
                 tbScript.Text = "Check all fields";
-                scriptExportPanel.Enabled = true;
+                tbScript.Enabled = false;
                 logger.Debug(exc, "\"ExportToScriptTrigger\" failed.");
             }
         }
@@ -208,13 +212,10 @@ namespace TombEditor
             Clipboard.SetText(tbScript.Text);
         }
 
-        private void FormTrigger_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void scriptExportPanel_Click(object sender, EventArgs e)
         {
-            if (tbScript.Bounds.Contains(e.Location))
-            {
-                AllocateNewScriptIds();
-                UpdateExportToTrigger();
-            }
+            AllocateNewScriptIds();
+            UpdateExportToTrigger();
         }
 
         private void cbRawMode_CheckedChanged(object sender, EventArgs e)
