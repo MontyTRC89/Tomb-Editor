@@ -24,7 +24,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write(ngleStartSignature);
 
             // Write chunks
-            WriteNgChunkExtraRoomFlags(writer);
+            // WriteNgChunkExtraRoomFlags(writer);
             WriteNgChunkStaticsTable(writer);
             WriteNgChunkAnimatedTextures(writer);
             WriteNgChunkMoveablesTable(writer);
