@@ -17,8 +17,8 @@ namespace TombEditor.Controls
 {
     public class DepthBar
     {
-        public const int MinDepth = -128;
-        public const int MaxDepth = 127;
+        public const float MinDepth = -128;
+        public const float MaxDepth = 127;
         public readonly List<DepthProbe> DepthProbes = new List<DepthProbe>();
         public event Action InvalidateParent;
         public event Func<IWin32Window> GetParent;
@@ -265,7 +265,7 @@ namespace TombEditor.Controls
                     break;
 
                 case SelectionMode.RoomMove:
-                    var destinationHeight = ((int)Math.Round(FromVisualY(barArea, e.Y) - _roomMouseOffset));
+                    float destinationHeight = FromVisualY(barArea, e.Y) - _roomMouseOffset;
 
                     if (_roomsToMove == null)
                     {
@@ -281,19 +281,19 @@ namespace TombEditor.Controls
                     }
 
                     // limit room movement to valid range
-                    var maxHeight = MaxDepth;
-                    var minHeight = MinDepth;
+                    float maxHeight = MaxDepth;
+                    float minHeight = MinDepth;
                     foreach (Room room in _roomsToMove)
                     {
-                        var roomUpperLimit = MaxDepth - (room.Position.Y - _roomMouseClicked.Position.Y + room.GetHighestCorner());
-                        var roomLowerLimit = MinDepth - (room.Position.Y - _roomMouseClicked.Position.Y + room.GetLowestCorner());
+                        float roomUpperLimit = MaxDepth - (room.Position.Y - _roomMouseClicked.Position.Y + room.GetHighestCorner());
+                        float roomLowerLimit = MinDepth - (room.Position.Y - _roomMouseClicked.Position.Y + room.GetLowestCorner());
                         maxHeight = Math.Min(maxHeight, roomUpperLimit);
                         minHeight = Math.Max(minHeight, roomLowerLimit);
                     }
                     destinationHeight = Math.Max(Math.Min(destinationHeight, maxHeight), minHeight);
 
                     // do movement
-                    EditorActions.MoveRooms(new VectorInt3(0, destinationHeight - _roomMouseClicked.Position.Y, 0), _roomsToMove);
+                    EditorActions.MoveRooms(new VectorInt3(0, (int)Math.Round(destinationHeight - _roomMouseClicked.Position.Y), 0), _roomsToMove);
                     break;
             }
         }
