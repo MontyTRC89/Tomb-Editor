@@ -269,6 +269,14 @@ namespace TombLib.Utils
             new FileFormat("Graphics Interchange Format (Not recommended)", "gif")
         };
 
+        public static IReadOnlyList<FileFormat> SaveFileFileExtensions { get; } = new List<FileFormat>()
+        {
+            new FileFormat("Portable Network Graphics", "png"),
+            new FileFormat("Windows Bitmap", "bmp", "dib"),
+            new FileFormat("Jpeg Image", "jpg", "jpeg", "jpe", "jif", "jfif", "jfi"),
+            new FileFormat("Graphics Interchange Format (Not recommended)", "gif")
+        };
+
         private static ImageC FromSystemDrawingBitmapMatchingPixelFormat(Bitmap bitmap)
         {
             BitmapData bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
@@ -319,7 +327,38 @@ namespace TombLib.Utils
 
         public void Save(string fileName)
         {
-            GetTempSystemDrawingBitmap((bitmap) => bitmap.Save(fileName));
+            // Figure out image format
+            string extension = Path.GetExtension(fileName).Remove(0, 1).ToLowerInvariant();
+            switch (extension)
+            {
+                case "png":
+                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, ImageFormat.Png));
+                    break;
+                case "bmp":
+                case "dib":
+                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, ImageFormat.Bmp));
+                    break;
+                case "jpg":
+                case "jpeg":
+                case "jpe":
+                case "jif":
+                case "jfif":
+                case "jfi":
+                    using (EncoderParameters encoderParameters = new EncoderParameters(1))
+                    using (EncoderParameter encoderParameter = new EncoderParameter(Encoder.Quality, 95L))
+                    {
+                        ImageCodecInfo codecInfo = ImageCodecInfo.GetImageDecoders().First(codec => codec.FormatID == ImageFormat.Jpeg.Guid);
+                        encoderParameters.Param[0] = encoderParameter;
+                        GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, codecInfo, encoderParameters));
+                    }
+                    break;
+                case "gif":
+                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, ImageFormat.Gif));
+                    break;
+                default:
+                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName));
+                    break;
+            }
         }
 
         // Try to use 'GetTempSystemDrawingBitmap' instead if possible to avoid unnecessary data allocation
