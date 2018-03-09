@@ -276,6 +276,26 @@ namespace WadTool
             }
         }
 
+        private void newMoveableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.CreateObject(_tool, this, new WadMoveable(new WadMoveableId()));
+        }
+
+        private void newStaticToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.CreateObject(_tool, this, new WadStatic(new WadStaticId()));
+        }
+
+        private void newSpriteSequenceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.CreateObject(_tool, this, new WadSpriteSequence(new WadSpriteSequenceId()));
+        }
+
+        private void newFixedSoundInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.CreateObject(_tool, this, new WadFixedSoundInfo(new WadFixedSoundInfoId()));
+        }
+
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
         }

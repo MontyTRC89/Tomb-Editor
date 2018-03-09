@@ -292,5 +292,29 @@ namespace WadTool
                 wad.Remove(id);
             tool.WadChanged(wadArea);
         }
+
+        public static void CreateObject(WadToolClass tool, IWin32Window owner, IWadObject initialWadObject)
+        {
+            Wad2 destinationWad = tool.DestinationWad;
+            if (destinationWad == null)
+            {
+                DarkMessageBox.Show(owner, "You must have a destination wad open.", "Error", MessageBoxIcon.Error);
+                return;
+            }
+
+            using (var form = new FormSelectSlot(initialWadObject.Id, destinationWad.SuggestedGameVersion))
+            {
+                if (form.ShowDialog(owner) != DialogResult.OK)
+                    return;
+                if (destinationWad.Contains(form.NewId))
+                {
+                    DarkMessageBox.Show(owner, "The slot " + form.NewId.ToString(destinationWad.SuggestedGameVersion) + " is already occupied.", "Error", MessageBoxIcon.Error);
+                    return;
+                }
+                destinationWad.Add(form.NewId, initialWadObject);
+            }
+
+            tool.DestinationWadChanged();
+        }
     }
 }
