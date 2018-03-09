@@ -102,6 +102,7 @@ namespace WadTool
                     }
                     dialog.Filter = Wad2Writer.FileFormats.GetFilter();
                     dialog.Title = "Save Wad2";
+                    dialog.AddExtension = true;
                     if (dialog.ShowDialog(owner) != DialogResult.OK)
                         return;
                     outPath = dialog.FileName;
@@ -270,7 +271,7 @@ namespace WadTool
             }
             else if (wadObject is WadSpriteSequence)
             {
-                using (var form = new FormSpriteSequenceEditor(tool, wad, (WadSpriteSequence)wadObject))
+                using (var form = new FormSpriteSequenceEditor(wad, (WadSpriteSequence)wadObject))
                 {
                     if (form.ShowDialog(owner) == DialogResult.Cancel)
                         return;

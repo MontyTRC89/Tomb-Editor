@@ -230,6 +230,11 @@
     <None Include="Resources\angle_right-16.png" />
     <None Include="Resources\angle_left-16.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\general_Export-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\misc_TransparentBackground.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
