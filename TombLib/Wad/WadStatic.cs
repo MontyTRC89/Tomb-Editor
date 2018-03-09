@@ -45,10 +45,10 @@ namespace TombLib.Wad
             Id = id;
         }
 
-        public WadMesh Mesh { get; set; }
-        public short Flags { get; set; }
-        public BoundingBox VisibilityBox { get; set; }
-        public BoundingBox CollisionBox { get; set; }
+        public WadMesh Mesh { get; set; } = WadMesh.Empty;
+        public short Flags { get; set; } = 0;
+        public BoundingBox VisibilityBox { get; set; } = new BoundingBox();
+        public BoundingBox CollisionBox { get; set; } = new BoundingBox();
 
         public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
         public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);

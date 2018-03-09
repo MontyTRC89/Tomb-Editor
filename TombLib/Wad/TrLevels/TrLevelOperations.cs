@@ -353,7 +353,6 @@ namespace TombLib.Wad.TrLevels
             }
 
             int currentLink = (int)oldMoveable.MeshTree;
-            newMoveable.Offset = Vector3.Zero;
 
             // Build the skeleton
             for (int j = 0; j < meshes.Count - 1; j++)

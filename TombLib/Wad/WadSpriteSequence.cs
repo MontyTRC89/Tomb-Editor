@@ -42,12 +42,12 @@ namespace TombLib.Wad
     {
         public WadSpriteSequenceId Id { get; private set; }
 
+        public List<WadSprite> Sprites { get; private set; } = new List<WadSprite>();
+
         public WadSpriteSequence(WadSpriteSequenceId id)
         {
             Id = id;
         }
-
-        public List<WadSprite> Sprites { get; private set; } = new List<WadSprite>();
 
         public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
         public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);

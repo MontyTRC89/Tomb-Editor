@@ -491,11 +491,7 @@ namespace TombLib.Wad
                 var mov = new WadMoveable(new WadMoveableId(objTypeId));
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
-                    if (id2 == Wad2Chunks.MoveableOffset)
-                    {
-                        mov.Offset = chunkIO.ReadChunkVector3(chunkSize2);
-                    }
-                    else if (id2 == Wad2Chunks.MoveableMesh)
+                    if (id2 == Wad2Chunks.MoveableMesh)
                     {
                         mov.Meshes.Add(meshes[chunkIO.ReadChunkInt(chunkSize2)]);
                     }

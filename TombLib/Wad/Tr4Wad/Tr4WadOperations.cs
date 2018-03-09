@@ -340,8 +340,6 @@ namespace TombLib.Wad.Tr4Wad
 
             int currentLink = (int)oldMoveable.LinksIndex;
 
-            newMoveable.Offset = Vector3.Zero;
-
             // Build the skeleton
             for (int j = 0; j < oldMoveable.NumPointers - 1; j++)
             {
