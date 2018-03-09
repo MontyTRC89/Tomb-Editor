@@ -1029,7 +1029,6 @@
         private System.Windows.Forms.ToolStripMenuItem newWad2ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importModelAsStaticToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
-        private System.Windows.Forms.ToolStripMenuItem spriteEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel2;
