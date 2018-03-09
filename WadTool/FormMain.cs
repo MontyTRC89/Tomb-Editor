@@ -37,11 +37,11 @@ namespace WadTool
             _tool = tool;
 
             panel3D.InitializePanel(_tool, _deviceManager);
+            panel3D.AnimationScrollBar = scrollbarAnimations;
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
             int TODO_MAKE_SURE_WADTOOL_IS_UPFRONT_ABOUT_WAD2_CONTAINING_SOUNDS;
             int TODO_ALLOW_DRAG_DROP;
-            int TODO_ALLOW_DELETE_KEY;
         }
 
         protected override void Dispose(bool disposing)
@@ -67,6 +67,7 @@ namespace WadTool
                 treeDestWad.Wad = _tool.DestinationWad;
                 treeDestWad.UpdateContent();
 
+                panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
             else if (obj is WadToolClass.SourceWadChangedEvent)
@@ -79,7 +80,8 @@ namespace WadTool
 
                 treeSourceWad.Wad = _tool.SourceWad;
                 treeSourceWad.UpdateContent();
-
+                
+                panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
             else if (obj is WadToolClass.MainSelectionChangedEvent)
@@ -94,10 +96,12 @@ namespace WadTool
                 {
                     panel3D.CurrentWad = _tool.GetWad(mainSelection.Value.WadArea);
                     panel3D.CurrentObjectId = mainSelection.Value.Id;
-                    panel3D.Animation = 0;
-                    panel3D.KeyFrame = 0;
+                    panel3D.AnimationIndex = 0;
+                    panel3D.KeyFrameIndex = 0;
                     panel3D.Invalidate();
                 }
+
+                panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
         }
@@ -214,19 +218,9 @@ namespace WadTool
             var node = treeAnimations.SelectedNodes[0];
             int animationIndex = (int)node.Tag;
 
-            // Reset scrollbar
-            scrollbarAnimations.Value = 0;
-            scrollbarAnimations.Maximum = moveable.Animations[animationIndex].KeyFrames.Count - 1;
-
             // Reset panel 3D
-            panel3D.Animation = animationIndex;
-            panel3D.KeyFrame = 0;
-            panel3D.Invalidate();
-        }
-
-        private void scrollbarAnimations_ValueChanged(object sender, DarkUI.Controls.ScrollValueEventArgs e)
-        {
-            panel3D.KeyFrame = scrollbarAnimations.Value;
+            panel3D.AnimationIndex = animationIndex;
+            panel3D.KeyFrameIndex = 0;
             panel3D.Invalidate();
         }
 
