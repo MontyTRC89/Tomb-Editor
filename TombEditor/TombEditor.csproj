@@ -130,12 +130,6 @@
     <Compile Include="Controls\ContextMenus\SelectedRoomContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\DarkDataGridViewControls.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\DarkDataGridViewControls.Designer.cs">
-      <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\DarkScrollBarC.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -391,9 +385,6 @@
     </EmbeddedResource>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
-      <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormChooseRoom.resx">
       <DependentUpon>FormChooseRoom.cs</DependentUpon>
     </EmbeddedResource>

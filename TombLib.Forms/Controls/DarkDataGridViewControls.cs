@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TombEditor.Controls
+namespace TombLib.Controls
 {
     public partial class DarkDataGridViewControls : UserControl
     {

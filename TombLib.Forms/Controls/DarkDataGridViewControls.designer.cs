@@ -1,13 +1,13 @@
-﻿namespace TombEditor.Controls
+﻿namespace TombLib.Controls
 {
     partial class DarkDataGridViewControls
     {
-        /// <summary> 
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
+        /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -22,8 +22,8 @@
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
@@ -60,7 +60,7 @@
             // 
             this.butNew.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.butNew.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butNew.Image = global::TombLib.Properties.Resources.general_plus_math_16;
             this.butNew.ImagePadding = 4;
             this.butNew.Location = new System.Drawing.Point(0, 0);
             this.butNew.Name = "butNew";
@@ -72,7 +72,7 @@
             // 
             this.butDelete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDelete.Image = global::TombEditor.Properties.Resources.general_trash_16;
+            this.butDelete.Image = global::TombLib.Properties.Resources.general_trash_16;
             this.butDelete.ImagePadding = 3;
             this.butDelete.Location = new System.Drawing.Point(0, 30);
             this.butDelete.Name = "butDelete";
