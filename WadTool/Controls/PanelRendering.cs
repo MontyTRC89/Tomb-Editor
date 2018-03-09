@@ -1,4 +1,5 @@
-﻿using SharpDX.Toolkit.Graphics;
+﻿using DarkUI.Controls;
+using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,9 +24,23 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int Animation { get; set; }
+        public int AnimationIndex { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int KeyFrame { get; set; }
+        public int KeyFrameIndex { get; set; }
+
+        private DarkScrollBar _animationScrollBar;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public DarkScrollBar AnimationScrollBar
+        {
+            get { return _animationScrollBar; }
+            set
+            {
+                if (_animationScrollBar != null)
+                    _animationScrollBar.ValueChanged -= AnimationScrollBar_Value_ValueChanged;
+                _animationScrollBar = value;
+                value.ValueChanged += AnimationScrollBar_Value_ValueChanged;
+            }
+        }
 
         private GraphicsDevice _device;
         private DeviceManager _deviceManager;
@@ -36,9 +51,12 @@ namespace WadTool.Controls
         private float _lastX;
         private float _lastY;
         private SpriteBatch _spriteBatch;
+        private Texture2D _spriteTexture;
+        private WadTexture _spriteTextureData = null;
 
         public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
         {
+            // Reset scrollbar
             _tool = tool;
             _device = deviceManager.Device;
             _deviceManager = deviceManager;
@@ -138,12 +156,11 @@ namespace WadTool.Controls
 
                         // Build animation transforms
                         var matrices = new List<Matrix4x4>();
-                        if (model.Animations.Count != 0)
+                        if ((AnimationIndex < model.Animations.Count) &&
+                            (KeyFrameIndex < model.Animations[AnimationIndex].KeyFrames.Count))
                         {
-                            var animation = model.Animations[Animation];
-                            /*if (KeyFrame % animation.Framerate == 0)
-                            {*/
-                            model.BuildAnimationPose(model.Animations[Animation].KeyFrames[KeyFrame / animation.Framerate]);
+                            var animation = model.Animations[AnimationIndex];
+                            model.BuildAnimationPose(animation.KeyFrames[KeyFrameIndex]);
                             for (var b = 0; b < model.Meshes.Count; b++)
                                 matrices.Add(model.AnimationTransforms[b]);
                         }
@@ -234,15 +251,30 @@ namespace WadTool.Controls
                 }
                 else if (CurrentObjectId is WadSpriteSequenceId)
                 {
-                    /*var sprite = (WadSpriteSequence)CurrentObject;
+                    WadSpriteSequence spriteSequence;
+                    if (CurrentWad.SpriteSequences.TryGetValue((WadSpriteSequenceId)CurrentObjectId, out spriteSequence))
+                    {
+                        int spriteIndex = Math.Min(spriteSequence.Sprites.Count - 1, KeyFrameIndex);
+                        if (spriteIndex < spriteSequence.Sprites.Count)
+                        {
+                            WadSprite sprite = spriteSequence.Sprites[spriteIndex];
 
-                    int x = (Width - sprite.Width) / 2;
-                    int y = (Height - sprite.Height) / 2;
+                            // Load texture
+                            if (_spriteTextureData != sprite.Texture)
+                            {
+                                _spriteTexture?.Dispose();
+                                _spriteTexture = TextureLoad.Load(_device, sprite.Texture.Image);
+                                _spriteTextureData = sprite.Texture;
+                            }
 
-                    _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
-                    _spriteBatch.Draw(sprite.DirectXTexture, new SharpDX.DrawingRectangle(x, y, sprite.Width, sprite.Height), SharpDX.Color.White);
-                    _spriteBatch.End();*/
-                    int IMPLEMENT_SHOW_SPRITES;
+                            // Draw
+                            int x = (ClientSize.Width - _spriteTextureData.Image.Width) / 2;
+                            int y = (ClientSize.Height - _spriteTextureData.Image.Height) / 2;
+                            _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
+                            _spriteBatch.Draw(_spriteTexture, new SharpDX.DrawingRectangle(x, y, _spriteTextureData.Image.Width, _spriteTextureData.Image.Height), SharpDX.Color.White);
+                            _spriteBatch.End();
+                        }
+                    }
                 }
                 else if (CurrentObjectId is WadFixedSoundInfoId)
                 {
@@ -299,15 +331,49 @@ namespace WadTool.Controls
                 _lastX = e.X;
                 _lastY = e.Y;
 
-                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                if ((ModifierKeys & Keys.Control) == Keys.Control)
                     Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
-                else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
                     Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                 else
                     Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
                                   -deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
                 Invalidate();
             }
+        }
+
+        private void AnimationScrollBar_Value_ValueChanged(object sender, ScrollValueEventArgs e)
+        {
+            KeyFrameIndex = AnimationScrollBar.Value;
+            Invalidate();
+        }
+
+        public void UpdateAnimationScrollbar()
+        {
+            // Figure out scroll bar maximum
+            int stateCount = -1;
+            if (CurrentObjectId is WadMoveableId)
+            {
+                WadMoveable wadObject;
+                if (CurrentWad.Moveables.TryGetValue((WadMoveableId)CurrentObjectId, out wadObject))
+                    if (AnimationIndex < wadObject.Animations.Count)
+                        stateCount = wadObject.Animations[AnimationIndex].KeyFrames.Count;
+            }
+            else if (CurrentObjectId is WadSpriteSequenceId)
+            {
+                WadSpriteSequence wadObject;
+                if (CurrentWad.SpriteSequences.TryGetValue((WadSpriteSequenceId)CurrentObjectId, out wadObject))
+                    stateCount = wadObject.Sprites.Count;
+            }
+
+            // Setup scroll bar
+            KeyFrameIndex = Math.Max(KeyFrameIndex, stateCount - 1);
+            AnimationScrollBar.ViewSize = 1;
+            AnimationScrollBar.Enabled = stateCount > 1;
+            AnimationScrollBar.Minimum = 0;
+            AnimationScrollBar.Maximum = Math.Max(1, stateCount);
+            AnimationScrollBar.Value = KeyFrameIndex;
+            AnimationScrollBar.Invalidate();
         }
     }
 }
