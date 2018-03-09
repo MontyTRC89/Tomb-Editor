@@ -59,6 +59,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\DarkDataGridViewControls.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DarkDataGridViewControls.designer.cs">
+      <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TriggerParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -102,6 +108,9 @@
     <Compile Include="Utils\LevelFileDialog.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
+      <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>
     </EmbeddedResource>

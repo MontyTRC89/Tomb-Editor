@@ -98,7 +98,7 @@
             this.skyTextureFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
             this.skyTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.soundDataGridViewControls = new TombEditor.Controls.DarkDataGridViewControls();
+            this.soundDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.soundDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.soundDataGridViewColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.soundDataGridViewColumnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
@@ -1295,7 +1295,7 @@
         private DarkUI.Controls.DarkContextMenu pathVariablesDataGridViewContextMenu;
         private System.Windows.Forms.ToolStripMenuItem pathVariablesDataGridViewContextMenuCopy;
         private System.Windows.Forms.ToolTip pathToolTip;
-        private Controls.DarkDataGridViewControls soundDataGridViewControls;
+        private TombLib.Controls.DarkDataGridViewControls soundDataGridViewControls;
         private DarkUI.Controls.DarkDataGridView soundDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn soundDataGridViewColumnPath;
         private DarkUI.Controls.DarkDataGridViewButtonColumn soundDataGridViewColumnSearch;
