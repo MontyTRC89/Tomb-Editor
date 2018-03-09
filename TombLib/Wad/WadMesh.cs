@@ -10,7 +10,7 @@ using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class WadMesh : IEquatable<WadMesh>
+    public class WadMesh : IEquatable<WadMesh>, ICloneable
     {
         public List<Vector3> VerticesPositions { get; set; } = new List<Vector3>();
         public List<Vector3> VerticesNormals { get; set; } = new List<Vector3>();
@@ -19,6 +19,11 @@ namespace TombLib.Wad
         public Hash Hash { get; private set; }
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
+
+        public WadMesh()
+        {
+            UpdateHash();
+        }
 
         public WadMesh Clone()
         {
@@ -29,6 +34,7 @@ namespace TombLib.Wad
             mesh.Polys = new List<WadPolygon>(Polys);
             return mesh;
         }
+        object ICloneable.Clone() => Clone();
 
         public byte[] ToByteArray()
         {
@@ -80,9 +86,9 @@ namespace TombLib.Wad
             }
         }
 
-        public Hash UpdateHash()
+        public void UpdateHash()
         {
-            return Hash = Hash.FromByteArray(this.ToByteArray());
+            Hash = Hash.FromByteArray(this.ToByteArray());
         }
 
         public BoundingBox CalculateBoundingBox(Matrix4x4 transform)
@@ -123,6 +129,8 @@ namespace TombLib.Wad
         public bool Equals(WadMesh other) => (Hash == other.Hash);
         public override bool Equals(object other) => (other is WadMesh) && (Hash == ((WadMesh)other).Hash);
         public override int GetHashCode() => Hash.GetHashCode();
+
+        public static WadMesh Empty { get; } = new WadMesh();
     }
 }
 

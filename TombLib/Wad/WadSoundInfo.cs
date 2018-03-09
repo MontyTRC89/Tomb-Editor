@@ -64,6 +64,9 @@ namespace TombLib.Wad
         public WadSoundInfoMetaData Data { get; }
         public Hash Hash { get; }
 
+        public WadSoundInfo()
+            : this(new WadSoundInfoMetaData("Unnamed"))
+        { }
         public WadSoundInfo(WadSoundInfoMetaData data)
         {
             if (data.Samples == null)
@@ -96,5 +99,7 @@ namespace TombLib.Wad
         public bool Equals(WadSoundInfo other) => Hash == other.Hash;
         public override bool Equals(object other) => (other is WadSoundInfo) && Hash == ((WadSoundInfo)other).Hash;
         public override int GetHashCode() { return Hash.GetHashCode(); }
+
+        public static WadSoundInfo Empty { get; } = new WadSoundInfo();
     }
 }

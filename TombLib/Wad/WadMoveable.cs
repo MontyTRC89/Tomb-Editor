@@ -53,10 +53,8 @@ namespace TombLib.Wad
     public class WadMoveable : IWadObject
     {
         public WadMoveableId Id { get; private set; }
-        //public string Name { get; set; }
         public List<WadMesh> Meshes { get; } = new List<WadMesh>();
         public List<WadLink> Links { get; } = new List<WadLink>();
-        public Vector3 Offset { get; set; }
         public List<WadAnimation> Animations { get; } = new List<WadAnimation>();
 
         public WadMoveable(WadMoveableId id)

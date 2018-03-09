@@ -104,7 +104,6 @@ namespace TombLib.Graphics
         public static SkinnedModel FromWad2(GraphicsDevice device, Wad2 wad, WadMoveable mov, List<WadTexture> reallocatedTextures)
         {
             SkinnedModel model = new SkinnedModel(device);
-            model.Offset = mov.Offset;
 
             // Prepare materials
             var materialOpaque = new Material(Material.Material_Opaque + "_0_0_0_0", null, false, false, 0);

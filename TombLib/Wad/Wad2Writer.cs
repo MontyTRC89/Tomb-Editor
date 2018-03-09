@@ -253,7 +253,6 @@ namespace TombLib.Wad
                         var m = moveable.Value;
 
                         LEB128.Write(chunkIO.Raw, m.Id.TypeId);
-                        chunkIO.WriteChunkVector3(Wad2Chunks.MoveableOffset, m.Offset);
 
                         foreach (var mesh in m.Meshes)
                             chunkIO.WriteChunkInt(Wad2Chunks.MoveableMesh, meshTable.IndexOf(mesh));
