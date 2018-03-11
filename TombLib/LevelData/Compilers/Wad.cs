@@ -370,7 +370,7 @@ namespace TombLib.LevelData.Compilers
 
                                 ushort soundIndex = _soundManager.AllocateSoundInfo(command.SoundInfo);
                                 if (soundIndex > 0x3FFF)
-                                    throw new IndexOutOfRangeException("Sound index '" + soundIndex+ "' too big.");
+                                    throw new IndexOutOfRangeException("Sound index '" + soundIndex + "' too big.");
                                 _animCommands.Add(checked((ushort)(command.Parameter1 + newAnimation.FrameStart)));
                                 _animCommands.Add(checked((ushort)(soundIndex | (command.Parameter2 & 0xC000))));
 
@@ -418,19 +418,19 @@ namespace TombLib.LevelData.Compilers
                 }
                 lastAnimation += oldMoveable.Animations.Count;
 
-                newMoveable.MeshTree = (uint)_meshTrees.Count;
-                newMoveable.StartingMesh = (ushort)_meshPointers.Count;
+                var meshTrees = new List<tr_meshtree>();
+                var usedMeshes = new List<WadMesh>();
+                BuildMeshTree(oldMoveable.Skeleton, meshTrees, usedMeshes);
 
-                // Now build mesh pointers and mesh trees
-                foreach (var meshTree in oldMoveable.Links)
+                foreach (var meshTree in meshTrees)
                 {
                     _meshTrees.Add((int)meshTree.Opcode);
-                    _meshTrees.Add((int)meshTree.Offset.X);
-                    _meshTrees.Add((int)-meshTree.Offset.Y);
-                    _meshTrees.Add((int)meshTree.Offset.Z);
+                    _meshTrees.Add((int)meshTree.X);
+                    _meshTrees.Add((int)meshTree.Y);
+                    _meshTrees.Add((int)meshTree.Z);
                 }
 
-                foreach (var mesh in oldMoveable.Meshes)
+                foreach (var mesh in usedMeshes)
                 {
                     _meshPointers.Add((uint)__meshPointers[mesh]);
                 }
@@ -591,6 +591,40 @@ namespace TombLib.LevelData.Compilers
                         n++;
                     }
                 }
+        }
+
+        private void BuildMeshTree(WadBone bone, List<tr_meshtree> meshTrees, List<WadMesh> usedMeshes)
+        {
+            tr_meshtree tree = new tr_meshtree();
+            tree.X = (int)bone.Transform.Translation.X;
+            tree.Y = (int)-bone.Transform.Translation.Y;
+            tree.Z = (int)bone.Transform.Translation.Z;
+
+            if (bone.Parent == null)
+                tree.Opcode = 2;
+            else
+            {
+                if (bone.Parent.Children.Count == 1)
+                    tree.Opcode = 0;
+                else
+                {
+                    int childrenCount = bone.Parent.Children.Count;
+                    if (bone.Parent.Children.IndexOf(bone) == 0)
+                        tree.Opcode = 2;
+                    else if (bone.Parent.Children.IndexOf(bone) == childrenCount - 1)
+                        tree.Opcode = 1;
+                    else
+                        tree.Opcode = 3;
+                }
+            }
+
+            if (bone.Parent != null)
+                meshTrees.Add(tree);
+
+            usedMeshes.Add(bone.Mesh);
+
+            for (int i = 0; i < bone.Children.Count; i++)
+                BuildMeshTree(bone.Children[i], meshTrees, usedMeshes);
         }
     }
 }

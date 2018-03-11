@@ -54,12 +54,25 @@ namespace TombLib.Wad
     {
         public WadMoveableId Id { get; private set; }
         public List<WadMesh> Meshes { get; } = new List<WadMesh>();
-        public List<WadLink> Links { get; } = new List<WadLink>();
         public List<WadAnimation> Animations { get; } = new List<WadAnimation>();
+        public WadBone Skeleton { get; set; }
 
         public WadMoveable(WadMoveableId id)
         {
             Id = id;
+        }
+
+        public void LinearizeSkeleton()
+        {
+            LinearizeSkeletonRecursive(Skeleton);
+        }
+
+        private void LinearizeSkeletonRecursive(WadBone bone)
+        {
+            Meshes.Add(bone.Mesh);
+            bone.Index = (short)(Meshes.Count - 1);
+            foreach (var childBone in bone.Children)
+                LinearizeSkeletonRecursive(childBone);
         }
 
         public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);

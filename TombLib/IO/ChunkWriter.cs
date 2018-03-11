@@ -167,6 +167,13 @@ namespace TombLib.IO
             _writer.Write(value);
         }
 
+        public void WriteChunkMatrix4x4(ChunkId chunkID, Matrix4x4 value)
+        {
+            chunkID.ToStream(_writer);
+            LEB128.Write(_writer, 64);
+            _writer.Write(value);
+        }
+
         public void WriteChunkString(ChunkId chunkID, string value)
         {
             byte[] data = Encoding.UTF8.GetBytes(value);

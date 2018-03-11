@@ -18,7 +18,7 @@ namespace TombLib.Wad.Tr4Wad
         public string FullPath { get; set; } = null;
         public bool Found { get { return (!string.IsNullOrEmpty(FullPath)) && File.Exists(FullPath); } }
     }
-
+    
     public static class Tr4WadOperations
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -332,25 +332,85 @@ namespace TombLib.Wad.Tr4Wad
             WadMoveable newMoveable = new WadMoveable(new WadMoveableId(oldMoveable.ObjectID));
             var frameBases = new Dictionary<WadAnimation, ushort>();
 
-            for (int j = 0; j < oldMoveable.NumPointers; j++)
-            {
-                var realPointer = (int)oldWad.RealPointers[(int)(oldMoveable.PointerIndex + j)];
-                newMoveable.Meshes.Add(meshes[realPointer]);
-            }
-
-            int currentLink = (int)oldMoveable.LinksIndex;
-
             // Build the skeleton
+            WadBone root = new WadBone();
+            root.Name = "bone_root";
+            root.Parent = null;
+            root.Transform = Matrix4x4.Identity;
+            root.Mesh = meshes[(int)oldWad.RealPointers[(int)(oldMoveable.PointerIndex + 0)]];
+            root.Index = 0;
+            newMoveable.Meshes.Add(root.Mesh);
+
+            var bones = new List<WadBone>();
+            bones.Add(root);
+            newMoveable.Skeleton = root;
+
             for (int j = 0; j < oldMoveable.NumPointers - 1; j++)
             {
-                WadLink link = new WadLink((WadLinkOpcode)oldWad.Links[currentLink],
-                                           new Vector3(oldWad.Links[currentLink + 1],
-                                                       -oldWad.Links[currentLink + 2],
-                                                       oldWad.Links[currentLink + 3]));
+                WadBone bone = new WadBone();
+                bone.Name = "bone_" + (j + 1).ToString();
+                bone.Parent = null;
+                bone.Transform = Matrix4x4.Identity; 
+                bone.Mesh = meshes[(int)oldWad.RealPointers[(int)(oldMoveable.PointerIndex + j + 1)]];
+                bone.Index = j + 1;
+                newMoveable.Meshes.Add(bone.Mesh);
+                bones.Add(bone);
+            }
 
-                currentLink += 4;
+            WadBone currentBone = root;
+            WadBone stackBone = root;
+            Stack<WadBone> stack = new Stack<WadBone>();
 
-                newMoveable.Links.Add(link);
+            for (int mi = 0; mi < (oldMoveable.NumPointers - 1); mi++)
+            {
+                int j = mi + 1;
+
+                var opcode = (WadLinkOpcode)oldWad.Links[(int)(oldMoveable.LinksIndex + mi * 4)];
+                int linkX = oldWad.Links[(int)(oldMoveable.LinksIndex + mi * 4) + 1];
+                int linkY = -oldWad.Links[(int)(oldMoveable.LinksIndex + mi * 4) + 2];
+                int linkZ = oldWad.Links[(int)(oldMoveable.LinksIndex + mi * 4) + 3];
+
+                switch (opcode)
+                {
+                    case WadLinkOpcode.NotUseStack:
+                        bones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
+                        bones[j].Parent = currentBone;
+                        currentBone.Children.Add(bones[j]);
+                        currentBone = bones[j];
+
+                        break;
+                    case WadLinkOpcode.Push:
+                        if (stack.Count <= 0)
+                            continue;
+                        currentBone = stack.Pop();
+
+                        bones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
+                        bones[j].Parent = currentBone;
+                        currentBone.Children.Add(bones[j]);
+                        currentBone = bones[j];
+
+                        break;
+                    case WadLinkOpcode.Pop:
+                        stack.Push(currentBone);
+
+                        bones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
+                        bones[j].Parent = currentBone;
+                        currentBone.Children.Add(bones[j]);
+                        currentBone = bones[j];
+
+                        break;
+                    case WadLinkOpcode.Read:
+                        if (stack.Count <= 0)
+                            continue;
+                        WadBone bone = stack.Pop();
+                        bones[j].Transform = Matrix4x4.CreateTranslation(linkX, linkY, linkZ);
+                        bones[j].Parent = bone;
+                        bone.Children.Add(bones[j]);
+                        currentBone = bones[j];
+                        stack.Push(bone);
+
+                        break;
+                }
             }
 
             // Convert animations
@@ -615,7 +675,7 @@ namespace TombLib.Wad.Tr4Wad
                         stateChange.Dispatches[j] = animDispatch;
                     }
             }
-
+            //newMoveable.LinearizeSkeleton();
             wad.Moveables.Add(newMoveable.Id, newMoveable);
             return newMoveable;
         }

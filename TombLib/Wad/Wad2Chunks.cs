@@ -83,6 +83,10 @@ namespace TombLib.Wad
         /********/public static readonly ChunkId MoveableMesh = ChunkId.FromString("W2MovMeshPtr");
         /******/public static readonly ChunkId MoveableLinks = ChunkId.FromString("W2Links");
         /********/public static readonly ChunkId MoveableLink = ChunkId.FromString("W2Lnk");
+        /********/public static readonly ChunkId MoveableBone = ChunkId.FromString("W2Bone");
+        /**********/public static readonly ChunkId MoveableBoneTransform = ChunkId.FromString("W2BoneTransf");
+        /**********/public static readonly ChunkId MoveableBoneMeshPointer = ChunkId.FromString("W2BoneMesh");
+        /**********/public static readonly ChunkId MoveableBoneName = ChunkId.FromString("W2BoneName");
         /********/public static readonly ChunkId MoveableLinkOffset = ChunkId.FromString("W2LnkO");
         /******/public static readonly ChunkId Animations = ChunkId.FromString("W2Animations");
         /********/public static readonly ChunkId AnimationObsolete = ChunkId.FromString("W2Anm");

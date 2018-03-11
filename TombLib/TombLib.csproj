@@ -253,6 +253,7 @@
     <Compile Include="Wad\TrLevels\Structs.cs" />
     <Compile Include="Wad\TrLevels\TrLevel.cs" />
     <Compile Include="Wad\TrLevels\TrLevelOperations.cs" />
+    <Compile Include="Wad\WadBone.cs" />
     <Compile Include="Wad\Wad2Chunks.cs" />
     <Compile Include="Wad\Wad2Loader.cs" />
     <Compile Include="Wad\Wad2Writer.cs" />
