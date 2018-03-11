@@ -139,7 +139,7 @@ namespace TombLib.Graphics
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
-        public static SkinnedModel FromWad2(GraphicsDevice device, Wad2 wad, WadMoveable mov, List<WadTexture> reallocatedTextures)
+        public static SkinnedModel FromWad2(GraphicsDevice device, Wad2 wad, WadMoveable mov, Dictionary<WadTexture, VectorInt2> reallocatedTextures)
         {
             SkinnedModel model = new SkinnedModel(device);
 
@@ -171,7 +171,7 @@ namespace TombLib.Graphics
                 for (int j = 0; j < msh.Polys.Count; j++)
                 {
                     WadPolygon poly = msh.Polys[j];
-                    Vector2 positionInPackedTexture = ((WadTexture)(poly.Texture.Texture)).PositionInTextureAtlas;
+                    Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)(poly.Texture.Texture)];
 
                     // Get the right submesh
                     var submesh = mesh.Submeshes[materialOpaque];
@@ -218,7 +218,7 @@ namespace TombLib.Graphics
                 model.Meshes.Add(mesh);
             }
 
-            // HACK: Add matrices here because if original WAD stack was corrupted, we could have broken parent - children 
+            // HACK: Add matrices here because if original WAD stack was corrupted, we could have broken parent - children
             // relations and so we could have meshes count different from matrices count
             for (int j = 0; j < mov.Meshes.Count; j++)
             {
