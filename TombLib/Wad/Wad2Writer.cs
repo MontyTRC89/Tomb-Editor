@@ -218,7 +218,6 @@ namespace TombLib.Wad
 
                                 chunkIO.WriteChunkWithChildren(isQuad ? Wad2Chunks.MeshQuad : Wad2Chunks.MeshTriangle, () =>
                                 {
-
                                     LEB128.Write(chunkIO.Raw, poly.Index0);
                                     LEB128.Write(chunkIO.Raw, poly.Index1);
                                     LEB128.Write(chunkIO.Raw, poly.Index2);
@@ -248,7 +247,7 @@ namespace TombLib.Wad
             {
                 chunkIO.WriteChunkString(Wad2Chunks.MoveableBoneName, bone.Name);
                 chunkIO.WriteChunkInt(Wad2Chunks.MoveableBoneMeshPointer, bone.Index);
-                chunkIO.WriteChunkMatrix4x4(Wad2Chunks.MoveableBoneTransform, bone.Transform);
+                chunkIO.WriteChunkVector3(Wad2Chunks.MoveableBoneTranslation, bone.Translation);
                 foreach (var childBone in bone.Children)
                     WriteBone(chunkIO, childBone, meshTable);
             });
