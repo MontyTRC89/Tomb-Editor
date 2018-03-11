@@ -477,6 +477,31 @@ namespace TombLib.Wad
             return true;
         }
 
+        private static WadBone LoadBone(ChunkReader chunkIO, WadMoveable mov)
+        {
+            WadBone bone = new WadBone();
+
+            chunkIO.ReadChunks((id, chunkSize) =>
+            {
+                if (id == Wad2Chunks.MoveableBoneName)
+                    bone.Name = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Wad2Chunks.MoveableBoneTransform)
+                    bone.Transform = chunkIO.ReadChunkMatrix4x4(chunkSize);
+                else if (id == Wad2Chunks.MoveableBoneMeshPointer)
+                    bone.Mesh = mov.Meshes[chunkIO.ReadChunkInt(chunkSize)];
+                else if (id == Wad2Chunks.MoveableBone)
+                    bone.Children.Add(LoadBone(chunkIO, mov));
+                else
+                    return false;
+                return true;
+            });
+
+            foreach (var childBone in bone.Children)
+                childBone.Parent = bone;
+
+            return bone;
+        }
+
         private static bool LoadMoveables(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, Dictionary<long, WadSoundInfo> soundInfos, Dictionary<long, WadMesh> meshes)
         {
             if (idOuter != Wad2Chunks.Moveables)
@@ -492,10 +517,8 @@ namespace TombLib.Wad
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
                     if (id2 == Wad2Chunks.MoveableMesh)
-                    {
                         mov.Meshes.Add(meshes[chunkIO.ReadChunkInt(chunkSize2)]);
-                    }
-                    else if (id2 == Wad2Chunks.MoveableLink)
+                    /*else if (id2 == Wad2Chunks.MoveableLink)
                     {
                         var opcode = (WadLinkOpcode)LEB128.ReadUShort(chunkIO.Raw);
                         Vector3 offset = Vector3.Zero;
@@ -508,7 +531,9 @@ namespace TombLib.Wad
                             return true;
                         });
                         mov.Links.Add(new WadLink(opcode, offset));
-                    }
+                    }*/
+                    /*else*/ if (id2 == Wad2Chunks.MoveableBone)
+                        mov.Skeleton = LoadBone(chunkIO, mov);
                     else if (id2 == Wad2Chunks.AnimationObsolete || id2 == Wad2Chunks.Animation)
                     {
                         var animation = new WadAnimation();
@@ -635,6 +660,8 @@ namespace TombLib.Wad
                     }
                     return true;
                 });
+
+                mov.LinearizeSkeleton();
                 wad.Moveables.Add(mov.Id, mov);
                 return true;
             });

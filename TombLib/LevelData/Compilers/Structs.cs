@@ -892,6 +892,15 @@ namespace TombLib.LevelData.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr_meshtree
+    {
+        public int Opcode;
+        public int X;
+        public int Y;
+        public int Z;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_animation
     {
         public uint FrameOffset;

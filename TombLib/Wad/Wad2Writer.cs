@@ -242,6 +242,18 @@ namespace TombLib.Wad
             });
         }
 
+        private static void WriteBone(ChunkWriter chunkIO, WadBone bone, List<WadMesh> meshTable)
+        {
+            chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
+            {
+                chunkIO.WriteChunkString(Wad2Chunks.MoveableBoneName, bone.Name);
+                chunkIO.WriteChunkInt(Wad2Chunks.MoveableBoneMeshPointer, bone.Index);
+                chunkIO.WriteChunkMatrix4x4(Wad2Chunks.MoveableBoneTransform, bone.Transform);
+                foreach (var childBone in bone.Children)
+                    WriteBone(chunkIO, childBone, meshTable);
+            });
+        }
+
         private static void WriteMoveables(ChunkWriter chunkIO, Wad2 wad, List<WadMesh> meshTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
@@ -257,14 +269,7 @@ namespace TombLib.Wad
                         foreach (var mesh in m.Meshes)
                             chunkIO.WriteChunkInt(Wad2Chunks.MoveableMesh, meshTable.IndexOf(mesh));
 
-                        foreach (var link in m.Links)
-                        {
-                            chunkIO.WriteChunkWithChildren(Wad2Chunks.MoveableLink, () =>
-                            {
-                                LEB128.Write(chunkIO.Raw, (ushort)link.Opcode);
-                                chunkIO.WriteChunkVector3(Wad2Chunks.MoveableLinkOffset, link.Offset);
-                            });
-                        }
+                        WriteBone(chunkIO, moveable.Value.Skeleton, meshTable);
 
                         foreach (var animation in m.Animations)
                         {

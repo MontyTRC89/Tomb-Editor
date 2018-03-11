@@ -189,5 +189,10 @@ namespace TombLib.IO
         {
             return _reader.ReadVector4();
         }
+
+        public Matrix4x4 ReadChunkMatrix4x4(long length)
+        {
+            return _reader.ReadMatrix();
+        }
     }
 }

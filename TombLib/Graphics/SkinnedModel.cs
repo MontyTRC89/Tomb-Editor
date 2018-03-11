@@ -19,7 +19,7 @@ namespace TombLib.Graphics
         public Bone Root { get; set; }
         public List<Animation> Animations { get; set; } = new List<Animation>();
         public List<Bone> Bones { get; set; } = new List<Bone>();
-        public List<Matrix4x4> Transforms { get; set; } = new List<Matrix4x4>();
+        public List<Matrix4x4> BindPoseTransforms { get; set; } = new List<Matrix4x4>();
         public List<Matrix4x4> AnimationTransforms { get; set; } = new List<Matrix4x4>();
 
         public SkinnedModel(GraphicsDevice device)
@@ -32,7 +32,7 @@ namespace TombLib.Graphics
         public void BuildHierarchy()
         {
             this.Root.GlobalTransform = Root.Transform;
-            Transforms[Root.Index] = Root.GlobalTransform;
+            BindPoseTransforms[Root.Index] = Root.GlobalTransform;
 
             foreach (var node in this.Root.Children)
             {
@@ -43,12 +43,24 @@ namespace TombLib.Graphics
         private void BuildHierarchy(Bone node, Matrix4x4 parentTransform, int level)
         {
             node.GlobalTransform = node.Transform * parentTransform;
-            Transforms[node.Index] = node.GlobalTransform;
+            BindPoseTransforms[node.Index] = node.GlobalTransform;
 
             foreach (var child in node.Children)
             {
                 BuildHierarchy(child, node.GlobalTransform, level + 1);
             }
+        }
+
+        public void UpdateAnimation(int animationIndex, int frameIndex)
+        {
+            var animation = Animations[animationIndex];
+            int frameRate = (int)Math.Max(animation.Framerate, (short)1);
+            int keyFrameIndex1 = frameIndex / frameRate;
+            int keyFrameIndex2 = keyFrameIndex1 + 1;
+            if (keyFrameIndex1 >= animation.KeyFrames.Count || keyFrameIndex2 >= animation.KeyFrames.Count)
+                return;
+            float k = (frameIndex - keyFrameIndex1 * frameRate) / (float)frameRate;
+            BuildAnimationPose(animation.KeyFrames[keyFrameIndex1], animation.KeyFrames[keyFrameIndex2], k);
         }
 
         public void BuildAnimationPose(KeyFrame frame)
@@ -69,6 +81,32 @@ namespace TombLib.Graphics
             foreach (Bone child in node.Children)
             {
                 BuildAnimationPose(child, AnimationTransforms[node.Index], level + 1, frame);
+            }
+        }
+
+        public void BuildAnimationPose(KeyFrame frame1, KeyFrame frame2, float k)
+        {
+            Matrix4x4 translation = Matrix4x4.Lerp(frame1.Translations[0], frame2.Translations[0], k);
+            Matrix4x4 rotation = Matrix4x4.Lerp(frame1.Rotations[0], frame2.Rotations[0], k);
+
+            var globalScale = Matrix4x4.CreateTranslation(Offset) * translation;
+            AnimationTransforms[0] = rotation * globalScale;
+
+            foreach (var node in this.Root.Children)
+            {
+                BuildAnimationPose(node, AnimationTransforms[0], 0, frame1, frame2, k);
+            }
+        }
+
+        private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, int level, KeyFrame frame1, KeyFrame frame2, float k)
+        {
+            Matrix4x4 rotation = Matrix4x4.Lerp(frame1.Rotations[node.Index], frame2.Rotations[node.Index], k);
+
+            AnimationTransforms[node.Index] = (rotation * node.Transform) * parentTransform;
+
+            foreach (Bone child in node.Children)
+            {
+                BuildAnimationPose(child, AnimationTransforms[node.Index], level + 1, frame1, frame2, k);
             }
         }
 
@@ -180,80 +218,16 @@ namespace TombLib.Graphics
                 model.Meshes.Add(mesh);
             }
 
-            // Initialize bones
-            Bone root = new Bone();
-            root.Name = "root_bone";
-            root.Parent = null;
-            root.Transform = Matrix4x4.Identity;
-            root.Index = 0;
-            model.Bones.Add(root);
-            model.Root = root;
-            model.Transforms.Add(Matrix4x4.CreateTranslation(Vector3.Zero));
-            model.AnimationTransforms.Add(Matrix4x4.CreateTranslation(Vector3.Zero));
-
-            for (int j = 0; j < mov.Meshes.Count - 1; j++)
+            // HACK: Add matrices here because if original WAD stack was corrupted, we could have broken parent - children 
+            // relations and so we could have meshes count different from matrices count
+            for (int j = 0; j < mov.Meshes.Count; j++)
             {
-                Bone bone = new Bone();
-                bone.Name = "bone_" + (j + 1).ToString();
-                bone.Parent = null;
-                bone.Transform = Matrix4x4.CreateTranslation(Vector3.Zero);
-                bone.Index = (short)(j + 1);
-                model.Transforms.Add(Matrix4x4.CreateTranslation(Vector3.Zero));
-                model.AnimationTransforms.Add(Matrix4x4.CreateTranslation(Vector3.Zero));
-                model.Bones.Add(bone);
+                model.BindPoseTransforms.Add(Matrix4x4.Identity);
+                model.AnimationTransforms.Add(Matrix4x4.Identity);
             }
 
-            Bone currentBone = root;
-            Bone stackBone = root;
-            Stack<Bone> stack = new Stack<Bone>();
-
-            for (int m = 0; m < (mov.Meshes.Count - 1); m++)
-            {
-                int j = m + 1;
-                WadLink link = mov.Links[m];
-
-                switch (link.Opcode)
-                {
-                    case WadLinkOpcode.NotUseStack:
-                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(link.Offset);
-                        model.Bones[j].Parent = currentBone;
-                        currentBone.Children.Add(model.Bones[j]);
-                        currentBone = model.Bones[j];
-
-                        break;
-                    case WadLinkOpcode.Push:
-                        if (stack.Count <= 0)
-                            continue;
-                        currentBone = stack.Pop();
-
-                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(link.Offset);
-                        model.Bones[j].Parent = currentBone;
-                        currentBone.Children.Add(model.Bones[j]);
-                        currentBone = model.Bones[j];
-
-                        break;
-                    case WadLinkOpcode.Pop:
-                        stack.Push(currentBone);
-
-                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(link.Offset);
-                        model.Bones[j].Parent = currentBone;
-                        currentBone.Children.Add(model.Bones[j]);
-                        currentBone = model.Bones[j];
-
-                        break;
-                    case WadLinkOpcode.Read:
-                        if (stack.Count <= 0)
-                            continue;
-                        Bone bone = stack.Pop();
-                        model.Bones[j].Transform = Matrix4x4.CreateTranslation(link.Offset);
-                        model.Bones[j].Parent = bone;
-                        bone.Children.Add(model.Bones[j]);
-                        currentBone = model.Bones[j];
-                        stack.Push(bone);
-
-                        break;
-                }
-            }
+            // Build the skeleton
+            model.Root = BuildSkeleton(model, mov, mov.Skeleton, null);
 
             // Prepare animations
             for (int j = 0; j < mov.Animations.Count; j++)
@@ -302,5 +276,26 @@ namespace TombLib.Graphics
             return model;
         }
 
+        private static Bone BuildSkeleton(SkinnedModel model, WadMoveable mov, WadBone bone, Bone parentBone)
+        {
+            Bone currentBone = new Bone();
+            currentBone.Name = bone.Name;
+            currentBone.Parent = parentBone;
+            currentBone.Transform = bone.Transform;
+            currentBone.Index = bone.Index;
+            model.Bones.Add(currentBone);
+            model.BindPoseTransforms[currentBone.Index] = bone.Transform;
+
+            foreach (var childBone in bone.Children)
+                currentBone.Children.Add(BuildSkeleton(model, mov, childBone, currentBone));
+
+            if (parentBone != null)
+            {
+                foreach (var childBone in currentBone.Children)
+                    childBone.Parent = currentBone;
+            }
+
+            return currentBone;
+        }
     }
 }
