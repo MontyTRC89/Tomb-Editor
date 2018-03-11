@@ -272,7 +272,6 @@
     <Compile Include="Wad\WadAnimDispatch.cs" />
     <Compile Include="Wad\WadKeyFrame.cs" />
     <Compile Include="Wad\WadKeyFrameRotation.cs" />
-    <Compile Include="Wad\WadLink.cs" />
     <Compile Include="Wad\WadMesh.cs" />
     <Compile Include="Wad\WadMoveable.cs" />
     <Compile Include="Wad\WadPolygon.cs" />
