@@ -34,9 +34,5 @@ namespace TombLib.Wad
         public bool Equals(WadTexture other) => (Hash == other.Hash);
         public override bool Equals(object other) => (other is WadTexture) && (Hash == ((WadTexture)other).Hash);
         public override int GetHashCode() => Hash.GetHashCode();
-
-        // Helper data
-        // TODO Remove this from here.
-        public VectorInt2 PositionInTextureAtlas { get; set; }
     }
 }

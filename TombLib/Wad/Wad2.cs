@@ -1,6 +1,5 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -40,7 +39,7 @@ namespace TombLib.Wad
         public Texture2D DirectXTexture { get; private set; }
         public SortedDictionary<WadMoveableId, SkinnedModel> DirectXMoveables { get; } = new SortedDictionary<WadMoveableId, SkinnedModel>();
         public SortedDictionary<WadStaticId, StaticModel> DirectXStatics { get; } = new SortedDictionary<WadStaticId, StaticModel>();
-        public List<WadTexture> PackedTextures { get; set; } = new List<WadTexture>();
+        public Dictionary<WadTexture, VectorInt2> PackedTextures { get; set; } = new Dictionary<WadTexture, VectorInt2>();
 
         // Size of the atlas
         // DX10 requires minimum 8K textures support for hardware certification so we should be safe with this
@@ -112,32 +111,27 @@ namespace TombLib.Wad
 
         public void RebuildTextureAtlas()
         {
-            if (DirectXTexture != null)
-                DirectXTexture.Dispose();
+            DirectXTexture?.Dispose();
+
+            // Order textures for packing
+            var packedTextures = new List<WadTexture>(MeshTexturesUnique);
+            packedTextures.Sort(new ComparerWadTextures());
 
             // Pack the textures in a single atlas
-            PackedTextures = new List<WadTexture>(MeshTexturesUnique);
-            PackedTextures.Sort(new ComparerWadTextures());
-
+            PackedTextures.Clear();
             var packer = new RectPackerSimpleStack(new VectorInt2(TextureAtlasSize, TextureAtlasSize));
-
-            foreach (var texture in PackedTextures)
+            foreach (var texture in packedTextures)
             {
-                texture.PositionInTextureAtlas = packer.TryAdd(texture.Image.Size).Value;
-            }
-
-            // Copy the page in a temp bitmap.
-            // I generate a texture atlas, putting all texture pages inside 2048x2048 pixel textures.
-            var tempBitmap = ImageC.CreateNew(TextureAtlasSize, TextureAtlasSize);
-
-            foreach (var texture in PackedTextures)
-            {
-                int startX = (int)texture.PositionInTextureAtlas.X;
-                int startY = (int)texture.PositionInTextureAtlas.Y;
-                tempBitmap.CopyFrom(startX, startY, texture.Image);
+                VectorInt2? positionInAtlas = packer.TryAdd(texture.Image.Size);
+                if (positionInAtlas == null)
+                    throw new Exception("Not enough space in wad texture atlas.");
+                PackedTextures.Add(texture, positionInAtlas.Value);
             }
 
             // Create the DirectX texture atlas
+            var tempBitmap = ImageC.CreateNew(TextureAtlasSize, TextureAtlasSize);
+            foreach (var texture in PackedTextures)
+                tempBitmap.CopyFrom(texture.Value.X, texture.Value.Y, texture.Key.Image);
             DirectXTexture = TextureLoad.Load(GraphicsDevice, tempBitmap);
         }
 
@@ -148,57 +142,23 @@ namespace TombLib.Wad
             // Rebuild the texture atlas and covert it to a DirectX texture
             RebuildTextureAtlas();
 
-            var tempMoveables = new ConcurrentDictionary<WadMoveableId, SkinnedModel>();
-            var tempStatics = new ConcurrentDictionary<WadStaticId, StaticModel>();
-
             // Create moveable models
             Parallel.For(0, Moveables.Count, i =>
             {
                 var mov = Moveables.ElementAt(i).Value;
-                tempMoveables.TryAdd(mov.Id, SkinnedModel.FromWad2(GraphicsDevice, this, mov, PackedTextures));
+                var model = SkinnedModel.FromWad2(GraphicsDevice, this, mov, PackedTextures);
+                lock (DirectXMoveables)
+                    DirectXMoveables.TryAdd(mov.Id, model);
             });
 
             // Create static meshes
             Parallel.For(0, Statics.Count, i =>
             {
                 var staticMesh = Statics.ElementAt(i).Value;
-                tempStatics.TryAdd(staticMesh.Id, StaticModel.FromWad2(GraphicsDevice, this, staticMesh, PackedTextures));
+                var model = StaticModel.FromWad2(GraphicsDevice, this, staticMesh, PackedTextures);
+                lock (DirectXStatics)
+                    DirectXStatics.TryAdd(staticMesh.Id, model);
             });
-
-            foreach (var mov in tempMoveables)
-                DirectXMoveables.Add(mov.Key, mov.Value);
-
-            foreach (var stat in tempStatics)
-                DirectXStatics.Add(stat.Key, stat.Value);
-        }
-
-        // This function will be used for showing all textures of Wad2 in a single map
-        public ImageC GetPackedTextureMap()
-        {
-            // Pack the textures in a single atlas
-            var packedTextures = new List<WadTexture>(MeshTexturesUnique);
-            PackedTextures.Sort(new ComparerWadTextures());
-            var factor = TextureAtlasSize / 512;
-            var height = TextureAtlasSize * factor;
-            var packer = new RectPackerSimpleStack(new VectorInt2(512, height));
-            VectorInt2 maxSize = new VectorInt2();
-            foreach (var texture in PackedTextures)
-            {
-                VectorInt2 positionInPackedTextureMap = packer.TryAdd(texture.Image.Size).Value;
-                maxSize = VectorInt2.Max(maxSize, positionInPackedTextureMap + texture.Image.Size);
-            }
-
-            // Copy the page in a temp bitmap.
-            var tempBitmap = ImageC.CreateNew(maxSize.X, maxSize.Y);
-
-            foreach (var texture in PackedTextures)
-            {
-                int startX = (int)texture.PositionInTextureAtlas.X;
-                int startY = (int)texture.PositionInTextureAtlas.Y;
-                tempBitmap.CopyFrom(startX, startY, texture.Image);
-            }
-
-            return tempBitmap;
         }
 
         public WadStaticId GetFirstFreeStaticMesh()
