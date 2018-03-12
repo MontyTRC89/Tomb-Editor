@@ -142,6 +142,9 @@
   <data name="Fog-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Fog-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="misc_TransparentBackground" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\misc_TransparentBackground.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ToEnd-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ToEnd-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -190,6 +193,9 @@
   <data name="angle_right-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\angle_right-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="volume_up-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\volume_up-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="plus_math-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\plus_math-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -216,9 +222,6 @@
   </data>
   <data name="clipboard-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\clipboard-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="volume_up-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\volume_up-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="trash-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\trash-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -250,7 +253,7 @@
   <data name="general_Export-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\general_Export-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="misc_TransparentBackground" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\misc_TransparentBackground.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="action_stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\action_stop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

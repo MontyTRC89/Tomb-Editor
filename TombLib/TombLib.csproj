@@ -158,7 +158,6 @@
     <Compile Include="LevelData\IO\Prj2Writer.cs" />
     <Compile Include="LevelData\IO\PrjLoader.cs" />
     <Compile Include="Graphics\Animation.cs" />
-    <Compile Include="Graphics\AnimDispatch.cs" />
     <Compile Include="Graphics\ArcBallCamera.cs" />
     <Compile Include="Graphics\Bone.cs" />
     <Compile Include="Graphics\Camera.cs" />
@@ -226,7 +225,6 @@
     <Compile Include="Graphics\SkinnedMesh.cs" />
     <Compile Include="Graphics\SkinnedModel.cs" />
     <Compile Include="Graphics\SkinnedVertex.cs" />
-    <Compile Include="Graphics\StateChange.cs" />
     <Compile Include="Graphics\StaticMesh.cs" />
     <Compile Include="Graphics\StaticModel.cs" />
     <Compile Include="Graphics\StaticVertex.cs" />

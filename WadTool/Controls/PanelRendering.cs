@@ -156,47 +156,11 @@ namespace WadTool.Controls
 
                         // Build animation transforms
                         var matrices = new List<Matrix4x4>();
-                        if ((AnimationIndex < model.Animations.Count) &&
-                            (KeyFrameIndex < model.Animations[AnimationIndex].KeyFrames.Count))
+                        if (model.Animations.Count != 0)
                         {
-                            var animation = model.Animations[AnimationIndex];
-                            model.BuildAnimationPose(animation.KeyFrames[KeyFrameIndex]);
                             for (var b = 0; b < model.Meshes.Count; b++)
                                 matrices.Add(model.AnimationTransforms[b]);
                         }
-                        /*else
-                        {
-
-                            var transforms1 = new List<Matrix4x4>();
-                            var transforms2 = new List<Matrix4x4>();
-                            var frame1 = (int)Math.Floor((double)KeyFrame / animation.Framerate);
-                            var frame2 = frame1 + 1;
-
-                            // Build transforms for current keyframe
-                            model.BuildAnimationPose(model.Animations[Animation].KeyFrames[frame1]);
-                            for (var b = 0; b < model.Meshes.Count; b++)
-                                transforms1.Add(model.AnimationTransforms[b]);
-
-                            var amount = (float)(KeyFrame - frame1) / animation.Framerate;
-
-                            if (frame2 >= animation.KeyFrames.Count)
-                            {
-                                // Impossible case (in theory...)
-                                for (var b = 0; b < model.Meshes.Count; b++)
-                                    matrices.Add(transforms1[b]);
-                            }
-                            else
-                            {
-                                // Build transforms for current keyframe + 1
-                                model.BuildAnimationPose(model.Animations[Animation].KeyFrames[frame2]);
-                                for (var b = 0; b < model.Meshes.Count; b++)
-                                    transforms2.Add(model.AnimationTransforms[b]);
-
-                                // Interpolate
-                                for (var b = 0; b < model.Meshes.Count; b++)
-                                    matrices.Add(Matrix4x4.Lerp(transforms1[b], transforms2[2], amount));
-                            }
-                        }    */
                         else
                         {
                             foreach (var bone in model.Bones)
