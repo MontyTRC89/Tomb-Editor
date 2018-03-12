@@ -236,5 +236,8 @@
   <ItemGroup>
     <None Include="Resources\misc_TransparentBackground.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\action_stop.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
