@@ -86,7 +86,7 @@ namespace TombLib.LevelData
 
     public struct ImportedGeometryInfo
     {
-        public readonly static ImportedGeometryInfo Default = new ImportedGeometryInfo { Name = "Unnamed", Path = "", Scale = 1, FlipZ = true, FlipUV_V = true };
+        public static readonly ImportedGeometryInfo Default = new ImportedGeometryInfo { Name = "Unnamed", Path = "", Scale = 1, FlipZ = true, FlipUV_V = true };
 
         public string Name { get; set; }
         public string Path { get; set; }

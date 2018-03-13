@@ -8,8 +8,8 @@ namespace TombEditor.Controls
     // TODO Maybe fork DarkUI to fix this in the source.
     public class DarkScrollBarC : DarkScrollBar
     {
-        private readonly static FieldInfo _value = typeof(DarkScrollBar).GetField("_value", BindingFlags.NonPublic | BindingFlags.Instance);
-        private readonly static FieldInfo _viewSize = typeof(DarkScrollBar).GetField("_viewSize", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly FieldInfo _value = typeof(DarkScrollBar).GetField("_value", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly FieldInfo _viewSize = typeof(DarkScrollBar).GetField("_viewSize", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private const int _precision = 20000;
         private double _newMinimum;

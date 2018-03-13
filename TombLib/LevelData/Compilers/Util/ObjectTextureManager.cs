@@ -73,7 +73,7 @@ namespace TombLib.LevelData.Compilers.Util
             public static bool operator !=(Result first, Result second) => !(first == second);
             public bool Equals(Result other) => this == other;
             public override bool Equals(object other) => (other is Result) && this == (Result)other;
-            public unsafe override int GetHashCode()
+            public override unsafe int GetHashCode()
             {
                 Result this2 = this;
                 return unchecked((-368200913) * *((int*)&this2)); // Random prime

@@ -49,7 +49,7 @@ namespace TombLib.Graphics.Primitives
         /// <summary>
         /// The input layout used by this geometric primitive (shared for all geometric primitive).
         /// </summary>
-        private readonly static VertexInputLayout InputLayout = VertexInputLayout.New<T>(0);
+        private static readonly VertexInputLayout InputLayout = VertexInputLayout.New<T>(0);
 
         /// <summary>
         /// True if the index buffer is a 32 bit index buffer.
