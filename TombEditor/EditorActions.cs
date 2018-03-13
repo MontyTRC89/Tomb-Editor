@@ -2293,7 +2293,6 @@ namespace TombEditor
             else
             {
                 DarkMessageBox.Show(owner, "No Lara found. Place Lara to play level.", "No Lara", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
             }
 
         }

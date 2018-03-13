@@ -251,7 +251,6 @@ namespace TombEditor.Controls
                     if (_editor?.Level?.Wad == null)
                     {
                         EditorActions.LoadWad(Parent);
-                        return;
                     }
                     else
                         if (_editor.ChosenItem != null)

@@ -70,7 +70,6 @@ namespace TombLib.Utils
                 }
                 else
                 { // Line 0 and 1 have undefined slope
-                    return;
                 }
             }
         }

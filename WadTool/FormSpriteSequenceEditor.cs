@@ -116,7 +116,6 @@ namespace WadTool
                 {
                     logger.Error(exc, "Unable to save file '" + fileDialog.FileName + "'.");
                     DarkMessageBox.Show(this, "Unable to save sprite. " + exc.ToString(), "Saving sprite failed.", MessageBoxIcon.Error);
-                    return;
                 }
             }
         }

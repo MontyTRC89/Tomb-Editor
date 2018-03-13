@@ -54,17 +54,14 @@ namespace TombLib.GeometryIO.Importers
                     var chunk = line.Split(' ')[0];
                     if (chunk == "Format")
                     {
-                        continue;
                     }
                     else if (chunk == "Thumbnail")
                     {
                         IgnoreChunk(reader);
-                        continue;
                     }
                     else if (chunk == "Scene")
                     {
                         IgnoreChunk(reader);
-                        continue;
                     }
                     else if (chunk == "Material")
                     {
@@ -92,7 +89,6 @@ namespace TombLib.GeometryIO.Importers
 
                             model.Materials.Add(material);
                         }
-                        continue;
                     }
                     else if (chunk == "Object")
                     {
@@ -256,7 +252,8 @@ namespace TombLib.GeometryIO.Importers
                 if (line.Contains("{"))
                 { depth++; continue; }
                 if (line.Contains("}"))
-                { depth--; continue; }
+                { depth--;
+                }
             }
         }
     }

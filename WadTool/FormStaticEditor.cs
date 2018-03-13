@@ -64,7 +64,6 @@ namespace WadTool
                         if (moveableMesh.Hash == Static.Mesh.Hash)
                         {
                             movebles.Add(moveable.Value);
-                            continue;
                         }
                     }
                 }
@@ -75,7 +74,6 @@ namespace WadTool
                         @static.Value.Mesh.Hash == Static.Mesh.Hash)
                     {
                         statics.Add(@static.Value);
-                        continue;
                     }
                 }
 

@@ -1063,7 +1063,6 @@ namespace TombEditor.Controls
                             if (ModifierKeys.HasFlag(Keys.Alt))
                             {
                                 EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
-                                break;
                             }
                             else if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos)) || _editor.SelectedSectors == SectorSelection.None)
                             {
