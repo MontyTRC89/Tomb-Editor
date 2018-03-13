@@ -1,10 +1,5 @@
 ﻿using DarkUI.Docking;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
@@ -13,7 +8,7 @@ namespace TombEditor.ToolWindows
     {
         private class InitEvent : IEditorEvent { }
 
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public ToolPalette()
         {
@@ -79,10 +74,10 @@ namespace TombEditor.ToolWindows
 
                 toolStrip.AutoSize = true;
                 Size = toolStrip.Size;
-                toolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Lighting) || (mode == EditorMode.Geometry);
+                toolStrip.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Lighting || mode == EditorMode.Geometry;
 
                 // Select classic winroomedit controls by default
-                SwitchTool((mode == EditorMode.FaceEdit || mode == EditorMode.Lighting) ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
+                SwitchTool(mode == EditorMode.FaceEdit || mode == EditorMode.Lighting ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
             }
         }
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using TombLib.Utils;
 using TombLib.NG;
 
 namespace TombLib.LevelData.Compilers
@@ -42,7 +40,7 @@ namespace TombLib.LevelData.Compilers
                     for (var x = 0; x < room.NumXSectors; x++)
                     {
                         var ceilingPortal = room.Blocks[x, z].CeilingPortal;
-                        if ((ceilingPortal != null) && !ceilingPortals.Contains(ceilingPortal))
+                        if (ceilingPortal != null && !ceilingPortals.Contains(ceilingPortal))
                             ceilingPortals.Add(ceilingPortal);
                     }
 
@@ -127,7 +125,7 @@ namespace TombLib.LevelData.Compilers
                         sector.RoomBelow = 255;
                         sector.RoomAbove = 255;
 
-                        if ((block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.None) || block.Type == BlockType.BorderWall)
+                        if (block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.None || block.Type == BlockType.BorderWall)
                         { // Sector is a complete wall
                             if (block.WallPortal != null)
                             { // Sector is a wall portal
@@ -364,7 +362,7 @@ namespace TombLib.LevelData.Compilers
 
                             // Additional short
                             ushort trigger3 = 0;
-                            trigger3 |= (ushort)(GetTriggerParameter(trigger.Timer, trigger, 0xff));
+                            trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
                             outFloorData.Add(trigger3);
                             break;
@@ -428,7 +426,7 @@ namespace TombLib.LevelData.Compilers
                                 trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (11 << 10));
                                 outFloorData.Add(trigger2);
 
-                                trigger2 = (ushort)(GetTriggerRealTimer(trigger, 0xffff));
+                                trigger2 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger2);
                             }
                             else
@@ -438,7 +436,7 @@ namespace TombLib.LevelData.Compilers
                             // Trigger for fly by
                             if (!(trigger.Target is FlybyCameraInstance))
                                 throw new Exception("A Flyby trigger must point to a flyby camera! ('" + trigger + "')");
-                            var flyByCamera = (FlybyCameraInstance)(trigger.Target);
+                            var flyByCamera = (FlybyCameraInstance)trigger.Target;
                             trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
                             outFloorData.Add(trigger2);
 
@@ -447,7 +445,7 @@ namespace TombLib.LevelData.Compilers
                             break;
                         case TriggerTargetType.ParameterNg:
                             // Trigger for secret found
-                            ushort targetTypeBits = (trigger.Target is ObjectInstance) ? (ushort)(0 << 10) : (ushort)(13 << 10);
+                            ushort targetTypeBits = trigger.Target is ObjectInstance ? (ushort)(0 << 10) : (ushort)(13 << 10);
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | targetTypeBits);
                             outFloorData.Add(trigger2);
                             break;
@@ -473,8 +471,8 @@ namespace TombLib.LevelData.Compilers
         {
             return NgParameterInfo.EncodeNGRealTimer(trigger.TargetType, trigger.TriggerType,
                 (trigger.Target as TriggerParameterUshort)?.Key ?? ushort.MaxValue, ushort.MaxValue,
-                (upperBoundInner) => GetTriggerParameter(trigger.Timer, trigger, upperBoundInner),
-                (upperBoundInner) => GetTriggerParameter(trigger.Extra, trigger, upperBoundInner));
+                upperBoundInner => GetTriggerParameter(trigger.Timer, trigger, upperBoundInner),
+                upperBoundInner => GetTriggerParameter(trigger.Extra, trigger, upperBoundInner));
         }
 
         private ushort GetTriggerParameter(ITriggerParameter parameter, TriggerInstance triggerDiagnostic, ushort upperBound)
@@ -526,16 +524,16 @@ namespace TombLib.LevelData.Compilers
 
         private struct RoomSectorShape
         {
-            public bool SplitDirectionIsXEqualsZ;
-            public bool SplitPortalFirst;
-            public bool SplitPortalSecond;
-            public bool SplitWallFirst;
-            public bool SplitWallSecond;
-            public int HeightXnZn;
-            public int HeightXnZp;
-            public int HeightXpZn;
-            public int HeightXpZp;
-            public int DiagonalStep;
+            public readonly bool SplitDirectionIsXEqualsZ;
+            public readonly bool SplitPortalFirst;
+            public readonly bool SplitPortalSecond;
+            public readonly bool SplitWallFirst;
+            public readonly bool SplitWallSecond;
+            public readonly int HeightXnZn;
+            public readonly int HeightXnZp;
+            public readonly int HeightXpZn;
+            public readonly int HeightXpZp;
+            public readonly int DiagonalStep;
 
             public RoomSectorShape(short[] edgeArray, Room.RoomConnectionType portalType, bool splitDirectionWithDiagonalSplit, DiagonalSplit diagonalSplitType, bool wall)
             {
@@ -622,10 +620,10 @@ namespace TombLib.LevelData.Compilers
 
             public int Max => Math.Max(Math.Max(HeightXnZn, HeightXnZp), Math.Max(HeightXpZn, HeightXpZp));
             public int Min => Math.Min(Math.Min(HeightXnZn, HeightXnZp), Math.Min(HeightXpZn, HeightXpZp));
-            public bool IsFlat => (HeightXnZp == HeightXnZn) && (HeightXpZn == HeightXnZn) && (HeightXpZp == HeightXnZn) &&
-                DiagonalStep == 0 && (SplitPortalSecond == SplitPortalFirst) && (SplitWallFirst == SplitWallSecond);
-            public bool IsSplit => ((HeightXnZn - HeightXnZp) != (HeightXpZn - HeightXpZp)) || ((HeightXnZn - HeightXpZn) != (HeightXnZp - HeightXpZp)) ||
-                DiagonalStep != 0 || (SplitPortalSecond != SplitPortalFirst) || (SplitWallFirst != SplitWallSecond);
+            public bool IsFlat => HeightXnZp == HeightXnZn && HeightXpZn == HeightXnZn && HeightXpZp == HeightXnZn &&
+                DiagonalStep == 0 && SplitPortalSecond == SplitPortalFirst && SplitWallFirst == SplitWallSecond;
+            public bool IsSplit => HeightXnZn - HeightXnZp != HeightXpZn - HeightXpZp || HeightXnZn - HeightXpZn != HeightXnZp - HeightXpZp ||
+                DiagonalStep != 0 || SplitPortalSecond != SplitPortalFirst || SplitWallFirst != SplitWallSecond;
         }
 
         // Portal type {no, first, second}, {Floor, Ceiling}, {Bisecting, NotBisecting}
@@ -636,7 +634,7 @@ namespace TombLib.LevelData.Compilers
 
         private ushort TriangleCollisionGetSigned(int Value, Room reportRoom, VectorInt2 reportPos)
         {
-            if ((Value < -16) || (Value > 15))
+            if (Value < -16 || Value > 15)
             {
                 _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The triangle is too steep, the collision is inaccurate.");
                 Value = Math.Max(Math.Min(Value, 15), -16);
@@ -648,7 +646,7 @@ namespace TombLib.LevelData.Compilers
 
         private ushort TriangleCollisionGetUnsigned(int Value, Room reportRoom, VectorInt2 reportPos)
         {
-            if ((Value < 0) || (Value > 15))
+            if (Value < 0 || Value > 15)
             {
                 _progressReporter.ReportWarn("Triangle collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The triangle is too steep, the collision is inaccurate.");
                 Value = Math.Max(Math.Min(Value, 0), 15);
@@ -725,7 +723,7 @@ namespace TombLib.LevelData.Compilers
 
                 data0 |= (ushort)(TriangleCollisionGetSigned(t00, reportRoom, reportPos) << 5);
                 data0 |= (ushort)(TriangleCollisionGetSigned(t01, reportRoom, reportPos) << 10);
-                data1 |= (ushort)(TriangleCollisionGetUnsigned(t10, reportRoom, reportPos));
+                data1 |= TriangleCollisionGetUnsigned(t10, reportRoom, reportPos);
                 data1 |= (ushort)(TriangleCollisionGetUnsigned(t11, reportRoom, reportPos) << 4);
                 data1 |= (ushort)(TriangleCollisionGetUnsigned(t12, reportRoom, reportPos) << 8);
                 data1 |= (ushort)(TriangleCollisionGetUnsigned(t13, reportRoom, reportPos) << 12);
@@ -749,8 +747,8 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 ushort result = 0;
-                result |= (ushort)((ushort)(heightDiffY) & 0xff);
-                result |= (ushort)(((ushort)(heightDiffX) & 0xff) << 8);
+                result |= (ushort)((ushort)heightDiffY & 0xff);
+                result |= (ushort)(((ushort)heightDiffX & 0xff) << 8);
 
                 lastFloorDataFunction = outFloorData.Count;
                 outFloorData.Add((ushort)(isCeiling ? 0x03 : 0x02));

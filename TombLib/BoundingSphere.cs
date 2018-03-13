@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib
 {
@@ -21,9 +17,9 @@ namespace TombLib
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(BoundingSphere first, BoundingSphere second) => (first.Center == second.Center) && (first.Radius == second.Radius);
+        public static bool operator ==(BoundingSphere first, BoundingSphere second) => first.Center == second.Center && first.Radius == second.Radius;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(BoundingSphere first, BoundingSphere second) => (first.Center != second.Center) || (first.Radius != second.Radius);
+        public static bool operator !=(BoundingSphere first, BoundingSphere second) => first.Center != second.Center || first.Radius != second.Radius;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString() => "Sphere at " + Center + " with radius " + Radius;

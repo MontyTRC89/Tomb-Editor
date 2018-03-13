@@ -1,10 +1,6 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
@@ -13,7 +9,7 @@ namespace TombEditor
 {
     public class Gizmo : BaseGizmo
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public Gizmo(GraphicsDevice device, Effect effect)
             : base(device, effect)
@@ -27,7 +23,7 @@ namespace TombEditor
                                      newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
         }
 
-        private float RotationQuanization => (Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift)) ? 22.5f : 0.0f;
+        private float RotationQuanization => Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift) ? 22.5f : 0.0f;
 
         protected override void GizmoRotateY(float newAngle)
         {

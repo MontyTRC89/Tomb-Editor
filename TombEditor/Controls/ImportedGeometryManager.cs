@@ -6,8 +6,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -114,14 +112,14 @@ namespace TombEditor.Controls
                 setValue(ref info);
                 _parent.LevelSettings.ImportedGeometryUpdate(Object, info);
             }
-        };
+        }
 
-        private SortableBindingList<ImportedGeometryWrapper> _dataGridViewDataSource = new SortableBindingList<ImportedGeometryWrapper>();
+        private readonly SortableBindingList<ImportedGeometryWrapper> _dataGridViewDataSource = new SortableBindingList<ImportedGeometryWrapper>();
         [Browsable(false)]
         public LevelSettings LevelSettings { get; set; }
 
-        private Color _correctColor;
-        private Color _wrongColor;
+        private readonly Color _correctColor;
+        private readonly Color _wrongColor;
 
         public ImportedGeometryManager()
         {
@@ -163,8 +161,8 @@ namespace TombEditor.Controls
                     switch (e.ListChangedType)
                     {
                         case ListChangedType.ItemDeleted:
-                            var remainingElements = new HashSet<ImportedGeometry>(_dataGridViewDataSource.Select((wrapper) => wrapper.Object));
-                            LevelSettings.ImportedGeometries.RemoveAll((obj) => !remainingElements.Contains(obj)); // Don't use indices here, the wrapper indices might not match with the real object if sorting was enabled.
+                            var remainingElements = new HashSet<ImportedGeometry>(_dataGridViewDataSource.Select(wrapper => wrapper.Object));
+                            LevelSettings.ImportedGeometries.RemoveAll(obj => !remainingElements.Contains(obj)); // Don't use indices here, the wrapper indices might not match with the real object if sorting was enabled.
                             break;
                     }
                 };
@@ -197,10 +195,10 @@ namespace TombEditor.Controls
 
         private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= _dataGridViewDataSource.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= _dataGridViewDataSource.Count)
                 return;
 
-            if ((dataGridView.Columns[e.ColumnIndex] == searchButtonColumn))
+            if (dataGridView.Columns[e.ColumnIndex] == searchButtonColumn)
             {
                 string path = BrowseFile(_dataGridViewDataSource[e.RowIndex].Path);
                 if (!string.IsNullOrEmpty(path))
@@ -214,7 +212,7 @@ namespace TombEditor.Controls
 
         private void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= _dataGridViewDataSource.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= _dataGridViewDataSource.Count)
                 return;
 
             ImportedGeometry object_ = _dataGridViewDataSource[e.RowIndex].Object;
@@ -261,7 +259,7 @@ namespace TombEditor.Controls
         }
 
         // Prevent user message from appearing multiple time for multi row deletes
-        private bool? userDeletingRow_Cancel = null;
+        private bool? userDeletingRow_Cancel;
 
         private void dataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Text;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
-    public struct WadStaticId : IWadObjectId, IEquatable<WadStaticId>, IComparable<WadStaticId>, IComparable
+    public struct WadStaticId : IWadObjectId, IEquatable<WadStaticId>, IComparable<WadStaticId>
     {
         public uint TypeId;
 
@@ -19,14 +14,14 @@ namespace TombLib.Wad
 
         public int CompareTo(WadStaticId other) => TypeId.CompareTo(other.TypeId);
         public int CompareTo(object other) => CompareTo((WadStaticId)other);
-        public static bool operator <(WadStaticId first, WadStaticId second) => (first.TypeId < second.TypeId);
-        public static bool operator <=(WadStaticId first, WadStaticId second) => (first.TypeId <= second.TypeId);
-        public static bool operator >(WadStaticId first, WadStaticId second) => (first.TypeId > second.TypeId);
-        public static bool operator >=(WadStaticId first, WadStaticId second) => (first.TypeId >= second.TypeId);
-        public static bool operator ==(WadStaticId first, WadStaticId second) => (first.TypeId == second.TypeId);
+        public static bool operator <(WadStaticId first, WadStaticId second) => first.TypeId < second.TypeId;
+        public static bool operator <=(WadStaticId first, WadStaticId second) => first.TypeId <= second.TypeId;
+        public static bool operator >(WadStaticId first, WadStaticId second) => first.TypeId > second.TypeId;
+        public static bool operator >=(WadStaticId first, WadStaticId second) => first.TypeId >= second.TypeId;
+        public static bool operator ==(WadStaticId first, WadStaticId second) => first.TypeId == second.TypeId;
         public static bool operator !=(WadStaticId first, WadStaticId second) => !(first == second);
         public bool Equals(WadStaticId other) => this == other;
-        public override bool Equals(object other) => (other is WadStaticId) && this == (WadStaticId)other;
+        public override bool Equals(object other) => other is WadStaticId && this == (WadStaticId)other;
         public override int GetHashCode() => unchecked((int)TypeId);
 
         public string ToString(WadGameVersion gameVersion)

@@ -1,7 +1,9 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Numerics;
+using TombLib.Graphics.Primitives;
 using TombLib.Utils;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
@@ -50,7 +52,7 @@ namespace TombLib.Graphics
 
         // Geometry of the gizmo
         private readonly GraphicsDevice _device;
-        private Buffer<SolidVertex> _rotationHelperGeometry;
+        private readonly Buffer<SolidVertex> _rotationHelperGeometry;
         private readonly GeometricPrimitive _cylinder;
         private readonly GeometricPrimitive _cube;
         private readonly GeometricPrimitive _cone;
@@ -78,7 +80,7 @@ namespace TombLib.Graphics
             _device = device;
 
             // Create the gizmo geometry
-            _rotationHelperGeometry = Buffer<SolidVertex>.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
+            _rotationHelperGeometry = Buffer.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
             _cylinder = GeometricPrimitive.Cylinder.New(_device, 1.0f, 1.0f, _lineRadiusTesselation);
             _cube = GeometricPrimitive.Cube.New(_device, 1.0f);
             _cone = GeometricPrimitive.Cone.New(_device, 1.0f, 1.3f, 16);
@@ -131,7 +133,7 @@ namespace TombLib.Graphics
         /// <returns>true, if an iteraction with the gizmo is happening</returns>
         public bool MouseMoved(Matrix4x4 viewProjection, float x, float y)
         {
-            if ((!DrawGizmo) || (_mode == GizmoMode.None))
+            if (!DrawGizmo || _mode == GizmoMode.None)
                 return false;
 
             // First get the ray in 3D space from X, Y mouse coordinates
@@ -297,7 +299,7 @@ namespace TombLib.Graphics
                 if (Collision.RayIntersectsPlane(ray, planeZ, out intersectionPoint))
                 {
                     var distance = (intersectionPoint - Position).Length();
-                    if (distance >= (Size - pickRadius) && distance <= (Size + pickRadius))
+                    if (distance >= Size - pickRadius && distance <= Size + pickRadius)
                     {
                         Vector3 startDirection = Vector3.Normalize(intersectionPoint - Position);
 
@@ -315,7 +317,7 @@ namespace TombLib.Graphics
                 if (Collision.RayIntersectsPlane(ray, planeX, out intersectionPoint))
                 {
                     var distance = (intersectionPoint - Position).Length();
-                    if (distance >= (Size - pickRadius) && distance <= (Size + pickRadius))
+                    if (distance >= Size - pickRadius && distance <= Size + pickRadius)
                     {
                         Vector3 startDirection = Vector3.Normalize(intersectionPoint - Position);
 
@@ -333,7 +335,7 @@ namespace TombLib.Graphics
                 if (Collision.RayIntersectsPlane(ray, planeY, out intersectionPoint))
                 {
                     var distance = (intersectionPoint - Position).Length();
-                    if (distance >= (Size - pickRadius) && distance <= (Size + pickRadius))
+                    if (distance >= Size - pickRadius && distance <= Size + pickRadius)
                     {
                         Vector3 startDirection = Vector3.Normalize(intersectionPoint - Position);
 
@@ -354,9 +356,9 @@ namespace TombLib.Graphics
             _scaleBase = SupportScale ? Scale : 1.0f;
             _rotationPickAngle = SimplifyAngle(pickingResult.RotationPickAngle);
             _rotationPickAngleOffset = SimplifyAngle(
-                ((pickingResult.Mode == GizmoMode.RotateY) ? RotationY :
-                (pickingResult.Mode == GizmoMode.RotateX) ? RotationX :
-                (pickingResult.Mode == GizmoMode.RotateZ) ? RotationZ : 0.0f) - pickingResult.RotationPickAngle);
+                (pickingResult.Mode == GizmoMode.RotateY ? RotationY :
+                pickingResult.Mode == GizmoMode.RotateX ? RotationX :
+                pickingResult.Mode == GizmoMode.RotateZ ? RotationZ : 0.0f) - pickingResult.RotationPickAngle);
             _rotationLastMouseAngle = SimplifyAngle(pickingResult.RotationPickAngle);
             _rotationLastMouseRadius = pickingResult.Distance;
         }
@@ -636,16 +638,16 @@ namespace TombLib.Graphics
                             color = _yAxisColor;
                             break;
                         case GizmoMode.RotateX:
-                            startAngle = -((float)Math.PI * 0.5f) - (_rotationPickAngle);
+                            startAngle = -((float)Math.PI * 0.5f) - _rotationPickAngle;
                             endAngle = -((float)Math.PI * 0.5f) - (RotationX - _rotationPickAngleOffset);
                             lastMouseAngle = -((float)Math.PI * 0.5f) - _rotationLastMouseAngle;
                             baseMatrix = Matrix4x4.CreateRotationZ((float)Math.PI / 2.0f) * RotateMatrixX;
                             color = _xAxisColor;
                             break;
                         case GizmoMode.RotateZ:
-                            startAngle = ((float)Math.PI) + _rotationPickAngle;
-                            endAngle = ((float)Math.PI) + RotationZ - _rotationPickAngleOffset;
-                            lastMouseAngle = ((float)Math.PI) + _rotationLastMouseAngle;
+                            startAngle = (float)Math.PI + _rotationPickAngle;
+                            endAngle = (float)Math.PI + RotationZ - _rotationPickAngleOffset;
+                            lastMouseAngle = (float)Math.PI + _rotationLastMouseAngle;
                             baseMatrix = Matrix4x4.CreateRotationX((float)Math.PI / 2.0f) * RotateMatrixZ;
                             color = _zAxisColor;
                             break;
@@ -680,8 +682,8 @@ namespace TombLib.Graphics
                     }
 
                     rotationHelperGeometry[_rotationTrianglesCount * 3] = new SolidVertex(new Vector3(
-                        (_rotationLastMouseRadius / Size) * (float)Math.Cos(lastMouseAngle), 0,
-                        (_rotationLastMouseRadius / Size) * (float)-Math.Sin(lastMouseAngle)));
+                        _rotationLastMouseRadius / Size * (float)Math.Cos(lastMouseAngle), 0,
+                        _rotationLastMouseRadius / Size * (float)-Math.Sin(lastMouseAngle)));
                     rotationHelperGeometry[_rotationTrianglesCount * 3 + 1] = middleVertex;
                     _rotationHelperGeometry.SetData(rotationHelperGeometry);
 

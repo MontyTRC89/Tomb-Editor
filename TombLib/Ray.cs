@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using TombLib.Graphics;
 
 namespace TombLib
 {
@@ -22,9 +17,9 @@ namespace TombLib
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Ray first, Ray second) => (first.Position == second.Position) && (first.Direction == second.Direction);
+        public static bool operator ==(Ray first, Ray second) => first.Position == second.Position && first.Direction == second.Direction;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Ray first, Ray second) => (first.Position != second.Position) || (first.Direction != second.Direction);
+        public static bool operator !=(Ray first, Ray second) => first.Position != second.Position || first.Direction != second.Direction;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString() => "Ray at " + Position + " in direction " + Direction;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

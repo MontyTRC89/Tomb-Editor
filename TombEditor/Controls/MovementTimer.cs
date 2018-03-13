@@ -5,11 +5,11 @@ namespace TombEditor.Controls
 {
     public class MovementTimer : IDisposable
     {
-        private Timer _moveTimer = new Timer() { Interval = 16 };
-        private float _moveAcceleration;
-        private EventHandler _moveEvent = null;
+        private readonly Timer _moveTimer = new Timer() { Interval = 16 };
+        private readonly float _moveAcceleration;
+        private EventHandler _moveEvent;
 
-        public float MoveMultiplier { get; private set; } = 0.0f;
+        public float MoveMultiplier { get; private set; }
         public Keys MoveDirection { get; private set; } = Keys.None;
 
         public MovementTimer(EventHandler moveEvent, float moveAcceleration = 0.02f)

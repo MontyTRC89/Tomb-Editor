@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
 
@@ -27,12 +21,12 @@ namespace TombEditor.Controls.ContextMenus
 
             Items.Add(new ToolStripSeparator());
 
-            Items.Add(new ToolStripMenuItem("Crop room", global::TombEditor.Properties.Resources.general_crop_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Crop room", Properties.Resources.general_crop_16, (o, e) =>
             {
                 EditorActions.CropRoom(targetRoom, targetArea, this);
             }));
 
-            Items.Add(new ToolStripMenuItem("Split room", global::TombEditor.Properties.Resources.general_split_files_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Split room", Properties.Resources.general_split_files_16, (o, e) =>
             {
                 EditorActions.SplitRoom(this);
             }));

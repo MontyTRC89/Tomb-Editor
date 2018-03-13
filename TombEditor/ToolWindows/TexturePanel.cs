@@ -1,16 +1,11 @@
 ﻿using DarkUI.Docking;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombEditor.ToolWindows
 {
     public partial class TexturePanel : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public TexturePanel()
         {
@@ -37,7 +32,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }

@@ -1,8 +1,5 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -96,7 +93,7 @@ namespace TombLib.IO
             int i;
 
             sizeOfT = Marshal.SizeOf(typeof(T));
-            unmanaged = Marshal.AllocHGlobal(sizeOfT * (int)count);
+            unmanaged = Marshal.AllocHGlobal(sizeOfT * count);
             buffer = new byte[sizeOfT];
 
             output = new T[count];

@@ -1,10 +1,5 @@
 ﻿using SharpDX.Toolkit.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Graphics;
 using WadTool.Controls;
 
@@ -12,8 +7,8 @@ namespace WadTool
 {
     public class GizmoStaticEditor : BaseGizmo
     {
-        private Configuration _configuration;
-        private PanelRenderingStaticEditor _control;
+        private readonly Configuration _configuration;
+        private readonly PanelRenderingStaticEditor _control;
 
         public GizmoStaticEditor(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingStaticEditor control)
             : base(device, effect)
@@ -38,7 +33,7 @@ namespace WadTool
             _control.StaticScale = newScale;
         }
 
-        protected override Vector3 Position => (_control != null ? _control.StaticPosition : Vector3.Zero);
+        protected override Vector3 Position => _control != null ? _control.StaticPosition : Vector3.Zero;
         protected override float RotationY => _control.StaticRotation.Y;
         protected override float RotationX => _control.StaticRotation.X;
         protected override float RotationZ => _control.StaticRotation.Z;

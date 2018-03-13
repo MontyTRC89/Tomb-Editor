@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
 using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
@@ -14,8 +9,8 @@ namespace TombEditor
     [Serializable]
     public class ObjectClipboardData
     {
-        private byte[] _data;
-        private string _levelPath;
+        private readonly byte[] _data;
+        private readonly string _levelPath;
 
         public ObjectClipboardData(Editor editor)
         {
@@ -24,7 +19,7 @@ namespace TombEditor
             using (var stream = new MemoryStream())
             {
                 var writer = new BinaryWriterEx(stream);
-                Prj2Writer.SaveToPrj2OnlyObjects(stream, editor.Level, new ObjectInstance[] { editor.SelectedObject });
+                Prj2Writer.SaveToPrj2OnlyObjects(stream, editor.Level, new[] { editor.SelectedObject });
                 _data = stream.GetBuffer();
             }
         }
@@ -42,7 +37,7 @@ namespace TombEditor
         public PositionBasedObjectInstance MergeGetSingleObject(Editor editor)
         {
             Prj2Loader.LoadedObjects loadedObjects = CreateObjects();
-            PositionBasedObjectInstance obj = (PositionBasedObjectInstance)(loadedObjects.Objects[0]);
+            PositionBasedObjectInstance obj = (PositionBasedObjectInstance)loadedObjects.Objects[0];
             LevelSettings newLevelSettings = editor.Level.Settings.Clone();
             obj.CopyDependentLevelSettings(new Room.CopyDependentLevelSettingsArgs(null, newLevelSettings, loadedObjects.Settings, true));
             editor.UpdateLevelSettings(newLevelSettings);

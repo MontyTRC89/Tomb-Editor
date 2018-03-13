@@ -1,22 +1,14 @@
 ﻿using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Utils;
-using TombLib.Wad.Tr4Wad;
 
 namespace TombLib.Forms
 {
     public partial class ImportTr4WadDialog : DarkForm
     {
-        private DialogDescriptonMissingSounds _dialogInfo;
+        private readonly DialogDescriptonMissingSounds _dialogInfo;
 
         public ImportTr4WadDialog(DialogDescriptonMissingSounds dialogInfo)
         {
@@ -131,7 +123,7 @@ namespace TombLib.Forms
 
         private void dgvSamples_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= dgvSamples.Rows.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= dgvSamples.Rows.Count)
                 return;
 
             if (e.ColumnIndex == 2)

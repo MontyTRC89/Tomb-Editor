@@ -1,11 +1,7 @@
-﻿using SharpDX.Toolkit;
-using SharpDX.Toolkit.Graphics;
-using System;
+﻿using SharpDX.Toolkit.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
@@ -42,7 +38,7 @@ namespace TombLib.Graphics
 
             if (Vertices.Count == 0) return;
 
-            VertexBuffer = Buffer.Vertex.New<StaticVertex>(GraphicsDevice, Vertices.ToArray<StaticVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<StaticVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
@@ -63,7 +59,7 @@ namespace TombLib.Graphics
 
             // Initialize the mesh
             var msh = staticMesh.Mesh;
-            var mesh = new StaticMesh(device, staticMesh.ToString() + "_mesh");
+            var mesh = new StaticMesh(device, staticMesh + "_mesh");
 
             mesh.Submeshes.Add(materialOpaque, new Submesh(materialOpaque));
             mesh.Submeshes.Add(materialOpaqueDoubleSided, new Submesh(materialOpaqueDoubleSided));
@@ -76,7 +72,7 @@ namespace TombLib.Graphics
             for (int j = 0; j < msh.Polys.Count; j++)
             {
                 WadPolygon poly = msh.Polys[j];
-                Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)(poly.Texture.Texture)];
+                Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)poly.Texture.Texture];
 
                 // Get the right submesh
                 var submesh = mesh.Submeshes[materialOpaque];

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
@@ -18,14 +17,14 @@ namespace TombLib.LevelData.Compilers.Util
             public WadSoundInfoMetaData Data;
         }
 
-        private GameVersion _gameVersion;
-        private Dictionary<Hash, ushort> _soundInfoToMapIndexLookup = new Dictionary<Hash, ushort>();
-        private SortedSet<ushort> _freeSoundMapIndices = new SortedSet<ushort>(); // To remember free space in the middle of the sound map.
+        private readonly GameVersion _gameVersion;
+        private readonly Dictionary<Hash, ushort> _soundInfoToMapIndexLookup = new Dictionary<Hash, ushort>();
+        private readonly SortedSet<ushort> _freeSoundMapIndices = new SortedSet<ushort>(); // To remember free space in the middle of the sound map.
 
-        private List<WadSample> _samples = new List<WadSample>();
-        private List<uint> _sampleIndices = new List<uint>(); // Set them to filler zeros for TR4, TR5
-        private List<SoundDetail> _soundDetails = new List<SoundDetail>();
-        private List<ushort> _soundMap = new List<ushort>(); // 0xffff for empty sounds.
+        private readonly List<WadSample> _samples = new List<WadSample>();
+        private readonly List<uint> _sampleIndices = new List<uint>(); // Set them to filler zeros for TR4, TR5
+        private readonly List<SoundDetail> _soundDetails = new List<SoundDetail>();
+        private readonly List<ushort> _soundMap = new List<ushort>(); // 0xffff for empty sounds.
 
         public SoundManager(LevelSettings settings, Wad2 wad)
         {
@@ -57,7 +56,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Fill accelerated data structure to find free sound map entries
             _soundInfoToMapIndexLookup.Add(soundInfo.Hash, soundMapIndex);
-            for (ushort i = oldSoundMapSize; i < (soundMapIndex - 1); ++i)
+            for (ushort i = oldSoundMapSize; i < soundMapIndex - 1; ++i)
                 _freeSoundMapIndices.Add(i);
             _freeSoundMapIndices.Remove(soundMapIndex);
         }
@@ -124,7 +123,7 @@ namespace TombLib.LevelData.Compilers.Util
             switch (_gameVersion)
             {
                 case GameVersion.TRNG:
-                    writer.Write(checked((ushort)(_soundMap.Count))); // Num demo data
+                    writer.Write(checked((ushort)_soundMap.Count)); // Num demo data
                     break;
                 case GameVersion.TR2:
                 case GameVersion.TR3:
@@ -146,7 +145,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             for (int i = 0; i < _soundMap.Count; i++)
-                writer.Write((ushort)_soundMap[i]);
+                writer.Write(_soundMap[i]);
 
             // Write sound details
             writer.Write((uint)_soundDetails.Count);
@@ -194,7 +193,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void WriteSoundData(BinaryWriter writer)
         {
-            writer.Write((uint)(_samples.Count)); // Write sample count
+            writer.Write((uint)_samples.Count); // Write sample count
             if (_gameVersion == GameVersion.TR5)
             { // We have to compress the samples first
               // TR5 uses compressed MS-ADPCM samples

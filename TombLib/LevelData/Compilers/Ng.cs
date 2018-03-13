@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
@@ -12,8 +7,8 @@ namespace TombLib.LevelData.Compilers
     {
         private void WriteNgHeader(BinaryWriter writer)
         {
-            var ngleStartSignature = System.Text.ASCIIEncoding.ASCII.GetBytes("NG");
-            var endSignature = System.Text.ASCIIEncoding.ASCII.GetBytes("NGLE");
+            var ngleStartSignature = System.Text.Encoding.ASCII.GetBytes("NG");
+            var endSignature = System.Text.Encoding.ASCII.GetBytes("NGLE");
             var startOffset = writer.BaseStream.Position;
 
             // Write start signature
@@ -176,7 +171,7 @@ namespace TombLib.LevelData.Compilers
                 flags |= 0x02;
             var buffer = new byte[] { 0x04, 0x00, 0x0D, 0x80 };
             writer.Write(buffer);
-            writer.Write((int)flags);
+            writer.Write(flags);
         }
 
         private void WriteNgChunkMoveablesTable(BinaryWriter writer)

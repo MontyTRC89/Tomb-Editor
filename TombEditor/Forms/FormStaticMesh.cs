@@ -1,19 +1,13 @@
-﻿using DarkUI.Forms;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Windows.Forms;
+using DarkUI.Forms;
 using TombLib.LevelData;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormStaticMesh : DarkForm
     {
-        private StaticInstance _staticMesh;
+        private readonly StaticInstance _staticMesh;
 
         public FormStaticMesh(StaticInstance staticMesh)
         {
@@ -24,7 +18,7 @@ namespace TombEditor
         private void butCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            this.Close();
+            Close();
         }
 
         private void FormObject_Load(object sender, EventArgs e)
@@ -91,7 +85,7 @@ namespace TombEditor
             _staticMesh.Ocb = ocb;
 
             DialogResult = DialogResult.OK;
-            this.Close();
+            Close();
         }
 
         private void cbScalable_CheckedChanged(object sender, EventArgs e)

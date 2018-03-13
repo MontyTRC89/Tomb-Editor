@@ -1,11 +1,4 @@
-﻿using NLog;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using TombLib.NG;
+﻿using System;
 
 namespace TombLib.LevelData
 {
@@ -51,7 +44,7 @@ namespace TombLib.LevelData
     public class TriggerParameterUshort : IEquatable<TriggerParameterUshort>, ITriggerParameter
     {
         public ushort Key { get; }
-        private object _nameObject;
+        private readonly object _nameObject;
 
         public TriggerParameterUshort(ushort key, object nameObject = null)
         {
@@ -92,21 +85,21 @@ namespace TombLib.LevelData
         public TriggerType TriggerType { get; set; } = TriggerType.Trigger;
         public TriggerTargetType TargetType { get; set; } = TriggerTargetType.FlipEffect;
 
-        private ITriggerParameter _target = null;
+        private ITriggerParameter _target;
         public ITriggerParameter Target
         {
             get { return _target; }
             set { UpdateEvents(ref _target, value); }
         }
 
-        private ITriggerParameter _timer = null;
+        private ITriggerParameter _timer;
         public ITriggerParameter Timer
         {
             get { return _timer; }
             set { UpdateEvents(ref _timer, value); }
         }
 
-        private ITriggerParameter _extra = null;
+        private ITriggerParameter _extra;
         public ITriggerParameter Extra
         {
             get { return _extra; }
@@ -122,12 +115,12 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            string output = TriggerType.ToString() + " ";
+            string output = TriggerType + " ";
             if (output.IndexOf("trigger", StringComparison.OrdinalIgnoreCase) == -1)
                 output += "Trigger ";
             output += "in room '" + (Room?.ToString() ?? "NULL") + "' ";
             output += "on sectors [" + Area.X0 + ", " + Area.Y0 + " to " + Area.X1 + ", " + Area.Y1 + "] ";
-            output += "for " + TargetType.ToString() + " ";
+            output += "for " + TargetType + " ";
             output += "(Target: " + Target + ", Timer: " + Timer + ", Extra: " + Extra + ")";
             return output;
         }

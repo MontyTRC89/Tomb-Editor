@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using TombLib.LevelData;
-using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
@@ -92,7 +86,7 @@ namespace TombLib.GeometryIO.Exporters
                             var v1 = indices[0];
                             var v2 = indices[1];
                             var v3 = indices[2];
-                            var v4 = (poly.Shape == IOPolygonShape.Quad ? indices[3] : 0);
+                            var v4 = poly.Shape == IOPolygonShape.Quad ? indices[3] : 0;
 
                             var texture = submesh.Value.Material.Texture;
                             var uv1 = GetUV(ApplyUVTransform(mesh.UV[v1], texture.Image.Width, texture.Image.Height));
@@ -144,7 +138,7 @@ namespace TombLib.GeometryIO.Exporters
             var g = (byte)((int)(color.Y * 128.0f) & 0xFF);
             var b = (byte)((int)(color.Z * 128.0f) & 0xFF);
 
-            return (uint)(0xFF000000 + (r) + (g << 8) + (b << 16));
+            return (uint)(0xFF000000 + r + (g << 8) + (b << 16));
         }
     }
 }

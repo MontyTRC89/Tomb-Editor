@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TombLib.LevelData
+﻿namespace TombLib.LevelData
 {
     public class SoundSourceInstance : PositionAndScriptBasedObjectInstance
     {

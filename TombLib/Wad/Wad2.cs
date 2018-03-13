@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
 using TombLib.GeometryIO;
 using TombLib.GeometryIO.Importers;
@@ -25,7 +23,7 @@ namespace TombLib.Wad
         }
     }
 
-    public partial class Wad2 : IDisposable
+    public class Wad2 : IDisposable
     {
         public WadGameVersion SuggestedGameVersion { get; set; }
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();
@@ -82,7 +80,7 @@ namespace TombLib.Wad
                 var textures = new HashSet<WadTexture>();
                 foreach (WadMesh mesh in MeshesUnique)
                     foreach (WadPolygon polygon in mesh.Polys)
-                        textures.Add((WadTexture)(polygon.Texture.Texture));
+                        textures.Add((WadTexture)polygon.Texture.Texture);
                 return textures;
             }
         }
@@ -216,7 +214,7 @@ namespace TombLib.Wad
         public WadMesh ImportWadMeshFromExternalModel(string fileName, IOGeometrySettings settings)
         {
             // Import the model
-            var importer = new AssimpImporter(settings, (absoluteTexturePath) =>
+            var importer = new AssimpImporter(settings, absoluteTexturePath =>
             {
                 return new WadTexture(ImageC.FromFile(absoluteTexturePath));
             });

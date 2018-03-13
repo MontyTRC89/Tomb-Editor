@@ -1,12 +1,6 @@
 ﻿using DarkUI.Docking;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.LevelData;
 
@@ -14,7 +8,7 @@ namespace TombEditor.ToolWindows
 {
     public partial class TriggerList : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public TriggerList()
         {
@@ -28,7 +22,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -36,14 +30,14 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update the trigger control
-            if ((obj is Editor.SelectedSectorsChangedEvent) ||
-                (obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.RoomSectorPropertiesChangedEvent))
+            if (obj is Editor.SelectedSectorsChangedEvent ||
+                obj is Editor.SelectedRoomChangedEvent ||
+                obj is Editor.RoomSectorPropertiesChangedEvent)
             {
                 lstTriggers.BeginUpdate();
                 lstTriggers.Items.Clear();
 
-                if ((_editor.Level != null) && _editor.SelectedSectors.Valid)
+                if (_editor.Level != null && _editor.SelectedSectors.Valid)
                 {
                     // Search for unique triggers inside the selected area
                     var triggers = new List<TriggerInstance>();
@@ -66,12 +60,12 @@ namespace TombEditor.ToolWindows
 
             // Update the trigger control selection
 
-            if ((obj is Editor.SelectedSectorsChangedEvent) ||
-                (obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.SelectedObjectChangedEvent))
+            if (obj is Editor.SelectedSectorsChangedEvent ||
+                obj is Editor.SelectedRoomChangedEvent ||
+                obj is Editor.SelectedObjectChangedEvent)
             {
                 var trigger = _editor.SelectedObject as TriggerInstance;
-                lstTriggers.SelectedItem = (trigger != null) && lstTriggers.Items.Contains(trigger) ? trigger : null;
+                lstTriggers.SelectedItem = trigger != null && lstTriggers.Items.Contains(trigger) ? trigger : null;
             }
         }
 
@@ -84,23 +78,23 @@ namespace TombEditor.ToolWindows
 
         private void butEditTrigger_Click(object sender, EventArgs e)
         {
-            if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject is TriggerInstance))
+            if (_editor.SelectedRoom == null || !(_editor.SelectedObject is TriggerInstance))
                 return;
             EditorActions.EditObject(_editor.SelectedObject, this);
         }
 
         private void butDeleteTrigger_Click(object sender, EventArgs e)
         {
-            if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject is TriggerInstance))
+            if (_editor.SelectedRoom == null || !(_editor.SelectedObject is TriggerInstance))
                 return;
             EditorActions.DeleteObject(_editor.SelectedObject);
         }
 
         private void lstTriggers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ((_editor.SelectedRoom == null) || (lstTriggers.SelectedItem == null))
+            if (_editor.SelectedRoom == null || lstTriggers.SelectedItem == null)
                 return;
-            _editor.SelectedObject = (ObjectInstance)(lstTriggers.SelectedItem);
+            _editor.SelectedObject = (ObjectInstance)lstTriggers.SelectedItem;
         }
 
         private void lstTriggers_MouseDoubleClick(object sender, MouseEventArgs e)

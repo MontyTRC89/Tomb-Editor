@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Forms;
+using TombLib.GeometryIO;
 
-namespace TombLib.GeometryIO
+namespace TombLib.Forms
 {
     public partial class GeometryIOSettingsDialog : DarkForm
     {
         public IOGeometrySettings Settings { get; private set; }
-        private List<IOGeometrySettingsPreset> _presets = new List<IOGeometrySettingsPreset>();
+        private readonly List<IOGeometrySettingsPreset> _presets = new List<IOGeometrySettingsPreset>();
 
         public GeometryIOSettingsDialog(IOGeometrySettings inSettings)
         {
@@ -26,7 +27,7 @@ namespace TombLib.GeometryIO
             if (disposing)
                 SuspendControlListening();
 
-            if (disposing && (components != null))
+            if (disposing && components != null)
             {
                 components.Dispose();
             }
@@ -41,7 +42,7 @@ namespace TombLib.GeometryIO
 
         public void AddPreset(string name, IOGeometrySettings settings)
         {
-            if (!_presets.Any((item) => item.Name == name))
+            if (!_presets.Any(item => item.Name == name))
             {
                 _presets.Add(new IOGeometrySettingsPreset() { Name = name, Settings = settings });
                 PopulatePresetList();
@@ -51,7 +52,7 @@ namespace TombLib.GeometryIO
         public void AddPreset(List<IOGeometrySettingsPreset> presetList)
         {
             foreach (var preset in presetList)
-                if (!_presets.Any((item => item.Name == preset.Name)))
+                if (!_presets.Any(item => item.Name == preset.Name))
                     _presets.Add(preset);
 
             PopulatePresetList();
@@ -59,7 +60,7 @@ namespace TombLib.GeometryIO
 
         public void AddPreset(IOGeometrySettingsPreset preset)
         {
-            if (!_presets.Any((item => item.Name == preset.Name)))
+            if (!_presets.Any(item => item.Name == preset.Name))
             {
                 _presets.Add(preset);
                 PopulatePresetList();
@@ -71,7 +72,7 @@ namespace TombLib.GeometryIO
             if (string.IsNullOrEmpty(name))
                 _presets.Clear();
             else
-                _presets.RemoveAll((item) => item.Name == name);
+                _presets.RemoveAll(item => item.Name == name);
 
             PopulatePresetList();
         }

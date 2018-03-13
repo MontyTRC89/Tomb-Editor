@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.IO;
-using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers
 {

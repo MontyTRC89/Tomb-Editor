@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Controls;
 using TombLib.Wad;
@@ -26,7 +22,7 @@ namespace WadTool.Controls
             set { _wad = value; UpdateContent(); }
         }
 
-        private bool _changing = false;
+        private bool _changing;
 
         public WadTreeView()
         {
@@ -183,57 +179,57 @@ namespace WadTool.Controls
 
         private void InitializeComponent()
         {
-            this.tree = new DarkUI.Controls.DarkTreeView();
-            this.suggestedGameVersionComboBox = new DarkUI.Controls.DarkComboBox();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.SuspendLayout();
+            tree = new DarkTreeView();
+            suggestedGameVersionComboBox = new DarkComboBox();
+            darkLabel1 = new DarkLabel();
+            SuspendLayout();
             // 
             // tree
             // 
-            this.tree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tree.Enabled = false;
-            this.tree.Location = new System.Drawing.Point(0, 30);
-            this.tree.MaxDragChange = 20;
-            this.tree.MultiSelect = true;
-            this.tree.Name = "tree";
-            this.tree.Size = new System.Drawing.Size(150, 120);
-            this.tree.TabIndex = 1;
-            this.tree.Click += new System.EventHandler(this.tree_Click);
-            this.tree.DoubleClick += new System.EventHandler(this.tree_DoubleClick);
+            tree.Anchor = AnchorStyles.Top | AnchorStyles.Bottom 
+                                           | AnchorStyles.Left 
+                                           | AnchorStyles.Right;
+            tree.Enabled = false;
+            tree.Location = new System.Drawing.Point(0, 30);
+            tree.MaxDragChange = 20;
+            tree.MultiSelect = true;
+            tree.Name = "tree";
+            tree.Size = new System.Drawing.Size(150, 120);
+            tree.TabIndex = 1;
+            tree.Click += new EventHandler(tree_Click);
+            tree.DoubleClick += new EventHandler(tree_DoubleClick);
             // 
             // suggestedGameVersionComboBox
             // 
-            this.suggestedGameVersionComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.suggestedGameVersionComboBox.Enabled = false;
-            this.suggestedGameVersionComboBox.FormattingEnabled = true;
-            this.suggestedGameVersionComboBox.Location = new System.Drawing.Point(103, 3);
-            this.suggestedGameVersionComboBox.Name = "suggestedGameVersionComboBox";
-            this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(47, 21);
-            this.suggestedGameVersionComboBox.TabIndex = 0;
-            this.suggestedGameVersionComboBox.Text = null;
-            this.suggestedGameVersionComboBox.SelectedIndexChanged += new System.EventHandler(this.suggestedGameVersionComboBox_SelectedIndexChanged);
+            suggestedGameVersionComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left 
+                                                                   | AnchorStyles.Right;
+            suggestedGameVersionComboBox.Enabled = false;
+            suggestedGameVersionComboBox.FormattingEnabled = true;
+            suggestedGameVersionComboBox.Location = new System.Drawing.Point(103, 3);
+            suggestedGameVersionComboBox.Name = "suggestedGameVersionComboBox";
+            suggestedGameVersionComboBox.Size = new System.Drawing.Size(47, 21);
+            suggestedGameVersionComboBox.TabIndex = 0;
+            suggestedGameVersionComboBox.Text = null;
+            suggestedGameVersionComboBox.SelectedIndexChanged += new EventHandler(suggestedGameVersionComboBox_SelectedIndexChanged);
             // 
             // darkLabel1
             // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 6);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(91, 13);
-            this.darkLabel1.TabIndex = 3;
-            this.darkLabel1.Text = "Game slot names:";
+            darkLabel1.AutoSize = true;
+            darkLabel1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+            darkLabel1.Location = new System.Drawing.Point(3, 6);
+            darkLabel1.Name = "darkLabel1";
+            darkLabel1.Size = new System.Drawing.Size(91, 13);
+            darkLabel1.TabIndex = 3;
+            darkLabel1.Text = "Game slot names:";
             // 
             // WadTreeView
             // 
-            this.Controls.Add(this.darkLabel1);
-            this.Controls.Add(this.suggestedGameVersionComboBox);
-            this.Controls.Add(this.tree);
-            this.Name = "WadTreeView";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            Controls.Add(darkLabel1);
+            Controls.Add(suggestedGameVersionComboBox);
+            Controls.Add(tree);
+            Name = "WadTreeView";
+            ResumeLayout(false);
+            PerformLayout();
 
         }
     }

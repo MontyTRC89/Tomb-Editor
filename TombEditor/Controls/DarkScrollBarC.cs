@@ -1,9 +1,6 @@
 ﻿using DarkUI.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace TombEditor.Controls
 {
@@ -11,13 +8,13 @@ namespace TombEditor.Controls
     // TODO Maybe fork DarkUI to fix this in the source.
     public class DarkScrollBarC : DarkScrollBar
     {
-        private readonly static FieldInfo _value = typeof(DarkScrollBar).GetField("_value", BindingFlags.NonPublic | BindingFlags.Instance);
-        private readonly static FieldInfo _viewSize = typeof(DarkScrollBar).GetField("_viewSize", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly FieldInfo _value = typeof(DarkScrollBar).GetField("_value", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly FieldInfo _viewSize = typeof(DarkScrollBar).GetField("_viewSize", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private const int _precision = 20000;
-        private double _newMinimum = 0;
+        private double _newMinimum;
         private double _newMaximum = 1;
-        private bool _currentlySet = false;
+        private bool _currentlySet;
 
         public new double Minimum => _newMinimum;
         public new double Maximum => _newMaximum;
@@ -57,7 +54,7 @@ namespace TombEditor.Controls
                 _value.SetValue(this, Math.Max(0, Math.Min(_precision - viewSizeInt, valueInt)));
 
                 // Update control state
-                if (Enabled = enable && (viewSize < _precision))
+                if (Enabled = enable && viewSize < _precision)
                     UpdateScrollBar();
             }
             finally

@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TombLib.Wad.TrLevels
+﻿namespace TombLib.Wad.TrLevels
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Runtime.InteropServices;
-    using TombLib.IO;
+    using IO;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct tr_color
@@ -45,9 +38,9 @@ namespace TombLib.Wad.TrLevels
 
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-        public static unsafe bool operator ==(tr_vertex first, tr_vertex second)
+        public static bool operator ==(tr_vertex first, tr_vertex second)
         {
-            return (first.X == second.X) && (first.Y == second.Y) && (first.Z == second.Z);
+            return first.X == second.X && first.Y == second.Y && first.Z == second.Z;
         }
 
         public static bool operator !=(tr_vertex first, tr_vertex second)
@@ -169,7 +162,7 @@ namespace TombLib.Wad.TrLevels
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
         public static unsafe bool operator ==(tr_room_vertex first, tr_room_vertex second)
         {
-            return (*(ulong*)&first == *(ulong*)&second) && (*(uint*)&first.Attributes == *(uint*)&second.Attributes);
+            return *(ulong*)&first == *(ulong*)&second && *(uint*)&first.Attributes == *(uint*)&second.Attributes;
         }
 
         public static bool operator !=(tr_room_vertex first, tr_room_vertex second)
@@ -280,7 +273,7 @@ namespace TombLib.Wad.TrLevels
             writer.WriteBlockArray(TexturedTriangles);
 
             var meshOffset2 = writer.BaseStream.Position;
-            var meshSize = (meshOffset2 - meshOffset1);
+            var meshSize = meshOffset2 - meshOffset1;
             if (meshSize % 4 != 0)
             {
                 const ushort tempFiller = 0;
@@ -538,7 +531,7 @@ namespace TombLib.Wad.TrLevels
         public ushort Characteristics;
     }
 
-    internal struct tr_sample
+    public struct tr_sample
     {
         public byte[] Data;
     }

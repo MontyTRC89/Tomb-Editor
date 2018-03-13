@@ -2,14 +2,10 @@
 using DarkUI.Forms;
 using NLog;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -24,7 +20,7 @@ namespace WadTool
         public Wad2 Wad { get; }
 
         private string _currentPath;
-        private Cache<WadTexture, Bitmap> _imageCache = new Cache<WadTexture, Bitmap>(1024, sprite => sprite.Image.ToBitmap());
+        private readonly Cache<WadTexture, Bitmap> _imageCache = new Cache<WadTexture, Bitmap>(1024, sprite => sprite.Image.ToBitmap());
 
         public FormSpriteSequenceEditor(Wad2 wad, WadSpriteSequence spriteSequence)
         {
@@ -44,7 +40,7 @@ namespace WadTool
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && components != null)
             {
                 _imageCache.Dispose();
                 components.Dispose();
@@ -78,7 +74,7 @@ namespace WadTool
                 catch (Exception exc)
                 {
                     logger.Error(exc, "Unable to open file '" + fileDialog.FileName + "'.");
-                    DarkMessageBox.Show(this, "Unable to load sprite from file '" + fileDialog.FileName + "'. " + exc.ToString(), "Unable to load sprite.", MessageBoxIcon.Error);
+                    DarkMessageBox.Show(this, "Unable to load sprite from file '" + fileDialog.FileName + "'. " + exc, "Unable to load sprite.", MessageBoxIcon.Error);
                     return null;
                 }
             }
@@ -113,14 +109,13 @@ namespace WadTool
                         if (dataGridView.SelectedRows.Count > 1)
                             fileName = Path.Combine(Path.GetDirectoryName(fileName),
                                 Path.GetFileNameWithoutExtension(fileName) + row.Index.ToString("0000") + Path.GetExtension(fileName));
-                        ((WadSprite)(row.DataBoundItem)).Texture.Image.Save(fileName);
+                        ((WadSprite)row.DataBoundItem).Texture.Image.Save(fileName);
                     }
                 }
                 catch (Exception exc)
                 {
                     logger.Error(exc, "Unable to save file '" + fileDialog.FileName + "'.");
-                    DarkMessageBox.Show(this, "Unable to save sprite. " + exc.ToString(), "Saving sprite failed.", MessageBoxIcon.Error);
-                    return;
+                    DarkMessageBox.Show(this, "Unable to save sprite. " + exc, "Saving sprite failed.", MessageBoxIcon.Error);
                 }
             }
         }
@@ -136,14 +131,14 @@ namespace WadTool
             if (dataGridView.SelectedRows.Count <= 0)
                 return;
 
-            picSprite.Image = _imageCache[((WadSprite)(dataGridView.SelectedRows[0].DataBoundItem)).Texture];
+            picSprite.Image = _imageCache[((WadSprite)dataGridView.SelectedRows[0].DataBoundItem).Texture];
         }
 
         private void dataGridView_CellFormattingSafe(object sender, DarkDataGridViewSafeCellFormattingEventArgs e)
         {
             if (!(e.Row.DataBoundItem is WadSprite))
                 return;
-            WadSprite item = (WadSprite)(e.Row.DataBoundItem);
+            WadSprite item = (WadSprite)e.Row.DataBoundItem;
 
             if (e.Column.Name == SizeColumn.Name)
                 e.Value = item.Texture.Image.Size.ToString();

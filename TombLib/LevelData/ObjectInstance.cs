@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 using TombLib.Utils;
 
@@ -8,28 +7,28 @@ namespace TombLib.LevelData
     public interface IScaleable
     {
         float Scale { get; set; }
-    };
+    }
 
     public interface IRotateableY
     {
         float RotationY { get; set; }
-    };
+    }
 
     public interface IRotateableYX : IRotateableY
     {
         float RotationX { get; set; }
-    };
+    }
 
     public interface IRotateableYXRoll : IRotateableYX
     {
         float Roll { get; set; }
-    };
+    }
 
     public abstract class ObjectInstance : ICloneable, ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(ObjectInstance instance);
         public event RemovedFromRoomDelegate DeletedEvent;
-        public Room Room { get; private set; } = null;
+        public Room Room { get; private set; }
 
         public virtual ObjectInstance Clone()
         {
@@ -190,8 +189,8 @@ namespace TombLib.LevelData
 
     public abstract class PositionAndScriptBasedObjectInstance : PositionBasedObjectInstance, IHasScriptID
     {
-        private ScriptIdTable<IHasScriptID> _scriptTable = null;
-        private uint? _scriptId = null;
+        private ScriptIdTable<IHasScriptID> _scriptTable;
+        private uint? _scriptId;
         public uint? ScriptId
         {
             get

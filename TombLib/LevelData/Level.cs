@@ -1,15 +1,10 @@
 ﻿using NLog;
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Numerics;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
-using TombLib.Wad.Tr4Wad;
 
 namespace TombLib.LevelData
 {
@@ -66,7 +61,7 @@ namespace TombLib.LevelData
 
         private void GetConnectedRoomsRecursively(HashSet<Room> result, Room startingRoom)
         {
-            if ((startingRoom == null) || result.Contains(startingRoom))
+            if (startingRoom == null || result.Contains(startingRoom))
                 return;
 
             result.Add(startingRoom);
@@ -84,8 +79,8 @@ namespace TombLib.LevelData
                 if (room != null && checkRoom(room))
                     roomList.Add(new KeyValuePair<float, Room>(room.Position.Y + room.GetHighestCorner(), room));
             var result = roomList
-                .OrderBy((roomPair) => roomPair.Key) // don't use the Sort member function because it is unstable!
-                .ThenBy((roomPair) => roomPair.Value.AlternateBaseRoom == null)
+                .OrderBy(roomPair => roomPair.Key) // don't use the Sort member function because it is unstable!
+                .ThenBy(roomPair => roomPair.Value.AlternateBaseRoom == null)
                 .Select(roomKey => roomKey.Value).ToList();
             return result;
         }
@@ -143,7 +138,7 @@ namespace TombLib.LevelData
             for (int i = 0; i < Rooms.Length; i++)
                 if (Rooms[i] == null)
                     return i;
-            throw new Exception("A maximum number of " + Level.MaxNumberOfRooms + " rooms has been reached. Unable to add room.");
+            throw new Exception("A maximum number of " + MaxNumberOfRooms + " rooms has been reached. Unable to add room.");
         }
 
         public void AssignRoomToFree(Room room)
@@ -214,7 +209,7 @@ namespace TombLib.LevelData
                 var oldRoom = oldRooms[i];
 
                 // Create room
-                var newSize = (transformation.QuadrantRotation % 2 == 0) ? oldRoom.SectorSize : new VectorInt2(oldRoom.NumZSectors, oldRoom.NumXSectors);
+                var newSize = transformation.QuadrantRotation % 2 == 0 ? oldRoom.SectorSize : new VectorInt2(oldRoom.NumZSectors, oldRoom.NumXSectors);
                 var newRoom = oldRoom.Clone(this, obj => false); // This is a waste of computing power: All sectors are copied and immediately afterwards thrown away because the room needs to get resized.
                 newRoom.Resize(this, new RectangleInt2(0, 0, newSize.X - 1, newSize.Y - 1));
 
@@ -232,7 +227,7 @@ namespace TombLib.LevelData
                         VectorInt2 newSectorPosition = transformation.Transform(new VectorInt2(x, z), oldRoom.SectorSize);
                         newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y] = oldRoom.Blocks[x, z].Clone();
                         newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y].Transform(transformation, null,
-                            (oldFace) => oldRoom.GetFaceShape(x, z, oldFace));
+                            oldFace => oldRoom.GetFaceShape(x, z, oldFace));
                     }
                 newRooms[i] = newRoom;
             }
@@ -251,7 +246,7 @@ namespace TombLib.LevelData
                     @object.Transform(transformation, oldRoom.SectorSize);
                     @object.TransformRoomReferences(room =>
                     {
-                        int index = Array.IndexOf<Room>(oldRooms, room);
+                        int index = Array.IndexOf(oldRooms, room);
                         if (index == -1)
                             return room;
                         else
@@ -265,13 +260,13 @@ namespace TombLib.LevelData
             for (int i = 0; i < oldRooms.Length; ++i)
             {
                 if (oldRooms[i].AlternateRoom != null)
-                    newRooms[i].AlternateRoom = newRooms[Array.IndexOf<Room>(oldRooms, oldRooms[i].AlternateRoom)];
+                    newRooms[i].AlternateRoom = newRooms[Array.IndexOf(oldRooms, oldRooms[i].AlternateRoom)];
                 if (oldRooms[i].AlternateBaseRoom != null)
-                    newRooms[i].AlternateBaseRoom = newRooms[Array.IndexOf<Room>(oldRooms, oldRooms[i].AlternateBaseRoom)];
+                    newRooms[i].AlternateBaseRoom = newRooms[Array.IndexOf(oldRooms, oldRooms[i].AlternateBaseRoom)];
             }
             for (int i = 0; i < oldRooms.Length; ++i)
             {
-                int roomIndex = Array.IndexOf<Room>(Rooms, oldRooms[i]);
+                int roomIndex = Array.IndexOf(Rooms, oldRooms[i]);
                 Rooms[roomIndex] = newRooms[i];
             }
 

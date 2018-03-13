@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib
 {
@@ -24,8 +19,8 @@ namespace TombLib
             Maximum = maximum;
         }
 
-        public Vector3 Size => this.Maximum - this.Minimum;
-        public Vector3 Center => (this.Maximum + this.Minimum) * 0.5f;
+        public Vector3 Size => Maximum - Minimum;
+        public Vector3 Center => (Maximum + Minimum) * 0.5f;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BoundingBox Intersec(BoundingBox other)
@@ -40,9 +35,9 @@ namespace TombLib
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(BoundingBox first, BoundingBox second) => (first.Minimum == second.Minimum) && (first.Maximum == second.Maximum);
+        public static bool operator ==(BoundingBox first, BoundingBox second) => first.Minimum == second.Minimum && first.Maximum == second.Maximum;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(BoundingBox first, BoundingBox second) => (first.Minimum != second.Minimum) || (first.Maximum != second.Maximum);
+        public static bool operator !=(BoundingBox first, BoundingBox second) => first.Minimum != second.Minimum || first.Maximum != second.Maximum;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString() => "Box from " + Minimum + " to " + Maximum;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

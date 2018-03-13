@@ -1,7 +1,7 @@
-﻿using DarkUI.Controls;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using DarkUI.Controls;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     partial class FormTrigger
     {

@@ -1,12 +1,10 @@
 ﻿using DarkUI.Controls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -17,7 +15,7 @@ namespace TombEditor.Controls
 {
     public class PanelTextureMap : Panel
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         private LevelTexture _visibleTexture;
         private TextureArea _selectedTexture;
@@ -29,7 +27,7 @@ namespace TombEditor.Controls
         private int? _selectedTexCoordIndex;
         private Vector2? _viewMoveMouseTexCoord;
         private Point _lastMousePosition;
-        private MovementTimer _movementTimer;
+        private readonly MovementTimer _movementTimer;
 
         private static readonly Pen textureSelectionPen = new Pen(Brushes.Yellow, 2.0f) { LineJoin = LineJoin.Round };
         private static readonly Pen textureSelectionPenTriangle = new Pen(Brushes.Red, 2.0f) { LineJoin = LineJoin.Round };
@@ -40,8 +38,8 @@ namespace TombEditor.Controls
         private const float textureSelectionPointSelectionRadius = 13.0f;
         private const float viewMargin = 10;
 
-        private DarkScrollBarC _hScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Horizontal };
-        private DarkScrollBarC _vScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Vertical };
+        private readonly DarkScrollBarC _hScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Horizontal };
+        private readonly DarkScrollBarC _vScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Vertical };
 
         private int _scrollSize => DarkUI.Config.Consts.ScrollBarSize;
         private int _scrollSizeTotal => _scrollSize + 1;
@@ -91,7 +89,7 @@ namespace TombEditor.Controls
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Reset texture map
-            if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
+            if (obj is Editor.LevelChangedEvent || obj is Editor.LoadedTexturesChangedEvent)
                 ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
         }
 
@@ -100,7 +98,7 @@ namespace TombEditor.Controls
             if (!(area.Texture is LevelTexture))
                 return;
 
-            VisibleTexture = (LevelTexture)(area.Texture);
+            VisibleTexture = (LevelTexture)area.Texture;
             SelectedTexture = area;
 
             Vector2 min = Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), Vector2.Min(area.TexCoord2, area.TexCoord3));
@@ -195,7 +193,7 @@ namespace TombEditor.Controls
 
             texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
             texCoord /= selectionPrecision.Precision;
-            if ((selectionPrecision.Precision >= 32.0f) && rectangularSelection)
+            if (selectionPrecision.Precision >= 32.0f && rectangularSelection)
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
@@ -450,7 +448,7 @@ namespace TombEditor.Controls
                     e.Graphics.InterpolationMode = InterpolationMode.Bicubic;
 
                 // Draw image
-                VisibleTexture.Image.GetTempSystemDrawingBitmap((tempBitmap) =>
+                VisibleTexture.Image.GetTempSystemDrawingBitmap(tempBitmap =>
                     {
                         // System.Drawing being silly, it draws the first row of pixels only half, so everything would be shifted
                         // To work around it, we have to do some silly coodinate changes :/
@@ -526,7 +524,7 @@ namespace TombEditor.Controls
             if (selectedTexture.Texture == VisibleTexture)
             {
                 // This texture is currently selected
-                PointF[] points = new PointF[]
+                PointF[] points = new[]
                 {
                     ToVisualCoord(selectedTexture.TexCoord0),
                     ToVisualCoord(selectedTexture.TexCoord1),
@@ -535,14 +533,14 @@ namespace TombEditor.Controls
                 };
 
                 // Draw fill color
-                e.Graphics.FillPolygon(textureSelectionBrush, new PointF[] { points[0], points[2], points[3] });
+                e.Graphics.FillPolygon(textureSelectionBrush, new[] { points[0], points[2], points[3] });
                 if (DrawTriangle)
-                    e.Graphics.FillPolygon(textureSelectionBrushTriangle, new PointF[] { points[0], points[1], points[2] });
+                    e.Graphics.FillPolygon(textureSelectionBrushTriangle, new[] { points[0], points[1], points[2] });
 
                 // Draw outlines
                 e.Graphics.DrawPolygon(textureSelectionPen, points);
                 if (DrawTriangle)
-                    e.Graphics.DrawPolygon(textureSelectionPenTriangle, new PointF[] { points[0], points[1], points[2] });
+                    e.Graphics.DrawPolygon(textureSelectionPenTriangle, new[] { points[0], points[1], points[2] });
 
                 for (int i = 0; i < 4; ++i)
                 {

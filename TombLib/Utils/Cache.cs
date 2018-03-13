@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimestampType = System.UInt32;
 
 namespace TombLib.Utils
@@ -11,13 +8,13 @@ namespace TombLib.Utils
     public class Cache<KeyT, ValueT> : IEnumerable<KeyValuePair<KeyT, ValueT>>, IDisposable
     {
         private const int cleanupFactorDiv32 = 25;
-        private TimestampType useCounter = 0;
+        private TimestampType useCounter;
         private class Entry
         {
             public TimestampType _lastUsedTimeStamp;
             public ValueT _value;
-        };
-        private Dictionary<KeyT, Entry> _availableItems;
+        }
+        private readonly Dictionary<KeyT, Entry> _availableItems;
 
         public Func<KeyT, ValueT> GenerateValue { get; set; }
         public Action<ValueT> DisposeValue { get; set; }
@@ -26,7 +23,7 @@ namespace TombLib.Utils
         public Cache(int maxCachedCount, Func<KeyT, ValueT> generateValue)
             : this(maxCachedCount, generateValue,
                   typeof(IDisposable).IsAssignableFrom(typeof(ValueT)) ?
-                  (Action<ValueT>)((value) => { ((IDisposable)value).Dispose(); }) : null)
+                  (Action<ValueT>)(value => { ((IDisposable)value).Dispose(); }) : null)
         {}
 
         public Cache(int maxCachedCount, Func<KeyT, ValueT> generateValue, Action<ValueT> disposeValue)
@@ -50,7 +47,7 @@ namespace TombLib.Utils
                 }
 
                 // Clean up if necessary
-                if ((_availableItems.Count + 1) >= MaxCachedCount)
+                if (_availableItems.Count + 1 >= MaxCachedCount)
                     Cleanup();
 
                 // Add value
@@ -76,7 +73,7 @@ namespace TombLib.Utils
         private void Cleanup()
         {
             int itemCount = _availableItems.Count;
-            int reducedCount = (itemCount * cleanupFactorDiv32) / 64 + 1;
+            int reducedCount = itemCount * cleanupFactorDiv32 / 64 + 1;
             if (reducedCount >= _availableItems.Count)
             {
                 Reset();

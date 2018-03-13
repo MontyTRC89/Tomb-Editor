@@ -1,13 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Graphics;
@@ -20,7 +14,7 @@ namespace WadTool
         public WadStatic Static { get; private set; }
 
         private readonly Wad2 _wad;
-        private WadStatic _workingStatic;
+        private readonly WadStatic _workingStatic;
 
         public FormStaticEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadStatic @static)
         {
@@ -70,7 +64,6 @@ namespace WadTool
                         if (moveableMesh.Hash == Static.Mesh.Hash)
                         {
                             movebles.Add(moveable.Value);
-                            continue;
                         }
                     }
                 }
@@ -81,7 +74,6 @@ namespace WadTool
                         @static.Value.Mesh.Hash == Static.Mesh.Hash)
                     {
                         statics.Add(@static.Value);
-                        continue;
                     }
                 }
 

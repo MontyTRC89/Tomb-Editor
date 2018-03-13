@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace TombLib.Wad
 {
@@ -33,22 +29,22 @@ namespace TombLib.Wad
                         rotY = Y / 1024.0f * 2 * (float)Math.PI;
                         rotZ = -Z / 1024.0f * 2 * (float)Math.PI;
 
-                        matrix = Matrix4x4.CreateFromYawPitchRoll((float)rotY, (float)rotX, (float)rotZ);
+                        matrix = Matrix4x4.CreateFromYawPitchRoll(rotY, rotX, rotZ);
                         break;
 
                     case WadKeyFrameRotationAxis.AxisX:
                         rotX = -X / 4096.0f * 2 * (float)Math.PI;
-                        matrix = Matrix4x4.CreateRotationX((float)rotX);
+                        matrix = Matrix4x4.CreateRotationX(rotX);
                         break;
 
                     case WadKeyFrameRotationAxis.AxisY:
                         rotY = Y / 4096.0f * 2 * (float)Math.PI;
-                        matrix = Matrix4x4.CreateRotationY((float)rotY);
+                        matrix = Matrix4x4.CreateRotationY(rotY);
                         break;
 
                     case WadKeyFrameRotationAxis.AxisZ:
                         rotZ = -Z / 4096.0f * 2 * (float)Math.PI;
-                        matrix = Matrix4x4.CreateRotationZ((float)rotZ);
+                        matrix = Matrix4x4.CreateRotationZ(rotZ);
                         break;
                 }
 

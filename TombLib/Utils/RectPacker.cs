@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib.Utils
 {
@@ -19,9 +15,9 @@ namespace TombLib.Utils
 
     public class RectPackerSimpleStack : RectPacker
     {
-        private int _currentX = 0;
-        private int _currentY = 0;
-        private int _stackHeight = 0;
+        private int _currentX;
+        private int _currentY;
+        private int _stackHeight;
 
         public RectPackerSimpleStack(VectorInt2 size)
             : base(size)
@@ -29,14 +25,14 @@ namespace TombLib.Utils
 
         public override VectorInt2? TryAdd(VectorInt2 size)
         {
-            if ((_currentY + size.Y) > Size.Y)
+            if (_currentY + size.Y > Size.Y)
                 return null;
 
-            if ((_currentX + size.X) > Size.X)
+            if (_currentX + size.X > Size.X)
             { // Does not fit in that row, but maybe in a new row
                 if (size.X > Size.X)
                     return null;
-                if ((_currentY + _stackHeight + size.Y) > Size.Y)
+                if (_currentY + _stackHeight + size.Y > Size.Y)
                     return null;
                 _currentX = 0;
                 _currentY = _currentY + _stackHeight;

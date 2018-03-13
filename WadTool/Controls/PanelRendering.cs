@@ -4,13 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Graphics;
-using TombLib.Utils;
 using TombLib.Wad;
 
 namespace WadTool.Controls
@@ -52,7 +48,7 @@ namespace WadTool.Controls
         private float _lastY;
         private SpriteBatch _spriteBatch;
         private Texture2D _spriteTexture;
-        private WadTexture _spriteTextureData = null;
+        private WadTexture _spriteTextureData;
 
         public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
         {
@@ -147,7 +143,7 @@ namespace WadTool.Controls
                         _device.SetVertexBuffer(0, model.VertexBuffer);
                         _device.SetIndexBuffer(model.IndexBuffer, true);
 
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
 
                         mioEffect.Parameters["Color"].SetValue(Vector4.One);
 
@@ -202,7 +198,7 @@ namespace WadTool.Controls
                         for (int i = 0; i < model.Meshes.Count; i++)
                         {
                             StaticMesh mesh = model.Meshes[i];
-                            _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
+                            _layout = VertexInputLayout.FromBuffer(0, model.VertexBuffer);
                             _device.SetVertexInputLayout(_layout);
 
                             mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
@@ -289,8 +285,8 @@ namespace WadTool.Controls
             if (e.Button == MouseButtons.Right)
             {
                 // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                float deltaX = (e.X - _lastX) / (float)Height;
-                float deltaY = (e.Y - _lastY) / (float)Height;
+                float deltaX = (e.X - _lastX) / Height;
+                float deltaY = (e.Y - _lastY) / Height;
 
                 _lastX = e.X;
                 _lastY = e.Y;

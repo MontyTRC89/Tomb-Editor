@@ -1,6 +1,4 @@
 ﻿using NLog;
-using System;
-using System.Collections.Generic;
 
 namespace TombLib.Utils
 {
@@ -27,7 +25,7 @@ namespace TombLib.Utils
 
         public void ReportProgress(float progress, string message)
         {
-            logger.Info(progress.ToString() + " - " + message);
+            logger.Info(progress + " - " + message);
         }
 
         public void RaiseDialog(IDialogDescription description)

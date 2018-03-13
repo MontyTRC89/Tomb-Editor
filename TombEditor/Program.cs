@@ -2,11 +2,9 @@
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using TombLib.Graphics;
+using TombEditor.Forms;
 using TombLib.NG;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
@@ -40,7 +38,7 @@ namespace TombEditor
                 NgCatalog.LoadCatalog("Catalogs\\NgCatalog.xml");
 
                 //Run
-                Editor editor = new Editor(WindowsFormsSynchronizationContext.Current, configuration);
+                Editor editor = new Editor(SynchronizationContext.Current, configuration);
                 Editor.Instance = editor;
                 Application.Run(new FormMain(editor));
 

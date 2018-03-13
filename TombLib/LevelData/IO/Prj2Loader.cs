@@ -68,7 +68,7 @@ namespace TombLib.LevelData.IO
                 {
                     if (LoadLevelSettings(chunkIO, id, filename, ref levelSettingsIds, ref loadedObjects.Settings, loadSettings))
                         return true;
-                    else if (LoadObjects(chunkIO, id, levelSettingsIds, (obj) => loadedObjects.Objects.Add(obj), newObjects, null, null, null))
+                    else if (LoadObjects(chunkIO, id, levelSettingsIds, obj => loadedObjects.Objects.Add(obj), newObjects, null, null, null))
                         return true;
                     return false;
                 });
@@ -380,7 +380,7 @@ namespace TombLib.LevelData.IO
                                     if (id4 == Prj2Chunks.SectorProperties)
                                     {
                                         long flag = chunkIO.ReadChunkLong(chunkSize4);
-                                        if (((flag & 1) != 0) && block.Type != BlockType.BorderWall)
+                                        if ((flag & 1) != 0 && block.Type != BlockType.BorderWall)
                                             block.Type = BlockType.Wall;
                                         block.Flags = (BlockFlags)(flag >> 2);
                                         block.ForceFloorSolid = (flag & 2) != 0;
@@ -482,7 +482,7 @@ namespace TombLib.LevelData.IO
                                 return false;
                             return true;
                         });
-                        roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(alternateRoomIndex, (alternateRoom) =>
+                        roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(alternateRoomIndex, alternateRoom =>
                             {
                                 if (room.AlternateRoom != null)
                                     logger.Error("The room " + room + " has more than 1 flip room.");
@@ -497,7 +497,7 @@ namespace TombLib.LevelData.IO
                                 }
                             }));
                     }
-                    else if (LoadObjects(chunkIO, id2, levelSettingsIds, (obj) => room.AddObjectAndSingularPortal(level, obj), newObjects, room, roomLinkActions, objectLinkActions))
+                    else if (LoadObjects(chunkIO, id2, levelSettingsIds, obj => room.AddObjectAndSingularPortal(level, obj), newObjects, room, roomLinkActions, objectLinkActions))
                         return true;
                     else
                         return false;
@@ -505,7 +505,7 @@ namespace TombLib.LevelData.IO
                 });
 
                 // Add room
-                if ((roomIndex > 0) && (roomIndex < level.Rooms.Length) && (level.Rooms[roomIndex] == null))
+                if (roomIndex > 0 && roomIndex < level.Rooms.Length && level.Rooms[roomIndex] == null)
                     level.Rooms[roomIndex] = room;
                 else
                     level.AssignRoomToFree(room);
@@ -538,7 +538,7 @@ namespace TombLib.LevelData.IO
                 }
 
             // Now build the real geometry and update geometry buffers
-            Parallel.ForEach(level.Rooms.Where(room => room != null), (room) => room.UpdateCompletely());
+            Parallel.ForEach(level.Rooms.Where(room => room != null), room => room.UpdateCompletely());
 
             return true;
         }
@@ -654,7 +654,7 @@ namespace TombLib.LevelData.IO
                     // If an issue comes up that prevents loading the second room, this placeholder will be used permanently.
                     var instance = new PortalInstance(area, direction, room);
                     instance.Opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
-                    roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, (adjoiningRoom) => instance.AdjoiningRoom = adjoiningRoom ?? room));
+                    roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, adjoiningRoom => instance.AdjoiningRoom = adjoiningRoom ?? room));
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
@@ -677,7 +677,7 @@ namespace TombLib.LevelData.IO
 
                     instance.CodeBits = (byte)(LEB128.ReadLong(chunkIO.Raw) & 0x1f);
                     instance.OneShot = chunkIO.Raw.ReadBoolean();
-                    objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, (targetObj) => instance.Target = targetObj));
+                    objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, targetObj => instance.Target = targetObj));
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
@@ -687,7 +687,7 @@ namespace TombLib.LevelData.IO
                     var area = new RectangleInt2(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
                     var instance = new TriggerInstance(area);
 
-                    Action<Action<ITriggerParameter>> readParameter = (setTriggerParameter) =>
+                    Action<Action<ITriggerParameter>> readParameter = setTriggerParameter =>
                     {
                         long type = LEB128.ReadLong(chunkIO.Raw);
                         switch (type)

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib
 {
@@ -24,7 +20,7 @@ namespace TombLib
         /// <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">Comparing Floating point numbers 2012 edition</a>.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static bool NearEqual(float a, float b)
+        public static unsafe bool NearEqual(float a, float b)
         {
             // Check if the numbers are really close -- needed
             // when comparing numbers near zero.
@@ -36,7 +32,7 @@ namespace TombLib
             int bInt = *(int*)&b;
 
             // Different signs means they do not match.
-            if ((aInt < 0) != (bInt < 0))
+            if (aInt < 0 != bInt < 0)
                 return false;
 
             // Find the difference in ULPs.
@@ -45,7 +41,7 @@ namespace TombLib
             // Choose of maxUlp = 4
             // according to http://code.google.com/p/googletest/source/browse/trunk/include/gtest/internal/gtest-internal.h
             const int maxUlp = 4;
-            return (ulp <= maxUlp);
+            return ulp <= maxUlp;
         }
 
         /// <summary>
@@ -81,7 +77,7 @@ namespace TombLib
         public static bool WithinEpsilon(float a, float b, float epsilon)
         {
             float num = a - b;
-            return ((-epsilon <= num) && (num <= epsilon));
+            return -epsilon <= num && num <= epsilon;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

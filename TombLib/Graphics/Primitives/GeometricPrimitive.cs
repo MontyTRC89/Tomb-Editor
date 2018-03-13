@@ -19,15 +19,13 @@
 // THE SOFTWARE.
 
 using System;
-using System.Numerics;
+using SharpDX;
 using SharpDX.Direct3D;
-using TombLib.Graphics;
+using SharpDX.Toolkit.Graphics;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
-    using Vector3 = System.Numerics.Vector3;
-    using Vector4 = System.Numerics.Vector4;
-
     /// <summary>
     /// A geometric primitive used to draw a simple model built from a set of vertices and indices.
     /// </summary>
@@ -51,7 +49,7 @@ namespace SharpDX.Toolkit.Graphics
         /// <summary>
         /// The input layout used by this geometric primitive (shared for all geometric primitive).
         /// </summary>
-        private readonly static VertexInputLayout InputLayout = VertexInputLayout.New<T>(0);
+        private static readonly VertexInputLayout InputLayout = VertexInputLayout.New<T>(0);
 
         /// <summary>
         /// True if the index buffer is a 32 bit index buffer.
@@ -221,7 +219,7 @@ namespace SharpDX.Toolkit.Graphics
 
         protected static void Swap<TIndex>(ref TIndex a, ref TIndex b)
         {
-            TIndex temp = a;
+            TIndex temp = b;
             b = a;
             a = temp;
         }

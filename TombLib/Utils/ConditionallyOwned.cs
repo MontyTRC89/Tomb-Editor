@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib.Utils
 {
@@ -35,6 +31,6 @@ namespace TombLib.Utils
 
         public override string ToString() => Value.ToString();
         public override int GetHashCode() => Value.GetHashCode();
-        public override bool Equals(object obj) => object.Equals(Value, obj);
+        public override bool Equals(object obj) => Equals(Value, obj);
     }
 }

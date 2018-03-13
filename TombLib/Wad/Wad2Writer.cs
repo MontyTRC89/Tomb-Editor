@@ -1,10 +1,7 @@
 ﻿using NLog;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -14,7 +11,7 @@ namespace TombLib.Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static IReadOnlyCollection<FileFormat> FileFormats = new FileFormat[] { new FileFormat("Wad2 file", "wad2") };
+        public static IReadOnlyCollection<FileFormat> FileFormats = new[] { new FileFormat("Wad2 file", "wad2") };
 
         public static void SaveToFile(Wad2 wad, string filename)
         {
@@ -38,19 +35,19 @@ namespace TombLib.Wad
             var spriteTable = new List<WadSprite>(wad.SpriteSequences.Values.SelectMany(spriteSequence => spriteSequence.Sprites));
             var textureTable = new List<WadTexture>(wad.MeshTexturesUnique);
 
-            WriteTextures(chunkIO, wad, textureTable);
-            WriteSamples(chunkIO, wad, sampleTable);
-            WriteSoundInfos(chunkIO, wad, soundInfoTable, sampleTable);
+            WriteTextures(chunkIO, textureTable);
+            WriteSamples(chunkIO, sampleTable);
+            WriteSoundInfos(chunkIO, soundInfoTable, sampleTable);
             WriteFixedSoundInfos(chunkIO, wad, soundInfoTable);
-            WriteSprites(chunkIO, wad, spriteTable);
+            WriteSprites(chunkIO, spriteTable);
             WriteSpriteSequences(chunkIO, wad, spriteTable);
-            WriteMeshes(chunkIO, wad, meshTable, textureTable);
+            WriteMeshes(chunkIO, meshTable, textureTable);
             WriteMoveables(chunkIO, wad, meshTable);
             WriteStatics(chunkIO, wad, meshTable);
             chunkIO.WriteChunkEnd();
         }
 
-        private static void WriteTextures(ChunkWriter chunkIO, Wad2 wad, List<WadTexture> textureTable)
+        private static void WriteTextures(ChunkWriter chunkIO, List<WadTexture> textureTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Textures, () =>
             {
@@ -66,7 +63,7 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteSamples(ChunkWriter chunkIO, Wad2 wad, List<WadSample> sampleTable)
+        private static void WriteSamples(ChunkWriter chunkIO, List<WadSample> sampleTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Samples, () =>
             {
@@ -81,7 +78,7 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteSoundInfos(ChunkWriter chunkIO, Wad2 wad, List<WadSoundInfo> soundInfoTable, List<WadSample> sampleTable)
+        private static void WriteSoundInfos(ChunkWriter chunkIO, List<WadSoundInfo> soundInfoTable, List<WadSample> sampleTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.SoundInfos, () =>
             {
@@ -123,7 +120,7 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteSprites(ChunkWriter chunkIO, Wad2 wad, List<WadSprite> spriteTable)
+        private static void WriteSprites(ChunkWriter chunkIO, List<WadSprite> spriteTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Sprites, () =>
             {
@@ -157,7 +154,7 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteMeshes(ChunkWriter chunkIO, Wad2 wad, List<WadMesh> meshTable, List<WadTexture> textureTable)
+        private static void WriteMeshes(ChunkWriter chunkIO, List<WadMesh> meshTable, List<WadTexture> textureTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Meshes, () =>
             {
@@ -241,7 +238,7 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteBone(ChunkWriter chunkIO, WadBone bone, List<WadMesh> meshTable)
+        private static void WriteBone(ChunkWriter chunkIO, WadBone bone)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
             {
@@ -249,7 +246,7 @@ namespace TombLib.Wad
                 chunkIO.WriteChunkInt(Wad2Chunks.MoveableBoneMeshPointer, bone.Index);
                 chunkIO.WriteChunkVector3(Wad2Chunks.MoveableBoneTranslation, bone.Translation);
                 foreach (var childBone in bone.Children)
-                    WriteBone(chunkIO, childBone, meshTable);
+                    WriteBone(chunkIO, childBone);
             });
         }
 
@@ -268,7 +265,7 @@ namespace TombLib.Wad
                         foreach (var mesh in m.Meshes)
                             chunkIO.WriteChunkInt(Wad2Chunks.MoveableMesh, meshTable.IndexOf(mesh));
 
-                        WriteBone(chunkIO, moveable.Value.Skeleton, meshTable);
+                        WriteBone(chunkIO, moveable.Value.Skeleton);
 
                         foreach (var animation in m.Animations)
                         {

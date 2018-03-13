@@ -73,12 +73,13 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using TombLib.Graphics;
+using SharpDX;
+using SharpDX.Toolkit.Graphics;
+using Vector2 = SharpDX.Vector2;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
     using Vector3 = System.Numerics.Vector3;
-    using Vector4 = System.Numerics.Vector4;
 
     public partial class GeometricPrimitive
     {
@@ -104,9 +105,9 @@ namespace SharpDX.Toolkit.Graphics
                 var indices = new List<int>();
 
                 if (tessellationOuterRing < 3)
-                    throw new ArgumentOutOfRangeException("tessellationOuterRing", "tessellationOuterRing parameter out of range");
+                    throw new ArgumentOutOfRangeException(nameof(tessellationOuterRing), "tessellationOuterRing parameter out of range");
                 if (tessellationOuterRing < 3)
-                    throw new ArgumentOutOfRangeException("tessellationOuterRing", "tessellationOuterRing parameter out of range");
+                    throw new ArgumentOutOfRangeException(nameof(tessellationOuterRing), "tessellationOuterRing parameter out of range");
 
                 int iStride = tessellationOuterRing + 1;
                 int jStride = tessellationInnerRing + 1;

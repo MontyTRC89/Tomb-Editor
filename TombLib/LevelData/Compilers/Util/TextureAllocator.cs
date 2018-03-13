@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
@@ -34,13 +32,13 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Custom implementation of these because default implementation is *insanely* slow.
             // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-            public static unsafe bool operator ==(TextureView first, TextureView second)
+            public static bool operator ==(TextureView first, TextureView second)
             {
-                return (first.Texture == second.Texture) && (first.Area == second.Area);
+                return first.Texture == second.Texture && first.Area == second.Area;
             }
             public static bool operator !=(TextureView first, TextureView second) => !(first == second);
             public bool Equals(TextureView other) => this == other;
-            public override bool Equals(object other) => (other is TextureView) && this == (TextureView)other;
+            public override bool Equals(object other) => other is TextureView && this == (TextureView)other;
             public override int GetHashCode() => Texture.GetHashCode();
         }
 
@@ -75,13 +73,13 @@ namespace TombLib.LevelData.Compilers.Util
                 int firstMaxHeight = Math.Max(first.Area.Width, first.Area.Height); //Because of flipping, the bigger dimension is the height.
                 int secondMaxHeight = Math.Max(second.Area.Width, second.Area.Height);
                 if (firstMaxHeight != secondMaxHeight)
-                    return (firstMaxHeight > secondMaxHeight) ? -1 : 1; //Heigher textures first!
+                    return firstMaxHeight > secondMaxHeight ? -1 : 1; //Heigher textures first!
 
                 // Compare area
                 int firstArea = first.Area.Width * first.Area.Height;
                 int secondArea = second.Area.Width * second.Area.Height;
                 if (firstArea != secondArea)
-                    return (firstArea > secondArea) ? -1 : 1; //Bigger textures first!
+                    return firstArea > secondArea ? -1 : 1; //Bigger textures first!
 
                 return 0;
             }
@@ -96,8 +94,8 @@ namespace TombLib.LevelData.Compilers.Util
         public int GetOrAllocateTextureID(TextureView texture, int priorityClass = 0)
         {
             if (!new Rectangle2(new Vector2(), texture.Texture.Image.Size).Contains(texture.Area))
-                throw new ArgumentOutOfRangeException("texture.Area");
-            if ((texture.Area.Width > 256) || (texture.Area.Height > 256))
+                throw new ArgumentOutOfRangeException(nameof(texture.Area));
+            if (texture.Area.Width > 256 || texture.Area.Height > 256)
                 throw new NotSupportedException("Texture page too big!");
 
             // Deduplicate hashed textures
@@ -212,16 +210,16 @@ namespace TombLib.LevelData.Compilers.Util
             const int pageWidth = OutputTextureWidth;
             const int pageHeight = OutputTextureHeight;
 
-            if (((endX - startX) >= pageWidth) || ((endY - startY) >= pageHeight)) // 'equals' is included too, because 1 was subtracted from 'end' above
+            if (endX - startX >= pageWidth || endY - startY >= pageHeight) // 'equals' is included too, because 1 was subtracted from 'end' above
                 throw new ApplicationException("An applied texture is bigger than 256²! We don't support that yet.");
 
-            if ((startX / pageWidth) == (endX / pageWidth))
+            if (startX / pageWidth == endX / pageWidth)
             { // Try to pack into a page that is at multiple of 256 on X
-                if ((startY / pageHeight) == (endY / pageHeight))
+                if (startY / pageHeight == endY / pageHeight)
                 { // Try to pack into a page that is at multiple of 256 on Y
                     return GetOrAllocateTextureIDForPageAt(ref texture,
-                        (startX / pageWidth) * pageWidth,
-                        (startY / pageHeight) * pageHeight, pageWidth, pageHeight, priorityClass);
+                        startX / pageWidth * pageWidth,
+                        startY / pageHeight * pageHeight, pageWidth, pageHeight, priorityClass);
                 }
             }
 

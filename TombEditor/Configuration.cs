@@ -18,7 +18,7 @@ namespace TombEditor
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [XmlIgnore]
-        public string FilePath { get; set; } = null;
+        public string FilePath { get; set; }
 
         [XmlIgnore]
         public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
@@ -238,7 +238,7 @@ namespace TombEditor
         public static Configuration Load(Stream stream)
         {
             using (XmlReader reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreWhitespace = false }))
-                return (Configuration)(new XmlSerializer(typeof(Configuration)).Deserialize(reader));
+                return (Configuration)new XmlSerializer(typeof(Configuration)).Deserialize(reader);
         }
 
         public static Configuration Load(string filePath)

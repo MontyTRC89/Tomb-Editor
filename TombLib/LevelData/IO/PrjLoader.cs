@@ -1,5 +1,4 @@
 ﻿using NLog;
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -290,7 +289,7 @@ namespace TombLib.LevelData.IO
 
                                     var obj = new PrjObject
                                     {
-                                        ScriptId = unchecked((ushort)(objectsThings[j])),
+                                        ScriptId = unchecked((ushort)objectsThings[j]),
                                         CodeBits = (byte)((objOcb >> 1) & 0x1f),
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
@@ -563,7 +562,7 @@ namespace TombLib.LevelData.IO
                                 case 0x4c00:
                                     var sound = new SoundSourceInstance()
                                     {
-                                        ScriptId = unchecked((ushort)(objectsThings2[j])),
+                                        ScriptId = unchecked((ushort)objectsThings2[j]),
                                         SoundName = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, unchecked((ushort)objSlot)),
                                         Position = position
                                     };
@@ -572,7 +571,7 @@ namespace TombLib.LevelData.IO
                                 case 0x4400:
                                     var sink = new SinkInstance()
                                     {
-                                        ScriptId = unchecked((ushort)(objectsThings2[j])),
+                                        ScriptId = unchecked((ushort)objectsThings2[j]),
                                         Strength = (short)(objTimer / 2),
                                         Position = position
                                     };
@@ -582,8 +581,8 @@ namespace TombLib.LevelData.IO
                                 case 0x4080:
                                     var camera = new CameraInstance()
                                     {
-                                        ScriptId = unchecked((ushort)(objectsThings2[j])),
-                                        Fixed = (objectType == 0x4080),
+                                        ScriptId = unchecked((ushort)objectsThings2[j]),
+                                        Fixed = objectType == 0x4080,
                                         Position = position
                                     };
                                     room.AddObject(level, camera);
@@ -591,8 +590,8 @@ namespace TombLib.LevelData.IO
                                 case 0x4040:
                                     var flybyCamera = new FlybyCameraInstance()
                                     {
-                                        ScriptId = unchecked((ushort)(objectsThings2[j])),
-                                        Timer = unchecked((short)objTimer),
+                                        ScriptId = unchecked((ushort)objectsThings2[j]),
+                                        Timer = objTimer,
                                         Sequence = (byte)((objSlot & 0xe000) >> 13),
                                         Number = (byte)((objSlot & 0x1f00) >> 8),
                                         Fov = (short)(objSlot & 0x00ff),
@@ -713,7 +712,7 @@ namespace TombLib.LevelData.IO
                                     reader.ReadInt16();
                                 }
 
-                                if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
+                                if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1)
                                 {
                                     if ((blockFlags1 & 0x0008) != 0)
                                         tempBlock._wallOpacity = (blockFlags1 & 0x1000) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
@@ -749,7 +748,7 @@ namespace TombLib.LevelData.IO
                         tempRooms.Add(i, tempRoom);
                         level.Rooms[i] = room;
 
-                        progressReporter.ReportProgress(i / ((float)numRooms) * 28.0f, "");
+                        progressReporter.ReportProgress(i / (float)numRooms * 28.0f, "");
                     }
                     progressReporter.ReportProgress(30, "Rooms loaded");
 
@@ -826,7 +825,7 @@ namespace TombLib.LevelData.IO
                                     for (int x = prjPortal._area.X0; x <= prjPortal._area.X1; ++x)
                                     {
                                         var existingLink = linkArray[x, z];
-                                        if ((existingLink.Key != null) && (existingLink.Key != currentLink.Key || existingLink.Value != currentLink.Value))
+                                        if (existingLink.Key != null && (existingLink.Key != currentLink.Key || existingLink.Value != currentLink.Value))
                                         {
                                             if (!collidingLinks.Contains(existingLink))
                                             {
@@ -940,7 +939,7 @@ namespace TombLib.LevelData.IO
                                     }
                                     for (int z = portalAreaSuggestion.Y0; z <= portalAreaSuggestion.Y1; ++z)
                                         for (int x = portalAreaSuggestion.X0; x <= portalAreaSuggestion.X1; ++x)
-                                            if ((basePortalLinks[x, z].Key != startLink.Key) || (basePortalLinks[x, z].Value != startLink.Value))
+                                            if (basePortalLinks[x, z].Key != startLink.Key || basePortalLinks[x, z].Value != startLink.Value)
                                             {
                                                 portalAreaSuggestions.RemoveAt(i);
                                                 goto ProcessNextAreaSuggestion;
@@ -975,12 +974,12 @@ namespace TombLib.LevelData.IO
                                         // Search an area that is as big as possible that contains only links of this type
                                         int endZ = z + 1;
                                         for (; endZ < room.NumZSectors; ++endZ)
-                                            if ((basePortalLinks[x, endZ].Key != link.Key) || (basePortalLinks[x, endZ].Value != link.Value))
+                                            if (basePortalLinks[x, endZ].Key != link.Key || basePortalLinks[x, endZ].Value != link.Value)
                                                 break;
                                         int endX = x + 1;
                                         for (; endX < room.NumXSectors; ++endX)
                                             for (int z2 = z; z2 < endZ; ++z2)
-                                                if ((basePortalLinks[endX, z2].Key != link.Key) || (basePortalLinks[endX, z2].Value != link.Value))
+                                                if (basePortalLinks[endX, z2].Key != link.Key || basePortalLinks[endX, z2].Value != link.Value)
                                                     goto FoundEndX;
                                         FoundEndX:
 
@@ -1070,7 +1069,7 @@ namespace TombLib.LevelData.IO
                                 {
                                     case PortalDirection.Ceiling:
                                     case PortalDirection.Floor:
-                                        if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
+                                        if (room.WaterLevel != 0 != (portal.AdjoiningRoom.WaterLevel != 0) && portal.Opacity == PortalOpacity.SolidFaces)
                                             portal.Opacity = PortalOpacity.TraversableFaces;
                                         break;
                                 }
@@ -1433,8 +1432,8 @@ namespace TombLib.LevelData.IO
                         var animatedTextureSet = new AnimatedTextureSet();
                         for (int j = firstTexture; j <= lastTexture; j++)
                         {
-                            float y = (j / 4) * 64.0f;
-                            float x = (j % 4) * 64.0f;
+                            float y = j / 4 * 64.0f;
+                            float x = j % 4 * 64.0f;
 
                             animatedTextureSet.Frames.Add(new AnimatedTextureFrame
                             {
@@ -1470,7 +1469,7 @@ namespace TombLib.LevelData.IO
 
                         string offsetString = "offset 0x" + reader.BaseStream.Position.ToString("x") + ".";
 
-                        if ((reader.BaseStream.Length - reader.BaseStream.Position) < 2)
+                        if (reader.BaseStream.Length - reader.BaseStream.Position < 2)
                         { // No header of any sorts
                             level.Settings.GameVersion = GameVersion.TR4;
                             progressReporter.ReportInfo("No header of any sorts found. The *.prj file ends at " + offsetString);
@@ -1581,8 +1580,8 @@ namespace TombLib.LevelData.IO
                                 if (room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) ||
                                     room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
                                 {
-                                    if ((room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) &&
-                                        room.IsFaceDefined(x, z, BlockFace.NegativeX_ED)) ||
+                                    if (room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) &&
+                                        room.IsFaceDefined(x, z, BlockFace.NegativeX_ED) ||
                                         !IsUndefinedButHasArea(room, x, z, BlockFace.NegativeX_QA))
                                     {
                                         LoadTextureArea(room, x, z, BlockFace.NegativeX_ED, texture, tempTextures, prjBlock._faces[10]);
@@ -1591,8 +1590,8 @@ namespace TombLib.LevelData.IO
                                 else
                                 {
                                     if (x > 0)
-                                        if ((room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
-                                            room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED)) ||
+                                        if (room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
+                                            room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED) ||
                                             !IsUndefinedButHasArea(room, x - 1, z, BlockFace.PositiveX_QA))
                                         {
                                             LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[10]);
@@ -1653,8 +1652,8 @@ namespace TombLib.LevelData.IO
                                 if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) ||
                                     room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
                                 {
-                                    if ((room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
-                                        room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED)) ||
+                                    if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
+                                        room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED) ||
                                         !IsUndefinedButHasArea(room, x, z, BlockFace.NegativeZ_QA))
                                     {
                                         LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[12]);
@@ -1663,8 +1662,8 @@ namespace TombLib.LevelData.IO
                                 else
                                 {
                                     if (z > 0)
-                                        if ((room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
-                                            room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED)) ||
+                                        if (room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
+                                            room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED) ||
                                             !IsUndefinedButHasArea(room, x, z - 1, BlockFace.PositiveZ_QA))
                                         {
                                             LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[12]);
@@ -1874,24 +1873,16 @@ namespace TombLib.LevelData.IO
             switch (face)
             {
                 case BlockFace.PositiveZ_QA:
-                    return (!room.IsFaceDefined(x, z, face) &&
-                            (b.QA[0] >= b.ED[0] && b.QA[1] >= b.ED[1]) &&
-                            !(b.QA[0] == b.ED[0] && b.QA[1] == b.ED[1]));
+                    return !room.IsFaceDefined(x, z, face) && b.QA[0] >= b.ED[0] && b.QA[1] >= b.ED[1] && !(b.QA[0] == b.ED[0] && b.QA[1] == b.ED[1]);
 
                 case BlockFace.NegativeZ_QA:
-                    return (!room.IsFaceDefined(x, z, face) &&
-                            (b.QA[3] >= b.ED[3] && b.QA[2] >= b.ED[2]) &&
-                            !(b.QA[3] == b.ED[3] && b.QA[2] == b.ED[2]));
+                    return !room.IsFaceDefined(x, z, face) && b.QA[3] >= b.ED[3] && b.QA[2] >= b.ED[2] && !(b.QA[3] == b.ED[3] && b.QA[2] == b.ED[2]);
 
                 case BlockFace.NegativeX_QA:
-                    return (!room.IsFaceDefined(x, z, face) &&
-                            (b.QA[3] >= b.ED[3] && b.QA[0] >= b.ED[0]) &&
-                            !(b.QA[3] == b.ED[3] && b.QA[0] == b.ED[0]));
+                    return !room.IsFaceDefined(x, z, face) && b.QA[3] >= b.ED[3] && b.QA[0] >= b.ED[0] && !(b.QA[3] == b.ED[3] && b.QA[0] == b.ED[0]);
 
                 case BlockFace.PositiveX_QA:
-                    return (!room.IsFaceDefined(x, z, face) &&
-                               (b.QA[1] >= b.ED[1] && b.QA[2] >= b.ED[2]) &&
-                               !(b.QA[1] == b.ED[1] && b.QA[2] == b.ED[2]));
+                    return !room.IsFaceDefined(x, z, face) && b.QA[1] >= b.ED[1] && b.QA[2] >= b.ED[2] && !(b.QA[1] == b.ED[1] && b.QA[2] == b.ED[2]);
             }
 
             return false;
@@ -1955,7 +1946,7 @@ namespace TombLib.LevelData.IO
             {
                 case 0x0000: // TYPE_TEXTURE_NONE
                 default:
-                    block.SetFaceTexture(face, new TextureArea { });
+                    block.SetFaceTexture(face, new TextureArea());
                     return;
                 case 0x0003: // TYPE_TEXTURE_COLOR
                     block.SetFaceTexture(face, new TextureArea { Texture = TextureInvisible.Instance });
@@ -1964,7 +1955,7 @@ namespace TombLib.LevelData.IO
                     int texIndex = ((prjFace._txtFlags & 0x03) << 8) | prjFace._txtIndex;
                     PrjTexInfo texInfo = tempTextures[texIndex];
 
-                    var uv = new Vector2[]
+                    var uv = new[]
                     {
                         new Vector2(
                             texInfo._x + 0.5f,
@@ -2025,7 +2016,7 @@ namespace TombLib.LevelData.IO
                                 break;
                             default:
                                 logger.Warn("Unknown texture triangle selection " + prjFace._txtTriangle);
-                                block.SetFaceTexture(face, new TextureArea { });
+                                block.SetFaceTexture(face, new TextureArea());
                                 return;
                         }
 

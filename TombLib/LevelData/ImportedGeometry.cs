@@ -41,7 +41,7 @@ namespace TombLib.LevelData
     {
         [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
         public Vector3 Position;
-        private float _unusedPadding;
+        private readonly float _unusedPadding;
         [VertexElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 16)]
         public Vector2 UV;
         [VertexElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 24)]
@@ -86,7 +86,7 @@ namespace TombLib.LevelData
 
     public struct ImportedGeometryInfo
     {
-        public readonly static ImportedGeometryInfo Default = new ImportedGeometryInfo { Name = "Unnamed", Path = "", Scale = 1, FlipZ = true, FlipUV_V = true };
+        public static readonly ImportedGeometryInfo Default = new ImportedGeometryInfo { Name = "Unnamed", Path = "", Scale = 1, FlipZ = true, FlipUV_V = true };
 
         public string Name { get; set; }
         public string Path { get; set; }
@@ -151,16 +151,16 @@ namespace TombLib.LevelData
                 if (Vertices.Count == 0)
                     return;
 
-                VertexBuffer = Buffer.Vertex.New<ImportedGeometryVertex>(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+                VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
                 IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
             }
         }
 
         public static IReadOnlyList<FileFormat> FileExtensions => BaseGeometryImporter.FileExtensions;
         public UniqueIDType UniqueID { get; } = new UniqueIDType();
-        public Exception LoadException { get; private set; } = null;
+        public Exception LoadException { get; private set; }
         public ImportedGeometryInfo Info { get; private set; } = ImportedGeometryInfo.Default;
-        public Model DirectXModel { get; private set; } = null;
+        public Model DirectXModel { get; private set; }
         public List<ImportedGeometryTexture> Textures { get; private set; } = new List<ImportedGeometryTexture>();
 
         public void Update(LevelSettings settings, Dictionary<string, Texture> absolutePathTextureLookup, ImportedGeometryInfo info)
@@ -193,14 +193,14 @@ namespace TombLib.LevelData
                 BaseGeometryImporter importer;
                 if (importedGeometryPath.ToLower().EndsWith(".mqo"))
                 {
-                    importer = new MetasequoiaRoomImporter(settingsIO, (absoluteTexturePath) =>
+                    importer = new MetasequoiaRoomImporter(settingsIO, absoluteTexturePath =>
                     {
                         return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
                     });
                 }
                 else
                 {
-                    importer = new AssimpImporter(settingsIO, (absoluteTexturePath) =>
+                    importer = new AssimpImporter(settingsIO, absoluteTexturePath =>
                     {
                         return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
                     });
@@ -243,7 +243,7 @@ namespace TombLib.LevelData
                                 {
                                     var vertex = new ImportedGeometryVertex();
                                     vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                    vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
+                                    vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                     modelMesh.Vertices.Add(vertex);
                                 }
 
@@ -263,7 +263,7 @@ namespace TombLib.LevelData
                                 {
                                     var vertex = new ImportedGeometryVertex();
                                     vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                    vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
+                                    vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                     modelMesh.Vertices.Add(vertex);
                                     submesh.Indices.Add(currentIndex);
                                     currentIndex++;
@@ -313,7 +313,7 @@ namespace TombLib.LevelData
                 {
                     // Make sure the texture is already listed under this object
                     var importedGeometryTexture = texture as ImportedGeometryTexture;
-                    if ((importedGeometryTexture != null) && !Textures.Contains(importedGeometryTexture))
+                    if (importedGeometryTexture != null && !Textures.Contains(importedGeometryTexture))
                         Textures.Add(importedGeometryTexture);
 
                     // Use texture

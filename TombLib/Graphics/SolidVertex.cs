@@ -1,11 +1,6 @@
 ﻿using SharpDX.Toolkit.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib.Graphics
 {
@@ -14,7 +9,7 @@ namespace TombLib.Graphics
     {
         [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
         public Vector3 Position;
-        private float _unusedPadding;
+        private readonly float _unusedPadding;
         [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 16)]
         public Vector4 Color;
 

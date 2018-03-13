@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib
 {
@@ -28,23 +24,23 @@ namespace TombLib
         public static VectorInt3 operator -(VectorInt3 value) => new VectorInt3(-value.X, -value.Y, -value.Z);
         public static VectorInt3 operator *(VectorInt3 value, int scale) => new VectorInt3(value.X * scale, value.Y * scale, value.Z * scale);
         public static VectorInt3 operator /(VectorInt3 value, int scale) => new VectorInt3(value.X / scale, value.Y / scale, value.Z / scale);
-        public static bool operator ==(VectorInt3 first, VectorInt3 second) => (first.X == second.X) && (first.Y == second.Y) && (first.Z == second.Z);
-        public static bool operator !=(VectorInt3 first, VectorInt3 second) => (first.X != second.X) || (first.Y != second.Y) || (first.Z != second.Z);
+        public static bool operator ==(VectorInt3 first, VectorInt3 second) => first.X == second.X && first.Y == second.Y && first.Z == second.Z;
+        public static bool operator !=(VectorInt3 first, VectorInt3 second) => first.X != second.X || first.Y != second.Y || first.Z != second.Z;
         public static implicit operator Vector3(VectorInt3 value) => new Vector3(value.X, value.Y, value.Z);
         public static explicit operator VectorInt3(Vector3 value) => FromRounded(value);
 
         public static VectorInt3 FromRounded(Vector3 value) => new VectorInt3(
-            (int)(Math.Min(Math.Max(Math.Round(value.X), int.MinValue), int.MaxValue)),
-            (int)(Math.Min(Math.Max(Math.Round(value.Y), int.MinValue), int.MaxValue)),
-            (int)(Math.Min(Math.Max(Math.Round(value.Z), int.MinValue), int.MaxValue)));
+            (int)Math.Min(Math.Max(Math.Round(value.X), int.MinValue), int.MaxValue),
+            (int)Math.Min(Math.Max(Math.Round(value.Y), int.MinValue), int.MaxValue),
+            (int)Math.Min(Math.Max(Math.Round(value.Z), int.MinValue), int.MaxValue));
         public static VectorInt3 FromFloor(Vector3 value) => new VectorInt3(
-            (int)(Math.Min(Math.Max(Math.Floor(value.X), int.MinValue), int.MaxValue)),
-            (int)(Math.Min(Math.Max(Math.Floor(value.Y), int.MinValue), int.MaxValue)),
-            (int)(Math.Min(Math.Max(Math.Floor(value.Z), int.MinValue), int.MaxValue)));
+            (int)Math.Min(Math.Max(Math.Floor(value.X), int.MinValue), int.MaxValue),
+            (int)Math.Min(Math.Max(Math.Floor(value.Y), int.MinValue), int.MaxValue),
+            (int)Math.Min(Math.Max(Math.Floor(value.Z), int.MinValue), int.MaxValue));
         public static VectorInt3 FromCeiling(Vector3 value) => new VectorInt3(
-            (int)(Math.Min(Math.Max(Math.Ceiling(value.X), int.MinValue), int.MaxValue)),
-            (int)(Math.Min(Math.Max(Math.Ceiling(value.Y), int.MinValue), int.MaxValue)),
-            (int)(Math.Min(Math.Max(Math.Ceiling(value.Z), int.MinValue), int.MaxValue)));
+            (int)Math.Min(Math.Max(Math.Ceiling(value.X), int.MinValue), int.MaxValue),
+            (int)Math.Min(Math.Max(Math.Ceiling(value.Y), int.MinValue), int.MaxValue),
+            (int)Math.Min(Math.Max(Math.Ceiling(value.Z), int.MinValue), int.MaxValue));
 
         public override string ToString() => "<" + X + ", " + Y + ", " + Z + ">";
         public override bool Equals(object obj)

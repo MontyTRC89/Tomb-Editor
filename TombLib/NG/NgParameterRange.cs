@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.LevelData;
 
 namespace TombLib.NG
@@ -39,7 +37,7 @@ namespace TombLib.NG
         public string FixedStr;
         public decimal Add;
         public decimal Factor;
-    };
+    }
 
     public struct NgLinearModel
     {
@@ -214,14 +212,14 @@ namespace TombLib.NG
         {
             if (first.Kind != second.Kind)
                 return false;
-            if ((first.FixedEnumeration == null) != (second.FixedEnumeration == null))
+            if (first.FixedEnumeration == null != (second.FixedEnumeration == null))
                 return false;
             if (first.FixedEnumeration != null && !first.FixedEnumeration.SequenceEqual(second.FixedEnumeration))
                 return false;
             return true;
         }
         public static bool operator !=(NgParameterRange first, NgParameterRange second) => !(first == second);
-        public bool Equals(NgParameterRange other) => this == (NgParameterRange)other;
+        public bool Equals(NgParameterRange other) => this == other;
         public override bool Equals(object other)
         {
             if (!(other is NgParameterRange))

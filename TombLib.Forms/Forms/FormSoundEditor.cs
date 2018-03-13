@@ -1,14 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Media;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
 
@@ -16,9 +9,9 @@ namespace TombLib.Forms
 {
     public partial class FormSoundEditor : DarkForm
     {
-        private Wad2 _wad;
+        private readonly Wad2 _wad;
         private int _currentSound = -1;
-        private bool _saveWadOnExit;
+        private readonly bool _saveWadOnExit;
         private Dictionary<ushort, WadSoundInfo> _sounds;
 
         public FormSoundEditor(Wad2 wad, bool saveWadOnExit)

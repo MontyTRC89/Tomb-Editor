@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 using NLog;
@@ -134,7 +132,7 @@ namespace TombEditor
         public tr_ai_item[] AiItems;
 
         string fileName;
-        byte[,] _texture16;
+        readonly byte[,] _texture16;
 
         public TestLevel3(string fileName, string outFileName)
         {
@@ -263,7 +261,7 @@ namespace TombEditor
             short temp = 0;
 
             Meshes = new tr3_mesh[2048];
-            while (totalBytes < (NumMeshData * 2))
+            while (totalBytes < NumMeshData * 2)
             {
                 long offset1 = reader.BaseStream.Position;
 
@@ -403,7 +401,7 @@ namespace TombEditor
 
             for (int n = 0; n < Overlaps.Length; n++)
             {
-                writer.WriteLine("[" + n + "] " + (Overlaps[n] & 0x7fff).ToString());
+                writer.WriteLine("[" + n + "] " + (Overlaps[n] & 0x7fff));
                 if ((Overlaps[n] & 0x8000) != 0)
                     writer.WriteLine("--- END OF LIST ---");
             }
@@ -604,8 +602,8 @@ namespace TombEditor
                     if (_tempTexturesArray[j].originalID == i)
                     {
                         short page = 0;
-                        byte w = (byte)((_tempTexturesArray[j].NewX));
-                        byte h = (byte)((_tempTexturesArray[j].NewY));
+                        byte w = (byte)_tempTexturesArray[j].NewX;
+                        byte h = (byte)_tempTexturesArray[j].NewY;
 
                         writer.Write(page);
                         writer.Write(w);

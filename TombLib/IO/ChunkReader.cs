@@ -1,11 +1,9 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 
 namespace TombLib.IO
@@ -14,7 +12,7 @@ namespace TombLib.IO
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private BinaryReaderEx _reader;
+        private readonly BinaryReaderEx _reader;
 
         public ChunkReader(byte[] expectedMagicNumber, Stream stream)
         {

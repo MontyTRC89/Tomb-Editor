@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib
 {
@@ -61,16 +57,14 @@ namespace TombLib
         public Vector2 GetMid() => (Start + End) * 0.5f;
 
         public bool Contains(Rectangle2 other) =>
-            ((Start.X <= other.Start.X) && (End.X >= other.End.X)) &&
-            ((Start.Y <= other.Start.Y) && (End.Y >= other.End.Y));
+            Start.X <= other.Start.X && End.X >= other.End.X && Start.Y <= other.Start.Y && End.Y >= other.End.Y;
 
         public bool Contains(Vector2 point) =>
-            ((Start.X <= point.X) && (End.X >= point.X)) &&
-            ((Start.Y <= point.Y) && (End.Y >= point.Y));
+            Start.X <= point.X && End.X >= point.X && Start.Y <= point.Y && End.Y >= point.Y;
 
         public bool Intersects(Rectangle2 other) =>
-            (Start.X <= other.End.X) && (End.X >= other.Start.X) &&
-            (Start.Y <= other.End.Y) && (End.Y >= other.Start.Y);
+            Start.X <= other.End.X && End.X >= other.Start.X &&
+            Start.Y <= other.End.Y && End.Y >= other.Start.Y;
 
         public Rectangle2 Inflate(float width) =>
             new Rectangle2(Start - new Vector2(width), End + new Vector2(width));
@@ -86,13 +80,13 @@ namespace TombLib
         public static Rectangle2 operator -(Vector2 offset, Rectangle2 area) => new Rectangle2(offset - area.Start, offset - area.End);
         public static Rectangle2 operator -(Rectangle2 area) => new Rectangle2(-area.Start, -area.End);
 
-        public static bool operator ==(Rectangle2 first, Rectangle2 second) => (first.Start == second.Start) && (first.End == second.End);
-        public static bool operator !=(Rectangle2 first, Rectangle2 second) => (first.Start != second.Start) || (first.End != second.End);
+        public static bool operator ==(Rectangle2 first, Rectangle2 second) => first.Start == second.Start && first.End == second.End;
+        public static bool operator !=(Rectangle2 first, Rectangle2 second) => first.Start != second.Start || first.End != second.End;
         public static Rectangle2 FromLTRB(Vector2 start, Vector2 size) => new Rectangle2(start, start + size);
         public static Rectangle2 FromLTRB(float x0, float y0, float width, float height) => new Rectangle2(x0, y0, x0 + width, y0 + height);
 
         public bool Equals(Rectangle2 other) => this == other;
-        public override string ToString() => Start.ToString() + " to " + End.ToString();
+        public override string ToString() => Start + " to " + End;
         public override bool Equals(object obj)
         {
             if (!(obj is Rectangle2))

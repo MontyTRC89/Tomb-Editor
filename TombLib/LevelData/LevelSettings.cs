@@ -129,10 +129,10 @@ namespace TombLib.LevelData
         public LevelSettings Clone()
         {
             LevelSettings result = (LevelSettings)MemberwiseClone();
-            result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll((soundPath) => soundPath.Clone());
-            result.Textures = Textures.ConvertAll((texture) => (LevelTexture)(texture.Clone()));
-            result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll((set) => set.Clone());
-            result.ImportedGeometries = ImportedGeometries.ConvertAll((geometry) => geometry.Clone());
+            result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll(soundPath => soundPath.Clone());
+            result.Textures = Textures.ConvertAll(texture => (LevelTexture)texture.Clone());
+            result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
+            result.ImportedGeometries = ImportedGeometries.ConvertAll(geometry => geometry.Clone());
             return result;
         }
 
@@ -140,7 +140,7 @@ namespace TombLib.LevelData
 
         public static string VariableCreate(VariableType type)
         {
-            return VariableBegin + type.ToString() + VariableEnd;
+            return VariableBegin + type + VariableEnd;
         }
 
         public string GetVariable(VariableType type)
@@ -189,14 +189,14 @@ namespace TombLib.LevelData
 
                 // Parse variable
                 VariableType variableType;
-                if ((!Enum.TryParse(variableName, out variableType)) ||
+                if (!Enum.TryParse(variableName, out variableType) ||
                     excluded.Contains(variableType))
                 {
                     startIndex = endIndex + VariableEnd.Length;
                     continue;
                 }
                 string variableContent = GetVariable(variableType);
-                path = path.Remove(startIndex, (endIndex + VariableEnd.Length) - startIndex);
+                path = path.Remove(startIndex, endIndex + VariableEnd.Length - startIndex);
                 path = path.Insert(startIndex, variableContent);
                 startIndex += variableContent.Length;
             } while (true);
@@ -354,7 +354,7 @@ namespace TombLib.LevelData
                 else
                     image = ImageC.FromStream(reader);
 
-                if ((image.Width != 256) || (image.Height != 256))
+                if (image.Width != 256 || image.Height != 256)
                     throw new NotSupportedException("The texture's size must be 256 by 256 pixels. " +
                         "(The current texture '" + path + "' is " + image.Width + " by " + image.Height + " pixels)");
                 return image;
@@ -363,7 +363,7 @@ namespace TombLib.LevelData
 
         public void ImportedGeometryUpdate(IEnumerable<ImportedGeometryUpdateInfo> geometriesToUpdate)
         {
-            var absolutePathTextureLookup = new Dictionary<string, TombLib.Utils.Texture>();
+            var absolutePathTextureLookup = new Dictionary<string, Texture>();
 
             // Add level textures to lookup
             foreach (LevelTexture levelTexture in Textures)
@@ -388,7 +388,7 @@ namespace TombLib.LevelData
 
         public void ImportedGeometryUpdate(ImportedGeometry geometry, ImportedGeometryInfo info)
         {
-            ImportedGeometryUpdate(new ImportedGeometryUpdateInfo[] { new ImportedGeometryUpdateInfo(geometry, info) });
+            ImportedGeometryUpdate(new[] { new ImportedGeometryUpdateInfo(geometry, info) });
         }
 
         public ImportedGeometry ImportedGeometryFromID(ImportedGeometry.UniqueIDType uniqueID)
@@ -400,10 +400,10 @@ namespace TombLib.LevelData
         }
 
         public static IEnumerable<FileFormat> FileFormatsLoadRawExtraTexture =>
-            new FileFormat[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
-        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevel = new FileFormat[] { new FileFormat("Tomb Editor Level", "prj2") };
-        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelPrj = new FileFormat[] { new FileFormat("Tomb Editor Level", "prj") };
-        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelCompiled = new FileFormat[]
+            new[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevel = new[] { new FileFormat("Tomb Editor Level", "prj2") };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelPrj = new[] { new FileFormat("Tomb Editor Level", "prj") };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelCompiled = new[]
         {
             new FileFormat("Tomb Raider I level", "phd"),
             new FileFormat("Tomb Raider II/III level", "tr2"),
