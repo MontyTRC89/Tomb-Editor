@@ -12,7 +12,7 @@ namespace TombLib.Utils
         public FileFormat(string description, params string[] extensions)
         {
             if (extensions.Length <= 0)
-                throw new ArgumentOutOfRangeException("extensions");
+                throw new ArgumentOutOfRangeException(nameof(extensions));
             Description = description;
             Extensions = extensions;
         }

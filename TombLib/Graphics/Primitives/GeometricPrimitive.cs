@@ -219,7 +219,7 @@ namespace TombLib.Graphics.Primitives
 
         protected static void Swap<TIndex>(ref TIndex a, ref TIndex b)
         {
-            TIndex temp = a;
+            TIndex temp = b;
             b = a;
             a = temp;
         }

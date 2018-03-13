@@ -250,7 +250,6 @@
       <DependentUpon>FormSink.cs</DependentUpon>
     </Compile>
     <Compile Include="Gizmo.cs" />
-    <Compile Include="ListExtensions.cs" />
     <Compile Include="ObjectClipboardData.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

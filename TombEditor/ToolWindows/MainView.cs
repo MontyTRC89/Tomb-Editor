@@ -134,9 +134,9 @@ namespace TombEditor.ToolWindows
                 butOpacitySolidFaces.Enabled = portal != null;
                 butOpacityTraversableFaces.Enabled = portal != null;
 
-                butOpacityNone.Checked = portal == null ? false : portal.Opacity == PortalOpacity.None;
-                butOpacitySolidFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.SolidFaces;
-                butOpacityTraversableFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.TraversableFaces;
+                butOpacityNone.Checked = portal != null && portal.Opacity == PortalOpacity.None;
+                butOpacitySolidFaces.Checked = portal != null && portal.Opacity == PortalOpacity.SolidFaces;
+                butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
             }
         }
 

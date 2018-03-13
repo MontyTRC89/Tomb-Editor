@@ -56,7 +56,7 @@ namespace TombEditor.Forms
                 _operation(this);
 
                 // Done
-                this?.BeginInvoke((Action)delegate
+                BeginInvoke((Action)delegate
                     {
                         pbStato.Value = 100;
                         butOk.Enabled = true;
@@ -78,7 +78,7 @@ namespace TombEditor.Forms
                 logger.Error(ex, "PRJ loading failed");
 
                 string message = "There was an error. Message: " + ex.Message;
-                this?.Invoke((Action)delegate
+                Invoke((Action)delegate
                     {
                         pbStato.Value = 0;
 
@@ -96,7 +96,7 @@ namespace TombEditor.Forms
 
         void AddMessage(float? progress, string message, bool isWarning)
         {
-            if (!(bool)this?.Invoke((Func<bool>)delegate
+            if (!(bool)Invoke((Func<bool>)delegate
             {
                 if (progress.HasValue)
                     pbStato.SetProgressNoAnimation((int)Math.Round(progress.Value, 0));

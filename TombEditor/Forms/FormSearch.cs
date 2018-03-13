@@ -161,7 +161,11 @@ namespace TombEditor.Forms
             {
                 objectList.FirstDisplayedScrollingRowIndex = 0;
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
+
             ResetCompletely();
         }
 
@@ -172,7 +176,11 @@ namespace TombEditor.Forms
             {
                 objectList.FirstDisplayedScrollingRowIndex = 0;
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
+
             ResetSort();
         }
 

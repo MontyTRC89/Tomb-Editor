@@ -49,7 +49,7 @@ namespace TombLib.Graphics.Primitives
             {
                 if (tessellation < 1)
                 {
-                    throw new ArgumentOutOfRangeException("tessellation", "tessellation must be > 0");
+                    throw new ArgumentOutOfRangeException(nameof(tessellation), "tessellation must be > 0");
                 }
 
                 int start = (int)(-size * 1024.0f);

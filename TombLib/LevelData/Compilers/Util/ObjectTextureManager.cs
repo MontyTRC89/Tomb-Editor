@@ -41,7 +41,7 @@ namespace TombLib.LevelData.Compilers.Util
                     case 2:
                         return new tr_face3 { Vertices = new ushort[3] { index2, index0, index1 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     default:
-                        throw new ArgumentOutOfRangeException("firstIndexToEmit");
+                        throw new ArgumentOutOfRangeException(nameof(FirstVertexIndexToEmit));
                 }
             }
 
@@ -59,7 +59,7 @@ namespace TombLib.LevelData.Compilers.Util
                     case 3:
                         return new tr_face4 { Vertices = new ushort[4] { index3, index0, index1, index2 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     default:
-                        throw new ArgumentOutOfRangeException("firstIndexToEmit");
+                        throw new ArgumentOutOfRangeException(nameof(FirstVertexIndexToEmit));
                 }
             }
 

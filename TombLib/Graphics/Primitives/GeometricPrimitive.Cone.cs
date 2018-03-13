@@ -97,7 +97,7 @@ namespace TombLib.Graphics.Primitives
             public static GeometricPrimitive New(GraphicsDevice device, float diameter = 1.0f, float length = 1.0f, int tessellation = 18, bool toLeftHanded = false)
             {
                 if (tessellation < 3)
-                    throw new ArgumentOutOfRangeException("tessellation", "Must be >= 3");
+                    throw new ArgumentOutOfRangeException(nameof(tessellation), "Must be >= 3");
 
                 int verticalSegments = tessellation;
                 int horizontalSegments = tessellation * 2;

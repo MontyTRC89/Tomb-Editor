@@ -105,9 +105,9 @@ namespace TombLib.Graphics.Primitives
                 var indices = new List<int>();
 
                 if (tessellationOuterRing < 3)
-                    throw new ArgumentOutOfRangeException("tessellationOuterRing", "tessellationOuterRing parameter out of range");
+                    throw new ArgumentOutOfRangeException(nameof(tessellationOuterRing), "tessellationOuterRing parameter out of range");
                 if (tessellationOuterRing < 3)
-                    throw new ArgumentOutOfRangeException("tessellationOuterRing", "tessellationOuterRing parameter out of range");
+                    throw new ArgumentOutOfRangeException(nameof(tessellationOuterRing), "tessellationOuterRing parameter out of range");
 
                 int iStride = tessellationOuterRing + 1;
                 int jStride = tessellationInnerRing + 1;

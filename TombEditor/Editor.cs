@@ -19,7 +19,7 @@ namespace TombEditor
 
     public interface IEditorEventCausesUnsavedChanges : IEditorEvent { }
 
-    public interface IEditorRoomChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
+    public interface IEditorRoomChangedEvent : IEditorEventCausesUnsavedChanges
     {
         Room Room { get; }
     }
@@ -31,7 +31,7 @@ namespace TombEditor
         Change
     }
 
-    public interface IEditorObjectChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
+    public interface IEditorObjectChangedEvent : IEditorEventCausesUnsavedChanges
     {
         Room Room { get; }
         ObjectInstance Object { get; }
@@ -194,10 +194,10 @@ namespace TombEditor
                 if (value.Count < 0)
                     throw new ArgumentException("The selected room list must contain at least 1 room.");
                 if (value.Any(room => room == null))
-                    throw new ArgumentNullException("The selected room list may not contain null.");
+                    throw new ArgumentNullException(nameof(value), "The selected room list may not contain null.");
                 var roomSet = new HashSet<Room>(new Room[] { null });
                 if (value.Any(room => !roomSet.Add(room)))
-                    throw new ArgumentNullException("The selected room list may not contain duplicates.");
+                    throw new ArgumentNullException(nameof(value), "The selected room list may not contain duplicates.");
                 var previous = _selectedRooms;
                 _selectedRooms = value.ToArray();
                 if (previous == null || previous[0] != _selectedRooms[0])
@@ -345,7 +345,7 @@ namespace TombEditor
         }
 
         // This is invoked if the loaded wads changed for the level.
-        public class LoadedWadsChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
+        public class LoadedWadsChangedEvent : IEditorEventCausesUnsavedChanges
         {
             public TombLib.Wad.Wad2 Current { get; internal set; }
         }
@@ -355,14 +355,14 @@ namespace TombEditor
         }
 
         // This is invoked if the loaded textures changed for the level.
-        public class LoadedTexturesChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
+        public class LoadedTexturesChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void LoadedTexturesChange()
         {
             RaiseEvent(new LoadedTexturesChangedEvent());
         }
 
         // This is invoked if the loaded imported geometries changed for the level.
-        public class LoadedImportedGeometriesChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
+        public class LoadedImportedGeometriesChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void LoadedImportedGeometriesChange()
         {
             RaiseEvent(new LoadedImportedGeometriesChangedEvent());
@@ -389,7 +389,7 @@ namespace TombEditor
 
         // This is invoked when ever the applied textures in a room change.
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomTextureChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
+        public class RoomTextureChangedEvent : IEditorRoomChangedEvent
         {
             public Room Room { get; internal set; }
         }
@@ -401,7 +401,7 @@ namespace TombEditor
         // This is invoked when ever the geometry of the room changed. (eg the room is moved, individual sectors are moved up or down, ...)
         // This is not invoked when other the properties of the room change
         // Textures, room properties like reverbration, objects changed, ...
-        public class RoomGeometryChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
+        public class RoomGeometryChangedEvent : IEditorRoomChangedEvent
         {
             public Room Room { get; internal set; }
         }
@@ -419,7 +419,7 @@ namespace TombEditor
 
         // This is invoked when the amount of rooms is changed. (Rooms have been added or removed)
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomListChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
+        public class RoomListChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void RoomListChange()
         {
             RaiseEvent(new RoomListChangedEvent());
@@ -427,7 +427,7 @@ namespace TombEditor
 
         // This is invoked for all changes to room flags, "Reverbration", ...
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
+        public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent
         {
             public Room Room { get; internal set; }
         }
@@ -440,7 +440,7 @@ namespace TombEditor
 
         // This is invoked for all changes to sectors. (eg setting a trigger, adding a portal, setting a sector to monkey, ...)
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
+        public class RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent
         {
             public Room Room { get; internal set; }
         }
@@ -453,7 +453,7 @@ namespace TombEditor
 
         // This is invoked for all changes to objects. (eg changing a light, changing a moveable, moving a static, ...)
         // "null" can be passed, if it is not determinable what object changed.
-        public class ObjectChangedEvent : IEditorObjectChangedEvent, IEditorEventCausesUnsavedChanges
+        public class ObjectChangedEvent : IEditorObjectChangedEvent
         {
             public Room Room { get; internal set; }
             public ObjectInstance Object { get; internal set; }
@@ -760,7 +760,7 @@ namespace TombEditor
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
         {
             if (synchronizationContext == null)
-                throw new ArgumentNullException("synchronizationContext");
+                throw new ArgumentNullException(nameof(synchronizationContext));
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
             Level = level;

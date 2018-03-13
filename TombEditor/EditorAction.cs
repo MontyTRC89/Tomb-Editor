@@ -30,6 +30,6 @@ namespace TombEditor
         public bool ShouldBeActive => Repeat;
     }
 
-    public class EditorActionRelocateCamera : IEditorAction, IEditorActionDisableOnLostFocus
+    public class EditorActionRelocateCamera : IEditorActionDisableOnLostFocus
     { }
 }

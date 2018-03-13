@@ -94,7 +94,7 @@ namespace TombLib.LevelData.Compilers.Util
         public int GetOrAllocateTextureID(TextureView texture, int priorityClass = 0)
         {
             if (!new Rectangle2(new Vector2(), texture.Texture.Image.Size).Contains(texture.Area))
-                throw new ArgumentOutOfRangeException("texture.Area");
+                throw new ArgumentOutOfRangeException(nameof(texture.Area));
             if (texture.Area.Width > 256 || texture.Area.Height > 256)
                 throw new NotSupportedException("Texture page too big!");
 

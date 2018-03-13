@@ -24,7 +24,10 @@ namespace TombLib.Forms
                 System.Diagnostics.Process.Start("http://www." + control.Text + "/");
                 control.LinkVisited = false;
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         private void FormAbout_Load(object sender, EventArgs e)

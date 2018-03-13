@@ -729,9 +729,9 @@ namespace TombEditor
                 room.UpdateCompletely();
             if (instance is PortalInstance)
             {
-                room?.UpdateCompletely();
+                room.UpdateCompletely();
                 adjoiningRoom?.UpdateCompletely();
-                room?.AlternateVersion?.UpdateCompletely();
+                room.AlternateVersion?.UpdateCompletely();
                 adjoiningRoom?.AlternateVersion?.UpdateCompletely();
             }
 
@@ -1147,8 +1147,8 @@ namespace TombEditor
             float maxHeight = float.MinValue;
             float minHeight = float.MaxValue;
 
-            for (int x = area.X0, iterX = 0; x <= area.X1; x++, iterX++)
-                for (int z = area.Y0, iterZ = 0; z <= area.Y1; z++, iterZ++)
+            for (int x = area.X0; x <= area.X1; x++)
+                for (int z = area.Y0; z <= area.Y1; z++)
                 {
                     var segments = GetFaces(room, new VectorInt2(x, z), direction, type);
 
@@ -2459,7 +2459,7 @@ namespace TombEditor
 
         public static void ShowTextureSoundsDialog(IWin32Window owner)
         {
-            using (var form = new FormTextureSounds(_editor, _editor.Level.Settings))
+            using (var form = new FormTextureSounds(_editor))
                 form.ShowDialog(owner);
         }
 

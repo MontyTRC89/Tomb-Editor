@@ -93,7 +93,7 @@ namespace TombLib.LevelData
             VectorInt2 offset = area.Start;
 
             if (numXSectors < 3 || numZSectors < 3)
-                throw new ArgumentOutOfRangeException("area", area, "Provided area for resizing the room is too small. The area must span at least 3 sectors in X and Z dimension.");
+                throw new ArgumentOutOfRangeException(nameof(area), area, "Provided area for resizing the room is too small. The area must span at least 3 sectors in X and Z dimension.");
 
             // Remove sector based objects if there are any
             var sectorObjects = Blocks != null ? SectorObjects.ToList() : new List<SectorBasedObjectInstance>();
@@ -395,7 +395,7 @@ namespace TombLib.LevelData
             if (sector == null)
                 return new RoomBlockPair();
 
-            if (sector?.WallPortal == null)
+            if (sector.WallPortal == null)
                 return new RoomBlockPair { Room = this, Block = sector, Pos = pos };
 
             Room adjoiningRoom = sector.WallPortal.AdjoiningRoom;
@@ -3096,8 +3096,8 @@ namespace TombLib.LevelData
                         continue;
                     result = new VerticalSpace
                     {
-                        FloorY = combineFloor(verticalSpace?.FloorY, result?.FloorY, null, null),
-                        CeilingY = combineCeiling(verticalSpace?.CeilingY, result?.CeilingY, null, null)
+                        FloorY = combineFloor(verticalSpace.Value.FloorY, result?.FloorY, null, null),
+                        CeilingY = combineCeiling(verticalSpace.Value.CeilingY, result?.CeilingY, null, null)
                     };
                 }
             return result;
@@ -3329,7 +3329,7 @@ namespace TombLib.LevelData
             var portal = instance as PortalInstance;
             if (portal != null)
             {
-                var alternatePortal = portal.FindAlternatePortal(this?.AlternateVersion);
+                var alternatePortal = portal.FindAlternatePortal(this.AlternateVersion);
                 if (alternatePortal != null)
                     result.Add(AlternateVersion.RemoveObjectAndSingularPortal(level, alternatePortal));
 

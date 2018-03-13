@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Forms;
-using NLog;
 using TombLib.LevelData;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
@@ -15,9 +13,6 @@ namespace TombEditor.Forms
 {
     public partial class FormTextureSounds : DarkForm
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private LevelSettings _levelSettings;
-
         private const byte _alpha = 212;
         private static readonly Brush[] _textureSoundBrushes = new Brush[16]
             {
@@ -43,11 +38,9 @@ namespace TombEditor.Forms
         private const float _textureSoundStringSize = 0.4f;
         private const float _textureSoundProportion = 1.0f / 4.0f;
 
-        public FormTextureSounds(Editor _editor, LevelSettings levelSettings)
+        public FormTextureSounds(Editor _editor)
         {
             InitializeComponent();
-
-            _levelSettings = levelSettings;
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
@@ -141,7 +134,6 @@ namespace TombEditor.Forms
                         }
 
                 // Fill covered tiles
-                var coveredTiles = new HashSet<Tuple<int, int>>();
                 ConservativeRasterizer.RasterizeQuadUniquely(
                     SelectedTexture.TexCoord0 / LevelTexture.TextureSoundGranularity,
                     SelectedTexture.TexCoord1 / LevelTexture.TextureSoundGranularity,

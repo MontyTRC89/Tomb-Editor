@@ -35,8 +35,8 @@ namespace TombLib.Controls
                 ParameterChanged?.Invoke(this, EventArgs.Empty);
 
                 butView.Visible =
-                    GetObjectPointer(_parameter) is ObjectInstance ||
-                    GetObjectPointer(_parameter) is Room;
+                    GetObjectPointer() is ObjectInstance ||
+                    GetObjectPointer() is Room;
             }
         }
 
@@ -81,7 +81,7 @@ namespace TombLib.Controls
 
         private void View(ITriggerParameter value)
         {
-            value = GetObjectPointer(value);
+            value = GetObjectPointer();
             if (value is ObjectInstance)
                 ViewObject?.Invoke((ObjectInstance)value);
             if (value is Room)
@@ -120,7 +120,7 @@ namespace TombLib.Controls
                 Parameter = new TriggerParameterUshort(0);
         }
 
-        private ITriggerParameter GetObjectPointer(ITriggerParameter parameter)
+        private ITriggerParameter GetObjectPointer()
         {
             if (_parameter is TriggerParameterUshort)
                 return ((TriggerParameterUshort)_parameter).NameObject as ITriggerParameter;

@@ -112,7 +112,7 @@ namespace TombLib.Forms
                         owner.InvokeIfNecessary(() =>
                         {
                             switch (MessageBox.Show(owner, "The objects file '" + path + " could not be loaded. " +
-                                "Do you want to load a substituting file now?\nError: " + (exc?.Message ?? "null"), "Open project",
+                                "Do you want to load a substituting file now?\nError: " + (exc.Message ?? "null"), "Open project",
                                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                             {
                                 case DialogResult.Yes:

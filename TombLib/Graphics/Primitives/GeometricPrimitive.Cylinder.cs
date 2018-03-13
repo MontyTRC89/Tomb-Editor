@@ -156,7 +156,7 @@ namespace TombLib.Graphics.Primitives
             public static GeometricPrimitive New(GraphicsDevice device, float height = 1.0f, float diameter = 1.0f, int tessellation = 32, bool toLeftHanded = false)
             {
                 if (tessellation < 3)
-                    throw new ArgumentOutOfRangeException("tessellation", "tessellation must be >= 3");
+                    throw new ArgumentOutOfRangeException(nameof(tessellation), "tessellation must be >= 3");
 
                 var vertices = new List<SolidVertex>();
                 var indices = new List<int>();
