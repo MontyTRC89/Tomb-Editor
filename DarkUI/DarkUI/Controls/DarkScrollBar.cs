@@ -360,7 +360,7 @@ namespace DarkUI.Controls
 
             var trackAreaSize = isVert ? _trackArea.Height - _thumbArea.Height : _trackArea.Width - _thumbArea.Width;
 
-            var positionRatio = (float)positionInPixels / (float)trackAreaSize;
+            var positionRatio = positionInPixels / (float)trackAreaSize;
             var viewScrollSize = Maximum - ViewSize;
 
             var newValue = (int)(positionRatio * viewScrollSize);
@@ -429,9 +429,9 @@ namespace DarkUI.Controls
                 Value = maximumValue;
 
             // Calculate size ratio
-            _viewContentRatio = (float)ViewSize / (float)Maximum;
+            _viewContentRatio = ViewSize / (float)Maximum;
             var viewAreaSize = Maximum - ViewSize;
-            var positionRatio = (float)Value / (float)viewAreaSize;
+            var positionRatio = Value / (float)viewAreaSize;
 
             // Update area
             switch (_scrollOrientation)

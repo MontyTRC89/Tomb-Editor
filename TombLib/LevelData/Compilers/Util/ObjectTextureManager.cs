@@ -31,7 +31,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             public tr_face3 CreateFace3(ushort index0, ushort index1, ushort index2, ushort lightingEffect)
             {
-                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? (ushort)0x8000 : (ushort)0));
+                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? 0x8000 : 0));
                 switch (FirstVertexIndexToEmit)
                 {
                     case 0:
@@ -47,7 +47,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             public tr_face4 CreateFace4(ushort index0, ushort index1, ushort index2, ushort index3, ushort lightingEffect)
             {
-                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? (ushort)0x8000 : (ushort)0));
+                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? 0x8000 : 0));
                 switch (FirstVertexIndexToEmit)
                 {
                     case 0:
@@ -632,26 +632,26 @@ namespace TombLib.LevelData.Compilers.Util
                 if (level.Settings.GameVersion != GameVersion.TR2)
                     Tile |= objectTexture.IsTriangularAndPadding != 0 ? (ushort)0x8000 : (ushort)0;
 
-                stream.Write((ushort)objectTexture.BlendMode);
-                stream.Write((ushort)Tile);
+                stream.Write(objectTexture.BlendMode);
+                stream.Write(Tile);
 
                 if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG ||
                                     level.Settings.GameVersion == GameVersion.TR5)
-                    stream.Write((ushort)objectTexture.NewFlags);
+                    stream.Write(objectTexture.NewFlags);
 
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord0X, ref objectTexture.TexCoord0Y);
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord1X, ref objectTexture.TexCoord1Y);
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord2X, ref objectTexture.TexCoord2Y);
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord3X, ref objectTexture.TexCoord3Y);
 
-                stream.Write((ushort)objectTexture.TexCoord0X);
-                stream.Write((ushort)objectTexture.TexCoord0Y);
-                stream.Write((ushort)objectTexture.TexCoord1X);
-                stream.Write((ushort)objectTexture.TexCoord1Y);
-                stream.Write((ushort)objectTexture.TexCoord2X);
-                stream.Write((ushort)objectTexture.TexCoord2Y);
-                stream.Write((ushort)objectTexture.TexCoord3X);
-                stream.Write((ushort)objectTexture.TexCoord3Y);
+                stream.Write(objectTexture.TexCoord0X);
+                stream.Write(objectTexture.TexCoord0Y);
+                stream.Write(objectTexture.TexCoord1X);
+                stream.Write(objectTexture.TexCoord1Y);
+                stream.Write(objectTexture.TexCoord2X);
+                stream.Write(objectTexture.TexCoord2Y);
+                stream.Write(objectTexture.TexCoord3X);
+                stream.Write(objectTexture.TexCoord3Y);
 
                 if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG || level.Settings.GameVersion == GameVersion.TR5)
                 {

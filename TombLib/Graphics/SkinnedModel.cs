@@ -50,7 +50,7 @@ namespace TombLib.Graphics
         public void UpdateAnimation(int animationIndex, int frameIndex)
         {
             var animation = Animations[animationIndex];
-            int frameRate = (int)Math.Max(animation.Framerate, (short)1);
+            int frameRate = Math.Max(animation.Framerate, (short)1);
             int keyFrameIndex1 = frameIndex / frameRate;
             int keyFrameIndex2 = keyFrameIndex1 + 1;
             if (keyFrameIndex1 >= animation.KeyFrames.Count || keyFrameIndex2 >= animation.KeyFrames.Count)

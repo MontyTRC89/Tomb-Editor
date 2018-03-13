@@ -51,8 +51,8 @@ namespace TombLib.Graphics
             newVertex.Normal = Vector3.Zero;
             newVertex.Tangent = Vector3.Zero;
             newVertex.Binormal = Vector3.Zero;
-            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / (float)Wad2.TextureAtlasSize, 
-                                       (positionInAtlas.Y + uv.Y) / (float)Wad2.TextureAtlasSize);
+            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / Wad2.TextureAtlasSize, 
+                                       (positionInAtlas.Y + uv.Y) / Wad2.TextureAtlasSize);
 
             mesh.Vertices.Add(newVertex);
             submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
@@ -65,8 +65,8 @@ namespace TombLib.Graphics
 
             newVertex.Position = new Vector3(v.X, v.Y, v.Z);
             newVertex.Normal = Vector3.Zero;
-            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / (float)Wad2.TextureAtlasSize, 
-                                       (positionInAtlas.Y + uv.Y) / (float)Wad2.TextureAtlasSize);
+            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / Wad2.TextureAtlasSize, 
+                                       (positionInAtlas.Y + uv.Y) / Wad2.TextureAtlasSize);
 
             var shade = 1.0f - color / 8191.0f;
             newVertex.Shade = new Vector2(shade, 0.0f);

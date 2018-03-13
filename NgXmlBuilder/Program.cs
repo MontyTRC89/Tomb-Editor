@@ -350,7 +350,7 @@ namespace NgXmlBuilder
 
             outChoice.Add(new NgParameterRange(new NgLinearModel
             {
-                Start = (ushort)idStart,
+                Start = idStart,
                 EndInclusive = unchecked((ushort)(idStart + count - 1)),
                 Parameters = linearParameters
             }));

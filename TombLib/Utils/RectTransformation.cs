@@ -71,7 +71,7 @@ namespace TombLib.Utils
 
         public VectorInt2 Transform(VectorInt2 position, VectorInt2 oldSize)
         {
-            Vector2 result = Transform((Vector2)position, oldSize - new Vector2(1, 1));
+            Vector2 result = Transform(position, oldSize - new Vector2(1, 1));
             return new VectorInt2((int)result.X, (int)result.Y);
         }
 

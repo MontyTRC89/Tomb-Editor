@@ -186,9 +186,9 @@ namespace WadTool.Controls
             // 
             // tree
             // 
-            tree.Anchor = (AnchorStyles)(AnchorStyles.Top | AnchorStyles.Bottom 
-                                         | AnchorStyles.Left 
-                                         | AnchorStyles.Right);
+            tree.Anchor = AnchorStyles.Top | AnchorStyles.Bottom 
+                                           | AnchorStyles.Left 
+                                           | AnchorStyles.Right;
             tree.Enabled = false;
             tree.Location = new System.Drawing.Point(0, 30);
             tree.MaxDragChange = 20;
@@ -201,8 +201,8 @@ namespace WadTool.Controls
             // 
             // suggestedGameVersionComboBox
             // 
-            suggestedGameVersionComboBox.Anchor = (AnchorStyles)(AnchorStyles.Top | AnchorStyles.Left 
-                                                                 | AnchorStyles.Right);
+            suggestedGameVersionComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left 
+                                                                   | AnchorStyles.Right;
             suggestedGameVersionComboBox.Enabled = false;
             suggestedGameVersionComboBox.FormattingEnabled = true;
             suggestedGameVersionComboBox.Location = new System.Drawing.Point(103, 3);
@@ -215,7 +215,7 @@ namespace WadTool.Controls
             // darkLabel1
             // 
             darkLabel1.AutoSize = true;
-            darkLabel1.ForeColor = System.Drawing.Color.FromArgb((int)(byte)220, (int)(byte)220, (int)(byte)220);
+            darkLabel1.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
             darkLabel1.Location = new System.Drawing.Point(3, 6);
             darkLabel1.Name = "darkLabel1";
             darkLabel1.Size = new System.Drawing.Size(91, 13);

@@ -57,8 +57,8 @@ namespace TombLib.LevelData.Compilers
                 Portals = new List<tr_room_portal>(),
                 Info = new tr_room_info
                 {
-                    X = (int)room.WorldPos.X,
-                    Z = (int)room.WorldPos.Z,
+                    X = room.WorldPos.X,
+                    Z = room.WorldPos.Z,
                     YTop = (int)-(room.WorldPos.Y + room.GetHighestCorner() * 256.0f),
                     YBottom = (int)-(room.WorldPos.Y + room.GetLowestCorner() * 256.0f)
                 },
@@ -79,7 +79,7 @@ namespace TombLib.LevelData.Compilers
             else if (_level.Settings.GameVersion == GameVersion.TR3)
                 newRoom.AmbientIntensity = PackColorTo16Bit(room.AmbientLight);
             else
-                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | (uint)roomAmbientColor.Blue;
+                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | roomAmbientColor.Blue;
 
             // Room flags
             if (room.QuickSandLevel > 0)
@@ -131,7 +131,7 @@ namespace TombLib.LevelData.Compilers
             if (room.MistLevel != 0)
             {
                 newRoom.Flags |= 0x0100;
-                newRoom.WaterScheme += (byte)room.MistLevel;
+                newRoom.WaterScheme += room.MistLevel;
             }
 
             // Generate geometry

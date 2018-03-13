@@ -341,8 +341,8 @@ namespace WadTool.Controls
             if (e.Button == MouseButtons.Right)
             {
                 // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                float deltaX = (e.X - _lastX) / (float)Height;
-                float deltaY = (e.Y - _lastY) / (float)Height;
+                float deltaX = (e.X - _lastX) / Height;
+                float deltaY = (e.Y - _lastY) / Height;
 
                 _lastX = e.X;
                 _lastY = e.Y;

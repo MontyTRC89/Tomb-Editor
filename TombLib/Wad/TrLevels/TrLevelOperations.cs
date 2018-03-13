@@ -343,7 +343,7 @@ namespace TombLib.Wad.TrLevels
             var meshes = new List<tr_mesh>();
             var convertedMeshes = new List<WadMesh>();
             for (int j = 0; j < oldMoveable.NumMeshes; j++)
-                meshes.Add(oldLevel.Meshes[(int)oldLevel.RealPointers[(int)(oldMoveable.StartingMesh + j)]]);
+                meshes.Add(oldLevel.Meshes[(int)oldLevel.RealPointers[oldMoveable.StartingMesh + j]]);
 
             // Convert the WadMesh
             foreach (var oldMesh in meshes)
@@ -470,18 +470,18 @@ namespace TombLib.Wad.TrLevels
                 for (int k = 0; k < oldAnimation.NumStateChanges; k++)
                 {
                     WadStateChange sc = new WadStateChange();
-                    var wadSc = oldLevel.StateChanges[(int)oldAnimation.StateChangeOffset + k];
+                    var wadSc = oldLevel.StateChanges[oldAnimation.StateChangeOffset + k];
                     sc.StateId = wadSc.StateID;
 
                     for (int n = 0; n < wadSc.NumAnimDispatches; n++)
                     {
                         WadAnimDispatch ad = new WadAnimDispatch();
-                        var wadAd = oldLevel.AnimDispatches[(int)wadSc.AnimDispatch + n];
+                        var wadAd = oldLevel.AnimDispatches[wadSc.AnimDispatch + n];
 
                         ad.InFrame = (ushort)(wadAd.Low - oldAnimation.FrameStart);
                         ad.OutFrame = (ushort)(wadAd.High - oldAnimation.FrameStart);
                         ad.NextAnimation = (ushort)((wadAd.NextAnimation - oldMoveable.Animation) % numAnimations);
-                        ad.NextFrame = (ushort)wadAd.NextFrame;
+                        ad.NextFrame = wadAd.NextFrame;
 
                         sc.Dispatches.Add(ad);
                     }
@@ -612,9 +612,9 @@ namespace TombLib.Wad.TrLevels
 
                             frames += 2;
 
-                            int rotX = (int)((rotation & 0x3ff0) >> 4);
-                            int rotZ = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
-                            int rotY = (int)(rotation2 & 0x3ff);
+                            int rotX = (rotation & 0x3ff0) >> 4;
+                            int rotZ = ((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff;
+                            int rotY = rotation2 & 0x3ff;
 
                             kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
                             kfAngle.X = rotX;
@@ -634,9 +634,9 @@ namespace TombLib.Wad.TrLevels
 
                                     frames += 2;
 
-                                    int rotX = (int)((rotation & 0x3ff0) >> 4);
-                                    int rotY = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
-                                    int rotZ = (int)(rotation2 & 0x3ff);
+                                    int rotX = (rotation & 0x3ff0) >> 4;
+                                    int rotY = ((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff;
+                                    int rotZ = rotation2 & 0x3ff;
 
                                     kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
                                     kfAngle.X = rotX;
@@ -690,7 +690,7 @@ namespace TombLib.Wad.TrLevels
                     }
 
                     if (frames - startOfFrame < oldAnimation.FrameSize)
-                        frames += (int)oldAnimation.FrameSize - (frames - startOfFrame);
+                        frames += oldAnimation.FrameSize - (frames - startOfFrame);
 
                     newAnimation.KeyFrames.Add(frame);
                 }

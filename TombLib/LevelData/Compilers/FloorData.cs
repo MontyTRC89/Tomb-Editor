@@ -362,7 +362,7 @@ namespace TombLib.LevelData.Compilers
 
                             // Additional short
                             ushort trigger3 = 0;
-                            trigger3 |= (ushort)GetTriggerParameter(trigger.Timer, trigger, 0xff);
+                            trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
                             outFloorData.Add(trigger3);
                             break;
@@ -426,7 +426,7 @@ namespace TombLib.LevelData.Compilers
                                 trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (11 << 10));
                                 outFloorData.Add(trigger2);
 
-                                trigger2 = (ushort)GetTriggerRealTimer(trigger, 0xffff);
+                                trigger2 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger2);
                             }
                             else
@@ -723,7 +723,7 @@ namespace TombLib.LevelData.Compilers
 
                 data0 |= (ushort)(TriangleCollisionGetSigned(t00, reportRoom, reportPos) << 5);
                 data0 |= (ushort)(TriangleCollisionGetSigned(t01, reportRoom, reportPos) << 10);
-                data1 |= (ushort)TriangleCollisionGetUnsigned(t10, reportRoom, reportPos);
+                data1 |= TriangleCollisionGetUnsigned(t10, reportRoom, reportPos);
                 data1 |= (ushort)(TriangleCollisionGetUnsigned(t11, reportRoom, reportPos) << 4);
                 data1 |= (ushort)(TriangleCollisionGetUnsigned(t12, reportRoom, reportPos) << 8);
                 data1 |= (ushort)(TriangleCollisionGetUnsigned(t13, reportRoom, reportPos) << 12);

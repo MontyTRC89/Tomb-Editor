@@ -93,7 +93,7 @@ namespace TombLib.IO
             int i;
 
             sizeOfT = Marshal.SizeOf(typeof(T));
-            unmanaged = Marshal.AllocHGlobal(sizeOfT * (int)count);
+            unmanaged = Marshal.AllocHGlobal(sizeOfT * count);
             buffer = new byte[sizeOfT];
 
             output = new T[count];

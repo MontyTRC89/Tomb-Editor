@@ -204,7 +204,7 @@ namespace TombLib.LevelData.Compilers
                 using (Task GeometryDataTask = Task.Factory.StartNew(() =>
                 {
                     geometryData = ZLib.CompressData(geometryDataBuffer);
-                    geometryDataUncompressedSize = (int)geometryDataBuffer.Length;
+                    geometryDataUncompressedSize = geometryDataBuffer.Length;
                 }))
                     Task.WaitAll(Texture32task, Texture16task, textureMiscTask, GeometryDataTask);
 

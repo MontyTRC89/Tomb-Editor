@@ -1340,8 +1340,8 @@ namespace TombEditor
             }
             else
             {
-                Vector2 verticalUVStride = (texture.TexCoord3 - texture.TexCoord2) / (float)(area.Y1 - area.Y0 + 1);
-                Vector2 horizontalUVStride = (texture.TexCoord2 - texture.TexCoord1) / (float)(area.X1 - area.X0 + 1);
+                Vector2 verticalUVStride = (texture.TexCoord3 - texture.TexCoord2) / (area.Y1 - area.Y0 + 1);
+                Vector2 horizontalUVStride = (texture.TexCoord2 - texture.TexCoord1) / (area.X1 - area.X0 + 1);
 
                 for (int x = area.X0, x1 = 0; x <= area.X1; x++, x1++)
                 {

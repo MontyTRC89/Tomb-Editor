@@ -229,7 +229,7 @@ namespace TombLib.LevelData.Compilers
 
             var offset = writer.BaseStream.Position;
 
-            writer.Write((int)0);
+            writer.Write(0);
 
             writer.Write((ushort)Vertices.Count);
             for (var k = 0; k < Vertices.Count; k++)
@@ -289,8 +289,8 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(light.X);
                     writer.Write(light.Y);
                     writer.Write(light.Z);
-                    writer.Write((ushort)light.Intensity);
-                    writer.Write((ushort)light.Intensity);
+                    writer.Write(light.Intensity);
+                    writer.Write(light.Intensity);
                     writer.Write((uint)light.Out);
                     writer.Write((uint)light.Out);
                 }
@@ -312,7 +312,7 @@ namespace TombLib.LevelData.Compilers
 
             var offset = writer.BaseStream.Position;
 
-            writer.Write((int)0);
+            writer.Write(0);
 
             writer.Write((ushort)Vertices.Count);
             for (var k = 0; k < Vertices.Count; k++)
@@ -397,7 +397,7 @@ namespace TombLib.LevelData.Compilers
 
             var offset = writer.BaseStream.Position;
 
-            writer.Write((int)0);
+            writer.Write(0);
 
             writer.Write((ushort)Vertices.Count);
             for (var k = 0; k < Vertices.Count; k++)
@@ -492,7 +492,7 @@ namespace TombLib.LevelData.Compilers
 
             // tr5_room_info
             writer.Write(Info.X);
-            writer.Write((int)0);
+            writer.Write(0);
             writer.Write(Info.Z);
             writer.Write(Info.YBottom);
             writer.Write(Info.YTop);
@@ -512,9 +512,9 @@ namespace TombLib.LevelData.Compilers
 
             writer.Write((uint)0x00007fff);
             writer.Write((uint)0x00007fff);
-            writer.Write((uint)0xcdcdcdcd);
-            writer.Write((uint)0xcdcdcdcd);
-            writer.Write((uint)0xffffffff);
+            writer.Write(0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
+            writer.Write(0xffffffff);
 
             writer.Write(AlternateRoom);
             writer.Write(Flags);
@@ -524,19 +524,19 @@ namespace TombLib.LevelData.Compilers
             writer.Write((uint)0);
             writer.Write((uint)0);
 
-            writer.Write((uint)0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
             writer.Write((uint)0);
 
             writer.Write((float)Info.X);
             writer.Write((float)Info.YBottom);
             writer.Write((float)Info.Z);
 
-            writer.Write((uint)0xcdcdcdcd);
-            writer.Write((uint)0xcdcdcdcd);
-            writer.Write((uint)0xcdcdcdcd);
-            writer.Write((uint)0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
             writer.Write((uint)0);
-            writer.Write((uint)0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
 
             writer.Write((uint)Triangles.Count);
             writer.Write((uint)Quads.Count);
@@ -568,10 +568,10 @@ namespace TombLib.LevelData.Compilers
 
             writer.Write((uint)(Vertices.Count * 28));
 
-            writer.Write((uint)0xcdcdcdcd);
-            writer.Write((uint)0xcdcdcdcd);
-            writer.Write((uint)0xcdcdcdcd);
-            writer.Write((uint)0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
+            writer.Write(0xcdcdcdcd);
 
             // Start of room data (after 216 bytes from XELA)
             foreach (var light in Lights)
@@ -579,26 +579,26 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((float)light.X);
                 writer.Write((float)light.Y);
                 writer.Write((float)light.Z);
-                writer.Write((float)light.Color.Red / 255.0f);
-                writer.Write((float)light.Color.Green / 255.0f);
-                writer.Write((float)light.Color.Blue / 255.0f);
+                writer.Write(light.Color.Red / 255.0f);
+                writer.Write(light.Color.Green / 255.0f);
+                writer.Write(light.Color.Blue / 255.0f);
 
-                writer.Write((uint)0xcdcdcdcd);
+                writer.Write(0xcdcdcdcd);
 
-                writer.Write((float)light.In);
-                writer.Write((float)light.Out);
+                writer.Write(light.In);
+                writer.Write(light.Out);
 
                 writer.Write((float)(light.LightType == 2 ? Math.Acos(light.In) * 2.0f : 0));
                 writer.Write((float)(light.LightType == 2 ? Math.Acos(light.Out) * 2.0f : 0));
-                writer.Write((float)(light.Length - light.CutOff));
+                writer.Write(light.Length - light.CutOff);
 
-                writer.Write((float)light.DirectionX);
-                writer.Write((float)light.DirectionY);
-                writer.Write((float)light.DirectionZ);
+                writer.Write(light.DirectionX);
+                writer.Write(light.DirectionY);
+                writer.Write(light.DirectionZ);
 
-                writer.Write((int)light.X);
-                writer.Write((int)light.Y);
-                writer.Write((int)light.Z);
+                writer.Write(light.X);
+                writer.Write(light.Y);
+                writer.Write(light.Z);
 
                 writer.Write((int)light.DirectionX);
                 writer.Write((int)light.DirectionY);
@@ -637,12 +637,12 @@ namespace TombLib.LevelData.Compilers
             writer.Write((ushort)0);
             writer.Write((ushort)0);
 
-            writer.Write((float)1024.0f);
+            writer.Write(1024.0f);
             writer.Write((float)Info.YBottom);
-            writer.Write((float)1024.0f);
-            writer.Write((float)((NumXSectors - 1) * 1024.0f));
+            writer.Write(1024.0f);
+            writer.Write((NumXSectors - 1) * 1024.0f);
             writer.Write((float)Info.YTop);
-            writer.Write((float)((NumZSectors - 1) * 1024.0f));
+            writer.Write((NumZSectors - 1) * 1024.0f);
 
             writer.Write((uint)0);
             var LayerVerticesOffset = writer.BaseStream.Position;
@@ -684,7 +684,7 @@ namespace TombLib.LevelData.Compilers
             roomDataSize = (int)(endOfRoomOffset - roomStartOffset - 8);
 
             writer.Seek((int)startOfRoomPosition, SeekOrigin.Begin);
-            writer.Write((int)roomDataSize);
+            writer.Write(roomDataSize);
 
             writer.Seek((int)EndSDOffsetPosition, SeekOrigin.Begin);
             writer.Write((int)EndSDOffset);
@@ -694,15 +694,15 @@ namespace TombLib.LevelData.Compilers
             writer.Write((int)EndPortalOffset);
 
             writer.Seek((int)LayerOffsetPosition, SeekOrigin.Begin);
-            writer.Write((int)LayerOffset);
-            writer.Write((int)VerticesOffset);
-            writer.Write((int)PolyOffset);
-            writer.Write((int)PolyOffset);
+            writer.Write(LayerOffset);
+            writer.Write(VerticesOffset);
+            writer.Write(PolyOffset);
+            writer.Write(PolyOffset);
 
             writer.Seek((int)LayerVerticesOffset, SeekOrigin.Begin);
-            writer.Write((int)VerticesOffset);
-            writer.Write((int)PolyOffset);
-            writer.Write((int)PolyOffset);
+            writer.Write(VerticesOffset);
+            writer.Write(PolyOffset);
+            writer.Write(PolyOffset);
 
             writer.Seek((int)endOfRoomOffset, SeekOrigin.Begin);
         }

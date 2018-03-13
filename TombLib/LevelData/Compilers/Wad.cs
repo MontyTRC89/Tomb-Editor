@@ -237,7 +237,7 @@ namespace TombLib.LevelData.Compilers
                                     break;
 
                                 case WadKeyFrameRotationAxis.AxisX:
-                                    rotation16 = (short)0x4000;
+                                    rotation16 = 0x4000;
                                     rotX = (short)angle.X;
                                     if (_level.Settings.GameVersion <= GameVersion.TR3) rotX = (short)(rotX / 4);
                                     rotation16 |= rotX;
@@ -399,7 +399,7 @@ namespace TombLib.LevelData.Compilers
                             newAnimDispatch.Low = unchecked((ushort)(dispatch.InFrame + newAnimation.FrameStart));
                             newAnimDispatch.High = unchecked((ushort)(dispatch.OutFrame + newAnimation.FrameStart));
                             newAnimDispatch.NextAnimation = checked((ushort)(dispatch.NextAnimation + lastAnimation));
-                            newAnimDispatch.NextFrame = (ushort)dispatch.NextFrame;
+                            newAnimDispatch.NextFrame = dispatch.NextFrame;
 
                             _animDispatches.Add(newAnimDispatch);
                         }
@@ -421,10 +421,10 @@ namespace TombLib.LevelData.Compilers
 
                 foreach (var meshTree in meshTrees)
                 {
-                    _meshTrees.Add((int)meshTree.Opcode);
-                    _meshTrees.Add((int)meshTree.X);
-                    _meshTrees.Add((int)meshTree.Y);
-                    _meshTrees.Add((int)meshTree.Z);
+                    _meshTrees.Add(meshTree.Opcode);
+                    _meshTrees.Add(meshTree.X);
+                    _meshTrees.Add(meshTree.Y);
+                    _meshTrees.Add(meshTree.Z);
                 }
 
                 foreach (var mesh in usedMeshes)

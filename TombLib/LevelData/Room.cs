@@ -276,7 +276,7 @@ namespace TombLib.LevelData
         public bool Flipped => AlternateRoom != null || AlternateBaseRoom != null;
         public Room AlternateVersion => AlternateRoom ?? AlternateBaseRoom;
         public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
-        public RectangleInt2 WorldArea => new RectangleInt2((int)Position.X, (int)Position.Z, (int)Position.X + NumXSectors - 1, (int)Position.Z + NumZSectors - 1);
+        public RectangleInt2 WorldArea => new RectangleInt2(Position.X, Position.Z, Position.X + NumXSectors - 1, Position.Z + NumZSectors - 1);
         public RectangleInt2 LocalArea => new RectangleInt2(0, 0, NumXSectors - 1, NumZSectors - 1);
         public IEnumerable<Room> Versions
         {
@@ -291,7 +291,7 @@ namespace TombLib.LevelData
 
         public VectorInt2 SectorPos
         {
-            get { return new VectorInt2((int)Position.X, (int)Position.Z); }
+            get { return new VectorInt2(Position.X, Position.Z); }
             set { Position = new VectorInt3(value.X, Position.Y, value.Y); }
         }
 
@@ -936,7 +936,7 @@ namespace TombLib.LevelData
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
-                            int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
+                            int facingX = x + (Position.X - adjoiningRoom.Position.X);
                             var block = adjoiningRoom.GetBlockTry(facingX, adjoiningRoom.NumZSectors - 2) ?? Block.Empty;
                             if (block.Type == BlockType.Wall &&
                                 (block.FloorDiagonalSplit == DiagonalSplit.None ||
@@ -971,7 +971,7 @@ namespace TombLib.LevelData
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
-                            int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
+                            int facingX = x + (Position.X - adjoiningRoom.Position.X);
                             var block = adjoiningRoom.GetBlockTry(facingX, 1) ?? Block.Empty;
                             if (block.Type == BlockType.Wall &&
                                 (block.FloorDiagonalSplit == DiagonalSplit.None ||
@@ -1005,7 +1005,7 @@ namespace TombLib.LevelData
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
-                            int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
+                            int facingZ = z + (Position.Z - adjoiningRoom.Position.Z);
                             var block = adjoiningRoom.GetBlockTry(adjoiningRoom.NumXSectors - 2, facingZ) ?? Block.Empty;
                             if (block.Type == BlockType.Wall &&
                                 (block.FloorDiagonalSplit == DiagonalSplit.None ||
@@ -1039,7 +1039,7 @@ namespace TombLib.LevelData
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
-                            int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
+                            int facingZ = z + (Position.Z - adjoiningRoom.Position.Z);
                             var block = adjoiningRoom.GetBlockTry(1, facingZ) ?? Block.Empty;
                             if (block.Type == BlockType.Wall &&
                                 (block.FloorDiagonalSplit == DiagonalSplit.None ||
@@ -1335,34 +1335,34 @@ namespace TombLib.LevelData
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wsNearB = wsNearA;
 
                         // Now get the facing block on the adjoining room and calculate the correct heights
-                        int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
+                        int facingX = x + (Position.X - adjoiningRoom.Position.X);
 
                         var adjoiningBlock = adjoiningRoom.GetBlockTry(facingX, adjoiningRoom.NumZSectors - 2) ?? Block.Empty;
 
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[1];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[0];
+                        int qAportal = adjoiningRoom.Position.Y + adjoiningBlock.QA[1];
+                        int qBportal = adjoiningRoom.Position.Y + adjoiningBlock.QA[0];
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qBportal = qAportal;
 
-                        qA = (int)Position.Y + qaNearA;
-                        qB = (int)Position.Y + qaNearB;
-                        qA = Math.Max(qA, qAportal) - (int)Position.Y;
-                        qB = Math.Max(qB, qBportal) - (int)Position.Y;
+                        qA = Position.Y + qaNearA;
+                        qB = Position.Y + qaNearB;
+                        qA = Math.Max(qA, qAportal) - Position.Y;
+                        qB = Math.Max(qB, qBportal) - Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[1];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[0];
+                        int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.WS[1];
+                        int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.WS[0];
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wBportal = wAportal;
 
-                        wA = (int)Position.Y + wsNearA;
-                        wB = (int)Position.Y + wsNearB;
-                        wA = Math.Min(wA, wAportal) - (int)Position.Y;
-                        wB = Math.Min(wB, wBportal) - (int)Position.Y;
+                        wA = Position.Y + wsNearA;
+                        wB = Position.Y + wsNearB;
+                        wA = Math.Min(wA, wAportal) - Position.Y;
+                        wB = Math.Min(wB, wBportal) - Position.Y;
 
-                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[1];
-                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[0];
-                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[1];
-                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[0];
+                        eA = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.ED[1];
+                        eB = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.ED[0];
+                        rA = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.RF[1];
+                        rB = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.RF[0];
                     }
 
                     if (b.FloorDiagonalSplit == DiagonalSplit.XpZn)
@@ -1464,34 +1464,34 @@ namespace TombLib.LevelData
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wsNearB = wsNearA;
 
                         // Now get the facing block on the adjoining room and calculate the correct heights
-                        int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
+                        int facingX = x + (Position.X - adjoiningRoom.Position.X);
 
                         var adjoiningBlock = adjoiningRoom.GetBlockTry(facingX, 1) ?? Block.Empty;
 
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[3];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[2];
+                        int qAportal = adjoiningRoom.Position.Y + adjoiningBlock.QA[3];
+                        int qBportal = adjoiningRoom.Position.Y + adjoiningBlock.QA[2];
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qBportal = qAportal;
 
-                        qA = (int)Position.Y + qaNearA;
-                        qB = (int)Position.Y + qaNearB;
-                        qA = Math.Max(qA, qAportal) - (int)Position.Y;
-                        qB = Math.Max(qB, qBportal) - (int)Position.Y;
+                        qA = Position.Y + qaNearA;
+                        qB = Position.Y + qaNearB;
+                        qA = Math.Max(qA, qAportal) - Position.Y;
+                        qB = Math.Max(qB, qBportal) - Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[3];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[2];
+                        int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.WS[3];
+                        int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.WS[2];
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wBportal = wAportal;
 
-                        wA = (int)Position.Y + wsNearA;
-                        wB = (int)Position.Y + wsNearB;
-                        wA = Math.Min(wA, wAportal) - (int)Position.Y;
-                        wB = Math.Min(wB, wBportal) - (int)Position.Y;
+                        wA = Position.Y + wsNearA;
+                        wB = Position.Y + wsNearB;
+                        wA = Math.Min(wA, wAportal) - Position.Y;
+                        wB = Math.Min(wB, wBportal) - Position.Y;
 
-                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[3];
-                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[2];
-                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[3];
-                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[2];
+                        eA = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.ED[3];
+                        eB = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.ED[2];
+                        rA = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.RF[3];
+                        rB = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.RF[2];
                     }
 
                     if (b.FloorDiagonalSplit == DiagonalSplit.XpZp)
@@ -1593,34 +1593,34 @@ namespace TombLib.LevelData
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wsNearB = wsNearA;
 
                         // Now get the facing block on the adjoining room and calculate the correct heights
-                        int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
+                        int facingZ = z + (Position.Z - adjoiningRoom.Position.Z);
 
                         var adjoiningBlock = adjoiningRoom.GetBlockTry(adjoiningRoom.NumXSectors - 2, facingZ) ?? Block.Empty;
 
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[2];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[1];
+                        int qAportal = adjoiningRoom.Position.Y + adjoiningBlock.QA[2];
+                        int qBportal = adjoiningRoom.Position.Y + adjoiningBlock.QA[1];
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qBportal = qAportal;
 
-                        qA = (int)Position.Y + qaNearA;
-                        qB = (int)Position.Y + qaNearB;
-                        qA = Math.Max(qA, qAportal) - (int)Position.Y;
-                        qB = Math.Max(qB, qBportal) - (int)Position.Y;
+                        qA = Position.Y + qaNearA;
+                        qB = Position.Y + qaNearB;
+                        qA = Math.Max(qA, qAportal) - Position.Y;
+                        qB = Math.Max(qB, qBportal) - Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[2];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[1];
+                        int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.WS[2];
+                        int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.WS[1];
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wBportal = wAportal;
 
-                        wA = (int)Position.Y + wsNearA;
-                        wB = (int)Position.Y + wsNearB;
-                        wA = Math.Min(wA, wAportal) - (int)Position.Y;
-                        wB = Math.Min(wB, wBportal) - (int)Position.Y;
+                        wA = Position.Y + wsNearA;
+                        wB = Position.Y + wsNearB;
+                        wA = Math.Min(wA, wAportal) - Position.Y;
+                        wB = Math.Min(wB, wBportal) - Position.Y;
 
-                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[2];
-                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[1];
-                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[2];
-                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[1];
+                        eA = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.ED[2];
+                        eB = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.ED[1];
+                        rA = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.RF[2];
+                        rB = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.RF[1];
                     }
 
                     if (b.FloorDiagonalSplit == DiagonalSplit.XnZn)
@@ -1920,34 +1920,34 @@ namespace TombLib.LevelData
                         if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wsNearB = wsNearA;
 
                         // Now get the facing block on the adjoining room and calculate the correct heights
-                        int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
+                        int facingZ = z + (Position.Z - adjoiningRoom.Position.Z);
 
                         var adjoiningBlock = adjoiningRoom.GetBlockTry(1, facingZ) ?? Block.Empty;
 
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[0];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QA[3];
+                        int qAportal = adjoiningRoom.Position.Y + adjoiningBlock.QA[0];
+                        int qBportal = adjoiningRoom.Position.Y + adjoiningBlock.QA[3];
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qBportal = qAportal;
 
-                        qA = (int)Position.Y + qaNearA;
-                        qB = (int)Position.Y + qaNearB;
-                        qA = Math.Max(qA, qAportal) - (int)Position.Y;
-                        qB = Math.Max(qB, qBportal) - (int)Position.Y;
+                        qA = Position.Y + qaNearA;
+                        qB = Position.Y + qaNearB;
+                        qA = Math.Max(qA, qAportal) - Position.Y;
+                        qB = Math.Max(qB, qBportal) - Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[0];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WS[3];
+                        int wAportal = adjoiningRoom.Position.Y + adjoiningBlock.WS[0];
+                        int wBportal = adjoiningRoom.Position.Y + adjoiningBlock.WS[3];
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wBportal = wAportal;
 
-                        wA = (int)Position.Y + wsNearA;
-                        wB = (int)Position.Y + wsNearB;
-                        wA = Math.Min(wA, wAportal) - (int)Position.Y;
-                        wB = Math.Min(wB, wBportal) - (int)Position.Y;
+                        wA = Position.Y + wsNearA;
+                        wB = Position.Y + wsNearB;
+                        wA = Math.Min(wA, wAportal) - Position.Y;
+                        wB = Math.Min(wB, wBportal) - Position.Y;
 
-                        eA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[1];
-                        eB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.ED[2];
-                        rA = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[1];
-                        rB = (int)adjoiningRoom.Position.Y - (int)Position.Y + adjoiningBlock.RF[2];
+                        eA = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.ED[1];
+                        eB = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.ED[2];
+                        rA = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.RF[1];
+                        rB = adjoiningRoom.Position.Y - Position.Y + adjoiningBlock.RF[2];
                     }
 
                     if (b.FloorDiagonalSplit == DiagonalSplit.XpZn)

@@ -1949,7 +1949,7 @@ namespace TombEditor.Controls
                 DrawDebugString(message, light.ObjectMatrix * viewProjection);
 
                 // Add the line height of the object
-                AddObjectHeightLine(viewProjection, light.Room, light.Position);
+                AddObjectHeightLine(light.Room, light.Position);
             }
 
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
@@ -1986,7 +1986,7 @@ namespace TombEditor.Controls
                     DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
-                    AddObjectHeightLine(viewProjection, room, instance.Position);
+                    AddObjectHeightLine(room, instance.Position);
                 }
 
                 effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
@@ -2006,7 +2006,7 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
 
-                    FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
+                    FlybyCameraInstance flyby = instance;
 
                     string message = "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
@@ -2017,7 +2017,7 @@ namespace TombEditor.Controls
                     DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
-                    AddObjectHeightLine(viewProjection, room, instance.Position);
+                    AddObjectHeightLine(room, instance.Position);
 
                     // Add the path of the flyby
                     AddFlybyPath(flyby.Sequence);
@@ -2049,7 +2049,7 @@ namespace TombEditor.Controls
                     DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
-                    AddObjectHeightLine(viewProjection, room, instance.Position);
+                    AddObjectHeightLine(room, instance.Position);
                 }
 
                 effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
@@ -2079,7 +2079,7 @@ namespace TombEditor.Controls
                     DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
-                    AddObjectHeightLine(viewProjection, room, instance.Position);
+                    AddObjectHeightLine(room, instance.Position);
                 }
 
                 effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
@@ -2116,7 +2116,7 @@ namespace TombEditor.Controls
                         _debug.AddString(message, screenPos);
 
                         // Add the line height of the object
-                        AddObjectHeightLine(viewProjection, room, instance.Position);
+                        AddObjectHeightLine(room, instance.Position);
                     }
 
                     effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
@@ -2145,7 +2145,7 @@ namespace TombEditor.Controls
                         DrawDebugString(message, instance.RotationPositionMatrix * viewProjection);
 
                         // Add the line height of the object
-                        AddObjectHeightLine(viewProjection, room, instance.Position);
+                        AddObjectHeightLine(room, instance.Position);
                     }
 
                     effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
@@ -2171,7 +2171,7 @@ namespace TombEditor.Controls
                         DrawDebugString(instance.ToString(), instance.RotationPositionMatrix * viewProjection);
 
                         // Add the line height of the object
-                        AddObjectHeightLine(viewProjection, room, instance.Position);
+                        AddObjectHeightLine(room, instance.Position);
                     }
 
                     effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
@@ -2282,7 +2282,7 @@ namespace TombEditor.Controls
                     DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
-                    AddObjectHeightLine(viewProjection, room, instance.Position);
+                    AddObjectHeightLine(room, instance.Position);
                 }
 
                 _lastObject = instance;
@@ -2365,7 +2365,7 @@ namespace TombEditor.Controls
                         GetObjectPositionString(_editor.SelectedRoom, instance), instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
-                    AddObjectHeightLine(viewProjection, _editor.SelectedRoom, instance.Position);
+                    AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
                 }
 
                 _lastObject = instance;
@@ -2438,7 +2438,7 @@ namespace TombEditor.Controls
                     DrawDebugString(message, instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
-                    AddObjectHeightLine(viewProjection, _editor.SelectedRoom, instance.Position);
+                    AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
                 }
 
                 _lastObject = instance;
@@ -2612,7 +2612,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void PrepareRenderBuckets(Matrix4x4 viewProjection)
+        private void PrepareRenderBuckets()
         {
             _opaqueBuckets = new List<RoomRenderBucket>();
             _transparentBuckets = new List<RoomRenderBucket>();
@@ -2908,7 +2908,7 @@ namespace TombEditor.Controls
             CollectObjectsToDraw();
 
             // Now group faces to render based on various things
-            PrepareRenderBuckets(viewProjection);
+            PrepareRenderBuckets();
         }
 
         private void RenderTask2(object viewProjection_)
@@ -3945,7 +3945,7 @@ namespace TombEditor.Controls
             return message;
         }
 
-        private void AddObjectHeightLine(Matrix4x4 viewProjection, Room room, Vector3 position)
+        private void AddObjectHeightLine(Room room, Vector3 position)
         {
             float floorHeight = GetFloorHeight(room, position);
 

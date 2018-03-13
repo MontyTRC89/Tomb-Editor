@@ -60,7 +60,7 @@ namespace DarkUI.Controls
 
             if (m.Msg == 0x000F)
             {
-                float percentage = (float)(Value - Minimum) / (float)(Maximum - Minimum);
+                float percentage = (Value - Minimum) / (float)(Maximum - Minimum);
 
                 using (Graphics g = CreateGraphics())
                 {

@@ -212,7 +212,7 @@ namespace TombLib.LevelData.IO
                                 for (int x = 0; x < room.NumXSectors; x++)
                                     chunkIO.WriteChunkWithChildren(Prj2Chunks.Sector, () =>
                                     {
-                                        chunkIO.Raw.Write((int)(x + z * room.NumXSectors));
+                                        chunkIO.Raw.Write(x + z * room.NumXSectors);
                                         var b = room.Blocks[x, z];
 
                                         long combinedFlag = (b.IsAnyWall ? 1L : 0) | (b.ForceFloorSolid ? 2L : 0) | ((long)b.Flags << 2);

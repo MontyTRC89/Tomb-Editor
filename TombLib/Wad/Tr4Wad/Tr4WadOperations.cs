@@ -337,7 +337,7 @@ namespace TombLib.Wad.Tr4Wad
             root.Parent = null;
             root.Transform = Matrix4x4.Identity;
             root.Translation = Vector3.Zero;
-            root.Mesh = meshes[(int)oldWad.RealPointers[(int)(oldMoveable.PointerIndex + 0)]];
+            root.Mesh = meshes[(int)oldWad.RealPointers[oldMoveable.PointerIndex + 0]];
             root.Index = 0;
             newMoveable.Meshes.Add(root.Mesh);
 
@@ -352,7 +352,7 @@ namespace TombLib.Wad.Tr4Wad
                 bone.Parent = null;
                 bone.Transform = Matrix4x4.Identity;
                 bone.Translation = Vector3.Zero;
-                bone.Mesh = meshes[(int)oldWad.RealPointers[(int)(oldMoveable.PointerIndex + j + 1)]];
+                bone.Mesh = meshes[(int)oldWad.RealPointers[oldMoveable.PointerIndex + j + 1]];
                 bone.Index = j + 1;
                 newMoveable.Meshes.Add(bone.Mesh);
                 bones.Add(bone);
@@ -448,13 +448,13 @@ namespace TombLib.Wad.Tr4Wad
                 for (int k = 0; k < oldAnimation.NumStateChanges; k++)
                 {
                     WadStateChange sc = new WadStateChange();
-                    wad_state_change wadSc = oldWad.Changes[(int)oldAnimation.ChangesIndex + k];
-                    sc.StateId = (ushort)wadSc.StateId;
+                    wad_state_change wadSc = oldWad.Changes[oldAnimation.ChangesIndex + k];
+                    sc.StateId = wadSc.StateId;
 
                     for (int n = 0; n < wadSc.NumDispatches; n++)
                     {
                         WadAnimDispatch ad = new WadAnimDispatch();
-                        wad_anim_dispatch wadAd = oldWad.Dispatches[(int)wadSc.DispatchesIndex + n];
+                        wad_anim_dispatch wadAd = oldWad.Dispatches[wadSc.DispatchesIndex + n];
 
                         ad.InFrame = (ushort)(wadAd.Low - oldAnimation.FrameStart);
                         ad.OutFrame = (ushort)(wadAd.High - oldAnimation.FrameStart);
@@ -623,7 +623,7 @@ namespace TombLib.Wad.Tr4Wad
                     }
 
                     if (frames - startOfFrame < oldAnimation.KeyFrameSize)
-                        frames += (int)oldAnimation.KeyFrameSize - (frames - startOfFrame);
+                        frames += oldAnimation.KeyFrameSize - (frames - startOfFrame);
 
                     newAnimation.KeyFrames.Add(frame);
                 }

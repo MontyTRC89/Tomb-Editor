@@ -171,7 +171,7 @@ namespace TombLib.LevelData.Compilers
                 flags |= 0x02;
             var buffer = new byte[] { 0x04, 0x00, 0x0D, 0x80 };
             writer.Write(buffer);
-            writer.Write((int)flags);
+            writer.Write(flags);
         }
 
         private void WriteNgChunkMoveablesTable(BinaryWriter writer)

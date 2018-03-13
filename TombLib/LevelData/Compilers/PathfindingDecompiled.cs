@@ -298,8 +298,8 @@ namespace TombLib.LevelData.Compilers
             dec_q2 = block.QA[2];
             dec_q3 = block.QA[3];
 
-            int currentX = (int)room.Position.X + x;
-            int currentZ = (int)room.Position.Z + z;
+            int currentX = room.Position.X + x;
+            int currentZ = room.Position.Z + z;
 
             dec_currentRoom = theRoom;
 
@@ -619,8 +619,8 @@ namespace TombLib.LevelData.Compilers
                 {
                     room = theRoom;
 
-                    xInRoom = x - (int)room.Position.X;
-                    zInRoom = z - (int)room.Position.Z;
+                    xInRoom = x - room.Position.X;
+                    zInRoom = z - room.Position.Z;
 
                     if (xInRoom >= 0)
                     {
@@ -668,8 +668,8 @@ namespace TombLib.LevelData.Compilers
 
                 room = dec_currentRoom;
 
-                xInRoom = x - (int)room.Position.X;
-                zInRoom = z - (int)room.Position.Z;
+                xInRoom = x - room.Position.X;
+                zInRoom = z - room.Position.Z;
 
                 block = room.Blocks[xInRoom, zInRoom];
 
@@ -684,8 +684,8 @@ namespace TombLib.LevelData.Compilers
 
                     room = dec_currentRoom;
 
-                    xInRoom = x - (int)room.Position.X;
-                    zInRoom = z - (int)room.Position.Z;
+                    xInRoom = x - room.Position.X;
+                    zInRoom = z - room.Position.Z;
 
                     block = room.Blocks[xInRoom, zInRoom];
                 }
@@ -709,8 +709,8 @@ namespace TombLib.LevelData.Compilers
             // Ignore pathfinding for current room?
             if (dec_currentRoom.FlagExcludeFromPathFinding) return 0x7fff;
 
-            int posXblocks = (int)room.Position.X;
-            int posZblocks = (int)room.Position.Z;
+            int posXblocks = room.Position.X;
+            int posZblocks = room.Position.Z;
 
             int xInRoom = x - posXblocks;
             int zInRoom = z - posZblocks;
@@ -753,8 +753,8 @@ namespace TombLib.LevelData.Compilers
 
                 room = dec_currentRoom;
 
-                posXblocks = (int)room.Position.X;
-                posZblocks = (int)room.Position.Z;
+                posXblocks = room.Position.X;
+                posZblocks = room.Position.Z;
 
                 xInRoom = x - posXblocks;
                 zInRoom = z - posZblocks;
@@ -774,8 +774,8 @@ namespace TombLib.LevelData.Compilers
                 dec_currentRoom = adjoiningRoom2;
                 room = dec_currentRoom;
 
-                posXblocks = (int)room.Position.X;
-                posZblocks = (int)room.Position.Z;
+                posXblocks = room.Position.X;
+                posZblocks = room.Position.Z;
 
                 xInRoom = x - posXblocks;
                 zInRoom = z - posZblocks;
@@ -826,8 +826,8 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            int floorHeight = meanFloorCornerHeight + (int)room.Position.Y;
-            int ceiling = block.CeilingMax + (int)room.Position.Y;
+            int floorHeight = meanFloorCornerHeight + room.Position.Y;
+            int ceiling = block.CeilingMax + room.Position.Y;
 
             if (dec_water && room.WaterLevel != 0 && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
             {

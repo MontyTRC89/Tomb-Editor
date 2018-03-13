@@ -219,7 +219,7 @@ namespace TombLib.NG
             return true;
         }
         public static bool operator !=(NgParameterRange first, NgParameterRange second) => !(first == second);
-        public bool Equals(NgParameterRange other) => this == (NgParameterRange)other;
+        public bool Equals(NgParameterRange other) => this == other;
         public override bool Equals(object other)
         {
             if (!(other is NgParameterRange))

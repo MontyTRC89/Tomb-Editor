@@ -29,7 +29,7 @@ namespace TombLib.IO
                 byte currentByte = unchecked((byte)(value & 0x7F));
                 if (maximumSize >> 6 == 0 || maximumSize >> 6 == -1)
                 {
-                    stream.Write((byte)currentByte);
+                    stream.Write(currentByte);
 
                     if (value >> 6 != 0 && value >> 6 != -1)
                         throw new OverflowException("Unable to write integer because the available space overflowed.");

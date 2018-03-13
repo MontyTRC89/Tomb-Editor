@@ -335,8 +335,8 @@ namespace TombLib.LevelData.Compilers
             while (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
                 var sector = room.Blocks[x, z];
-                x += (int)(room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X);
-                z += (int)(room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z);
+                x += room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X;
+                z += room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z;
                 room = sector.FloorPortal.AdjoiningRoom;
             }
         }

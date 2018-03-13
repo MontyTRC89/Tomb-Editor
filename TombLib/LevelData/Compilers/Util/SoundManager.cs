@@ -145,7 +145,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             for (int i = 0; i < _soundMap.Count; i++)
-                writer.Write((ushort)_soundMap[i]);
+                writer.Write(_soundMap[i]);
 
             // Write sound details
             writer.Write((uint)_soundDetails.Count);

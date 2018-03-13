@@ -401,7 +401,7 @@ namespace TombLib.LevelData.Compilers.Util
                         set.AnimationType == AnimatedTextureAnimationType.HalfRotate ||
                         set.AnimationType == AnimatedTextureAnimationType.RiverRotate)
                         num++;
-                return (int)num;
+                return num;
             }
         }
 
@@ -417,7 +417,7 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 stream.Write((ushort)(compiledAnimatedTexture.ObjectTextureIndices.Count - 1));
                 foreach (var objectTextureIndex in compiledAnimatedTexture.ObjectTextureIndices)
-                    stream.Write((ushort)objectTextureIndex);
+                    stream.Write(objectTextureIndex);
             }
         }
     }
