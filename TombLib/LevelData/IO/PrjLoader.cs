@@ -591,7 +591,7 @@ namespace TombLib.LevelData.IO
                                     var flybyCamera = new FlybyCameraInstance()
                                     {
                                         ScriptId = unchecked((ushort)(objectsThings2[j])),
-                                        Timer = unchecked((short)objTimer),
+                                        Timer = (short)objTimer,
                                         Sequence = (byte)((objSlot & 0xe000) >> 13),
                                         Number = (byte)((objSlot & 0x1f00) >> 8),
                                         Fov = (short)(objSlot & 0x00ff),

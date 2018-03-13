@@ -237,7 +237,7 @@ namespace TombLib.LevelData.Compilers
                                     break;
 
                                 case WadKeyFrameRotationAxis.AxisX:
-                                    rotation16 = unchecked((short)0x4000);
+                                    rotation16 = (short)0x4000;
                                     rotX = (short)angle.X;
                                     if (_level.Settings.GameVersion <= GameVersion.TR3) rotX = (short)(rotX / 4);
                                     rotation16 |= rotX;
@@ -399,7 +399,7 @@ namespace TombLib.LevelData.Compilers
                             newAnimDispatch.Low = unchecked((ushort)(dispatch.InFrame + newAnimation.FrameStart));
                             newAnimDispatch.High = unchecked((ushort)(dispatch.OutFrame + newAnimation.FrameStart));
                             newAnimDispatch.NextAnimation = checked((ushort)(dispatch.NextAnimation + lastAnimation));
-                            newAnimDispatch.NextFrame = checked((ushort)(dispatch.NextFrame));
+                            newAnimDispatch.NextFrame = (ushort)(dispatch.NextFrame);
 
                             _animDispatches.Add(newAnimDispatch);
                         }

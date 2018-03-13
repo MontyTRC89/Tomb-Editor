@@ -229,7 +229,7 @@ namespace NgXmlBuilder
 
         private static void AddFixed(List<NgParameterRange> choice, IEnumerable<TriggerParameterUshort> enumsToAdd)
         {
-            if (enumsToAdd.Count() == 0)
+            if (!enumsToAdd.Any())
                 return;
             for (int i = 0; i < choice.Count; ++i)
                 if (choice[i].Kind == NgParameterKind.FixedEnumeration)
@@ -282,7 +282,7 @@ namespace NgXmlBuilder
                     break;
                 ++count;
             }
-            ExitLoop0:;
+            ExitLoop0:
             if (count <= 5) // It's not worth it if there are at most 5 elements
             {
                 AddFixed(outChoice, unmappedEnumsSorted.Take(count).Select(p => p.Original));
@@ -340,7 +340,7 @@ namespace NgXmlBuilder
                         }
                     }
             }
-            ExitLoop1:;
+            ExitLoop1:
             if (count < (2 + linearParameters.Count * 2)) // It's not worth it if there are at most 5 elements
             {
                 AddFixed(outChoice, unmappedEnumsSorted.Take(count).Select(p => p.Original));
@@ -350,7 +350,7 @@ namespace NgXmlBuilder
 
             outChoice.Add(new NgParameterRange(new NgLinearModel
             {
-                Start = unchecked((ushort)idStart),
+                Start = (ushort)idStart,
                 EndInclusive = unchecked((ushort)(idStart + count - 1)),
                 Parameters = linearParameters
             }));
