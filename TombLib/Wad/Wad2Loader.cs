@@ -185,13 +185,13 @@ namespace TombLib.Wad
                 if (idOuter == Wad2Chunks.SoundInfosObsolete)
                 {
                     index = LEB128.ReadLong(chunkIO.Raw);
-                    soundInfo.VolumeDiv255 = (byte)((LEB128.ReadByte(chunkIO.Raw) * 255) / 100);
+                    soundInfo.VolumeDiv255 = (byte)(LEB128.ReadByte(chunkIO.Raw) * 255 / 100);
                     soundInfo.RangeInSectors = LEB128.ReadByte(chunkIO.Raw);
-                    soundInfo.PitchFactorDiv128 = (byte)((LEB128.ReadByte(chunkIO.Raw) * 255) / 100);
-                    soundInfo.ChanceDiv255 = (byte)((LEB128.ReadByte(chunkIO.Raw) * 255) / 100);
-                    soundInfo.FlagN = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                    soundInfo.RandomizePitch = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                    soundInfo.RandomizeGain = (LEB128.ReadByte(chunkIO.Raw) == 1);
+                    soundInfo.PitchFactorDiv128 = (byte)(LEB128.ReadByte(chunkIO.Raw) * 255 / 100);
+                    soundInfo.ChanceDiv255 = (byte)(LEB128.ReadByte(chunkIO.Raw) * 255 / 100);
+                    soundInfo.FlagN = LEB128.ReadByte(chunkIO.Raw) == 1;
+                    soundInfo.RandomizePitch = LEB128.ReadByte(chunkIO.Raw) == 1;
+                    soundInfo.RandomizeGain = LEB128.ReadByte(chunkIO.Raw) == 1;
                     soundInfo.LoopBehaviour = (WadSoundLoopBehaviour)LEB128.ReadUShort(chunkIO.Raw);
                 }
 
@@ -357,8 +357,8 @@ namespace TombLib.Wad
                     {
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            if ((id3 == Wad2Chunks.MeshQuad) ||
-                                (id3 == Wad2Chunks.MeshTriangle))
+                            if (id3 == Wad2Chunks.MeshQuad ||
+                                id3 == Wad2Chunks.MeshTriangle)
                             {
                                 var polygon = new WadPolygon();
                                 polygon.Shape = id3 == Wad2Chunks.MeshQuad ? WadPolygonShape.Quad : WadPolygonShape.Triangle;

@@ -22,7 +22,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -30,8 +30,8 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update light UI
-            if ((obj is Editor.ObjectChangedEvent) ||
-               (obj is Editor.SelectedObjectChangedEvent))
+            if (obj is Editor.ObjectChangedEvent ||
+               obj is Editor.SelectedObjectChangedEvent)
             {
                 var light = _editor.SelectedObject as LightInstance;
 
@@ -119,7 +119,7 @@ namespace TombEditor.ToolWindows
                 return;
 
             T? newValue = getGuiValue(light);
-            if ((!newValue.HasValue) || compareEquals(light, newValue.Value))
+            if (!newValue.HasValue || compareEquals(light, newValue.Value))
                 return;
 
             setLightValue(light, newValue.Value);

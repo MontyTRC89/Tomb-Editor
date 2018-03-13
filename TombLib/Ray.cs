@@ -17,9 +17,9 @@ namespace TombLib
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Ray first, Ray second) => (first.Position == second.Position) && (first.Direction == second.Direction);
+        public static bool operator ==(Ray first, Ray second) => first.Position == second.Position && first.Direction == second.Direction;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Ray first, Ray second) => (first.Position != second.Position) || (first.Direction != second.Direction);
+        public static bool operator !=(Ray first, Ray second) => first.Position != second.Position || first.Direction != second.Direction;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString() => "Ray at " + Position + " in direction " + Direction;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

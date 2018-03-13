@@ -137,7 +137,7 @@ namespace TombLib.Graphics.Primitives
                 for (int i = 0; i < tessellation; i++)
                 {
                     var circleVector = GetCircleVector(i, tessellation);
-                    var position = (circleVector*radius) + (normal*height);
+                    var position = circleVector*radius + normal*height;
                     var textureCoordinate = new Vector2(circleVector.X*textureScale.X + 0.5f, circleVector.Z*textureScale.Y + 0.5f);
                     vertices.Add(new SolidVertex(position));
                 }

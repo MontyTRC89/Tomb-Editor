@@ -43,7 +43,7 @@ namespace TombLib.LevelData.Compilers
                     Zmin = (byte)dec_boxes[i].Zmin,
                     Zmax = (byte)dec_boxes[i].Zmax,
                     TrueFloor = (short)-(dec_boxes[i].TrueFloor * 256),
-                    OverlapIndex = (ushort)((ushort)(dec_boxes[i].OverlapIndex) | (dec_boxes[i].IsolatedBox ? 0x8000 : 0))
+                    OverlapIndex = (ushort)((ushort)dec_boxes[i].OverlapIndex | (dec_boxes[i].IsolatedBox ? 0x8000 : 0))
                 };
                 _zones[i] = new tr_zone()
                 {
@@ -229,7 +229,7 @@ namespace TombLib.LevelData.Compilers
                 var next = stack.Pop();
                 var last = false;
 
-                for (int i = (_boxes[next].OverlapIndex & 0x3fff); i < _overlaps.Length && !last; i++)
+                for (int i = _boxes[next].OverlapIndex & 0x3fff; i < _overlaps.Length && !last; i++)
                 {
                     int overlapIndex = i;
                     last = (_overlaps[overlapIndex] & 0x8000) != 0;
@@ -244,8 +244,8 @@ namespace TombLib.LevelData.Compilers
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         if (water == isWater && step <= 256 &&
-                            ((!flipped  && dec_boxes[boxIndex].Flag0x04) ||
-                            (flipped && dec_boxes[boxIndex].Flag0x02)))
+                            (!flipped  && dec_boxes[boxIndex].Flag0x04 ||
+                            flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
                     }
 
@@ -260,8 +260,8 @@ namespace TombLib.LevelData.Compilers
                         var canClimb = Math.Abs(step) <= 256;
 
                         if (water == isWater && (canJump || canClimb) &&
-                            ((!flipped && dec_boxes[boxIndex].Flag0x04) ||
-                            (flipped && dec_boxes[boxIndex].Flag0x02)))
+                            (!flipped && dec_boxes[boxIndex].Flag0x04 ||
+                            flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
                     }
 
@@ -271,7 +271,7 @@ namespace TombLib.LevelData.Compilers
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
-                        if (((water == isWater && step <= 256) || water)) add = true;
+                        if (water == isWater && step <= 256 || water) add = true;
                     }
 
                     // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 blocks and monkey.
@@ -286,8 +286,8 @@ namespace TombLib.LevelData.Compilers
                         var canMonkey = dec_boxes[boxIndex].Monkey;
 
                         if (water == isWater && (canJump || canClimb || canMonkey) &&
-                            ((!flipped && dec_boxes[boxIndex].Flag0x04) ||
-                            (flipped && dec_boxes[boxIndex].Flag0x02)))
+                            (!flipped && dec_boxes[boxIndex].Flag0x04 ||
+                            flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
                     }
 
@@ -296,8 +296,8 @@ namespace TombLib.LevelData.Compilers
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         if (water == isWater &&
-                            ((!flipped && dec_boxes[boxIndex].Flag0x04) ||
-                            (flipped && dec_boxes[boxIndex].Flag0x02)))
+                            (!flipped && dec_boxes[boxIndex].Flag0x04 ||
+                            flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
                     }
 

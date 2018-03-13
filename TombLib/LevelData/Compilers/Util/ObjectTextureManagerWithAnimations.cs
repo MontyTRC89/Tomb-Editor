@@ -126,7 +126,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Check if the texture tile where the texture starts is animated
             Vector2 lookupPos = texture.TexCoord0 * AnimationLookupFactor;
-            if (!((lookupPos.X >= 0) && (lookupPos.Y >= 0) && (lookupPos.X < lookup.GetLength(0)) && (lookupPos.Y < lookup.GetLength(1))))
+            if (!(lookupPos.X >= 0 && lookupPos.Y >= 0 && lookupPos.X < lookup.GetLength(0) && lookupPos.Y < lookup.GetLength(1)))
                 return AddTexture(texture, isTriangle, isUsedInRoomMesh, 0, supportsUpTo65536, canRotate);
             List<AnimationLookupEntry> relevantList = lookup[(int)lookupPos.X, (int)lookupPos.Y];
             if (relevantList == null || relevantList.Count == 0)
@@ -200,8 +200,8 @@ namespace TombLib.LevelData.Compilers.Util
 
                     // Detect of UVs in clockwise order to avoid NaN later on
                     float animationArea =
-                        (((a0.X - a1.X) * (a0.Y + a1.Y) + (a1.X - a2.X) * (a1.Y + a2.Y)) +
-                        ((a2.X - a3.X) * (a2.Y + a3.Y) + (a3.X - a0.X) * (a3.Y + a0.Y)));
+                        (a0.X - a1.X) * (a0.Y + a1.Y) + (a1.X - a2.X) * (a1.Y + a2.Y) +
+                        ((a2.X - a3.X) * (a2.Y + a3.Y) + (a3.X - a0.X) * (a3.Y + a0.Y));
                     bool animationUVsAreClockwise = animationArea > 0.0f;
                     if (animationUVsAreClockwise)
                         Swap.Do(ref a1, ref a3);
@@ -219,7 +219,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     Vector2 e = a1 - a0;
                     Vector2 f = a3 - a0;
-                    Vector2 g = (a0 - a1) + (a2 - a3);
+                    Vector2 g = a0 - a1 + (a2 - a3);
 
                     float k2 = g.X * f.Y - g.Y * f.X; // 2D cross product
                     float eCrossF = e.X * f.Y - e.Y * f.X; // 2D cross product
@@ -251,10 +251,10 @@ namespace TombLib.LevelData.Compilers.Util
                         Vector4 u2 = (hX - f.X * v2) / (new Vector4(e.X) + g.X * v2);
 
                         Vector4 maxOvershoot = Vector4.Min(Vector4.Min(v1, new Vector4(1.0f) - v1), Vector4.Min(u1, new Vector4(1.0f) - u1));
-                        texCoord0 = (maxOvershoot.X >= 0) ? new Vector2(v1.X, u1.X) : new Vector2(v2.X, u2.X);
-                        texCoord1 = (maxOvershoot.Y >= 0) ? new Vector2(v1.Y, u1.Y) : new Vector2(v2.Y, u2.Y);
-                        texCoord2 = (maxOvershoot.Z >= 0) ? new Vector2(v1.Z, u1.Z) : new Vector2(v2.Z, u2.Z);
-                        texCoord3 = (maxOvershoot.W >= 0) ? new Vector2(v1.W, u1.W) : new Vector2(v2.W, u2.W);
+                        texCoord0 = maxOvershoot.X >= 0 ? new Vector2(v1.X, u1.X) : new Vector2(v2.X, u2.X);
+                        texCoord1 = maxOvershoot.Y >= 0 ? new Vector2(v1.Y, u1.Y) : new Vector2(v2.Y, u2.Y);
+                        texCoord2 = maxOvershoot.Z >= 0 ? new Vector2(v1.Z, u1.Z) : new Vector2(v2.Z, u2.Z);
+                        texCoord3 = maxOvershoot.W >= 0 ? new Vector2(v1.W, u1.W) : new Vector2(v2.W, u2.W);
                     }
 
 
@@ -341,7 +341,7 @@ namespace TombLib.LevelData.Compilers.Util
                         result.FirstVertexIndexToEmit = animation.Key.FirstVertexIndexToEmit;
                         result.Flags = ResultFlags.None;
                         bool wasRemoved = _delayAddedAnimationVersions.Remove(result); // Remove queued version of this texture if necessary
-                        if ((!wasRemoved) && ((result.Flags & ResultFlags.IsNew) == ResultFlags.None)) // Was this texture already used for another animation? If yes create a new one.
+                        if (!wasRemoved && (result.Flags & ResultFlags.IsNew) == ResultFlags.None) // Was this texture already used for another animation? If yes create a new one.
                             result = AddTexture(currentArea, animation.Value._isTriangle, animation.Value._isUsedInRoomMesh, 0, true, false, GetNewTextureSpaceIdentifier());
 
                         objectTextureIndex = result.ObjectTextureIndex;

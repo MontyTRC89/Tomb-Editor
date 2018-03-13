@@ -51,7 +51,7 @@ namespace TombLib.LevelData
             {
                 ImageC image = ImageC.FromFile(settings.MakeAbsolute(Path));
 
-                if ((Convert512PixelsToDoubleRows) && (image.Width == 512))
+                if (Convert512PixelsToDoubleRows && image.Width == 512)
                 {
                     ImageC newImage = ImageC.CreateNew(256, image.Height * 2);
                     for (int oldY = 0; oldY < image.Height; oldY += 64)
@@ -143,17 +143,17 @@ namespace TombLib.LevelData
         public TextureSound? GetTextureSoundFromTexCoord(Vector2 coord)
         {
             coord /= TextureSoundGranularity;
-            if (!((coord.X >= 0) && (coord.Y >= 0) && (coord.X < TextureSoundWidth) && (coord.Y < TextureSoundHeight)))
+            if (!(coord.X >= 0 && coord.Y >= 0 && coord.X < TextureSoundWidth && coord.Y < TextureSoundHeight))
                 return null;
-            return _textureSounds[(int)(coord.X), (int)(coord.Y)];
+            return _textureSounds[(int)coord.X, (int)coord.Y];
         }
 
         public BumpMappingLevel? GetBumpMappingLevelFromTexCoord(Vector2 coord)
         {
             coord /= BumpMappingGranularity;
-            if (!((coord.X >= 0) && (coord.Y >= 0) && (coord.X < BumpMappingWidth) && (coord.Y < BumpMappingHeight)))
+            if (!(coord.X >= 0 && coord.Y >= 0 && coord.X < BumpMappingWidth && coord.Y < BumpMappingHeight))
                 return null;
-            return _bumpMappingLevel[(int)(coord.X), (int)(coord.Y)];
+            return _bumpMappingLevel[(int)coord.X, (int)coord.Y];
         }
 
         public int TextureSoundWidth => _textureSounds.GetLength(0);
@@ -166,8 +166,8 @@ namespace TombLib.LevelData
         {
             int requiredTextureSoundWidth = Math.Max(TextureSoundWidth, width);
             int requiredTextureSoundHeight = Math.Max(TextureSoundHeight, height);
-            if ((TextureSoundWidth < requiredTextureSoundWidth) ||
-                (TextureSoundHeight < requiredTextureSoundHeight))
+            if (TextureSoundWidth < requiredTextureSoundWidth ||
+                TextureSoundHeight < requiredTextureSoundHeight)
             {
                 var newTextureSounds = new TextureSound[requiredTextureSoundWidth, requiredTextureSoundHeight];
                 for (int y = 0; y < requiredTextureSoundHeight; ++y)
@@ -184,8 +184,8 @@ namespace TombLib.LevelData
         {
             int requiredBumpMappingWidth = Math.Max(BumpMappingWidth, width);
             int requiredBumpMappingHeight = Math.Max(BumpMappingHeight, height);
-            if ((BumpMappingWidth < requiredBumpMappingWidth) ||
-                (BumpMappingHeight < requiredBumpMappingHeight))
+            if (BumpMappingWidth < requiredBumpMappingWidth ||
+                BumpMappingHeight < requiredBumpMappingHeight)
             {
                 var newBumpMappingInfos = new BumpMappingLevel[requiredBumpMappingWidth, requiredBumpMappingHeight];
                 for (int y = 0; y < requiredBumpMappingHeight; ++y)

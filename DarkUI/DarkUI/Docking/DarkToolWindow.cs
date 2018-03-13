@@ -77,7 +77,7 @@ namespace DarkUI.Docking
             _closeButtonRect = new Rectangle
             {
                 X = ClientRectangle.Right - DockIcons.tw_close.Width - 5 - 3,
-                Y = ClientRectangle.Top + (Consts.ToolWindowHeaderSize / 2) - (DockIcons.tw_close.Height / 2),
+                Y = ClientRectangle.Top + Consts.ToolWindowHeaderSize / 2 - DockIcons.tw_close.Height / 2,
                 Width = DockIcons.tw_close.Width,
                 Height = DockIcons.tw_close.Height
             };
@@ -197,7 +197,7 @@ namespace DarkUI.Docking
             // Draw icon
             if (Icon != null)
             {
-                g.DrawImage(Icon, ClientRectangle.Left + 5, ClientRectangle.Top + (Consts.ToolWindowHeaderSize / 2) - (Icon.Height / 2) + 1);
+                g.DrawImage(Icon, ClientRectangle.Left + 5, ClientRectangle.Top + Consts.ToolWindowHeaderSize / 2 - Icon.Height / 2 + 1);
                 xOffset = Icon.Width + 8;
             }
 

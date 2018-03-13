@@ -593,7 +593,7 @@ namespace TombEditor
             short temp = 0;
 
             Meshes = new tr_mesh[2048];
-            while (totalBytes < (NumMeshData * 2))
+            while (totalBytes < NumMeshData * 2)
             {
                 long offset1 = reader.BaseStream.Position;
 

@@ -201,7 +201,7 @@ namespace TombLib.LevelData
 
         public bool ContainsPoint(int x, int z)
         {
-            return (x >= Area.X0 && z >= Area.Y0 && x <= Area.X0 + Area.Width && z <= Area.Y0 + Area.Height);
+            return x >= Area.X0 && z >= Area.Y0 && x <= Area.X0 + Area.Width && z <= Area.Y0 + Area.Height;
         }
 
         public override void RemoveFromRoom(Level level, Room room)

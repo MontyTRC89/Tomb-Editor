@@ -112,22 +112,22 @@ namespace TombEditor.Forms
             }
 
             ushort flags = 0;
-            flags |= (ushort)(cbBit0.Checked ? (1 << 0) : 0);
-            flags |= (ushort)(cbBit1.Checked ? (1 << 1) : 0);
-            flags |= (ushort)(cbBit2.Checked ? (1 << 2) : 0);
-            flags |= (ushort)(cbBit3.Checked ? (1 << 3) : 0);
-            flags |= (ushort)(cbBit4.Checked ? (1 << 4) : 0);
-            flags |= (ushort)(cbBit5.Checked ? (1 << 5) : 0);
-            flags |= (ushort)(cbBit6.Checked ? (1 << 6) : 0);
-            flags |= (ushort)(cbBit7.Checked ? (1 << 7) : 0);
-            flags |= (ushort)(cbBit8.Checked ? (1 << 8) : 0);
-            flags |= (ushort)(cbBit9.Checked ? (1 << 9) : 0);
-            flags |= (ushort)(cbBit10.Checked ? (1 << 10) : 0);
-            flags |= (ushort)(cbBit11.Checked ? (1 << 11) : 0);
-            flags |= (ushort)(cbBit12.Checked ? (1 << 12) : 0);
-            flags |= (ushort)(cbBit13.Checked ? (1 << 13) : 0);
-            flags |= (ushort)(cbBit14.Checked ? (1 << 14) : 0);
-            flags |= (ushort)(cbBit15.Checked ? (1 << 15) : 0);
+            flags |= (ushort)(cbBit0.Checked ? 1 << 0 : 0);
+            flags |= (ushort)(cbBit1.Checked ? 1 << 1 : 0);
+            flags |= (ushort)(cbBit2.Checked ? 1 << 2 : 0);
+            flags |= (ushort)(cbBit3.Checked ? 1 << 3 : 0);
+            flags |= (ushort)(cbBit4.Checked ? 1 << 4 : 0);
+            flags |= (ushort)(cbBit5.Checked ? 1 << 5 : 0);
+            flags |= (ushort)(cbBit6.Checked ? 1 << 6 : 0);
+            flags |= (ushort)(cbBit7.Checked ? 1 << 7 : 0);
+            flags |= (ushort)(cbBit8.Checked ? 1 << 8 : 0);
+            flags |= (ushort)(cbBit9.Checked ? 1 << 9 : 0);
+            flags |= (ushort)(cbBit10.Checked ? 1 << 10 : 0);
+            flags |= (ushort)(cbBit11.Checked ? 1 << 11 : 0);
+            flags |= (ushort)(cbBit12.Checked ? 1 << 12 : 0);
+            flags |= (ushort)(cbBit13.Checked ? 1 << 13 : 0);
+            flags |= (ushort)(cbBit14.Checked ? 1 << 14 : 0);
+            flags |= (ushort)(cbBit15.Checked ? 1 << 15 : 0);
             _flyByCamera.Flags = flags;
 
             _flyByCamera.Sequence = sequence;

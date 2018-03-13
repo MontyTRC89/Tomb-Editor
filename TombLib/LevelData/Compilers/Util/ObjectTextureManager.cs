@@ -72,11 +72,11 @@ namespace TombLib.LevelData.Compilers.Util
 
             public static bool operator !=(Result first, Result second) => !(first == second);
             public bool Equals(Result other) => this == other;
-            public override bool Equals(object other) => (other is Result) && this == (Result)other;
+            public override bool Equals(object other) => other is Result && this == (Result)other;
             public override unsafe int GetHashCode()
             {
                 Result this2 = this;
-                return unchecked((-368200913) * *((int*)&this2)); // Random prime
+                return unchecked(-368200913 * *((int*)&this2)); // Random prime
             }
         }
 
@@ -283,7 +283,7 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 TextureID = textureID;
                 IsTriangularAndPadding = isTriangular ? (ushort)1 : (ushort)0;
-                BlendMode = (ushort)(texture.BlendMode);
+                BlendMode = (ushort)texture.BlendMode;
                 NewFlags = GetNewFlag(texture, isTriangular, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit);
                 TextureSpaceIdentifier = textureSpaceIdentifier;
                 Unused = 0;
@@ -342,7 +342,7 @@ namespace TombLib.LevelData.Compilers.Util
                 texCoord0 = new Vector2(TexCoord0X, TexCoord0Y) * (1.0f / 256.0f) + texCoordModification[0];
                 texCoord1 = new Vector2(TexCoord1X, TexCoord1Y) * (1.0f / 256.0f) + texCoordModification[1];
                 texCoord2 = new Vector2(TexCoord2X, TexCoord2Y) * (1.0f / 256.0f) + texCoordModification[2];
-                texCoord3 = (isTriangle) ? new Vector2() : (new Vector2(TexCoord3X, TexCoord3Y) * (1.0f / 256.0f) + texCoordModification[3]);
+                texCoord3 = isTriangle ? new Vector2() : new Vector2(TexCoord3X, TexCoord3Y) * (1.0f / 256.0f) + texCoordModification[3];
             }
 
             public void GetRealTexRect(out Vector2 minTexCoord, out Vector2 maxTexCoord)
@@ -360,12 +360,12 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 ulong* firstPtr = (ulong*)&first;
                 ulong* secondPtr = (ulong*)&second;
-                return (firstPtr[0] == secondPtr[0]) && (firstPtr[1] == secondPtr[1]) && (firstPtr[2] == secondPtr[2]);
+                return firstPtr[0] == secondPtr[0] && firstPtr[1] == secondPtr[1] && firstPtr[2] == secondPtr[2];
             }
 
             public static bool operator !=(SavedObjectTexture first, SavedObjectTexture second) => !(first == second);
             public bool Equals(SavedObjectTexture other) => this == other;
-            public override bool Equals(object other) => (other is SavedObjectTexture) && this == (SavedObjectTexture)other;
+            public override bool Equals(object other) => other is SavedObjectTexture && this == (SavedObjectTexture)other;
             public override int GetHashCode() => base.GetHashCode();
         }
         private readonly List<SavedObjectTexture> _objectTextures = new List<SavedObjectTexture>();
@@ -390,7 +390,7 @@ namespace TombLib.LevelData.Compilers.Util
                     throw new ApplicationException("More than 0x7fff object textures that are used for meshes in rooms/movables/statics are not possible.");
             }
             _objectTextures.Add(newEntry);
-            return (ushort)(newID);
+            return (ushort)newID;
         }
 
         private ushort AddOrGetObjectTexture(SavedObjectTexture newEntry, bool supportsUpTo65536, out bool isNew)
@@ -630,7 +630,7 @@ namespace TombLib.LevelData.Compilers.Util
                 TextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
                 ushort Tile = UsedTexturePackInfo.OutputTextureID;
                 if (level.Settings.GameVersion != GameVersion.TR2)
-                    Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
+                    Tile |= objectTexture.IsTriangularAndPadding != 0 ? (ushort)0x8000 : (ushort)0;
 
                 stream.Write((ushort)objectTexture.BlendMode);
                 stream.Write((ushort)Tile);

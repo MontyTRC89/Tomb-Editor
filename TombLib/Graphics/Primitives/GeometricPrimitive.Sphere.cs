@@ -103,7 +103,7 @@ namespace TombLib.Graphics.Primitives
                 int horizontalSegments = tessellation * 2;
 
                 var vertices = new SolidVertex[(verticalSegments + 1) * (horizontalSegments + 1)];
-                var indices = new int[(verticalSegments) * (horizontalSegments + 1) * 6];
+                var indices = new int[verticalSegments * (horizontalSegments + 1) * 6];
 
                 float radius = diameter / 2;
 
@@ -113,7 +113,7 @@ namespace TombLib.Graphics.Primitives
                 {
                     float v = 1.0f - (float)i / verticalSegments;
 
-                    var latitude = (float)((i * Math.PI / verticalSegments) - Math.PI / 2.0);
+                    var latitude = (float)(i * Math.PI / verticalSegments - Math.PI / 2.0);
                     var dy = (float)Math.Sin(latitude);
                     var dxz = (float)Math.Cos(latitude);
 
@@ -147,13 +147,13 @@ namespace TombLib.Graphics.Primitives
                         int nextI = i + 1;
                         int nextJ = (j + 1) % stride;
 
-                        indices[indexCount++] = (i * stride + nextJ);
-                        indices[indexCount++] = (nextI * stride + j);
-                        indices[indexCount++] = (i * stride + j);
+                        indices[indexCount++] = i * stride + nextJ;
+                        indices[indexCount++] = nextI * stride + j;
+                        indices[indexCount++] = i * stride + j;
 
-                        indices[indexCount++] = (nextI * stride + nextJ);
-                        indices[indexCount++] = (nextI * stride + j);
-                        indices[indexCount++] = (i * stride + nextJ);
+                        indices[indexCount++] = nextI * stride + nextJ;
+                        indices[indexCount++] = nextI * stride + j;
+                        indices[indexCount++] = i * stride + nextJ;
                     }
                 }
 

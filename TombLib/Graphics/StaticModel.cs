@@ -72,7 +72,7 @@ namespace TombLib.Graphics
             for (int j = 0; j < msh.Polys.Count; j++)
             {
                 WadPolygon poly = msh.Polys[j];
-                Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)(poly.Texture.Texture)];
+                Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)poly.Texture.Texture];
 
                 // Get the right submesh
                 var submesh = mesh.Submeshes[materialOpaque];

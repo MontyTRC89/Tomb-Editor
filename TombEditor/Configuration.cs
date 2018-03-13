@@ -238,7 +238,7 @@ namespace TombEditor
         public static Configuration Load(Stream stream)
         {
             using (XmlReader reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreWhitespace = false }))
-                return (Configuration)(new XmlSerializer(typeof(Configuration)).Deserialize(reader));
+                return (Configuration)new XmlSerializer(typeof(Configuration)).Deserialize(reader);
         }
 
         public static Configuration Load(string filePath)

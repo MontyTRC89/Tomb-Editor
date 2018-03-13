@@ -61,7 +61,7 @@ namespace TombLib.LevelData
 
         private void GetConnectedRoomsRecursively(HashSet<Room> result, Room startingRoom)
         {
-            if ((startingRoom == null) || result.Contains(startingRoom))
+            if (startingRoom == null || result.Contains(startingRoom))
                 return;
 
             result.Add(startingRoom);
@@ -209,7 +209,7 @@ namespace TombLib.LevelData
                 var oldRoom = oldRooms[i];
 
                 // Create room
-                var newSize = (transformation.QuadrantRotation % 2 == 0) ? oldRoom.SectorSize : new VectorInt2(oldRoom.NumZSectors, oldRoom.NumXSectors);
+                var newSize = transformation.QuadrantRotation % 2 == 0 ? oldRoom.SectorSize : new VectorInt2(oldRoom.NumZSectors, oldRoom.NumXSectors);
                 var newRoom = oldRoom.Clone(this, obj => false); // This is a waste of computing power: All sectors are copied and immediately afterwards thrown away because the room needs to get resized.
                 newRoom.Resize(this, new RectangleInt2(0, 0, newSize.X - 1, newSize.Y - 1));
 

@@ -34,7 +34,7 @@ namespace TombLib.GeometryIO.Importers
                 var mat = scene.Materials[i];
                 var material = new IOMaterial(mat.HasName ? mat.Name : "Material_" + i);
 
-                var diffusePath = (mat.HasTextureDiffuse ? mat.TextureDiffuse.FilePath : null);
+                var diffusePath = mat.HasTextureDiffuse ? mat.TextureDiffuse.FilePath : null;
                 if (string.IsNullOrWhiteSpace(diffusePath))
                     continue;
 

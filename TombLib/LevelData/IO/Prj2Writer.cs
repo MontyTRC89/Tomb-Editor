@@ -100,9 +100,9 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.GameLevelFilePath, settings.GameLevelFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.GameExecutableFilePath, settings.GameExecutableFilePath ?? "");
                 chunkIO.WriteChunkBool(Prj2Chunks.GameEnableQuickStartFeature, settings.GameEnableQuickStartFeature);
-                chunkIO.WriteChunkInt(Prj2Chunks.GameVersion, (long)(settings.GameVersion));
-                chunkIO.WriteChunkInt(Prj2Chunks.Tr5LaraType, (long)(settings.Tr5LaraType));
-                chunkIO.WriteChunkInt(Prj2Chunks.Tr5Weather, (long)(settings.Tr5WeatherType));
+                chunkIO.WriteChunkInt(Prj2Chunks.GameVersion, (long)settings.GameVersion);
+                chunkIO.WriteChunkInt(Prj2Chunks.Tr5LaraType, (long)settings.Tr5LaraType);
+                chunkIO.WriteChunkInt(Prj2Chunks.Tr5Weather, (long)settings.Tr5WeatherType);
                 chunkIO.WriteChunkVector4(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.Textures, () =>
@@ -122,7 +122,7 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.Write(texture.TextureSoundHeight);
                                 for (int y = 0; y < texture.TextureSoundHeight; ++y)
                                     for (int x = 0; x < texture.TextureSoundWidth; ++x)
-                                        chunkIO.Raw.Write((byte)(texture.GetTextureSound(x, y)));
+                                        chunkIO.Raw.Write((byte)texture.GetTextureSound(x, y));
                             });
                         });
                         levelSettingIds.LevelTextures.Add(texture, index++);
@@ -280,7 +280,7 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomRainLevel, room.RainLevel);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomSnowLevel, room.SnowLevel);
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomQuickSandLevel, room.QuickSandLevel);
-                        if ((room.AlternateRoom != null) && rooms.ContainsKey(room.AlternateRoom))
+                        if (room.AlternateRoom != null && rooms.ContainsKey(room.AlternateRoom))
                             chunkIO.WriteChunkWithChildren(Prj2Chunks.RoomAlternate, () =>
                             {
                                 chunkIO.WriteChunkInt(Prj2Chunks.AlternateGroup, room.AlternateGroup);

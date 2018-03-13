@@ -142,7 +142,7 @@ namespace TombLib.LevelData.Compilers
                 _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
 
                 // Write object textures
-                writer.Write(checked((byte)(_objectTextureManager.NgUvRotateCount)));
+                writer.Write(checked((byte)_objectTextureManager.NgUvRotateCount));
                 writer.Write(new byte[] { 0x54, 0x45, 0x58, 0x00 });
 
                 _objectTextureManager.WriteObjectTextures(writer, _level);
@@ -205,7 +205,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     Stream textureMiscData = PrepareFontAndSkyTexture();
                     textureMisc = ZLib.CompressData(textureMiscData);
-                    textureMiscUncompressedSize = (int)(textureMiscData.Length);
+                    textureMiscUncompressedSize = (int)textureMiscData.Length;
                 }))
 
                 Task.WaitAll(Texture32task, Texture16task, textureMiscTask);

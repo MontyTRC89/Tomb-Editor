@@ -118,14 +118,14 @@ namespace TombEditor.Controls
 
         private static float FromVisualY(RectangleF barArea, float y)
         {
-            float depth = MaxDepth - ((y - barArea.Y) / barArea.Height) * (MaxDepth - MinDepth);
+            float depth = MaxDepth - (y - barArea.Y) / barArea.Height * (MaxDepth - MinDepth);
             depth = Math.Max(Math.Min(depth, MaxDepth), MinDepth);
             return depth;
         }
 
         private static float ToVisualY(RectangleF barArea, float depth)
         {
-            return ((MaxDepth - depth) / (MaxDepth - MinDepth)) * barArea.Height + barArea.Y;
+            return (MaxDepth - depth) / (MaxDepth - MinDepth) * barArea.Height + barArea.Y;
         }
 
         public static bool CheckForLockedRooms(IWin32Window window, IEnumerable<Room> rooms)
@@ -177,7 +177,7 @@ namespace TombEditor.Controls
                     }
 
                     // check if a the click happend on a room
-                    if (barArea.Contains(e.Location) && (_selectionMode == SelectionMode.None))
+                    if (barArea.Contains(e.Location) && _selectionMode == SelectionMode.None)
                     {
                         for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
                         {
@@ -191,9 +191,9 @@ namespace TombEditor.Controls
                                 {
                                     float posX0 = groupArea.X + sequenceWidth * i;
                                     float posX1 = groupArea.X + sequenceWidth * (i + 1);
-                                    if ((e.X >= posX0) && (e.X <= posX1))
+                                    if (e.X >= posX0 && e.X <= posX1)
                                         for (int j = roomSequences[i].Count - 1; j >= 0; --j)
-                                            if ((mouseDepth <= roomSequences[i][j].MaxDepth) && (mouseDepth >= roomSequences[i][j].MinDepth))
+                                            if (mouseDepth <= roomSequences[i][j].MaxDepth && mouseDepth >= roomSequences[i][j].MinDepth)
                                             {
                                                 _roomMouseClicked = roomSequences[i][j].Room;
                                                 _roomMouseOffset = mouseDepth - _roomMouseClicked.Position.Y;
@@ -330,13 +330,13 @@ namespace TombEditor.Controls
             // Draw height strings
             for (int i = 0; i <= _heightStringCount; ++i)
             {
-                float depth = MaxDepth - ((MaxDepth - MinDepth) / _heightStringCount) * i;
+                float depth = MaxDepth - (MaxDepth - MinDepth) / _heightStringCount * i;
                 float posY = ToVisualY(barArea, depth);
 
                 // Hide height string when close to selection limits
                 float distanceToSelectionLimit0 = Math.Abs(posY - selectedLimit0PosY);
                 float distanceToSelectionLimit1 = Math.Abs(posY - selectedLimit1PosY);
-                float distance = Math.Min(distanceToSelectionLimit0, distanceToSelectionLimit1) - (_heightStringFont.Height * 0.85f);
+                float distance = Math.Min(distanceToSelectionLimit0, distanceToSelectionLimit1) - _heightStringFont.Height * 0.85f;
 
                 if (distance > _heightStringFadeDistance)
                 {
@@ -409,7 +409,7 @@ namespace TombEditor.Controls
 
                             // Draw fill color for room
                             Brush colorBrush = _roomsNormalBrush;
-                            if ((room.Block != null) && (room.Block.Type != BlockType.Floor))
+                            if (room.Block != null && room.Block.Type != BlockType.Floor)
                                 colorBrush = _roomsWallBrush;
                             using (var colorBrush2 = getRoomBrush(room.Room, colorBrush))
                                 e.Graphics.FillRectangle(colorBrush2, posX0, posY0, posX1 - posX0, posY1 - posY0);
@@ -418,17 +418,17 @@ namespace TombEditor.Controls
 
                             // Find portals on the selected sector
                             Pen belowPen = _roomBoundsPen;
-                            if ((room.Block != null) && (room.Block.FloorPortal != null))
+                            if (room.Block != null && room.Block.FloorPortal != null)
                             {
                                 Room portalRoom = room.Block.FloorPortal.AdjoiningRoom;
-                                if (((i - 1) >= 0) && (roomSequence[i - 1].Room == portalRoom))
+                                if (i - 1 >= 0 && roomSequence[i - 1].Room == portalRoom)
                                     belowPen = _portalPen;
                             }
                             Pen abovePen = _roomBoundsPen;
-                            if ((room.Block != null) && (room.Block.CeilingPortal != null))
+                            if (room.Block != null && room.Block.CeilingPortal != null)
                             {
                                 Room portalRoom = room.Block.CeilingPortal.AdjoiningRoom;
-                                if (((i + 1) < roomSequence.Count) && (roomSequence[i + 1].Room == portalRoom))
+                                if (i + 1 < roomSequence.Count && roomSequence[i + 1].Room == portalRoom)
                                     abovePen = _portalPen;
                             }
 
@@ -473,7 +473,7 @@ namespace TombEditor.Controls
 
             RectangleF textArea = new RectangleF(0.0f, screenPosY - _heightStringFont.Height,
                 barArea.X - (_heightStringLineDistance + _heightStringLineLength), _heightStringFont.Height * 2);
-            string text = string.Format((selection ? "y = {0:F0}" : "{0:F0}"), depth);
+            string text = string.Format(selection ? "y = {0:F0}" : "{0:F0}", depth);
             e.Graphics.DrawString(text, _heightStringFont, pen.Brush, textArea, _heightStringLayout);
 
             e.Graphics.SmoothingMode = SmoothingMode.Default;
@@ -493,23 +493,23 @@ namespace TombEditor.Controls
         {
             // Decide what bar is at the given index
             Vector2 probePos = groupIndex == DepthProbes.Count ? cursorPos : DepthProbes[groupIndex].Position;
-            bool shouldCheckRoomsToMove = (groupIndex == DepthProbes.Count) && (_roomsToMove != null);
+            bool shouldCheckRoomsToMove = groupIndex == DepthProbes.Count && _roomsToMove != null;
 
             // Iterate over all rooms under the curser and add them to the room sequences
             IEnumerable<Room> sortedRoomList = level.GetVerticallyAscendingRoomList(room =>
             {
                 Vector2 roomLocal = probePos - room.SectorPos;
-                bool CollidesWithProbe = (roomLocal.X >= 1) && (roomLocal.Y >= 1) && (roomLocal.X < (room.NumXSectors - 1)) && (roomLocal.Y < (room.NumZSectors - 1));
-                return (shouldCheckRoomsToMove ? _roomsToMove.Contains(room) : CollidesWithProbe);
+                bool CollidesWithProbe = roomLocal.X >= 1 && roomLocal.Y >= 1 && roomLocal.X < room.NumXSectors - 1 && roomLocal.Y < room.NumZSectors - 1;
+                return shouldCheckRoomsToMove ? _roomsToMove.Contains(room) : CollidesWithProbe;
             });
 
             var roomSequences = new List<List<RelevantRoom>>();
             foreach (Room room in sortedRoomList)
             {
                 Vector2 roomLocal = probePos - room.SectorPos;
-                bool CollidesWithProbe = (roomLocal.X >= 1) && (roomLocal.Y >= 1) && (roomLocal.X < (room.NumXSectors - 1)) && (roomLocal.Y < (room.NumZSectors - 1));
+                bool CollidesWithProbe = roomLocal.X >= 1 && roomLocal.Y >= 1 && roomLocal.X < room.NumXSectors - 1 && roomLocal.Y < room.NumZSectors - 1;
 
-                Block block = CollidesWithProbe ? room.Blocks[(int)(roomLocal.X), (int)(roomLocal.Y)] : null;
+                Block block = CollidesWithProbe ? room.Blocks[(int)roomLocal.X, (int)roomLocal.Y] : null;
                 RelevantRoom relevantRoom = new RelevantRoom
                 {
                     Room = room,
@@ -519,7 +519,7 @@ namespace TombEditor.Controls
                 };
 
                 // Search for a fit in the sequence for rooms it the current room is connected to on this sector
-                if ((block != null) && (block.FloorPortal != null))
+                if (block != null && block.FloorPortal != null)
                 {
                     var portal = block.FloorPortal;
                     var roomAbove = portal.AdjoiningRoom;
@@ -590,7 +590,7 @@ namespace TombEditor.Controls
         public float SelectedMin => Math.Min(_selectedLimit0, _selectedLimit1);
         public float SelectedMax => Math.Max(_selectedLimit0, _selectedLimit1);
         public HashSet<Room> RoomsToMove => _roomsToMove;
-        public bool CheckRoom(float roomMinDepth, float roomMaxDepth) => (roomMinDepth >= SelectedMin) && (roomMaxDepth <= SelectedMax);
+        public bool CheckRoom(float roomMinDepth, float roomMaxDepth) => roomMinDepth >= SelectedMin && roomMaxDepth <= SelectedMax;
         public bool CheckRoom(Room room) => CheckRoom(room.Position.Y + room.GetLowestCorner(), room.Position.Y + room.GetHighestCorner());
     }
 }

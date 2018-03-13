@@ -123,7 +123,7 @@ namespace TombLib.Forms
 
         private void dgvSamples_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= dgvSamples.Rows.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= dgvSamples.Rows.Count)
                 return;
 
             if (e.ColumnIndex == 2)

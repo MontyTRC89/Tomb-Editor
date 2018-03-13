@@ -35,9 +35,9 @@ namespace TombLib
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(BoundingBox first, BoundingBox second) => (first.Minimum == second.Minimum) && (first.Maximum == second.Maximum);
+        public static bool operator ==(BoundingBox first, BoundingBox second) => first.Minimum == second.Minimum && first.Maximum == second.Maximum;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(BoundingBox first, BoundingBox second) => (first.Minimum != second.Minimum) || (first.Maximum != second.Maximum);
+        public static bool operator !=(BoundingBox first, BoundingBox second) => first.Minimum != second.Minimum || first.Maximum != second.Maximum;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString() => "Box from " + Minimum + " to " + Maximum;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -27,11 +27,11 @@ namespace TombLib.IO
             {
                 // Write byte
                 byte currentByte = unchecked((byte)(value & 0x7F));
-                if (((maximumSize >> 6) == 0) || ((maximumSize >> 6) == -1))
+                if (maximumSize >> 6 == 0 || maximumSize >> 6 == -1)
                 {
                     stream.Write((byte)currentByte);
 
-                    if (((value >> 6) != 0) && (((value >> 6) != -1)))
+                    if (value >> 6 != 0 && value >> 6 != -1)
                         throw new OverflowException("Unable to write integer because the available space overflowed.");
 
                     return;
@@ -70,7 +70,7 @@ namespace TombLib.IO
             do
             {
                 currentByte = stream.ReadByte();
-                result |= ((long)(currentByte & 0x7F)) << currentShift;
+                result |= (long)(currentByte & 0x7F) << currentShift;
                 currentShift += 7;
             } while ((currentByte & 0x80) != 0);
 

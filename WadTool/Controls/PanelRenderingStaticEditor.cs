@@ -266,7 +266,7 @@ namespace WadTool.Controls
                                     new SharpDX.Vector2(0, 0),
                                     SharpDX.Color.White);
             _spriteBatch.DrawString(_deviceManager.Font,
-                                    "Rotation: " + (StaticRotation.X * (180 / Math.PI)),
+                                    "Rotation: " + StaticRotation.X * (180 / Math.PI),
                                     new SharpDX.Vector2(0, 18),
                                     SharpDX.Color.White);
             _spriteBatch.DrawString(_deviceManager.Font,

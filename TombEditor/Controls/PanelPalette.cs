@@ -27,7 +27,7 @@ namespace TombEditor.Controls
 
         public PanelPalette()
         {
-            if (DesignMode || (LicenseManager.UsageMode == LicenseUsageMode.Designtime))
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime)
                 return;
 
             using (var stream = new MemoryStream(Properties.Resources.Palette, false))
@@ -41,7 +41,7 @@ namespace TombEditor.Controls
             if (_palette == null)
                 return Color.Magenta;
             int index = point.Y * _paletteWidth + point.X;
-            if ((index < 0) || (index >= _palette.Count))
+            if (index < 0 || index >= _palette.Count)
                 return Color.Magenta;
             return _palette[index];
         }
@@ -77,7 +77,7 @@ namespace TombEditor.Controls
                     e.Graphics.DrawRectangle(_gridPen, x * 10, y * 10, 10, 10);
                 }
 
-            if ((_selectedColorCoord.X >= 0) && (_selectedColorCoord.Y >= 0))
+            if (_selectedColorCoord.X >= 0 && _selectedColorCoord.Y >= 0)
                 e.Graphics.DrawRectangle(_selectionPen, _selectedColorCoord.X * _paletteCellWidth,
                     _selectedColorCoord.Y * _paletteCellHeight, _paletteCellWidth, _paletteCellHeight);
         }

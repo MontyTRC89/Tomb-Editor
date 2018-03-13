@@ -67,7 +67,7 @@ namespace TombLib.Forms
                 var dialogDescription = (DialogDescriptonTextureUnloadable)dialogDescription_;
 
                 bool ignoreError = false;
-                while ((dialogDescription.Texture.ImageLoadException != null) && !ignoreError)
+                while (dialogDescription.Texture.ImageLoadException != null && !ignoreError)
                     owner.InvokeIfNecessary(() =>
                     {
                         switch (MessageBox.Show(owner, "The texture file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Texture.Path) +

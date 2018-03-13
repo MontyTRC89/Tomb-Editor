@@ -138,9 +138,9 @@ namespace TombLib.Utils
 
             //Check if P in edge region of BC, if so return projection of P onto BC
             float va = d3 * d6 - d5 * d4;
-            if (va <= 0.0f && (d4 - d3) >= 0.0f && (d5 - d6) >= 0.0f)
+            if (va <= 0.0f && d4 - d3 >= 0.0f && d5 - d6 >= 0.0f)
             {
-                float w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+                float w = (d4 - d3) / (d4 - d3 + (d5 - d6));
                 return vertex2 + w * (vertex3 - vertex2); //Barycentric coordinates (0,1-w,w)
             }
 
@@ -165,7 +165,7 @@ namespace TombLib.Utils
             float dot = Vector3.Dot(plane.Normal, point);
             float t = dot - plane.D;
 
-            return point - (t * plane.Normal);
+            return point - t * plane.Normal;
         }
 
         /// <summary>
@@ -474,8 +474,8 @@ namespace TombLib.Utils
             float t = dett / denominator;
 
             //The points of intersection.
-            Vector3 point1 = ray1.Position + (s * ray1.Direction);
-            Vector3 point2 = ray2.Position + (t * ray2.Direction);
+            Vector3 point1 = ray1.Position + s * ray1.Direction;
+            Vector3 point2 = ray2.Position + t * ray2.Direction;
 
             //If the points are not equal, no intersection has occurred.
             if (!MathC.NearEqual(point2.X, point1.X) ||
@@ -543,7 +543,7 @@ namespace TombLib.Utils
                 return false;
             }
 
-            point = ray.Position + (ray.Direction * distance);
+            point = ray.Position + ray.Direction * distance;
             return true;
         }
 
@@ -584,14 +584,14 @@ namespace TombLib.Utils
 
             //Cross product of ray direction and edge2 - first part of determinant.
             Vector3 directioncrossedge2;
-            directioncrossedge2.X = (ray.Direction.Y * edge2.Z) - (ray.Direction.Z * edge2.Y);
-            directioncrossedge2.Y = (ray.Direction.Z * edge2.X) - (ray.Direction.X * edge2.Z);
-            directioncrossedge2.Z = (ray.Direction.X * edge2.Y) - (ray.Direction.Y * edge2.X);
+            directioncrossedge2.X = ray.Direction.Y * edge2.Z - ray.Direction.Z * edge2.Y;
+            directioncrossedge2.Y = ray.Direction.Z * edge2.X - ray.Direction.X * edge2.Z;
+            directioncrossedge2.Z = ray.Direction.X * edge2.Y - ray.Direction.Y * edge2.X;
 
             //Compute the determinant.
             float determinant;
             //Dot product of edge1 and the first part of determinant.
-            determinant = (edge1.X * directioncrossedge2.X) + (edge1.Y * directioncrossedge2.Y) + (edge1.Z * directioncrossedge2.Z);
+            determinant = edge1.X * directioncrossedge2.X + edge1.Y * directioncrossedge2.Y + edge1.Z * directioncrossedge2.Z;
 
             //If the ray is parallel to the triangle plane, there is no collision.
             //This also means that we are not culling, the ray may hit both the
@@ -611,7 +611,7 @@ namespace TombLib.Utils
             distanceVector.Z = ray.Position.Z - vertex1.Z;
 
             float triangleU;
-            triangleU = (distanceVector.X * directioncrossedge2.X) + (distanceVector.Y * directioncrossedge2.Y) + (distanceVector.Z * directioncrossedge2.Z);
+            triangleU = distanceVector.X * directioncrossedge2.X + distanceVector.Y * directioncrossedge2.Y + distanceVector.Z * directioncrossedge2.Z;
             triangleU *= inversedeterminant;
 
             //Make sure it is inside the triangle.
@@ -623,12 +623,12 @@ namespace TombLib.Utils
 
             //Calculate the V parameter of the intersection point.
             Vector3 distancecrossedge1;
-            distancecrossedge1.X = (distanceVector.Y * edge1.Z) - (distanceVector.Z * edge1.Y);
-            distancecrossedge1.Y = (distanceVector.Z * edge1.X) - (distanceVector.X * edge1.Z);
-            distancecrossedge1.Z = (distanceVector.X * edge1.Y) - (distanceVector.Y * edge1.X);
+            distancecrossedge1.X = distanceVector.Y * edge1.Z - distanceVector.Z * edge1.Y;
+            distancecrossedge1.Y = distanceVector.Z * edge1.X - distanceVector.X * edge1.Z;
+            distancecrossedge1.Z = distanceVector.X * edge1.Y - distanceVector.Y * edge1.X;
 
             float triangleV;
-            triangleV = ((ray.Direction.X * distancecrossedge1.X) + (ray.Direction.Y * distancecrossedge1.Y)) + (ray.Direction.Z * distancecrossedge1.Z);
+            triangleV = ray.Direction.X * distancecrossedge1.X + ray.Direction.Y * distancecrossedge1.Y + ray.Direction.Z * distancecrossedge1.Z;
             triangleV *= inversedeterminant;
 
             //Make sure it is inside the triangle.
@@ -640,7 +640,7 @@ namespace TombLib.Utils
 
             //Compute the distance along the ray to the triangle.
             float raydistance;
-            raydistance = (edge2.X * distancecrossedge1.X) + (edge2.Y * distancecrossedge1.Y) + (edge2.Z * distancecrossedge1.Z);
+            raydistance = edge2.X * distancecrossedge1.X + edge2.Y * distancecrossedge1.Y + edge2.Z * distancecrossedge1.Z;
             raydistance *= inversedeterminant;
 
             //Is the triangle behind the ray origin?
@@ -673,7 +673,7 @@ namespace TombLib.Utils
                 return false;
             }
 
-            point = ray.Position + (ray.Direction * distance);
+            point = ray.Position + ray.Direction * distance;
             return true;
         }
 
@@ -806,7 +806,7 @@ namespace TombLib.Utils
                 return false;
             }
 
-            point = ray.Position + (ray.Direction * distance);
+            point = ray.Position + ray.Direction * distance;
             return true;
         }
 
@@ -825,7 +825,7 @@ namespace TombLib.Utils
 
             Vector3 m = ray.Position - sphere.Center;
             float b = Vector3.Dot(m, ray.Direction);
-            float c = Vector3.Dot(m, m) - (sphere.Radius * sphere.Radius);
+            float c = Vector3.Dot(m, m) - sphere.Radius * sphere.Radius;
 
             if (c > 0f && b > 0f)
             {
@@ -866,7 +866,7 @@ namespace TombLib.Utils
                 return false;
             }
 
-            point = ray.Position + (ray.Direction * distance);
+            point = ray.Position + ray.Direction * distance;
             return true;
         }
 
@@ -998,12 +998,12 @@ namespace TombLib.Utils
             Vector3 min;
             Vector3 max;
 
-            max.X = (plane.Normal.X >= 0.0f) ? box.Minimum.X : box.Maximum.X;
-            max.Y = (plane.Normal.Y >= 0.0f) ? box.Minimum.Y : box.Maximum.Y;
-            max.Z = (plane.Normal.Z >= 0.0f) ? box.Minimum.Z : box.Maximum.Z;
-            min.X = (plane.Normal.X >= 0.0f) ? box.Maximum.X : box.Minimum.X;
-            min.Y = (plane.Normal.Y >= 0.0f) ? box.Maximum.Y : box.Minimum.Y;
-            min.Z = (plane.Normal.Z >= 0.0f) ? box.Maximum.Z : box.Minimum.Z;
+            max.X = plane.Normal.X >= 0.0f ? box.Minimum.X : box.Maximum.X;
+            max.Y = plane.Normal.Y >= 0.0f ? box.Minimum.Y : box.Maximum.Y;
+            max.Z = plane.Normal.Z >= 0.0f ? box.Minimum.Z : box.Maximum.Z;
+            min.X = plane.Normal.X >= 0.0f ? box.Maximum.X : box.Minimum.X;
+            min.Y = plane.Normal.Y >= 0.0f ? box.Maximum.Y : box.Minimum.Y;
+            min.Z = plane.Normal.Z >= 0.0f ? box.Maximum.Z : box.Minimum.Z;
 
             float distance = Vector3.Dot(plane.Normal, max);
 
@@ -1195,9 +1195,7 @@ namespace TombLib.Utils
             if (box1.Maximum.Z < box2.Minimum.Z || box1.Minimum.Z > box2.Maximum.Z)
                 return ContainmentType.Disjoint;
 
-            if (box1.Minimum.X <= box2.Minimum.X && (box2.Maximum.X <= box1.Maximum.X &&
-                box1.Minimum.Y <= box2.Minimum.Y && box2.Maximum.Y <= box1.Maximum.Y) &&
-                box1.Minimum.Z <= box2.Minimum.Z && box2.Maximum.Z <= box1.Maximum.Z)
+            if (box1.Minimum.X <= box2.Minimum.X && box2.Maximum.X <= box1.Maximum.X && box1.Minimum.Y <= box2.Minimum.Y && box2.Maximum.Y <= box1.Maximum.Y && box1.Minimum.Z <= box2.Minimum.Z && box2.Maximum.Z <= box1.Maximum.Z)
             {
                 return ContainmentType.Contains;
             }
@@ -1219,9 +1217,7 @@ namespace TombLib.Utils
             if (distance > sphere.Radius * sphere.Radius)
                 return ContainmentType.Disjoint;
 
-            if ((((box.Minimum.X + sphere.Radius <= sphere.Center.X) && (sphere.Center.X <= box.Maximum.X - sphere.Radius)) && ((box.Maximum.X - box.Minimum.X > sphere.Radius) &&
-                (box.Minimum.Y + sphere.Radius <= sphere.Center.Y))) && (((sphere.Center.Y <= box.Maximum.Y - sphere.Radius) && (box.Maximum.Y - box.Minimum.Y > sphere.Radius)) &&
-                (((box.Minimum.Z + sphere.Radius <= sphere.Center.Z) && (sphere.Center.Z <= box.Maximum.Z - sphere.Radius)) && (box.Maximum.Z - box.Minimum.Z > sphere.Radius))))
+            if (box.Minimum.X + sphere.Radius <= sphere.Center.X && sphere.Center.X <= box.Maximum.X - sphere.Radius && box.Maximum.X - box.Minimum.X > sphere.Radius && box.Minimum.Y + sphere.Radius <= sphere.Center.Y && sphere.Center.Y <= box.Maximum.Y - sphere.Radius && box.Maximum.Y - box.Minimum.Y > sphere.Radius && box.Minimum.Z + sphere.Radius <= sphere.Center.Z && sphere.Center.Z <= box.Maximum.Z - sphere.Radius && box.Maximum.Z - box.Minimum.Z > sphere.Radius)
             {
                 return ContainmentType.Contains;
             }

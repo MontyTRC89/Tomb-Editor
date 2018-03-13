@@ -42,7 +42,7 @@ namespace TombEditor.Forms
 
         private void FormImportPRJ_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if ((e.CloseReason == CloseReason.UserClosing) && _thread.IsAlive && !_threadShouldAbort)
+            if (e.CloseReason == CloseReason.UserClosing && _thread.IsAlive && !_threadShouldAbort)
             {
                 EndThread();
                 e.Cancel = true;

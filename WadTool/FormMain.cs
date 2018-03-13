@@ -43,7 +43,7 @@ namespace WadTool
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && components != null)
             {
                 _tool.EditorEventRaised -= Tool_EditorEventRaised;
                 components.Dispose();

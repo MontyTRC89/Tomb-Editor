@@ -72,7 +72,7 @@ namespace TombLib.Graphics
 
         private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, int level, KeyFrame frame)
         {
-            AnimationTransforms[node.Index] = (frame.Rotations[node.Index] * node.Transform) * parentTransform;
+            AnimationTransforms[node.Index] = frame.Rotations[node.Index] * node.Transform * parentTransform;
 
             foreach (Bone child in node.Children)
             {
@@ -98,7 +98,7 @@ namespace TombLib.Graphics
         {
             Matrix4x4 rotation = Matrix4x4.Lerp(frame1.Rotations[node.Index], frame2.Rotations[node.Index], k);
 
-            AnimationTransforms[node.Index] = (rotation * node.Transform) * parentTransform;
+            AnimationTransforms[node.Index] = rotation * node.Transform * parentTransform;
 
             foreach (Bone child in node.Children)
             {
@@ -167,7 +167,7 @@ namespace TombLib.Graphics
                 for (int j = 0; j < msh.Polys.Count; j++)
                 {
                     WadPolygon poly = msh.Polys[j];
-                    Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)(poly.Texture.Texture)];
+                    Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)poly.Texture.Texture];
 
                     // Get the right submesh
                     var submesh = mesh.Submeshes[materialOpaque];

@@ -212,7 +212,7 @@ namespace TombLib.NG
         {
             if (first.Kind != second.Kind)
                 return false;
-            if ((first.FixedEnumeration == null) != (second.FixedEnumeration == null))
+            if (first.FixedEnumeration == null != (second.FixedEnumeration == null))
                 return false;
             if (first.FixedEnumeration != null && !first.FixedEnumeration.SequenceEqual(second.FixedEnumeration))
                 return false;

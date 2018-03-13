@@ -371,7 +371,7 @@ namespace TombEditor.Forms
 
         private void fontTextureFilePathTxt_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_levelSettings.FontTextureFilePath) || (_levelSettings.FontTextureFilePath == fontTextureFilePathTxt.Text))
+            if (string.IsNullOrEmpty(_levelSettings.FontTextureFilePath) || _levelSettings.FontTextureFilePath == fontTextureFilePathTxt.Text)
                 return;
             if (string.IsNullOrEmpty(fontTextureFilePathTxt.Text)) // Don't set if it would be empty otherwise.
                 return;
@@ -401,7 +401,7 @@ namespace TombEditor.Forms
 
         private void skyTextureFilePathTxt_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_levelSettings.SkyTextureFilePath) || (_levelSettings.SkyTextureFilePath == skyTextureFilePathTxt.Text))
+            if (string.IsNullOrEmpty(_levelSettings.SkyTextureFilePath) || _levelSettings.SkyTextureFilePath == skyTextureFilePathTxt.Text)
                 return;
             if (string.IsNullOrEmpty(skyTextureFilePathTxt.Text)) // Don't set if it would be empty otherwise.
                 return;
@@ -452,7 +452,7 @@ namespace TombEditor.Forms
 
         private void soundDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= soundDataGridViewDataSource.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= soundDataGridViewDataSource.Count)
                 return;
 
             if (e.ColumnIndex == 1)
@@ -469,10 +469,10 @@ namespace TombEditor.Forms
 
         private void soundDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= soundDataGridViewDataSource.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= soundDataGridViewDataSource.Count)
                 return;
 
-            if ((soundDataGridView.Columns[e.ColumnIndex] == soundDataGridViewColumnSearch))
+            if (soundDataGridView.Columns[e.ColumnIndex] == soundDataGridViewColumnSearch)
             {
                 string result = LevelFileDialog.BrowseFolder(this, _levelSettings, soundDataGridViewDataSource[e.RowIndex].Path,
                     "Select the sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
@@ -550,7 +550,7 @@ namespace TombEditor.Forms
 
         private void pathVariablesDataGridViewContextMenuCopy_Click(object sender, EventArgs e)
         {
-            string text = (pathVariablesDataGridView.SelectedCells.Count == 0) ? "" :
+            string text = pathVariablesDataGridView.SelectedCells.Count == 0 ? "" :
                 pathVariablesDataGridView.SelectedCells[0].Value.ToString();
             Clipboard.SetText(text);
         }
@@ -603,7 +603,7 @@ namespace TombEditor.Forms
 
         private void tr5SpritesTextureFilePathTxt_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath) || (_levelSettings.Tr5ExtraSpritesFilePath == tr5SpritesTextureFilePathTxt.Text))
+            if (string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath) || _levelSettings.Tr5ExtraSpritesFilePath == tr5SpritesTextureFilePathTxt.Text)
                 return;
             if (string.IsNullOrEmpty(tr5SpritesTextureFilePathTxt.Text)) // Don't set if it would be empty otherwise.
                 return;

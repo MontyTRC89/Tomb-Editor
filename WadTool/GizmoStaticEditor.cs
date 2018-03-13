@@ -33,7 +33,7 @@ namespace WadTool
             _control.StaticScale = newScale;
         }
 
-        protected override Vector3 Position => (_control != null ? _control.StaticPosition : Vector3.Zero);
+        protected override Vector3 Position => _control != null ? _control.StaticPosition : Vector3.Zero;
         protected override float RotationY => _control.StaticRotation.Y;
         protected override float RotationX => _control.StaticRotation.X;
         protected override float RotationZ => _control.StaticRotation.Z;

@@ -45,11 +45,11 @@ namespace TombEditor.Forms
             }
 
             byte CodeBits = 0;
-            CodeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
-            CodeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
-            CodeBits |= (byte)(cbBit3.Checked ? (1 << 2) : 0);
-            CodeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
-            CodeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
+            CodeBits |= (byte)(cbBit1.Checked ? 1 << 0 : 0);
+            CodeBits |= (byte)(cbBit2.Checked ? 1 << 1 : 0);
+            CodeBits |= (byte)(cbBit3.Checked ? 1 << 2 : 0);
+            CodeBits |= (byte)(cbBit4.Checked ? 1 << 3 : 0);
+            CodeBits |= (byte)(cbBit5.Checked ? 1 << 4 : 0);
             _movable.CodeBits = CodeBits;
 
             _movable.Invisible = cbInvisible.Checked;

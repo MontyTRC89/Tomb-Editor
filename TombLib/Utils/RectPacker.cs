@@ -25,14 +25,14 @@ namespace TombLib.Utils
 
         public override VectorInt2? TryAdd(VectorInt2 size)
         {
-            if ((_currentY + size.Y) > Size.Y)
+            if (_currentY + size.Y > Size.Y)
                 return null;
 
-            if ((_currentX + size.X) > Size.X)
+            if (_currentX + size.X > Size.X)
             { // Does not fit in that row, but maybe in a new row
                 if (size.X > Size.X)
                     return null;
-                if ((_currentY + _stackHeight + size.Y) > Size.Y)
+                if (_currentY + _stackHeight + size.Y > Size.Y)
                     return null;
                 _currentX = 0;
                 _currentY = _currentY + _stackHeight;

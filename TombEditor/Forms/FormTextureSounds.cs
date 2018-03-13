@@ -75,7 +75,7 @@ namespace TombEditor.Forms
             if (!(comboSounds.SelectedItem is TextureSound))
                 return;
 
-            var sound = (TextureSound)(comboSounds.SelectedItem);
+            var sound = (TextureSound)comboSounds.SelectedItem;
             ConservativeRasterizer.RasterizeQuad(
                 textureMap.SelectedTexture.TexCoord0 / LevelTexture.TextureSoundGranularity,
                 textureMap.SelectedTexture.TexCoord1 / LevelTexture.TextureSoundGranularity,
@@ -119,7 +119,7 @@ namespace TombEditor.Forms
                     for (int y = soundTileStartY; y <= soundTileEndY; ++y)
                         for (int x = soundTileStartX; x <= soundTileEndX; ++x)
                         {
-                            if ((x < 0) || (x >= texture.TextureSoundWidth) || (y < 0) || (y >= texture.TextureSoundHeight))
+                            if (x < 0 || x >= texture.TextureSoundWidth || y < 0 || y >= texture.TextureSoundHeight)
                                 continue;
 
                             TextureSound sound = texture.GetTextureSound(x, y);

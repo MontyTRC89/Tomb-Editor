@@ -25,10 +25,10 @@ namespace TombLib.Wad
 
         public override Texture Clone() => this;
 
-        public static bool operator==(WadTexture first, WadTexture second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : (first.Hash == second.Hash));
+        public static bool operator==(WadTexture first, WadTexture second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);
         public static bool operator!=(WadTexture first, WadTexture second) => !(first == second);
-        public bool Equals(WadTexture other) => (Hash == other.Hash);
-        public override bool Equals(object other) => (other is WadTexture) && (Hash == ((WadTexture)other).Hash);
+        public bool Equals(WadTexture other) => Hash == other.Hash;
+        public override bool Equals(object other) => other is WadTexture && Hash == ((WadTexture)other).Hash;
         public override int GetHashCode() => Hash.GetHashCode();
     }
 }

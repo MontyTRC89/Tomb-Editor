@@ -10,7 +10,7 @@ namespace TombLib.Utils
 
         private static bool IsFinite(float value)
         {
-            return (value - value) == (value - value); // Convert infinity to NaN and detect NaN
+            return value - value == value - value; // Convert infinity to NaN and detect NaN
         }
         private static void RasterizeBetweenLines(
             float yStart, float yEnd,

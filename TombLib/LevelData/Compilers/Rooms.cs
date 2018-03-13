@@ -57,15 +57,15 @@ namespace TombLib.LevelData.Compilers
                 Portals = new List<tr_room_portal>(),
                 Info = new tr_room_info
                 {
-                    X = (int)(room.WorldPos.X),
-                    Z = (int)(room.WorldPos.Z),
+                    X = (int)room.WorldPos.X,
+                    Z = (int)room.WorldPos.Z,
                     YTop = (int)-(room.WorldPos.Y + room.GetHighestCorner() * 256.0f),
                     YBottom = (int)-(room.WorldPos.Y + room.GetLowestCorner() * 256.0f)
                 },
                 NumXSectors = room.NumXSectors,
                 NumZSectors = room.NumZSectors,
-                AlternateRoom = (room.Flipped && room.AlternateRoom != null) ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
-                AlternateGroup = (byte)((room.Flipped && room.AlternateRoom != null) ? room.AlternateGroup : 0),
+                AlternateRoom = room.Flipped && room.AlternateRoom != null ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
+                AlternateGroup = (byte)(room.Flipped && room.AlternateRoom != null ? room.AlternateGroup : 0),
                 Flipped = room.Flipped,
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
@@ -108,7 +108,7 @@ namespace TombLib.LevelData.Compilers
             if (room.WaterLevel <= 0)
             {
                 foreach (PortalInstance portal in room.Portals)
-                    if ((portal.Direction == PortalDirection.Floor) && (portal.AdjoiningRoom.WaterLevel != 0))
+                    if (portal.Direction == PortalDirection.Floor && portal.AdjoiningRoom.WaterLevel != 0)
                         if (!waterPortals.Contains(portal))
                             waterPortals.Add(portal);
 
@@ -177,7 +177,7 @@ namespace TombLib.LevelData.Compilers
                                 texture.TexCoord1 = editorRoomVertices[i + 1].UV;
 
                                 // Check if 2 triangles can be combined to a quad
-                                if (((i + 6) <= rangeEnd) &&
+                                if (i + 6 <= rangeEnd &&
                                     editorRoomVertices[i + 1].Equals(editorRoomVertices[i + 5]) &&
                                     editorRoomVertices[i + 2].Equals(editorRoomVertices[i + 4]))
                                 {
@@ -236,9 +236,9 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     Position = new tr_vertex
                                     {
-                                        X = (short)(position.X),
+                                        X = (short)position.X,
                                         Y = (short)-(position.Y + room.WorldPos.Y),
-                                        Z = (short)(position.Z)
+                                        Z = (short)position.Z
                                     },
                                     Lighting1 = 0,
                                     Lighting2 = 0x4210, // TODO: apply light calculations also to imported geometry
@@ -324,18 +324,9 @@ namespace TombLib.LevelData.Compilers
                                 var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
 
                                 // A ccandidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
-                                if ((connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
-                                     !room.Blocks[xv, zv].IsAnyWall &&
-                                     connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal) &&
-                                    (connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal &&
-                                     !room.Blocks[xv - 1, zv].IsAnyWall &&
-                                     connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal) &&
-                                    (connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal &&
-                                     !room.Blocks[xv, zv - 1].IsAnyWall &&
-                                     connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal) &&
-                                    (connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal &&
-                                     !room.Blocks[xv - 1, zv - 1].IsAnyWall &&
-                                     connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal))
+                                if (connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
+                                    !room.Blocks[xv, zv].IsAnyWall &&
+                                    connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal && connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal && !room.Blocks[xv - 1, zv].IsAnyWall && connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal && connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal && !room.Blocks[xv, zv - 1].IsAnyWall && connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal && connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal && !room.Blocks[xv - 1, zv - 1].IsAnyWall && connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal)
                                 {
                                     trVertex.Attributes = 0xE000;
                                 }
@@ -396,9 +387,9 @@ namespace TombLib.LevelData.Compilers
                     X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
                     Y = (int)-Math.Round(room.WorldPos.Y + instance.Position.Y),
                     Z = (int)Math.Round(newRoom.Info.Z + instance.Position.Z),
-                    Rotation = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue,
-                       Math.Round(instance.RotationY * (65536.0 / 360.0))))),
-                    ObjectID = checked((ushort)(instance.WadObjectId.TypeId)),
+                    Rotation = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                        Math.Round(instance.RotationY * (65536.0 / 360.0)))),
+                    ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                     Intensity1 = PackColorTo16Bit(new Vector4(instance.Color.Z, instance.Color.Y, instance.Color.X, instance.Color.W)),
                     Intensity2 = (ushort)(_level.Settings.GameVersion == GameVersion.TR5 ? 0x0001 : instance.Ocb)
                 });
@@ -414,9 +405,9 @@ namespace TombLib.LevelData.Compilers
             tr_room_vertex trVertex;
             trVertex.Position = new tr_vertex
             {
-                X = (short)(Position.X),
+                X = (short)Position.X,
                 Y = (short)-(Position.Y + room.WorldPos.Y),
-                Z = (short)(Position.Z)
+                Z = (short)Position.Z
             };
             trVertex.Lighting1 = 0;
             trVertex.Lighting2 = PackColorTo16Bit(Color);
@@ -457,7 +448,7 @@ namespace TombLib.LevelData.Compilers
                     continue;
                 tr_color color = PackColorTo24Bit(new Vector4(light.Color, 1.0f));
                 ushort intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f));
-                if (intensity == 0 || (color.Red == 0 && color.Green == 0 && color.Blue == 0))
+                if (intensity == 0 || color.Red == 0 && color.Green == 0 && color.Blue == 0)
                     continue;
                 lightCount += 1;
 
@@ -781,7 +772,7 @@ namespace TombLib.LevelData.Compilers
 
             public static unsafe bool FastEquals(PortalPlane first, PortalPlane second)
             {
-                return (*(ulong*)(&first) == *(ulong*)(&second));
+                return *(ulong*)&first == *(ulong*)&second;
             }
         }
 
@@ -891,7 +882,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 // Make the normal vector as short as possible
-                while (((normal.X % 2) == 0) && ((normal.Y % 2) == 0) && ((normal.Z % 2) == 0))
+                while (normal.X % 2 == 0 && normal.Y % 2 == 0 && normal.Z % 2 == 0)
                     normal = new tr_vertex((short)(normal.X / 2), (short)(normal.Y / 2), (short)(normal.Z / 2));
 
                 // Add portal
@@ -968,7 +959,7 @@ namespace TombLib.LevelData.Compilers
                         if (maxCoordinate > short.MaxValue)
                             continue;
 
-                        var connectedRoomLocalPosUint = new tr_vertex((short)(trVertexPos.X), (short)(trVertexPos.Y), (short)(trVertexPos.Z));
+                        var connectedRoomLocalPosUint = new tr_vertex((short)trVertexPos.X, (short)trVertexPos.Y, (short)trVertexPos.Z);
 
                         // Lookup vertex
                         Dictionary<tr_vertex, ushort> connectedRoomColorLookup;
@@ -988,7 +979,7 @@ namespace TombLib.LevelData.Compilers
                     // Set color
                     if (Count > 1)
                     {
-                        Vector4 averageColor = new Vector4(R, G, B, 0.0f) * ((1.0f / 16.0f) / Count);
+                        Vector4 averageColor = new Vector4(R, G, B, 0.0f) * (1.0f / 16.0f / Count);
                         vertex.Lighting2 = PackColorTo16Bit(averageColor);
                         vertices[i] = vertex;
                     }
@@ -1009,18 +1000,18 @@ namespace TombLib.LevelData.Compilers
             int sectorPosZ2 = sectorPosZ - 1;
 
             // Check up to 4 sectors around the destination
-            if ((sectorPosX >= 0) && (sectorPosX < currentRoom.NumXSectors))
+            if (sectorPosX >= 0 && sectorPosX < currentRoom.NumXSectors)
             {
-                if ((sectorPosZ >= 0) && (sectorPosZ < currentRoom.NumZSectors))
+                if (sectorPosZ >= 0 && sectorPosZ < currentRoom.NumZSectors)
                     FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX, sectorPosZ);
-                if ((sectorPosZ2 >= 0) && (sectorPosZ2 < currentRoom.NumZSectors))
+                if (sectorPosZ2 >= 0 && sectorPosZ2 < currentRoom.NumZSectors)
                     FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX, sectorPosZ2);
             }
-            if ((sectorPosX2 >= 0) && (sectorPosX2 < currentRoom.NumXSectors))
+            if (sectorPosX2 >= 0 && sectorPosX2 < currentRoom.NumXSectors)
             {
-                if ((sectorPosZ >= 0) && (sectorPosZ < currentRoom.NumZSectors))
+                if (sectorPosZ >= 0 && sectorPosZ < currentRoom.NumZSectors)
                     FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX2, sectorPosZ);
-                if ((sectorPosZ2 >= 0) && (sectorPosZ2 < currentRoom.NumZSectors))
+                if (sectorPosZ2 >= 0 && sectorPosZ2 < currentRoom.NumZSectors)
                     FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX2, sectorPosZ2);
             }
         }
@@ -1063,9 +1054,9 @@ namespace TombLib.LevelData.Compilers
             color = Vector4.Min(new Vector4(31), Vector4.Max(new Vector4(0), color));
 
             ushort tmp = 0;
-            tmp |= (ushort)((ushort)(color.X) << 10);
-            tmp |= (ushort)((ushort)(color.Y) << 5);
-            tmp |= (ushort)(color.Z);
+            tmp |= (ushort)((ushort)color.X << 10);
+            tmp |= (ushort)((ushort)color.Y << 5);
+            tmp |= (ushort)color.Z;
             return tmp;
         }
 
@@ -1075,7 +1066,7 @@ namespace TombLib.LevelData.Compilers
             color += new Vector4(0.5f); // Round correctly
             color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color));
 
-            uint result = (uint)(0xff000000 + (((byte)color.X) << 16) + (((byte)color.Y) << 8) + ((byte)color.Z));
+            uint result = (uint)(0xff000000 + ((byte)color.X << 16) + ((byte)color.Y << 8) + (byte)color.Z);
             return result;
         }
 

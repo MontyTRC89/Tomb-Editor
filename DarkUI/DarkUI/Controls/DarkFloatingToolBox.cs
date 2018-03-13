@@ -168,7 +168,7 @@ namespace DarkUI.Controls
             dragBounds.Width -= Width;
             dragBounds.Height -= Height;
 
-            dragOffset = (offset);
+            dragOffset = offset;
 
             isDragging = true;
             DoDragDrop(new DarkFloatingToolboxContainer(this), DragDropEffects.Move);
@@ -179,7 +179,7 @@ namespace DarkUI.Controls
         protected override void WndProc(ref Message m)
         {
             const int WM_NCHITTEST = 0x0084;
-            const int HTTRANSPARENT = (-1);
+            const int HTTRANSPARENT = -1;
 
             if (isDragging && m.Msg == WM_NCHITTEST)
                 m.Result = (IntPtr)HTTRANSPARENT;
@@ -228,8 +228,8 @@ namespace DarkUI.Controls
                 var nextLocation = Parent.PointToClient(new Point(Cursor.Position.X - dragOffset.X, Cursor.Position.Y - dragOffset.Y));
 
                 // Snap toolbox to parent border
-                nextLocation.Offset((nextLocation.X < _dragSnappingMargin.Width ? -nextLocation.X : 0), (nextLocation.Y < _dragSnappingMargin.Height ? -nextLocation.Y : 0));
-                nextLocation.Offset((nextLocation.X > dragBounds.Width - _dragSnappingMargin.Width ? -(nextLocation.X - dragBounds.Width) : 0), (nextLocation.Y > dragBounds.Height - _dragSnappingMargin.Height ? -(nextLocation.Y - dragBounds.Height) : 0));
+                nextLocation.Offset(nextLocation.X < _dragSnappingMargin.Width ? -nextLocation.X : 0, nextLocation.Y < _dragSnappingMargin.Height ? -nextLocation.Y : 0);
+                nextLocation.Offset(nextLocation.X > dragBounds.Width - _dragSnappingMargin.Width ? -(nextLocation.X - dragBounds.Width) : 0, nextLocation.Y > dragBounds.Height - _dragSnappingMargin.Height ? -(nextLocation.Y - dragBounds.Height) : 0);
 
                 Location = nextLocation;
                 Refresh(); // We need to invalidate all controls behind

@@ -68,11 +68,11 @@ namespace TombLib.Graphics.Primitives
                     if (x == 0) color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
                     var v1 = new SolidVertex();
-                    v1.Position = new Vector3(x, 0.0f, (x == 0 ? -32768.0f : start));
+                    v1.Position = new Vector3(x, 0.0f, x == 0 ? -32768.0f : start);
                     v1.Color = color;
 
                     var v2 = new SolidVertex();
-                    v2.Position = new Vector3(x, 0.0f, (x == 0 ? 32768.0f : end));
+                    v2.Position = new Vector3(x, 0.0f, x == 0 ? 32768.0f : end);
                     v2.Color = color;
 
                     vertices.Add(v1);
@@ -89,11 +89,11 @@ namespace TombLib.Graphics.Primitives
                     if (z == 0) color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
                     var v1 = new SolidVertex();
-                    v1.Position = new Vector3((z == 0 ? -32768.0f : start), 0.0f, z);
+                    v1.Position = new Vector3(z == 0 ? -32768.0f : start, 0.0f, z);
                     v1.Color = color;
 
                     var v2 = new SolidVertex();
-                    v2.Position = new Vector3((z == 0 ? 32768.0f : end), 0.0f, z);
+                    v2.Position = new Vector3(z == 0 ? 32768.0f : end, 0.0f, z);
                     v2.Color = color;
 
                     vertices.Add(v1);

@@ -200,7 +200,7 @@ namespace TombEditor
                     throw new ArgumentNullException("The selected room list may not contain duplicates.");
                 var previous = _selectedRooms;
                 _selectedRooms = value.ToArray();
-                if (previous == null || (previous[0] != _selectedRooms[0]))
+                if (previous == null || previous[0] != _selectedRooms[0])
                     RaiseEvent(new SelectedRoomChangedEvent(previous, value));
                 else
                     RaiseEvent(new SelectedRoomsChangedEvent { Previous = previous, Current = value });
@@ -236,7 +236,7 @@ namespace TombEditor
             var roomEvent = eventObj as IEditorRoomChangedEvent;
             if (roomEvent == null)
                 return true;
-            return (SelectedRoom != null) && (roomEvent.Room == SelectedRoom);
+            return SelectedRoom != null && roomEvent.Room == SelectedRoom;
         }
 
         public class SelectedObjectChangedEvent : IEditorPropertyChangedEvent
@@ -545,7 +545,7 @@ namespace TombEditor
         // All required update methods will be invoked automatically.
         public void UpdateLevelSettings(LevelSettings newSettings)
         {
-            if ((_level == null) || newSettings == null)
+            if (_level == null || newSettings == null)
                 return;
 
             // Determine what will change when the new settings are applied
@@ -729,7 +729,7 @@ namespace TombEditor
                     {
                         // Get all compatible projects
                         var directory = new DirectoryInfo(path);
-                        var filesOrdered = directory.EnumerateFiles(configuration.AutoSave_NamePutDateFirst ? ("*" + configuration.AutoSave_NameSeparator + fileNameBase + ".prj2") : (fileNameBase + configuration.AutoSave_NameSeparator + "*.prj2"))
+                        var filesOrdered = directory.EnumerateFiles(configuration.AutoSave_NamePutDateFirst ? "*" + configuration.AutoSave_NameSeparator + fileNameBase + ".prj2" : fileNameBase + configuration.AutoSave_NameSeparator + "*.prj2")
                                                     .OrderBy(d => d.Name)
                                                     .Select(d => d.Name)
                                                     .ToList();

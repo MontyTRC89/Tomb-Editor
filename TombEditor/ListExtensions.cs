@@ -20,7 +20,7 @@ namespace TombEditor
 
             public DestinationT this[int index]
             {
-                get { return (DestinationT)(_baseList[index]); }
+                get { return (DestinationT)_baseList[index]; }
                 set { _baseList[index] = value; }
             }
 

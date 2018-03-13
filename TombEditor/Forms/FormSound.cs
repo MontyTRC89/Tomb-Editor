@@ -61,11 +61,11 @@ namespace TombEditor.Forms
         private void butOK_Click(object sender, EventArgs e)
         {
             byte codeBits = 0;
-            codeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
-            codeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
-            codeBits |= (byte)(cbBit3.Checked ? (1 << 2) : 0);
-            codeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
-            codeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
+            codeBits |= (byte)(cbBit1.Checked ? 1 << 0 : 0);
+            codeBits |= (byte)(cbBit2.Checked ? 1 << 1 : 0);
+            codeBits |= (byte)(cbBit3.Checked ? 1 << 2 : 0);
+            codeBits |= (byte)(cbBit4.Checked ? 1 << 3 : 0);
+            codeBits |= (byte)(cbBit5.Checked ? 1 << 4 : 0);
             _soundSource.SoundName = tbSound.Text;
             _soundSource.CodeBits = codeBits;
 

@@ -32,7 +32,7 @@ namespace TombLib.Utils
         public static explicit operator ColorC(Vector4 this_)
         {
             this_ = Vector4.Min(Vector4.Max(this_ * 255.99998f, new Vector4()),  new Vector4(255.0f));
-            return new ColorC((byte)(this_.X), (byte)(this_.Y), (byte)(this_.Z), (byte)(this_.W));
+            return new ColorC((byte)this_.X, (byte)this_.Y, (byte)this_.Z, (byte)this_.W);
         }
 
         /*public static ColorC FromVector4(Vector4 color)
@@ -71,10 +71,10 @@ namespace TombLib.Utils
         }
 
         public static bool operator ==(ImageC first, ImageC second) =>
-            (first.Width == second.Width) && (first.Height == second.Height) && (first._data == second._data);
+            first.Width == second.Width && first.Height == second.Height && first._data == second._data;
         public static bool operator !=(ImageC first, ImageC second) => !(first == second);
         public bool Equals(ImageC other) => this == other;
-        public override bool Equals(object other) => (other is ImageC) && this == (ImageC)other;
+        public override bool Equals(object other) => other is ImageC && this == (ImageC)other;
         public override int GetHashCode() => base.GetHashCode();
         public override string ToString() => "Image (Width=" + Width + ", Height=" + Height + ")";
 
@@ -146,16 +146,16 @@ namespace TombLib.Utils
             ushort height = BitConverter.ToUInt16(startBytes, 14);
             byte pixelDepth = startBytes[16];
 
-            if ((colorMapType != 0) && (colorMapType != 1))
+            if (colorMapType != 0 && colorMapType != 1)
                 return false;
             if (colorMapType == 1)
             {
                 if (colorMapFirstEntry >= colorMapLength)
                     return false;
-                if ((colorMapSize == 0) || (colorMapSize > 32))
+                if (colorMapSize == 0 || colorMapSize > 32)
                     return false;
             }
-            if ((width == 0) || (height == 0))
+            if (width == 0 || height == 0)
                 return false;
 
             switch (imageType)
@@ -228,7 +228,7 @@ namespace TombLib.Utils
             stream.Position = startPos;
 
             // Detect special image types
-            if ((startBytes[0] == 0x44) && (startBytes[1] == 0x44) && (startBytes[2] == 0x53) && (startBytes[3] == 0x20))
+            if (startBytes[0] == 0x44 && startBytes[1] == 0x44 && startBytes[2] == 0x53 && startBytes[3] == 0x20)
             {
                 // dds image
                 return FromPfimImage(Pfim.Dds.Create(stream));
@@ -295,7 +295,7 @@ namespace TombLib.Utils
         public static ImageC FromSystemDrawingImage(Image image)
         {
             Bitmap imageAsBitmap = image as Bitmap;
-            if ((imageAsBitmap != null) && (imageAsBitmap.PixelFormat == PixelFormat.Format32bppArgb))
+            if (imageAsBitmap != null && imageAsBitmap.PixelFormat == PixelFormat.Format32bppArgb)
                 return FromSystemDrawingBitmapMatchingPixelFormat(imageAsBitmap);
 
             using (var convertedBitmap = new Bitmap(image.Width, image.Height))
@@ -404,9 +404,9 @@ namespace TombLib.Utils
         public unsafe void CopyFrom(int toX, int toY, ImageC fromImage, int fromX, int fromY, int width, int height)
         {
             // Check coordinates
-            if ((toX < 0) || (toY < 0) || (fromX < 0) || (fromY < 0) || (width < 0) || (height < 0) ||
-                (toX + width > Width) || (toY + height > Height) ||
-                (fromX + width > fromImage.Width) || (fromY + height > fromImage.Height))
+            if (toX < 0 || toY < 0 || fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
+                toX + width > Width || toY + height > Height ||
+                fromX + width > fromImage.Width || fromY + height > fromImage.Height)
                 throw new ArgumentOutOfRangeException();
 
             // Copy data quickly
@@ -484,8 +484,8 @@ namespace TombLib.Utils
         public unsafe bool HasAlpha(int X, int Y, int width, int height)
         {
             // Check coordinates
-            if ((X < 0) || (Y < 0) || (width < 0) || (height < 0) ||
-                (X + width > Width) || (Y + height > Height))
+            if (X < 0 || Y < 0 || width < 0 || height < 0 ||
+                X + width > Width || Y + height > Height)
                 throw new ArgumentOutOfRangeException();
 
             // Check for alpha
@@ -517,12 +517,12 @@ namespace TombLib.Utils
 
         public byte[] ToByteArray()
         {
-            return (new MemoryStream(_data)).ToArray();
+            return new MemoryStream(_data).ToArray();
         }
 
         public Stream ToRawStream(int yStart, int Height)
         {
-            return new MemoryStream(_data, yStart * (Width * PixelSize), Height * (Width * PixelSize));
+            return new MemoryStream(_data, yStart * Width * PixelSize, Height * Width * PixelSize);
         }
 
         public ulong HashImageData(System.Security.Cryptography.HashAlgorithm hashAlgorithm)

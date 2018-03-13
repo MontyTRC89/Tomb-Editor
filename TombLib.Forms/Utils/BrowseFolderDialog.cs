@@ -51,7 +51,7 @@ namespace TombLib.Utils
 
         private DialogResult ShowVistaDialog(IWin32Window owner)
         {
-            var frm = (NativeMethods.IFileDialog)(new NativeMethods.FileOpenDialogRCW());
+            var frm = (NativeMethods.IFileDialog)new NativeMethods.FileOpenDialogRCW();
             uint options;
             frm.GetOptions(out options);
             options |= NativeMethods.FOS_PICKFOLDERS | NativeMethods.FOS_FORCEFILESYSTEM | NativeMethods.FOS_NOVALIDATE | NativeMethods.FOS_NOTESTFILECREATE | NativeMethods.FOS_DONTADDTORECENT;

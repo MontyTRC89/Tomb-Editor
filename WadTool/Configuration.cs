@@ -99,14 +99,14 @@ namespace WadTool
 
                 // Parse variable
                 VariableType variableType;
-                if ((!Enum.TryParse(variableName, out variableType)) ||
+                if (!Enum.TryParse(variableName, out variableType) ||
                     excluded.Contains(variableType))
                 {
                     startIndex = endIndex + VariableEnd.Length;
                     continue;
                 }
                 string variableContent = GetVariable(variableType);
-                path = path.Remove(startIndex, (endIndex + VariableEnd.Length) - startIndex);
+                path = path.Remove(startIndex, endIndex + VariableEnd.Length - startIndex);
                 path = path.Insert(startIndex, variableContent);
                 startIndex += variableContent.Length;
             } while (true);
@@ -151,7 +151,7 @@ namespace WadTool
 
         public static Configuration Load(Stream stream)
         {
-            return (Configuration)(new XmlSerializer(typeof(Configuration)).Deserialize(stream));
+            return (Configuration)new XmlSerializer(typeof(Configuration)).Deserialize(stream);
         }
 
         public static Configuration Load(string filePath)

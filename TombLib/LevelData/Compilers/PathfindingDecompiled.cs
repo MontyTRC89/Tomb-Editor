@@ -62,7 +62,7 @@ namespace TombLib.LevelData.Compilers
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
-                                int boxIndex = (_level.Settings.GameVersion >= GameVersion.TR3 ? 0x7ff : 0xffff);
+                                int boxIndex = _level.Settings.GameVersion >= GameVersion.TR3 ? 0x7ff : 0xffff;
                                 if (!room.FlagExcludeFromPathFinding)
                                 {
                                     dec_tr_box_aux box = new dec_tr_box_aux();
@@ -288,7 +288,7 @@ namespace TombLib.LevelData.Compilers
 
             if (block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall ||
-                ((block.WallPortal != null) && (block.FloorPortal.Opacity == PortalOpacity.SolidFaces)))
+                block.WallPortal != null && block.FloorPortal.Opacity == PortalOpacity.SolidFaces)
             {
                 return false;
             }
@@ -677,7 +677,7 @@ namespace TombLib.LevelData.Compilers
                 while (room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
                 {
                     Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
-                    if ((room.WaterLevel != 0) != (adjoiningRoom.WaterLevel != 0))
+                    if (room.WaterLevel != 0 != (adjoiningRoom.WaterLevel != 0))
                         break;
 
                     dec_currentRoom = adjoiningRoom;
@@ -698,7 +698,7 @@ namespace TombLib.LevelData.Compilers
         private bool Dec_IsOutsideOrdBorderRoom(int x, int z)
         {
             Room room = dec_currentRoom;
-            return (x < 0 || z < 0 || x > room.NumXSectors - 1 || z > room.NumZSectors - 1);
+            return x < 0 || z < 0 || x > room.NumXSectors - 1 || z > room.NumZSectors - 1;
         }
 
         private int Dec_GetBoxFloorHeight(int x, int z)
@@ -727,9 +727,9 @@ namespace TombLib.LevelData.Compilers
 
             // If block is a wall or is a vertical toggle opacity 1
             // Note that is & 8 because wall and border wall are the only blocks with bit 4 (0x08) set
-            if (((block.Type == BlockType.Wall ||
-                block.Type == BlockType.BorderWall) && block.WallPortal == null) ||
-                ((block.WallPortal != null) && (block.WallPortal.Opacity == PortalOpacity.SolidFaces)) ||
+            if ((block.Type == BlockType.Wall ||
+                 block.Type == BlockType.BorderWall) && block.WallPortal == null ||
+                block.WallPortal != null && block.WallPortal.Opacity == PortalOpacity.SolidFaces ||
                 (block.Flags & BlockFlags.NotWalkableFloor) != 0)
             {
                 dec_q0 = -1;
@@ -741,7 +741,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // If it's not a wall portal or is vertical toggle opacity 1
-            if ((block.WallPortal == null || block.WallPortal.Opacity == PortalOpacity.SolidFaces))
+            if (block.WallPortal == null || block.WallPortal.Opacity == PortalOpacity.SolidFaces)
             {
 
             }
@@ -768,7 +768,7 @@ namespace TombLib.LevelData.Compilers
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
 
-                if ((room.WaterLevel != 0) != (adjoiningRoom2.WaterLevel != 0))
+                if (room.WaterLevel != 0 != (adjoiningRoom2.WaterLevel != 0))
                     break;
 
                 dec_currentRoom = adjoiningRoom2;
@@ -793,10 +793,10 @@ namespace TombLib.LevelData.Compilers
             dec_q2 = block.QA[2];
             dec_q3 = block.QA[3];
 
-            int slope1 = (Math.Abs(dec_q0 - dec_q1) >= 3 ? 1 : 0);
-            int slope2 = (Math.Abs(dec_q1 - dec_q2) >= 3 ? 1 : 0);
-            int slope3 = (Math.Abs(dec_q2 - dec_q3) >= 3 ? 1 : 0);
-            int slope4 = (Math.Abs(dec_q3 - dec_q0) >= 3 ? 1 : 0);
+            int slope1 = Math.Abs(dec_q0 - dec_q1) >= 3 ? 1 : 0;
+            int slope2 = Math.Abs(dec_q1 - dec_q2) >= 3 ? 1 : 0;
+            int slope3 = Math.Abs(dec_q2 - dec_q3) >= 3 ? 1 : 0;
+            int slope4 = Math.Abs(dec_q3 - dec_q0) >= 3 ? 1 : 0;
 
             bool someFlag = false;
 
@@ -829,7 +829,7 @@ namespace TombLib.LevelData.Compilers
             int floorHeight = meanFloorCornerHeight + (int)room.Position.Y;
             int ceiling = block.CeilingMax + (int)room.Position.Y;
 
-            if (dec_water && room.WaterLevel != 0 && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null)
+            if (dec_water && room.WaterLevel != 0 && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
             {
                 Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
                 if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;

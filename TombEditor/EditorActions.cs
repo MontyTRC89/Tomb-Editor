@@ -131,12 +131,12 @@ namespace TombEditor
                     if (block == null)
                         return;
 
-                    if (((verticalSubdivision == 0 || verticalSubdivision == 2) && block.FloorDiagonalSplit == DiagonalSplit.None) ||
-                       ((verticalSubdivision == 1 || verticalSubdivision == 3) && block.CeilingDiagonalSplit == DiagonalSplit.None))
+                    if ((verticalSubdivision == 0 || verticalSubdivision == 2) && block.FloorDiagonalSplit == DiagonalSplit.None ||
+                       (verticalSubdivision == 1 || verticalSubdivision == 3) && block.CeilingDiagonalSplit == DiagonalSplit.None)
                     {
                         if (smoothEditingType == SmoothGeometryEditingType.Any ||
-                           (!block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor) ||
-                           (!block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall))
+                           !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
+                           !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall)
                         {
                             block.ChangeEdge(verticalSubdivision, edge, increment);
                             block.FixHeights(verticalSubdivision);
@@ -188,10 +188,10 @@ namespace TombEditor
                         }
                         else
                         {
-                            var floor = (verticalSubdivision % 2 == 0);
+                            var floor = verticalSubdivision % 2 == 0;
                             var currentFaces = block.GetVerticalSubdivision(verticalSubdivision);
                             var currentSplit = floor ? block.FloorDiagonalSplit : block.CeilingDiagonalSplit;
-                            var incrementInvalid = floor ? (increment < 0) : (increment > 0);
+                            var incrementInvalid = floor ? increment < 0 : increment > 0;
                             int[] corners = new int[2] { 0, 0 };
                             DiagonalSplit[] splits = new DiagonalSplit[2] { DiagonalSplit.None, DiagonalSplit.None };
 
@@ -202,28 +202,28 @@ namespace TombEditor
                                     corners[0] = 0;
                                     corners[1] = 1;
                                     splits[0] = DiagonalSplit.XpZn;
-                                    splits[1] = (arrow == EditorArrowType.CornerNW) ? DiagonalSplit.XnZp : DiagonalSplit.XnZn;
+                                    splits[1] = arrow == EditorArrowType.CornerNW ? DiagonalSplit.XnZp : DiagonalSplit.XnZn;
                                     break;
                                 case EditorArrowType.EdgeE:
                                 case EditorArrowType.CornerNE:
                                     corners[0] = 1;
                                     corners[1] = 2;
                                     splits[0] = DiagonalSplit.XnZn;
-                                    splits[1] = (arrow == EditorArrowType.CornerNE) ? DiagonalSplit.XpZp : DiagonalSplit.XnZp;
+                                    splits[1] = arrow == EditorArrowType.CornerNE ? DiagonalSplit.XpZp : DiagonalSplit.XnZp;
                                     break;
                                 case EditorArrowType.EdgeS:
                                 case EditorArrowType.CornerSE:
                                     corners[0] = 2;
                                     corners[1] = 3;
                                     splits[0] = DiagonalSplit.XnZp;
-                                    splits[1] = (arrow == EditorArrowType.CornerSE) ? DiagonalSplit.XpZn : DiagonalSplit.XpZp;
+                                    splits[1] = arrow == EditorArrowType.CornerSE ? DiagonalSplit.XpZn : DiagonalSplit.XpZp;
                                     break;
                                 case EditorArrowType.EdgeW:
                                 case EditorArrowType.CornerSW:
                                     corners[0] = 3;
                                     corners[1] = 0;
                                     splits[0] = DiagonalSplit.XpZp;
-                                    splits[1] = (arrow == EditorArrowType.CornerSW) ? DiagonalSplit.XnZn : DiagonalSplit.XpZn;
+                                    splits[1] = arrow == EditorArrowType.CornerSW ? DiagonalSplit.XnZn : DiagonalSplit.XpZn;
                                     break;
                             }
 
@@ -293,10 +293,10 @@ namespace TombEditor
 
         public static void SmoothSector(Room room, int x, int z, int v)
         {
-            var floor = (v % 2 == 0);
+            var floor = v % 2 == 0;
             var currBlock = room.GetBlockTryThroughPortal(x, z);
 
-            if (currBlock.Room != room || (floor && currBlock.Block.FloorDiagonalSplit != DiagonalSplit.None) || (!floor && currBlock.Block.CeilingDiagonalSplit != DiagonalSplit.None))
+            if (currBlock.Room != room || floor && currBlock.Block.FloorDiagonalSplit != DiagonalSplit.None || !floor && currBlock.Block.CeilingDiagonalSplit != DiagonalSplit.None)
                 return;
 
             Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
@@ -317,25 +317,25 @@ namespace TombEditor
 
             short[] newFaces = new short[4];
 
-            int validBlockCnt = ((lookupBlocks[7].Room != null ? 1 : 0) + (lookupBlocks[0].Room != null ? 1 : 0) + (lookupBlocks[1].Room != null ? 1 : 0));
+            int validBlockCnt = (lookupBlocks[7].Room != null ? 1 : 0) + (lookupBlocks[0].Room != null ? 1 : 0) + (lookupBlocks[1].Room != null ? 1 : 0);
             newFaces[0] = (short)(((lookupBlocks[7].Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[7] +
                                    (lookupBlocks[0].Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[0] +
-                                   (lookupBlocks[1].Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[1]) / (validBlockCnt));
+                                   (lookupBlocks[1].Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[1]) / validBlockCnt);
 
-            validBlockCnt = ((lookupBlocks[1].Room != null ? 1 : 0) + (lookupBlocks[2].Room != null ? 1 : 0) + (lookupBlocks[3].Room != null ? 1 : 0));
+            validBlockCnt = (lookupBlocks[1].Room != null ? 1 : 0) + (lookupBlocks[2].Room != null ? 1 : 0) + (lookupBlocks[3].Room != null ? 1 : 0);
             newFaces[1] = (short)(((lookupBlocks[1].Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2] +
                                    (lookupBlocks[2].Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
-                                   (lookupBlocks[3].Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0]) / (validBlockCnt));
+                                   (lookupBlocks[3].Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0]) / validBlockCnt);
 
-            validBlockCnt = ((lookupBlocks[3].Room != null ? 1 : 0) + (lookupBlocks[4].Room != null ? 1 : 0) + (lookupBlocks[5].Room != null ? 1 : 0));
+            validBlockCnt = (lookupBlocks[3].Room != null ? 1 : 0) + (lookupBlocks[4].Room != null ? 1 : 0) + (lookupBlocks[5].Room != null ? 1 : 0);
             newFaces[2] = (short)(((lookupBlocks[3].Block?.GetVerticalSubdivision(v)[3] ?? 0) + adj[3] +
                                    (lookupBlocks[4].Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
-                                   (lookupBlocks[5].Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1]) / (validBlockCnt));
+                                   (lookupBlocks[5].Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1]) / validBlockCnt);
 
-            validBlockCnt = ((lookupBlocks[5].Room != null ? 1 : 0) + (lookupBlocks[6].Room != null ? 1 : 0) + (lookupBlocks[7].Room != null ? 1 : 0));
+            validBlockCnt = (lookupBlocks[5].Room != null ? 1 : 0) + (lookupBlocks[6].Room != null ? 1 : 0) + (lookupBlocks[7].Room != null ? 1 : 0);
             newFaces[3] = (short)(((lookupBlocks[5].Block?.GetVerticalSubdivision(v)[0] ?? 0) + adj[0] +
                                    (lookupBlocks[6].Block?.GetVerticalSubdivision(v)[1] ?? 0) + adj[1] +
-                                   (lookupBlocks[7].Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2]) / (validBlockCnt));
+                                   (lookupBlocks[7].Block?.GetVerticalSubdivision(v)[2] ?? 0) + adj[2]) / validBlockCnt);
 
             currBlock.Block.GetVerticalSubdivision(v)[0] += (short)Math.Sign(newFaces[0] - currBlock.Block.GetVerticalSubdivision(v)[0]);
             currBlock.Block.GetVerticalSubdivision(v)[1] += (short)Math.Sign(newFaces[1] - currBlock.Block.GetVerticalSubdivision(v)[1]);
@@ -350,17 +350,17 @@ namespace TombEditor
             if (precise)
                 heightScale /= 4;
 
-            bool linearShape = (type <= EditorToolType.HalfPipe);
-            bool uniformShape = (type >= EditorToolType.HalfPipe);
-            bool step90 = (arrow <= EditorArrowType.EdgeW);
-            bool turn90 = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
+            bool linearShape = type <= EditorToolType.HalfPipe;
+            bool uniformShape = type >= EditorToolType.HalfPipe;
+            bool step90 = arrow <= EditorArrowType.EdgeW;
+            bool turn90 = arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE;
             bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW) ^ uniformShape;
             bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE) ^ uniformShape;
-            bool uniformAlign = (arrow != EditorArrowType.EntireFace && type > EditorToolType.HalfPipe && step90);
+            bool uniformAlign = arrow != EditorArrowType.EntireFace && type > EditorToolType.HalfPipe && step90;
 
             double sizeX = area.Width + (stepped ? 0 : 1);
             double sizeZ = area.Height + (stepped ? 0 : 1);
-            double grainBias = (uniformShape ? (!step90 ? 0 : 1) : 0);
+            double grainBias = uniformShape ? (!step90 ? 0 : 1) : 0;
             double grainX = (1 + grainBias) / sizeX / (uniformAlign && turn90 ? 2 : 1);
             double grainZ = (1 + grainBias) / sizeZ / (uniformAlign && !turn90 ? 2 : 1);
 
@@ -368,8 +368,8 @@ namespace TombEditor
                 for (int h = area.Y0, z = 0; h != area.Y0 + sizeZ + 1; h++, z++)
                 {
                     double currentHeight;
-                    double currX = (linearShape && !turn90 && step90) ? 0 : grainX * (reverseX ? sizeX - x : x) - (uniformAlign && turn90 ? 0 : grainBias);
-                    double currZ = (linearShape && turn90 && step90) ? 0 : grainZ * (reverseZ ? sizeZ - z : z) - (uniformAlign && !turn90 ? 0 : grainBias);
+                    double currX = linearShape && !turn90 && step90 ? 0 : grainX * (reverseX ? sizeX - x : x) - (uniformAlign && turn90 ? 0 : grainBias);
+                    double currZ = linearShape && turn90 && step90 ? 0 : grainZ * (reverseZ ? sizeZ - z : z) - (uniformAlign && !turn90 ? 0 : grainBias);
 
                     switch (type)
                     {
@@ -404,23 +404,23 @@ namespace TombEditor
             if (precise)
                 heightScale /= 4;
 
-            bool allFace = (arrow == EditorArrowType.EntireFace);
-            bool step90 = (arrow <= EditorArrowType.EdgeW);
-            bool turn90 = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE);
-            bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW);
-            bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE);
+            bool allFace = arrow == EditorArrowType.EntireFace;
+            bool step90 = arrow <= EditorArrowType.EdgeW;
+            bool turn90 = arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE;
+            bool reverseX = arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW;
+            bool reverseZ = arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE;
 
-            float smoothGrainX = (float)(allFace || (step90 && !turn90) ? Math.PI : (Math.PI * 0.5f)) / (area.Width + 1);
-            float smoothGrainZ = (float)(allFace || (step90 && turn90) ? Math.PI : (Math.PI * 0.5f)) / (area.Height + 1);
+            float smoothGrainX = (float)(allFace || step90 && !turn90 ? Math.PI : Math.PI * 0.5f) / (area.Width + 1);
+            float smoothGrainZ = (float)(allFace || step90 && turn90 ? Math.PI : Math.PI * 0.5f) / (area.Height + 1);
 
             for (int w = area.X0, x = 0; w < area.X1 + 2; w++, x++)
                 for (int h = area.Y0, z = 0; h != area.Y1 + 2; h++, z++)
                 {
-                    var smoothFactor = raw ? 1 : (Math.Sin(smoothGrainX * (reverseX ? area.Width + 1 - x : x)) * Math.Sin(smoothGrainZ * (reverseZ ? area.Height + 1 - z : z)));
+                    var smoothFactor = raw ? 1 : Math.Sin(smoothGrainX * (reverseX ? area.Width + 1 - x : x)) * Math.Sin(smoothGrainZ * (reverseZ ? area.Height + 1 - z : z));
 
                     int currX = x * (heightmap.GetLength(0) / (area.Width + 2));
                     int currZ = z * (heightmap.GetLength(1) / (area.Height + 2));
-                    room.ModifyPoint(w, h, verticalSubdivision, (short)(Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale)), area);
+                    room.ModifyPoint(w, h, verticalSubdivision, (short)Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale), area);
                 }
             SmartBuildGeometry(room, area);
         }
@@ -470,7 +470,7 @@ namespace TombEditor
                 trigger.TargetType = TriggerTargetType.Sink;
                 trigger.Target = _editor.SelectedObject;
             }
-            else if (_editor.SelectedObject is StaticInstance && (_editor.Level.Settings.GameVersion == GameVersion.TRNG))
+            else if (_editor.SelectedObject is StaticInstance && _editor.Level.Settings.GameVersion == GameVersion.TRNG)
             {
                 trigger.TargetType = TriggerTargetType.FlipEffect;
                 trigger.Target = new TriggerParameterUshort(160);
@@ -512,8 +512,8 @@ namespace TombEditor
             }
             // Set some limits to scale
             // TODO: object risks to be too small and to be not pickable. We should add some size check
-            if (newScale < (1 / 32.0f))
-                newScale = (1 / 32.0f);
+            if (newScale < 1 / 32.0f)
+                newScale = 1 / 32.0f;
             if (newScale > 128.0f)
                 newScale = 128.0f;
             instance.Scale = newScale;
@@ -533,11 +533,11 @@ namespace TombEditor
 
             // Limit movement precision
             if (precision.X > 0.0f)
-                pos.X = ((float)Math.Round(pos.X / precision.X)) * precision.X;
+                pos.X = (float)Math.Round(pos.X / precision.X) * precision.X;
             if (precision.Y > 0.0f)
-                pos.Y = ((float)Math.Round(pos.Y / precision.Y)) * precision.Y;
+                pos.Y = (float)Math.Round(pos.Y / precision.Y) * precision.Y;
             if (precision.Z > 0.0f)
-                pos.Z = ((float)Math.Round(pos.Z / precision.Z)) * precision.Z;
+                pos.Z = (float)Math.Round(pos.Z / precision.Z) * precision.Z;
 
             // Limit movement area
             if (!canGoOutsideRoom)
@@ -545,8 +545,8 @@ namespace TombEditor
                 float x = (float)Math.Floor(pos.X / 1024.0f);
                 float z = (float)Math.Floor(pos.Z / 1024.0f);
 
-                if ((x < 0.0f) || (x > (instance.Room.NumXSectors - 1)) ||
-                    (z < 0.0f) || (z > (instance.Room.NumZSectors - 1)))
+                if (x < 0.0f || x > instance.Room.NumXSectors - 1 ||
+                    z < 0.0f || z > instance.Room.NumZSectors - 1)
                     return;
 
                 Block block = instance.Room.Blocks[(int)x, (int)z];
@@ -1190,7 +1190,7 @@ namespace TombEditor
                 maxSectionHeight = overrideHeights[1];
             }
 
-            float sectionHeight = (maxSectionHeight - minSectionHeight);
+            float sectionHeight = maxSectionHeight - minSectionHeight;
             bool inverted = false;
 
             foreach (var segment in segments)
@@ -1219,8 +1219,8 @@ namespace TombEditor
 
                         processedTexture.TexCoord0.X = texture.TexCoord0.X + stride * iteration;
                         processedTexture.TexCoord1.X = texture.TexCoord1.X + stride * iteration;
-                        processedTexture.TexCoord3.X = texture.TexCoord3.X - stride * (subdivisions - (iteration));
-                        processedTexture.TexCoord2.X = texture.TexCoord2.X - stride * (subdivisions - (iteration));
+                        processedTexture.TexCoord3.X = texture.TexCoord3.X - stride * (subdivisions - iteration);
+                        processedTexture.TexCoord2.X = texture.TexCoord2.X - stride * (subdivisions - iteration);
                     }
 
                 }
@@ -1245,8 +1245,8 @@ namespace TombEditor
 
                         processedTexture.TexCoord2.Y = texture.TexCoord2.Y + stride * iteration;
                         processedTexture.TexCoord3.Y = texture.TexCoord3.Y + stride * iteration;
-                        processedTexture.TexCoord1.Y = texture.TexCoord1.Y - stride * (subdivisions - (iteration));
-                        processedTexture.TexCoord0.Y = texture.TexCoord0.Y - stride * (subdivisions - (iteration));
+                        processedTexture.TexCoord1.Y = texture.TexCoord1.Y - stride * (subdivisions - iteration);
+                        processedTexture.TexCoord0.Y = texture.TexCoord0.Y - stride * (subdivisions - iteration);
                     }
                 }
 
@@ -1256,12 +1256,12 @@ namespace TombEditor
 
         public static void TexturizeGroup(Room room, SectorSelection selection, TextureArea texture, BlockFace pickedFace, bool subdivideWalls = false, bool unifyHeight = false)
         {
-            RectangleInt2 area = (selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea);
+            RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
 
             if (pickedFace < BlockFace.Floor)
             {
-                int xSubs = (subdivideWalls == true ? area.X1 - area.X0 : 0);
-                int zSubs = (subdivideWalls == true ? area.Y1 - area.Y0 : 0);
+                int xSubs = subdivideWalls == true ? area.X1 - area.X0 : 0;
+                int zSubs = subdivideWalls == true ? area.Y1 - area.Y0 : 0;
 
                 for (int x = area.X0, iterX = 0; x <= area.X1; x++, iterX++)
                     for (int z = area.Y0, iterZ = 0; z <= area.Y1; z++, iterZ++)
@@ -1269,58 +1269,58 @@ namespace TombEditor
                         {
                             case BlockFace.NegativeX_QA:
                             case BlockFace.NegativeX_ED:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Floor) : null);
                                 break;
 
                             case BlockFace.NegativeX_Middle:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Wall, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Wall) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Wall) : null);
                                 break;
 
                             case BlockFace.NegativeX_RF:
                             case BlockFace.NegativeX_WS:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeX, BlockFaceType.Ceiling) : null);
                                 break;
 
                             case BlockFace.PositiveX_QA:
                             case BlockFace.PositiveX_ED:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Floor, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Floor) : null);
                                 break;
 
                             case BlockFace.PositiveX_Middle:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Wall, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Wall) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Wall, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Wall) : null);
                                 break;
 
                             case BlockFace.PositiveX_RF:
                             case BlockFace.PositiveX_WS:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveX, BlockFaceType.Ceiling, texture, zSubs, iterZ, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveX, BlockFaceType.Ceiling) : null);
                                 break;
 
                             case BlockFace.NegativeZ_QA:
                             case BlockFace.NegativeZ_ED:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Floor) : null);
                                 break;
 
                             case BlockFace.NegativeZ_Middle:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Wall, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Wall) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Wall) : null);
                                 break;
 
                             case BlockFace.NegativeZ_RF:
                             case BlockFace.NegativeZ_WS:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.NegativeZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.NegativeZ, BlockFaceType.Ceiling) : null);
                                 break;
 
                             case BlockFace.PositiveZ_QA:
                             case BlockFace.PositiveZ_ED:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Floor, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Floor) : null);
                                 break;
 
                             case BlockFace.PositiveZ_Middle:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Wall, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Wall) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Wall, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Wall) : null);
                                 break;
 
                             case BlockFace.PositiveZ_RF:
                             case BlockFace.PositiveZ_WS:
-                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, (unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null));
+                                TexturizeWallSection(room, new VectorInt2(x, z), Direction.PositiveZ, BlockFaceType.Ceiling, texture, xSubs, iterX, unifyHeight ? GetAreaExtremums(room, area, Direction.PositiveZ, BlockFaceType.Ceiling) : null);
                                 break;
 
                             case BlockFace.DiagonalQA:
@@ -1381,7 +1381,7 @@ namespace TombEditor
 
         public static void TexturizeAll(Room room, SectorSelection selection, TextureArea texture, BlockFaceType type)
         {
-            RectangleInt2 area = (selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea);
+            RectangleInt2 area = selection.Valid ? selection.Area : _editor.SelectedRoom.LocalArea;
 
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
@@ -1430,7 +1430,7 @@ namespace TombEditor
             HashSet<Room> rooms = new HashSet<Room>(rooms_);
 
             // Check if is the last room
-            int remainingRoomCount = _editor.Level.Rooms.Count(r => (r != null) && !rooms.Contains(r) && !rooms.Contains(r.AlternateVersion));
+            int remainingRoomCount = _editor.Level.Rooms.Count(r => r != null && !rooms.Contains(r) && !rooms.Contains(r.AlternateVersion));
             if (remainingRoomCount <= 0)
             {
                 DarkMessageBox.Show(owner, "You must have at least one room in your level.", "Error", MessageBoxIcon.Error);
@@ -1469,7 +1469,7 @@ namespace TombEditor
         public static void CropRoom(Room room, RectangleInt2 newArea, IWin32Window owner)
         {
             newArea = newArea.Inflate(1);
-            if ((newArea.Width + 1) > Room.MaxRoomDimensions || (newArea.Height + 1) > Room.MaxRoomDimensions)
+            if (newArea.Width + 1 > Room.MaxRoomDimensions || newArea.Height + 1 > Room.MaxRoomDimensions)
             {
                 DarkMessageBox.Show(owner, "The selected area exceeds the maximum room size.", "Error", MessageBoxIcon.Error);
                 return;
@@ -1488,7 +1488,7 @@ namespace TombEditor
             room.UpdateCompletely();
 
             // Fix selection if necessary
-            if ((_editor.SelectedRoom == room) && _editor.SelectedSectors.Valid)
+            if (_editor.SelectedRoom == room && _editor.SelectedSectors.Valid)
             {
                 var selection = _editor.SelectedSectors;
                 selection.Area = selection.Area.Intersect(newArea) - newArea.Start;
@@ -1880,7 +1880,7 @@ namespace TombEditor
 
                 foreach (Room neighborRoom in _editor.Level.Rooms.Where(possibleNeighborRoom => possibleNeighborRoom != null))
                 {
-                    if ((neighborRoom == room) || (neighborRoom == room.AlternateVersion))
+                    if (neighborRoom == room || neighborRoom == room.AlternateVersion)
                         continue;
                     RectangleInt2 neighborArea = area + (room.SectorPos - neighborRoom.SectorPos);
                     if (!new RectangleInt2(0, 0, neighborRoom.NumXSectors - 1, neighborRoom.NumZSectors - 1).Contains(neighborArea))
@@ -1892,7 +1892,7 @@ namespace TombEditor
                     if (neighborVerticalSpaceLocal == null)
                         continue;
                     VerticalSpace neighborVerticalSpace = neighborVerticalSpaceLocal.Value + neighborRoom.Position.Y;
-                    if (!((verticalSpace.FloorY <= neighborVerticalSpace.CeilingY) && (verticalSpace.CeilingY >= neighborVerticalSpace.FloorY)))
+                    if (!(verticalSpace.FloorY <= neighborVerticalSpace.CeilingY && verticalSpace.CeilingY >= neighborVerticalSpace.FloorY))
                         continue;
 
                     // Decide on a direction
@@ -1909,13 +1909,13 @@ namespace TombEditor
                             candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Ceiling, neighborRoom));
                         }
                     }
-                    if ((area.Width == 0) && (area.X0 == 0))
+                    if (area.Width == 0 && area.X0 == 0)
                         candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallNegativeX, neighborRoom));
-                    if ((area.Width == 0) && (area.X0 == (room.NumXSectors - 1)))
+                    if (area.Width == 0 && area.X0 == room.NumXSectors - 1)
                         candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallPositiveX, neighborRoom));
-                    if ((area.Height == 0) && (area.Y0 == 0))
+                    if (area.Height == 0 && area.Y0 == 0)
                         candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallNegativeZ, neighborRoom));
-                    if ((area.Height == 0) && (area.Y0 == (room.NumZSectors - 1)))
+                    if (area.Height == 0 && area.Y0 == room.NumZSectors - 1)
                         candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallPositiveZ, neighborRoom));
                 }
             }
@@ -1925,7 +1925,7 @@ namespace TombEditor
                 using (var form = new FormChooseRoom("More than one possible room found that can be connected. " +
                     "Please choose one:", candidates.Select(candidate => candidate.Item2), selectedRoom => _editor.SelectedRoom = selectedRoom))
                 {
-                    if ((form.ShowDialog(owner) != DialogResult.OK) || (form.SelectedRoom == null))
+                    if (form.ShowDialog(owner) != DialogResult.OK || form.SelectedRoom == null)
                         return;
                     candidates.RemoveAll(candidate => candidate.Item2 != form.SelectedRoom);
                 }
@@ -2010,7 +2010,7 @@ namespace TombEditor
             Random rng = new Random();
             for (int x = 1; x <= area.Width; x++)
                 for (int z = 1; z <= area.Height; z++)
-                    changes[x, z] = ((float)rng.NextDouble()) * strengthDirection;
+                    changes[x, z] = (float)rng.NextDouble() * strengthDirection;
 
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
@@ -2027,7 +2027,7 @@ namespace TombEditor
             Random rng = new Random();
             for (int x = 1; x <= area.Width; x++)
                 for (int z = 1; z <= area.Height; z++)
-                    changes[x, z] = ((float)rng.NextDouble()) * strengthDirection;
+                    changes[x, z] = (float)rng.NextDouble() * strengthDirection;
 
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
@@ -2045,7 +2045,7 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (int i = 0; i < 4; ++i)
                         room.Blocks[area.X0 + x, area.Y0 + z].QA[i] +=
-                            (short)Math.Round(((float)rng.NextDouble()) * strengthDirection);
+                            (short)Math.Round((float)rng.NextDouble() * strengthDirection);
 
             SmartBuildGeometry(room, area);
         }
@@ -2057,7 +2057,7 @@ namespace TombEditor
                 for (int z = 0; z <= area.Height; z++)
                     for (int i = 0; i < 4; ++i)
                         room.Blocks[area.X0 + x, area.Y0 + z].WS[i] +=
-                            (short)Math.Round(((float)rng.NextDouble()) * strengthDirection);
+                            (short)Math.Round((float)rng.NextDouble() * strengthDirection);
 
             SmartBuildGeometry(room, area);
         }
@@ -2136,10 +2136,10 @@ namespace TombEditor
 
                                 // Use the closest available vertical area information and divide it equally
                                 VerticalSpace verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
-                                block.ED[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 4.0f + verticalArea.CeilingY * 1.0f) / 5.0f) : verticalArea.FloorY);
-                                block.QA[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 3.0f + verticalArea.CeilingY * 2.0f) / 5.0f) : ((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 1.0f) / 3.0f));
-                                block.WS[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f) : ((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f));
-                                block.RF[i] = (short)Math.Round(fiveDivisions ? ((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 4.0f) / 5.0f) : verticalArea.CeilingY);
+                                block.ED[i] = (short)Math.Round(fiveDivisions ? (verticalArea.FloorY * 4.0f + verticalArea.CeilingY * 1.0f) / 5.0f : verticalArea.FloorY);
+                                block.QA[i] = (short)Math.Round(fiveDivisions ? (verticalArea.FloorY * 3.0f + verticalArea.CeilingY * 2.0f) / 5.0f : (verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 1.0f) / 3.0f);
+                                block.WS[i] = (short)Math.Round(fiveDivisions ? (verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f : (verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f);
+                                block.RF[i] = (short)Math.Round(fiveDivisions ? (verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 4.0f) / 5.0f : verticalArea.CeilingY);
                             }
                     }
                 }
@@ -2205,7 +2205,7 @@ namespace TombEditor
             _editor.RoomListChange();
 
             // Fix selection
-            if ((_editor.SelectedRoom == room) && _editor.SelectedSectors.Valid)
+            if (_editor.SelectedRoom == room && _editor.SelectedSectors.Valid)
             {
                 var selection = _editor.SelectedSectors;
                 selection.Area = selection.Area + new VectorInt2((int)(oldRoomPos.X - room.Position.X), (int)(oldRoomPos.Z - room.Position.Z));
@@ -2230,7 +2230,7 @@ namespace TombEditor
 
         public static bool CheckForRoomAndBlockSelection(IWin32Window owner)
         {
-            if ((_editor.SelectedRoom == null) || !_editor.SelectedSectors.Valid)
+            if (_editor.SelectedRoom == null || !_editor.SelectedSectors.Valid)
             {
                 DarkMessageBox.Show(owner, "Please select a valid group of sectors", "Error", MessageBoxIcon.Error);
                 return false;
@@ -2282,11 +2282,11 @@ namespace TombEditor
 
         public static void BuildLevelAndPlay(IWin32Window owner)
         {
-            if ((_editor?.Level?.Wad?.Moveables[WadMoveableId.Lara] != null) &&
+            if (_editor?.Level?.Wad?.Moveables[WadMoveableId.Lara] != null &&
                  _editor.Level.Rooms
                 .Where(room => room != null)
                 .SelectMany(room => room.Objects)
-                .Any(obj => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara)))
+                .Any(obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara)))
             {
                 if (BuildLevel(true, owner))
                     TombLauncher.Launch(_editor.Level.Settings, owner);
@@ -2392,7 +2392,7 @@ namespace TombEditor
             foreach (string file in files)
                 if (Wad2.WadFormatExtensions.Matches(file) ||
                     LevelTexture.FileExtensions.Matches(file) ||
-                    (allow3DImport && ImportedGeometry.FileExtensions.Matches(file)) ||
+                    allow3DImport && ImportedGeometry.FileExtensions.Matches(file) ||
                     file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase) ||
                     file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
                     return true;
@@ -2407,7 +2407,7 @@ namespace TombEditor
                 foreach (var instance in room.Objects)
                 {
                     lara = instance as MoveableInstance;
-                    if ((lara != null) && (lara.WadObjectId == WadMoveableId.Lara))
+                    if (lara != null && lara.WadObjectId == WadMoveableId.Lara)
                     {
                         room.RemoveObject(_editor.Level, instance);
                         _editor.ObjectChange(lara, ObjectChangeType.Remove, room);
@@ -2472,7 +2472,7 @@ namespace TombEditor
         public static void SetPortalOpacity(PortalOpacity opacity, IWin32Window owner)
         {
             var portal = _editor.SelectedObject as PortalInstance;
-            if ((_editor.SelectedRoom == null) || (portal == null))
+            if (_editor.SelectedRoom == null || portal == null)
             {
                 DarkMessageBox.Show(owner, "No portal selected.", "Error", MessageBoxIcon.Error);
                 return;

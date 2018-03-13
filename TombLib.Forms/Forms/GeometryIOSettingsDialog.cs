@@ -27,7 +27,7 @@ namespace TombLib.Forms
             if (disposing)
                 SuspendControlListening();
 
-            if (disposing && (components != null))
+            if (disposing && components != null)
             {
                 components.Dispose();
             }
@@ -52,7 +52,7 @@ namespace TombLib.Forms
         public void AddPreset(List<IOGeometrySettingsPreset> presetList)
         {
             foreach (var preset in presetList)
-                if (!_presets.Any((item => item.Name == preset.Name)))
+                if (!_presets.Any(item => item.Name == preset.Name))
                     _presets.Add(preset);
 
             PopulatePresetList();
@@ -60,7 +60,7 @@ namespace TombLib.Forms
 
         public void AddPreset(IOGeometrySettingsPreset preset)
         {
-            if (!_presets.Any((item => item.Name == preset.Name)))
+            if (!_presets.Any(item => item.Name == preset.Name))
             {
                 _presets.Add(preset);
                 PopulatePresetList();

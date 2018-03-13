@@ -8,13 +8,13 @@ namespace TombLib.Utils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int LineIntersectsWithRayFrom00(Vector2 pos0, Vector2 pos1)
         {
-            if ((pos1.Y > 0.0f) == (pos0.Y > 0.0f))
+            if (pos1.Y > 0.0f == pos0.Y > 0.0f)
                 return 0;
 
             float flt0 = (pos1.Y - pos0.Y) * pos1.X;
             float flt1 = (pos1.X - pos0.X) * pos1.Y;
 
-            if ((pos0.Y > pos1.Y) ? (flt0 < flt1) : (flt0 > flt1))
+            if (pos0.Y > pos1.Y ? flt0 < flt1 : flt0 > flt1)
                 return 1;
             return 0;
         }

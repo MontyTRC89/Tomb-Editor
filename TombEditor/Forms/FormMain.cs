@@ -87,7 +87,7 @@ namespace TombEditor.Forms
                 Application.RemoveMessageFilter(dockArea.DockResizeFilter);
                 _editor.EditorEventRaised -= EditorEventRaised;
             }
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -165,15 +165,15 @@ namespace TombEditor.Forms
             if (obj is Editor.AutosaveEvent)
             {
                 var evt = obj as Editor.AutosaveEvent;
-                statusAutosave.Text = (evt.Exception == null ? "Autosave OK: " + evt.Time : "Autosave failed!");
+                statusAutosave.Text = evt.Exception == null ? "Autosave OK: " + evt.Time : "Autosave failed!";
                 statusAutosave.ForeColor = evt.Exception == null ? statusLastCompilation.ForeColor : Color.LightSalmon;
             }
 
             // Update room information on the status strip
-            if ((obj is Editor.SelectedRoomChangedEvent) ||
+            if (obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomGeometryChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomSectorPropertiesChangedEvent) ||
-                (obj is Editor.RoomPropertiesChangedEvent))
+                obj is Editor.RoomPropertiesChangedEvent)
             {
                 var room = _editor.SelectedRoom;
                 if (room == null)
@@ -187,13 +187,13 @@ namespace TombEditor.Forms
             }
 
             // Update selection information of the status strip
-            if ((obj is Editor.SelectedRoomChangedEvent) ||
+            if (obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomGeometryChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomSectorPropertiesChangedEvent) ||
-                (obj is Editor.SelectedSectorsChangedEvent))
+                obj is Editor.SelectedSectorsChangedEvent)
             {
                 var room = _editor.SelectedRoom;
-                if ((room == null) || !_editor.SelectedSectors.Valid)
+                if (room == null || !_editor.SelectedSectors.Valid)
                 {
                     statusStripGlobalSelectionArea.Text = "Global area: None";
                     statusStripLocalSelectionArea.Text = "Local area: None";
@@ -206,17 +206,17 @@ namespace TombEditor.Forms
                     statusStripGlobalSelectionArea.Text = "Global area = " +
                         "(" + (room.Position.X + _editor.SelectedSectors.Area.X0) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y0) + ") \u2192 " +
                         "(" + (room.Position.X + _editor.SelectedSectors.Area.X1) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y1) + ")" +
-                        " | y = [" + ((minHeight == int.MaxValue || maxHeight == int.MinValue) ? "N/A" : ((room.Position.Y + minHeight) + ", " + (room.Position.Y + maxHeight))) + "]";
+                        " | y = [" + (minHeight == int.MaxValue || maxHeight == int.MinValue ? "N/A" : room.Position.Y + minHeight + ", " + (room.Position.Y + maxHeight)) + "]";
 
                     statusStripLocalSelectionArea.Text = "Local area = " +
                         "(" + _editor.SelectedSectors.Area.X0 + ", " + _editor.SelectedSectors.Area.Y0 + ") \u2192 " +
                         "(" + _editor.SelectedSectors.Area.X1 + ", " + _editor.SelectedSectors.Area.Y1 + ")" +
-                        " | y = [" + ((minHeight == int.MaxValue || maxHeight == int.MinValue) ? "N/A" : (minHeight + ", " + maxHeight)) + "]";
+                        " | y = [" + (minHeight == int.MaxValue || maxHeight == int.MinValue ? "N/A" : minHeight + ", " + maxHeight) + "]";
                 }
             }
 
             // Update application title bar
-            if ((obj is Editor.LevelFileNameChangedEvent) || (obj is Editor.HasUnsavedChangesChangedEvent))
+            if (obj is Editor.LevelFileNameChangedEvent || obj is Editor.HasUnsavedChangesChangedEvent)
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     FileSystemUtils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
@@ -232,10 +232,10 @@ namespace TombEditor.Forms
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 var @event = (Editor.ConfigurationChangedEvent)obj;
-                if ((@event.Current.Window_Maximized != @event.Previous.Window_Maximized) ||
-                    (@event.Current.Window_Position != @event.Previous.Window_Position) ||
-                    (@event.Current.Window_Size != @event.Previous.Window_Size) ||
-                    (@event.Current.Window_Layout != @event.Previous.Window_Layout))
+                if (@event.Current.Window_Maximized != @event.Previous.Window_Maximized ||
+                    @event.Current.Window_Position != @event.Previous.Window_Position ||
+                    @event.Current.Window_Size != @event.Previous.Window_Size ||
+                    @event.Current.Window_Layout != @event.Previous.Window_Layout)
                     LoadWindowLayout(_editor.Configuration);
             }
         }
@@ -350,7 +350,7 @@ namespace TombEditor.Forms
                     break;
 
                 case Keys.O: // Show options dialog
-                    if (modifierKeys == Keys.None && (_editor.SelectedObject != null) && focused)
+                    if (modifierKeys == Keys.None && _editor.SelectedObject != null && focused)
                         EditorActions.EditObject(_editor.SelectedObject, this);
                     break;
 
@@ -388,29 +388,29 @@ namespace TombEditor.Forms
                     break;
 
                 case Keys.Left: // Rotate objects with cones
-                    if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
+                    if (modifierKeys == Keys.Shift && _editor.SelectedObject != null && focused)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
-                    else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
+                    else if (modifierKeys == Keys.Control && _editor.SelectedObject is PositionBasedObjectInstance && focused)
                         MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
                     break;
                 case Keys.Right: // Rotate objects with cones
-                    if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
+                    if (modifierKeys == Keys.Shift && _editor.SelectedObject != null && focused)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
-                    else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
+                    else if (modifierKeys == Keys.Control && _editor.SelectedObject is PositionBasedObjectInstance && focused)
                         MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
                     break;
 
                 case Keys.Up:// Rotate objects with cones
-                    if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
+                    if (modifierKeys == Keys.Shift && _editor.SelectedObject != null && focused)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
-                    else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
+                    else if (modifierKeys == Keys.Control && _editor.SelectedObject is PositionBasedObjectInstance && focused)
                         MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
                     break;
 
                 case Keys.Down:// Rotate objects with cones
-                    if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
+                    if (modifierKeys == Keys.Shift && _editor.SelectedObject != null && focused)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
-                    else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
+                    else if (modifierKeys == Keys.Control && _editor.SelectedObject is PositionBasedObjectInstance && focused)
                         MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
                     break;
 
@@ -567,7 +567,7 @@ namespace TombEditor.Forms
             }
 
             // Check camera move key state
-            if ((e.KeyCode == Keys.Menu) || keyCodeIsMoveCameraKey)
+            if (e.KeyCode == Keys.Menu || keyCodeIsMoveCameraKey)
                 if (_editor.Action is EditorActionRelocateCamera)
                     _editor.Action = null;
             if (keyCodeIsMoveCameraKey)
@@ -618,7 +618,7 @@ namespace TombEditor.Forms
 
         private void importConvertTextureToPng_Click(object sender, EventArgs e)
         {
-            if ((_editor.Level == null) || (_editor.Level.Settings.Textures.Count == 0))
+            if (_editor.Level == null || _editor.Level.Settings.Textures.Count == 0)
             {
                 DarkMessageBox.Show(this, "Currently there is no texture loaded to convert it.", "No texture loaded", MessageBoxIcon.Error);
                 return;

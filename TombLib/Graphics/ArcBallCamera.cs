@@ -72,7 +72,7 @@ namespace TombLib.Graphics
 
         public void MoveCameraPlane(Vector3 movementVec)
         {
-            float distanceMultiplier = (float)Math.Pow((Distance / DefaultDistance), (float)2 / (float)3);
+            float distanceMultiplier = (float)Math.Pow(Distance / DefaultDistance, (float)2 / (float)3);
             Target += MathC.HomogenousTransform(movementVec * distanceMultiplier, GetRotationMatrix());
         }
 

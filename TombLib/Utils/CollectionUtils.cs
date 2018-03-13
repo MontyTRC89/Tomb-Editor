@@ -71,27 +71,27 @@ namespace TombLib.Utils
 
         public static T TryGet<T>(this T[] array, int index0) where T : class
         {
-            if ((index0 < 0) || (index0 >= array.GetLength(0)))
+            if (index0 < 0 || index0 >= array.GetLength(0))
                 return null;
             return array[index0];
         }
 
         public static T TryGet<T>(this T[,] array, int index0, int index1) where T : class
         {
-            if ((index0 < 0) || (index0 >= array.GetLength(0)))
+            if (index0 < 0 || index0 >= array.GetLength(0))
                 return null;
-            if ((index1 < 0) || (index1 >= array.GetLength(1)))
+            if (index1 < 0 || index1 >= array.GetLength(1))
                 return null;
             return array[index0, index1];
         }
 
         public static T TryGet<T>(this T[,,] array, int index0, int index1, int index2) where T : class
         {
-            if ((index0 < 0) || (index0 >= array.GetLength(0)))
+            if (index0 < 0 || index0 >= array.GetLength(0))
                 return null;
-            if ((index1 < 0) || (index1 >= array.GetLength(1)))
+            if (index1 < 0 || index1 >= array.GetLength(1))
                 return null;
-            if ((index2 < 0) || (index2 >= array.GetLength(2)))
+            if (index2 < 0 || index2 >= array.GetLength(2))
                 return null;
             return array[index0, index1, index2];
         }

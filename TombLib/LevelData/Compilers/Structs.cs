@@ -32,7 +32,7 @@ namespace TombLib.LevelData.Compilers
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
         public static unsafe bool operator ==(tr_vertex first, tr_vertex second)
         {
-            return (first.X == second.X) && (first.Y == second.Y) && (first.Z == second.Z);
+            return first.X == second.X && first.Y == second.Y && first.Z == second.Z;
         }
 
         public static bool operator !=(tr_vertex first, tr_vertex second)
@@ -153,7 +153,7 @@ namespace TombLib.LevelData.Compilers
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
         public static unsafe bool operator ==(tr_room_vertex first, tr_room_vertex second)
         {
-            return (*(ulong*)&first == *(ulong*)&second) && (*(uint*)&first.Attributes == *(uint*)&second.Attributes);
+            return *(ulong*)&first == *(ulong*)&second && *(uint*)&first.Attributes == *(uint*)&second.Attributes;
         }
 
         public static bool operator !=(tr_room_vertex first, tr_room_vertex second)
@@ -544,7 +544,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write((uint)0);
 
             writer.Write((uint)(Lights.Count * 88));
-            writer.Write((uint)(Lights.Count));
+            writer.Write((uint)Lights.Count);
 
             writer.Write((uint)0);
 
@@ -641,7 +641,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write((float)Info.YBottom);
             writer.Write((float)1024.0f);
             writer.Write((float)((NumXSectors - 1) * 1024.0f));
-            writer.Write((float)(Info.YTop));
+            writer.Write((float)Info.YTop);
             writer.Write((float)((NumZSectors - 1) * 1024.0f));
 
             writer.Write((uint)0);
@@ -757,7 +757,7 @@ namespace TombLib.LevelData.Compilers
             writer.WriteBlockArray(TexturedTriangles);
 
             var meshOffset2 = writer.BaseStream.Position;
-            var meshSize = (meshOffset2 - meshOffset1);
+            var meshSize = meshOffset2 - meshOffset1;
             if (meshSize % 4 != 0)
             {
                 const ushort tempFiller = 0;

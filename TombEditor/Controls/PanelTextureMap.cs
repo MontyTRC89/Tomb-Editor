@@ -89,7 +89,7 @@ namespace TombEditor.Controls
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Reset texture map
-            if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
+            if (obj is Editor.LevelChangedEvent || obj is Editor.LoadedTexturesChangedEvent)
                 ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
         }
 
@@ -98,7 +98,7 @@ namespace TombEditor.Controls
             if (!(area.Texture is LevelTexture))
                 return;
 
-            VisibleTexture = (LevelTexture)(area.Texture);
+            VisibleTexture = (LevelTexture)area.Texture;
             SelectedTexture = area;
 
             Vector2 min = Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), Vector2.Min(area.TexCoord2, area.TexCoord3));
@@ -193,7 +193,7 @@ namespace TombEditor.Controls
 
             texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
             texCoord /= selectionPrecision.Precision;
-            if ((selectionPrecision.Precision >= 32.0f) && rectangularSelection)
+            if (selectionPrecision.Precision >= 32.0f && rectangularSelection)
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),

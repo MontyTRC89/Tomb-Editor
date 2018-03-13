@@ -194,7 +194,7 @@ namespace TombEditor.Forms
                 selectedSet = new AnimatedTextureSet();
 
             // Setup frames
-            var dataSource = (TransparentBindingList<AnimatedTextureFrame>)(texturesDataGridView.DataSource);
+            var dataSource = (TransparentBindingList<AnimatedTextureFrame>)texturesDataGridView.DataSource;
             if (dataSource?.Items != selectedSet.Frames)
             {
                 var newDataSource = new TransparentBindingList<AnimatedTextureFrame>(selectedSet.Frames);
@@ -327,7 +327,7 @@ namespace TombEditor.Forms
 
             // Update view
             previewProgressBar.Minimum = 0;
-            previewProgressBar.Maximum = (frameCount - 1);
+            previewProgressBar.Maximum = frameCount - 1;
             previewProgressBar.SetProgressNoAnimation(frameIndex);
             previewImage.Image = _imageCache[new CachedImageInfo
             {
@@ -458,7 +458,7 @@ namespace TombEditor.Forms
         {
             if (e.DesiredType == typeof(LevelTexture))
             {
-                e.Value = _editor.Level.Settings.Textures.FirstOrDefault(texture => texture.ToString() == (string)(e.Value));
+                e.Value = _editor.Level.Settings.Textures.FirstOrDefault(texture => texture.ToString() == (string)e.Value);
                 e.ParsingApplied = true;
             }
         }
@@ -471,7 +471,7 @@ namespace TombEditor.Forms
             AnimatedTextureFrame frame;
             try
             {
-                frame = (AnimatedTextureFrame)(texturesDataGridView.Rows[e.RowIndex].DataBoundItem);
+                frame = (AnimatedTextureFrame)texturesDataGridView.Rows[e.RowIndex].DataBoundItem;
             }
             catch (Exception exc)
             {
@@ -480,7 +480,7 @@ namespace TombEditor.Forms
             }
 
             // Do cell formatting
-            if ((e.DesiredType == typeof(Image)) || e.DesiredType.IsSubclassOf(typeof(Image)))
+            if (e.DesiredType == typeof(Image) || e.DesiredType.IsSubclassOf(typeof(Image)))
             {
                 // Image column
                 CachedImageInfo info;
@@ -516,10 +516,8 @@ namespace TombEditor.Forms
                 {
                     float outputTexCoordX = (x + 0.5f) * xTexCoordFactor;
                     float outputTexCoordY = (y + 0.5f) * yTexCoordFactor;
-                    Vector2 inputTexCoord = (
-                            texCoord00 * ((1.0f - outputTexCoordX) * (1.0f - outputTexCoordY)) +
-                            texCoord01 * ((1.0f - outputTexCoordX) * outputTexCoordY)
-                        ) + (
+                    Vector2 inputTexCoord = texCoord00 * ((1.0f - outputTexCoordX) * (1.0f - outputTexCoordY)) +
+                                            texCoord01 * ((1.0f - outputTexCoordX) * outputTexCoordY) + (
                             texCoord10 * (outputTexCoordX * (1.0f - outputTexCoordY)) +
                             texCoord11 * (outputTexCoordX * outputTexCoordY)
                         );
@@ -528,19 +526,17 @@ namespace TombEditor.Forms
                     inputTexCoord -= new Vector2(0.5f); // Offset of texture coordinate from texel midpoint
                     inputTexCoord = Vector2.Min(Vector2.Max(inputTexCoord, new Vector2()), max); // Clamp into available texture space
 
-                    int firstX = (int)(inputTexCoord.X);
-                    int firstY = (int)(inputTexCoord.Y);
+                    int firstX = (int)inputTexCoord.X;
+                    int firstY = (int)inputTexCoord.Y;
                     int secondX = Math.Min(firstX + 1, input.Width);
                     int secondY = Math.Min(firstY + 1, input.Height);
                     float secondFactorX = inputTexCoord.X - firstX;
                     float secondFactorY = inputTexCoord.Y - firstY;
 
-                    Vector4 outputPixel = (
-                            ((Vector4)input.GetPixel(secondX, secondY) * (secondFactorX * secondFactorY)) +
-                            ((Vector4)input.GetPixel(secondX, firstY) * (secondFactorX * (1.0f - secondFactorY)))
-                        ) + (
-                            ((Vector4)input.GetPixel(firstX, secondY) * ((1.0f - secondFactorX) * secondFactorY)) +
-                            ((Vector4)input.GetPixel(firstX, firstY) * ((1.0f - secondFactorX) * (1.0f - secondFactorY)))
+                    Vector4 outputPixel = (Vector4)input.GetPixel(secondX, secondY) * (secondFactorX * secondFactorY) +
+                                          (Vector4)input.GetPixel(secondX, firstY) * (secondFactorX * (1.0f - secondFactorY)) + (
+                            (Vector4)input.GetPixel(firstX, secondY) * ((1.0f - secondFactorX) * secondFactorY) +
+                            (Vector4)input.GetPixel(firstX, firstY) * ((1.0f - secondFactorX) * (1.0f - secondFactorY))
                         );
                     output.SetPixel(x, y, (ColorC)outputPixel);
                 }
@@ -556,7 +552,7 @@ namespace TombEditor.Forms
         {
             if (texturesDataGridView.SelectedRows.Count > 0)
             {
-                var frame = (AnimatedTextureFrame)(texturesDataGridView.SelectedRows[0].DataBoundItem);
+                var frame = (AnimatedTextureFrame)texturesDataGridView.SelectedRows[0].DataBoundItem;
                 var textureToShow = new TextureArea
                 {
                     Texture = frame.Texture,
@@ -629,7 +625,7 @@ namespace TombEditor.Forms
 
                         if (current)
                         {
-                            string counterString = (i + 1) + "/" + set.Frames.Count;
+                            string counterString = i + 1 + "/" + set.Frames.Count;
                             SizeF textSize = e.Graphics.MeasureString(counterString, textFont);
                             RectangleF textArea = RectangleF.FromLTRB(upperLeft.X, upperLeft.Y, lowerRight.X, lowerRight.Y);
 

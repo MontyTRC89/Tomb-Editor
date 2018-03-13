@@ -68,7 +68,7 @@ namespace TombLib.Wad
                     writer.Write(Polys[i].Index2);
                     if (Polys[i].Shape == WadPolygonShape.Quad)
                         writer.Write(Polys[i].Index3);
-                    writer.Write(((WadTexture)(Polys[i].Texture.Texture)).Hash);
+                    writer.Write(((WadTexture)Polys[i].Texture.Texture).Hash);
                     writer.Write(Polys[i].Texture.DoubleSided);
                     writer.Write((short)Polys[i].Texture.BlendMode);
                     writer.Write(Polys[i].Texture.TexCoord0);
@@ -121,10 +121,10 @@ namespace TombLib.Wad
                 Vector3.Distance(boundingBox.Minimum, boundingBox.Maximum) * 0.5f);
         }
 
-        public static bool operator ==(WadMesh first, WadMesh second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : (first.Hash == second.Hash));
+        public static bool operator ==(WadMesh first, WadMesh second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);
         public static bool operator !=(WadMesh first, WadMesh second) => !(first == second);
-        public bool Equals(WadMesh other) => (Hash == other.Hash);
-        public override bool Equals(object other) => (other is WadMesh) && (Hash == ((WadMesh)other).Hash);
+        public bool Equals(WadMesh other) => Hash == other.Hash;
+        public override bool Equals(object other) => other is WadMesh && Hash == ((WadMesh)other).Hash;
         public override int GetHashCode() => Hash.GetHashCode();
 
         public static WadMesh Empty { get; } = new WadMesh();

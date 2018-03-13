@@ -54,7 +54,7 @@ namespace TombEditor.Controls
             if (obj is Editor.ChosenItemChangedEvent)
             {
                 Editor.ChosenItemChangedEvent e = (Editor.ChosenItemChangedEvent)obj;
-                if ((e.Current != null) && (_editor?.Level?.Wad != null))
+                if (e.Current != null && _editor?.Level?.Wad != null)
                     ResetCamera();
                 Invalidate();
                 Update(); // Magic fix for room view leaking into item view
@@ -118,7 +118,7 @@ namespace TombEditor.Controls
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
-            if ((_editor.ChosenItem == null) || (_editor.Level?.Wad == null))
+            if (_editor.ChosenItem == null || _editor.Level?.Wad == null)
             {
                 _device.Present();
                 return;
@@ -163,7 +163,7 @@ namespace TombEditor.Controls
             else
             {
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.MoveableId];
-                SkinnedModel skin = ((chosenItem.MoveableId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin)) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model);
+                SkinnedModel skin = chosenItem.MoveableId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model;
 
                 Effect mioEffect = _deviceManager.Effects["Model"];
 
@@ -284,7 +284,7 @@ namespace TombEditor.Controls
                     _lastX = e.X;
                     _lastY = e.Y;
 
-                    if (ModifierKeys.HasFlag(Keys.Shift) || (e.Button == MouseButtons.Middle))
+                    if (ModifierKeys.HasFlag(Keys.Shift) || e.Button == MouseButtons.Middle)
                         Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                     else if (ModifierKeys.HasFlag(Keys.Control))
                         Camera.Zoom(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseZoom);

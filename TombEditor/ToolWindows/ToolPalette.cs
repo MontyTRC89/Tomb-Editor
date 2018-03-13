@@ -74,10 +74,10 @@ namespace TombEditor.ToolWindows
 
                 toolStrip.AutoSize = true;
                 Size = toolStrip.Size;
-                toolStrip.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Lighting) || (mode == EditorMode.Geometry);
+                toolStrip.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Lighting || mode == EditorMode.Geometry;
 
                 // Select classic winroomedit controls by default
-                SwitchTool((mode == EditorMode.FaceEdit || mode == EditorMode.Lighting) ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
+                SwitchTool(mode == EditorMode.FaceEdit || mode == EditorMode.Lighting ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
             }
         }
 

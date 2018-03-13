@@ -243,7 +243,7 @@ namespace TombLib.LevelData
                                 {
                                     var vertex = new ImportedGeometryVertex();
                                     vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                    vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
+                                    vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                     modelMesh.Vertices.Add(vertex);
                                 }
 
@@ -263,7 +263,7 @@ namespace TombLib.LevelData
                                 {
                                     var vertex = new ImportedGeometryVertex();
                                     vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                    vertex.UV = (tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero);
+                                    vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                     modelMesh.Vertices.Add(vertex);
                                     submesh.Indices.Add(currentIndex);
                                     currentIndex++;
@@ -313,7 +313,7 @@ namespace TombLib.LevelData
                 {
                     // Make sure the texture is already listed under this object
                     var importedGeometryTexture = texture as ImportedGeometryTexture;
-                    if ((importedGeometryTexture != null) && !Textures.Contains(importedGeometryTexture))
+                    if (importedGeometryTexture != null && !Textures.Contains(importedGeometryTexture))
                         Textures.Add(importedGeometryTexture);
 
                     // Use texture

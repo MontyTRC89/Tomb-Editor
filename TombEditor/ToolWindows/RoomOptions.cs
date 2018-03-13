@@ -28,7 +28,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -36,7 +36,7 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update the room list
-            if ((obj is InitEvent) || (obj is Editor.RoomListChangedEvent))
+            if (obj is InitEvent || obj is Editor.RoomListChangedEvent)
             {
                 // Adjust the amount of entries in the combo list
                 while (comboRoom.Items.Count > _editor.Level.Rooms.GetLength(0))
@@ -53,11 +53,11 @@ namespace TombEditor.ToolWindows
             }
 
             // Update the room property controls
-            if ((obj is InitEvent) || (obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.LevelChangedEvent) ||
+            if (obj is InitEvent || obj is Editor.SelectedRoomChangedEvent || obj is Editor.LevelChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
                 Room room = _editor.SelectedRoom;
-                if ((obj is InitEvent) || (obj is Editor.SelectedRoomChangedEvent))
+                if (obj is InitEvent || obj is Editor.SelectedRoomChangedEvent)
                     comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
                 // Update the state of other controls
@@ -94,7 +94,7 @@ namespace TombEditor.ToolWindows
                     cbLocked.Checked = room.Locked;
                 }
 
-                comboFlipMap.SelectedIndex = room.Flipped ? (room.AlternateGroup + 1) : 0;
+                comboFlipMap.SelectedIndex = room.Flipped ? room.AlternateGroup + 1 : 0;
             }
         }
 
@@ -128,8 +128,8 @@ namespace TombEditor.ToolWindows
                 }
                 else
                 { // Change flipped map number, not much to do here
-                    if ((room.AlternateGroup != alternateGroupIndex) &&
-                        (room.AlternateVersion.AlternateGroup != alternateGroupIndex))
+                    if (room.AlternateGroup != alternateGroupIndex &&
+                        room.AlternateVersion.AlternateGroup != alternateGroupIndex)
                     {
 
                         room.AlternateGroup = alternateGroupIndex;
@@ -199,10 +199,10 @@ namespace TombEditor.ToolWindows
 
         private void comboReverberation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom.Reverberation == (Reverberation)(comboReverberation.SelectedIndex))
+            if (_editor.SelectedRoom.Reverberation == (Reverberation)comboReverberation.SelectedIndex)
                 return;
 
-            _editor.SelectedRoom.Reverberation = (Reverberation)(comboReverberation.SelectedIndex);
+            _editor.SelectedRoom.Reverberation = (Reverberation)comboReverberation.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -248,10 +248,10 @@ namespace TombEditor.ToolWindows
                 quicksandLevel = (byte)(i - 12);
             }
 
-            if ((_editor.SelectedRoom.WaterLevel == waterLevel) &&
-                (_editor.SelectedRoom.RainLevel == rainLevel) &&
-                (_editor.SelectedRoom.SnowLevel == snowLevel) &&
-                (_editor.SelectedRoom.QuickSandLevel == quicksandLevel))
+            if (_editor.SelectedRoom.WaterLevel == waterLevel &&
+                _editor.SelectedRoom.RainLevel == rainLevel &&
+                _editor.SelectedRoom.SnowLevel == snowLevel &&
+                _editor.SelectedRoom.QuickSandLevel == quicksandLevel)
                 return;
 
             _editor.SelectedRoom.WaterLevel = waterLevel;

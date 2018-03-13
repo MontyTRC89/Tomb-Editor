@@ -106,7 +106,7 @@ namespace TombLib.IO
         {
             int hash = unchecked(_idLength * (int)3239679517); // Random prime
             for (int i = 0; i < _idLength; ++i)
-                hash = unchecked((hash * 1321196299) + _idBytes[i]); // Random prime
+                hash = unchecked(hash * 1321196299 + _idBytes[i]); // Random prime
             return hash;
         }
 

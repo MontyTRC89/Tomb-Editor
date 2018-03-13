@@ -113,7 +113,7 @@ namespace TombLib.LevelData.Compilers
                 int packPriority = waterfallMeshes.Contains(oldMesh) ? 1 : 0;
                 foreach (var poly in oldMesh.Polys)
                 {
-                    ushort lightingEffect = (poly.Texture.BlendMode == BlendMode.Additive) ? (ushort)1 : (ushort)0;
+                    ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
                     lightingEffect |= (ushort)(poly.ShineStrength << 1);
 
                     if (poly.Shape == WadPolygonShape.Quad)
@@ -122,7 +122,7 @@ namespace TombLib.LevelData.Compilers
                         lock (_objectTextureManager)
                             result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
                         newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3, lightingEffect);
-                        currentMeshSize += (_level.Settings.GameVersion <= GameVersion.TR3 ? 10 : 12);
+                        currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 10 : 12;
                     }
                     else
                     {
@@ -131,7 +131,7 @@ namespace TombLib.LevelData.Compilers
                             result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
 
                         newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, lightingEffect);
-                        currentMeshSize += (_level.Settings.GameVersion <= GameVersion.TR3 ? 8 : 10);
+                        currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 8 : 10;
                     }
                 }
 
@@ -277,7 +277,7 @@ namespace TombLib.LevelData.Compilers
                         // Padding
                         if (currentKeyFrameSize < maxKeyFrameSize)
                         {
-                            for (int p = 0; p < (maxKeyFrameSize - currentKeyFrameSize); p++)
+                            for (int p = 0; p < maxKeyFrameSize - currentKeyFrameSize; p++)
                             {
                                 _frames.Add(0);
                             }
@@ -320,15 +320,15 @@ namespace TombLib.LevelData.Compilers
                     newAnimation.Accel = oldAnimation.Acceleration;
                     newAnimation.SpeedLateral = oldAnimation.LateralSpeed;
                     newAnimation.AccelLateral = oldAnimation.LateralAcceleration;
-                    newAnimation.FrameStart = unchecked((ushort)(realFrameBase));
-                    newAnimation.FrameEnd = unchecked((ushort)(realFrameBase + (oldAnimation.RealNumberOfFrames == 0 ? 0 : (oldAnimation.RealNumberOfFrames - 1))));
-                    newAnimation.AnimCommand = checked((ushort)(_animCommands.Count));
-                    newAnimation.StateChangeOffset = checked((ushort)(_stateChanges.Count));
+                    newAnimation.FrameStart = unchecked((ushort)realFrameBase);
+                    newAnimation.FrameEnd = unchecked((ushort)(realFrameBase + (oldAnimation.RealNumberOfFrames == 0 ? 0 : oldAnimation.RealNumberOfFrames - 1)));
+                    newAnimation.AnimCommand = checked((ushort)_animCommands.Count);
+                    newAnimation.StateChangeOffset = checked((ushort)_stateChanges.Count);
                     newAnimation.NumAnimCommands = checked((ushort)oldAnimation.AnimCommands.Count);
                     newAnimation.NumStateChanges = checked((ushort)oldAnimation.StateChanges.Count);
                     newAnimation.NextAnimation = checked((ushort)(oldAnimation.NextAnimation + lastAnimation));
                     newAnimation.NextFrame = oldAnimation.NextFrame;
-                    newAnimation.StateID = (oldAnimation.StateId);
+                    newAnimation.StateID = oldAnimation.StateId;
 
                     // Add anim commands
                     foreach (var command in oldAnimation.AnimCommands)
@@ -390,7 +390,7 @@ namespace TombLib.LevelData.Compilers
 
                         newStateChange.AnimDispatch = checked((ushort)lastAnimDispatch);
                         newStateChange.StateID = stateChange.StateId;
-                        newStateChange.NumAnimDispatches = checked((ushort)(stateChange.Dispatches.Count));
+                        newStateChange.NumAnimDispatches = checked((ushort)stateChange.Dispatches.Count);
 
                         foreach (var dispatch in stateChange.Dispatches)
                         {
@@ -399,7 +399,7 @@ namespace TombLib.LevelData.Compilers
                             newAnimDispatch.Low = unchecked((ushort)(dispatch.InFrame + newAnimation.FrameStart));
                             newAnimDispatch.High = unchecked((ushort)(dispatch.OutFrame + newAnimation.FrameStart));
                             newAnimDispatch.NextAnimation = checked((ushort)(dispatch.NextAnimation + lastAnimation));
-                            newAnimDispatch.NextFrame = (ushort)(dispatch.NextFrame);
+                            newAnimDispatch.NextFrame = (ushort)dispatch.NextFrame;
 
                             _animDispatches.Add(newAnimDispatch);
                         }

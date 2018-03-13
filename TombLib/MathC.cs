@@ -32,7 +32,7 @@ namespace TombLib
             int bInt = *(int*)&b;
 
             // Different signs means they do not match.
-            if ((aInt < 0) != (bInt < 0))
+            if (aInt < 0 != bInt < 0)
                 return false;
 
             // Find the difference in ULPs.
@@ -41,7 +41,7 @@ namespace TombLib
             // Choose of maxUlp = 4
             // according to http://code.google.com/p/googletest/source/browse/trunk/include/gtest/internal/gtest-internal.h
             const int maxUlp = 4;
-            return (ulp <= maxUlp);
+            return ulp <= maxUlp;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace TombLib
         public static bool WithinEpsilon(float a, float b, float epsilon)
         {
             float num = a - b;
-            return ((-epsilon <= num) && (num <= epsilon));
+            return -epsilon <= num && num <= epsilon;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -165,7 +165,7 @@ namespace TombLib.Wad.TrLevels
                     using (var levelReader = new BinaryReaderEx(stream))
                     {
                         var unused = levelReader.ReadUInt32();
-                        var numRooms = (Version != TrVersion.TR5 ? levelReader.ReadUInt16() : levelReader.ReadUInt32());
+                        var numRooms = Version != TrVersion.TR5 ? levelReader.ReadUInt16() : levelReader.ReadUInt32();
 
                         for (var i = 0; i < numRooms; i++)
                         {
@@ -365,7 +365,7 @@ namespace TombLib.Wad.TrLevels
 
                         Meshes = new List<tr_mesh>();
 
-                        while (totalBytes < (numMeshData * 2))
+                        while (totalBytes < numMeshData * 2)
                         {
                             long offset1 = levelReader.BaseStream.Position;
 
@@ -898,9 +898,9 @@ namespace TombLib.Wad.TrLevels
                     {
                         for (int x = 0; x < width; x++)
                         {
-                            var r = (Palette8[texture8[y * 256 + x]].Red * 4);
-                            var g = (Palette8[texture8[y * 256 + x]].Green * 4);
-                            var b = (Palette8[texture8[y * 256 + x]].Blue * 4);
+                            var r = Palette8[texture8[y * 256 + x]].Red * 4;
+                            var g = Palette8[texture8[y * 256 + x]].Green * 4;
+                            var b = Palette8[texture8[y * 256 + x]].Blue * 4;
                             var a = (byte)(r == 255 && g == 0 && b == 255 ? 0 : 255);
 
                             TextureMap32[y * 1024 + x * 4 + 0] = (byte)b;
@@ -928,7 +928,7 @@ namespace TombLib.Wad.TrLevels
                             var r = ((color & 0x7c00) >> 10) * 8;
                             var g = ((color & 0x03e0) >> 5) * 8;
                             var b = ((color & 0x001f) >> 0) * 8;
-                            var a = ((color & 0x8000) != 0 ? 255 : 0);
+                            var a = (color & 0x8000) != 0 ? 255 : 0;
 
                             TextureMap32[y * 1024 + x * 4 + 0] = (byte)b;
                             TextureMap32[y * 1024 + x * 4 + 1] = (byte)g;

@@ -152,7 +152,7 @@ namespace DarkUI.Controls
 
         private void BaseKeyDown(object sender, KeyEventArgs e)
         {
-            if ((e.KeyCode == Keys.V) && (e.Modifiers == Keys.Control) && AllowUserToPasteCells)
+            if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control && AllowUserToPasteCells)
             {
                 string clipboardString = Clipboard.GetDataObject()?.GetData(DataFormats.UnicodeText) as string;
                 if (clipboardString == null)
@@ -171,7 +171,7 @@ namespace DarkUI.Controls
                     startColumn = Math.Min(startColumn, columns.IndexOf(cell.OwningColumn));
                     startRow = Math.Min(startRow, cell.RowIndex);
                 }
-                if ((startColumn == int.MaxValue) || (startRow == int.MaxValue))
+                if (startColumn == int.MaxValue || startRow == int.MaxValue)
                     return;
 
                 // Paste string
@@ -180,17 +180,17 @@ namespace DarkUI.Controls
                 string[] pastedRows = clipboardString.Split(rowSeparator, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < pastedRows.GetLength(0); ++i)
                 {
-                    if ((startRow + i) >= Rows.Count)
+                    if (startRow + i >= Rows.Count)
                         break;
 
                     var row = Rows[startRow + i];
                     string[] pastedCells = pastedRows[i].Split(columnSeperator, StringSplitOptions.None);
                     for (int j = 0; j < pastedCells.GetLength(0); ++j)
                     {
-                        if ((startColumn + j) >= columns.Count)
+                        if (startColumn + j >= columns.Count)
                             break;
                         var cell = row.Cells[columns[startColumn + j].Name];
-                        if ((cell.ReadOnly) || (cell.OwningColumn is DataGridViewButtonColumn))
+                        if (cell.ReadOnly || cell.OwningColumn is DataGridViewButtonColumn)
                             continue;
                         cell.Value = pastedCells[j];
                         cell.Selected = true;
@@ -223,7 +223,7 @@ namespace DarkUI.Controls
         private void BaseMouseMove(object sender, MouseEventArgs e)
         {
             if (AllowUserToDragDropRows && !IsCurrentCellInEditMode &&
-                (e.Button == MouseButtons.Left) && (ModifierKeys == Keys.None))
+                e.Button == MouseButtons.Left && ModifierKeys == Keys.None)
             {
                 var info = HitTest(e.Location);
                 switch (info.Type)
@@ -280,7 +280,7 @@ namespace DarkUI.Controls
         {
             // Get drag data
             var metaData = e.Data.GetData(typeof(DragDropMetaData)) as DragDropMetaData;
-            if ((metaData == null) || (DragPosition < 0))
+            if (metaData == null || DragPosition < 0)
                 return;
 
             IList rows = EditableRowCollection;
@@ -428,7 +428,7 @@ namespace DarkUI.Controls
                     // Setup rows
                     int rowCount = _base.Rows.Count + 1;
                     int rowInView = CountVisibleRows(_base.FirstDisplayedScrollingRowIndex, size.Height - _scrollSize);
-                    bool rowScrollVisible = _scrollBars.HasFlag(ScrollBars.Vertical) && (rowInView < rowCount);
+                    bool rowScrollVisible = _scrollBars.HasFlag(ScrollBars.Vertical) && rowInView < rowCount;
                     if (rowScrollVisible)
                     {
                         _vScrollBar.ViewSize = rowInView + 1;
@@ -441,7 +441,7 @@ namespace DarkUI.Controls
                     // Setup columns
                     int columnsPixelCount = TotalColumnsWidth;
                     int columnsPixelInView = size.Width - 2 * BorderWidth;
-                    bool columnScrollVisible = _scrollBars.HasFlag(ScrollBars.Horizontal) && (columnsPixelInView < columnsPixelCount);
+                    bool columnScrollVisible = _scrollBars.HasFlag(ScrollBars.Horizontal) && columnsPixelInView < columnsPixelCount;
                     if (columnScrollVisible)
                     {
                         _hScrollBar.ViewSize = columnsPixelInView;
@@ -1141,7 +1141,7 @@ namespace DarkUI.Controls
             Color borderColor = Colors.GreySelection;
             Color fillColor = Colors.GreyBackground;
 
-            if (DataGridView.Focused && (DataGridView.CurrentCellAddress == new Point(ColumnIndex, rowIndex)))
+            if (DataGridView.Focused && DataGridView.CurrentCellAddress == new Point(ColumnIndex, rowIndex))
                 borderColor = Colors.BlueHighlight; //Selection
 
             if (ButtonState.HasFlag(ButtonState.Inactive) || !Enabled)

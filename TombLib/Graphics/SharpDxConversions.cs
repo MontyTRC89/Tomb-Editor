@@ -27,16 +27,16 @@ namespace TombLib.Graphics
         public static Vector3 Project(this SharpDX.ViewportF viewport, Vector3 vector, Matrix4x4 worldViewProjection)
         {
             var result = Vector3.Transform(vector, worldViewProjection);
-            float a = (((vector.X * worldViewProjection.M14) + (vector.Y * worldViewProjection.M24)) + (vector.Z * worldViewProjection.M34)) + worldViewProjection.M44;
+            float a = vector.X * worldViewProjection.M14 + vector.Y * worldViewProjection.M24 + vector.Z * worldViewProjection.M34 + worldViewProjection.M44;
 
             if (!MathC.IsOne(a))
             {
-                result = (result / a);
+                result = result / a;
             }
 
-            result.X = (((result.X + 1f) * 0.5f) * viewport.Width) + viewport.X;
-            result.Y = (((-result.Y + 1f) * 0.5f) * viewport.Height) + viewport.Y;
-            result.Z = (result.Z * (viewport.MaxDepth - viewport.MinDepth)) + viewport.MinDepth;
+            result.X = (result.X + 1f) * 0.5f * viewport.Width + viewport.X;
+            result.Y = (-result.Y + 1f) * 0.5f * viewport.Height + viewport.Y;
+            result.Z = result.Z * (viewport.MaxDepth - viewport.MinDepth) + viewport.MinDepth;
             return result;
         }
 
@@ -47,16 +47,16 @@ namespace TombLib.Graphics
                 return new Vector3();
 
             Vector3 vector = new Vector3(
-                (((source.X - viewport.X) / (viewport.Width)) * 2f) - 1f,
-                -((((source.Y - viewport.Y) / (viewport.Height)) * 2f) - 1f),
+                (source.X - viewport.X) / viewport.Width * 2f - 1f,
+                -((source.Y - viewport.Y) / viewport.Height * 2f - 1f),
                 (source.Z - viewport.MinDepth) / (viewport.MaxDepth - viewport.MinDepth));
 
-            float a = (((vector.X * inverse.M14) + (vector.Y * inverse.M24)) + (vector.Z * inverse.M34)) + inverse.M44;
+            float a = vector.X * inverse.M14 + vector.Y * inverse.M24 + vector.Z * inverse.M34 + inverse.M44;
             vector = Vector3.Transform(vector, inverse);
 
             if (!MathC.IsOne(a))
             {
-                vector = (vector / a);
+                vector = vector / a;
             }
             return vector;
         }

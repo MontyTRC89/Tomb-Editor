@@ -174,7 +174,7 @@ namespace SoundTool
                 case WadGameVersion.TR3:
                     return 370;
                 case WadGameVersion.TR4_TRNG:
-                    return (isNg ? 4096 : 370);
+                    return isNg ? 4096 : 370;
                 default:
                     return 450;
             }
@@ -252,37 +252,37 @@ namespace SoundTool
                                 if (token == "P")
                                 {
                                     sound.FlagP = true;
-                                    sound.Flags |= (0x2000);
+                                    sound.Flags |= 0x2000;
                                 }
 
                                 if (token == "V")
                                 {
                                     sound.FlagV = true;
-                                    sound.Flags |= (0x4000);
+                                    sound.Flags |= 0x4000;
                                 }
 
                                 if (token == "N")
                                 {
                                     sound.FlagN = true;
-                                    sound.Flags |= (0x1000);
+                                    sound.Flags |= 0x1000;
                                 }
 
                                 if (token == "L")
                                 {
                                     sound.FlagL = true;
-                                    sound.Flags |= (0x03);
+                                    sound.Flags |= 0x03;
                                 }
 
                                 if (token == "R")
                                 {
                                     sound.FlagP = true;
-                                    sound.Flags |= (0x02);
+                                    sound.Flags |= 0x02;
                                 }
 
                                 if (token == "W")
                                 {
                                     sound.FlagP = true;
-                                    sound.Flags |= (0x01);
+                                    sound.Flags |= 0x01;
                                 }
                             }
                             else if (!token.StartsWith("VOL") || !Int16.TryParse(token.Substring(3), out volume))

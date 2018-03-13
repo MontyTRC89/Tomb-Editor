@@ -80,7 +80,7 @@ namespace TombLib.Wad
                 var textures = new HashSet<WadTexture>();
                 foreach (WadMesh mesh in MeshesUnique)
                     foreach (WadPolygon polygon in mesh.Polys)
-                        textures.Add((WadTexture)(polygon.Texture.Texture));
+                        textures.Add((WadTexture)polygon.Texture.Texture);
                 return textures;
             }
         }

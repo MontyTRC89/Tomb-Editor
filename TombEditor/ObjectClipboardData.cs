@@ -37,7 +37,7 @@ namespace TombEditor
         public PositionBasedObjectInstance MergeGetSingleObject(Editor editor)
         {
             Prj2Loader.LoadedObjects loadedObjects = CreateObjects();
-            PositionBasedObjectInstance obj = (PositionBasedObjectInstance)(loadedObjects.Objects[0]);
+            PositionBasedObjectInstance obj = (PositionBasedObjectInstance)loadedObjects.Objects[0];
             LevelSettings newLevelSettings = editor.Level.Settings.Clone();
             obj.CopyDependentLevelSettings(new Room.CopyDependentLevelSettingsArgs(null, newLevelSettings, loadedObjects.Settings, true));
             editor.UpdateLevelSettings(newLevelSettings);

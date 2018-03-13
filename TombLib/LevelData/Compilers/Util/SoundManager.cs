@@ -56,7 +56,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Fill accelerated data structure to find free sound map entries
             _soundInfoToMapIndexLookup.Add(soundInfo.Hash, soundMapIndex);
-            for (ushort i = oldSoundMapSize; i < (soundMapIndex - 1); ++i)
+            for (ushort i = oldSoundMapSize; i < soundMapIndex - 1; ++i)
                 _freeSoundMapIndices.Add(i);
             _freeSoundMapIndices.Remove(soundMapIndex);
         }
@@ -123,7 +123,7 @@ namespace TombLib.LevelData.Compilers.Util
             switch (_gameVersion)
             {
                 case GameVersion.TRNG:
-                    writer.Write(checked((ushort)(_soundMap.Count))); // Num demo data
+                    writer.Write(checked((ushort)_soundMap.Count)); // Num demo data
                     break;
                 case GameVersion.TR2:
                 case GameVersion.TR3:
@@ -193,7 +193,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void WriteSoundData(BinaryWriter writer)
         {
-            writer.Write((uint)(_samples.Count)); // Write sample count
+            writer.Write((uint)_samples.Count); // Write sample count
             if (_gameVersion == GameVersion.TR5)
             { // We have to compress the samples first
               // TR5 uses compressed MS-ADPCM samples

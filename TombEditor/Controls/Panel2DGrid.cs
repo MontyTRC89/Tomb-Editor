@@ -50,11 +50,11 @@ namespace TombEditor.Controls
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update drawing
-            if ((obj is HighlightManager.ChangeHighlightEvent) ||
-                (obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.SelectedSectorsChangedEvent) ||
-                (obj is Editor.RoomSectorPropertiesChangedEvent) ||
-                ((obj is Editor.SelectedObjectChangedEvent) && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj)))
+            if (obj is HighlightManager.ChangeHighlightEvent ||
+                obj is Editor.SelectedRoomChangedEvent ||
+                obj is Editor.SelectedSectorsChangedEvent ||
+                obj is Editor.RoomSectorPropertiesChangedEvent ||
+                obj is Editor.SelectedObjectChangedEvent && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj))
             {
                 Invalidate();
             }
@@ -69,7 +69,7 @@ namespace TombEditor.Controls
 
         private static bool IsObjectChangeRelevant(Editor.SelectedObjectChangedEvent e)
         {
-            return (e.Previous is SectorBasedObjectInstance) || (e.Current is SectorBasedObjectInstance);
+            return e.Previous is SectorBasedObjectInstance || e.Current is SectorBasedObjectInstance;
         }
 
         private RectangleF getVisualAreaTotal()
@@ -120,7 +120,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            if ((_editor == null) || (_editor.SelectedRoom == null))
+            if (_editor == null || _editor.SelectedRoom == null)
                 return;
 
             // Move camera to selected sector
@@ -137,8 +137,8 @@ namespace TombEditor.Controls
             // Choose action
             if (e.Button == MouseButtons.Left)
             {
-                if ((selectedSectorObject != null) &&
-                    (selectedSectorObject.Room == _editor.SelectedRoom) &&
+                if (selectedSectorObject != null &&
+                    selectedSectorObject.Room == _editor.SelectedRoom &&
                     selectedSectorObject.Area.Contains(sectorPos))
                 {
                     if (selectedSectorObject is PortalInstance)
@@ -185,10 +185,10 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
-            if ((_editor?.SelectedRoom == null) || (_editor.Action is EditorActionRelocateCamera))
+            if (_editor?.SelectedRoom == null || _editor.Action is EditorActionRelocateCamera)
                 return;
 
-            if ((e.Button == MouseButtons.Left) && _doSectorSelection)
+            if (e.Button == MouseButtons.Left && _doSectorSelection)
                 _editor.SelectedSectors = new SectorSelection { Start = _editor.SelectedSectors.Start, End = FromVisualCoord(e.Location) };
         }
 
@@ -209,7 +209,7 @@ namespace TombEditor.Controls
         {
             try
             {
-                if ((_editor == null) || (_editor.SelectedRoom == null))
+                if (_editor == null || _editor.SelectedRoom == null)
                     return;
 
                 Room currentRoom = _editor.SelectedRoom;
@@ -230,7 +230,7 @@ namespace TombEditor.Controls
                         {
                             for (int i = 0; i < currentHighlights.Count; i++)
                             {
-                                e.Graphics.SmoothingMode = (currentHighlights[i].Shape == HighlightShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias);
+                                e.Graphics.SmoothingMode = currentHighlights[i].Shape == HighlightShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias;
 
                                 switch (currentHighlights[i].Shape)
                                 {
@@ -314,7 +314,7 @@ namespace TombEditor.Controls
                     e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_editor.SelectedSectors.Area));
 
                 var instance = _editor.SelectedObject as SectorBasedObjectInstance;
-                if ((instance != null) && (instance.Room == _editor.SelectedRoom))
+                if (instance != null && instance.Room == _editor.SelectedRoom)
                 {
                     Pen pen = instance is PortalInstance ? _selectedPortalPen : _selectedTriggerPen;
                     RectangleF visualArea = ToVisualCoord(instance.Area);

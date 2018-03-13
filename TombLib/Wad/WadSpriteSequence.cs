@@ -15,14 +15,14 @@ namespace TombLib.Wad
 
         public int CompareTo(WadSpriteSequenceId other) => TypeId.CompareTo(other.TypeId);
         public int CompareTo(object other) => CompareTo((WadSpriteSequenceId)other);
-        public static bool operator <(WadSpriteSequenceId first, WadSpriteSequenceId second) => (first.TypeId < second.TypeId);
-        public static bool operator <=(WadSpriteSequenceId first, WadSpriteSequenceId second) => (first.TypeId <= second.TypeId);
-        public static bool operator >(WadSpriteSequenceId first, WadSpriteSequenceId second) => (first.TypeId > second.TypeId);
-        public static bool operator >=(WadSpriteSequenceId first, WadSpriteSequenceId second) => (first.TypeId >= second.TypeId);
-        public static bool operator ==(WadSpriteSequenceId first, WadSpriteSequenceId second) => (first.TypeId == second.TypeId);
+        public static bool operator <(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId < second.TypeId;
+        public static bool operator <=(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId <= second.TypeId;
+        public static bool operator >(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId > second.TypeId;
+        public static bool operator >=(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId >= second.TypeId;
+        public static bool operator ==(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId == second.TypeId;
         public static bool operator !=(WadSpriteSequenceId first, WadSpriteSequenceId second) => !(first == second);
         public bool Equals(WadSpriteSequenceId other) => this == other;
-        public override bool Equals(object other) => (other is WadSpriteSequenceId) && this == (WadSpriteSequenceId)other;
+        public override bool Equals(object other) => other is WadSpriteSequenceId && this == (WadSpriteSequenceId)other;
         public override int GetHashCode() => unchecked((int)TypeId);
 
         public string ToString(WadGameVersion gameVersion)

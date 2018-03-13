@@ -66,7 +66,7 @@ namespace TombLib.Wad.TrLevels
                 // We can't use this bit in TR2...
                 bool isTriangle = (oldTexture.TileAndFlags & 0x8000) != 0;
                 if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2)
-                    isTriangle = (oldTexture.Vertices[3].X == 0) && (oldTexture.Vertices[3].Y == 0);
+                    isTriangle = oldTexture.Vertices[3].X == 0 && oldTexture.Vertices[3].Y == 0;
 
                 // Calculate UV coordinates...
                 Vector2[] coordAddArray;
@@ -99,11 +99,11 @@ namespace TombLib.Wad.TrLevels
                 // Create texture area
                 TextureArea textureArea;
                 textureArea.DoubleSided = false;
-                textureArea.BlendMode = (BlendMode)(oldTexture.Attributes);
+                textureArea.BlendMode = (BlendMode)oldTexture.Attributes;
                 textureArea.TexCoord0 = coords[0] - start;
                 textureArea.TexCoord1 = coords[1] - start;
                 textureArea.TexCoord2 = coords[2] - start;
-                textureArea.TexCoord3 = isTriangle ? new Vector2() : (coords[3] - start);
+                textureArea.TexCoord3 = isTriangle ? new Vector2() : coords[3] - start;
                 textureArea.Texture = texture;
 
                 objectTextures[i] = textureArea;
@@ -244,15 +244,15 @@ namespace TombLib.Wad.TrLevels
                     {
                         spriteX = oldSpriteTexture.X;
                         spriteY = oldSpriteTexture.Y;
-                        spriteWidth = ((oldSpriteTexture.Width - 255) / 256 + 1);
-                        spriteHeight = ((oldSpriteTexture.Height - 255) / 256 + 1);
+                        spriteWidth = (oldSpriteTexture.Width - 255) / 256 + 1;
+                        spriteHeight = (oldSpriteTexture.Height - 255) / 256 + 1;
                     }
                     else
                     {
                         spriteX = oldSpriteTexture.LeftSide;
                         spriteY = oldSpriteTexture.TopSide;
-                        spriteWidth = ((oldSpriteTexture.Width / 256) + 1);
-                        spriteHeight = ((oldSpriteTexture.Height / 256) + 1);
+                        spriteWidth = oldSpriteTexture.Width / 256 + 1;
+                        spriteHeight = oldSpriteTexture.Height / 256 + 1;
                     }
 
                     // Add current sprite to the sequence
@@ -293,9 +293,9 @@ namespace TombLib.Wad.TrLevels
                 newInfo.RangeInSectors = oldInfo.Range;
                 newInfo.ChanceDiv255 = (byte)oldInfo.Chance;
                 newInfo.PitchFactorDiv128 = oldInfo.Pitch;
-                newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0); // TODO: loop meaning changed between TR versions
-                newInfo.RandomizeGain = ((oldInfo.Characteristics & 0x4000) != 0);
-                newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);
+                newInfo.RandomizePitch = (oldInfo.Characteristics & 0x2000) != 0; // TODO: loop meaning changed between TR versions
+                newInfo.RandomizeGain = (oldInfo.Characteristics & 0x4000) != 0;
+                newInfo.FlagN = (oldInfo.Characteristics & 0x1000) != 0;
                 newInfo.LoopBehaviour = (WadSoundLoopBehaviour)(oldInfo.Characteristics & 0x03);
 
                 // Read all samples linked to this sound info (for example footstep has 4 samples)
@@ -383,7 +383,7 @@ namespace TombLib.Wad.TrLevels
             WadBone stackBone = root;
             Stack<WadBone> stack = new Stack<WadBone>();
 
-            for (int mi = 0; mi < (newMoveable.Meshes.Count - 1); mi++)
+            for (int mi = 0; mi < newMoveable.Meshes.Count - 1; mi++)
             {
                 int j = mi + 1;
 
@@ -591,7 +591,7 @@ namespace TombLib.Wad.TrLevels
                     frames += 6;
 
                     frame.Offset = new Vector3(oldLevel.Frames[frames],
-                                               (short)(-oldLevel.Frames[frames + 1]),
+                                               (short)-oldLevel.Frames[frames + 1],
                                                oldLevel.Frames[frames + 2]);
 
                     frames += 3;
@@ -614,7 +614,7 @@ namespace TombLib.Wad.TrLevels
 
                             int rotX = (int)((rotation & 0x3ff0) >> 4);
                             int rotZ = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
-                            int rotY = (int)((rotation2) & 0x3ff);
+                            int rotY = (int)(rotation2 & 0x3ff);
 
                             kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
                             kfAngle.X = rotX;
@@ -636,7 +636,7 @@ namespace TombLib.Wad.TrLevels
 
                                     int rotX = (int)((rotation & 0x3ff0) >> 4);
                                     int rotY = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
-                                    int rotZ = (int)((rotation2) & 0x3ff);
+                                    int rotZ = (int)(rotation2 & 0x3ff);
 
                                     kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
                                     kfAngle.X = rotX;
@@ -689,8 +689,8 @@ namespace TombLib.Wad.TrLevels
                         frame.Angles.Add(kfAngle);
                     }
 
-                    if ((frames - startOfFrame) < oldAnimation.FrameSize)
-                        frames += ((int)oldAnimation.FrameSize - (frames - startOfFrame));
+                    if (frames - startOfFrame < oldAnimation.FrameSize)
+                        frames += (int)oldAnimation.FrameSize - (frames - startOfFrame);
 
                     newAnimation.KeyFrames.Add(frame);
                 }

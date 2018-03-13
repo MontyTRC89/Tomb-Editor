@@ -40,7 +40,7 @@ namespace WadTool
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && components != null)
             {
                 _imageCache.Dispose();
                 components.Dispose();
@@ -109,7 +109,7 @@ namespace WadTool
                         if (dataGridView.SelectedRows.Count > 1)
                             fileName = Path.Combine(Path.GetDirectoryName(fileName),
                                 Path.GetFileNameWithoutExtension(fileName) + row.Index.ToString("0000") + Path.GetExtension(fileName));
-                        ((WadSprite)(row.DataBoundItem)).Texture.Image.Save(fileName);
+                        ((WadSprite)row.DataBoundItem).Texture.Image.Save(fileName);
                     }
                 }
                 catch (Exception exc)
@@ -131,14 +131,14 @@ namespace WadTool
             if (dataGridView.SelectedRows.Count <= 0)
                 return;
 
-            picSprite.Image = _imageCache[((WadSprite)(dataGridView.SelectedRows[0].DataBoundItem)).Texture];
+            picSprite.Image = _imageCache[((WadSprite)dataGridView.SelectedRows[0].DataBoundItem).Texture];
         }
 
         private void dataGridView_CellFormattingSafe(object sender, DarkDataGridViewSafeCellFormattingEventArgs e)
         {
             if (!(e.Row.DataBoundItem is WadSprite))
                 return;
-            WadSprite item = (WadSprite)(e.Row.DataBoundItem);
+            WadSprite item = (WadSprite)e.Row.DataBoundItem;
 
             if (e.Column.Name == SizeColumn.Name)
                 e.Value = item.Texture.Image.Size.ToString();

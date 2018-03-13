@@ -130,7 +130,7 @@ namespace TombLib.LevelData
         {
             LevelSettings result = (LevelSettings)MemberwiseClone();
             result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll(soundPath => soundPath.Clone());
-            result.Textures = Textures.ConvertAll(texture => (LevelTexture)(texture.Clone()));
+            result.Textures = Textures.ConvertAll(texture => (LevelTexture)texture.Clone());
             result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
             result.ImportedGeometries = ImportedGeometries.ConvertAll(geometry => geometry.Clone());
             return result;
@@ -189,14 +189,14 @@ namespace TombLib.LevelData
 
                 // Parse variable
                 VariableType variableType;
-                if ((!Enum.TryParse(variableName, out variableType)) ||
+                if (!Enum.TryParse(variableName, out variableType) ||
                     excluded.Contains(variableType))
                 {
                     startIndex = endIndex + VariableEnd.Length;
                     continue;
                 }
                 string variableContent = GetVariable(variableType);
-                path = path.Remove(startIndex, (endIndex + VariableEnd.Length) - startIndex);
+                path = path.Remove(startIndex, endIndex + VariableEnd.Length - startIndex);
                 path = path.Insert(startIndex, variableContent);
                 startIndex += variableContent.Length;
             } while (true);
@@ -354,7 +354,7 @@ namespace TombLib.LevelData
                 else
                     image = ImageC.FromStream(reader);
 
-                if ((image.Width != 256) || (image.Height != 256))
+                if (image.Width != 256 || image.Height != 256)
                     throw new NotSupportedException("The texture's size must be 256 by 256 pixels. " +
                         "(The current texture '" + path + "' is " + image.Width + " by " + image.Height + " pixels)");
                 return image;

@@ -380,7 +380,7 @@ namespace TombLib.LevelData.IO
                                     if (id4 == Prj2Chunks.SectorProperties)
                                     {
                                         long flag = chunkIO.ReadChunkLong(chunkSize4);
-                                        if (((flag & 1) != 0) && block.Type != BlockType.BorderWall)
+                                        if ((flag & 1) != 0 && block.Type != BlockType.BorderWall)
                                             block.Type = BlockType.Wall;
                                         block.Flags = (BlockFlags)(flag >> 2);
                                         block.ForceFloorSolid = (flag & 2) != 0;
@@ -505,7 +505,7 @@ namespace TombLib.LevelData.IO
                 });
 
                 // Add room
-                if ((roomIndex > 0) && (roomIndex < level.Rooms.Length) && (level.Rooms[roomIndex] == null))
+                if (roomIndex > 0 && roomIndex < level.Rooms.Length && level.Rooms[roomIndex] == null)
                     level.Rooms[roomIndex] = room;
                 else
                     level.AssignRoomToFree(room);

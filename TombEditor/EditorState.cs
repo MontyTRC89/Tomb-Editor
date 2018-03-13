@@ -22,12 +22,12 @@ namespace TombEditor
 
         public static bool operator == (EditorTool first, EditorTool second)
         {
-            return (first.Tool == second.Tool && first.TextureUVFixer == second.TextureUVFixer);
+            return first.Tool == second.Tool && first.TextureUVFixer == second.TextureUVFixer;
         }
 
         public static bool operator !=(EditorTool first, EditorTool second)
         {
-            return (first.Tool != second.Tool || first.TextureUVFixer != second.TextureUVFixer);
+            return first.Tool != second.Tool || first.TextureUVFixer != second.TextureUVFixer;
         }
 
         public override bool Equals(object obj)
@@ -66,12 +66,12 @@ namespace TombEditor
 
         public static bool operator ==(SectorSelection first, SectorSelection second)
         {
-            return (first.Start == second.Start) && (first.End == second.End) && (first.Arrow == second.Arrow);
+            return first.Start == second.Start && first.End == second.End && first.Arrow == second.Arrow;
         }
 
         public static bool operator !=(SectorSelection first, SectorSelection second)
         {
-            return (first.Start != second.Start) || (first.End != second.End) || (first.Arrow != second.Arrow);
+            return first.Start != second.Start || first.End != second.End || first.Arrow != second.Arrow;
         }
 
         public override bool Equals(object obj)
@@ -101,7 +101,7 @@ namespace TombEditor
             }
         }
 
-        public bool Valid => (Start.X != -1) && (Start.Y != -1) && (End.X != -1) && (End.Y != -1);
+        public bool Valid => Start.X != -1 && Start.Y != -1 && End.X != -1 && End.Y != -1;
 
         public SectorSelection ChangeArrows(EditorArrowType Arrow)
         {
@@ -123,14 +123,14 @@ namespace TombEditor
 
         public static bool operator ==(TextureSelection first, TextureSelection second)
         {
-            return (first.Index == second.Index) && (first.Triangle == second.Triangle) &&
-                (first.Invisible == second.Invisible) && (first.DoubleSided == second.DoubleSided) && (first.Transparent == second.Transparent);
+            return first.Index == second.Index && first.Triangle == second.Triangle &&
+                first.Invisible == second.Invisible && first.DoubleSided == second.DoubleSided && first.Transparent == second.Transparent;
         }
 
         public static bool operator !=(TextureSelection first, TextureSelection second)
         {
-            return (first.Index != second.Index) || (first.Triangle != second.Triangle) ||
-                (first.Invisible != second.Invisible) || (first.DoubleSided != second.DoubleSided) || (first.Transparent != second.Transparent);
+            return first.Index != second.Index || first.Triangle != second.Triangle ||
+                first.Invisible != second.Invisible || first.DoubleSided != second.DoubleSided || first.Transparent != second.Transparent;
         }
 
         public override bool Equals(object obj)

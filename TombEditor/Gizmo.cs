@@ -23,7 +23,7 @@ namespace TombEditor
                                      newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
         }
 
-        private float RotationQuanization => (Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift)) ? 22.5f : 0.0f;
+        private float RotationQuanization => Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift) ? 22.5f : 0.0f;
 
         protected override void GizmoRotateY(float newAngle)
         {

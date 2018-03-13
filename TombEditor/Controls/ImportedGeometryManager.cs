@@ -195,10 +195,10 @@ namespace TombEditor.Controls
 
         private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= _dataGridViewDataSource.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= _dataGridViewDataSource.Count)
                 return;
 
-            if ((dataGridView.Columns[e.ColumnIndex] == searchButtonColumn))
+            if (dataGridView.Columns[e.ColumnIndex] == searchButtonColumn)
             {
                 string path = BrowseFile(_dataGridViewDataSource[e.RowIndex].Path);
                 if (!string.IsNullOrEmpty(path))
@@ -212,7 +212,7 @@ namespace TombEditor.Controls
 
         private void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= _dataGridViewDataSource.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= _dataGridViewDataSource.Count)
                 return;
 
             ImportedGeometry object_ = _dataGridViewDataSource[e.RowIndex].Object;

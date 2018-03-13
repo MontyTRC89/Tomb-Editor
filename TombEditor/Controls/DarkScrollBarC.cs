@@ -54,7 +54,7 @@ namespace TombEditor.Controls
                 _value.SetValue(this, Math.Max(0, Math.Min(_precision - viewSizeInt, valueInt)));
 
                 // Update control state
-                if (Enabled = enable && (viewSize < _precision))
+                if (Enabled = enable && viewSize < _precision)
                     UpdateScrollBar();
             }
             finally

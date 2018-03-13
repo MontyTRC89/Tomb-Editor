@@ -47,8 +47,8 @@ namespace TombEditor
             }
             PngInfo temp;
 
-            for (int j = 0; j < (Textures.Count - 1); j++)
-                for (int i = 0; i < (Textures.Count - 1); i++)
+            for (int j = 0; j < Textures.Count - 1; j++)
+                for (int i = 0; i < Textures.Count - 1; i++)
                     if (infos[i].Height < infos[i + 1].Height)
                     {
                         temp = infos[i];

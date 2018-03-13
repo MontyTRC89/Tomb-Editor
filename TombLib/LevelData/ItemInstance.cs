@@ -73,12 +73,12 @@ namespace TombLib.LevelData
         public static bool operator ==(ItemType first, ItemType second)
         {
             // Don't compare _gameVersion because nobody really cares about that, it's only there to make ToString work.
-            return (first.IsStatic == second.IsStatic) && (first.MoveableId == second.MoveableId) && (first.StaticId == second.StaticId);
+            return first.IsStatic == second.IsStatic && first.MoveableId == second.MoveableId && first.StaticId == second.StaticId;
         }
 
         public static bool operator !=(ItemType first, ItemType second) => !(first == second);
 
-        public override bool Equals(object other) => (other is ItemType) && this == (ItemType)other;
+        public override bool Equals(object other) => other is ItemType && this == (ItemType)other;
 
         public override int GetHashCode()
         {

@@ -261,7 +261,7 @@ namespace TombEditor
             short temp = 0;
 
             Meshes = new tr3_mesh[2048];
-            while (totalBytes < (NumMeshData * 2))
+            while (totalBytes < NumMeshData * 2)
             {
                 long offset1 = reader.BaseStream.Position;
 
@@ -602,8 +602,8 @@ namespace TombEditor
                     if (_tempTexturesArray[j].originalID == i)
                     {
                         short page = 0;
-                        byte w = (byte)((_tempTexturesArray[j].NewX));
-                        byte h = (byte)((_tempTexturesArray[j].NewY));
+                        byte w = (byte)_tempTexturesArray[j].NewX;
+                        byte h = (byte)_tempTexturesArray[j].NewY;
 
                         writer.Write(page);
                         writer.Write(w);

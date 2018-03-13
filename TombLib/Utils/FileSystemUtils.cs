@@ -12,7 +12,7 @@ namespace TombLib.Utils
 
         public static bool IsFileNotFoundException(Exception exc)
         {
-            return (exc is FileNotFoundException) || (exc is DirectoryNotFoundException) || (exc is DriveNotFoundException);
+            return exc is FileNotFoundException || exc is DirectoryNotFoundException || exc is DriveNotFoundException;
         }
 
         public static string GetFileNameWithoutExtensionTry(string path)
@@ -61,7 +61,7 @@ namespace TombLib.Utils
                 catch (Exception)
                 { }
                 Thread.Sleep(waitTime);
-                waitTime = ((waitTime + 1) * 4) / 3;
+                waitTime = (waitTime + 1) * 4 / 3;
             } while (watch.ElapsedMilliseconds < waitTimeInMilliseconds); // Wait up to 300 milliseconds until the configuration is readable
             return false;
         }

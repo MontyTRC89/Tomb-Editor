@@ -91,10 +91,10 @@ namespace TombLib.Wad
         public string Name => Data.Name;
         public void Play() => Data.Play();
 
-        public static bool operator ==(WadSoundInfo first, WadSoundInfo second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : (first.Hash == second.Hash));
+        public static bool operator ==(WadSoundInfo first, WadSoundInfo second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);
         public static bool operator !=(WadSoundInfo first, WadSoundInfo second) => !(first == second);
         public bool Equals(WadSoundInfo other) => Hash == other.Hash;
-        public override bool Equals(object other) => (other is WadSoundInfo) && Hash == ((WadSoundInfo)other).Hash;
+        public override bool Equals(object other) => other is WadSoundInfo && Hash == ((WadSoundInfo)other).Hash;
         public override int GetHashCode() { return Hash.GetHashCode(); }
 
         public static WadSoundInfo Empty { get; } = new WadSoundInfo();

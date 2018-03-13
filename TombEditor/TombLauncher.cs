@@ -174,7 +174,7 @@ namespace TombEditor
                     timer.Start();
                     int currentWaitMilliseconds = 0;
                     bool closedWindow = false;
-                    while ((timer.ElapsedMilliseconds < maxWaitMilliseconds) && !closedWindow)
+                    while (timer.ElapsedMilliseconds < maxWaitMilliseconds && !closedWindow)
                     {
                         // Look for any window of Tomb4.exe
                         EnumWindowsProc onEnumWindowDelegate = (IntPtr hWnd, IntPtr lParam) =>
@@ -190,8 +190,8 @@ namespace TombEditor
                             ReportError(GetWindowRect(hWnd, out area), "GetWindowRect");
                             int width = area.Right - area.Left;
                             int height = area.Bottom - area.Top;
-                            if ((width > windowIdenficicationMaxWidth) ||
-                                (height > windowIdenficicationMaxHeight))
+                            if (width > windowIdenficicationMaxWidth ||
+                                height > windowIdenficicationMaxHeight)
                                 return 1;
 
                             // Close window
@@ -204,7 +204,7 @@ namespace TombEditor
 
                         // Wait
                         Thread.Sleep(currentWaitMilliseconds);
-                        currentWaitMilliseconds = ((currentWaitMilliseconds + 1) * 4) / 3;
+                        currentWaitMilliseconds = (currentWaitMilliseconds + 1) * 4 / 3;
                     }
                 }
 
@@ -313,7 +313,7 @@ namespace TombEditor
                     Address = address;
                     OldCode = oldCode;
                     NewCode = newCode;
-                    if (oldCode != null && newCode != null && (oldCode.Length != NewCode.Length))
+                    if (oldCode != null && newCode != null && oldCode.Length != NewCode.Length)
                         throw new ArgumentException();
                 }
 

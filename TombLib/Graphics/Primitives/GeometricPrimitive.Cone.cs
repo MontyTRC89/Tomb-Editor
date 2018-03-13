@@ -103,7 +103,7 @@ namespace TombLib.Graphics.Primitives
                 int horizontalSegments = tessellation * 2;
 
                 var vertices = new SolidVertex[(verticalSegments + 1) * (horizontalSegments + 1)];
-                var indices = new int[(verticalSegments) * (horizontalSegments + 1) * 6];
+                var indices = new int[verticalSegments * (horizontalSegments + 1) * 6];
 
                 float radius = diameter / 2;
 
@@ -127,7 +127,7 @@ namespace TombLib.Graphics.Primitives
                 for (int i = 0; i < tessellation; i++)
                 {
                     int first = i;
-                    int last = (i == tessellation - 1 ? 0 : i + 1);
+                    int last = i == tessellation - 1 ? 0 : i + 1;
                     int cone = tempVertices.Count - 1;
 
                     tempIndices.Add(cone);

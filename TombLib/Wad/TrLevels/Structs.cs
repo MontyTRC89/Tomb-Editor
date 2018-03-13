@@ -40,7 +40,7 @@
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
         public static unsafe bool operator ==(tr_vertex first, tr_vertex second)
         {
-            return (first.X == second.X) && (first.Y == second.Y) && (first.Z == second.Z);
+            return first.X == second.X && first.Y == second.Y && first.Z == second.Z;
         }
 
         public static bool operator !=(tr_vertex first, tr_vertex second)
@@ -162,7 +162,7 @@
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
         public static unsafe bool operator ==(tr_room_vertex first, tr_room_vertex second)
         {
-            return (*(ulong*)&first == *(ulong*)&second) && (*(uint*)&first.Attributes == *(uint*)&second.Attributes);
+            return *(ulong*)&first == *(ulong*)&second && *(uint*)&first.Attributes == *(uint*)&second.Attributes;
         }
 
         public static bool operator !=(tr_room_vertex first, tr_room_vertex second)
@@ -273,7 +273,7 @@
             writer.WriteBlockArray(TexturedTriangles);
 
             var meshOffset2 = writer.BaseStream.Position;
-            var meshSize = (meshOffset2 - meshOffset1);
+            var meshSize = meshOffset2 - meshOffset1;
             if (meshSize % 4 != 0)
             {
                 const ushort tempFiller = 0;

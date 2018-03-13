@@ -18,12 +18,12 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(10, "Building final texture map");
 
-            byte[] texture32Data = new byte[(spritePages.Count + packedTextures.Count) * (256 * 256 * 4)];
+            byte[] texture32Data = new byte[(spritePages.Count + packedTextures.Count) * 256 * 256 * 4];
 
             for (int i = 0; i < packedTextures.Count; ++i)
-                packedTextures[i].RawCopyTo(texture32Data, i * (256 * 256 * 4));
+                packedTextures[i].RawCopyTo(texture32Data, i * 256 * 256 * 4);
             for (int i = 0; i < spritePages.Count; ++i)
-                spritePages[i].RawCopyTo(texture32Data, (packedTextures.Count + i) * (256 * 256 * 4));
+                spritePages[i].RawCopyTo(texture32Data, (packedTextures.Count + i) * 256 * 256 * 4);
 
             _texture32Data = texture32Data;
         }
@@ -58,7 +58,7 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(18, "Building font & sky textures");
 
-            var image = ImageC.CreateNew(256, (_level.Settings.GameVersion == GameVersion.TR5 ? 768 : 512));
+            var image = ImageC.CreateNew(256, _level.Settings.GameVersion == GameVersion.TR5 ? 768 : 512);
 
             if (_level.Settings.GameVersion == GameVersion.TR5)
             {
@@ -129,8 +129,8 @@ namespace TombLib.LevelData.Compilers
                     {
                         newTexture.X = (byte)packInfo.Pos.X;
                         newTexture.Y = (byte)packInfo.Pos.Y;
-                        newTexture.Width = (ushort)(((oldTexture.Texture.Image.Width - 1) * 256) + 255);
-                        newTexture.Height = (ushort)(((oldTexture.Texture.Image.Height - 1) * 256) + 255);
+                        newTexture.Width = (ushort)((oldTexture.Texture.Image.Width - 1) * 256 + 255);
+                        newTexture.Height = (ushort)((oldTexture.Texture.Image.Height - 1) * 256 + 255);
                         newTexture.TopSide = 0;
                         newTexture.LeftSide = 0;
                         newTexture.RightSide = 0;
@@ -144,8 +144,8 @@ namespace TombLib.LevelData.Compilers
                         newTexture.Y = (byte)newTexture.TopSide;
                         newTexture.Width = (ushort)((oldTexture.Texture.Image.Width - 1) * 256);
                         newTexture.Height = (ushort)((oldTexture.Texture.Image.Height - 1) * 256);
-                        newTexture.RightSide = (short)(newTexture.LeftSide + (oldTexture.Texture.Image.Width));
-                        newTexture.BottomSide = (short)(newTexture.TopSide + (oldTexture.Texture.Image.Height));
+                        newTexture.RightSide = (short)(newTexture.LeftSide + oldTexture.Texture.Image.Width);
+                        newTexture.BottomSide = (short)(newTexture.TopSide + oldTexture.Texture.Image.Height);
                     }
                     newTexture.Tile = (ushort)(pagesBeforeSprites + packInfo.OutputTextureID);
 

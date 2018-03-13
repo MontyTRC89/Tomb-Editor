@@ -126,20 +126,20 @@ namespace TombLib.Graphics.Primitives
                     Vector3 normal = faceNormals[i];
 
                     // Get two vectors perpendicular both to the face normal and to each other.
-                    Vector3 basis = (i >= 4) ? Vector3.UnitZ : Vector3.UnitY;
+                    Vector3 basis = i >= 4 ? Vector3.UnitZ : Vector3.UnitY;
 
                     Vector3 side1 = Vector3.Cross(normal, basis);
                     Vector3 side2 = Vector3.Cross(normal, side1);
 
                     // Six indices (two triangles) per face.
                     int vbase = i * 4;
-                    indices[indexCount++] = (vbase + 2);
-                    indices[indexCount++] = (vbase + 1);
-                    indices[indexCount++] = (vbase + 0);
+                    indices[indexCount++] = vbase + 2;
+                    indices[indexCount++] = vbase + 1;
+                    indices[indexCount++] = vbase + 0;
 
-                    indices[indexCount++] = (vbase + 3);
-                    indices[indexCount++] = (vbase + 2);
-                    indices[indexCount++] = (vbase + 0);
+                    indices[indexCount++] = vbase + 3;
+                    indices[indexCount++] = vbase + 2;
+                    indices[indexCount++] = vbase + 0;
 
                     // Four vertices per face.
                     vertices[vertexCount++] = new SolidVertex((normal - side1 - side2) * size);

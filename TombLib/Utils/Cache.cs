@@ -47,7 +47,7 @@ namespace TombLib.Utils
                 }
 
                 // Clean up if necessary
-                if ((_availableItems.Count + 1) >= MaxCachedCount)
+                if (_availableItems.Count + 1 >= MaxCachedCount)
                     Cleanup();
 
                 // Add value
@@ -73,7 +73,7 @@ namespace TombLib.Utils
         private void Cleanup()
         {
             int itemCount = _availableItems.Count;
-            int reducedCount = (itemCount * cleanupFactorDiv32) / 64 + 1;
+            int reducedCount = itemCount * cleanupFactorDiv32 / 64 + 1;
             if (reducedCount >= _availableItems.Count)
             {
                 Reset();

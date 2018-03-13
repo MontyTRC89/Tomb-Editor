@@ -67,7 +67,7 @@ namespace TombEditor.Forms
             // Create lookup array
             int[,] lookup = new int[searched.Length + 1, find.Length + 1];
             for (int i = 0; i <= searched.Length; ++i)
-                lookup[i, 0] = ((i == 0) || char.IsWhiteSpace(searched[i - 1])) ? 0 : 1; // Immediate deletions
+                lookup[i, 0] = i == 0 || char.IsWhiteSpace(searched[i - 1]) ? 0 : 1; // Immediate deletions
             for (int i = 0; i <= find.Length; ++i)
                 lookup[0, i] = i; // Immediate insertions
 
@@ -76,7 +76,7 @@ namespace TombEditor.Forms
                 for (int j = 1; j <= find.Length; ++j)
                 {
                     lookup[i, j] = Math.Min(
-                        lookup[i - 1, j - 1] + ((find[j - 1] == searched[i - 1]) ? 0 : 1), //  Substitute
+                        lookup[i - 1, j - 1] + (find[j - 1] == searched[i - 1] ? 0 : 1), //  Substitute
                         Math.Min(
                             lookup[i - 1, j] + 1, // Delete
                             lookup[i, j - 1] + 1)); // Insert
@@ -107,7 +107,7 @@ namespace TombEditor.Forms
             // Rebuild object list if necessary
             if (_cachedRelevantObjects != null)
             {
-                ScopeMode scope = (ScopeMode)(comboScope.SelectedItem);
+                ScopeMode scope = (ScopeMode)comboScope.SelectedItem;
                 if (obj is Editor.LoadedWadsChangedEvent && (scope == ScopeMode.ItemTypes || scope == ScopeMode.Everything))
                     ResetCompletely();
                 if (obj is Editor.RoomListChangedEvent) // Always rebuild completely when rooms change for now.
@@ -115,7 +115,7 @@ namespace TombEditor.Forms
                 else if (obj is Editor.SelectedRoomChangedEvent && scope == ScopeMode.ObjectsInCurrentRoom)
                     ResetCompletely();
                 else if (obj is IEditorObjectChangedEvent && (scope == ScopeMode.AllObjects || scope == ScopeMode.Everything ||
-                    (scope == ScopeMode.ObjectsInCurrentRoom && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom)))
+                    scope == ScopeMode.ObjectsInCurrentRoom && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom))
                 {
                     var @event = (IEditorObjectChangedEvent)obj;
                     switch (@event.ChangeType)
@@ -243,7 +243,7 @@ namespace TombEditor.Forms
             {
                 _cachedRelevantObjects = new Dictionary<ObjectType, RateType>();
                 _cachedSortedObjects = new SortedDictionary<RateType, ObjectType>();
-                IEnumerable<ObjectType> relevantObjects = GetRelevantObjects((ScopeMode)(comboScope.SelectedItem));
+                IEnumerable<ObjectType> relevantObjects = GetRelevantObjects((ScopeMode)comboScope.SelectedItem);
                 foreach (ObjectType obj in relevantObjects)
                 {
                     RateType rateType = RateObject(obj);
@@ -291,7 +291,7 @@ namespace TombEditor.Forms
             {
                 KeyValuePair<RateType, ObjectType> entry = _cachedSortedObjects.ElementAt(e.RowIndex);
                 Room room = GetRoom(entry.Value);
-                e.Value = room == null ? "<Unknown>" : (_editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room);
+                e.Value = room == null ? "<Unknown>" : _editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room;
             }
             else if (objectList.Columns[e.ColumnIndex].Name == objectListColumnType.Name)
             {
@@ -325,7 +325,7 @@ namespace TombEditor.Forms
 
         private void objectList_SelectionChanged(object sender, EventArgs e)
         {
-            if ((objectList.SelectedRows.Count == 0) || _currentlyChangingRowCount)
+            if (objectList.SelectedRows.Count == 0 || _currentlyChangingRowCount)
                 return;
 
             int rowIndex = objectList.SelectedRows[0].Index;

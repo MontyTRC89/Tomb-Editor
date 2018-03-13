@@ -372,7 +372,7 @@ namespace TombLib.LevelData.Compilers
 
                     Vector3 position = instance.Room.WorldPos + instance.Position;
                     double angle = Math.Round(instance.RotationY * (65536.0 / 360.0));
-                    ushort angleInt = unchecked((ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle))));
+                    ushort angleInt = unchecked((ushort)Math.Max(0, Math.Min(ushort.MaxValue, angle)));
                     if (wadMoveable.Id.IsAI(_level.Settings.WadGameVersion))
                     {
                         _aiItems.Add(new tr_ai_item
@@ -380,7 +380,7 @@ namespace TombLib.LevelData.Compilers
                             X = (int)Math.Round(position.X),
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
-                            ObjectID = checked((ushort)(instance.WadObjectId.TypeId)),
+                            ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                             Room = (ushort)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             OCB = instance.Ocb,
@@ -397,7 +397,7 @@ namespace TombLib.LevelData.Compilers
                             X = (int)Math.Round(position.X),
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
-                            ObjectID = checked((ushort)(instance.WadObjectId.TypeId)),
+                            ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                             Room = (short)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             Intensity1 = -1,

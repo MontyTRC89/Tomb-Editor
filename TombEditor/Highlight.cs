@@ -82,7 +82,7 @@ namespace TombEditor
             if (block == null)
                 return null;
 
-            bool checkIgnored = (typesToIgnore != null);
+            bool checkIgnored = typesToIgnore != null;
 
             Block bottomBlock = room.ProbeLowestBlock(x, z, probeThroughPortals).Block ?? Block.Empty;
             for(int i = 0; i < _priorityList.Count; i++)
@@ -181,10 +181,10 @@ namespace TombEditor
                     case HighlightShape.EdgeZp:
                     case HighlightShape.EdgeZn:
                         if (!bottomBlock.HasFlag(BlockFlags.ClimbAny))
-                            if ((shape == HighlightShape.EdgeXn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeX)) ||
-                                (shape == HighlightShape.EdgeXp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveX)) ||
-                                (shape == HighlightShape.EdgeZp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveZ)) ||
-                                (shape == HighlightShape.EdgeZn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeZ)))
+                            if (shape == HighlightShape.EdgeXn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeX) ||
+                                shape == HighlightShape.EdgeXp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveX) ||
+                                shape == HighlightShape.EdgeZp && bottomBlock.HasFlag(BlockFlags.ClimbPositiveZ) ||
+                                shape == HighlightShape.EdgeZn && bottomBlock.HasFlag(BlockFlags.ClimbNegativeZ))
                             return ColorClimb;
                         break;
                     default:

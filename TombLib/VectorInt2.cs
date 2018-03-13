@@ -22,20 +22,20 @@ namespace TombLib
         public static VectorInt2 operator -(VectorInt2 value) => new VectorInt2(-value.X, -value.Y);
         public static VectorInt2 operator *(VectorInt2 value, int scale) => new VectorInt2(value.X * scale, value.Y * scale);
         public static VectorInt2 operator /(VectorInt2 value, int scale) => new VectorInt2(value.X / scale, value.Y / scale);
-        public static bool operator ==(VectorInt2 first, VectorInt2 second) => (first.X == second.X) && (first.Y == second.Y);
-        public static bool operator !=(VectorInt2 first, VectorInt2 second) => (first.X != second.X) || (first.Y != second.Y);
+        public static bool operator ==(VectorInt2 first, VectorInt2 second) => first.X == second.X && first.Y == second.Y;
+        public static bool operator !=(VectorInt2 first, VectorInt2 second) => first.X != second.X || first.Y != second.Y;
         public static implicit operator Vector2(VectorInt2 value) => new Vector2(value.X, value.Y);
         public static explicit operator VectorInt2(Vector2 value) => FromRounded(value);
 
         public static VectorInt2 FromRounded(Vector2 value) => new VectorInt2(
-            (int)(Math.Min(Math.Max(Math.Round(value.X), int.MinValue), int.MaxValue)),
-            (int)(Math.Min(Math.Max(Math.Round(value.Y), int.MinValue), int.MaxValue)));
+            (int)Math.Min(Math.Max(Math.Round(value.X), int.MinValue), int.MaxValue),
+            (int)Math.Min(Math.Max(Math.Round(value.Y), int.MinValue), int.MaxValue));
         public static VectorInt2 FromFloor(Vector2 value) => new VectorInt2(
-            (int)(Math.Min(Math.Max(Math.Floor(value.X), int.MinValue), int.MaxValue)),
-            (int)(Math.Min(Math.Max(Math.Floor(value.Y), int.MinValue), int.MaxValue)));
+            (int)Math.Min(Math.Max(Math.Floor(value.X), int.MinValue), int.MaxValue),
+            (int)Math.Min(Math.Max(Math.Floor(value.Y), int.MinValue), int.MaxValue));
         public static VectorInt2 FromCeiling(Vector2 value) => new VectorInt2(
-            (int)(Math.Min(Math.Max(Math.Ceiling(value.X), int.MinValue), int.MaxValue)),
-            (int)(Math.Min(Math.Max(Math.Ceiling(value.Y), int.MinValue), int.MaxValue)));
+            (int)Math.Min(Math.Max(Math.Ceiling(value.X), int.MinValue), int.MaxValue),
+            (int)Math.Min(Math.Max(Math.Ceiling(value.Y), int.MinValue), int.MaxValue));
 
         public override string ToString() => "<" + X + ", " + Y + ">";
         public override bool Equals(object obj)
