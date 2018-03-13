@@ -145,7 +145,7 @@ namespace TombEditor.Controls
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
-                    StaticMesh mesh = model.Meshes[i];
+                    var mesh = model.Meshes[i];
 
                     if (_layout == null)
                     {
@@ -179,7 +179,7 @@ namespace TombEditor.Controls
 
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
-                    SkinnedMesh mesh = skin.Meshes[i];
+                    var mesh = skin.Meshes[i];
                     if (skin.Vertices.Count == 0)
                         continue;
 

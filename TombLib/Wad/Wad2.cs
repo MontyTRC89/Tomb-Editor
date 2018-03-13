@@ -37,6 +37,7 @@ namespace TombLib.Wad
         public Texture2D DirectXTexture { get; private set; }
         public SortedDictionary<WadMoveableId, SkinnedModel> DirectXMoveables { get; } = new SortedDictionary<WadMoveableId, SkinnedModel>();
         public SortedDictionary<WadStaticId, StaticModel> DirectXStatics { get; } = new SortedDictionary<WadStaticId, StaticModel>();
+        public Dictionary<WadMesh, ObjectMesh> DirectXMeshes { get; } = new Dictionary<WadMesh, ObjectMesh>();
         public Dictionary<WadTexture, VectorInt2> PackedTextures { get; set; } = new Dictionary<WadTexture, VectorInt2>();
 
         // Size of the atlas

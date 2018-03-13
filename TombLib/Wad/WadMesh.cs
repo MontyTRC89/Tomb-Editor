@@ -96,7 +96,7 @@ namespace TombLib.Wad
             {
                 var transformedVertex = MathC.HomogenousTransform(oldVertex, transform);
                 min = Vector3.Min(transformedVertex, min);
-                max = Vector3.Min(transformedVertex, max);
+                max = Vector3.Max(transformedVertex, max);
             }
             return new BoundingBox(min, max);
         }
@@ -108,7 +108,7 @@ namespace TombLib.Wad
             foreach (Vector3 oldVertex in VerticesPositions)
             {
                 min = Vector3.Min(oldVertex, min);
-                max = Vector3.Min(oldVertex, max);
+                max = Vector3.Max(oldVertex, max);
             }
             return new BoundingBox(min, max);
         }

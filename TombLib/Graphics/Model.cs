@@ -40,31 +40,14 @@ namespace TombLib.Graphics
             IndexBuffer?.Dispose();
         }
 
-        public abstract void BuildBuffers();
+        public abstract void UpdateBuffers();
 
-        protected static void PutSkinnedVertexAndIndex(Vector3 v, SkinnedMesh mesh, Submesh submesh, Vector2 uv,
-                                                       int submeshIndex, int boneIndex, Vector2 positionInAtlas)
-        {
-            SkinnedVertex newVertex = new SkinnedVertex();
-
-            newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.Normal = Vector3.Zero;
-            newVertex.Tangent = Vector3.Zero;
-            newVertex.Binormal = Vector3.Zero;
-            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / Wad2.TextureAtlasSize, 
-                                       (positionInAtlas.Y + uv.Y) / Wad2.TextureAtlasSize);
-
-            mesh.Vertices.Add(newVertex);
-            submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
-        }
-
-        protected static void PutStaticVertexAndIndex(Vector3 v, StaticMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
+        protected static void PutObjectVertexAndIndex(Vector3 v, ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
                                                       short color, Vector2 positionInAtlas)
         {
-            StaticVertex newVertex = new StaticVertex();
+            var newVertex = new ObjectVertex();
 
             newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.Normal = Vector3.Zero;
             newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / Wad2.TextureAtlasSize, 
                                        (positionInAtlas.Y + uv.Y) / Wad2.TextureAtlasSize);
 

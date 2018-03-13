@@ -1632,10 +1632,9 @@ namespace TombEditor.Controls
                     if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(modelInfo.WadObjectId) ?? false)
                     {
                         SkinnedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
-
                         for (int j = 0; j < model.Meshes.Count; j++)
                         {
-                            SkinnedMesh mesh = model.Meshes[j];
+                            var mesh = model.Meshes[j];
                             DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
                         }
                     }
@@ -1654,8 +1653,7 @@ namespace TombEditor.Controls
                     if (_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(modelInfo.WadObjectId) ?? false)
                     {
                         StaticModel model = _editor.Level.Wad.DirectXStatics[modelInfo.WadObjectId];
-
-                        StaticMesh mesh = model.Meshes[0];
+                        var mesh = model.Meshes[0];
                         DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
                     }
                     else
@@ -2247,7 +2245,7 @@ namespace TombEditor.Controls
 
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
-                    SkinnedMesh mesh = skin.Meshes[i];
+                    var mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
 
@@ -2409,7 +2407,7 @@ namespace TombEditor.Controls
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
-                    StaticMesh mesh = model.Meshes[i];
+                    var mesh = model.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
 
@@ -2481,7 +2479,7 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < skinnedModel.Meshes.Count; i++)
             {
-                SkinnedMesh mesh = skinnedModel.Meshes[i];
+                var mesh = skinnedModel.Meshes[i];
 
                 Matrix4x4 modelMatrix = Matrix4x4.CreateScale(20.0f) * skinnedModel.AnimationTransforms[i] * _editor.SelectedRoom.Transform;
                 skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((modelMatrix * viewProjection).ToSharpDX());

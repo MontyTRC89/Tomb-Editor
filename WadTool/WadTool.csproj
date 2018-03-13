@@ -89,6 +89,9 @@
     <Compile Include="Controls\PanelRendering.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\PanelRenderingMesh.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PanelRenderingStaticEditor.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -125,7 +125,7 @@ namespace TombLib.LevelData
                 Scale = scale;
             }
 
-            public override void BuildBuffers()
+            public override void UpdateBuffers()
             {
                 var lastBaseIndex = 0;
 
@@ -286,7 +286,7 @@ namespace TombLib.LevelData
                     }
                 }
 
-                DirectXModel.BuildBuffers();
+                DirectXModel.UpdateBuffers();
             }
             catch (OperationCanceledException)
             {

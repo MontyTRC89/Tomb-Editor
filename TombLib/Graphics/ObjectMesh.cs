@@ -1,0 +1,143 @@
+﻿using SharpDX.Toolkit.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
+using TombLib.Utils;
+using TombLib.Wad;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
+
+namespace TombLib.Graphics
+{
+    public class ObjectMesh : Mesh<ObjectVertex>
+    {
+        public Buffer<ObjectVertex> VertexBuffer { get; private set; }
+        public Buffer IndexBuffer { get; private set; }
+        public List<Material> Materials { get; private set; }
+
+        public ObjectMesh(GraphicsDevice device, string name)
+            : base(device, name)
+        { }
+
+        public void UpdateBuffers()
+        {
+            int lastBaseIndex = 0;
+
+            foreach (var submesh in Submeshes)
+            {
+                submesh.Value.BaseIndex = lastBaseIndex;
+                foreach (var index in submesh.Value.Indices)
+                    Indices.Add((ushort)(lastBaseIndex + index));
+                lastBaseIndex += submesh.Value.NumIndices;
+            }
+
+            UpdateBoundingBox();
+
+            if (Vertices.Count == 0)
+                return;
+
+            if (VertexBuffer != null)
+                VertexBuffer.Dispose();
+            if (IndexBuffer != null)
+                IndexBuffer.Dispose();
+
+            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<ObjectVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+        }
+
+        private static void PutObjectVertexAndIndex(Vector3 v, ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
+                                                    short color, Vector2 positionInAtlas)
+        {
+            var newVertex = new ObjectVertex();
+
+            newVertex.Position = new Vector3(v.X, v.Y, v.Z);
+            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / Wad2.TextureAtlasSize,
+                                       (positionInAtlas.Y + uv.Y) / Wad2.TextureAtlasSize);
+
+            var shade = 1.0f - color / 8191.0f;
+            newVertex.Shade = new Vector2(shade, 0.0f);
+
+            mesh.Vertices.Add(newVertex);
+            submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
+        }
+
+        public static ObjectMesh FromWad2(GraphicsDevice device, Wad2 wad, WadMesh msh, Dictionary<WadTexture, VectorInt2> reallocatedTextures)
+        {
+            // Initialize the mesh
+            var mesh = new ObjectMesh(device, "ObjectMesh_" + msh.Hash.ToString());
+
+            // Prepare materials
+            var materialOpaque = new Material(Material.Material_Opaque + "_0_0_0_0", null, false, false, 0);
+            var materialOpaqueDoubleSided = new Material(Material.Material_OpaqueDoubleSided + "_0_0_1_0", null, false, true, 0);
+            var materialAdditiveBlending = new Material(Material.Material_AdditiveBlending + "_0_1_0_0", null, true, false, 0);
+            var materialAdditiveBlendingDoubleSided = new Material(Material.Material_AdditiveBlendingDoubleSided + "_0_1_1_0", null, true, true, 0);
+
+            mesh.Materials = new List<Material>();
+            mesh.Materials.Add(materialOpaque);
+            mesh.Materials.Add(materialOpaqueDoubleSided);
+            mesh.Materials.Add(materialAdditiveBlending);
+            mesh.Materials.Add(materialAdditiveBlendingDoubleSided);
+
+            mesh.Submeshes.Add(materialOpaque, new Submesh(materialOpaque));
+            mesh.Submeshes.Add(materialOpaqueDoubleSided, new Submesh(materialOpaqueDoubleSided));
+            mesh.Submeshes.Add(materialAdditiveBlending, new Submesh(materialAdditiveBlending));
+            mesh.Submeshes.Add(materialAdditiveBlendingDoubleSided, new Submesh(materialAdditiveBlendingDoubleSided));
+
+            mesh.BoundingBox = msh.BoundingBox;
+            mesh.BoundingSphere = msh.BoundingSphere;
+
+            for (int j = 0; j < msh.Polys.Count; j++)
+            {
+                WadPolygon poly = msh.Polys[j];
+                Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)poly.Texture.Texture];
+
+                // Get the right submesh
+                var submesh = mesh.Submeshes[materialOpaque];
+                if (poly.Texture.BlendMode == BlendMode.Additive)
+                {
+                    if (poly.Texture.DoubleSided)
+                        submesh = mesh.Submeshes[materialAdditiveBlendingDoubleSided];
+                    else
+                        submesh = mesh.Submeshes[materialAdditiveBlending];
+                }
+                else
+                {
+                    if (poly.Texture.DoubleSided)
+                        submesh = mesh.Submeshes[materialOpaqueDoubleSided];
+                }
+
+                if (poly.Shape == WadPolygonShape.Triangle)
+                {
+                    int v1 = poly.Index0;
+                    int v2 = poly.Index1;
+                    int v3 = poly.Index2;
+
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, 0, positionInPackedTexture);
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, 0, positionInPackedTexture);
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, 0, positionInPackedTexture);
+                }
+                else
+                {
+                    int v1 = poly.Index0;
+                    int v2 = poly.Index1;
+                    int v3 = poly.Index2;
+                    int v4 = poly.Index3;
+
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, 0, positionInPackedTexture);
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, 0, positionInPackedTexture);
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, 0, positionInPackedTexture);
+
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, 0, positionInPackedTexture);
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, 0, positionInPackedTexture);
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, 0, positionInPackedTexture);
+                }
+            }
+
+            mesh.UpdateBuffers();
+
+            return mesh;
+        }
+    }
+}
