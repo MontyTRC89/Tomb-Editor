@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Text;
 using TombLib;
 using TombLib.IO;
 using TombLib.LevelData;
@@ -30,11 +29,11 @@ namespace TombEditor
             public Vector2 End => new Vector2(EndX, EndY);
         }
 
-        private byte[] _data;
-        private List<ContourLine> _contourLines;
-        private float _dropPositionX; // Vector2 can't be serialized for no good reason.
-        private float _dropPositionY;
-        private string _levelPath;
+        private readonly byte[] _data;
+        private readonly List<ContourLine> _contourLines;
+        private readonly float _dropPositionX; // Vector2 can't be serialized for no good reason.
+        private readonly float _dropPositionY;
+        private readonly string _levelPath;
 
         public RoomClipboardData(Editor editor, Vector2 dropPosition)
         {
@@ -71,7 +70,7 @@ namespace TombEditor
                 var writer = new BinaryWriterEx(stream);
                 Prj2Writer.SaveToPrj2(stream, editor.Level, new Prj2Writer.Filter
                 {
-                    RoomPredicate = (room) => editor.SelectedRoomsContains(room)
+                    RoomPredicate = room => editor.SelectedRoomsContains(room)
                 });
                 _data = stream.GetBuffer();
             }
@@ -81,7 +80,7 @@ namespace TombEditor
             : this(editor, editor.SelectedRooms.Aggregate(
                 RectangleInt2.MaxMin,
                 (area, room) => room.WorldArea.Union(area),
-                (area) => area.GetMid()))
+                area => area.GetMid()))
         { }
 
         public IReadOnlyList<ContourLine> ContourLines => _contourLines;

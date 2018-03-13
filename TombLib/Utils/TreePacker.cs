@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TombLib.Utils
+﻿namespace TombLib.Utils
 {
     public class TreePacker : RectPacker
     {
@@ -13,7 +7,7 @@ namespace TombLib.Utils
             public TreePackerNode Left { get; set; }
             public TreePackerNode Right { get; set; }
             public RectangleInt2 Rectangle { get; set; }
-            public bool Filled { get; set; } = false;
+            public bool Filled { get; set; }
 
             private bool RectangleFitsIn(VectorInt2 size)
             {
@@ -68,7 +62,7 @@ namespace TombLib.Utils
             }
         }
 
-        private TreePackerNode _startNode;
+        private readonly TreePackerNode _startNode;
 
         public TreePacker(VectorInt2 size)
             : base(size)

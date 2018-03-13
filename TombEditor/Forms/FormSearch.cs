@@ -1,20 +1,17 @@
-﻿using DarkUI.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using DarkUI.Forms;
+using TombLib.LevelData;
+using TombLib.Utils;
+using TombLib.Wad;
 using RateType = System.UInt64;
 using ObjectType = System.Object;
-using TombLib.LevelData;
-using TombLib.Wad;
-using System.Runtime.CompilerServices;
-using TombLib.Utils;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormSearch : DarkForm
     {
@@ -25,7 +22,7 @@ namespace TombEditor
             AllObjects,
             ObjectsInCurrentRoom,
             ItemTypes
-        };
+        }
 
         private const int _trueRateBitCount = 16;
         private const int _matchBitShift = 64 - _trueRateBitCount;
@@ -40,13 +37,13 @@ namespace TombEditor
             public RateType _id = RateType.MaxValue;
         }
 
-        private RateType _currentId = 0;
-        private Editor _editor;
+        private RateType _currentId;
+        private readonly Editor _editor;
         private readonly ConditionalWeakTable<ObjectType, RateTypeClass> _baseObjectIdDictionary = new ConditionalWeakTable<ObjectType, RateTypeClass>();
-        private Dictionary<ObjectType, RateType> _cachedRelevantObjects = null;
-        private SortedDictionary<RateType, ObjectType> _cachedSortedObjects = null;
+        private Dictionary<ObjectType, RateType> _cachedRelevantObjects;
+        private SortedDictionary<RateType, ObjectType> _cachedSortedObjects;
         private string _keyword = "";
-        private bool _currentlyChangingRowCount = false;
+        private bool _currentlyChangingRowCount;
 
         public FormSearch(Editor editor)
         {
@@ -70,7 +67,7 @@ namespace TombEditor
             // Create lookup array
             int[,] lookup = new int[searched.Length + 1, find.Length + 1];
             for (int i = 0; i <= searched.Length; ++i)
-                lookup[i, 0] = ((i == 0) || char.IsWhiteSpace(searched[i - 1])) ? 0 : 1; // Immediate deletions
+                lookup[i, 0] = i == 0 || char.IsWhiteSpace(searched[i - 1]) ? 0 : 1; // Immediate deletions
             for (int i = 0; i <= find.Length; ++i)
                 lookup[0, i] = i; // Immediate insertions
 
@@ -79,7 +76,7 @@ namespace TombEditor
                 for (int j = 1; j <= find.Length; ++j)
                 {
                     lookup[i, j] = Math.Min(
-                        lookup[i - 1, j - 1] + ((find[j - 1] == searched[i - 1]) ? 0 : 1), //  Substitute
+                        lookup[i - 1, j - 1] + (find[j - 1] == searched[i - 1] ? 0 : 1), //  Substitute
                         Math.Min(
                             lookup[i - 1, j] + 1, // Delete
                             lookup[i, j - 1] + 1)); // Insert
@@ -110,7 +107,7 @@ namespace TombEditor
             // Rebuild object list if necessary
             if (_cachedRelevantObjects != null)
             {
-                ScopeMode scope = (ScopeMode)(comboScope.SelectedItem);
+                ScopeMode scope = (ScopeMode)comboScope.SelectedItem;
                 if (obj is Editor.LoadedWadsChangedEvent && (scope == ScopeMode.ItemTypes || scope == ScopeMode.Everything))
                     ResetCompletely();
                 if (obj is Editor.RoomListChangedEvent) // Always rebuild completely when rooms change for now.
@@ -118,7 +115,7 @@ namespace TombEditor
                 else if (obj is Editor.SelectedRoomChangedEvent && scope == ScopeMode.ObjectsInCurrentRoom)
                     ResetCompletely();
                 else if (obj is IEditorObjectChangedEvent && (scope == ScopeMode.AllObjects || scope == ScopeMode.Everything ||
-                    (scope == ScopeMode.ObjectsInCurrentRoom && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom)))
+                    scope == ScopeMode.ObjectsInCurrentRoom && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom))
                 {
                     var @event = (IEditorObjectChangedEvent)obj;
                     switch (@event.ChangeType)
@@ -164,7 +161,11 @@ namespace TombEditor
             {
                 objectList.FirstDisplayedScrollingRowIndex = 0;
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
+
             ResetCompletely();
         }
 
@@ -175,7 +176,11 @@ namespace TombEditor
             {
                 objectList.FirstDisplayedScrollingRowIndex = 0;
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
+
             ResetSort();
         }
 
@@ -246,7 +251,7 @@ namespace TombEditor
             {
                 _cachedRelevantObjects = new Dictionary<ObjectType, RateType>();
                 _cachedSortedObjects = new SortedDictionary<RateType, ObjectType>();
-                IEnumerable<ObjectType> relevantObjects = GetRelevantObjects((ScopeMode)(comboScope.SelectedItem));
+                IEnumerable<ObjectType> relevantObjects = GetRelevantObjects((ScopeMode)comboScope.SelectedItem);
                 foreach (ObjectType obj in relevantObjects)
                 {
                     RateType rateType = RateObject(obj);
@@ -294,7 +299,7 @@ namespace TombEditor
             {
                 KeyValuePair<RateType, ObjectType> entry = _cachedSortedObjects.ElementAt(e.RowIndex);
                 Room room = GetRoom(entry.Value);
-                e.Value = room == null ? "<Unknown>" : (_editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room.ToString());
+                e.Value = room == null ? "<Unknown>" : _editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room;
             }
             else if (objectList.Columns[e.ColumnIndex].Name == objectListColumnType.Name)
             {
@@ -328,7 +333,7 @@ namespace TombEditor
 
         private void objectList_SelectionChanged(object sender, EventArgs e)
         {
-            if ((objectList.SelectedRows.Count == 0) || _currentlyChangingRowCount)
+            if (objectList.SelectedRows.Count == 0 || _currentlyChangingRowCount)
                 return;
 
             int rowIndex = objectList.SelectedRows[0].Index;

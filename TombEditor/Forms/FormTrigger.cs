@@ -1,30 +1,22 @@
-﻿using DarkUI.Controls;
+﻿using System;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 using DarkUI.Forms;
 using NLog;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.NG;
-using TombLib.Wad.Catalog;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormTrigger : DarkForm
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private Level _level;
-        private TriggerInstance _trigger;
+        private readonly Level _level;
+        private readonly TriggerInstance _trigger;
 
         public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
                            Action<Room> selectRoom)
@@ -84,21 +76,21 @@ namespace TombEditor
         }
 
         private TriggerType TriggerType => paramTriggerType.Parameter is TriggerParameterUshort ?
-                (TriggerType)((TriggerParameterUshort)(paramTriggerType.Parameter)).Key : TriggerType.Trigger;
+                (TriggerType)((TriggerParameterUshort)paramTriggerType.Parameter).Key : TriggerType.Trigger;
 
         private TriggerTargetType TargetType => paramTargetType.Parameter is TriggerParameterUshort ?
-                (TriggerTargetType)((TriggerParameterUshort)(paramTargetType.Parameter)).Key : TriggerTargetType.Object;
+                (TriggerTargetType)((TriggerParameterUshort)paramTargetType.Parameter).Key : TriggerTargetType.Object;
 
         private byte CodeBits
         {
             get
             {
                 byte codeBits = 0;
-                codeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
-                codeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
-                codeBits |= (byte)(cbBit3.Checked ? (1 << 2) : 0);
-                codeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
-                codeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
+                codeBits |= (byte)(cbBit1.Checked ? 1 << 0 : 0);
+                codeBits |= (byte)(cbBit2.Checked ? 1 << 1 : 0);
+                codeBits |= (byte)(cbBit3.Checked ? 1 << 2 : 0);
+                codeBits |= (byte)(cbBit4.Checked ? 1 << 3 : 0);
+                codeBits |= (byte)(cbBit5.Checked ? 1 << 4 : 0);
                 return codeBits;
             }
         }

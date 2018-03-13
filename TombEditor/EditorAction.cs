@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.LevelData;
 
 namespace TombEditor
@@ -22,7 +18,7 @@ namespace TombEditor
     public class EditorActionPlace : IEditorActionPlace
     {
         public bool Repeat { get; }
-        private Func<Level, Room, PositionBasedObjectInstance> _createObjectInstance;
+        private readonly Func<Level, Room, PositionBasedObjectInstance> _createObjectInstance;
 
         public EditorActionPlace(bool repeat, Func<Level, Room, PositionBasedObjectInstance> createObjectInstance)
         {
@@ -34,6 +30,6 @@ namespace TombEditor
         public bool ShouldBeActive => Repeat;
     }
 
-    public class EditorActionRelocateCamera : IEditorAction, IEditorActionDisableOnLostFocus
+    public class EditorActionRelocateCamera : IEditorActionDisableOnLostFocus
     { }
 }

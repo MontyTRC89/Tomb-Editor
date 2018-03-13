@@ -1,6 +1,6 @@
 ﻿using DarkUI.Controls;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     partial class FormFlybyCamera
     {

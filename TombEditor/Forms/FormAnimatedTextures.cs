@@ -1,19 +1,19 @@
-﻿using DarkUI.Controls;
-using DarkUI.Extensions;
-using DarkUI.Forms;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using DarkUI.Controls;
+using DarkUI.Extensions;
+using DarkUI.Forms;
+using NLog;
 using TombLib.LevelData;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormAnimatedTextures : DarkForm
     {
@@ -33,11 +33,11 @@ namespace TombEditor
             public Vector2 _sourceTexCoord2;
             public Vector2 _sourceTexCoord3;
             public Size _destinationSize;
-        };
+        }
         private struct NgAnimatedTextureSettingPair
         {
-            public int Key;
-            public string Value;
+            public readonly int Key;
+            public readonly string Value;
 
             public NgAnimatedTextureSettingPair(int key,string value)
             {
@@ -51,17 +51,17 @@ namespace TombEditor
             }
         }
 
-        private Editor _editor;
-        private Cache<CachedImageInfo, Bitmap> _imageCache;
+        private readonly Editor _editor;
+        private readonly Cache<CachedImageInfo, Bitmap> _imageCache;
 
-        private Timer _previewTimer = new Timer();
-        private AnimatedTextureFrame _previewCurrentFrame = null;
-        private int _previewCurrentRepeatTimes = 0;
+        private readonly Timer _previewTimer = new Timer();
+        private AnimatedTextureFrame _previewCurrentFrame;
+        private int _previewCurrentRepeatTimes;
         private const float _previewFps = 15;
         private const float _maxLegacyFrames = 16;
-        private int _lastY = 0;
+        private int _lastY;
 
-        private bool _isNg;
+        private readonly bool _isNg;
 
         public FormAnimatedTextures(Editor editor)
         {
@@ -72,7 +72,7 @@ namespace TombEditor
             _editor.EditorEventRaised += _editor_EditorEventRaised;
 
             // Setup image cache
-            _imageCache = new Cache<CachedImageInfo, Bitmap>(512, (subsection) =>
+            _imageCache = new Cache<CachedImageInfo, Bitmap>(512, subsection =>
                 {
                     return GetPerspectivePreview(subsection._image, subsection._sourceTexCoord0, subsection._sourceTexCoord1, subsection._sourceTexCoord2,
                         subsection._sourceTexCoord3, subsection._destinationSize).ToBitmap();
@@ -139,7 +139,7 @@ namespace TombEditor
                 while (comboAnimatedTextureSets.Items.Count > _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.RemoveAt(comboAnimatedTextureSets.Items.Count - 1);
                 for (int i = 0; i < comboAnimatedTextureSets.Items.Count; ++i)
-                    if (!object.ReferenceEquals(comboAnimatedTextureSets.Items[i], _editor.Level.Settings.AnimatedTextureSets[i]))
+                    if (!ReferenceEquals(comboAnimatedTextureSets.Items[i], _editor.Level.Settings.AnimatedTextureSets[i]))
                         comboAnimatedTextureSets.Items[i] = _editor.Level.Settings.AnimatedTextureSets[i];
                 while (comboAnimatedTextureSets.Items.Count < _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.Add(_editor.Level.Settings.AnimatedTextureSets[comboAnimatedTextureSets.Items.Count]);
@@ -194,7 +194,7 @@ namespace TombEditor
                 selectedSet = new AnimatedTextureSet();
 
             // Setup frames
-            var dataSource = (TransparentBindingList<AnimatedTextureFrame>)(texturesDataGridView.DataSource);
+            var dataSource = (TransparentBindingList<AnimatedTextureFrame>)texturesDataGridView.DataSource;
             if (dataSource?.Items != selectedSet.Frames)
             {
                 var newDataSource = new TransparentBindingList<AnimatedTextureFrame>(selectedSet.Frames);
@@ -223,12 +223,12 @@ namespace TombEditor
                 previewImage.Image = null;
                 previewProgressBar.Maximum = 0;
                 previewProgressBar.Value = 0;
-                previewProgressBar.TextMode = DarkUI.Controls.DarkProgressBarMode.NoText;
+                previewProgressBar.TextMode = DarkProgressBarMode.NoText;
             }
             else
             {
                 _previewTimer.Enabled = true;
-                previewProgressBar.TextMode = DarkUI.Controls.DarkProgressBarMode.XOfN;
+                previewProgressBar.TextMode = DarkProgressBarMode.XOfN;
             }
 
             if (!_isNg)
@@ -327,7 +327,7 @@ namespace TombEditor
 
             // Update view
             previewProgressBar.Minimum = 0;
-            previewProgressBar.Maximum = (frameCount - 1);
+            previewProgressBar.Maximum = frameCount - 1;
             previewProgressBar.SetProgressNoAnimation(frameIndex);
             previewImage.Image = _imageCache[new CachedImageInfo
             {
@@ -458,7 +458,7 @@ namespace TombEditor
         {
             if (e.DesiredType == typeof(LevelTexture))
             {
-                e.Value = _editor.Level.Settings.Textures.FirstOrDefault((texture) => texture.ToString() == (string)(e.Value));
+                e.Value = _editor.Level.Settings.Textures.FirstOrDefault(texture => texture.ToString() == (string)e.Value);
                 e.ParsingApplied = true;
             }
         }
@@ -471,7 +471,7 @@ namespace TombEditor
             AnimatedTextureFrame frame;
             try
             {
-                frame = (AnimatedTextureFrame)(texturesDataGridView.Rows[e.RowIndex].DataBoundItem);
+                frame = (AnimatedTextureFrame)texturesDataGridView.Rows[e.RowIndex].DataBoundItem;
             }
             catch (Exception exc)
             {
@@ -480,7 +480,7 @@ namespace TombEditor
             }
 
             // Do cell formatting
-            if ((e.DesiredType == typeof(Image)) || e.DesiredType.IsSubclassOf(typeof(Image)))
+            if (e.DesiredType == typeof(Image) || e.DesiredType.IsSubclassOf(typeof(Image)))
             {
                 // Image column
                 CachedImageInfo info;
@@ -516,10 +516,8 @@ namespace TombEditor
                 {
                     float outputTexCoordX = (x + 0.5f) * xTexCoordFactor;
                     float outputTexCoordY = (y + 0.5f) * yTexCoordFactor;
-                    Vector2 inputTexCoord = (
-                            texCoord00 * ((1.0f - outputTexCoordX) * (1.0f - outputTexCoordY)) +
-                            texCoord01 * ((1.0f - outputTexCoordX) * outputTexCoordY)
-                        ) + (
+                    Vector2 inputTexCoord = texCoord00 * ((1.0f - outputTexCoordX) * (1.0f - outputTexCoordY)) +
+                                            texCoord01 * ((1.0f - outputTexCoordX) * outputTexCoordY) + (
                             texCoord10 * (outputTexCoordX * (1.0f - outputTexCoordY)) +
                             texCoord11 * (outputTexCoordX * outputTexCoordY)
                         );
@@ -528,19 +526,17 @@ namespace TombEditor
                     inputTexCoord -= new Vector2(0.5f); // Offset of texture coordinate from texel midpoint
                     inputTexCoord = Vector2.Min(Vector2.Max(inputTexCoord, new Vector2()), max); // Clamp into available texture space
 
-                    int firstX = (int)(inputTexCoord.X);
-                    int firstY = (int)(inputTexCoord.Y);
+                    int firstX = (int)inputTexCoord.X;
+                    int firstY = (int)inputTexCoord.Y;
                     int secondX = Math.Min(firstX + 1, input.Width);
                     int secondY = Math.Min(firstY + 1, input.Height);
                     float secondFactorX = inputTexCoord.X - firstX;
                     float secondFactorY = inputTexCoord.Y - firstY;
 
-                    Vector4 outputPixel = (
-                            ((Vector4)input.GetPixel(secondX, secondY) * (secondFactorX * secondFactorY)) +
-                            ((Vector4)input.GetPixel(secondX, firstY) * (secondFactorX * (1.0f - secondFactorY)))
-                        ) + (
-                            ((Vector4)input.GetPixel(firstX, secondY) * ((1.0f - secondFactorX) * secondFactorY)) +
-                            ((Vector4)input.GetPixel(firstX, firstY) * ((1.0f - secondFactorX) * (1.0f - secondFactorY)))
+                    Vector4 outputPixel = (Vector4)input.GetPixel(secondX, secondY) * (secondFactorX * secondFactorY) +
+                                          (Vector4)input.GetPixel(secondX, firstY) * (secondFactorX * (1.0f - secondFactorY)) + (
+                            (Vector4)input.GetPixel(firstX, secondY) * ((1.0f - secondFactorX) * secondFactorY) +
+                            (Vector4)input.GetPixel(firstX, firstY) * ((1.0f - secondFactorX) * (1.0f - secondFactorY))
                         );
                     output.SetPixel(x, y, (ColorC)outputPixel);
                 }
@@ -556,7 +552,7 @@ namespace TombEditor
         {
             if (texturesDataGridView.SelectedRows.Count > 0)
             {
-                var frame = (AnimatedTextureFrame)(texturesDataGridView.SelectedRows[0].DataBoundItem);
+                var frame = (AnimatedTextureFrame)texturesDataGridView.SelectedRows[0].DataBoundItem;
                 var textureToShow = new TextureArea
                 {
                     Texture = frame.Texture,
@@ -576,10 +572,10 @@ namespace TombEditor
             protected override float MaxTextureSize => float.PositiveInfinity;
             protected override bool DrawTriangle => false;
 
-            private static readonly Pen outlinePen = new Pen(System.Drawing.Color.Silver, 2);
-            private static readonly Pen activeOutlinePen = new Pen(System.Drawing.Color.Violet, 2);
-            private static readonly Brush textBrush = new SolidBrush(System.Drawing.Color.Violet);
-            private static readonly Brush textShadowBrush = new SolidBrush(System.Drawing.Color.Black);
+            private static readonly Pen outlinePen = new Pen(Color.Silver, 2);
+            private static readonly Pen activeOutlinePen = new Pen(Color.Violet, 2);
+            private static readonly Brush textBrush = new SolidBrush(Color.Violet);
+            private static readonly Brush textShadowBrush = new SolidBrush(Color.Black);
             private static readonly Font textFont = new Font("Segoe UI", 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
             private static readonly StringFormat textFormat = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
 
@@ -612,7 +608,7 @@ namespace TombEditor
                     AnimatedTextureFrame frame = set.Frames[i];
                     if (frame.Texture == SelectedTexture.Texture)
                     {
-                        PointF[] edges = new PointF[]
+                        PointF[] edges = new[]
                         {
                                 ToVisualCoord(frame.TexCoord0),
                                 ToVisualCoord(frame.TexCoord1),
@@ -629,7 +625,7 @@ namespace TombEditor
 
                         if (current)
                         {
-                            string counterString = (i + 1) + "/" + set.Frames.Count;
+                            string counterString = i + 1 + "/" + set.Frames.Count;
                             SizeF textSize = e.Graphics.MeasureString(counterString, textFont);
                             RectangleF textArea = RectangleF.FromLTRB(upperLeft.X, upperLeft.Y, lowerRight.X, lowerRight.Y);
 

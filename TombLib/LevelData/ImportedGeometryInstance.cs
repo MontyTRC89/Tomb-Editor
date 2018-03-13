@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
 
 namespace TombLib.LevelData
 {
@@ -11,9 +9,9 @@ namespace TombLib.LevelData
         public float Scale { get; set; } = 1;
         public bool UseVertexColor { get; set; } = false;
 
-        private float _roll { get; set; } = 0;
-        private float _rotationX { get; set; } = 0;
-        private float _rotationY { get; set; } = 0;
+        private float _roll { get; set; }
+        private float _rotationX { get; set; }
+        private float _rotationY { get; set; }
 
         /// <summary> Degrees in the range [0, 360) </summary>
         public float Roll

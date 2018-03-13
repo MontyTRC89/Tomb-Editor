@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TombLib.Utils
 {
@@ -74,23 +71,23 @@ namespace TombLib.Utils
         public static bool operator ==(TextureArea first, TextureArea second)
         {
             return
-                (first.Texture == second.Texture) &&
-                (first.TexCoord0.Equals(second.TexCoord0)) &&
-                (first.TexCoord1.Equals(second.TexCoord1)) &&
-                (first.TexCoord2.Equals(second.TexCoord2)) &&
-                (first.TexCoord3.Equals(second.TexCoord3)) &&
-                (first.BlendMode == second.BlendMode) &&
-                (first.DoubleSided == second.DoubleSided);
+                first.Texture == second.Texture &&
+                first.TexCoord0.Equals(second.TexCoord0) &&
+                first.TexCoord1.Equals(second.TexCoord1) &&
+                first.TexCoord2.Equals(second.TexCoord2) &&
+                first.TexCoord3.Equals(second.TexCoord3) &&
+                first.BlendMode == second.BlendMode &&
+                first.DoubleSided == second.DoubleSided;
         }
 
         public static bool operator !=(TextureArea first, TextureArea second) => !(first == second);
         public bool Equals(TextureArea other) => this == other;
-        public override bool Equals(object other) => (other is TextureArea) && this == (TextureArea)other;
+        public override bool Equals(object other) => other is TextureArea && this == (TextureArea)other;
         public override int GetHashCode() => base.GetHashCode();
 
-        public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
-        public bool TextureIsInvisble => (Texture == null) || (Texture == TextureInvisible.Instance) || (Texture.IsUnavailable);
-        public bool TextureIsRectangle => ((TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length());
+        public bool TextureIsUnavailable => Texture == null || Texture.IsUnavailable;
+        public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
+        public bool TextureIsRectangle => (TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length();
 
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
         {

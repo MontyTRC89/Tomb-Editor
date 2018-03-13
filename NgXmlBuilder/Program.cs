@@ -2,12 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
 using TombLib.NG;
-using System.Net;
 using TombLib.Utils;
 using TombLib.LevelData;
 using System.Xml.Linq;
@@ -141,7 +136,7 @@ namespace NgXmlBuilder
             return s;
         }
 
-        static readonly char[] numberChars = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '+', '-' };
+        static readonly char[] numberChars = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '+', '-' };
 
         private struct ParsedSubstring
         {
@@ -234,7 +229,7 @@ namespace NgXmlBuilder
 
         private static void AddFixed(List<NgParameterRange> choice, IEnumerable<TriggerParameterUshort> enumsToAdd)
         {
-            if (enumsToAdd.Count() == 0)
+            if (!enumsToAdd.Any())
                 return;
             for (int i = 0; i < choice.Count; ++i)
                 if (choice[i].Kind == NgParameterKind.FixedEnumeration)
@@ -267,14 +262,14 @@ namespace NgXmlBuilder
                 if (entry.Original.Name.StartsWith("PUZZLE_ITEM", StringComparison.InvariantCulture) ||
                     entry.Original.Name.StartsWith("KEY_ITEM", StringComparison.InvariantCulture) ||
                     entry.Original.Name.StartsWith("Send command for ", StringComparison.InvariantCulture) ||
-                    (entry.Original.Name.Length == 2 && entry.Original.Name.StartsWith("F", StringComparison.InvariantCulture)) || // F keys
-                    (entry.Original.Name.Length == 7 && entry.Original.Name.StartsWith("Number", StringComparison.InvariantCulture))) // Number keys
+                    entry.Original.Name.Length == 2 && entry.Original.Name.StartsWith("F", StringComparison.InvariantCulture) || // F keys
+                    entry.Original.Name.Length == 7 && entry.Original.Name.StartsWith("Number", StringComparison.InvariantCulture)) // Number keys
                     break;
 
                 if (entry.Substrings.Count != firstEnum.Substrings.Count)
                     break;
                 for (int j = 0; j < entry.Substrings.Count; ++j)
-                    if ((entry.Substrings[j].Value != null) != (firstEnum.Substrings[j].Value != null))
+                    if (entry.Substrings[j].Value != null != (firstEnum.Substrings[j].Value != null))
                         goto ExitLoop0;
                 for (int j = 0; j < entry.Substrings.Count; ++j)
                     if (entry.Substrings[j].Value == null)
@@ -283,11 +278,11 @@ namespace NgXmlBuilder
 
                 // Check if the run is linear
                 // There can't be missing keys.
-                if ((idStart + count) != entry.Original.Key)
+                if (idStart + count != entry.Original.Key)
                     break;
                 ++count;
             }
-            ExitLoop0:;
+            ExitLoop0:
             if (count <= 5) // It's not worth it if there are at most 5 elements
             {
                 AddFixed(outChoice, unmappedEnumsSorted.Take(count).Select(p => p.Original));
@@ -319,7 +314,7 @@ namespace NgXmlBuilder
                     if (linearParameters[i].Factor == 0)
                         linearParameters[i] = new NgLinearParameter { FixedStr = firstEnum.Substrings[i].String };
             for (int i = linearParameters.Count - 1; i >= 1; --i)
-                if ((linearParameters[i].FixedStr != null) && (linearParameters[i - 1].FixedStr != null))
+                if (linearParameters[i].FixedStr != null && linearParameters[i - 1].FixedStr != null)
                 {
                     linearParameters[i - 1] = new NgLinearParameter { FixedStr = linearParameters[i - 1].FixedStr + linearParameters[i].FixedStr };
                     linearParameters.RemoveAt(i);
@@ -345,8 +340,8 @@ namespace NgXmlBuilder
                         }
                     }
             }
-            ExitLoop1:;
-            if (count < (2 + linearParameters.Count * 2)) // It's not worth it if there are at most 5 elements
+            ExitLoop1:
+            if (count < 2 + linearParameters.Count * 2) // It's not worth it if there are at most 5 elements
             {
                 AddFixed(outChoice, unmappedEnumsSorted.Take(count).Select(p => p.Original));
                 unmappedEnumsSorted.RemoveRange(0, count);
@@ -355,7 +350,7 @@ namespace NgXmlBuilder
 
             outChoice.Add(new NgParameterRange(new NgLinearModel
             {
-                Start = unchecked((ushort)idStart),
+                Start = idStart,
                 EndInclusive = unchecked((ushort)(idStart + count - 1)),
                 Parameters = linearParameters
             }));

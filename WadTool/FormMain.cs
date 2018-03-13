@@ -3,16 +3,11 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using TombLib.Forms;
-using TombLib.GeometryIO;
-using TombLib.LevelData;
-using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.Diagnostics;
-using NLog;
 using TombLib.Graphics;
 using DarkUI.Controls;
 
@@ -20,8 +15,8 @@ namespace WadTool
 {
     public partial class FormMain : DarkForm
     {
-        private WadToolClass _tool;
-        private DeviceManager _deviceManager;
+        private readonly WadToolClass _tool;
+        private readonly DeviceManager _deviceManager;
         private bool _playAnimation;
 
         public FormMain(WadToolClass tool)
@@ -48,7 +43,7 @@ namespace WadTool
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && components != null)
             {
                 _tool.EditorEventRaised -= Tool_EditorEventRaised;
                 components.Dispose();
@@ -267,7 +262,7 @@ namespace WadTool
 
             if (_playAnimation)
             {
-                int frameRate = (int)Math.Max(animation.FrameDuration, (short)1);
+                int frameRate = Math.Max(animation.FrameDuration, (short)1);
                 timerPlayAnimation.Stop();
                 timerPlayAnimation.Interval = 1000 / 30 / frameRate;
                 timerPlayAnimation.Start();
@@ -453,7 +448,7 @@ namespace WadTool
 
             // Start animation
             _playAnimation = true;
-            int frameRate = (int)Math.Max(animation.FrameDuration, (short)1);
+            int frameRate = Math.Max(animation.FrameDuration, (short)1);
             timerPlayAnimation.Stop();
             timerPlayAnimation.Interval = 1000 / 30 / frameRate;
             timerPlayAnimation.Start();

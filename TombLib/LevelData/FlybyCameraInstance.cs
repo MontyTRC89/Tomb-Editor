@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TombLib.LevelData
 {
@@ -14,9 +11,9 @@ namespace TombLib.LevelData
 
         private float _speed { get; set; } = 1;
         private float _fov { get; set; } = 45;
-        private float _roll { get; set; } = 0;
-        private float _rotationX { get; set; } = 0;
-        private float _rotationY { get; set; } = 0;
+        private float _roll { get; set; }
+        private float _rotationX { get; set; }
+        private float _rotationY { get; set; }
 
         /// <summary> Spped in the range [0, Infinity). </summary>
         public float Speed

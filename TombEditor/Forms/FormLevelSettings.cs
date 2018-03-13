@@ -1,8 +1,4 @@
-﻿using DarkUI.Config;
-using DarkUI.Forms;
-using NLog;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -10,13 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using DarkUI.Config;
+using DarkUI.Forms;
+using NLog;
 using TombLib.Forms;
-using TombLib.IO;
 using TombLib.LevelData;
-using TombLib.LevelData.IO;
 using TombLib.Utils;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormLevelSettings : DarkForm
     {
@@ -24,7 +21,7 @@ namespace TombEditor
 
         private class PictureTooltip : ToolTip
         {
-            private DarkForm parentForm;
+            private readonly DarkForm parentForm;
 
             public PictureTooltip(DarkForm parent)
             {
@@ -80,12 +77,12 @@ namespace TombEditor
 
         private readonly Color _correctColor;
         private readonly Color _wrongColor;
-        private Editor _editor;
-        private LevelSettings _levelSettings;
+        private readonly Editor _editor;
+        private readonly LevelSettings _levelSettings;
         private string fontTextureFilePathPicPreviewCurrentPath;
         private string skyTextureFilePathPicPreviewCurrentPath;
         private string tr5ExtraSpritesFilePathPicPreviewCurrentPath;
-        private PictureTooltip _pictureTooltip;
+        private readonly PictureTooltip _pictureTooltip;
         private readonly BindingList<OldWadSoundPath> soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
 
         public FormLevelSettings(Editor editor)
@@ -374,7 +371,7 @@ namespace TombEditor
 
         private void fontTextureFilePathTxt_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_levelSettings.FontTextureFilePath) || (_levelSettings.FontTextureFilePath == fontTextureFilePathTxt.Text))
+            if (string.IsNullOrEmpty(_levelSettings.FontTextureFilePath) || _levelSettings.FontTextureFilePath == fontTextureFilePathTxt.Text)
                 return;
             if (string.IsNullOrEmpty(fontTextureFilePathTxt.Text)) // Don't set if it would be empty otherwise.
                 return;
@@ -404,7 +401,7 @@ namespace TombEditor
 
         private void skyTextureFilePathTxt_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_levelSettings.SkyTextureFilePath) || (_levelSettings.SkyTextureFilePath == skyTextureFilePathTxt.Text))
+            if (string.IsNullOrEmpty(_levelSettings.SkyTextureFilePath) || _levelSettings.SkyTextureFilePath == skyTextureFilePathTxt.Text)
                 return;
             if (string.IsNullOrEmpty(skyTextureFilePathTxt.Text)) // Don't set if it would be empty otherwise.
                 return;
@@ -455,7 +452,7 @@ namespace TombEditor
 
         private void soundDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= soundDataGridViewDataSource.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= soundDataGridViewDataSource.Count)
                 return;
 
             if (e.ColumnIndex == 1)
@@ -472,10 +469,10 @@ namespace TombEditor
 
         private void soundDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if ((e.RowIndex < 0) || (e.RowIndex >= soundDataGridViewDataSource.Count))
+            if (e.RowIndex < 0 || e.RowIndex >= soundDataGridViewDataSource.Count)
                 return;
 
-            if ((soundDataGridView.Columns[e.ColumnIndex] == soundDataGridViewColumnSearch))
+            if (soundDataGridView.Columns[e.ColumnIndex] == soundDataGridViewColumnSearch)
             {
                 string result = LevelFileDialog.BrowseFolder(this, _levelSettings, soundDataGridViewDataSource[e.RowIndex].Path,
                     "Select the sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
@@ -527,7 +524,7 @@ namespace TombEditor
         private void gameExecutableFilePathBut_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.GameExecutableFilePath,
-                "Select an executable", new FileFormat[] { new FileFormat("Windows executables", "exe") }, false, VariableType.GameDirectory);
+                "Select an executable", new[] { new FileFormat("Windows executables", "exe") }, false, VariableType.GameDirectory);
             if (result != null)
             {
                 _levelSettings.GameExecutableFilePath = result;
@@ -553,9 +550,9 @@ namespace TombEditor
 
         private void pathVariablesDataGridViewContextMenuCopy_Click(object sender, EventArgs e)
         {
-            string text = (pathVariablesDataGridView.SelectedCells.Count == 0) ? "" :
+            string text = pathVariablesDataGridView.SelectedCells.Count == 0 ? "" :
                 pathVariablesDataGridView.SelectedCells[0].Value.ToString();
-            System.Windows.Forms.Clipboard.SetText(text);
+            Clipboard.SetText(text);
         }
 
         // Dialog buttons
@@ -606,7 +603,7 @@ namespace TombEditor
 
         private void tr5SpritesTextureFilePathTxt_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath) || (_levelSettings.Tr5ExtraSpritesFilePath == tr5SpritesTextureFilePathTxt.Text))
+            if (string.IsNullOrEmpty(_levelSettings.Tr5ExtraSpritesFilePath) || _levelSettings.Tr5ExtraSpritesFilePath == tr5SpritesTextureFilePathTxt.Text)
                 return;
             if (string.IsNullOrEmpty(tr5SpritesTextureFilePathTxt.Text)) // Don't set if it would be empty otherwise.
                 return;

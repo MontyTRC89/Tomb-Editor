@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
@@ -15,8 +14,8 @@ namespace TombLib.Wad.Tr4Wad
     public class SamplePathInfo
     {
         public string Name { get; set; }
-        public string FullPath { get; set; } = null;
-        public bool Found { get { return (!string.IsNullOrEmpty(FullPath)) && File.Exists(FullPath); } }
+        public string FullPath { get; set; }
+        public bool Found { get { return !string.IsNullOrEmpty(FullPath) && File.Exists(FullPath); } }
     }
     
     public static class Tr4WadOperations
@@ -90,7 +89,7 @@ namespace TombLib.Wad.Tr4Wad
             Parallel.For(0, oldWad.Textures.Count, i =>
               {
                   var oldTexture = oldWad.Textures[i];
-                  var startX = (short)(oldTexture.X);
+                  var startX = (short)oldTexture.X;
                   var startY = (short)(oldTexture.Page * 256 + oldTexture.Y);
 
                   // Create the texture ImageC
@@ -122,12 +121,12 @@ namespace TombLib.Wad.Tr4Wad
 
         private static int GetTr4TextureIdFromPolygon(wad_polygon polygon)
         {
-            short textureId = (short)(polygon.Texture);
+            short textureId = (short)polygon.Texture;
             if (polygon.Shape == 8)
             {
                 textureId = (short)(polygon.Texture & 0xFFF);
                 if ((polygon.Texture & 0x8000) != 0)
-                    textureId = (short)(-textureId);
+                    textureId = (short)-textureId;
             }
             else
             {
@@ -200,7 +199,7 @@ namespace TombLib.Wad.Tr4Wad
 
             // Load the real sprite texture data
             int numSpriteTexturePages = spriteDataSize / 196608;
-            if ((spriteDataSize % 196608) != 0)
+            if (spriteDataSize % 196608 != 0)
                 numSpriteTexturePages++;
 
             foreach (var oldSequence in oldWad.SpriteSequences)
@@ -286,9 +285,9 @@ namespace TombLib.Wad.Tr4Wad
                 newInfo.RangeInSectors = oldInfo.Range;
                 newInfo.ChanceDiv255 = oldInfo.Chance;
                 newInfo.PitchFactorDiv128 = oldInfo.Pitch;
-                newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
-                newInfo.RandomizeGain = ((oldInfo.Characteristics & 0x4000) != 0);
-                newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);
+                newInfo.RandomizePitch = (oldInfo.Characteristics & 0x2000) != 0;
+                newInfo.RandomizeGain = (oldInfo.Characteristics & 0x4000) != 0;
+                newInfo.FlagN = (oldInfo.Characteristics & 0x1000) != 0;
                 newInfo.LoopBehaviour = (WadSoundLoopBehaviour)(oldInfo.Characteristics & 0x03);
 
                 // Read all samples linked to this sound info (for example footstep has 4 samples)
@@ -338,7 +337,7 @@ namespace TombLib.Wad.Tr4Wad
             root.Parent = null;
             root.Transform = Matrix4x4.Identity;
             root.Translation = Vector3.Zero;
-            root.Mesh = meshes[(int)oldWad.RealPointers[(int)(oldMoveable.PointerIndex + 0)]];
+            root.Mesh = meshes[(int)oldWad.RealPointers[oldMoveable.PointerIndex + 0]];
             root.Index = 0;
             newMoveable.Meshes.Add(root.Mesh);
 
@@ -349,11 +348,11 @@ namespace TombLib.Wad.Tr4Wad
             for (int j = 0; j < oldMoveable.NumPointers - 1; j++)
             {
                 WadBone bone = new WadBone();
-                bone.Name = "bone_" + (j + 1).ToString();
+                bone.Name = "bone_" + (j + 1);
                 bone.Parent = null;
                 bone.Transform = Matrix4x4.Identity;
                 bone.Translation = Vector3.Zero;
-                bone.Mesh = meshes[(int)oldWad.RealPointers[(int)(oldMoveable.PointerIndex + j + 1)]];
+                bone.Mesh = meshes[(int)oldWad.RealPointers[oldMoveable.PointerIndex + j + 1]];
                 bone.Index = j + 1;
                 newMoveable.Meshes.Add(bone.Mesh);
                 bones.Add(bone);
@@ -363,7 +362,7 @@ namespace TombLib.Wad.Tr4Wad
             WadBone stackBone = root;
             Stack<WadBone> stack = new Stack<WadBone>();
 
-            for (int mi = 0; mi < (oldMoveable.NumPointers - 1); mi++)
+            for (int mi = 0; mi < oldMoveable.NumPointers - 1; mi++)
             {
                 int j = mi + 1;
 
@@ -449,13 +448,13 @@ namespace TombLib.Wad.Tr4Wad
                 for (int k = 0; k < oldAnimation.NumStateChanges; k++)
                 {
                     WadStateChange sc = new WadStateChange();
-                    wad_state_change wadSc = oldWad.Changes[(int)oldAnimation.ChangesIndex + k];
-                    sc.StateId = (ushort)wadSc.StateId;
+                    wad_state_change wadSc = oldWad.Changes[oldAnimation.ChangesIndex + k];
+                    sc.StateId = wadSc.StateId;
 
                     for (int n = 0; n < wadSc.NumDispatches; n++)
                     {
                         WadAnimDispatch ad = new WadAnimDispatch();
-                        wad_anim_dispatch wadAd = oldWad.Dispatches[(int)wadSc.DispatchesIndex + n];
+                        wad_anim_dispatch wadAd = oldWad.Dispatches[wadSc.DispatchesIndex + n];
 
                         ad.InFrame = (ushort)(wadAd.Low - oldAnimation.FrameStart);
                         ad.OutFrame = (ushort)(wadAd.High - oldAnimation.FrameStart);
@@ -519,7 +518,7 @@ namespace TombLib.Wad.Tr4Wad
                                 command.SoundInfo = soundInfos[soundInfoIndex];
                                 if (command.SoundInfo == null)
                                 {
-                                    logger.Warn("Sound with index " + (soundInfoIndex) + " missing but used by animation.");
+                                    logger.Warn("Sound with index " + soundInfoIndex + " missing but used by animation.");
                                     continue;
                                 }
                                 command.Parameter2 &= 0xC000; // Clear sound ID
@@ -543,7 +542,7 @@ namespace TombLib.Wad.Tr4Wad
                 int frames = (int)oldAnimation.KeyFrameOffset / 2;
                 uint numFrames = 0;
                 if (oldAnimation.KeyFrameSize != 0)
-                    if ((j + oldMoveable.AnimationIndex) == (oldWad.Animations.Count - 1))
+                    if (j + oldMoveable.AnimationIndex == oldWad.Animations.Count - 1)
                         numFrames = ((uint)(2 * oldWad.KeyFrames.Count) - oldAnimation.KeyFrameOffset) / (uint)(2 * oldAnimation.KeyFrameSize);
                     else
                         numFrames = (oldWad.Animations[oldMoveable.AnimationIndex + j + 1].KeyFrameOffset - oldAnimation.KeyFrameOffset) / (uint)(2 * oldAnimation.KeyFrameSize);
@@ -563,7 +562,7 @@ namespace TombLib.Wad.Tr4Wad
                     frames += 6;
 
                     frame.Offset = new Vector3(oldWad.KeyFrames[frames],
-                                               (short)(-oldWad.KeyFrames[frames + 1]),
+                                               (short)-oldWad.KeyFrames[frames + 1],
                                                oldWad.KeyFrames[frames + 2]);
 
                     frames += 3;
@@ -583,7 +582,7 @@ namespace TombLib.Wad.Tr4Wad
 
                                 int rotX = (rotation & 0x3ff0) >> 4;
                                 int rotY = ((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6);
-                                int rotZ = (rotation2) & 0x3ff;
+                                int rotZ = rotation2 & 0x3ff;
 
                                 kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
                                 kfAngle.X = rotX;
@@ -623,8 +622,8 @@ namespace TombLib.Wad.Tr4Wad
                         frame.Angles.Add(kfAngle);
                     }
 
-                    if ((frames - startOfFrame) < oldAnimation.KeyFrameSize)
-                        frames += ((int)oldAnimation.KeyFrameSize - (frames - startOfFrame));
+                    if (frames - startOfFrame < oldAnimation.KeyFrameSize)
+                        frames += oldAnimation.KeyFrameSize - (frames - startOfFrame);
 
                     newAnimation.KeyFrames.Add(frame);
                 }

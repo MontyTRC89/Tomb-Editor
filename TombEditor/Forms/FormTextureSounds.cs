@@ -1,23 +1,18 @@
-﻿using DarkUI.Forms;
-using NLog;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Numerics;
 using System.Windows.Forms;
+using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormTextureSounds : DarkForm
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private LevelSettings _levelSettings;
-
         private const byte _alpha = 212;
         private static readonly Brush[] _textureSoundBrushes = new Brush[16]
             {
@@ -43,11 +38,9 @@ namespace TombEditor
         private const float _textureSoundStringSize = 0.4f;
         private const float _textureSoundProportion = 1.0f / 4.0f;
 
-        public FormTextureSounds(Editor _editor, LevelSettings levelSettings)
+        public FormTextureSounds(Editor _editor)
         {
             InitializeComponent();
-
-            _levelSettings = levelSettings;
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
@@ -75,7 +68,7 @@ namespace TombEditor
             if (!(comboSounds.SelectedItem is TextureSound))
                 return;
 
-            var sound = (TextureSound)(comboSounds.SelectedItem);
+            var sound = (TextureSound)comboSounds.SelectedItem;
             ConservativeRasterizer.RasterizeQuad(
                 textureMap.SelectedTexture.TexCoord0 / LevelTexture.TextureSoundGranularity,
                 textureMap.SelectedTexture.TexCoord1 / LevelTexture.TextureSoundGranularity,
@@ -119,7 +112,7 @@ namespace TombEditor
                     for (int y = soundTileStartY; y <= soundTileEndY; ++y)
                         for (int x = soundTileStartX; x <= soundTileEndX; ++x)
                         {
-                            if ((x < 0) || (x >= texture.TextureSoundWidth) || (y < 0) || (y >= texture.TextureSoundHeight))
+                            if (x < 0 || x >= texture.TextureSoundWidth || y < 0 || y >= texture.TextureSoundHeight)
                                 continue;
 
                             TextureSound sound = texture.GetTextureSound(x, y);
@@ -141,7 +134,6 @@ namespace TombEditor
                         }
 
                 // Fill covered tiles
-                var coveredTiles = new HashSet<Tuple<int, int>>();
                 ConservativeRasterizer.RasterizeQuadUniquely(
                     SelectedTexture.TexCoord0 / LevelTexture.TextureSoundGranularity,
                     SelectedTexture.TexCoord1 / LevelTexture.TextureSoundGranularity,

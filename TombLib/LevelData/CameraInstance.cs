@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace TombLib.LevelData
+﻿namespace TombLib.LevelData
 {
     public class CameraInstance : PositionAndScriptBasedObjectInstance
     {

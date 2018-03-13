@@ -1,14 +1,11 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TombLib.IO;
-using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util
@@ -34,7 +31,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             public tr_face3 CreateFace3(ushort index0, ushort index1, ushort index2, ushort lightingEffect)
             {
-                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? (ushort)0x8000 : (ushort)0));
+                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? 0x8000 : 0));
                 switch (FirstVertexIndexToEmit)
                 {
                     case 0:
@@ -44,13 +41,13 @@ namespace TombLib.LevelData.Compilers.Util
                     case 2:
                         return new tr_face3 { Vertices = new ushort[3] { index2, index0, index1 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     default:
-                        throw new ArgumentOutOfRangeException("firstIndexToEmit");
+                        throw new ArgumentOutOfRangeException(nameof(FirstVertexIndexToEmit));
                 }
             }
 
             public tr_face4 CreateFace4(ushort index0, ushort index1, ushort index2, ushort index3, ushort lightingEffect)
             {
-                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? (ushort)0x8000 : (ushort)0));
+                ushort objectTextureIndex = (ushort)(ObjectTextureIndex | ((Flags & ResultFlags.DoubleSided) != ResultFlags.None ? 0x8000 : 0));
                 switch (FirstVertexIndexToEmit)
                 {
                     case 0:
@@ -62,7 +59,7 @@ namespace TombLib.LevelData.Compilers.Util
                     case 3:
                         return new tr_face4 { Vertices = new ushort[4] { index3, index0, index1, index2 }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
                     default:
-                        throw new ArgumentOutOfRangeException("firstIndexToEmit");
+                        throw new ArgumentOutOfRangeException(nameof(FirstVertexIndexToEmit));
                 }
             }
 
@@ -75,11 +72,11 @@ namespace TombLib.LevelData.Compilers.Util
 
             public static bool operator !=(Result first, Result second) => !(first == second);
             public bool Equals(Result other) => this == other;
-            public override bool Equals(object other) => (other is Result) && this == (Result)other;
-            public unsafe override int GetHashCode()
+            public override bool Equals(object other) => other is Result && this == (Result)other;
+            public override unsafe int GetHashCode()
             {
                 Result this2 = this;
-                return unchecked((-368200913) * *((int*)&this2)); // Random prime
+                return unchecked(-368200913 * *((int*)&this2)); // Random prime
             }
         }
 
@@ -264,13 +261,13 @@ namespace TombLib.LevelData.Compilers.Util
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
         private unsafe struct SavedObjectTexture : IEquatable<SavedObjectTexture>
         {
-            public ushort TextureID;
-            public ushort IsTriangularAndPadding;
+            public readonly ushort TextureID;
+            public readonly ushort IsTriangularAndPadding;
             public ushort BlendMode;
             //Bit 0 - 2     mapping correction. It seems that these bits change the way the texture is applied...
             //Bit 11 - 12   the bump mapping type. Can be 0x01 or 0x10. It's 0x00 if not bump mapped. Only textures for room or animated textures can be bump mapped, not meshes
             //Bit 15        if set, the texture is for a tri/quad from a room or animated texture. If not set, the texture is for a mesh
-            public ushort NewFlags;
+            public readonly ushort NewFlags;
             public ushort TexCoord0X; // C# sucks!!!!!
             public ushort TexCoord0Y;
             public ushort TexCoord1X;
@@ -279,14 +276,14 @@ namespace TombLib.LevelData.Compilers.Util
             public ushort TexCoord2Y;
             public ushort TexCoord3X;
             public ushort TexCoord3Y;
-            public uint TextureSpaceIdentifier;
-            private uint Unused;
+            public readonly uint TextureSpaceIdentifier;
+            private readonly uint Unused;
 
             public SavedObjectTexture(ushort textureID, TextureArea texture, uint textureSpaceIdentifier, TextureAllocator.TextureView view, bool isTriangular, bool isUsedInRoomMesh, bool canRotate, out byte firstTexCoordToEmit)
             {
                 TextureID = textureID;
                 IsTriangularAndPadding = isTriangular ? (ushort)1 : (ushort)0;
-                BlendMode = (ushort)(texture.BlendMode);
+                BlendMode = (ushort)texture.BlendMode;
                 NewFlags = GetNewFlag(texture, isTriangular, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit);
                 TextureSpaceIdentifier = textureSpaceIdentifier;
                 Unused = 0;
@@ -345,7 +342,7 @@ namespace TombLib.LevelData.Compilers.Util
                 texCoord0 = new Vector2(TexCoord0X, TexCoord0Y) * (1.0f / 256.0f) + texCoordModification[0];
                 texCoord1 = new Vector2(TexCoord1X, TexCoord1Y) * (1.0f / 256.0f) + texCoordModification[1];
                 texCoord2 = new Vector2(TexCoord2X, TexCoord2Y) * (1.0f / 256.0f) + texCoordModification[2];
-                texCoord3 = (isTriangle) ? new Vector2() : (new Vector2(TexCoord3X, TexCoord3Y) * (1.0f / 256.0f) + texCoordModification[3]);
+                texCoord3 = isTriangle ? new Vector2() : new Vector2(TexCoord3X, TexCoord3Y) * (1.0f / 256.0f) + texCoordModification[3];
             }
 
             public void GetRealTexRect(out Vector2 minTexCoord, out Vector2 maxTexCoord)
@@ -359,24 +356,24 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Custom implementation of these because default implementation is *insanely* slow.
             // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-            public static unsafe bool operator ==(SavedObjectTexture first, SavedObjectTexture second)
+            public static bool operator ==(SavedObjectTexture first, SavedObjectTexture second)
             {
                 ulong* firstPtr = (ulong*)&first;
                 ulong* secondPtr = (ulong*)&second;
-                return (firstPtr[0] == secondPtr[0]) && (firstPtr[1] == secondPtr[1]) && (firstPtr[2] == secondPtr[2]);
+                return firstPtr[0] == secondPtr[0] && firstPtr[1] == secondPtr[1] && firstPtr[2] == secondPtr[2];
             }
 
             public static bool operator !=(SavedObjectTexture first, SavedObjectTexture second) => !(first == second);
             public bool Equals(SavedObjectTexture other) => this == other;
-            public override bool Equals(object other) => (other is SavedObjectTexture) && this == (SavedObjectTexture)other;
+            public override bool Equals(object other) => other is SavedObjectTexture && this == (SavedObjectTexture)other;
             public override int GetHashCode() => base.GetHashCode();
-        };
-        private List<SavedObjectTexture> _objectTextures = new List<SavedObjectTexture>();
-        private Dictionary<SavedObjectTexture, ushort> _objectTexturesLookup = new Dictionary<SavedObjectTexture, ushort>();
-        private uint _textureSpaceIdentifier = 0;
-        private int _supportsUpTo65536TextureCount = 0;
+        }
+        private readonly List<SavedObjectTexture> _objectTextures = new List<SavedObjectTexture>();
+        private readonly Dictionary<SavedObjectTexture, ushort> _objectTexturesLookup = new Dictionary<SavedObjectTexture, ushort>();
+        private uint _textureSpaceIdentifier;
+        private int _supportsUpTo65536TextureCount;
 
-        private TextureAllocator _textureAllocator = new TextureAllocator();
+        private readonly TextureAllocator _textureAllocator = new TextureAllocator();
 
         private ushort AddObjectTextureWithoutLookup(SavedObjectTexture newEntry, bool supportsUpTo65536)
         {
@@ -393,7 +390,7 @@ namespace TombLib.LevelData.Compilers.Util
                     throw new ApplicationException("More than 0x7fff object textures that are used for meshes in rooms/movables/statics are not possible.");
             }
             _objectTextures.Add(newEntry);
-            return (ushort)(newID);
+            return (ushort)newID;
         }
 
         private ushort AddOrGetObjectTexture(SavedObjectTexture newEntry, bool supportsUpTo65536, out bool isNew)
@@ -432,7 +429,7 @@ namespace TombLib.LevelData.Compilers.Util
             OnPackingTextures(progressReporter);
 
             // Enable alpha blending for faces whose textures are not completely opaque.
-            Parallel.For(0, _objectTextures.Count, (objectTextureIndex) =>
+            Parallel.For(0, _objectTextures.Count, objectTextureIndex =>
             {
                 SavedObjectTexture objectTexture = _objectTextures[objectTextureIndex];
                 if (objectTexture.BlendMode != (ushort)BlendMode.Normal) // Only consider alpha blending when blend mode is 0.
@@ -633,28 +630,28 @@ namespace TombLib.LevelData.Compilers.Util
                 TextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
                 ushort Tile = UsedTexturePackInfo.OutputTextureID;
                 if (level.Settings.GameVersion != GameVersion.TR2)
-                    Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
+                    Tile |= objectTexture.IsTriangularAndPadding != 0 ? (ushort)0x8000 : (ushort)0;
 
-                stream.Write((ushort)objectTexture.BlendMode);
-                stream.Write((ushort)Tile);
+                stream.Write(objectTexture.BlendMode);
+                stream.Write(Tile);
 
                 if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG ||
                                     level.Settings.GameVersion == GameVersion.TR5)
-                    stream.Write((ushort)objectTexture.NewFlags);
+                    stream.Write(objectTexture.NewFlags);
 
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord0X, ref objectTexture.TexCoord0Y);
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord1X, ref objectTexture.TexCoord1Y);
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord2X, ref objectTexture.TexCoord2Y);
                 UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord3X, ref objectTexture.TexCoord3Y);
 
-                stream.Write((ushort)objectTexture.TexCoord0X);
-                stream.Write((ushort)objectTexture.TexCoord0Y);
-                stream.Write((ushort)objectTexture.TexCoord1X);
-                stream.Write((ushort)objectTexture.TexCoord1Y);
-                stream.Write((ushort)objectTexture.TexCoord2X);
-                stream.Write((ushort)objectTexture.TexCoord2Y);
-                stream.Write((ushort)objectTexture.TexCoord3X);
-                stream.Write((ushort)objectTexture.TexCoord3Y);
+                stream.Write(objectTexture.TexCoord0X);
+                stream.Write(objectTexture.TexCoord0Y);
+                stream.Write(objectTexture.TexCoord1X);
+                stream.Write(objectTexture.TexCoord1Y);
+                stream.Write(objectTexture.TexCoord2X);
+                stream.Write(objectTexture.TexCoord2Y);
+                stream.Write(objectTexture.TexCoord3X);
+                stream.Write(objectTexture.TexCoord3Y);
 
                 if (level.Settings.GameVersion == GameVersion.TR4 || level.Settings.GameVersion == GameVersion.TRNG || level.Settings.GameVersion == GameVersion.TR5)
                 {

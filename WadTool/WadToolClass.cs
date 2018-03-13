@@ -1,19 +1,11 @@
-﻿using SharpDX.Direct3D;
-using SharpDX.Toolkit.Graphics;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System;
+using System.Threading;
 using TombLib.Wad;
-using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
-    public interface IEditorEvent { };
-    public interface IWadChangedEvent : IEditorEvent { };
+    public interface IEditorEvent { }
+    public interface IWadChangedEvent : IEditorEvent { }
 
     public enum WadArea
     {
@@ -34,7 +26,7 @@ namespace WadTool
 
         public void RaiseEvent(IEditorEvent eventObj)
         {
-            WindowsFormsSynchronizationContext.Current.Send((eventObj_) => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
+            SynchronizationContext.Current.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
         }
 
         // The configuration

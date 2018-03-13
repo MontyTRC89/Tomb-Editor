@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormImportedGeometry : DarkForm
     {
         public LevelSettings OldLevelSettings { get; }
         public LevelSettings NewLevelSettings { get; }
 
-        private ImportedGeometryInstance _instance;
+        private readonly ImportedGeometryInstance _instance;
         private ImportedGeometry.UniqueIDType _currentModel; // Refer to the current geometry by ID to identify it on old and new level settings.
 
         public FormImportedGeometry(ImportedGeometryInstance instance, LevelSettings levelSettings)

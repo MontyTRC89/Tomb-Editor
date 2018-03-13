@@ -51,26 +51,26 @@ namespace TombLib.Utils
 
         private DialogResult ShowVistaDialog(IWin32Window owner)
         {
-            var frm = (NativeMethods.IFileDialog)(new NativeMethods.FileOpenDialogRCW());
+            var frm = (NativeMethods.IFileDialog)new NativeMethods.FileOpenDialogRCW();
             uint options;
             frm.GetOptions(out options);
             options |= NativeMethods.FOS_PICKFOLDERS | NativeMethods.FOS_FORCEFILESYSTEM | NativeMethods.FOS_NOVALIDATE | NativeMethods.FOS_NOTESTFILECREATE | NativeMethods.FOS_DONTADDTORECENT;
             frm.SetOptions(options);
             frm.SetTitle(Title);
-            if (this.InitialFolder != null)
+            if (InitialFolder != null)
             {
                 NativeMethods.IShellItem directoryShellItem;
                 var riid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE"); //IShellItem
-                if (NativeMethods.SHCreateItemFromParsingName(this.InitialFolder, IntPtr.Zero, ref riid, out directoryShellItem) == NativeMethods.S_OK)
+                if (NativeMethods.SHCreateItemFromParsingName(InitialFolder, IntPtr.Zero, ref riid, out directoryShellItem) == NativeMethods.S_OK)
                 {
                     frm.SetFolder(directoryShellItem);
                 }
             }
-            if (this.DefaultFolder != null)
+            if (DefaultFolder != null)
             {
                 NativeMethods.IShellItem directoryShellItem;
                 var riid = new Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE"); //IShellItem
-                if (NativeMethods.SHCreateItemFromParsingName(this.DefaultFolder, IntPtr.Zero, ref riid, out directoryShellItem) == NativeMethods.S_OK)
+                if (NativeMethods.SHCreateItemFromParsingName(DefaultFolder, IntPtr.Zero, ref riid, out directoryShellItem) == NativeMethods.S_OK)
                 {
                     frm.SetDefaultFolder(directoryShellItem);
                 }
@@ -88,7 +88,7 @@ namespace TombLib.Utils
                         {
                             try
                             {
-                                this.Folder = Marshal.PtrToStringAuto(pszString);
+                                Folder = Marshal.PtrToStringAuto(pszString);
                                 return DialogResult.OK;
                             }
                             finally
@@ -109,15 +109,15 @@ namespace TombLib.Utils
                 frm.CheckFileExists = false;
                 frm.CheckPathExists = true;
                 frm.CreatePrompt = false;
-                frm.Filter = "|" + Guid.Empty.ToString();
+                frm.Filter = "|" + Guid.Empty;
                 frm.FileName = "any";
-                if (this.InitialFolder != null) { frm.InitialDirectory = this.InitialFolder; }
+                if (InitialFolder != null) { frm.InitialDirectory = InitialFolder; }
                 frm.OverwritePrompt = false;
                 frm.Title = Title;
                 frm.ValidateNames = false;
                 if (frm.ShowDialog(owner) == DialogResult.OK)
                 {
-                    this.Folder = Path.GetDirectoryName(frm.FileName);
+                    Folder = Path.GetDirectoryName(frm.FileName);
                     return DialogResult.OK;
                 }
                 else

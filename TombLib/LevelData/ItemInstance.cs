@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.LevelData
@@ -26,7 +23,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return ItemType.ToString() +
+            return ItemType +
                    ", Room = " + (Room?.ToString() ?? "NULL") +
                    ", X = " + SectorPosition.X +
                    ", Y = " + SectorPosition.Y +
@@ -47,7 +44,7 @@ namespace TombLib.LevelData
         public bool IsStatic { get; }
         public WadMoveableId MoveableId { get; }
         public WadStaticId StaticId { get; }
-        private WadGameVersion _wadGameVersion;
+        private readonly WadGameVersion _wadGameVersion;
 
         public ItemType(WadStaticId staticId, WadGameVersion wadGameVersion = WadGameVersion.TR4_TRNG)
         {
@@ -76,12 +73,12 @@ namespace TombLib.LevelData
         public static bool operator ==(ItemType first, ItemType second)
         {
             // Don't compare _gameVersion because nobody really cares about that, it's only there to make ToString work.
-            return (first.IsStatic == second.IsStatic) && (first.MoveableId == second.MoveableId) && (first.StaticId == second.StaticId);
+            return first.IsStatic == second.IsStatic && first.MoveableId == second.MoveableId && first.StaticId == second.StaticId;
         }
 
         public static bool operator !=(ItemType first, ItemType second) => !(first == second);
 
-        public override bool Equals(object other) => (other is ItemType) && this == (ItemType)other;
+        public override bool Equals(object other) => other is ItemType && this == (ItemType)other;
 
         public override int GetHashCode()
         {
@@ -98,6 +95,6 @@ namespace TombLib.LevelData
             else
                 return MoveableId.ToString(_wadGameVersion);
         }
-    };
+    }
 
 }

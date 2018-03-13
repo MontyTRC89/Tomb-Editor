@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 
 namespace TombLib.Graphics
 {
@@ -35,7 +32,7 @@ namespace TombLib.Graphics
         public float FieldOfView { get; set; } = 0.872f;
 
         // Default camera distance, used for internal zoom/panning multiplier calculation
-        private float DefaultDistance;
+        private readonly float DefaultDistance;
 
         public ArcBallCamera(Vector3 target, float rotationX,
             float rotationY, float minRotationX, float maxRotationX,
@@ -75,7 +72,7 @@ namespace TombLib.Graphics
 
         public void MoveCameraPlane(Vector3 movementVec)
         {
-            float distanceMultiplier = (float)Math.Pow((Distance / DefaultDistance), (float)2 / (float)3);
+            float distanceMultiplier = (float)Math.Pow(Distance / DefaultDistance, 2 / (float)3);
             Target += MathC.HomogenousTransform(movementVec * distanceMultiplier, GetRotationMatrix());
         }
 

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 using NLog;
 using TombLib.IO;
-using TombEditor;
 using TombLib.Utils;
 
 namespace TombEditor
@@ -596,7 +593,7 @@ namespace TombEditor
             short temp = 0;
 
             Meshes = new tr_mesh[2048];
-            while (totalBytes < (NumMeshData * 2))
+            while (totalBytes < NumMeshData * 2)
             {
                 long offset1 = reader.BaseStream.Position;
 
@@ -746,7 +743,7 @@ namespace TombEditor
 
             for (int n = 0; n < Overlaps.Length; n++)
             {
-                writer.WriteLine("[" + n + "] " + (Overlaps[n] & 0x7fff).ToString());
+                writer.WriteLine("[" + n + "] " + (Overlaps[n] & 0x7fff));
                 if ((Overlaps[n] & 0x8000) != 0)
                     writer.WriteLine("--- END OF LIST ---");
             }

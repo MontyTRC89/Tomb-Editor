@@ -1,11 +1,8 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
@@ -21,7 +18,7 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
 
-        private Editor _editor;
+        private readonly Editor _editor;
         private VertexInputLayout _layout;
         private DeviceManager _deviceManager;
         private GraphicsDevice _device;
@@ -57,7 +54,7 @@ namespace TombEditor.Controls
             if (obj is Editor.ChosenItemChangedEvent)
             {
                 Editor.ChosenItemChangedEvent e = (Editor.ChosenItemChangedEvent)obj;
-                if ((e.Current != null) && (_editor?.Level?.Wad != null))
+                if (e.Current != null && _editor?.Level?.Wad != null)
                     ResetCamera();
                 Invalidate();
                 Update(); // Magic fix for room view leaking into item view
@@ -121,7 +118,7 @@ namespace TombEditor.Controls
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
-            if ((_editor.ChosenItem == null) || (_editor.Level?.Wad == null))
+            if (_editor.ChosenItem == null || _editor.Level?.Wad == null)
             {
                 _device.Present();
                 return;
@@ -144,7 +141,7 @@ namespace TombEditor.Controls
                 _device.SetVertexBuffer(0, model.VertexBuffer);
                 _device.SetIndexBuffer(model.IndexBuffer, true);
 
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer));
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
@@ -152,7 +149,7 @@ namespace TombEditor.Controls
 
                     if (_layout == null)
                     {
-                        _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
+                        _layout = VertexInputLayout.FromBuffer(0, model.VertexBuffer);
                         _device.SetVertexInputLayout(_layout);
                     }
 
@@ -166,14 +163,14 @@ namespace TombEditor.Controls
             else
             {
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.MoveableId];
-                SkinnedModel skin = ((chosenItem.MoveableId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin)) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model);
+                SkinnedModel skin = chosenItem.MoveableId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model;
 
                 Effect mioEffect = _deviceManager.Effects["Model"];
 
                 _device.SetVertexBuffer(0, skin.VertexBuffer);
                 _device.SetIndexBuffer(skin.IndexBuffer, true);
 
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, skin.VertexBuffer));
 
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
@@ -254,7 +251,6 @@ namespace TombEditor.Controls
                     if (_editor?.Level?.Wad == null)
                     {
                         EditorActions.LoadWad(Parent);
-                        return;
                     }
                     else
                         if (_editor.ChosenItem != null)
@@ -288,7 +284,7 @@ namespace TombEditor.Controls
                     _lastX = e.X;
                     _lastY = e.Y;
 
-                    if (ModifierKeys.HasFlag(Keys.Shift) || (e.Button == MouseButtons.Middle))
+                    if (ModifierKeys.HasFlag(Keys.Shift) || e.Button == MouseButtons.Middle)
                         Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                     else if (ModifierKeys.HasFlag(Keys.Control))
                         Camera.Zoom(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseZoom);

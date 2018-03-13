@@ -1,7 +1,6 @@
 ﻿using DarkUI.Controls;
-using System.Windows.Forms;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     partial class FormInputBox
     {

@@ -1,19 +1,13 @@
-﻿using DarkUI.Forms;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Windows.Forms;
+using DarkUI.Forms;
 using TombLib.LevelData;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormMoveable : DarkForm
     {
-        private MoveableInstance _movable;
+        private readonly MoveableInstance _movable;
 
         public FormMoveable(MoveableInstance moveable)
         {
@@ -24,7 +18,7 @@ namespace TombEditor
         private void butCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            this.Close();
+            Close();
         }
 
         private void FormObject_Load(object sender, EventArgs e)
@@ -51,11 +45,11 @@ namespace TombEditor
             }
 
             byte CodeBits = 0;
-            CodeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
-            CodeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
-            CodeBits |= (byte)(cbBit3.Checked ? (1 << 2) : 0);
-            CodeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
-            CodeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
+            CodeBits |= (byte)(cbBit1.Checked ? 1 << 0 : 0);
+            CodeBits |= (byte)(cbBit2.Checked ? 1 << 1 : 0);
+            CodeBits |= (byte)(cbBit3.Checked ? 1 << 2 : 0);
+            CodeBits |= (byte)(cbBit4.Checked ? 1 << 3 : 0);
+            CodeBits |= (byte)(cbBit5.Checked ? 1 << 4 : 0);
             _movable.CodeBits = CodeBits;
 
             _movable.Invisible = cbInvisible.Checked;
@@ -64,7 +58,7 @@ namespace TombEditor
             _movable.Ocb = ocb;
 
             DialogResult = DialogResult.OK;
-            this.Close();
+            Close();
         }
     }
 }

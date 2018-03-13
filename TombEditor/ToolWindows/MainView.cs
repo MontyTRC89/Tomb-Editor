@@ -1,14 +1,7 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Docking;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
@@ -18,7 +11,7 @@ namespace TombEditor.ToolWindows
 {
     public partial class MainView : DarkDocument
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public MainView()
         {
@@ -50,13 +43,13 @@ namespace TombEditor.ToolWindows
 
         public void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
         {
-            if (panel3D.Camera.RotationY < (Math.PI * (1.0 / 4.0)))
+            if (panel3D.Camera.RotationY < Math.PI * (1.0 / 4.0))
                 EditorActions.MoveObjectRelative(instance, pos, precision, canGoOutsideRoom);
-            else if (panel3D.Camera.RotationY < (Math.PI * (3.0 / 4.0)))
+            else if (panel3D.Camera.RotationY < Math.PI * (3.0 / 4.0))
                 EditorActions.MoveObjectRelative(instance, new Vector3(pos.Z, pos.Y, -pos.X), new Vector3(precision.Z, precision.Y, -precision.X), canGoOutsideRoom);
-            else if (panel3D.Camera.RotationY < (Math.PI * (5.0 / 4.0)))
+            else if (panel3D.Camera.RotationY < Math.PI * (5.0 / 4.0))
                 EditorActions.MoveObjectRelative(instance, new Vector3(-pos.X, pos.Y, -pos.Z), new Vector3(-precision.X, precision.Y, -precision.Z), canGoOutsideRoom);
-            else if (panel3D.Camera.RotationY < (Math.PI * (7.0 / 4.0)))
+            else if (panel3D.Camera.RotationY < Math.PI * (7.0 / 4.0))
                 EditorActions.MoveObjectRelative(instance, new Vector3(-pos.Z, pos.Y, pos.X), new Vector3(-precision.Z, precision.Y, precision.X), canGoOutsideRoom);
             else
                 EditorActions.MoveObjectRelative(instance, pos, precision, canGoOutsideRoom);
@@ -69,7 +62,7 @@ namespace TombEditor.ToolWindows
                 _editor.EditorEventRaised -= EditorEventRaised;
                 ClipboardEvents.ClipboardChanged -= ClipboardEvents_ClipboardChanged;
             }
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -107,7 +100,7 @@ namespace TombEditor.ToolWindows
                 butFaceEdit.Checked = mode == EditorMode.FaceEdit;
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
-                panel3D.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry) || (mode == EditorMode.Lighting);
+                panel3D.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Geometry || mode == EditorMode.Lighting;
 
                 butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
                 butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
@@ -117,7 +110,7 @@ namespace TombEditor.ToolWindows
             }
 
             // Update flipmap toolbar button
-            if ((obj is Editor.SelectedRoomChangedEvent) ||
+            if (obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
                 butFlipMap.Enabled = _editor.SelectedRoom.Flipped;
@@ -133,17 +126,17 @@ namespace TombEditor.ToolWindows
             }
 
             // Update portal opacity controls
-            if ((obj is Editor.ObjectChangedEvent) ||
-               (obj is Editor.SelectedObjectChangedEvent))
+            if (obj is Editor.ObjectChangedEvent ||
+               obj is Editor.SelectedObjectChangedEvent)
             {
                 var portal = _editor.SelectedObject as PortalInstance;
                 butOpacityNone.Enabled = portal != null;
                 butOpacitySolidFaces.Enabled = portal != null;
                 butOpacityTraversableFaces.Enabled = portal != null;
 
-                butOpacityNone.Checked = portal == null ? false : portal.Opacity == PortalOpacity.None;
-                butOpacitySolidFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.SolidFaces;
-                butOpacityTraversableFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.TraversableFaces;
+                butOpacityNone.Checked = portal != null && portal.Opacity == PortalOpacity.None;
+                butOpacitySolidFaces.Checked = portal != null && portal.Opacity == PortalOpacity.SolidFaces;
+                butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
             }
         }
 
@@ -276,12 +269,12 @@ namespace TombEditor.ToolWindows
 
         private void butCopy_Click(object sender, EventArgs e)
         {
-            EditorActions.TryCopyObject(_editor.SelectedObject, this.ParentForm);
+            EditorActions.TryCopyObject(_editor.SelectedObject, ParentForm);
         }
 
         private void butStamp_Click(object sender, EventArgs e)
         {
-            EditorActions.TryStampObject(_editor.SelectedObject, this.ParentForm);
+            EditorActions.TryStampObject(_editor.SelectedObject, ParentForm);
         }
 
         private void butPaste_Click(object sender, EventArgs e)

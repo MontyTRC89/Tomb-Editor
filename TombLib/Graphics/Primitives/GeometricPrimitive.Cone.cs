@@ -72,13 +72,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
-using TombLib.Graphics;
+using SharpDX.Toolkit.Graphics;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
     using Vector3 = System.Numerics.Vector3;
-    using Vector4 = System.Numerics.Vector4;
 
     public partial class GeometricPrimitive
     {
@@ -99,13 +97,13 @@ namespace SharpDX.Toolkit.Graphics
             public static GeometricPrimitive New(GraphicsDevice device, float diameter = 1.0f, float length = 1.0f, int tessellation = 18, bool toLeftHanded = false)
             {
                 if (tessellation < 3)
-                    throw new ArgumentOutOfRangeException("tessellation", "Must be >= 3");
+                    throw new ArgumentOutOfRangeException(nameof(tessellation), "Must be >= 3");
 
                 int verticalSegments = tessellation;
                 int horizontalSegments = tessellation * 2;
 
                 var vertices = new SolidVertex[(verticalSegments + 1) * (horizontalSegments + 1)];
-                var indices = new int[(verticalSegments) * (horizontalSegments + 1) * 6];
+                var indices = new int[verticalSegments * (horizontalSegments + 1) * 6];
 
                 float radius = diameter / 2;
 
@@ -129,7 +127,7 @@ namespace SharpDX.Toolkit.Graphics
                 for (int i = 0; i < tessellation; i++)
                 {
                     int first = i;
-                    int last = (i == tessellation - 1 ? 0 : i + 1);
+                    int last = i == tessellation - 1 ? 0 : i + 1;
                     int cone = tempVertices.Count - 1;
 
                     tempIndices.Add(cone);

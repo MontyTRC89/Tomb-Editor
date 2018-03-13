@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.IO;
@@ -219,7 +218,7 @@ namespace TombLib.Wad.Tr4Wad
                 for (int i = 0; i < numTextures; i++)
                 {
                     wad_object_texture text;
-                    reader.ReadBlock<wad_object_texture>(out text);
+                    reader.ReadBlock(out text);
                     Textures.Add(text);
                 }
 
@@ -514,8 +513,8 @@ namespace TombLib.Wad.Tr4Wad
                         Tile = buffer[2],
                         X = buffer[0],
                         Y = buffer[1],
-                        Width = (ushort)(buffer[5]),
-                        Height = (ushort)(buffer[7]),
+                        Width = buffer[5],
+                        Height = buffer[7],
                         LeftSide = buffer[0],
                         TopSide = buffer[1],
                         RightSide = (short)(buffer[0] + buffer[5] + 1),

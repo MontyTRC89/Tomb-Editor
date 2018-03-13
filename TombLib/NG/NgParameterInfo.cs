@@ -96,11 +96,11 @@ namespace TombLib.NG
 
                         case TriggerTargetType.FlipEffect:
                             if (levelSettings.GameVersion == GameVersion.TRNG)
-                                return new NgParameterRange(NgCatalog.FlipEffectTrigger.MainList.DicSelect(e => (TriggerParameterUshort)(e.Value)));
+                                return new NgParameterRange(NgCatalog.FlipEffectTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
                             else
                                 return new NgParameterRange(NgCatalog.FlipEffectTrigger.MainList
                                     .DicWhere(entry => entry.Value.Name.StartsWith("OldFlip"))
-                                    .DicSelect(e => (TriggerParameterUshort)(e.Value)));
+                                    .DicSelect(e => (TriggerParameterUshort)e.Value));
 
                         case TriggerTargetType.ActionNg:
                             if (!(timer is TriggerParameterUshort))
@@ -122,7 +122,7 @@ namespace TombLib.NG
             switch (triggerType)
             {
                 case TriggerType.ConditionNg:
-                    return new NgParameterRange(NgCatalog.ConditionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)(e.Value)));
+                    return new NgParameterRange(NgCatalog.ConditionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
 
                 default:
                     switch (targetType)
@@ -134,7 +134,7 @@ namespace TombLib.NG
                             return flipEffectSubtriggerType?.Timer ?? new NgParameterRange(NgParameterKind.Empty);
 
                         case TriggerTargetType.ActionNg:
-                            return new NgParameterRange(NgCatalog.ActionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)(e.Value)));
+                            return new NgParameterRange(NgCatalog.ActionTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
 
                         case TriggerTargetType.TimerfieldNg:
                             return new NgParameterRange(NgParameterKind.Empty);
@@ -178,9 +178,9 @@ namespace TombLib.NG
 
         public static bool TriggerIsValid(LevelSettings levelSettings, TriggerInstance trigger)
         {
-            if (!(GetTriggerTypeRange(levelSettings).Contains(trigger.TriggerType)))
+            if (!GetTriggerTypeRange(levelSettings).Contains(trigger.TriggerType))
                 return false;
-            if (!(GetTargetTypeRange(levelSettings, trigger.TriggerType).Contains(trigger.TargetType)))
+            if (!GetTargetTypeRange(levelSettings, trigger.TriggerType).Contains(trigger.TargetType))
                 return false;
             if (!GetTargetRange(levelSettings, trigger.TriggerType, trigger.TargetType, trigger.Timer).ParameterMatches(trigger.Target, false))
                 return false;

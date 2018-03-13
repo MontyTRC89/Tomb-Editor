@@ -1,7 +1,6 @@
 ﻿using DarkUI.Controls;
-using System.Windows.Forms;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     partial class FormTextureSounds
     {
@@ -13,7 +12,7 @@ namespace TombEditor
         /// </summary>
         private void InitializeComponent()
         {
-            this.textureMap = new TombEditor.FormTextureSounds.PanelTextureMapForSounds();
+            this.textureMap = new FormTextureSounds.PanelTextureMapForSounds();
             this.butAssignSound = new DarkUI.Controls.DarkButton();
             this.comboSounds = new DarkUI.Controls.DarkComboBox();
             this.butOk = new DarkUI.Controls.DarkButton();
@@ -85,7 +84,7 @@ namespace TombEditor
         }
 
         #endregion
-        private TombEditor.FormTextureSounds.PanelTextureMapForSounds textureMap;
+        private FormTextureSounds.PanelTextureMapForSounds textureMap;
         private DarkButton butAssignSound;
         private DarkComboBox comboSounds;
         private DarkButton butOk;

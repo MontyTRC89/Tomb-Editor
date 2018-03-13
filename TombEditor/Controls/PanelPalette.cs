@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace TombEditor.Controls
 {
-    public partial class PanelPalette : PictureBox
+    public class PanelPalette : PictureBox
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color SelectedColor
@@ -19,8 +17,8 @@ namespace TombEditor.Controls
         public event EventHandler SelectedColorChanged;
 
         private Point _selectedColorCoord = new Point(-1, -1);
-        private static Pen _selectionPen = Pens.White;
-        private static Pen _gridPen = Pens.Black;
+        private static readonly Pen _selectionPen = Pens.White;
+        private static readonly Pen _gridPen = Pens.Black;
         private const int _paletteWidth = 64;
         private const int _paletteHeight = 10;
         private const float _paletteCellWidth = 10;
@@ -29,13 +27,13 @@ namespace TombEditor.Controls
 
         public PanelPalette()
         {
-            if (DesignMode || (LicenseManager.UsageMode == LicenseUsageMode.Designtime))
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime)
                 return;
 
             using (var stream = new MemoryStream(Properties.Resources.Palette, false))
                 using (var readerPalette = new BinaryReader(stream))
                     while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
-                        _palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
+                        _palette.Add(Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
         }
 
         private Color getColorFromPalette(Point point)
@@ -43,7 +41,7 @@ namespace TombEditor.Controls
             if (_palette == null)
                 return Color.Magenta;
             int index = point.Y * _paletteWidth + point.X;
-            if ((index < 0) || (index >= _palette.Count))
+            if (index < 0 || index >= _palette.Count)
                 return Color.Magenta;
             return _palette[index];
         }
@@ -79,7 +77,7 @@ namespace TombEditor.Controls
                     e.Graphics.DrawRectangle(_gridPen, x * 10, y * 10, 10, 10);
                 }
 
-            if ((_selectedColorCoord.X >= 0) && (_selectedColorCoord.Y >= 0))
+            if (_selectedColorCoord.X >= 0 && _selectedColorCoord.Y >= 0)
                 e.Graphics.DrawRectangle(_selectionPen, _selectedColorCoord.X * _paletteCellWidth,
                     _selectedColorCoord.Y * _paletteCellHeight, _paletteCellWidth, _paletteCellHeight);
         }

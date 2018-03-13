@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 
 namespace TombLib.GeometryIO
@@ -50,8 +47,8 @@ namespace TombLib.GeometryIO
             }
             if (_settings.WrapUV)
             {
-                uv.X -= (uv.X > 1.0f ? (float)Math.Floor(uv.X) : 0.0f);
-                uv.Y -= (uv.Y > 1.0f ? (float)Math.Floor(uv.Y) : 0.0f);
+                uv.X -= uv.X > 1.0f ? (float)Math.Floor(uv.X) : 0.0f;
+                uv.Y -= uv.Y > 1.0f ? (float)Math.Floor(uv.Y) : 0.0f;
             }
             if (_settings.PremultiplyUV)
             {

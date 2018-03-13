@@ -35,14 +35,14 @@ namespace TombEditor.Controls
         private float _viewScale = 6.0f;
 
         private readonly DepthBar _depthBar = new DepthBar();
-        private Editor _editor;
+        private readonly Editor _editor;
         private Room _roomMouseClicked;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private Vector2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
         private Vector2? _viewMoveMouseWorldCoord;
         private int? _currentlyEditedDepthProbeIndex;
         private Point _lastMousePosition;
-        private MovementTimer _movementTimer;
+        private readonly MovementTimer _movementTimer;
         private IReadOnlyList<RoomClipboardData.ContourLine> _insertionContourLineData;
         private Vector2 _insertionDropPosition;
         private VectorInt2 _insertionCurrentOffset;
@@ -60,14 +60,14 @@ namespace TombEditor.Controls
                         parent._editor.Level.Rooms.Where(room => room != null)
                         .Where(room => parent._depthBar.CheckRoom(room))
                         .Where(room =>
-                            ((room.Position.X + room.NumXSectors) > Math.Min(_area.Start.X, _area.End.X)) &&
-                            ((room.Position.Z + room.NumZSectors) > Math.Min(_area.Start.Y, _area.End.Y)) &&
-                            (room.Position.X < Math.Max(_area.Start.X, _area.End.X)) &&
-                            (room.Position.Z < Math.Max(_area.Start.Y, _area.End.Y))), ModifierKeys));
+                            room.Position.X + room.NumXSectors > Math.Min(_area.Start.X, _area.End.X) &&
+                            room.Position.Z + room.NumZSectors > Math.Min(_area.Start.Y, _area.End.Y) &&
+                            room.Position.X < Math.Max(_area.Start.X, _area.End.X) &&
+                            room.Position.Z < Math.Max(_area.Start.Y, _area.End.Y)), ModifierKeys));
                 return _roomSelectionCache;
             }
         }
-        private SelectionArea _selectionArea = null;
+        private SelectionArea _selectionArea;
 
         private static readonly Brush _roomsNormalBrush = new SolidBrush(Color.FromArgb(180, 20, 200, 200));
         private static readonly Brush _roomsNormalAboveBrush = new SolidBrush(Color.FromArgb(120, 50, 50, 200));
@@ -76,7 +76,7 @@ namespace TombEditor.Controls
         private static readonly Brush _roomsMovedBrush = new SolidBrush(Color.FromArgb(70, 230, 230, 20));
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(185, 255, 255, 255));
         private static readonly Brush _selectionAreaBrush = new HatchBrush(HatchStyle.SmallConfetti, Color.FromArgb(90, 20, 20, 190), Color.FromArgb(50, 20, 20, 190));
-        private static readonly Pen _selectionAreaPen = new Pen(Color.FromArgb(200, 20, 20, 190), 1.5f) { DashPattern = new float[] { 3.0f, 3.0f } };
+        private static readonly Pen _selectionAreaPen = new Pen(Color.FromArgb(200, 20, 20, 190), 1.5f) { DashPattern = new[] { 3.0f, 3.0f } };
         private static readonly Pen _roomBorderPen = new Pen(Color.Black, 1);
         private static readonly Pen _roomPortalPen = new Pen(Color.FromArgb(220, 7, 70, 70), 1) { DashStyle = DashStyle.Dot };
         private static readonly Pen _gridPenThin = new Pen(Color.LightGray, 1);
@@ -110,7 +110,7 @@ namespace TombEditor.Controls
 
             _depthBar.InvalidateParent += Invalidate;
             _depthBar.GetParent += () => this;
-            _depthBar.SelectedRoom += (rooms) => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
+            _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
 
             _movementTimer = new MovementTimer(MoveTimerTick);
 
@@ -133,10 +133,10 @@ namespace TombEditor.Controls
                 _selectionArea._roomSelectionCache = null;
 
             // Update drawing
-            if ((obj is Editor.SelectedRoomsChangedEvent) ||
-                (obj is Editor.RoomGeometryChangedEvent) ||
-                (obj is Editor.RoomSectorPropertiesChangedEvent) ||
-                (obj is Editor.RoomListChangedEvent))
+            if (obj is Editor.SelectedRoomsChangedEvent ||
+                obj is Editor.RoomGeometryChangedEvent ||
+                obj is Editor.RoomSectorPropertiesChangedEvent ||
+                obj is Editor.RoomListChangedEvent)
             {
                 if (_editor.Mode == EditorMode.Map2D)
                     Invalidate();
@@ -251,7 +251,7 @@ namespace TombEditor.Controls
                         if (ModifierKeys != Keys.None || !_editor.SelectedRooms.Contains(_roomMouseClicked))
                         {
                             _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms,
-                                new Room[] { _roomMouseClicked }, ModifierKeys));
+                                new[] { _roomMouseClicked }, ModifierKeys));
                         }
                         _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
                     }
@@ -316,9 +316,9 @@ namespace TombEditor.Controls
                         IEnumerable<Room> connectedRooms = _editor.Level.GetConnectedRooms(clickedRoom);
                         connectedRooms = WinFormsUtils.BoolCombine(_editor.SelectedRooms, _editor.Level.GetConnectedRooms(clickedRoom), ModifierKeys);
                         connectedRooms = // Don't use the currently clicked room because it was already processed with the previous single click.
-                            _editor.SelectedRooms.Where(room => (room == clickedRoom) || (room == clickedRoom.AlternateVersion))
+                            _editor.SelectedRooms.Where(room => room == clickedRoom || room == clickedRoom.AlternateVersion)
                             .Concat(
-                                connectedRooms.Where(room => (room != clickedRoom) && (room != clickedRoom.AlternateVersion)));
+                                connectedRooms.Where(room => room != clickedRoom && room != clickedRoom.AlternateVersion));
                         _editor.SelectRoomsAndResetCamera(connectedRooms);
                     }
                     _selectionArea = null;
@@ -347,7 +347,7 @@ namespace TombEditor.Controls
                 case MouseButtons.Left:
                     if (_currentlyEditedDepthProbeIndex.HasValue)
                     {// Move depth probe around
-                        _depthBar.DepthProbes[(_currentlyEditedDepthProbeIndex.Value)].Position = FromVisualCoord(e.Location);
+                        _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value].Position = FromVisualCoord(e.Location);
                         Invalidate();
                     }
                     else if (_roomMouseClicked != null)
@@ -361,7 +361,7 @@ namespace TombEditor.Controls
 
                         if (_roomsToMove == null)
                         {
-                            HashSet<Room> roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new Room[] { _roomMouseClicked }));
+                            HashSet<Room> roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new[] { _roomMouseClicked }));
                             if (DepthBar.CheckForLockedRooms(this, roomsToMove))
                             {
                                 _roomMouseClicked = null;
@@ -483,7 +483,7 @@ namespace TombEditor.Controls
 
         private void KeyUpdateSelectionAreaPreview(KeyEventArgs e)
         {
-            if (((e.KeyCode & Keys.ShiftKey) != 0) || ((e.KeyCode & Keys.ControlKey) != 0))
+            if ((e.KeyCode & Keys.ShiftKey) != 0 || (e.KeyCode & Keys.ControlKey) != 0)
             {
                 if (_selectionArea != null)
                 {
@@ -507,7 +507,7 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if ((LicenseManager.UsageMode != LicenseUsageMode.Runtime) || (_editor?.Level == null))
+            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime || _editor?.Level == null)
             {
                 e.Graphics.Clear(Parent.BackColor);
                 e.Graphics.DrawString("2D Room Rendering: Not Available!", Font, Brushes.DarkGray, ClientRectangle,
@@ -527,8 +527,8 @@ namespace TombEditor.Controls
                 float currentRangeMin = _editor.SelectedRoom.Position.Y + _editor.SelectedRoom.GetLowestCorner();
                 float currentRangeMax = _editor.SelectedRoom.Position.Y + _editor.SelectedRoom.GetHighestCorner();
                 List<Room> sortedRoomList = _editor.Level.GetVerticallyAscendingRoomList(room =>
-                    (room.Position.X + room.NumXSectors) >= visibleArea.Start.X && room.Position.X <= visibleArea.End.X &&
-                    (room.Position.Z + room.NumZSectors) >= visibleArea.Start.Y && room.Position.Z <= visibleArea.End.Y).ToList();
+                    room.Position.X + room.NumXSectors >= visibleArea.Start.X && room.Position.X <= visibleArea.End.X &&
+                    room.Position.Z + room.NumZSectors >= visibleArea.Start.Y && room.Position.Z <= visibleArea.End.Y).ToList();
 
                 bool drewAny = false;
                 foreach (Room room in sortedRoomList)
@@ -551,11 +551,11 @@ namespace TombEditor.Controls
                 Point GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
 
                 for (int x = GridLinesStartInt.X; x <= GridLinesEndInt.X; ++x)
-                    e.Graphics.DrawLine(((x % 10) == 0) ? _gridPenThick : _gridPenThin,
+                    e.Graphics.DrawLine(x % 10 == 0 ? _gridPenThick : _gridPenThin,
                         ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, Level.MaxSectorCoord)));
 
                 for (int y = GridLinesStartInt.Y; y <= GridLinesEndInt.Y; ++y)
-                    e.Graphics.DrawLine(((y % 10) == 0) ? _gridPenThick : _gridPenThin,
+                    e.Graphics.DrawLine(y % 10 == 0 ? _gridPenThick : _gridPenThin,
                         ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(Level.MaxSectorCoord, y)));
 
                 // Draw visible rooms
@@ -671,28 +671,28 @@ namespace TombEditor.Controls
             {
                 // Fill area of room with rectangular stripes
                 List<RectangleF> rectangles = new List<RectangleF>();
-                for (int z = 1; z < (height - 1); ++z)
+                for (int z = 1; z < height - 1; ++z)
                 {
                     int previousRectangleCount = rectangles.Count;
-                    for (int x = 1; x < (width - 1); ++x)
+                    for (int x = 1; x < width - 1; ++x)
                         if (room.Blocks[x, z].Type == BlockType.Floor)
                         {
                             int xBegin = x;
                             // Search for the next sector without a wall
-                            for (; x < (width - 1); ++x)
+                            for (; x < width - 1; ++x)
                                 if (room.Blocks[x, z].Type != BlockType.Floor)
                                     break;
                             rectangles.Add(new RectangleF(xBegin, z, x - xBegin, 1));
                         }
 
                     // Try to combine rectangle with the rectangle of the previous row
-                    if ((rectangles.Count >= 2) && ((previousRectangleCount + 1) == rectangles.Count))
+                    if (rectangles.Count >= 2 && previousRectangleCount + 1 == rectangles.Count)
                     {
                         RectangleF previousRectangle = rectangles[rectangles.Count - 2];
                         RectangleF thisRectangle = rectangles[rectangles.Count - 1];
-                        if ((thisRectangle.X == previousRectangle.X) &&
-                            (thisRectangle.Width == previousRectangle.Width) &&
-                            (thisRectangle.Top == previousRectangle.Bottom))
+                        if (thisRectangle.X == previousRectangle.X &&
+                            thisRectangle.Width == previousRectangle.Width &&
+                            thisRectangle.Top == previousRectangle.Bottom)
                         {
                             rectangles.RemoveAt(rectangles.Count - 1);
                             previousRectangle.Height += 1;
@@ -711,9 +711,9 @@ namespace TombEditor.Controls
                 if (rectangles.Count > 0)
                 {
                     Brush brush = _roomsNormalBrush;
-                    if ((room.Position.Y + room.GetHighestCorner()) <= currentRangeMin)
+                    if (room.Position.Y + room.GetHighestCorner() <= currentRangeMin)
                         brush = _roomsNormalBelowBrush;
-                    if ((room.Position.Y + room.GetLowestCorner()) >= currentRangeMax)
+                    if (room.Position.Y + room.GetLowestCorner() >= currentRangeMax)
                         brush = _roomsNormalAboveBrush;
                     using (var brush2 = GetRoomBrush(room, brush))
                         e.Graphics.FillRectangles(brush2, rectangles.ToArray());
@@ -730,11 +730,11 @@ namespace TombEditor.Controls
                         Block aboveBlock = room.Blocks[x, z - 1];
                         Block leftBlock = room.Blocks[x - 1, z];
                         if (aboveBlock.IsAnyWall != thisBlock.IsAnyWall)
-                            e.Graphics.DrawLine((aboveBlock.WallPortal != null) || (thisBlock.WallPortal != null) ? _roomPortalPen : _roomBorderPen,
+                            e.Graphics.DrawLine(aboveBlock.WallPortal != null || thisBlock.WallPortal != null ? _roomPortalPen : _roomBorderPen,
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
                                 ToVisualCoord(new Vector2(x + 1 + room.SectorPos.X, z + room.SectorPos.Y)));
                         if (leftBlock.IsAnyWall != thisBlock.IsAnyWall)
-                            e.Graphics.DrawLine((leftBlock.WallPortal != null) || (thisBlock.WallPortal != null) ? _roomPortalPen : _roomBorderPen,
+                            e.Graphics.DrawLine(leftBlock.WallPortal != null || thisBlock.WallPortal != null ? _roomPortalPen : _roomBorderPen,
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + 1 + room.SectorPos.Y)));
                     }
@@ -745,8 +745,8 @@ namespace TombEditor.Controls
         {
             // Handle room movement
             bool isBeingMoved =
-                ((_roomsToMove != null) && _roomsToMove.Contains(room)) ||
-                ((_depthBar.RoomsToMove != null) && _depthBar.RoomsToMove.Contains(room));
+                _roomsToMove != null && _roomsToMove.Contains(room) ||
+                _depthBar.RoomsToMove != null && _depthBar.RoomsToMove.Contains(room);
             if (isBeingMoved)
                 baseBrush = _roomsMovedBrush;
 
@@ -780,11 +780,11 @@ namespace TombEditor.Controls
 
         private Room DoPicking(Vector2 pos)
         {
-            IEnumerable<Room> roomList = _editor.Level.GetVerticallyAscendingRoomList((room) =>
+            IEnumerable<Room> roomList = _editor.Level.GetVerticallyAscendingRoomList(room =>
             {
                 float roomLocalX = pos.X - room.SectorPos.X;
                 float roomLocalZ = pos.Y - room.SectorPos.Y;
-                if ((roomLocalX < 1) || (roomLocalZ < 1) || (roomLocalX >= (room.NumXSectors - 1)) || (roomLocalZ >= (room.NumZSectors - 1)))
+                if (roomLocalX < 1 || roomLocalZ < 1 || roomLocalX >= room.NumXSectors - 1 || roomLocalZ >= room.NumZSectors - 1)
                     return false;
 
                 if (room.Blocks[(int)roomLocalX, (int)roomLocalZ].IsAnyWall)

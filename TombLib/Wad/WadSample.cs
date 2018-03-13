@@ -3,10 +3,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Media;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 
 namespace TombLib.Wad
@@ -40,7 +37,7 @@ namespace TombLib.Wad
                 uint waveSignature = BitConverter.ToUInt32(data, 8);
                 if (riffSignature != 0x46464952)
                     return false;
-                if (fileSize != (data.Length - 8))
+                if (fileSize != data.Length - 8)
                     return false;
                 if (waveSignature != 0x45564157)
                     return false;
@@ -63,9 +60,9 @@ namespace TombLib.Wad
                     return false;
                 if (sampleRate != 22050) // We could support other sample rates but for now it's fixed to 22050Hz
                     return false;
-                if (bytesPerSecond != (sampleRate * blockAlign))
+                if (bytesPerSecond != sampleRate * blockAlign)
                     return false;
-                if (blockAlign != ((bitsPerSample * channelCount) / 8))
+                if (blockAlign != bitsPerSample * channelCount / 8)
                     return false;
                 if (bitsPerSample != 16) // We want 16 bit audio
                     return false;
@@ -74,7 +71,7 @@ namespace TombLib.Wad
                 uint dataLength = BitConverter.ToUInt32(data, 24 + (int)fmtLength);
                 if (dataSignature != 0x61746164)
                     return false;
-                if (dataLength != (data.Length - (28 + (int)fmtLength)))
+                if (dataLength != data.Length - (28 + (int)fmtLength))
                     return false;
                 return true;
             }
@@ -151,7 +148,7 @@ namespace TombLib.Wad
             using (var anyWaveStream = new WaveFileReader(inStream))
             using (var pcmStream = new WaveFormatConversionStream(_formatPcm22050Hz, anyWaveStream))
             {
-                int sampleSize = ((pcmStream.WaveFormat.BitsPerSample * pcmStream.WaveFormat.Channels) / 8);
+                int sampleSize = pcmStream.WaveFormat.BitsPerSample * pcmStream.WaveFormat.Channels / 8;
                 int uncompressedSampleCount = (int)pcmStream.Length / sampleSize;
                 uncompressedSampleCount = AlignTo(uncompressedSampleCount, _formatAdpcm22050Hz.SamplesPerBlock);
                 uncompressedSize = uncompressedSampleCount * 2; // Time 2 because 16 bit mono samples (2 byte per sample)
@@ -178,7 +175,7 @@ namespace TombLib.Wad
         {
             public long _extendedLengthInBytes;
             public WaveStream _baseStream;
-            private long _currentPosition = 0;
+            private long _currentPosition;
 
             public override long Length => _extendedLengthInBytes;
             public override long Position
@@ -220,7 +217,7 @@ namespace TombLib.Wad
 
         private static int AlignTo(int value, int alignment)
         {
-            return ((value + alignment - 1) / alignment) * alignment;
+            return (value + alignment - 1) / alignment * alignment;
         }
 
 
@@ -229,10 +226,10 @@ namespace TombLib.Wad
 
 
 
-        public static bool operator ==(WadSample first, WadSample second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : (first.Hash == second.Hash));
+        public static bool operator ==(WadSample first, WadSample second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);
         public static bool operator !=(WadSample first, WadSample second) => !(first == second);
         public bool Equals(WadSample other) => Hash == other.Hash;
-        public override bool Equals(object other) => (other is WadSample) && Hash == ((WadSample)other).Hash;
+        public override bool Equals(object other) => other is WadSample && Hash == ((WadSample)other).Hash;
         public override int GetHashCode() { return Hash.GetHashCode(); }
 
         public void Play()

@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.NG;
 using DarkUI.Config;
 using NLog;
-using TombLib.Utils;
 
 namespace TombLib.Controls
 {
@@ -40,12 +35,12 @@ namespace TombLib.Controls
                 ParameterChanged?.Invoke(this, EventArgs.Empty);
 
                 butView.Visible =
-                    (GetObjectPointer(_parameter) is ObjectInstance) ||
-                    (GetObjectPointer(_parameter) is Room);
+                    GetObjectPointer() is ObjectInstance ||
+                    GetObjectPointer() is Room;
             }
         }
 
-        private bool _rawMode = false;
+        private bool _rawMode;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
         public bool RawMode
@@ -60,7 +55,7 @@ namespace TombLib.Controls
             }
         }
 
-        private NgParameterRange _parameterRange = new NgParameterRange();
+        private NgParameterRange _parameterRange;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
         public NgParameterRange ParameterRange
@@ -76,7 +71,7 @@ namespace TombLib.Controls
         }
 
         public Level Level { get; set; }
-        private bool _currentlyChanging = false;
+        private bool _currentlyChanging;
 
         public TriggerParameterControl()
         {
@@ -86,7 +81,7 @@ namespace TombLib.Controls
 
         private void View(ITriggerParameter value)
         {
-            value = GetObjectPointer(value);
+            value = GetObjectPointer();
             if (value is ObjectInstance)
                 ViewObject?.Invoke((ObjectInstance)value);
             if (value is Room)
@@ -115,7 +110,7 @@ namespace TombLib.Controls
         {
             if (_currentlyChanging || !numericUpDown.Visible)
                 return;
-            Parameter = new TriggerParameterUshort(unchecked((ushort)(numericUpDown.Value)));
+            Parameter = new TriggerParameterUshort((ushort)numericUpDown.Value);
         }
 
         private void label_MouseDown(object sender, MouseEventArgs e)
@@ -125,7 +120,7 @@ namespace TombLib.Controls
                 Parameter = new TriggerParameterUshort(0);
         }
 
-        private ITriggerParameter GetObjectPointer(ITriggerParameter parameter)
+        private ITriggerParameter GetObjectPointer()
         {
             if (_parameter is TriggerParameterUshort)
                 return ((TriggerParameterUshort)_parameter).NameObject as ITriggerParameter;
@@ -167,7 +162,7 @@ namespace TombLib.Controls
                         label.Visible = true;
                         colorPreview.Visible = false;
                     }
-                    else if (listOfThings == null || (_rawMode && !ParameterRange.IsObject && !ParameterRange.IsRoom))
+                    else if (listOfThings == null || _rawMode && !ParameterRange.IsObject && !ParameterRange.IsRoom)
                     {
                         label.BackColor = numericUpDown.BackColor;
                         label.Text = "";

@@ -1,14 +1,9 @@
 ﻿using DarkUI.Docking;
 using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
@@ -19,7 +14,7 @@ namespace TombEditor.ToolWindows
 {
     public partial class ObjectBrowser : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public ObjectBrowser()
         {
@@ -38,7 +33,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -101,8 +96,8 @@ namespace TombEditor.ToolWindows
                 .Where(room => room != null)
                 .SelectMany(room => room.Objects)
                 .FindFirstAfterWithWrapAround(
-                (obj) => previousFind == obj,
-                (obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == currentItem.Value);
+                obj => previousFind == obj,
+                obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == currentItem.Value);
 
             // Show result
             if (instance == null)
@@ -122,7 +117,7 @@ namespace TombEditor.ToolWindows
             if (comboItems.Items.Count == 0)
                 return;
 
-            if ((comboItems.SelectedIndex - 1) < 0)
+            if (comboItems.SelectedIndex - 1 < 0)
                 comboItems.SelectedIndex = comboItems.Items.Count - 1;
             else
                 comboItems.SelectedIndex = comboItems.SelectedIndex - 1;
@@ -133,7 +128,7 @@ namespace TombEditor.ToolWindows
             if (comboItems.Items.Count == 0)
                 return;
 
-            if ((comboItems.SelectedIndex + 1) >= comboItems.Items.Count)
+            if (comboItems.SelectedIndex + 1 >= comboItems.Items.Count)
                 comboItems.SelectedIndex = 0;
             else
                 comboItems.SelectedIndex = comboItems.SelectedIndex + 1;
@@ -145,7 +140,7 @@ namespace TombEditor.ToolWindows
             if (currentItem == null)
                 return;
 
-            if ((!currentItem.Value.IsStatic) && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
+            if (!currentItem.Value.IsStatic && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
             {
                 DarkMessageBox.Show(this, "You can't add moveables to a flipped room", "Error", MessageBoxIcon.Information);
                 return;
@@ -181,12 +176,12 @@ namespace TombEditor.ToolWindows
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ((comboItems.SelectedItem == null) || (_editor?.Level?.Wad == null))
+            if (comboItems.SelectedItem == null || _editor?.Level?.Wad == null)
                 _editor.ChosenItem = null;
             if (comboItems.SelectedItem is WadMoveable)
-                _editor.ChosenItem = new ItemType(((WadMoveable)(comboItems.SelectedItem)).Id, _editor?.Level?.Settings);
+                _editor.ChosenItem = new ItemType(((WadMoveable)comboItems.SelectedItem).Id, _editor?.Level?.Settings);
             else if (comboItems.SelectedItem is WadStatic)
-                _editor.ChosenItem = new ItemType(((WadStatic)(comboItems.SelectedItem)).Id, _editor?.Level?.Settings);
+                _editor.ChosenItem = new ItemType(((WadStatic)comboItems.SelectedItem).Id, _editor?.Level?.Settings);
         }
 
         private void comboItems_Format(object sender, ListControlConvertEventArgs e)

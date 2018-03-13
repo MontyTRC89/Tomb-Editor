@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
-using TombLib;
-using TombLib.LevelData.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -77,13 +73,13 @@ namespace TombLib.LevelData
         /// <summary> Maximum normal height for non-slidable slopes </summary>
         public const float CriticalSlantComponent = 0.8f;
         /// <summary> The x offset of each face index in [0, 4). </summary>
-        public static readonly int[] FaceX = new int[] { 0, 1, 1, 0 };
+        public static readonly int[] FaceX = new[] { 0, 1, 1, 0 };
         /// <summary> The x offset of each face index in [0, 4). </summary>
-        public static readonly int[] FaceZ = new int[] { 1, 1, 0, 0 };
+        public static readonly int[] FaceZ = new[] { 1, 1, 0, 0 };
 
         public BlockType Type { get; set; } = BlockType.Floor;
         public BlockFlags Flags { get; set; } = BlockFlags.None;
-        public bool ForceFloorSolid { get; set; } = false; // If this is set to true, portals are overwritten for this sector.
+        public bool ForceFloorSolid { get; set; } // If this is set to true, portals are overwritten for this sector.
         // ReSharper disable once InconsistentNaming
         public short[] ED { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
@@ -94,8 +90,8 @@ namespace TombLib.LevelData
         public short[] RF { get; } = new short[4];
         private TextureArea[] _faceTextures { get; } = new TextureArea[(int)FaceCount];
 
-        public bool FloorSplitDirectionToggled { get; set; } = false;
-        public bool CeilingSplitDirectionToggled { get; set; } = false;
+        public bool FloorSplitDirectionToggled { get; set; }
+        public bool CeilingSplitDirectionToggled { get; set; }
         public DiagonalSplit FloorDiagonalSplit { get; set; } = DiagonalSplit.None;
         public DiagonalSplit CeilingDiagonalSplit { get; set; } = DiagonalSplit.None;
 
@@ -210,7 +206,7 @@ namespace TombLib.LevelData
         public void Raise(int verticalSubdivision, bool diagonalStep, short increment)
         {
             var faces = GetVerticalSubdivision(verticalSubdivision);
-            var split = (verticalSubdivision == 0 || verticalSubdivision == 2) ? FloorDiagonalSplit : CeilingDiagonalSplit;
+            var split = verticalSubdivision == 0 || verticalSubdivision == 2 ? FloorDiagonalSplit : CeilingDiagonalSplit;
 
             if (diagonalStep)
             {
@@ -234,10 +230,10 @@ namespace TombLib.LevelData
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    if ((i == 0 && split == DiagonalSplit.XpZn) ||
-                        (i == 1 && split == DiagonalSplit.XnZn) ||
-                        (i == 2 && split == DiagonalSplit.XnZp) ||
-                        (i == 3 && split == DiagonalSplit.XpZp))
+                    if (i == 0 && split == DiagonalSplit.XpZn ||
+                        i == 1 && split == DiagonalSplit.XnZn ||
+                        i == 2 && split == DiagonalSplit.XnZp ||
+                        i == 3 && split == DiagonalSplit.XpZp)
                         continue;
                     faces[i] += increment;
                 }
@@ -246,18 +242,18 @@ namespace TombLib.LevelData
 
         public void RaiseStepWise(int verticalSubdivision, bool diagonalStep, short increment, bool autoSwitch = false)
         {
-            var floor = (verticalSubdivision % 2 == 0);
+            var floor = verticalSubdivision % 2 == 0;
             var split = floor ? FloorDiagonalSplit : CeilingDiagonalSplit;
 
             if (split != DiagonalSplit.None)
             {
                 var faces = GetVerticalSubdivision(verticalSubdivision);
-                var stepIsLimited = increment != 0 && ((increment > 0) == (!floor ^ diagonalStep));
+                var stepIsLimited = increment != 0 && increment > 0 == (!floor ^ diagonalStep);
 
-                if ((split == DiagonalSplit.XpZn && faces[0] == faces[1] && stepIsLimited) ||
-                    (split == DiagonalSplit.XnZn && faces[1] == faces[2] && stepIsLimited) ||
-                    (split == DiagonalSplit.XnZp && faces[2] == faces[3] && stepIsLimited) ||
-                    (split == DiagonalSplit.XpZp && faces[3] == faces[0] && stepIsLimited))
+                if (split == DiagonalSplit.XpZn && faces[0] == faces[1] && stepIsLimited ||
+                    split == DiagonalSplit.XnZn && faces[1] == faces[2] && stepIsLimited ||
+                    split == DiagonalSplit.XnZp && faces[2] == faces[3] && stepIsLimited ||
+                    split == DiagonalSplit.XpZp && faces[3] == faces[0] && stepIsLimited)
                 {
                     if (IsAnyWall && autoSwitch)
                         Raise(verticalSubdivision, !diagonalStep, increment);
@@ -356,7 +352,7 @@ namespace TombLib.LevelData
             }
 
             // Rotate sector geometry
-            bool diagonalChange = transformation.MirrorX != ((transformation.QuadrantRotation % 2) != 0);
+            bool diagonalChange = transformation.MirrorX != (transformation.QuadrantRotation % 2 != 0);
             bool oldFloorSplitDirectionIsXEqualsZReal = FloorSplitDirectionIsXEqualsZWithDiagonalSplit;
             if (onlyFloor != false)
             {
@@ -887,8 +883,8 @@ namespace TombLib.LevelData
 
         public static bool IsQuad(int hXnZp, int hXpZp, int hXpZn, int hXnZn)
         {
-            return (hXpZp - hXpZn) == (hXnZp - hXnZn) &&
-                (hXpZp - hXnZp) == (hXpZn - hXnZn);
+            return hXpZp - hXpZn == hXnZp - hXnZn &&
+                hXpZp - hXnZp == hXpZn - hXnZn;
         }
 
         public bool IsAnyWall => Type != BlockType.Floor;

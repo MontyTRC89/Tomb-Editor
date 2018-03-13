@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
 using DarkUI.Controls;
@@ -15,7 +8,7 @@ using System.Media;
 
 namespace SoundTool
 {
-    public partial class FormMain : DarkUI.Forms.DarkForm
+    public partial class FormMain : DarkForm
     {
         private WadGameVersion _version;
         private int _currentSound;
@@ -78,7 +71,7 @@ namespace SoundTool
 
         private void tR4CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _version = WadGameVersion.TR4;
+            _version = WadGameVersion.TR4_TRNG;
 
             buildMAINSFXToolStripMenuItem.Enabled = false;
             cbMandatorySound.Visible = true;
@@ -130,7 +123,7 @@ namespace SoundTool
             lstSamples.Items.Clear();
             foreach (var sample in soundInfo.Samples)
             {
-                var itemSample = new DarkUI.Controls.DarkListItem(sample);
+                var itemSample = new DarkListItem(sample);
                 lstSamples.Items.Add(itemSample);
             }
 
@@ -205,8 +198,8 @@ namespace SoundTool
 
         private void convertTXTToXMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var input = "";
-            var output = "";
+            string input;
+            string output;
 
             using (var dialog = new OpenFileDialog())
             {
@@ -263,7 +256,7 @@ namespace SoundTool
                 case WadGameVersion.TR1: path += "TR1"; break;
                 case WadGameVersion.TR2: path += "TR2"; break;
                 case WadGameVersion.TR3: path += "TR3"; break;
-                case WadGameVersion.TR4: path += "TR4"; break;
+                case WadGameVersion.TR4_TRNG: path += "TR4"; break;
                 case WadGameVersion.TR5: path += "TR5"; break;
             }
             path += "\\Samples\\" + sample + ".wav";

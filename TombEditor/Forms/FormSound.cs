@@ -1,27 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using TombLib.LevelData;
-using System.IO;
-using System.Media;
-using TombLib.Wad;
-using NLog;
 using DarkUI.Forms;
+using NLog;
+using TombLib.LevelData;
+using TombLib.Wad;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
-    public partial class FormSound : DarkUI.Forms.DarkForm
+    public partial class FormSound : DarkForm
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private SoundSourceInstance _soundSource;
-        private Wad2 _wad;
-        private Random rng = new Random();
+        private readonly SoundSourceInstance _soundSource;
+        private readonly Wad2 _wad;
 
         public FormSound(SoundSourceInstance soundSource, Wad2 wad)
         {
@@ -67,11 +60,11 @@ namespace TombEditor
         private void butOK_Click(object sender, EventArgs e)
         {
             byte codeBits = 0;
-            codeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
-            codeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
-            codeBits |= (byte)(cbBit3.Checked ? (1 << 2) : 0);
-            codeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
-            codeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
+            codeBits |= (byte)(cbBit1.Checked ? 1 << 0 : 0);
+            codeBits |= (byte)(cbBit2.Checked ? 1 << 1 : 0);
+            codeBits |= (byte)(cbBit3.Checked ? 1 << 2 : 0);
+            codeBits |= (byte)(cbBit4.Checked ? 1 << 3 : 0);
+            codeBits |= (byte)(cbBit5.Checked ? 1 << 4 : 0);
             _soundSource.SoundName = tbSound.Text;
             _soundSource.CodeBits = codeBits;
 
@@ -94,7 +87,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Warn(exc, "Unable to play sample");
-                DarkMessageBox.Show(this, "Playing sound failed. " + exc.ToString(), "Unable to play sound.", MessageBoxIcon.Information);
+                DarkMessageBox.Show(this, "Playing sound failed. " + exc, "Unable to play sound.", MessageBoxIcon.Information);
             }
         }
 

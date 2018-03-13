@@ -1,7 +1,7 @@
-﻿using DarkUI.Controls;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using DarkUI.Controls;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     partial class FormAnimatedTextures
     {
@@ -18,7 +18,7 @@ namespace TombEditor
             this.comboAnimatedTextureSets = new DarkUI.Controls.DarkComboBox();
             this.butAnimatedTextureSetDelete = new DarkUI.Controls.DarkButton();
             this.butAnimatedTextureSetNew = new DarkUI.Controls.DarkButton();
-            this.textureMap = new TombEditor.FormAnimatedTextures.PanelTextureMapForAnimations();
+            this.textureMap = new FormAnimatedTextures.PanelTextureMapForAnimations();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.butUpdate = new DarkUI.Controls.DarkButton();

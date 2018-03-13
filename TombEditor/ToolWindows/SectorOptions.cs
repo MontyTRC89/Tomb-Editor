@@ -3,12 +3,6 @@ using DarkUI.Docking;
 using DarkUI.Forms;
 using NLog;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.LevelData;
 
@@ -16,7 +10,7 @@ namespace TombEditor.ToolWindows
 {
     public partial class SectorOptions : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public SectorOptions()
@@ -39,7 +33,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }

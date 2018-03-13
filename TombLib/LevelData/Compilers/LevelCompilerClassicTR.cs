@@ -1,11 +1,7 @@
-﻿using NAudio.Wave;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
-using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -22,7 +18,7 @@ namespace TombLib.LevelData.Compilers
             {
                 return "Boxes: " + BoxCount + " | Overlaps: " + OverlapCount + " | Applied 'object' textures: " + ObjectTextureCount;
             }
-        };
+        }
 
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>();
 
@@ -40,31 +36,31 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private ScriptIdTable<IHasScriptID> _scriptingIdsTable;
+        private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private byte[] _texture32Data;
-        private List<ushort> _floorData = new List<ushort>();
-        private List<tr_mesh> _meshes = new List<tr_mesh>();
-        private List<uint> _meshPointers = new List<uint>();
-        private List<tr_animation> _animations = new List<tr_animation>();
-        private List<tr_state_change> _stateChanges = new List<tr_state_change>();
-        private List<tr_anim_dispatch> _animDispatches = new List<tr_anim_dispatch>();
-        private List<ushort> _animCommands = new List<ushort>();
-        private List<int> _meshTrees = new List<int>();
-        private List<short> _frames = new List<short>();
+        private readonly List<ushort> _floorData = new List<ushort>();
+        private readonly List<tr_mesh> _meshes = new List<tr_mesh>();
+        private readonly List<uint> _meshPointers = new List<uint>();
+        private readonly List<tr_animation> _animations = new List<tr_animation>();
+        private readonly List<tr_state_change> _stateChanges = new List<tr_state_change>();
+        private readonly List<tr_anim_dispatch> _animDispatches = new List<tr_anim_dispatch>();
+        private readonly List<ushort> _animCommands = new List<ushort>();
+        private readonly List<int> _meshTrees = new List<int>();
+        private readonly List<short> _frames = new List<short>();
         private List<tr_moveable> _moveables = new List<tr_moveable>();
-        private List<tr_staticmesh> _staticMeshes = new List<tr_staticmesh>();
+        private readonly List<tr_staticmesh> _staticMeshes = new List<tr_staticmesh>();
 
         private List<tr_sprite_texture> _spriteTextures = new List<tr_sprite_texture>();
         private List<tr_sprite_sequence> _spriteSequences = new List<tr_sprite_sequence>();
-        private List<tr_camera> _cameras = new List<tr_camera>();
-        private List<tr4_flyby_camera> _flyByCameras = new List<tr4_flyby_camera>();
-        private List<tr_sound_source> _soundSources = new List<tr_sound_source>();
+        private readonly List<tr_camera> _cameras = new List<tr_camera>();
+        private readonly List<tr4_flyby_camera> _flyByCameras = new List<tr4_flyby_camera>();
+        private readonly List<tr_sound_source> _soundSources = new List<tr_sound_source>();
         private tr_box[] _boxes = new tr_box[0];
         private ushort[] _overlaps = new ushort[0];
         private tr_zone[] _zones = new tr_zone[0];
 
-        private List<tr_item> _items = new List<tr_item>();
-        private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
+        private readonly List<tr_item> _items = new List<tr_item>();
+        private readonly List<tr_ai_item> _aiItems = new List<tr_ai_item>();
 
         private Util.SoundManager _soundManager;
         private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
@@ -339,8 +335,8 @@ namespace TombLib.LevelData.Compilers
             while (room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
                 var sector = room.Blocks[x, z];
-                x += (int)(room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X);
-                z += (int)(room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z);
+                x += room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X;
+                z += room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z;
                 room = sector.FloorPortal.AdjoiningRoom;
             }
         }
@@ -376,7 +372,7 @@ namespace TombLib.LevelData.Compilers
 
                     Vector3 position = instance.Room.WorldPos + instance.Position;
                     double angle = Math.Round(instance.RotationY * (65536.0 / 360.0));
-                    ushort angleInt = unchecked((ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle))));
+                    ushort angleInt = unchecked((ushort)Math.Max(0, Math.Min(ushort.MaxValue, angle)));
                     if (wadMoveable.Id.IsAI(_level.Settings.WadGameVersion))
                     {
                         _aiItems.Add(new tr_ai_item
@@ -384,7 +380,7 @@ namespace TombLib.LevelData.Compilers
                             X = (int)Math.Round(position.X),
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
-                            ObjectID = checked((ushort)(instance.WadObjectId.TypeId)),
+                            ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                             Room = (ushort)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             OCB = instance.Ocb,
@@ -401,7 +397,7 @@ namespace TombLib.LevelData.Compilers
                             X = (int)Math.Round(position.X),
                             Y = (int)-Math.Round(position.Y),
                             Z = (int)Math.Round(position.Z),
-                            ObjectID = checked((ushort)(instance.WadObjectId.TypeId)),
+                            ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                             Room = (short)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             Intensity1 = -1,

@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.Wad;
@@ -37,7 +35,10 @@ namespace WadTool
                         dialog.InitialDirectory = Path.GetDirectoryName(previousFilePath);
                         dialog.FileName = Path.GetFileName(previousFilePath);
                     }
-                    catch { }
+                    catch
+                    {
+                        // ignored
+                    }
 
                 dialog.Filter = Wad2.WadFormatExtensions.GetFilter();
                 dialog.Title = "Open " + (destination ? "destination" : "source") + " WAD - Wad2 - Level";
@@ -88,7 +89,10 @@ namespace WadTool
                 {
                     outPath = Path.ChangeExtension(outPath, "wad2");
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
 
 
             // Ask the  about it
@@ -116,7 +120,7 @@ namespace WadTool
             catch (Exception exc)
             {
                 logger.Warn(exc, "Unable to save to '" + outPath + "'");
-                DarkMessageBox.Show(owner, "Unable to save to '" + outPath + "'.   " + exc.ToString(), "Unable to save.");
+                DarkMessageBox.Show(owner, "Unable to save to '" + outPath + "'.   " + exc, "Unable to save.");
             }
         }
 
@@ -172,7 +176,12 @@ namespace WadTool
                 {
                     dialog.InitialDirectory = Path.GetDirectoryName(tool.DestinationWad.FileName);
                     dialog.FileName = Path.GetFileName(tool.DestinationWad.FileName);
-                } catch { }
+                }
+                catch
+                {
+                    // ignored
+                }
+
                 dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
                 dialog.Title = "Select a 3D file that you want to see imported.";
                 if (dialog.ShowDialog(owner) != DialogResult.OK)

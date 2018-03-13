@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TombLib.Wad.TrLevels
+﻿namespace TombLib.Wad.TrLevels
 {
     internal enum TrVersion : uint
     {

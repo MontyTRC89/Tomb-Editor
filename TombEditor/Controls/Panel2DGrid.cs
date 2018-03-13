@@ -1,11 +1,9 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
@@ -17,8 +15,8 @@ namespace TombEditor.Controls
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private bool _doSectorSelection = false;
-        private Editor _editor;
+        private bool _doSectorSelection;
+        private readonly Editor _editor;
 
         private static readonly float _outlineHighlightWidth = 3;
         private static readonly Pen _gridPen = Pens.Black;
@@ -52,11 +50,11 @@ namespace TombEditor.Controls
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update drawing
-            if ((obj is HighlightManager.ChangeHighlightEvent) ||
-                (obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.SelectedSectorsChangedEvent) ||
-                (obj is Editor.RoomSectorPropertiesChangedEvent) ||
-                ((obj is Editor.SelectedObjectChangedEvent) && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj)))
+            if (obj is HighlightManager.ChangeHighlightEvent ||
+                obj is Editor.SelectedRoomChangedEvent ||
+                obj is Editor.SelectedSectorsChangedEvent ||
+                obj is Editor.RoomSectorPropertiesChangedEvent ||
+                obj is Editor.SelectedObjectChangedEvent && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj))
             {
                 Invalidate();
             }
@@ -71,7 +69,7 @@ namespace TombEditor.Controls
 
         private static bool IsObjectChangeRelevant(Editor.SelectedObjectChangedEvent e)
         {
-            return (e.Previous is SectorBasedObjectInstance) || (e.Current is SectorBasedObjectInstance);
+            return e.Previous is SectorBasedObjectInstance || e.Current is SectorBasedObjectInstance;
         }
 
         private RectangleF getVisualAreaTotal()
@@ -122,7 +120,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            if ((_editor == null) || (_editor.SelectedRoom == null))
+            if (_editor == null || _editor.SelectedRoom == null)
                 return;
 
             // Move camera to selected sector
@@ -139,8 +137,8 @@ namespace TombEditor.Controls
             // Choose action
             if (e.Button == MouseButtons.Left)
             {
-                if ((selectedSectorObject != null) &&
-                    (selectedSectorObject.Room == _editor.SelectedRoom) &&
+                if (selectedSectorObject != null &&
+                    selectedSectorObject.Room == _editor.SelectedRoom &&
                     selectedSectorObject.Area.Contains(sectorPos))
                 {
                     if (selectedSectorObject is PortalInstance)
@@ -151,7 +149,7 @@ namespace TombEditor.Controls
                     }
                     else if (selectedSectorObject is TriggerInstance)
                     { // Open trigger options
-                        EditorActions.EditObject(selectedSectorObject, this.Parent);
+                        EditorActions.EditObject(selectedSectorObject, Parent);
                     }
                 }
                 else
@@ -169,10 +167,10 @@ namespace TombEditor.Controls
                 var portalsInRoom = _editor.SelectedRoom.Portals.Cast<SectorBasedObjectInstance>();
                 var triggersInRoom = _editor.SelectedRoom.Triggers.Cast<SectorBasedObjectInstance>();
                 var relevantTriggersAndPortals = portalsInRoom.Concat(triggersInRoom)
-                    .Where((obj) => obj.Area.Contains(sectorPos));
+                    .Where(obj => obj.Area.Contains(sectorPos));
 
                 SectorBasedObjectInstance nextPortalOrTrigger = relevantTriggersAndPortals.
-                    FindFirstAfterWithWrapAround((obj) => obj == selectedSectorObject, (obj) => true);
+                    FindFirstAfterWithWrapAround(obj => obj == selectedSectorObject, obj => true);
                 if (nextPortalOrTrigger != null)
                 {
                     _editor.SelectedObject = nextPortalOrTrigger;
@@ -187,10 +185,10 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
-            if ((_editor?.SelectedRoom == null) || (_editor.Action is EditorActionRelocateCamera))
+            if (_editor?.SelectedRoom == null || _editor.Action is EditorActionRelocateCamera)
                 return;
 
-            if ((e.Button == MouseButtons.Left) && _doSectorSelection)
+            if (e.Button == MouseButtons.Left && _doSectorSelection)
                 _editor.SelectedSectors = new SectorSelection { Start = _editor.SelectedSectors.Start, End = FromVisualCoord(e.Location) };
         }
 
@@ -211,7 +209,7 @@ namespace TombEditor.Controls
         {
             try
             {
-                if ((_editor == null) || (_editor.SelectedRoom == null))
+                if (_editor == null || _editor.SelectedRoom == null)
                     return;
 
                 Room currentRoom = _editor.SelectedRoom;
@@ -232,7 +230,7 @@ namespace TombEditor.Controls
                         {
                             for (int i = 0; i < currentHighlights.Count; i++)
                             {
-                                e.Graphics.SmoothingMode = (currentHighlights[i].Shape == HighlightShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias);
+                                e.Graphics.SmoothingMode = currentHighlights[i].Shape == HighlightShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias;
 
                                 switch (currentHighlights[i].Shape)
                                 {
@@ -316,7 +314,7 @@ namespace TombEditor.Controls
                     e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_editor.SelectedSectors.Area));
 
                 var instance = _editor.SelectedObject as SectorBasedObjectInstance;
-                if ((instance != null) && (instance.Room == _editor.SelectedRoom))
+                if (instance != null && instance.Room == _editor.SelectedRoom)
                 {
                     Pen pen = instance is PortalInstance ? _selectedPortalPen : _selectedTriggerPen;
                     RectangleF visualArea = ToVisualCoord(instance.Area);

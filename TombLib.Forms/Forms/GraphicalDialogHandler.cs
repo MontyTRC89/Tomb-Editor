@@ -1,11 +1,6 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -72,7 +67,7 @@ namespace TombLib.Forms
                 var dialogDescription = (DialogDescriptonTextureUnloadable)dialogDescription_;
 
                 bool ignoreError = false;
-                while ((dialogDescription.Texture.ImageLoadException != null) && !ignoreError)
+                while (dialogDescription.Texture.ImageLoadException != null && !ignoreError)
                     owner.InvokeIfNecessary(() =>
                     {
                         switch (MessageBox.Show(owner, "The texture file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Texture.Path) +
@@ -117,7 +112,7 @@ namespace TombLib.Forms
                         owner.InvokeIfNecessary(() =>
                         {
                             switch (MessageBox.Show(owner, "The objects file '" + path + " could not be loaded. " +
-                                "Do you want to load a substituting file now?\nError: " + (exc?.Message ?? "null"), "Open project",
+                                "Do you want to load a substituting file now?\nError: " + (exc.Message ?? "null"), "Open project",
                                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                             {
                                 case DialogResult.Yes:
@@ -156,7 +151,7 @@ namespace TombLib.Forms
             }
         }
 
-        private IWin32Window _owner;
+        private readonly IWin32Window _owner;
 
         public GraphicalDialogHandler(IWin32Window owner)
         {

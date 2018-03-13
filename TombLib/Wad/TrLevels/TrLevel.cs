@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -168,7 +165,7 @@ namespace TombLib.Wad.TrLevels
                     using (var levelReader = new BinaryReaderEx(stream))
                     {
                         var unused = levelReader.ReadUInt32();
-                        var numRooms = (Version != TrVersion.TR5 ? levelReader.ReadUInt16() : levelReader.ReadUInt32());
+                        var numRooms = Version != TrVersion.TR5 ? levelReader.ReadUInt16() : levelReader.ReadUInt32();
 
                         for (var i = 0; i < numRooms; i++)
                         {
@@ -228,7 +225,7 @@ namespace TombLib.Wad.TrLevels
                                 // TR5 is very different, but luckly we have a field with the total size
                                 // But I read everything for debugging the new TR5 compiler
                                 // XELA
-                                var xela = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(4));
+                                var xela = System.Text.Encoding.ASCII.GetString(levelReader.ReadBytes(4));
                                 var roomDataSize = levelReader.ReadUInt32();
                                 /*levelReader.ReadUInt32();
                                 levelReader.ReadUInt32();
@@ -368,7 +365,7 @@ namespace TombLib.Wad.TrLevels
 
                         Meshes = new List<tr_mesh>();
 
-                        while (totalBytes < (numMeshData * 2))
+                        while (totalBytes < numMeshData * 2)
                         {
                             long offset1 = levelReader.BaseStream.Position;
 
@@ -664,9 +661,9 @@ namespace TombLib.Wad.TrLevels
                         // SPR marker
                         var marker = "";
                         if (Version == TrVersion.TR4)
-                            marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(3));
+                            marker = System.Text.Encoding.ASCII.GetString(levelReader.ReadBytes(3));
                         if (Version == TrVersion.TR5)
-                            marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(4));
+                            marker = System.Text.Encoding.ASCII.GetString(levelReader.ReadBytes(4));
 
                         // Sprite textures
                         var numSpriteTextures = levelReader.ReadUInt32();
@@ -730,9 +727,9 @@ namespace TombLib.Wad.TrLevels
                         if (Version == TrVersion.TR3 || Version == TrVersion.TR4 || Version == TrVersion.TR5)
                         {
                             if (Version == TrVersion.TR4)
-                                marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(4));
+                                marker = System.Text.Encoding.ASCII.GetString(levelReader.ReadBytes(4));
                             if (Version == TrVersion.TR5)
-                                marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(5));
+                                marker = System.Text.Encoding.ASCII.GetString(levelReader.ReadBytes(5));
 
                             var numObjectTextures = levelReader.ReadUInt32();
                             for (var i = 0; i < numObjectTextures; i++)
@@ -839,7 +836,7 @@ namespace TombLib.Wad.TrLevels
                                 var sample = new tr_sample();
 
                                 // Check for RIFF header
-                                var riff = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(4));
+                                var riff = System.Text.Encoding.ASCII.GetString(levelReader.ReadBytes(4));
                                 samplesBytesRead += 4;
                                 if (riff != "RIFF")
                                     continue;
@@ -853,7 +850,7 @@ namespace TombLib.Wad.TrLevels
                                 {
                                     using (var writerSample = new BinaryWriterEx(ms))
                                     {
-                                        writerSample.Write(System.Text.ASCIIEncoding.ASCII.GetBytes("RIFF"));
+                                        writerSample.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
                                         writerSample.Write(fileSize);
                                         writerSample.Write(levelReader.ReadBytes(fileSize));
                                         samplesBytesRead += fileSize;
@@ -901,9 +898,9 @@ namespace TombLib.Wad.TrLevels
                     {
                         for (int x = 0; x < width; x++)
                         {
-                            var r = (Palette8[texture8[y * 256 + x]].Red * 4);
-                            var g = (Palette8[texture8[y * 256 + x]].Green * 4);
-                            var b = (Palette8[texture8[y * 256 + x]].Blue * 4);
+                            var r = Palette8[texture8[y * 256 + x]].Red * 4;
+                            var g = Palette8[texture8[y * 256 + x]].Green * 4;
+                            var b = Palette8[texture8[y * 256 + x]].Blue * 4;
                             var a = (byte)(r == 255 && g == 0 && b == 255 ? 0 : 255);
 
                             TextureMap32[y * 1024 + x * 4 + 0] = (byte)b;
@@ -931,7 +928,7 @@ namespace TombLib.Wad.TrLevels
                             var r = ((color & 0x7c00) >> 10) * 8;
                             var g = ((color & 0x03e0) >> 5) * 8;
                             var b = ((color & 0x001f) >> 0) * 8;
-                            var a = ((color & 0x8000) != 0 ? 255 : 0);
+                            var a = (color & 0x8000) != 0 ? 255 : 0;
 
                             TextureMap32[y * 1024 + x * 4 + 0] = (byte)b;
                             TextureMap32[y * 1024 + x * 4 + 1] = (byte)g;
@@ -956,7 +953,7 @@ namespace TombLib.Wad.TrLevels
                         var sample = new tr_sample();
 
                         // Check for RIFF header
-                        var riff = System.Text.ASCIIEncoding.ASCII.GetString(sampleReader.ReadBytes(4));
+                        var riff = System.Text.Encoding.ASCII.GetString(sampleReader.ReadBytes(4));
                         if (riff != "RIFF")
                             continue;
 
@@ -968,7 +965,7 @@ namespace TombLib.Wad.TrLevels
                         {
                             using (var writerSample = new BinaryWriterEx(ms))
                             {
-                                writerSample.Write(System.Text.ASCIIEncoding.ASCII.GetBytes("RIFF"));
+                                writerSample.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
                                 writerSample.Write(fileSize);
                                 writerSample.Write(sampleReader.ReadBytes(fileSize));
                             }

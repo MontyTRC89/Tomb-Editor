@@ -2,12 +2,6 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -18,7 +12,7 @@ namespace WadTool
     {
         public Type TypeClass { get; }
         public WadGameVersion GameVersion { get; }
-        public IWadObjectId NewId { get; set; } = null;
+        public IWadObjectId NewId { get; set; }
 
         public FormSelectSlot(IWadObjectId currentId, WadGameVersion gameVersion)
         {
@@ -64,7 +58,7 @@ namespace WadTool
                 if (!string.IsNullOrEmpty(searchKeyword))
                     if (objectSlotSuggestion.Value.IndexOf(searchKeyword, StringComparison.OrdinalIgnoreCase) == -1)
                         continue;
-                string label = "(" + objectSlotSuggestion.Key + ") " + objectSlotSuggestion.Value.ToString();
+                string label = "(" + objectSlotSuggestion.Key + ") " + objectSlotSuggestion.Value;
                 nodes.Add(new DarkTreeNode(label) { Tag = objectSlotSuggestion.Key });
             }
             treeSlots.Nodes.Clear();

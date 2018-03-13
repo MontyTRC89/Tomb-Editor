@@ -1,18 +1,12 @@
 ﻿using DarkUI.Docking;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.LevelData;
 
 namespace TombEditor.ToolWindows
 {
     public partial class Palette : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public Palette()
         {
@@ -38,7 +32,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }

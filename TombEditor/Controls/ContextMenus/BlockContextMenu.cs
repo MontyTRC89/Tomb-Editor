@@ -1,11 +1,4 @@
-﻿using DarkUI.Controls;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
@@ -15,11 +8,11 @@ namespace TombEditor.Controls.ContextMenus
 {
     class BlockContextMenu : BaseContextMenu
     {
-        private ToolStripMenuItem _itemPaste;
+        private readonly ToolStripMenuItem _itemPaste;
         public BlockContextMenu(Editor editor, Room targetRoom, VectorInt2 targetBlock)
             : base(editor)
         {
-            Items.Add(_itemPaste = new ToolStripMenuItem("Paste", global::TombEditor.Properties.Resources.general_clipboard_16, (o, e) =>
+            Items.Add(_itemPaste = new ToolStripMenuItem("Paste", Properties.Resources.general_clipboard_16, (o, e) =>
             {
                 EditorActions.PasteObject(targetBlock);
             }));
@@ -36,27 +29,27 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.PlaceObject(targetRoom, targetBlock, ItemInstance.FromItemType(_editor.Action.ItemType));
             }));*/
 
-            Items.Add(new ToolStripMenuItem("Add camera", global::TombEditor.Properties.Resources.objects_Camera_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Add camera", Properties.Resources.objects_Camera_16, (o, e) =>
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new CameraInstance());
             }));
 
-            Items.Add(new ToolStripMenuItem("Add fly-by camera", global::TombEditor.Properties.Resources.objects_movie_projector_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Add fly-by camera", Properties.Resources.objects_movie_projector_16, (o, e) =>
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new FlybyCameraInstance());
             }));
 
-            Items.Add(new ToolStripMenuItem("Add sink", global::TombEditor.Properties.Resources.objects_tornado_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Add sink", Properties.Resources.objects_tornado_16, (o, e) =>
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new SinkInstance());
             }));
 
-            Items.Add(new ToolStripMenuItem("Add sound source", global::TombEditor.Properties.Resources.objects_speaker_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Add sound source", Properties.Resources.objects_speaker_16, (o, e) =>
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new SoundSourceInstance());
             }));
 
-            Items.Add(new ToolStripMenuItem("Add imported geometry", global::TombEditor.Properties.Resources.objects_custom_geometry, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Add imported geometry", Properties.Resources.objects_custom_geometry, (o, e) =>
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new ImportedGeometryInstance());
             }));

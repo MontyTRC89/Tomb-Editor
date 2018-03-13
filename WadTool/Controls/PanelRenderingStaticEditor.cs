@@ -1,16 +1,14 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Graphics;
+using TombLib.Graphics.Primitives;
 using TombLib.Wad;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace WadTool.Controls
 {
@@ -139,7 +137,7 @@ namespace WadTool.Controls
             var p6 = new SolidVertex(new Vector3(box.Maximum.X, box.Maximum.Y, box.Maximum.Z));
             var p7 = new SolidVertex(new Vector3(box.Minimum.X, box.Maximum.Y, box.Maximum.Z));
 
-            var vertices = new SolidVertex[]
+            var vertices = new[]
             {
                 p4, p5, p5, p1, p1, p0, p0, p4,
                     p5, p6, p6, p2, p2, p1, p1, p5,
@@ -149,7 +147,7 @@ namespace WadTool.Controls
                     p0, p1, p1, p2, p2, p3, p3, p0
             };
 
-            return Buffer<SolidVertex>.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
+            return Buffer.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
         }
 
         public void Draw()
@@ -192,7 +190,7 @@ namespace WadTool.Controls
                 {
                     StaticMesh mesh = model.Meshes[i];
 
-                    _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
+                    _layout = VertexInputLayout.FromBuffer(0, model.VertexBuffer);
                     _device.SetVertexInputLayout(_layout);
 
                     mioEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
@@ -244,7 +242,7 @@ namespace WadTool.Controls
             {
                 // Draw the grid
                 _device.SetVertexBuffer(0, _plane.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SolidVertex>(0, _plane.VertexBuffer));
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
                 _device.SetIndexBuffer(_plane.IndexBuffer, true);
 
                 solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
@@ -268,7 +266,7 @@ namespace WadTool.Controls
                                     new SharpDX.Vector2(0, 0),
                                     SharpDX.Color.White);
             _spriteBatch.DrawString(_deviceManager.Font,
-                                    "Rotation: " + (StaticRotation.X * (180 / Math.PI)),
+                                    "Rotation: " + StaticRotation.X * (180 / Math.PI),
                                     new SharpDX.Vector2(0, 18),
                                     SharpDX.Color.White);
             _spriteBatch.DrawString(_deviceManager.Font,
@@ -343,15 +341,15 @@ namespace WadTool.Controls
             if (e.Button == MouseButtons.Right)
             {
                 // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                float deltaX = (e.X - _lastX) / (float)Height;
-                float deltaY = (e.Y - _lastY) / (float)Height;
+                float deltaX = (e.X - _lastX) / Height;
+                float deltaY = (e.Y - _lastY) / Height;
 
                 _lastX = e.X;
                 _lastY = e.Y;
 
-                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                if ((ModifierKeys & Keys.Control) == Keys.Control)
                     Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
-                else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
                     Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                 else
                     Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
