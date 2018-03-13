@@ -98,6 +98,12 @@
     <Compile Include="Controls\WadTreeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="FormFixedSoundInfoEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFixedSoundInfoEditor.Designer.cs">
+      <DependentUpon>FormFixedSoundInfoEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,6 +147,9 @@
     <Compile Include="WadToolClass.cs" />
     <EmbeddedResource Include="Controls\WadTreeControl.resx">
       <DependentUpon>WadTreeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormFixedSoundInfoEditor.resx">
+      <DependentUpon>FormFixedSoundInfoEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>

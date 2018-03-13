@@ -1,15 +1,16 @@
-﻿using DarkUI.Forms;
+﻿using DarkUI.Controls;
+using DarkUI.Forms;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using TombLib.Forms;
+using TombLib.Graphics;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
-using System.Diagnostics;
-using TombLib.Graphics;
-using DarkUI.Controls;
+using TombLib.Utils;
 
 namespace WadTool
 {
@@ -67,7 +68,7 @@ namespace WadTool
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
-            else if (obj is WadToolClass.SourceWadChangedEvent)
+            if (obj is WadToolClass.SourceWadChangedEvent)
             {
                 if (_tool.SourceWad != null)
                 {
@@ -77,20 +78,34 @@ namespace WadTool
 
                 treeSourceWad.Wad = _tool.SourceWad;
                 treeSourceWad.UpdateContent();
-                
+
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
             }
-            else if (obj is WadToolClass.MainSelectionChangedEvent)
+            if (obj is WadToolClass.MainSelectionChangedEvent ||
+                obj is WadToolClass.DestinationWadChangedEvent ||
+                obj is WadToolClass.SourceWadChangedEvent)
             {
                 var mainSelection = _tool.MainSelection;
                 if (mainSelection == null)
                 {
+                    soundInfoEditor.Visible = false;
+                    panel3D.Visible = true;
                     panel3D.CurrentWad = null;
                     panel3D.CurrentObjectId = null;
                 }
+                else if (mainSelection?.Id is WadFixedSoundInfoId)
+                {
+                    Wad2 wad = _tool.GetWad(mainSelection.Value.WadArea);
+                    soundInfoEditor.SoundInfo = wad.FixedSoundInfos.TryGetOrDefault((WadFixedSoundInfoId)mainSelection.Value.Id)?.SoundInfo;
+                    soundInfoEditor.Visible = true;
+                    panel3D.Visible = false;
+                }
                 else
                 {
+                    soundInfoEditor.Visible = false;
+                    panel3D.Visible = true;
+
                     panel3D.CurrentWad = _tool.GetWad(mainSelection.Value.WadArea);
                     panel3D.CurrentObjectId = mainSelection.Value.Id;
                     panel3D.AnimationIndex = 0;
@@ -117,6 +132,15 @@ namespace WadTool
 
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
+            }
+        }
+
+        private void soundInfoEditor_SoundInfoChanged(object sender, EventArgs e)
+        {
+            if (_tool.MainSelection?.Id is WadFixedSoundInfoId)
+            {
+                Wad2 wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
+                wad.FixedSoundInfos[(WadFixedSoundInfoId)_tool.MainSelection.Value.Id].SoundInfo = soundInfoEditor.SoundInfo;
             }
         }
 
@@ -212,9 +236,8 @@ namespace WadTool
             if (node.Tag == null || !(node.Tag is WadSample))
                 return;
 
-            var currentSound = (WadSample)node.Tag;
-
-            currentSound.Play();
+            var currentSample = (WadSample)node.Tag;
+            WadSoundPlayer.PlaySample(currentSample);
         }
 
         private void StopAnimation()
@@ -313,7 +336,7 @@ namespace WadTool
 
         private void treeSourceWad_KeyDown(object sender, KeyEventArgs e)
         {
-            StopAnimation();            
+            StopAnimation();
         }
 
         private void newMoveableToolStripMenuItem_Click(object sender, EventArgs e)

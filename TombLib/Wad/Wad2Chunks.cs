@@ -28,10 +28,11 @@ namespace TombLib.Wad
         /****/public static readonly ChunkId SoundInfoRange = ChunkId.FromString("W2Ran");
         /****/public static readonly ChunkId SoundInfoPitch = ChunkId.FromString("W2Pit");
         /****/public static readonly ChunkId SoundInfoChance = ChunkId.FromString("W2Cha");
-        /****/public static readonly ChunkId SoundInfoFlagN = ChunkId.FromString("W2n");
-        /****/public static readonly ChunkId SoundInfoRandomizePitch = ChunkId.FromString("W2P");
-        /****/public static readonly ChunkId SoundInfoRandomizeGain = ChunkId.FromString("W2G");
-        /****/public static readonly ChunkId SoundInfoLoopBehaviour = ChunkId.FromString("W2L");
+        /****/public static readonly ChunkId SoundInfoDisablePanning = ChunkId.FromString("W2NoPan");
+        /****/public static readonly ChunkId SoundInfoRandomizePitch = ChunkId.FromString("W2RngP");
+        /****/public static readonly ChunkId SoundInfoRandomizeVolume = ChunkId.FromString("W2RngV");
+        /****/public static readonly ChunkId SoundInfoLoopBehaviour = ChunkId.FromString("W2Loop");
+        /****/public static readonly ChunkId SoundInfoTargetSampleRate = ChunkId.FromString("W2SamplRate");
         /****/public static readonly ChunkId SoundInfoSampleIndex = ChunkId.FromString("W2SamplePtr");
         public static readonly ChunkId FixedSoundInfos = ChunkId.FromString("W2FixedSounds");
         /**/public static readonly ChunkId FixedSoundInfo = ChunkId.FromString("W2FixedSound");

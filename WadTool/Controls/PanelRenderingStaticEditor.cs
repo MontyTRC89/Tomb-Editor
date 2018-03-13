@@ -43,7 +43,6 @@ namespace WadTool.Controls
         private SwapChainGraphicsPresenter _presenter;
         private RasterizerState _rasterizerWireframe;
         private WadToolClass _tool;
-        private VertexInputLayout _layout;
         private float _lastX;
         private float _lastY;
         private SpriteBatch _spriteBatch;
