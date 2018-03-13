@@ -1946,7 +1946,7 @@ namespace TombLib.LevelData.IO
             {
                 case 0x0000: // TYPE_TEXTURE_NONE
                 default:
-                    block.SetFaceTexture(face, new TextureArea { });
+                    block.SetFaceTexture(face, new TextureArea());
                     return;
                 case 0x0003: // TYPE_TEXTURE_COLOR
                     block.SetFaceTexture(face, new TextureArea { Texture = TextureInvisible.Instance });
@@ -2016,7 +2016,7 @@ namespace TombLib.LevelData.IO
                                 break;
                             default:
                                 logger.Warn("Unknown texture triangle selection " + prjFace._txtTriangle);
-                                block.SetFaceTexture(face, new TextureArea { });
+                                block.SetFaceTexture(face, new TextureArea());
                                 return;
                         }
 

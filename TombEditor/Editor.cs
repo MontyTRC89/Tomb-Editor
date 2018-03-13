@@ -358,21 +358,21 @@ namespace TombEditor
         public class LoadedTexturesChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
         public void LoadedTexturesChange()
         {
-            RaiseEvent(new LoadedTexturesChangedEvent { });
+            RaiseEvent(new LoadedTexturesChangedEvent());
         }
 
         // This is invoked if the loaded imported geometries changed for the level.
         public class LoadedImportedGeometriesChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
         public void LoadedImportedGeometriesChange()
         {
-            RaiseEvent(new LoadedImportedGeometriesChangedEvent { });
+            RaiseEvent(new LoadedImportedGeometriesChangedEvent());
         }
 
         // This is invoked if the animated texture sets changed for the level.
         public class AnimatedTexturesChanged : IEditorEvent { }
         public void AnimatedTexturesChange()
         {
-            RaiseEvent(new AnimatedTexturesChanged { });
+            RaiseEvent(new AnimatedTexturesChanged());
         }
 
         // This is invoke after an autosave
@@ -414,7 +414,7 @@ namespace TombEditor
         public class LevelFileNameChangedEvent : IEditorEvent { }
         public void LevelFileNameChange()
         {
-            RaiseEvent(new LevelFileNameChangedEvent { });
+            RaiseEvent(new LevelFileNameChangedEvent());
         }
 
         // This is invoked when the amount of rooms is changed. (Rooms have been added or removed)
@@ -422,7 +422,7 @@ namespace TombEditor
         public class RoomListChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
         public void RoomListChange()
         {
-            RaiseEvent(new RoomListChangedEvent { });
+            RaiseEvent(new RoomListChangedEvent());
         }
 
         // This is invoked for all changes to room flags, "Reverbration", ...
@@ -484,7 +484,7 @@ namespace TombEditor
         public class ResetCameraEvent : IEditorCameraEvent { }
         public void ResetCamera()
         {
-            RaiseEvent(new ResetCameraEvent { });
+            RaiseEvent(new ResetCameraEvent());
         }
 
         // Select a texture and center the view

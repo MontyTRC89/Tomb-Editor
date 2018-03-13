@@ -126,7 +126,7 @@ namespace TombLib.LevelData.IO
                             });
                         });
                         levelSettingIds.LevelTextures.Add(texture, index++);
-                    };
+                    }
                 }, long.MaxValue);
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.ImportedGeometries, () =>
                 {
