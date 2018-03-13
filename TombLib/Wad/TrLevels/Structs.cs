@@ -38,7 +38,7 @@
 
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-        public static unsafe bool operator ==(tr_vertex first, tr_vertex second)
+        public static bool operator ==(tr_vertex first, tr_vertex second)
         {
             return first.X == second.X && first.Y == second.Y && first.Z == second.Z;
         }

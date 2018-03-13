@@ -356,7 +356,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Custom implementation of these because default implementation is *insanely* slow.
             // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-            public static unsafe bool operator ==(SavedObjectTexture first, SavedObjectTexture second)
+            public static bool operator ==(SavedObjectTexture first, SavedObjectTexture second)
             {
                 ulong* firstPtr = (ulong*)&first;
                 ulong* secondPtr = (ulong*)&second;

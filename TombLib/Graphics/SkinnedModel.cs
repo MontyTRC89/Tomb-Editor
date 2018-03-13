@@ -32,18 +32,18 @@ namespace TombLib.Graphics
 
             foreach (var node in Root.Children)
             {
-                BuildHierarchy(node, Root.GlobalTransform, 0);
+                BuildHierarchy(node, Root.GlobalTransform);
             }
         }
 
-        private void BuildHierarchy(Bone node, Matrix4x4 parentTransform, int level)
+        private void BuildHierarchy(Bone node, Matrix4x4 parentTransform)
         {
             node.GlobalTransform = node.Transform * parentTransform;
             BindPoseTransforms[node.Index] = node.GlobalTransform;
 
             foreach (var child in node.Children)
             {
-                BuildHierarchy(child, node.GlobalTransform, level + 1);
+                BuildHierarchy(child, node.GlobalTransform);
             }
         }
 
@@ -66,17 +66,17 @@ namespace TombLib.Graphics
 
             foreach (var node in Root.Children)
             {
-                BuildAnimationPose(node, AnimationTransforms[0], 0, frame);
+                BuildAnimationPose(node, AnimationTransforms[0], frame);
             }
         }
 
-        private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, int level, KeyFrame frame)
+        private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, KeyFrame frame)
         {
             AnimationTransforms[node.Index] = frame.Rotations[node.Index] * node.Transform * parentTransform;
 
             foreach (Bone child in node.Children)
             {
-                BuildAnimationPose(child, AnimationTransforms[node.Index], level + 1, frame);
+                BuildAnimationPose(child, AnimationTransforms[node.Index], frame);
             }
         }
 
@@ -90,11 +90,11 @@ namespace TombLib.Graphics
 
             foreach (var node in Root.Children)
             {
-                BuildAnimationPose(node, AnimationTransforms[0], 0, frame1, frame2, k);
+                BuildAnimationPose(node, AnimationTransforms[0], frame1, frame2, k);
             }
         }
 
-        private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, int level, KeyFrame frame1, KeyFrame frame2, float k)
+        private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, KeyFrame frame1, KeyFrame frame2, float k)
         {
             Matrix4x4 rotation = Matrix4x4.Lerp(frame1.Rotations[node.Index], frame2.Rotations[node.Index], k);
 
@@ -102,7 +102,7 @@ namespace TombLib.Graphics
 
             foreach (Bone child in node.Children)
             {
-                BuildAnimationPose(child, AnimationTransforms[node.Index], level + 1, frame1, frame2, k);
+                BuildAnimationPose(child, AnimationTransforms[node.Index], frame1, frame2, k);
             }
         }
 
@@ -223,7 +223,7 @@ namespace TombLib.Graphics
             }
 
             // Build the skeleton
-            model.Root = BuildSkeleton(model, mov, mov.Skeleton, null);
+            model.Root = BuildSkeleton(model, mov.Skeleton, null);
 
             // Prepare animations
             for (int j = 0; j < mov.Animations.Count; j++)
@@ -272,7 +272,7 @@ namespace TombLib.Graphics
             return model;
         }
 
-        private static Bone BuildSkeleton(SkinnedModel model, WadMoveable mov, WadBone bone, Bone parentBone)
+        private static Bone BuildSkeleton(SkinnedModel model, WadBone bone, Bone parentBone)
         {
             Bone currentBone = new Bone();
             currentBone.Name = bone.Name;
@@ -283,7 +283,7 @@ namespace TombLib.Graphics
             model.BindPoseTransforms[currentBone.Index] = bone.Transform;
 
             foreach (var childBone in bone.Children)
-                currentBone.Children.Add(BuildSkeleton(model, mov, childBone, currentBone));
+                currentBone.Children.Add(BuildSkeleton(model, childBone, currentBone));
 
             if (parentBone != null)
             {

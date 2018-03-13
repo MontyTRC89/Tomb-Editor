@@ -32,7 +32,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Custom implementation of these because default implementation is *insanely* slow.
             // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-            public static unsafe bool operator ==(TextureView first, TextureView second)
+            public static bool operator ==(TextureView first, TextureView second)
             {
                 return first.Texture == second.Texture && first.Area == second.Area;
             }
