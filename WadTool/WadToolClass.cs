@@ -4,8 +4,8 @@ using TombLib.Wad;
 
 namespace WadTool
 {
-    public interface IEditorEvent { };
-    public interface IWadChangedEvent : IEditorEvent { };
+    public interface IEditorEvent { }
+    public interface IWadChangedEvent : IEditorEvent { }
 
     public enum WadArea
     {
@@ -26,7 +26,7 @@ namespace WadTool
 
         public void RaiseEvent(IEditorEvent eventObj)
         {
-            WindowsFormsSynchronizationContext.Current.Send((eventObj_) => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
+            WindowsFormsSynchronizationContext.Current.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
         }
 
         // The configuration

@@ -110,7 +110,7 @@ namespace TombEditor.Controls
 
             _depthBar.InvalidateParent += Invalidate;
             _depthBar.GetParent += () => this;
-            _depthBar.SelectedRoom += (rooms) => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
+            _depthBar.SelectedRoom += rooms => _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms, rooms, ModifierKeys));
 
             _movementTimer = new MovementTimer(MoveTimerTick);
 
@@ -780,7 +780,7 @@ namespace TombEditor.Controls
 
         private Room DoPicking(Vector2 pos)
         {
-            IEnumerable<Room> roomList = _editor.Level.GetVerticallyAscendingRoomList((room) =>
+            IEnumerable<Room> roomList = _editor.Level.GetVerticallyAscendingRoomList(room =>
             {
                 float roomLocalX = pos.X - room.SectorPos.X;
                 float roomLocalZ = pos.Y - room.SectorPos.Y;

@@ -409,7 +409,7 @@ namespace TombEditor.Controls
                             break;
                     }
 
-                    var face = EditorActions.GetFaces(_parent._editor.SelectedRoom, _referencePicking.Pos, direction, BlockFaceType.Wall).First((item) => item.Key == _referencePicking.Face);
+                    var face = EditorActions.GetFaces(_parent._editor.SelectedRoom, _referencePicking.Pos, direction, BlockFaceType.Wall).First(item => item.Key == _referencePicking.Face);
 
                     if (face.Value[0] - _referencePicking.VerticalCoord > _referencePicking.VerticalCoord - face.Value[1])
                         switch (ReferenceBlock.FloorDiagonalSplit)

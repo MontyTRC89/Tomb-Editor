@@ -68,7 +68,7 @@ namespace TombLib.LevelData
         {
             public int Start;
             public int Count;
-        };
+        }
         private VertexRange[,,] _sectorFaceVertexVertexRange;
         private int[,] _sectorAllVerticesOffset;
         private List<EditorVertex> _allVertices = new List<EditorVertex>();
@@ -140,7 +140,7 @@ namespace TombLib.LevelData
 
         public Room Split(Level level, RectangleInt2 area)
         {
-            var newRoom = Clone(level, (instance) => !(instance is PositionBasedObjectInstance) && !(instance is PortalInstance));
+            var newRoom = Clone(level, instance => !(instance is PositionBasedObjectInstance) && !(instance is PortalInstance));
             newRoom.Name = "Split from " + Name;
             newRoom.Resize(level, area);
             List<PortalInstance> portals = Portals.ToList();
@@ -2281,7 +2281,7 @@ namespace TombLib.LevelData
             public BlockFace Face;
             public float Distance;
             public float VerticalCoord;
-        };
+        }
 
         public IntersectionInfo? RayIntersectsGeometry(Ray ray)
         {
@@ -3368,7 +3368,7 @@ namespace TombLib.LevelData
             TriangularPortalXnZp,
             TriangularPortalXpZp,
             FullPortal
-        };
+        }
 
         public static RoomConnectionType Combine(RoomConnectionType first, RoomConnectionType second)
         {
@@ -3393,7 +3393,7 @@ namespace TombLib.LevelData
             public RoomConnectionType VisualType => (Portal?.HasTexturedFaces ?? true) ? RoomConnectionType.NoPortal : AnyType;
             ///<summary>Gives how the block geometrically behaves regarding portals</summary>
             public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
-        };
+        }
 
         public static IEnumerable<KeyValuePair<Room, Room>> GetPossibleAlternateRoomPairs(Room firstRoom, Room secondRoom, bool lookingFromSecond = false)
         {
@@ -3567,7 +3567,7 @@ namespace TombLib.LevelData
             System.Diagnostics.Debug.Assert(roomsToProcess.Count == areaToProcess.Count);
 
             // Update the collected stuff now
-            Parallel.For(0, roomsToProcess.Count, (index) =>
+            Parallel.For(0, roomsToProcess.Count, index =>
                 {
                     roomsToProcess[index].BuildGeometry(areaToProcess[index]);
                     roomsToProcess[index].CalculateLightingForThisRoom();
@@ -3678,5 +3678,5 @@ namespace TombLib.LevelData
         {
             return new VerticalSpace { FloorY = old.FloorY + offset, CeilingY = old.CeilingY + offset };
         }
-    };
+    }
 }

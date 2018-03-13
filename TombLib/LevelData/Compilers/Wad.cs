@@ -156,7 +156,7 @@ namespace TombLib.LevelData.Compilers
         {
             public int KeyFramesOffset { get; set; }
             public int KeyFramesSize { get; set; }
-        };
+        }
 
         public void ConvertWad2DataToTr4(Wad2 wad)
         {

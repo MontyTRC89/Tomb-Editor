@@ -956,7 +956,7 @@ namespace TombLib.Utils
             Front,
             Intersecting,
             Back
-        };
+        }
 
         /// <summary>
         /// Determines whether there is an intersection between a <see cref="Plane"/> and a triangle.
@@ -1274,7 +1274,7 @@ namespace TombLib.Utils
             Disjoint,
             Contains,
             Intersects
-        };
+        }
 
         /// <summary>
         /// Determines whether a <see cref="BoundingSphere"/> contains a <see cref="BoundingBox"/>.

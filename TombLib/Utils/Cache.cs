@@ -13,7 +13,7 @@ namespace TombLib.Utils
         {
             public TimestampType _lastUsedTimeStamp;
             public ValueT _value;
-        };
+        }
         private Dictionary<KeyT, Entry> _availableItems;
 
         public Func<KeyT, ValueT> GenerateValue { get; set; }
@@ -23,7 +23,7 @@ namespace TombLib.Utils
         public Cache(int maxCachedCount, Func<KeyT, ValueT> generateValue)
             : this(maxCachedCount, generateValue,
                   typeof(IDisposable).IsAssignableFrom(typeof(ValueT)) ?
-                  (Action<ValueT>)((value) => { ((IDisposable)value).Dispose(); }) : null)
+                  (Action<ValueT>)(value => { ((IDisposable)value).Dispose(); }) : null)
         {}
 
         public Cache(int maxCachedCount, Func<KeyT, ValueT> generateValue, Action<ValueT> disposeValue)

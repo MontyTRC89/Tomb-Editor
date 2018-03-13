@@ -96,8 +96,8 @@ namespace TombEditor.ToolWindows
                 .Where(room => room != null)
                 .SelectMany(room => room.Objects)
                 .FindFirstAfterWithWrapAround(
-                (obj) => previousFind == obj,
-                (obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == currentItem.Value);
+                obj => previousFind == obj,
+                obj => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == currentItem.Value);
 
             // Show result
             if (instance == null)

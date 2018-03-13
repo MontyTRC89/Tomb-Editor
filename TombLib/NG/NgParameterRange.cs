@@ -37,7 +37,7 @@ namespace TombLib.NG
         public string FixedStr;
         public decimal Add;
         public decimal Factor;
-    };
+    }
 
     public struct NgLinearModel
     {

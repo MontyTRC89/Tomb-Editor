@@ -367,7 +367,7 @@ namespace TombLib.LevelData.Compilers.Util
             public bool Equals(SavedObjectTexture other) => this == other;
             public override bool Equals(object other) => (other is SavedObjectTexture) && this == (SavedObjectTexture)other;
             public override int GetHashCode() => base.GetHashCode();
-        };
+        }
         private List<SavedObjectTexture> _objectTextures = new List<SavedObjectTexture>();
         private Dictionary<SavedObjectTexture, ushort> _objectTexturesLookup = new Dictionary<SavedObjectTexture, ushort>();
         private uint _textureSpaceIdentifier = 0;
@@ -429,7 +429,7 @@ namespace TombLib.LevelData.Compilers.Util
             OnPackingTextures(progressReporter);
 
             // Enable alpha blending for faces whose textures are not completely opaque.
-            Parallel.For(0, _objectTextures.Count, (objectTextureIndex) =>
+            Parallel.For(0, _objectTextures.Count, objectTextureIndex =>
             {
                 SavedObjectTexture objectTexture = _objectTextures[objectTextureIndex];
                 if (objectTexture.BlendMode != (ushort)BlendMode.Normal) // Only consider alpha blending when blend mode is 0.

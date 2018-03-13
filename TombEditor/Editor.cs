@@ -11,7 +11,7 @@ using TombLib.Utils;
 
 namespace TombEditor
 {
-    public interface IEditorEvent { };
+    public interface IEditorEvent { }
 
     public interface IEditorPropertyChangedEvent : IEditorEvent { }
 
@@ -46,7 +46,7 @@ namespace TombEditor
 
         public void RaiseEvent(IEditorEvent eventObj)
         {
-            SynchronizationContext.Send((eventObj_) => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
+            SynchronizationContext.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
         }
 
         // --- State of the editor ---
@@ -70,7 +70,7 @@ namespace TombEditor
                     return;
 
                 // Validate level
-                int roomCount = value.Rooms.Count((room) => room != null);
+                int roomCount = value.Rooms.Count(room => room != null);
                 if (roomCount <= 0)
                     value.Rooms[0] = new Room(value, Room.MaxRoomDimensions, Room.MaxRoomDimensions,
                                               _level.Settings.DefaultAmbientLight, "Room 0");
@@ -89,7 +89,7 @@ namespace TombEditor
                     EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
                 }
                 RoomListChange();
-                SelectedRooms = new Room[] { _level.Rooms.First((room) => room != null) };
+                SelectedRooms = new Room[] { _level.Rooms.First(room => room != null) };
                 ResetCamera();
                 LoadedWadsChange(value.Wad);
                 LoadedTexturesChange();
@@ -557,7 +557,7 @@ namespace TombEditor
             bool animatedTexturesChanged = newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
 
             // Update the current settings
-            _level.ApplyNewLevelSettings(newSettings, (instance) => ObjectChange(instance, ObjectChangeType.Change));
+            _level.ApplyNewLevelSettings(newSettings, instance => ObjectChange(instance, ObjectChangeType.Change));
 
             // Update state
             if (importedGeometryChanged)

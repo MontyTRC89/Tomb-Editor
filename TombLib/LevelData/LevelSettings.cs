@@ -129,10 +129,10 @@ namespace TombLib.LevelData
         public LevelSettings Clone()
         {
             LevelSettings result = (LevelSettings)MemberwiseClone();
-            result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll((soundPath) => soundPath.Clone());
-            result.Textures = Textures.ConvertAll((texture) => (LevelTexture)(texture.Clone()));
-            result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll((set) => set.Clone());
-            result.ImportedGeometries = ImportedGeometries.ConvertAll((geometry) => geometry.Clone());
+            result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll(soundPath => soundPath.Clone());
+            result.Textures = Textures.ConvertAll(texture => (LevelTexture)(texture.Clone()));
+            result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
+            result.ImportedGeometries = ImportedGeometries.ConvertAll(geometry => geometry.Clone());
             return result;
         }
 

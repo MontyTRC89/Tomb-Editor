@@ -10,7 +10,7 @@ namespace TombLib.LevelData
     {
         public static IReadOnlyList<FileFormat> FileExtensions => ImageC.FromFileFileExtensions;
 
-        public class UniqueIDType { };
+        public class UniqueIDType { }
         public UniqueIDType UniqueID { get; private set; } = new UniqueIDType();
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

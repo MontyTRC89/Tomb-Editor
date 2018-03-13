@@ -141,5 +141,5 @@ namespace TombLib.IO
             }
             return str.ToString();
         }
-    };
+    }
 }

@@ -112,7 +112,7 @@ namespace TombEditor.Controls
                 setValue(ref info);
                 _parent.LevelSettings.ImportedGeometryUpdate(Object, info);
             }
-        };
+        }
 
         private SortableBindingList<ImportedGeometryWrapper> _dataGridViewDataSource = new SortableBindingList<ImportedGeometryWrapper>();
         [Browsable(false)]
@@ -161,8 +161,8 @@ namespace TombEditor.Controls
                     switch (e.ListChangedType)
                     {
                         case ListChangedType.ItemDeleted:
-                            var remainingElements = new HashSet<ImportedGeometry>(_dataGridViewDataSource.Select((wrapper) => wrapper.Object));
-                            LevelSettings.ImportedGeometries.RemoveAll((obj) => !remainingElements.Contains(obj)); // Don't use indices here, the wrapper indices might not match with the real object if sorting was enabled.
+                            var remainingElements = new HashSet<ImportedGeometry>(_dataGridViewDataSource.Select(wrapper => wrapper.Object));
+                            LevelSettings.ImportedGeometries.RemoveAll(obj => !remainingElements.Contains(obj)); // Don't use indices here, the wrapper indices might not match with the real object if sorting was enabled.
                             break;
                     }
                 };

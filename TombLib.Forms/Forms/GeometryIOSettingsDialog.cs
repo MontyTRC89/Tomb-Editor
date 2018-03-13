@@ -41,7 +41,7 @@ namespace TombLib.GeometryIO
 
         public void AddPreset(string name, IOGeometrySettings settings)
         {
-            if (!_presets.Any((item) => item.Name == name))
+            if (!_presets.Any(item => item.Name == name))
             {
                 _presets.Add(new IOGeometrySettingsPreset() { Name = name, Settings = settings });
                 PopulatePresetList();
@@ -71,7 +71,7 @@ namespace TombLib.GeometryIO
             if (string.IsNullOrEmpty(name))
                 _presets.Clear();
             else
-                _presets.RemoveAll((item) => item.Name == name);
+                _presets.RemoveAll(item => item.Name == name);
 
             PopulatePresetList();
         }

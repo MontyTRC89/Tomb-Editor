@@ -471,8 +471,8 @@ namespace TombLib.LevelData.Compilers
         {
             return NgParameterInfo.EncodeNGRealTimer(trigger.TargetType, trigger.TriggerType,
                 (trigger.Target as TriggerParameterUshort)?.Key ?? ushort.MaxValue, ushort.MaxValue,
-                (upperBoundInner) => GetTriggerParameter(trigger.Timer, trigger, upperBoundInner),
-                (upperBoundInner) => GetTriggerParameter(trigger.Extra, trigger, upperBoundInner));
+                upperBoundInner => GetTriggerParameter(trigger.Timer, trigger, upperBoundInner),
+                upperBoundInner => GetTriggerParameter(trigger.Extra, trigger, upperBoundInner));
         }
 
         private ushort GetTriggerParameter(ITriggerParameter parameter, TriggerInstance triggerDiagnostic, ushort upperBound)

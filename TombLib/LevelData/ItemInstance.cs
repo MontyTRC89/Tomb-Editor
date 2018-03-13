@@ -95,6 +95,6 @@ namespace TombLib.LevelData
             else
                 return MoveableId.ToString(_wadGameVersion);
         }
-    };
+    }
 
 }

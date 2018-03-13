@@ -193,14 +193,14 @@ namespace TombLib.LevelData
                 BaseGeometryImporter importer;
                 if (importedGeometryPath.ToLower().EndsWith(".mqo"))
                 {
-                    importer = new MetasequoiaRoomImporter(settingsIO, (absoluteTexturePath) =>
+                    importer = new MetasequoiaRoomImporter(settingsIO, absoluteTexturePath =>
                     {
                         return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
                     });
                 }
                 else
                 {
-                    importer = new AssimpImporter(settingsIO, (absoluteTexturePath) =>
+                    importer = new AssimpImporter(settingsIO, absoluteTexturePath =>
                     {
                         return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
                     });

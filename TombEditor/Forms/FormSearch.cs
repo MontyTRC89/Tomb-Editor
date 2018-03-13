@@ -22,7 +22,7 @@ namespace TombEditor
             AllObjects,
             ObjectsInCurrentRoom,
             ItemTypes
-        };
+        }
 
         private const int _trueRateBitCount = 16;
         private const int _matchBitShift = 64 - _trueRateBitCount;

@@ -15,7 +15,7 @@ namespace TombLib.LevelData.IO
         {
             public Predicate<Room> RoomPredicate;
             public bool FilterLevelSettings;
-        };
+        }
 
         public static void SaveToPrj2(string filename, Level level, Filter filter = null)
         {
@@ -79,7 +79,7 @@ namespace TombLib.LevelData.IO
         {
             public Dictionary<ImportedGeometry, int> ImportedGeometries { get; } = new Dictionary<ImportedGeometry, int>();
             public Dictionary<LevelTexture, int> LevelTextures { get; } = new Dictionary<LevelTexture, int>();
-        };
+        }
 
         private static LevelSettingsIds WriteLevelSettings(ChunkWriter chunkIO, LevelSettings settings)
         {

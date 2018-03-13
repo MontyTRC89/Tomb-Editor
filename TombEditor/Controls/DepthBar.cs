@@ -592,5 +592,5 @@ namespace TombEditor.Controls
         public HashSet<Room> RoomsToMove => _roomsToMove;
         public bool CheckRoom(float roomMinDepth, float roomMaxDepth) => (roomMinDepth >= SelectedMin) && (roomMaxDepth <= SelectedMax);
         public bool CheckRoom(Room room) => CheckRoom(room.Position.Y + room.GetLowestCorner(), room.Position.Y + room.GetHighestCorner());
-    };
+    }
 }

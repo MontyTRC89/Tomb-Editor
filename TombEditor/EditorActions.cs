@@ -576,7 +576,7 @@ namespace TombEditor
             X,
             Roll,
             None
-        };
+        }
 
         public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees, float quantization = 0.0f, bool delta = true)
         {
@@ -1922,7 +1922,7 @@ namespace TombEditor
             if (candidates.Count > 1)
             {
                 using (var form = new FormChooseRoom("More than one possible room found that can be connected. " +
-                    "Please choose one:", candidates.Select(candidate => candidate.Item2), (selectedRoom) => _editor.SelectedRoom = selectedRoom))
+                    "Please choose one:", candidates.Select(candidate => candidate.Item2), selectedRoom => _editor.SelectedRoom = selectedRoom))
                 {
                     if ((form.ShowDialog(owner) != DialogResult.OK) || (form.SelectedRoom == null))
                         return;
@@ -2258,7 +2258,7 @@ namespace TombEditor
             string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
 
             using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone,
-                (progressReporter) =>
+                progressReporter =>
                 {
                     var watch = new Stopwatch();
                     watch.Start();
@@ -2285,7 +2285,7 @@ namespace TombEditor
                  _editor.Level.Rooms
                 .Where(room => room != null)
                 .SelectMany(room => room.Objects)
-                .Any((obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara)))
+                .Any(obj => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara)))
             {
                 if (BuildLevel(true, owner))
                     TombLauncher.Launch(_editor.Level.Settings, owner);
@@ -2335,7 +2335,7 @@ namespace TombEditor
 
         public static bool EnsureNoOutsidePortalsInSelecton(IWin32Window owner)
         {
-            return Room.RemoveOutsidePortals(_editor.Level, _editor.SelectedRooms, (list) =>
+            return Room.RemoveOutsidePortals(_editor.Level, _editor.SelectedRooms, list =>
             {
                 StringBuilder portalsToRemoveList = list.Aggregate(new StringBuilder(), (str, room) => str.Append(room).Append("\n"), str => str.Remove(str.Length - 1, 1));
                 return DarkMessageBox.Show(owner, "The rooms can't have portals to the outside. Do you want to continue by removing all portals to the outside? " +
@@ -2541,7 +2541,7 @@ namespace TombEditor
 
                         if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
                         {
-                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = (txt) =>
+                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
                             {
                                 if (txt is LevelTexture)
                                     return _editor.Level.Settings.MakeAbsolute(((LevelTexture)txt).Path);
@@ -2823,7 +2823,7 @@ namespace TombEditor
             Level newLevel = null;
             try
             {
-                using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
+                using (var form = new FormOperationDialog("Import PRJ", false, progressReporter =>
                     newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter)))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)

@@ -167,10 +167,10 @@ namespace TombEditor.Controls
                 var portalsInRoom = _editor.SelectedRoom.Portals.Cast<SectorBasedObjectInstance>();
                 var triggersInRoom = _editor.SelectedRoom.Triggers.Cast<SectorBasedObjectInstance>();
                 var relevantTriggersAndPortals = portalsInRoom.Concat(triggersInRoom)
-                    .Where((obj) => obj.Area.Contains(sectorPos));
+                    .Where(obj => obj.Area.Contains(sectorPos));
 
                 SectorBasedObjectInstance nextPortalOrTrigger = relevantTriggersAndPortals.
-                    FindFirstAfterWithWrapAround((obj) => obj == selectedSectorObject, (obj) => true);
+                    FindFirstAfterWithWrapAround(obj => obj == selectedSectorObject, obj => true);
                 if (nextPortalOrTrigger != null)
                 {
                     _editor.SelectedObject = nextPortalOrTrigger;

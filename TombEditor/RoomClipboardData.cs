@@ -70,7 +70,7 @@ namespace TombEditor
                 var writer = new BinaryWriterEx(stream);
                 Prj2Writer.SaveToPrj2(stream, editor.Level, new Prj2Writer.Filter
                 {
-                    RoomPredicate = (room) => editor.SelectedRoomsContains(room)
+                    RoomPredicate = room => editor.SelectedRoomsContains(room)
                 });
                 _data = stream.GetBuffer();
             }
@@ -80,7 +80,7 @@ namespace TombEditor
             : this(editor, editor.SelectedRooms.Aggregate(
                 RectangleInt2.MaxMin,
                 (area, room) => room.WorldArea.Union(area),
-                (area) => area.GetMid()))
+                area => area.GetMid()))
         { }
 
         public IReadOnlyList<ContourLine> ContourLines => _contourLines;

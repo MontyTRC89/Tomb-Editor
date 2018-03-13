@@ -33,7 +33,7 @@ namespace TombEditor
             public Vector2 _sourceTexCoord2;
             public Vector2 _sourceTexCoord3;
             public Size _destinationSize;
-        };
+        }
         private struct NgAnimatedTextureSettingPair
         {
             public int Key;
@@ -72,7 +72,7 @@ namespace TombEditor
             _editor.EditorEventRaised += _editor_EditorEventRaised;
 
             // Setup image cache
-            _imageCache = new Cache<CachedImageInfo, Bitmap>(512, (subsection) =>
+            _imageCache = new Cache<CachedImageInfo, Bitmap>(512, subsection =>
                 {
                     return GetPerspectivePreview(subsection._image, subsection._sourceTexCoord0, subsection._sourceTexCoord1, subsection._sourceTexCoord2,
                         subsection._sourceTexCoord3, subsection._destinationSize).ToBitmap();
@@ -458,7 +458,7 @@ namespace TombEditor
         {
             if (e.DesiredType == typeof(LevelTexture))
             {
-                e.Value = _editor.Level.Settings.Textures.FirstOrDefault((texture) => texture.ToString() == (string)(e.Value));
+                e.Value = _editor.Level.Settings.Textures.FirstOrDefault(texture => texture.ToString() == (string)(e.Value));
                 e.ParsingApplied = true;
             }
         }

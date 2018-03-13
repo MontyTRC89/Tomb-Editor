@@ -79,8 +79,8 @@ namespace TombLib.LevelData
                 if (room != null && checkRoom(room))
                     roomList.Add(new KeyValuePair<float, Room>(room.Position.Y + room.GetHighestCorner(), room));
             var result = roomList
-                .OrderBy((roomPair) => roomPair.Key) // don't use the Sort member function because it is unstable!
-                .ThenBy((roomPair) => roomPair.Value.AlternateBaseRoom == null)
+                .OrderBy(roomPair => roomPair.Key) // don't use the Sort member function because it is unstable!
+                .ThenBy(roomPair => roomPair.Value.AlternateBaseRoom == null)
                 .Select(roomKey => roomKey.Value).ToList();
             return result;
         }
@@ -227,7 +227,7 @@ namespace TombLib.LevelData
                         VectorInt2 newSectorPosition = transformation.Transform(new VectorInt2(x, z), oldRoom.SectorSize);
                         newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y] = oldRoom.Blocks[x, z].Clone();
                         newRoom.Blocks[newSectorPosition.X, newSectorPosition.Y].Transform(transformation, null,
-                            (oldFace) => oldRoom.GetFaceShape(x, z, oldFace));
+                            oldFace => oldRoom.GetFaceShape(x, z, oldFace));
                     }
                 newRooms[i] = newRoom;
             }

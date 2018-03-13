@@ -448,7 +448,7 @@ namespace TombEditor.Controls
                     e.Graphics.InterpolationMode = InterpolationMode.Bicubic;
 
                 // Draw image
-                VisibleTexture.Image.GetTempSystemDrawingBitmap((tempBitmap) =>
+                VisibleTexture.Image.GetTempSystemDrawingBitmap(tempBitmap =>
                     {
                         // System.Drawing being silly, it draws the first row of pixels only half, so everything would be shifted
                         // To work around it, we have to do some silly coodinate changes :/

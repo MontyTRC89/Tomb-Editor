@@ -18,7 +18,7 @@ namespace TombLib.LevelData.Compilers
             {
                 return "Boxes: " + BoxCount + " | Overlaps: " + OverlapCount + " | Applied 'object' textures: " + ObjectTextureCount;
             }
-        };
+        }
 
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>();
 

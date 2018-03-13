@@ -176,7 +176,12 @@ namespace WadTool
                 {
                     dialog.InitialDirectory = Path.GetDirectoryName(tool.DestinationWad.FileName);
                     dialog.FileName = Path.GetFileName(tool.DestinationWad.FileName);
-                } catch { }
+                }
+                catch
+                {
+                    // ignored
+                }
+
                 dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
                 dialog.Title = "Select a 3D file that you want to see imported.";
                 if (dialog.ShowDialog(owner) != DialogResult.OK)

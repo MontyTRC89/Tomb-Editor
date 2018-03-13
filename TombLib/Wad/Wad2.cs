@@ -214,7 +214,7 @@ namespace TombLib.Wad
         public WadMesh ImportWadMeshFromExternalModel(string fileName, IOGeometrySettings settings)
         {
             // Import the model
-            var importer = new AssimpImporter(settings, (absoluteTexturePath) =>
+            var importer = new AssimpImporter(settings, absoluteTexturePath =>
             {
                 return new WadTexture(ImageC.FromFile(absoluteTexturePath));
             });

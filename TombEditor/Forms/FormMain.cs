@@ -1017,12 +1017,12 @@ namespace TombEditor
 
         private void newRoomUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, (room) => room.GetHighestCorner(), 12);
+            EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, room => room.GetHighestCorner(), 12);
         }
 
         private void newRoomDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, (room) => room.GetLowestCorner() - 12, 12);
+            EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, room => room.GetLowestCorner() - 12, 12);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

@@ -12,7 +12,7 @@ namespace TombEditor.ToolWindows
     {
         private Editor _editor;
 
-        private class InitEvent : IEditorEvent { };
+        private class InitEvent : IEditorEvent { }
 
         public RoomOptions()
         {
