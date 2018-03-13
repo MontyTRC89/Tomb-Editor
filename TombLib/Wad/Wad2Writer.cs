@@ -87,13 +87,13 @@ namespace TombLib.Wad
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.SoundInfo, () =>
                     {
                         chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoIndex, i);
-                        chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoVolume, soundInfo.Data.VolumeDiv255);
-                        chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoRange, soundInfo.Data.RangeInSectors);
-                        chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoPitch, soundInfo.Data.PitchFactorDiv128);
-                        chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoChance, soundInfo.Data.ChanceDiv255);
-                        chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoFlagN, soundInfo.Data.FlagN);
+                        chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoVolume, soundInfo.Data.Volume);
+                        chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoRange, soundInfo.Data.RangeInSectors);
+                        chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoPitch, soundInfo.Data.PitchFactor);
+                        chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoChance, soundInfo.Data.Chance);
+                        chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoDisablePanning, soundInfo.Data.DisablePanning);
                         chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoRandomizePitch, soundInfo.Data.RandomizePitch);
-                        chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoRandomizeGain, soundInfo.Data.RandomizeGain);
+                        chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoRandomizeVolume, soundInfo.Data.RandomizeVolume);
                         chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoLoopBehaviour, (ushort)soundInfo.Data.LoopBehaviour);
                         chunkIO.WriteChunkString(Wad2Chunks.SoundInfoName, soundInfo.Name);
 

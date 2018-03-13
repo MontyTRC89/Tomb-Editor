@@ -122,5 +122,11 @@ namespace TombLib.Utils
 
             return null;
         }
+
+        public static T2 AddAndReturn<T, T2>(this IList<T> list, T2 item) where T2 : T
+        {
+            list.Add(item);
+            return item;
+        }
     }
 }

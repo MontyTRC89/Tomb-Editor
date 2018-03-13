@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -18,41 +21,68 @@ namespace TombLib.Wad
     {
         public string Name { get; set; }
         public List<WadSample> Samples { get; set; }
-        public byte VolumeDiv255 { get; set; }
-        public byte RangeInSectors { get; set; }
-        public byte ChanceDiv255 { get; set; }
-        public byte PitchFactorDiv128 { get; set; } // 128 here will keep the pitch identical, 255 will *almost* double it.
-        public bool FlagN { get; set; }
-        public bool RandomizePitch { get; set; }
-        public bool RandomizeGain { get; set; }
+        public float Volume { get; set; } // Increasing the volume above 1 is not supported by old games.
+        public float RangeInSectors { get; set; }
+        public float Chance { get; set; } // Must be a value between 0 and 1.
+        public float PitchFactor { get; set; } // 1.0f here will keep the pitch identical, 2.0f will double it. (Attention about the value range of this, it depends on the sample frequency, by default almost 2.0 is the maximum)
+        public bool DisablePanning { get; set; }
+        public bool RandomizePitch { get; set; } // The pitch is sped up and slowed down by 6000/(2^16). (Not relative to the pitch)
+        public bool RandomizeVolume { get; set; } // The volume is reduced by an absolete value of 1/8 of the full volume. (Not relative to the volume value)
         public WadSoundLoopBehaviour LoopBehaviour { get; set; }
 
         public WadSoundInfoMetaData(string name)
         {
             Name = name;
             Samples = new List<WadSample>();
-            VolumeDiv255 = 128;
-            RangeInSectors = 8;
-            ChanceDiv255 = 255;
-            PitchFactorDiv128 = 128;
-            FlagN = false;
+            Volume = 1.0f;
+            RangeInSectors = 8.0f;
+            Chance = 1.0f;
+            PitchFactor = 1.0f;
+            DisablePanning = false;
             RandomizePitch = false;
-            RandomizeGain = false;
+            RandomizeVolume = false;
             LoopBehaviour = WadSoundLoopBehaviour.None;
         }
 
-        private static readonly Random PlayRng = new Random();
-        public void Play()
+        public byte VolumeByte
         {
-            if (Samples.Count < 0)
-                return;
+            get { return (byte)Math.Max(0, Math.Min(255, Volume * 255 + 0.5f)); }
+            set { Volume = value / 255.0f; }
+        }
 
-            int rngSampleIndex;
-            lock (PlayRng)
-                rngSampleIndex = PlayRng.Next(0, Samples.Count - 1);
+        public byte RangeInSectorsByte
+        {
+            get { return (byte)Math.Max(0, Math.Min(255, RangeInSectors)); }
+            set { RangeInSectors = value; }
+        }
 
-            // TODO How about the other parameters?
-            Samples[rngSampleIndex].Play();
+        public byte ChanceByte
+        {
+            get
+            {
+                byte result = (byte)Math.Max(0, Math.Min(255, Chance * 255 + 0.5f));
+                return result == 255 ? (byte)0 : result;
+            }
+            set { Chance = (value == 0) ? 1.0f : (value / 255.0f); }
+        }
+
+        public byte PitchFactorByte
+        {
+            get
+            {
+                float actualPitchFactor = PitchFactor;
+                if (Samples.Count > 0)
+                    actualPitchFactor *= Samples[0].SampleRate / WadSample.GameSupportedSampleRate;
+                return (byte)(0x80 ^ (byte)Math.Max(0, Math.Min(255, actualPitchFactor * 128 + 0.5f)));
+
+            }
+            set { PitchFactor = (value ^ 0x80) / 128.0f; }
+        }
+
+        public static float GetMaxPitch(uint sampleFrequency)
+        {
+            float pitchFactor = (float)WadSample.GameSupportedSampleRate / (float)sampleFrequency;
+            return pitchFactor * (255.5f / 128.0f);
         }
     }
 
@@ -70,16 +100,21 @@ namespace TombLib.Wad
                 throw new ArgumentNullException("data.Samples");
             Data = data;
 
+            if (data.Samples.Count > 1)
+                for (int i = 1; i < data.Samples.Count; ++i)
+                    if (data.Samples[i].SampleRate != data.Samples[0].SampleRate)
+                        throw new Exception("Different sound samples of the same sound have different sample rates!");
+
             using (var ms = new MemoryStream())
             {
                 var writer = new BinaryWriterEx(ms);
-                writer.Write(data.VolumeDiv255);
-                writer.Write(data.RangeInSectors);
-                writer.Write(data.ChanceDiv255);
-                writer.Write(data.PitchFactorDiv128);
-                writer.Write(data.FlagN);
+                writer.Write(data.VolumeByte);
+                writer.Write(data.RangeInSectorsByte);
+                writer.Write(data.ChanceByte);
+                writer.Write(data.PitchFactorByte);
+                writer.Write(data.DisablePanning);
                 writer.Write(data.RandomizePitch);
-                writer.Write(data.RandomizeGain);
+                writer.Write(data.RandomizeVolume);
                 writer.Write((byte)data.LoopBehaviour);
                 foreach (var sample in data.Samples)
                     writer.Write(sample.Hash);
@@ -89,12 +124,11 @@ namespace TombLib.Wad
         }
 
         public string Name => Data.Name;
-        public void Play() => Data.Play();
 
-        public static bool operator ==(WadSoundInfo first, WadSoundInfo second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);
+        public static bool operator ==(WadSoundInfo first, WadSoundInfo second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : (first.Hash == second.Hash));
         public static bool operator !=(WadSoundInfo first, WadSoundInfo second) => !(first == second);
         public bool Equals(WadSoundInfo other) => Hash == other.Hash;
-        public override bool Equals(object other) => other is WadSoundInfo && Hash == ((WadSoundInfo)other).Hash;
+        public override bool Equals(object other) => (other is WadSoundInfo) && Hash == ((WadSoundInfo)other).Hash;
         public override int GetHashCode() { return Hash.GetHashCode(); }
 
         public static WadSoundInfo Empty { get; } = new WadSoundInfo();

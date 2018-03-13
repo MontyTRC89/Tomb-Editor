@@ -262,11 +262,9 @@ namespace WadTool
             if (wadObject is WadStatic)
             {
                 using (var form = new FormStaticEditor(tool, deviceManager, wad, (WadStatic)wadObject))
-                {
-                    if (form.ShowDialog(owner) == DialogResult.Cancel)
+                    if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
-                    tool.WadChanged(tool.MainSelection.Value.WadArea);
-                }
+                tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
             else if (wadObject is WadMoveable)
             {
@@ -275,17 +273,21 @@ namespace WadTool
             }
             else if (wadObject is WadFixedSoundInfo)
             {
-                int TODO_FIXED_SOUND_EDITOR;
-                DarkMessageBox.Show(owner, "Sorry fixed sound editing is not supported right now! :(", "Feature not supported", MessageBoxIcon.Information);
+                WadFixedSoundInfo fixedSoundInfo = (WadFixedSoundInfo)wadObject;
+                using (var form = new FormFixedSoundInfoEditor { SoundInfo = fixedSoundInfo.SoundInfo })
+                {
+                    if (form.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                    fixedSoundInfo.SoundInfo = form.SoundInfo;
+                }
+                tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
             else if (wadObject is WadSpriteSequence)
             {
                 using (var form = new FormSpriteSequenceEditor(wad, (WadSpriteSequence)wadObject))
-                {
-                    if (form.ShowDialog(owner) == DialogResult.Cancel)
+                    if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
-                    tool.WadChanged(tool.MainSelection.Value.WadArea);
-                }
+                tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
         }
 

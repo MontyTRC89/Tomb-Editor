@@ -65,6 +65,12 @@
     <Compile Include="Controls\DarkDataGridViewControls.designer.cs">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SoundInfoEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SoundInfoEditor.Designer.cs">
+      <DependentUpon>SoundInfoEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TriggerParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -78,12 +84,6 @@
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\GraphicalDialogHandler.cs" />
-    <Compile Include="Forms\FormSoundEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSoundEditor.Designer.cs">
-      <DependentUpon>FormSoundEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\GeometryIOSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,14 +111,14 @@
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SoundInfoEditor.resx">
+      <DependentUpon>SoundInfoEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\TriggerParameterControl.resx">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSoundEditor.resx">
-      <DependentUpon>FormSoundEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GeometryIOSettingsDialog.resx">
       <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>

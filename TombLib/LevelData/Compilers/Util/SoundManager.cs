@@ -26,6 +26,7 @@ namespace TombLib.LevelData.Compilers.Util
         private readonly List<SoundDetail> _soundDetails = new List<SoundDetail>();
         private readonly List<ushort> _soundMap = new List<ushort>(); // 0xffff for empty sounds.
 
+
         public SoundManager(LevelSettings settings, Wad2 wad)
         {
             _gameVersion = settings.GameVersion;
@@ -37,14 +38,23 @@ namespace TombLib.LevelData.Compilers.Util
 
         private void SetSoundMapEntryToSoundInfo(WadSoundInfo soundInfo, ushort soundMapIndex)
         {
+            // Create sound detail
+            SoundDetail soundDetail = new SoundDetail { Data = soundInfo.Data };
+            if (soundInfo.Data.Samples.Count == 0 ||
+                soundInfo.Data.Chance < (0.5f / 256.0f) ||
+                soundInfo.Data.Volume < (0.5f / 256.0f))
+            { // Use null sample if there are no samples, or we shouldn't play anything. The engine otherwise messes this up otherwise.
+                soundDetail.Data.Samples = new List<WadSample>(new[] { WadSample.NullSample });
+            }
+
             // Add sound samples.
-            _sampleIndices.AddRange(Enumerable.Repeat((uint)0, soundInfo.Data.Samples.Count)); // Unused filler for TR4 and TR5
-            ushort firstSampleIndex = checked((ushort)_samples.Count);
-            _samples.AddRange(soundInfo.Data.Samples);
+            _sampleIndices.AddRange(Enumerable.Repeat((uint)0, soundDetail.Data.Samples.Count)); // Unused filler for TR4 and TR5
+            soundDetail.FirstSample = checked((ushort)_samples.Count);
+            _samples.AddRange(soundDetail.Data.Samples);
 
             // Add the sound details.
             ushort soundDetailIndex = checked((ushort)_soundDetails.Count);
-            _soundDetails.Add(new SoundDetail { FirstSample = firstSampleIndex, Data = soundInfo.Data });
+            _soundDetails.Add(soundDetail);
 
             // Add the sound map entry.
             ushort oldSoundMapSize = checked((ushort)_soundMap.Count);
@@ -157,19 +167,19 @@ namespace TombLib.LevelData.Compilers.Util
                     throw new Exception("Too many sound effects for sound info '" + soundDetail.Data.Name + "'.");
                 ushort characteristics = (ushort)(3 & (int)soundDetail.Data.LoopBehaviour);
                 characteristics |= (ushort)(soundDetail.Data.Samples.Count << 2);
-                if (soundDetail.Data.FlagN)
+                if (soundDetail.Data.DisablePanning)
                     characteristics |= 0x1000;
                 if (soundDetail.Data.RandomizePitch)
                     characteristics |= 0x2000;
-                if (soundDetail.Data.RandomizeGain)
+                if (soundDetail.Data.RandomizeVolume)
                     characteristics |= 0x4000;
 
                 if (_gameVersion == GameVersion.TR2)
                 {
                     var newSoundDetail = new tr_sound_details();
                     newSoundDetail.Sample = soundDetail.FirstSample;
-                    newSoundDetail.Volume = soundDetail.Data.VolumeDiv255;
-                    newSoundDetail.Chance = soundDetail.Data.ChanceDiv255;
+                    newSoundDetail.Volume = soundDetail.Data.VolumeByte;
+                    newSoundDetail.Chance = soundDetail.Data.ChanceByte;
                     newSoundDetail.Characteristics = characteristics;
                     writer.WriteBlock(newSoundDetail);
                 }
@@ -177,10 +187,10 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     var newSoundDetail = new tr3_sound_details();
                     newSoundDetail.Sample = soundDetail.FirstSample;
-                    newSoundDetail.Volume = soundDetail.Data.VolumeDiv255;
-                    newSoundDetail.Chance = soundDetail.Data.ChanceDiv255;
-                    newSoundDetail.Range = soundDetail.Data.RangeInSectors;
-                    newSoundDetail.Pitch = soundDetail.Data.PitchFactorDiv128;
+                    newSoundDetail.Volume = soundDetail.Data.VolumeByte;
+                    newSoundDetail.Chance = soundDetail.Data.ChanceByte;
+                    newSoundDetail.Range = soundDetail.Data.RangeInSectorsByte;
+                    newSoundDetail.Pitch = soundDetail.Data.PitchFactorByte;
                     newSoundDetail.Characteristics = characteristics;
                     writer.WriteBlock(newSoundDetail);
                 }
@@ -201,7 +211,7 @@ namespace TombLib.LevelData.Compilers.Util
                 int[] uncompressedSizes = new int[_samples.Count];
                 Parallel.For(0, _samples.Count, delegate (int i)
                     {
-                        compressedSamples[i] = _samples[i].CompressToMsAdpcm22050Hz(out uncompressedSizes[i]);
+                        compressedSamples[i] = _samples[i].CompressToMsAdpcm(WadSample.GameSupportedSampleRate, out uncompressedSizes[i]);
                     });
                 for (int i = 0; i < _samples.Count; ++i)
                 {
@@ -216,7 +226,10 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     writer.Write((uint)sample.Data.Length);
                     writer.Write((uint)sample.Data.Length);
-                    writer.Write(sample.Data);
+                    writer.Write(sample.Data, 0, 24);
+                    writer.Write((uint)WadSample.GameSupportedSampleRate); // Overwrite sample rate because the engine actually doens't read this and assumes 22050 anyway. Anything else than 22050 would just be a lie.
+                    writer.Write((uint)(WadSample.GameSupportedSampleRate * 2));
+                    writer.Write(sample.Data, 32, sample.Data.Length - 32);
                 }
             }
         }

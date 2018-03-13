@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
@@ -58,15 +60,15 @@ namespace TombLib.Wad
                     wad.SuggestedGameVersion = (WadGameVersion)chunkIO.ReadChunkLong(chunkSize);
                     return true;
                 }
-                if (LoadTextures(chunkIO, id, ref textures))
+                if (LoadTextures(chunkIO, id, wad, ref textures))
                     return true;
-                else if (LoadSamples(chunkIO, id, ref samples))
+                else if (LoadSamples(chunkIO, id, wad, ref samples))
                     return true;
-                else if (LoadSoundInfos(chunkIO, id, ref soundInfos, samples))
+                else if (LoadSoundInfos(chunkIO, id, wad, ref soundInfos, samples))
                     return true;
                 else if (LoadFixedSoundInfos(chunkIO, id, wad, soundInfos))
                     return true;
-                else if (LoadSprites(chunkIO, id, ref sprites))
+                else if (LoadSprites(chunkIO, id, wad, ref sprites))
                     return true;
                 else if (LoadSpriteSequences(chunkIO, id, wad, sprites))
                     return true;
@@ -87,7 +89,7 @@ namespace TombLib.Wad
             return wad;
         }
 
-        private static bool LoadTextures(ChunkReader chunkIO, ChunkId idOuter, ref Dictionary<long, WadTexture> outTextures)
+        private static bool LoadTextures(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadTexture> outTextures)
         {
             if (idOuter != Wad2Chunks.Textures)
                 return false;
@@ -122,7 +124,7 @@ namespace TombLib.Wad
             return true;
         }
 
-        private static bool LoadSamples(ChunkReader chunkIO, ChunkId idOuter, ref Dictionary<long, WadSample> outSamples)
+        private static bool LoadSamples(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSample> outSamples)
         {
             if (idOuter != Wad2Chunks.Samples)
                 return false;
@@ -165,7 +167,7 @@ namespace TombLib.Wad
             return true;
         }
 
-        private static bool LoadSoundInfos(ChunkReader chunkIO, ChunkId idOuter, ref Dictionary<long, WadSoundInfo> outSoundInfos, Dictionary<long, WadSample> samples)
+        private static bool LoadSoundInfos(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSoundInfo> outSoundInfos, Dictionary<long, WadSample> samples)
         {
             if (idOuter != Wad2Chunks.SoundInfosObsolete && idOuter != Wad2Chunks.SoundInfos)
                 return false;
@@ -183,13 +185,13 @@ namespace TombLib.Wad
                 if (idOuter == Wad2Chunks.SoundInfosObsolete)
                 {
                     index = LEB128.ReadLong(chunkIO.Raw);
-                    soundInfo.VolumeDiv255 = (byte)(LEB128.ReadByte(chunkIO.Raw) * 255 / 100);
-                    soundInfo.RangeInSectors = LEB128.ReadByte(chunkIO.Raw);
-                    soundInfo.PitchFactorDiv128 = (byte)(LEB128.ReadByte(chunkIO.Raw) * 255 / 100);
-                    soundInfo.ChanceDiv255 = (byte)(LEB128.ReadByte(chunkIO.Raw) * 255 / 100);
-                    soundInfo.FlagN = LEB128.ReadByte(chunkIO.Raw) == 1;
-                    soundInfo.RandomizePitch = LEB128.ReadByte(chunkIO.Raw) == 1;
-                    soundInfo.RandomizeGain = LEB128.ReadByte(chunkIO.Raw) == 1;
+                    soundInfo.VolumeByte = LEB128.ReadByte(chunkIO.Raw);
+                    soundInfo.RangeInSectorsByte = LEB128.ReadByte(chunkIO.Raw);
+                    soundInfo.PitchFactorByte = LEB128.ReadByte(chunkIO.Raw);
+                    soundInfo.ChanceByte = LEB128.ReadByte(chunkIO.Raw);
+                    soundInfo.DisablePanning = (LEB128.ReadByte(chunkIO.Raw) == 1);
+                    soundInfo.RandomizePitch = (LEB128.ReadByte(chunkIO.Raw) == 1);
+                    soundInfo.RandomizeVolume = (LEB128.ReadByte(chunkIO.Raw) == 1);
                     soundInfo.LoopBehaviour = (WadSoundLoopBehaviour)LEB128.ReadUShort(chunkIO.Raw);
                 }
 
@@ -198,19 +200,19 @@ namespace TombLib.Wad
                     if (id2 == Wad2Chunks.SoundInfoIndex)
                         index = chunkIO.ReadChunkLong(chunkSize2);
                     else if (id2 == Wad2Chunks.SoundInfoVolume)
-                        soundInfo.VolumeDiv255 = chunkIO.ReadChunkByte(chunkSize2);
+                        soundInfo.Volume = chunkIO.ReadChunkFloat(chunkSize2);
                     else if (id2 == Wad2Chunks.SoundInfoRange)
-                        soundInfo.RangeInSectors = chunkIO.ReadChunkByte(chunkSize2);
+                        soundInfo.RangeInSectors = chunkIO.ReadChunkFloat(chunkSize2);
                     else if (id2 == Wad2Chunks.SoundInfoPitch)
-                        soundInfo.PitchFactorDiv128 = chunkIO.ReadChunkByte(chunkSize2);
+                        soundInfo.PitchFactor = chunkIO.ReadChunkFloat(chunkSize2);
                     else if (id2 == Wad2Chunks.SoundInfoChance)
-                        soundInfo.ChanceDiv255 = chunkIO.ReadChunkByte(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoFlagN)
-                        soundInfo.FlagN = chunkIO.ReadChunkBool(chunkSize2);
+                        soundInfo.Chance = chunkIO.ReadChunkFloat(chunkSize2);
+                    else if (id2 == Wad2Chunks.SoundInfoDisablePanning)
+                        soundInfo.DisablePanning = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Wad2Chunks.SoundInfoRandomizePitch)
                         soundInfo.RandomizePitch = chunkIO.ReadChunkBool(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoRandomizeGain)
-                        soundInfo.RandomizeGain = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Wad2Chunks.SoundInfoRandomizeVolume)
+                        soundInfo.RandomizeVolume = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Wad2Chunks.SoundInfoLoopBehaviour)
                         soundInfo.LoopBehaviour = (WadSoundLoopBehaviour)(3 & chunkIO.ReadChunkByte(chunkSize2));
                     else if (id2 == Wad2Chunks.SoundInfoName || id2 == Wad2Chunks.SoundInfoNameObsolete)
@@ -397,7 +399,7 @@ namespace TombLib.Wad
             return mesh;
         }
 
-        private static bool LoadSprites(ChunkReader chunkIO, ChunkId idOuter, ref Dictionary<long, WadSprite> outSprites)
+        private static bool LoadSprites(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSprite> outSprites)
         {
             if (idOuter != Wad2Chunks.Sprites)
                 return false;
