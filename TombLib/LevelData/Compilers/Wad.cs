@@ -11,7 +11,7 @@ namespace TombLib.LevelData.Compilers
     public partial class LevelCompilerClassicTR
     {
         private static readonly bool _writeDbgWadTxt = false;
-        private Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();
+        private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();
 
         private void ConvertWadMeshes(Wad2 wad)
         {

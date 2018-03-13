@@ -8,7 +8,7 @@ namespace TombEditor.ToolWindows
 {
     public partial class Lighting : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public Lighting()
         {

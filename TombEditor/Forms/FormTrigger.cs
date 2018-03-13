@@ -15,8 +15,8 @@ namespace TombEditor.Forms
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private Level _level;
-        private TriggerInstance _trigger;
+        private readonly Level _level;
+        private readonly TriggerInstance _trigger;
 
         public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
                            Action<Room> selectRoom)

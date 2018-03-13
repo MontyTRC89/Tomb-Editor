@@ -17,8 +17,8 @@ namespace TombEditor.Controls
         public event EventHandler SelectedColorChanged;
 
         private Point _selectedColorCoord = new Point(-1, -1);
-        private static Pen _selectionPen = Pens.White;
-        private static Pen _gridPen = Pens.Black;
+        private static readonly Pen _selectionPen = Pens.White;
+        private static readonly Pen _gridPen = Pens.Black;
         private const int _paletteWidth = 64;
         private const int _paletteHeight = 10;
         private const float _paletteCellWidth = 10;

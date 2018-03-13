@@ -7,7 +7,7 @@ namespace TombEditor.Forms
 {
     public partial class FormMoveable : DarkForm
     {
-        private MoveableInstance _movable;
+        private readonly MoveableInstance _movable;
 
         public FormMoveable(MoveableInstance moveable)
         {

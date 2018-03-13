@@ -16,7 +16,7 @@ namespace TombEditor.Controls
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private bool _doSectorSelection;
-        private Editor _editor;
+        private readonly Editor _editor;
 
         private static readonly float _outlineHighlightWidth = 3;
         private static readonly Pen _gridPen = Pens.Black;

@@ -18,7 +18,7 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
 
-        private Editor _editor;
+        private readonly Editor _editor;
         private VertexInputLayout _layout;
         private DeviceManager _deviceManager;
         private GraphicsDevice _device;

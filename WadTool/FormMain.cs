@@ -15,8 +15,8 @@ namespace WadTool
 {
     public partial class FormMain : DarkForm
     {
-        private WadToolClass _tool;
-        private DeviceManager _deviceManager;
+        private readonly WadToolClass _tool;
+        private readonly DeviceManager _deviceManager;
         private bool _playAnimation;
 
         public FormMain(WadToolClass tool)

@@ -4,9 +4,9 @@ namespace TombLib.Utils
 {
     public struct Hash : IEquatable<Hash>
     {
-        private static Random _rng = new Random();
-        private static ulong _keyLow = (ulong)(_rng.Next()) ^ ((ulong)(_rng.Next()) << 32);
-        private static ulong _keyHigh = (ulong)(_rng.Next()) ^ ((ulong)(_rng.Next()) << 32);
+        private static readonly Random _rng = new Random();
+        private static readonly ulong _keyLow = (ulong)(_rng.Next()) ^ ((ulong)(_rng.Next()) << 32);
+        private static readonly ulong _keyHigh = (ulong)(_rng.Next()) ^ ((ulong)(_rng.Next()) << 32);
 
         public ulong HashLow;
         public ulong HashHigh;

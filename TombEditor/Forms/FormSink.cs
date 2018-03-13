@@ -8,7 +8,7 @@ namespace TombEditor.Forms
     public partial class FormSink : DarkForm
     {
         public bool IsNew { get; set; }
-        private SinkInstance _sink;
+        private readonly SinkInstance _sink;
 
         public FormSink(SinkInstance sink)
         {

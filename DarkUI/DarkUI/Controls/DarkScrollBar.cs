@@ -43,7 +43,7 @@ namespace DarkUI.Controls
         private int _initialValue;
         private Point _initialContact;
 
-        private Timer _scrollTimer;
+        private readonly Timer _scrollTimer;
 
         #endregion
 

@@ -132,7 +132,7 @@ namespace TombEditor
         public tr_ai_item[] AiItems;
 
         string fileName;
-        byte[,] _texture16;
+        readonly byte[,] _texture16;
 
         public TestLevel3(string fileName, string outFileName)
         {

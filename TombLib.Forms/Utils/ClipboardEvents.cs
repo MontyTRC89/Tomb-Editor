@@ -7,7 +7,7 @@ namespace TombLib.Utils
     public static class ClipboardEvents
     {
         private const int WM_ClipboardChanged = 0x031D;
-        private static IntPtr HWND_MESSAGE = new IntPtr(-3);
+        private static readonly IntPtr HWND_MESSAGE = new IntPtr(-3);
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool AddClipboardFormatListener(IntPtr hwnd);
@@ -15,7 +15,7 @@ namespace TombLib.Utils
         private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
         private static EventHandler ClipboardChangedEvents;
-        private static object @lock = new object();
+        private static readonly object @lock = new object();
         public static event EventHandler ClipboardChanged
         {
             add

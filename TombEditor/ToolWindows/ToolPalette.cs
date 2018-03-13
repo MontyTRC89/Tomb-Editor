@@ -8,7 +8,7 @@ namespace TombEditor.ToolWindows
     {
         private class InitEvent : IEditorEvent { }
 
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public ToolPalette()
         {

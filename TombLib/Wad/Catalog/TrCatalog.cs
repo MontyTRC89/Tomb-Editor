@@ -40,7 +40,7 @@ namespace TombLib.Wad.Catalog
             }
         }
 
-        private static Dictionary<WadGameVersion, Game> Games = new Dictionary<WadGameVersion, Game>();
+        private static readonly Dictionary<WadGameVersion, Game> Games = new Dictionary<WadGameVersion, Game>();
 
         public static int PredictSoundMapSize(WadGameVersion wadVersion, bool IsNg, int numDemoData)
         {

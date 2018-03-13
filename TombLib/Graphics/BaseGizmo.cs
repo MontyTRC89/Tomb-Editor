@@ -52,7 +52,7 @@ namespace TombLib.Graphics
 
         // Geometry of the gizmo
         private readonly GraphicsDevice _device;
-        private Buffer<SolidVertex> _rotationHelperGeometry;
+        private readonly Buffer<SolidVertex> _rotationHelperGeometry;
         private readonly GeometricPrimitive _cylinder;
         private readonly GeometricPrimitive _cube;
         private readonly GeometricPrimitive _cone;

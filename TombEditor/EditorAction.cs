@@ -18,7 +18,7 @@ namespace TombEditor
     public class EditorActionPlace : IEditorActionPlace
     {
         public bool Repeat { get; }
-        private Func<Level, Room, PositionBasedObjectInstance> _createObjectInstance;
+        private readonly Func<Level, Room, PositionBasedObjectInstance> _createObjectInstance;
 
         public EditorActionPlace(bool repeat, Func<Level, Room, PositionBasedObjectInstance> createObjectInstance)
         {

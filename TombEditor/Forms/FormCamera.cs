@@ -7,7 +7,7 @@ namespace TombEditor.Forms
 {
     public partial class FormCamera : DarkForm
     {
-        private CameraInstance _instance;
+        private readonly CameraInstance _instance;
 
         public FormCamera(CameraInstance instance)
         {

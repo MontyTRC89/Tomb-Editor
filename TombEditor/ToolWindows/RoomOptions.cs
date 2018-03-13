@@ -11,7 +11,7 @@ namespace TombEditor.ToolWindows
 {
     public partial class RoomOptions : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         private class InitEvent : IEditorEvent { }
 

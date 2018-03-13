@@ -44,7 +44,7 @@ namespace TombLib.LevelData
         public bool IsStatic { get; }
         public WadMoveableId MoveableId { get; }
         public WadStaticId StaticId { get; }
-        private WadGameVersion _wadGameVersion;
+        private readonly WadGameVersion _wadGameVersion;
 
         public ItemType(WadStaticId staticId, WadGameVersion wadGameVersion = WadGameVersion.TR4_TRNG)
         {

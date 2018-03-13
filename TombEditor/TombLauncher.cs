@@ -119,10 +119,10 @@ namespace TombEditor
             [StructLayout(LayoutKind.Sequential)]
             private struct RECT
             {
-                public int Left;
-                public int Top;
-                public int Right;
-                public int Bottom;
+                public readonly int Left;
+                public readonly int Top;
+                public readonly int Right;
+                public readonly int Bottom;
             }
             private const uint WM_CLOSE = 0x0010;
             private const int SW_HIDE = 0;

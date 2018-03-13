@@ -198,8 +198,8 @@ namespace SoundTool
 
         private void convertTXTToXMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var input = "";
-            var output = "";
+            string input;
+            string output;
 
             using (var dialog = new OpenFileDialog())
             {

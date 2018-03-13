@@ -7,7 +7,7 @@ namespace TombEditor
     {
         public struct ListCast<CollectionT, SourceT, DestinationT> : IList<DestinationT> where CollectionT : IList<SourceT> where DestinationT : class, SourceT
         {
-            private CollectionT _baseList;
+            private readonly CollectionT _baseList;
 
             public ListCast(CollectionT baseCollection)
             {

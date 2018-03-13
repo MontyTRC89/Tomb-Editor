@@ -5,7 +5,7 @@ namespace TombEditor.ToolWindows
 {
     public partial class TexturePanel : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public TexturePanel()
         {

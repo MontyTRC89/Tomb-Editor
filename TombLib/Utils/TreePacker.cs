@@ -62,7 +62,7 @@
             }
         }
 
-        private TreePackerNode _startNode;
+        private readonly TreePackerNode _startNode;
 
         public TreePacker(VectorInt2 size)
             : base(size)

@@ -261,13 +261,13 @@ namespace TombLib.LevelData.Compilers.Util
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
         private unsafe struct SavedObjectTexture : IEquatable<SavedObjectTexture>
         {
-            public ushort TextureID;
-            public ushort IsTriangularAndPadding;
+            public readonly ushort TextureID;
+            public readonly ushort IsTriangularAndPadding;
             public ushort BlendMode;
             //Bit 0 - 2     mapping correction. It seems that these bits change the way the texture is applied...
             //Bit 11 - 12   the bump mapping type. Can be 0x01 or 0x10. It's 0x00 if not bump mapped. Only textures for room or animated textures can be bump mapped, not meshes
             //Bit 15        if set, the texture is for a tri/quad from a room or animated texture. If not set, the texture is for a mesh
-            public ushort NewFlags;
+            public readonly ushort NewFlags;
             public ushort TexCoord0X; // C# sucks!!!!!
             public ushort TexCoord0Y;
             public ushort TexCoord1X;
@@ -276,8 +276,8 @@ namespace TombLib.LevelData.Compilers.Util
             public ushort TexCoord2Y;
             public ushort TexCoord3X;
             public ushort TexCoord3Y;
-            public uint TextureSpaceIdentifier;
-            private uint Unused;
+            public readonly uint TextureSpaceIdentifier;
+            private readonly uint Unused;
 
             public SavedObjectTexture(ushort textureID, TextureArea texture, uint textureSpaceIdentifier, TextureAllocator.TextureView view, bool isTriangular, bool isUsedInRoomMesh, bool canRotate, out byte firstTexCoordToEmit)
             {
@@ -368,12 +368,12 @@ namespace TombLib.LevelData.Compilers.Util
             public override bool Equals(object other) => (other is SavedObjectTexture) && this == (SavedObjectTexture)other;
             public override int GetHashCode() => base.GetHashCode();
         }
-        private List<SavedObjectTexture> _objectTextures = new List<SavedObjectTexture>();
-        private Dictionary<SavedObjectTexture, ushort> _objectTexturesLookup = new Dictionary<SavedObjectTexture, ushort>();
+        private readonly List<SavedObjectTexture> _objectTextures = new List<SavedObjectTexture>();
+        private readonly Dictionary<SavedObjectTexture, ushort> _objectTexturesLookup = new Dictionary<SavedObjectTexture, ushort>();
         private uint _textureSpaceIdentifier;
         private int _supportsUpTo65536TextureCount;
 
-        private TextureAllocator _textureAllocator = new TextureAllocator();
+        private readonly TextureAllocator _textureAllocator = new TextureAllocator();
 
         private ushort AddObjectTextureWithoutLookup(SavedObjectTexture newEntry, bool supportsUpTo65536)
         {

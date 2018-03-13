@@ -524,16 +524,16 @@ namespace TombLib.LevelData.Compilers
 
         private struct RoomSectorShape
         {
-            public bool SplitDirectionIsXEqualsZ;
-            public bool SplitPortalFirst;
-            public bool SplitPortalSecond;
-            public bool SplitWallFirst;
-            public bool SplitWallSecond;
-            public int HeightXnZn;
-            public int HeightXnZp;
-            public int HeightXpZn;
-            public int HeightXpZp;
-            public int DiagonalStep;
+            public readonly bool SplitDirectionIsXEqualsZ;
+            public readonly bool SplitPortalFirst;
+            public readonly bool SplitPortalSecond;
+            public readonly bool SplitWallFirst;
+            public readonly bool SplitWallSecond;
+            public readonly int HeightXnZn;
+            public readonly int HeightXnZp;
+            public readonly int HeightXpZn;
+            public readonly int HeightXpZp;
+            public readonly int DiagonalStep;
 
             public RoomSectorShape(short[] edgeArray, Room.RoomConnectionType portalType, bool splitDirectionWithDiagonalSplit, DiagonalSplit diagonalSplitType, bool wall)
             {

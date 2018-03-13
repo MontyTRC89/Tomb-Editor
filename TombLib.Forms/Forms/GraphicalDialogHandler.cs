@@ -151,7 +151,7 @@ namespace TombLib.Forms
             }
         }
 
-        private IWin32Window _owner;
+        private readonly IWin32Window _owner;
 
         public GraphicalDialogHandler(IWin32Window owner)
         {

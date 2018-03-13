@@ -13,8 +13,8 @@ namespace TombEditor.Forms
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private SoundSourceInstance _soundSource;
-        private Wad2 _wad;
+        private readonly SoundSourceInstance _soundSource;
+        private readonly Wad2 _wad;
         private Random rng = new Random();
 
         public FormSound(SoundSourceInstance soundSource, Wad2 wad)

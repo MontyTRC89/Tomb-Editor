@@ -7,8 +7,8 @@ namespace WadTool
 {
     public class GizmoStaticEditor : BaseGizmo
     {
-        private Configuration _configuration;
-        private PanelRenderingStaticEditor _control;
+        private readonly Configuration _configuration;
+        private readonly PanelRenderingStaticEditor _control;
 
         public GizmoStaticEditor(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingStaticEditor control)
             : base(device, effect)

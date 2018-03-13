@@ -8,7 +8,7 @@ namespace TombEditor.Controls.ContextMenus
 {
     class BlockContextMenu : BaseContextMenu
     {
-        private ToolStripMenuItem _itemPaste;
+        private readonly ToolStripMenuItem _itemPaste;
         public BlockContextMenu(Editor editor, Room targetRoom, VectorInt2 targetBlock)
             : base(editor)
         {

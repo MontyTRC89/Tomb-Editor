@@ -15,7 +15,7 @@ namespace TombEditor.Controls
 {
     public class PanelTextureMap : Panel
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         private LevelTexture _visibleTexture;
         private TextureArea _selectedTexture;
@@ -27,7 +27,7 @@ namespace TombEditor.Controls
         private int? _selectedTexCoordIndex;
         private Vector2? _viewMoveMouseTexCoord;
         private Point _lastMousePosition;
-        private MovementTimer _movementTimer;
+        private readonly MovementTimer _movementTimer;
 
         private static readonly Pen textureSelectionPen = new Pen(Brushes.Yellow, 2.0f) { LineJoin = LineJoin.Round };
         private static readonly Pen textureSelectionPenTriangle = new Pen(Brushes.Red, 2.0f) { LineJoin = LineJoin.Round };
@@ -38,8 +38,8 @@ namespace TombEditor.Controls
         private const float textureSelectionPointSelectionRadius = 13.0f;
         private const float viewMargin = 10;
 
-        private DarkScrollBarC _hScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Horizontal };
-        private DarkScrollBarC _vScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Vertical };
+        private readonly DarkScrollBarC _hScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Horizontal };
+        private readonly DarkScrollBarC _vScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Vertical };
 
         private int _scrollSize => DarkUI.Config.Consts.ScrollBarSize;
         private int _scrollSizeTotal => _scrollSize + 1;

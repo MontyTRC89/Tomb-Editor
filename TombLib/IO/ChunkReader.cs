@@ -12,7 +12,7 @@ namespace TombLib.IO
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private BinaryReaderEx _reader;
+        private readonly BinaryReaderEx _reader;
 
         public ChunkReader(byte[] expectedMagicNumber, Stream stream)
         {

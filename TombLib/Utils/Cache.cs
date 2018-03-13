@@ -14,7 +14,7 @@ namespace TombLib.Utils
             public TimestampType _lastUsedTimeStamp;
             public ValueT _value;
         }
-        private Dictionary<KeyT, Entry> _availableItems;
+        private readonly Dictionary<KeyT, Entry> _availableItems;
 
         public Func<KeyT, ValueT> GenerateValue { get; set; }
         public Action<ValueT> DisposeValue { get; set; }

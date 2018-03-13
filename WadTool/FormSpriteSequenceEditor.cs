@@ -20,7 +20,7 @@ namespace WadTool
         public Wad2 Wad { get; }
 
         private string _currentPath;
-        private Cache<WadTexture, Bitmap> _imageCache = new Cache<WadTexture, Bitmap>(1024, sprite => sprite.Image.ToBitmap());
+        private readonly Cache<WadTexture, Bitmap> _imageCache = new Cache<WadTexture, Bitmap>(1024, sprite => sprite.Image.ToBitmap());
 
         public FormSpriteSequenceEditor(Wad2 wad, WadSpriteSequence spriteSequence)
         {

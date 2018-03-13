@@ -763,9 +763,9 @@ namespace TombLib.LevelData.Compilers
         [StructLayout(LayoutKind.Sequential, Pack = 2)]
         private struct PortalPlane
         {
-            public short SlopeX;
-            public short SlopeZ;
-            public int Height;
+            public readonly short SlopeX;
+            public readonly short SlopeZ;
+            public readonly int Height;
 
             public int EvaluateHeight(int x, int z)
             {

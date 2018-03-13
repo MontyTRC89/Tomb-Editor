@@ -44,7 +44,7 @@ namespace TombLib.LevelData
     public class TriggerParameterUshort : IEquatable<TriggerParameterUshort>, ITriggerParameter
     {
         public ushort Key { get; }
-        private object _nameObject;
+        private readonly object _nameObject;
 
         public TriggerParameterUshort(ushort key, object nameObject = null)
         {

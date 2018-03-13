@@ -32,7 +32,7 @@ namespace TombLib.Graphics
         public float FieldOfView { get; set; } = 0.872f;
 
         // Default camera distance, used for internal zoom/panning multiplier calculation
-        private float DefaultDistance;
+        private readonly float DefaultDistance;
 
         public ArcBallCamera(Vector3 target, float rotationX,
             float rotationY, float minRotationX, float maxRotationX,

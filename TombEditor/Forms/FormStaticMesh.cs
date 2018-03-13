@@ -7,7 +7,7 @@ namespace TombEditor.Forms
 {
     public partial class FormStaticMesh : DarkForm
     {
-        private StaticInstance _staticMesh;
+        private readonly StaticInstance _staticMesh;
 
         public FormStaticMesh(StaticInstance staticMesh)
         {

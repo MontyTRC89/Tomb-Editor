@@ -38,7 +38,7 @@ namespace TombEditor.Forms
         }
 
         private RateType _currentId;
-        private Editor _editor;
+        private readonly Editor _editor;
         private readonly ConditionalWeakTable<ObjectType, RateTypeClass> _baseObjectIdDictionary = new ConditionalWeakTable<ObjectType, RateTypeClass>();
         private Dictionary<ObjectType, RateType> _cachedRelevantObjects;
         private SortedDictionary<RateType, ObjectType> _cachedSortedObjects;

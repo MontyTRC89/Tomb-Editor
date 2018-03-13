@@ -14,7 +14,7 @@ namespace TombEditor.ToolWindows
 {
     public partial class ObjectBrowser : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public ObjectBrowser()
         {

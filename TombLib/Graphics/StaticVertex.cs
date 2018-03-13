@@ -9,7 +9,7 @@ namespace TombLib.Graphics
     {
         [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
         public Vector3 Position;
-        private float _unusedPadding;
+        private readonly float _unusedPadding;
         [VertexElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 16)]
         public Vector2 UV;
         [VertexElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 24)]

@@ -8,7 +8,7 @@ namespace TombLib.Forms
 {
     public partial class ImportTr4WadDialog : DarkForm
     {
-        private DialogDescriptonMissingSounds _dialogInfo;
+        private readonly DialogDescriptonMissingSounds _dialogInfo;
 
         public ImportTr4WadDialog(DialogDescriptonMissingSounds dialogInfo)
         {

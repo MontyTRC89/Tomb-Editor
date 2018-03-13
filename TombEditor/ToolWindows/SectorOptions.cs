@@ -10,7 +10,7 @@ namespace TombEditor.ToolWindows
 {
     public partial class SectorOptions : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public SectorOptions()

@@ -9,7 +9,7 @@ namespace TombEditor.Forms
     {
         public bool IsNew { get; set; }
 
-        private FlybyCameraInstance _flyByCamera;
+        private readonly FlybyCameraInstance _flyByCamera;
 
         public FormFlybyCamera(FlybyCameraInstance flyByCamera)
         {

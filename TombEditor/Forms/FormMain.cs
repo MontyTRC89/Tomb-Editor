@@ -20,25 +20,25 @@ namespace TombEditor.Forms
     {
         // Dockable tool windows are placed on actual dock panel at runtime.
 
-        private ToolWindows.MainView MainView = new ToolWindows.MainView();
-        private ToolWindows.TriggerList TriggerList = new ToolWindows.TriggerList();
-        private ToolWindows.RoomOptions RoomOptions = new ToolWindows.RoomOptions();
-        private ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
-        private ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
-        private ToolWindows.Lighting Lighting = new ToolWindows.Lighting();
-        private ToolWindows.Palette Palette = new ToolWindows.Palette();
-        private ToolWindows.TexturePanel TexturePanel = new ToolWindows.TexturePanel();
-        private ToolWindows.ObjectList ObjectList = new ToolWindows.ObjectList();
-        private ToolWindows.ToolPalette ToolPalette = new ToolWindows.ToolPalette();
+        private readonly ToolWindows.MainView MainView = new ToolWindows.MainView();
+        private readonly ToolWindows.TriggerList TriggerList = new ToolWindows.TriggerList();
+        private readonly ToolWindows.RoomOptions RoomOptions = new ToolWindows.RoomOptions();
+        private readonly ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
+        private readonly ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
+        private readonly ToolWindows.Lighting Lighting = new ToolWindows.Lighting();
+        private readonly ToolWindows.Palette Palette = new ToolWindows.Palette();
+        private readonly ToolWindows.TexturePanel TexturePanel = new ToolWindows.TexturePanel();
+        private readonly ToolWindows.ObjectList ObjectList = new ToolWindows.ObjectList();
+        private readonly ToolWindows.ToolPalette ToolPalette = new ToolWindows.ToolPalette();
 
         // Floating tool boxes are placed on 3D view at runtime
-        private ToolWindows.ToolPaletteFloating ToolBox = new ToolWindows.ToolPaletteFloating();
+        private readonly ToolWindows.ToolPaletteFloating ToolBox = new ToolWindows.ToolPaletteFloating();
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private bool _pressedMoveCameraKey;
-        private Editor _editor;
-        private DeviceManager _deviceManager = DeviceManager.DefaultDeviceManager;
+        private readonly Editor _editor;
+        private readonly DeviceManager _deviceManager = DeviceManager.DefaultDeviceManager;
 
         public FormMain(Editor editor)
         {

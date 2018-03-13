@@ -9,8 +9,8 @@ namespace TombEditor
     [Serializable]
     public class ObjectClipboardData
     {
-        private byte[] _data;
-        private string _levelPath;
+        private readonly byte[] _data;
+        private readonly string _levelPath;
 
         public ObjectClipboardData(Editor editor)
         {

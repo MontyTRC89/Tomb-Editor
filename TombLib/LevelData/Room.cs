@@ -3582,7 +3582,7 @@ namespace TombLib.LevelData
             public LevelSettings SourceLevelSettings { get; }
             public bool UnifyData { get; }
             private Dictionary<ushort, ushort> FlyBySequenceReassociation { get; } = new Dictionary<ushort, ushort>();
-            private HashSet<ushort> UsedFlyBySequences = new HashSet<ushort>();
+            private readonly HashSet<ushort> UsedFlyBySequences = new HashSet<ushort>();
             public CopyDependentLevelSettingsArgs(IEnumerable<ObjectInstance> oldInstances, LevelSettings destinationLevelSettings, LevelSettings sourceLevelSettings, bool unifyData)
             {
                 DestinationLevelSettings = destinationLevelSettings;

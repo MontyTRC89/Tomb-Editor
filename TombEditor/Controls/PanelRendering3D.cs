@@ -132,7 +132,7 @@ namespace TombEditor.Controls
         {
             private class ReferenceCell
             {
-                public short[,] Heights;
+                public readonly short[,] Heights;
                 public bool Processed;
 
                 public ReferenceCell()
@@ -142,8 +142,8 @@ namespace TombEditor.Controls
                 }
             }
 
-            private PanelRendering3D _parent;
-            private ReferenceCell[,] _actionGrid = new ReferenceCell[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
+            private readonly PanelRendering3D _parent;
+            private readonly ReferenceCell[,] _actionGrid = new ReferenceCell[Room.MaxRoomDimensions, Room.MaxRoomDimensions];
             private PickingResultBlock _referencePicking;
             private Point _referencePosition;
             private Point _newPosition;
@@ -151,7 +151,7 @@ namespace TombEditor.Controls
 
             // Terrain map resolution must be ALWAYS POWER OF 2 PLUS 1 - this is the requirement of diamond square algorithm.
             private const int TerrainMapResolution = 32 + 1;
-            public float[,] RandomHeightMap = new float[TerrainMapResolution, TerrainMapResolution];
+            public readonly float[,] RandomHeightMap = new float[TerrainMapResolution, TerrainMapResolution];
 
             public bool Engaged { get; private set; }
             public bool Dragged { get; private set; }
@@ -547,7 +547,7 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DisablePickingForImportedGeometry { get; set; }
 
-        private Editor _editor;
+        private readonly Editor _editor;
         private DeviceManager _deviceManager;
         private Texture2D _textureAtlas;
         private Vector2 _textureAtlasRemappingSize;

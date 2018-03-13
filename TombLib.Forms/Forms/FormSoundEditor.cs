@@ -9,9 +9,9 @@ namespace TombLib.Forms
 {
     public partial class FormSoundEditor : DarkForm
     {
-        private Wad2 _wad;
+        private readonly Wad2 _wad;
         private int _currentSound = -1;
-        private bool _saveWadOnExit;
+        private readonly bool _saveWadOnExit;
         private Dictionary<ushort, WadSoundInfo> _sounds;
 
         public FormSoundEditor(Wad2 wad, bool saveWadOnExit)

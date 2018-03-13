@@ -14,7 +14,7 @@ namespace WadTool
         public WadStatic Static { get; private set; }
 
         private readonly Wad2 _wad;
-        private WadStatic _workingStatic;
+        private readonly WadStatic _workingStatic;
 
         public FormStaticEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadStatic @static)
         {

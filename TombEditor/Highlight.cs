@@ -65,7 +65,7 @@ namespace TombEditor
         public static readonly Vector4 ColorTriggerTriggerer = new Vector4(0, 0, 252, 255) / 255.0f;
         public static readonly Vector4 ColorForceSolidFloor = Vector4.Lerp(ColorFloor, new Vector4(0.0f, 0.0f, 0.0f, 1.0f), 0.1f);
 
-        private List<HighlightType> _priorityList = Enum.GetValues(typeof(HighlightType)).Cast<HighlightType>().ToList();
+        private readonly List<HighlightType> _priorityList = Enum.GetValues(typeof(HighlightType)).Cast<HighlightType>().ToList();
         public HighlightType Priority => _priorityList[0];
 
         public HighlightState()
@@ -197,15 +197,15 @@ namespace TombEditor
 
     public class HighlightManager : IDisposable
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public class ChangeHighlightEvent : IEditorEvent { }
         private HighlightState _currentState;
         private HighlightState _previousState;
 
         private float _transitionValue;
-        private float _transitionSpeed = 0.4f;
-        private Timer _transitionAnimator = new Timer() { Interval = 60 };
+        private readonly float _transitionSpeed = 0.4f;
+        private readonly Timer _transitionAnimator = new Timer() { Interval = 60 };
 
         private static readonly List<HighlightShape> _allShapes = Enum.GetValues(typeof(HighlightShape)).Cast<HighlightShape>().ToList();
 

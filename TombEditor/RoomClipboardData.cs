@@ -29,11 +29,11 @@ namespace TombEditor
             public Vector2 End => new Vector2(EndX, EndY);
         }
 
-        private byte[] _data;
-        private List<ContourLine> _contourLines;
-        private float _dropPositionX; // Vector2 can't be serialized for no good reason.
-        private float _dropPositionY;
-        private string _levelPath;
+        private readonly byte[] _data;
+        private readonly List<ContourLine> _contourLines;
+        private readonly float _dropPositionX; // Vector2 can't be serialized for no good reason.
+        private readonly float _dropPositionY;
+        private readonly string _levelPath;
 
         public RoomClipboardData(Editor editor, Vector2 dropPosition)
         {

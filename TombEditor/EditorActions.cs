@@ -26,7 +26,7 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static Editor _editor = Editor.Instance;
+        private static readonly Editor _editor = Editor.Instance;
 
         public static bool ContinueOnFileDrop(IWin32Window owner, string description)
         {

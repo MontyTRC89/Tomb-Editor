@@ -21,7 +21,7 @@ namespace TombEditor.Forms
 
         private class PictureTooltip : ToolTip
         {
-            private DarkForm parentForm;
+            private readonly DarkForm parentForm;
 
             public PictureTooltip(DarkForm parent)
             {
@@ -77,12 +77,12 @@ namespace TombEditor.Forms
 
         private readonly Color _correctColor;
         private readonly Color _wrongColor;
-        private Editor _editor;
-        private LevelSettings _levelSettings;
+        private readonly Editor _editor;
+        private readonly LevelSettings _levelSettings;
         private string fontTextureFilePathPicPreviewCurrentPath;
         private string skyTextureFilePathPicPreviewCurrentPath;
         private string tr5ExtraSpritesFilePathPicPreviewCurrentPath;
-        private PictureTooltip _pictureTooltip;
+        private readonly PictureTooltip _pictureTooltip;
         private readonly BindingList<OldWadSoundPath> soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
 
         public FormLevelSettings(Editor editor)

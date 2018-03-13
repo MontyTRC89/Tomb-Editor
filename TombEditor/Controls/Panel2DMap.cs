@@ -35,14 +35,14 @@ namespace TombEditor.Controls
         private float _viewScale = 6.0f;
 
         private readonly DepthBar _depthBar = new DepthBar();
-        private Editor _editor;
+        private readonly Editor _editor;
         private Room _roomMouseClicked;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private Vector2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
         private Vector2? _viewMoveMouseWorldCoord;
         private int? _currentlyEditedDepthProbeIndex;
         private Point _lastMousePosition;
-        private MovementTimer _movementTimer;
+        private readonly MovementTimer _movementTimer;
         private IReadOnlyList<RoomClipboardData.ContourLine> _insertionContourLineData;
         private Vector2 _insertionDropPosition;
         private VectorInt2 _insertionCurrentOffset;

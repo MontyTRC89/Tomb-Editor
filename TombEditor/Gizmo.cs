@@ -9,7 +9,7 @@ namespace TombEditor
 {
     public class Gizmo : BaseGizmo
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public Gizmo(GraphicsDevice device, Effect effect)
             : base(device, effect)

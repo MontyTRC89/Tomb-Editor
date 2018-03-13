@@ -14,10 +14,10 @@ namespace TombEditor.Forms
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private Action<IProgressReporter> _operation;
+        private readonly Action<IProgressReporter> _operation;
         private Thread _thread;
         private volatile bool _threadShouldAbort;
-        private bool _autoCloseWhenDone;
+        private readonly bool _autoCloseWhenDone;
 
         public FormOperationDialog(string operationName, bool autoCloseWhenDone, Action<IProgressReporter> operation)
         {

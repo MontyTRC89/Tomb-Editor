@@ -114,12 +114,12 @@ namespace TombEditor.Controls
             }
         }
 
-        private SortableBindingList<ImportedGeometryWrapper> _dataGridViewDataSource = new SortableBindingList<ImportedGeometryWrapper>();
+        private readonly SortableBindingList<ImportedGeometryWrapper> _dataGridViewDataSource = new SortableBindingList<ImportedGeometryWrapper>();
         [Browsable(false)]
         public LevelSettings LevelSettings { get; set; }
 
-        private Color _correctColor;
-        private Color _wrongColor;
+        private readonly Color _correctColor;
+        private readonly Color _wrongColor;
 
         public ImportedGeometryManager()
         {

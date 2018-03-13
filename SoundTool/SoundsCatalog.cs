@@ -10,7 +10,7 @@ namespace SoundTool
     public class SoundsCatalog
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private static Dictionary<WadGameVersion, SortedDictionary<ushort, SoundCatalogInfo>> _catalog = new Dictionary<WadGameVersion, SortedDictionary<ushort, SoundCatalogInfo>>();
+        private static readonly Dictionary<WadGameVersion, SortedDictionary<ushort, SoundCatalogInfo>> _catalog = new Dictionary<WadGameVersion, SortedDictionary<ushort, SoundCatalogInfo>>();
 
         public static void LoadAllCatalogsFromXml(string path)
         {

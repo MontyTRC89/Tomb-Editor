@@ -41,7 +41,7 @@ namespace TombLib.Wad
             LoopBehaviour = WadSoundLoopBehaviour.None;
         }
 
-        private static Random PlayRng = new Random();
+        private static readonly Random PlayRng = new Random();
         public void Play()
         {
             if (Samples.Count < 0)

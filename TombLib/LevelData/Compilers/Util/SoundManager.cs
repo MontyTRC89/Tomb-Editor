@@ -17,14 +17,14 @@ namespace TombLib.LevelData.Compilers.Util
             public WadSoundInfoMetaData Data;
         }
 
-        private GameVersion _gameVersion;
-        private Dictionary<Hash, ushort> _soundInfoToMapIndexLookup = new Dictionary<Hash, ushort>();
-        private SortedSet<ushort> _freeSoundMapIndices = new SortedSet<ushort>(); // To remember free space in the middle of the sound map.
+        private readonly GameVersion _gameVersion;
+        private readonly Dictionary<Hash, ushort> _soundInfoToMapIndexLookup = new Dictionary<Hash, ushort>();
+        private readonly SortedSet<ushort> _freeSoundMapIndices = new SortedSet<ushort>(); // To remember free space in the middle of the sound map.
 
-        private List<WadSample> _samples = new List<WadSample>();
-        private List<uint> _sampleIndices = new List<uint>(); // Set them to filler zeros for TR4, TR5
-        private List<SoundDetail> _soundDetails = new List<SoundDetail>();
-        private List<ushort> _soundMap = new List<ushort>(); // 0xffff for empty sounds.
+        private readonly List<WadSample> _samples = new List<WadSample>();
+        private readonly List<uint> _sampleIndices = new List<uint>(); // Set them to filler zeros for TR4, TR5
+        private readonly List<SoundDetail> _soundDetails = new List<SoundDetail>();
+        private readonly List<ushort> _soundMap = new List<ushort>(); // 0xffff for empty sounds.
 
         public SoundManager(LevelSettings settings, Wad2 wad)
         {

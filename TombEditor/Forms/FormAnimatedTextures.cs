@@ -36,8 +36,8 @@ namespace TombEditor.Forms
         }
         private struct NgAnimatedTextureSettingPair
         {
-            public int Key;
-            public string Value;
+            public readonly int Key;
+            public readonly string Value;
 
             public NgAnimatedTextureSettingPair(int key,string value)
             {
@@ -51,17 +51,17 @@ namespace TombEditor.Forms
             }
         }
 
-        private Editor _editor;
-        private Cache<CachedImageInfo, Bitmap> _imageCache;
+        private readonly Editor _editor;
+        private readonly Cache<CachedImageInfo, Bitmap> _imageCache;
 
-        private Timer _previewTimer = new Timer();
+        private readonly Timer _previewTimer = new Timer();
         private AnimatedTextureFrame _previewCurrentFrame;
         private int _previewCurrentRepeatTimes;
         private const float _previewFps = 15;
         private const float _maxLegacyFrames = 16;
         private int _lastY;
 
-        private bool _isNg;
+        private readonly bool _isNg;
 
         public FormAnimatedTextures(Editor editor)
         {
