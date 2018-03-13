@@ -71,7 +71,7 @@ namespace SoundTool
 
         private void tR4CatalogToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _version = WadGameVersion.TR4;
+            _version = WadGameVersion.TR4_TRNG;
 
             buildMAINSFXToolStripMenuItem.Enabled = false;
             cbMandatorySound.Visible = true;
@@ -256,7 +256,7 @@ namespace SoundTool
                 case WadGameVersion.TR1: path += "TR1"; break;
                 case WadGameVersion.TR2: path += "TR2"; break;
                 case WadGameVersion.TR3: path += "TR3"; break;
-                case WadGameVersion.TR4: path += "TR4"; break;
+                case WadGameVersion.TR4_TRNG: path += "TR4"; break;
                 case WadGameVersion.TR5: path += "TR5"; break;
             }
             path += "\\Samples\\" + sample + ".wav";
