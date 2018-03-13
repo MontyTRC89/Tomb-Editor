@@ -3,7 +3,7 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
-    public struct WadStaticId : IWadObjectId, IEquatable<WadStaticId>, IComparable<WadStaticId>, IComparable
+    public struct WadStaticId : IWadObjectId, IEquatable<WadStaticId>, IComparable<WadStaticId>
     {
         public uint TypeId;
 

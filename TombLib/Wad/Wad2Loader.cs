@@ -58,17 +58,17 @@ namespace TombLib.Wad
                     wad.SuggestedGameVersion = (WadGameVersion)chunkIO.ReadChunkLong(chunkSize);
                     return true;
                 }
-                if (LoadTextures(chunkIO, id, wad, ref textures))
+                if (LoadTextures(chunkIO, id, ref textures))
                     return true;
-                else if (LoadSamples(chunkIO, id, wad, ref samples))
+                else if (LoadSamples(chunkIO, id, ref samples))
                     return true;
-                else if (LoadSoundInfos(chunkIO, id, wad, ref soundInfos, samples))
+                else if (LoadSoundInfos(chunkIO, id, ref soundInfos, samples))
                     return true;
                 else if (LoadFixedSoundInfos(chunkIO, id, wad, soundInfos))
                     return true;
-                else if (LoadMeshes(chunkIO, id, wad, ref meshes, textures))
+                else if (LoadMeshes(chunkIO, id, ref meshes, textures))
                     return true;
-                else if (LoadSprites(chunkIO, id, wad, ref sprites))
+                else if (LoadSprites(chunkIO, id, ref sprites))
                     return true;
                 else if (LoadSpriteSequences(chunkIO, id, wad, sprites))
                     return true;
@@ -89,7 +89,7 @@ namespace TombLib.Wad
             return wad;
         }
 
-        private static bool LoadTextures(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadTexture> outTextures)
+        private static bool LoadTextures(ChunkReader chunkIO, ChunkId idOuter, ref Dictionary<long, WadTexture> outTextures)
         {
             if (idOuter != Wad2Chunks.Textures)
                 return false;
@@ -124,7 +124,7 @@ namespace TombLib.Wad
             return true;
         }
 
-        private static bool LoadSamples(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSample> outSamples)
+        private static bool LoadSamples(ChunkReader chunkIO, ChunkId idOuter, ref Dictionary<long, WadSample> outSamples)
         {
             if (idOuter != Wad2Chunks.Samples)
                 return false;
@@ -167,7 +167,7 @@ namespace TombLib.Wad
             return true;
         }
 
-        private static bool LoadSoundInfos(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSoundInfo> outSoundInfos, Dictionary<long, WadSample> samples)
+        private static bool LoadSoundInfos(ChunkReader chunkIO, ChunkId idOuter, ref Dictionary<long, WadSoundInfo> outSoundInfos, Dictionary<long, WadSample> samples)
         {
             if (idOuter != Wad2Chunks.SoundInfosObsolete && idOuter != Wad2Chunks.SoundInfos)
                 return false;
@@ -269,7 +269,7 @@ namespace TombLib.Wad
             return true;
         }
 
-        private static bool LoadMeshes(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadMesh> outMeshes, Dictionary<long, WadTexture> textures)
+        private static bool LoadMeshes(ChunkReader chunkIO, ChunkId idOuter, ref Dictionary<long, WadMesh> outMeshes, Dictionary<long, WadTexture> textures)
         {
             if (idOuter != Wad2Chunks.Meshes)
                 return false;
@@ -411,7 +411,7 @@ namespace TombLib.Wad
             return true;
         }
 
-        private static bool LoadSprites(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSprite> outSprites)
+        private static bool LoadSprites(ChunkReader chunkIO, ChunkId idOuter, ref Dictionary<long, WadSprite> outSprites)
         {
             if (idOuter != Wad2Chunks.Sprites)
                 return false;
