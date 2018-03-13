@@ -17,6 +17,9 @@
         {
             this.components = new System.ComponentModel.Container();
             this.dataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.PreviewColumn = new System.Windows.Forms.DataGridViewImageColumn();
+            this.SizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.btExport = new DarkUI.Controls.DarkButton();
@@ -26,9 +29,6 @@
             this.btOk = new DarkUI.Controls.DarkButton();
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.PreviewColumn = new System.Windows.Forms.DataGridViewImageColumn();
-            this.SizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -56,6 +56,28 @@
             this.dataGridView.CellFormattingSafe += new DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventHandler(this.dataGridView_CellFormattingSafe);
             this.dataGridView.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
             this.dataGridView.Click += new System.EventHandler(this.dataGridView_Click);
+            // 
+            // PreviewColumn
+            // 
+            this.PreviewColumn.HeaderText = "Preview";
+            this.PreviewColumn.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.PreviewColumn.Name = "PreviewColumn";
+            this.PreviewColumn.ReadOnly = true;
+            this.PreviewColumn.Width = 80;
+            // 
+            // SizeColumn
+            // 
+            this.SizeColumn.HeaderText = "Size";
+            this.SizeColumn.Name = "SizeColumn";
+            this.SizeColumn.ReadOnly = true;
+            this.SizeColumn.Width = 80;
+            // 
+            // IdColumn
+            // 
+            this.IdColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.IdColumn.HeaderText = "Id";
+            this.IdColumn.Name = "IdColumn";
+            this.IdColumn.ReadOnly = true;
             // 
             // tableLayoutPanel1
             // 
@@ -152,28 +174,6 @@
             this.btCancel.TabIndex = 49;
             this.btCancel.Text = "Cancel";
             this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
-            // 
-            // PreviewColumn
-            // 
-            this.PreviewColumn.HeaderText = "Preview";
-            this.PreviewColumn.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.PreviewColumn.Name = "PreviewColumn";
-            this.PreviewColumn.ReadOnly = true;
-            this.PreviewColumn.Width = 80;
-            // 
-            // SizeColumn
-            // 
-            this.SizeColumn.HeaderText = "Size";
-            this.SizeColumn.Name = "SizeColumn";
-            this.SizeColumn.ReadOnly = true;
-            this.SizeColumn.Width = 80;
-            // 
-            // IdColumn
-            // 
-            this.IdColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.IdColumn.HeaderText = "Id";
-            this.IdColumn.Name = "IdColumn";
-            this.IdColumn.ReadOnly = true;
             // 
             // FormSpriteSequenceEditor
             // 

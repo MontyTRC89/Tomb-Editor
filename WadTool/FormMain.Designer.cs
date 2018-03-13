@@ -675,7 +675,7 @@
             this.darkButton2.Image = global::WadTool.Properties.Resources.edit_16;
             this.darkButton2.Location = new System.Drawing.Point(167, 3);
             this.darkButton2.Name = "darkButton2";
-            this.darkButton2.Size = new System.Drawing.Size(107, 23);
+            this.darkButton2.Size = new System.Drawing.Size(115, 23);
             this.darkButton2.TabIndex = 21;
             this.darkButton2.Text = "Rename";
             this.darkButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
