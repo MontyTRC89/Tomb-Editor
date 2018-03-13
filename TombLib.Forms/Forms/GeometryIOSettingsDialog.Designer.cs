@@ -1,4 +1,4 @@
-﻿namespace TombLib.GeometryIO
+﻿namespace TombLib.Forms
 {
     partial class GeometryIOSettingsDialog
     {

@@ -70,9 +70,10 @@
 // contributors exclude the implied warranties of merchantability, fitness for a
 // particular purpose and non-infringement.
 
-using TombLib.Graphics;
+using SharpDX;
+using SharpDX.Toolkit.Graphics;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
     using Vector3 = System.Numerics.Vector3;
 

@@ -1,17 +1,17 @@
-﻿using DarkUI.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using DarkUI.Forms;
+using TombLib.LevelData;
+using TombLib.Utils;
+using TombLib.Wad;
 using RateType = System.UInt64;
 using ObjectType = System.Object;
-using TombLib.LevelData;
-using TombLib.Wad;
-using System.Runtime.CompilerServices;
-using TombLib.Utils;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormSearch : DarkForm
     {

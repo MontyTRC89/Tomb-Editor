@@ -20,9 +20,9 @@
 
 using System;
 using System.Collections.Generic;
-using TombLib.Graphics;
+using SharpDX.Toolkit.Graphics;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
     using Vector3 = System.Numerics.Vector3;
     using Vector4 = System.Numerics.Vector4;

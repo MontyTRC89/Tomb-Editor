@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using DarkUI.Config;
+using DarkUI.Icons;
 
 namespace DarkUI.Controls
 {

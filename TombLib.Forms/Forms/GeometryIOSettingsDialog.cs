@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Forms;
+using TombLib.GeometryIO;
 
-namespace TombLib.GeometryIO
+namespace TombLib.Forms
 {
     public partial class GeometryIOSettingsDialog : DarkForm
     {

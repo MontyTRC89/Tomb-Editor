@@ -1,4 +1,4 @@
-﻿namespace TombEditor
+﻿namespace TombEditor.Forms
 {
     partial class FormChooseRoom
     {

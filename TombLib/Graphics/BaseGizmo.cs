@@ -1,6 +1,7 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Numerics;
+using TombLib.Graphics.Primitives;
 using TombLib.Utils;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 

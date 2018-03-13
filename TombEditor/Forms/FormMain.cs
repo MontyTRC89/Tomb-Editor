@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using TombLib.LevelData;
-using System.Numerics;
 using System.IO;
-using NLog;
-using TombLib.Utils;
+using System.Linq;
+using System.Numerics;
+using System.Windows.Forms;
 using DarkUI.Docking;
 using DarkUI.Forms;
+using NLog;
+using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;
-using TombLib;
-using System.Diagnostics;
+using TombLib.LevelData;
+using TombLib.Utils;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormMain : DarkForm
     {

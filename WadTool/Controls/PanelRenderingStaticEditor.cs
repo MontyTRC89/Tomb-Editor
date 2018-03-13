@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Graphics;
+using TombLib.Graphics.Primitives;
 using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 

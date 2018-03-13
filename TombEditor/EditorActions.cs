@@ -8,6 +8,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Windows.Forms;
+using TombEditor.Forms;
 using TombLib;
 using TombLib.Forms;
 using TombLib.GeometryIO;

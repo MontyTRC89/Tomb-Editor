@@ -1,7 +1,4 @@
-﻿using DarkUI.Config;
-using DarkUI.Forms;
-using NLog;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -9,11 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using DarkUI.Config;
+using DarkUI.Forms;
+using NLog;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormLevelSettings : DarkForm
     {

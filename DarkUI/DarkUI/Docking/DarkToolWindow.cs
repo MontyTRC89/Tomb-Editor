@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System;
+using DarkUI.Icons;
 
 namespace DarkUI.Docking
 {

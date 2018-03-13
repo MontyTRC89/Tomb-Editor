@@ -1,17 +1,17 @@
-﻿using DarkUI.Forms;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Numerics;
 using System.Windows.Forms;
+using DarkUI.Forms;
+using NLog;
 using TombLib.LevelData;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormTextureSounds : DarkForm
     {

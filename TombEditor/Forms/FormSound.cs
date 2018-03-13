@@ -2,12 +2,12 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using DarkUI.Forms;
+using NLog;
 using TombLib.LevelData;
 using TombLib.Wad;
-using NLog;
-using DarkUI.Forms;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormSound : DarkForm
     {

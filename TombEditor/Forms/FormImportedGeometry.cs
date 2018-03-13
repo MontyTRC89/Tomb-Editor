@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormImportedGeometry : DarkForm
     {

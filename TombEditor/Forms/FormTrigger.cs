@@ -1,15 +1,15 @@
-﻿using DarkUI.Forms;
-using NLog;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using DarkUI.Forms;
+using NLog;
 using TombLib;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.NG;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormTrigger : DarkForm
     {

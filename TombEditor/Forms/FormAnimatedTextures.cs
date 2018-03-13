@@ -1,19 +1,19 @@
-﻿using DarkUI.Controls;
-using DarkUI.Extensions;
-using DarkUI.Forms;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using DarkUI.Controls;
+using DarkUI.Extensions;
+using DarkUI.Forms;
+using NLog;
 using TombLib.LevelData;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormAnimatedTextures : DarkForm
     {

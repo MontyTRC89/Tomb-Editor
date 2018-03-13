@@ -71,9 +71,10 @@
 // particular purpose and non-infringement.
 
 using System;
-using TombLib.Graphics;
+using SharpDX;
+using SharpDX.Toolkit.Graphics;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
     using Vector3 = System.Numerics.Vector3;
 

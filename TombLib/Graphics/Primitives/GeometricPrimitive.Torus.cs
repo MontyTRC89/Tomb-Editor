@@ -73,9 +73,11 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using TombLib.Graphics;
+using SharpDX;
+using SharpDX.Toolkit.Graphics;
+using Vector2 = SharpDX.Vector2;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
     using Vector3 = System.Numerics.Vector3;
 

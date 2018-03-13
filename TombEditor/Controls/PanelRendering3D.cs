@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
 using TombLib.Graphics;
+using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;

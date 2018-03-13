@@ -1,8 +1,8 @@
-﻿using DarkUI.Forms;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using DarkUI.Forms;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormInputBox : DarkForm
     {

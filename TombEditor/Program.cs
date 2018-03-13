@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
+using TombEditor.Forms;
 using TombLib.NG;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;

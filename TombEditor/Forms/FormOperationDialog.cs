@@ -1,14 +1,14 @@
-﻿using DarkUI.Extensions;
-using DarkUI.Forms;
-using NLog;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using DarkUI.Extensions;
+using DarkUI.Forms;
+using NLog;
 using TombLib.Forms;
 using TombLib.Utils;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormOperationDialog : DarkForm, IProgressReporter
     {

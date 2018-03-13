@@ -2,6 +2,7 @@
 using System;
 using System.Numerics;
 using System.Windows.Forms;
+using TombEditor.Forms;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;

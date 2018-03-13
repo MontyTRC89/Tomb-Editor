@@ -19,10 +19,12 @@
 // THE SOFTWARE.
 
 using System;
+using SharpDX;
 using SharpDX.Direct3D;
-using TombLib.Graphics;
+using SharpDX.Toolkit.Graphics;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
     /// <summary>
     /// A geometric primitive used to draw a simple model built from a set of vertices and indices.
