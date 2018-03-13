@@ -21,7 +21,7 @@ using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
-    public partial class PanelRendering3D : Panel
+    public class PanelRendering3D : Panel
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 

@@ -18,7 +18,7 @@ namespace DarkUI.Controls
         public DarkFloatingToolboxContainer(DarkFloatingToolbox toolbox) { Toolbox = toolbox; }
     }
 
-    public partial class DarkFloatingToolbox : UserControl
+    public class DarkFloatingToolbox : UserControl
     {
         [Category("Layout")]
         [Description("Determines snapping distance to parent control")]

@@ -23,7 +23,7 @@ namespace TombLib.Wad
         }
     }
 
-    public partial class Wad2 : IDisposable
+    public class Wad2 : IDisposable
     {
         public WadGameVersion SuggestedGameVersion { get; set; }
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();

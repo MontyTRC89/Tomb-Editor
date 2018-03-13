@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace TombEditor.Controls
 {
-    public partial class PanelPalette : PictureBox
+    public class PanelPalette : PictureBox
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color SelectedColor
