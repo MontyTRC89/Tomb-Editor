@@ -2103,7 +2103,7 @@ namespace TombEditor.Controls
                         _device.SetRasterizerState(_rasterizerWireframe);
 
                         string message = instance.ToString();
-                        message += "\nUnavailable " + instance.ItemType.ToString();
+                        message += "\nUnavailable " + instance.ItemType;
 
                         // Object position
                         message += "\n" + GetObjectPositionString(room, instance);
@@ -2139,7 +2139,7 @@ namespace TombEditor.Controls
                         _device.SetRasterizerState(_rasterizerWireframe);
 
                         string message = instance.ToString();
-                        message += "\nUnavailable " + instance.ItemType.ToString();
+                        message += "\nUnavailable " + instance.ItemType;
 
                         DrawDebugString(message, instance.RotationPositionMatrix * viewProjection);
 
@@ -2267,7 +2267,7 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString() + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
+                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId] + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
@@ -2360,7 +2360,7 @@ namespace TombEditor.Controls
                 if (_editor.SelectedObject == instance)
                 {
                     // Object position
-                    DrawDebugString(instance.ToString() + "\n" +
+                    DrawDebugString(instance + "\n" +
                         GetObjectPositionString(_editor.SelectedRoom, instance), instance.ObjectMatrix * viewProjection);
 
                     // Add the line height of the object
@@ -2427,7 +2427,7 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = _editor.Level.Wad.Statics[instance.WadObjectId].ToString() + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
+                    string message = _editor.Level.Wad.Statics[instance.WadObjectId] + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance);

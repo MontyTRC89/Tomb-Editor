@@ -59,7 +59,7 @@ namespace TombLib.Graphics
 
             // Initialize the mesh
             var msh = staticMesh.Mesh;
-            var mesh = new StaticMesh(device, staticMesh.ToString() + "_mesh");
+            var mesh = new StaticMesh(device, staticMesh + "_mesh");
 
             mesh.Submeshes.Add(materialOpaque, new Submesh(materialOpaque));
             mesh.Submeshes.Add(materialOpaqueDoubleSided, new Submesh(materialOpaqueDoubleSided));

@@ -61,7 +61,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Light " + Type.ToString() +
+            return "Light " + Type +
                 ", X = " + Position.X +
                 ", Y = " + Position.Y +
                 ", Z = " + Position.Z;

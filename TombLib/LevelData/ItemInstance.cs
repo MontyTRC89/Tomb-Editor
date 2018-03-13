@@ -23,7 +23,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return ItemType.ToString() +
+            return ItemType +
                    ", Room = " + (Room?.ToString() ?? "NULL") +
                    ", X = " + SectorPosition.X +
                    ", Y = " + SectorPosition.Y +

@@ -127,7 +127,7 @@ namespace TombEditor
 
         void IProgressReporter.ReportProgress(float progress, string message)
         {
-            logger.Info(progress.ToString() + " - " + message);
+            logger.Info(progress + " - " + message);
             AddMessage(progress, message, false);
         }
 

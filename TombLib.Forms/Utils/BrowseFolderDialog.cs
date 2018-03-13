@@ -109,7 +109,7 @@ namespace TombLib.Utils
                 frm.CheckFileExists = false;
                 frm.CheckPathExists = true;
                 frm.CreatePrompt = false;
-                frm.Filter = "|" + Guid.Empty.ToString();
+                frm.Filter = "|" + Guid.Empty;
                 frm.FileName = "any";
                 if (this.InitialFolder != null) { frm.InitialDirectory = this.InitialFolder; }
                 frm.OverwritePrompt = false;

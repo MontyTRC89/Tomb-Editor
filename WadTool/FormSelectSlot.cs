@@ -58,7 +58,7 @@ namespace WadTool
                 if (!string.IsNullOrEmpty(searchKeyword))
                     if (objectSlotSuggestion.Value.IndexOf(searchKeyword, StringComparison.OrdinalIgnoreCase) == -1)
                         continue;
-                string label = "(" + objectSlotSuggestion.Key + ") " + objectSlotSuggestion.Value.ToString();
+                string label = "(" + objectSlotSuggestion.Key + ") " + objectSlotSuggestion.Value;
                 nodes.Add(new DarkTreeNode(label) { Tag = objectSlotSuggestion.Key });
             }
             treeSlots.Nodes.Clear();

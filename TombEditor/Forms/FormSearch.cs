@@ -291,7 +291,7 @@ namespace TombEditor
             {
                 KeyValuePair<RateType, ObjectType> entry = _cachedSortedObjects.ElementAt(e.RowIndex);
                 Room room = GetRoom(entry.Value);
-                e.Value = room == null ? "<Unknown>" : (_editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room.ToString());
+                e.Value = room == null ? "<Unknown>" : (_editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room);
             }
             else if (objectList.Columns[e.ColumnIndex].Name == objectListColumnType.Name)
             {

@@ -684,7 +684,7 @@ namespace TombEditor
 
         public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
         {
-            if (DarkMessageBox.Show(owner, "Do you really want to delete " + instance.ToString() + "?",
+            if (DarkMessageBox.Show(owner, "Do you really want to delete " + instance + "?",
                     "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 

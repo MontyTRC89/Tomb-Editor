@@ -74,7 +74,7 @@ namespace WadTool
                 catch (Exception exc)
                 {
                     logger.Error(exc, "Unable to open file '" + fileDialog.FileName + "'.");
-                    DarkMessageBox.Show(this, "Unable to load sprite from file '" + fileDialog.FileName + "'. " + exc.ToString(), "Unable to load sprite.", MessageBoxIcon.Error);
+                    DarkMessageBox.Show(this, "Unable to load sprite from file '" + fileDialog.FileName + "'. " + exc, "Unable to load sprite.", MessageBoxIcon.Error);
                     return null;
                 }
             }
@@ -115,7 +115,7 @@ namespace WadTool
                 catch (Exception exc)
                 {
                     logger.Error(exc, "Unable to save file '" + fileDialog.FileName + "'.");
-                    DarkMessageBox.Show(this, "Unable to save sprite. " + exc.ToString(), "Saving sprite failed.", MessageBoxIcon.Error);
+                    DarkMessageBox.Show(this, "Unable to save sprite. " + exc, "Saving sprite failed.", MessageBoxIcon.Error);
                 }
             }
         }

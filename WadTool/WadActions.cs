@@ -35,7 +35,10 @@ namespace WadTool
                         dialog.InitialDirectory = Path.GetDirectoryName(previousFilePath);
                         dialog.FileName = Path.GetFileName(previousFilePath);
                     }
-                    catch { }
+                    catch
+                    {
+                        // ignored
+                    }
 
                 dialog.Filter = Wad2.WadFormatExtensions.GetFilter();
                 dialog.Title = "Open " + (destination ? "destination" : "source") + " WAD - Wad2 - Level";
@@ -86,7 +89,10 @@ namespace WadTool
                 {
                     outPath = Path.ChangeExtension(outPath, "wad2");
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
 
 
             // Ask the  about it
@@ -114,7 +120,7 @@ namespace WadTool
             catch (Exception exc)
             {
                 logger.Warn(exc, "Unable to save to '" + outPath + "'");
-                DarkMessageBox.Show(owner, "Unable to save to '" + outPath + "'.   " + exc.ToString(), "Unable to save.");
+                DarkMessageBox.Show(owner, "Unable to save to '" + outPath + "'.   " + exc, "Unable to save.");
             }
         }
 

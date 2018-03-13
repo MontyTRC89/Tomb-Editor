@@ -115,12 +115,12 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            string output = TriggerType.ToString() + " ";
+            string output = TriggerType + " ";
             if (output.IndexOf("trigger", StringComparison.OrdinalIgnoreCase) == -1)
                 output += "Trigger ";
             output += "in room '" + (Room?.ToString() ?? "NULL") + "' ";
             output += "on sectors [" + Area.X0 + ", " + Area.Y0 + " to " + Area.X1 + ", " + Area.Y1 + "] ";
-            output += "for " + TargetType.ToString() + " ";
+            output += "for " + TargetType + " ";
             output += "(Target: " + Target + ", Timer: " + Timer + ", Extra: " + Extra + ")";
             return output;
         }

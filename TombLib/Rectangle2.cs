@@ -88,7 +88,7 @@ namespace TombLib
         public static Rectangle2 FromLTRB(float x0, float y0, float width, float height) => new Rectangle2(x0, y0, x0 + width, y0 + height);
 
         public bool Equals(Rectangle2 other) => this == other;
-        public override string ToString() => Start.ToString() + " to " + End.ToString();
+        public override string ToString() => Start + " to " + End;
         public override bool Equals(object obj)
         {
             if (!(obj is Rectangle2))

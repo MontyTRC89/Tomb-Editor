@@ -140,7 +140,7 @@ namespace TombLib.LevelData
 
         public static string VariableCreate(VariableType type)
         {
-            return VariableBegin + type.ToString() + VariableEnd;
+            return VariableBegin + type + VariableEnd;
         }
 
         public string GetVariable(VariableType type)

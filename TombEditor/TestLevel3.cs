@@ -401,7 +401,7 @@ namespace TombEditor
 
             for (int n = 0; n < Overlaps.Length; n++)
             {
-                writer.WriteLine("[" + n + "] " + (Overlaps[n] & 0x7fff).ToString());
+                writer.WriteLine("[" + n + "] " + (Overlaps[n] & 0x7fff));
                 if ((Overlaps[n] & 0x8000) != 0)
                     writer.WriteLine("--- END OF LIST ---");
             }

@@ -154,7 +154,7 @@ namespace TombLib.Graphics
             for (int m = 0; m < mov.Meshes.Count; m++)
             {
                 WadMesh msh = mov.Meshes[m];
-                var mesh = new SkinnedMesh(device, mov.ToString() + "_mesh_" + m.ToString());
+                var mesh = new SkinnedMesh(device, mov + "_mesh_" + m);
 
                 mesh.Submeshes.Add(materialOpaque, new Submesh(materialOpaque));
                 mesh.Submeshes.Add(materialOpaqueDoubleSided, new Submesh(materialOpaqueDoubleSided));

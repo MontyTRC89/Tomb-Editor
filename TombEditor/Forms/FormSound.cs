@@ -88,7 +88,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Warn(exc, "Unable to play sample");
-                DarkMessageBox.Show(this, "Playing sound failed. " + exc.ToString(), "Unable to play sound.", MessageBoxIcon.Information);
+                DarkMessageBox.Show(this, "Playing sound failed. " + exc, "Unable to play sound.", MessageBoxIcon.Information);
             }
         }
 

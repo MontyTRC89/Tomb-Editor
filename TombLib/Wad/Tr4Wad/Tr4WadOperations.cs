@@ -348,7 +348,7 @@ namespace TombLib.Wad.Tr4Wad
             for (int j = 0; j < oldMoveable.NumPointers - 1; j++)
             {
                 WadBone bone = new WadBone();
-                bone.Name = "bone_" + (j + 1).ToString();
+                bone.Name = "bone_" + (j + 1);
                 bone.Parent = null;
                 bone.Transform = Matrix4x4.Identity;
                 bone.Translation = Vector3.Zero;
