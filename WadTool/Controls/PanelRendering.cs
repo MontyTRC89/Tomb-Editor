@@ -143,7 +143,7 @@ namespace WadTool.Controls
                         _device.SetVertexBuffer(0, model.VertexBuffer);
                         _device.SetIndexBuffer(model.IndexBuffer, true);
 
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
 
                         mioEffect.Parameters["Color"].SetValue(Vector4.One);
 
@@ -198,7 +198,7 @@ namespace WadTool.Controls
                         for (int i = 0; i < model.Meshes.Count; i++)
                         {
                             StaticMesh mesh = model.Meshes[i];
-                            _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
+                            _layout = VertexInputLayout.FromBuffer(0, model.VertexBuffer);
                             _device.SetVertexInputLayout(_layout);
 
                             mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());

@@ -141,7 +141,7 @@ namespace TombEditor.Controls
                 _device.SetVertexBuffer(0, model.VertexBuffer);
                 _device.SetIndexBuffer(model.IndexBuffer, true);
 
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer));
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
@@ -149,7 +149,7 @@ namespace TombEditor.Controls
 
                     if (_layout == null)
                     {
-                        _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
+                        _layout = VertexInputLayout.FromBuffer(0, model.VertexBuffer);
                         _device.SetVertexInputLayout(_layout);
                     }
 
@@ -170,7 +170,7 @@ namespace TombEditor.Controls
                 _device.SetVertexBuffer(0, skin.VertexBuffer);
                 _device.SetIndexBuffer(skin.IndexBuffer, true);
 
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, skin.VertexBuffer));
 
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);

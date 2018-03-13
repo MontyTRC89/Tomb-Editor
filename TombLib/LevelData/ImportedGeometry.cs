@@ -151,7 +151,7 @@ namespace TombLib.LevelData
                 if (Vertices.Count == 0)
                     return;
 
-                VertexBuffer = Buffer.Vertex.New<ImportedGeometryVertex>(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+                VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
                 IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
             }
         }

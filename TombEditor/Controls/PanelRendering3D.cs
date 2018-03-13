@@ -872,7 +872,7 @@ namespace TombEditor.Controls
                 }
             }
 
-            _skyVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_device, vertices.ToArray<EditorVertex>(), SharpDX.Direct3D11.ResourceUsage.Default);
+            _skyVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_device, vertices.ToArray<EditorVertex>(), SharpDX.Direct3D11.ResourceUsage.Default);
         }
 
         private void RebuildTextureAtlas()
@@ -2237,7 +2237,7 @@ namespace TombEditor.Controls
                 if (_lastObject == null)
                 {
                     _device.SetVertexInputLayout(
-                        VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
+                        VertexInputLayout.FromBuffer(0, skin.VertexBuffer));
                 }
 
                 skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
@@ -2391,7 +2391,7 @@ namespace TombEditor.Controls
                 if (_lastObject == null)
                 {
                     _device.SetVertexInputLayout(
-                        VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer));
+                        VertexInputLayout.FromBuffer(0, model.VertexBuffer));
                 }
 
                 if (_lastObject == null || instance.WadObjectId != _lastObject.WadObjectId)
@@ -2457,7 +2457,7 @@ namespace TombEditor.Controls
 
             SkinnedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[WadMoveableId.SkyBox];
 
-            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skinnedModel.VertexBuffer));
+            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, skinnedModel.VertexBuffer));
 
             /*_device.SetVertexBuffer(0, _skyVertexBuffer);
 
@@ -3961,7 +3961,7 @@ namespace TombEditor.Controls
             // Prepare the Vertex Buffer
             if (_objectHeightLineVertexBuffer != null)
                 _objectHeightLineVertexBuffer.Dispose();
-            _objectHeightLineVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device,
+            _objectHeightLineVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_device,
                 vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             _drawHeightLine = true;
@@ -4009,7 +4009,7 @@ namespace TombEditor.Controls
             // Prepare the Vertex Buffer
             if (_flybyPathVertexBuffer != null)
                 _flybyPathVertexBuffer.Dispose();
-            _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_device, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             _drawFlybyPath = true;
         }

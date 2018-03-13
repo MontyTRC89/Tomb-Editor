@@ -246,7 +246,7 @@ namespace TombLib.LevelData
                     @object.Transform(transformation, oldRoom.SectorSize);
                     @object.TransformRoomReferences(room =>
                     {
-                        int index = Array.IndexOf<Room>(oldRooms, room);
+                        int index = Array.IndexOf(oldRooms, room);
                         if (index == -1)
                             return room;
                         else
@@ -260,13 +260,13 @@ namespace TombLib.LevelData
             for (int i = 0; i < oldRooms.Length; ++i)
             {
                 if (oldRooms[i].AlternateRoom != null)
-                    newRooms[i].AlternateRoom = newRooms[Array.IndexOf<Room>(oldRooms, oldRooms[i].AlternateRoom)];
+                    newRooms[i].AlternateRoom = newRooms[Array.IndexOf(oldRooms, oldRooms[i].AlternateRoom)];
                 if (oldRooms[i].AlternateBaseRoom != null)
-                    newRooms[i].AlternateBaseRoom = newRooms[Array.IndexOf<Room>(oldRooms, oldRooms[i].AlternateBaseRoom)];
+                    newRooms[i].AlternateBaseRoom = newRooms[Array.IndexOf(oldRooms, oldRooms[i].AlternateBaseRoom)];
             }
             for (int i = 0; i < oldRooms.Length; ++i)
             {
-                int roomIndex = Array.IndexOf<Room>(Rooms, oldRooms[i]);
+                int roomIndex = Array.IndexOf(Rooms, oldRooms[i]);
                 Rooms[roomIndex] = newRooms[i];
             }
 

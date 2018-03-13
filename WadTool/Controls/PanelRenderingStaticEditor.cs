@@ -188,7 +188,7 @@ namespace WadTool.Controls
                 {
                     StaticMesh mesh = model.Meshes[i];
 
-                    _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer);
+                    _layout = VertexInputLayout.FromBuffer(0, model.VertexBuffer);
                     _device.SetVertexInputLayout(_layout);
 
                     mioEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
@@ -240,7 +240,7 @@ namespace WadTool.Controls
             {
                 // Draw the grid
                 _device.SetVertexBuffer(0, _plane.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SolidVertex>(0, _plane.VertexBuffer));
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
                 _device.SetIndexBuffer(_plane.IndexBuffer, true);
 
                 solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());

@@ -218,7 +218,7 @@ namespace TombLib.Wad.Tr4Wad
                 for (int i = 0; i < numTextures; i++)
                 {
                     wad_object_texture text;
-                    reader.ReadBlock<wad_object_texture>(out text);
+                    reader.ReadBlock(out text);
                     Textures.Add(text);
                 }
 

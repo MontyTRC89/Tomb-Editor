@@ -206,7 +206,7 @@ namespace TombEditor
                     RaiseEvent(new SelectedRoomsChangedEvent { Previous = previous, Current = value });
             }
         }
-        public bool SelectedRoomsContains(Room room) => Array.IndexOf<Room>(_selectedRooms, room) != -1;
+        public bool SelectedRoomsContains(Room room) => Array.IndexOf(_selectedRooms, room) != -1;
 
         public class SelectedRoomChangedEvent : SelectedRoomsChangedEvent
         {
@@ -258,7 +258,7 @@ namespace TombEditor
                 {
                     if (value.Room == null)
                         throw new ArgumentException("The object to be selected is not inside a room.");
-                    if (Array.IndexOf<Room>(Level.Rooms, value.Room) == -1)
+                    if (Array.IndexOf(Level.Rooms, value.Room) == -1)
                         throw new ArgumentException("The object to be selected is not part of the level.");
                 }
                 var previous = _selectedObject;
