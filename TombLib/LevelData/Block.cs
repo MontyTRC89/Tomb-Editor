@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
-using TombLib;
-using TombLib.LevelData.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData

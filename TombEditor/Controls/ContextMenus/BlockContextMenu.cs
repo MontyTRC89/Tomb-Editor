@@ -1,11 +1,4 @@
-﻿using DarkUI.Controls;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;

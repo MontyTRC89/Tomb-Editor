@@ -1,6 +1,4 @@
 ﻿using NLog;
-using System;
-using System.Collections.Generic;
 
 namespace TombLib.Utils
 {

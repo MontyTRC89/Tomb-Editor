@@ -72,13 +72,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using TombLib.Graphics;
 
 namespace SharpDX.Toolkit.Graphics
 {
     using Vector3 = System.Numerics.Vector3;
-    using Vector4 = System.Numerics.Vector4;
 
     public partial class GeometricPrimitive
     {

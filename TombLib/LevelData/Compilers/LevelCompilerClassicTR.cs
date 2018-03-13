@@ -1,11 +1,7 @@
-﻿using NAudio.Wave;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
-using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 

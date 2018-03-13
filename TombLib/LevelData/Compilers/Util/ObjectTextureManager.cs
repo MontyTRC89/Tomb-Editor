@@ -1,14 +1,11 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TombLib.IO;
-using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.Util

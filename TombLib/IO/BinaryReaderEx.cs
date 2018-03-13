@@ -1,8 +1,5 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;

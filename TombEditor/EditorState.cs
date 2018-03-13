@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using TombLib;
+﻿using TombLib;
 
 namespace TombEditor
 {

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.LevelData

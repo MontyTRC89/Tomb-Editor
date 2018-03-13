@@ -1,11 +1,7 @@
-﻿using SharpDX.Toolkit;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 

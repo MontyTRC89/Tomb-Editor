@@ -2,7 +2,6 @@
 using DarkUI.Forms;
 using NLog;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -11,9 +10,7 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Forms;
-using TombLib.IO;
 using TombLib.LevelData;
-using TombLib.LevelData.IO;
 using TombLib.Utils;
 
 namespace TombEditor

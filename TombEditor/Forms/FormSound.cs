@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using TombLib.LevelData;
-using System.IO;
-using System.Media;
 using TombLib.Wad;
 using NLog;
 using DarkUI.Forms;

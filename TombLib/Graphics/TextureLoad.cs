@@ -2,9 +2,7 @@
 using SharpDX.Direct3D11;
 using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Numerics;
 using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
 
 namespace TombLib.Graphics

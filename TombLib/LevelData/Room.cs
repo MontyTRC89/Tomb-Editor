@@ -1,12 +1,10 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.Graphics;
-using TombLib.LevelData.Compilers;
 using TombLib.Utils;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using Texture = TombLib.Utils.Texture;

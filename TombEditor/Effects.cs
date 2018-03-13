@@ -1,13 +1,8 @@
 ﻿using NLog;
-using SharpDX.D3DCompiler;
-using SharpDX.Direct3D11;
 using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 
 namespace TombEditor

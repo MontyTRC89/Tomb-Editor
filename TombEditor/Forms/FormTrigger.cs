@@ -1,21 +1,13 @@
-﻿using DarkUI.Controls;
-using DarkUI.Forms;
+﻿using DarkUI.Forms;
 using NLog;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.NG;
-using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {

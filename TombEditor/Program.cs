@@ -2,11 +2,8 @@
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using TombLib.Graphics;
 using TombLib.NG;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;

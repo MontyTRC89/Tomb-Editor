@@ -1,11 +1,4 @@
-﻿using NLog;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using TombLib.NG;
+﻿using System;
 
 namespace TombLib.LevelData
 {

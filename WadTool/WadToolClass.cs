@@ -1,14 +1,6 @@
-﻿using SharpDX.Direct3D;
-using SharpDX.Toolkit.Graphics;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
 using TombLib.Wad;
-using TombLib.Wad.Catalog;
 
 namespace WadTool
 {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using TombLib.IO;
-using TombLib.LevelData;
 
 namespace TombLib.LevelData.Compilers
 {

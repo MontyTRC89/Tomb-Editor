@@ -3,16 +3,11 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using TombLib.Forms;
-using TombLib.GeometryIO;
-using TombLib.LevelData;
-using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.Diagnostics;
-using NLog;
 using TombLib.Graphics;
 using DarkUI.Controls;
 
