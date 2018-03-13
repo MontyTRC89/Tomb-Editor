@@ -303,7 +303,7 @@ namespace TombEditor
                     _editor.Action = null;
                     _editor.SelectedSectors = SectorSelection.None;
                     _editor.SelectedObject = null;
-                    _editor.SelectedRooms = new Room[] { _editor.SelectedRoom };
+                    _editor.SelectedRooms = new[] { _editor.SelectedRoom };
                     break;
 
                 case Keys.F1: // 2D map mode
@@ -891,7 +891,7 @@ namespace TombEditor
             if (_editor.Mode == EditorMode.Map2D)
                 EditorActions.DeleteRooms(_editor.SelectedRooms, this);
             else
-                EditorActions.DeleteRooms(new Room[] { _editor.SelectedRoom }, this);
+                EditorActions.DeleteRooms(new[] { _editor.SelectedRoom }, this);
         }
 
         private void selectConnectedRoomsToolStripMenuItem_Click(object sender, EventArgs e)

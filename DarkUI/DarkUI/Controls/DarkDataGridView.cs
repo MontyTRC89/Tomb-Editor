@@ -175,8 +175,8 @@ namespace DarkUI.Controls
                     return;
 
                 // Paste string
-                string[] rowSeparator = new string[] { "\r", "\n" };
-                string[] columnSeperator = new string[] { "\t" };
+                string[] rowSeparator = new[] { "\r", "\n" };
+                string[] columnSeperator = new[] { "\t" };
                 string[] pastedRows = clipboardString.Split(rowSeparator, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < pastedRows.GetLength(0); ++i)
                 {

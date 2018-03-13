@@ -89,7 +89,7 @@ namespace TombEditor
                     EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
                 }
                 RoomListChange();
-                SelectedRooms = new Room[] { _level.Rooms.First(room => room != null) };
+                SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
                 ResetCamera();
                 LoadedWadsChange(value.Wad);
                 LoadedTexturesChange();
@@ -225,7 +225,7 @@ namespace TombEditor
             {
                 if (value == _selectedRooms[0])
                     return;
-                SelectedRooms = new Room[] { value };
+                SelectedRooms = new[] { value };
             }
         }
 

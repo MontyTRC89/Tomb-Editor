@@ -1952,7 +1952,7 @@ namespace TombEditor
             _editor.Action = null;
             _editor.SelectedSectors = SectorSelection.None;
             _editor.SelectedObject = null;
-            _editor.SelectedRooms = new Room[] { _editor.SelectedRoom };
+            _editor.SelectedRooms = new[] { _editor.SelectedRoom };
 
             _editor.RoomSectorPropertiesChange(room);
             _editor.RoomSectorPropertiesChange(destination);
@@ -2516,7 +2516,7 @@ namespace TombEditor
 
         public static void ExportCurrentRoom(IWin32Window owner)
         {
-            ExportRooms(owner, new Room[] { _editor.SelectedRoom });
+            ExportRooms(owner, new[] { _editor.SelectedRoom });
         }
 
         public static void ExportRooms(IWin32Window owner, IEnumerable<Room> rooms)

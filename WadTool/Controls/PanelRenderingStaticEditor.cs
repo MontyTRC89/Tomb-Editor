@@ -135,7 +135,7 @@ namespace WadTool.Controls
             var p6 = new SolidVertex(new Vector3(box.Maximum.X, box.Maximum.Y, box.Maximum.Z));
             var p7 = new SolidVertex(new Vector3(box.Minimum.X, box.Maximum.Y, box.Maximum.Z));
 
-            var vertices = new SolidVertex[]
+            var vertices = new[]
             {
                 p4, p5, p5, p1, p1, p0, p0, p4,
                     p5, p6, p6, p2, p2, p1, p1, p5,

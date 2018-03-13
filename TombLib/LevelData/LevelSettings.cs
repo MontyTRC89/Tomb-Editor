@@ -388,7 +388,7 @@ namespace TombLib.LevelData
 
         public void ImportedGeometryUpdate(ImportedGeometry geometry, ImportedGeometryInfo info)
         {
-            ImportedGeometryUpdate(new ImportedGeometryUpdateInfo[] { new ImportedGeometryUpdateInfo(geometry, info) });
+            ImportedGeometryUpdate(new[] { new ImportedGeometryUpdateInfo(geometry, info) });
         }
 
         public ImportedGeometry ImportedGeometryFromID(ImportedGeometry.UniqueIDType uniqueID)
@@ -400,10 +400,10 @@ namespace TombLib.LevelData
         }
 
         public static IEnumerable<FileFormat> FileFormatsLoadRawExtraTexture =>
-            new FileFormat[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
-        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevel = new FileFormat[] { new FileFormat("Tomb Editor Level", "prj2") };
-        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelPrj = new FileFormat[] { new FileFormat("Tomb Editor Level", "prj") };
-        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelCompiled = new FileFormat[]
+            new[] { new FileFormat("Raw sky/font image", "raw", "pc") }.Concat(ImageC.FromFileFileExtensions);
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevel = new[] { new FileFormat("Tomb Editor Level", "prj2") };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelPrj = new[] { new FileFormat("Tomb Editor Level", "prj") };
+        public static readonly IReadOnlyCollection<FileFormat> FileFormatsLevelCompiled = new[]
         {
             new FileFormat("Tomb Raider I level", "phd"),
             new FileFormat("Tomb Raider II/III level", "tr2"),

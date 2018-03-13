@@ -112,7 +112,7 @@ namespace SharpDX.Toolkit.Graphics
             /// <returns>A cube.</returns>
             public static GeometricPrimitive New(GraphicsDevice device, float sizeX, float sizeY, float sizeZ)
             {
-                var vertices = new SolidVertex[]
+                var vertices = new[]
                 {
                     new SolidVertex(new Vector3(-sizeX, -sizeY, -sizeZ)),
                     new SolidVertex(new Vector3(sizeX, -sizeY, -sizeZ)),

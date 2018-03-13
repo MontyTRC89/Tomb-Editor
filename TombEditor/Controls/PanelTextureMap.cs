@@ -524,7 +524,7 @@ namespace TombEditor.Controls
             if (selectedTexture.Texture == VisibleTexture)
             {
                 // This texture is currently selected
-                PointF[] points = new PointF[]
+                PointF[] points = new[]
                 {
                     ToVisualCoord(selectedTexture.TexCoord0),
                     ToVisualCoord(selectedTexture.TexCoord1),
@@ -533,14 +533,14 @@ namespace TombEditor.Controls
                 };
 
                 // Draw fill color
-                e.Graphics.FillPolygon(textureSelectionBrush, new PointF[] { points[0], points[2], points[3] });
+                e.Graphics.FillPolygon(textureSelectionBrush, new[] { points[0], points[2], points[3] });
                 if (DrawTriangle)
-                    e.Graphics.FillPolygon(textureSelectionBrushTriangle, new PointF[] { points[0], points[1], points[2] });
+                    e.Graphics.FillPolygon(textureSelectionBrushTriangle, new[] { points[0], points[1], points[2] });
 
                 // Draw outlines
                 e.Graphics.DrawPolygon(textureSelectionPen, points);
                 if (DrawTriangle)
-                    e.Graphics.DrawPolygon(textureSelectionPenTriangle, new PointF[] { points[0], points[1], points[2] });
+                    e.Graphics.DrawPolygon(textureSelectionPenTriangle, new[] { points[0], points[1], points[2] });
 
                 for (int i = 0; i < 4; ++i)
                 {

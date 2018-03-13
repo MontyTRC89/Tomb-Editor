@@ -33,7 +33,7 @@ namespace TombLib.Graphics
 
                     //return Texture2D.New(graphicsDevice, description, new DataBox[] { new DataBox(lockData.Scan0, lockData.Stride, 0) }); //Only for the none toolkit version which unfortunately we cannot use currently.
                     result = Texture2D.New(graphicsDevice, description.Width, description.Height, description.MipLevels, description.Format,
-                            new SharpDX.DataBox[] { new SharpDX.DataBox(data, image.Width * Utils.ImageC.PixelSize, 0) }, TextureFlags.ShaderResource, 1, description.Usage);
+                            new[] { new SharpDX.DataBox(data, image.Width * Utils.ImageC.PixelSize, 0) }, TextureFlags.ShaderResource, 1, description.Usage);
                     });
             }
             catch (Exception exc)

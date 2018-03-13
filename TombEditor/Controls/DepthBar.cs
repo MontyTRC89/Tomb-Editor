@@ -197,7 +197,7 @@ namespace TombEditor.Controls
                                             {
                                                 _roomMouseClicked = roomSequences[i][j].Room;
                                                 _roomMouseOffset = mouseDepth - _roomMouseClicked.Position.Y;
-                                                SelectedRoom?.Invoke(new Room[] { _roomMouseClicked });
+                                                SelectedRoom?.Invoke(new[] { _roomMouseClicked });
                                                 InvalidateParent?.Invoke();
                                                 _selectionMode = SelectionMode.RoomMove;
                                                 return false;
@@ -460,7 +460,7 @@ namespace TombEditor.Controls
 
             if (selection)
             {
-                PointF[] heightPolyPoints = new PointF[]
+                PointF[] heightPolyPoints = new[]
                 {
                     new PointF(barArea.X - _heightStringArrowSize - 4, screenPosY + _heightStringArrowSize / 1.5f),
                     new PointF(barArea.X - _heightStringArrowSize - 4, screenPosY - _heightStringArrowSize / 1.5f),

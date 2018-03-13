@@ -11,7 +11,7 @@ namespace TombLib.Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static IReadOnlyCollection<FileFormat> FileFormats = new FileFormat[] { new FileFormat("Wad2 file", "wad2") };
+        public static IReadOnlyCollection<FileFormat> FileFormats = new[] { new FileFormat("Wad2 file", "wad2") };
 
         public static void SaveToFile(Wad2 wad, string filename)
         {

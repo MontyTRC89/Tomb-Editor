@@ -612,7 +612,7 @@ namespace TombEditor
                     AnimatedTextureFrame frame = set.Frames[i];
                     if (frame.Texture == SelectedTexture.Texture)
                     {
-                        PointF[] edges = new PointF[]
+                        PointF[] edges = new[]
                         {
                                 ToVisualCoord(frame.TexCoord0),
                                 ToVisualCoord(frame.TexCoord1),

@@ -3952,7 +3952,7 @@ namespace TombEditor.Controls
             float height = position.Y - floorHeight;
 
             // Prepare two vertices for the line
-            var vertices = new SolidVertex[]
+            var vertices = new[]
             {
                 new SolidVertex { Position = position, Color = Vector4.One },
                 new SolidVertex { Position = new Vector3(position.X, floorHeight, position.Z), Color = Vector4.One }

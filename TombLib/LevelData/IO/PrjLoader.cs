@@ -1963,7 +1963,7 @@ namespace TombLib.LevelData.IO
                     int texIndex = ((prjFace._txtFlags & 0x03) << 8) | prjFace._txtIndex;
                     PrjTexInfo texInfo = tempTextures[texIndex];
 
-                    var uv = new Vector2[]
+                    var uv = new[]
                     {
                         new Vector2(
                             texInfo._x + 0.5f,

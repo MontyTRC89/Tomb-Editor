@@ -22,7 +22,7 @@ namespace TombLib.Utils
             baseDir = Path.GetFullPath(baseDir);
             fileName = Path.GetFullPath(Path.Combine(baseDir, fileName));
 
-            var dictionarySeperators = new string[] { Path.DirectorySeparatorChar.ToString(), Path.AltDirectorySeparatorChar.ToString() };
+            var dictionarySeperators = new[] { Path.DirectorySeparatorChar.ToString(), Path.AltDirectorySeparatorChar.ToString() };
             string[] baseDirArr = baseDir.Split(dictionarySeperators, StringSplitOptions.RemoveEmptyEntries);
             string[] fileNameArr = fileName.Split(dictionarySeperators, StringSplitOptions.RemoveEmptyEntries);
 
@@ -46,8 +46,8 @@ namespace TombLib.Utils
                 if (File.Exists(filename))
                     return filename;
 
-                string[] filePathComponents = filename.Split(new char[] { '\\', '/' });
-                string[] levelPathComponents = fullBasePath.Split(new char[] { '\\', '/' });
+                string[] filePathComponents = filename.Split(new[] { '\\', '/' });
+                string[] levelPathComponents = fullBasePath.Split(new[] { '\\', '/' });
 
                 // Try to go up 2 directories to find file (works in original levels)
                 // If it turns out that many people have directory structures incompatible to this assumptions

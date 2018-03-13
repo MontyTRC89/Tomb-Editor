@@ -524,7 +524,7 @@ namespace TombEditor
         private void gameExecutableFilePathBut_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.GameExecutableFilePath,
-                "Select an executable", new FileFormat[] { new FileFormat("Windows executables", "exe") }, false, VariableType.GameDirectory);
+                "Select an executable", new[] { new FileFormat("Windows executables", "exe") }, false, VariableType.GameDirectory);
             if (result != null)
             {
                 _levelSettings.GameExecutableFilePath = result;

@@ -19,7 +19,7 @@ namespace TombEditor
             using (var stream = new MemoryStream())
             {
                 var writer = new BinaryWriterEx(stream);
-                Prj2Writer.SaveToPrj2OnlyObjects(stream, editor.Level, new ObjectInstance[] { editor.SelectedObject });
+                Prj2Writer.SaveToPrj2OnlyObjects(stream, editor.Level, new[] { editor.SelectedObject });
                 _data = stream.GetBuffer();
             }
         }

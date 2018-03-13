@@ -76,7 +76,7 @@ namespace TombEditor.Controls
         private static readonly Brush _roomsMovedBrush = new SolidBrush(Color.FromArgb(70, 230, 230, 20));
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(185, 255, 255, 255));
         private static readonly Brush _selectionAreaBrush = new HatchBrush(HatchStyle.SmallConfetti, Color.FromArgb(90, 20, 20, 190), Color.FromArgb(50, 20, 20, 190));
-        private static readonly Pen _selectionAreaPen = new Pen(Color.FromArgb(200, 20, 20, 190), 1.5f) { DashPattern = new float[] { 3.0f, 3.0f } };
+        private static readonly Pen _selectionAreaPen = new Pen(Color.FromArgb(200, 20, 20, 190), 1.5f) { DashPattern = new[] { 3.0f, 3.0f } };
         private static readonly Pen _roomBorderPen = new Pen(Color.Black, 1);
         private static readonly Pen _roomPortalPen = new Pen(Color.FromArgb(220, 7, 70, 70), 1) { DashStyle = DashStyle.Dot };
         private static readonly Pen _gridPenThin = new Pen(Color.LightGray, 1);
@@ -251,7 +251,7 @@ namespace TombEditor.Controls
                         if (ModifierKeys != Keys.None || !_editor.SelectedRooms.Contains(_roomMouseClicked))
                         {
                             _editor.SelectRoomsAndResetCamera(WinFormsUtils.BoolCombine(_editor.SelectedRooms,
-                                new Room[] { _roomMouseClicked }, ModifierKeys));
+                                new[] { _roomMouseClicked }, ModifierKeys));
                         }
                         _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
                     }
@@ -361,7 +361,7 @@ namespace TombEditor.Controls
 
                         if (_roomsToMove == null)
                         {
-                            HashSet<Room> roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new Room[] { _roomMouseClicked }));
+                            HashSet<Room> roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new[] { _roomMouseClicked }));
                             if (DepthBar.CheckForLockedRooms(this, roomsToMove))
                             {
                                 _roomMouseClicked = null;

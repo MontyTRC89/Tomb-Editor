@@ -136,7 +136,7 @@ namespace NgXmlBuilder
             return s;
         }
 
-        static readonly char[] numberChars = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '+', '-' };
+        static readonly char[] numberChars = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '+', '-' };
 
         private struct ParsedSubstring
         {

@@ -2245,14 +2245,14 @@ namespace TombLib.LevelData
 
             if (!isForCeiling)
             {
-                _sectorFaceIndices[x, z, (int)face].AddRange(new int[] { sectorVerticesStart + 2,
+                _sectorFaceIndices[x, z, (int)face].AddRange(new[] { sectorVerticesStart + 2,
                                                                          sectorVerticesStart + 0,
                                                                          sectorVerticesStart + 1,
                                                                          sectorVerticesStart + 3 });
             }
             else
             {
-                _sectorFaceIndices[x, z, (int)face].AddRange(new int[] { sectorVerticesStart + 5,
+                _sectorFaceIndices[x, z, (int)face].AddRange(new[] { sectorVerticesStart + 5,
                                                                          sectorVerticesStart + 1,
                                                                          sectorVerticesStart + 2,
                                                                          sectorVerticesStart + 0 });
@@ -2270,7 +2270,7 @@ namespace TombLib.LevelData
             sectorVertices.Add(new EditorVertex { Position = p2, UV = texture.TexCoord2, EditorUV = editorUV2 * editorUvFactor });
 
             _sectorFaceVertexVertexRange[x, z, (int)face] = new VertexRange { Start = sectorVerticesStart, Count = 3 };
-            _sectorFaceIndices[x, z, (int)face].AddRange(new int[] { sectorVerticesStart + 0,
+            _sectorFaceIndices[x, z, (int)face].AddRange(new[] { sectorVerticesStart + 0,
                                                                      sectorVerticesStart + 1,
                                                                      sectorVerticesStart + 2 });
         }
@@ -3317,7 +3317,7 @@ namespace TombLib.LevelData
 
             // Add normal object
             AddObjectAndSingularPortal(level, instance);
-            return new ObjectInstance[] { instance };
+            return new[] { instance };
         }
 
         public IEnumerable<ObjectInstance> RemoveObjectAndKeepAlive(Level level, ObjectInstance instance)

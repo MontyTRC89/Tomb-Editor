@@ -73,9 +73,9 @@ namespace TombLib.LevelData
         /// <summary> Maximum normal height for non-slidable slopes </summary>
         public const float CriticalSlantComponent = 0.8f;
         /// <summary> The x offset of each face index in [0, 4). </summary>
-        public static readonly int[] FaceX = new int[] { 0, 1, 1, 0 };
+        public static readonly int[] FaceX = new[] { 0, 1, 1, 0 };
         /// <summary> The x offset of each face index in [0, 4). </summary>
-        public static readonly int[] FaceZ = new int[] { 1, 1, 0, 0 };
+        public static readonly int[] FaceZ = new[] { 1, 1, 0, 0 };
 
         public BlockType Type { get; set; } = BlockType.Floor;
         public BlockFlags Flags { get; set; } = BlockFlags.None;
