@@ -9,7 +9,7 @@ using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
-    public class SkinnedModel : Model<SkinnedMesh, SkinnedVertex>
+    public class SkinnedModel : Model<ObjectMesh, ObjectVertex>
     {
         public Vector3 Offset;
         public Bone Root { get; set; }
@@ -106,11 +106,11 @@ namespace TombLib.Graphics
             }
         }
 
-        public override void BuildBuffers()
+        public override void UpdateBuffers()
         {
             int lastBaseIndex = 0;
 
-            Vertices = new List<SkinnedVertex>();
+            Vertices = new List<ObjectVertex>();
             Indices = new List<int>();
 
             foreach (var mesh in Meshes)
@@ -131,7 +131,12 @@ namespace TombLib.Graphics
             if (Vertices.Count == 0)
                 return;
 
-            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<SkinnedVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            if (VertexBuffer != null)
+                VertexBuffer.Dispose();
+            if (IndexBuffer != null)
+                IndexBuffer.Dispose();
+
+            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<ObjectVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
@@ -154,7 +159,7 @@ namespace TombLib.Graphics
             for (int m = 0; m < mov.Meshes.Count; m++)
             {
                 WadMesh msh = mov.Meshes[m];
-                var mesh = new SkinnedMesh(device, mov + "_mesh_" + m);
+                var mesh = new ObjectMesh(device, mov + "_mesh_" + m);
 
                 mesh.Submeshes.Add(materialOpaque, new Submesh(materialOpaque));
                 mesh.Submeshes.Add(materialOpaqueDoubleSided, new Submesh(materialOpaqueDoubleSided));
@@ -190,9 +195,9 @@ namespace TombLib.Graphics
                         int v2 = poly.Index1;
                         int v3 = poly.Index2;
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, m, positionInPackedTexture);
+                        PutObjectVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, 0, positionInPackedTexture);
+                        PutObjectVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, 0, positionInPackedTexture);
+                        PutObjectVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, 0, positionInPackedTexture);
                     }
                     else
                     {
@@ -201,16 +206,17 @@ namespace TombLib.Graphics
                         int v3 = poly.Index2;
                         int v4 = poly.Index3;
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, m, positionInPackedTexture);
+                        PutObjectVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, 0, positionInPackedTexture);
+                        PutObjectVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, 0, positionInPackedTexture);
+                        PutObjectVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, 0, positionInPackedTexture);
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, m, positionInPackedTexture);
+                        PutObjectVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, 0, positionInPackedTexture);
+                        PutObjectVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, 0, positionInPackedTexture);
+                        PutObjectVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, 0, positionInPackedTexture);
                     }
                 }
 
+                mesh.UpdateBuffers();
                 model.Meshes.Add(mesh);
             }
 
@@ -267,7 +273,7 @@ namespace TombLib.Graphics
             if (model.Animations.Count > 0 && model.Animations[0].KeyFrames.Count > 0)
                 model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
 
-            model.BuildBuffers();
+            model.UpdateBuffers();
 
             return model;
         }

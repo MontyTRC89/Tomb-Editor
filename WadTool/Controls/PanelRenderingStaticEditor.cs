@@ -172,32 +172,28 @@ namespace WadTool.Controls
             {
                 var model = _tool.DestinationWad.DirectXStatics[Static.Id];
 
-                Effect mioEffect = _deviceManager.Effects["StaticModel"];
+                var effect = _deviceManager.Effects["StaticModel"];
 
                 var world = GizmoTransform;
 
-                mioEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-
-                mioEffect.Parameters["Color"].SetValue(Vector4.One);
-
-                mioEffect.Parameters["Texture"].SetResource(_tool.DestinationWad.DirectXTexture);
-                mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                _device.SetVertexBuffer(0, model.VertexBuffer);
-                _device.SetIndexBuffer(model.IndexBuffer, true);
+                effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+                effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.Parameters["Texture"].SetResource(_tool.DestinationWad.DirectXTexture);
+                effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
-                    StaticMesh mesh = model.Meshes[i];
+                    var mesh = model.Meshes[i];
 
-                    _layout = VertexInputLayout.FromBuffer(0, model.VertexBuffer);
-                    _device.SetVertexInputLayout(_layout);
+                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
 
-                    mioEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                    mioEffect.Techniques[0].Passes[0].Apply();
+                    effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+                    effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var submesh in mesh.Submeshes)
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
 
                 // Draw boxes

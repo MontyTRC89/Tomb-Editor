@@ -137,18 +137,11 @@ namespace WadTool.Controls
                     if (CurrentWad.DirectXMoveables.TryGetValue((WadMoveableId)CurrentObjectId, out model))
                     {
                         var skin = model;
+                        var effect = _deviceManager.Effects["Model"];
 
-                        Effect mioEffect = _deviceManager.Effects["Model"];
-
-                        _device.SetVertexBuffer(0, model.VertexBuffer);
-                        _device.SetIndexBuffer(model.IndexBuffer, true);
-
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
-
-                        mioEffect.Parameters["Color"].SetValue(Vector4.One);
-
-                        mioEffect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
-                        mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+                        effect.Parameters["Color"].SetValue(Vector4.One);
+                        effect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
+                        effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                         // Build animation transforms
                         var matrices = new List<Matrix4x4>();
@@ -165,16 +158,20 @@ namespace WadTool.Controls
 
                         for (int i = 0; i < model.Meshes.Count; i++)
                         {
-                            SkinnedMesh mesh = skin.Meshes[i];
+                            var mesh = skin.Meshes[i];
                             if (mesh.Vertices.Count == 0)
                                 continue;
 
-                            mioEffect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
+                            _device.SetVertexBuffer(0, mesh.VertexBuffer);
+                            _device.SetIndexBuffer(mesh.IndexBuffer, true);
+                            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
 
-                            mioEffect.Techniques[0].Passes[0].Apply();
+                            effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
+
+                            effect.Techniques[0].Passes[0].Apply();
 
                             foreach (var submesh in mesh.Submeshes)
-                                _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                                _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                         }
                     }
                 }
@@ -183,29 +180,26 @@ namespace WadTool.Controls
                     StaticModel model;
                     if (CurrentWad.DirectXStatics.TryGetValue((WadStaticId)CurrentObjectId, out model))
                     {
+                        var effect = _deviceManager.Effects["StaticModel"];
 
-                        Effect mioEffect = _deviceManager.Effects["StaticModel"];
-                        mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-
-                        mioEffect.Parameters["Color"].SetValue(Vector4.One);
-
-                        mioEffect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
-                        mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                        _device.SetVertexBuffer(0, model.VertexBuffer);
-                        _device.SetIndexBuffer(model.IndexBuffer, true);
+                        effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                        effect.Parameters["Color"].SetValue(Vector4.One);
+                        effect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
+                        effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                         for (int i = 0; i < model.Meshes.Count; i++)
                         {
-                            StaticMesh mesh = model.Meshes[i];
-                            _layout = VertexInputLayout.FromBuffer(0, model.VertexBuffer);
-                            _device.SetVertexInputLayout(_layout);
+                            var mesh = model.Meshes[i];
 
-                            mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                            mioEffect.Techniques[0].Passes[0].Apply();
+                            _device.SetVertexBuffer(0, mesh.VertexBuffer);
+                            _device.SetIndexBuffer(mesh.IndexBuffer, true);
+                            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                            effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                            effect.Techniques[0].Passes[0].Apply();
 
                             foreach (var submesh in mesh.Submeshes)
-                                _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                                _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                         }
                     }
                 }

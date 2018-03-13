@@ -125,6 +125,8 @@
     <Compile Include="GeometryIO\IOSubmesh.cs" />
     <Compile Include="Graphics\DeviceManager.cs" />
     <Compile Include="Graphics\Material.cs" />
+    <Compile Include="Graphics\ObjectMesh.cs" />
+    <Compile Include="Graphics\ObjectVertex.cs" />
     <Compile Include="Graphics\SharpDxConversions.cs" />
     <Compile Include="Graphics\Submesh.cs" />
     <Compile Include="LevelData\AnimatedTextureSet.cs" />
@@ -222,12 +224,8 @@
     <Compile Include="Graphics\KeyFrame.cs" />
     <Compile Include="Graphics\Mesh.cs" />
     <Compile Include="Graphics\Model.cs" />
-    <Compile Include="Graphics\SkinnedMesh.cs" />
     <Compile Include="Graphics\SkinnedModel.cs" />
-    <Compile Include="Graphics\SkinnedVertex.cs" />
-    <Compile Include="Graphics\StaticMesh.cs" />
     <Compile Include="Graphics\StaticModel.cs" />
-    <Compile Include="Graphics\StaticVertex.cs" />
     <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="IO\BinaryReaderEx.cs" />
     <Compile Include="IO\BinaryWriterEx.cs" />
