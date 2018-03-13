@@ -55,11 +55,11 @@ namespace TombEditor
         private Cache<CachedImageInfo, Bitmap> _imageCache;
 
         private Timer _previewTimer = new Timer();
-        private AnimatedTextureFrame _previewCurrentFrame = null;
-        private int _previewCurrentRepeatTimes = 0;
+        private AnimatedTextureFrame _previewCurrentFrame;
+        private int _previewCurrentRepeatTimes;
         private const float _previewFps = 15;
         private const float _maxLegacyFrames = 16;
-        private int _lastY = 0;
+        private int _lastY;
 
         private bool _isNg;
 
@@ -139,7 +139,7 @@ namespace TombEditor
                 while (comboAnimatedTextureSets.Items.Count > _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.RemoveAt(comboAnimatedTextureSets.Items.Count - 1);
                 for (int i = 0; i < comboAnimatedTextureSets.Items.Count; ++i)
-                    if (!object.ReferenceEquals(comboAnimatedTextureSets.Items[i], _editor.Level.Settings.AnimatedTextureSets[i]))
+                    if (!ReferenceEquals(comboAnimatedTextureSets.Items[i], _editor.Level.Settings.AnimatedTextureSets[i]))
                         comboAnimatedTextureSets.Items[i] = _editor.Level.Settings.AnimatedTextureSets[i];
                 while (comboAnimatedTextureSets.Items.Count < _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.Add(_editor.Level.Settings.AnimatedTextureSets[comboAnimatedTextureSets.Items.Count]);
@@ -223,12 +223,12 @@ namespace TombEditor
                 previewImage.Image = null;
                 previewProgressBar.Maximum = 0;
                 previewProgressBar.Value = 0;
-                previewProgressBar.TextMode = DarkUI.Controls.DarkProgressBarMode.NoText;
+                previewProgressBar.TextMode = DarkProgressBarMode.NoText;
             }
             else
             {
                 _previewTimer.Enabled = true;
-                previewProgressBar.TextMode = DarkUI.Controls.DarkProgressBarMode.XOfN;
+                previewProgressBar.TextMode = DarkProgressBarMode.XOfN;
             }
 
             if (!_isNg)
@@ -576,10 +576,10 @@ namespace TombEditor
             protected override float MaxTextureSize => float.PositiveInfinity;
             protected override bool DrawTriangle => false;
 
-            private static readonly Pen outlinePen = new Pen(System.Drawing.Color.Silver, 2);
-            private static readonly Pen activeOutlinePen = new Pen(System.Drawing.Color.Violet, 2);
-            private static readonly Brush textBrush = new SolidBrush(System.Drawing.Color.Violet);
-            private static readonly Brush textShadowBrush = new SolidBrush(System.Drawing.Color.Black);
+            private static readonly Pen outlinePen = new Pen(Color.Silver, 2);
+            private static readonly Pen activeOutlinePen = new Pen(Color.Violet, 2);
+            private static readonly Brush textBrush = new SolidBrush(Color.Violet);
+            private static readonly Brush textShadowBrush = new SolidBrush(Color.Black);
             private static readonly Font textFont = new Font("Segoe UI", 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
             private static readonly StringFormat textFormat = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
 

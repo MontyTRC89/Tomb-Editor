@@ -33,7 +33,7 @@ namespace TombEditor.Controls
             using (var stream = new MemoryStream(Properties.Resources.Palette, false))
                 using (var readerPalette = new BinaryReader(stream))
                     while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
-                        _palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
+                        _palette.Add(Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
         }
 
         private Color getColorFromPalette(Point point)

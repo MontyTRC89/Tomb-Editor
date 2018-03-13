@@ -27,12 +27,12 @@ namespace TombLib.Graphics
 
         public void BuildHierarchy()
         {
-            this.Root.GlobalTransform = Root.Transform;
+            Root.GlobalTransform = Root.Transform;
             BindPoseTransforms[Root.Index] = Root.GlobalTransform;
 
-            foreach (var node in this.Root.Children)
+            foreach (var node in Root.Children)
             {
-                BuildHierarchy(node, this.Root.GlobalTransform, 0);
+                BuildHierarchy(node, Root.GlobalTransform, 0);
             }
         }
 
@@ -64,7 +64,7 @@ namespace TombLib.Graphics
             var globalScale = Matrix4x4.CreateTranslation(Offset) * frame.Translations[0];
             AnimationTransforms[0] = frame.Rotations[0] * globalScale;
 
-            foreach (var node in this.Root.Children)
+            foreach (var node in Root.Children)
             {
                 BuildAnimationPose(node, AnimationTransforms[0], 0, frame);
             }
@@ -88,7 +88,7 @@ namespace TombLib.Graphics
             var globalScale = Matrix4x4.CreateTranslation(Offset) * translation;
             AnimationTransforms[0] = rotation * globalScale;
 
-            foreach (var node in this.Root.Children)
+            foreach (var node in Root.Children)
             {
                 BuildAnimationPose(node, AnimationTransforms[0], 0, frame1, frame2, k);
             }

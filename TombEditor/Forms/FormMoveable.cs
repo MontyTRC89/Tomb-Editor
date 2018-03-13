@@ -18,7 +18,7 @@ namespace TombEditor
         private void butCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            this.Close();
+            Close();
         }
 
         private void FormObject_Load(object sender, EventArgs e)
@@ -58,7 +58,7 @@ namespace TombEditor
             _movable.Ocb = ocb;
 
             DialogResult = DialogResult.OK;
-            this.Close();
+            Close();
         }
     }
 }

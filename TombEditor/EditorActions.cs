@@ -50,7 +50,7 @@ namespace TombEditor
 
         public static void SmartBuildGeometry(Room room, RectangleInt2 area)
         {
-            var watch = new System.Diagnostics.Stopwatch();
+            var watch = new Stopwatch();
             watch.Start();
             room.SmartBuildGeometry(area);
             watch.Stop();

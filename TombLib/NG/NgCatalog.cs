@@ -11,7 +11,7 @@ namespace TombLib.NG
         public static NgTriggerSubtypes FlipEffectTrigger { get; set; } = new NgTriggerSubtypes();
         public static NgTriggerSubtypes ActionTrigger { get; set; } = new NgTriggerSubtypes();
         public static NgTriggerSubtypes ConditionTrigger { get; set; } = new NgTriggerSubtypes();
-        public static NgParameterRange TimerFieldTrigger { get; set; } = new NgParameterRange();
+        public static NgParameterRange TimerFieldTrigger { get; set; }
 
         public static void LoadCatalog(string fileName)
         {

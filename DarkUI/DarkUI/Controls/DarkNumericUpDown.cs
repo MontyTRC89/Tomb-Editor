@@ -18,7 +18,7 @@ namespace DarkUI.Controls
         [Description("Forces mousewheel to scroll by one increment.")]
         public bool MousewheelSingleIncrement { get; set; } = true;
 
-        private bool _mouseDown = false;
+        private bool _mouseDown;
         private Point? _mousePos;
 
         public DarkNumericUpDown()

@@ -561,11 +561,11 @@ namespace TombEditor.Controls
         private GeometricPrimitive _littleSphere;
         private const float _littleCubeRadius = 128.0f;
         private const float _littleSphereRadius = 128.0f;
-        private System.Drawing.Point _lastMousePosition;
-        private System.Drawing.Point _startMousePosition;
+        private Point _lastMousePosition;
+        private Point _startMousePosition;
         private MovementTimer _movementTimer;
-        private bool _doSectorSelection = false;
-        private bool _noSelectionConfirm = false;
+        private bool _doSectorSelection;
+        private bool _noSelectionConfirm;
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
         private Buffer<EditorVertex> _skyVertexBuffer;
         private Debug _debug;
@@ -589,7 +589,7 @@ namespace TombEditor.Controls
         };
 
         // Current room's last position
-        private Vector3? _currentRoomLastPos = null;
+        private Vector3? _currentRoomLastPos;
 
         // Gizmo
         private Gizmo _gizmo;
@@ -613,10 +613,10 @@ namespace TombEditor.Controls
 
         // Debug lines
         private Buffer<SolidVertex> _objectHeightLineVertexBuffer;
-        private bool _drawHeightLine = false;
+        private bool _drawHeightLine;
 
         private Buffer<SolidVertex> _flybyPathVertexBuffer;
-        private bool _drawFlybyPath = false;
+        private bool _drawFlybyPath;
         private List<BoundingBoxToDraw> _boundingBoxesToDraw;
 
         private Effect _roomEffect;
@@ -1146,7 +1146,7 @@ namespace TombEditor.Controls
                 case MouseButtons.Left:
                     PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
                     if (newPicking is PickingResultObject)
-                        EditorActions.EditObject(((PickingResultObject)newPicking).ObjectInstance, this.Parent);
+                        EditorActions.EditObject(((PickingResultObject)newPicking).ObjectInstance, Parent);
                     break;
 
                 case MouseButtons.Right:

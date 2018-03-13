@@ -48,7 +48,7 @@ namespace WadTool.Controls
         private float _lastY;
         private SpriteBatch _spriteBatch;
         private Texture2D _spriteTexture;
-        private WadTexture _spriteTextureData = null;
+        private WadTexture _spriteTextureData;
 
         public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
         {

@@ -2,6 +2,7 @@
 using System;
 using System.Numerics;
 using TombLib.Utils;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
@@ -78,7 +79,7 @@ namespace TombLib.Graphics
             _device = device;
 
             // Create the gizmo geometry
-            _rotationHelperGeometry = Buffer<SolidVertex>.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
+            _rotationHelperGeometry = Buffer.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
             _cylinder = GeometricPrimitive.Cylinder.New(_device, 1.0f, 1.0f, _lineRadiusTesselation);
             _cube = GeometricPrimitive.Cube.New(_device, 1.0f);
             _cone = GeometricPrimitive.Cone.New(_device, 1.0f, 1.3f, 16);

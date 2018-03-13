@@ -85,21 +85,21 @@ namespace TombLib.LevelData
         public TriggerType TriggerType { get; set; } = TriggerType.Trigger;
         public TriggerTargetType TargetType { get; set; } = TriggerTargetType.FlipEffect;
 
-        private ITriggerParameter _target = null;
+        private ITriggerParameter _target;
         public ITriggerParameter Target
         {
             get { return _target; }
             set { UpdateEvents(ref _target, value); }
         }
 
-        private ITriggerParameter _timer = null;
+        private ITriggerParameter _timer;
         public ITriggerParameter Timer
         {
             get { return _timer; }
             set { UpdateEvents(ref _timer, value); }
         }
 
-        private ITriggerParameter _extra = null;
+        private ITriggerParameter _extra;
         public ITriggerParameter Extra
         {
             get { return _extra; }

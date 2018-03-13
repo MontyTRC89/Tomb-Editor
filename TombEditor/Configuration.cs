@@ -18,7 +18,7 @@ namespace TombEditor
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [XmlIgnore]
-        public string FilePath { get; set; } = null;
+        public string FilePath { get; set; }
 
         [XmlIgnore]
         public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;

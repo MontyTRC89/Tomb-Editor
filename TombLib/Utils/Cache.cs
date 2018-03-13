@@ -8,7 +8,7 @@ namespace TombLib.Utils
     public class Cache<KeyT, ValueT> : IEnumerable<KeyValuePair<KeyT, ValueT>>, IDisposable
     {
         private const int cleanupFactorDiv32 = 25;
-        private TimestampType useCounter = 0;
+        private TimestampType useCounter;
         private class Entry
         {
             public TimestampType _lastUsedTimeStamp;

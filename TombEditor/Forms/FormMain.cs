@@ -36,7 +36,7 @@ namespace TombEditor
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private bool _pressedMoveCameraKey = false;
+        private bool _pressedMoveCameraKey;
         private Editor _editor;
         private DeviceManager _deviceManager = DeviceManager.DefaultDeviceManager;
 

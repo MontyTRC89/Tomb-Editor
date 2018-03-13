@@ -138,7 +138,7 @@ namespace TombLib.LevelData
             for (int i = 0; i < Rooms.Length; i++)
                 if (Rooms[i] == null)
                     return i;
-            throw new Exception("A maximum number of " + Level.MaxNumberOfRooms + " rooms has been reached. Unable to add room.");
+            throw new Exception("A maximum number of " + MaxNumberOfRooms + " rooms has been reached. Unable to add room.");
         }
 
         public void AssignRoomToFree(Room room)

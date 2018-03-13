@@ -22,8 +22,8 @@ namespace TombLib.LevelData
         public bool IsDynamicallyUsed { get; set; } = true;
         public bool IsStaticallyUsed { get; set; } = true;
 
-        private float _rotationX = 0.0f;
-        private float _rotationY = 0.0f;
+        private float _rotationX;
+        private float _rotationY;
 
         /// <summary> Degrees in the range [-90, 90] </summary>
         public float RotationX

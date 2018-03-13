@@ -12,9 +12,9 @@ namespace TombEditor.Controls
         private readonly static FieldInfo _viewSize = typeof(DarkScrollBar).GetField("_viewSize", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private const int _precision = 20000;
-        private double _newMinimum = 0;
+        private double _newMinimum;
         private double _newMaximum = 1;
-        private bool _currentlySet = false;
+        private bool _currentlySet;
 
         public new double Minimum => _newMinimum;
         public new double Maximum => _newMaximum;

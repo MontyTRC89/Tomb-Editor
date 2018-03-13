@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
-    using TombLib.IO;
+    using IO;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct tr_color

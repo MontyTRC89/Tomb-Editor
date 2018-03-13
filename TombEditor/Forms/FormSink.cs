@@ -19,7 +19,7 @@ namespace TombEditor
         private void butCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            this.Close();
+            Close();
         }
 
         private void FormSink_Load(object sender, EventArgs e)
@@ -32,7 +32,7 @@ namespace TombEditor
             _sink.Strength = (short)comboStrength.SelectedIndex;
 
             DialogResult = DialogResult.OK;
-            this.Close();
+            Close();
         }
     }
 }

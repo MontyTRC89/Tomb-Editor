@@ -269,12 +269,12 @@ namespace TombEditor.ToolWindows
 
         private void butCopy_Click(object sender, EventArgs e)
         {
-            EditorActions.TryCopyObject(_editor.SelectedObject, this.ParentForm);
+            EditorActions.TryCopyObject(_editor.SelectedObject, ParentForm);
         }
 
         private void butStamp_Click(object sender, EventArgs e)
         {
-            EditorActions.TryStampObject(_editor.SelectedObject, this.ParentForm);
+            EditorActions.TryStampObject(_editor.SelectedObject, ParentForm);
         }
 
         private void butPaste_Click(object sender, EventArgs e)

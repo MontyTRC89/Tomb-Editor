@@ -203,7 +203,7 @@ namespace TombEditor
         private HighlightState _currentState;
         private HighlightState _previousState;
 
-        private float _transitionValue = 0.0f;
+        private float _transitionValue;
         private float _transitionSpeed = 0.4f;
         private Timer _transitionAnimator = new Timer() { Interval = 60 };
 

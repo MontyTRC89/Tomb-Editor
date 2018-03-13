@@ -158,9 +158,9 @@ namespace TombLib.LevelData
 
         public static IReadOnlyList<FileFormat> FileExtensions => BaseGeometryImporter.FileExtensions;
         public UniqueIDType UniqueID { get; } = new UniqueIDType();
-        public Exception LoadException { get; private set; } = null;
+        public Exception LoadException { get; private set; }
         public ImportedGeometryInfo Info { get; private set; } = ImportedGeometryInfo.Default;
-        public Model DirectXModel { get; private set; } = null;
+        public Model DirectXModel { get; private set; }
         public List<ImportedGeometryTexture> Textures { get; private set; } = new List<ImportedGeometryTexture>();
 
         public void Update(LevelSettings settings, Dictionary<string, Texture> absolutePathTextureLookup, ImportedGeometryInfo info)

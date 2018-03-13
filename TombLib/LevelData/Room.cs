@@ -39,8 +39,8 @@ namespace TombLib.LevelData
         public Block[,] Blocks { get; private set; }
         private List<PositionBasedObjectInstance> _objects = new List<PositionBasedObjectInstance>();
 
-        public Room AlternateBaseRoom { get; set; } = null;
-        public Room AlternateRoom { get; set; } = null;
+        public Room AlternateBaseRoom { get; set; }
+        public Room AlternateRoom { get; set; }
         public short AlternateGroup { get; set; } = -1;
 
         public Vector4 AmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 2.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)

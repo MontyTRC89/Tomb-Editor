@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 using TombLib.Wad;
 
@@ -26,7 +27,7 @@ namespace WadTool
 
         public void RaiseEvent(IEditorEvent eventObj)
         {
-            WindowsFormsSynchronizationContext.Current.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
+            SynchronizationContext.Current.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
         }
 
         // The configuration

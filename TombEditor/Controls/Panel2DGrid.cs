@@ -15,7 +15,7 @@ namespace TombEditor.Controls
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private bool _doSectorSelection = false;
+        private bool _doSectorSelection;
         private Editor _editor;
 
         private static readonly float _outlineHighlightWidth = 3;
@@ -149,7 +149,7 @@ namespace TombEditor.Controls
                     }
                     else if (selectedSectorObject is TriggerInstance)
                     { // Open trigger options
-                        EditorActions.EditObject(selectedSectorObject, this.Parent);
+                        EditorActions.EditObject(selectedSectorObject, Parent);
                     }
                 }
                 else

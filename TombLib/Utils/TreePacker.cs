@@ -7,7 +7,7 @@
             public TreePackerNode Left { get; set; }
             public TreePackerNode Right { get; set; }
             public RectangleInt2 Rectangle { get; set; }
-            public bool Filled { get; set; } = false;
+            public bool Filled { get; set; }
 
             private bool RectangleFitsIn(VectorInt2 size)
             {

@@ -14,7 +14,7 @@ namespace TombLib.Utils
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
-        private static EventHandler ClipboardChangedEvents = null;
+        private static EventHandler ClipboardChangedEvents;
         private static object @lock = new object();
         public static event EventHandler ClipboardChanged
         {
@@ -35,7 +35,7 @@ namespace TombLib.Utils
         }
 
         // Hidden form to recieve the WM_ClipboardChanged message.
-        private static NotificationForm _form = null;
+        private static NotificationForm _form;
         private class NotificationForm : Form
         {
             public NotificationForm()

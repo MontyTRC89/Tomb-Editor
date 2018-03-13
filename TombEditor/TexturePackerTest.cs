@@ -75,7 +75,7 @@ namespace TombEditor
                 info.NewHeight = info.Height / 2;
 
 
-                Bitmap bmp = (Bitmap)Bitmap.FromFile("textures\\" + info.Name);
+                Bitmap bmp = (Bitmap)Image.FromFile("textures\\" + info.Name);
                 for (int x = 0; x < bmp.Width; x += 2)
                 {
                     for (int y = 0; y < bmp.Height; y += 2)

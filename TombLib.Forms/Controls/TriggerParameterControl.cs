@@ -40,7 +40,7 @@ namespace TombLib.Controls
             }
         }
 
-        private bool _rawMode = false;
+        private bool _rawMode;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
         public bool RawMode
@@ -55,7 +55,7 @@ namespace TombLib.Controls
             }
         }
 
-        private NgParameterRange _parameterRange = new NgParameterRange();
+        private NgParameterRange _parameterRange;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
         public NgParameterRange ParameterRange
@@ -71,7 +71,7 @@ namespace TombLib.Controls
         }
 
         public Level Level { get; set; }
-        private bool _currentlyChanging = false;
+        private bool _currentlyChanging;
 
         public TriggerParameterControl()
         {

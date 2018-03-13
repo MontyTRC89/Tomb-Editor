@@ -79,7 +79,7 @@ namespace TombLib.LevelData
 
         public BlockType Type { get; set; } = BlockType.Floor;
         public BlockFlags Flags { get; set; } = BlockFlags.None;
-        public bool ForceFloorSolid { get; set; } = false; // If this is set to true, portals are overwritten for this sector.
+        public bool ForceFloorSolid { get; set; } // If this is set to true, portals are overwritten for this sector.
         // ReSharper disable once InconsistentNaming
         public short[] ED { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
@@ -90,8 +90,8 @@ namespace TombLib.LevelData
         public short[] RF { get; } = new short[4];
         private TextureArea[] _faceTextures { get; } = new TextureArea[(int)FaceCount];
 
-        public bool FloorSplitDirectionToggled { get; set; } = false;
-        public bool CeilingSplitDirectionToggled { get; set; } = false;
+        public bool FloorSplitDirectionToggled { get; set; }
+        public bool CeilingSplitDirectionToggled { get; set; }
         public DiagonalSplit FloorDiagonalSplit { get; set; } = DiagonalSplit.None;
         public DiagonalSplit CeilingDiagonalSplit { get; set; } = DiagonalSplit.None;
 

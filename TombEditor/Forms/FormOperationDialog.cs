@@ -16,8 +16,8 @@ namespace TombEditor
 
         private Action<IProgressReporter> _operation;
         private Thread _thread;
-        private volatile bool _threadShouldAbort = false;
-        private bool _autoCloseWhenDone = false;
+        private volatile bool _threadShouldAbort;
+        private bool _autoCloseWhenDone;
 
         public FormOperationDialog(string operationName, bool autoCloseWhenDone, Action<IProgressReporter> operation)
         {

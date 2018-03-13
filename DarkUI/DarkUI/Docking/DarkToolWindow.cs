@@ -12,8 +12,8 @@ namespace DarkUI.Docking
         #region Field Region
 
         private Rectangle _closeButtonRect;
-        private bool _closeButtonHot = false;
-        private bool _closeButtonPressed = false;
+        private bool _closeButtonHot;
+        private bool _closeButtonPressed;
 
         private Rectangle _headerRect;
         private bool _shouldDrag;

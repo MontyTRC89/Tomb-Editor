@@ -37,7 +37,7 @@ namespace TombEditor
                 NgCatalog.LoadCatalog("Catalogs\\NgCatalog.xml");
 
                 //Run
-                Editor editor = new Editor(WindowsFormsSynchronizationContext.Current, configuration);
+                Editor editor = new Editor(SynchronizationContext.Current, configuration);
                 Editor.Instance = editor;
                 Application.Run(new FormMain(editor));
 

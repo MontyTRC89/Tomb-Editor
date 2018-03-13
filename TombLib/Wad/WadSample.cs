@@ -175,7 +175,7 @@ namespace TombLib.Wad
         {
             public long _extendedLengthInBytes;
             public WaveStream _baseStream;
-            private long _currentPosition = 0;
+            private long _currentPosition;
 
             public override long Length => _extendedLengthInBytes;
             public override long Position

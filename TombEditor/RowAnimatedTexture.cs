@@ -9,10 +9,10 @@
 
         public RowAnimatedTexture(short x, short y, short page, int txt)
         {
-            this.X = x;
-            this.Y = y;
-            this.Page = page;
-            this.Texture = txt;
+            X = x;
+            Y = y;
+            Page = page;
+            Texture = txt;
         }
     }
 }

@@ -37,13 +37,13 @@ namespace TombEditor
             public RateType _id = RateType.MaxValue;
         }
 
-        private RateType _currentId = 0;
+        private RateType _currentId;
         private Editor _editor;
         private readonly ConditionalWeakTable<ObjectType, RateTypeClass> _baseObjectIdDictionary = new ConditionalWeakTable<ObjectType, RateTypeClass>();
-        private Dictionary<ObjectType, RateType> _cachedRelevantObjects = null;
-        private SortedDictionary<RateType, ObjectType> _cachedSortedObjects = null;
+        private Dictionary<ObjectType, RateType> _cachedRelevantObjects;
+        private SortedDictionary<RateType, ObjectType> _cachedSortedObjects;
         private string _keyword = "";
-        private bool _currentlyChangingRowCount = false;
+        private bool _currentlyChangingRowCount;
 
         public FormSearch(Editor editor)
         {

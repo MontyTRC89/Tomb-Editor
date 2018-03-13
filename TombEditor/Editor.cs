@@ -577,8 +577,8 @@ namespace TombEditor
         }
 
         // Configuration
-        FileSystemWatcher configurationWatcher = null;
-        bool configurationIsLoadedFromFile = false;
+        FileSystemWatcher configurationWatcher;
+        bool configurationIsLoadedFromFile;
         private void ConfigurationWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             if (Path.GetFullPath(e.FullPath) == Path.GetFullPath(Configuration.FilePath))
@@ -678,7 +678,7 @@ namespace TombEditor
 
         // Auto saving
         private readonly System.Windows.Forms.Timer AutoSavingTimer;
-        private volatile bool currentlyAutoSaving = false;
+        private volatile bool currentlyAutoSaving;
         private void AutoSave()
         {
             Level level = Level; // Copy the member variables to local variables so that the we will have slightly higher chance to succeed in the parallel thread.

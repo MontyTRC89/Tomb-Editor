@@ -12,7 +12,7 @@ namespace WadTool
     {
         public Type TypeClass { get; }
         public WadGameVersion GameVersion { get; }
-        public IWadObjectId NewId { get; set; } = null;
+        public IWadObjectId NewId { get; set; }
 
         public FormSelectSlot(IWadObjectId currentId, WadGameVersion gameVersion)
         {

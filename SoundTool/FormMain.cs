@@ -8,7 +8,7 @@ using System.Media;
 
 namespace SoundTool
 {
-    public partial class FormMain : DarkUI.Forms.DarkForm
+    public partial class FormMain : DarkForm
     {
         private WadGameVersion _version;
         private int _currentSound;
@@ -123,7 +123,7 @@ namespace SoundTool
             lstSamples.Items.Clear();
             foreach (var sample in soundInfo.Samples)
             {
-                var itemSample = new DarkUI.Controls.DarkListItem(sample);
+                var itemSample = new DarkListItem(sample);
                 lstSamples.Items.Add(itemSample);
             }
 

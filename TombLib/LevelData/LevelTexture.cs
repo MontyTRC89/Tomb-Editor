@@ -19,7 +19,7 @@ namespace TombLib.LevelData
 
         public string Path { get; private set; }
         public Exception ImageLoadException { get; private set; }
-        public bool Convert512PixelsToDoubleRows { get; private set; } = false;
+        public bool Convert512PixelsToDoubleRows { get; private set; }
 
         private bool _replaceMagentaWithTransparency = true;
         public override bool ReplaceMagentaWithTransparency => _replaceMagentaWithTransparency;

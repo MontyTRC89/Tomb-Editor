@@ -24,21 +24,21 @@ namespace TombLib.LevelData.Compilers
 
     public sealed partial class LevelCompilerClassicTR
     {
-        private bool dec_graybox = false;
+        private bool dec_graybox;
         private bool dec_water = true;
-        private bool dec_monkey = false;
-        private bool dec_flipped = false;
-        private bool dec_jump = false;
-        private Room dec_currentRoom = null;
+        private bool dec_monkey;
+        private bool dec_flipped;
+        private bool dec_jump;
+        private Room dec_currentRoom;
         private short dec_q0 = -1;
         private short dec_q1 = -1;
         private short dec_q2 = -1;
         private short dec_q3 = -1;
         private dec_tr_box_aux[] dec_boxes;
         private ushort[] dec_overlaps;
-        private int dec_numBoxes = 0;
-        private int dec_numOverlaps = 0;
-        private bool dec_boxExtendsInAnotherRoom = false;
+        private int dec_numBoxes;
+        private int dec_numOverlaps;
+        private bool dec_boxExtendsInAnotherRoom;
 
         private void Dec_BuildBoxesAndOverlaps()
         {

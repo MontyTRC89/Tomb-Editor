@@ -552,7 +552,7 @@ namespace TombEditor
         {
             string text = (pathVariablesDataGridView.SelectedCells.Count == 0) ? "" :
                 pathVariablesDataGridView.SelectedCells[0].Value.ToString();
-            System.Windows.Forms.Clipboard.SetText(text);
+            Clipboard.SetText(text);
         }
 
         // Dialog buttons

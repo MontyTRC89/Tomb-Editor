@@ -279,7 +279,7 @@ namespace TombLib.Utils
 
         private static ImageC FromSystemDrawingBitmapMatchingPixelFormat(Bitmap bitmap)
         {
-            BitmapData bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             try
             {
                 ImageC result = CreateNew(bitmap.Width, bitmap.Height);
@@ -308,14 +308,14 @@ namespace TombLib.Utils
 
         public static ImageC FromStreamRaw(Stream stream, int width, int height)
         {
-            ImageC result = ImageC.CreateNew(width, height);
+            ImageC result = CreateNew(width, height);
             stream.Read(result._data, 0, width * height * PixelSize);
             return result;
         }
 
         public static ImageC FromByteArray(byte[] data, int width, int height)
         {
-            ImageC result = ImageC.CreateNew(width, height);
+            ImageC result = CreateNew(width, height);
             Array.Copy(data, result._data, data.Length);
             return result;
         }
@@ -369,7 +369,7 @@ namespace TombLib.Utils
             Bitmap result = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
             try
             {
-                BitmapData resultData = result.LockBits(new System.Drawing.Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                BitmapData resultData = result.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
                 try
                 {
                     Marshal.Copy(_data, 0, resultData.Scan0, resultData.Height * resultData.Stride);

@@ -19,7 +19,7 @@ namespace DarkUI.Controls
         private DarkScrollOrientation _scrollOrientation;
 
         private int _value;
-        private int _minimum = 0;
+        private int _minimum;
         private int _maximum = 100;
 
         private int _viewSize;

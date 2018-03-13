@@ -363,7 +363,7 @@ namespace TombLib.LevelData
 
         public void ImportedGeometryUpdate(IEnumerable<ImportedGeometryUpdateInfo> geometriesToUpdate)
         {
-            var absolutePathTextureLookup = new Dictionary<string, TombLib.Utils.Texture>();
+            var absolutePathTextureLookup = new Dictionary<string, Texture>();
 
             // Add level textures to lookup
             foreach (LevelTexture levelTexture in Textures)

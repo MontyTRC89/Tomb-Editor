@@ -466,7 +466,7 @@ namespace TombLib.LevelData.Compilers
         {
             var roomStartOffset = writer.BaseStream.Position;
 
-            var xela = System.Text.ASCIIEncoding.ASCII.GetBytes("XELA");
+            var xela = System.Text.Encoding.ASCII.GetBytes("XELA");
             writer.Write(xela);
 
             var startOfRoomPosition = writer.BaseStream.Position;

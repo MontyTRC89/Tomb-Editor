@@ -19,7 +19,7 @@ namespace DarkUI.Docking
 
         private readonly DarkDockTabArea _tabArea;
 
-        private DarkDockTab _dragTab = null;
+        private DarkDockTab _dragTab;
 
         private DarkDockSplitter _splitter;
 

@@ -259,7 +259,7 @@ namespace TombEditor.Controls
         }
 
         // Prevent user message from appearing multiple time for multi row deletes
-        private bool? userDeletingRow_Cancel = null;
+        private bool? userDeletingRow_Cancel;
 
         private void dataGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {

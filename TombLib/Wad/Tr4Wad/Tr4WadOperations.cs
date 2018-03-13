@@ -14,7 +14,7 @@ namespace TombLib.Wad.Tr4Wad
     public class SamplePathInfo
     {
         public string Name { get; set; }
-        public string FullPath { get; set; } = null;
+        public string FullPath { get; set; }
         public bool Found { get { return (!string.IsNullOrEmpty(FullPath)) && File.Exists(FullPath); } }
     }
     

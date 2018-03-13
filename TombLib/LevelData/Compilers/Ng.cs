@@ -7,8 +7,8 @@ namespace TombLib.LevelData.Compilers
     {
         private void WriteNgHeader(BinaryWriter writer)
         {
-            var ngleStartSignature = System.Text.ASCIIEncoding.ASCII.GetBytes("NG");
-            var endSignature = System.Text.ASCIIEncoding.ASCII.GetBytes("NGLE");
+            var ngleStartSignature = System.Text.Encoding.ASCII.GetBytes("NG");
+            var endSignature = System.Text.Encoding.ASCII.GetBytes("NGLE");
             var startOffset = writer.BaseStream.Position;
 
             // Write start signature

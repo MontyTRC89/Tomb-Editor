@@ -22,7 +22,7 @@ namespace DarkUI.Controls
         private readonly DataGridView _base = new DataGridView();
         private readonly DarkScrollBar _vScrollBar = new DarkScrollBar { ScrollOrientation = DarkScrollOrientation.Vertical };
         private readonly DarkScrollBar _hScrollBar = new DarkScrollBar { ScrollOrientation = DarkScrollOrientation.Horizontal };
-        private bool _isInit = false;
+        private bool _isInit;
         private ScrollBars _scrollBars = ScrollBars.Both;
         private int _dragPosition = -1;
 
@@ -405,7 +405,7 @@ namespace DarkUI.Controls
             return result;
         }
 
-        private bool _updateScrollBarLayout = false;
+        private bool _updateScrollBarLayout;
 
         private void UpdateScrollBarLayout()
         {

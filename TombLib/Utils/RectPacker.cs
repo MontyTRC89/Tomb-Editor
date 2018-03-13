@@ -15,9 +15,9 @@ namespace TombLib.Utils
 
     public class RectPackerSimpleStack : RectPacker
     {
-        private int _currentX = 0;
-        private int _currentY = 0;
-        private int _stackHeight = 0;
+        private int _currentX;
+        private int _currentY;
+        private int _stackHeight;
 
         public RectPackerSimpleStack(VectorInt2 size)
             : base(size)

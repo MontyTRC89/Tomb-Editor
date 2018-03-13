@@ -21,7 +21,7 @@ namespace DarkUI.Controls
         private DarkDropdownItem _selectedItem;
 
         private readonly DarkContextMenu _menu = new DarkContextMenu();
-        private bool _menuOpen = false;
+        private bool _menuOpen;
 
         private bool _showBorder = true;
 

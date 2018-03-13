@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace WadTool.Controls
 {
@@ -145,7 +146,7 @@ namespace WadTool.Controls
                     p0, p1, p1, p2, p2, p3, p3, p0
             };
 
-            return Buffer<SolidVertex>.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
+            return Buffer.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
         }
 
         public void Draw()
@@ -345,9 +346,9 @@ namespace WadTool.Controls
                 _lastX = e.X;
                 _lastY = e.Y;
 
-                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                if ((ModifierKeys & Keys.Control) == Keys.Control)
                     Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
-                else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
                     Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                 else
                     Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,

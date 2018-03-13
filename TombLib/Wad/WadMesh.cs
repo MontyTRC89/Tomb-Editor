@@ -85,7 +85,7 @@ namespace TombLib.Wad
 
         public void UpdateHash()
         {
-            Hash = Hash.FromByteArray(this.ToByteArray());
+            Hash = Hash.FromByteArray(ToByteArray());
         }
 
         public BoundingBox CalculateBoundingBox(Matrix4x4 transform)

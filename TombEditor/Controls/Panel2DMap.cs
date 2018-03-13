@@ -67,7 +67,7 @@ namespace TombEditor.Controls
                 return _roomSelectionCache;
             }
         }
-        private SelectionArea _selectionArea = null;
+        private SelectionArea _selectionArea;
 
         private static readonly Brush _roomsNormalBrush = new SolidBrush(Color.FromArgb(180, 20, 200, 200));
         private static readonly Brush _roomsNormalAboveBrush = new SolidBrush(Color.FromArgb(120, 50, 50, 200));

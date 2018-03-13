@@ -9,7 +9,7 @@ using DarkUI.Forms;
 
 namespace TombEditor
 {
-    public partial class FormSound : DarkUI.Forms.DarkForm
+    public partial class FormSound : DarkForm
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 

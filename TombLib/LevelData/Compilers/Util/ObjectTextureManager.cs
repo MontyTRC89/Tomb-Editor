@@ -370,8 +370,8 @@ namespace TombLib.LevelData.Compilers.Util
         }
         private List<SavedObjectTexture> _objectTextures = new List<SavedObjectTexture>();
         private Dictionary<SavedObjectTexture, ushort> _objectTexturesLookup = new Dictionary<SavedObjectTexture, ushort>();
-        private uint _textureSpaceIdentifier = 0;
-        private int _supportsUpTo65536TextureCount = 0;
+        private uint _textureSpaceIdentifier;
+        private int _supportsUpTo65536TextureCount;
 
         private TextureAllocator _textureAllocator = new TextureAllocator();
 

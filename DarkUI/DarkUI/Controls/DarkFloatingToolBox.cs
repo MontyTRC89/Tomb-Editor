@@ -35,7 +35,7 @@ namespace DarkUI.Controls
             get { return _autoAnchor; }
             set { _autoAnchor = value; }
         }
-        private bool _autoAnchor = false;
+        private bool _autoAnchor;
 
         [Category("Layout")]
         [Description("Determines if resize grip is horizontal or vertical.")]
@@ -230,7 +230,7 @@ namespace DarkUI.Controls
                 nextLocation.Offset((nextLocation.X < _dragSnappingMargin.Width ? -nextLocation.X : 0), (nextLocation.Y < _dragSnappingMargin.Height ? -nextLocation.Y : 0));
                 nextLocation.Offset((nextLocation.X > dragBounds.Width - _dragSnappingMargin.Width ? -(nextLocation.X - dragBounds.Width) : 0), (nextLocation.Y > dragBounds.Height - _dragSnappingMargin.Height ? -(nextLocation.Y - dragBounds.Height) : 0));
 
-                this.Location = nextLocation;
+                Location = nextLocation;
                 Refresh(); // We need to invalidate all controls behind
             }
         }

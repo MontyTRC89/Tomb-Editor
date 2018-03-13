@@ -14,29 +14,29 @@ namespace TombEditor.Controls.ContextMenus
                 Items.Add(new ToolStripSeparator());
             }
 
-            Items.Add(new ToolStripMenuItem("Edit object", global::TombEditor.Properties.Resources.general_edit_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Edit object", Properties.Resources.general_edit_16, (o, e) =>
             {
                 EditorActions.EditObject(targetObject, this);
             }) { Enabled = !(targetObject is LightInstance) });
 
-            Items.Add(new ToolStripMenuItem("Copy", global::TombEditor.Properties.Resources.general_copy_link_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Copy", Properties.Resources.general_copy_link_16, (o, e) =>
             {
                 EditorActions.TryCopyObject(targetObject, this);
             }));
 
-            Items.Add(new ToolStripMenuItem("Clone", global::TombEditor.Properties.Resources.actions_rubber_stamp_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Clone", Properties.Resources.actions_rubber_stamp_16, (o, e) =>
             {
                 EditorActions.TryStampObject(targetObject, this);
             }));
 
-            Items.Add(new ToolStripMenuItem("Delete", global::TombEditor.Properties.Resources.toolbox_Eraser_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Delete", Properties.Resources.toolbox_Eraser_16, (o, e) =>
             {
                 EditorActions.DeleteObjectWithWarning(targetObject, this);
             }));
 
             if (_editor.SelectedObject is ImportedGeometryInstance)
             {
-                Items.Add(new ToolStripMenuItem("Reload imported geometry", global::TombEditor.Properties.Resources.general_Open_16, (o, e) =>
+                Items.Add(new ToolStripMenuItem("Reload imported geometry", Properties.Resources.general_Open_16, (o, e) =>
                 {
                     EditorActions.ReloadImportedGeometry(_editor.SelectedObject as ImportedGeometryInstance);
                 }));
@@ -45,7 +45,7 @@ namespace TombEditor.Controls.ContextMenus
             if (_editor.SelectedObject is IRotateableY || _editor.SelectedObject is IRotateableYX || _editor.SelectedObject is IRotateableYXRoll)
             {
                 Items.Add(new ToolStripSeparator());
-                Items.Add(new ToolStripMenuItem("Reset rotation (all axes)", global::TombEditor.Properties.Resources.actions_center_direction_16, (o, e) =>
+                Items.Add(new ToolStripMenuItem("Reset rotation (all axes)", Properties.Resources.actions_center_direction_16, (o, e) =>
                 {
                     EditorActions.ResetObjectRotation();
                 }));
