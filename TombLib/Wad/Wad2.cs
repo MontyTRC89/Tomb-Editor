@@ -1,5 +1,6 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,9 +36,9 @@ namespace TombLib.Wad
         // Data for rendering
         public GraphicsDevice GraphicsDevice { get; set; }
         public Texture2D DirectXTexture { get; private set; }
-        public SortedDictionary<WadMoveableId, SkinnedModel> DirectXMoveables { get; } = new SortedDictionary<WadMoveableId, SkinnedModel>();
+        public SortedDictionary<WadMoveableId, AnimatedModel> DirectXMoveables { get; } = new SortedDictionary<WadMoveableId, AnimatedModel>();
         public SortedDictionary<WadStaticId, StaticModel> DirectXStatics { get; } = new SortedDictionary<WadStaticId, StaticModel>();
-        public Dictionary<WadMesh, ObjectMesh> DirectXMeshes { get; } = new Dictionary<WadMesh, ObjectMesh>();
+        public ConcurrentDictionary<WadMesh, ObjectMesh> DirectXMeshes { get; } = new ConcurrentDictionary<WadMesh, ObjectMesh>();
         public Dictionary<WadTexture, VectorInt2> PackedTextures { get; set; } = new Dictionary<WadTexture, VectorInt2>();
 
         // Size of the atlas
@@ -145,7 +146,7 @@ namespace TombLib.Wad
             Parallel.For(0, Moveables.Count, i =>
             {
                 var mov = Moveables.ElementAt(i).Value;
-                var model = SkinnedModel.FromWad2(GraphicsDevice, this, mov, PackedTextures);
+                var model = AnimatedModel.FromWad2(GraphicsDevice, this, mov, PackedTextures);
                 lock (DirectXMoveables)
                     DirectXMoveables.TryAdd(mov.Id, model);
             });

@@ -133,7 +133,7 @@ namespace WadTool.Controls
                 Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
                 if (CurrentObjectId is WadMoveableId)
                 {
-                    SkinnedModel model;
+                    AnimatedModel model;
                     if (CurrentWad.DirectXMoveables.TryGetValue((WadMoveableId)CurrentObjectId, out model))
                     {
                         var skin = model;

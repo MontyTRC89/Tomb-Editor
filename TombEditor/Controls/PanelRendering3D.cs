@@ -1631,7 +1631,7 @@ namespace TombEditor.Controls
                     MoveableInstance modelInfo = (MoveableInstance)instance;
                     if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(modelInfo.WadObjectId) ?? false)
                     {
-                        SkinnedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
+                        AnimatedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
                         for (int j = 0; j < model.Meshes.Count; j++)
                         {
                             var mesh = model.Meshes[j];
@@ -2220,8 +2220,8 @@ namespace TombEditor.Controls
                 if (!(_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false))
                     continue;
 
-                SkinnedModel model = _editor.Level.Wad.DirectXMoveables[instance.WadObjectId];
-                SkinnedModel skin = instance.WadObjectId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model;
+                AnimatedModel model = _editor.Level.Wad.DirectXMoveables[instance.WadObjectId];
+                AnimatedModel skin = instance.WadObjectId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model;
 
                 _debug.NumMoveables++;
 
@@ -2454,7 +2454,7 @@ namespace TombEditor.Controls
 
             Effect skinnedModelEffect = _deviceManager.Effects["Model"];
 
-            SkinnedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[WadMoveableId.SkyBox];
+            AnimatedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[WadMoveableId.SkyBox];
 
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, skinnedModel.VertexBuffer));
 

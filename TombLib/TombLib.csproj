@@ -224,7 +224,7 @@
     <Compile Include="Graphics\KeyFrame.cs" />
     <Compile Include="Graphics\Mesh.cs" />
     <Compile Include="Graphics\Model.cs" />
-    <Compile Include="Graphics\SkinnedModel.cs" />
+    <Compile Include="Graphics\AnimatedModel.cs" />
     <Compile Include="Graphics\StaticModel.cs" />
     <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="IO\BinaryReaderEx.cs" />
