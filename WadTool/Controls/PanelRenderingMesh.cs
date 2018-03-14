@@ -52,7 +52,7 @@ namespace WadTool.Controls
 
             _presenter = new SwapChainGraphicsPresenter(_device, pp);
 
-            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
+            Camera = new ArcBallCamera(new Vector3(0.0f, 0.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 0, 1000000, (float)Math.PI / 4.0f);
 
             // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
             new BasicEffect(_device);
@@ -128,7 +128,7 @@ namespace WadTool.Controls
                 effect.Techniques[0].Passes[0].Apply();
 
                 foreach (var submesh in mesh.Submeshes)
-                    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
             }
 
             _device.Present();

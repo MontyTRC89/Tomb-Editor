@@ -224,6 +224,7 @@ namespace TombLib.Wad
 
             // Create a new mesh (all meshes from model will be joined)
             var mesh = new WadMesh();
+            mesh.Name = "ImportedMesh";
             mesh.BoundingBox = tmpModel.BoundingBox;
             mesh.BoundingSphere = tmpModel.BoundingSphere;
 

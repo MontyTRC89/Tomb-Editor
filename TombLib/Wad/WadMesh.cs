@@ -9,6 +9,7 @@ namespace TombLib.Wad
 {
     public class WadMesh : IEquatable<WadMesh>, ICloneable
     {
+        public string Name { get; set; }
         public List<Vector3> VerticesPositions { get; set; } = new List<Vector3>();
         public List<Vector3> VerticesNormals { get; set; } = new List<Vector3>();
         public List<short> VerticesShades { get; set; } = new List<short>();
@@ -20,6 +21,31 @@ namespace TombLib.Wad
         public WadMesh()
         {
             UpdateHash();
+        }
+
+        public void RecalculateNormals()
+        {
+            for (int i = 0; i < VerticesPositions.Count; i++)
+            {
+                int numPolygons = 0;
+                var sum = Vector3.Zero;
+                foreach (var poly in Polys)
+                {
+                    if (poly.Index0 == i || poly.Index1 == i || poly.Index2 == i || poly.Index3 == i)
+                    {
+                        // Calculate the face normal
+                        var normal = (VerticesPositions[poly.Index0] + VerticesPositions[poly.Index1] + VerticesPositions[poly.Index2]) / 3.0f;
+                        sum += normal;
+                        numPolygons++;
+                    }
+                }
+
+                if (numPolygons != 0)
+                {
+                    VerticesNormals[i] = sum / (float)numPolygons;
+                    VerticesNormals[i] /= VerticesNormals[i].Length() * 16300.0f; // WTF?
+                }
+            }
         }
 
         public WadMesh Clone()

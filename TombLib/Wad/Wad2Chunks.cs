@@ -40,6 +40,7 @@ namespace TombLib.Wad
         public static readonly ChunkId Meshes = ChunkId.FromString("W2Meshes");
         /**/public static readonly ChunkId Mesh = ChunkId.FromString("W2Mesh");
         /****/public static readonly ChunkId MeshIndex = ChunkId.FromString("W2Index");
+        /****/public static readonly ChunkId MeshName = ChunkId.FromString("W2MeshName");
         /****/public static readonly ChunkId MeshSphere = ChunkId.FromString("W2MeshSphere");
         /****/public static readonly ChunkId MeshSphereCenter = ChunkId.FromString("W2SphC");
         /****/public static readonly ChunkId MeshSphereRadius = ChunkId.FromString("W2SphR");

@@ -146,6 +146,8 @@ namespace TombLib.Wad.Tr4Wad
         {
             WadMesh mesh = new WadMesh();
 
+            mesh.Name = "Mesh_" + oldWad.Meshes.IndexOf(oldMesh);
+
             // Create the bounding sphere
             mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.SphereX, -oldMesh.SphereY, oldMesh.SphereZ), oldMesh.Radius);
 

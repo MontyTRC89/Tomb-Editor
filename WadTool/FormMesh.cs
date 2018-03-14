@@ -28,16 +28,21 @@ namespace WadTool
 
             panelMesh.InitializePanel(_tool, _deviceManager);
 
-            lstMeshes.DataSource = new BindingList<WadMesh>(new List<WadMesh>(_wad.MeshesUnique));
+            foreach (var mesh in _wad.MeshesUnique)
+            {
+                var node = new DarkUI.Controls.DarkTreeNode(mesh.Name);
+                node.Tag = mesh;
+                lstMeshes.Nodes.Add(node);
+            }
         }
 
         private void lstMeshes_Click(object sender, EventArgs e)
         {
             // Update big image view
-            if (lstMeshes.SelectedRows.Count <= 0)
+            if (lstMeshes.SelectedNodes.Count <= 0)
                 return;
 
-            panelMesh.Mesh = ((WadMesh)lstMeshes.SelectedRows[0].DataBoundItem);
+            panelMesh.Mesh = ((WadMesh)lstMeshes.SelectedNodes[0].Tag);
             panelMesh.Invalidate();
         }
     }
