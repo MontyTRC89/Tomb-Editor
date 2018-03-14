@@ -314,7 +314,7 @@ namespace TombLib.Wad.Tr4Wad
                         wad.FixedSoundInfos.Add(id, new WadFixedSoundInfo(id) { SoundInfo = soundInfos[i] });
                     }
 
-             return soundInfos;
+            return soundInfos;
         }
 
         internal static List<WadMesh> ConvertTr4Meshes(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> textures)
@@ -531,12 +531,13 @@ namespace TombLib.Wad.Tr4Wad
                                 break;
                             default: // Ignore invalid anim commands (see for example karnak.wad)
                                 logger.Warn("Invalid anim command " + commandType);
-                                lastCommand += 1;
-                                continue;
+                                goto ExitForLoop;
                         }
 
                         newAnimation.AnimCommands.Add(command);
                     }
+                    ExitForLoop:
+                    ;
                 }
 
                 int frames = (int)oldAnimation.KeyFrameOffset / 2;
