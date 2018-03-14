@@ -116,6 +116,8 @@ namespace TombLib.Wad.TrLevels
         {
             WadMesh mesh = new WadMesh();
 
+            mesh.Name = "Mesh_" + oldLevel.Meshes.IndexOf(oldMesh);
+
             // Add positions
             foreach (var oldVertex in oldMesh.Vertices)
             {

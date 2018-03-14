@@ -164,6 +164,7 @@ namespace TombLib.Wad
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.Mesh, () =>
                     {
                         chunkIO.WriteChunkInt(Wad2Chunks.MeshIndex, i);
+                        chunkIO.WriteChunkString(Wad2Chunks.MeshName, mesh.Name);
 
                         // Write bounding sphere
                         chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshSphere, () =>

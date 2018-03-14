@@ -286,6 +286,8 @@ namespace TombLib.Wad
                 {
                     if (id2 == Wad2Chunks.MeshIndex)
                         obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
+                    else if (id2 == Wad2Chunks.MeshName)
+                        mesh.Name = chunkIO.ReadChunkString(chunkSize2);
                     else if (id2 == Wad2Chunks.MeshSphere)
                     {
                         // Read bounding sphere
