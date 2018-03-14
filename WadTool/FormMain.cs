@@ -379,6 +379,8 @@ namespace WadTool
 
         private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            using (var form = new FormMesh(_tool, _deviceManager, _tool.DestinationWad))
+                form.ShowDialog();
         }
 
         private void timerPlayAnimation_Tick(object sender, EventArgs e)

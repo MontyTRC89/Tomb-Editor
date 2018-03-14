@@ -162,8 +162,8 @@ namespace TombEditor.Controls
             }
             else
             {
-                SkinnedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.MoveableId];
-                SkinnedModel skin = chosenItem.MoveableId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model;
+                AnimatedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.MoveableId];
+                AnimatedModel skin = chosenItem.MoveableId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model;
 
                 Effect mioEffect = _deviceManager.Effects["Model"];
 

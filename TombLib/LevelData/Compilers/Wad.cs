@@ -419,6 +419,9 @@ namespace TombLib.LevelData.Compilers
                 var usedMeshes = new List<WadMesh>();
                 BuildMeshTree(oldMoveable.Skeleton, meshTrees, usedMeshes);
 
+                newMoveable.MeshTree = (uint)_meshTrees.Count;
+                newMoveable.StartingMesh = (ushort)_meshPointers.Count;
+
                 foreach (var meshTree in meshTrees)
                 {
                     _meshTrees.Add(meshTree.Opcode);

@@ -9,7 +9,7 @@ using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
-    public class SkinnedModel : Model<ObjectMesh, ObjectVertex>
+    public class AnimatedModel : Model<ObjectMesh, ObjectVertex>
     {
         public Vector3 Offset;
         public Bone Root { get; set; }
@@ -18,7 +18,7 @@ namespace TombLib.Graphics
         public List<Matrix4x4> BindPoseTransforms { get; set; } = new List<Matrix4x4>();
         public List<Matrix4x4> AnimationTransforms { get; set; } = new List<Matrix4x4>();
 
-        public SkinnedModel(GraphicsDevice device)
+        public AnimatedModel(GraphicsDevice device)
             : base(device, ModelType.Skinned)
         {}
 
@@ -140,83 +140,17 @@ namespace TombLib.Graphics
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
-        public static SkinnedModel FromWad2(GraphicsDevice device, Wad2 wad, WadMoveable mov, Dictionary<WadTexture, VectorInt2> reallocatedTextures)
+        public static AnimatedModel FromWad2(GraphicsDevice device, Wad2 wad, WadMoveable mov, Dictionary<WadTexture, VectorInt2> reallocatedTextures)
         {
-            SkinnedModel model = new SkinnedModel(device);
+            AnimatedModel model = new AnimatedModel(device);
 
-            // Prepare materials
-            var materialOpaque = new Material(Material.Material_Opaque + "_0_0_0_0", null, false, false, 0);
-            var materialOpaqueDoubleSided = new Material(Material.Material_OpaqueDoubleSided + "_0_0_1_0", null, false, true, 0);
-            var materialAdditiveBlending = new Material(Material.Material_AdditiveBlending + "_0_1_0_0", null, true, false, 0);
-            var materialAdditiveBlendingDoubleSided = new Material(Material.Material_AdditiveBlendingDoubleSided + "_0_1_1_0", null, true, true, 0);
-
-            model.Materials.Add(materialOpaque);
-            model.Materials.Add(materialOpaqueDoubleSided);
-            model.Materials.Add(materialAdditiveBlending);
-            model.Materials.Add(materialAdditiveBlendingDoubleSided);
-
-            // Initialize the mesh
+            // Create meshes
             for (int m = 0; m < mov.Meshes.Count; m++)
             {
                 WadMesh msh = mov.Meshes[m];
-                var mesh = new ObjectMesh(device, mov + "_mesh_" + m);
-
-                mesh.Submeshes.Add(materialOpaque, new Submesh(materialOpaque));
-                mesh.Submeshes.Add(materialOpaqueDoubleSided, new Submesh(materialOpaqueDoubleSided));
-                mesh.Submeshes.Add(materialAdditiveBlending, new Submesh(materialAdditiveBlending));
-                mesh.Submeshes.Add(materialAdditiveBlendingDoubleSided, new Submesh(materialAdditiveBlendingDoubleSided));
-
-                mesh.BoundingBox = msh.BoundingBox;
-                mesh.BoundingSphere = msh.BoundingSphere;
-
-                for (int j = 0; j < msh.Polys.Count; j++)
-                {
-                    WadPolygon poly = msh.Polys[j];
-                    Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)poly.Texture.Texture];
-
-                    // Get the right submesh
-                    var submesh = mesh.Submeshes[materialOpaque];
-                    if (poly.Texture.BlendMode == BlendMode.Additive)
-                    {
-                        if (poly.Texture.DoubleSided)
-                            submesh = mesh.Submeshes[materialAdditiveBlendingDoubleSided];
-                        else
-                            submesh = mesh.Submeshes[materialAdditiveBlending];
-                    }
-                    else
-                    {
-                        if (poly.Texture.DoubleSided)
-                            submesh = mesh.Submeshes[materialOpaqueDoubleSided];
-                    }
-
-                    if (poly.Shape == WadPolygonShape.Triangle)
-                    {
-                        int v1 = poly.Index0;
-                        int v2 = poly.Index1;
-                        int v3 = poly.Index2;
-
-                        PutObjectVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, 0, positionInPackedTexture);
-                        PutObjectVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, 0, positionInPackedTexture);
-                        PutObjectVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, 0, positionInPackedTexture);
-                    }
-                    else
-                    {
-                        int v1 = poly.Index0;
-                        int v2 = poly.Index1;
-                        int v3 = poly.Index2;
-                        int v4 = poly.Index3;
-
-                        PutObjectVertexAndIndex(msh.VerticesPositions[v1], mesh, submesh, poly.Texture.TexCoord0, 0, 0, positionInPackedTexture);
-                        PutObjectVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, 0, positionInPackedTexture);
-                        PutObjectVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, 0, positionInPackedTexture);
-
-                        PutObjectVertexAndIndex(msh.VerticesPositions[v4], mesh, submesh, poly.Texture.TexCoord3, 0, 0, positionInPackedTexture);
-                        PutObjectVertexAndIndex(msh.VerticesPositions[v2], mesh, submesh, poly.Texture.TexCoord1, 0, 0, positionInPackedTexture);
-                        PutObjectVertexAndIndex(msh.VerticesPositions[v3], mesh, submesh, poly.Texture.TexCoord2, 0, 0, positionInPackedTexture);
-                    }
-                }
-
-                mesh.UpdateBuffers();
+                var mesh = ObjectMesh.FromWad2(device, wad, msh, reallocatedTextures);
+                if (!wad.DirectXMeshes.ContainsKey(msh))
+                    wad.DirectXMeshes.TryAdd(msh, mesh);
                 model.Meshes.Add(mesh);
             }
 
@@ -278,7 +212,7 @@ namespace TombLib.Graphics
             return model;
         }
 
-        private static Bone BuildSkeleton(SkinnedModel model, WadBone bone, Bone parentBone)
+        private static Bone BuildSkeleton(AnimatedModel model, WadBone bone, Bone parentBone)
         {
             Bone currentBone = new Bone();
             currentBone.Name = bone.Name;
