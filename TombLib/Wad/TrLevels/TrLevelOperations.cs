@@ -546,12 +546,13 @@ namespace TombLib.Wad.TrLevels
 
                             default: // Ignore invalid anim commands (see for example karnak.wad)
                                 logger.Warn("Unknown anim command " + commandType);
-                                lastCommand += 1;
-                                continue;
+                                goto ExitForLoop;
                         }
 
                         newAnimation.AnimCommands.Add(command);
                     }
+                    ExitForLoop:
+                    ;
                 }
 
                 int frames = (int)oldAnimation.FrameOffset / 2;
