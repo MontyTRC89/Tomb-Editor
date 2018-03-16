@@ -61,6 +61,10 @@
             this.butCalculateVisibilityBox = new DarkUI.Controls.DarkButton();
             this.butSaveChanges = new DarkUI.Controls.DarkButton();
             this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
+            this.butResetTranslation = new DarkUI.Controls.DarkButton();
+            this.butResetRotation = new DarkUI.Controls.DarkButton();
+            this.butResetScale = new DarkUI.Controls.DarkButton();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.SuspendLayout();
             // 
             // darkStatusStrip1
@@ -397,11 +401,58 @@
             this.panelRendering.StaticScale = 1F;
             this.panelRendering.TabIndex = 1;
             // 
+            // butResetTranslation
+            // 
+            this.butResetTranslation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butResetTranslation.Location = new System.Drawing.Point(625, 362);
+            this.butResetTranslation.Name = "butResetTranslation";
+            this.butResetTranslation.Size = new System.Drawing.Size(75, 23);
+            this.butResetTranslation.TabIndex = 80;
+            this.butResetTranslation.Text = "Translation";
+            this.butResetTranslation.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butResetTranslation.Click += new System.EventHandler(this.butResetTranslation_Click);
+            // 
+            // butResetRotation
+            // 
+            this.butResetRotation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butResetRotation.Location = new System.Drawing.Point(706, 362);
+            this.butResetRotation.Name = "butResetRotation";
+            this.butResetRotation.Size = new System.Drawing.Size(61, 23);
+            this.butResetRotation.TabIndex = 81;
+            this.butResetRotation.Text = "Rotation";
+            this.butResetRotation.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butResetRotation.Click += new System.EventHandler(this.butResetRotation_Click);
+            // 
+            // butResetScale
+            // 
+            this.butResetScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butResetScale.Location = new System.Drawing.Point(773, 362);
+            this.butResetScale.Name = "butResetScale";
+            this.butResetScale.Size = new System.Drawing.Size(44, 23);
+            this.butResetScale.TabIndex = 82;
+            this.butResetScale.Text = "Scale";
+            this.butResetScale.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butResetScale.Click += new System.EventHandler(this.butResetScale_Click);
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(584, 367);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(35, 13);
+            this.darkLabel1.TabIndex = 83;
+            this.darkLabel1.Text = "Reset";
+            // 
             // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(829, 564);
+            this.Controls.Add(this.darkLabel1);
+            this.Controls.Add(this.butResetScale);
+            this.Controls.Add(this.butResetRotation);
+            this.Controls.Add(this.butResetTranslation);
             this.Controls.Add(this.cbDrawGizmo);
             this.Controls.Add(this.cbDrawGrid);
             this.Controls.Add(this.butCalculateCollisionBox);
@@ -436,6 +487,7 @@
             this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.darkStatusStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(837, 595);
             this.Name = "FormStaticEditor";
@@ -481,5 +533,9 @@
         private DarkUI.Controls.DarkCheckBox cbCollisionBox;
         private DarkUI.Controls.DarkCheckBox cbDrawGrid;
         private DarkUI.Controls.DarkCheckBox cbDrawGizmo;
+        private DarkUI.Controls.DarkButton butResetTranslation;
+        private DarkUI.Controls.DarkButton butResetRotation;
+        private DarkUI.Controls.DarkButton butResetScale;
+        private DarkUI.Controls.DarkLabel darkLabel1;
     }
 }
