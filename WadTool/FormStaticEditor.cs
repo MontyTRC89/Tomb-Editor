@@ -142,5 +142,20 @@ namespace WadTool
             panelRendering.DrawGizmo = cbDrawGizmo.Checked;
             panelRendering.Invalidate();
         }
+
+        private void butResetTranslation_Click(object sender, EventArgs e)
+        {
+            panelRendering.StaticPosition = Vector3.Zero;
+        }
+
+        private void butResetRotation_Click(object sender, EventArgs e)
+        {
+            panelRendering.StaticRotation = Vector3.Zero;
+        }
+
+        private void butResetScale_Click(object sender, EventArgs e)
+        {
+            panelRendering.StaticScale = 1.0f;
+        }
     }
 }
