@@ -61,18 +61,14 @@ namespace TombLib.Wad.Tr4Wad
             WadSoundInfo[] soundInfos = ConvertTr4Sounds(wad, oldWad, samples);
             logger.Info("Sounds read.");
 
-            // Convert meshes
-            List<WadMesh> meshes = ConvertTr4Meshes(wad, oldWad, textures);
-            logger.Info("Meshes read.");
-
             // Convert moveables
             for (int i = 0; i < oldWad.Moveables.Count; i++)
-                ConvertTr4MoveableToWadMoveable(wad, oldWad, i, meshes, soundInfos);
+                ConvertTr4MoveableToWadMoveable(wad, oldWad, i, textures, soundInfos);
             logger.Info("Moveables read.");
 
             // Convert statics
             for (int i = 0; i < oldWad.Statics.Count; i++)
-                ConvertTr4StaticMeshToWadStatic(wad, oldWad, i, meshes);
+                ConvertTr4StaticMeshToWadStatic(wad, oldWad, i, textures);
             logger.Info("Statics read.");
 
             // Convert sprites
@@ -142,11 +138,12 @@ namespace TombLib.Wad.Tr4Wad
             return textureId;
         }
 
-        private static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> textures, wad_mesh oldMesh)
+        private static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> textures, 
+                                                       wad_mesh oldMesh, int objectID)
         {
             WadMesh mesh = new WadMesh();
 
-            mesh.Name = "Mesh_" + oldWad.Meshes.IndexOf(oldMesh);
+            mesh.Name = "Mesh-" + objectID + "-" + oldWad.Meshes.IndexOf(oldMesh);
 
             // Create the bounding sphere
             mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.SphereX, -oldMesh.SphereY, oldMesh.SphereZ), oldMesh.Radius);
@@ -191,7 +188,7 @@ namespace TombLib.Wad.Tr4Wad
 
             mesh.BoundingBox = new BoundingBox(oldMesh.Minimum, oldMesh.Maximum);
 
-            mesh.UpdateHash();
+            //mesh.UpdateHash();
             return mesh;
         }
 
@@ -319,19 +316,22 @@ namespace TombLib.Wad.Tr4Wad
             return soundInfos;
         }
 
-        internal static List<WadMesh> ConvertTr4Meshes(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> textures)
-        {
-            List<WadMesh> meshes = new List<WadMesh>();
-            foreach (var mesh in oldWad.Meshes)
-                meshes.Add(ConvertTr4MeshToWadMesh(wad, oldWad, textures, mesh));
-            return meshes;
-        }
-
-        internal static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex, List<WadMesh> meshes, WadSoundInfo[] soundInfos)
+        internal static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex,
+                                                                    /*List<WadMesh> meshes, */
+                                                                    Dictionary<int, WadTexture> textures,
+                                                                    WadSoundInfo[] soundInfos)
         {
             wad_moveable oldMoveable = oldWad.Moveables[moveableIndex];
             WadMoveable newMoveable = new WadMoveable(new WadMoveableId(oldMoveable.ObjectID));
             var frameBases = new Dictionary<WadAnimation, ushort>();
+
+            // Add meshes
+            for (int j = 0; j < oldMoveable.NumPointers; j++)
+            {
+                newMoveable.Meshes.Add(ConvertTr4MeshToWadMesh(wad, oldWad, textures,
+                                                               oldWad.Meshes[(int)oldWad.RealPointers[oldMoveable.PointerIndex + j]],
+                                                               (int)oldMoveable.ObjectID));
+            }
 
             // Build the skeleton
             WadBone root = new WadBone();
@@ -339,9 +339,8 @@ namespace TombLib.Wad.Tr4Wad
             root.Parent = null;
             root.Transform = Matrix4x4.Identity;
             root.Translation = Vector3.Zero;
-            root.Mesh = meshes[(int)oldWad.RealPointers[oldMoveable.PointerIndex + 0]];
+            root.Mesh = newMoveable.Meshes[0]; 
             root.Index = 0;
-            newMoveable.Meshes.Add(root.Mesh);
 
             var bones = new List<WadBone>();
             bones.Add(root);
@@ -354,9 +353,8 @@ namespace TombLib.Wad.Tr4Wad
                 bone.Parent = null;
                 bone.Transform = Matrix4x4.Identity;
                 bone.Translation = Vector3.Zero;
-                bone.Mesh = meshes[(int)oldWad.RealPointers[oldMoveable.PointerIndex + j + 1]];
+                bone.Mesh = newMoveable.Meshes[j + 1]; 
                 bone.Index = j + 1;
-                newMoveable.Meshes.Add(bone.Mesh);
                 bones.Add(bone);
             }
 
@@ -688,7 +686,8 @@ namespace TombLib.Wad.Tr4Wad
             return newMoveable;
         }
 
-        internal static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex, List<WadMesh> meshes)
+        internal static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex, /*List<WadMesh> meshes*/
+                                                                  Dictionary<int, WadTexture> textures)
         {
             var oldStaticMesh = oldWad.Statics[staticIndex];
             var staticMesh = new WadStatic(new WadStaticId(oldStaticMesh.ObjectId));
@@ -710,8 +709,9 @@ namespace TombLib.Wad.Tr4Wad
                                                                    -oldStaticMesh.VisibilityY2,
                                                                    oldStaticMesh.VisibilityZ2));
 
-            // Then import the mesh. If it was already added, the mesh will not be added to the dictionary.
-            staticMesh.Mesh = meshes[(int)oldWad.RealPointers[oldStaticMesh.PointersIndex]];
+            staticMesh.Mesh = ConvertTr4MeshToWadMesh(wad, oldWad, textures,
+                                                      oldWad.Meshes[(int)oldWad.RealPointers[oldStaticMesh.PointersIndex]],
+                                                      (int)oldStaticMesh.ObjectId);
 
             wad.Statics.Add(staticMesh.Id, staticMesh);
 

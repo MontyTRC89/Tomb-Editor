@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
@@ -44,6 +45,8 @@ namespace TombLib.Wad
         public short Flags { get; set; } = 0;
         public BoundingBox VisibilityBox { get; set; } = new BoundingBox();
         public BoundingBox CollisionBox { get; set; } = new BoundingBox();
+        public List<WadLight> Lights { get; set; } = new List<WadLight>();
+        public WadMeshLightingType LightingType { get; set; } = WadMeshLightingType.PrecalculatedGrayShades;
 
         public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
         public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);

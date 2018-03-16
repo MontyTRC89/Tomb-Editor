@@ -51,8 +51,6 @@ namespace WadTool
                     _workingStatic.Mesh.VerticesNormals[i] = new Vector3(normal.X, normal.Y, normal.Z);
                 }
 
-                _workingStatic.Mesh.UpdateHash();
-
                 // Now check in Wad2 for already existing mesh
                 var movebles = new List<WadMoveable>();
                 var statics = new List<WadStatic>();

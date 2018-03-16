@@ -80,18 +80,25 @@ namespace TombLib.Wad
             get
             {
                 var textures = new HashSet<WadTexture>();
-                foreach (WadMesh mesh in MeshesUnique)
-                    foreach (WadPolygon polygon in mesh.Polys)
+                /* foreach (WadMesh mesh in MeshesUnique)
+                     foreach (WadPolygon polygon in mesh.Polys)
+                         textures.Add((WadTexture)polygon.Texture.Texture);*/
+                foreach (var moveable in Moveables)
+                    foreach (var mesh in moveable.Value.Meshes)
+                        foreach (WadPolygon polygon in mesh.Polys)
+                            textures.Add((WadTexture)polygon.Texture.Texture);
+                foreach (var stat in Statics)
+                    foreach (WadPolygon polygon in stat.Value.Mesh.Polys)
                         textures.Add((WadTexture)polygon.Texture.Texture);
                 return textures;
             }
         }
 
-        public HashSet<WadMesh> MeshesUnique
+        public List<WadMesh> MeshesUnique
         {
             get
             {
-                var meshes = new HashSet<WadMesh>();
+                var meshes = new List<WadMesh>();
                 foreach (WadMoveable moveable in Moveables.Values)
                     foreach (WadMesh mesh in moveable.Meshes)
                         meshes.Add(mesh);
@@ -274,7 +281,6 @@ namespace TombLib.Wad
                 lastBaseVertex = mesh.VerticesPositions.Count;
             }
 
-            mesh.UpdateHash();
             return mesh;
         }
 
