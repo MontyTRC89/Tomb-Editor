@@ -41,7 +41,6 @@ namespace TombLib.Wad
             WriteFixedSoundInfos(chunkIO, wad, soundInfoTable);
             WriteSprites(chunkIO, spriteTable);
             WriteSpriteSequences(chunkIO, wad, spriteTable);
-            //WriteMeshes(chunkIO, meshTable, textureTable);
             WriteMoveables(chunkIO, wad, textureTable);
             WriteStatics(chunkIO, wad, textureTable);
             chunkIO.WriteChunkEnd();
@@ -149,91 +148,6 @@ namespace TombLib.Wad
                         LEB128.Write(chunkIO.Raw, sequence.Id.TypeId);
                         foreach (var spr in sequence.Sprites)
                             chunkIO.WriteChunkInt(Wad2Chunks.SpriteSequenceSpriteIndex, spriteTable.IndexOf(spr));
-                    });
-                }
-            });
-        }
-
-        private static void WriteMeshes(ChunkWriter chunkIO, List<WadMesh> meshTable, List<WadTexture> textureTable)
-        {
-            chunkIO.WriteChunkWithChildren(Wad2Chunks.Meshes, () =>
-            {
-                for (int i = 0; i < meshTable.Count; ++i)
-                {
-                    var mesh = meshTable[i];
-                    chunkIO.WriteChunkWithChildren(Wad2Chunks.Mesh, () =>
-                    {
-                        chunkIO.WriteChunkInt(Wad2Chunks.MeshIndex, i);
-                        chunkIO.WriteChunkString(Wad2Chunks.MeshName, mesh.Name);
-
-                        // Write bounding sphere
-                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshSphere, () =>
-                        {
-                            chunkIO.WriteChunkVector3(Wad2Chunks.MeshSphereCenter, mesh.BoundingSphere.Center);
-                            chunkIO.WriteChunkFloat(Wad2Chunks.MeshSphereRadius, mesh.BoundingSphere.Radius);
-                        });
-
-                        // Write bounding box
-                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshBoundingBox, () =>
-                        {
-                            chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMin, mesh.BoundingBox.Minimum);
-                            chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMax, mesh.BoundingBox.Maximum);
-                        });
-
-                        // Write positions
-                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexPositions, () =>
-                        {
-                            foreach (var pos in mesh.VerticesPositions)
-                            {
-                                chunkIO.WriteChunkVector3(Wad2Chunks.MeshVertexPosition, pos);
-                            }
-                        });
-
-                        // Write normals
-                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexNormals, () =>
-                        {
-                            foreach (var normal in mesh.VerticesNormals)
-                            {
-                                chunkIO.WriteChunkVector3(Wad2Chunks.MeshVertexNormal, normal);
-                            }
-                        });
-
-                        // Write shades
-                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexShades, () =>
-                        {
-                            foreach (var shade in mesh.VerticesShades)
-                            {
-                                chunkIO.WriteChunkInt(Wad2Chunks.MeshVertexShade, shade);
-                            }
-                        });
-
-                        // Write polygons
-                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshPolygons, () =>
-                        {
-                            foreach (var poly in mesh.Polys)
-                            {
-                                bool isQuad = poly.Shape == WadPolygonShape.Quad;
-
-                                chunkIO.WriteChunkWithChildren(isQuad ? Wad2Chunks.MeshQuad : Wad2Chunks.MeshTriangle, () =>
-                                {
-                                    LEB128.Write(chunkIO.Raw, poly.Index0);
-                                    LEB128.Write(chunkIO.Raw, poly.Index1);
-                                    LEB128.Write(chunkIO.Raw, poly.Index2);
-                                    if (isQuad)
-                                        LEB128.Write(chunkIO.Raw, poly.Index3);
-                                    LEB128.Write(chunkIO.Raw, poly.ShineStrength);
-
-                                    LEB128.Write(chunkIO.Raw, textureTable.IndexOf(poly.Texture.Texture as WadTexture));
-                                    chunkIO.Raw.Write(poly.Texture.TexCoord0);
-                                    chunkIO.Raw.Write(poly.Texture.TexCoord1);
-                                    chunkIO.Raw.Write(poly.Texture.TexCoord2);
-                                    if (isQuad)
-                                        chunkIO.Raw.Write(poly.Texture.TexCoord3);
-                                    LEB128.Write(chunkIO.Raw, (long)poly.Texture.BlendMode);
-                                    chunkIO.Raw.Write(poly.Texture.DoubleSided);
-                                });
-                            }
-                        });
                     });
                 }
             });
