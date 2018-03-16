@@ -25,6 +25,12 @@
         AxisZ = 3
     }
 
+    public enum WadMeshShadeMode : short
+    {
+        Dynamic = 0,
+        Static = 1
+    }
+
     public enum WadAnimCommandType : short
     {
         PositionReference = 1,

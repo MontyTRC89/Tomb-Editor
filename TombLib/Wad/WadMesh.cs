@@ -17,10 +17,11 @@ namespace TombLib.Wad
         public Hash Hash { get; private set; }
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
+        public WadMeshLightingType LightingType { get; set; }
 
         public WadMesh()
         {
-            UpdateHash();
+
         }
 
         public void RecalculateNormals()
@@ -107,11 +108,6 @@ namespace TombLib.Wad
 
                 return ms.ToArray();
             }
-        }
-
-        public void UpdateHash()
-        {
-            Hash = Hash.FromByteArray(ToByteArray());
         }
 
         public BoundingBox CalculateBoundingBox(Matrix4x4 transform)

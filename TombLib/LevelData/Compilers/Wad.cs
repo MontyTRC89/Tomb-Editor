@@ -5,6 +5,7 @@ using System.Linq;
 using TombLib.LevelData.Compilers.Util;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -12,144 +13,129 @@ namespace TombLib.LevelData.Compilers
     {
         private static readonly bool _writeDbgWadTxt = false;
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();
+        private int _totalMeshSize = 0;
 
-        private void ConvertWadMeshes(Wad2 wad)
+        private tr_mesh ConvertWadMesh(Wad2 wad, WadMesh oldMesh, bool isWaterfall)
         {
-            // Build a list of meshes used by waterfalls
-            var meshes = new List<WadMesh>(wad.MeshesUnique);
-            var waterfallMeshes = new List<WadMesh>(wad.Moveables.Values
-                .Where(moveable => moveable.Id.IsWaterfall(_level.Settings.WadGameVersion))
-                .SelectMany(moveable => moveable.Meshes)
-                .Distinct());
-
-            ReportProgress(11, "Converting WAD meshes to TR4 format");
-            ReportProgress(11, "    Number of meshes: " + meshes.Count);
-
             int currentMeshSize = 0;
-            int totalMeshSize = 0;
 
-            for (int i = 0; i < meshes.Count; i++)
+            var newMesh = new tr_mesh
             {
-                var oldMesh = meshes[i];
-
-                currentMeshSize = 0;
-
-                var newMesh = new tr_mesh
+                Center = new tr_vertex
                 {
-                    Center = new tr_vertex
-                    {
-                        X = (short)oldMesh.BoundingSphere.Center.X,
-                        Y = (short)-oldMesh.BoundingSphere.Center.Y,
-                        Z = (short)oldMesh.BoundingSphere.Center.Z
-                    },
-                    Radius = (short)oldMesh.BoundingSphere.Radius
-                };
+                    X = (short)oldMesh.BoundingSphere.Center.X,
+                    Y = (short)-oldMesh.BoundingSphere.Center.Y,
+                    Z = (short)oldMesh.BoundingSphere.Center.Z
+                },
+                Radius = (short)oldMesh.BoundingSphere.Radius
+            };
 
-                currentMeshSize += 10;
+            currentMeshSize += 10;
 
-                newMesh.NumVertices = (short)oldMesh.VerticesPositions.Count;
-                currentMeshSize += 2;
+            newMesh.NumVertices = (short)oldMesh.VerticesPositions.Count;
+            currentMeshSize += 2;
 
-                newMesh.Vertices = new tr_vertex[oldMesh.VerticesPositions.Count];
+            newMesh.Vertices = new tr_vertex[oldMesh.VerticesPositions.Count];
 
-                for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
+            for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
+            {
+                var vertex = oldMesh.VerticesPositions[j];
+                newMesh.Vertices[j] = new tr_vertex((short)vertex.X, (short)-vertex.Y, (short)vertex.Z);
+
+                currentMeshSize += 6;
+            }
+
+            newMesh.NumNormals = (short)(oldMesh.VerticesNormals.Count > 0 ? oldMesh.VerticesNormals.Count : -oldMesh.VerticesShades.Count);
+            currentMeshSize += 2;
+
+            if (oldMesh.VerticesNormals.Count > 0)
+            {
+                newMesh.Normals = new tr_vertex[oldMesh.VerticesNormals.Count];
+
+                for (int j = 0; j < oldMesh.VerticesNormals.Count; j++)
                 {
-                    var vertex = oldMesh.VerticesPositions[j];
-                    newMesh.Vertices[j] = new tr_vertex((short)vertex.X, (short)-vertex.Y, (short)vertex.Z);
+                    var normal = oldMesh.VerticesNormals[j];
+                    newMesh.Normals[j] = new tr_vertex((short)normal.X, (short)-normal.Y, (short)normal.Z);
 
                     currentMeshSize += 6;
                 }
+            }
+            else
+            {
+                newMesh.Lights = new short[oldMesh.VerticesShades.Count];
 
-                newMesh.NumNormals = (short)(oldMesh.VerticesNormals.Count > 0 ? oldMesh.VerticesNormals.Count : -oldMesh.VerticesShades.Count);
-                currentMeshSize += 2;
-
-                if (oldMesh.VerticesNormals.Count > 0)
+                for (int j = 0; j < oldMesh.VerticesShades.Count; j++)
                 {
-                    newMesh.Normals = new tr_vertex[oldMesh.VerticesNormals.Count];
+                    newMesh.Lights[j] = oldMesh.VerticesShades[j];
 
-                    for (int j = 0; j < oldMesh.VerticesNormals.Count; j++)
-                    {
-                        var normal = oldMesh.VerticesNormals[j];
-                        newMesh.Normals[j] = new tr_vertex((short)normal.X, (short)-normal.Y, (short)normal.Z);
+                    currentMeshSize += 2;
+                }
+            }
 
-                        currentMeshSize += 6;
-                    }
+            short numQuads = 0;
+            short numTriangles = 0;
+
+            foreach (var poly in oldMesh.Polys)
+            {
+                if (poly.Shape == WadPolygonShape.Quad)
+                    numQuads++;
+                else
+                    numTriangles++;
+            }
+
+            newMesh.NumTexturedQuads = numQuads;
+            currentMeshSize += 2;
+
+            newMesh.NumTexturedTriangles = numTriangles;
+            currentMeshSize += 2;
+
+            int lastQuad = 0;
+            int lastTriangle = 0;
+
+            newMesh.TexturedQuads = new tr_face4[numQuads];
+            newMesh.TexturedTriangles = new tr_face3[numTriangles];
+
+            int packPriority = (isWaterfall ? 1 : 0); //waterfallMeshes.Contains(oldMesh) ? 1 : 0;
+            foreach (var poly in oldMesh.Polys)
+            {
+                ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
+                lightingEffect |= (ushort)(poly.ShineStrength << 1);
+
+                if (poly.Shape == WadPolygonShape.Quad)
+                {
+                    ObjectTextureManager.Result result;
+                    lock (_objectTextureManager)
+                        result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
+                    newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3, lightingEffect);
+                    currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 10 : 12;
                 }
                 else
                 {
-                    newMesh.Lights = new short[oldMesh.VerticesShades.Count];
+                    ObjectTextureManager.Result result;
+                    lock (_objectTextureManager)
+                        result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
 
-                    for (int j = 0; j < oldMesh.VerticesShades.Count; j++)
-                    {
-                        newMesh.Lights[j] = oldMesh.VerticesShades[j];
-
-                        currentMeshSize += 2;
-                    }
+                    newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, lightingEffect);
+                    currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 8 : 10;
                 }
-
-                short numQuads = 0;
-                short numTriangles = 0;
-
-                foreach (var poly in oldMesh.Polys)
-                {
-                    if (poly.Shape == WadPolygonShape.Quad)
-                        numQuads++;
-                    else
-                        numTriangles++;
-                }
-
-                newMesh.NumTexturedQuads = numQuads;
-                currentMeshSize += 2;
-
-                newMesh.NumTexturedTriangles = numTriangles;
-                currentMeshSize += 2;
-
-                int lastQuad = 0;
-                int lastTriangle = 0;
-
-                newMesh.TexturedQuads = new tr_face4[numQuads];
-                newMesh.TexturedTriangles = new tr_face3[numTriangles];
-
-                int packPriority = waterfallMeshes.Contains(oldMesh) ? 1 : 0;
-                foreach (var poly in oldMesh.Polys)
-                {
-                    ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
-                    lightingEffect |= (ushort)(poly.ShineStrength << 1);
-
-                    if (poly.Shape == WadPolygonShape.Quad)
-                    {
-                        ObjectTextureManager.Result result;
-                        lock (_objectTextureManager)
-                            result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
-                        newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3, lightingEffect);
-                        currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 10 : 12;
-                    }
-                    else
-                    {
-                        ObjectTextureManager.Result result;
-                        lock (_objectTextureManager)
-                            result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
-
-                        newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, lightingEffect);
-                        currentMeshSize += _level.Settings.GameVersion <= GameVersion.TR3 ? 8 : 10;
-                    }
-                }
-
-                if (_level.Settings.GameVersion <= GameVersion.TR3) currentMeshSize += 4; // Num colored quads and triangles
-
-                if (currentMeshSize % 4 != 0)
-                {
-                    currentMeshSize += 2;
-                }
-
-                newMesh.MeshSize = currentMeshSize;
-                newMesh.MeshPointer = totalMeshSize;
-                __meshPointers.Add(oldMesh, totalMeshSize);
-
-                totalMeshSize += currentMeshSize;
-
-                _meshes.Add(newMesh);
             }
+
+            if (_level.Settings.GameVersion <= GameVersion.TR3) currentMeshSize += 4; // Num colored quads and triangles
+
+            if (currentMeshSize % 4 != 0)
+            {
+                currentMeshSize += 2;
+            }
+
+            newMesh.MeshSize = currentMeshSize;
+            newMesh.MeshPointer = _totalMeshSize;
+            _meshPointers.Add((uint)_totalMeshSize);
+
+            _totalMeshSize += currentMeshSize;
+
+            _meshes.Add(newMesh);
+
+            return newMesh;
         }
 
         private class AnimationTr4HelperData
@@ -415,12 +401,15 @@ namespace TombLib.LevelData.Compilers
                 }
                 lastAnimation += oldMoveable.Animations.Count;
 
+                newMoveable.MeshTree = (uint)_meshTrees.Count;
+                newMoveable.StartingMesh = (ushort)_meshPointers.Count;
+
+                foreach (var wadMesh in oldMoveable.Meshes)
+                    ConvertWadMesh(wad, wadMesh, oldMoveable.Id.IsWaterfall(wad.SuggestedGameVersion));
+
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
                 BuildMeshTree(oldMoveable.Skeleton, meshTrees, usedMeshes);
-
-                newMoveable.MeshTree = (uint)_meshTrees.Count;
-                newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
                 foreach (var meshTree in meshTrees)
                 {
@@ -428,11 +417,6 @@ namespace TombLib.LevelData.Compilers
                     _meshTrees.Add(meshTree.X);
                     _meshTrees.Add(meshTree.Y);
                     _meshTrees.Add(meshTree.Z);
-                }
-
-                foreach (var mesh in usedMeshes)
-                {
-                    _meshPointers.Add((uint)__meshPointers[mesh]);
                 }
 
                 _moveables.Add(newMoveable);
@@ -485,9 +469,9 @@ namespace TombLib.LevelData.Compilers
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
-                _staticMeshes.Add(newStaticMesh);
+                ConvertWadMesh(wad, oldStaticMesh.Mesh, false);
 
-                _meshPointers.Add((uint)__meshPointers[oldStaticMesh.Mesh]);
+                _staticMeshes.Add(newStaticMesh);
             }
 
             if (_writeDbgWadTxt)

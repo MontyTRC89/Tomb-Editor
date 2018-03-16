@@ -41,9 +41,9 @@ namespace TombLib.Wad
             WriteFixedSoundInfos(chunkIO, wad, soundInfoTable);
             WriteSprites(chunkIO, spriteTable);
             WriteSpriteSequences(chunkIO, wad, spriteTable);
-            WriteMeshes(chunkIO, meshTable, textureTable);
-            WriteMoveables(chunkIO, wad, meshTable);
-            WriteStatics(chunkIO, wad, meshTable);
+            //WriteMeshes(chunkIO, meshTable, textureTable);
+            WriteMoveables(chunkIO, wad, textureTable);
+            WriteStatics(chunkIO, wad, textureTable);
             chunkIO.WriteChunkEnd();
         }
 
@@ -239,6 +239,84 @@ namespace TombLib.Wad
             });
         }
 
+        public static void WriteMesh(ChunkWriter chunkIO, WadMesh mesh, List<WadTexture> textureTable)
+        {
+            chunkIO.WriteChunkWithChildren(Wad2Chunks.Mesh, () =>
+            {
+                chunkIO.WriteChunkInt(Wad2Chunks.MeshIndex, 0);
+                chunkIO.WriteChunkString(Wad2Chunks.MeshName, mesh.Name);
+
+                // Write bounding sphere
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshSphere, () =>
+                {
+                    chunkIO.WriteChunkVector3(Wad2Chunks.MeshSphereCenter, mesh.BoundingSphere.Center);
+                    chunkIO.WriteChunkFloat(Wad2Chunks.MeshSphereRadius, mesh.BoundingSphere.Radius);
+                });
+
+                // Write bounding box
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshBoundingBox, () =>
+                {
+                    chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMin, mesh.BoundingBox.Minimum);
+                    chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMax, mesh.BoundingBox.Maximum);
+                });
+
+                // Write positions
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexPositions, () =>
+                {
+                    foreach (var pos in mesh.VerticesPositions)
+                    {
+                        chunkIO.WriteChunkVector3(Wad2Chunks.MeshVertexPosition, pos);
+                    }
+                });
+
+                // Write normals
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexNormals, () =>
+                {
+                    foreach (var normal in mesh.VerticesNormals)
+                    {
+                        chunkIO.WriteChunkVector3(Wad2Chunks.MeshVertexNormal, normal);
+                    }
+                });
+
+                // Write shades
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexShades, () =>
+                {
+                    foreach (var shade in mesh.VerticesShades)
+                    {
+                        chunkIO.WriteChunkInt(Wad2Chunks.MeshVertexShade, shade);
+                    }
+                });
+
+                // Write polygons
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshPolygons, () =>
+                {
+                    foreach (var poly in mesh.Polys)
+                    {
+                        bool isQuad = poly.Shape == WadPolygonShape.Quad;
+
+                        chunkIO.WriteChunkWithChildren(isQuad ? Wad2Chunks.MeshQuad : Wad2Chunks.MeshTriangle, () =>
+                        {
+                            LEB128.Write(chunkIO.Raw, poly.Index0);
+                            LEB128.Write(chunkIO.Raw, poly.Index1);
+                            LEB128.Write(chunkIO.Raw, poly.Index2);
+                            if (isQuad)
+                                LEB128.Write(chunkIO.Raw, poly.Index3);
+                            LEB128.Write(chunkIO.Raw, poly.ShineStrength);
+
+                            LEB128.Write(chunkIO.Raw, textureTable.IndexOf(poly.Texture.Texture as WadTexture));
+                            chunkIO.Raw.Write(poly.Texture.TexCoord0);
+                            chunkIO.Raw.Write(poly.Texture.TexCoord1);
+                            chunkIO.Raw.Write(poly.Texture.TexCoord2);
+                            if (isQuad)
+                                chunkIO.Raw.Write(poly.Texture.TexCoord3);
+                            LEB128.Write(chunkIO.Raw, (long)poly.Texture.BlendMode);
+                            chunkIO.Raw.Write(poly.Texture.DoubleSided);
+                        });
+                    }
+                });
+            });
+        }
+
         private static void WriteBone(ChunkWriter chunkIO, WadBone bone)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
@@ -251,7 +329,8 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteMoveables(ChunkWriter chunkIO, Wad2 wad, List<WadMesh> meshTable)
+        private static void WriteMoveables(ChunkWriter chunkIO, Wad2 wad, /*List<WadMesh> meshTable*/
+                                           List<WadTexture> textureTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
             {
@@ -264,7 +343,8 @@ namespace TombLib.Wad
                         LEB128.Write(chunkIO.Raw, m.Id.TypeId);
 
                         foreach (var mesh in m.Meshes)
-                            chunkIO.WriteChunkInt(Wad2Chunks.MoveableMesh, meshTable.IndexOf(mesh));
+                            WriteMesh(chunkIO, mesh, textureTable);
+                            //chunkIO.WriteChunkInt(Wad2Chunks.MoveableMesh, meshTable.IndexOf(mesh));
 
                         WriteBone(chunkIO, moveable.Value.Skeleton);
 
@@ -345,7 +425,7 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteStatics(ChunkWriter chunkIO, Wad2 wad, List<WadMesh> meshTable)
+        private static void WriteStatics(ChunkWriter chunkIO, Wad2 wad, List<WadTexture> textureTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Statics, () =>
             {
@@ -356,8 +436,21 @@ namespace TombLib.Wad
                         var s = staticMesh.Value;
 
                         LEB128.Write(chunkIO.Raw, s.Id.TypeId);
-                        LEB128.Write(chunkIO.Raw, meshTable.IndexOf(s.Mesh));
+                        //LEB128.Write(chunkIO.Raw, meshTable.IndexOf(s.Mesh));
                         LEB128.Write(chunkIO.Raw, s.Flags);
+                        LEB128.Write(chunkIO.Raw, (short)s.LightingType);
+
+                        WriteMesh(chunkIO, s.Mesh, textureTable);
+
+                        foreach (var light in s.Lights)
+                        {
+                            chunkIO.WriteChunkWithChildren(Wad2Chunks.StaticLight, () =>
+                            {
+                                chunkIO.WriteChunkVector3(Wad2Chunks.StaticLightPosition, light.Position);
+                                chunkIO.WriteChunkFloat(Wad2Chunks.StaticLightRadius, light.Radius);
+                                chunkIO.WriteChunkFloat(Wad2Chunks.StaticLightIntensity, light.Intensity);
+                            });
+                        }
 
                         chunkIO.WriteChunkWithChildren(Wad2Chunks.StaticVisibilityBox, () =>
                         {

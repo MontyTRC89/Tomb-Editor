@@ -198,8 +198,6 @@ namespace TombLib.Wad.TrLevels
                 mesh.Polys.Add(poly);
             }
 
-            // Calculate hash
-            mesh.UpdateHash();
             return mesh;
         }
 
@@ -343,41 +341,38 @@ namespace TombLib.Wad.TrLevels
 
             // First a list of meshes for this moveable is built
             var meshes = new List<tr_mesh>();
-            var convertedMeshes = new List<WadMesh>();
             for (int j = 0; j < oldMoveable.NumMeshes; j++)
                 meshes.Add(oldLevel.Meshes[(int)oldLevel.RealPointers[oldMoveable.StartingMesh + j]]);
 
             // Convert the WadMesh
             foreach (var oldMesh in meshes)
             {
-                WadMesh newMesh = ConvertTrLevelMeshToWadMesh(wad, oldLevel, oldMesh, objectTextures);
-                convertedMeshes.Add(newMesh);
+                var newMesh = ConvertTrLevelMeshToWadMesh(wad, oldLevel, oldMesh, objectTextures);
+                newMoveable.Meshes.Add(newMesh);
             }
 
             // Build the skeleton
-            WadBone root = new WadBone();
+            var root = new WadBone();
             root.Name = "bone_root";
             root.Parent = null;
             root.Transform = Matrix4x4.Identity;
             root.Translation = Vector3.Zero;
-            root.Mesh = convertedMeshes[0];
+            root.Mesh = newMoveable.Meshes[0];
             root.Index = 0;
-            newMoveable.Meshes.Add(root.Mesh);
-
+            
             var bones = new List<WadBone>();
             bones.Add(root);
             newMoveable.Skeleton = root;
 
             for (int j = 0; j < oldMoveable.NumMeshes - 1; j++)
             {
-                WadBone bone = new WadBone();
+                var bone = new WadBone();
                 bone.Name = "bone_" + (j + 1);
                 bone.Parent = null;
                 bone.Transform = Matrix4x4.Identity;
                 bone.Translation = Vector3.Zero;
-                bone.Mesh = convertedMeshes[j + 1];
+                bone.Mesh = newMoveable.Meshes[j + 1];
                 bone.Index = j + 1;
-                newMoveable.Meshes.Add(bone.Mesh);
                 bones.Add(bone);
             }
 

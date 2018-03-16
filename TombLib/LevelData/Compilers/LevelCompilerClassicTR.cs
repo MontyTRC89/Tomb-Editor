@@ -91,7 +91,7 @@ namespace TombLib.LevelData.Compilers
             _soundManager = new Util.SoundManager(_level.Settings, _level.Wad);
 
             // Prepare level data in parallel to the sounds
-            ConvertWadMeshes(_level.Wad);
+            //ConvertWadMeshes(_level.Wad);
             ConvertWad2DataToTr4(_level.Wad);
             BuildRooms();
             PrepareSoundSources();
