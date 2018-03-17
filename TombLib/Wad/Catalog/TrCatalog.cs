@@ -126,24 +126,31 @@ namespace TombLib.Wad.Catalog
             return game.Sounds[id].FixedByDefault;
         }
 
-        public static Dictionary<uint, string> GetAllMoveables(WadGameVersion version)
+        public static IReadOnlyDictionary<uint, string> GetAllMoveables(WadGameVersion version)
         {
             return Games[version].Moveables.ToDictionary(item => item.Key, item => item.Value.Name);
         }
 
-        public static Dictionary<uint, string> GetAllStatics(WadGameVersion version)
+        public static IReadOnlyDictionary<uint, string> GetAllStatics(WadGameVersion version)
         {
             return Games[version].Statics.ToDictionary(item => item.Key, item => item.Value.Name);
         }
 
-        public static Dictionary<uint, string> GetAllSpriteSequences(WadGameVersion version)
+        public static IReadOnlyDictionary<uint, string> GetAllSpriteSequences(WadGameVersion version)
         {
             return Games[version].SpriteSequences.ToDictionary(item => item.Key, item => item.Value.Name);
         }
 
-        public static Dictionary<uint, string> GetAllSounds(WadGameVersion version)
+        public static IReadOnlyDictionary<uint, string> GetAllSounds(WadGameVersion version)
         {
             return Games[version].Sounds.ToDictionary(item => item.Key, item => item.Value.Name);
+        }
+
+        public static IReadOnlyDictionary<uint, string> GetAllFixedByDefaultSounds(WadGameVersion version)
+        {
+            return Games[version].Sounds
+                .Where(sound => sound.Value.FixedByDefault)
+                .ToDictionary(item => item.Key, item => item.Value.Name);
         }
 
         public static string GetVersionString(WadGameVersion version)
