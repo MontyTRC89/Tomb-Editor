@@ -117,8 +117,36 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
+  </metadata>
+  <data name="numericPitch.ToolTip" xml:space="preserve">
+    <value>Pitch of the sound on playback. The pitch is relative to the pitch of the sample. At most the pitch can be almost doubled by 22050 Hz sample rate.
+Note that the pitch range depends on the sample rate. This is because at most the engine will play anything in 43928 Hz. Unfortunately the standard sample rate
+44100 Hz is slightly above that, but the pitch difference is not perceivable for almost all purposes.</value>
+  </data>
+  <data name="cbRandomizePitch.ToolTip" xml:space="preserve">
+    <value>Vary the pitch for each playback of the sound info.
+The pitch is sped up and slowed down by rougly 10% by 22050 Hz.
+Not relative to the pitch on the right or the sample rate. (So eg 5% variation at 44100 Hz)</value>
+  </data>
+  <data name="cbRandomizeVolume.ToolTip" xml:space="preserve">
+    <value>Vary the volume for each playback of the sound info.
+The volume is reduced by an absolete value of 1/8 of the full volume.
+Not relative to the volume on the right. If this is enabled and the volume is lower
+than 12.5%, sometimes the sound will randomly not play (volume 0%)</value>
+  </data>
+  <metadata name="WaveformColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="PlayButtonColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="DurationColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="SizeColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
   </metadata>
   <metadata name="WaveformColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
