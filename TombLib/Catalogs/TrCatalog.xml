@@ -1526,13 +1526,13 @@
             <sound id="285" name="Ooh-aah! (dam guard / prisoner dying)"/>
             <sound id="286" name="Hmmp (dam guard climbing)"/>
             <sound id="287" name="Hmp - ah (prisoner?)"/>
-            <sound id="288" name="Footstep in water"/>
-            <sound id="289" name="Footstep in slush?"/>
-            <sound id="290" name="Footstep in crunchy snow?"/>
-            <sound id="291" name="Footstep in snow? "/>
-            <sound id="292" name="Footstep on wood"/>
-            <sound id="293" name="Footstep on sand?"/>
-            <sound id="294" name="Footstep on metal"/>
+            <sound id="288" name="Footstep in water" fixed_by_default="true"/>
+            <sound id="289" name="Footstep in slush?" fixed_by_default="true"/>
+            <sound id="290" name="Footstep in crunchy snow?" fixed_by_default="true"/>
+            <sound id="291" name="Footstep in snow?" fixed_by_default="true"/>
+            <sound id="292" name="Footstep on wood" fixed_by_default="true"/>
+            <sound id="293" name="Footstep on sand?" fixed_by_default="true"/>
+            <sound id="294" name="Footstep on metal" fixed_by_default="true"/>
             <sound id="295" name="Background hum"/>
             <sound id="296" name="Tunnel-borer turning"/>
             <sound id="297" name="Door clanking into position"/>
@@ -2306,7 +2306,7 @@
             <sound id="5" name="Lara climb1"/>
             <sound id="6" name="Lara draw" fixed_by_default="true"/>
             <sound id="7" name="Lara holster" fixed_by_default="true"/>
-            <sound id="8" name="Lara fire"/>
+            <sound id="8" name="Lara fire" fixed_by_default="true"/>
             <sound id="9" name="Lara reload"/>
             <sound id="10" name="Lara ricochet" fixed_by_default="true"/>
             <sound id="11" name="Push block end" fixed_by_default="true"/>
@@ -2586,13 +2586,13 @@
             <sound id="285" name="Obj gem smash" fixed_by_default="true"/>
             <sound id="286" name="Catblades draw"/>
             <sound id="287" name="Swirly long move sfx"/>
-            <sound id="288" name="Footsteps mud"/>
+            <sound id="288" name="Footsteps mud"  fixed_by_default="true"/>
             <sound id="289" name="Horseman horse neigh"/>
-            <sound id="290" name="Footsteps gravel"/>
-            <sound id="291" name="Footsteps sand and grass"/>
-            <sound id="292" name="Footsteps wood"/>
-            <sound id="293" name="Footsteps marble"/>
-            <sound id="294" name="Footsteps metal"/>
+            <sound id="290" name="Footsteps gravel"  fixed_by_default="true"/>
+            <sound id="291" name="Footsteps sand and grass"  fixed_by_default="true"/>
+            <sound id="292" name="Footsteps wood"  fixed_by_default="true"/>
+            <sound id="293" name="Footsteps marble"  fixed_by_default="true"/>
+            <sound id="294" name="Footsteps metal"  fixed_by_default="true"/>
             <sound id="295" name="Gen sphinx doorthd"/>
             <sound id="296" name="Sett plasma 1"/>
             <sound id="297" name="Sett bolt 1"/>
@@ -3817,7 +3817,7 @@
             <sprite_sequence id="459" name="Misc sprites"/>
         </sprite_sequences>
         <sounds max="450">
-            <sound id="0" name="Lara feet" fixed_by_default="true"/>
+            <sound id="0" name="Lara feet"/>
             <sound id="1" name="Lara climb2"/>
             <sound id="2" name="Lara no" fixed_by_default="true"/>
             <sound id="3" name="Lara slipping"/>
@@ -3825,7 +3825,7 @@
             <sound id="5" name="Lara climb1"/>
             <sound id="6" name="Lara holster draw" fixed_by_default="true"/>
             <sound id="7" name="Lara holster away" fixed_by_default="true"/>
-            <sound id="8" name="Lara fire"/>
+            <sound id="8" name="Lara fire" fixed_by_default="true"/>
             <sound id="9" name="Lara reload"/>
             <sound id="10" name="Lara ricochet" fixed_by_default="true"/>
             <sound id="11" name="Push block end" fixed_by_default="true"/>
@@ -4105,13 +4105,13 @@
             <sound id="285" name="Underwater fan on"/>
             <sound id="286" name="Sub controlroom loop"/>
             <sound id="287" name="D manhole metal"/>
-            <sound id="288" name="Footsteps mud"/>
-            <sound id="289" name="Footsteps ice"/>
-            <sound id="290" name="Footsteps gravel"/>
-            <sound id="291" name="Footsteps sand and grass"/>
-            <sound id="292" name="Footsteps wood"/>
-            <sound id="293" name="Footsteps snow"/>
-            <sound id="294" name="Footsteps metal"/>
+            <sound id="288" name="Footsteps mud" fixed_by_default="true"/>
+            <sound id="289" name="Footsteps ice" fixed_by_default="true"/>
+            <sound id="290" name="Footsteps gravel" fixed_by_default="true"/>
+            <sound id="291" name="Footsteps sand and grass" fixed_by_default="true"/>
+            <sound id="292" name="Footsteps wood" fixed_by_default="true"/>
+            <sound id="293" name="Footsteps snow" fixed_by_default="true"/>
+            <sound id="294" name="Footsteps metal" fixed_by_default="true"/>
             <sound id="295" name="Tightrope creak"/>
             <sound id="296" name="Tightrope walk"/>
             <sound id="297" name="Drawers wood clse"/>
