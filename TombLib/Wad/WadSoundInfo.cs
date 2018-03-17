@@ -84,6 +84,17 @@ namespace TombLib.Wad
             float pitchFactor = (float)WadSample.GameSupportedSampleRate / (float)sampleFrequency;
             return pitchFactor * (255.5f / 128.0f);
         }
+
+        public int SampleDataSize
+        {
+            get
+            {
+                int dataSize = 0;
+                foreach (WadSample sample in Samples)
+                    dataSize += sample.Data.Length;
+                return dataSize;
+            }
+        }
     }
 
     public class WadSoundInfo

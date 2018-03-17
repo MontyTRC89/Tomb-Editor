@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace TombLib.LevelData.Compilers.Util
 {
     public class SoundManager
     {
-        private struct SoundDetail
+        private class SoundDetail
         {
             public ushort FirstSample;
             public WadSoundInfoMetaData Data;
@@ -24,9 +25,9 @@ namespace TombLib.LevelData.Compilers.Util
 
         private readonly List<WadSample> _samples = new List<WadSample>();
         private readonly List<uint> _sampleIndices = new List<uint>(); // Set them to filler zeros for TR4, TR5
+        private readonly Dictionary<Hash, ushort> _sampleGroups = new Dictionary<Hash, ushort>(); // Data structure to share the same sample groups even if the sound info differs
         private readonly List<SoundDetail> _soundDetails = new List<SoundDetail>();
         private readonly List<ushort> _soundMap = new List<ushort>(); // 0xffff for empty sounds.
-
 
         public SoundManager(LevelSettings settings, Wad2 wad)
         {
@@ -55,10 +56,25 @@ namespace TombLib.LevelData.Compilers.Util
                     soundDetail.Data.Samples = new List<WadSample>(new[] { WadSample.NullSample });
                 }
 
-                // Add sound samples.
-                _sampleIndices.AddRange(Enumerable.Repeat((uint)0, soundDetail.Data.Samples.Count)); // Unused filler for TR4 and TR5
-                soundDetail.FirstSample = checked((ushort)_samples.Count);
-                _samples.AddRange(soundDetail.Data.Samples);
+                // Get sound samples
+                Hash sampleGroupHash;
+                using (var stream = new MemoryStream(soundDetail.Data.Samples.Count * 16))
+                using (var writer = new BinaryWriterEx(stream))
+                {
+                    foreach (WadSample sample in soundDetail.Data.Samples)
+                        writer.Write(sample.Hash);
+                    sampleGroupHash = Hash.FromByteArray(stream.ToArray());
+                }
+                if (!_sampleGroups.TryGetValue(sampleGroupHash, out soundDetail.FirstSample))
+                {
+                    // Add sample
+                    _sampleIndices.AddRange(Enumerable.Repeat((uint)0, soundDetail.Data.Samples.Count)); // Unused filler for TR4 and TR5
+                    soundDetail.FirstSample = checked((ushort)_samples.Count);
+                    _samples.AddRange(soundDetail.Data.Samples);
+
+                    // Add sample group
+                    _sampleGroups.Add(sampleGroupHash, soundDetail.FirstSample);
+                }
 
                 // Add the sound details.
                 soundDetailIndex = checked((ushort)_soundDetails.Count);
@@ -132,7 +148,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Fit size of sound map
             if (soundMapSize < _soundMap.Count)
-                throw new Exception("Sound map to0 big with " + _soundMap.Count + " of " +
+                throw new Exception("Sound map too big with " + _soundMap.Count + " of " +
                     soundMapSize + " entries for the game version " + _gameVersion + ".");
             _soundMap.Resize(soundMapSize, (ushort)0xffff);
         }
