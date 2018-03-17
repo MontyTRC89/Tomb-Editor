@@ -19,6 +19,7 @@ namespace TombLib.Controls
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        private const string _clipboardName = "SoundInfo";
         private Cache<Tuple<WadSample, Size, int>, Bitmap> sampleImageCache = new Cache<Tuple<WadSample, Size, int>, Bitmap>(256, DrawWaveform);
         private string _currentPath = null;
         private bool _soundInfoCurrentlyChanging = false;
@@ -36,6 +37,11 @@ namespace TombLib.Controls
             // Update the track bar when the form is started up.
             trackBar_Scroll(this, EventArgs.Empty);
             trackBar_Resize(this, EventArgs.Empty);
+
+            toolTip.SetToolTip(numericVolumeLabel, toolTip.GetToolTip(numericVolume));
+            toolTip.SetToolTip(numericPitchLabel, toolTip.GetToolTip(numericPitch));
+            toolTip.SetToolTip(numericRangeLabel, toolTip.GetToolTip(numericRange));
+            toolTip.SetToolTip(numericVolumeLabel, toolTip.GetToolTip(numericVolume));
         }
 
         private object CreateNewSample()
@@ -60,24 +66,30 @@ namespace TombLib.Controls
                 // Load sounds
                 try
                 {
-                    return new WadSample(WadSample.ConvertSampleFormat(File.ReadAllBytes(fileDialog.FileName), fileSampleRate =>
+                    WadSample result = new WadSample(WadSample.ConvertSampleFormat(File.ReadAllBytes(fileDialog.FileName), fileSampleRate =>
                     {
-                        uint currentTargetSampleRate = TargetSampleRate;
-                        if (fileSampleRate == currentTargetSampleRate)
-                            return new WadSample.ResampleInfo { Resample = false, SampleRate = currentTargetSampleRate };
+                        if (fileSampleRate == TargetSampleRate)
+                            return new WadSample.ResampleInfo { Resample = false, SampleRate = TargetSampleRate };
+                        if (((ICollection<WadSample>)dataGridView.DataSource).Count == 0)
+                            return new WadSample.ResampleInfo { Resample = false, SampleRate = fileSampleRate };
 
                         // Ask the user about how to proceed if the sample rate mismatches...
-                        switch (DarkMessageBox.Show(this, "The file '" + fileDialog.FileName + "' sample rate does not match the sound info sample rate.",
-                            "\nDo you want to resample it? This process is lossy, but otherwise the length and pitch of the sound will change."))
+                        switch (DarkMessageBox.Show(this, "The file '" + fileDialog.FileName + "' sample rate does not match the sound info sample rate." +
+                            "\nDo you want to resample it? This process is lossy, but otherwise the length and pitch of the sound will change.", "Sample rate does not match", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
                         {
                             case DialogResult.Yes:
-                                return new WadSample.ResampleInfo { Resample = true, SampleRate = currentTargetSampleRate };
+                                return new WadSample.ResampleInfo { Resample = true, SampleRate = TargetSampleRate };
                             case DialogResult.No:
-                                return new WadSample.ResampleInfo { Resample = false, SampleRate = currentTargetSampleRate };
+                                return new WadSample.ResampleInfo { Resample = false, SampleRate = TargetSampleRate };
                             default:
                                 throw new OperationCanceledException();
                         }
                     }));
+
+                    // Update sample rate if it changed
+                    if (TargetSampleRate != result.SampleRate)
+                        TargetSampleRate = result.SampleRate;
+                    return result;
                 }
                 catch (OperationCanceledException) { return null; }
                 catch (Exception exc)
@@ -127,6 +139,34 @@ namespace TombLib.Controls
                     DarkMessageBox.Show(this, "Unable to save sound. " + exc, "Saving sound failed.", MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void butClipboardCopy_Click(object sender, EventArgs e)
+        {
+            using (Wad2 tempWad = new Wad2())
+            {
+                tempWad.FixedSoundInfos.Add(new WadFixedSoundInfoId(), new WadFixedSoundInfo(new WadFixedSoundInfoId()) { SoundInfo = SoundInfo });
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    Wad2Writer.SaveToStream(tempWad, stream);
+                    Clipboard.SetData(_clipboardName, stream.ToArray());
+                }
+            }
+        }
+
+        private void butClipboardPaste_Click(object sender, EventArgs e)
+        {
+            var data = Clipboard.GetData("SoundInfo") as byte[];
+            if (data == null)
+            {
+                DarkMessageBox.Show(this, "Windows clipboard does not currently not contain a sound info.", "Clipboard empty", MessageBoxIcon.Information);
+                return;
+            }
+
+            // Load sound info
+            using (MemoryStream stream = new MemoryStream(data, false))
+            using (Wad2 tempWad = Wad2Loader.LoadFromStream(stream))
+                SoundInfo = tempWad.FixedSoundInfos.Values.First().SoundInfo;
         }
 
         private void butPlayPreview_Click(object sender, EventArgs e)
@@ -197,8 +237,8 @@ namespace TombLib.Controls
 
         private void trackBar_Scroll(object sender, EventArgs e)
         {
-            trackBar_1SecondMark.Location = new Point(trackBar.Value + 5, trackBar_1SecondMark.Location.Y);
-            dataGridView.InvalidateColumn(0);
+            trackBar_100MillisecondMark.Location = new Point(trackBar.Value + 5, trackBar_100MillisecondMark.Location.Y);
+            dataGridView.InvalidateColumn(dataGridView.Columns[WaveformColumn.Name].Index);
         }
 
         private void trackBar_Resize(object sender, EventArgs e)
@@ -276,15 +316,16 @@ namespace TombLib.Controls
                     TargetSampleRate = newSampleRate;
                     for (int i = 0; i < samples.Count; ++i)
                         samples[i] = samples[i].ChangeSampleRate(newSampleRate, true);
-                    dataGridView.InvalidateColumn(0);
+                    dataGridView.InvalidateColumn(dataGridView.Columns[WaveformColumn.Name].Index);
+                    dataGridView.InvalidateColumn(dataGridView.Columns[SizeColumn.Name].Index);
                     break;
 
                 case DialogResult.No:
                     TargetSampleRate = newSampleRate;
                     for (int i = 0; i < samples.Count; ++i)
                         samples[i] = samples[i].ChangeSampleRate(newSampleRate, false);
-                    dataGridView.InvalidateColumn(0);
-                    dataGridView.InvalidateColumn(2);
+                    dataGridView.InvalidateColumn(dataGridView.Columns[WaveformColumn.Name].Index);
+                    dataGridView.InvalidateColumn(dataGridView.Columns[DurationColumn.Name].Index);
                     break;
 
                 default:
