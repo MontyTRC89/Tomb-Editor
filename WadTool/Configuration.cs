@@ -48,6 +48,8 @@ namespace WadTool
         public float Gizmo_ScaleCubeSize { get; set; } = 128.0f;
         public float Gizmo_LineThickness { get; set; } = 45.0f;
 
+        public bool StartUpHelp_Show { get; set; } = true;
+
         public List<string> OldWadSoundPaths { get; set; } = new List<string>
             {
                 "",

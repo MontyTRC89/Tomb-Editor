@@ -25,6 +25,23 @@ namespace WadTool
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
+                // Show startup help
+                if (configuration.StartUpHelp_Show)
+                {
+                    var help = new FormStartupHelp();
+                    Application.Run(help);
+                    switch (help.DialogResult)
+                    {
+                        case DialogResult.Cancel:
+                            return;
+                        case DialogResult.OK:
+                            configuration.StartUpHelp_Show = false;
+                            break;
+                    }
+                }
+                configuration.SaveTry();
+
+
                 // Run
                 TrCatalog.LoadCatalog("Catalogs\\TRCatalog.xml");
                 using (WadToolClass tool = new WadToolClass(configuration))
