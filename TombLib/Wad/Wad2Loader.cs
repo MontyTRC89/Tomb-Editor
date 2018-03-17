@@ -50,7 +50,6 @@ namespace TombLib.Wad
             Dictionary<long, WadTexture> textures = null;
             Dictionary<long, WadSample> samples = null;
             Dictionary<long, WadSoundInfo> soundInfos = null;
-            Dictionary<long, WadMesh> meshes = null;
             Dictionary<long, WadSprite> sprites = null;
 
             chunkIO.ReadChunks((id, chunkSize) =>
@@ -491,7 +490,7 @@ namespace TombLib.Wad
             return bone;
         }
 
-        private static bool LoadMoveables(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, 
+        private static bool LoadMoveables(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad,
                                           Dictionary<long, WadSoundInfo> soundInfos, /*Dictionary<long, WadMesh> meshes*/
                                           Dictionary<long, WadTexture> textures)
         {
