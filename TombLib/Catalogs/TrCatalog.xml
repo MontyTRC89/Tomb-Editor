@@ -2298,92 +2298,92 @@
             <sprite_sequence id="494" name="NG custom sprites"/>
         </sprite_sequences>
         <sounds max="370">
-            <sound id="0" name="Lara feet" fixed_by_default="true"/>
-            <sound id="1" name="Lara climb2" fixed_by_default="true"/>
+            <sound id="0" name="Lara feet"/>
+            <sound id="1" name="Lara climb2"/>
             <sound id="2" name="Lara no" fixed_by_default="true"/>
-            <sound id="3" name="Lara slipping" fixed_by_default="true"/>
-            <sound id="4" name="Lara land" fixed_by_default="true"/>
-            <sound id="5" name="Lara climb1" fixed_by_default="true"/>
+            <sound id="3" name="Lara slipping"/>
+            <sound id="4" name="Lara land"/>
+            <sound id="5" name="Lara climb1"/>
             <sound id="6" name="Lara draw" fixed_by_default="true"/>
             <sound id="7" name="Lara holster" fixed_by_default="true"/>
-            <sound id="8" name="Lara fire" fixed_by_default="true"/>
-            <sound id="9" name="Lara reload" fixed_by_default="true"/>
+            <sound id="8" name="Lara fire"/>
+            <sound id="9" name="Lara reload"/>
             <sound id="10" name="Lara ricochet" fixed_by_default="true"/>
             <sound id="11" name="Push block end" fixed_by_default="true"/>
-            <sound id="12" name="Metal scrape loop"/>
+            <sound id="12" name="Metal scrape loop" fixed_by_default="true"/>
             <sound id="13" name="Small scarab feet"/>
             <sound id="14" name="Big scarab attack"/>
             <sound id="15" name="Big scarab death"/>
             <sound id="16" name="Big scarab flying"/>
-            <sound id="17" name="Lara wet feet" fixed_by_default="true"/>
-            <sound id="18" name="Lara wade" fixed_by_default="true"/>
-            <sound id="19" name="Rumble loop" fixed_by_default="true"/>
-            <sound id="20" name="Metal scrape loop"/>
+            <sound id="17" name="Lara wet feet"/>
+            <sound id="18" name="Lara wade"/>
+            <sound id="19" name="Rumble loop"/>
+            <sound id="20" name="Metal scrape loop" fixed_by_default="true"/>
             <sound id="21" name="Cricket loop"/>
             <sound id="22" name="Wood bridge fall"/>
-            <sound id="23" name="Stargate swirl"/>
-            <sound id="24" name="Lara knees shuffle" fixed_by_default="true"/>
+            <sound id="23" name="Stargate swirl" fixed_by_default="true"/>
+            <sound id="24" name="Lara knees shuffle"/>
             <sound id="25" name="Push spx switch"/>
-            <sound id="26" name="Lara climb3" fixed_by_default="true"/>
-            <sound id="27" fixed_by_default="true"/>
-            <sound id="28" name="Lara shimmy2" fixed_by_default="true"/>
-            <sound id="29" name="Lara jump" fixed_by_default="true"/>
+            <sound id="26" name="Lara climb3"/>
+            <sound id="27"/>
+            <sound id="28" name="Lara shimmy2"/>
+            <sound id="29" name="Lara jump"/>
             <sound id="30" name="Lara fall" fixed_by_default="true"/>
             <sound id="31" name="Lara injury" fixed_by_default="true"/>
-            <sound id="32" name="Lara roll" fixed_by_default="true"/>
+            <sound id="32" name="Lara roll"/>
             <sound id="33" name="Lara splash" fixed_by_default="true"/>
             <sound id="34" name="Lara getout"/>
-            <sound id="35" name="Lara swim" fixed_by_default="true"/>
+            <sound id="35" name="Lara swim"/>
             <sound id="36" name="Lara breath" fixed_by_default="true"/>
             <sound id="37" name="Lara bubbles" fixed_by_default="true"/>
-            <sound id="38" name="Spinning puzzle"/>
-            <sound id="39" name="Lara key" fixed_by_default="true"/>
+            <sound id="38" name="Spinning puzzle" fixed_by_default="true"/>
+            <sound id="39" name="Lara key"/>
             <sound id="40" name="Cog resaw library"/>
-            <sound id="41" name="Lara general death" fixed_by_default="true"/>
-            <sound id="42" name="Lara knees death" fixed_by_default="true"/>
-            <sound id="43" name="Lara uzi fire" fixed_by_default="true"/>
-            <sound id="44" name="Lara uzi stop" fixed_by_default="true"/>
-            <sound id="45" name="Lara shotgun" fixed_by_default="true"/>
-            <sound id="46" name="Lara block push1" fixed_by_default="true"/>
-            <sound id="47" name="Lara block push2" fixed_by_default="true"/>
-            <sound id="48" name="Sarlid palaces"/>
+            <sound id="41" name="Lara general death"/>
+            <sound id="42" name="Lara knees death"/>
+            <sound id="43" name="Lara uzi fire"/>
+            <sound id="44" name="Lara uzi stop"/>
+            <sound id="45" name="Lara shotgun"/>
+            <sound id="46" name="Lara block push1"/>
+            <sound id="47" name="Lara block push2"/>
+            <sound id="48" name="Sarlid palaces" fixed_by_default="true"/>
             <sound id="49" name="Lara shotgun shell" fixed_by_default="true"/>
-            <sound id="50" name="Underwater door"/>
-            <sound id="51" name="Lara blkpull" fixed_by_default="true"/>
-            <sound id="52" name="Lara floating" fixed_by_default="true"/>
-            <sound id="53" name="Lara falldeth" fixed_by_default="true"/>
-            <sound id="54" name="Lara grabhand" fixed_by_default="true"/>
-            <sound id="55" name="Lara grabbody" fixed_by_default="true"/>
-            <sound id="56" name="Lara grabfeet" fixed_by_default="true"/>
+            <sound id="50" name="Underwater door" fixed_by_default="true"/>
+            <sound id="51" name="Lara blkpull"/>
+            <sound id="52" name="Lara floating"/>
+            <sound id="53" name="Lara falldeth"/>
+            <sound id="54" name="Lara grabhand"/>
+            <sound id="55" name="Lara grabbody"/>
+            <sound id="56" name="Lara grabfeet"/>
             <sound id="57" name="Ratchet 3shot"/>
             <sound id="58" name="Ratchet 1shot"/>
             <sound id="59" name="Water loop notinuse"/>
             <sound id="60" name="Underwater" fixed_by_default="true"/>
             <sound id="61" name="Underwater switch"/>
             <sound id="62" name="Lara pickup"/>
-            <sound id="63" name="Pushable sound"/>
+            <sound id="63" name="Pushable sound" fixed_by_default="true"/>
             <sound id="64" name="Door general"/>
-            <sound id="65" name="Helicopter loop"/>
-            <sound id="66" name="Rock fall crumble"/>
-            <sound id="67" name="Rock fall land"/>
+            <sound id="65" name="Helicopter loop" fixed_by_default="true"/>
+            <sound id="66" name="Rock fall crumble" fixed_by_default="true"/>
+            <sound id="67" name="Rock fall land" fixed_by_default="true"/>
             <sound id="68" name="Pendulum blades"/>
             <sound id="69" name="Stalegtite"/>
             <sound id="70" name="Lara thud" fixed_by_default="true"/>
-            <sound id="71" name="Generic swoosh" fixed_by_default="true"/>
-            <sound id="72" name="Generic heavy thud" fixed_by_default="true"/>
+            <sound id="71" name="Generic swoosh"/>
+            <sound id="72" name="Generic heavy thud"/>
             <sound id="73" name="Croc feet"/>
             <sound id="74" name="Swinging flames"/>
-            <sound id="75" name="Stone scrape" fixed_by_default="true"/>
+            <sound id="75" name="Stone scrape"/>
             <sound id="76" name="Blast circle"/>
-            <sound id="77" name="Bazooka fire" fixed_by_default="true"/>
+            <sound id="77" name="Bazooka fire"/>
             <sound id="78" name="Hecklerandkoch fire" fixed_by_default="true"/>
             <sound id="79" name="Waterfall loop" fixed_by_default="true"/>
             <sound id="80" name="Croc attack"/>
             <sound id="81" name="Croc death"/>
-            <sound id="82" name="Portcullis up" fixed_by_default="true"/>
-            <sound id="83" name="Portcullis down" fixed_by_default="true"/>
+            <sound id="82" name="Portcullis up"/>
+            <sound id="83" name="Portcullis down"/>
             <sound id="84" name="Double doors bang"/>
-            <sound id="85" name="Double doors creak" fixed_by_default="true"/>
+            <sound id="85" name="Double doors creak"/>
             <sound id="86" name="Petes pyra stone"/>
             <sound id="87" name="Petes pyra pneu"/>
             <sound id="88" name="Ahmet die"/>
@@ -2393,67 +2393,67 @@
             <sound id="92" name="Ahmet swipe"/>
             <sound id="93" name="Ahmet wait"/>
             <sound id="94" name="Guide jump"/>
-            <sound id="95" name="General footsteps1" fixed_by_default="true"/>
+            <sound id="95" name="General footsteps1"/>
             <sound id="96" name="Guide land usenot"/>
-            <sound id="97" name="Pour"/>
+            <sound id="97" name="Pour" fixed_by_default="true"/>
             <sound id="98" name="Scale1"/>
             <sound id="99" name="Scale2"/>
             <sound id="100" name="Beetlara windup"/>
-            <sound id="101" name="Beetle clk whirr"/>
-            <sound id="102" name="Beetle clk exp"/>
-            <sound id="103" name="Mine exp overlay"/>
+            <sound id="101" name="Beetle clk whirr" fixed_by_default="true"/>
+            <sound id="102" name="Beetle clk exp" fixed_by_default="true"/>
+            <sound id="103" name="Mine exp overlay" fixed_by_default="true"/>
             <sound id="104" name="Hecklerandkoch stop"/>
             <sound id="105" name="Explosion1" fixed_by_default="true"/>
-            <sound id="106" name="Explosion2 volwas80"/>
+            <sound id="106" name="Explosion2 volwas80" fixed_by_default="true"/>
             <sound id="107" name="Earthquake loop" fixed_by_default="true"/>
             <sound id="108" name="Menu rotate" fixed_by_default="true"/>
             <sound id="109" name="Menu select" fixed_by_default="true"/>
             <sound id="110" name="Menu empty"/>
             <sound id="111" name="Menu choose" fixed_by_default="true"/>
-            <sound id="112" name="Tick tock" fixed_by_default="true"/>
+            <sound id="112" name="Tick tock"/>
             <sound id="113" name="Menu empty"/>
             <sound id="114" name="Menu combine" fixed_by_default="true"/>
             <sound id="115" name="Menu empty"/>
             <sound id="116" name="Menu medi" fixed_by_default="true"/>
-            <sound id="117" name="Lara climb walls noise" fixed_by_default="true"/>
-            <sound id="118" name="Water loop" fixed_by_default="true"/>
+            <sound id="117" name="Lara climb walls noise"/>
+            <sound id="118" name="Water loop"/>
             <sound id="119" name="Voncroy jump"/>
-            <sound id="120" name="Locusts loop"/>
+            <sound id="120" name="Locusts loop" fixed_by_default="true"/>
             <sound id="121" name="Dessert eagle fire" fixed_by_default="true"/>
-            <sound id="122" name="Boulder fall"/>
-            <sound id="123" name="Lara mini load" fixed_by_default="true"/>
-            <sound id="124" name="Lara mini lock" fixed_by_default="true"/>
-            <sound id="125" name="Lara mini fire" fixed_by_default="true"/>
+            <sound id="122" name="Boulder fall" fixed_by_default="true"/>
+            <sound id="123" name="Lara mini load"/>
+            <sound id="124" name="Lara mini lock"/>
+            <sound id="125" name="Lara mini fire"/>
             <sound id="126" name="Gate opening"/>
             <sound id="127" name="Lara electric loop"/>
             <sound id="128" name="Lara electric crackles"/>
             <sound id="129" name="Blood loop"/>
             <sound id="130" name="Bike start"/>
-            <sound id="131" name="Bike idle"/>
+            <sound id="131" name="Bike idle" fixed_by_default="true"/>
             <sound id="132" name="Bike accelerate"/>
-            <sound id="133" name="Bike moving"/>
+            <sound id="133" name="Bike moving" fixed_by_default="true"/>
             <sound id="134" name="Bike side impact"/>
             <sound id="135" name="Bike front impact"/>
-            <sound id="136" name="Soft wind loop" fixed_by_default="true"/>
+            <sound id="136" name="Soft wind loop"/>
             <sound id="137" name="Bike land"/>
             <sound id="138" name="Crocgod roar"/>
             <sound id="139" name="Crocgod wings"/>
             <sound id="140" name="Crocgod land"/>
             <sound id="141" name="Crocgod fire roar"/>
             <sound id="142" name="Bike stop"/>
-            <sound id="143" name="Generic body slam" fixed_by_default="true"/>
+            <sound id="143" name="Generic body slam"/>
             <sound id="144" name="Heckerandkoch overlay"/>
-            <sound id="145" name="Lara spike death" fixed_by_default="true"/>
+            <sound id="145" name="Lara spike death"/>
             <sound id="146" name="Lara death3"/>
             <sound id="147" name="Rolling ball"/>
             <sound id="148" name="Blk plat raiseandlow"/>
-            <sound id="149" name="Rumble nextdoor"/>
+            <sound id="149" name="Rumble nextdoor" fixed_by_default="true"/>
             <sound id="150" name="Loop for small fires" fixed_by_default="true"/>
             <sound id="151" name="Chains library"/>
             <sound id="152" name="Jeep start"/>
-            <sound id="153" name="Jeep idle"/>
+            <sound id="153" name="Jeep idle" fixed_by_default="true"/>
             <sound id="154" name="Jeep accelerate"/>
-            <sound id="155" name="Jeep move"/>
+            <sound id="155" name="Jeep move" fixed_by_default="true"/>
             <sound id="156" name="Jeep stop"/>
             <sound id="157" name="Bats 1"/>
             <sound id="158" name="Rolling door"/>
@@ -2482,28 +2482,28 @@
             <sound id="181" name="Dog death"/>
             <sound id="182" name="Thunder rumble" fixed_by_default="true"/>
             <sound id="183" name="Thunder crack" fixed_by_default="true"/>
-            <sound id="184" name="Wraith whispers"/>
+            <sound id="184" name="Wraith whispers"  fixed_by_default="true"/>
             <sound id="185" name="Empty"/>
             <sound id="186" name="Empty"/>
             <sound id="187" name="Skel footsteps"/>
             <sound id="188" name="Skel attack"/>
-            <sound id="189" name="Generic sword swoosh" fixed_by_default="true"/>
+            <sound id="189" name="Generic sword swoosh"/>
             <sound id="190" name="Skel sword clang"/>
             <sound id="191" name="Skel stick ground"/>
-            <sound id="192" name="Gen pull sword" fixed_by_default="true"/>
+            <sound id="192" name="Gen pull sword"/>
             <sound id="193" name="Skel land heavy"/>
-            <sound id="194" name="Guide scare"/>
+            <sound id="194" name="Guide scare" fixed_by_default="true"/>
             <sound id="195" name="Jeep door open"/>
             <sound id="196" name="Jeep door close"/>
-            <sound id="197" name="Elec arcing loop"/>
-            <sound id="198" name="Elec one shot"/>
+            <sound id="197" name="Elec arcing loop" fixed_by_default="true"/>
+            <sound id="198" name="Elec one shot" fixed_by_default="true"/>
             <sound id="199" name="Empty"/>
             <sound id="200" name="Library cog loop"/>
             <sound id="201" name="Jeep side impact"/>
             <sound id="202" name="Jeep front impact"/>
             <sound id="203" name="Jeep land"/>
             <sound id="204" name="Spinning gem slots"/>
-            <sound id="205" name="Rummble" fixed_by_default="true"/>
+            <sound id="205" name="Rummble"/>
             <sound id="206" name="Warthog headbutt"/>
             <sound id="207" name="Warthog death"/>
             <sound id="208" name="Set spike timer"/>
@@ -2511,14 +2511,14 @@
             <sound id="210" name="Warthog feet"/>
             <sound id="211" name="Warthog grunt"/>
             <sound id="212" name="Save crystal"/>
-            <sound id="213" name="Horse ricochets"/>
+            <sound id="213" name="Horse ricochets" fixed_by_default="true"/>
             <sound id="214" name="Metal shutters smash"/>
-            <sound id="215" name="Gem drop on floor" fixed_by_default="true"/>
+            <sound id="215" name="Gem drop on floor"/>
             <sound id="216" name="Scorpion scream"/>
             <sound id="217" name="Scorpion feet"/>
             <sound id="218" name="Scorpion claws"/>
             <sound id="219" name="Scorpion tail whip"/>
-            <sound id="220" name="Scorpion small feet" fixed_by_default="true"/>
+            <sound id="220" name="Scorpion small feet"/>
             <sound id="221" name="Metal gate open"/>
             <sound id="222" name="Horse trotting"/>
             <sound id="223" name="Kn templar walk"/>
@@ -2536,7 +2536,7 @@
             <sound id="235" name="Lara crossbow" fixed_by_default="true"/>
             <sound id="236" name="Small creature feet"/>
             <sound id="237" name="Sas gadgie die"/>
-            <sound id="238" name="Water flushes"/>
+            <sound id="238" name="Water flushes" fixed_by_default="true"/>
             <sound id="239" name="Guid zippo"/>
             <sound id="240" name="Leap switch"/>
             <sound id="241" name="Old switch"/>
@@ -2560,14 +2560,14 @@
             <sound id="259" name="Bad troop stun"/>
             <sound id="260" name="Bad swordaway"/>
             <sound id="261" name="Bad troop uzi"/>
-            <sound id="262" name="Bad sword rico"/>
+            <sound id="262" name="Bad sword rico" fixed_by_default="true"/>
             <sound id="263" name="Bad troop uzi end"/>
             <sound id="264" name="Troop scorp cries"/>
             <sound id="265" name="Sas troop feet"/>
             <sound id="266" name="Generic nrg charge"/>
             <sound id="267" name="Sas mg fire"/>
             <sound id="268" name="Hammer head wade"/>
-            <sound id="269" name="Small switch" fixed_by_default="true"/>
+            <sound id="269" name="Small switch"/>
             <sound id="270" name="Empty"/>
             <sound id="271" name="Siren wing flap"/>
             <sound id="272" name="Siren noizes"/>
@@ -2578,42 +2578,42 @@
             <sound id="277" name="Hammer head atk"/>
             <sound id="278" name="Small door subway"/>
             <sound id="279" name="Train door open"/>
-            <sound id="280" name="Train door close"/>
-            <sound id="281" name="Voncroy knife swish"/>
+            <sound id="280" name="Train door close" fixed_by_default="true"/>
+            <sound id="281" name="Voncroy knife swish" fixed_by_default="true"/>
             <sound id="282" name="Train unlink break"/>
             <sound id="283" name="Obj box hit"/>
             <sound id="284" name="Obj box hit chance"/>
             <sound id="285" name="Obj gem smash" fixed_by_default="true"/>
             <sound id="286" name="Catblades draw"/>
             <sound id="287" name="Swirly long move sfx"/>
-            <sound id="288" name="Footsteps mud" fixed_by_default="true"/>
+            <sound id="288" name="Footsteps mud"/>
             <sound id="289" name="Horseman horse neigh"/>
-            <sound id="290" name="Footsteps gravel" fixed_by_default="true"/>
-            <sound id="291" name="Footsteps sand and grass" fixed_by_default="true"/>
-            <sound id="292" name="Footsteps wood" fixed_by_default="true"/>
+            <sound id="290" name="Footsteps gravel"/>
+            <sound id="291" name="Footsteps sand and grass"/>
+            <sound id="292" name="Footsteps wood"/>
             <sound id="293" name="Footsteps marble"/>
-            <sound id="294" name="Footsteps metal" fixed_by_default="true"/>
+            <sound id="294" name="Footsteps metal"/>
             <sound id="295" name="Gen sphinx doorthd"/>
             <sound id="296" name="Sett plasma 1"/>
             <sound id="297" name="Sett bolt 1"/>
             <sound id="298" name="Sett feet"/>
             <sound id="299" name="Sett nrg charge"/>
             <sound id="300" name="Sett nrg charge2"/>
-            <sound id="301" name="Horseman takehit"/>
+            <sound id="301" name="Horseman takehit" fixed_by_default="true"/>
             <sound id="302" name="Horseman walk"/>
             <sound id="303" name="Horseman grunt"/>
             <sound id="304" name="Horseman fall"/>
             <sound id="305" name="Horseman die"/>
             <sound id="306" name="Mapper switch on"/>
             <sound id="307" name="Mapper open"/>
-            <sound id="308" name="Mapper lazer"/>
+            <sound id="308" name="Mapper lazer" fixed_by_default="true"/>
             <sound id="309" name="Mapper move"/>
             <sound id="310" name="Mapper clunk"/>
             <sound id="311" name="Blades draw"/>
             <sound id="312" name="Blades clash loud"/>
             <sound id="313" name="Blades clash quiet"/>
             <sound id="314" name="Hammer trap bang"/>
-            <sound id="315" name="Door big stone" fixed_by_default="true"/>
+            <sound id="315" name="Door big stone"/>
             <sound id="316" name="Sett big roar"/>
             <sound id="317" name="Baboon chatter"/>
             <sound id="318" name="Baboon roll"/>
@@ -2623,9 +2623,9 @@
             <sound id="322" name="Sett jump attack"/>
             <sound id="323" name="Joby block"/>
             <sound id="324" name="Sett take hit"/>
-            <sound id="325" name="Dart spitt"/>
-            <sound id="326" name="Lara crowbar gem" fixed_by_default="true"/>
-            <sound id="327" name="Crowbar door open" fixed_by_default="true"/>
+            <sound id="325" name="Dart spitt" fixed_by_default="true"/>
+            <sound id="326" name="Lara crowbar gem"/>
+            <sound id="327" name="Crowbar door open"/>
             <sound id="328" name="Lara lever gen sqks"/>
             <sound id="329" name="Horseman getup"/>
             <sound id="330" name="Exh basket open"/>
@@ -2637,37 +2637,37 @@
             <sound id="336" name="Exh roller blinds"/>
             <sound id="337" name="Lara lever part1"/>
             <sound id="338" name="Lara lever part2"/>
-            <sound id="339" name="Lara pole climb" fixed_by_default="true"/>
+            <sound id="339" name="Lara pole climb"/>
             <sound id="340" name="Lara pole loop" fixed_by_default="true"/>
             <sound id="341" name="Trap spikeball spk"/>
             <sound id="342" name="Lara pulley"/>
-            <sound id="343" name="Teeth spikes"/>
-            <sound id="344" name="Sand loop"/>
-            <sound id="345" name="Lara use object" fixed_by_default="true"/>
+            <sound id="343" name="Teeth spikes" fixed_by_default="true"/>
+            <sound id="344" name="Sand loop" fixed_by_default="true"/>
+            <sound id="345" name="Lara use object"/>
             <sound id="346" name="Library cog sqks"/>
             <sound id="347" name="Hit rock" fixed_by_default="true"/>
             <sound id="348" name="Lara no french" fixed_by_default="true"/>
             <sound id="349" name="Lara no japan" fixed_by_default="true"/>
-            <sound id="350" name="Lara crow wrench" fixed_by_default="true"/>
+            <sound id="350" name="Lara crow wrench"/>
             <sound id="351" name="Lara rope creak" fixed_by_default="true"/>
             <sound id="352" name="Bowlanim"/>
             <sound id="353" name="Sphinx door woodcrack"/>
             <sound id="354" name="Beetle clk whirr"/>
-            <sound id="355" name="Mapper pyramid open"/>
+            <sound id="355" name="Mapper pyramid open" fixed_by_default="true"/>
             <sound id="356" name="Light beam joby"/>
             <sound id="357" name="Guide fire light"/>
-            <sound id="358" name="Autoguns"/>
+            <sound id="358" name="Autoguns" fixed_by_default="true"/>
             <sound id="359" name="Pulley andy"/>
             <sound id="360" name="Steam"/>
             <sound id="361" name="Joby garage door"/>
-            <sound id="362" name="Joby wind"/>
-            <sound id="363" name="Sandham in the house"/>
+            <sound id="362" name="Joby wind" fixed_by_default="true"/>
+            <sound id="363" name="Sandham in the house" fixed_by_default="true"/>
             <sound id="364" name="Sandham conveys"/>
             <sound id="365" name="Cranky grape crush"/>
-            <sound id="366" name="Bike hit objects"/>
-            <sound id="367" name="Bike hit enemies"/>
+            <sound id="366" name="Bike hit objects" fixed_by_default="true"/>
+            <sound id="367" name="Bike hit enemies" fixed_by_default="true"/>
             <sound id="368" name="Flame emitter" fixed_by_default="true"/>
-            <sound id="369" name="Lara click switch" fixed_by_default="true"/>
+            <sound id="369" name="Lara click switch"/>
         </sounds>
 		<original_names>
 			<org is_static="false" id="0" name="LARA"/>
