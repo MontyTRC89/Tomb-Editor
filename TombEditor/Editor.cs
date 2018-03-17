@@ -310,17 +310,44 @@ namespace TombEditor
             public Configuration Previous { get; internal set; }
             public Configuration Current { get; internal set; }
         }
-        private Configuration _Configuration;
+        private Configuration _configuration;
         public Configuration Configuration
         {
-            get { return _Configuration; }
+            get { return _configuration; }
             set
             {
-                if (value == _Configuration)
+                if (value == _configuration)
                     return;
-                var previous = _Configuration;
-                _Configuration = value;
+                var previous = _configuration;
+                _configuration = value;
                 RaiseEvent(new ConfigurationChangedEvent { Previous = previous, Current = value });
+            }
+        }
+
+        public class BookmarkedObjectChanged : IEditorPropertyChangedEvent
+        {
+            public ObjectInstance Previous { get; internal set; }
+            public ObjectInstance Current { get; internal set; }
+        }
+        private ObjectInstance _bookmarkedObject = null;
+        public ObjectInstance BookmarkedObject
+        {
+            get
+            {
+                // Check that it's still part of the project
+                if (Level == null)
+                    return null;
+                if (!Level.Rooms.Where(room => room != null).SelectMany(room => room.AnyObjects).Contains(_bookmarkedObject))
+                    return null;
+                return _bookmarkedObject;
+            }
+            set
+            {
+                if (value == _bookmarkedObject)
+                    return;
+                var previous = _bookmarkedObject;
+                _bookmarkedObject = value;
+                RaiseEvent(new BookmarkedObjectChanged { Previous = previous, Current = value });
             }
         }
 
@@ -503,7 +530,7 @@ namespace TombEditor
         // Notify all components that values of the configuration have changed
         public void ConfigurationChange()
         {
-            RaiseEvent(new ConfigurationChangedEvent { Previous = _Configuration, Current = _Configuration });
+            RaiseEvent(new ConfigurationChangedEvent { Previous = _configuration, Current = _configuration });
         }
 
         // Select a room and center the camera
@@ -651,7 +678,7 @@ namespace TombEditor
             if (obj is IEditorEventCausesUnsavedChanges)
             {
                 HasUnsavedChanges = true;
-                if (_Configuration.AutoSave_Enable)
+                if (_configuration.AutoSave_Enable)
                     AutoSavingTimer?.Start();
             }
 
@@ -660,6 +687,15 @@ namespace TombEditor
             {
                 if (((IEditorObjectChangedEvent)obj).Object == SelectedObject)
                     SelectedObject = null;
+            }
+
+            // Update bookmarks
+            if (obj is LevelChangedEvent ||
+                (obj is ObjectChangedEvent &&
+                    ((ObjectChangedEvent)obj).ChangeType == ObjectChangeType.Remove) &&
+                    ((ObjectChangedEvent)obj).Object == _bookmarkedObject)
+            {
+                BookmarkedObject = null;
             }
         }
 

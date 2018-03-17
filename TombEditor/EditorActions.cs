@@ -275,17 +275,20 @@ namespace TombEditor
         {
             if (_editor.SelectedObject is IRotateableYX)
             {
-                if (axis == RotationAxis.X || axis == RotationAxis.None) (_editor.SelectedObject as IRotateableYX).RotationX = 0;
+                if (axis == RotationAxis.X || axis == RotationAxis.None)
+                    (_editor.SelectedObject as IRotateableYX).RotationX = 0;
             }
 
             if (_editor.SelectedObject is IRotateableY)
             {
-                if (axis == RotationAxis.Y || axis == RotationAxis.None) (_editor.SelectedObject as IRotateableY).RotationY = 0;
+                if (axis == RotationAxis.Y || axis == RotationAxis.None)
+                    (_editor.SelectedObject as IRotateableY).RotationY = 0;
             }
 
             if (_editor.SelectedObject is IRotateableYXRoll)
             {
-                if (axis == RotationAxis.Roll || axis == RotationAxis.None) (_editor.SelectedObject as IRotateableYXRoll).Roll = 0;
+                if (axis == RotationAxis.Roll || axis == RotationAxis.None)
+                    (_editor.SelectedObject as IRotateableYXRoll).Roll = 0;
             }
 
             _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
@@ -447,34 +450,41 @@ namespace TombEditor
 
         public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner)
         {
-            var trigger = new TriggerInstance(area);
+            // Allow creating a trigger using the bookmarked object if shift was pressed.
+            ObjectInstance @object;
+            if (Control.ModifierKeys.HasFlag(Keys.Shift))
+                @object = _editor.BookmarkedObject;
+            else
+                @object = _editor.SelectedObject;
+
 
             // Initialize trigger with selected object if the selected object makes sense in the trigger context.
-            if (_editor.SelectedObject is MoveableInstance)
+            var trigger = new TriggerInstance(area);
+            if (@object is MoveableInstance)
             {
                 trigger.TargetType = TriggerTargetType.Object;
-                trigger.Target = _editor.SelectedObject;
+                trigger.Target = @object;
             }
-            else if (_editor.SelectedObject is FlybyCameraInstance)
+            else if (@object is FlybyCameraInstance)
             {
                 trigger.TargetType = TriggerTargetType.FlyByCamera;
-                trigger.Target = _editor.SelectedObject;
+                trigger.Target = @object;
             }
-            else if (_editor.SelectedObject is CameraInstance)
+            else if (@object is CameraInstance)
             {
                 trigger.TargetType = TriggerTargetType.Camera;
-                trigger.Target = _editor.SelectedObject;
+                trigger.Target = @object;
             }
-            else if (_editor.SelectedObject is SinkInstance)
+            else if (@object is SinkInstance)
             {
                 trigger.TargetType = TriggerTargetType.Sink;
-                trigger.Target = _editor.SelectedObject;
+                trigger.Target = @object;
             }
-            else if (_editor.SelectedObject is StaticInstance && _editor.Level.Settings.GameVersion == GameVersion.TRNG)
+            else if (@object is StaticInstance && _editor.Level.Settings.GameVersion == GameVersion.TRNG)
             {
                 trigger.TargetType = TriggerTargetType.FlipEffect;
                 trigger.Target = new TriggerParameterUshort(160);
-                trigger.Timer = _editor.SelectedObject;
+                trigger.Timer = @object;
             }
 
             // Display form

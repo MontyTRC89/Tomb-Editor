@@ -34,6 +34,11 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.DeleteObjectWithWarning(targetObject, this);
             }));
 
+            Items.Add(new ToolStripMenuItem("Bookmark object", null, (o, e) =>
+            {
+                _editor.BookmarkedObject = targetObject;
+            }));
+
             if (_editor.SelectedObject is ImportedGeometryInstance)
             {
                 Items.Add(new ToolStripMenuItem("Reload imported geometry", Properties.Resources.general_Open_16, (o, e) =>
