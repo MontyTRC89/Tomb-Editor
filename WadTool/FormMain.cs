@@ -25,12 +25,9 @@ namespace WadTool
             _deviceManager = new DeviceManager();
 
             InitializeComponent();
-
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = Debugger.IsAttached;
-
-
-            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             _tool = tool;
 
@@ -38,7 +35,6 @@ namespace WadTool
             panel3D.AnimationScrollBar = scrollbarAnimations;
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
-            int TODO_MAKE_SURE_WADTOOL_IS_UPFRONT_ABOUT_WAD2_CONTAINING_SOUNDS;
             int TODO_ALLOW_DRAG_DROP;
         }
 
