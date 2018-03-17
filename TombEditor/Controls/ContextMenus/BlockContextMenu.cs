@@ -24,7 +24,7 @@ namespace TombEditor.Controls.ContextMenus
             }));
             Items.Add(new ToolStripSeparator());
 
-            /*Items.Add(new ToolStripMenuItem("Add camera", global::TombEditor.Properties.Resources.objects_Camera_16, (o, e) =>
+            /*Items.Add(new ToolStripMenuItem("Add camera", Properties.Resources.objects_Camera_16, (o, e) =>
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, ItemInstance.FromItemType(_editor.Action.ItemType));
             }));*/

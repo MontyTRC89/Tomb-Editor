@@ -135,6 +135,7 @@ namespace TombEditor.Forms
 
                 deleteToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject != null;
                 rotateToolStripMenuItem.Enabled = selectedObject is IRotateableY;
+                bookmarkObjectToolStripMenuItem.Enabled = selectedObject != null;
             }
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
@@ -237,6 +238,13 @@ namespace TombEditor.Forms
                     @event.Current.Window_Size != @event.Previous.Window_Size ||
                     @event.Current.Window_Layout != @event.Previous.Window_Layout)
                     LoadWindowLayout(_editor.Configuration);
+            }
+
+            // Update object bookmarks
+            if (obj is Editor.BookmarkedObjectChanged)
+            {
+                var @event = (Editor.BookmarkedObjectChanged)obj;
+                bookmarkRestoreObjectToolStripMenuItem.Enabled = @event.Current != null;
             }
         }
 
@@ -955,6 +963,16 @@ namespace TombEditor.Forms
         {
             if (_editor.SelectedObject != null)
                 EditorActions.EditObject(_editor.SelectedObject, this);
+        }
+
+        private void bookmarkObjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.BookmarkedObject = _editor.SelectedObject;
+        }
+
+        private void bookmarkRestoreObjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.SelectedObject = _editor.BookmarkedObject;
         }
 
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
