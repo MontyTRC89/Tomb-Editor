@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers.Util
 {
@@ -31,30 +32,38 @@ namespace TombLib.LevelData.Compilers.Util
         {
             _gameVersion = settings.GameVersion;
 
-            // Add fixed sounds
+            // Fix all the sounds for the TR version
+            foreach (uint fixedSound in TrCatalog.GetAllFixedByDefaultSounds(settings.WadGameVersion).Keys)
+                SetSoundMapEntryToSoundInfo(checked((ushort)fixedSound), null);
+
+            // Add fixed sounds from the wad
             foreach (WadFixedSoundInfo fixedSoundInfo in wad.FixedSoundInfos.Values)
-                SetSoundMapEntryToSoundInfo(fixedSoundInfo.SoundInfo, checked((ushort)fixedSoundInfo.Id.TypeId));
+                SetSoundMapEntryToSoundInfo(checked((ushort)fixedSoundInfo.Id.TypeId), fixedSoundInfo.SoundInfo);
         }
 
-        private void SetSoundMapEntryToSoundInfo(WadSoundInfo soundInfo, ushort soundMapIndex)
+        private void SetSoundMapEntryToSoundInfo(ushort soundMapIndex, WadSoundInfo soundInfo)
         {
-            // Create sound detail
-            SoundDetail soundDetail = new SoundDetail { Data = soundInfo.Data };
-            if (soundInfo.Data.Samples.Count == 0 ||
-                soundInfo.Data.Chance < (0.5f / 256.0f) ||
-                soundInfo.Data.Volume < (0.5f / 256.0f))
-            { // Use null sample if there are no samples, or we shouldn't play anything. The engine otherwise messes this up otherwise.
-                soundDetail.Data.Samples = new List<WadSample>(new[] { WadSample.NullSample });
+            ushort soundDetailIndex = 0xffff; // Empty sound detail index.
+            if (soundInfo != null)
+            {
+                // Create sound detail
+                SoundDetail soundDetail = new SoundDetail { Data = soundInfo.Data };
+                if (soundInfo.Data.Samples.Count == 0 ||
+                    soundInfo.Data.Chance < (0.5f / 256.0f) ||
+                    soundInfo.Data.Volume < (0.5f / 256.0f))
+                { // Use null sample if there are no samples, or we shouldn't play anything. The engine otherwise messes this up otherwise.
+                    soundDetail.Data.Samples = new List<WadSample>(new[] { WadSample.NullSample });
+                }
+
+                // Add sound samples.
+                _sampleIndices.AddRange(Enumerable.Repeat((uint)0, soundDetail.Data.Samples.Count)); // Unused filler for TR4 and TR5
+                soundDetail.FirstSample = checked((ushort)_samples.Count);
+                _samples.AddRange(soundDetail.Data.Samples);
+
+                // Add the sound details.
+                soundDetailIndex = checked((ushort)_soundDetails.Count);
+                _soundDetails.Add(soundDetail);
             }
-
-            // Add sound samples.
-            _sampleIndices.AddRange(Enumerable.Repeat((uint)0, soundDetail.Data.Samples.Count)); // Unused filler for TR4 and TR5
-            soundDetail.FirstSample = checked((ushort)_samples.Count);
-            _samples.AddRange(soundDetail.Data.Samples);
-
-            // Add the sound details.
-            ushort soundDetailIndex = checked((ushort)_soundDetails.Count);
-            _soundDetails.Add(soundDetail);
 
             // Add the sound map entry.
             ushort oldSoundMapSize = checked((ushort)_soundMap.Count);
@@ -65,7 +74,8 @@ namespace TombLib.LevelData.Compilers.Util
             _soundMap[soundMapIndex] = soundDetailIndex;
 
             // Fill accelerated data structure to find free sound map entries
-            _soundInfoToMapIndexLookup.Add(soundInfo.Hash, soundMapIndex);
+            if (soundInfo != null)
+                _soundInfoToMapIndexLookup.Add(soundInfo.Hash, soundMapIndex);
             for (ushort i = oldSoundMapSize; i < soundMapIndex - 1; ++i)
                 _freeSoundMapIndices.Add(i);
             _freeSoundMapIndices.Remove(soundMapIndex);
@@ -85,7 +95,7 @@ namespace TombLib.LevelData.Compilers.Util
                 }
                 else
                     soundMapIndex = checked((ushort)_soundDetails.Count);
-                SetSoundMapEntryToSoundInfo(soundInfo, soundMapIndex);
+                SetSoundMapEntryToSoundInfo(soundMapIndex, soundInfo);
             }
             return soundMapIndex;
         }
