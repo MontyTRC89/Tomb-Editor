@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using TombLib.Utils;
 
 namespace TombLib.Wad.Catalog
 {
@@ -27,11 +28,11 @@ namespace TombLib.Wad.Catalog
         private class Game
         {
             internal WadGameVersion Version { get; private set; }
-            internal Dictionary<uint, Item> Moveables { get; private set; } = new Dictionary<uint, Item>();
-            internal Dictionary<uint, Item> SpriteSequences { get; private set; } = new Dictionary<uint, Item>();
-            internal Dictionary<uint, Item> Statics { get; private set; } = new Dictionary<uint, Item>();
-            internal Dictionary<uint, ItemSound> Sounds { get; private set; } = new Dictionary<uint, ItemSound>();
-            internal Dictionary<string, OriginalNameInfo> OriginalNames { get; private set; } = new Dictionary<string, OriginalNameInfo>();
+            internal SortedList<uint, Item> Moveables { get; private set; } = new SortedList<uint, Item>();
+            internal SortedList<uint, Item> SpriteSequences { get; private set; } = new SortedList<uint, Item>();
+            internal SortedList<uint, Item> Statics { get; private set; } = new SortedList<uint, Item>();
+            internal SortedList<uint, ItemSound> Sounds { get; private set; } = new SortedList<uint, ItemSound>();
+            internal SortedList<string, OriginalNameInfo> OriginalNames { get; private set; } = new SortedList<string, OriginalNameInfo>();
             //internal int SoundMapSize { get; set; }
 
             public Game(WadGameVersion version)
@@ -126,31 +127,31 @@ namespace TombLib.Wad.Catalog
             return game.Sounds[id].FixedByDefault;
         }
 
-        public static IReadOnlyDictionary<uint, string> GetAllMoveables(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllMoveables(WadGameVersion version)
         {
-            return Games[version].Moveables.ToDictionary(item => item.Key, item => item.Value.Name);
+            return Games[version].Moveables.DicSelect(item => item.Value.Name);
         }
 
-        public static IReadOnlyDictionary<uint, string> GetAllStatics(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllStatics(WadGameVersion version)
         {
-            return Games[version].Statics.ToDictionary(item => item.Key, item => item.Value.Name);
+            return Games[version].Statics.DicSelect(item => item.Value.Name);
         }
 
-        public static IReadOnlyDictionary<uint, string> GetAllSpriteSequences(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllSpriteSequences(WadGameVersion version)
         {
-            return Games[version].SpriteSequences.ToDictionary(item => item.Key, item => item.Value.Name);
+            return Games[version].SpriteSequences.DicSelect(item => item.Value.Name);
         }
 
-        public static IReadOnlyDictionary<uint, string> GetAllSounds(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllSounds(WadGameVersion version)
         {
-            return Games[version].Sounds.ToDictionary(item => item.Key, item => item.Value.Name);
+            return Games[version].Sounds.DicSelect(item => item.Value.Name);
         }
 
-        public static IReadOnlyDictionary<uint, string> GetAllFixedByDefaultSounds(WadGameVersion version)
+        public static IDictionary<uint, string> GetAllFixedByDefaultSounds(WadGameVersion version)
         {
             return Games[version].Sounds
-                .Where(sound => sound.Value.FixedByDefault)
-                .ToDictionary(item => item.Key, item => item.Value.Name);
+                .DicWhere(sound => sound.Value.FixedByDefault)
+                .DicSelect(item => item.Value.Name);
         }
 
         public static string GetVersionString(WadGameVersion version)

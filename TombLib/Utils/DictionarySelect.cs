@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace TombLib.Utils
 {
-    public class DictionarySelect<K, V, V2> : IDictionary<K, V2>
+    public class DictionarySelect<K, V, V2> : IDictionary<K, V2>, IReadOnlyDictionary<K, V2>
     {
         public IDictionary<K, V> BaseDictionary { get; }
         public Func<KeyValuePair<K, V>, V2> Selector { get; }
@@ -26,6 +26,7 @@ namespace TombLib.Utils
         public bool IsReadOnly => true;
 
         public ICollection<K> Keys => BaseDictionary.Keys;
+        IEnumerable<K> IReadOnlyDictionary<K, V2>.Keys => Keys;
 
         private struct ValueCollection : ICollection<V2>
         {
@@ -52,6 +53,7 @@ namespace TombLib.Utils
             }
         }
         public ICollection<V2> Values => new ValueCollection(this);
+        IEnumerable<V2> IReadOnlyDictionary<K, V2>.Values => Values;
 
         public void Add(KeyValuePair<K, V2> item)
         {
