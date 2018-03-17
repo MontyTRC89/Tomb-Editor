@@ -38,32 +38,44 @@ namespace WadTool
 
         private void ReloadSlots()
         {
-            IDictionary<uint, string> objectSlotSuggestions;
+            treeSlots.Nodes.Clear();
+
+            // Decide on ID type
             if (TypeClass == typeof(WadMoveableId))
-                objectSlotSuggestions = TrCatalog.GetAllMoveables(GameVersion);
+                treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllMoveables(GameVersion)));
             else if (TypeClass == typeof(WadStaticId))
-                objectSlotSuggestions = TrCatalog.GetAllStatics(GameVersion);
+                treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllStatics(GameVersion)));
             else if (TypeClass == typeof(WadSpriteSequenceId))
-                objectSlotSuggestions = TrCatalog.GetAllSpriteSequences(GameVersion);
+                treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllSpriteSequences(GameVersion)));
             else if (TypeClass == typeof(WadFixedSoundInfoId))
-                objectSlotSuggestions = TrCatalog.GetAllSounds(GameVersion);
+            {
+                DarkTreeNode usedSoundNode = new DarkTreeNode("Used sounds");
+                usedSoundNode.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllFixedByDefaultSounds(GameVersion)));
+                usedSoundNode.Expanded = true;
+                treeSlots.Nodes.Add(usedSoundNode);
+
+                DarkTreeNode allSoundNode = new DarkTreeNode("All sounds");
+                allSoundNode.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllSounds(GameVersion)));
+                treeSlots.Nodes.Add(allSoundNode);
+            }
             else
                 throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 
-            // TODO Implement fuzzy search?
+            // Make sure it redraws
+            treeSlots.Invalidate();
+        }
+
+        private IEnumerable<DarkTreeNode> PopulateSlots(IDictionary<uint, string> objectSlotSuggestions)
+        {
             string searchKeyword = tbSearch.Text;
-            var nodes = new List<DarkTreeNode>();
             foreach (var objectSlotSuggestion in objectSlotSuggestions)
             {
                 if (!string.IsNullOrEmpty(searchKeyword))
                     if (objectSlotSuggestion.Value.IndexOf(searchKeyword, StringComparison.OrdinalIgnoreCase) == -1)
                         continue;
                 string label = "(" + objectSlotSuggestion.Key + ") " + objectSlotSuggestion.Value;
-                nodes.Add(new DarkTreeNode(label) { Tag = objectSlotSuggestion.Key });
+                yield return new DarkTreeNode(label) { Tag = objectSlotSuggestion.Key };
             }
-            treeSlots.Nodes.Clear();
-            treeSlots.Nodes.AddRange(nodes);
-            treeSlots.Invalidate();
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -92,11 +104,12 @@ namespace WadTool
         private void chosenId_ValueChanged(object sender, EventArgs e)
         {
             foreach (DarkTreeNode node in treeSlots.Nodes)
-                if ((uint)node.Tag == (uint)chosenId.Value)
-                {
-                    treeSlots.SelectNode(node);
-                    return;
-                }
+                if (node.Tag is uint)
+                    if ((uint)node.Tag == (uint)chosenId.Value)
+                    {
+                        treeSlots.SelectNode(node);
+                        return;
+                    }
             if (treeSlots.SelectedNodes.Count > 0)
             {
                 treeSlots.SelectedNodes.Clear();
@@ -107,7 +120,8 @@ namespace WadTool
         private void treeSlots_SelectedNodesChanged(object sender, EventArgs e)
         {
             if (treeSlots.SelectedNodes.Count > 0)
-                chosenId.Value = (uint)treeSlots.SelectedNodes[0].Tag;
+                if (treeSlots.SelectedNodes[0].Tag is uint)
+                    chosenId.Value = (uint)treeSlots.SelectedNodes[0].Tag;
         }
 
         private void tbSearch_TextChanged(object sender, EventArgs e)
