@@ -2,12 +2,16 @@
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
+using TombLib.Forms;
+using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.Wad;
 using WadTool.Controls;
+using TombLib.Utils;
 
 namespace WadTool
 {
@@ -30,6 +34,8 @@ namespace WadTool
             _wad = wad;
             _tool = tool;
             _device = deviceManager.Device;
+
+            _wad.TempMeshes.Clear();
 
             Static = @static;
 
@@ -95,9 +101,9 @@ namespace WadTool
 
         private void UpdateDirectXModel(WadStatic s)
         {
-            _wad.DirectXStatics[Static.Id].Dispose();
-            _wad.DirectXStatics.Remove(Static.Id);
-            _wad.DirectXStatics.Add(Static.Id, StaticModel.FromWad2(_device, _wad, s, _wad.PackedTextures));
+            _wad.DirectXStatics[s.Id].Dispose();
+            _wad.DirectXStatics.Remove(s.Id);
+            _wad.DirectXStatics.Add(s.Id, StaticModel.FromWad2(_device, _wad, s, _wad.PackedTextures));
         }
 
         private void UpdateLightsList()
@@ -245,6 +251,7 @@ namespace WadTool
         {
             if (DialogResult != DialogResult.OK)
                 UpdateDirectXModel(Static);
+            _wad.TempMeshes.Clear();
         }
 
         private void lstLights_Click(object sender, EventArgs e)
@@ -255,6 +262,38 @@ namespace WadTool
             var node = lstLights.SelectedNodes[0];
             panelRendering.SelectedLight = (WadLight)node.Tag;
             panelRendering.Invalidate();
+        }
+
+        private void butImportMeshFromFile_Click(object sender, EventArgs e)
+        {
+            using (FileDialog dialog = new OpenFileDialog())
+            {
+                try
+                {
+                    dialog.InitialDirectory = Path.GetDirectoryName(_tool.DestinationWad.FileName);
+                    dialog.FileName = Path.GetFileName(_tool.DestinationWad.FileName);
+                }
+                catch
+                {
+                    // ignored
+                }
+
+                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
+                dialog.Title = "Select a 3D file that you want to see imported.";
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                {
+                    form.AddPreset(IOSettingsPresets.SettingsPresets);
+                    if (form.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    _tool.DestinationWad.ImportExternalModelIntoStaticMesh(_workingStatic, dialog.FileName, form.Settings);
+                    _workingStatic.Mesh.RecalculateNormals();
+                    UpdateDirectXModel(_workingStatic);
+                    panelRendering.Invalidate();
+                }
+            }
         }
     }
 }

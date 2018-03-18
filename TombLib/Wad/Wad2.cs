@@ -32,6 +32,7 @@ namespace TombLib.Wad
         public SortedList<WadSpriteSequenceId, WadSpriteSequence> SpriteSequences { get; set; } = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
         public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> FixedSoundInfos { get; set; } = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
         public string FileName { get; set; }
+        public List<WadMesh> TempMeshes { get; set; } = new List<WadMesh>();
 
         // Data for rendering
         public GraphicsDevice GraphicsDevice { get; set; }
@@ -40,7 +41,7 @@ namespace TombLib.Wad
         public SortedDictionary<WadStaticId, StaticModel> DirectXStatics { get; } = new SortedDictionary<WadStaticId, StaticModel>();
         public ConcurrentDictionary<WadMesh, ObjectMesh> DirectXMeshes { get; } = new ConcurrentDictionary<WadMesh, ObjectMesh>();
         public Dictionary<WadTexture, VectorInt2> PackedTextures { get; set; } = new Dictionary<WadTexture, VectorInt2>();
-
+        
         // Size of the atlas
         // DX10 requires minimum 8K textures support for hardware certification so we should be safe with this
         public const int TextureAtlasSize = 8192;
@@ -80,15 +81,15 @@ namespace TombLib.Wad
             get
             {
                 var textures = new HashSet<WadTexture>();
-                /* foreach (WadMesh mesh in MeshesUnique)
-                     foreach (WadPolygon polygon in mesh.Polys)
-                         textures.Add((WadTexture)polygon.Texture.Texture);*/
                 foreach (var moveable in Moveables)
                     foreach (var mesh in moveable.Value.Meshes)
                         foreach (WadPolygon polygon in mesh.Polys)
                             textures.Add((WadTexture)polygon.Texture.Texture);
                 foreach (var stat in Statics)
                     foreach (WadPolygon polygon in stat.Value.Mesh.Polys)
+                        textures.Add((WadTexture)polygon.Texture.Texture);
+                foreach (var mesh in TempMeshes)
+                    foreach (WadPolygon polygon in mesh.Polys)
                         textures.Add((WadTexture)polygon.Texture.Texture);
                 return textures;
             }
@@ -215,6 +216,19 @@ namespace TombLib.Wad
             staticMesh.CollisionBox = staticMesh.Mesh.BoundingBox;
 
             Statics.Add(staticMesh.Id, staticMesh);
+
+            // Reload DirectX data
+            PrepareDataForDirectX();
+        }
+
+        public void ImportExternalModelIntoStaticMesh(WadStatic staticMesh, string fileName, IOGeometrySettings settings)
+        {
+            staticMesh.Mesh = ImportWadMeshFromExternalModel(fileName, settings);
+            staticMesh.VisibilityBox = staticMesh.Mesh.BoundingBox;
+            staticMesh.CollisionBox = staticMesh.Mesh.BoundingBox;
+
+            // Because we need to rebuild texture atlas
+            TempMeshes.Add(staticMesh.Mesh);
 
             // Reload DirectX data
             PrepareDataForDirectX();

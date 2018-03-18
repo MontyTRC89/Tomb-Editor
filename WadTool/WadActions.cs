@@ -328,5 +328,7 @@ namespace WadTool
 
             tool.DestinationWadChanged();
         }
+
+
     }
 }
