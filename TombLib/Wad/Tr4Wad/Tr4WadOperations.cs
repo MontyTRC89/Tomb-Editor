@@ -189,7 +189,10 @@ namespace TombLib.Wad.Tr4Wad
 
             mesh.BoundingBox = new BoundingBox(oldMesh.Minimum, oldMesh.Maximum);
 
-            //mesh.UpdateHash();
+            // Usually only for static meshes
+            if (mesh.VerticesNormals.Count == 0)
+                mesh.RecalculateNormals();
+
             return mesh;
         }
 

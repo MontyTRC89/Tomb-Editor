@@ -26,6 +26,8 @@ namespace TombLib.Wad
 
         public void RecalculateNormals()
         {
+            VerticesNormals.Clear();
+
             for (int i = 0; i < VerticesPositions.Count; i++)
             {
                 int numPolygons = 0;
@@ -35,17 +37,18 @@ namespace TombLib.Wad
                     if (poly.Index0 == i || poly.Index1 == i || poly.Index2 == i || poly.Index3 == i)
                     {
                         // Calculate the face normal
-                        var normal = (VerticesPositions[poly.Index0] + VerticesPositions[poly.Index1] + VerticesPositions[poly.Index2]) / 3.0f;
+                        var v1 = VerticesPositions[poly.Index0] - VerticesPositions[poly.Index2];
+                        var v2 = VerticesPositions[poly.Index1] - VerticesPositions[poly.Index2];
+                        var normal = Vector3.Cross(v1, v2);
                         sum += normal;
                         numPolygons++;
                     }
                 }
 
                 if (numPolygons != 0)
-                {
-                    VerticesNormals[i] = sum / (float)numPolygons;
-                    VerticesNormals[i] /= VerticesNormals[i].Length() * 16300.0f; // WTF?
-                }
+                    sum /= (float)numPolygons;
+
+                VerticesNormals.Add(sum / sum.Length() * 16300.0f); // WTF Core?
             }
         }
 

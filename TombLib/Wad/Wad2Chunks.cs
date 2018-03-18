@@ -107,6 +107,7 @@ namespace TombLib.Wad
         ///****/public static readonly ChunkId StaticName = ChunkId.FromString("W2StaticName");
         /****/public static readonly ChunkId StaticVisibilityBox = ChunkId.FromString("W2StaticVB");
         /****/public static readonly ChunkId StaticCollisionBox = ChunkId.FromString("W2StaticCB");
+        /****/public static readonly ChunkId StaticAmbientLight = ChunkId.FromString("W2StaticAmbientLight");
         /****/public static readonly ChunkId StaticLight = ChunkId.FromString("W2StaticLight");
         /******/public static readonly ChunkId StaticLightPosition = ChunkId.FromString("W2StaticLightPos");
         /******/public static readonly ChunkId StaticLightRadius = ChunkId.FromString("W2StaticLightR");

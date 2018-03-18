@@ -39,6 +39,7 @@ namespace TombLib.Wad
         public WadStatic(WadStaticId id)
         {
             Id = id;
+            Lights = new List<WadLight>();
         }
 
         public WadMesh Mesh { get; set; } = WadMesh.Empty;
@@ -47,6 +48,7 @@ namespace TombLib.Wad
         public BoundingBox CollisionBox { get; set; } = new BoundingBox();
         public List<WadLight> Lights { get; set; } = new List<WadLight>();
         public WadMeshLightingType LightingType { get; set; } = WadMeshLightingType.PrecalculatedGrayShades;
+        public short AmbientLight { get; set; } = 128;
 
         public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
         public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);

@@ -1,4 +1,5 @@
-﻿using SharpDX.Toolkit.Graphics;
+﻿using DarkUI.Forms;
+using SharpDX.Toolkit.Graphics;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,6 +8,7 @@ using System.Windows.Forms;
 using TombLib;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
+using TombLib.Utils;
 using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
@@ -14,10 +16,18 @@ namespace WadTool.Controls
 {
     public class PanelRenderingStaticEditor : Panel
     {
+        public enum StaticEditorAction
+        {
+            Normal,
+            PlaceLight
+        }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadStatic Static { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public WadLight SelectedLight { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawVisibilityBox { get; set; }
@@ -27,6 +37,10 @@ namespace WadTool.Controls
         public bool DrawGrid { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawGizmo { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawLights { get; set; }
+
+        public StaticEditorAction Action { get; set; }
 
         public Matrix4x4 GizmoTransform
         {
@@ -47,8 +61,12 @@ namespace WadTool.Controls
         private float _lastY;
         private SpriteBatch _spriteBatch;
         private GizmoStaticEditor _gizmo;
+        private GizmoStaticEditorLight _gizmoLight;
         private GeometricPrimitive _plane;
         private GeometricPrimitive _cube;
+        private GeometricPrimitive _sphere;
+        private GeometricPrimitive _littleSphere;
+        private bool _drawGizmoLight;
 
         public Vector3 StaticPosition { get; set; } = Vector3.Zero;
         public Vector3 StaticRotation { get; set; } = Vector3.Zero;
@@ -109,8 +127,11 @@ namespace WadTool.Controls
 
             _spriteBatch = new SpriteBatch(_device);
             _gizmo = new GizmoStaticEditor(_tool.Configuration, _device, _deviceManager.Effects["Solid"], this);
+            _gizmoLight = new GizmoStaticEditorLight(_tool.Configuration, _device, _deviceManager.Effects["Solid"], this);
             _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
             _cube = GeometricPrimitive.LinesCube.New(_device, 1024.0f, 1024.0f, 1024.0f);
+            _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * 128.0f, 8);
+            _sphere = GeometricPrimitive.Sphere.New(_device, 1024.0f, 6);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -247,10 +268,52 @@ namespace WadTool.Controls
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
+            if (DrawLights)
+            {
+                _device.SetRasterizerState(_rasterizerWireframe);
+
+                foreach (var light in Static.Lights)
+                {
+                    // Draw the little sphere
+                    _device.SetVertexBuffer(0, _littleSphere.VertexBuffer);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
+                    _device.SetIndexBuffer(_littleSphere.IndexBuffer, false);
+
+                    var world = Matrix4x4.CreateTranslation(light.Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
+                    solidEffect.Techniques[0].Passes[0].Apply();
+
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+
+                    if (SelectedLight == light)
+                    {
+                        _device.SetVertexBuffer(0, _sphere.VertexBuffer);
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
+                        _device.SetIndexBuffer(_sphere.IndexBuffer, false);
+
+                        world = Matrix4x4.CreateScale(light.Radius * 2.0f) * Matrix4x4.CreateTranslation(light.Position);
+                        solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                        solidEffect.Techniques[0].Passes[0].Apply();
+
+                        _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+                    }
+                }
+
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+            }
+
             if (DrawGizmo)
             {
                 // Draw the gizmo
                 _gizmo.Draw(viewProjection);
+            }
+
+            if (SelectedLight != null)
+            {
+                // Draw the gizmo of selected light
+                _gizmoLight.Draw(viewProjection);
             }
 
             // Draw debug strings
@@ -305,23 +368,105 @@ namespace WadTool.Controls
                 Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height));
         }
 
+        private void PlaceLight(int x, int y)
+        {
+            // Get the intersection point between ray and the horizontal plane
+            var ray = GetRay(x, y);
+            var plane = new Plane(Vector3.UnitY, 0.0f);
+            var point = Vector3.Zero;
+            Collision.RayIntersectsPlane(ray, plane, out point);
+
+            // Add the light at the intersection point
+            var light = new WadLight(point, 1.0f, 0.5f);
+            Static.Lights.Add(light);
+
+            _tool.StaticLightsChanged();
+
+            Action = StaticEditorAction.Normal;
+            Invalidate();
+        }
+
+        private void DeleteLight(WadLight light)
+        {
+            if (DarkMessageBox.Show(Parent,"Do you really want to delete this light?","Confirm delete",
+                                    MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                Static.Lights.Remove(light);
+                SelectedLight = null;
+                _tool.StaticLightsChanged();
+            }
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
 
             if (e.Button == MouseButtons.Left)
             {
-                if (DrawGizmo)
+                if (Action != StaticEditorAction.PlaceLight)
                 {
-                    var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
-                    if (result != null)
-                        _gizmo.ActivateGizmo(result);
-                    return;
+                    if (DrawGizmo)
+                    {
+                        var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
+                        if (result != null)
+                        {
+                            _gizmo.ActivateGizmo(result);
+                            Invalidate();
+                            return;
+                        }
+                    }
+
+                    if (SelectedLight != null)
+                    {
+                        var result = _gizmoLight.DoPicking(GetRay(e.X, e.Y));
+                        if (result != null)
+                        {
+                            _gizmoLight.ActivateGizmo(result);
+                            Invalidate();
+                            return;
+                        }
+                    }
+
+                    // Try to pick lights
+                    float minDistance = float.MaxValue;
+                    SelectedLight = null;
+                    foreach (var light in Static.Lights)
+                    {
+                        float distance = 0;
+                        if (Collision.RayIntersectsSphere(GetRay(e.X, e.Y), new BoundingSphere(light.Position, 128.0f), 
+                                                          out distance))
+                        {
+                            if (distance <= minDistance)
+                                minDistance = distance;
+                            SelectedLight = light;
+                        }
+                    }
+
+                    _tool.StaticSelectedLightChanged();
+
+                    if (SelectedLight != null)
+                        Invalidate();
+                }
+                else
+                {
+                    PlaceLight(e.X, e.Y);
                 }
             }
 
+            Invalidate();
+
             _lastX = e.X;
             _lastY = e.Y;
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (e.KeyCode == Keys.Escape)
+                Action = StaticEditorAction.Normal;
+            else if (e.KeyCode == Keys.Delete && SelectedLight != null)
+                DeleteLight(SelectedLight);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -332,6 +477,16 @@ namespace WadTool.Controls
                 Invalidate();
             if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), e.X, e.Y))
                 Invalidate();
+
+            if (_gizmoLight.GizmoUpdateHoverEffect(_gizmoLight.DoPicking(GetRay(e.X, e.Y))))
+                Invalidate();
+            if (_gizmoLight.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), e.X, e.Y))
+                Invalidate();
+
+            if (Action == StaticEditorAction.Normal)
+                Cursor = Cursors.Default;
+            else
+                Cursor = Cursors.Cross;
 
             if (e.Button == MouseButtons.Right)
             {
@@ -359,6 +514,43 @@ namespace WadTool.Controls
 
             if (_gizmo.MouseUp())
                 Invalidate();
+
+            if (_gizmoLight.MouseUp())
+                Invalidate();
+        }
+
+        public void UpdateLights()
+        {
+            Static.Mesh.VerticesShades.Clear();
+
+            for (int i = 0; i < Static.Mesh.VerticesPositions.Count; i++)
+            {
+                float newShade = Static.AmbientLight / 255.0f;
+                foreach (var light in Static.Lights)
+                {
+                    // Get the light direction vector
+                    var lightDirection = light.Position - Static.Mesh.VerticesPositions[i];
+                    if (lightDirection.Length() > light.Radius * 1024)
+                        continue;
+
+                    var l = lightDirection / lightDirection.Length();
+
+                    // Get the normal
+                    var n = Static.Mesh.VerticesNormals[i] / Static.Mesh.VerticesNormals[i].Length();
+
+                    // Calculate cosine
+                    float dot = Vector3.Dot(n, l);
+                    if (dot <= 0)
+                        continue;
+
+                    newShade += dot * light.Intensity * (1.0f - (light.Position - Static.Mesh.VerticesPositions[i]).Length() /
+                                (light.Radius * 1024.0f));
+                }
+
+                Static.Mesh.VerticesShades.Add((short)((255.0f - newShade * 255.0f) * 8191 / 255));
+            }
+
+            _tool.StaticLightsChanged();
         }
     }
 }

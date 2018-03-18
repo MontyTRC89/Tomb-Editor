@@ -350,11 +350,12 @@ namespace TombLib.Wad
                         var s = staticMesh.Value;
 
                         LEB128.Write(chunkIO.Raw, s.Id.TypeId);
-                        //LEB128.Write(chunkIO.Raw, meshTable.IndexOf(s.Mesh));
                         LEB128.Write(chunkIO.Raw, s.Flags);
                         LEB128.Write(chunkIO.Raw, (short)s.LightingType);
 
                         WriteMesh(chunkIO, s.Mesh, textureTable);
+
+                        chunkIO.WriteChunkInt(Wad2Chunks.StaticAmbientLight, s.AmbientLight);
 
                         foreach (var light in s.Lights)
                         {

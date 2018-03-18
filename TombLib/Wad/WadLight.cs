@@ -16,7 +16,7 @@ namespace TombLib.Wad
         public WadLight()
         {
             Position = Vector3.Zero;
-            Radius = 1024.0f;
+            Radius = 1.0f;
             Intensity = 0.5f;
         }
 
