@@ -201,6 +201,10 @@ namespace TombLib.Wad.TrLevels
                 mesh.Polys.Add(poly);
             }
 
+            // Usually only for static meshes
+            if (mesh.VerticesNormals.Count == 0)
+                mesh.RecalculateNormals();
+
             return mesh;
         }
 

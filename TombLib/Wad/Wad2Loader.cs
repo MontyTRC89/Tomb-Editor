@@ -697,9 +697,9 @@ namespace TombLib.Wad
                         s.CollisionBox = new BoundingBox(min, max);
                     }
                     else if (id2 == Wad2Chunks.Mesh)
-                    {
                         s.Mesh = LoadMesh(chunkIO, chunkSize2, textures);
-                    }
+                    else if (id2 == Wad2Chunks.StaticAmbientLight)
+                        s.AmbientLight = chunkIO.ReadChunkShort(chunkSize2);
                     else if (id2 == Wad2Chunks.StaticLight)
                     {
                         var light = new WadLight();

@@ -147,6 +147,7 @@
       <DependentUpon>FormStaticEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="GizmoStaticEditor.cs" />
+    <Compile Include="GizmoStaticEditorLight.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

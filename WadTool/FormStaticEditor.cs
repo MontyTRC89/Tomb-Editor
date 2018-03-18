@@ -1,4 +1,5 @@
 ﻿using DarkUI.Forms;
+using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -6,6 +7,7 @@ using System.Windows.Forms;
 using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
+using WadTool.Controls;
 
 namespace WadTool
 {
@@ -15,12 +17,20 @@ namespace WadTool
 
         private readonly Wad2 _wad;
         private readonly WadStatic _workingStatic;
+        private readonly WadToolClass _tool;
+        private readonly GraphicsDevice _device;
+        private bool _doChangesInLighting = false;
 
         public FormStaticEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadStatic @static)
         {
+            _doChangesInLighting = false;
+
             InitializeComponent();
 
             _wad = wad;
+            _tool = tool;
+            _device = deviceManager.Device;
+
             Static = @static;
 
             _workingStatic = @static.Clone();
@@ -29,8 +39,29 @@ namespace WadTool
             panelRendering.Static = _workingStatic;
             panelRendering.DrawGrid = true;
             panelRendering.DrawGizmo = true;
+            panelRendering.DrawLights = true;
             UpdateVisibilityBoxUI();
             UpdateCollisionBoxUI();
+            UpdateLightsList();
+
+            numAmbient.Value = (decimal)_workingStatic.AmbientLight;
+
+            _tool.EditorEventRaised += Tool_EditorEventRaised;
+
+            _doChangesInLighting = true;
+        }
+
+        private void Tool_EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is WadToolClass.StaticSelectedLightChangedEvent)
+                UpdateLightUI();
+            else if (obj is WadToolClass.StaticLightsChangedEvent)
+            {
+                UpdateLightsList();
+                UpdateLightUI();
+                UpdateDirectXModel(_workingStatic);
+                panelRendering.Invalidate();
+            }
         }
 
         private void butSaveChanges_Click(object sender, EventArgs e)
@@ -50,38 +81,33 @@ namespace WadTool
                     var normal = MathC.HomogenousTransform(_workingStatic.Mesh.VerticesNormals[i], transform);
                     _workingStatic.Mesh.VerticesNormals[i] = new Vector3(normal.X, normal.Y, normal.Z);
                 }
+            }
 
-                // Now check in Wad2 for already existing mesh
-                var movebles = new List<WadMoveable>();
-                var statics = new List<WadStatic>();
+            // Assign the edited mesh to original static mesh
+            _wad.Statics.Remove(_workingStatic.Id);
+            _wad.Statics.Add(_workingStatic.Id, _workingStatic);
 
-                foreach (var moveable in _wad.Moveables)
-                {
-                    foreach (var moveableMesh in moveable.Value.Meshes)
-                    {
-                        if (moveableMesh.Hash == Static.Mesh.Hash)
-                        {
-                            movebles.Add(moveable.Value);
-                        }
-                    }
-                }
+            UpdateDirectXModel(_workingStatic);
 
-                foreach (var @static in _wad.Statics)
-                {
-                    if (@static.Value.Id != Static.Id &&
-                        @static.Value.Mesh.Hash == Static.Mesh.Hash)
-                    {
-                        statics.Add(@static.Value);
-                    }
-                }
+            DialogResult = DialogResult.OK;
+            Close();
+        }
 
-                // Assign the edited mesh to original static mesh
-                _wad.Statics.Remove(_workingStatic.Id);
-                _wad.Statics.Add(_workingStatic.Id, _workingStatic);
-                _wad.PrepareDataForDirectX();
+        private void UpdateDirectXModel(WadStatic s)
+        {
+            _wad.DirectXStatics[Static.Id].Dispose();
+            _wad.DirectXStatics.Remove(Static.Id);
+            _wad.DirectXStatics.Add(Static.Id, StaticModel.FromWad2(_device, _wad, s, _wad.PackedTextures));
+        }
 
-                DialogResult = DialogResult.OK;
-                Close();
+        private void UpdateLightsList()
+        {
+            lstLights.Nodes.Clear();
+            foreach (var light in _workingStatic.Lights)
+            {
+                var node = new DarkUI.Controls.DarkTreeNode("Light #" + _workingStatic.Lights.IndexOf(light));
+                node.Tag = light;
+                lstLights.Nodes.Add(node);
             }
         }
 
@@ -146,16 +172,89 @@ namespace WadTool
         private void butResetTranslation_Click(object sender, EventArgs e)
         {
             panelRendering.StaticPosition = Vector3.Zero;
+            panelRendering.Invalidate();
         }
 
         private void butResetRotation_Click(object sender, EventArgs e)
         {
             panelRendering.StaticRotation = Vector3.Zero;
+            panelRendering.Invalidate();
         }
 
         private void butResetScale_Click(object sender, EventArgs e)
         {
             panelRendering.StaticScale = 1.0f;
+            panelRendering.Invalidate();
+        }
+
+        private void butAddLight_Click(object sender, EventArgs e)
+        {
+            panelRendering.Action = PanelRenderingStaticEditor.StaticEditorAction.PlaceLight;
+        }
+
+        public void UpdateLightUI()
+        {
+            if (panelRendering.SelectedLight != null)
+            {
+                numIntensity.Enabled = true;
+                numIntensity.Value = (decimal)panelRendering.SelectedLight?.Intensity;
+                numRadius.Enabled = true;
+                numRadius.Value = (decimal)panelRendering.SelectedLight?.Radius;
+            }
+            else
+            {
+                numIntensity.Enabled = false;
+                numRadius.Enabled = false;
+            }
+        }
+
+        private void numIntensity_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_doChangesInLighting)
+                return;
+
+            panelRendering.SelectedLight.Intensity = (float)numIntensity.Value;
+            panelRendering.UpdateLights();
+        }
+
+        private void numInnerRange_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_doChangesInLighting)
+                return;
+
+            panelRendering.SelectedLight.Radius = (float)numRadius.Value;
+            panelRendering.UpdateLights();
+        }
+
+        private void numAmbient_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_doChangesInLighting)
+                return;
+
+            _workingStatic.AmbientLight = (short)numAmbient.Value;
+            panelRendering.UpdateLights();
+        }
+
+        private void cbDrawLights_CheckedChanged(object sender, EventArgs e)
+        {
+            panelRendering.DrawLights = cbDrawLights.Checked;
+            panelRendering.Invalidate();
+        }
+
+        private void FormStaticEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (DialogResult != DialogResult.OK)
+                UpdateDirectXModel(Static);
+        }
+
+        private void lstLights_Click(object sender, EventArgs e)
+        {
+            if (lstLights.SelectedNodes.Count == 0)
+                return;
+
+            var node = lstLights.SelectedNodes[0];
+            panelRendering.SelectedLight = (WadLight)node.Tag;
+            panelRendering.Invalidate();
         }
     }
 }

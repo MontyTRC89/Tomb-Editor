@@ -118,8 +118,7 @@ namespace WadTool
         {
             RaiseEvent(new SourceWadChangedEvent());
         }
-
-
+        
         // Selection
         public class MainSelectionChangedEvent : IWadChangedEvent
         { }
@@ -138,9 +137,19 @@ namespace WadTool
             }
         }
 
+        public class StaticSelectedLightChangedEvent : IEditorEvent
+        { }
+        public void StaticSelectedLightChanged()
+        {
+            RaiseEvent(new StaticSelectedLightChangedEvent());
+        }
 
-
-
+        public class StaticLightsChangedEvent : IEditorEvent
+        { }
+        public void StaticLightsChanged()
+        {
+            RaiseEvent(new StaticLightsChangedEvent());
+        }
 
         // Construction and destruction
         public WadToolClass(Configuration configuration)
