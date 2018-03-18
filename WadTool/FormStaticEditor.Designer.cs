@@ -76,6 +76,7 @@
             this.cbDrawLights = new DarkUI.Controls.DarkCheckBox();
             this.lstLights = new DarkUI.Controls.DarkTreeView();
             this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
+            this.butImportMeshFromFile = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.numRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAmbient)).BeginInit();
@@ -642,11 +643,24 @@
             this.panelRendering.StaticScale = 1F;
             this.panelRendering.TabIndex = 1;
             // 
+            // butImportMeshFromFile
+            // 
+            this.butImportMeshFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butImportMeshFromFile.Image = global::WadTool.Properties.Resources.opened_folder_16;
+            this.butImportMeshFromFile.Location = new System.Drawing.Point(766, 585);
+            this.butImportMeshFromFile.Name = "butImportMeshFromFile";
+            this.butImportMeshFromFile.Size = new System.Drawing.Size(230, 23);
+            this.butImportMeshFromFile.TabIndex = 98;
+            this.butImportMeshFromFile.Text = "Import mesh from file";
+            this.butImportMeshFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butImportMeshFromFile.Click += new System.EventHandler(this.butImportMeshFromFile_Click);
+            // 
             // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.butImportMeshFromFile);
             this.Controls.Add(this.lstLights);
             this.Controls.Add(this.cbDrawLights);
             this.Controls.Add(this.numAmbient);
@@ -761,5 +775,6 @@
         private DarkUI.Controls.DarkLabel darkLabel17;
         private DarkUI.Controls.DarkCheckBox cbDrawLights;
         private DarkUI.Controls.DarkTreeView lstLights;
+        private DarkUI.Controls.DarkButton butImportMeshFromFile;
     }
 }
