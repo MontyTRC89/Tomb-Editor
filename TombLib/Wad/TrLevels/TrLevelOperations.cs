@@ -700,13 +700,6 @@ namespace TombLib.Wad.TrLevels
                     newAnimation.KeyFrames.Add(frame);
                 }
 
-                // TODO: check if this hack work well
-                // In original WADs animations with no keyframes had some random FrameEnd values
-                if (newAnimation.KeyFrames.Count == 0)
-                {
-                    newAnimation.FrameEnd = oldAnimation.FrameStart;
-                }
-
                 frameBases.Add(newAnimation, oldAnimation.FrameStart);
 
                 newMoveable.Animations.Add(newAnimation);
