@@ -257,6 +257,8 @@ namespace TombLib.LevelData.IO
                                 long flag = chunkIO.ReadChunkLong(chunkSize3);
                                 importedGeometryInfo.FlipUV_V = (flag & 4) != 0;
                             }
+                            else if (id3 == Prj2Chunks.ImportedGeometryInvertFaces)
+                                importedGeometryInfo.InvertFaces = chunkIO.ReadChunkBool(chunkSize3);
                             else
                                 return false;
                             return true;
