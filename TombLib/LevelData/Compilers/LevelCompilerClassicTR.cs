@@ -147,12 +147,16 @@ namespace TombLib.LevelData.Compilers
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var instance in _soundSourcesTable.Keys)
             {
-                WadSoundInfo soundInfo = _level.Wad.TryGetSound(instance.SoundName);
+                if (instance.IsEmpty)
+                    continue;
+
+                WadSoundInfo soundInfo = instance.GetSoundInfo(_level);
                 if (soundInfo == null)
                 {
-                    _progressReporter.ReportWarn("Sound '" + instance.SoundName + "' for sound source in room '" + instance.Room + "' at '" + instance.Position + "' is missing.");
+                    _progressReporter.ReportWarn("Sound (" + instance.SoundNameToDisplay + ") for sound source in room '" + instance.Room + "' at '" + instance.Position + "' is missing.");
                     continue;
                 }
+
                 Vector3 position = instance.Room.WorldPos + instance.Position;
                 _soundSources.Add(new tr_sound_source
                 {

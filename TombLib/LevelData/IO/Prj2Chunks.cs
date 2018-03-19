@@ -84,6 +84,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectSink = ChunkId.FromString("TeSin");
         /**********/public static readonly ChunkId ObjectSoundSource = ChunkId.FromString("TeSou");
         /**********/public static readonly ChunkId ObjectSoundSource2 = ChunkId.FromString("TeSou2");
+        /**********/public static readonly ChunkId ObjectSoundSource3 = ChunkId.FromString("TeSou3");
         /**********/public static readonly ChunkId ObjectImportedGeometry = ChunkId.FromString("TeImp");
         /**********/public static readonly ChunkId ObjectLight = ChunkId.FromString("TeLig");
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
@@ -96,5 +97,6 @@ namespace TombLib.LevelData.IO
         /************/public static readonly ChunkId ObjectTrigger2Extra = ChunkId.FromString("TeEx");
         /************/public static readonly ChunkId ObjectTrigger2CodeBits = ChunkId.FromString("TeCo");
         /************/public static readonly ChunkId ObjectTrigger2OneShot = ChunkId.FromString("TeOS");
+        public static readonly ChunkId EmbeddedSoundInfoWad = ChunkId.FromString("TeEmbeddedSoundInfoWad");
     }
 }

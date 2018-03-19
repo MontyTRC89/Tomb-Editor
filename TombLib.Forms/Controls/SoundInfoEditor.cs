@@ -346,6 +346,17 @@ namespace TombLib.Controls
             }
         }
 
+        [DefaultValue(true)]
+        public bool HasName
+        {
+            get { return tbName.Visible; }
+            set
+            {
+                tbName.Visible = value;
+                tbNameLabel.Visible = value;
+            }
+        }
+
         protected void OnSoundInfoChanged(object sender, EventArgs e)
         {
             if (!_soundInfoCurrentlyChanging)
@@ -382,6 +393,8 @@ namespace TombLib.Controls
                     // Update control
                     if (value.Data.Samples.Count > 0)
                         TargetSampleRate = value.Data.Samples[0].SampleRate;
+                    else
+                        TargetSampleRate = WadSample.GameSupportedSampleRate;
 
                     tbName.Text = value.Name;
                     numericVolume.Value = Math.Min(numericVolume.Maximum, Math.Max(numericVolume.Minimum, 100m * (decimal)value.Data.Volume));

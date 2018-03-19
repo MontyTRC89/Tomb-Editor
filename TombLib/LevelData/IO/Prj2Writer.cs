@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.LevelData.IO
 {
@@ -44,9 +46,10 @@ namespace TombLib.LevelData.IO
 
                 // Write settings
                 LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
+                Dictionary<WadSoundInfo, int> soundInfos = WriteEmbeddedSoundInfoWad(chunkIO, rooms.Keys.SelectMany(room => room.Objects));
 
                 // Write rooms
-                WriteRooms(chunkIO, rooms, levelSettingIds);
+                WriteRooms(chunkIO, rooms, levelSettingIds, soundInfos);
 
                 chunkIO.WriteChunkEnd();
             }
@@ -67,9 +70,10 @@ namespace TombLib.LevelData.IO
                 foreach (ObjectInstance instance in objects)
                     instance.CopyDependentLevelSettings(copyInstance);
                 LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
+                Dictionary<WadSoundInfo, int> soundInfos = WriteEmbeddedSoundInfoWad(chunkIO, objects);
 
                 // Write objects
-                WriteObjects(chunkIO, objects, new Dictionary<Room, int>(), levelSettingIds, objectInstanceLookup);
+                WriteObjects(chunkIO, objects, new Dictionary<Room, int>(), levelSettingIds, objectInstanceLookup, soundInfos);
 
                 chunkIO.WriteChunkEnd();
             }
@@ -183,7 +187,39 @@ namespace TombLib.LevelData.IO
             return levelSettingIds;
         }
 
-        private static void WriteRooms(ChunkWriter chunkIO, Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds)
+        private static Dictionary<WadSoundInfo, int> WriteEmbeddedSoundInfoWad(ChunkWriter chunkIO, IEnumerable<ObjectInstance> objects)
+        {
+            // Collect embedded sound infos
+            var soundInfoList = new List<WadSoundInfo>();
+            var SoundInfos = new Dictionary<WadSoundInfo, int>();
+            foreach (SoundSourceInstance soundSource in objects.OfType<SoundSourceInstance>())
+                if (soundSource.EmbeddedSoundInfo != null)
+                    if (!SoundInfos.ContainsKey(soundSource.EmbeddedSoundInfo))
+                    {
+                        SoundInfos.Add(soundSource.EmbeddedSoundInfo, soundInfoList.Count);
+                        soundInfoList.Add(soundSource.EmbeddedSoundInfo);
+                    }
+
+            // Write embedded sound info wad
+            if (soundInfoList.Count > 0)
+            {
+                Wad2 tempEmbeddedWad = new Wad2();
+                for (int i = 0; i < soundInfoList.Count; ++i)
+                {
+                    var id = new WadFixedSoundInfoId((uint)i);
+                    tempEmbeddedWad.FixedSoundInfos.Add(id, new WadFixedSoundInfo(id) { SoundInfo = soundInfoList[i] });
+                }
+                chunkIO.WriteChunk(Prj2Chunks.EmbeddedSoundInfoWad, () =>
+                {
+                    Wad2Writer.SaveToStream(tempEmbeddedWad, chunkIO.Stream);
+                }, long.MaxValue);
+            }
+
+            return SoundInfos;
+        }
+
+
+        private static void WriteRooms(ChunkWriter chunkIO, Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds, Dictionary<WadSoundInfo, int> soundInfos)
         {
             // Allocate object indices
             var objectInstanceLookup = new Dictionary<ObjectInstance, int>();
@@ -288,13 +324,14 @@ namespace TombLib.LevelData.IO
                             }, LEB128.MaximumSize1Byte);
 
                         // Write room objects
-                        WriteObjects(chunkIO, room.AnyObjects, rooms, levelSettingIds, objectInstanceLookup);
+                        WriteObjects(chunkIO, room.AnyObjects, rooms, levelSettingIds, objectInstanceLookup, soundInfos);
                     }, long.MaxValue);
             }, long.MaxValue);
         }
 
         private static void WriteObjects(ChunkWriter chunkIO, IEnumerable<ObjectInstance> objects,
-            Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds, Dictionary<ObjectInstance, int> objectInstanceLookup)
+            Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds,
+            Dictionary<ObjectInstance, int> objectInstanceLookup, Dictionary<WadSoundInfo, int> soundInfos)
         {
             chunkIO.WriteChunkWithChildren(Prj2Chunks.Objects, () =>
             {
@@ -362,14 +399,13 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Strength);
                         });
                     else if (o is SoundSourceInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource2, () =>
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource3, () =>
                         {
                             var instance = (SoundSourceInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.Write(instance.SoundName);
-                            chunkIO.Raw.Write(instance.Flags);
-                            chunkIO.Raw.Write(instance.CodeBits);
+                            chunkIO.Raw.WriteStringUTF8(instance.WadReferencedSoundName ?? "");
+                            LEB128.Write(chunkIO.Raw, instance.EmbeddedSoundInfo == null ? -1 : soundInfos[instance.EmbeddedSoundInfo]);
                         });
                     else if (o is LightInstance)
                         chunkIO.WriteChunk(Prj2Chunks.ObjectLight, () =>
