@@ -15,6 +15,7 @@ namespace WadTool
                 comboGameVersion.Items.Add(version);
 
             comboGameVersion.SelectedItem = WadGameVersion.TR4_TRNG;
+            ActiveControl = butCreate;
         }
 
         private void butCancel_Click(object sender, EventArgs e)
