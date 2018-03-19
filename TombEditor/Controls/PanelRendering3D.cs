@@ -1672,7 +1672,7 @@ namespace TombEditor.Controls
                 {
                     var geometry = (ImportedGeometryInstance)instance;
 
-                    if (geometry?.Model?.DirectXModel?.Meshes?.ElementAt(0) != null)
+                    if (geometry?.Model?.DirectXModel?.Meshes?.FirstOrDefault() != null)
                         foreach (ImportedGeometryMesh mesh in geometry.Model.DirectXModel.Meshes)
                             DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
                     else
