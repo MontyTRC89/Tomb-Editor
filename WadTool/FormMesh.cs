@@ -14,6 +14,22 @@ namespace WadTool
 {
     public partial class FormMesh : DarkUI.Forms.DarkForm
     {
+        private class MeshTreeNode
+        {
+            public WadMesh WadMesh { get; set; }
+            public ObjectMesh DirectXMesh { get; set; }
+            public IWadObjectId ObjectId { get; set; }
+
+            public MeshTreeNode(IWadObjectId obj, WadMesh wadMesh, ObjectMesh dxMesh)
+            {
+                ObjectId = obj;
+                WadMesh = wadMesh;
+                DirectXMesh = dxMesh;
+            }
+        }
+
+        public WadMesh SelectedMesh { get; set; }
+
         private Wad2 _wad;
         private DeviceManager _deviceManager;
         private WadToolClass _tool;
@@ -28,22 +44,64 @@ namespace WadTool
 
             panelMesh.InitializePanel(_tool, _deviceManager);
 
-            foreach (var mesh in _wad.MeshesUnique)
+            var moveablesNode = new DarkUI.Controls.DarkTreeNode("Moveables");
+            foreach (var moveable in _wad.Moveables)
             {
-                var node = new DarkUI.Controls.DarkTreeNode(mesh.Name);
-                node.Tag = mesh;
-                lstMeshes.Nodes.Add(node);
+                var list = new List<DarkUI.Controls.DarkTreeNode>();
+                var moveableNode = new DarkUI.Controls.DarkTreeNode(moveable.Key.ToString(_wad.SuggestedGameVersion));
+                for (int i = 0; i < moveable.Value.Meshes.Count(); i++)
+                {
+                    var wadMesh = moveable.Value.Meshes.ElementAt(i);
+                    var dxMesh = _wad.DirectXMoveables[moveable.Key].Meshes[i];
+                    var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
+                    node.Tag = new MeshTreeNode(moveable.Key, wadMesh, dxMesh);
+                    list.Add(node);
+                }
+                moveableNode.Nodes.AddRange(list);
+                moveablesNode.Nodes.Add(moveableNode);
             }
+            lstMeshes.Nodes.Add(moveablesNode);
+
+            var staticsNode = new DarkUI.Controls.DarkTreeNode("Statics");
+            foreach (var @static in _wad.Statics)
+            {
+                var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.SuggestedGameVersion));
+                var wadMesh = @static.Value.Mesh;
+                var dxMesh = _wad.DirectXStatics[@static.Key].Meshes[0];
+                var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
+                node.Tag = new MeshTreeNode(@static.Key, wadMesh, dxMesh);
+                staticNode.Nodes.Add(node);
+                staticsNode.Nodes.Add(staticNode);
+            }
+            lstMeshes.Nodes.Add(staticsNode);
         }
 
         private void lstMeshes_Click(object sender, EventArgs e)
         {
             // Update big image view
-            if (lstMeshes.SelectedNodes.Count <= 0)
+            if (lstMeshes.SelectedNodes.Count <= 0 || lstMeshes.SelectedNodes[0].Tag == null)
                 return;
 
-            panelMesh.Mesh = ((WadMesh)lstMeshes.SelectedNodes[0].Tag);
+            panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).DirectXMesh;
             panelMesh.Invalidate();
+        }
+
+        private void btCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void btOk_Click(object sender, EventArgs e)
+        {
+            // Update big image view
+            if (lstMeshes.SelectedNodes.Count <= 0 || lstMeshes.SelectedNodes[0].Tag == null)
+                return;
+
+            SelectedMesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
+
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

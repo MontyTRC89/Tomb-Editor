@@ -613,7 +613,7 @@
             this.cbDrawLights.AutoSize = true;
             this.cbDrawLights.Checked = true;
             this.cbDrawLights.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawLights.Location = new System.Drawing.Point(768, 626);
+            this.cbDrawLights.Location = new System.Drawing.Point(766, 626);
             this.cbDrawLights.Name = "cbDrawLights";
             this.cbDrawLights.Size = new System.Drawing.Size(85, 17);
             this.cbDrawLights.TabIndex = 96;
