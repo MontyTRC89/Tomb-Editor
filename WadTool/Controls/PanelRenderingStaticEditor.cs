@@ -66,7 +66,6 @@ namespace WadTool.Controls
         private GeometricPrimitive _cube;
         private GeometricPrimitive _sphere;
         private GeometricPrimitive _littleSphere;
-        private bool _drawGizmoLight;
 
         public Vector3 StaticPosition { get; set; } = Vector3.Zero;
         public Vector3 StaticRotation { get; set; } = Vector3.Zero;

@@ -15,9 +15,11 @@ namespace WadTool.Controls
     public class PanelRenderingMesh : Panel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WadMesh Mesh { get; set; }
+        public ObjectMesh Mesh { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawGrid { get; set; }
 
         private GraphicsDevice _device;
         private DeviceManager _deviceManager;
@@ -28,6 +30,7 @@ namespace WadTool.Controls
         private float _lastX;
         private float _lastY;
         private SpriteBatch _spriteBatch;
+        private GeometricPrimitive _plane;
 
         public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
         {
@@ -52,7 +55,7 @@ namespace WadTool.Controls
 
             _presenter = new SwapChainGraphicsPresenter(_device, pp);
 
-            Camera = new ArcBallCamera(new Vector3(0.0f, 0.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 0, 1000000, (float)Math.PI / 4.0f);
+            Camera = new ArcBallCamera(new Vector3(0.0f, 512.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 0, 1000000, (float)Math.PI / 4.0f);
 
             // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
             new BasicEffect(_device);
@@ -75,7 +78,10 @@ namespace WadTool.Controls
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
 
+            _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
             _spriteBatch = new SpriteBatch(_device);
+
+            DrawGrid = true;
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -110,7 +116,7 @@ namespace WadTool.Controls
 
             if (Mesh != null)
             {
-                var mesh = _tool.DestinationWad.DirectXMeshes[Mesh];
+                var mesh = Mesh;
                 var effect = _deviceManager.Effects["StaticModel"];
                 var world = Matrix4x4.Identity;
 
@@ -129,6 +135,20 @@ namespace WadTool.Controls
 
                 foreach (var submesh in mesh.Submeshes)
                     _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+            }
+
+            if (DrawGrid)
+            {
+                // Draw the grid
+                _device.SetVertexBuffer(0, _plane.VertexBuffer);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
+                _device.SetIndexBuffer(_plane.IndexBuffer, true);
+
+                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                solidEffect.Techniques[0].Passes[0].Apply();
+
+                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
             _device.Present();

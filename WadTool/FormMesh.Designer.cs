@@ -30,7 +30,8 @@
         {
             this.lstMeshes = new DarkUI.Controls.DarkTreeView();
             this.panelMesh = new WadTool.Controls.PanelRenderingMesh();
-            this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
+            this.btCancel = new DarkUI.Controls.DarkButton();
+            this.btOk = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
             // 
             // lstMeshes
@@ -41,7 +42,7 @@
             this.lstMeshes.Location = new System.Drawing.Point(13, 13);
             this.lstMeshes.MaxDragChange = 20;
             this.lstMeshes.Name = "lstMeshes";
-            this.lstMeshes.Size = new System.Drawing.Size(261, 504);
+            this.lstMeshes.Size = new System.Drawing.Size(320, 504);
             this.lstMeshes.TabIndex = 1;
             this.lstMeshes.Text = "darkTreeView1";
             this.lstMeshes.Click += new System.EventHandler(this.lstMeshes_Click);
@@ -51,31 +52,39 @@
             this.panelMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelMesh.Location = new System.Drawing.Point(280, 44);
+            this.panelMesh.Location = new System.Drawing.Point(339, 13);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(532, 473);
+            this.panelMesh.Size = new System.Drawing.Size(473, 504);
             this.panelMesh.TabIndex = 0;
             // 
-            // darkToolStrip1
+            // btCancel
             // 
-            this.darkToolStrip1.AutoSize = false;
-            this.darkToolStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkToolStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkToolStrip1.Location = new System.Drawing.Point(280, 13);
-            this.darkToolStrip1.Name = "darkToolStrip1";
-            this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(532, 28);
-            this.darkToolStrip1.TabIndex = 2;
-            this.darkToolStrip1.Text = "darkToolStrip1";
+            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btCancel.Location = new System.Drawing.Point(580, 537);
+            this.btCancel.Name = "btCancel";
+            this.btCancel.Size = new System.Drawing.Size(113, 26);
+            this.btCancel.TabIndex = 52;
+            this.btCancel.Text = "Cancel";
+            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
+            // 
+            // btOk
+            // 
+            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btOk.Location = new System.Drawing.Point(699, 537);
+            this.btOk.Name = "btOk";
+            this.btOk.Size = new System.Drawing.Size(113, 26);
+            this.btOk.TabIndex = 53;
+            this.btOk.Text = "Ok";
+            this.btOk.Click += new System.EventHandler(this.btOk_Click);
             // 
             // FormMesh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(824, 575);
-            this.Controls.Add(this.darkToolStrip1);
+            this.Controls.Add(this.btCancel);
             this.Controls.Add(this.lstMeshes);
+            this.Controls.Add(this.btOk);
             this.Controls.Add(this.panelMesh);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "FormMesh";
@@ -89,6 +98,7 @@
 
         private Controls.PanelRenderingMesh panelMesh;
         private DarkUI.Controls.DarkTreeView lstMeshes;
-        private DarkUI.Controls.DarkToolStrip darkToolStrip1;
+        private DarkUI.Controls.DarkButton btCancel;
+        private DarkUI.Controls.DarkButton btOk;
     }
 }
