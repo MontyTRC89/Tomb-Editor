@@ -231,15 +231,15 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteBone(ChunkWriter chunkIO, WadBone bone)
+        private static void WriteBone(ChunkWriter chunkIO, WadBone bone, List<WadBone> bones)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
             {
                 chunkIO.WriteChunkString(Wad2Chunks.MoveableBoneName, bone.Name);
-                chunkIO.WriteChunkInt(Wad2Chunks.MoveableBoneMeshPointer, bone.Index);
+                chunkIO.WriteChunkInt(Wad2Chunks.MoveableBoneMeshPointer, bones.IndexOf(bone));
                 chunkIO.WriteChunkVector3(Wad2Chunks.MoveableBoneTranslation, bone.Translation);
                 foreach (var childBone in bone.Children)
-                    WriteBone(chunkIO, childBone);
+                    WriteBone(chunkIO, childBone, bones);
             });
         }
 
@@ -250,6 +250,7 @@ namespace TombLib.Wad
             {
                 foreach (var moveable in wad.Moveables)
                 {
+                    var bones = moveable.Value.Skeleton.LinearizedBones.ToList();
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveable, () =>
                     {
                         var m = moveable.Value;
@@ -260,7 +261,7 @@ namespace TombLib.Wad
                             WriteMesh(chunkIO, mesh, textureTable);
                             //chunkIO.WriteChunkInt(Wad2Chunks.MoveableMesh, meshTable.IndexOf(mesh));
 
-                        WriteBone(chunkIO, moveable.Value.Skeleton);
+                        WriteBone(chunkIO, moveable.Value.Skeleton, bones);
 
                         foreach (var animation in m.Animations)
                         {
