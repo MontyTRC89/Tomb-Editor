@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 using TombLib.Utils;
 
@@ -25,6 +27,20 @@ namespace TombLib.GeometryIO
             var relativeTexturePath = PathC.GetRelativePath(baseDirectory, texturePath);
             if (relativeTexturePath == null || relativeTexturePath == "") return texturePath;
             return relativeTexturePath;
+        }
+
+        public static BaseGeometryExporter CreateForFile(string filename, IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+        {
+            if (filename.EndsWith(".mqo", StringComparison.InvariantCultureIgnoreCase))
+                return new Exporters.Metasequoia(settings, getTexturePathCallback);
+            /*else if (filename.EndsWith(".ply", StringComparison.InvariantCultureIgnoreCase))
+                return new Exporters.Ply(settings, getTexturePathCallback);
+            else if (filename.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase))
+                return new Exporters.Obj(settings, getTexturePathCallback);
+            else if (filename.EndsWith(".dea", StringComparison.InvariantCultureIgnoreCase))
+                return new Exporters.Collada(settings, getTexturePathCallback);*/
+            else
+                throw new NotSupportedException("Unsupported file extension '" + Path.GetExtension(filename) + "'");
         }
 
         protected Vector3 ApplyAxesTransforms(Vector3 position)
@@ -75,8 +91,8 @@ namespace TombLib.GeometryIO
 
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
-            new FileFormat("Metasequoia", "mqo"),
-            /*new FileFormat("Stanford Polygon Library", "ply"),
+            new FileFormat("Metasequoia", "mqo") /*,
+            new FileFormat("Stanford Polygon Library", "ply"),
             new FileFormat("Wavefront Object", "obj"),
             new FileFormat("Collada", "dae")*/
         };

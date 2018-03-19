@@ -21,6 +21,14 @@ namespace TombLib.GeometryIO
             _getTextureCallback = getTextureCallback;
         }
 
+        public static BaseGeometryImporter CreateForFile(string filename, IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
+        {
+            if (filename.EndsWith(".mqo", StringComparison.InvariantCultureIgnoreCase))
+                return new Importers.Metasequoia(settings, getTextureCallback);
+            else
+                return new Importers.Assimp(settings, getTextureCallback);
+        }
+
         protected Texture GetTexture(string baseDirectory, string textureFilePath)
         {
             string absoluteTextureFilePath = Path.Combine(baseDirectory, textureFilePath);
@@ -65,6 +73,7 @@ namespace TombLib.GeometryIO
 
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
+            new FileFormat("Metasequoia", "mqo"),
             new FileFormat("Autodesk", "fbx"),
             new FileFormat("Collada", "dae"),
             new FileFormat("glTF", "gltf", "glb"),

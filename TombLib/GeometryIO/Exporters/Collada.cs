@@ -9,9 +9,9 @@ using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
-    public class RoomExporterCollada : BaseGeometryExporter
+     /*public class Collada : BaseGeometryExporter
     {
-        public RoomExporterCollada(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+        public Collada(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
             : base(settings, getTexturePathCallback)
         {
 
@@ -24,7 +24,7 @@ namespace TombLib.GeometryIO.Exporters
             using (var writer = new StreamWriter(filename, false))
             {
                 var roomMesh = model.Meshes[0];
-                string texturePath = GetTexturePath(path, roomMesh.Texture);
+                string texturePath = GetTexturePath(path, roomMesh.m);
                 var textureName = Path.GetFileName(texturePath).Replace(".", "_");
 
                 // Write XML header
@@ -164,11 +164,11 @@ namespace TombLib.GeometryIO.Exporters
                                  "<input semantic=\"POSITION\" source=\"#Room-mesh-positions\" />\n" +
                                  "</vertices>");
 
-                /*writer.WriteLine("<triangles material=\"" + textureName + "-material\" count=\"" + (roomMesh.NumQuads * 2 + roomMesh.NumTriangles) + "\">\n" +
-                                 "<input semantic=\"VERTEX\" source=\"#Room-mesh-vertices\" offset=\"0\" />\n" +
-                                 "<input semantic=\"TEXCOORD\" source=\"#Room-mesh-map-0\" offset=\"1\" set=\"0\" />\n" +
-                                 "<input semantic=\"COLOR\" source=\"#Room-mesh-colors-Col\" offset=\"2\" set=\"0\" />\n" +
-                                 "<p>");*/
+                //writer.WriteLine("<triangles material=\"" + textureName + "-material\" count=\"" + (roomMesh.NumQuads * 2 + roomMesh.NumTriangles) + "\">\n" +
+                //                 "<input semantic=\"VERTEX\" source=\"#Room-mesh-vertices\" offset=\"0\" />\n" +
+                //                 "<input semantic=\"TEXCOORD\" source=\"#Room-mesh-map-0\" offset=\"1\" set=\"0\" />\n" +
+                //                 "<input semantic=\"COLOR\" source=\"#Room-mesh-colors-Col\" offset=\"2\" set=\"0\" />\n" +
+                //                 "<p>");
                 writer.WriteLine("<polylist material=\"" + textureName + "-material\" count=\"" + roomMesh.Polygons.Count + "\">\n" +
                                  "<input semantic=\"VERTEX\" source=\"#Room-mesh-vertices\" offset=\"0\" />\n" +
                                  "<input semantic=\"TEXCOORD\" source=\"#Room-mesh-map-0\" offset=\"1\" set=\"0\" />\n" +
@@ -202,11 +202,11 @@ namespace TombLib.GeometryIO.Exporters
                                  "</mesh>\n" +
                                  "</geometry>\n" +
                                  "</library_geometries>");
-                /*writer.WriteLine("</p>\n" +
-                                 "</triangles>\n" +
-                                 "</mesh>\n" +
-                                 "</geometry>\n" +
-                                 "</library_geometries>");*/
+                //writer.WriteLine("</p>\n" +
+                //                 "</triangles>\n" +
+                //                 "</mesh>\n" +
+                //                 "</geometry>\n" +
+                //                 "</library_geometries>");
 
                 // Write scene
                 writer.WriteLine("<library_visual_scenes>\n" +
@@ -232,5 +232,5 @@ namespace TombLib.GeometryIO.Exporters
 
             return true;
         }
-    }
+    }*/
 }

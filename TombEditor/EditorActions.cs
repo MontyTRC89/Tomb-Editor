@@ -2560,27 +2560,10 @@ namespace TombEditor
                                     return "";
                             };
 
-                            BaseGeometryExporter exporter;
-                            switch (resultingExtension)
-                            {
-                                default:
-                                case ".mqo":
-                                    exporter = new RoomExporterMetasequoia(settingsDialog.Settings, getTextureCallback);
-                                    break;
-                                    /*case ".obj":
-                                        exporter = new RoomExporterObj(settingsDialog.Settings, getTextureCallback);
-                                        break;
-                                    case ".ply":
-                                        exporter = new RoomExporterPly(settingsDialog.Settings, getTextureCallback);
-                                        break;
-                                    case ".dae":
-                                        exporter = new RoomExporterCollada(settingsDialog.Settings, getTextureCallback);
-                                        break;*/
-                            }
+                            BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
 
                             // Prepare data for export
                             var model = new IOModel();
-
                             var texture = _editor.Level.Settings.Textures[0];
 
                             // Create various materials
@@ -2711,8 +2694,7 @@ namespace TombEditor
                             FlipY = info.FlipY,
                             FlipZ = info.FlipZ,
                             FlipUV_V = info.FlipUV_V,
-                            InvertFaces = info.InvertFaces,
-                            UseVertexColor = info.UseVertexColor,
+                            InvertFaces = info.InvertFaces
                         };
 
                         ImportedGeometry newObject = new ImportedGeometry();

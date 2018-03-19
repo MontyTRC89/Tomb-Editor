@@ -7,11 +7,11 @@ using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Importers
 {
-    public class AssimpImporter : BaseGeometryImporter
+    public class Assimp : BaseGeometryImporter
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public AssimpImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
+        public Assimp(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
             : base(settings, getTextureCallback)
         {
 
@@ -42,7 +42,7 @@ namespace TombLib.GeometryIO.Importers
 
                 // Create the new material
                 material.Texture = textures[i];
-                material.AdditiveBlending = mat.HasBlendMode && mat.BlendMode == Assimp.BlendMode.Additive;
+                material.AdditiveBlending = mat.HasBlendMode && mat.BlendMode == global::Assimp.BlendMode.Additive;
                 material.DoubleSided = mat.HasTwoSided && mat.IsTwoSided;
                 newModel.Materials.Add(material);
             }

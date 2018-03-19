@@ -9,9 +9,9 @@ using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
-    public class RoomExporterObj : BaseGeometryExporter
+    /*public class Obj : BaseGeometryExporter
     {
-        public RoomExporterObj(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+        public Obj(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
             : base(settings, getTexturePathCallback)
         {
 
@@ -50,31 +50,34 @@ namespace TombLib.GeometryIO.Exporters
                 // Save faces
                 writer.WriteLine("usemtl Room");
                 writer.WriteLine("s off");
-                foreach (var poly in mesh.Polygons)
-                {
-                    var indices = new List<int>();
-                    indices.Add(poly.Indices[0] + 1);
-                    indices.Add(poly.Indices[1] + 1);
-                    indices.Add(poly.Indices[2] + 1);
-                    if (poly.Shape == IOPolygonShape.Quad) indices.Add(poly.Indices[3] + 1);
-
-                    // Change vertex winding
-                    if (_settings.InvertFaces) indices.Reverse();
-
-                    var v1 = indices[0];
-                    var v2 = indices[1];
-                    var v3 = indices[2];
-                    var v4 = (poly.Shape == IOPolygonShape.Quad ? indices[3] : 0);
-
-                    if (poly.Shape == IOPolygonShape.Triangle)
+                foreach (var submesh in mesh.Submeshes)
+                    foreach (var poly in submesh.Value.Polygons)
                     {
-                        writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3);
+                        var indices = new List<int>();
+                        indices.Add(poly.Indices[0] + 1);
+                        indices.Add(poly.Indices[1] + 1);
+                        indices.Add(poly.Indices[2] + 1);
+                        if (poly.Shape == IOPolygonShape.Quad)
+                            indices.Add(poly.Indices[3] + 1);
+
+                        // Change vertex winding
+                        if (_settings.InvertFaces)
+                            indices.Reverse();
+
+                        var v1 = indices[0];
+                        var v2 = indices[1];
+                        var v3 = indices[2];
+                        var v4 = (poly.Shape == IOPolygonShape.Quad ? indices[3] : 0);
+
+                        if (poly.Shape == IOPolygonShape.Triangle)
+                        {
+                            writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3);
+                        }
+                        else
+                        {
+                            writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3 + " " + v4 + "/" + v4);
+                        }
                     }
-                    else
-                    {
-                        writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3 + " " + v4 + "/" + v4);
-                    }
-                }
             }
 
             using (var writer = new StreamWriter(material, false))
@@ -90,5 +93,5 @@ namespace TombLib.GeometryIO.Exporters
 
             return true;
         }
-    }
+    }*/
 }
