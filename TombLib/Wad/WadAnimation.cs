@@ -12,7 +12,6 @@ namespace TombLib.Wad
         public int LateralAcceleration { get; set; }
         public ushort NextAnimation { get; set; }
         public ushort NextFrame { get; set; }
-        public ushort FrameEnd { get; set; }
         public ushort RealNumberOfFrames { get; set; }
         public string Name { get; set; } = "Animation";
 
