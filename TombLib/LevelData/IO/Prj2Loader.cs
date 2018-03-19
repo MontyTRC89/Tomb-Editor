@@ -230,7 +230,7 @@ namespace TombLib.LevelData.IO
                             return false;
 
                         ImportedGeometry importedGeometry = new ImportedGeometry();
-                        ImportedGeometryInfo importedGeometryInfo = new ImportedGeometryInfo();
+                        ImportedGeometryInfo importedGeometryInfo = ImportedGeometryInfo.Default;
                         long importedGeometryIndex = long.MinValue;
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
@@ -572,7 +572,7 @@ namespace TombLib.LevelData.IO
 
             chunkIO.ReadChunks((id3, chunkSize3) =>
             {
-                var objectID = LEB128.ReadLong(chunkIO.Raw);
+                long objectID = LEB128.ReadLong(chunkIO.Raw);
                 if (id3 == Prj2Chunks.ObjectMovable)
                 {
                     var instance = new MoveableInstance();
@@ -772,7 +772,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectImportedGeometry)
+                else if (id3 == Prj2Chunks.ObjectImportedGeometry || id3 == Prj2Chunks.ObjectImportedGeometry2)
                 {
                     var instance = new ImportedGeometryInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -780,6 +780,8 @@ namespace TombLib.LevelData.IO
                     instance.Roll = chunkIO.Raw.ReadSingle();
                     instance.Scale = chunkIO.Raw.ReadSingle();
                     instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
+                    if (id3 != Prj2Chunks.ObjectImportedGeometry)
+                        instance.MeshFilter = chunkIO.Raw.ReadStringUTF8();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

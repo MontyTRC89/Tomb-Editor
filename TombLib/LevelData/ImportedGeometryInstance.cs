@@ -5,9 +5,8 @@ namespace TombLib.LevelData
     public class ImportedGeometryInstance : PositionBasedObjectInstance, IScaleable, IRotateableYXRoll
     {
         public ImportedGeometry Model { get; set; }
-
         public float Scale { get; set; } = 1;
-        public bool UseVertexColor { get; set; } = false;
+        public string MeshFilter { get; set; } = "";
 
         private float _roll { get; set; }
         private float _rotationX { get; set; }
@@ -70,10 +69,10 @@ namespace TombLib.LevelData
                 args.DestinationLevelSettings.ImportedGeometries.Add(Model);
             }
         }
-    }
 
-    public class ImportedRoomInstance : ImportedGeometryInstance
-    {
-        public ImportedGeometryMesh Mesh { get; set; }
+        public bool MeshNameMatchesFilter(string meshName)
+        {
+            return meshName.IndexOf(MeshFilter, StringComparison.InvariantCultureIgnoreCase) >= 0;
+        }
     }
 }

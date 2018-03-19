@@ -22,6 +22,7 @@ namespace TombEditor.Forms
             NewLevelSettings = levelSettings.Clone();
             importedGeometryManager.LevelSettings = NewLevelSettings;
             importedGeometryManager.SelectedImportedGeometry = NewLevelSettings.ImportedGeometryFromID(_currentModel);
+            tbMeshFilter.Text = instance.MeshFilter;
             UpdateCurrentModelDisplay();
         }
 
@@ -46,6 +47,7 @@ namespace TombEditor.Forms
         private void butOk_Click(object sender, EventArgs e)
         {
             _instance.Model = OldLevelSettings.ImportedGeometryFromID(_currentModel) ?? NewLevelSettings.ImportedGeometryFromID(_currentModel);
+            _instance.MeshFilter = tbMeshFilter.Text;
             DialogResult = DialogResult.OK;
             Close();
         }

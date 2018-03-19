@@ -87,6 +87,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectSoundSource2 = ChunkId.FromString("TeSou2");
         /**********/public static readonly ChunkId ObjectSoundSource3 = ChunkId.FromString("TeSou3");
         /**********/public static readonly ChunkId ObjectImportedGeometry = ChunkId.FromString("TeImp");
+        /**********/public static readonly ChunkId ObjectImportedGeometry2 = ChunkId.FromString("TeImp");
         /**********/public static readonly ChunkId ObjectLight = ChunkId.FromString("TeLig");
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
         /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri");
