@@ -15,6 +15,7 @@ using TombLib.Wad;
 
 namespace TombLib.Controls
 {
+    [DefaultEvent("SoundInfoChanged")]
     public partial class SoundInfoEditor : UserControl
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -353,6 +354,7 @@ namespace TombLib.Controls
 
         public event EventHandler SoundInfoChanged;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadSoundInfo SoundInfo
         {
             get

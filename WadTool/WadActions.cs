@@ -329,6 +329,19 @@ namespace WadTool
             tool.DestinationWadChanged();
         }
 
+        public static void ShowSoundOverview(WadToolClass tool, IWin32Window owner, WadArea wadArea)
+        {
+            Wad2 wad = tool.GetWad(wadArea);
+            if (wad == null)
+            {
+                DarkMessageBox.Show(owner, "You must have a " + wadArea.ToString().ToLower() + " wad loaded.", "Error", MessageBoxIcon.Error);
+                return;
+            }
 
+            using (FormSoundOverview form = new FormSoundOverview(wad))
+                if (form.ShowDialog(owner) != DialogResult.OK)
+                    return;
+            tool.WadChanged(wadArea);
+        }
     }
 }
