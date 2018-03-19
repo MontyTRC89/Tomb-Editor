@@ -143,11 +143,12 @@ namespace TombLib.Graphics
         public static AnimatedModel FromWad2(GraphicsDevice device, Wad2 wad, WadMoveable mov, Dictionary<WadTexture, VectorInt2> reallocatedTextures)
         {
             AnimatedModel model = new AnimatedModel(device);
+            List<WadBone> bones = mov.Skeleton.LinearizedBones.ToList();
 
             // Create meshes
-            for (int m = 0; m < mov.Meshes.Count; m++)
+            for (int m = 0; m < bones.Count; m++)
             {
-                WadMesh msh = mov.Meshes[m];
+                WadMesh msh = bones[m].Mesh;
                 var mesh = ObjectMesh.FromWad2(device, wad, msh, reallocatedTextures);
                 if (!wad.DirectXMeshes.ContainsKey(msh))
                     wad.DirectXMeshes.TryAdd(msh, mesh);
@@ -156,14 +157,14 @@ namespace TombLib.Graphics
 
             // HACK: Add matrices here because if original WAD stack was corrupted, we could have broken parent - children
             // relations and so we could have meshes count different from matrices count
-            for (int j = 0; j < mov.Meshes.Count; j++)
+            for (int j = 0; j < bones.Count; j++)
             {
                 model.BindPoseTransforms.Add(Matrix4x4.Identity);
                 model.AnimationTransforms.Add(Matrix4x4.Identity);
             }
 
             // Build the skeleton
-            model.Root = BuildSkeleton(model, mov.Skeleton, null);
+            model.Root = BuildSkeleton(model, mov.Skeleton, null, bones);
 
             // Prepare animations
             for (int j = 0; j < mov.Animations.Count; j++)
@@ -180,7 +181,7 @@ namespace TombLib.Graphics
                     KeyFrame frame = new KeyFrame();
                     WadKeyFrame wadFrame = wadAnim.KeyFrames[f];
 
-                    for (int k = 0; k < mov.Meshes.Count; k++)
+                    for (int k = 0; k < bones.Count; k++)
                     {
                         frame.Rotations.Add(Matrix4x4.Identity);
                         frame.Translations.Add(Matrix4x4.Identity);
@@ -212,18 +213,18 @@ namespace TombLib.Graphics
             return model;
         }
 
-        private static Bone BuildSkeleton(AnimatedModel model, WadBone bone, Bone parentBone)
+        private static Bone BuildSkeleton(AnimatedModel model, WadBone bone, Bone parentBone, List<WadBone> bones)
         {
             Bone currentBone = new Bone();
             currentBone.Name = bone.Name;
             currentBone.Parent = parentBone;
             currentBone.Transform = bone.Transform;
-            currentBone.Index = bone.Index;
+            currentBone.Index = bones.IndexOf(bone);
             model.Bones.Add(currentBone);
             model.BindPoseTransforms[currentBone.Index] = bone.Transform;
 
             foreach (var childBone in bone.Children)
-                currentBone.Children.Add(BuildSkeleton(model, childBone, currentBone));
+                currentBone.Children.Add(BuildSkeleton(model, childBone, currentBone, bones));
 
             if (parentBone != null)
             {

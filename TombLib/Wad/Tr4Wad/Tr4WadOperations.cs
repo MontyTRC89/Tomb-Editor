@@ -139,7 +139,7 @@ namespace TombLib.Wad.Tr4Wad
             return textureId;
         }
 
-        private static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> textures, 
+        private static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> textures,
                                                        wad_mesh oldMesh, int objectID)
         {
             WadMesh mesh = new WadMesh();
@@ -329,10 +329,11 @@ namespace TombLib.Wad.Tr4Wad
             WadMoveable newMoveable = new WadMoveable(new WadMoveableId(oldMoveable.ObjectID));
             var frameBases = new Dictionary<WadAnimation, ushort>();
 
-            // Add meshes
+            // Load meshes
+            var meshes = new List<WadMesh>();
             for (int j = 0; j < oldMoveable.NumPointers; j++)
             {
-                newMoveable.Meshes.Add(ConvertTr4MeshToWadMesh(wad, oldWad, textures,
+                meshes.Add(ConvertTr4MeshToWadMesh(wad, oldWad, textures,
                                                                oldWad.Meshes[(int)oldWad.RealPointers[oldMoveable.PointerIndex + j]],
                                                                (int)oldMoveable.ObjectID));
             }
@@ -343,8 +344,7 @@ namespace TombLib.Wad.Tr4Wad
             root.Parent = null;
             root.Transform = Matrix4x4.Identity;
             root.Translation = Vector3.Zero;
-            root.Mesh = newMoveable.Meshes[0]; 
-            root.Index = 0;
+            root.Mesh = meshes[0];
 
             var bones = new List<WadBone>();
             bones.Add(root);
@@ -357,8 +357,7 @@ namespace TombLib.Wad.Tr4Wad
                 bone.Parent = null;
                 bone.Transform = Matrix4x4.Identity;
                 bone.Translation = Vector3.Zero;
-                bone.Mesh = newMoveable.Meshes[j + 1]; 
-                bone.Index = j + 1;
+                bone.Mesh = meshes[j + 1];
                 bones.Add(bone);
             }
 

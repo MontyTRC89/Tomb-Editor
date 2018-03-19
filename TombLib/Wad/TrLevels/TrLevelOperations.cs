@@ -347,16 +347,14 @@ namespace TombLib.Wad.TrLevels
             WadMoveable newMoveable = new WadMoveable(new WadMoveableId(oldMoveable.ObjectID));
 
             // First a list of meshes for this moveable is built
-            var meshes = new List<tr_mesh>();
+            var oldMeshes = new List<tr_mesh>();
             for (int j = 0; j < oldMoveable.NumMeshes; j++)
-                meshes.Add(oldLevel.Meshes[(int)oldLevel.RealPointers[(int)(oldMoveable.StartingMesh + j)]]);
+                oldMeshes.Add(oldLevel.Meshes[(int)oldLevel.RealPointers[(int)(oldMoveable.StartingMesh + j)]]);
 
             // Convert the WadMesh
-            foreach (var oldMesh in meshes)
-            {
-                var newMesh = ConvertTrLevelMeshToWadMesh(wad, oldLevel, oldMesh, objectTextures);
-                newMoveable.Meshes.Add(newMesh);
-            }
+            var newMeshes = new List<WadMesh>();
+            foreach (var oldMesh in oldMeshes)
+                newMeshes.Add(ConvertTrLevelMeshToWadMesh(wad, oldLevel, oldMesh, objectTextures));
 
             // Build the skeleton
             var root = new WadBone();
@@ -364,9 +362,8 @@ namespace TombLib.Wad.TrLevels
             root.Parent = null;
             root.Transform = Matrix4x4.Identity;
             root.Translation = Vector3.Zero;
-            root.Mesh = newMoveable.Meshes[0];
-            root.Index = 0;
-            
+            root.Mesh = newMeshes[0];
+
             var bones = new List<WadBone>();
             bones.Add(root);
             newMoveable.Skeleton = root;
@@ -378,8 +375,7 @@ namespace TombLib.Wad.TrLevels
                 bone.Parent = null;
                 bone.Transform = Matrix4x4.Identity;
                 bone.Translation = Vector3.Zero;
-                bone.Mesh = newMoveable.Meshes[j + 1];
-                bone.Index = j + 1;
+                bone.Mesh = newMeshes[j + 1];
                 bones.Add(bone);
             }
 
@@ -387,7 +383,7 @@ namespace TombLib.Wad.TrLevels
             WadBone stackBone = root;
             Stack<WadBone> stack = new Stack<WadBone>();
 
-            for (int mi = 0; mi < (newMoveable.Meshes.Count - 1); mi++)
+            for (int mi = 0; mi < (oldMeshes.Count - 1); mi++)
             {
                 int j = mi + 1;
 

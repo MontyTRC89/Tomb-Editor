@@ -284,7 +284,7 @@ namespace TombLib.LevelData.Compilers
             {
                 var newMoveable = new tr_moveable();
                 newMoveable.Animation = checked((ushort)(oldMoveable.Animations.Count != 0 ? lastAnimation : 0xffff));
-                newMoveable.NumMeshes = checked((ushort)oldMoveable.Meshes.Count);
+                newMoveable.NumMeshes = checked((ushort)oldMoveable.Meshes.Count());
                 newMoveable.ObjectID = oldMoveable.Id.TypeId;
                 newMoveable.FrameOffset = 0;
 

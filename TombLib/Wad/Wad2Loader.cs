@@ -462,7 +462,7 @@ namespace TombLib.Wad
             return true;
         }
 
-        private static WadBone LoadBone(ChunkReader chunkIO, WadMoveable mov)
+        private static WadBone LoadBone(ChunkReader chunkIO, WadMoveable mov, List<WadMesh> meshes)
         {
             WadBone bone = new WadBone();
 
@@ -476,9 +476,9 @@ namespace TombLib.Wad
                     bone.Transform = Matrix4x4.CreateTranslation(bone.Translation);
                 }
                 else if (id == Wad2Chunks.MoveableBoneMeshPointer)
-                    bone.Mesh = mov.Meshes[chunkIO.ReadChunkInt(chunkSize)];
+                    bone.Mesh = meshes[chunkIO.ReadChunkInt(chunkSize)];
                 else if (id == Wad2Chunks.MoveableBone)
-                    bone.Children.Add(LoadBone(chunkIO, mov));
+                    bone.Children.Add(LoadBone(chunkIO, mov, meshes));
                 else
                     return false;
                 return true;
@@ -504,13 +504,14 @@ namespace TombLib.Wad
 
                 uint objTypeId = LEB128.ReadUInt(chunkIO.Raw);
                 var mov = new WadMoveable(new WadMoveableId(objTypeId));
+                var meshes = new List<WadMesh>();
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
                     if (id2 == Wad2Chunks.MoveableMesh)
-                        mov.Meshes.Add(/*meshes[chunkIO.ReadChunkInt(chunkSize2)]*/
+                        meshes.Add(/*meshes[chunkIO.ReadChunkInt(chunkSize2)]*/
                                        LoadMesh(chunkIO, chunkSize2, textures));
                     else if (id2 == Wad2Chunks.MoveableBone)
-                        mov.Skeleton = LoadBone(chunkIO, mov);
+                        mov.Skeleton = LoadBone(chunkIO, mov, meshes);
                     else if (id2 == Wad2Chunks.AnimationObsolete || id2 == Wad2Chunks.Animation)
                     {
                         var animation = new WadAnimation();
