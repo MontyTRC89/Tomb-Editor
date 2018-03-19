@@ -2071,7 +2071,7 @@ namespace TombEditor.Controls
                     _device.SetRasterizerState(_rasterizerWireframe);
 
                     string message = "Sound source [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
-                    message += " (" + instance.SoundName + ") ";
+                    message += " (" + instance.SoundNameToDisplay + ") ";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);

@@ -563,7 +563,7 @@ namespace TombLib.LevelData.IO
                                     var sound = new SoundSourceInstance()
                                     {
                                         ScriptId = unchecked((ushort)objectsThings2[j]),
-                                        SoundName = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, unchecked((ushort)objSlot)),
+                                        WadReferencedSoundName = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, unchecked((ushort)objSlot)),
                                         Position = position
                                     };
                                     room.AddObject(level, sound);

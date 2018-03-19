@@ -659,7 +659,7 @@ namespace TombEditor
             }
             else if (instance is SoundSourceInstance)
             {
-                using (var formSoundSource = new FormSound((SoundSourceInstance)instance, _editor.Level.Wad))
+                using (var formSoundSource = new FormSoundSource((SoundSourceInstance)instance, _editor.Level.Wad))
                     if (formSoundSource.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);

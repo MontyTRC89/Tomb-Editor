@@ -237,11 +237,11 @@
     <Compile Include="Forms\FormAnimatedTextures.Designer.cs">
       <DependentUpon>FormAnimatedTextures.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormSound.cs">
+    <Compile Include="Forms\FormSoundSource.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormSound.Designer.cs">
-      <DependentUpon>FormSound.cs</DependentUpon>
+    <Compile Include="Forms\FormSoundSource.Designer.cs">
+      <DependentUpon>FormSoundSource.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormSink.cs">
       <SubType>Form</SubType>
@@ -415,8 +415,8 @@
     <EmbeddedResource Include="Forms\FormAnimatedTextures.resx">
       <DependentUpon>FormAnimatedTextures.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSound.resx">
-      <DependentUpon>FormSound.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormSoundSource.resx">
+      <DependentUpon>FormSoundSource.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSink.resx">
       <DependentUpon>FormSink.cs</DependentUpon>
