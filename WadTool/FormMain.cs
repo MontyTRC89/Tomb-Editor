@@ -500,5 +500,10 @@ namespace WadTool
         {
             StopAnimation();
         }
+
+        private void soundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.ShowSoundOverview(_tool, this, WadArea.Destination);
+        }
     }
 }

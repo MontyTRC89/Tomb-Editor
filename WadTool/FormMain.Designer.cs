@@ -30,11 +30,6 @@
             this.saveWad2AsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addNewStaticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importModelAsStaticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.createToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newMoveableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newStaticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,11 +85,13 @@
             this.butDeleteObject = new DarkUI.Controls.DarkButton();
             this.butChangeSlot = new DarkUI.Controls.DarkButton();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.panel3D = new WadTool.Controls.PanelRendering();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitSeam = new System.Windows.Forms.Panel();
             this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.soundInfoOverviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.groupSelectedMoveable.SuspendLayout();
@@ -130,8 +127,8 @@
             this.darkMenuStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.editToolStripMenuItem,
             this.createToolStripMenuItem,
+            this.viewToolStripMenuItem,
             this.helpToolStripMenuItem,
             this.debugToolStripMenuItem});
             this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -232,51 +229,6 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
-            // editToolStripMenuItem
-            // 
-            this.editToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addNewStaticToolStripMenuItem,
-            this.importModelAsStaticToolStripMenuItem,
-            this.toolStripMenuItem4,
-            this.toolStripMenuItem5});
-            this.editToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-            this.editToolStripMenuItem.Text = "Edit";
-            // 
-            // addNewStaticToolStripMenuItem
-            // 
-            this.addNewStaticToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.addNewStaticToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addNewStaticToolStripMenuItem.Name = "addNewStaticToolStripMenuItem";
-            this.addNewStaticToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.addNewStaticToolStripMenuItem.Text = "Add new static mesh";
-            // 
-            // importModelAsStaticToolStripMenuItem
-            // 
-            this.importModelAsStaticToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.importModelAsStaticToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.importModelAsStaticToolStripMenuItem.Name = "importModelAsStaticToolStripMenuItem";
-            this.importModelAsStaticToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.importModelAsStaticToolStripMenuItem.Text = "Import model as static mesh";
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(221, 6);
-            // 
-            // toolStripMenuItem5
-            // 
-            this.toolStripMenuItem5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripMenuItem5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem5.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(221, 6);
-            // 
             // createToolStripMenuItem
             // 
             this.createToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -341,7 +293,7 @@
             this.aboutWadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutWadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutWadToolToolStripMenuItem.Name = "aboutWadToolToolStripMenuItem";
-            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.aboutWadToolToolStripMenuItem.Text = "About Wad Tool...";
             this.aboutWadToolToolStripMenuItem.Click += new System.EventHandler(this.aboutWadToolToolStripMenuItem_Click);
             // 
@@ -581,7 +533,7 @@
             this.treeSounds.Location = new System.Drawing.Point(6, 22);
             this.treeSounds.MaxDragChange = 20;
             this.treeSounds.Name = "treeSounds";
-            this.treeSounds.Size = new System.Drawing.Size(273, 147);
+            this.treeSounds.Size = new System.Drawing.Size(273, 151);
             this.treeSounds.TabIndex = 16;
             this.treeSounds.Text = "darkTreeView1";
             // 
@@ -604,7 +556,7 @@
             this.groupSelectedMoveable.Controls.Add(this.tableLayoutPanel2);
             this.groupSelectedMoveable.Location = new System.Drawing.Point(0, 8);
             this.groupSelectedMoveable.Name = "groupSelectedMoveable";
-            this.groupSelectedMoveable.Size = new System.Drawing.Size(581, 240);
+            this.groupSelectedMoveable.Size = new System.Drawing.Size(581, 244);
             this.groupSelectedMoveable.TabIndex = 21;
             this.groupSelectedMoveable.TabStop = false;
             this.groupSelectedMoveable.Text = "Selected moveable:";
@@ -623,7 +575,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(570, 213);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(570, 217);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // panel5
@@ -635,7 +587,7 @@
             this.panel5.Location = new System.Drawing.Point(285, 0);
             this.panel5.Margin = new System.Windows.Forms.Padding(0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(285, 213);
+            this.panel5.Size = new System.Drawing.Size(285, 217);
             this.panel5.TabIndex = 1;
             // 
             // flowLayoutPanel2
@@ -645,7 +597,7 @@
             this.flowLayoutPanel2.Controls.Add(this.butPlayAnimation);
             this.flowLayoutPanel2.Controls.Add(this.butStop);
             this.flowLayoutPanel2.Controls.Add(this.darkButton2);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 172);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 176);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(285, 41);
             this.flowLayoutPanel2.TabIndex = 21;
@@ -702,7 +654,7 @@
             this.treeAnimations.Location = new System.Drawing.Point(3, 22);
             this.treeAnimations.MaxDragChange = 20;
             this.treeAnimations.Name = "treeAnimations";
-            this.treeAnimations.Size = new System.Drawing.Size(279, 147);
+            this.treeAnimations.Size = new System.Drawing.Size(279, 151);
             this.treeAnimations.TabIndex = 20;
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
@@ -716,7 +668,7 @@
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(282, 213);
+            this.panel4.Size = new System.Drawing.Size(282, 217);
             this.panel4.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -725,7 +677,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.Controls.Add(this.butPlaySound);
             this.flowLayoutPanel1.Controls.Add(this.butRenameSound);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 172);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 176);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(282, 41);
             this.flowLayoutPanel1.TabIndex = 22;
@@ -909,6 +861,21 @@
             this.panel3.Size = new System.Drawing.Size(472, 445);
             this.panel3.TabIndex = 12;
             // 
+            // soundInfoEditor
+            // 
+            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundInfoEditor.Location = new System.Drawing.Point(4, 30);
+            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(442, 346);
+            this.soundInfoEditor.Name = "soundInfoEditor";
+            this.soundInfoEditor.Size = new System.Drawing.Size(462, 382);
+            this.soundInfoEditor.SoundInfo = wadSoundInfo1;
+            this.soundInfoEditor.TabIndex = 21;
+            this.soundInfoEditor.Visible = false;
+            this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
+            // 
             // panel3D
             // 
             this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -958,20 +925,24 @@
             this.timerPlayAnimation.Interval = 33;
             this.timerPlayAnimation.Tick += new System.EventHandler(this.timerPlayAnimation_Tick);
             // 
-            // soundInfoEditor
+            // viewToolStripMenuItem
             // 
-            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundInfoEditor.Location = new System.Drawing.Point(4, 30);
-            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(442, 346);
-            this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(462, 382);
-            this.soundInfoEditor.SoundInfo = wadSoundInfo1;
-            this.soundInfoEditor.TabIndex = 21;
-            this.soundInfoEditor.Visible = false;
-            this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
+            this.viewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.soundInfoOverviewToolStripMenuItem});
+            this.viewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // soundInfoOverviewToolStripMenuItem
+            // 
+            this.soundInfoOverviewToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundInfoOverviewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.soundInfoOverviewToolStripMenuItem.Name = "soundInfoOverviewToolStripMenuItem";
+            this.soundInfoOverviewToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.soundInfoOverviewToolStripMenuItem.Text = "Destination sound info overview";
+            this.soundInfoOverviewToolStripMenuItem.Click += new System.EventHandler(this.soundInfoOverviewToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -1039,8 +1010,6 @@
         private DarkUI.Controls.DarkButton butAddObjectToDifferentSlot;
         private DarkUI.Controls.DarkButton butDeleteObject;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addNewStaticToolStripMenuItem;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkButton butPlaySound;
         private DarkUI.Controls.DarkTreeView treeSounds;
@@ -1070,9 +1039,6 @@
         private DarkUI.Controls.DarkButton darkButton2;
         private DarkUI.Controls.DarkButton butEditItem;
         private System.Windows.Forms.ToolStripMenuItem newWad2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importModelAsStaticToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
@@ -1093,6 +1059,8 @@
         private System.Windows.Forms.Timer timerPlayAnimation;
         private DarkUI.Controls.DarkButton butPlayAnimation;
         private TombLib.Controls.SoundInfoEditor soundInfoEditor;
+        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem soundInfoOverviewToolStripMenuItem;
     }
 }
 
