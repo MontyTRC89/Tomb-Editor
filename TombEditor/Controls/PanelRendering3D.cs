@@ -1674,15 +1674,16 @@ namespace TombEditor.Controls
 
                     if (geometry?.Model?.DirectXModel?.Meshes?.FirstOrDefault() != null)
                         foreach (ImportedGeometryMesh mesh in geometry.Model.DirectXModel.Meshes)
-                            DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
-                    else
-                    {
-                        BoundingBox box = new BoundingBox(
-                            room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
-                            room.WorldPos + geometry.Position + new Vector3(_littleCubeRadius));
-                        if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                            result = new PickingResultObject(distance, instance);
-                    }
+                            if (geometry.MeshNameMatchesFilter(mesh.Name))
+                                DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                            else
+                            {
+                                BoundingBox box = new BoundingBox(
+                                    room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
+                                    room.WorldPos + geometry.Position + new Vector3(_littleCubeRadius));
+                                if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                                    result = new PickingResultObject(distance, instance);
+                            }
                 }
                 else if (ShowOtherObjects)
                 {
@@ -2159,9 +2160,8 @@ namespace TombEditor.Controls
                 foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (instance.Model?.DirectXModel != null)
-                        continue;
-
-                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                        if (instance.Model.DirectXModel.Meshes.Any(mesh => instance.MeshNameMatchesFilter(mesh.Name)))
+                            continue;
 
                     Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
@@ -2306,12 +2306,7 @@ namespace TombEditor.Controls
                 var room = instance.Room;
                 var roomIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
-                var meshes = new List<ImportedGeometryMesh>();
-                if (model.HasMultipleRooms && model.RoomMeshes.ContainsKey(roomIndex))
-                    meshes.Add(model.RoomMeshes[roomIndex]);
-                else
-                    meshes.AddRange(model.Meshes);
-
+                var meshes = model.Meshes;
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
                 _device.SetVertexBuffer(0, model.VertexBuffer);
                 _device.SetIndexBuffer(model.IndexBuffer, true);
@@ -2319,6 +2314,8 @@ namespace TombEditor.Controls
                 for (var i = 0; i < meshes.Count; i++)
                 {
                     var mesh = meshes[i];
+                    if (!instance.MeshNameMatchesFilter(mesh.Name))
+                        continue;
                     if (mesh.Vertices.Count == 0)
                         continue;
 

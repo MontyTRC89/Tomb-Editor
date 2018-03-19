@@ -2660,122 +2660,73 @@ namespace TombEditor
             }
         }
 
+        public const string RoomIdentifier = "TeRoom_";
+
         public static void ImportRooms(IWin32Window owner)
         {
+            string importedGeometryPath;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Title = "Import rooms";
-                openFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter();
-                openFileDialog.AddExtension = true;
-                openFileDialog.DefaultExt = "mqo";
+                openFileDialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
                 openFileDialog.FileName = _editor.SelectedRoom.Name;
+                if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
+                    return;
+                importedGeometryPath = openFileDialog.FileName;
+            }
 
-                if (openFileDialog.ShowDialog(owner) == DialogResult.OK)
+            // Add imported geometries
+            try
+            {
+                string importedGeometryDirectory = Path.GetDirectoryName(importedGeometryPath);
+
+                var info = ImportedGeometryInfo.Default;
+                info.Path = importedGeometryPath;
+                info.Name = Path.GetFileNameWithoutExtension(importedGeometryPath);
+
+                ImportedGeometry newObject = new ImportedGeometry();
+                _editor.Level.Settings.ImportedGeometryUpdate(newObject, info);
+                _editor.Level.Settings.ImportedGeometries.Add(newObject);
+
+                // Figure out the relevant rooms
+                List<int> roomIndices = new List<int>();
+                foreach (ImportedGeometryMesh mesh in newObject.DirectXModel.Meshes)
                 {
-                    var settings = _editor.Level?.Settings;
-
-                    try
+                    int currentIndex = 0;
+                    do
                     {
-                        string importedGeometryPath = openFileDialog.FileName;
-                        string importedGeometryDirectory = Path.GetDirectoryName(importedGeometryPath);
+                        int roomIndexStart = mesh.Name.IndexOf(RoomIdentifier, currentIndex, StringComparison.InvariantCultureIgnoreCase);
+                        if (roomIndexStart < 0)
+                            break;
 
-                        var info = new ImportedGeometryInfo();
-                        info.Path = importedGeometryPath;
-                        info.Name = Path.GetFileNameWithoutExtension(importedGeometryPath);
+                        int roomIndexEnd = roomIndexStart + RoomIdentifier.Length;
+                        while (roomIndexEnd < mesh.Name.Length && !char.IsWhiteSpace(mesh.Name[roomIndexEnd]))
+                            ++roomIndexEnd;
 
-                        // Invoke the TombLib geometry import code
-                        var settingsIO = new IOGeometrySettings
-                        {
-                            Scale = info.Scale,
-                            SwapXY = info.SwapXY,
-                            SwapXZ = info.SwapXZ,
-                            SwapYZ = info.SwapYZ,
-                            FlipX = info.FlipX,
-                            FlipY = info.FlipY,
-                            FlipZ = info.FlipZ,
-                            FlipUV_V = info.FlipUV_V,
-                            InvertFaces = info.InvertFaces
-                        };
+                        string roomIndexStr = mesh.Name.Substring(roomIndexStart, roomIndexEnd - roomIndexStart);
+                        ushort roomIndex;
+                        if (ushort.TryParse(roomIndexStr, out roomIndex))
+                            roomIndices.Add(roomIndex);
 
-                        ImportedGeometry newObject = new ImportedGeometry();
-                        _editor.Level.Settings.ImportedGeometryUpdate(newObject, info);
-                        _editor.Level.Settings.ImportedGeometries.Add(newObject);
+                        currentIndex = roomIndexEnd;
+                    } while (currentIndex < mesh.Name.Length);
+                }
+                roomIndices = roomIndices.Distinct().ToList();
 
-                        // Now assign each imported room to its room
-                        foreach (var pair in newObject.DirectXModel.RoomMeshes)
-                        {
-                            var roomIndex = pair.Key;
-                            var mesh = pair.Value;
-
-                            if (roomIndex < _editor.Level.Rooms.Length && _editor.Level.Rooms[roomIndex] != null)
-                            {
-                                var room = _editor.Level.Rooms[roomIndex];
-
-                                // We have found a valid room, now search for a ImportedRoomInstance
-                                var found = false;
-                                foreach (var instance in room.Objects)
-                                    if (instance is ImportedGeometryInstance)
-                                    {
-                                        var imported = instance as ImportedGeometryInstance;
-                                        imported.Model = newObject;
-                                        found = true;
-                                        break;
-                                    }
-
-                                // If no instance is found, then add it
-                                if (!found)
-                                {
-                                    var newImported = new ImportedGeometryInstance();
-                                    newImported.Position = Vector3.Zero;
-                                    newImported.Model = newObject;
-                                    room.AddObject(_editor.Level, newImported);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception exc)
-                    {
-                        logger.Error(exc.Message);
-                    }
+                // Add rooms
+                foreach (int roomIndex in roomIndices)
+                {
+                    Room room = _editor.Level.Rooms[roomIndex];
+                    var newImported = new ImportedGeometryInstance();
+                    newImported.Position = Vector3.Zero;
+                    newImported.Model = newObject;
+                    room.AddObject(_editor.Level, newImported);
                 }
             }
-        }
-
-        public static void UpdateImportedRoomInstance(ImportedGeometry model)
-        {
-            // Now assign each imported room to its room
-            foreach (var mesh in model.DirectXModel.Meshes)
+            catch (Exception exc)
             {
-                if (mesh.Name.StartsWith("TeRoom_"))
-                {
-                    var roomIndex = int.Parse(mesh.Name.Split('_')[1]);
-                    if (roomIndex < _editor.Level.Rooms.Length && _editor.Level.Rooms[roomIndex] != null)
-                    {
-                        var room = _editor.Level.Rooms[roomIndex];
-
-                        // We have found a valid room, now search for a ImportedRoomInstance
-                        var found = false;
-                        foreach (var instance in room.Objects)
-                            if (instance is ImportedRoomInstance)
-                            {
-                                var imported = instance as ImportedRoomInstance;
-                                imported.Model = model;
-                                imported.Mesh = mesh;
-                                found = true;
-                                break;
-                            }
-
-                        // If no instance is found, then add it
-                        if (!found)
-                        {
-                            var newImported = new ImportedRoomInstance();
-                            newImported.Position = Vector3.Zero;
-                            newImported.Model = model;
-                            newImported.Mesh = mesh;
-                            room.AddObject(_editor.Level, newImported);
-                        }
-                    }
-                }
+                logger.Error(exc.Message);
+                DarkMessageBox.Show(owner, "Unable to import rooms from geometry. " + exc.ToString(), "Failed to imported rooms.");
             }
         }
 

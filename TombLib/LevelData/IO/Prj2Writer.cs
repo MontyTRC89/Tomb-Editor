@@ -483,7 +483,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkEnd();
                         });
                     else if (o is ImportedGeometryInstance)
-                        chunkIO.WriteChunk(Prj2Chunks.ObjectImportedGeometry, () =>
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectImportedGeometry2, () =>
                         {
                             var instance = (ImportedGeometryInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -492,6 +492,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.RotationX);
                             chunkIO.Raw.Write(instance.Roll);
                             chunkIO.Raw.Write(instance.Scale);
+                            chunkIO.Raw.WriteStringUTF8(instance.MeshFilter);
                             LEB128.Write(chunkIO.Raw, instance.Model == null ? -1 : levelSettingIds.ImportedGeometries[instance.Model]);
                         });
                     else

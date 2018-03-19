@@ -44,10 +44,6 @@ namespace TombLib.LevelData
         private readonly float _unusedPadding;
         [VertexElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 16)]
         public Vector2 UV;
-        [VertexElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 24)]
-        public Vector3 Normal;
-        [VertexElement("TEXCOORD", 1, SharpDX.DXGI.Format.R32G32_Float, 36)]
-        public Vector2 Shade;
         [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 44)]
         public Vector4 Color;
 
@@ -56,32 +52,9 @@ namespace TombLib.LevelData
 
     public class ImportedGeometryMesh : Mesh<ImportedGeometryVertex>
     {
-        //public Texture Texture { get; set; }
-
         public ImportedGeometryMesh(GraphicsDevice device, string name)
             : base(device, name)
         { }
-
-        /*public override void BuildBuffers()
-        {
-            BaseIndex = 0;
-            NumIndices = Indices.Count;
-
-            if (Vertices.Count == 0)
-                return;
-
-            Vector3 minVertex = new Vector3(float.MaxValue);
-            Vector3 maxVertex = new Vector3(float.MinValue);
-            foreach (var vertex in Vertices)
-            {
-                minVertex = Vector3.Min(minVertex, vertex.Position);
-                maxVertex = Vector3.Max(maxVertex, vertex.Position);
-            }
-            BoundingBox = new BoundingBox(minVertex, maxVertex);
-
-            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Default);
-            IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Default);
-        }*/
     }
 
     public struct ImportedGeometryInfo
@@ -111,10 +84,6 @@ namespace TombLib.LevelData
         public class Model : Model<ImportedGeometryMesh, ImportedGeometryVertex>
         {
             public float Scale { get; private set; }
-
-            // Used only by Tomb Editor for handling the special case of multiple rooms
-            public bool HasMultipleRooms { get; set; }
-            public Dictionary<int, ImportedGeometryMesh> RoomMeshes { get; private set; } = new Dictionary<int, ImportedGeometryMesh>();
 
             public Model(GraphicsDevice device, float scale)
                 : base(device, ModelType.RoomGeometry)
@@ -196,7 +165,6 @@ namespace TombLib.LevelData
                 // Create a new static model
                 DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
                 DirectXModel.BoundingBox = tmpModel.BoundingBox;
-                DirectXModel.HasMultipleRooms = tmpModel.HasMultipleRooms;
 
                 // Create materials
                 foreach (var tmpMaterial in tmpModel.Materials)
@@ -228,6 +196,7 @@ namespace TombLib.LevelData
                                 {
                                     var vertex = new ImportedGeometryVertex();
                                     vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                    vertex.Color = tmpPoly.Indices[i] > mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]] : Vector4.One;
                                     vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                     modelMesh.Vertices.Add(vertex);
                                 }
@@ -261,14 +230,6 @@ namespace TombLib.LevelData
                         modelMesh.Submeshes.Add(material, submesh);
                     }
                     //modelMesh.Texture = mesh.Texture;
-
-                    // Add mesh to the model
-                    DirectXModel.Meshes.Add(modelMesh);
-                    if (modelMesh.Name.StartsWith("TeRoom_"))
-                    {
-                        var roomIndex = int.Parse(modelMesh.Name.Split('_')[1]);
-                        DirectXModel.RoomMeshes.Add(roomIndex, modelMesh);
-                    }
                 }
 
                 DirectXModel.UpdateBuffers();
