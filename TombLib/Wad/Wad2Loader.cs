@@ -61,7 +61,7 @@ namespace TombLib.Wad
                 }
                 if (LoadTextures(chunkIO, id, wad, ref textures))
                     return true;
-                else if (LoadSamples(chunkIO, id, wad, ref samples))
+                else if (LoadSamples(chunkIO, id, wad, ref samples, obsolete))
                     return true;
                 else if (LoadSoundInfos(chunkIO, id, wad, ref soundInfos, samples))
                     return true;
@@ -123,7 +123,7 @@ namespace TombLib.Wad
             return true;
         }
 
-        private static bool LoadSamples(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSample> outSamples)
+        private static bool LoadSamples(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSample> outSamples, bool obsolete)
         {
             if (idOuter != Wad2Chunks.Samples)
                 return false;
@@ -158,7 +158,10 @@ namespace TombLib.Wad
                     data = File.ReadAllBytes(fullPath);
                 }
 
-                samples.Add(obsoleteIndex++, new WadSample(WadSample.ConvertSampleFormat(data)));
+                samples.Add(obsoleteIndex++, new WadSample(WadSample.ConvertSampleFormat(data,
+                    sampleRate => obsolete ?
+                        new WadSample.ResampleInfo { Resample = false, SampleRate = WadSample.GameSupportedSampleRate } :
+                        new WadSample.ResampleInfo { Resample = true, SampleRate = sampleRate })));
                 return true;
             });
 
