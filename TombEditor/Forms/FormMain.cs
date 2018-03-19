@@ -1168,7 +1168,7 @@ namespace TombEditor.Forms
 
         private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.ExportCurrentRoom(this);
+            EditorActions.ExportRooms(this, _editor.SelectedRooms);
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
