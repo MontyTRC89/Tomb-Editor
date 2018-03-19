@@ -5,9 +5,9 @@ using System.Numerics;
 
 namespace TombLib.GeometryIO.Exporters
 {
-    public class RoomExporterMetasequoia : BaseGeometryExporter
+    public class Metasequoia : BaseGeometryExporter
     {
-        public RoomExporterMetasequoia(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+        public Metasequoia(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
             : base(settings, getTexturePathCallback)
         {
 
@@ -126,13 +126,13 @@ namespace TombLib.GeometryIO.Exporters
             return true;
         }
 
-        private string GetUV(Vector2 uv)
+        private static string GetUV(Vector2 uv)
         {
             return uv.X.ToString(CultureInfo.InvariantCulture) + " " +
                    uv.Y.ToString(CultureInfo.InvariantCulture);
         }
 
-        private uint GetColor(Vector4 color)
+        private static uint GetColor(Vector4 color)
         {
             var r = (byte)((int)(color.X * 128.0f) & 0xFF);
             var g = (byte)((int)(color.Y * 128.0f) & 0xFF);

@@ -9,9 +9,9 @@ using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Exporters
 {
-    public class RoomExporterPly : BaseGeometryExporter
+    /*public class Ply : BaseGeometryExporter
     {
-        public RoomExporterPly(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
+        public Ply(IOGeometrySettings settings, GetTextureDelegate getTexturePathCallback)
             : base(settings, getTexturePathCallback)
         {
 
@@ -62,7 +62,7 @@ namespace TombLib.GeometryIO.Exporters
                 }
 
                 // Save faces
-                foreach (var poly in mesh.Polygons)
+                foreach (var poly in mesh.Submeshes.)
                 {
                     var indices = new List<int>();
                     indices.Add(poly.Indices[0]);
@@ -91,5 +91,5 @@ namespace TombLib.GeometryIO.Exporters
 
             return true;
         }
-    }
+    }*/
 }

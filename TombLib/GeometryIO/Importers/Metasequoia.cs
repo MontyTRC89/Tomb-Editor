@@ -8,11 +8,11 @@ using TombLib.Utils;
 
 namespace TombLib.GeometryIO.Importers
 {
-    public class MetasequoiaRoomImporter : BaseGeometryImporter
+    public class Metasequoia : BaseGeometryImporter
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public MetasequoiaRoomImporter(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
+        public Metasequoia(IOGeometrySettings settings, GetTextureDelegate getTextureCallback)
             : base(settings, getTextureCallback)
         {
 

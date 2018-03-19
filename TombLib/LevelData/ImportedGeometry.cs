@@ -100,9 +100,6 @@ namespace TombLib.LevelData
         public bool FlipZ { get; set; }
         public bool FlipUV_V { get; set; }
         public bool InvertFaces { get; set; }
-        public bool UseVertexColor { get; set; }
-
-        public bool HasMultipleRooms { get; set; }
     }
 
     public class ImportedGeometry : ICloneable, IEquatable<ImportedGeometry>
@@ -136,7 +133,7 @@ namespace TombLib.LevelData
                 {
                     var meshBaseIndex = Vertices.Count;
                     Vertices.AddRange(mesh.Vertices);
-                    
+
                     foreach (var submesh in mesh.Submeshes)
                     {
                         submesh.Value.BaseIndex = lastBaseIndex;
@@ -156,7 +153,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public static IReadOnlyList<FileFormat> FileExtensions => BaseGeometryImporter.FileExtensions;
+        public static IEnumerable<FileFormat> FileExtensions => BaseGeometryImporter.FileExtensions;
         public UniqueIDType UniqueID { get; } = new UniqueIDType();
         public Exception LoadException { get; private set; }
         public ImportedGeometryInfo Info { get; private set; } = ImportedGeometryInfo.Default;
@@ -187,25 +184,13 @@ namespace TombLib.LevelData
                     FlipZ = info.FlipZ,
                     FlipUV_V = info.FlipUV_V,
                     InvertFaces = info.InvertFaces,
-                    UseVertexColor = info.UseVertexColor
+                    UseVertexColor = true
                 };
 
-                BaseGeometryImporter importer;
-                if (importedGeometryPath.ToLower().EndsWith(".mqo"))
+                BaseGeometryImporter importer = BaseGeometryImporter.CreateForFile(importedGeometryPath, settingsIO, absoluteTexturePath =>
                 {
-                    importer = new MetasequoiaRoomImporter(settingsIO, absoluteTexturePath =>
-                    {
-                        return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
-                    });
-                }
-                else
-                {
-                    importer = new AssimpImporter(settingsIO, absoluteTexturePath =>
-                    {
-                        return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
-                    });
-                }
-
+                    return GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, absoluteTexturePath);
+                });
                 var tmpModel = importer.ImportFromFile(importedGeometryPath);
 
                 // Create a new static model
