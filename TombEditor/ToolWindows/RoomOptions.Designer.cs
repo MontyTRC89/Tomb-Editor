@@ -97,7 +97,6 @@
             this.comboFlipMap.Name = "comboFlipMap";
             this.comboFlipMap.Size = new System.Drawing.Size(99, 23);
             this.comboFlipMap.TabIndex = 8;
-            this.comboFlipMap.Text = null;
             this.comboFlipMap.SelectedIndexChanged += new System.EventHandler(this.comboFlipMap_SelectedIndexChanged);
             // 
             // darkLabel19
@@ -126,7 +125,6 @@
             this.comboReverberation.Name = "comboReverberation";
             this.comboReverberation.Size = new System.Drawing.Size(79, 23);
             this.comboReverberation.TabIndex = 19;
-            this.comboReverberation.Text = "None";
             this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
             // darkLabel18
@@ -153,7 +151,6 @@
             this.comboMist.Name = "comboMist";
             this.comboMist.Size = new System.Drawing.Size(52, 23);
             this.comboMist.TabIndex = 18;
-            this.comboMist.Text = "No";
             this.comboMist.SelectedIndexChanged += new System.EventHandler(this.comboMist_SelectedIndexChanged);
             // 
             // darkLabel17
@@ -180,7 +177,6 @@
             this.comboReflection.Name = "comboReflection";
             this.comboReflection.Size = new System.Drawing.Size(52, 23);
             this.comboReflection.TabIndex = 17;
-            this.comboReflection.Text = "No";
             this.comboReflection.SelectedIndexChanged += new System.EventHandler(this.comboReflection_SelectedIndexChanged);
             // 
             // darkLabel16
@@ -259,7 +255,6 @@
             this.comboRoomType.Name = "comboRoomType";
             this.comboRoomType.Size = new System.Drawing.Size(99, 23);
             this.comboRoomType.TabIndex = 9;
-            this.comboRoomType.Text = "Normal";
             this.comboRoomType.SelectedIndexChanged += new System.EventHandler(this.comboRoomType_SelectedIndexChanged);
             // 
             // darkLabel15
@@ -277,12 +272,13 @@
             // 
             this.comboRoom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboRoom.DropDownHeight = 406;
             this.comboRoom.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboRoom.IntegralHeight = false;
             this.comboRoom.Location = new System.Drawing.Point(3, 28);
             this.comboRoom.Name = "comboRoom";
             this.comboRoom.Size = new System.Drawing.Size(220, 23);
             this.comboRoom.TabIndex = 0;
-            this.comboRoom.Text = null;
             this.comboRoom.SelectedIndexChanged += new System.EventHandler(this.comboRoom_SelectedIndexChanged);
             // 
             // panelRoomAmbientLight
