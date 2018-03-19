@@ -131,7 +131,7 @@ namespace WadTool
                 if (form.ShowDialog(owner) == DialogResult.Cancel)
                     return;
 
-                tool.DestinationWad = new Wad2();
+                tool.DestinationWad = new Wad2 { SuggestedGameVersion = form.Version };
             }
         }
 

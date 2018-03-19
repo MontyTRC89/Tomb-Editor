@@ -26,7 +26,7 @@ namespace TombLib.Wad
 
     public class Wad2 : IDisposable
     {
-        public WadGameVersion SuggestedGameVersion { get; set; }
+        public WadGameVersion SuggestedGameVersion { get; set; } = WadGameVersion.TR4_TRNG;
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();
         public SortedList<WadStaticId, WadStatic> Statics { get; set; } = new SortedList<WadStaticId, WadStatic>();
         public SortedList<WadSpriteSequenceId, WadSpriteSequence> SpriteSequences { get; set; } = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
@@ -41,7 +41,7 @@ namespace TombLib.Wad
         public SortedDictionary<WadStaticId, StaticModel> DirectXStatics { get; } = new SortedDictionary<WadStaticId, StaticModel>();
         public ConcurrentDictionary<WadMesh, ObjectMesh> DirectXMeshes { get; } = new ConcurrentDictionary<WadMesh, ObjectMesh>();
         public Dictionary<WadTexture, VectorInt2> PackedTextures { get; set; } = new Dictionary<WadTexture, VectorInt2>();
-        
+
         // Size of the atlas
         // DX10 requires minimum 8K textures support for hardware certification so we should be safe with this
         public const int TextureAtlasSize = 8192;

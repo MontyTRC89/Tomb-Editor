@@ -49,12 +49,12 @@ namespace WadTool
                 treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllSpriteSequences(GameVersion)));
             else if (TypeClass == typeof(WadFixedSoundInfoId))
             {
-                DarkTreeNode usedSoundNode = new DarkTreeNode("Used sounds");
+                DarkTreeNode usedSoundNode = new DarkTreeNode("Sounds used by the game");
                 usedSoundNode.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllFixedByDefaultSounds(GameVersion)));
                 usedSoundNode.Expanded = true;
                 treeSlots.Nodes.Add(usedSoundNode);
 
-                DarkTreeNode allSoundNode = new DarkTreeNode("All sounds");
+                DarkTreeNode allSoundNode = new DarkTreeNode("All sound slots");
                 allSoundNode.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllSounds(GameVersion)));
                 treeSlots.Nodes.Add(allSoundNode);
             }
