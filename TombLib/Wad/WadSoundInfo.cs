@@ -12,8 +12,8 @@ namespace TombLib.Wad
     public enum WadSoundLoopBehaviour : byte
     {
         None = 0,
-        OneShotRewound = 1, // The sound will be rewound if triggered again
-        OneShotWait = 2, // The same sound will be ignored until current one stops
+        OneShotWait = 1, // The same sound will be ignored until current one stops
+        OneShotRewound = 2, // The sound will be rewound if triggered again
         Looped = 3 // The sound will be looped until strictly stopped by an engine event
     }
 
@@ -72,9 +72,8 @@ namespace TombLib.Wad
             {
                 float actualPitchFactor = PitchFactor;
                 if (Samples.Count > 0)
-                    actualPitchFactor *= Samples[0].SampleRate / WadSample.GameSupportedSampleRate;
+                    actualPitchFactor *= (float)Samples[0].SampleRate / (float)WadSample.GameSupportedSampleRate;
                 return (byte)(0x80 ^ (byte)Math.Max(0, Math.Min(255, actualPitchFactor * 128 + 0.5f)));
-
             }
             set { PitchFactor = (value ^ 0x80) / 128.0f; }
         }
