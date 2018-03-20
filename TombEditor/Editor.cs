@@ -396,10 +396,17 @@ namespace TombEditor
         }
 
         // This is invoked if the animated texture sets changed for the level.
-        public class AnimatedTexturesChanged : IEditorEvent { }
+        public class AnimatedTexturesChanged : IEditorEventCausesUnsavedChanges { }
         public void AnimatedTexturesChange()
         {
             RaiseEvent(new AnimatedTexturesChanged());
+        }
+
+        // This is invoked if the animated texture sets changed for the level.
+        public class TextureSoundsChanged : IEditorEventCausesUnsavedChanges { }
+        public void TextureSoundsChange()
+        {
+            RaiseEvent(new TextureSoundsChanged());
         }
 
         // This is invoke after an autosave

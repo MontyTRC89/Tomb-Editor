@@ -37,20 +37,22 @@ namespace TombEditor.Forms
         private static readonly StringFormat _textureSoundStringFormat = new StringFormat(StringFormatFlags.NoWrap) { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
         private const float _textureSoundStringSize = 0.4f;
         private const float _textureSoundProportion = 1.0f / 4.0f;
+        private Editor _editor;
 
-        public FormTextureSounds(Editor _editor)
+        public FormTextureSounds(Editor editor)
         {
             InitializeComponent();
+            _editor = editor;
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(440, 180) + (Size - ClientSize);
 
             // Initialize texture map
-            if (_editor.SelectedTexture.TextureIsInvisble)
-                textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
+            if (editor.SelectedTexture.TextureIsInvisble)
+                textureMap.ResetVisibleTexture(editor.Level.Settings.Textures.Count > 0 ? editor.Level.Settings.Textures[0] : null);
             else
-                textureMap.ShowTexture(_editor.SelectedTexture);
+                textureMap.ShowTexture(editor.SelectedTexture);
 
             // Add texture sounds to combo box
             foreach (TextureSound sound in Enum.GetValues(typeof(TextureSound)))
@@ -81,6 +83,7 @@ namespace TombEditor.Forms
                             textureMap.VisibleTexture.SetTextureSound(x, y, sound);
                 });
             textureMap.Invalidate();
+            _editor.TextureSoundsChange();
         }
 
         public class PanelTextureMapForSounds : Controls.PanelTextureMap
