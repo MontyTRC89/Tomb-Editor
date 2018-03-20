@@ -1672,18 +1672,21 @@ namespace TombEditor.Controls
                 {
                     var geometry = (ImportedGeometryInstance)instance;
 
-                    if (geometry?.Model?.DirectXModel?.Meshes?.FirstOrDefault() != null)
-                        foreach (ImportedGeometryMesh mesh in geometry.Model.DirectXModel.Meshes)
-                            if (geometry.MeshNameMatchesFilter(mesh.Name))
-                                DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
-                            else
-                            {
-                                BoundingBox box = new BoundingBox(
-                                    room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
-                                    room.WorldPos + geometry.Position + new Vector3(_littleCubeRadius));
-                                if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                                    result = new PickingResultObject(distance, instance);
-                            }
+                    bool testedMesh = false;
+                    foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
+                        if (geometry.MeshNameMatchesFilter(mesh.Name))
+                        {
+                            DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                            testedMesh = true;
+                        }
+                    if (!testedMesh)
+                    {
+                        BoundingBox box = new BoundingBox(
+                            room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
+                            room.WorldPos + geometry.Position + new Vector3(_littleCubeRadius));
+                        if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                            result = new PickingResultObject(distance, instance);
+                    }
                 }
                 else if (ShowOtherObjects)
                 {
