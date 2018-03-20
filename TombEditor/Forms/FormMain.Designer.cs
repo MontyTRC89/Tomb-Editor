@@ -651,7 +651,7 @@
             this.exportRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_Export_16;
             this.exportRoomToolStripMenuItem.Name = "exportRoomToolStripMenuItem";
             this.exportRoomToolStripMenuItem.Size = new System.Drawing.Size(298, 22);
-            this.exportRoomToolStripMenuItem.Text = "Export current room";
+            this.exportRoomToolStripMenuItem.Text = "Export rooms";
             this.exportRoomToolStripMenuItem.Click += new System.EventHandler(this.exportRoomToolStripMenuItem_Click);
             // 
             // importRoomsToolStripMenuItem
