@@ -32,10 +32,14 @@ namespace TombLib.Utils
             AddTargetAndRule(config, minLogLevel, new ColoredConsoleTarget("Console") { Layout = _layout, DetectConsoleAvailable = true });
             AddTargetAndRule(config, minLogLevel, new DebuggerTarget("Debugger") { Layout = _layout });
             if (writeToFile)
+            {
+                string fileName = assemblyProductAttribute?.Product ?? "TombLib";
+                fileName = fileName.Replace(" ", "") + "Log.txt";
+
                 AddTargetAndRule(config, minLogLevel, new FileTarget("File")
                 {
                     Layout = _layout,
-                    FileName = (assemblyProductAttribute?.Product ?? "TombLib") + "Log.txt",
+                    FileName = fileName,
                     KeepFileOpen = true,
                     DeleteOldFileOnStartup = true,
 
@@ -43,6 +47,7 @@ namespace TombLib.Utils
                     ArchiveNumbering = ArchiveNumberingMode.DateAndSequence,
                     ArchiveOldFileOnStartup = archiveFileCount > 0
                 });
+            }
             LogManager.Configuration = config;
 
             // Setup application exception handler to use nlog
