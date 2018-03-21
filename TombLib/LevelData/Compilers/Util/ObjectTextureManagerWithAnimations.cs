@@ -104,6 +104,10 @@ namespace TombLib.LevelData.Compilers.Util
                         frame.TexCoord3 * AnimationLookupFactor,
                         (startX, startY, endX, endY) =>
                         {
+                            startX = Math.Max(0, startX);
+                            startY = Math.Max(0, startY);
+                            endX = Math.Min(lookup.GetUpperBound(0), endX);
+                            endY = Math.Min(lookup.GetUpperBound(1), endY);
                             for (int y = startY; y < endY; ++y)
                                 for (int x = startX; x < endX; ++x)
                                 {

@@ -528,8 +528,8 @@ namespace TombEditor.Forms
 
                     int firstX = (int)inputTexCoord.X;
                     int firstY = (int)inputTexCoord.Y;
-                    int secondX = Math.Min(firstX + 1, input.Width);
-                    int secondY = Math.Min(firstY + 1, input.Height);
+                    int secondX = Math.Min(firstX + 1, input.Width - 1);
+                    int secondY = Math.Min(firstY + 1, input.Height - 1);
                     float secondFactorX = inputTexCoord.X - firstX;
                     float secondFactorY = inputTexCoord.Y - firstY;
 
