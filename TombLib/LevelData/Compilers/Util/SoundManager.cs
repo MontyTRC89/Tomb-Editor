@@ -91,7 +91,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Fill accelerated data structure to find free sound map entries
             if (soundInfo != null)
-                _soundInfoToMapIndexLookup.Add(soundInfo.Hash, soundMapIndex);
+                _soundInfoToMapIndexLookup.TryAdd(soundInfo.Hash, soundMapIndex);
             for (ushort i = oldSoundMapSize; i < soundMapIndex - 1; ++i)
                 _freeSoundMapIndices.Add(i);
             _freeSoundMapIndices.Remove(soundMapIndex);
