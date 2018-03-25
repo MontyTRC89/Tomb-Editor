@@ -92,6 +92,9 @@
     <Compile Include="Controls\PanelRenderingMesh.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\PanelRenderingSkeleton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PanelRenderingStaticEditor.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -128,6 +131,12 @@
     <Compile Include="FormSelectSlot.Designer.cs">
       <DependentUpon>FormSelectSlot.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormSkeletonEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSkeletonEditor.Designer.cs">
+      <DependentUpon>FormSkeletonEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSoundOverview.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,6 +161,7 @@
     <Compile Include="FormStaticEditor.Designer.cs">
       <DependentUpon>FormStaticEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="GizmoSkeletonEditor.cs" />
     <Compile Include="GizmoStaticEditor.cs" />
     <Compile Include="GizmoStaticEditorLight.cs" />
     <Compile Include="Program.cs" />
@@ -162,6 +172,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="WadActions.cs" />
+    <Compile Include="WadMeshBoneNode.cs" />
     <Compile Include="WadToolClass.cs" />
     <EmbeddedResource Include="Controls\WadTreeControl.resx">
       <DependentUpon>WadTreeControl.cs</DependentUpon>
@@ -180,6 +191,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSelectSlot.resx">
       <DependentUpon>FormSelectSlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSkeletonEditor.resx">
+      <DependentUpon>FormSkeletonEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSoundOverview.resx">
       <DependentUpon>FormSoundOverview.cs</DependentUpon>

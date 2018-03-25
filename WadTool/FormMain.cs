@@ -505,5 +505,15 @@ namespace WadTool
         {
             WadActions.ShowSoundOverview(_tool, this, WadArea.Destination);
         }
+
+        private void darkButton1_Click(object sender, EventArgs e)
+        {
+            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
+            using (var form = new FormSkeletonEditor(_tool, _deviceManager, wad, moveableId))
+            {
+                form.ShowDialog();
+            }
+        }
     }
 }

@@ -51,7 +51,7 @@ namespace TombLib.Wad
     public class WadMoveable : IWadObject
     {
         public WadMoveableId Id { get; private set; }
-        public IEnumerable<WadMesh> Meshes => Skeleton.LinearizedBones.Select(bone => bone.Mesh);
+        public List<WadMesh> Meshes => Skeleton.LinearizedBones.Select(bone => bone.Mesh).ToList();
         public List<WadAnimation> Animations { get; } = new List<WadAnimation>();
         public WadBone Skeleton { get; set; } = new WadBone();
 

@@ -33,6 +33,11 @@ namespace WadTool
             _control.StaticScale = newScale;
         }
 
+        protected override void GizmoMoveDelta(Vector3 delta)
+        {
+            
+        }
+
         protected override Vector3 Position => _control != null ? _control.StaticPosition : Vector3.Zero;
         protected override float RotationY => _control.StaticRotation.Y;
         protected override float RotationX => _control.StaticRotation.X;

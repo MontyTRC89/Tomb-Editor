@@ -484,9 +484,10 @@ namespace TombLib.Utils
         public unsafe bool HasAlpha(int X, int Y, int width, int height)
         {
             // Check coordinates
+            // TODO: check Woops bug
             if (X < 0 || Y < 0 || width < 0 || height < 0 ||
                 X + width > Width || Y + height > Height)
-                throw new ArgumentOutOfRangeException();
+                return false; // throw new ArgumentOutOfRangeException();
 
             // Check for alpha
             uint alphaBits = ColorToUint(new ColorC(0, 0, 0, 255));

@@ -144,21 +144,30 @@ namespace TombLib.Graphics
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ, out intersection))
+                        {
                             GizmoMove(new Vector3(intersection.X - Size * _arrowHeadOffsetMultiplier, Position.Y, Position.Z));
+                            GizmoMoveDelta(new Vector3(intersection.X - Size * _arrowHeadOffsetMultiplier - Position.X, 0.0f, 0.0f));
+                        }
                     }
                     break;
                 case GizmoMode.TranslateY:
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ, out intersection))
+                        {
                             GizmoMove(new Vector3(Position.X, intersection.Y - Size * _arrowHeadOffsetMultiplier, Position.Z));
+                            GizmoMoveDelta(new Vector3(0.0f, intersection.Y - Size * _arrowHeadOffsetMultiplier - Position.Y, 0.0f));
+                        }
                     }
                     break;
                 case GizmoMode.TranslateZ:
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY, out intersection))
+                        {
                             GizmoMove(new Vector3(Position.X, Position.Y, intersection.Z + Size * _arrowHeadOffsetMultiplier));
+                            GizmoMoveDelta(new Vector3(0.0f, 0.0f, intersection.Z + Size * _arrowHeadOffsetMultiplier - Position.Z));
+                        }
                     }
                     break;
                 case GizmoMode.ScaleX:
@@ -706,7 +715,10 @@ namespace TombLib.Graphics
             }
         }
 
+        // They are called both, just leave the implementation empty if not needed, don't use exceptions
         protected abstract void GizmoMove(Vector3 newPos);
+        protected abstract void GizmoMoveDelta(Vector3 delta);
+
         protected abstract void GizmoScale(float newScale);
         protected abstract void GizmoRotateY(float newAngle);
         protected abstract void GizmoRotateX(float newAngle);
