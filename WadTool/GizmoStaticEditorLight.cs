@@ -43,6 +43,11 @@ namespace WadTool
             _control.UpdateLights();
         }
 
+        protected override void GizmoMoveDelta(Vector3 delta)
+        {
+            
+        }
+
         protected override Vector3 Position => _control != null && _control.SelectedLight != null ? _control.SelectedLight.Position : Vector3.Zero;
         protected override float RotationY => 0;
         protected override float RotationX => 0;

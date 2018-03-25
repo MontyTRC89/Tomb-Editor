@@ -22,5 +22,20 @@ namespace TombLib.Wad
                         yield return childBones;
             }
         }
+
+        public WadBone Clone(WadBone parentBone)
+        {
+            WadBone newBone = new WadBone();
+            newBone.Name = Name;
+            newBone.Mesh = Mesh;
+            newBone.Translation = Translation;
+            newBone.Transform = Transform;
+            newBone.Parent = parentBone;
+
+            foreach (var childBone in Children)
+                newBone.Children.Add(childBone.Clone(newBone));
+
+            return newBone;
+        }
     }
 }

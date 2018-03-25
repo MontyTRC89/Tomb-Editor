@@ -151,6 +151,13 @@ namespace WadTool
             RaiseEvent(new StaticLightsChangedEvent());
         }
 
+        public class BoneOffsetMovedEvent : IEditorEvent
+        { }
+        public void BoneOffsetMoved()
+        {
+            RaiseEvent(new BoneOffsetMovedEvent());
+        }
+
         // Construction and destruction
         public WadToolClass(Configuration configuration)
         {
