@@ -50,6 +50,10 @@ namespace WadTool
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is WadToolClass.SelectedObjectEditedEvent)
+            {
+
+            }
             if (obj is WadToolClass.DestinationWadChangedEvent)
             {
                 if (_tool.DestinationWad != null)
@@ -512,7 +516,9 @@ namespace WadTool
             var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
             using (var form = new FormSkeletonEditor(_tool, _deviceManager, wad, moveableId))
             {
-                form.ShowDialog();
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
+                _tool.SelectedObjectEdited();
             }
         }
     }

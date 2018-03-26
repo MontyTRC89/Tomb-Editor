@@ -86,6 +86,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ContextMenus\MoveableContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PanelRendering.cs">
       <SubType>Component</SubType>
     </Compile>

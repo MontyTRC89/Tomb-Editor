@@ -373,5 +373,23 @@ namespace TombLib.Wad
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
             new FileFormat("Tomb Raider Chronicles level", "trc")
         };
+
+        public void ReloadMoveable(WadMoveableId id)
+        {
+            if (!DirectXMoveables.ContainsKey(id))
+                return;
+            DirectXMoveables[id].Dispose();
+            DirectXMoveables.Remove(id);
+            DirectXMoveables.Add(id, AnimatedModel.FromWad2(GraphicsDevice, this, Moveables[id], PackedTextures));
+        }
+
+        public void ReloadStatic(WadStaticId id)
+        {
+            if (!DirectXStatics.ContainsKey(id))
+                return;
+            DirectXStatics[id].Dispose();
+            DirectXStatics.Remove(id);
+            DirectXStatics.Add(id, StaticModel.FromWad2(GraphicsDevice, this, Statics[id], PackedTextures));
+        }
     }
 }

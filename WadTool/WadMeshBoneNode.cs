@@ -18,6 +18,7 @@ namespace WadTool
         public ObjectMesh DirectXMesh { get; set; }
         public Matrix4x4 GlobalTransform { get; set; }
         public int LinearizedIndex { get; set; }
+        public List<WadMeshBoneNode> Children { get; private set; } = new List<WadMeshBoneNode>();
 
         public Vector3 Centre
         {
@@ -37,6 +38,17 @@ namespace WadTool
             DirectXMesh = dxMesh;
             GlobalTransform = Matrix4x4.Identity;
             Parent = parent;
+        }
+
+        public IEnumerable<WadMeshBoneNode> LinearizedBones
+        {
+            get
+            {
+                yield return this;
+                foreach (WadMeshBoneNode child in Children)
+                    foreach (WadMeshBoneNode childBones in child.LinearizedBones)
+                        yield return childBones;
+            }
         }
     }
 }
