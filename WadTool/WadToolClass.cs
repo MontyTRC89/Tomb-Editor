@@ -158,6 +158,13 @@ namespace WadTool
             RaiseEvent(new BoneOffsetMovedEvent());
         }
 
+        public class SelectedObjectEditedEvent : IEditorEvent
+        { }
+        public void SelectedObjectEdited()
+        {
+            RaiseEvent(new SelectedObjectEditedEvent());
+        }
+
         // Construction and destruction
         public WadToolClass(Configuration configuration)
         {

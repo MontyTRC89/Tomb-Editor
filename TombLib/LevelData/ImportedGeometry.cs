@@ -6,7 +6,7 @@ using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.GeometryIO;
-using TombLib.GeometryIO.Importers;
+//using TombLib.GeometryIO.Importers;
 using TombLib.Graphics;
 using TombLib.Utils;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;

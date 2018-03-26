@@ -1,4 +1,5 @@
 ﻿using DarkUI.Controls;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,7 +59,13 @@ namespace WadTool
             node.Tag = new WadMeshBoneNode(parentNode, wadMesh, currentBone, dxMesh);
 
             foreach (var childBone in currentBone.Children)
-                node.Nodes.Add(LoadSkeleton((WadMeshBoneNode)node.Tag, childBone, node));
+            {
+                var newChildNode = LoadSkeleton((WadMeshBoneNode)node.Tag, childBone, node);
+                node.Nodes.Add(newChildNode);
+                //((WadMeshBoneNode)node.Tag).Children.Add((WadMeshBoneNode)newChildNode.Tag);
+                var tag = (WadMeshBoneNode)node.Tag;
+                tag.Children.Add((WadMeshBoneNode)(newChildNode.Tag));
+            }
 
             return node;
         }
@@ -101,6 +108,95 @@ namespace WadTool
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
             panelRendering.SelectedNode = theNode;
             panelRendering.Invalidate();
+        }
+
+        private void cbDrawGizmo_CheckedChanged(object sender, EventArgs e)
+        {
+            panelRendering.DrawGizmo = cbDrawGizmo.Checked;
+            panelRendering.Invalidate();
+        }
+
+        private void cbDrawGrid_CheckedChanged(object sender, EventArgs e)
+        {
+            panelRendering.DrawGrid = cbDrawGrid.Checked;
+            panelRendering.Invalidate();
+        }
+
+        private void butSaveChanges_Click(object sender, EventArgs e)
+        {
+            // First I have to count old skeleton bones count
+            int originalBonesCount = _moveable.Skeleton.LinearizedBones.Count();
+            int currentBonesCount = _workingSkeleton.LinearizedBones.Count();
+
+            if (originalBonesCount < currentBonesCount)
+            {
+                if (DarkMessageBox.Show(this, "The original moveable has less bones than current unsaved skeleton. " +
+                                        "Some extra angles will be added to keyframes of animations. " +
+                                        "Do you really want to continue?", "Confirm", MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Question) == DialogResult.No)
+                    return;
+            }
+
+            if (originalBonesCount > currentBonesCount)
+            {
+                if (DarkMessageBox.Show(this, "The original moveable has more bones than current unsaved skeleton. " +
+                                        "Some extra angles will be deleted from keyframes of animations. " +
+                                        "Do you really want to continue?", "Confirm", MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Question) == DialogResult.No)
+                    return;
+            }
+
+            // The user agree to do this, so let's do it
+
+            // First, we have to build the new skeleton
+            _moveable.Skeleton = SaveSkeleton(null, treeSkeleton.Nodes[0]);
+
+            // Now I have to change all animations
+            if (currentBonesCount != originalBonesCount)
+            {
+                for (int i = 0; i < _moveable.Animations.Count; i++)
+                {
+                    for (int j = 0; j < _moveable.Animations[i].KeyFrames.Count; j++)
+                    {
+                        if (currentBonesCount > originalBonesCount)
+                        {
+                            for (int k = 0; k < currentBonesCount - originalBonesCount; k++)
+                            {
+                                var newAngle = new WadKeyFrameRotation();
+                                newAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
+                                _moveable.Animations[i].KeyFrames[j].Angles.Add(newAngle);
+                            }
+                        }
+                        else
+                        {
+                            _moveable.Animations[i].KeyFrames[j].Angles.RemoveRange(currentBonesCount, originalBonesCount - currentBonesCount);
+                        }
+                    }
+                }
+            }
+
+            // Now reload the moveable
+            _wad.ReloadMoveable(_moveable.Id);
+
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private WadBone SaveSkeleton(WadBone parentBone, DarkTreeNode currentNode)
+        {
+            var currentBone = (WadMeshBoneNode)currentNode.Tag;
+            var bone = new WadBone();
+
+            bone.Name = currentBone.Bone.Name;
+            bone.Parent = parentBone;
+            bone.Translation = currentBone.Bone.Translation;
+            bone.Mesh = currentBone.WadMesh;
+            bone.Transform = Matrix4x4.CreateTranslation(bone.Translation);
+
+            foreach (var childNode in currentNode.Nodes)
+                bone.Children.Add(SaveSkeleton(bone, childNode));
+
+            return bone;
         }
     }
 }
