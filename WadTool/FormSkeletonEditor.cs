@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib;
+using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.Wad;
 
@@ -62,7 +63,6 @@ namespace WadTool
             {
                 var newChildNode = LoadSkeleton((WadMeshBoneNode)node.Tag, childBone, node);
                 node.Nodes.Add(newChildNode);
-                //((WadMeshBoneNode)node.Tag).Children.Add((WadMeshBoneNode)newChildNode.Tag);
                 var tag = (WadMeshBoneNode)node.Tag;
                 tag.Children.Add((WadMeshBoneNode)(newChildNode.Tag));
             }
@@ -197,6 +197,38 @@ namespace WadTool
                 bone.Children.Add(SaveSkeleton(bone, childNode));
 
             return bone;
+        }
+
+        private void butDeleteBone_Click(object sender, EventArgs e)
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            if (DarkMessageBox.Show(this, "Are you really sure to delete bone '" + theNode.Bone.Name + "' and " +
+                                    "all its children?", "Delete bone",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            treeSkeleton.SelectedNodes[0].Remove();
+        }
+
+        private void butRenameBone_Click(object sender, EventArgs e)
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            using (var form = new FormInputBox("Rename bone", "Insert the name of the bone:", theNode.Bone.Name))
+            {
+                if (form.ShowDialog() == DialogResult.OK && form.Result != "")
+                {
+                    theNode.Bone.Name = form.Result;
+                    treeSkeleton.SelectedNodes[0].Text = form.Result;
+                    panelRendering.Invalidate();
+                }
+            }
         }
     }
 }

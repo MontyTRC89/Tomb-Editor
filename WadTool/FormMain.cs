@@ -521,5 +521,17 @@ namespace WadTool
                 _tool.SelectedObjectEdited();
             }
         }
+
+        private void darkButton3_Click(object sender, EventArgs e)
+        {
+            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
+            using (var form = new FormAnimationEditor(_tool, _deviceManager, wad, moveableId))
+            {
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
+                _tool.SelectedObjectEdited();
+            }
+        }
     }
 }

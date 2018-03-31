@@ -33,10 +33,13 @@
             this.cbDrawGizmo = new DarkUI.Controls.DarkCheckBox();
             this.cbDrawGrid = new DarkUI.Controls.DarkCheckBox();
             this.butSaveChanges = new DarkUI.Controls.DarkButton();
+            this.butRenameBone = new DarkUI.Controls.DarkButton();
+            this.butDeleteBone = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
             // 
             // treeSkeleton
             // 
+            this.treeSkeleton.AllowMoveNodes = true;
             this.treeSkeleton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -96,11 +99,37 @@
             this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butSaveChanges.Click += new System.EventHandler(this.butSaveChanges_Click);
             // 
+            // butRenameBone
+            // 
+            this.butRenameBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butRenameBone.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butRenameBone.Location = new System.Drawing.Point(725, 621);
+            this.butRenameBone.Name = "butRenameBone";
+            this.butRenameBone.Size = new System.Drawing.Size(81, 23);
+            this.butRenameBone.TabIndex = 84;
+            this.butRenameBone.Text = "Rename";
+            this.butRenameBone.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butRenameBone.Click += new System.EventHandler(this.butRenameBone_Click);
+            // 
+            // butDeleteBone
+            // 
+            this.butDeleteBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butDeleteBone.Image = global::WadTool.Properties.Resources.trash_161;
+            this.butDeleteBone.Location = new System.Drawing.Point(812, 621);
+            this.butDeleteBone.Name = "butDeleteBone";
+            this.butDeleteBone.Size = new System.Drawing.Size(72, 23);
+            this.butDeleteBone.TabIndex = 83;
+            this.butDeleteBone.Text = "Delete";
+            this.butDeleteBone.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDeleteBone.Click += new System.EventHandler(this.butDeleteBone_Click);
+            // 
             // FormSkeletonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.butRenameBone);
+            this.Controls.Add(this.butDeleteBone);
             this.Controls.Add(this.cbDrawGizmo);
             this.Controls.Add(this.cbDrawGrid);
             this.Controls.Add(this.butSaveChanges);
@@ -123,5 +152,7 @@
         private DarkUI.Controls.DarkCheckBox cbDrawGizmo;
         private DarkUI.Controls.DarkCheckBox cbDrawGrid;
         private DarkUI.Controls.DarkButton butSaveChanges;
+        private DarkUI.Controls.DarkButton butRenameBone;
+        private DarkUI.Controls.DarkButton butDeleteBone;
     }
 }
