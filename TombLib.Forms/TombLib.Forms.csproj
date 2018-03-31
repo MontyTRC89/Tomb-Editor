@@ -83,6 +83,12 @@
     <Compile Include="Forms\FormAbout.designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormInputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormInputBox.Designer.cs">
+      <DependentUpon>FormInputBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\GraphicalDialogHandler.cs" />
     <Compile Include="Forms\GeometryIOSettingsDialog.cs">
       <SubType>Form</SubType>
@@ -119,6 +125,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormInputBox.resx">
+      <DependentUpon>FormInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GeometryIOSettingsDialog.resx">
       <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>

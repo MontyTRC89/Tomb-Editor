@@ -168,40 +168,7 @@ namespace TombLib.Graphics
 
             // Prepare animations
             for (int j = 0; j < mov.Animations.Count; j++)
-            {
-                Animation animation = new Animation();
-                WadAnimation wadAnim = mov.Animations[j];
-
-                animation.Framerate = wadAnim.FrameDuration;
-
-                animation.KeyFrames = new List<KeyFrame>();
-
-                for (int f = 0; f < wadAnim.KeyFrames.Count; f++)
-                {
-                    KeyFrame frame = new KeyFrame();
-                    WadKeyFrame wadFrame = wadAnim.KeyFrames[f];
-
-                    for (int k = 0; k < bones.Count; k++)
-                    {
-                        frame.Rotations.Add(Matrix4x4.Identity);
-                        frame.Translations.Add(Matrix4x4.Identity);
-                    }
-
-                    frame.Translations[0] = Matrix4x4.CreateTranslation(new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z));
-
-                    for (int k = 1; k < frame.Translations.Count; k++)
-                        frame.Translations[k] = Matrix4x4.CreateTranslation(Vector3.Zero);
-
-                    for (int n = 0; n < frame.Rotations.Count; n++)
-                    {
-                        frame.Rotations[n] = wadFrame.Angles[n].RotationMatrix;
-                    }
-
-                    animation.KeyFrames.Add(frame);
-                }
-
-                model.Animations.Add(animation);
-            }
+                model.Animations.Add(Animation.FromWad2(bones, mov.Animations[j]));
 
             // Prepare data by loading the first animation and uploading data to the GPU
             model.BuildHierarchy();

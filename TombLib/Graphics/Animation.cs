@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
+using TombLib.Wad;
 
 namespace TombLib.Graphics
 {
@@ -9,5 +11,39 @@ namespace TombLib.Graphics
         public float Speed { get; set; }
         public float Acceleration { get; set; }
         public List<KeyFrame> KeyFrames { get; set; } = new List<KeyFrame>();
+
+        public static Animation FromWad2(List<WadBone> bones, WadAnimation wadAnim)
+        {
+            Animation animation = new Animation();
+
+            animation.Framerate = wadAnim.FrameDuration;
+            animation.KeyFrames = new List<KeyFrame>();
+
+            for (int f = 0; f < wadAnim.KeyFrames.Count; f++)
+            {
+                KeyFrame frame = new KeyFrame();
+                WadKeyFrame wadFrame = wadAnim.KeyFrames[f];
+
+                for (int k = 0; k < bones.Count; k++)
+                {
+                    frame.Rotations.Add(Matrix4x4.Identity);
+                    frame.Translations.Add(Matrix4x4.Identity);
+                }
+
+                frame.Translations[0] = Matrix4x4.CreateTranslation(new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z));
+
+                for (int k = 1; k < frame.Translations.Count; k++)
+                    frame.Translations[k] = Matrix4x4.CreateTranslation(Vector3.Zero);
+
+                for (int n = 0; n < frame.Rotations.Count; n++)
+                {
+                    frame.Rotations[n] = wadFrame.Angles[n].RotationMatrix;
+                }
+
+                animation.KeyFrames.Add(frame);
+            }
+
+            return animation;
+        }
     }
 }
