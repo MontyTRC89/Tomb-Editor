@@ -22,7 +22,9 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WadAnimation Animation { get; set; }
+        public WadAnimationNode Animation { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AnimatedModel Model { get { return _model; } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int CurrentKeyFrame { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -53,9 +55,12 @@ namespace WadTool.Controls
         private GeometricPrimitive _sphere;
         private GeometricPrimitive _littleSphere;
         private Wad2 _wad;
+        private AnimatedModel _model;
+        private WadMoveable _moveable;
+        private WadMoveableId _moveableId;
 
         public List<WadMeshBoneNode> Skeleton { get; set; }
-        public WadMeshBoneNode SelectedNode { get; set; }
+        public ObjectMesh SelectedMesh { get; set; }
 
         private static readonly Vector4 _red = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
         private static readonly Vector4 _green = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
@@ -64,12 +69,15 @@ namespace WadTool.Controls
         private Buffer<SolidVertex> _vertexBufferVisibility;
         private Buffer<SolidVertex> _vertexBufferCollision;
 
-        public void InitializePanel(WadToolClass tool, Wad2 wad, DeviceManager deviceManager)
+        public void InitializePanel(WadToolClass tool, Wad2 wad, DeviceManager deviceManager, WadMoveableId moveableId)
         {
             _tool = tool;
             _device = deviceManager.Device;
             _deviceManager = deviceManager;
             _wad = wad;
+            _moveableId = moveableId;
+            _moveable = _wad.Moveables[_moveableId];
+            _model = _wad.DirectXMoveables[_moveableId];
 
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
@@ -176,38 +184,76 @@ namespace WadTool.Controls
 
             Effect solidEffect = _deviceManager.Effects["Solid"];
 
-            if (Skeleton != null)
+            if (_model != null)
             {
+                var skin = _model;
                 var effect = _deviceManager.Effects["Model"];
 
-                effect.Parameters["Texture"].SetResource(_tool.DestinationWad.DirectXTexture);
+                effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.Parameters["Texture"].SetResource(_wad.DirectXTexture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
-                foreach (var node in Skeleton)
+                // Build animation transforms
+                var matrices = new List<Matrix4x4>();
+                if (Animation != null)
                 {
-                    _device.SetVertexBuffer(0, node.DirectXMesh.VertexBuffer);
-                    _device.SetIndexBuffer(node.DirectXMesh.IndexBuffer, true);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, node.DirectXMesh.VertexBuffer));
+                    for (var b = 0; b < _model.Meshes.Count; b++)
+                        matrices.Add(_model.AnimationTransforms[b]);
+                }
+                else
+                {
+                    foreach (var bone in _model.Bones)
+                        matrices.Add(bone.GlobalTransform);
+                }
 
-                    effect.Parameters["ModelViewProjection"].SetValue((node.GlobalTransform * viewProjection).ToSharpDX());
+                for (int i = 0; i < _model.Meshes.Count; i++)
+                {
+                    var mesh = skin.Meshes[i];
+                    if (mesh.Vertices.Count == 0)
+                        continue;
+
+                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                    effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
+
                     effect.Techniques[0].Passes[0].Apply();
 
-                    foreach (var submesh in node.DirectXMesh.Submeshes)
+                    foreach (var submesh in mesh.Submeshes)
                         _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
 
                 // Draw box
-                if (SelectedNode != null)
+                if (SelectedMesh != null)
                 {
                     if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
-                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(SelectedNode.WadMesh.BoundingBox);
+                    int meshIndex = _model.Meshes.IndexOf(SelectedMesh);
+                    var world = (Animation != null ? _model.AnimationTransforms[meshIndex] : _model.BindPoseTransforms[meshIndex]);
+                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(SelectedMesh.BoundingBox);
 
                     _device.SetVertexBuffer(_vertexBufferVisibility);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
                     _device.SetIndexBuffer(null, false);
 
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((SelectedNode.GlobalTransform * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                     solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                    _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
+                }
+
+                if (Animation != null)
+                {
+                    if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
+                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Animation.DirectXAnimation.KeyFrames[CurrentKeyFrame].GetBoundingBox(_model));
+
+                    _device.SetVertexBuffer(_vertexBufferVisibility);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
+                    _device.SetIndexBuffer(null, false);
+
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_blue);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
 
                     _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
@@ -228,30 +274,30 @@ namespace WadTool.Controls
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
-            if (DrawGizmo && SelectedNode != null)
+            if (DrawGizmo && SelectedMesh != null)
             {
                 // Draw the gizmo
                 _gizmo.Draw(viewProjection);
             }
 
             // Draw debug strings
-            if (SelectedNode != null)
+            if (SelectedMesh != null)
             {
-                Vector3 screenPos = _device.Viewport.Project(SelectedNode.Centre - Vector3.UnitY * 128.0f,
-                                    SelectedNode.GlobalTransform * viewProjection);
+                /*Vector3 screenPos = _device.Viewport.Project(SelectedMesh.Centre - Vector3.UnitY * 128.0f,
+                                    SelectedMesh.GlobalTransform * viewProjection);
                 _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
                 _spriteBatch.DrawString(_deviceManager.Font,
-                                        "Name: " + SelectedNode.Bone.Name,
+                                        "Name: " + SelectedMesh.Bone.Name,
                                         new Vector2(screenPos.X, screenPos.Y).ToSharpDX(),
                                         SharpDX.Color.White);
 
                 _spriteBatch.DrawString(_deviceManager.Font,
-                                        "Local offset: " + SelectedNode.Bone.Translation,
+                                        "Local offset: " + SelectedMesh.Bone.Translation,
                                         new Vector2(screenPos.X, screenPos.Y + 20.0f).ToSharpDX(),
                                         SharpDX.Color.White);
 
-                _spriteBatch.End();
+                _spriteBatch.End();*/
             }
 
             _device.Present();
@@ -307,21 +353,21 @@ namespace WadTool.Controls
                 }
 
                 // Try to do node picking
-                WadMeshBoneNode foundNode = null;
-                foreach (var node in Skeleton)
+                ObjectMesh foundMesh = null;
+                for (int i = 0; i < _model.Meshes.Count; i++)
                 {
                     float distance = 0;
                     float minDistance = float.PositiveInfinity;
-                    if (DoNodePicking(GetRay(e.X, e.Y), node, out distance))
+                    if (DoMeshPicking(GetRay(e.X, e.Y), i, out distance))
                     {
                         if (distance < minDistance)
                         {
                             distance = minDistance;
-                            foundNode = node;
+                            foundMesh = _model.Meshes[i];
                         }
                     }
                 }
-                SelectedNode = foundNode;
+                SelectedMesh = foundMesh;
             }
 
             Invalidate();
@@ -372,13 +418,13 @@ namespace WadTool.Controls
                 Invalidate();
         }
 
-        private bool DoNodePicking(Ray ray, WadMeshBoneNode node, out float nodeDistance)
+        private bool DoMeshPicking(Ray ray, int meshIndex, out float meshDistance)
         {
-            nodeDistance = 0;
+            meshDistance = 0;
 
             // Transform view ray to object space space
             Matrix4x4 inverseObjectMatrix;
-            if (!Matrix4x4.Invert(node.GlobalTransform, out inverseObjectMatrix))
+            if (!Matrix4x4.Invert((Animation != null ? _model.AnimationTransforms[meshIndex] : _model.BindPoseTransforms[meshIndex]), out inverseObjectMatrix))
                 return false;
             Vector3 transformedRayPos = MathC.HomogenousTransform(ray.Position, inverseObjectMatrix);
             Vector3 transformedRayDestination = MathC.HomogenousTransform(ray.Position + ray.Direction, inverseObjectMatrix);
@@ -388,12 +434,13 @@ namespace WadTool.Controls
             // Now do a ray - triangle intersection test
             bool hit = false;
             float minDistance = float.PositiveInfinity;
-            foreach (var submesh in node.DirectXMesh.Submeshes)
+            var mesh = _model.Meshes[meshIndex];
+            foreach (var submesh in mesh.Submeshes)
                 for (int k = 0; k < submesh.Value.Indices.Count; k += 3)
                 {
-                    Vector3 p1 = node.DirectXMesh.Vertices[submesh.Value.Indices[k]].Position;
-                    Vector3 p2 = node.DirectXMesh.Vertices[submesh.Value.Indices[k + 1]].Position;
-                    Vector3 p3 = node.DirectXMesh.Vertices[submesh.Value.Indices[k + 2]].Position;
+                    Vector3 p1 = mesh.Vertices[submesh.Value.Indices[k]].Position;
+                    Vector3 p2 = mesh.Vertices[submesh.Value.Indices[k + 1]].Position;
+                    Vector3 p3 = mesh.Vertices[submesh.Value.Indices[k + 2]].Position;
 
                     float distance;
                     if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
@@ -405,7 +452,7 @@ namespace WadTool.Controls
 
             if (hit)
             {
-                nodeDistance = minDistance;
+                meshDistance = minDistance;
                 return true;
             }
             else
