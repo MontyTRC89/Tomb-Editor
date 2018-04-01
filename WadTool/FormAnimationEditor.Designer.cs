@@ -60,6 +60,20 @@
             this.drawCollisionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.butCalculateCollisionBox = new DarkUI.Controls.DarkButton();
+            this.tbCollisionBoxMaxZ = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel8 = new DarkUI.Controls.DarkLabel();
+            this.tbCollisionBoxMaxY = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel9 = new DarkUI.Controls.DarkLabel();
+            this.tbCollisionBoxMaxX = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
+            this.tbCollisionBoxMinZ = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel11 = new DarkUI.Controls.DarkLabel();
+            this.tbCollisionBoxMinY = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel12 = new DarkUI.Controls.DarkLabel();
+            this.tbCollisionBoxMinX = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel13 = new DarkUI.Controls.DarkLabel();
+            this.cbCollisionBox = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.darkButton2 = new DarkUI.Controls.DarkButton();
@@ -367,6 +381,22 @@
             // 
             // panelBottom
             // 
+            this.panelBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelBottom.Controls.Add(this.butCalculateCollisionBox);
+            this.panelBottom.Controls.Add(this.tbCollisionBoxMaxZ);
+            this.panelBottom.Controls.Add(this.darkLabel8);
+            this.panelBottom.Controls.Add(this.tbCollisionBoxMaxY);
+            this.panelBottom.Controls.Add(this.darkLabel9);
+            this.panelBottom.Controls.Add(this.tbCollisionBoxMaxX);
+            this.panelBottom.Controls.Add(this.darkLabel10);
+            this.panelBottom.Controls.Add(this.tbCollisionBoxMinZ);
+            this.panelBottom.Controls.Add(this.darkLabel11);
+            this.panelBottom.Controls.Add(this.tbCollisionBoxMinY);
+            this.panelBottom.Controls.Add(this.darkLabel12);
+            this.panelBottom.Controls.Add(this.tbCollisionBoxMinX);
+            this.panelBottom.Controls.Add(this.darkLabel13);
+            this.panelBottom.Controls.Add(this.cbCollisionBox);
             this.panelBottom.Controls.Add(this.darkLabel2);
             this.panelBottom.Controls.Add(this.darkButton1);
             this.panelBottom.Controls.Add(this.darkButton2);
@@ -375,19 +405,153 @@
             this.panelBottom.Controls.Add(this.butRenameAnimation);
             this.panelBottom.Controls.Add(this.butDeleteAnimation);
             this.panelBottom.Controls.Add(this.treeAnimations);
-            this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBottom.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelBottom.Location = new System.Drawing.Point(0, 512);
+            this.panelBottom.Location = new System.Drawing.Point(765, 27);
             this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Size = new System.Drawing.Size(1008, 193);
+            this.panelBottom.Size = new System.Drawing.Size(243, 639);
             this.panelBottom.TabIndex = 2;
+            // 
+            // butCalculateCollisionBox
+            // 
+            this.butCalculateCollisionBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCalculateCollisionBox.Image = global::WadTool.Properties.Resources.resize_16;
+            this.butCalculateCollisionBox.Location = new System.Drawing.Point(11, 466);
+            this.butCalculateCollisionBox.Name = "butCalculateCollisionBox";
+            this.butCalculateCollisionBox.Size = new System.Drawing.Size(230, 23);
+            this.butCalculateCollisionBox.TabIndex = 91;
+            this.butCalculateCollisionBox.Text = "Calculate collision box";
+            this.butCalculateCollisionBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            // 
+            // tbCollisionBoxMaxZ
+            // 
+            this.tbCollisionBoxMaxZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbCollisionBoxMaxZ.Location = new System.Drawing.Point(164, 430);
+            this.tbCollisionBoxMaxZ.Name = "tbCollisionBoxMaxZ";
+            this.tbCollisionBoxMaxZ.Size = new System.Drawing.Size(72, 22);
+            this.tbCollisionBoxMaxZ.TabIndex = 90;
+            // 
+            // darkLabel8
+            // 
+            this.darkLabel8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel8.AutoSize = true;
+            this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel8.Location = new System.Drawing.Point(161, 413);
+            this.darkLabel8.Name = "darkLabel8";
+            this.darkLabel8.Size = new System.Drawing.Size(39, 13);
+            this.darkLabel8.TabIndex = 89;
+            this.darkLabel8.Text = "Z max:";
+            // 
+            // tbCollisionBoxMaxY
+            // 
+            this.tbCollisionBoxMaxY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbCollisionBoxMaxY.Location = new System.Drawing.Point(85, 430);
+            this.tbCollisionBoxMaxY.Name = "tbCollisionBoxMaxY";
+            this.tbCollisionBoxMaxY.Size = new System.Drawing.Size(73, 22);
+            this.tbCollisionBoxMaxY.TabIndex = 88;
+            // 
+            // darkLabel9
+            // 
+            this.darkLabel9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel9.AutoSize = true;
+            this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel9.Location = new System.Drawing.Point(82, 413);
+            this.darkLabel9.Name = "darkLabel9";
+            this.darkLabel9.Size = new System.Drawing.Size(38, 13);
+            this.darkLabel9.TabIndex = 87;
+            this.darkLabel9.Text = "Y max:";
+            // 
+            // tbCollisionBoxMaxX
+            // 
+            this.tbCollisionBoxMaxX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbCollisionBoxMaxX.Location = new System.Drawing.Point(6, 430);
+            this.tbCollisionBoxMaxX.Name = "tbCollisionBoxMaxX";
+            this.tbCollisionBoxMaxX.Size = new System.Drawing.Size(73, 22);
+            this.tbCollisionBoxMaxX.TabIndex = 86;
+            // 
+            // darkLabel10
+            // 
+            this.darkLabel10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel10.AutoSize = true;
+            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel10.Location = new System.Drawing.Point(3, 413);
+            this.darkLabel10.Name = "darkLabel10";
+            this.darkLabel10.Size = new System.Drawing.Size(39, 13);
+            this.darkLabel10.TabIndex = 85;
+            this.darkLabel10.Text = "X max:";
+            // 
+            // tbCollisionBoxMinZ
+            // 
+            this.tbCollisionBoxMinZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbCollisionBoxMinZ.Location = new System.Drawing.Point(164, 382);
+            this.tbCollisionBoxMinZ.Name = "tbCollisionBoxMinZ";
+            this.tbCollisionBoxMinZ.Size = new System.Drawing.Size(72, 22);
+            this.tbCollisionBoxMinZ.TabIndex = 84;
+            // 
+            // darkLabel11
+            // 
+            this.darkLabel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel11.AutoSize = true;
+            this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel11.Location = new System.Drawing.Point(161, 365);
+            this.darkLabel11.Name = "darkLabel11";
+            this.darkLabel11.Size = new System.Drawing.Size(38, 13);
+            this.darkLabel11.TabIndex = 83;
+            this.darkLabel11.Text = "Z min:";
+            // 
+            // tbCollisionBoxMinY
+            // 
+            this.tbCollisionBoxMinY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbCollisionBoxMinY.Location = new System.Drawing.Point(85, 382);
+            this.tbCollisionBoxMinY.Name = "tbCollisionBoxMinY";
+            this.tbCollisionBoxMinY.Size = new System.Drawing.Size(73, 22);
+            this.tbCollisionBoxMinY.TabIndex = 82;
+            // 
+            // darkLabel12
+            // 
+            this.darkLabel12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel12.AutoSize = true;
+            this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel12.Location = new System.Drawing.Point(82, 365);
+            this.darkLabel12.Name = "darkLabel12";
+            this.darkLabel12.Size = new System.Drawing.Size(37, 13);
+            this.darkLabel12.TabIndex = 81;
+            this.darkLabel12.Text = "Y min:";
+            // 
+            // tbCollisionBoxMinX
+            // 
+            this.tbCollisionBoxMinX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbCollisionBoxMinX.Location = new System.Drawing.Point(6, 382);
+            this.tbCollisionBoxMinX.Name = "tbCollisionBoxMinX";
+            this.tbCollisionBoxMinX.Size = new System.Drawing.Size(73, 22);
+            this.tbCollisionBoxMinX.TabIndex = 80;
+            // 
+            // darkLabel13
+            // 
+            this.darkLabel13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel13.AutoSize = true;
+            this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel13.Location = new System.Drawing.Point(3, 365);
+            this.darkLabel13.Name = "darkLabel13";
+            this.darkLabel13.Size = new System.Drawing.Size(38, 13);
+            this.darkLabel13.TabIndex = 79;
+            this.darkLabel13.Text = "X min:";
+            // 
+            // cbCollisionBox
+            // 
+            this.cbCollisionBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbCollisionBox.AutoSize = true;
+            this.cbCollisionBox.Location = new System.Drawing.Point(6, 339);
+            this.cbCollisionBox.Name = "cbCollisionBox";
+            this.cbCollisionBox.Size = new System.Drawing.Size(93, 17);
+            this.cbCollisionBox.TabIndex = 78;
+            this.cbCollisionBox.Text = "Collision Box";
             // 
             // darkLabel2
             // 
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(330, 11);
+            this.darkLabel2.Location = new System.Drawing.Point(159, 534);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(44, 13);
             this.darkLabel2.TabIndex = 29;
@@ -397,7 +561,7 @@
             // 
             this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkButton1.Image = global::WadTool.Properties.Resources.edit_16;
-            this.darkButton1.Location = new System.Drawing.Point(459, 27);
+            this.darkButton1.Location = new System.Drawing.Point(162, 561);
             this.darkButton1.Name = "darkButton1";
             this.darkButton1.Size = new System.Drawing.Size(80, 23);
             this.darkButton1.TabIndex = 28;
@@ -408,7 +572,7 @@
             // 
             this.darkButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkButton2.Image = global::WadTool.Properties.Resources.trash_161;
-            this.darkButton2.Location = new System.Drawing.Point(459, 56);
+            this.darkButton2.Location = new System.Drawing.Point(162, 590);
             this.darkButton2.Name = "darkButton2";
             this.darkButton2.Size = new System.Drawing.Size(80, 23);
             this.darkButton2.TabIndex = 27;
@@ -417,7 +581,7 @@
             // 
             // treeFrames
             // 
-            this.treeFrames.Location = new System.Drawing.Point(330, 27);
+            this.treeFrames.Location = new System.Drawing.Point(6, 498);
             this.treeFrames.MaxDragChange = 20;
             this.treeFrames.Name = "treeFrames";
             this.treeFrames.Size = new System.Drawing.Size(123, 152);
@@ -439,7 +603,7 @@
             // 
             this.butRenameAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butRenameAnimation.Image = global::WadTool.Properties.Resources.edit_16;
-            this.butRenameAnimation.Location = new System.Drawing.Point(243, 27);
+            this.butRenameAnimation.Location = new System.Drawing.Point(6, 298);
             this.butRenameAnimation.Name = "butRenameAnimation";
             this.butRenameAnimation.Size = new System.Drawing.Size(80, 23);
             this.butRenameAnimation.TabIndex = 24;
@@ -450,7 +614,7 @@
             // 
             this.butDeleteAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butDeleteAnimation.Image = global::WadTool.Properties.Resources.trash_161;
-            this.butDeleteAnimation.Location = new System.Drawing.Point(243, 56);
+            this.butDeleteAnimation.Location = new System.Drawing.Point(92, 298);
             this.butDeleteAnimation.Name = "butDeleteAnimation";
             this.butDeleteAnimation.Size = new System.Drawing.Size(80, 23);
             this.butDeleteAnimation.TabIndex = 23;
@@ -462,35 +626,42 @@
             this.treeAnimations.Location = new System.Drawing.Point(3, 27);
             this.treeAnimations.MaxDragChange = 20;
             this.treeAnimations.Name = "treeAnimations";
-            this.treeAnimations.Size = new System.Drawing.Size(234, 152);
+            this.treeAnimations.Size = new System.Drawing.Size(233, 265);
             this.treeAnimations.TabIndex = 0;
             this.treeAnimations.Text = "darkTreeView1";
+            this.treeAnimations.Click += new System.EventHandler(this.treeAnimations_Click);
             // 
             // panelRendering
             // 
-            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRendering.Location = new System.Drawing.Point(0, 24);
+            this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRendering.Location = new System.Drawing.Point(3, 27);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.SelectedNode = null;
-            this.panelRendering.Size = new System.Drawing.Size(1008, 488);
+            this.panelRendering.SelectedMesh = null;
+            this.panelRendering.Size = new System.Drawing.Size(759, 639);
             this.panelRendering.Skeleton = null;
             this.panelRendering.TabIndex = 4;
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.trackFrames);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 471);
+            this.panel1.Location = new System.Drawing.Point(0, 664);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1008, 41);
             this.panel1.TabIndex = 5;
             // 
             // trackFrames
             // 
-            this.trackFrames.Location = new System.Drawing.Point(3, 3);
+            this.trackFrames.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackFrames.Location = new System.Drawing.Point(3, 8);
             this.trackFrames.Name = "trackFrames";
             this.trackFrames.Size = new System.Drawing.Size(1002, 45);
             this.trackFrames.TabIndex = 0;
+            this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
             // 
             // FormAnimationEditor
             // 
@@ -564,5 +735,19 @@
         private DarkUI.Controls.DarkLabel darkLabel1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TrackBar trackFrames;
+        private DarkUI.Controls.DarkButton butCalculateCollisionBox;
+        private DarkUI.Controls.DarkTextBox tbCollisionBoxMaxZ;
+        private DarkUI.Controls.DarkLabel darkLabel8;
+        private DarkUI.Controls.DarkTextBox tbCollisionBoxMaxY;
+        private DarkUI.Controls.DarkLabel darkLabel9;
+        private DarkUI.Controls.DarkTextBox tbCollisionBoxMaxX;
+        private DarkUI.Controls.DarkLabel darkLabel10;
+        private DarkUI.Controls.DarkTextBox tbCollisionBoxMinZ;
+        private DarkUI.Controls.DarkLabel darkLabel11;
+        private DarkUI.Controls.DarkTextBox tbCollisionBoxMinY;
+        private DarkUI.Controls.DarkLabel darkLabel12;
+        private DarkUI.Controls.DarkTextBox tbCollisionBoxMinX;
+        private DarkUI.Controls.DarkLabel darkLabel13;
+        private DarkUI.Controls.DarkCheckBox cbCollisionBox;
     }
 }

@@ -26,18 +26,24 @@ namespace TombLib.Graphics
 
                 for (int k = 0; k < bones.Count; k++)
                 {
-                    frame.Rotations.Add(Matrix4x4.Identity);
-                    frame.Translations.Add(Matrix4x4.Identity);
+                    frame.Rotations.Add(Vector3.Zero);
+                    frame.Translations.Add(Vector3.Zero);
+                    frame.RotationsMatrices.Add(Matrix4x4.Identity);
+                    frame.TranslationsMatrices.Add(Matrix4x4.Identity);
                 }
 
-                frame.Translations[0] = Matrix4x4.CreateTranslation(new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z));
+                frame.Translations[0] = new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z); // Matrix4x4.CreateTranslation(new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z));
 
                 for (int k = 1; k < frame.Translations.Count; k++)
-                    frame.Translations[k] = Matrix4x4.CreateTranslation(Vector3.Zero);
+                {
+                    frame.Translations[k] = Vector3.Zero;
+                    frame.RotationsMatrices[k] = Matrix4x4.CreateTranslation(Vector3.Zero);
+                }
 
                 for (int n = 0; n < frame.Rotations.Count; n++)
                 {
-                    frame.Rotations[n] = wadFrame.Angles[n].RotationMatrix;
+                    frame.Rotations[n] = wadFrame.Angles[n].RotationVector;
+                    frame.RotationsMatrices[n] = wadFrame.Angles[n].RotationMatrix;
                 }
 
                 animation.KeyFrames.Add(frame);
