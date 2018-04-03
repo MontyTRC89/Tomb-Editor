@@ -621,6 +621,7 @@ namespace TombEditor.Controls
         private List<BoundingBoxToDraw> _boundingBoxesToDraw;
 
         private Effect _roomEffect;
+        private bool _gizmoEnabled = false;
 
         public PanelRendering3D()
         {
@@ -1128,6 +1129,7 @@ namespace TombEditor.Controls
                 {
                     // Set gizmo axis
                     _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
+                    _gizmoEnabled = true;
                 }
                 else if (newPicking == null)
                 {
@@ -1348,7 +1350,7 @@ namespace TombEditor.Controls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if (_editor.Mode == EditorMode.Geometry)
+                    if (_editor.Mode == EditorMode.Geometry && !_gizmoEnabled)
                     {
                         PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null && !_toolHandler.Dragged)
@@ -1402,6 +1404,7 @@ namespace TombEditor.Controls
                                     }
                         }
                     }
+
                     break;
 
                 case MouseButtons.Right:
@@ -1442,6 +1445,7 @@ namespace TombEditor.Controls
 
             _toolHandler.Disengage();
             _doSectorSelection = false;
+            _gizmoEnabled = false;
             if (_gizmo.MouseUp())
                 Invalidate();
             Capture = false;

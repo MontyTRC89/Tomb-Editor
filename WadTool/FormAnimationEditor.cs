@@ -105,5 +105,14 @@ namespace WadTool
                 panelRendering.Invalidate();
             }
         }
+
+        private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _moveable.Animations.Clear();
+            foreach (var animation in _workingAnimations)
+            {
+                
+            }
+        }
     }
 }
