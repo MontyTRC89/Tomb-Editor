@@ -42,7 +42,7 @@ namespace TombLib.Graphics
 
                 for (int n = 0; n < frame.Rotations.Count; n++)
                 {
-                    frame.Rotations[n] = wadFrame.Angles[n].RotationVector;
+                    frame.Rotations[n] = wadFrame.Angles[n].RotationVectorInRadians;
                     frame.RotationsMatrices[n] = wadFrame.Angles[n].RotationMatrix;
                 }
 

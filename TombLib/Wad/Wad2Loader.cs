@@ -568,11 +568,7 @@ namespace TombLib.Wad
                                     else if (id4 == Wad2Chunks.KeyFrameAngle)
                                     {
                                         var angle = new WadKeyFrameRotation();
-                                        angle.Axis = (WadKeyFrameRotationAxis)LEB128.ReadUShort(chunkIO.Raw);
-                                        angle.X = LEB128.ReadInt(chunkIO.Raw);
-                                        angle.Y = LEB128.ReadInt(chunkIO.Raw);
-                                        angle.Z = LEB128.ReadInt(chunkIO.Raw);
-                                        keyframe.Angles.Add(angle);
+                                        angle.Rotations = chunkIO.ReadChunkVector3(chunkSize4);
                                     }
                                     else
                                     {

@@ -588,10 +588,7 @@ namespace TombLib.Wad.Tr4Wad
                                 int rotY = ((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6);
                                 int rotZ = (rotation2) & 0x3ff;
 
-                                kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
-                                kfAngle.X = rotX;
-                                kfAngle.Y = rotY;
-                                kfAngle.Z = rotZ;
+                                kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.ThreeAxes, rotX, rotY, rotZ);
 
                                 break;
 
@@ -599,8 +596,7 @@ namespace TombLib.Wad.Tr4Wad
                                 frames += 1;
                                 int rotationX = rot & 0x3fff;
 
-                                kfAngle.Axis = WadKeyFrameRotationAxis.AxisX;
-                                kfAngle.X = rotationX;
+                                kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.AxisX, rotationX, 0, 0);
 
                                 break;
 
@@ -608,8 +604,7 @@ namespace TombLib.Wad.Tr4Wad
                                 frames += 1;
                                 int rotationY = rot & 0x3fff;
 
-                                kfAngle.Axis = WadKeyFrameRotationAxis.AxisY;
-                                kfAngle.Y = rotationY;
+                                kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.AxisY, 0, rotationY, 0);
 
                                 break;
 
@@ -617,8 +612,7 @@ namespace TombLib.Wad.Tr4Wad
                                 int rotationZ = rot & 0x3fff;
                                 frames += 1;
 
-                                kfAngle.Axis = WadKeyFrameRotationAxis.AxisZ;
-                                kfAngle.Z = rotationZ;
+                                kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.AxisZ, 0, 0, rotationZ);
 
                                 break;
                         }
