@@ -5,72 +5,89 @@ namespace TombLib.Wad
 {
     public struct WadKeyFrameRotation
     {
-        public WadKeyFrameRotationAxis Axis { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
+        // We store angles as degrees, integer
+        public Vector3 Rotations { get; set; }
 
-        // I store angles in the old way because passing between int and floats cause a loss of precision
-        // This property builds the DirectX rotation matrix from these angles
-        public VectorInt3 RotationVector
+        public float OriginalX { get; set; }
+        public float OriginalY { get; set; }
+        public float OriginalZ { get; set; }
+
+        public static WadKeyFrameRotation FromTrAngle(WadKeyFrameRotationAxis axis, int x, int y, int z)
+        {
+            var angle = new WadKeyFrameRotation();
+
+            float rotX = 0;
+            float rotY = 0;
+            float rotZ = 0;
+
+            angle.OriginalX = x;
+            angle.OriginalY = y;
+            angle.OriginalZ = z;
+
+            switch (axis)
+            {
+                case WadKeyFrameRotationAxis.ThreeAxes:
+                    rotX = -x / 1024.0f * 360;
+                    rotY = y / 1024.0f * 360;
+                    rotZ = -z / 1024.0f * 360;
+                    break;
+
+                case WadKeyFrameRotationAxis.AxisX:
+                    rotX = -x / 4096.0f * 360;
+                    break;
+
+                case WadKeyFrameRotationAxis.AxisY:
+                    rotY = y / 4096.0f * 360;
+                    break;
+
+                case WadKeyFrameRotationAxis.AxisZ:
+                    rotZ = -z / 4096.0f * 360;
+                    break;
+            }
+
+            angle.Rotations = new Vector3(rotX, rotY, rotZ);
+            return angle;
+        }
+
+        public static void ToTrAngle(WadKeyFrameRotation angle, out WadKeyFrameRotationAxis axis, out int rotX, out int rotY, out int rotZ)
+        {
+            if (angle.Rotations.X != 0 && angle.Rotations.Y == 0 && angle.Rotations.Z == 0)
+            {
+                axis = WadKeyFrameRotationAxis.AxisX;
+                rotX = (int)(-angle.Rotations.X * 4096 / 360);
+                rotY = 0;
+                rotZ = 0;
+            }
+            else if (angle.Rotations.X == 0 && angle.Rotations.Y != 0 && angle.Rotations.Z == 0)
+            {
+                axis = WadKeyFrameRotationAxis.AxisY;
+                rotX = 0;
+                rotY = (int)(angle.Rotations.Y * 4096 / 360);
+                rotZ = 0;
+            }
+            else if (angle.Rotations.X == 0 && angle.Rotations.Y == 0 && angle.Rotations.Z != 0)
+            {
+                axis = WadKeyFrameRotationAxis.AxisZ;
+                rotX = 0;
+                rotY = 0;
+                rotZ = (int)(-angle.Rotations.Z * 4096 / 360);
+            }
+            else
+            {
+                axis = WadKeyFrameRotationAxis.ThreeAxes;
+                rotX = (int)(-angle.Rotations.X * 1024 / 360);
+                rotY = (int)(angle.Rotations.Y * 1024 / 360);
+                rotZ = (int)(-angle.Rotations.Z * 1024 / 360);
+            }
+        }
+
+        public Vector3 RotationVectorInRadians
         {
             get
             {
-                var rotationVector = new VectorInt3(0, 0, 0);
-
-                float rotX = 0;
-                float rotY = 0;
-                float rotZ = 0;
-
-                switch (Axis)
-                {
-                    case WadKeyFrameRotationAxis.ThreeAxes:
-                        rotX = -X / 1024.0f * 2 * (float)Math.PI;
-                        rotY = Y / 1024.0f * 2 * (float)Math.PI;
-                        rotZ = -Z / 1024.0f * 2 * (float)Math.PI;
-
-                        rotationVector = new VectorInt3((int)rotX, (int)rotY, (int)rotZ);  
-                        break;
-
-                    case WadKeyFrameRotationAxis.AxisX:
-                        rotX = -X / 4096.0f * 2 * (float)Math.PI;
-                        rotationVector = new VectorInt3((int)rotX, 0, 0); 
-                        break;
-
-                    case WadKeyFrameRotationAxis.AxisY:
-                        rotY = Y / 4096.0f * 2 * (float)Math.PI;
-                        rotationVector = new VectorInt3(0, (int)rotY, 0);  
-                        break;
-
-                    case WadKeyFrameRotationAxis.AxisZ:
-                        rotZ = -Z / 4096.0f * 2 * (float)Math.PI;
-                        rotationVector = new VectorInt3(0, 0, (int)rotZ);  
-                        break;
-                }
-
-                return rotationVector;
-            }
-            set
-            {
-                if (value == null)
-                    return;
-
-                if (value.X != 0 && value.Y == 0 && value.Z == 0)
-                {
-                    Axis = WadKeyFrameRotationAxis.AxisX;
-
-                }
-                                if ((value.X != 0 && value.Y == 0 && value.Z == 0) ||
-                    (value.X == 0 && value.Y != 0 && value.Z == 0) ||
-                    (value.X == 0 && value.Y == 0 && value.Z != 0))
-                {
-                    // Single axis rotation
-                    //Axis
-                }
-                else
-                {
-                    // Multiple axes rotation
-                }
+                return new Vector3(Rotations.X / 180.0f * (float)Math.PI, 
+                                   Rotations.Y / 180.0f * (float)Math.PI, 
+                                   Rotations.Z / 180.0f * (float)Math.PI);
             }
         }
 
@@ -78,39 +95,9 @@ namespace TombLib.Wad
         {
             get
             {
-                Matrix4x4 matrix = Matrix4x4.Identity;
-
-                float rotX = 0;
-                float rotY = 0;
-                float rotZ = 0;
-
-                switch (Axis)
-                {
-                    case WadKeyFrameRotationAxis.ThreeAxes:
-                        rotX = -X / 1024.0f * 2 * (float)Math.PI;
-                        rotY = Y / 1024.0f * 2 * (float)Math.PI;
-                        rotZ = -Z / 1024.0f * 2 * (float)Math.PI;
-
-                        matrix = Matrix4x4.CreateFromYawPitchRoll(rotY, rotX, rotZ);
-                        break;
-
-                    case WadKeyFrameRotationAxis.AxisX:
-                        rotX = -X / 4096.0f * 2 * (float)Math.PI;
-                        matrix = Matrix4x4.CreateRotationX(rotX);
-                        break;
-
-                    case WadKeyFrameRotationAxis.AxisY:
-                        rotY = Y / 4096.0f * 2 * (float)Math.PI;
-                        matrix = Matrix4x4.CreateRotationY(rotY);
-                        break;
-
-                    case WadKeyFrameRotationAxis.AxisZ:
-                        rotZ = -Z / 4096.0f * 2 * (float)Math.PI;
-                        matrix = Matrix4x4.CreateRotationZ(rotZ);
-                        break;
-                }
-
-                return matrix;
+                return Matrix4x4.CreateFromYawPitchRoll(RotationVectorInRadians.Y, 
+                                                        RotationVectorInRadians.X, 
+                                                        RotationVectorInRadians.Z);
             }
         }
     }

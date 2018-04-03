@@ -163,6 +163,11 @@ namespace TombLib.LevelData.Compilers
                     AnimationTr4HelperData animationHelper = animationDictionary.TryAdd(animation, new AnimationTr4HelperData());
                     animationHelper.KeyFramesOffset = totalKeyFrameSize * 2;
 
+                    var axis = WadKeyFrameRotationAxis.ThreeAxes;
+                    int rotX = 0;
+                    int rotY = 0;
+                    int rotZ = 0;
+
                     // First I need to calculate the max frame size because I will need to pad later with 0x00
                     int maxKeyFrameSize = 0;
                     foreach (var keyframe in animation.KeyFrames)
@@ -171,7 +176,8 @@ namespace TombLib.LevelData.Compilers
 
                         foreach (var angle in keyframe.Angles)
                         {
-                            if (angle.Axis == WadKeyFrameRotationAxis.ThreeAxes)
+                            WadKeyFrameRotation.ToTrAngle(angle, out axis, out rotX, out rotY, out rotZ);
+                            if (axis == WadKeyFrameRotationAxis.ThreeAxes)
                                 currentKeyFrameSize += 2;
                             else
                                 currentKeyFrameSize += 1;
@@ -203,19 +209,16 @@ namespace TombLib.LevelData.Compilers
 
                         foreach (var angle in keyframe.Angles)
                         {
-                            //long rotation32 = 0;
                             short rotation16 = 0;
-                            short rotX = 0;
-                            short rotY = 0;
-                            short rotZ = 0;
+                             WadKeyFrameRotation.ToTrAngle(angle, out axis, out rotX, out rotY, out rotZ);
 
-                            switch (angle.Axis)
+                            switch (axis)
                             {
                                 case WadKeyFrameRotationAxis.ThreeAxes:
-                                    rotation16 = (short)((angle.X << 4) | ((angle.Y & 0xfc0) >> 6));
+                                    rotation16 = (short)((rotX << 4) | ((rotY & 0xfc0) >> 6));
                                     _frames.Add(rotation16);
 
-                                    rotation16 = (short)(((angle.Y & 0x3f) << 10) | (angle.Z & 0x3ff));
+                                    rotation16 = (short)(((rotY & 0x3f) << 10) | (rotZ & 0x3ff));
                                     _frames.Add(rotation16);
 
                                     currentKeyFrameSize += 2;
@@ -224,9 +227,8 @@ namespace TombLib.LevelData.Compilers
 
                                 case WadKeyFrameRotationAxis.AxisX:
                                     rotation16 = 0x4000;
-                                    rotX = (short)angle.X;
                                     if (_level.Settings.GameVersion <= GameVersion.TR3) rotX = (short)(rotX / 4);
-                                    rotation16 |= rotX;
+                                    rotation16 |= (short)rotX;
                                     _frames.Add(rotation16);
 
                                     currentKeyFrameSize += 1;
@@ -235,9 +237,8 @@ namespace TombLib.LevelData.Compilers
 
                                 case WadKeyFrameRotationAxis.AxisY:
                                     rotation16 = unchecked((short)0x8000);
-                                    rotY = (short)angle.Y;
                                     if (_level.Settings.GameVersion <= GameVersion.TR3) rotY = (short)(rotY / 4);
-                                    rotation16 |= rotY;
+                                    rotation16 |= (short)rotY;
 
                                     _frames.Add(rotation16);
 
@@ -247,12 +248,10 @@ namespace TombLib.LevelData.Compilers
 
                                 case WadKeyFrameRotationAxis.AxisZ:
                                     rotation16 = unchecked((short)0xc000);
-                                    rotZ = (short)angle.Z;
                                     if (_level.Settings.GameVersion <= GameVersion.TR3) rotZ = (short)(rotZ / 4);
-                                    rotation16 += rotZ;
+                                    rotation16 += (short)rotZ;
 
                                     _frames.Add(rotation16);
-                                    //Console.WriteLine(rotation16.ToString("X"));
 
                                     currentKeyFrameSize += 1;
 

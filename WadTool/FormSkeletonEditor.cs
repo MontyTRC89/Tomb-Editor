@@ -163,7 +163,7 @@ namespace WadTool
                             for (int k = 0; k < currentBonesCount - originalBonesCount; k++)
                             {
                                 var newAngle = new WadKeyFrameRotation();
-                                newAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
+                                //newAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
                                 _moveable.Animations[i].KeyFrames[j].Angles.Add(newAngle);
                             }
                         }

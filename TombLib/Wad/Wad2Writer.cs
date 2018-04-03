@@ -292,13 +292,7 @@ namespace TombLib.Wad
 
                                         foreach (var angle in kf.Angles)
                                         {
-                                            chunkIO.WriteChunk(Wad2Chunks.KeyFrameAngle, () =>
-                                            {
-                                                LEB128.Write(chunkIO.Raw, (ushort)angle.Axis);
-                                                LEB128.Write(chunkIO.Raw, angle.X);
-                                                LEB128.Write(chunkIO.Raw, angle.Y);
-                                                LEB128.Write(chunkIO.Raw, angle.Z);
-                                            });
+                                            chunkIO.WriteChunkVector3(Wad2Chunks.KeyFrameAngle, angle.Rotations);
                                         }
                                     });
                                 }
