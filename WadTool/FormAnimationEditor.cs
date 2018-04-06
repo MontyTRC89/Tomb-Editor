@@ -36,7 +36,15 @@ namespace WadTool
             _deviceManager = deviceManager;
 
             // Initialize the panel
-            panelRendering.InitializePanel(_tool, _wad, _deviceManager, _moveableId);
+            var skin = _moveableId;
+            if (_moveableId.TypeId==0)
+            {
+                if (_wad.SuggestedGameVersion == WadGameVersion.TR4_TRNG && _wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
+                    skin = WadMoveableId.LaraSkin;
+                if (_wad.SuggestedGameVersion == WadGameVersion.TR5 && _wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
+                    skin = WadMoveableId.LaraSkin;
+            }
+            panelRendering.InitializePanel(_tool, _wad, _deviceManager, _moveableId, skin);
 
             // Get a copy of the skeleton in linearized form
             _bones = _moveable.Skeleton.LinearizedBones.ToList<WadBone>();
@@ -83,8 +91,14 @@ namespace WadTool
             {
                 _model.BuildAnimationPose(node.DirectXAnimation.KeyFrames[0]);
                 trackFrames.Visible = true;
-                trackFrames.Minimum = 0;
-                trackFrames.Maximum = node.DirectXAnimation.KeyFrames.Count - 1;
+                trackFrames.MinValue = 0;
+                trackFrames.MaxValue = node.DirectXAnimation.KeyFrames.Count - 1;
+
+                // Load animation commands
+                foreach (var cmd in node.WadAnimation.AnimCommands)
+                    if (cmd.Type == WadAnimCommandType.PlaySound || cmd.Type == WadAnimCommandType.FlipEffect)
+                        trackFrames.AnimationCommands.Add(cmd);
+                trackFrames.UpdateAnimationCommands();
             }
             else
             {

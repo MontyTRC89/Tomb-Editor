@@ -58,6 +58,8 @@ namespace WadTool.Controls
         private AnimatedModel _model;
         private WadMoveable _moveable;
         private WadMoveableId _moveableId;
+        private AnimatedModel _skinModel;
+        private WadMoveableId _skinMoveableId;
 
         public List<WadMeshBoneNode> Skeleton { get; set; }
         public ObjectMesh SelectedMesh { get; set; }
@@ -67,9 +69,9 @@ namespace WadTool.Controls
         private static readonly Vector4 _blue = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
         private Buffer<SolidVertex> _vertexBufferVisibility;
-        private Buffer<SolidVertex> _vertexBufferCollision;
 
-        public void InitializePanel(WadToolClass tool, Wad2 wad, DeviceManager deviceManager, WadMoveableId moveableId)
+        public void InitializePanel(WadToolClass tool, Wad2 wad, DeviceManager deviceManager, WadMoveableId moveableId, 
+                                    WadMoveableId skinMoveableId)
         {
             _tool = tool;
             _device = deviceManager.Device;
@@ -78,6 +80,12 @@ namespace WadTool.Controls
             _moveableId = moveableId;
             _moveable = _wad.Moveables[_moveableId];
             _model = _wad.DirectXMoveables[_moveableId];
+
+            if (skinMoveableId != null)
+            {
+                _skinMoveableId = skinMoveableId;
+                _skinModel = _wad.DirectXMoveables[_skinMoveableId];
+            }
 
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
@@ -186,7 +194,7 @@ namespace WadTool.Controls
 
             if (_model != null)
             {
-                var skin = _model;
+                var skin = (_skinModel != null ? _skinModel : _model);
                 var effect = _deviceManager.Effects["Model"];
 
                 effect.Parameters["Color"].SetValue(Vector4.One);
@@ -206,7 +214,7 @@ namespace WadTool.Controls
                         matrices.Add(bone.GlobalTransform);
                 }
 
-                for (int i = 0; i < _model.Meshes.Count; i++)
+                for (int i = 0; i < skin.Meshes.Count; i++)
                 {
                     var mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0)

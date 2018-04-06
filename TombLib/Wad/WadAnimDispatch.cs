@@ -1,6 +1,6 @@
 ﻿namespace TombLib.Wad
 {
-    public struct WadAnimDispatch
+    public class WadAnimDispatch
     {
         public ushort InFrame { get; set; }
         public ushort OutFrame { get; set; }

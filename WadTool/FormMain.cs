@@ -114,6 +114,19 @@ namespace WadTool
                     // Update animations list
                     if (mainSelection.Value.Id is WadMoveableId)
                     {
+                        var skin = panel3D.CurrentObjectId;
+                        var wad = _tool.GetWad(mainSelection.Value.WadArea);
+
+                        if (((WadMoveableId)mainSelection.Value.Id).TypeId == 0)
+                        {
+                            if (panel3D.CurrentWad.SuggestedGameVersion == WadGameVersion.TR4_TRNG && wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
+                                skin = WadMoveableId.LaraSkin;
+                            if (panel3D.CurrentWad.SuggestedGameVersion == WadGameVersion.TR5 && wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
+                                skin = WadMoveableId.LaraSkin;
+                        }
+
+                        panel3D.SkinObjectId = (WadMoveableId)skin;
+
                         var moveableId = (WadMoveableId)mainSelection.Value.Id;
                         var moveable = panel3D.CurrentWad.Moveables[moveableId];
                         var animationsNodes = new List<DarkTreeNode>();

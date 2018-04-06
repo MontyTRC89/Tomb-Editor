@@ -18,6 +18,8 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IWadObjectId CurrentObjectId { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public WadMoveableId SkinObjectId { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int AnimationIndex { get; set; }
@@ -135,7 +137,11 @@ namespace WadTool.Controls
                     AnimatedModel model;
                     if (CurrentWad.DirectXMoveables.TryGetValue((WadMoveableId)CurrentObjectId, out model))
                     {
-                        var skin = model;
+                        AnimatedModel skin = null;
+                        if (!(CurrentObjectId is WadMoveableId &&
+                              CurrentWad.DirectXMoveables.TryGetValue((WadMoveableId)SkinObjectId, out skin)))
+                            skin = model;
+
                         var effect = _deviceManager.Effects["Model"];
 
                         effect.Parameters["Color"].SetValue(Vector4.One);
@@ -155,7 +161,7 @@ namespace WadTool.Controls
                                 matrices.Add(bone.GlobalTransform);
                         }
 
-                        for (int i = 0; i < model.Meshes.Count; i++)
+                        for (int i = 0; i < skin.Meshes.Count; i++)
                         {
                             var mesh = skin.Meshes[i];
                             if (mesh.Vertices.Count == 0)

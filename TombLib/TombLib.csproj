@@ -255,6 +255,7 @@
     <Compile Include="VectorInt2.cs" />
     <Compile Include="VectorInt3.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
+    <Compile Include="Wad\WadAnimationNode.cs" />
     <Compile Include="Wad\WadLight.cs" />
     <Compile Include="Wad\IWadObject.cs" />
     <Compile Include="Wad\TrLevels\Enumerations.cs" />

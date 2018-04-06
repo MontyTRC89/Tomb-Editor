@@ -59,6 +59,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AnimationTrackBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\AnimationTrackBar.Designer.cs">
+      <DependentUpon>AnimationTrackBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DarkDataGridViewControls.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     <Compile Include="Utils\LevelFileDialog.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\AnimationTrackBar.resx">
+      <DependentUpon>AnimationTrackBar.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </EmbeddedResource>
