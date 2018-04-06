@@ -8,7 +8,6 @@ using TombLib.Wad;
 
 namespace TombLib.Wad
 { 
-    [Serializable]
     public class WadAnimationNode
     {
         public WadAnimation WadAnimation { get; set; }

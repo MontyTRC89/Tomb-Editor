@@ -8,7 +8,7 @@ using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
 
-namespace WadTool
+namespace TombLib.Wad
 {
     public class WadMeshBoneNode
     {

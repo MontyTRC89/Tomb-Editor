@@ -269,6 +269,7 @@
     <Compile Include="Wad\WadAnimCommand.cs" />
     <Compile Include="Wad\Tr4Wad\Tr4WadOperations.cs" />
     <Compile Include="Wad\WadFixedSoundInfo.cs" />
+    <Compile Include="Wad\WadMeshBoneNode.cs" />
     <Compile Include="Wad\WadSample.cs" />
     <Compile Include="Wad\WadSoundInfo.cs" />
     <Compile Include="Wad\WadSoundPlayer.cs" />
