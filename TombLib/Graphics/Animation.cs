@@ -32,7 +32,8 @@ namespace TombLib.Graphics
                     frame.TranslationsMatrices.Add(Matrix4x4.Identity);
                 }
 
-                frame.Translations[0] = new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z); // Matrix4x4.CreateTranslation(new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z));
+                frame.Translations[0] = new Vector3(wadFrame.Offset.X, wadFrame.Offset.Y, wadFrame.Offset.Z); 
+                frame.TranslationsMatrices[0] = Matrix4x4.CreateTranslation(wadFrame.Offset);
 
                 for (int k = 1; k < frame.Translations.Count; k++)
                 {

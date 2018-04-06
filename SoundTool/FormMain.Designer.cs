@@ -43,6 +43,7 @@
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertTXTToXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buildMAINSFXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.batchEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutSoundToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
@@ -71,7 +72,6 @@
             this.comboLoop = new DarkUI.Controls.DarkComboBox();
             this.cbMandatorySound = new DarkUI.Controls.DarkCheckBox();
             this.cbNgLocked = new DarkUI.Controls.DarkCheckBox();
-            this.batchEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -116,7 +116,7 @@
             this.openToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.openToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Open_16;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             // 
             // tR1CatalogToolStripMenuItem
@@ -125,7 +125,7 @@
             this.tR1CatalogToolStripMenuItem.Enabled = false;
             this.tR1CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.tR1CatalogToolStripMenuItem.Name = "tR1CatalogToolStripMenuItem";
-            this.tR1CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR1CatalogToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.tR1CatalogToolStripMenuItem.Text = "TR1 Catalog";
             this.tR1CatalogToolStripMenuItem.Click += new System.EventHandler(this.tR1CatalogToolStripMenuItem_Click);
             // 
@@ -135,7 +135,7 @@
             this.tR2CatalogToolStripMenuItem.Enabled = false;
             this.tR2CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.tR2CatalogToolStripMenuItem.Name = "tR2CatalogToolStripMenuItem";
-            this.tR2CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR2CatalogToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.tR2CatalogToolStripMenuItem.Text = "TR2 Catalog";
             this.tR2CatalogToolStripMenuItem.Click += new System.EventHandler(this.tR2CatalogToolStripMenuItem_Click);
             // 
@@ -145,7 +145,7 @@
             this.tR3CatalogToolStripMenuItem.Enabled = false;
             this.tR3CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.tR3CatalogToolStripMenuItem.Name = "tR3CatalogToolStripMenuItem";
-            this.tR3CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR3CatalogToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.tR3CatalogToolStripMenuItem.Text = "TR3 Catalog";
             this.tR3CatalogToolStripMenuItem.Click += new System.EventHandler(this.tR3CatalogToolStripMenuItem_Click);
             // 
@@ -154,7 +154,7 @@
             this.tR4CatalogToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tR4CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tR4CatalogToolStripMenuItem.Name = "tR4CatalogToolStripMenuItem";
-            this.tR4CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR4CatalogToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.tR4CatalogToolStripMenuItem.Text = "TR4 Catalog";
             this.tR4CatalogToolStripMenuItem.Click += new System.EventHandler(this.tR4CatalogToolStripMenuItem_Click);
             // 
@@ -163,7 +163,7 @@
             this.tR5CatalogToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tR5CatalogToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tR5CatalogToolStripMenuItem.Name = "tR5CatalogToolStripMenuItem";
-            this.tR5CatalogToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tR5CatalogToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.tR5CatalogToolStripMenuItem.Text = "TR5 Catalog";
             this.tR5CatalogToolStripMenuItem.Click += new System.EventHandler(this.tR5CatalogToolStripMenuItem_Click);
             // 
@@ -173,7 +173,7 @@
             this.saveToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveToolStripMenuItem.Image = global::SoundTool.Properties.Resources.general_Save_16;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -183,14 +183,14 @@
             this.toolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(100, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -224,6 +224,14 @@
             this.buildMAINSFXToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.buildMAINSFXToolStripMenuItem.Text = "Build MAIN.SFX";
             this.buildMAINSFXToolStripMenuItem.Click += new System.EventHandler(this.buildMAINSFXToolStripMenuItem_Click);
+            // 
+            // batchEditToolStripMenuItem
+            // 
+            this.batchEditToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.batchEditToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.batchEditToolStripMenuItem.Name = "batchEditToolStripMenuItem";
+            this.batchEditToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.batchEditToolStripMenuItem.Text = "Batch edit";
             // 
             // helpToolStripMenuItem
             // 
@@ -467,7 +475,6 @@
             this.comboLoop.Name = "comboLoop";
             this.comboLoop.Size = new System.Drawing.Size(79, 21);
             this.comboLoop.TabIndex = 62;
-            this.comboLoop.Text = "None";
             // 
             // cbMandatorySound
             // 
@@ -486,14 +493,6 @@
             this.cbNgLocked.Size = new System.Drawing.Size(92, 17);
             this.cbNgLocked.TabIndex = 76;
             this.cbNgLocked.Text = "TRNG locked";
-            // 
-            // batchEditToolStripMenuItem
-            // 
-            this.batchEditToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.batchEditToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.batchEditToolStripMenuItem.Name = "batchEditToolStripMenuItem";
-            this.batchEditToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.batchEditToolStripMenuItem.Text = "Batch edit";
             // 
             // FormMain
             // 

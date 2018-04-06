@@ -1,4 +1,7 @@
-﻿namespace WadTool
+﻿using TombLib.Controls;
+using TombLib.Wad;
+
+namespace WadTool
 {
     partial class FormAnimationEditor
     {
@@ -82,13 +85,12 @@
             this.butRenameAnimation = new DarkUI.Controls.DarkButton();
             this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
             this.treeAnimations = new DarkUI.Controls.DarkTreeView();
-            this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.trackFrames = new System.Windows.Forms.TrackBar();
+            this.trackFrames = new TombLib.Controls.AnimationTrackBar();
+            this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.darkMenuStrip1.SuspendLayout();
             this.panelBottom.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackFrames)).BeginInit();
             this.SuspendLayout();
             // 
             // darkMenuStrip1
@@ -125,7 +127,7 @@
             this.saveChangesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.saveChangesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.saveChangesToolStripMenuItem.Text = "Save changes";
             this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
             // 
@@ -135,14 +137,14 @@
             this.toolStripMenuItem3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(142, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.closeToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.closeToolStripMenuItem.Text = "Close";
             // 
             // editToolStripMenuItem
@@ -632,6 +634,29 @@
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.treeAnimations_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.trackFrames);
+            this.panel1.Location = new System.Drawing.Point(0, 607);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1008, 98);
+            this.panel1.TabIndex = 5;
+            // 
+            // trackFrames
+            // 
+            this.trackFrames.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackFrames.Location = new System.Drawing.Point(3, 8);
+            this.trackFrames.MaxValue = 10;
+            this.trackFrames.MinValue = 0;
+            this.trackFrames.Name = "trackFrames";
+            this.trackFrames.Size = new System.Drawing.Size(1002, 87);
+            this.trackFrames.TabIndex = 0;
+            this.trackFrames.Value = 0;
+            this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
+            // 
             // panelRendering
             // 
             this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -640,29 +665,9 @@
             this.panelRendering.Location = new System.Drawing.Point(3, 27);
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.SelectedMesh = null;
-            this.panelRendering.Size = new System.Drawing.Size(759, 639);
+            this.panelRendering.Size = new System.Drawing.Size(759, 574);
             this.panelRendering.Skeleton = null;
             this.panelRendering.TabIndex = 4;
-            // 
-            // panel1
-            // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.trackFrames);
-            this.panel1.Location = new System.Drawing.Point(0, 664);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1008, 41);
-            this.panel1.TabIndex = 5;
-            // 
-            // trackFrames
-            // 
-            this.trackFrames.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackFrames.Location = new System.Drawing.Point(3, 8);
-            this.trackFrames.Name = "trackFrames";
-            this.trackFrames.Size = new System.Drawing.Size(1002, 45);
-            this.trackFrames.TabIndex = 0;
-            this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
             // 
             // FormAnimationEditor
             // 
@@ -684,8 +689,6 @@
             this.panelBottom.ResumeLayout(false);
             this.panelBottom.PerformLayout();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackFrames)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -735,7 +738,7 @@
         private DarkUI.Controls.DarkTreeView treeFrames;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TrackBar trackFrames;
+        private AnimationTrackBar trackFrames;
         private DarkUI.Controls.DarkButton butCalculateCollisionBox;
         private DarkUI.Controls.DarkTextBox tbCollisionBoxMaxZ;
         private DarkUI.Controls.DarkLabel darkLabel8;
