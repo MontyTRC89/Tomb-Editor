@@ -233,7 +233,7 @@ namespace TombLib.Wad
 
         private static void WriteBone(ChunkWriter chunkIO, WadBone bone, List<WadBone> bones)
         {
-            chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
+            chunkIO.WriteChunkWithChildren(Wad2Chunks.MoveableBone, () =>
             {
                 chunkIO.WriteChunkString(Wad2Chunks.MoveableBoneName, bone.Name);
                 chunkIO.WriteChunkInt(Wad2Chunks.MoveableBoneMeshPointer, bones.IndexOf(bone));
@@ -259,7 +259,6 @@ namespace TombLib.Wad
 
                         foreach (var mesh in m.Meshes)
                             WriteMesh(chunkIO, mesh, textureTable);
-                            //chunkIO.WriteChunkInt(Wad2Chunks.MoveableMesh, meshTable.IndexOf(mesh));
 
                         WriteBone(chunkIO, moveable.Value.Skeleton, bones);
 
