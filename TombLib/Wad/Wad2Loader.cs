@@ -472,7 +472,10 @@ namespace TombLib.Wad
             chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (id == Wad2Chunks.MoveableBoneName)
+                {
                     bone.Name = chunkIO.ReadChunkString(chunkSize);
+                    Console.WriteLine("Processing " + bone.Name);
+                }
                 else if (id == Wad2Chunks.MoveableBoneTranslation)
                 {
                     bone.Translation = chunkIO.ReadChunkVector3(chunkSize);
@@ -510,9 +513,11 @@ namespace TombLib.Wad
                 var meshes = new List<WadMesh>();
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
-                    if (id2 == Wad2Chunks.MoveableMesh)
-                        meshes.Add(/*meshes[chunkIO.ReadChunkInt(chunkSize2)]*/
-                                       LoadMesh(chunkIO, chunkSize2, textures));
+                    if (id2 == Wad2Chunks.Mesh)
+                    {
+                        var mesh = LoadMesh(chunkIO, chunkSize2, textures);
+                        meshes.Add(mesh);
+                    }
                     else if (id2 == Wad2Chunks.MoveableBone)
                         mov.Skeleton = LoadBone(chunkIO, mov, meshes);
                     else if (id2 == Wad2Chunks.AnimationObsolete || id2 == Wad2Chunks.Animation)
@@ -569,6 +574,7 @@ namespace TombLib.Wad
                                     {
                                         var angle = new WadKeyFrameRotation();
                                         angle.Rotations = chunkIO.ReadChunkVector3(chunkSize4);
+                                        keyframe.Angles.Add(angle);
                                     }
                                     else
                                     {
@@ -638,8 +644,8 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                //mov.LinearizeSkeleton();
                 wad.Moveables.Add(mov.Id, mov);
+
                 return true;
             });
 
