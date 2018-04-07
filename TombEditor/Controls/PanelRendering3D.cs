@@ -2276,7 +2276,10 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId] + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
+                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString(_editor.Level.Wad != null ? 
+                                                                                                _editor.Level.Wad.SuggestedGameVersion : 
+                                                                                                WadGameVersion.TR4_TRNG) + 
+                                     " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
@@ -2433,7 +2436,10 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = _editor.Level.Wad.Statics[instance.WadObjectId] + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
+                    string message = _editor.Level.Wad.Statics[instance.WadObjectId].ToString(_editor.Level.Wad != null ?
+                                                                            _editor.Level.Wad.SuggestedGameVersion :
+                                                                            WadGameVersion.TR4_TRNG) +
+                                     " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance);

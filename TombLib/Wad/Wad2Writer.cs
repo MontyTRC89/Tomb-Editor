@@ -288,7 +288,6 @@ namespace TombLib.Wad
                                             chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMin, kf.BoundingBox.Minimum);
                                             chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMax, kf.BoundingBox.Maximum);
                                         });
-
                                         foreach (var angle in kf.Angles)
                                         {
                                             chunkIO.WriteChunkVector3(Wad2Chunks.KeyFrameAngle, angle.Rotations);
