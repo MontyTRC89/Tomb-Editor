@@ -110,7 +110,11 @@ namespace TombLib.LevelData
                     if (newBlocks[x, z].Type == BlockType.BorderWall)
                         newBlocks[x, z].Type = BlockType.Wall;
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
+                    {
                         newBlocks[x, z].Type = BlockType.BorderWall;
+                        newBlocks[x, z].FloorDiagonalSplit = DiagonalSplit.None;
+                        newBlocks[x, z].CeilingDiagonalSplit = DiagonalSplit.None;
+                    }
                 }
 
             // Update data structures
