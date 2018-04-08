@@ -365,5 +365,11 @@ namespace TombEditor.ToolWindows
             if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
             panel3D.Invalidate();
         }
+
+        private void drawAllRoomsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawAllRooms = !panel3D.DrawAllRooms;
+            panel3D.Invalidate();
+        }
     }
 }
