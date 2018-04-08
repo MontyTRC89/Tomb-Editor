@@ -535,6 +535,8 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowMoveables { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawAllRooms { get; set; } = false;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowStatics { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowImportedGeometry { get; set; } = true;
@@ -2613,7 +2615,7 @@ namespace TombEditor.Controls
                     if (Vector3.Dot(normal, cameraDirection) < -0.1f && theLimit > 1)
                         continue;
 
-                    if (/*portal.Room == theRoom &&*/ !visitedRooms.Contains(portal.AdjoiningRoom) &&
+                    if (!visitedRooms.Contains(portal.AdjoiningRoom) &&
                         !stackRooms.Contains(portal.AdjoiningRoom))
                     {
                         stackRooms.Push(portal.AdjoiningRoom);
@@ -2789,10 +2791,19 @@ namespace TombEditor.Controls
             _roomsToDraw = new List<Room>();
 
             // Collect rooms to draw
-            if (DrawPortals)
-                CollectRoomsToDraw(_editor.SelectedRoom);
+            if (!DrawAllRooms)
+            {
+                if (DrawPortals)
+                    CollectRoomsToDraw(_editor.SelectedRoom);
+                else
+                    _roomsToDraw.Add(_editor.SelectedRoom);
+            }
             else
-                _roomsToDraw.Add(_editor.SelectedRoom);
+            {
+                foreach (var room in _editor.Level.Rooms)
+                    if (room != null)
+                        _roomsToDraw.Add(room);
+            }
 
             _debug.NumRooms = _roomsToDraw.Count;
 
