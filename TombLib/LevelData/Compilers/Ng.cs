@@ -134,6 +134,8 @@ namespace TombLib.LevelData.Compilers
                     waterLevel = (byte)(room.QuickSandLevel - 1);
                 else if (room.WaterLevel != 0)
                     waterLevel = (byte)(room.WaterLevel - 1);
+                else if (room.MistLevel != 0)
+                    waterLevel = (byte)(room.MistLevel - 1);
 
                 var buffer = new byte[] { waterLevel, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
                 writer.Write(buffer);
