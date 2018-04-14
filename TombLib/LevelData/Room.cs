@@ -3464,76 +3464,26 @@ namespace TombLib.LevelData
                 DiagonalSplit diagonalSplit = aboveDiagonalSplit != DiagonalSplit.None ? aboveDiagonalSplit : belowDiagonalSplit;
                 bool splitXEqualsZ = belowIsQuad ? aboveSplitXEqualsZ : belowSplitXEqualsZ;
 
-                bool matchesAtXnYn = roomBelow.Position.Y + blockBelow.WS[Block.FaceXnZn] == roomAbove.Position.Y + blockAbove.QA[Block.FaceXnZn];
-                bool matchesAtXpYn = roomBelow.Position.Y + blockBelow.WS[Block.FaceXpZn] == roomAbove.Position.Y + blockAbove.QA[Block.FaceXpZn];
-                bool matchesAtXnYp = roomBelow.Position.Y + blockBelow.WS[Block.FaceXnZp] == roomAbove.Position.Y + blockAbove.QA[Block.FaceXnZp];
-                bool matchesAtXpYp = roomBelow.Position.Y + blockBelow.WS[Block.FaceXpZp] == roomAbove.Position.Y + blockAbove.QA[Block.FaceXpZp];
+                bool matchesAtXnYn = roomBelow.Position.Y + blockBelow.GetActualCeilingMax(Block.FaceXnZn) == roomAbove.Position.Y + blockAbove.GetActualFloorMin(Block.FaceXnZn);
+                bool matchesAtXpYn = roomBelow.Position.Y + blockBelow.GetActualCeilingMax(Block.FaceXpZn) == roomAbove.Position.Y + blockAbove.GetActualFloorMin(Block.FaceXpZn);
+                bool matchesAtXnYp = roomBelow.Position.Y + blockBelow.GetActualCeilingMax(Block.FaceXnZp) == roomAbove.Position.Y + blockAbove.GetActualFloorMin(Block.FaceXnZp);
+                bool matchesAtXpYp = roomBelow.Position.Y + blockBelow.GetActualCeilingMax(Block.FaceXpZp) == roomAbove.Position.Y + blockAbove.GetActualFloorMin(Block.FaceXpZp);
 
-                if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && !(blockAbove.IsAnyWall || blockBelow.IsAnyWall) &&
-                    !(blockAbove.FloorDiagonalSplit != DiagonalSplit.None || blockBelow.CeilingDiagonalSplit != DiagonalSplit.None))
+                if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && !(blockAbove.IsAnyWall || blockBelow.IsAnyWall))
                     return RoomConnectionType.FullPortal;
-
-                if (blockAbove.FloorDiagonalSplit != DiagonalSplit.None || blockBelow.CeilingDiagonalSplit != DiagonalSplit.None)
-                {
-                    if (blockBelow.CeilingDiagonalSplit == blockAbove.FloorDiagonalSplit)
-                    {
-                        if (blockAbove.FloorDiagonalSplit == DiagonalSplit.XpZn)
-                            return RoomConnectionType.TriangularPortalXnZp;
-                        else if (blockAbove.FloorDiagonalSplit == DiagonalSplit.XnZp)
-                            return RoomConnectionType.TriangularPortalXpZn;
-                        else if (blockAbove.FloorDiagonalSplit == DiagonalSplit.XnZn)
-                            return RoomConnectionType.TriangularPortalXpZp;
-                        else if (blockAbove.FloorDiagonalSplit == DiagonalSplit.XpZp)
-                            return RoomConnectionType.TriangularPortalXnZn;
-                    }
-                    else
-                    {
-                        // Below diagonal ceiling
-                        if (blockBelow.CeilingDiagonalSplit == DiagonalSplit.XpZn && blockAbove.QA[Block.FaceXnZn] == blockAbove.QA[Block.FaceXnZp] &&
-                            blockAbove.QA[Block.FaceXnZp] == blockAbove.QA[Block.FaceXpZp])
-                            return RoomConnectionType.TriangularPortalXnZp;
-                        else if (blockBelow.CeilingDiagonalSplit == DiagonalSplit.XnZp && blockAbove.QA[Block.FaceXnZn] == blockAbove.QA[Block.FaceXpZn] &&
-                            blockAbove.QA[Block.FaceXpZn] == blockAbove.QA[Block.FaceXpZp])
-                            return RoomConnectionType.TriangularPortalXpZn;
-                        else if (blockBelow.CeilingDiagonalSplit == DiagonalSplit.XnZn && blockAbove.QA[Block.FaceXpZn] == blockAbove.QA[Block.FaceXnZp] &&
-                            blockAbove.QA[Block.FaceXnZp] == blockAbove.QA[Block.FaceXpZp])
-                            return RoomConnectionType.TriangularPortalXpZp;
-                        else if (blockBelow.CeilingDiagonalSplit == DiagonalSplit.XpZp && blockAbove.QA[Block.FaceXnZn] == blockAbove.QA[Block.FaceXnZp] &&
-                            blockAbove.QA[Block.FaceXnZp] == blockAbove.QA[Block.FaceXpZn])
-                            return RoomConnectionType.TriangularPortalXnZn;
-
-                        // Above diagonal floor
-                        else if (blockBelow.FloorDiagonalSplit == DiagonalSplit.XpZn && blockBelow.WS[Block.FaceXnZn] == blockBelow.WS[Block.FaceXnZp] &&
-                            blockBelow.WS[Block.FaceXnZp] == blockAbove.WS[Block.FaceXpZp])
-                            return RoomConnectionType.TriangularPortalXnZp;
-                        else if (blockBelow.FloorDiagonalSplit == DiagonalSplit.XnZp && blockBelow.WS[Block.FaceXnZn] == blockBelow.WS[Block.FaceXpZn] &&
-                            blockBelow.WS[Block.FaceXpZn] == blockAbove.WS[Block.FaceXpZp])
-                            return RoomConnectionType.TriangularPortalXpZn;
-                        else if (blockBelow.FloorDiagonalSplit == DiagonalSplit.XnZn && blockBelow.WS[Block.FaceXpZn] == blockBelow.WS[Block.FaceXnZp] &&
-                            blockBelow.WS[Block.FaceXnZp] == blockAbove.WS[Block.FaceXpZp])
-                            return RoomConnectionType.TriangularPortalXpZp;
-                        else if (blockBelow.FloorDiagonalSplit == DiagonalSplit.XpZp && blockBelow.WS[Block.FaceXnZn] == blockBelow.WS[Block.FaceXnZp] &&
-                            blockBelow.WS[Block.FaceXnZp] == blockAbove.WS[Block.FaceXpZn])
-                            return RoomConnectionType.TriangularPortalXnZn;
-                        return RoomConnectionType.NoPortal;
-                    }
+                if ((belowIsQuad || belowSplitXEqualsZ) && (aboveIsQuad || splitXEqualsZ))
+                { // Try to make a triangular portal split which is parallel to X=Z
+                    if (matchesAtXnYn && matchesAtXnYp && matchesAtXpYp && (diagonalSplit == DiagonalSplit.XpZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                        return RoomConnectionType.TriangularPortalXnZp;
+                    if (matchesAtXnYn && matchesAtXpYn && matchesAtXpYp && (diagonalSplit == DiagonalSplit.XnZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                        return RoomConnectionType.TriangularPortalXpZn;
                 }
-                else
-                {
-                    if ((belowIsQuad || belowSplitXEqualsZ) && (aboveIsQuad || splitXEqualsZ))
-                    {
-                        if (matchesAtXnYn && matchesAtXnYp && matchesAtXpYp && (diagonalSplit == DiagonalSplit.XpZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
-                            return RoomConnectionType.TriangularPortalXnZp;
-                        if (matchesAtXnYn && matchesAtXpYn && matchesAtXpYp && (diagonalSplit == DiagonalSplit.XnZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
-                            return RoomConnectionType.TriangularPortalXpZn;
-                    }
-                    if ((belowIsQuad || !belowSplitXEqualsZ) && (aboveIsQuad || !splitXEqualsZ))
-                    {
-                        if (matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && (diagonalSplit == DiagonalSplit.XnZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
-                            return RoomConnectionType.TriangularPortalXpZp;
-                        if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && (diagonalSplit == DiagonalSplit.XpZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
-                            return RoomConnectionType.TriangularPortalXnZn;
-                    }
+                if ((belowIsQuad || !belowSplitXEqualsZ) && (aboveIsQuad || !splitXEqualsZ))
+                { // Try to make a triangular portal split which is perpendicular to X=Z
+                    if (matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && (diagonalSplit == DiagonalSplit.XnZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                        return RoomConnectionType.TriangularPortalXpZp;
+                    if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && (diagonalSplit == DiagonalSplit.XpZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                        return RoomConnectionType.TriangularPortalXnZn;
                 }
             }
             return RoomConnectionType.NoPortal;

@@ -833,6 +833,60 @@ namespace TombLib.LevelData
             }
         }
 
+        /// <summary>Returns the height of the 4 edges if the sector is split</summary>
+        private static int GetActualHeight(short[] heights, DiagonalSplit splitType, int face, bool max)
+        {
+            switch (splitType)
+            {
+                case DiagonalSplit.None:
+                    return heights[face];
+
+
+                case DiagonalSplit.XnZn:
+                    if (face == FaceXnZp || face == FaceXpZn)
+                        return max ?
+                            Math.Max(heights[face], heights[FaceXpZp]) :
+                            Math.Min(heights[face], heights[FaceXpZp]);
+                    return heights[face];
+                case DiagonalSplit.XpZp:
+                    if (face == FaceXnZp || face == FaceXpZn)
+                        return max ?
+                            Math.Max(heights[face], heights[FaceXnZn]) :
+                            Math.Min(heights[face], heights[FaceXnZn]);
+                    return heights[face];
+
+
+                case DiagonalSplit.XpZn:
+                    if (face == FaceXpZp || face == FaceXnZn)
+                        return max ?
+                            Math.Max(heights[face], heights[FaceXnZp]) :
+                            Math.Min(heights[face], heights[FaceXnZp]);
+                    return heights[face];
+                case DiagonalSplit.XnZp:
+                    if (face == FaceXpZp || face == FaceXnZn)
+                        return max ?
+                            Math.Max(heights[face], heights[FaceXpZn]) :
+                            Math.Min(heights[face], heights[FaceXpZn]);
+                    return heights[face];
+
+
+                default:
+                    throw new ApplicationException("\"splitType\" in unknown state.");
+            }
+        }
+
+        /// <summary>Returns the height of the 4 edges if the sector is split</summary>
+        public int GetActualFloorMax(int face) => GetActualHeight(QA, FloorDiagonalSplit, face, true);
+
+        /// <summary>Returns the height of the 4 edges if the sector is split</summary>
+        public int GetActualFloorMin(int face) => GetActualHeight(QA, FloorDiagonalSplit, face, false);
+
+        /// <summary>Returns the height of the 4 edges if the sector is split</summary>
+        public int GetActualCeilingMax(int face) => GetActualHeight(WS, CeilingDiagonalSplit, face, true);
+
+        /// <summary>Returns the height of the 4 edges if the sector is split</summary>
+        public int GetActualCeilingMin(int face) => GetActualHeight(WS, CeilingDiagonalSplit, face, false);
+
         /// <summary>Checks for FloorDiagonalSplit and takes priority</summary>
         public bool FloorSplitDirectionIsXEqualsZWithDiagonalSplit
         {
