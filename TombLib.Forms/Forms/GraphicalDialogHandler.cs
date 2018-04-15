@@ -67,12 +67,12 @@ namespace TombLib.Forms
                 var dialogDescription = (DialogDescriptonTextureUnloadable)dialogDescription_;
 
                 bool ignoreError = false;
-                while (dialogDescription.Texture.ImageLoadException != null && !ignoreError)
+                while (dialogDescription.Texture.LoadException != null && !ignoreError)
                     owner.InvokeIfNecessary(() =>
                     {
                         switch (MessageBox.Show(owner, "The texture file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Texture.Path) +
-                            " could not be loaded: " + dialogDescription.Texture.ImageLoadException.Message + ". \n" +
-                            "Do you want to load a substituting file now?\nError: " + (dialogDescription.Texture.ImageLoadException?.Message ?? "null"), "Open project",
+                            " could not be loaded: " + (dialogDescription.Texture.LoadException?.Message ?? "null") + ". \n" +
+                            "Do you want to load a substituting file now?", "Open project",
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                         {
                             case DialogResult.Yes:
@@ -89,47 +89,26 @@ namespace TombLib.Forms
             else if (dialogDescription_ is DialogDescriptonWadUnloadable)
             {
                 var dialogDescription = (DialogDescriptonWadUnloadable)dialogDescription_;
-                Level level = dialogDescription.Level;
 
-                if (string.IsNullOrEmpty(level.Settings.WadFilePath))
-                    return;
-
-                do
-                {
-                    // Try loading the file
-                    try
+                bool ignoreError = false;
+                while (dialogDescription.Wad.LoadException != null && !ignoreError)
+                    owner.InvokeIfNecessary(() =>
                     {
-                        level.ReloadWad(new GraphicalDialogHandler(owner));
-                        if (level.WadLoadingException != null) throw level.WadLoadingException;
-                        return;
-                    }
-                    catch (Exception exc)
-                    {
-                        string path = level.Settings.MakeAbsolute(level.Settings.WadFilePath);
-                        logger.Warn(exc, "Unable to load object file \"" + path + "\".");
-
-                        bool retry = false;
-                        owner.InvokeIfNecessary(() =>
+                        switch (MessageBox.Show(owner, "The objects file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Wad.Path) +
+                            " could not be loaded: " + (dialogDescription.Wad.LoadException?.Message ?? "null") + ". \n" +
+                            "Do you want to load a substituting file now?", "Open project",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                         {
-                            switch (MessageBox.Show(owner, "The objects file '" + path + " could not be loaded. " +
-                                "Do you want to load a substituting file now?\nError: " + (exc.Message ?? "null"), "Open project",
-                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
-                            {
-                                case DialogResult.Yes:
-                                    string browsedPath = BrowseObjectFile(level.Settings, level.Settings.WadFilePath, owner);
-                                    retry = browsedPath != level.Settings.WadFilePath;
-                                    level.Settings.WadFilePath = browsedPath;
-                                    break;
-                                case DialogResult.No:
-                                    break;
-                                case DialogResult.Cancel:
-                                    throw new OperationCanceledException("Canceled because *.wad was not loadable");
-                            }
-                        });
-                        if (!retry)
-                            return;
-                    }
-                } while (true);
+                            case DialogResult.Yes:
+                                dialogDescription.Wad.SetPath(dialogDescription.Settings, BrowseObjectFile(dialogDescription.Settings, dialogDescription.Wad.Path, owner));
+                                break;
+                            case DialogResult.No:
+                                ignoreError = true;
+                                break;
+                            case DialogResult.Cancel:
+                                throw new OperationCanceledException("Canceled because wad file was not loadable");
+                        }
+                    });
             }
             else if (dialogDescription_ is DialogDescriptonMissingSounds)
             {

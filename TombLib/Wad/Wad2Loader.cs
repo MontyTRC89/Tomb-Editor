@@ -474,13 +474,10 @@ namespace TombLib.Wad
                 if (id == Wad2Chunks.MoveableBoneName)
                 {
                     bone.Name = chunkIO.ReadChunkString(chunkSize);
-                    Console.WriteLine("Processing " + bone.Name);
+                    //Console.WriteLine("Processing " + bone.Name);
                 }
                 else if (id == Wad2Chunks.MoveableBoneTranslation)
-                {
                     bone.Translation = chunkIO.ReadChunkVector3(chunkSize);
-                    bone.Transform = Matrix4x4.CreateTranslation(bone.Translation);
-                }
                 else if (id == Wad2Chunks.MoveableBoneMeshPointer)
                     bone.Mesh = meshes[chunkIO.ReadChunkInt(chunkSize)];
                 else if (id == Wad2Chunks.MoveableBone)

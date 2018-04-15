@@ -35,8 +35,6 @@ namespace WadTool
             _tool = tool;
             _device = deviceManager.Device;
 
-            _wad.TempMeshes.Clear();
-
             Static = @static;
 
             _workingStatic = @static.Clone();
@@ -65,7 +63,7 @@ namespace WadTool
             {
                 UpdateLightsList();
                 UpdateLightUI();
-                UpdateDirectXModel(_workingStatic);
+                _workingStatic.Version = DataVersion.GetNext();
                 panelRendering.Invalidate();
             }
         }
@@ -93,17 +91,10 @@ namespace WadTool
             _wad.Statics.Remove(_workingStatic.Id);
             _wad.Statics.Add(_workingStatic.Id, _workingStatic);
 
-            UpdateDirectXModel(_workingStatic);
+            _workingStatic.Version = DataVersion.GetNext();
 
             DialogResult = DialogResult.OK;
             Close();
-        }
-
-        private void UpdateDirectXModel(WadStatic s)
-        {
-            _wad.DirectXStatics[s.Id].Dispose();
-            _wad.DirectXStatics.Remove(s.Id);
-            _wad.DirectXStatics.Add(s.Id, StaticModel.FromWad2(_device, _wad, s, _wad.PackedTextures));
         }
 
         private void UpdateLightsList()
@@ -250,8 +241,7 @@ namespace WadTool
         private void FormStaticEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (DialogResult != DialogResult.OK)
-                UpdateDirectXModel(Static);
-            _wad.TempMeshes.Clear();
+                _workingStatic.Version = DataVersion.GetNext();
         }
 
         private void lstLights_Click(object sender, EventArgs e)
@@ -288,9 +278,11 @@ namespace WadTool
                     form.AddPreset(IOSettingsPresets.SettingsPresets);
                     if (form.ShowDialog(this) != DialogResult.OK)
                         return;
-                    _tool.DestinationWad.ImportExternalModelIntoStaticMesh(_workingStatic, dialog.FileName, form.Settings);
+                    _workingStatic.Mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    _workingStatic.VisibilityBox = _workingStatic.Mesh.BoundingBox;
+                    _workingStatic.CollisionBox = _workingStatic.Mesh.BoundingBox;
+                    _workingStatic.Version = DataVersion.GetNext();
                     _workingStatic.Mesh.RecalculateNormals();
-                    UpdateDirectXModel(_workingStatic);
                     panelRendering.Invalidate();
                 }
             }

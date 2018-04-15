@@ -469,7 +469,7 @@ namespace TombEditor.Controls
                 else
                 {
                     string fileName = FileSystemUtils.GetFileNameWithoutExtensionTry(VisibleTexture?.Path) ?? "";
-                    if (FileSystemUtils.IsFileNotFoundException(VisibleTexture?.ImageLoadException))
+                    if (FileSystemUtils.IsFileNotFoundException(VisibleTexture?.LoadException))
                         notifyMessage = "Texture file '" + fileName + "' was not found!\n";
                     else
                         notifyMessage = "Unable to load texture from file '" + fileName + "'.\n";

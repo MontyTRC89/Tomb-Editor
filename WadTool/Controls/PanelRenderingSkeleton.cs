@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
@@ -19,22 +20,12 @@ namespace WadTool.Controls
     public class PanelRenderingSkeleton : Panel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WadStatic Static { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WadLight SelectedLight { get; set; }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawVisibilityBox { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawCollisionBox { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawGrid { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawGizmo { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawLights { get; set; }
 
         public Matrix4x4 GizmoTransform
         {
@@ -59,6 +50,7 @@ namespace WadTool.Controls
         private GeometricPrimitive _cube;
         private GeometricPrimitive _sphere;
         private GeometricPrimitive _littleSphere;
+        private WadRenderer _wadRenderer; // TODO Remove internal hack that destroys rendering encapsulation
 
         public Vector3 StaticPosition { get; set; } = Vector3.Zero;
         public Vector3 StaticRotation { get; set; } = Vector3.Zero;
@@ -79,6 +71,7 @@ namespace WadTool.Controls
             _tool = tool;
             _device = deviceManager.Device;
             _deviceManager = deviceManager;
+            _wadRenderer = new WadRenderer(_device);
 
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
@@ -129,6 +122,23 @@ namespace WadTool.Controls
 
             DrawGizmo = true;
             DrawGrid = true;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _presenter?.Dispose();
+                _rasterizerWireframe?.Dispose();
+                _spriteBatch?.Dispose();
+                _gizmo?.Dispose();
+                _plane?.Dispose();
+                _cube?.Dispose();
+                _sphere?.Dispose();
+                _littleSphere?.Dispose();
+                _wadRenderer?.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -185,30 +195,37 @@ namespace WadTool.Controls
 
             Effect solidEffect = _deviceManager.Effects["Solid"];
 
+            _wadRenderer.Dispose();
             if (Skeleton != null)
             {
                 var effect = _deviceManager.Effects["Model"];
 
-                effect.Parameters["Texture"].SetResource(_tool.DestinationWad.DirectXTexture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 foreach (var node in Skeleton)
                 {
-                    _device.SetVertexBuffer(0, node.DirectXMesh.VertexBuffer);
-                    _device.SetIndexBuffer(node.DirectXMesh.IndexBuffer, true);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, node.DirectXMesh.VertexBuffer));
+                    // TODO Keep data on GPU, optimize data upload
+                    // Use new renderer
+                    var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = node.WadMesh });
 
+                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                    effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                     effect.Parameters["ModelViewProjection"].SetValue((node.GlobalTransform * viewProjection).ToSharpDX());
                     effect.Techniques[0].Passes[0].Apply();
 
-                    foreach (var submesh in node.DirectXMesh.Submeshes)
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                    foreach (var mesh_ in mesh.Meshes)
+                        foreach (var submesh in mesh_.Submeshes)
+                            _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
 
                 // Draw box
                 if (SelectedNode != null)
                 {
-                    if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
+                    if (_vertexBufferVisibility != null)
+                        _vertexBufferVisibility.Dispose();
                     _vertexBufferVisibility = GetVertexBufferFromBoundingBox(SelectedNode.WadMesh.BoundingBox);
 
                     _device.SetVertexBuffer(_vertexBufferVisibility);
@@ -246,7 +263,7 @@ namespace WadTool.Controls
             // Draw debug strings
             if (SelectedNode != null)
             {
-                Vector3 screenPos = _device.Viewport.Project(SelectedNode.Centre - Vector3.UnitY * 128.0f, 
+                Vector3 screenPos = _device.Viewport.Project(SelectedNode.Centre - Vector3.UnitY * 128.0f,
                                     SelectedNode.GlobalTransform * viewProjection);
                 _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
@@ -381,7 +398,7 @@ namespace WadTool.Controls
                 Invalidate();
         }
 
-        private bool DoNodePicking(Ray ray, WadMeshBoneNode node, out float nodeDistance)  
+        private bool DoNodePicking(Ray ray, WadMeshBoneNode node, out float nodeDistance)
         {
             nodeDistance = 0;
 
@@ -397,20 +414,26 @@ namespace WadTool.Controls
             // Now do a ray - triangle intersection test
             bool hit = false;
             float minDistance = float.PositiveInfinity;
-            foreach (var submesh in node.DirectXMesh.Submeshes)
-                for (int k = 0; k < submesh.Value.Indices.Count; k += 3)
-                {
-                    Vector3 p1 = node.DirectXMesh.Vertices[submesh.Value.Indices[k]].Position;
-                    Vector3 p2 = node.DirectXMesh.Vertices[submesh.Value.Indices[k + 1]].Position;
-                    Vector3 p3 = node.DirectXMesh.Vertices[submesh.Value.Indices[k + 2]].Position;
+            /*
+            _wadRenderer.Dispose();
+            foreach (var submesh in node.Bone.Children.Select(bone => bone.Mesh))
+            for (int k = 0; k < submesh.Value.Indices.Count; k += 3)
+            {
+                var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = node.WadMesh });
 
-                    float distance;
-                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
-                    {
-                        minDistance = distance;
-                        hit = true;
-                    }
+                Vector3 p1 = mesh.Vertices[submesh.Value.Indices[k]].Position;
+                Vector3 p2 = mesh.Vertices[submesh.Value.Indices[k + 1]].Position;
+                Vector3 p3 = mesh.Vertices[submesh.Value.Indices[k + 2]].Position;
+
+                float distance;
+                if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
+                {
+                    minDistance = distance;
+                    hit = true;
                 }
+            }*/
+            // TODO Avoid using the renderer for pickingData transforms need to be available in wad mesh without rendering.
+            int TODO_DoNodePicking;
 
             if (hit)
             {

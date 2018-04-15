@@ -144,14 +144,12 @@ namespace TombLib.Controls
 
         private void butClipboardCopy_Click(object sender, EventArgs e)
         {
-            using (Wad2 tempWad = new Wad2())
+            Wad2 tempWad = new Wad2();
+            tempWad.FixedSoundInfos.Add(new WadFixedSoundInfoId(), new WadFixedSoundInfo(new WadFixedSoundInfoId()) { SoundInfo = SoundInfo });
+            using (MemoryStream stream = new MemoryStream())
             {
-                tempWad.FixedSoundInfos.Add(new WadFixedSoundInfoId(), new WadFixedSoundInfo(new WadFixedSoundInfoId()) { SoundInfo = SoundInfo });
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    Wad2Writer.SaveToStream(tempWad, stream);
-                    Clipboard.SetData(_clipboardName, stream.ToArray());
-                }
+                Wad2Writer.SaveToStream(tempWad, stream);
+                Clipboard.SetData(_clipboardName, stream.ToArray());
             }
         }
 
@@ -166,8 +164,10 @@ namespace TombLib.Controls
 
             // Load sound info
             using (MemoryStream stream = new MemoryStream(data, false))
-            using (Wad2 tempWad = Wad2Loader.LoadFromStream(stream))
+            {
+                Wad2 tempWad = Wad2Loader.LoadFromStream(stream);
                 SoundInfo = tempWad.FixedSoundInfos.Values.First().SoundInfo;
+            }
         }
 
         private void butPlayPreview_Click(object sender, EventArgs e)

@@ -84,7 +84,7 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(0, "Tomb Raider Level Compiler");
 
-            if (_level.Wad == null)
+            if (_level.Settings.Wads.All(wad => wad.Wad == null))
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);

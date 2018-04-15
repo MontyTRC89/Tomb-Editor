@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
+using TombLib.Wad;
 using ImportedGeometryUpdateInfo = System.Collections.Generic.KeyValuePair<TombLib.LevelData.ImportedGeometry, TombLib.LevelData.ImportedGeometryInfo>;
 
 namespace TombLib.LevelData
@@ -91,14 +92,23 @@ namespace TombLib.LevelData
         public static readonly char Dir = Path.DirectorySeparatorChar;
 
         public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.
-        public string WadFilePath { get; set; } = null; // Can be null if no object file is loaded.
         public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
-        /*public string Tr2MainSamFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr3MainSamFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr2SoundsXmlFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr3SoundsXmlFilePath { get; set; } = null; // Can be null if the default should be used.*/
+
+        public string WadFilePath
+        {
+            get { return Wads.Count == 0 ? null : Wads[0].Path; }
+            set
+            {
+                int TODO_REMOVE_WadFilePath;
+                if (Wads.Count == 0)
+                    Wads.Add(new ReferencedWad(this, value));
+                else
+                    Wads[0].SetPath(this, value);
+            }
+        }
+        public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
 
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
             {
@@ -119,8 +129,7 @@ namespace TombLib.LevelData
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
-
-        public Vector4 DefaultAmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 2.0f);
+        public Vector4 DefaultAmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 1.0f);
 
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
@@ -160,8 +169,8 @@ namespace TombLib.LevelData
                 case VariableType.LevelName:
                     if (!string.IsNullOrEmpty(LevelFilePath))
                         return FileSystemUtils.GetFileNameWithoutExtensionTry(LevelFilePath);
-                    if (!string.IsNullOrEmpty(WadFilePath))
-                        return FileSystemUtils.GetFileNameWithoutExtensionTry(WadFilePath);
+                    if (Wads.Count > 0 && !string.IsNullOrEmpty(Wads[0].Path))
+                        return FileSystemUtils.GetFileNameWithoutExtensionTry(Wads[0].Path);
                     return "Default";
                 case VariableType.EngineVersion:
                     return GameVersion.ToString();
@@ -289,6 +298,13 @@ namespace TombLib.LevelData
             }
         }
 
+        public Wad2 ComposeActualWad()
+        {
+            Wad2 result = new Wad2();
+            int TODO_ComposeActualWad;
+            throw new NotImplementedException();
+        }
+
         public ImageC LoadFontTexture()
         {
             string absolutePath = MakeAbsolute(FontTextureFilePath);
@@ -312,18 +328,6 @@ namespace TombLib.LevelData
                 return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Extra_Tr5_pc);
             return LoadRawExtraTexture(absolutePath);
         }
-
-        /*public string Tr2MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr2MainSamFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/MAIN.SAM");
-
-        public string Tr3MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr3MainSamFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR3/MAIN.SAM");
-
-        public string Tr2SoundsXmlFileNameAbsoluteOrDefault => MakeAbsolute(Tr2SoundsXmlFilePath) ??
-           Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/Sounds.xml");
-
-        public string Tr3SoundsXmlFileNameAbsoluteOrDefault => MakeAbsolute(Tr3SoundsXmlFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR3/Sounds.xml");*/
 
         public static ImageC LoadRawExtraTexture(string path)
         {

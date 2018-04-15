@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;
+using TombLib.Utils;
 using TombLib.Wad;
 
 namespace WadTool
@@ -52,12 +53,10 @@ namespace WadTool
         private DarkTreeNode LoadSkeleton(WadMeshBoneNode parentNode, WadBone currentBone, DarkTreeNode parent)
         {
             var wadMesh = currentBone.Mesh;
-            var model = _wad.DirectXMoveables[_moveable.Id];
             var wadMoveable = _moveable;
-            var dxMesh = model.Meshes[wadMoveable.Meshes.IndexOf(wadMesh)];
 
             DarkTreeNode node = new DarkTreeNode(currentBone.Name);
-            node.Tag = new WadMeshBoneNode(parentNode, wadMesh, currentBone, dxMesh);
+            node.Tag = new WadMeshBoneNode(parentNode, wadMesh, currentBone);
 
             foreach (var childBone in currentBone.Children)
             {
@@ -86,7 +85,7 @@ namespace WadTool
             theNode.LinearizedIndex = _linearizedSkeleton.Count;
 
             _linearizedSkeleton.Add(theNode);
-                
+
             foreach (var childNode in current.Nodes)
                 LinearizeNodes(childNode, theNode.GlobalTransform);
         }
@@ -94,7 +93,6 @@ namespace WadTool
         public void UpdateSkeletonMatrices(DarkTreeNode current, Matrix4x4 parentTransform)
         {
             var node = (WadMeshBoneNode)current.Tag;
-            node.Bone.Transform = Matrix4x4.CreateTranslation(node.Bone.Translation);
             node.GlobalTransform = node.Bone.Transform * parentTransform;
 
             foreach (var childNode in current.Nodes)
@@ -175,8 +173,8 @@ namespace WadTool
                 }
             }
 
-            // Now reload the moveable
-            _wad.ReloadMoveable(_moveable.Id);
+            // Now cause the moveable to reload
+            _moveable.Version = DataVersion.GetNext();
 
             DialogResult = DialogResult.OK;
             Close();
@@ -191,7 +189,6 @@ namespace WadTool
             bone.Parent = parentBone;
             bone.Translation = currentBone.Bone.Translation;
             bone.Mesh = currentBone.WadMesh;
-            bone.Transform = Matrix4x4.CreateTranslation(bone.Translation);
 
             foreach (var childNode in currentNode.Nodes)
                 bone.Children.Add(SaveSkeleton(bone, childNode));

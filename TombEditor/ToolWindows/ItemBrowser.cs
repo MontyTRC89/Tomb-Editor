@@ -12,11 +12,11 @@ using TombLib.Wad;
 
 namespace TombEditor.ToolWindows
 {
-    public partial class ObjectBrowser : DarkToolWindow
+    public partial class ItemBrowser : DarkToolWindow
     {
         private readonly Editor _editor;
 
-        public ObjectBrowser()
+        public ItemBrowser()
         {
             InitializeComponent();
 

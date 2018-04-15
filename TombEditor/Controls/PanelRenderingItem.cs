@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
@@ -24,6 +25,7 @@ namespace TombEditor.Controls
         private GraphicsDevice _device;
         private int _lastX;
         private int _lastY;
+        private WadRenderer _wadRenderer;
 
         public PanelRenderingItem()
         {
@@ -68,6 +70,7 @@ namespace TombEditor.Controls
         {
             _deviceManager = deviceManager;
             _device = deviceManager.Device;
+            _wadRenderer = new WadRenderer(_device, true);
 
             // inizializzo il Presenter se necessario
             if (Presenter == null)
@@ -128,12 +131,14 @@ namespace TombEditor.Controls
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (chosenItem.IsStatic)
             {
-                StaticModel model = _editor.Level.Wad.DirectXStatics[chosenItem.StaticId];
+                if (!_editor.Level.Wad.Statics.ContainsKey(chosenItem.StaticId))
+                    return;
+                StaticModel model = _wadRenderer.GetStatic(_editor.Level.Wad.Statics[chosenItem.StaticId]);
 
                 Effect mioEffect = _deviceManager.Effects["StaticModel"];
                 mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
 
-                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
+                mioEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 mioEffect.Parameters["Color"].SetValue(Vector4.One);
@@ -162,8 +167,13 @@ namespace TombEditor.Controls
             }
             else
             {
-                AnimatedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.MoveableId];
-                AnimatedModel skin = chosenItem.MoveableId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model;
+                if (!_editor.Level.Wad.Moveables.ContainsKey(chosenItem.MoveableId))
+                    return;
+                AnimatedModel model = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[chosenItem.MoveableId]);
+                AnimatedModel skin = model;
+                if (chosenItem.MoveableId == WadMoveableId.Lara) // Show Lara
+                    if (_editor.Level.Wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
+                        skin = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[WadMoveableId.LaraSkin]);
 
                 Effect mioEffect = _deviceManager.Effects["Model"];
 
@@ -172,7 +182,7 @@ namespace TombEditor.Controls
 
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, skin.VertexBuffer));
 
-                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
+                mioEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 mioEffect.Parameters["Color"].SetValue(Vector4.One);
@@ -207,20 +217,23 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_editor?.Level?.Wad == null)
+            LevelSettings settings = _editor?.Level?.Settings;
+            if (settings != null && !settings.Wads.Any(wad => wad.LoadException != null))
             {
+                ReferencedWad errorWad = settings.Wads.FirstOrDefault(wad => wad.LoadException != null);
                 string notifyMessage;
-                if (string.IsNullOrEmpty(_editor?.Level?.Settings?.WadFilePath))
+                if (errorWad == null)
                     notifyMessage = "Click here to load a new WAD file.";
                 else
                 {
-                    string fileName = FileSystemUtils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.WadFilePath) ?? "";
-                    if (FileSystemUtils.IsFileNotFoundException(_editor.Level.WadLoadingException))
+                    string filePath = settings.MakeAbsolute(errorWad.Path);
+                    string fileName = FileSystemUtils.GetFileNameWithoutExtensionTry(filePath) ?? "";
+                    if (FileSystemUtils.IsFileNotFoundException(errorWad.LoadException))
                         notifyMessage = "Wad file '" + fileName + "' was not found!\n";
                     else
                         notifyMessage = "Unable to load wad from file '" + fileName + "'.\n";
                     notifyMessage += "Click here to choose a replacement.\n\n";
-                    notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.WadFilePath) ?? "");
+                    notifyMessage += "Path: " + (filePath ?? "");
                 }
 
                 e.Graphics.Clear(Parent.BackColor);
@@ -245,16 +258,14 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            switch(e.Button)
+            switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if (_editor?.Level?.Wad == null)
-                    {
-                        EditorActions.LoadWad(Parent);
-                    }
-                    else
-                        if (_editor.ChosenItem != null)
-                            DoDragDrop(_editor.ChosenItem, DragDropEffects.Copy);
+                    LevelSettings settings = _editor?.Level?.Settings;
+                    if (settings != null && !settings.Wads.Any(wad => wad.LoadException != null))
+                        EditorActions.AddWad(Parent, settings.Wads.FirstOrDefault(wad => wad.LoadException != null));
+                    else if (_editor.ChosenItem != null)
+                        DoDragDrop(_editor.ChosenItem, DragDropEffects.Copy);
                     break;
 
                 case MouseButtons.Right:

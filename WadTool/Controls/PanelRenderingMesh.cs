@@ -15,7 +15,7 @@ namespace WadTool.Controls
     public class PanelRenderingMesh : Panel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ObjectMesh Mesh { get; set; }
+        public WadMesh Mesh { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -31,12 +31,14 @@ namespace WadTool.Controls
         private float _lastY;
         private SpriteBatch _spriteBatch;
         private GeometricPrimitive _plane;
+        private WadRenderer _wadRenderer;
 
         public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
         {
             _tool = tool;
             _device = deviceManager.Device;
             _deviceManager = deviceManager;
+            _wadRenderer = new WadRenderer(deviceManager.Device);
 
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
@@ -84,6 +86,19 @@ namespace WadTool.Controls
             DrawGrid = true;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _presenter?.Dispose();
+                _rasterizerWireframe?.Dispose();
+                _spriteBatch?.Dispose();
+                _plane?.Dispose();
+                _wadRenderer?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             if (_device == null || _presenter == null)
@@ -114,15 +129,18 @@ namespace WadTool.Controls
 
             Effect solidEffect = _deviceManager.Effects["Solid"];
 
+            _wadRenderer.Dispose();
             if (Mesh != null)
             {
-                var mesh = Mesh;
+                // TODO Keep data on GPU, optimize data upload
+                // Use new renderer
+                var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = Mesh });
                 var effect = _deviceManager.Effects["StaticModel"];
                 var world = Matrix4x4.Identity;
 
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                 effect.Parameters["Color"].SetValue(Vector4.One);
-                effect.Parameters["Texture"].SetResource(_tool.DestinationWad.DirectXTexture);
+                effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 _device.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -133,8 +151,9 @@ namespace WadTool.Controls
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                 effect.Techniques[0].Passes[0].Apply();
 
-                foreach (var submesh in mesh.Submeshes)
-                    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                foreach (var mesh_ in mesh.Meshes)
+                    foreach (var submesh in mesh_.Submeshes)
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
             }
 
             if (DrawGrid)

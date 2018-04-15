@@ -315,11 +315,11 @@
     <Compile Include="ToolWindows\RoomOptions.Designer.cs">
       <DependentUpon>RoomOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\ObjectBrowser.cs">
+    <Compile Include="ToolWindows\ItemBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\ObjectBrowser.Designer.cs">
-      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    <Compile Include="ToolWindows\ItemBrowser.Designer.cs">
+      <DependentUpon>ItemBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="ToolWindows\SectorOptions.cs">
       <SubType>UserControl</SubType>
@@ -370,8 +370,8 @@
     <EmbeddedResource Include="ToolWindows\MainView.resx">
       <DependentUpon>MainView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\ObjectBrowser.resx">
-      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    <EmbeddedResource Include="ToolWindows\ItemBrowser.resx">
+      <DependentUpon>ItemBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ObjectList.resx">
       <DependentUpon>ObjectList.cs</DependentUpon>

@@ -22,7 +22,7 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WadAnimationNode Animation { get; set; }
+        public AnimationNode Animation { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AnimatedModel Model { get { return _model; } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -59,7 +59,9 @@ namespace WadTool.Controls
         private WadMoveable _moveable;
         private WadMoveableId _moveableId;
         private AnimatedModel _skinModel;
+        private WadMoveable _skinMoveable;
         private WadMoveableId _skinMoveableId;
+        private WadRenderer _wadRenderer;
 
         public List<WadMeshBoneNode> Skeleton { get; set; }
         public ObjectMesh SelectedMesh { get; set; }
@@ -70,21 +72,23 @@ namespace WadTool.Controls
 
         private Buffer<SolidVertex> _vertexBufferVisibility;
 
-        public void InitializePanel(WadToolClass tool, Wad2 wad, DeviceManager deviceManager, WadMoveableId moveableId, 
+        public void InitializePanel(WadToolClass tool, Wad2 wad, DeviceManager deviceManager, WadMoveableId moveableId,
                                     WadMoveableId skinMoveableId)
         {
             _tool = tool;
+            _wadRenderer = new WadRenderer(deviceManager.Device);
             _device = deviceManager.Device;
             _deviceManager = deviceManager;
             _wad = wad;
             _moveableId = moveableId;
             _moveable = _wad.Moveables[_moveableId];
-            _model = _wad.DirectXMoveables[_moveableId];
+            _model = _wadRenderer.GetMoveable(_moveable);
 
             if (skinMoveableId != null)
             {
                 _skinMoveableId = skinMoveableId;
-                _skinModel = _wad.DirectXMoveables[_skinMoveableId];
+                _skinMoveable = _wad.Moveables[_skinMoveableId];
+                _skinModel = _wadRenderer.GetMoveable(_skinMoveable);
             }
 
             // Initialize the viewport, after the panel is added and sized on the form
@@ -198,7 +202,7 @@ namespace WadTool.Controls
                 var effect = _deviceManager.Effects["Model"];
 
                 effect.Parameters["Color"].SetValue(Vector4.One);
-                effect.Parameters["Texture"].SetResource(_wad.DirectXTexture);
+                effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 // Build animation transforms

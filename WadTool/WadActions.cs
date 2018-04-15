@@ -56,12 +56,10 @@ namespace WadTool
             }
             catch (OperationCanceledException)
             {
-                newWad?.Dispose();
                 return;
             }
             catch (Exception exc)
             {
-                newWad?.Dispose();
                 logger.Info(exc, "Unable to load " + (destination ? "destination" : "source") + " file from '" + selectedFilePath + "'.");
                 DarkMessageBox.Show(owner, "Loading the file failed! \n" + exc.Message, "Loading failed", MessageBoxIcon.Error);
                 return;
@@ -192,7 +190,12 @@ namespace WadTool
                     form.AddPreset(IOSettingsPresets.SettingsPresets);
                     if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
-                    tool.DestinationWad.CreateNewStaticMeshFromExternalModel(dialog.FileName, form.Settings);
+
+                    var @static = new WadStatic(tool.DestinationWad.GetFirstFreeStaticMesh());
+                    @static.Mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    @static.VisibilityBox = @static.Mesh.BoundingBox;
+                    @static.CollisionBox = @static.Mesh.BoundingBox;
+                    tool.DestinationWad.Statics.Add(@static.Id, @static);
                     tool.DestinationWadChanged();
                 }
             }

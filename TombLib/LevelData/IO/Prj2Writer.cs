@@ -90,7 +90,6 @@ namespace TombLib.LevelData.IO
             var levelSettingIds = new LevelSettingsIds();
             chunkIO.WriteChunkWithChildren(Prj2Chunks.Settings, () =>
             {
-                chunkIO.WriteChunkString(Prj2Chunks.WadFilePath, settings.WadFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.FontTextureFilePath, settings.FontTextureFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.SkyTextureFilePath, settings.SkyTextureFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.Tr5ExtraSpritesFilePath, settings.Tr5ExtraSpritesFilePath ?? "");
@@ -109,6 +108,14 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.Tr5Weather, (long)settings.Tr5WeatherType);
                 chunkIO.WriteChunkVector4(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
+                chunkIO.WriteChunkWithChildren(Prj2Chunks.Wads, () =>
+                {
+                    foreach (ReferencedWad wad in settings.Wads)
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.Wad, () =>
+                        {
+                            chunkIO.WriteChunkString(Prj2Chunks.WadPath, wad.Path ?? "");
+                        });
+                }, long.MaxValue);
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.Textures, () =>
                 {
                     int index = 0;

@@ -702,12 +702,6 @@ namespace TombEditor
             DeleteObject(instance);
         }
 
-        public static void ReloadImportedGeometry(ImportedGeometryInstance instance)
-        {
-            _editor.Level.Settings.ImportedGeometryUpdate(instance.Model, instance.Model.Info);
-            _editor.ObjectChange(instance, ObjectChangeType.Change);
-        }
-
         public static void DeleteObject(ObjectInstance instance)
         {
             var room = instance.Room;
@@ -2319,29 +2313,37 @@ namespace TombEditor
             _editor.LoadedTexturesChange();
         }
 
-        public static void LoadWad(IWin32Window owner)
+        public static void AddWad(IWin32Window owner, ReferencedWad toReplace = null)
         {
             var settings = _editor.Level.Settings;
-            string path = GraphicalDialogHandler.BrowseObjectFile(settings, settings.WadFilePath, owner);
-            if (path == settings.WadFilePath)
+            string path = GraphicalDialogHandler.BrowseObjectFile(settings, toReplace?.Path, owner);
+            if (path == toReplace?.Path)
                 return;
 
-            settings.WadFilePath = path;
-            _editor.Level.ReloadWad(new GraphicalDialogHandler(owner));
-            _editor.LoadedWadsChange(_editor.Level.Wad);
+            if (toReplace != null)
+                toReplace.SetPath(_editor.Level.Settings, path);
+            else
+            {
+                var newWad = new ReferencedWad(_editor.Level.Settings, path, new GraphicalDialogHandler(owner));
+                if (newWad.LoadException == null)
+                    return;
+                _editor.Level.Settings.Wads.Add(newWad);
+            }
+            _editor.LoadedWadsChange();
         }
 
-        public static void UnloadWad()
+        public static void RemoveWads(IWin32Window owner)
         {
-            _editor.Level.Settings.WadFilePath = null;
-            _editor.Level.ReloadWad();
-            _editor.LoadedWadsChange(null);
+            _editor.Level.Settings.Wads.Clear();
+            _editor.LoadedWadsChange();
         }
 
-        public static void ReloadWad()
+        public static void ReloadWads(IWin32Window owner)
         {
-            _editor.Level.ReloadWad();
-            _editor.LoadedWadsChange(null);
+            var dialogHandler = new GraphicalDialogHandler(owner);
+            foreach (var wad in _editor.Level.Settings.Wads)
+                wad.Reload(_editor.Level.Settings, dialogHandler);
+            _editor.LoadedWadsChange();
         }
 
         public static bool EnsureNoOutsidePortalsInSelecton(IWin32Window owner)
@@ -2441,9 +2443,13 @@ namespace TombEditor
                 {
                     if (Wad2.WadFormatExtensions.Matches(file))
                     {
-                        _editor.Level.Settings.WadFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
-                        _editor.Level.ReloadWad(new GraphicalDialogHandler(owner));
-                        _editor.LoadedWadsChange(_editor.Level.Wad);
+                        string path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+                        ReferencedWad wad = new ReferencedWad(_editor.Level.Settings, path, new GraphicalDialogHandler(owner));
+                        if (wad.LoadException != null)
+                        {
+                            _editor.Level.Settings.Wads.Add(wad);
+                            _editor.LoadedWadsChange();
+                        }
                     }
                     else if (LevelTexture.FileExtensions.Matches(file))
                     {
@@ -2765,20 +2771,13 @@ namespace TombEditor
 
 
             Level newLevel = null;
-            try
+            using (var form = new FormOperationDialog("Import PRJ", false, progressReporter =>
+                newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter)))
             {
-                using (var form = new FormOperationDialog("Import PRJ", false, progressReporter =>
-                    newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter)))
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
-                        return;
-                    _editor.Level = newLevel;
-                    newLevel = null;
-                }
-            }
-            finally
-            {
-                newLevel?.Dispose();
+                if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                    return;
+                _editor.Level = newLevel;
+                newLevel = null;
             }
         }
 

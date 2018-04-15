@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using TombLib.Graphics;
 using TombLib.Wad;
 
-namespace TombLib.Wad
-{ 
-    public class WadAnimationNode
+namespace TombLib.Graphics
+{
+    public class AnimationNode
     {
         public WadAnimation WadAnimation { get; set; }
         public Animation DirectXAnimation { get; set; }
 
-        public WadAnimationNode(WadAnimation wadAnim, Animation dxAnim)
+        public AnimationNode(WadAnimation wadAnim, Animation dxAnim)
         {
             WadAnimation = wadAnim;
             DirectXAnimation = dxAnim;
