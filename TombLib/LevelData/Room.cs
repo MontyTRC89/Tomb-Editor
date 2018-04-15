@@ -3003,7 +3003,7 @@ namespace TombLib.LevelData
 
         public Buffer<EditorVertex> VertexBuffer => _vertexBuffer;
 
-        public Matrix4x4 Transform => Matrix4x4.CreateTranslation(new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f));
+        public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
 
         public int GetHighestCorner(RectangleInt2 area)
         {

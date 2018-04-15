@@ -17,14 +17,12 @@ namespace WadTool
         private class MeshTreeNode
         {
             public WadMesh WadMesh { get; set; }
-            public ObjectMesh DirectXMesh { get; set; }
             public IWadObjectId ObjectId { get; set; }
 
-            public MeshTreeNode(IWadObjectId obj, WadMesh wadMesh, ObjectMesh dxMesh)
+            public MeshTreeNode(IWadObjectId obj, WadMesh wadMesh)
             {
                 ObjectId = obj;
                 WadMesh = wadMesh;
-                DirectXMesh = dxMesh;
             }
         }
 
@@ -33,6 +31,7 @@ namespace WadTool
         private Wad2 _wad;
         private DeviceManager _deviceManager;
         private WadToolClass _tool;
+        private WadRenderer render;
 
         public FormMesh(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
         {
@@ -52,9 +51,8 @@ namespace WadTool
                 for (int i = 0; i < moveable.Value.Meshes.Count(); i++)
                 {
                     var wadMesh = moveable.Value.Meshes.ElementAt(i);
-                    var dxMesh = _wad.DirectXMoveables[moveable.Key].Meshes[i];
                     var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
-                    node.Tag = new MeshTreeNode(moveable.Key, wadMesh, dxMesh);
+                    node.Tag = new MeshTreeNode(moveable.Key, wadMesh);
                     list.Add(node);
                 }
                 moveableNode.Nodes.AddRange(list);
@@ -67,9 +65,8 @@ namespace WadTool
             {
                 var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.SuggestedGameVersion));
                 var wadMesh = @static.Value.Mesh;
-                var dxMesh = _wad.DirectXStatics[@static.Key].Meshes[0];
                 var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
-                node.Tag = new MeshTreeNode(@static.Key, wadMesh, dxMesh);
+                node.Tag = new MeshTreeNode(@static.Key, wadMesh);
                 staticNode.Nodes.Add(node);
                 staticsNode.Nodes.Add(staticNode);
             }
@@ -82,7 +79,7 @@ namespace WadTool
             if (lstMeshes.SelectedNodes.Count <= 0 || lstMeshes.SelectedNodes[0].Tag == null)
                 return;
 
-            panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).DirectXMesh;
+            panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
             panelMesh.Invalidate();
         }
 

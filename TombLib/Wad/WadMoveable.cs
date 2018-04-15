@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
@@ -51,6 +52,7 @@ namespace TombLib.Wad
     public class WadMoveable : IWadObject
     {
         public WadMoveableId Id { get; private set; }
+        public DataVersion Version { get; set; } = DataVersion.GetNext();
         public List<WadMesh> Meshes => Skeleton.LinearizedBones.Select(bone => bone.Mesh).ToList();
         public List<WadAnimation> Animations { get; } = new List<WadAnimation>();
         public WadBone Skeleton { get; set; } = new WadBone();

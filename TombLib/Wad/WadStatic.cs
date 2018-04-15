@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
@@ -35,6 +36,7 @@ namespace TombLib.Wad
     public class WadStatic : IWadObject, ICloneable
     {
         public WadStaticId Id { get; private set; }
+        public DataVersion Version { get; set; } = DataVersion.GetNext();
 
         public WadStatic(WadStaticId id)
         {

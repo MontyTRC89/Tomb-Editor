@@ -573,6 +573,7 @@ namespace TombEditor.Controls
         private Buffer<EditorVertex> _skyVertexBuffer;
         private Debug _debug;
         private RasterizerState _rasterizerStateDepthBias;
+        private WadRenderer _wadRenderer;
 
         // Context menus
         private BaseContextMenu _currentContextMenu;
@@ -639,22 +640,25 @@ namespace TombEditor.Controls
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 _editor.EditorEventRaised -= EditorEventRaised;
-            _textureAtlas?.Dispose();
-            _presenter?.Dispose();
-            _rasterizerWireframe?.Dispose();
-            _objectHeightLineVertexBuffer?.Dispose();
-            _flybyPathVertexBuffer?.Dispose();
-            _gizmo?.Dispose();
-            _skyVertexBuffer?.Dispose();
-            _sphere?.Dispose();
-            _cone?.Dispose();
-            _linesCube?.Dispose();
-            _littleCube?.Dispose();
-            _littleSphere?.Dispose();
-            _movementTimer?.Dispose();
-            _rasterizerStateDepthBias?.Dispose();
-            _currentContextMenu?.Dispose();
+                _textureAtlas?.Dispose();
+                _presenter?.Dispose();
+                _rasterizerWireframe?.Dispose();
+                _objectHeightLineVertexBuffer?.Dispose();
+                _flybyPathVertexBuffer?.Dispose();
+                _gizmo?.Dispose();
+                _skyVertexBuffer?.Dispose();
+                _sphere?.Dispose();
+                _cone?.Dispose();
+                _linesCube?.Dispose();
+                _littleCube?.Dispose();
+                _littleSphere?.Dispose();
+                _movementTimer?.Dispose();
+                _rasterizerStateDepthBias?.Dispose();
+                _currentContextMenu?.Dispose();
+                _wadRenderer?.Dispose();
+            }
             base.Dispose(disposing);
         }
 
@@ -766,6 +770,7 @@ namespace TombEditor.Controls
         {
             _deviceManager = deviceManager;
             _device = deviceManager.Device;
+            _wadRenderer = new WadRenderer(deviceManager.Device, true);
             logger.Info("Starting DirectX 11");
 
             // Initialize the viewport, after the panel is added and sized on the form
@@ -1638,9 +1643,10 @@ namespace TombEditor.Controls
                 if (instance is MoveableInstance && ShowMoveables)
                 {
                     MoveableInstance modelInfo = (MoveableInstance)instance;
-                    if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(modelInfo.WadObjectId) ?? false)
+                    if (_editor?.Level?.Wad?.Moveables?.ContainsKey(modelInfo.WadObjectId) ?? false)
                     {
-                        AnimatedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
+                        // TODO Make picking independent of the rendering data.
+                        AnimatedModel model = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[modelInfo.WadObjectId]);
                         for (int j = 0; j < model.Meshes.Count; j++)
                         {
                             var mesh = model.Meshes[j];
@@ -1659,9 +1665,10 @@ namespace TombEditor.Controls
                 else if (instance is StaticInstance && ShowStatics)
                 {
                     StaticInstance modelInfo = (StaticInstance)instance;
-                    if (_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(modelInfo.WadObjectId) ?? false)
+                    if (_editor?.Level?.Wad?.Statics?.ContainsKey(modelInfo.WadObjectId) ?? false)
                     {
-                        StaticModel model = _editor.Level.Wad.DirectXStatics[modelInfo.WadObjectId];
+                        // TODO Make picking independent of the rendering data.
+                        StaticModel model = _wadRenderer.GetStatic(_editor.Level.Wad.Statics[modelInfo.WadObjectId]);
                         var mesh = model.Meshes[0];
                         DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
                     }
@@ -2104,7 +2111,7 @@ namespace TombEditor.Controls
             {
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
-                    if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false)
+                    if (_editor?.Level?.Wad?.Moveables?.ContainsKey(instance.WadObjectId) ?? false)
                         continue;
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
@@ -2139,7 +2146,7 @@ namespace TombEditor.Controls
 
                 foreach (var instance in room.Objects.OfType<StaticInstance>())
                 {
-                    if (_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(instance.WadObjectId) ?? false)
+                    if (_editor?.Level?.Wad?.Statics?.ContainsKey(instance.WadObjectId) ?? false)
                         continue;
 
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
@@ -2224,16 +2231,18 @@ namespace TombEditor.Controls
 
             MoveableInstance _lastObject = null;
 
-            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
             foreach (var instance in _moveablesToDraw)
             {
-                if (!(_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false))
+                if (!(_editor?.Level?.Wad?.Moveables?.ContainsKey(instance.WadObjectId) ?? false))
                     continue;
 
-                AnimatedModel model = _editor.Level.Wad.DirectXMoveables[instance.WadObjectId];
-                AnimatedModel skin = instance.WadObjectId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model;
+                AnimatedModel model = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[instance.WadObjectId]);
+                AnimatedModel skin = model;
+                if (instance.WadObjectId == WadMoveableId.Lara) // Show Lara
+                    if (_editor.Level.Wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
+                        skin = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[WadMoveableId.LaraSkin]);
 
                 _debug.NumMoveables++;
 
@@ -2251,6 +2260,7 @@ namespace TombEditor.Controls
                         VertexInputLayout.FromBuffer(0, skin.VertexBuffer));
                 }
 
+                skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                 if (_editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_selectionColor);
@@ -2278,9 +2288,9 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString(_editor.Level.Wad != null ? 
-                                                                                                _editor.Level.Wad.SuggestedGameVersion : 
-                                                                                                WadGameVersion.TR4_TRNG) + 
+                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString(_editor.Level.Wad != null ?
+                                                                                                _editor.Level.Wad.SuggestedGameVersion :
+                                                                                                WadGameVersion.TR4_TRNG) +
                                      " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
@@ -2388,16 +2398,15 @@ namespace TombEditor.Controls
 
             Effect staticMeshEffect = _deviceManager.Effects["StaticModel"];
 
-            staticMeshEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
             StaticInstance _lastObject = null;
 
             foreach (var instance in _staticsToDraw)
             {
-                if (!(_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(instance.WadObjectId) ?? false))
+                if (!(_editor?.Level?.Wad?.Statics?.ContainsKey(instance.WadObjectId) ?? false))
                     continue;
-                StaticModel model = _editor.Level.Wad.DirectXStatics[instance.WadObjectId];
+                StaticModel model = _wadRenderer.GetStatic(_editor.Level.Wad.Statics[instance.WadObjectId]);
 
                 if (_lastObject == null)
                 {
@@ -2414,6 +2423,7 @@ namespace TombEditor.Controls
                 _debug.NumStaticMeshes++;
 
                 staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
+                staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 if (_editor.SelectedObject == instance)
                     staticMeshEffect.Parameters["Color"].SetValue(_selectionColor);
 
@@ -2469,7 +2479,7 @@ namespace TombEditor.Controls
 
             Effect skinnedModelEffect = _deviceManager.Effects["Model"];
 
-            AnimatedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[WadMoveableId.SkyBox];
+            AnimatedModel skinnedModel = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[WadMoveableId.SkyBox]);
 
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, skinnedModel.VertexBuffer));
 
@@ -2488,7 +2498,7 @@ namespace TombEditor.Controls
             _device.SetVertexBuffer(0, skinnedModel.VertexBuffer);
             _device.SetIndexBuffer(skinnedModel.IndexBuffer, true);
 
-            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
+            skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
             skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
 

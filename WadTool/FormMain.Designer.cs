@@ -90,9 +90,9 @@
             this.panel3D = new WadTool.Controls.PanelRendering();
             this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.darkButton3 = new DarkUI.Controls.DarkButton();
             this.splitSeam = new System.Windows.Forms.Panel();
             this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
-            this.darkButton3 = new DarkUI.Controls.DarkButton();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.groupSelectedMoveable.SuspendLayout();
@@ -313,7 +313,7 @@
             this.aboutWadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutWadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutWadToolToolStripMenuItem.Name = "aboutWadToolToolStripMenuItem";
-            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.aboutWadToolToolStripMenuItem.Text = "About Wad Tool...";
             this.aboutWadToolToolStripMenuItem.Click += new System.EventHandler(this.aboutWadToolToolStripMenuItem_Click);
             // 
@@ -553,7 +553,7 @@
             this.treeSounds.Location = new System.Drawing.Point(6, 22);
             this.treeSounds.MaxDragChange = 20;
             this.treeSounds.Name = "treeSounds";
-            this.treeSounds.Size = new System.Drawing.Size(273, 157);
+            this.treeSounds.Size = new System.Drawing.Size(273, 159);
             this.treeSounds.TabIndex = 16;
             this.treeSounds.Text = "darkTreeView1";
             // 
@@ -576,7 +576,7 @@
             this.groupSelectedMoveable.Controls.Add(this.tableLayoutPanel2);
             this.groupSelectedMoveable.Location = new System.Drawing.Point(0, 8);
             this.groupSelectedMoveable.Name = "groupSelectedMoveable";
-            this.groupSelectedMoveable.Size = new System.Drawing.Size(581, 250);
+            this.groupSelectedMoveable.Size = new System.Drawing.Size(581, 252);
             this.groupSelectedMoveable.TabIndex = 21;
             this.groupSelectedMoveable.TabStop = false;
             this.groupSelectedMoveable.Text = "Selected moveable:";
@@ -595,7 +595,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(570, 223);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(570, 225);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // panel5
@@ -607,7 +607,7 @@
             this.panel5.Location = new System.Drawing.Point(285, 0);
             this.panel5.Margin = new System.Windows.Forms.Padding(0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(285, 223);
+            this.panel5.Size = new System.Drawing.Size(285, 225);
             this.panel5.TabIndex = 1;
             // 
             // flowLayoutPanel2
@@ -617,7 +617,7 @@
             this.flowLayoutPanel2.Controls.Add(this.butPlayAnimation);
             this.flowLayoutPanel2.Controls.Add(this.butStop);
             this.flowLayoutPanel2.Controls.Add(this.darkButton2);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 182);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 184);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(285, 41);
             this.flowLayoutPanel2.TabIndex = 21;
@@ -674,7 +674,7 @@
             this.treeAnimations.Location = new System.Drawing.Point(3, 22);
             this.treeAnimations.MaxDragChange = 20;
             this.treeAnimations.Name = "treeAnimations";
-            this.treeAnimations.Size = new System.Drawing.Size(279, 157);
+            this.treeAnimations.Size = new System.Drawing.Size(279, 159);
             this.treeAnimations.TabIndex = 20;
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.lstAnimations_Click);
@@ -688,7 +688,7 @@
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(282, 223);
+            this.panel4.Size = new System.Drawing.Size(282, 225);
             this.panel4.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -697,7 +697,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.Controls.Add(this.butPlaySound);
             this.flowLayoutPanel1.Controls.Add(this.butRenameSound);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 182);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 184);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(282, 41);
             this.flowLayoutPanel1.TabIndex = 22;
@@ -765,7 +765,7 @@
             this.treeSourceWad.Name = "treeSourceWad";
             this.treeSourceWad.Size = new System.Drawing.Size(247, 388);
             this.treeSourceWad.TabIndex = 8;
-            this.treeSourceWad.Click += new System.EventHandler(this.treeSourceWad_Click);
+            this.treeSourceWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeSourceWad_SelectedWadObjectIdsChanged);
             this.treeSourceWad.DoubleClick += new System.EventHandler(this.treeSourceWad_DoubleClick);
             this.treeSourceWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeSourceWad_KeyDown);
             // 
@@ -816,7 +816,7 @@
             this.treeDestWad.Name = "treeDestWad";
             this.treeDestWad.Size = new System.Drawing.Size(251, 385);
             this.treeDestWad.TabIndex = 7;
-            this.treeDestWad.Click += new System.EventHandler(this.treeDestWad_Click);
+            this.treeDestWad.SelectedWadObjectIdsChanged += new System.EventHandler(this.treeDestWad_SelectedWadObjectIdsChanged);
             this.treeDestWad.DoubleClick += new System.EventHandler(this.treeDestWad_DoubleClick);
             this.treeDestWad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeDestWad_KeyDown);
             // 
@@ -940,6 +940,15 @@
             this.splitContainer1.SplitterWidth = 2;
             this.splitContainer1.TabIndex = 23;
             // 
+            // darkButton3
+            // 
+            this.darkButton3.Location = new System.Drawing.Point(586, 54);
+            this.darkButton3.Name = "darkButton3";
+            this.darkButton3.Size = new System.Drawing.Size(134, 23);
+            this.darkButton3.TabIndex = 24;
+            this.darkButton3.Text = "Edit animations";
+            this.darkButton3.Click += new System.EventHandler(this.darkButton3_Click);
+            // 
             // splitSeam
             // 
             this.splitSeam.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -954,15 +963,6 @@
             // 
             this.timerPlayAnimation.Interval = 33;
             this.timerPlayAnimation.Tick += new System.EventHandler(this.timerPlayAnimation_Tick);
-            // 
-            // darkButton3
-            // 
-            this.darkButton3.Location = new System.Drawing.Point(586, 54);
-            this.darkButton3.Name = "darkButton3";
-            this.darkButton3.Size = new System.Drawing.Size(134, 23);
-            this.darkButton3.TabIndex = 24;
-            this.darkButton3.Text = "Edit animations";
-            this.darkButton3.Click += new System.EventHandler(this.darkButton3_Click);
             // 
             // FormMain
             // 

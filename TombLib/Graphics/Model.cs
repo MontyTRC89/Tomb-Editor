@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using TombLib.Utils;
 using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
@@ -26,6 +27,7 @@ namespace TombLib.Graphics
         public List<int> Indices { get; set; }
         public string Name { get; set; }
         public List<Material> Materials { get; private set; } = new List<Material>();
+        public DataVersion Version { get; set; } = DataVersion.GetNext();
 
         public Model(GraphicsDevice device, ModelType type)
         {
@@ -48,8 +50,8 @@ namespace TombLib.Graphics
             var newVertex = new ObjectVertex();
 
             newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / Wad2.TextureAtlasSize, 
-                                       (positionInAtlas.Y + uv.Y) / Wad2.TextureAtlasSize);
+            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / WadRenderer.TextureAtlasSize,
+                                       (positionInAtlas.Y + uv.Y) / WadRenderer.TextureAtlasSize);
 
             var shade = 1.0f - color / 8191.0f;
             newVertex.Shade = new Vector2(shade, 0.0f);

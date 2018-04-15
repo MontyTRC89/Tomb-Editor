@@ -12,7 +12,7 @@ namespace TombLib.Graphics
     {
         public StaticModel(GraphicsDevice device)
             : base(device, ModelType.Static)
-        { }
+        {}
 
         public override void UpdateBuffers()
         {
@@ -46,23 +46,5 @@ namespace TombLib.Graphics
             VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<ObjectVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
-
-        public static StaticModel FromWad2(GraphicsDevice device, Wad2 wad, WadStatic staticMesh, Dictionary<WadTexture, VectorInt2> reallocatedTextures)
-        {
-            StaticModel model = new StaticModel(device);
-
-            // Create the mesh
-            var msh = staticMesh.Mesh;
-            var mesh = ObjectMesh.FromWad2(device, wad, msh, reallocatedTextures);
-            if (!wad.DirectXMeshes.ContainsKey(msh))
-                wad.DirectXMeshes.TryAdd(msh, mesh);
-            model.Meshes.Add(mesh);
-
-            // Prepare data by uploading data to the GPU
-            model.UpdateBuffers();
-
-            return model;
-        }
-
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TombLib.Utils
 {
-    public class TreePacker : RectPacker
+    public class RectPackerTree : RectPacker
     {
         private class TreePackerNode
         {
@@ -64,7 +64,7 @@
 
         private readonly TreePackerNode _startNode;
 
-        public TreePacker(VectorInt2 size)
+        public RectPackerTree(VectorInt2 size)
             : base(size)
         {
             _startNode = new TreePackerNode();

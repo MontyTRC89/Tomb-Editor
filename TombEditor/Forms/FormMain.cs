@@ -23,7 +23,7 @@ namespace TombEditor.Forms
         private readonly ToolWindows.MainView MainView = new ToolWindows.MainView();
         private readonly ToolWindows.TriggerList TriggerList = new ToolWindows.TriggerList();
         private readonly ToolWindows.RoomOptions RoomOptions = new ToolWindows.RoomOptions();
-        private readonly ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
+        private readonly ToolWindows.ItemBrowser ItemBrowser = new ToolWindows.ItemBrowser();
         private readonly ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
         private readonly ToolWindows.Lighting Lighting = new ToolWindows.Lighting();
         private readonly ToolWindows.Palette Palette = new ToolWindows.Palette();
@@ -66,7 +66,7 @@ namespace TombEditor.Forms
 
             // Initialize panels
             MainView.Initialize(_deviceManager);
-            ObjectBrowser.Initialize(_deviceManager);
+            ItemBrowser.Initialize(_deviceManager);
 
             // Restore window settings
             LoadWindowLayout(_editor.Configuration);
@@ -104,8 +104,9 @@ namespace TombEditor.Forms
                     return Lighting;
                 case "Palette":
                     return Palette;
-                case "ObjectBrowser":
-                    return ObjectBrowser;
+                case "ItemBrowser":
+                case "ObjectBrowser": // Deprecated name
+                    return ItemBrowser;
                 case "RoomOptions":
                     return RoomOptions;
                 case "SectorOptions":
@@ -605,7 +606,8 @@ namespace TombEditor.Forms
 
         private void reloadTexturesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Level.ReloadLevelTextures();
+            foreach (var texture in _editor.Level.Settings.Textures)
+                texture.Reload(_editor.Level.Settings);
             _editor.LoadedTexturesChange();
         }
 
@@ -633,9 +635,9 @@ namespace TombEditor.Forms
             }
 
             LevelTexture texture = _editor.Level.Settings.Textures[0];
-            if (texture.ImageLoadException != null)
+            if (texture.LoadException != null)
             {
-                DarkMessageBox.Show(this, "The texture that should be converted to *.png could not be loaded. " + texture.ImageLoadException.Message, "Error", MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "The texture that should be converted to *.png could not be loaded. " + texture.LoadException.Message, "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -656,19 +658,19 @@ namespace TombEditor.Forms
             _editor.LoadedTexturesChange();
         }
 
-        private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addWadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.LoadWad(this);
+            EditorActions.AddWad(this);
         }
 
-        private void unloadWADToolStripMenuItem_Click(object sender, EventArgs e)
+        private void removeWadsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.UnloadWad();
+            EditorActions.RemoveWads(this);
         }
 
-        private void reloadWadToolStripMenuItem_Click(object sender, EventArgs e)
+        private void reloadWadsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.ReloadWad();
+            EditorActions.ReloadWads(this);
         }
 
         private void addCameraToolStripMenuItem_Click(object sender, EventArgs e)
@@ -873,12 +875,12 @@ namespace TombEditor.Forms
 
         private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ObjectBrowser.FindItem();
+            ItemBrowser.FindItem();
         }
 
         private void resetFilterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ObjectBrowser.ResetSearch();
+            ItemBrowser.ResetSearch();
         }
 
         private void moveLaraToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1079,9 +1081,9 @@ namespace TombEditor.Forms
             ToolWindow_Toggle(RoomOptions);
         }
 
-        private void objectBrowserToolStripMenuItem_Click(object sender, EventArgs e)
+        private void itemBrowserToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ToolWindow_Toggle(ObjectBrowser);
+            ToolWindow_Toggle(ItemBrowser);
         }
 
         private void triggerListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1121,7 +1123,7 @@ namespace TombEditor.Forms
         {
             sectorOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(SectorOptions);
             roomOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(RoomOptions);
-            objectBrowserToolStripMenuItem.Checked = dockArea.ContainsContent(ObjectBrowser);
+            itemBrowserToolStripMenuItem.Checked = dockArea.ContainsContent(ItemBrowser);
             triggerListToolStripMenuItem.Checked = dockArea.ContainsContent(TriggerList);
             objectListToolStripMenuItem.Checked = dockArea.ContainsContent(ObjectList);
             lightingToolStripMenuItem.Checked = dockArea.ContainsContent(Lighting);

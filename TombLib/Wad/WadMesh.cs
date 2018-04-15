@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+using TombLib.GeometryIO;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -18,11 +19,6 @@ namespace TombLib.Wad
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
         public WadMeshLightingType LightingType { get; set; }
-
-        public WadMesh()
-        {
-
-        }
 
         public void RecalculateNormals()
         {
@@ -145,6 +141,75 @@ namespace TombLib.Wad
                 (boundingBox.Maximum + boundingBox.Minimum) * 0.5f,
                 Vector3.Distance(boundingBox.Minimum, boundingBox.Maximum) * 0.5f);
         }
+
+        public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings)
+        {
+            // Import the model
+            var importer = BaseGeometryImporter.CreateForFile(fileName, settings, absoluteTexturePath =>
+            {
+                return new WadTexture(ImageC.FromFile(absoluteTexturePath));
+            });
+            var tmpModel = importer.ImportFromFile(fileName);
+
+            // Create a new mesh (all meshes from model will be joined)
+            var mesh = new WadMesh();
+            mesh.Name = "ImportedMesh";
+            var lastBaseVertex = 0;
+            foreach (var tmpMesh in tmpModel.Meshes)
+            {
+                mesh.VerticesPositions.AddRange(tmpMesh.Positions);
+                foreach (var tmpSubmesh in tmpMesh.Submeshes)
+                    foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
+                    {
+                        if (tmpPoly.Shape == IOPolygonShape.Quad)
+                        {
+                            var poly = new WadPolygon { Shape = WadPolygonShape.Quad };
+                            poly.Index0 = tmpPoly.Indices[0] + lastBaseVertex;
+                            poly.Index1 = tmpPoly.Indices[1] + lastBaseVertex;
+                            poly.Index2 = tmpPoly.Indices[2] + lastBaseVertex;
+                            poly.Index3 = tmpPoly.Indices[3] + lastBaseVertex;
+
+                            var area = new TextureArea();
+                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
+                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
+                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
+                            area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
+                            area.Texture = tmpSubmesh.Value.Material.Texture;
+                            poly.Texture = area;
+
+                            mesh.Polys.Add(poly);
+                        }
+                        else
+                        {
+                            var poly = new WadPolygon { Shape = WadPolygonShape.Triangle };
+                            poly.Index0 = tmpPoly.Indices[0] + lastBaseVertex;
+                            poly.Index1 = tmpPoly.Indices[1] + lastBaseVertex;
+                            poly.Index2 = tmpPoly.Indices[2] + lastBaseVertex;
+
+                            var area = new TextureArea();
+                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
+                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
+                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
+                            area.Texture = tmpSubmesh.Value.Material.Texture;
+                            poly.Texture = area;
+
+                            mesh.Polys.Add(poly);
+                        }
+                    }
+
+                lastBaseVertex = mesh.VerticesPositions.Count;
+            }
+
+            mesh.BoundingBox = mesh.CalculateBoundingBox();
+            mesh.BoundingSphere = mesh.CalculateBoundingSphere();
+            return mesh;
+        }
+
+        public static bool operator ==(WadMesh first, WadMesh second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);
+        public static bool operator !=(WadMesh first, WadMesh second) => !(first == second);
+        public bool Equals(WadMesh other) => Hash == other.Hash;
+        public override bool Equals(object other) => other is WadMesh && Hash == ((WadMesh)other).Hash;
+        public override int GetHashCode() => Hash.GetHashCode();
 
         public static WadMesh Empty { get; } = new WadMesh();
     }

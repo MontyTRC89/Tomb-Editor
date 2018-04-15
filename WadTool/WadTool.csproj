@@ -188,6 +188,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="WadActions.cs" />
+    <Compile Include="WadMeshBoneNode.cs" />
     <Compile Include="WadToolClass.cs" />
     <EmbeddedResource Include="Controls\WadTreeControl.resx">
       <DependentUpon>WadTreeControl.cs</DependentUpon>

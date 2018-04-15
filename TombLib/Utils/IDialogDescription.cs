@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TombLib.LevelData;
+using TombLib.Wad;
 using TombLib.Wad.Tr4Wad;
 
 namespace TombLib.Utils
@@ -21,7 +22,8 @@ namespace TombLib.Utils
 
     public class DialogDescriptonWadUnloadable : IDialogDescription
     {
-        public Level Level { get; set; }
+        public LevelSettings Settings { get; set; }
+        public ReferencedWad Wad { get; set; }
     }
 
     public class DialogDescriptonMissingSounds : IDialogDescription

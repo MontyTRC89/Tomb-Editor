@@ -579,9 +579,9 @@ namespace TombLib.LevelData.Compilers
         private void BuildMeshTree(WadBone bone, List<tr_meshtree> meshTrees, List<WadMesh> usedMeshes)
         {
             tr_meshtree tree = new tr_meshtree();
-            tree.X = (int)bone.Transform.Translation.X;
-            tree.Y = (int)-bone.Transform.Translation.Y;
-            tree.Z = (int)bone.Transform.Translation.Z;
+            tree.X = (int)bone.Translation.X;
+            tree.Y = (int)-bone.Translation.Y;
+            tree.Z = (int)bone.Translation.Z;
 
             if (bone.Parent == null)
                 tree.Opcode = 2;

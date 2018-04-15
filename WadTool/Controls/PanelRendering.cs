@@ -14,9 +14,7 @@ namespace WadTool.Controls
     public class PanelRendering : Panel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Wad2 CurrentWad { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IWadObjectId CurrentObjectId { get; set; }
+        public IWadObject CurrentObject { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadMoveableId SkinObjectId { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -50,6 +48,7 @@ namespace WadTool.Controls
         private SpriteBatch _spriteBatch;
         private Texture2D _spriteTexture;
         private WadTexture _spriteTextureData;
+        private WadRenderer _wadRenderer;
 
         public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
         {
@@ -57,6 +56,7 @@ namespace WadTool.Controls
             _tool = tool;
             _device = deviceManager.Device;
             _deviceManager = deviceManager;
+            _wadRenderer = new WadRenderer(deviceManager.Device);
 
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
@@ -101,6 +101,19 @@ namespace WadTool.Controls
             _spriteBatch = new SpriteBatch(_device);
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _wadRenderer?.Dispose();
+                _spriteBatch?.Dispose();
+                _spriteTexture?.Dispose();
+                _presenter?.Dispose();
+                _rasterizerWireframe?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             if (_device == null || _presenter == null)
@@ -129,115 +142,103 @@ namespace WadTool.Controls
             _device.SetBlendState(_device.BlendStates.Opaque);
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
-            if (CurrentWad != null && CurrentObjectId != null)
+            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
+            if (CurrentObject is WadMoveable)
             {
-                Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-                if (CurrentObjectId is WadMoveableId)
+                AnimatedModel model = _wadRenderer.GetMoveable((WadMoveable)CurrentObject);
+                // We don't need to rebuilt it everytime necessarily, but it's cheap to so and
+                // simpler than trying to figure out when it may be necessary.
+                model.UpdateAnimation(AnimationIndex, KeyFrameIndex);
+
+                var effect = _deviceManager.Effects["Model"];
+
+                effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+                effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+
+                // Build animation transforms
+                var matrices = new List<Matrix4x4>();
+                if (model.Animations.Count != 0)
                 {
-                    AnimatedModel model;
-                    if (CurrentWad.DirectXMoveables.TryGetValue((WadMoveableId)CurrentObjectId, out model))
-                    {
-                        AnimatedModel skin = null;
-                        if (!(CurrentObjectId is WadMoveableId &&
-                              CurrentWad.DirectXMoveables.TryGetValue((WadMoveableId)SkinObjectId, out skin)))
-                            skin = model;
-
-                        var effect = _deviceManager.Effects["Model"];
-
-                        effect.Parameters["Color"].SetValue(Vector4.One);
-                        effect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
-                        effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                        // Build animation transforms
-                        var matrices = new List<Matrix4x4>();
-                        if (model.Animations.Count != 0)
-                        {
-                            for (var b = 0; b < model.Meshes.Count; b++)
-                                matrices.Add(model.AnimationTransforms[b]);
-                        }
-                        else
-                        {
-                            foreach (var bone in model.Bones)
-                                matrices.Add(bone.GlobalTransform);
-                        }
-
-                        for (int i = 0; i < skin.Meshes.Count; i++)
-                        {
-                            var mesh = skin.Meshes[i];
-                            if (mesh.Vertices.Count == 0)
-                                continue;
-
-                            _device.SetVertexBuffer(0, mesh.VertexBuffer);
-                            _device.SetIndexBuffer(mesh.IndexBuffer, true);
-                            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
-
-                            effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
-
-                            effect.Techniques[0].Passes[0].Apply();
-
-                            foreach (var submesh in mesh.Submeshes)
-                                _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
-                        }
-                    }
+                    for (var b = 0; b < model.Meshes.Count; b++)
+                        matrices.Add(model.AnimationTransforms[b]);
                 }
-                else if (CurrentObjectId is WadStaticId)
+                else
                 {
-                    StaticModel model;
-                    if (CurrentWad.DirectXStatics.TryGetValue((WadStaticId)CurrentObjectId, out model))
-                    {
-                        var effect = _deviceManager.Effects["StaticModel"];
-
-                        effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                        effect.Parameters["Color"].SetValue(Vector4.One);
-                        effect.Parameters["Texture"].SetResource(CurrentWad.DirectXTexture);
-                        effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                        for (int i = 0; i < model.Meshes.Count; i++)
-                        {
-                            var mesh = model.Meshes[i];
-
-                            _device.SetVertexBuffer(0, mesh.VertexBuffer);
-                            _device.SetIndexBuffer(mesh.IndexBuffer, true);
-                            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
-
-                            effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                            effect.Techniques[0].Passes[0].Apply();
-
-                            foreach (var submesh in mesh.Submeshes)
-                                _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
-                        }
-                    }
-                }
-                else if (CurrentObjectId is WadSpriteSequenceId)
-                {
-                    WadSpriteSequence spriteSequence;
-                    if (CurrentWad.SpriteSequences.TryGetValue((WadSpriteSequenceId)CurrentObjectId, out spriteSequence))
-                    {
-                        int spriteIndex = Math.Min(spriteSequence.Sprites.Count - 1, KeyFrameIndex);
-                        if (spriteIndex < spriteSequence.Sprites.Count)
-                        {
-                            WadSprite sprite = spriteSequence.Sprites[spriteIndex];
-
-                            // Load texture
-                            if (_spriteTextureData != sprite.Texture)
-                            {
-                                _spriteTexture?.Dispose();
-                                _spriteTexture = TextureLoad.Load(_device, sprite.Texture.Image);
-                                _spriteTextureData = sprite.Texture;
-                            }
-
-                            // Draw
-                            int x = (ClientSize.Width - _spriteTextureData.Image.Width) / 2;
-                            int y = (ClientSize.Height - _spriteTextureData.Image.Height) / 2;
-                            _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
-                            _spriteBatch.Draw(_spriteTexture, new SharpDX.DrawingRectangle(x, y, _spriteTextureData.Image.Width, _spriteTextureData.Image.Height), SharpDX.Color.White);
-                            _spriteBatch.End();
-                        }
-                    }
+                    foreach (var bone in model.Bones)
+                        matrices.Add(bone.GlobalTransform);
                 }
 
-                _device.Present();
+                for (int i = 0; i < model.Meshes.Count; i++)
+                {
+                    var mesh = model.Meshes[i];
+                    if (mesh.Vertices.Count == 0)
+                        continue;
+
+                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                    effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
+
+                    effect.Techniques[0].Passes[0].Apply();
+
+                    foreach (var submesh in mesh.Submeshes)
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                }
             }
+            else if (CurrentObject is WadStatic)
+            {
+                StaticModel model = _wadRenderer.GetStatic((WadStatic)CurrentObject);
+
+                var effect = _deviceManager.Effects["StaticModel"];
+
+                effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+                effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+
+                for (int i = 0; i < model.Meshes.Count; i++)
+                {
+                    var mesh = model.Meshes[i];
+
+                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                    effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                    effect.Techniques[0].Passes[0].Apply();
+
+                    foreach (var submesh in mesh.Submeshes)
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                }
+            }
+            else if (CurrentObject is WadSpriteSequence)
+            {
+                WadSpriteSequence spriteSequence = (WadSpriteSequence)CurrentObject;
+                int spriteIndex = Math.Min(spriteSequence.Sprites.Count - 1, KeyFrameIndex);
+                if (spriteIndex < spriteSequence.Sprites.Count)
+                {
+                    WadSprite sprite = spriteSequence.Sprites[spriteIndex];
+
+                    // Load texture
+                    if (_spriteTextureData != sprite.Texture)
+                    {
+                        _spriteTexture?.Dispose();
+                        _spriteTexture = TextureLoad.Load(_device, sprite.Texture.Image);
+                        _spriteTextureData = sprite.Texture;
+                    }
+
+                    // Draw
+                    int x = (ClientSize.Width - _spriteTextureData.Image.Width) / 2;
+                    int y = (ClientSize.Height - _spriteTextureData.Image.Height) / 2;
+                    _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
+                    _spriteBatch.Draw(_spriteTexture, new SharpDX.DrawingRectangle(x, y, _spriteTextureData.Image.Width, _spriteTextureData.Image.Height), SharpDX.Color.White);
+                    _spriteBatch.End();
+                }
+            }
+
+            _device.Present();
         }
 
         protected override void OnResize(EventArgs e)
@@ -307,18 +308,14 @@ namespace WadTool.Controls
         {
             // Figure out scroll bar maximum
             int stateCount = -1;
-            if (CurrentObjectId is WadMoveableId)
+            if (CurrentObject is WadMoveable)
             {
-                WadMoveable wadObject;
-                if (CurrentWad.Moveables.TryGetValue((WadMoveableId)CurrentObjectId, out wadObject))
-                    if (AnimationIndex < wadObject.Animations.Count)
-                        stateCount = wadObject.Animations[AnimationIndex].KeyFrames.Count;
+                if (AnimationIndex < ((WadMoveable)CurrentObject).Animations.Count)
+                    stateCount = ((WadMoveable)CurrentObject).Animations[AnimationIndex].KeyFrames.Count;
             }
-            else if (CurrentObjectId is WadSpriteSequenceId)
+            else if (CurrentObject is WadSpriteSequence)
             {
-                WadSpriteSequence wadObject;
-                if (CurrentWad.SpriteSequences.TryGetValue((WadSpriteSequenceId)CurrentObjectId, out wadObject))
-                    stateCount = wadObject.Sprites.Count;
+                stateCount = ((WadSpriteSequence)CurrentObject).Sprites.Count;
             }
 
             // Setup scroll bar

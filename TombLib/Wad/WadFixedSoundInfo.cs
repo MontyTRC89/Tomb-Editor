@@ -1,4 +1,5 @@
 ﻿using System;
+using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
@@ -34,6 +35,7 @@ namespace TombLib.Wad
     public class WadFixedSoundInfo : IWadObject
     {
         public WadFixedSoundInfoId Id { get; private set; }
+        public DataVersion Version { get; set; } = DataVersion.GetNext();
         public WadSoundInfo SoundInfo { get; set; } = WadSoundInfo.Empty;
 
         public WadFixedSoundInfo(WadFixedSoundInfoId id)
