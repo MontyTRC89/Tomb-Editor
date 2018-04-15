@@ -243,8 +243,7 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteMoveables(ChunkWriter chunkIO, Wad2 wad, /*List<WadMesh> meshTable*/
-                                           List<WadTexture> textureTable)
+        private static void WriteMoveables(ChunkWriter chunkIO, Wad2 wad, List<WadTexture> textureTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
             {
@@ -325,8 +324,6 @@ namespace TombLib.Wad
                                 }
                             });
                         }
-
-                        //chunkIO.WriteChunkString(Wad2Chunks.MoveableName, m.Name);
                     });
                 }
             });

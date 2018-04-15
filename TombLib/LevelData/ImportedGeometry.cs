@@ -41,10 +41,10 @@ namespace TombLib.LevelData
     {
         [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
         public Vector3 Position;
-        private readonly float _unusedPadding;
-        [VertexElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 16)]
+        //private readonly float _unusedPadding;
+        [VertexElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 12)]
         public Vector2 UV;
-        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 44)]
+        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 20)]
         public Vector4 Color;
 
         Vector3 IVertex.Position => Position;
@@ -230,6 +230,7 @@ namespace TombLib.LevelData
                         modelMesh.Submeshes.Add(material, submesh);
                     }
                     //modelMesh.Texture = mesh.Texture;
+                    DirectXModel.Meshes.Add(modelMesh);
                 }
 
                 DirectXModel.UpdateBuffers();

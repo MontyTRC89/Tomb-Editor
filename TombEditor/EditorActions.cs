@@ -2703,7 +2703,7 @@ namespace TombEditor
                         while (roomIndexEnd < mesh.Name.Length && !char.IsWhiteSpace(mesh.Name[roomIndexEnd]))
                             ++roomIndexEnd;
 
-                        string roomIndexStr = mesh.Name.Substring(roomIndexStart, roomIndexEnd - roomIndexStart);
+                        string roomIndexStr = mesh.Name.Substring(roomIndexStart + RoomIdentifier.Length, roomIndexEnd - (roomIndexStart + RoomIdentifier.Length));
                         ushort roomIndex;
                         if (ushort.TryParse(roomIndexStr, out roomIndex))
                             roomIndices.Add(roomIndex);
