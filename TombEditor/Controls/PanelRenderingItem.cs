@@ -15,17 +15,42 @@ namespace TombEditor.Controls
     class PanelRenderingItem : Panel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SwapChainGraphicsPresenter Presenter { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IWadObject CurrentObject
+        {
+            get { return _currentObject; }
+            set
+            {
+                if (value == _currentObject)
+                    return;
+                _currentObject = value;
+                Invalidate();
+            }
+        }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IWadObject SkinObject
+        {
+            get { return _skinObject; }
+            set
+            {
+                if (value == _skinObject)
+                    return;
+                _skinObject = value;
+                Invalidate();
+            }
+        }
 
         private readonly Editor _editor;
+        private SwapChainGraphicsPresenter _presenter;
         private VertexInputLayout _layout;
         private DeviceManager _deviceManager;
         private GraphicsDevice _device;
         private int _lastX;
         private int _lastY;
         private WadRenderer _wadRenderer;
+        private IWadObject _currentObject;
+        private IWadObject _skinObject;
 
         public PanelRenderingItem()
         {
@@ -39,7 +64,11 @@ namespace TombEditor.Controls
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 _editor.EditorEventRaised -= EditorEventRaised;
+                _presenter?.Dispose();
+                _wadRenderer?.Dispose();
+            }
             base.Dispose(disposing);
         }
 
@@ -73,7 +102,7 @@ namespace TombEditor.Controls
             _wadRenderer = new WadRenderer(_device, true);
 
             // inizializzo il Presenter se necessario
-            if (Presenter == null)
+            if (_presenter == null)
             {
                 PresentationParameters pp = new PresentationParameters();
                 pp.BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm;
@@ -86,7 +115,7 @@ namespace TombEditor.Controls
                 pp.PresentationInterval = PresentInterval.Immediate;
                 pp.RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer;
                 pp.Flags = SharpDX.DXGI.SwapChainFlags.None;
-                Presenter = new SwapChainGraphicsPresenter(_deviceManager.Device, pp);
+                _presenter = new SwapChainGraphicsPresenter(_deviceManager.Device, pp);
 
                 ResetCamera();
             }
@@ -112,32 +141,19 @@ namespace TombEditor.Controls
             if (DesignMode)
                 return;
 
-            _device.Presenter = Presenter;
+            _device.Presenter = _presenter;
             _device.SetViewports(new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, _editor.Configuration.Rendering3D_BackgroundColor.ToSharpDX(), 1.0f, 0);
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, _editor.Configuration.RenderingItem_BackgroundColor.ToSharpDX(), 1.0f, 0);
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
-            if (_editor.ChosenItem == null)
-            {
-                _device.Present();
-                return;
-            }
-            ItemType chosenItem = _editor.ChosenItem.Value;
-
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-            if (chosenItem.IsStatic)
+            if (CurrentObject is WadStatic)
             {
-                WadStatic @static = _editor.Level.Settings.WadTryGetStatic(chosenItem.StaticId);
-                if (@static == null)
-                {
-                    _device.Present();
-                    return;
-                }
-                StaticModel model = _wadRenderer.GetStatic(@static);
+                StaticModel model = _wadRenderer.GetStatic((WadStatic)CurrentObject);
 
                 Effect mioEffect = _deviceManager.Effects["StaticModel"];
                 mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
@@ -169,22 +185,12 @@ namespace TombEditor.Controls
                         _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                 }
             }
-            else
+            else if (CurrentObject is WadMoveable)
             {
-                WadMoveable moveable = _editor.Level.Settings.WadTryGetMoveable(chosenItem.MoveableId);
-                if (moveable == null)
-                {
-                    _device.Present();
-                    return;
-                }
-                AnimatedModel model = _wadRenderer.GetMoveable(moveable);
+                AnimatedModel model = _wadRenderer.GetMoveable((WadMoveable)CurrentObject);
                 AnimatedModel skin = model;
-                if (chosenItem.MoveableId == WadMoveableId.Lara) // Show Lara
-                {
-                    WadMoveable skinMoveable = _editor.Level.Settings.WadTryGetMoveable(chosenItem.MoveableId);
-                    if (skinMoveable != null)
-                        skin = _wadRenderer.GetMoveable(skinMoveable);
-                }
+                if (((WadMoveable)CurrentObject).Id == WadMoveableId.Lara && _skinObject is WadMoveable) // Show Lara
+                    skin = _wadRenderer.GetMoveable((WadMoveable)_skinObject);
 
                 Effect mioEffect = _deviceManager.Effects["Model"];
 
@@ -217,7 +223,6 @@ namespace TombEditor.Controls
                         _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                 }
             }
-
             _device.Present();
         }
 
@@ -260,9 +265,9 @@ namespace TombEditor.Controls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (Presenter != null)
+            if (_presenter != null)
             {
-                Presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
+                _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
                 Invalidate();
             }
         }

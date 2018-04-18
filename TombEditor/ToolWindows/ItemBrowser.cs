@@ -44,7 +44,6 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.LoadedWadsChangedEvent)
             {
                 comboItems.Items.Clear();
-
                 foreach (var moveable in _editor.Level.Settings.WadGetAllMoveables().Values)
                     comboItems.Items.Add(moveable);
                 foreach (var staticMesh in _editor.Level.Settings.WadGetAllStatics().Values)
@@ -58,11 +57,14 @@ namespace TombEditor.ToolWindows
             {
                 var e = (Editor.ChosenItemChangedEvent)obj;
                 if (!e.Current.HasValue)
-                    comboItems.SelectedIndex = -1;
+                    comboItems.SelectedItem = panelItem.CurrentObject = null;
                 else if (e.Current.Value.IsStatic)
-                    comboItems.SelectedItem = _editor.Level.Settings.WadTryGetStatic(e.Current.Value.StaticId);
+                    comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetStatic(e.Current.Value.StaticId);
                 else
-                    comboItems.SelectedItem = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
+                {
+                    comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
+                    panelItem.SkinObject = _editor.Level.Settings.WadTryGetMoveable(WadMoveableId.LaraSkin);
+                }
             }
 
             // Update item color control

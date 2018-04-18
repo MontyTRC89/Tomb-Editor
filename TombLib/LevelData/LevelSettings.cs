@@ -96,18 +96,6 @@ namespace TombLib.LevelData
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
 
-        public string WadFilePath
-        {
-            get { return Wads.Count == 0 ? null : Wads[0].Path; }
-            set
-            {
-                int TODO_REMOVE_WadFilePath;
-                if (Wads.Count == 0)
-                    Wads.Add(new ReferencedWad(this, value));
-                else
-                    Wads[0].SetPath(this, value);
-            }
-        }
         public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
 
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
@@ -115,6 +103,16 @@ namespace TombLib.LevelData
                 new OldWadSoundPath(""),
                 new OldWadSoundPath("Sounds"), // For directly loading wad files.
                 new OldWadSoundPath("Sound"),
+                new OldWadSoundPath("Sounds/Samples"),
+                new OldWadSoundPath("Sound/Samples"),
+                new OldWadSoundPath("../Sounds"), // For directly loading wad files.
+                new OldWadSoundPath("../Sound"),
+                new OldWadSoundPath("../Sounds/Samples"),
+                new OldWadSoundPath("../Sound/Samples"),
+                new OldWadSoundPath("../../Sounds"), // For directly loading wad files.
+                new OldWadSoundPath("../../Sound"),
+                new OldWadSoundPath("../../Sounds/Samples"),
+                new OldWadSoundPath("../../Sound/Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound" + Dir + "Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "sound" + Dir + "Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "sound" + Dir + "Samples"),
