@@ -198,7 +198,7 @@ namespace TombEditor.Controls
             if (e.RowIndex < 0 || e.RowIndex >= _dataGridViewDataSource.Count)
                 return;
 
-            if (dataGridView.Columns[e.ColumnIndex] == searchButtonColumn)
+            if (dataGridView.Columns[e.ColumnIndex].Name == searchButtonColumn.Name)
             {
                 string path = BrowseFile(_dataGridViewDataSource[e.RowIndex].Path);
                 if (!string.IsNullOrEmpty(path))
@@ -215,19 +215,26 @@ namespace TombEditor.Controls
             if (e.RowIndex < 0 || e.RowIndex >= _dataGridViewDataSource.Count)
                 return;
 
-            ImportedGeometry object_ = _dataGridViewDataSource[e.RowIndex].Object;
-            if (object_.LoadException == null)
+            if (dataGridView.Columns[e.ColumnIndex].Name == errorMessageColumn.Name)
             {
-                if (dataGridView.Columns[e.ColumnIndex].DataPropertyName == "ErrorMessage")
+                ImportedGeometry object_ = _dataGridViewDataSource[e.RowIndex].Object;
+                if (object_.LoadException == null)
                 {
                     e.CellStyle.BackColor = _correctColor;
                     e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_correctColor, 0.4);
+
+                }
+                else
+                {
+                    e.CellStyle.BackColor = _wrongColor;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_wrongColor, 0.4);
                 }
             }
-            else
+            else if (dataGridView.Columns[e.ColumnIndex].Name == pathColumn.Name)
             {
-                e.CellStyle.BackColor = _wrongColor;
-                e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_wrongColor, 0.4);
+                ImportedGeometry object_ = _dataGridViewDataSource[e.RowIndex].Object;
+                string absolutePath = LevelSettings.MakeAbsolute(object_.Info.Path);
+                dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = absolutePath;
             }
         }
 

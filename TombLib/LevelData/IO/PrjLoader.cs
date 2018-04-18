@@ -1239,9 +1239,6 @@ namespace TombLib.LevelData.IO
                             level.Settings.SkyTextureFilePath = level.Settings.MakeRelative(wadSkyFilePath, VariableType.LevelDirectory);
                         else if (File.Exists(genericSkyFilePath))
                             level.Settings.SkyTextureFilePath = level.Settings.MakeRelative(genericSkyFilePath, VariableType.LevelDirectory);
-
-                        string soundPath = Path.Combine(Path.GetDirectoryName(objectFilePath), "../../sound/Samples");
-                        level.Settings.OldWadSoundPaths[1].Path = level.Settings.MakeRelative(soundPath, VariableType.LevelDirectory);
                     }
                 }
 

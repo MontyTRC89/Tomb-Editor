@@ -12,6 +12,7 @@ using NLog;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using DarkUI.Controls;
 
 namespace TombEditor.Forms
 {
@@ -75,6 +76,36 @@ namespace TombEditor.Forms
             }
         }
 
+        private class ReferencedWadWrapper
+        {
+            private readonly FormLevelSettings _parent;
+            public ReferencedWad Wad;
+            public ReferencedWadWrapper(FormLevelSettings parent, ReferencedWad wad)
+            {
+                _parent = parent;
+                Wad = wad;
+            }
+            public string Path
+            {
+                get { return Wad.Path; }
+                set
+                {
+                    Wad = new ReferencedWad(_parent._levelSettings, value);
+                    for (int i = 0; i < _parent.objectFileDataGridView.ColumnCount; ++i)
+                        _parent.objectFileDataGridView.InvalidateColumn(i);
+                }
+            }
+            public string Message
+            {
+                get
+                {
+                    if (Wad.LoadException == null)
+                        return "Successfully loaded";
+                    return Wad.LoadException.Message + " (" + Wad.LoadException.GetType().Name + ")";
+                }
+            }
+        }
+
         private readonly Color _correctColor;
         private readonly Color _wrongColor;
         private readonly Editor _editor;
@@ -83,7 +114,10 @@ namespace TombEditor.Forms
         private string skyTextureFilePathPicPreviewCurrentPath;
         private string tr5ExtraSpritesFilePathPicPreviewCurrentPath;
         private readonly PictureTooltip _pictureTooltip;
+        private readonly BindingList<ReferencedWadWrapper> objectFileDataGridViewDataSource = new BindingList<ReferencedWadWrapper>();
         private readonly BindingList<OldWadSoundPath> soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
+        private readonly Color _objectFileDataGridViewCorrectColor;
+        private readonly Color _objectFileDataGridViewWrongColor;
 
         public FormLevelSettings(Editor editor)
         {
@@ -94,8 +128,26 @@ namespace TombEditor.Forms
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(670, 380) + (Size - ClientSize);
-            Size = MinimumSize;
+            //MinimumSize = new Size(678, 331) + (Size - ClientSize);
+            //Size = MinimumSize;
+
+            // Initialize object file data grid view
+            foreach (var wad in _levelSettings.Wads)
+                objectFileDataGridViewDataSource.Add(new ReferencedWadWrapper(this, wad)); // We don't need to clone because we don't modify the wad, we create new wads
+            objectFileDataGridViewDataSource.ListChanged += delegate
+            {
+                _levelSettings.Wads.Clear();
+                _levelSettings.Wads.AddRange(objectFileDataGridViewDataSource.Select(o => o.Wad));
+            };
+            objectFileDataGridView.DataSource = objectFileDataGridViewDataSource;
+            objectFileDataGridViewControls.DataGridView = objectFileDataGridView;
+            objectFileDataGridViewControls.CreateNewRow = objectFileDataGridViewCreateNewRow;
+            objectFileDataGridViewControls.AllowUserDelete = true;
+            objectFileDataGridViewControls.AllowUserMove = true;
+            objectFileDataGridViewControls.AllowUserNew = true;
+            objectFileDataGridViewControls.Enabled = true;
+            _objectFileDataGridViewCorrectColor = objectFileDataGridView.BackColor.MixWith(Color.LimeGreen, 0.55);
+            _objectFileDataGridViewWrongColor = objectFileDataGridView.BackColor.MixWith(Color.DarkRed, 0.55);
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.OldWadSoundPaths)
@@ -109,9 +161,9 @@ namespace TombEditor.Forms
             soundDataGridView.DataSource = soundDataGridViewDataSource;
             soundDataGridViewControls.DataGridView = soundDataGridView;
             soundDataGridViewControls.CreateNewRow = soundDataGridViewCreateNewRow;
-            soundDataGridViewControls.AllowUserNew = true;
             soundDataGridViewControls.AllowUserDelete = true;
             soundDataGridViewControls.AllowUserMove = true;
+            soundDataGridViewControls.AllowUserNew = true;
             soundDataGridViewControls.Enabled = true;
 
             // Initialize picture previews
@@ -155,7 +207,6 @@ namespace TombEditor.Forms
         {
             levelFilePathTxt.Text = _levelSettings.LevelFilePath;
             textureFilePathTxt.Text = _levelSettings.TextureFilePath;
-            wadFilePathTxt.Text = _levelSettings.WadFilePath;
             gameDirectoryTxt.Text = _levelSettings.GameDirectory;
             gameLevelFilePathTxt.Text = _levelSettings.GameLevelFilePath;
             gameExecutableFilePathTxt.Text = _levelSettings.GameExecutableFilePath;
@@ -195,21 +246,18 @@ namespace TombEditor.Forms
             // Check correctness of the paths
             string levelFilePath = _levelSettings.LevelFilePath;
             string textureFilePath = _levelSettings.MakeAbsolute(_levelSettings.TextureFilePath);
-            string wadFilePath = _levelSettings.MakeAbsolute(_levelSettings.WadFilePath);
             string gameDirectory = _levelSettings.MakeAbsolute(_levelSettings.GameDirectory);
             string gameLevelFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameLevelFilePath);
             string gameExecutableFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameExecutableFilePath);
 
             levelFilePathTxt.BackColor = Directory.Exists(FileSystemUtils.GetDirectoryNameTry(levelFilePath)) ? _correctColor : _wrongColor;
             textureFilePathTxt.BackColor = File.Exists(textureFilePath) ? _correctColor : _wrongColor;
-            wadFilePathTxt.BackColor = File.Exists(wadFilePath) ? _correctColor : _wrongColor;
             gameDirectoryTxt.BackColor = Directory.Exists(gameDirectory) ? _correctColor : _wrongColor;
             gameLevelFilePathTxt.BackColor = Directory.Exists(FileSystemUtils.GetDirectoryNameTry(gameLevelFilePath)) ? _correctColor : _wrongColor;
             gameExecutableFilePathTxt.BackColor = File.Exists(gameExecutableFilePath) ? _correctColor : _wrongColor;
 
             pathToolTip.SetToolTip(levelFilePathTxt, levelFilePath);
             pathToolTip.SetToolTip(textureFilePathTxt, textureFilePath);
-            pathToolTip.SetToolTip(wadFilePathTxt, wadFilePath);
             pathToolTip.SetToolTip(gameDirectoryTxt, gameDirectory);
             pathToolTip.SetToolTip(gameLevelFilePathTxt, gameLevelFilePath);
             pathToolTip.SetToolTip(gameExecutableFilePathTxt, gameExecutableFilePath);
@@ -340,26 +388,6 @@ namespace TombEditor.Forms
             }
         }
 
-        // Object file (*.wad) path
-        private void wadFilePathTxt_TextChanged(object sender, EventArgs e)
-        {
-            if (_levelSettings.WadFilePath == wadFilePathTxt.Text)
-                return;
-            _levelSettings.WadFilePath = wadFilePathTxt.Text;
-            UpdateDialog();
-
-        }
-
-        private void wadFilePathBut_Click(object sender, EventArgs e)
-        {
-            string path = GraphicalDialogHandler.BrowseObjectFile(_levelSettings, _levelSettings.WadFilePath, this);
-            if (path != _levelSettings.WadFilePath)
-            {
-                _levelSettings.WadFilePath = path;
-                UpdateDialog();
-            }
-        }
-
         // Font Texture
         private void fontTextureFilePathOptAuto_CheckedChanged(object sender, EventArgs e)
         {
@@ -455,15 +483,17 @@ namespace TombEditor.Forms
             if (e.RowIndex < 0 || e.RowIndex >= soundDataGridViewDataSource.Count)
                 return;
 
-            if (e.ColumnIndex == 1)
+            if (soundDataGridView.Columns[e.ColumnIndex].Name == soundDataGridViewColumnPath.Name)
             {
                 OldWadSoundPath path = soundDataGridViewDataSource[e.RowIndex];
                 string parsedPath = _levelSettings.ParseVariables(path.Path);
-                if (Path.IsPathRooted(parsedPath) && !Directory.Exists(_levelSettings.MakeAbsolute(path.Path)))
+                string absolutePath = _levelSettings.MakeAbsolute(path.Path);
+                if (Path.IsPathRooted(parsedPath) && !Directory.Exists(absolutePath))
                 {
                     e.CellStyle.BackColor = _wrongColor;
                     e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_wrongColor, 0.4);
                 }
+                soundDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = absolutePath;
             }
         }
 
@@ -472,12 +502,69 @@ namespace TombEditor.Forms
             if (e.RowIndex < 0 || e.RowIndex >= soundDataGridViewDataSource.Count)
                 return;
 
-            if (soundDataGridView.Columns[e.ColumnIndex] == soundDataGridViewColumnSearch)
+            if (soundDataGridView.Columns[e.ColumnIndex].Name == soundDataGridViewColumnSearch.Name)
             {
                 string result = LevelFileDialog.BrowseFolder(this, _levelSettings, soundDataGridViewDataSource[e.RowIndex].Path,
                     "Select the sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
                 if (result != null)
                     soundDataGridViewDataSource[e.RowIndex] = new OldWadSoundPath(result);
+            }
+        }
+
+        // Object list
+        private ReferencedWadWrapper objectFileDataGridViewCreateNewRow()
+        {
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
+                "Select a new object file", ReferencedWad.FileExtensions, false, VariableType.LevelDirectory);
+            if (result != null)
+                return new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, result, new GraphicalDialogHandler(this)));
+            return null;
+        }
+
+        private void objectFileDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= objectFileDataGridViewDataSource.Count)
+                return;
+
+            if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewMessageColumn.Name)
+            {
+                ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
+                if (wad.LoadException == null)
+                {
+                    e.CellStyle.BackColor = _objectFileDataGridViewCorrectColor;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_objectFileDataGridViewCorrectColor, 0.4);
+                }
+                else
+                {
+                    e.CellStyle.BackColor = _objectFileDataGridViewWrongColor;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_objectFileDataGridViewWrongColor, 0.4);
+                }
+            }
+            else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewPathColumn.Name)
+            {
+                ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
+                string absolutePath = _levelSettings.MakeAbsolute(wad.Path);
+                soundDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = absolutePath;
+            }
+            else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowContentColumn.Name)
+            {
+                ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
+                var cell = objectFileDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                ((DarkDataGridViewButtonCell)cell).Enabled = wad.LoadException == null;
+            }
+        }
+
+        private void objectFileDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= objectFileDataGridViewDataSource.Count)
+                return;
+
+            if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewSearchColumn.Name)
+            {
+                string result = LevelFileDialog.BrowseFile(this, _levelSettings, objectFileDataGridViewDataSource[e.RowIndex].Path,
+                    "Select a new object file", ReferencedWad.FileExtensions, false, VariableType.LevelDirectory);
+                if (result != null)
+                    objectFileDataGridViewDataSource[e.RowIndex] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, result, new GraphicalDialogHandler(this)));
             }
         }
 
@@ -638,6 +725,11 @@ namespace TombEditor.Forms
                 return;
             _levelSettings.Tr5WeatherType = weather; // Must also check none enum values
             UpdateDialog();
+        }
+
+        private void soundDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
