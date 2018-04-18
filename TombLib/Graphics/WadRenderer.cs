@@ -155,6 +155,7 @@ namespace TombLib.Graphics
                 if (Texture == null)
                     Texture = Texture2D.New(GraphicsDevice, TextureAtlasSize, TextureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, 1, SharpDX.Direct3D11.ResourceUsage.Default);
                 TextureLoad.Update(GraphicsDevice, Texture, texture.Image, position.Value);
+                PackedTextures.Add(texture, position.Value);
                 return position.Value;
             }
         }

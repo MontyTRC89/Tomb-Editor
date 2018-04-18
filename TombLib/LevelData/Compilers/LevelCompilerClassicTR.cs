@@ -88,11 +88,11 @@ namespace TombLib.LevelData.Compilers
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(_level.Settings.AnimatedTextureSets);
-            _soundManager = new Util.SoundManager(_level.Settings, _level.Wad);
+            _soundManager = new Util.SoundManager(_level.Settings, _level.Settings.WadGetAllFixedSoundInfos());
 
             // Prepare level data in parallel to the sounds
             //ConvertWadMeshes(_level.Wad);
-            ConvertWad2DataToTr4(_level.Wad);
+            ConvertWad2DataToTr4();
             BuildRooms();
             PrepareSoundSources();
             PrepareItems();
@@ -367,8 +367,8 @@ namespace TombLib.LevelData.Compilers
             foreach (Room room in _level.Rooms.Where(room => room != null))
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
-                    WadMoveable wadMoveable;
-                    if (!_level.Wad.Moveables.TryGetValue(instance.WadObjectId, out wadMoveable))
+                    WadMoveable wadMoveable = _level.Settings.WadTryGetMoveable(instance.WadObjectId);
+                    if (wadMoveable == null)
                     {
                         _progressReporter.ReportWarn("Moveable '" + instance + "' was not included in the level because it is missing the *.wad file.");
                         continue;

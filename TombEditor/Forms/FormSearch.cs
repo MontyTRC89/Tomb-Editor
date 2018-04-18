@@ -413,13 +413,10 @@ namespace TombEditor.Forms
             // Item types
             if (scope == ScopeMode.Everything || scope == ScopeMode.ItemTypes)
             {
-                if (_editor.Level.Wad != null)
-                {
-                    foreach (WadStatic obj in _editor.Level.Wad.Statics.Values)
-                        yield return new ItemType(obj.Id, _editor?.Level?.Settings);
-                    foreach (WadMoveable obj in _editor.Level.Wad.Moveables.Values)
-                        yield return new ItemType(obj.Id, _editor?.Level?.Settings);
-                }
+                foreach (WadStatic obj in _editor.Level.Settings.WadGetAllStatics().Values)
+                    yield return new ItemType(obj.Id, _editor?.Level?.Settings);
+                foreach (WadMoveable obj in _editor.Level.Settings.WadGetAllMoveables().Values)
+                    yield return new ItemType(obj.Id, _editor?.Level?.Settings);
             }
         }
     }

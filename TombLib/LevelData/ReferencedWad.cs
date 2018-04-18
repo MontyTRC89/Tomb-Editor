@@ -28,7 +28,7 @@ namespace TombLib.LevelData
         public ReferencedWad(LevelSettings settings, string path, IDialogHandler progressReporter = null)
         {
             Path = path;
-            Reload(settings);
+            Reload(settings, progressReporter);
         }
 
         public void Reload(LevelSettings settings, IDialogHandler progressReporter = null)

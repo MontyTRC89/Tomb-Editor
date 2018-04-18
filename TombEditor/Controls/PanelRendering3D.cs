@@ -1643,10 +1643,11 @@ namespace TombEditor.Controls
                 if (instance is MoveableInstance && ShowMoveables)
                 {
                     MoveableInstance modelInfo = (MoveableInstance)instance;
-                    if (_editor?.Level?.Wad?.Moveables?.ContainsKey(modelInfo.WadObjectId) ?? false)
+                    WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
+                    if (moveable != null)
                     {
                         // TODO Make picking independent of the rendering data.
-                        AnimatedModel model = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[modelInfo.WadObjectId]);
+                        AnimatedModel model = _wadRenderer.GetMoveable(moveable);
                         for (int j = 0; j < model.Meshes.Count; j++)
                         {
                             var mesh = model.Meshes[j];
@@ -1665,10 +1666,11 @@ namespace TombEditor.Controls
                 else if (instance is StaticInstance && ShowStatics)
                 {
                     StaticInstance modelInfo = (StaticInstance)instance;
-                    if (_editor?.Level?.Wad?.Statics?.ContainsKey(modelInfo.WadObjectId) ?? false)
+                    WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(modelInfo.WadObjectId);
+                    if (@static != null)
                     {
                         // TODO Make picking independent of the rendering data.
-                        StaticModel model = _wadRenderer.GetStatic(_editor.Level.Wad.Statics[modelInfo.WadObjectId]);
+                        StaticModel model = _wadRenderer.GetStatic(@static);
                         var mesh = model.Meshes[0];
                         DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
                     }
@@ -2111,7 +2113,8 @@ namespace TombEditor.Controls
             {
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
-                    if (_editor?.Level?.Wad?.Moveables?.ContainsKey(instance.WadObjectId) ?? false)
+                    WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId);
+                    if (moveable == null)
                         continue;
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
@@ -2146,7 +2149,8 @@ namespace TombEditor.Controls
 
                 foreach (var instance in room.Objects.OfType<StaticInstance>())
                 {
-                    if (_editor?.Level?.Wad?.Statics?.ContainsKey(instance.WadObjectId) ?? false)
+                    WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId);
+                    if (@static == null)
                         continue;
 
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
@@ -2235,14 +2239,18 @@ namespace TombEditor.Controls
 
             foreach (var instance in _moveablesToDraw)
             {
-                if (!(_editor?.Level?.Wad?.Moveables?.ContainsKey(instance.WadObjectId) ?? false))
+                WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId);
+                if (moveable == null)
                     continue;
 
-                AnimatedModel model = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[instance.WadObjectId]);
+                AnimatedModel model = _wadRenderer.GetMoveable(moveable);
                 AnimatedModel skin = model;
                 if (instance.WadObjectId == WadMoveableId.Lara) // Show Lara
-                    if (_editor.Level.Wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
-                        skin = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[WadMoveableId.LaraSkin]);
+                {
+                    WadMoveable skinMoveable = _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.LaraSkin);
+                    if (skinMoveable != null)
+                        skin = _wadRenderer.GetMoveable(skinMoveable);
+                }
 
                 _debug.NumMoveables++;
 
@@ -2288,9 +2296,7 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString(_editor.Level.Wad != null ?
-                                                                                                _editor.Level.Wad.SuggestedGameVersion :
-                                                                                                WadGameVersion.TR4_TRNG) +
+                    string message = moveable.ToString(_editor.Level.Settings.WadGameVersion) +
                                      " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
@@ -2404,9 +2410,10 @@ namespace TombEditor.Controls
 
             foreach (var instance in _staticsToDraw)
             {
-                if (!(_editor?.Level?.Wad?.Statics?.ContainsKey(instance.WadObjectId) ?? false))
+                WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId);
+                if (@static == null)
                     continue;
-                StaticModel model = _wadRenderer.GetStatic(_editor.Level.Wad.Statics[instance.WadObjectId]);
+                StaticModel model = _wadRenderer.GetStatic(@static);
 
                 if (_lastObject == null)
                 {
@@ -2448,9 +2455,7 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = _editor.Level.Wad.Statics[instance.WadObjectId].ToString(_editor.Level.Wad != null ?
-                                                                            _editor.Level.Wad.SuggestedGameVersion :
-                                                                            WadGameVersion.TR4_TRNG) +
+                    string message = @static.ToString(_editor.Level.Settings.WadGameVersion) +
                                      " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
 
                     // Object position
@@ -2470,16 +2475,15 @@ namespace TombEditor.Controls
 
         private void DrawSkyBox(Matrix4x4 viewProjection)
         {
-            if (_editor?.Level?.Wad == null)
-                return;
-            if (!_editor.Level.Wad.Moveables.ContainsKey(WadMoveableId.SkyBox))
+            WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.SkyBox);
+            if (moveable == null)
                 return;
 
             _device.SetBlendState(_device.BlendStates.AlphaBlend);
 
             Effect skinnedModelEffect = _deviceManager.Effects["Model"];
 
-            AnimatedModel skinnedModel = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[WadMoveableId.SkyBox]);
+            AnimatedModel skinnedModel = _wadRenderer.GetMoveable(moveable);
 
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, skinnedModel.VertexBuffer));
 
@@ -2822,7 +2826,7 @@ namespace TombEditor.Controls
             Task.WaitAll(task1, task2);
 
             // Draw the skybox if present
-            if (_editor.Level.Wad != null && DrawHorizon)
+            if (DrawHorizon)
             {
                 DrawSkyBox(viewProjection);
                 _device.Clear(ClearOptions.DepthBuffer, SharpDX.Color.Transparent, 1.0f, 0);
@@ -2847,7 +2851,6 @@ namespace TombEditor.Controls
             DrawOpaqueBuckets(viewProjection);
 
             // Draw moveables and static meshes
-            if (_editor.Level.Wad != null)
             {
                 // Before drawing custom geometry, apply a depth bias for reducing Z fighting
                 _device.SetRasterizerState(_rasterizerStateDepthBias);

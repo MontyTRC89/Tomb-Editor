@@ -659,7 +659,7 @@ namespace TombEditor
             }
             else if (instance is SoundSourceInstance)
             {
-                using (var formSoundSource = new FormSoundSource((SoundSourceInstance)instance, _editor.Level.Wad))
+                using (var formSoundSource = new FormSoundSource((SoundSourceInstance)instance, _editor.Level.Settings.WadGetAllSoundInfos()))
                     if (formSoundSource.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
@@ -2286,7 +2286,7 @@ namespace TombEditor
 
         public static void BuildLevelAndPlay(IWin32Window owner)
         {
-            if (_editor?.Level?.Wad?.Moveables[WadMoveableId.Lara] != null &&
+            if (_editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.Lara) != null &&
                  _editor.Level.Rooms
                 .Where(room => room != null)
                 .SelectMany(room => room.Objects)
@@ -2325,7 +2325,7 @@ namespace TombEditor
             else
             {
                 var newWad = new ReferencedWad(_editor.Level.Settings, path, new GraphicalDialogHandler(owner));
-                if (newWad.LoadException == null)
+                if (newWad.LoadException != null)
                     return;
                 _editor.Level.Settings.Wads.Add(newWad);
             }

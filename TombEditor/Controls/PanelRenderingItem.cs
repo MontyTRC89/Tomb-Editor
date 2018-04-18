@@ -56,7 +56,7 @@ namespace TombEditor.Controls
             if (obj is Editor.ChosenItemChangedEvent)
             {
                 Editor.ChosenItemChangedEvent e = (Editor.ChosenItemChangedEvent)obj;
-                if (e.Current != null && _editor?.Level?.Wad != null)
+                if (e.Current != null)
                     ResetCamera();
                 Invalidate();
                 Update(); // Magic fix for room view leaking into item view
@@ -121,7 +121,7 @@ namespace TombEditor.Controls
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
-            if (_editor.ChosenItem == null || _editor.Level?.Wad == null)
+            if (_editor.ChosenItem == null)
             {
                 _device.Present();
                 return;
@@ -131,9 +131,13 @@ namespace TombEditor.Controls
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (chosenItem.IsStatic)
             {
-                if (!_editor.Level.Wad.Statics.ContainsKey(chosenItem.StaticId))
+                WadStatic @static = _editor.Level.Settings.WadTryGetStatic(chosenItem.StaticId);
+                if (@static == null)
+                {
+                    _device.Present();
                     return;
-                StaticModel model = _wadRenderer.GetStatic(_editor.Level.Wad.Statics[chosenItem.StaticId]);
+                }
+                StaticModel model = _wadRenderer.GetStatic(@static);
 
                 Effect mioEffect = _deviceManager.Effects["StaticModel"];
                 mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
@@ -167,13 +171,20 @@ namespace TombEditor.Controls
             }
             else
             {
-                if (!_editor.Level.Wad.Moveables.ContainsKey(chosenItem.MoveableId))
+                WadMoveable moveable = _editor.Level.Settings.WadTryGetMoveable(chosenItem.MoveableId);
+                if (moveable == null)
+                {
+                    _device.Present();
                     return;
-                AnimatedModel model = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[chosenItem.MoveableId]);
+                }
+                AnimatedModel model = _wadRenderer.GetMoveable(moveable);
                 AnimatedModel skin = model;
                 if (chosenItem.MoveableId == WadMoveableId.Lara) // Show Lara
-                    if (_editor.Level.Wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
-                        skin = _wadRenderer.GetMoveable(_editor.Level.Wad.Moveables[WadMoveableId.LaraSkin]);
+                {
+                    WadMoveable skinMoveable = _editor.Level.Settings.WadTryGetMoveable(chosenItem.MoveableId);
+                    if (skinMoveable != null)
+                        skin = _wadRenderer.GetMoveable(skinMoveable);
+                }
 
                 Effect mioEffect = _deviceManager.Effects["Model"];
 
@@ -218,7 +229,9 @@ namespace TombEditor.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             LevelSettings settings = _editor?.Level?.Settings;
-            if (settings != null && !settings.Wads.Any(wad => wad.LoadException != null))
+            if (settings == null)
+                return;
+            if (settings.Wads.All(wad => wad.LoadException != null))
             {
                 ReferencedWad errorWad = settings.Wads.FirstOrDefault(wad => wad.LoadException != null);
                 string notifyMessage;
@@ -262,7 +275,7 @@ namespace TombEditor.Controls
             {
                 case MouseButtons.Left:
                     LevelSettings settings = _editor?.Level?.Settings;
-                    if (settings != null && !settings.Wads.Any(wad => wad.LoadException != null))
+                    if (settings != null && settings.Wads.All(wad => wad.LoadException != null))
                         EditorActions.AddWad(Parent, settings.Wads.FirstOrDefault(wad => wad.LoadException != null));
                     else if (_editor.ChosenItem != null)
                         DoDragDrop(_editor.ChosenItem, DragDropEffects.Copy);
