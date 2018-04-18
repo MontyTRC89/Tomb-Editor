@@ -58,6 +58,7 @@ namespace TombLib.LevelData
         public bool FlagExcludeFromPathFinding { get; set; }
         public Reverberation Reverberation { get; set; }
         public bool Locked { get; set; }
+        public ImportedGeometryMesh ExternalRoomMesh { get; set; }
 
         public Level Level { get; set; }
 
@@ -3671,6 +3672,19 @@ namespace TombLib.LevelData
         }
 
         bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
+
+       /* public bool HasExternalRoomGeometry
+        {
+           / get
+            {
+                foreach (var obj in Objects)
+                    if (obj is ImportedGeometryInstance)
+                    {
+                        var imported = obj as ImportedGeometryInstance;
+                        if (imported.Model.)
+                    }
+            }
+        }*/
     }
 
     public struct VerticalSpace

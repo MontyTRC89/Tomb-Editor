@@ -47,6 +47,8 @@ namespace TombLib.Graphics
                     frame.RotationsMatrices[n] = wadFrame.Angles[n].RotationMatrix;
                 }
 
+                frame.BoundingBox = new BoundingBox(wadFrame.BoundingBox.Minimum, wadFrame.BoundingBox.Maximum);
+
                 animation.KeyFrames.Add(frame);
             }
 
