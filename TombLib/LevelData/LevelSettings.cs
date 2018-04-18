@@ -116,6 +116,8 @@ namespace TombLib.LevelData
                 new OldWadSoundPath("Sounds"), // For directly loading wad files.
                 new OldWadSoundPath("Sound"),
                 new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound" + Dir + "Samples"),
+                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "sound" + Dir + "Samples"),
+                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "sound" + Dir + "Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
@@ -230,7 +232,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public Wad.WadGameVersion WadGameVersion
+        public WadGameVersion WadGameVersion
         {
             get
             {
@@ -401,6 +403,93 @@ namespace TombLib.LevelData
                 if (importedGeometry.UniqueID == uniqueID)
                     return importedGeometry;
             return null;
+        }
+
+        public WadMoveable WadTryGetMoveable(WadMoveableId id)
+        {
+            WadMoveable result;
+            foreach (ReferencedWad wad in Wads)
+                if (wad.Wad != null && wad.Wad.Moveables.TryGetValue(id, out result))
+                    return result;
+            return null;
+        }
+
+        public WadStatic WadTryGetStatic(WadStaticId id)
+        {
+            WadStatic result;
+            foreach (ReferencedWad wad in Wads)
+                if (wad.Wad != null && wad.Wad.Statics.TryGetValue(id, out result))
+                    return result;
+            return null;
+        }
+
+        public WadFixedSoundInfo WadTryGetFixedSoundInfo(WadFixedSoundInfoId id)
+        {
+            WadFixedSoundInfo result;
+            foreach (ReferencedWad wad in Wads)
+                if (wad.Wad != null && wad.Wad.FixedSoundInfos.TryGetValue(id, out result))
+                    return result;
+            return null;
+        }
+
+        public WadSoundInfo WadTryGetSoundInfo(string soundName)
+        {
+            foreach (ReferencedWad wad in Wads)
+                if (wad.Wad != null)
+                {
+                    WadSoundInfo result = wad.Wad.TryGetSound(soundName);
+                    if (result != null)
+                        return result;
+                }
+            return null;
+        }
+
+        public SortedList<WadMoveableId, WadMoveable> WadGetAllMoveables()
+        {
+            SortedList<WadMoveableId, WadMoveable> result = new SortedList<WadMoveableId, WadMoveable>();
+            foreach (ReferencedWad wad in Wads)
+                foreach (KeyValuePair<WadMoveableId, WadMoveable> moveable in wad.Wad.Moveables)
+                    if (!result.ContainsKey(moveable.Key))
+                        result.Add(moveable.Key, moveable.Value);
+            return result;
+        }
+
+        public SortedList<WadStaticId, WadStatic> WadGetAllStatics()
+        {
+            SortedList<WadStaticId, WadStatic> result = new SortedList<WadStaticId, WadStatic>();
+            foreach (ReferencedWad wad in Wads)
+                foreach (KeyValuePair<WadStaticId, WadStatic> @static in wad.Wad.Statics)
+                    if (!result.ContainsKey(@static.Key))
+                        result.Add(@static.Key, @static.Value);
+            return result;
+        }
+
+        public SortedList<WadSpriteSequenceId, WadSpriteSequence> WadGetAllSpriteSequences()
+        {
+            SortedList<WadSpriteSequenceId, WadSpriteSequence> result = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
+            foreach (ReferencedWad wad in Wads)
+                foreach (KeyValuePair<WadSpriteSequenceId, WadSpriteSequence> moveable in wad.Wad.SpriteSequences)
+                    if (!result.ContainsKey(moveable.Key))
+                        result.Add(moveable.Key, moveable.Value);
+            return result;
+        }
+
+        public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> WadGetAllFixedSoundInfos()
+        {
+            SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> result = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
+            foreach (ReferencedWad wad in Wads)
+                foreach (KeyValuePair<WadFixedSoundInfoId, WadFixedSoundInfo> moveable in wad.Wad.FixedSoundInfos)
+                    if (!result.ContainsKey(moveable.Key))
+                        result.Add(moveable.Key, moveable.Value);
+            return result;
+        }
+
+        public HashSet<WadSoundInfo> WadGetAllSoundInfos()
+        {
+            HashSet<WadSoundInfo> result = new HashSet<WadSoundInfo>();
+            foreach (ReferencedWad wad in Wads)
+                result.UnionWith(wad.Wad.SoundInfosUnique);
+            return result;
         }
 
         public static IEnumerable<FileFormat> FileFormatsLoadRawExtraTexture =>

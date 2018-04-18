@@ -33,7 +33,7 @@ namespace TombLib.LevelData
         {
             if (EmbeddedSoundInfo != null)
                 return EmbeddedSoundInfo;
-            return level.Wad.TryGetSound(WadReferencedSoundName);
+            return level.Settings.WadTryGetSoundInfo(WadReferencedSoundName);
         }
 
         public string SoundNameToDisplay

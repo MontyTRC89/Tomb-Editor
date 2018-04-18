@@ -70,9 +70,9 @@
             this.lstSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstSounds.Location = new System.Drawing.Point(8, 28);
+            this.lstSounds.Location = new System.Drawing.Point(8, 41);
             this.lstSounds.Name = "lstSounds";
-            this.lstSounds.Size = new System.Drawing.Size(580, 311);
+            this.lstSounds.Size = new System.Drawing.Size(580, 298);
             this.lstSounds.TabIndex = 61;
             this.lstSounds.Text = "darkListView1";
             this.lstSounds.SelectedIndicesChanged += new System.EventHandler(this.lstSounds_SelectedIndicesChanged);
@@ -154,7 +154,7 @@
             // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(6, 12);
+            this.darkLabel1.Location = new System.Drawing.Point(6, 25);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(232, 13);
             this.darkLabel1.TabIndex = 54;
@@ -193,12 +193,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(618, 531);
-            this.Controls.Add(this.optionPlayCustomSoundGroupBox);
             this.Controls.Add(this.optionPlayCustomSound);
             this.Controls.Add(this.optionPlaySoundFromWad);
             this.Controls.Add(this.butOK);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.optionPlaySoundFromWadGroupBox);
+            this.Controls.Add(this.optionPlayCustomSoundGroupBox);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(400, 200);

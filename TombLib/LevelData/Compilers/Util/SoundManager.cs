@@ -29,7 +29,7 @@ namespace TombLib.LevelData.Compilers.Util
         private readonly List<SoundDetail> _soundDetails = new List<SoundDetail>();
         private readonly List<ushort> _soundMap = new List<ushort>(); // 0xffff for empty sounds.
 
-        public SoundManager(LevelSettings settings, Wad2 wad)
+        public SoundManager(LevelSettings settings, SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> fixedSoundInfos)
         {
             _gameVersion = settings.GameVersion;
 
@@ -38,7 +38,7 @@ namespace TombLib.LevelData.Compilers.Util
                 SetSoundMapEntryToSoundInfo(checked((ushort)fixedSound), null);
 
             // Add fixed sounds from the wad
-            foreach (WadFixedSoundInfo fixedSoundInfo in wad.FixedSoundInfos.Values)
+            foreach (WadFixedSoundInfo fixedSoundInfo in fixedSoundInfos.Values)
                 SetSoundMapEntryToSoundInfo(checked((ushort)fixedSoundInfo.Id.TypeId), fixedSoundInfo.SoundInfo);
         }
 

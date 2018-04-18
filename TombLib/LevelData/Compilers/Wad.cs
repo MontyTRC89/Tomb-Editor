@@ -15,7 +15,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();
         private int _totalMeshSize = 0;
 
-        private tr_mesh ConvertWadMesh(Wad2 wad, WadMesh oldMesh, bool isWaterfall)
+        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isWaterfall)
         {
             int currentMeshSize = 0;
 
@@ -144,8 +144,11 @@ namespace TombLib.LevelData.Compilers
             public int KeyFramesSize { get; set; }
         }
 
-        public void ConvertWad2DataToTr4(Wad2 wad)
+        public void ConvertWad2DataToTr4()
         {
+            SortedList<WadMoveableId, WadMoveable> moveables = _level.Settings.WadGetAllMoveables();
+            SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
+
             int lastAnimation = 0;
             int lastAnimDispatch = 0;
 
@@ -156,7 +159,7 @@ namespace TombLib.LevelData.Compilers
             int currentKeyFrameSize = 0;
             int totalKeyFrameSize = 0;
 
-            foreach (WadMoveable moveable in wad.Moveables.Values)
+            foreach (WadMoveable moveable in moveables.Values)
             {
                 foreach (var animation in moveable.Animations)
                 {
@@ -279,7 +282,7 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            foreach (WadMoveable oldMoveable in wad.Moveables.Values)
+            foreach (WadMoveable oldMoveable in moveables.Values)
             {
                 var newMoveable = new tr_moveable();
                 newMoveable.Animation = checked((ushort)(oldMoveable.Animations.Count != 0 ? lastAnimation : 0xffff));
@@ -404,7 +407,7 @@ namespace TombLib.LevelData.Compilers
                 newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
                 foreach (var wadMesh in oldMoveable.Meshes)
-                    ConvertWadMesh(wad, wadMesh, oldMoveable.Id.IsWaterfall(wad.SuggestedGameVersion));
+                    ConvertWadMesh(wadMesh, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion));
 
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
@@ -438,9 +441,8 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Convert static meshes
-            for (int i = 0; i < wad.Statics.Count; i++)
+            foreach (WadStatic oldStaticMesh in statics.Values)
             {
-                var oldStaticMesh = wad.Statics.ElementAt(i).Value;
                 var newStaticMesh = new tr_staticmesh();
 
                 newStaticMesh.ObjectID = oldStaticMesh.Id.TypeId;
@@ -468,7 +470,7 @@ namespace TombLib.LevelData.Compilers
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
-                ConvertWadMesh(wad, oldStaticMesh.Mesh, false);
+                ConvertWadMesh(oldStaticMesh.Mesh, false);
 
                 _staticMeshes.Add(newStaticMesh);
             }

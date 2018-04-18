@@ -14,13 +14,11 @@ namespace TombLib.LevelData
         public const short MaxSectorCoord = 100;
         public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
-        public Wad2 Wad => Settings.Wads.FirstOrDefault()?.Wad;
         public LevelSettings Settings { get; private set; } = new LevelSettings();
         public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
 
         public static Level CreateSimpleLevel()
         {
-            int TODO_REMOVE_WAD;
             logger.Info("Creating new empty level");
 
             Level result = new Level();

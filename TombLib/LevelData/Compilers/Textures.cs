@@ -96,12 +96,13 @@ namespace TombLib.LevelData.Compilers
         private List<ImageC> BuildSprites(int pagesBeforeSprites)
         {
             ReportProgress(9, "Building sprites");
+            var spriteSequences = _level.Settings.WadGetAllSpriteSequences();
             //ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
 
             // Add all sprites to the texture packer
             var textureAllocator = new Util.TextureAllocator();
             var spriteTextureIDs = new Dictionary<Hash, int>();
-            foreach (var sprite in _level.Wad.SpriteSequences.Values.SelectMany(sequence => sequence.Sprites))
+            foreach (var sprite in spriteSequences.Values.SelectMany(sequence => sequence.Sprites))
                 if (!spriteTextureIDs.ContainsKey(sprite.Texture.Hash))
                     spriteTextureIDs.Add(sprite.Texture.Hash, textureAllocator.GetOrAllocateTextureID(sprite.Texture));
 
@@ -113,7 +114,7 @@ namespace TombLib.LevelData.Compilers
             var tempSprites = new List<tr_sprite_texture>();
             var lastOffset = 0;
 
-            foreach (var oldSequence in _level.Wad.SpriteSequences.Values)
+            foreach (var oldSequence in spriteSequences.Values)
             {
                 var newSequence = new tr_sprite_sequence();
                 newSequence.NegativeLength = (short)-oldSequence.Sprites.Count;
