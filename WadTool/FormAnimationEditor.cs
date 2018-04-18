@@ -1,9 +1,11 @@
-﻿using System;
+﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -89,16 +91,16 @@ namespace WadTool
             _selectedNode = node;
             if (node.DirectXAnimation.KeyFrames.Count != 0)
             {
-                _model.BuildAnimationPose(node.DirectXAnimation.KeyFrames[0]);
                 trackFrames.Visible = true;
-                trackFrames.MinValue = 0;
-                trackFrames.MaxValue = node.DirectXAnimation.KeyFrames.Count - 1;
+                trackFrames.Minimum = 0;
+                trackFrames.Maximum = node.DirectXAnimation.KeyFrames.Count - 1;
 
+                SelectFrame(0);
                 // Load animation commands
-                foreach (var cmd in node.WadAnimation.AnimCommands)
+                /*foreach (var cmd in node.WadAnimation.AnimCommands)
                     if (cmd.Type == WadAnimCommandType.PlaySound || cmd.Type == WadAnimCommandType.FlipEffect)
                         trackFrames.AnimationCommands.Add(cmd);
-                trackFrames.UpdateAnimationCommands();
+                trackFrames.UpdateAnimationCommands();*/
             }
             else
             {
@@ -112,11 +114,27 @@ namespace WadTool
 
         private void trackFrames_ValueChanged(object sender, EventArgs e)
         {
+            SelectFrame(trackFrames.Value);
+        }
+
+        private void SelectFrame(int frameIndex)
+        {
             if (_selectedNode != null)
             {
-                _model.BuildAnimationPose(_selectedNode.DirectXAnimation.KeyFrames[trackFrames.Value]);
-                panelRendering.CurrentKeyFrame = trackFrames.Value;
+                var keyFrame = _selectedNode.DirectXAnimation.KeyFrames[frameIndex];
+                _model.BuildAnimationPose(keyFrame);
+                panelRendering.CurrentKeyFrame = frameIndex;
                 panelRendering.Invalidate();
+
+                // Update GUI
+                statusFrame.Text = "Frame: " + (trackFrames.Value + 1) + "/" + _selectedNode.WadAnimation.KeyFrames.Count;
+
+                tbCollisionBoxMinX.Text = keyFrame.BoundingBox.Minimum.X.ToString();
+                tbCollisionBoxMinY.Text = keyFrame.BoundingBox.Minimum.Y.ToString();
+                tbCollisionBoxMinZ.Text = keyFrame.BoundingBox.Minimum.Z.ToString();
+                tbCollisionBoxMaxX.Text = keyFrame.BoundingBox.Maximum.X.ToString();
+                tbCollisionBoxMaxY.Text = keyFrame.BoundingBox.Maximum.Y.ToString();
+                tbCollisionBoxMaxZ.Text = keyFrame.BoundingBox.Maximum.Z.ToString();
             }
         }
 
@@ -126,6 +144,129 @@ namespace WadTool
             foreach (var animation in _workingAnimations)
             {
                 
+            }
+        }
+
+        private void butCalculateCollisionBox_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode != null)
+            {
+                var keyFrame = _selectedNode.DirectXAnimation.KeyFrames[trackFrames.Value];
+
+                // First check for errors
+                int value = 0;
+                if (!Int32.TryParse(tbCollisionBoxMinX.Text,out value) ||
+                    !Int32.TryParse(tbCollisionBoxMinY.Text, out value) ||
+                    !Int32.TryParse(tbCollisionBoxMinZ.Text, out value) ||
+                    !Int32.TryParse(tbCollisionBoxMaxX.Text, out value) ||
+                    !Int32.TryParse(tbCollisionBoxMaxY.Text, out value) ||
+                    !Int32.TryParse(tbCollisionBoxMaxZ.Text, out value))
+                {
+
+                }
+               
+
+                // Update GUI
+                statusFrame.Text = "Frame: " + trackFrames.Value + "/" + trackFrames.Maximum;
+
+                tbCollisionBoxMinX.Text = keyFrame.BoundingBox.Minimum.X.ToString();
+                tbCollisionBoxMinY.Text = keyFrame.BoundingBox.Minimum.Y.ToString();
+                tbCollisionBoxMinZ.Text = keyFrame.BoundingBox.Minimum.Z.ToString();
+                tbCollisionBoxMaxX.Text = keyFrame.BoundingBox.Maximum.X.ToString();
+                tbCollisionBoxMaxY.Text = keyFrame.BoundingBox.Maximum.Y.ToString();
+                tbCollisionBoxMaxZ.Text = keyFrame.BoundingBox.Maximum.Z.ToString();
+            }
+        }
+
+        private void addNewToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            AddNewAnimation();
+        }
+
+        private void butDeleteAnimation_Click(object sender, EventArgs e)
+        {
+            DeleteAnimation();
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeleteAnimation();
+        }
+
+        private void AddNewAnimation()
+        {
+            var wadAnimation = new WadAnimation();
+            wadAnimation.FrameDuration = 1;
+            wadAnimation.Name = "New Animation " + _workingAnimations.Count;
+
+            var keyFrame = new WadKeyFrame();
+            foreach (var bone in _moveable.Skeleton.LinearizedBones)
+                keyFrame.Angles.Add(new WadKeyFrameRotation());
+            wadAnimation.KeyFrames.Add(keyFrame);
+
+            var dxAnimation = Animation.FromWad2(_moveable.Skeleton.LinearizedBones.ToList(), wadAnimation);
+            var node = new WadAnimationNode(wadAnimation, dxAnimation);
+            var treeNode = new DarkUI.Controls.DarkTreeNode(wadAnimation.Name);
+            treeNode.Tag = node;
+
+            _workingAnimations.Add(node);
+            treeAnimations.Nodes.Add(treeNode);
+        }
+
+        private void DeleteAnimation()
+        {
+            if (_selectedNode != null)
+            { 
+                if (DarkMessageBox.Show(this, "Do you really want to delete '" + _selectedNode.WadAnimation.Name + "'?",
+                                        "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    treeAnimations.Nodes.Remove(treeAnimations.SelectedNodes[0]);
+                    if (treeAnimations.Nodes.Count != 0)
+                        SelectAnimation(treeAnimations.Nodes[0].Tag as WadAnimationNode);
+                    else
+                        _selectedNode = null;
+                    panelRendering.Invalidate();
+                }
+            }
+        }
+
+        private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            panelRendering.DrawGrid = !panelRendering.DrawGrid;
+            panelRendering.Invalidate();
+        }
+
+        private void drawGizmoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            panelRendering.DrawGizmo= !panelRendering.DrawGizmo;
+            panelRendering.Invalidate();
+        }
+
+        private void drawCollisionBoxToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            panelRendering.DrawCollisionBox = !panelRendering.DrawCollisionBox;
+            panelRendering.Invalidate();
+        }
+
+        private void insertFrameAfterCurrentOneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddNewKeyFrame(panelRendering.CurrentKeyFrame + 1);
+        }
+
+        private void AddNewKeyFrame(int index)
+        {
+            if (_selectedNode != null)
+            {
+                var keyFrame = new KeyFrame();
+                foreach (var bone in _moveable.Skeleton.LinearizedBones)
+                {
+                    keyFrame.Rotations.Add(Vector3.Zero);
+                    keyFrame.RotationsMatrices.Add(Matrix4x4.CreateFromYawPitchRoll(0, 0, 0));
+                    keyFrame.Translations.Add(bone.Translation);
+                    keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(bone.Translation));
+                }
+             
+                _selectedNode.DirectXAnimation.KeyFrames.Insert(index, keyFrame);
             }
         }
     }

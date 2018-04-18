@@ -28,7 +28,21 @@ namespace WadTool
 
         protected override void GizmoMove(Vector3 newPos)
         {
-
+            if (_control != null)
+            {
+                var model = _control.Model;
+                var animation = _control.Animation;
+                if (animation == null || _control.SelectedMesh == null)
+                    return;
+                var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
+                var keyframe = _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame];
+                var translationVector = keyframe.Translations[meshIndex];
+                translationVector = new Vector3(newPos.X, newPos.Y, newPos.Z);
+                keyframe.Translations[meshIndex] = translationVector;
+                keyframe.TranslationsMatrices[meshIndex] = Matrix4x4.CreateTranslation(translationVector);
+                _control.Model.BuildAnimationPose(keyframe);
+                _control.Invalidate();
+            }
         }
 
         protected override void GizmoRotateX(float newAngle)
@@ -156,7 +170,7 @@ namespace WadTool
         protected override float LineThickness => _configuration.GizmoAnimationEditor_LineThickness;
 
         protected override bool SupportScale => false;
-        protected override bool SupportTranslate => false;
+        protected override bool SupportTranslate => true;
         protected override bool SupportRotationY => true;
         protected override bool SupportRotationX => true;
         protected override bool SupportRotationZ => true;

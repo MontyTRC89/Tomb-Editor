@@ -10,8 +10,9 @@ namespace TombLib.Graphics
         public List<Vector3> Rotations { get; set; } = new List<Vector3>();
         public List<Matrix4x4> TranslationsMatrices { get; set; } = new List<Matrix4x4>();
         public List<Matrix4x4> RotationsMatrices { get; set; } = new List<Matrix4x4>();
+        public BoundingBox BoundingBox { get; set; }
 
-        public BoundingBox GetBoundingBox(AnimatedModel model)
+        public BoundingBox CalculateBoundingBox(AnimatedModel model)
         {
             Vector3 min = new Vector3(float.MaxValue);
             Vector3 max = new Vector3(float.MinValue);
@@ -27,7 +28,9 @@ namespace TombLib.Graphics
                 }
             }
 
-            return new BoundingBox(min, max);
+            BoundingBox = new BoundingBox(min, max);
+
+            return BoundingBox;
         }
     }
 }

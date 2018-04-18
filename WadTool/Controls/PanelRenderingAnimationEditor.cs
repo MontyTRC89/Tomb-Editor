@@ -254,7 +254,7 @@ namespace WadTool.Controls
                 if (Animation != null)
                 {
                     if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
-                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Animation.DirectXAnimation.KeyFrames[CurrentKeyFrame].GetBoundingBox(_model));
+                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Animation.DirectXAnimation.KeyFrames[CurrentKeyFrame].BoundingBox);
 
                     _device.SetVertexBuffer(_vertexBufferVisibility);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
@@ -314,10 +314,17 @@ namespace WadTool.Controls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (_presenter != null)
+            try
             {
-                _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
-                Invalidate();
+                if (_presenter != null)
+                {
+                    _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
+                    Invalidate();
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 
