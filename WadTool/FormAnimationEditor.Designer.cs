@@ -128,13 +128,8 @@ namespace WadTool
             this.toolStripMenuItem3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-<<<<<<< HEAD
             this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
-            // 
-=======
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(142, 6);
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+
             // closeToolStripMenuItem
             //
             this.closeToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -176,12 +171,8 @@ namespace WadTool
             this.insertFrameAfterCurrentOneToolStripMenuItem.Name = "insertFrameAfterCurrentOneToolStripMenuItem";
             this.insertFrameAfterCurrentOneToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.insertFrameAfterCurrentOneToolStripMenuItem.Text = "Insert frame after current one";
-<<<<<<< HEAD
             this.insertFrameAfterCurrentOneToolStripMenuItem.Click += new System.EventHandler(this.insertFrameAfterCurrentOneToolStripMenuItem_Click);
-            // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+
             // deleteFrameToolStripMenuItem
             //
             this.deleteFrameToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -271,12 +262,8 @@ namespace WadTool
             this.addNewToolStripMenuItem.Name = "addNewToolStripMenuItem";
             this.addNewToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.addNewToolStripMenuItem.Text = "New animation";
-<<<<<<< HEAD
             this.addNewToolStripMenuItem.Click += new System.EventHandler(this.addNewToolStripMenuItem_Click_1);
-            // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+ 
             // deleteToolStripMenuItem
             //
             this.deleteToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -284,12 +271,8 @@ namespace WadTool
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
-<<<<<<< HEAD
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-            // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+
             // toolStripMenuItem5
             //
             this.toolStripMenuItem5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -368,12 +351,8 @@ namespace WadTool
             this.drawGridToolStripMenuItem.Name = "drawGridToolStripMenuItem";
             this.drawGridToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.drawGridToolStripMenuItem.Text = "Draw grid";
-<<<<<<< HEAD
             this.drawGridToolStripMenuItem.Click += new System.EventHandler(this.drawGridToolStripMenuItem_Click);
-            // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+ 
             // drawGizmoToolStripMenuItem
             //
             this.drawGizmoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -384,12 +363,8 @@ namespace WadTool
             this.drawGizmoToolStripMenuItem.Name = "drawGizmoToolStripMenuItem";
             this.drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.drawGizmoToolStripMenuItem.Text = "Draw gizmo";
-<<<<<<< HEAD
             this.drawGizmoToolStripMenuItem.Click += new System.EventHandler(this.drawGizmoToolStripMenuItem_Click);
-            // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+  
             // drawCollisionBoxToolStripMenuItem
             //
             this.drawCollisionBoxToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -400,12 +375,8 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem.Name = "drawCollisionBoxToolStripMenuItem";
             this.drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.drawCollisionBoxToolStripMenuItem.Text = "Draw collision box";
-<<<<<<< HEAD
             this.drawCollisionBoxToolStripMenuItem.Click += new System.EventHandler(this.drawCollisionBoxToolStripMenuItem_Click);
-            // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+
             // darkStatusStrip1
             //
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -418,7 +389,6 @@ namespace WadTool
             this.darkStatusStrip1.Size = new System.Drawing.Size(1008, 36);
             this.darkStatusStrip1.TabIndex = 1;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
-<<<<<<< HEAD
             // 
             // statusFrame
             // 
@@ -426,9 +396,6 @@ namespace WadTool
             this.statusFrame.Size = new System.Drawing.Size(40, 23);
             this.statusFrame.Text = "Frame";
             // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
             // panelBottom
             //
             this.panelBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -461,7 +428,6 @@ namespace WadTool
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(243, 673);
             this.panelBottom.TabIndex = 2;
-<<<<<<< HEAD
             // 
             // butApplyChangesToBoundingBox
             // 
@@ -473,10 +439,7 @@ namespace WadTool
             this.butApplyChangesToBoundingBox.TabIndex = 92;
             this.butApplyChangesToBoundingBox.Text = "Apply";
             this.butApplyChangesToBoundingBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+  
             // butCalculateCollisionBox
             //
             this.butCalculateCollisionBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -487,12 +450,8 @@ namespace WadTool
             this.butCalculateCollisionBox.TabIndex = 91;
             this.butCalculateCollisionBox.Text = "Calculate collision box";
             this.butCalculateCollisionBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-<<<<<<< HEAD
             this.butCalculateCollisionBox.Click += new System.EventHandler(this.butCalculateCollisionBox_Click);
-            // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+  
             // tbCollisionBoxMaxZ
             //
             this.tbCollisionBoxMaxZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -691,12 +650,8 @@ namespace WadTool
             this.butDeleteAnimation.TabIndex = 23;
             this.butDeleteAnimation.Text = "Delete";
             this.butDeleteAnimation.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-<<<<<<< HEAD
             this.butDeleteAnimation.Click += new System.EventHandler(this.butDeleteAnimation_Click);
-            // 
-=======
-            //
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
+  
             // treeAnimations
             //
             this.treeAnimations.Location = new System.Drawing.Point(3, 27);

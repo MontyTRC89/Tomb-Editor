@@ -100,14 +100,9 @@ namespace WadTool
             if (node.WadAnimation.KeyFrames.Count != 0)
             {
                 trackFrames.Visible = true;
-<<<<<<< HEAD
+
                 trackFrames.Minimum = 0;
                 trackFrames.Maximum = node.DirectXAnimation.KeyFrames.Count - 1;
-=======
-                trackFrames.MinValue = 0;
-                trackFrames.MaxValue = node.WadAnimation.KeyFrames.Count - 1;
->>>>>>> 2a72672a51d65f9309cdc75f3e87bb2570bd922b
-
                 SelectFrame(0);
                 // Load animation commands
                 /*foreach (var cmd in node.WadAnimation.AnimCommands)
@@ -218,7 +213,7 @@ namespace WadTool
             wadAnimation.KeyFrames.Add(keyFrame);
 
             var dxAnimation = Animation.FromWad2(_moveable.Skeleton.LinearizedBones.ToList(), wadAnimation);
-            var node = new WadAnimationNode(wadAnimation, dxAnimation);
+            var node = new AnimationNode(wadAnimation, dxAnimation);
             var treeNode = new DarkUI.Controls.DarkTreeNode(wadAnimation.Name);
             treeNode.Tag = node;
 
@@ -235,7 +230,7 @@ namespace WadTool
                 {
                     treeAnimations.Nodes.Remove(treeAnimations.SelectedNodes[0]);
                     if (treeAnimations.Nodes.Count != 0)
-                        SelectAnimation(treeAnimations.Nodes[0].Tag as WadAnimationNode);
+                        SelectAnimation(treeAnimations.Nodes[0].Tag as AnimationNode);
                     else
                         _selectedNode = null;
                     panelRendering.Invalidate();
