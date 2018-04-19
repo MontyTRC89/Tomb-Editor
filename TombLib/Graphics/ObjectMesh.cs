@@ -47,15 +47,15 @@ namespace TombLib.Graphics
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
-        private static void PutObjectVertexAndIndex(Vector3 v, Vector3 n, 
+        private static void PutObjectVertexAndIndex(Vector3 v, Vector3 n,
                                                     ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
                                                     short color, Vector2 positionInAtlas)
         {
             var newVertex = new ObjectVertex();
 
             newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / Wad2.TextureAtlasSize,
-                                       (positionInAtlas.Y + uv.Y) / Wad2.TextureAtlasSize);
+            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / WadRenderer.TextureAtlasSize,
+                                       (positionInAtlas.Y + uv.Y) / WadRenderer.TextureAtlasSize);
             newVertex.Normal = n / n.Length();
 
             var shade = 1.0f - color / 8191.0f;
@@ -65,7 +65,7 @@ namespace TombLib.Graphics
             submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
         }
 
-        public static ObjectMesh FromWad2(GraphicsDevice device, Wad2 wad, WadMesh msh, Dictionary<WadTexture, VectorInt2> reallocatedTextures)
+        public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture)
         {
             // Initialize the mesh
             var mesh = new ObjectMesh(device, "ObjectMesh_" + msh.Hash.ToString());
@@ -95,7 +95,7 @@ namespace TombLib.Graphics
             for (int j = 0; j < msh.Polys.Count; j++)
             {
                 WadPolygon poly = msh.Polys[j];
-                Vector2 positionInPackedTexture = reallocatedTextures[(WadTexture)poly.Texture.Texture];
+                Vector2 positionInPackedTexture = allocateTexture((WadTexture)poly.Texture.Texture);
 
                 // Get the right submesh
                 var submesh = mesh.Submeshes[materialOpaque];
@@ -118,13 +118,13 @@ namespace TombLib.Graphics
                     int v2 = poly.Index1;
                     int v3 = poly.Index2;
 
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v1], msh.VerticesNormals[v1], mesh, submesh, 
-                                            poly.Texture.TexCoord0, 0, (short)(hasShades ? msh.VerticesShades[v1] : 0), 
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v1], msh.VerticesNormals[v1], mesh, submesh,
+                                            poly.Texture.TexCoord0, 0, (short)(hasShades ? msh.VerticesShades[v1] : 0),
                                             positionInPackedTexture);
                     PutObjectVertexAndIndex(msh.VerticesPositions[v2], msh.VerticesNormals[v2], mesh, submesh,
                                             poly.Texture.TexCoord1, 0, (short)(hasShades ? msh.VerticesShades[v2] : 0),
                                             positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v3], msh.VerticesNormals[v3], mesh, submesh, 
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v3], msh.VerticesNormals[v3], mesh, submesh,
                                             poly.Texture.TexCoord2, 0, (short)(hasShades ? msh.VerticesShades[v3] : 0),
                                             positionInPackedTexture);
                 }
@@ -135,24 +135,24 @@ namespace TombLib.Graphics
                     int v3 = poly.Index2;
                     int v4 = poly.Index3;
 
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v1], msh.VerticesNormals[v1], mesh, submesh, 
-                                            poly.Texture.TexCoord0, 0, (short)(hasShades ? msh.VerticesShades[v1] : 0), 
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v1], msh.VerticesNormals[v1], mesh, submesh,
+                                            poly.Texture.TexCoord0, 0, (short)(hasShades ? msh.VerticesShades[v1] : 0),
                                             positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], msh.VerticesNormals[v2], mesh, submesh, 
-                                            poly.Texture.TexCoord1, 0, (short)(hasShades ? msh.VerticesShades[v2] : 0), 
-                                            positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v4], msh.VerticesNormals[v4], mesh, submesh, 
-                                            poly.Texture.TexCoord3, 0, (short)(hasShades ? msh.VerticesShades[v4] : 0), 
-                                            positionInPackedTexture);
-
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v4], msh.VerticesNormals[v4], mesh, submesh, 
-                                            poly.Texture.TexCoord3, 0, (short)(hasShades ? msh.VerticesShades[v4] : 0), 
-                                            positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], msh.VerticesNormals[v2], mesh, submesh, 
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], msh.VerticesNormals[v2], mesh, submesh,
                                             poly.Texture.TexCoord1, 0, (short)(hasShades ? msh.VerticesShades[v2] : 0),
                                             positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v3], msh.VerticesNormals[v3], mesh, submesh,  
-                                            poly.Texture.TexCoord2, 0, (short)(hasShades ? msh.VerticesShades[v3] : 0), 
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v4], msh.VerticesNormals[v4], mesh, submesh,
+                                            poly.Texture.TexCoord3, 0, (short)(hasShades ? msh.VerticesShades[v4] : 0),
+                                            positionInPackedTexture);
+
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v4], msh.VerticesNormals[v4], mesh, submesh,
+                                            poly.Texture.TexCoord3, 0, (short)(hasShades ? msh.VerticesShades[v4] : 0),
+                                            positionInPackedTexture);
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], msh.VerticesNormals[v2], mesh, submesh,
+                                            poly.Texture.TexCoord1, 0, (short)(hasShades ? msh.VerticesShades[v2] : 0),
+                                            positionInPackedTexture);
+                    PutObjectVertexAndIndex(msh.VerticesPositions[v3], msh.VerticesNormals[v3], mesh, submesh,
+                                            poly.Texture.TexCoord2, 0, (short)(hasShades ? msh.VerticesShades[v3] : 0),
                                             positionInPackedTexture);
                 }
             }

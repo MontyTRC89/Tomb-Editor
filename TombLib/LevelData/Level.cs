@@ -2,21 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
-    public class Level : IDisposable
+    public class Level
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public const short MaxSectorCoord = 100;
         public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
-        public Wad2 Wad { get; private set; }
-        public Exception WadLoadingException { get; private set; }
         public LevelSettings Settings { get; private set; } = new LevelSettings();
         public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
 
@@ -83,53 +80,6 @@ namespace TombLib.LevelData
                 .ThenBy(roomPair => roomPair.Value.AlternateBaseRoom == null)
                 .Select(roomKey => roomKey.Value).ToList();
             return result;
-        }
-
-        public void Dispose()
-        {
-            Wad?.Dispose();
-            Wad = null;
-            WadLoadingException = null;
-        }
-
-        public void ReloadWad() => ReloadWad(new ProgressReporterSimple());
-        public void ReloadWad(IDialogHandler progressReporter)
-        {
-            string path = Settings.MakeAbsolute(Settings.WadFilePath);
-            if (string.IsNullOrEmpty(path))
-            {
-                logger.Info("Reseting wad");
-                Wad?.Dispose();
-                Wad = null;
-                WadLoadingException = null;
-                return;
-            }
-
-            Wad2 newWad = null;
-            try
-            {
-                newWad = Wad2.ImportFromFile(path, Settings.OldWadSoundPaths.Select(soundPath => Settings.ParseVariables(soundPath.Path)), progressReporter);
-                newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
-                newWad.PrepareDataForDirectX();
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "Loading *.wad failed.");
-                newWad?.Dispose();
-                Wad?.Dispose();
-                Wad = null;
-                WadLoadingException = exc;
-                return;
-            }
-            Wad?.Dispose();
-            Wad = newWad;
-            WadLoadingException = null;
-        }
-
-        public void ReloadLevelTextures()
-        {
-            foreach (var texture in Settings.Textures)
-                texture.Reload(Settings);
         }
 
         public int GetFreeRoomIndex()
@@ -340,9 +290,8 @@ namespace TombLib.LevelData
                         "However this should not be triggered currently because there is no GUI for multi texture management.");
             }
 
-            // Update wads if necessary
-            if (newSettings.MakeAbsolute(newSettings.WadFilePath) != oldSettings.MakeAbsolute(oldSettings.WadFilePath))
-                ReloadWad();
+            // Wads
+            Settings.Wads = oldSettings.Wads;
         }
         public void ApplyNewLevelSettings(LevelSettings newSettings) => ApplyNewLevelSettings(newSettings, s => { });
     }

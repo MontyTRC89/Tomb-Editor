@@ -2,8 +2,10 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
+using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -11,19 +13,9 @@ using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
-    class PanelRenderingItem : Panel
+    public class PanelRenderingItem : PanelItemPreview
     {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public SwapChainGraphicsPresenter Presenter { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ArcBallCamera Camera { get; set; }
-
         private readonly Editor _editor;
-        private VertexInputLayout _layout;
-        private DeviceManager _deviceManager;
-        private GraphicsDevice _device;
-        private int _lastX;
-        private int _lastY;
 
         public PanelRenderingItem()
         {
@@ -54,7 +46,7 @@ namespace TombEditor.Controls
             if (obj is Editor.ChosenItemChangedEvent)
             {
                 Editor.ChosenItemChangedEvent e = (Editor.ChosenItemChangedEvent)obj;
-                if (e.Current != null && _editor?.Level?.Wad != null)
+                if (e.Current != null)
                     ResetCamera();
                 Invalidate();
                 Update(); // Magic fix for room view leaking into item view
@@ -64,163 +56,27 @@ namespace TombEditor.Controls
                 Invalidate();
         }
 
-        public void InitializePanel(DeviceManager deviceManager)
-        {
-            _deviceManager = deviceManager;
-            _device = deviceManager.Device;
-
-            // inizializzo il Presenter se necessario
-            if (Presenter == null)
-            {
-                PresentationParameters pp = new PresentationParameters();
-                pp.BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm;
-                pp.BackBufferWidth = ClientSize.Width;
-                pp.BackBufferHeight = ClientSize.Height;
-                pp.DepthStencilFormat = DepthFormat.Depth24Stencil8;
-                pp.DeviceWindowHandle = this;
-                pp.IsFullScreen = false;
-                pp.MultiSampleCount = MSAALevel.None;
-                pp.PresentationInterval = PresentInterval.Immediate;
-                pp.RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer;
-                pp.Flags = SharpDX.DXGI.SwapChainFlags.None;
-                Presenter = new SwapChainGraphicsPresenter(_deviceManager.Device, pp);
-
-                ResetCamera();
-            }
-        }
-
-        public void ResetCamera()
-        {
-            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180));
-        }
-
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            base.OnMouseWheel(e);
-
-            Camera.Zoom(-e.Delta * _editor.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
-            Invalidate();
-        }
-
-        // Do NOT call this method to redraw the scene!
-        // Call Invalidate() instead to schedule a redraw in the message loop.
-        private void Draw()
-        {
-            if (DesignMode)
-                return;
-
-            _device.Presenter = Presenter;
-            _device.SetViewports(new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height));
-            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
-            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, _editor.Configuration.Rendering3D_BackgroundColor.ToSharpDX(), 1.0f, 0);
-
-            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-
-            if (_editor.ChosenItem == null || _editor.Level?.Wad == null)
-            {
-                _device.Present();
-                return;
-            }
-            ItemType chosenItem = _editor.ChosenItem.Value;
-
-            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-            if (chosenItem.IsStatic)
-            {
-                StaticModel model = _editor.Level.Wad.DirectXStatics[chosenItem.StaticId];
-
-                Effect mioEffect = _deviceManager.Effects["StaticModel"];
-                mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-
-                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
-                mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                mioEffect.Parameters["Color"].SetValue(Vector4.One);
-
-                _device.SetVertexBuffer(0, model.VertexBuffer);
-                _device.SetIndexBuffer(model.IndexBuffer, true);
-
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, model.VertexBuffer));
-
-                for (int i = 0; i < model.Meshes.Count; i++)
-                {
-                    var mesh = model.Meshes[i];
-
-                    if (_layout == null)
-                    {
-                        _layout = VertexInputLayout.FromBuffer(0, model.VertexBuffer);
-                        _device.SetVertexInputLayout(_layout);
-                    }
-
-                    mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                    mioEffect.Techniques[0].Passes[0].Apply();
-
-                    foreach (var submesh in mesh.Submeshes)
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                }
-            }
-            else
-            {
-                AnimatedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.MoveableId];
-                AnimatedModel skin = chosenItem.MoveableId == WadMoveableId.Lara && _editor.Level.Wad.DirectXMoveables.ContainsKey(WadMoveableId.LaraSkin) ? _editor.Level.Wad.DirectXMoveables[WadMoveableId.LaraSkin] : model;
-
-                Effect mioEffect = _deviceManager.Effects["Model"];
-
-                _device.SetVertexBuffer(0, skin.VertexBuffer);
-                _device.SetIndexBuffer(skin.IndexBuffer, true);
-
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, skin.VertexBuffer));
-
-                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
-                mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                mioEffect.Parameters["Color"].SetValue(Vector4.One);
-
-                for (int i = 0; i < skin.Meshes.Count; i++)
-                {
-                    var mesh = skin.Meshes[i];
-                    if (skin.Vertices.Count == 0)
-                        continue;
-
-                    Matrix4x4 modelMatrix;
-                    if (model.AnimationTransforms != null)
-                        modelMatrix = model.AnimationTransforms[i];
-                    else
-                        modelMatrix = model.Bones[i].GlobalTransform;
-                    mioEffect.Parameters["ModelViewProjection"].SetValue((modelMatrix * viewProjection).ToSharpDX());
-
-                    mioEffect.Techniques[0].Passes[0].Apply();
-
-                    foreach (var submesh in mesh.Submeshes)
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                }
-            }
-
-            _device.Present();
-        }
-
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            // Don't paint the background
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_editor?.Level?.Wad == null)
+            LevelSettings settings = _editor?.Level?.Settings;
+            if (settings == null)
+                return;
+            if (settings.Wads.All(wad => wad.LoadException != null))
             {
+                ReferencedWad errorWad = settings.Wads.FirstOrDefault(wad => wad.LoadException != null);
                 string notifyMessage;
-                if (string.IsNullOrEmpty(_editor?.Level?.Settings?.WadFilePath))
+                if (errorWad == null)
                     notifyMessage = "Click here to load a new WAD file.";
                 else
                 {
-                    string fileName = FileSystemUtils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.WadFilePath) ?? "";
-                    if (FileSystemUtils.IsFileNotFoundException(_editor.Level.WadLoadingException))
+                    string filePath = settings.MakeAbsolute(errorWad.Path);
+                    string fileName = FileSystemUtils.GetFileNameWithoutExtensionTry(filePath) ?? "";
+                    if (FileSystemUtils.IsFileNotFoundException(errorWad.LoadException))
                         notifyMessage = "Wad file '" + fileName + "' was not found!\n";
                     else
                         notifyMessage = "Unable to load wad from file '" + fileName + "'.\n";
                     notifyMessage += "Click here to choose a replacement.\n\n";
-                    notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.WadFilePath) ?? "");
+                    notifyMessage += "Path: " + (filePath ?? "");
                 }
 
                 e.Graphics.Clear(Parent.BackColor);
@@ -228,77 +84,31 @@ namespace TombEditor.Controls
                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
             else
-                Draw();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            if (Presenter != null)
-            {
-                Presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
-                Invalidate();
-            }
+                base.OnPaint(e);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
 
-            switch(e.Button)
-            {
-                case MouseButtons.Left:
-                    if (_editor?.Level?.Wad == null)
-                    {
-                        EditorActions.LoadWad(Parent);
-                    }
-                    else
-                        if (_editor.ChosenItem != null)
-                            DoDragDrop(_editor.ChosenItem, DragDropEffects.Copy);
-                    break;
-
-                case MouseButtons.Right:
-                    //https://stackoverflow.com/questions/14191219/receive-mouse-move-even-cursor-is-outside-control
-                    Capture = true; // Capture mouse for zoom and panning
-
-                    _lastX = e.X;
-                    _lastY = e.Y;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
             switch (e.Button)
             {
-                case MouseButtons.Right:
-                case MouseButtons.Middle:
-                    // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                    float deltaX = (e.X - _lastX) / (float)Height;
-                    float deltaY = (e.Y - _lastY) / (float)Height;
-
-                    _lastX = e.X;
-                    _lastY = e.Y;
-
-                    if (ModifierKeys.HasFlag(Keys.Shift) || e.Button == MouseButtons.Middle)
-                        Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
-                    else if (ModifierKeys.HasFlag(Keys.Control))
-                        Camera.Zoom(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseZoom);
-                    else
-                        Camera.Rotate(deltaX * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate, -deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate);
-                    Invalidate();
+                case MouseButtons.Left:
+                    LevelSettings settings = _editor?.Level?.Settings;
+                    if (settings != null && settings.Wads.All(wad => wad.LoadException != null))
+                        EditorActions.AddWad(Parent, settings.Wads.FirstOrDefault(wad => wad.LoadException != null));
+                    else if (_editor.ChosenItem != null)
+                        DoDragDrop(_editor.ChosenItem, DragDropEffects.Copy);
                     break;
             }
         }
 
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-            Capture = false;
-        }
+        public override Vector4 BackgroundColor => _editor.Configuration.Rendering3D_BackgroundColor;
+        public override float FieldOfView => _editor.Configuration.Rendering3D_FieldOfView;
+        public override float NavigationSpeedMouseWheelZoom => _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom;
+        public override float NavigationSpeedMouseZoom => _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom;
+        public override float NavigationSpeedMouseTranslate => _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate;
+        public override float NavigationSpeedMouseRotate => _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate;
+        public override bool ReadOnly => true;
     }
 }

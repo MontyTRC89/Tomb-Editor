@@ -40,6 +40,7 @@ namespace TombEditor
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
+        public Vector4 RenderingItem_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
 
         public int Rendering3D_DrawRoomsMaxDepth { get; set; } = 6;
         public float Rendering3D_NavigationSpeedKeyRotate { get; set; } = 0.30f;
@@ -145,8 +146,8 @@ namespace TombEditor
                         },
                         new DockGroupState
                         {
-                            Contents = new List<string> { "ObjectBrowser" },
-                            VisibleContent = "ObjectBrowser",
+                            Contents = new List<string> { "ItemBrowser" },
+                            VisibleContent = "ItemBrowser",
                             Order = 2,
                             Size = new Size(284,259)
                         },

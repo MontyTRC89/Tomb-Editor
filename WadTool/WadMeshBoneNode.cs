@@ -8,14 +8,13 @@ using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
 
-namespace TombLib.Wad
+namespace WadTool
 {
     public class WadMeshBoneNode
     {
         public WadMesh WadMesh { get; set; }
         public WadBone Bone { get; set; }
         public WadMeshBoneNode Parent { get; set; }
-        public ObjectMesh DirectXMesh { get; set; }
         public Matrix4x4 GlobalTransform { get; set; }
         public int LinearizedIndex { get; set; }
         public List<WadMeshBoneNode> Children { get; private set; } = new List<WadMeshBoneNode>();
@@ -31,11 +30,10 @@ namespace TombLib.Wad
             }
         }
 
-        public WadMeshBoneNode(WadMeshBoneNode parent, WadMesh wadMesh, WadBone bone, ObjectMesh dxMesh)
+        public WadMeshBoneNode(WadMeshBoneNode parent, WadMesh wadMesh, WadBone bone)
         {
             WadMesh = wadMesh;
             Bone = bone;
-            DirectXMesh = dxMesh;
             GlobalTransform = Matrix4x4.Identity;
             Parent = parent;
         }

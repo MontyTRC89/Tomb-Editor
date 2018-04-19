@@ -6,6 +6,7 @@ using DarkUI.Forms;
 using NLog;
 using TombLib.LevelData;
 using TombLib.Wad;
+using System.Collections.Generic;
 
 namespace TombEditor.Forms
 {
@@ -14,13 +15,13 @@ namespace TombEditor.Forms
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly SoundSourceInstance _soundSource;
-        private readonly Wad2 _wad;
+        private readonly IEnumerable<WadSoundInfo> _soundInfos;
         private static readonly WadSoundInfo _newSoundDefault = new WadSoundInfo(new WadSoundInfoMetaData("Empty") { LoopBehaviour = WadSoundLoopBehaviour.Looped });
 
-        public FormSoundSource(SoundSourceInstance soundSource, Wad2 wad)
+        public FormSoundSource(SoundSourceInstance soundSource, IEnumerable<WadSoundInfo> soundInfos)
         {
             _soundSource = soundSource;
-            _wad = wad;
+            _soundInfos = soundInfos;
 
             InitializeComponent();
 
@@ -28,7 +29,7 @@ namespace TombEditor.Forms
             optionPlayCustomSound.Checked = string.IsNullOrEmpty(soundSource.WadReferencedSoundName);
 
             soundInfoEditor.SoundInfo = soundSource.EmbeddedSoundInfo ?? _newSoundDefault;
-            foreach (var sound in _wad?.SoundInfosUnique ?? Enumerable.Empty<WadSoundInfo>())
+            foreach (var sound in _soundInfos.OrderBy(soundInfo => soundInfo.Name))
                 lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Name) { Tag = sound });
             SetSoundName(_soundSource.WadReferencedSoundName ?? "");
         }
@@ -69,7 +70,8 @@ namespace TombEditor.Forms
 
         private void butPlay_Click(object sender, EventArgs e)
         {
-            var soundInfo = _wad?.TryGetSound(tbSound.Text);
+            string text = tbSound.Text;
+            var soundInfo = _soundInfos.FirstOrDefault(soundInfo_ => soundInfo_.Name == text);
             if (soundInfo == null)
             {
                 DarkMessageBox.Show(this, "This sound is missing.", "Unable to play sound.", MessageBoxIcon.Information);

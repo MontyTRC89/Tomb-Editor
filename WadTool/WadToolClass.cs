@@ -41,7 +41,6 @@ namespace WadTool
             {
                 if (_destinationWad == value)
                     return;
-                _destinationWad?.Dispose();
                 _destinationWad = value;
                 DestinationWadChanged();
 
@@ -63,7 +62,6 @@ namespace WadTool
             {
                 if (_sourceWad == value)
                     return;
-                _sourceWad?.Dispose();
                 _sourceWad = value;
 
                 SourceWadChanged();
@@ -173,8 +171,7 @@ namespace WadTool
 
         public void Dispose()
         {
-            SourceWad?.Dispose();
-            DestinationWad?.Dispose();
+
         }
     }
 }

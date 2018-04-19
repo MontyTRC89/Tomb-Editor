@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
+using TombLib.Graphics;
 
 namespace TombLib.Controls
 {
@@ -20,7 +21,7 @@ namespace TombLib.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<WadAnimCommand> AnimationCommands { get; set; } = new List<WadAnimCommand>();
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WadAnimationNode Animation { get; set; }
+        public AnimationNode Animation { get; set; }
 
         private Font _font = new Font("Segoe UI", 8, FontStyle.Regular);
 

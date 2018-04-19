@@ -12,11 +12,11 @@ using TombLib.Wad;
 
 namespace TombEditor.ToolWindows
 {
-    public partial class ObjectBrowser : DarkToolWindow
+    public partial class ItemBrowser : DarkToolWindow
     {
         private readonly Editor _editor;
 
-        public ObjectBrowser()
+        public ItemBrowser()
         {
             InitializeComponent();
 
@@ -44,16 +44,12 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.LoadedWadsChangedEvent)
             {
                 comboItems.Items.Clear();
-
-                if (_editor.Level?.Wad != null)
-                {
-                    foreach (var moveable in _editor.Level.Wad.Moveables.Values)
-                        comboItems.Items.Add(moveable);
-                    foreach (var staticMesh in _editor.Level.Wad.Statics.Values)
-                        comboItems.Items.Add(staticMesh);
-                    if (!(_editor.Level.Wad.Moveables.Count == 0 && _editor.Level.Wad.Statics.Count == 0))
-                        comboItems.SelectedIndex = 0;
-                }
+                foreach (var moveable in _editor.Level.Settings.WadGetAllMoveables().Values)
+                    comboItems.Items.Add(moveable);
+                foreach (var staticMesh in _editor.Level.Settings.WadGetAllStatics().Values)
+                    comboItems.Items.Add(staticMesh);
+                if (comboItems.Items.Count > 0 && comboItems.SelectedIndex == -1)
+                    comboItems.SelectedIndex = 0;
             }
 
             // Update selection of items combo box
@@ -61,11 +57,20 @@ namespace TombEditor.ToolWindows
             {
                 var e = (Editor.ChosenItemChangedEvent)obj;
                 if (!e.Current.HasValue)
-                    comboItems.SelectedIndex = -1;
+                    comboItems.SelectedItem = panelItem.CurrentObject = null;
                 else if (e.Current.Value.IsStatic)
-                    comboItems.SelectedItem = _editor.Level.Wad.Statics[e.Current.Value.StaticId];
+                    comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetStatic(e.Current.Value.StaticId);
                 else
-                    comboItems.SelectedItem = _editor.Level.Wad.Moveables[e.Current.Value.MoveableId];
+                {
+                    comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
+                    if (e.Current.Value.MoveableId == WadMoveableId.Lara) // Show Lara's skin
+                    {
+                        WadMoveable moveable = _editor.Level.Settings.WadTryGetMoveable(WadMoveableId.LaraSkin);
+                        if (moveable != null)
+                            panelItem.CurrentObject = moveable;
+                    }
+                    panelItem.Invalidate();
+                }
             }
 
             // Update item color control
@@ -176,7 +181,7 @@ namespace TombEditor.ToolWindows
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboItems.SelectedItem == null || _editor?.Level?.Wad == null)
+            if (comboItems.SelectedItem == null)
                 _editor.ChosenItem = null;
             if (comboItems.SelectedItem is WadMoveable)
                 _editor.ChosenItem = new ItemType(((WadMoveable)comboItems.SelectedItem).Id, _editor?.Level?.Settings);

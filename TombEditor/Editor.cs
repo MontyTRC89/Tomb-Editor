@@ -83,15 +83,13 @@ namespace TombEditor
                 SelectedTexture = TextureArea.None;
 
                 // Delete old level after the new level is set
-                using (var previousLevel = Level)
-                {
-                    _level = value;
-                    EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
-                }
+                var previousLevel = Level;
+                _level = value;
+                EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
                 RoomListChange();
                 SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
                 ResetCamera();
-                LoadedWadsChange(value.Wad);
+                LoadedWadsChange();
                 LoadedTexturesChange();
                 LoadedImportedGeometriesChange();
                 LevelFileNameChange();
@@ -372,13 +370,10 @@ namespace TombEditor
         }
 
         // This is invoked if the loaded wads changed for the level.
-        public class LoadedWadsChangedEvent : IEditorEventCausesUnsavedChanges
+        public class LoadedWadsChangedEvent : IEditorEventCausesUnsavedChanges { }
+        public void LoadedWadsChange()
         {
-            public TombLib.Wad.Wad2 Current { get; internal set; }
-        }
-        public void LoadedWadsChange(TombLib.Wad.Wad2 wad)
-        {
-            RaiseEvent(new LoadedWadsChangedEvent { Current = wad });
+            RaiseEvent(new LoadedWadsChangedEvent());
         }
 
         // This is invoked if the loaded textures changed for the level.
@@ -586,9 +581,10 @@ namespace TombEditor
             // This has to be done now, because the old state will be lost after the new settings are applied
             bool importedGeometryChanged = !newSettings.ImportedGeometries.SequenceEqual(_level.Settings.ImportedGeometries);
             bool texturesChanged = !newSettings.Textures.SequenceEqual(_level.Settings.Textures);
-            bool wadsChanged = newSettings.MakeAbsolute(newSettings.WadFilePath) != _level.Settings.MakeAbsolute(_level.Settings.WadFilePath);
+            bool wadsChanged = !newSettings.Wads.SequenceEqual(_level.Settings.Wads);
+            // TODO Currently we reload wads a lot. We should try to reload less by comparing the content.
+            bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
-            bool animatedTexturesChanged = newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
 
             // Update the current settings
             _level.ApplyNewLevelSettings(newSettings, instance => ObjectChange(instance, ObjectChangeType.Change));
@@ -601,13 +597,13 @@ namespace TombEditor
                 LoadedTexturesChange();
 
             if (wadsChanged)
-                LoadedWadsChange(_level.Wad);
-
-            if (levelFilenameChanged)
-                LevelFileNameChange();
+                LoadedWadsChange();
 
             if (animatedTexturesChanged)
                 AnimatedTexturesChange();
+
+            if (levelFilenameChanged)
+                LevelFileNameChange();
         }
 
         // Configuration
@@ -715,7 +711,6 @@ namespace TombEditor
         {
             configurationWatcher?.Dispose();
             HighlightManager?.Dispose();
-            Level?.Dispose();
             AutoSavingTimer?.Dispose();
         }
 

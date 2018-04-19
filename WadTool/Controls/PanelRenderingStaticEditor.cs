@@ -66,6 +66,7 @@ namespace WadTool.Controls
         private GeometricPrimitive _cube;
         private GeometricPrimitive _sphere;
         private GeometricPrimitive _littleSphere;
+        private WadRenderer _wadRenderer;
 
         public Vector3 StaticPosition { get; set; } = Vector3.Zero;
         public Vector3 StaticRotation { get; set; } = Vector3.Zero;
@@ -83,6 +84,7 @@ namespace WadTool.Controls
             _tool = tool;
             _device = deviceManager.Device;
             _deviceManager = deviceManager;
+            _wadRenderer = new WadRenderer(_device);
 
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
@@ -131,6 +133,27 @@ namespace WadTool.Controls
             _cube = GeometricPrimitive.LinesCube.New(_device, 1024.0f, 1024.0f, 1024.0f);
             _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * 128.0f, 8);
             _sphere = GeometricPrimitive.Sphere.New(_device, 1024.0f, 6);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _spriteBatch?.Dispose();
+                _gizmo?.Dispose();
+                _gizmoLight?.Dispose();
+                _plane?.Dispose();
+                _cube?.Dispose();
+                _sphere?.Dispose();
+                _littleSphere?.Dispose();
+                _presenter?.Dispose();
+                _rasterizerWireframe?.Dispose();
+                _wadRenderer?.Dispose();
+                _vertexBufferVisibility?.Dispose();
+                _vertexBufferCollision?.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -189,7 +212,7 @@ namespace WadTool.Controls
 
             if (Static != null)
             {
-                var model = _tool.DestinationWad.DirectXStatics[Static.Id];
+                var model = _wadRenderer.GetStatic(Static);
 
                 var effect = _deviceManager.Effects["StaticModel"];
 
@@ -197,7 +220,7 @@ namespace WadTool.Controls
 
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                 effect.Parameters["Color"].SetValue(Vector4.One);
-                effect.Parameters["Texture"].SetResource(_tool.DestinationWad.DirectXTexture);
+                effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
@@ -221,7 +244,8 @@ namespace WadTool.Controls
 
                     if (DrawVisibilityBox)
                     {
-                        if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
+                        if (_vertexBufferVisibility != null)
+                            _vertexBufferVisibility.Dispose();
                         _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Static.VisibilityBox);
 
                         _device.SetVertexBuffer(_vertexBufferVisibility);
@@ -237,7 +261,8 @@ namespace WadTool.Controls
 
                     if (DrawCollisionBox)
                     {
-                        if (_vertexBufferCollision != null) _vertexBufferCollision.Dispose();
+                        if (_vertexBufferCollision != null)
+                            _vertexBufferCollision.Dispose();
                         _vertexBufferCollision = GetVertexBufferFromBoundingBox(Static.CollisionBox);
 
                         _device.SetVertexBuffer(_vertexBufferCollision);
@@ -387,8 +412,8 @@ namespace WadTool.Controls
 
         private void DeleteLight(WadLight light)
         {
-            if (DarkMessageBox.Show(Parent,"Do you really want to delete this light?","Confirm delete",
-                                    MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.Yes)
+            if (DarkMessageBox.Show(Parent, "Do you really want to delete this light?", "Confirm delete",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 Static.Lights.Remove(light);
                 SelectedLight = null;
@@ -432,7 +457,7 @@ namespace WadTool.Controls
                     foreach (var light in Static.Lights)
                     {
                         float distance = 0;
-                        if (Collision.RayIntersectsSphere(GetRay(e.X, e.Y), new BoundingSphere(light.Position, 128.0f), 
+                        if (Collision.RayIntersectsSphere(GetRay(e.X, e.Y), new BoundingSphere(light.Position, 128.0f),
                                                           out distance))
                         {
                             if (distance <= minDistance)

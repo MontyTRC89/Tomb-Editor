@@ -1,5 +1,4 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +22,7 @@ namespace TombLib.Wad
         }
     }
 
-    public class Wad2 : IDisposable
+    public class Wad2
     {
         public WadGameVersion SuggestedGameVersion { get; set; } = WadGameVersion.TR4_TRNG;
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();
@@ -31,33 +30,6 @@ namespace TombLib.Wad
         public SortedList<WadSpriteSequenceId, WadSpriteSequence> SpriteSequences { get; set; } = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
         public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> FixedSoundInfos { get; set; } = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
         public string FileName { get; set; }
-        public List<WadMesh> TempMeshes { get; set; } = new List<WadMesh>();
-
-        // Data for rendering
-        public GraphicsDevice GraphicsDevice { get; set; }
-        public Texture2D DirectXTexture { get; private set; }
-        public SortedDictionary<WadMoveableId, AnimatedModel> DirectXMoveables { get; } = new SortedDictionary<WadMoveableId, AnimatedModel>();
-        public SortedDictionary<WadStaticId, StaticModel> DirectXStatics { get; } = new SortedDictionary<WadStaticId, StaticModel>();
-        public ConcurrentDictionary<WadMesh, ObjectMesh> DirectXMeshes { get; } = new ConcurrentDictionary<WadMesh, ObjectMesh>();
-        public Dictionary<WadTexture, VectorInt2> PackedTextures { get; set; } = new Dictionary<WadTexture, VectorInt2>();
-
-        // Size of the atlas
-        // DX10 requires minimum 8K textures support for hardware certification so we should be safe with this
-        public const int TextureAtlasSize = 8192;
-
-        public void Dispose()
-        {
-            DirectXTexture?.Dispose();
-            DirectXTexture = null;
-
-            foreach (var obj in DirectXMoveables.Values)
-                obj.Dispose();
-            DirectXMoveables.Clear();
-
-            foreach (var obj in DirectXStatics.Values)
-                obj.Dispose();
-            DirectXStatics.Clear();
-        }
 
         public HashSet<WadSoundInfo> SoundInfosUnique
         {
@@ -87,9 +59,6 @@ namespace TombLib.Wad
                 foreach (var stat in Statics)
                     foreach (WadPolygon polygon in stat.Value.Mesh.Polys)
                         textures.Add((WadTexture)polygon.Texture.Texture);
-                foreach (var mesh in TempMeshes)
-                    foreach (WadPolygon polygon in mesh.Polys)
-                        textures.Add((WadTexture)polygon.Texture.Texture);
                 return textures;
             }
         }
@@ -114,58 +83,6 @@ namespace TombLib.Wad
                 if (soundInfo.Name.Equals(soundName, StringComparison.InvariantCultureIgnoreCase))
                     return soundInfo;
             return null;
-        }
-
-        public void RebuildTextureAtlas()
-        {
-            DirectXTexture?.Dispose();
-
-            // Order textures for packing
-            var packedTextures = new List<WadTexture>(MeshTexturesUnique);
-            packedTextures.Sort(new ComparerWadTextures());
-
-            // Pack the textures in a single atlas
-            PackedTextures.Clear();
-            var packer = new RectPackerSimpleStack(new VectorInt2(TextureAtlasSize, TextureAtlasSize));
-            foreach (var texture in packedTextures)
-            {
-                VectorInt2? positionInAtlas = packer.TryAdd(texture.Image.Size);
-                if (positionInAtlas == null)
-                    throw new Exception("Not enough space in wad texture atlas.");
-                PackedTextures.Add(texture, positionInAtlas.Value);
-            }
-
-            // Create the DirectX texture atlas
-            var tempBitmap = ImageC.CreateNew(TextureAtlasSize, TextureAtlasSize);
-            foreach (var texture in PackedTextures)
-                tempBitmap.CopyFrom(texture.Value.X, texture.Value.Y, texture.Key.Image);
-            DirectXTexture = TextureLoad.Load(GraphicsDevice, tempBitmap);
-        }
-
-        public void PrepareDataForDirectX()
-        {
-            Dispose();
-
-            // Rebuild the texture atlas and covert it to a DirectX texture
-            RebuildTextureAtlas();
-
-            // Create moveable models
-            Parallel.For(0, Moveables.Count, i =>
-            {
-                var mov = Moveables.ElementAt(i).Value;
-                var model = AnimatedModel.FromWad2(GraphicsDevice, this, mov, PackedTextures);
-                lock (DirectXMoveables)
-                    DirectXMoveables.TryAdd(mov.Id, model);
-            });
-
-            // Create static meshes
-            Parallel.For(0, Statics.Count, i =>
-            {
-                var staticMesh = Statics.ElementAt(i).Value;
-                var model = StaticModel.FromWad2(GraphicsDevice, this, staticMesh, PackedTextures);
-                lock (DirectXStatics)
-                    DirectXStatics.TryAdd(staticMesh.Id, model);
-            });
         }
 
         public WadStaticId GetFirstFreeStaticMesh()
@@ -205,96 +122,6 @@ namespace TombLib.Wad
                                 if (!moveables.Contains(moveable.Value))
                                     moveables.Add(moveable.Value);
             return moveables;
-        }
-
-        public void CreateNewStaticMeshFromExternalModel(string fileName, IOGeometrySettings settings)
-        {
-            var staticMesh = new WadStatic(GetFirstFreeStaticMesh());
-            staticMesh.Mesh = ImportWadMeshFromExternalModel(fileName, settings);
-            staticMesh.VisibilityBox = staticMesh.Mesh.BoundingBox;
-            staticMesh.CollisionBox = staticMesh.Mesh.BoundingBox;
-
-            Statics.Add(staticMesh.Id, staticMesh);
-
-            // Reload DirectX data
-            PrepareDataForDirectX();
-        }
-
-        public void ImportExternalModelIntoStaticMesh(WadStatic staticMesh, string fileName, IOGeometrySettings settings)
-        {
-            staticMesh.Mesh = ImportWadMeshFromExternalModel(fileName, settings);
-            staticMesh.VisibilityBox = staticMesh.Mesh.BoundingBox;
-            staticMesh.CollisionBox = staticMesh.Mesh.BoundingBox;
-
-            // Because we need to rebuild texture atlas
-            TempMeshes.Add(staticMesh.Mesh);
-
-            // Reload DirectX data
-            PrepareDataForDirectX();
-        }
-
-        public WadMesh ImportWadMeshFromExternalModel(string fileName, IOGeometrySettings settings)
-        {
-            // Import the model
-            var importer = BaseGeometryImporter.CreateForFile(fileName, settings, absoluteTexturePath =>
-            {
-                return new WadTexture(ImageC.FromFile(absoluteTexturePath));
-            });
-            var tmpModel = importer.ImportFromFile(fileName);
-
-            // Create a new mesh (all meshes from model will be joined)
-            var mesh = new WadMesh();
-            mesh.Name = "ImportedMesh";
-            mesh.BoundingBox = tmpModel.BoundingBox;
-            mesh.BoundingSphere = tmpModel.BoundingSphere;
-
-            var lastBaseVertex = 0;
-            foreach (var tmpMesh in tmpModel.Meshes)
-            {
-                mesh.VerticesPositions.AddRange(tmpMesh.Positions);
-                foreach (var tmpSubmesh in tmpMesh.Submeshes)
-                    foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
-                    {
-                        if (tmpPoly.Shape == IOPolygonShape.Quad)
-                        {
-                            var poly = new WadPolygon { Shape = WadPolygonShape.Quad };
-                            poly.Index0 = tmpPoly.Indices[0] + lastBaseVertex;
-                            poly.Index1 = tmpPoly.Indices[1] + lastBaseVertex;
-                            poly.Index2 = tmpPoly.Indices[2] + lastBaseVertex;
-                            poly.Index3 = tmpPoly.Indices[3] + lastBaseVertex;
-
-                            var area = new TextureArea();
-                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
-                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
-                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
-                            area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
-                            area.Texture = tmpSubmesh.Value.Material.Texture;
-                            poly.Texture = area;
-
-                            mesh.Polys.Add(poly);
-                        }
-                        else
-                        {
-                            var poly = new WadPolygon { Shape = WadPolygonShape.Triangle };
-                            poly.Index0 = tmpPoly.Indices[0] + lastBaseVertex;
-                            poly.Index1 = tmpPoly.Indices[1] + lastBaseVertex;
-                            poly.Index2 = tmpPoly.Indices[2] + lastBaseVertex;
-
-                            var area = new TextureArea();
-                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
-                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
-                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
-                            area.Texture = tmpSubmesh.Value.Material.Texture;
-                            poly.Texture = area;
-
-                            mesh.Polys.Add(poly);
-                        }
-                    }
-
-                lastBaseVertex = mesh.VerticesPositions.Count;
-            }
-
-            return mesh;
         }
 
         public IWadObject TryGet(IWadObjectId wadObjectId)
@@ -373,23 +200,5 @@ namespace TombLib.Wad
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
             new FileFormat("Tomb Raider Chronicles level", "trc")
         };
-
-        public void ReloadMoveable(WadMoveableId id)
-        {
-            if (!DirectXMoveables.ContainsKey(id))
-                return;
-            DirectXMoveables[id].Dispose();
-            DirectXMoveables.Remove(id);
-            DirectXMoveables.Add(id, AnimatedModel.FromWad2(GraphicsDevice, this, Moveables[id], PackedTextures));
-        }
-
-        public void ReloadStatic(WadStaticId id)
-        {
-            if (!DirectXStatics.ContainsKey(id))
-                return;
-            DirectXStatics[id].Dispose();
-            DirectXStatics.Remove(id);
-            DirectXStatics.Add(id, StaticModel.FromWad2(GraphicsDevice, this, Statics[id], PackedTextures));
-        }
     }
 }

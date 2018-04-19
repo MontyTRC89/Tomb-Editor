@@ -31,7 +31,8 @@ namespace WadTool
 
             _tool = tool;
 
-            panel3D.InitializePanel(_tool, _deviceManager);
+            panel3D.Configuration = tool.Configuration;
+            panel3D.InitializePanel(_deviceManager);
             panel3D.AnimationScrollBar = scrollbarAnimations;
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
@@ -56,12 +57,6 @@ namespace WadTool
             }
             if (obj is WadToolClass.DestinationWadChangedEvent)
             {
-                if (_tool.DestinationWad != null)
-                {
-                    _tool.DestinationWad.GraphicsDevice = _deviceManager.Device;
-                    _tool.DestinationWad.PrepareDataForDirectX();
-                }
-
                 treeDestWad.Wad = _tool.DestinationWad;
                 treeDestWad.UpdateContent();
 
@@ -70,12 +65,6 @@ namespace WadTool
             }
             if (obj is WadToolClass.SourceWadChangedEvent)
             {
-                if (_tool.SourceWad != null)
-                {
-                    _tool.SourceWad.GraphicsDevice = _deviceManager.Device;
-                    _tool.SourceWad.PrepareDataForDirectX();
-                }
-
                 treeSourceWad.Wad = _tool.SourceWad;
                 treeSourceWad.UpdateContent();
 
@@ -89,54 +78,40 @@ namespace WadTool
                 var mainSelection = _tool.MainSelection;
                 if (mainSelection == null)
                 {
-                    soundInfoEditor.Visible = false;
-                    panel3D.Visible = true;
-                    panel3D.CurrentWad = null;
-                    panel3D.CurrentObjectId = null;
-                }
-                else if (mainSelection?.Id is WadFixedSoundInfoId)
-                {
-                    Wad2 wad = _tool.GetWad(mainSelection.Value.WadArea);
-                    soundInfoEditor.SoundInfo = wad.FixedSoundInfos.TryGetOrDefault((WadFixedSoundInfoId)mainSelection.Value.Id)?.SoundInfo;
-                    soundInfoEditor.Visible = true;
-                    panel3D.Visible = false;
+                    panel3D.CurrentObject = null;
                 }
                 else
                 {
-                    soundInfoEditor.Visible = false;
-                    panel3D.Visible = true;
+                    Wad2 wad = _tool.GetWad(mainSelection.Value.WadArea);
 
-                    panel3D.CurrentWad = _tool.GetWad(mainSelection.Value.WadArea);
-                    panel3D.CurrentObjectId = mainSelection.Value.Id;
+                    // Display the object (or set it to Lara's skin instead if it's Lara)
+                    if (mainSelection.Value.Id is WadMoveableId &&
+                        ((WadMoveableId)mainSelection.Value.Id) == WadMoveableId.Lara &&
+                        (wad.SuggestedGameVersion == WadGameVersion.TR4_TRNG || wad.SuggestedGameVersion == WadGameVersion.TR5) &&
+                        wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
+                    {
+                        panel3D.CurrentObject = wad.TryGet(WadMoveableId.LaraSkin);
+                    }
+                    else
+                    {
+                        panel3D.CurrentObject = wad.TryGet(mainSelection.Value.Id);
+                    }
                     panel3D.AnimationIndex = 0;
                     panel3D.KeyFrameIndex = 0;
 
                     // Update animations list
                     if (mainSelection.Value.Id is WadMoveableId)
                     {
-                        var skin = panel3D.CurrentObjectId;
-                        var wad = _tool.GetWad(mainSelection.Value.WadArea);
-
-                        if (((WadMoveableId)mainSelection.Value.Id).TypeId == 0)
-                        {
-                            if (panel3D.CurrentWad.SuggestedGameVersion == WadGameVersion.TR4_TRNG && wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
-                                skin = WadMoveableId.LaraSkin;
-                            if (panel3D.CurrentWad.SuggestedGameVersion == WadGameVersion.TR5 && wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
-                                skin = WadMoveableId.LaraSkin;
-                        }
-
-                        panel3D.SkinObjectId = (WadMoveableId)skin;
-
                         var moveableId = (WadMoveableId)mainSelection.Value.Id;
-                        var moveable = panel3D.CurrentWad.Moveables[moveableId];
+                        var moveable = wad.Moveables[moveableId];
                         var animationsNodes = new List<DarkTreeNode>();
-                        treeAnimations.Nodes.Clear();
                         for (int i = 0; i < moveable.Animations.Count; i++)
                         {
                             var nodeAnimation = new DarkTreeNode(moveable.Animations[i].Name);
                             nodeAnimation.Tag = i;
                             animationsNodes.Add(nodeAnimation);
                         }
+                        treeAnimations.Nodes.Clear();
                         treeAnimations.Nodes.AddRange(animationsNodes);
                     }
 
@@ -148,13 +123,8 @@ namespace WadTool
             }
         }
 
-        private void soundInfoEditor_SoundInfoChanged(object sender, EventArgs e)
+        private void Panel3D_ObjectWasModified(object sender, System.EventArgs e)
         {
-            if (_tool.MainSelection?.Id is WadFixedSoundInfoId)
-            {
-                Wad2 wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-                wad.FixedSoundInfos[(WadFixedSoundInfoId)_tool.MainSelection.Value.Id].SoundInfo = soundInfoEditor.SoundInfo;
-            }
         }
 
         private void openSourceWADToolStripMenuItem_Click(object sender, EventArgs e)
@@ -162,20 +132,20 @@ namespace WadTool
             butOpenSourceWad_Click(null, null);
         }
 
-        private void treeSourceWad_Click(object sender, EventArgs e)
-        {
-            StopAnimation();
-            IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
-            if (currentSelection != null)
-                _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
-        }
-
-        private void treeDestWad_Click(object sender, EventArgs e)
+        private void treeDestWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
         {
             StopAnimation();
             IWadObjectId currentSelection = treeDestWad.SelectedWadObjectIds.FirstOrDefault();
             if (currentSelection != null)
                 _tool.MainSelection = new MainSelection { WadArea = WadArea.Destination, Id = currentSelection };
+        }
+
+        private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
+        {
+            StopAnimation();
+            IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
+            if (currentSelection != null)
+                _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
         }
 
         private void openDestinationWad2ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -427,8 +397,7 @@ namespace WadTool
                 var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
                 var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
                 var moveable = wad.Moveables[moveableId];
-                var model = wad.DirectXMoveables[(WadMoveableId)_tool.MainSelection.Value.Id];
-                if (moveable == null || model == null || moveable.Animations.Count == 0)
+                if (moveable == null || moveable.Animations.Count == 0)
                 {
                     _playAnimation = false;
                     return;
@@ -451,7 +420,6 @@ namespace WadTool
                     panel3D.KeyFrameIndex = 0;
                 else
                     panel3D.KeyFrameIndex++;
-                model.UpdateAnimation(animationIndex, panel3D.KeyFrameIndex);
                 panel3D.Draw();
             }
         }
@@ -462,8 +430,7 @@ namespace WadTool
             var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
             var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
             var moveable = wad.Moveables[moveableId];
-            var model = wad.DirectXMoveables[(WadMoveableId)_tool.MainSelection.Value.Id];
-            if (moveable == null || model == null || moveable.Animations.Count == 0)
+            if (moveable == null || moveable.Animations.Count == 0)
             {
                 _playAnimation = false;
                 return;
