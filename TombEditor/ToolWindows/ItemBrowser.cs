@@ -63,7 +63,13 @@ namespace TombEditor.ToolWindows
                 else
                 {
                     comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
-                    panelItem.SkinObject = _editor.Level.Settings.WadTryGetMoveable(WadMoveableId.LaraSkin);
+                    if (e.Current.Value.MoveableId == WadMoveableId.Lara) // Show Lara's skin
+                    {
+                        WadMoveable moveable = _editor.Level.Settings.WadTryGetMoveable(WadMoveableId.LaraSkin);
+                        if (moveable != null)
+                            panelItem.CurrentObject = moveable;
+                    }
+                    panelItem.Invalidate();
                 }
             }
 

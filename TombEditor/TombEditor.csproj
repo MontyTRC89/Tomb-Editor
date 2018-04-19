@@ -148,6 +148,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EditorAction.cs" />
+    <Compile Include="Forms\FormWadPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormWadPreview.Designer.cs">
+      <DependentUpon>FormWadPreview.cs</DependentUpon>
+    </Compile>
     <Compile Include="Highlight.cs" />
     <Compile Include="KeyboardLayout.cs" />
     <Compile Include="Controls\PanelRenderingItem.cs">
@@ -351,6 +357,9 @@
     <Compile Include="WinFormsUtils.cs" />
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormWadPreview.resx">
+      <DependentUpon>FormWadPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ToolPaletteFloating.resx">
       <DependentUpon>ToolPaletteFloating.cs</DependentUpon>

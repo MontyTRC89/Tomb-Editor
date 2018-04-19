@@ -118,6 +118,7 @@ namespace TombEditor.Forms
         private readonly BindingList<OldWadSoundPath> soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
         private readonly Color _objectFileDataGridViewCorrectColor;
         private readonly Color _objectFileDataGridViewWrongColor;
+        private FormWadPreview _wadPreview = null;
 
         public FormLevelSettings(Editor editor)
         {
@@ -201,6 +202,16 @@ namespace TombEditor.Forms
 
             // Initialize controls
             UpdateDialog();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _wadPreview?.Dispose();
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
         private void UpdateDialog()
@@ -566,6 +577,30 @@ namespace TombEditor.Forms
                 if (result != null)
                     objectFileDataGridViewDataSource[e.RowIndex] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, result, new GraphicalDialogHandler(this)));
             }
+            else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowContentColumn.Name)
+            {
+                ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
+                if (wad.LoadException != null)
+                    return;
+
+                // Open preview
+                _wadPreview?.Dispose();
+                _wadPreview = new FormWadPreview(wad.Wad, TombLib.Graphics.DeviceManager.DefaultDeviceManager, _editor);
+
+                // Set screen position
+                const int WindowBorderMargin = 5;
+                const int RightMargin = 5;
+                Rectangle screenArea = objectFileDataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
+                screenArea = new Rectangle(objectFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size);
+                Point pos = screenArea.Location + new Size(0, screenArea.Height / 2);
+                pos -= new Size(_wadPreview.Width + RightMargin, _wadPreview.Height / 2);
+                Rectangle parentWindowBounds = Bounds;
+                pos.Y = Math.Max(pos.Y, parentWindowBounds.Top + WindowBorderMargin);
+                pos.Y = Math.Min(pos.Y, parentWindowBounds.Bottom - _wadPreview.Height - WindowBorderMargin);
+                _wadPreview.Location = pos;
+
+                _wadPreview.Show(this);
+            }
         }
 
         // Game version
@@ -725,11 +760,6 @@ namespace TombEditor.Forms
                 return;
             _levelSettings.Tr5WeatherType = weather; // Must also check none enum values
             UpdateDialog();
-        }
-
-        private void soundDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
     }
 }

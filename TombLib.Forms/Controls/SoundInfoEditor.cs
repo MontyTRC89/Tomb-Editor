@@ -416,5 +416,26 @@ namespace TombLib.Controls
                 }
             }
         }
+
+        [DefaultValue(false)]
+        public bool ReadOnly
+        {
+            get { return tbName.Enabled; }
+            set
+            {
+                tbName.Enabled = !value;
+                numericVolume.Enabled = !value;
+                numericPitch.Enabled = !value;
+                numericRange.Enabled = !value;
+                numericChance.Enabled = !value;
+                cbRandomizeVolume.Enabled = !value;
+                cbRandomizePitch.Enabled = !value;
+                cbDisablePanning.Enabled = !value;
+                comboLoop.Enabled = !value;
+                dataGridView.ReadOnly = value;
+                comboSampleRate.Enabled = !value;
+                comboSampleRateTextBox.Enabled = !value;
+            }
+        }
     }
 }

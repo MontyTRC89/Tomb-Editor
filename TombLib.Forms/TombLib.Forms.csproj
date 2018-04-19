@@ -45,6 +45,30 @@
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SharpDX, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11.Effects, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.Direct3D11.Effects.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit.Graphics, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Eigenes\Programmierung\Programme\TombEditor\Tomb-Editor\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -71,6 +95,9 @@
     <Compile Include="Controls\DarkDataGridViewControls.designer.cs">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PanelItemPreview.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\SoundInfoEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -82,6 +109,9 @@
     </Compile>
     <Compile Include="Controls\TriggerParameterControl.designer.cs">
       <DependentUpon>TriggerParameterControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WadTreeControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>

@@ -31,7 +31,8 @@ namespace WadTool
 
             _tool = tool;
 
-            panel3D.InitializePanel(_tool, _deviceManager);
+            panel3D.Configuration = tool.Configuration;
+            panel3D.InitializePanel(_deviceManager);
             panel3D.AnimationScrollBar = scrollbarAnimations;
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
@@ -77,24 +78,13 @@ namespace WadTool
                 var mainSelection = _tool.MainSelection;
                 if (mainSelection == null)
                 {
-                    soundInfoEditor.Visible = false;
-                    panel3D.Visible = true;
                     panel3D.CurrentObject = null;
-                }
-                else if (mainSelection?.Id is WadFixedSoundInfoId)
-                {
-                    Wad2 wad = _tool.GetWad(mainSelection.Value.WadArea);
-                    soundInfoEditor.SoundInfo = wad.FixedSoundInfos.TryGetOrDefault((WadFixedSoundInfoId)mainSelection.Value.Id)?.SoundInfo;
-                    soundInfoEditor.Visible = true;
-                    panel3D.Visible = false;
                 }
                 else
                 {
                     Wad2 wad = _tool.GetWad(mainSelection.Value.WadArea);
 
                     // Display the object (or set it to Lara's skin instead if it's Lara)
-                    soundInfoEditor.Visible = false;
-                    panel3D.Visible = true;
                     if (mainSelection.Value.Id is WadMoveableId &&
                         ((WadMoveableId)mainSelection.Value.Id) == WadMoveableId.Lara &&
                         (wad.SuggestedGameVersion == WadGameVersion.TR4_TRNG || wad.SuggestedGameVersion == WadGameVersion.TR5) &&
@@ -133,13 +123,8 @@ namespace WadTool
             }
         }
 
-        private void soundInfoEditor_SoundInfoChanged(object sender, EventArgs e)
+        private void Panel3D_ObjectWasModified(object sender, System.EventArgs e)
         {
-            if (_tool.MainSelection?.Id is WadFixedSoundInfoId)
-            {
-                Wad2 wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
-                wad.FixedSoundInfos[(WadFixedSoundInfoId)_tool.MainSelection.Value.Id].SoundInfo = soundInfoEditor.SoundInfo;
-            }
         }
 
         private void openSourceWADToolStripMenuItem_Click(object sender, EventArgs e)
