@@ -166,7 +166,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 if (resultingTextures.Count >= 65535)
                     throw new NotSupportedException("More then 65536 textures are not supported. That is A LOT (exactly 16GB of texture data), so its probably some other bug if you see this message.");
-                var packer = new TreePacker(new VectorInt2(OutputTextureWidth, OutputTextureHeight));
+                var packer = new RectPackerTree(new VectorInt2(OutputTextureWidth, OutputTextureHeight));
                 usedTexturePackInfo = new Result { OutputTextureID = (ushort)resultingTextures.Count, Pos = packer.TryAdd(usedTexture.Area.Size).Value };
                 resultingTextures.Add(ImageC.CreateNew(OutputTextureWidth, OutputTextureHeight));
                 resultingTexturesPacker.Add(packer);

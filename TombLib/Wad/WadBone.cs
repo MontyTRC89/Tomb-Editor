@@ -7,10 +7,11 @@ namespace TombLib.Wad
     {
         public string Name { get; set; }
         public WadMesh Mesh { get; set; }
-        public Matrix4x4 Transform { get; set; }
         public Vector3 Translation { get; set; }
         public WadBone Parent { get; set; }
         public List<WadBone> Children { get; } = new List<WadBone>();
+
+        public Matrix4x4 Transform => Matrix4x4.CreateTranslation(Translation);
 
         public IEnumerable<WadBone> LinearizedBones
         {
@@ -29,7 +30,6 @@ namespace TombLib.Wad
             newBone.Name = Name;
             newBone.Mesh = Mesh;
             newBone.Translation = Translation;
-            newBone.Transform = Transform;
             newBone.Parent = parentBone;
 
             foreach (var childBone in Children)

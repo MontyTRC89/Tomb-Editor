@@ -18,7 +18,7 @@ namespace TombLib.LevelData
         public const float BumpMappingGranularity = 64.0f;
 
         public string Path { get; private set; }
-        public Exception ImageLoadException { get; private set; }
+        public Exception LoadException { get; private set; }
         public bool Convert512PixelsToDoubleRows { get; private set; }
 
         private bool _replaceMagentaWithTransparency = true;
@@ -39,7 +39,7 @@ namespace TombLib.LevelData
 
         public void Reload(LevelSettings settings)
         {
-            ImageLoadException = null;
+            LoadException = null;
             if (string.IsNullOrEmpty(Path))
             {
                 Image = UnloadedPlaceholder;
@@ -81,7 +81,7 @@ namespace TombLib.LevelData
             {
                 logger.Warn(exc, "Unable to load texture '" + Path + "'.");
                 Image = UnloadedPlaceholder;
-                ImageLoadException = exc;
+                LoadException = exc;
             }
         }
 
@@ -115,7 +115,7 @@ namespace TombLib.LevelData
                 UniqueID = UniqueID,
                 Image = Image,
                 Path = Path,
-                ImageLoadException = ImageLoadException,
+                LoadException = LoadException,
                 _replaceMagentaWithTransparency = _replaceMagentaWithTransparency
             };
         }
@@ -204,7 +204,7 @@ namespace TombLib.LevelData
         {
             Image = other.Image;
             Path = other.Path;
-            ImageLoadException = other.ImageLoadException;
+            LoadException = other.LoadException;
             Convert512PixelsToDoubleRows = other.Convert512PixelsToDoubleRows;
             _replaceMagentaWithTransparency = other._replaceMagentaWithTransparency;
         }

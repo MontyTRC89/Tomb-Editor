@@ -2325,7 +2325,7 @@
             <sound id="24" name="Lara knees shuffle"/>
             <sound id="25" name="Push spx switch"/>
             <sound id="26" name="Lara climb3"/>
-            <sound id="27"/>
+            <sound id="27"/> <!--According to Gancian http://www.tombraiderforums.com/showpost.php?p=7843587&postcount=1181 -->
             <sound id="28" name="Lara shimmy2"/>
             <sound id="29" name="Lara jump"/>
             <sound id="30" name="Lara fall" fixed_by_default="true"/>
@@ -2587,7 +2587,7 @@
             <sound id="286" name="Catblades draw"/>
             <sound id="287" name="Swirly long move sfx"/>
             <sound id="288" name="Footsteps mud"  fixed_by_default="true"/>
-            <sound id="289" name="Horseman horse neigh"/>
+            <sound id="289" name="Horseman horse neigh"/> <!--According to Gancian http://www.tombraiderforums.com/showpost.php?p=7843587&postcount=1181 -->
             <sound id="290" name="Footsteps gravel"  fixed_by_default="true"/>
             <sound id="291" name="Footsteps sand and grass"  fixed_by_default="true"/>
             <sound id="292" name="Footsteps wood"  fixed_by_default="true"/>

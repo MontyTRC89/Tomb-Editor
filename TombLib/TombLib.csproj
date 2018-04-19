@@ -134,12 +134,14 @@
     <Compile Include="GeometryIO\IOPolygon.cs" />
     <Compile Include="GeometryIO\IOSettingsPresets.cs" />
     <Compile Include="GeometryIO\IOSubmesh.cs" />
+    <Compile Include="Graphics\AnimationNode.cs" />
     <Compile Include="Graphics\DeviceManager.cs" />
     <Compile Include="Graphics\Material.cs" />
     <Compile Include="Graphics\ObjectMesh.cs" />
     <Compile Include="Graphics\ObjectVertex.cs" />
     <Compile Include="Graphics\SharpDxConversions.cs" />
     <Compile Include="Graphics\Submesh.cs" />
+    <Compile Include="Graphics\WadRenderer.cs" />
     <Compile Include="LevelData\AnimatedTextureSet.cs" />
     <Compile Include="LevelData\Block.cs" />
     <Compile Include="LevelData\BumpMappingInfo.cs" />
@@ -198,6 +200,7 @@
     <Compile Include="LevelData\MoveableInstance.cs" />
     <Compile Include="LevelData\ObjectInstance.cs" />
     <Compile Include="LevelData\PortalInstance.cs" />
+    <Compile Include="LevelData\ReferencedWad.cs" />
     <Compile Include="LevelData\Room.cs" />
     <Compile Include="LevelData\ScriptID.cs" />
     <Compile Include="LevelData\SinkInstance.cs" />
@@ -205,6 +208,7 @@
     <Compile Include="LevelData\StaticInstance.cs" />
     <Compile Include="LevelData\TextureSound.cs" />
     <Compile Include="LevelData\TriggerInstance.cs" />
+    <Compile Include="Utils\DataVersion.cs" />
     <Compile Include="MathC.cs" />
     <Compile Include="NG\NgParameterInfo.cs" />
     <Compile Include="NG\NgParameterRange.cs" />
@@ -255,7 +259,6 @@
     <Compile Include="VectorInt2.cs" />
     <Compile Include="VectorInt3.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
-    <Compile Include="Wad\WadAnimationNode.cs" />
     <Compile Include="Wad\WadLight.cs" />
     <Compile Include="Wad\IWadObject.cs" />
     <Compile Include="Wad\TrLevels\Enumerations.cs" />
@@ -269,7 +272,6 @@
     <Compile Include="Wad\WadAnimCommand.cs" />
     <Compile Include="Wad\Tr4Wad\Tr4WadOperations.cs" />
     <Compile Include="Wad\WadFixedSoundInfo.cs" />
-    <Compile Include="Wad\WadMeshBoneNode.cs" />
     <Compile Include="Wad\WadSample.cs" />
     <Compile Include="Wad\WadSoundInfo.cs" />
     <Compile Include="Wad\WadSoundPlayer.cs" />

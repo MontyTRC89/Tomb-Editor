@@ -1,4 +1,5 @@
 ﻿using System;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
@@ -9,6 +10,7 @@ namespace TombLib.Wad
     public interface IWadObject
     {
         IWadObjectId Id { get; }
+        DataVersion Version { get; }
         string ToString(WadGameVersion gameVersion);
     }
 }

@@ -360,7 +360,6 @@ namespace TombLib.Wad.TrLevels
             var root = new WadBone();
             root.Name = "bone_root";
             root.Parent = null;
-            root.Transform = Matrix4x4.Identity;
             root.Translation = Vector3.Zero;
             root.Mesh = newMeshes[0];
 
@@ -373,7 +372,6 @@ namespace TombLib.Wad.TrLevels
                 var bone = new WadBone();
                 bone.Name = "bone_" + (j + 1).ToString();
                 bone.Parent = null;
-                bone.Transform = Matrix4x4.Identity;
                 bone.Translation = Vector3.Zero;
                 bone.Mesh = newMeshes[j + 1];
                 bones.Add(bone);
@@ -396,7 +394,6 @@ namespace TombLib.Wad.TrLevels
                 {
                     case WadLinkOpcode.NotUseStack:
                         bones[j].Translation = new Vector3(linkX, linkY, linkZ);
-                        bones[j].Transform = Matrix4x4.CreateTranslation(bones[j].Translation);
                         bones[j].Parent = currentBone;
                         currentBone.Children.Add(bones[j]);
                         currentBone = bones[j];
@@ -408,7 +405,6 @@ namespace TombLib.Wad.TrLevels
                         currentBone = stack.Pop();
 
                         bones[j].Translation = new Vector3(linkX, linkY, linkZ);
-                        bones[j].Transform = Matrix4x4.CreateTranslation(bones[j].Translation);
                         bones[j].Parent = currentBone;
                         currentBone.Children.Add(bones[j]);
                         currentBone = bones[j];
@@ -418,7 +414,6 @@ namespace TombLib.Wad.TrLevels
                         stack.Push(currentBone);
 
                         bones[j].Translation = new Vector3(linkX, linkY, linkZ);
-                        bones[j].Transform = Matrix4x4.CreateTranslation(bones[j].Translation);
                         bones[j].Parent = currentBone;
                         currentBone.Children.Add(bones[j]);
                         currentBone = bones[j];
@@ -429,7 +424,6 @@ namespace TombLib.Wad.TrLevels
                             continue;
                         WadBone bone = stack.Pop();
                         bones[j].Translation = new Vector3(linkX, linkY, linkZ);
-                        bones[j].Transform = Matrix4x4.CreateTranslation(bones[j].Translation);
                         bones[j].Parent = bone;
                         bone.Children.Add(bones[j]);
                         currentBone = bones[j];

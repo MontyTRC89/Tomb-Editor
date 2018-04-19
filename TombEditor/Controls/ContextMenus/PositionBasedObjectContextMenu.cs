@@ -39,15 +39,17 @@ namespace TombEditor.Controls.ContextMenus
                 _editor.BookmarkedObject = targetObject;
             }));
 
-            if (_editor.SelectedObject is ImportedGeometryInstance)
+            if (targetObject is ImportedGeometryInstance)
             {
                 Items.Add(new ToolStripMenuItem("Reload imported geometry", Properties.Resources.general_Open_16, (o, e) =>
                 {
-                    EditorActions.ReloadImportedGeometry(_editor.SelectedObject as ImportedGeometryInstance);
+                    _editor.Level.Settings.ImportedGeometryUpdate(
+                        ((ImportedGeometryInstance)targetObject).Model,
+                        ((ImportedGeometryInstance)targetObject).Model.Info);
                 }));
             }
 
-            if (_editor.SelectedObject is IRotateableY || _editor.SelectedObject is IRotateableYX || _editor.SelectedObject is IRotateableYXRoll)
+            if (targetObject is IRotateableY || targetObject is IRotateableYX || targetObject is IRotateableYXRoll)
             {
                 Items.Add(new ToolStripSeparator());
                 Items.Add(new ToolStripMenuItem("Reset rotation (all axes)", Properties.Resources.actions_center_direction_16, (o, e) =>
@@ -55,7 +57,7 @@ namespace TombEditor.Controls.ContextMenus
                     EditorActions.ResetObjectRotation();
                 }));
 
-                if (_editor.SelectedObject is IRotateableYX)
+                if (targetObject is IRotateableYX)
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (X axis)", null, (o, e) =>
                     {
@@ -63,7 +65,7 @@ namespace TombEditor.Controls.ContextMenus
                     }));
                 }
 
-                if (_editor.SelectedObject is IRotateableY)
+                if (targetObject is IRotateableY)
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (Y axis)", null, (o, e) =>
                     {
@@ -71,7 +73,7 @@ namespace TombEditor.Controls.ContextMenus
                     }));
                 }
 
-                if (_editor.SelectedObject is IRotateableYXRoll)
+                if (targetObject is IRotateableYXRoll)
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (Roll axis)", null, (o, e) =>
                     {
@@ -80,7 +82,7 @@ namespace TombEditor.Controls.ContextMenus
                 }
             }
 
-            // Get all triggers pointing to selected object
+            // Get all triggers pointing to target object
             var triggers = _editor.Level.GetAllTriggersPointingToObject(targetObject);
             if (triggers.Count != 0)
             {

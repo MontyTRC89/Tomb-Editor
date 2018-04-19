@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using DarkUI.Controls;
 using TombLib.Wad;
 
-namespace WadTool.Controls
+namespace TombLib.Controls
 {
     public class WadTreeView : UserControl
     {
@@ -112,7 +112,7 @@ namespace WadTool.Controls
         }
 
 
-        public void KeepSelection(Action update)
+        private void KeepSelection(Action update)
         {
             var selectedNodes = new HashSet<object>(tree.SelectedNodes.Select(node => node.Tag).Where(tag => tag != null));
             tree.SelectedNodes.Clear();
@@ -158,6 +158,22 @@ namespace WadTool.Controls
             }
         }
 
+        public void SelectFirst()
+        {
+            DarkTreeNode firstNode = CollectAllNodes(tree.Nodes).FirstOrDefault(node => node.Tag is IWadObjectId);
+            if (firstNode != null)
+            {
+                tree.SelectNode(firstNode);
+
+                // Expand
+                while (firstNode != null)
+                {
+                    firstNode.Expanded = true;
+                    firstNode = firstNode.ParentNode;
+                }
+            }
+        }
+
         private void suggestedGameVersionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             object selection = suggestedGameVersionComboBox.SelectedItem;
@@ -183,11 +199,11 @@ namespace WadTool.Controls
             this.suggestedGameVersionComboBox = new DarkUI.Controls.DarkComboBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.SuspendLayout();
-            // 
+            //
             // tree
-            // 
-            this.tree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.tree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tree.Enabled = false;
             this.tree.Location = new System.Drawing.Point(0, 30);
@@ -198,10 +214,10 @@ namespace WadTool.Controls
             this.tree.TabIndex = 1;
             this.tree.Click += new System.EventHandler(this.tree_Click);
             this.tree.DoubleClick += new System.EventHandler(this.tree_DoubleClick);
-            // 
+            //
             // suggestedGameVersionComboBox
-            // 
-            this.suggestedGameVersionComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.suggestedGameVersionComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.suggestedGameVersionComboBox.Enabled = false;
             this.suggestedGameVersionComboBox.FormattingEnabled = true;
@@ -210,9 +226,9 @@ namespace WadTool.Controls
             this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(47, 21);
             this.suggestedGameVersionComboBox.TabIndex = 0;
             this.suggestedGameVersionComboBox.SelectedIndexChanged += new System.EventHandler(this.suggestedGameVersionComboBox_SelectedIndexChanged);
-            // 
+            //
             // darkLabel1
-            // 
+            //
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(3, 6);
@@ -220,22 +236,23 @@ namespace WadTool.Controls
             this.darkLabel1.Size = new System.Drawing.Size(91, 13);
             this.darkLabel1.TabIndex = 3;
             this.darkLabel1.Text = "Game slot names:";
-            // 
+            //
             // WadTreeView
-            // 
+            //
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.suggestedGameVersionComboBox);
             this.Controls.Add(this.tree);
             this.Name = "WadTreeView";
-            this.Load += new System.EventHandler(this.WadTreeView_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
-        private void WadTreeView_Load(object sender, EventArgs e)
+        [DefaultValue(true)]
+        public bool MultiSelect
         {
-
+            get { return tree.MultiSelect; }
+            set { tree.MultiSelect = value; }
         }
     }
 }

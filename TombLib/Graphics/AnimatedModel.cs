@@ -20,10 +20,9 @@ namespace TombLib.Graphics
 
         public AnimatedModel(GraphicsDevice device)
             : base(device, ModelType.Skinned)
-        {}
-
-        public void ApplyTransforms()
-        { }
+        {
+            UpdateBuffers();
+        }
 
         public void BuildHierarchy()
         {
@@ -49,6 +48,8 @@ namespace TombLib.Graphics
 
         public void UpdateAnimation(int animationIndex, int frameIndex)
         {
+            if (animationIndex >= Animations.Count)
+                return;
             var animation = Animations[animationIndex];
             int frameRate = Math.Max(animation.Framerate, (short)1);
             int keyFrameIndex1 = frameIndex / frameRate;
@@ -132,20 +133,14 @@ namespace TombLib.Graphics
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
-        public static AnimatedModel FromWad2(GraphicsDevice device, Wad2 wad, WadMoveable mov, Dictionary<WadTexture, VectorInt2> reallocatedTextures)
+        public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, VectorInt2> allocateTexture)
         {
             AnimatedModel model = new AnimatedModel(device);
             List<WadBone> bones = mov.Skeleton.LinearizedBones.ToList();
 
             // Create meshes
             for (int m = 0; m < bones.Count; m++)
-            {
-                WadMesh msh = bones[m].Mesh;
-                var mesh = ObjectMesh.FromWad2(device, wad, msh, reallocatedTextures);
-                if (!wad.DirectXMeshes.ContainsKey(msh))
-                    wad.DirectXMeshes.TryAdd(msh, mesh);
-                model.Meshes.Add(mesh);
-            }
+                model.Meshes.Add(ObjectMesh.FromWad2(device, bones[m].Mesh, allocateTexture));
 
             // HACK: Add matrices here because if original WAD stack was corrupted, we could have broken parent - children
             // relations and so we could have meshes count different from matrices count

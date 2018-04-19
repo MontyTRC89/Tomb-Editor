@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
+using TombLib.Wad;
 using ImportedGeometryUpdateInfo = System.Collections.Generic.KeyValuePair<TombLib.LevelData.ImportedGeometry, TombLib.LevelData.ImportedGeometryInfo>;
 
 namespace TombLib.LevelData
@@ -91,21 +92,30 @@ namespace TombLib.LevelData
         public static readonly char Dir = Path.DirectorySeparatorChar;
 
         public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.
-        public string WadFilePath { get; set; } = null; // Can be null if no object file is loaded.
         public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
-        /*public string Tr2MainSamFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr3MainSamFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr2SoundsXmlFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr3SoundsXmlFilePath { get; set; } = null; // Can be null if the default should be used.*/
+
+        public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
 
         public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
             {
                 new OldWadSoundPath(""),
                 new OldWadSoundPath("Sounds"), // For directly loading wad files.
                 new OldWadSoundPath("Sound"),
+                new OldWadSoundPath("Sounds/Samples"),
+                new OldWadSoundPath("Sound/Samples"),
+                new OldWadSoundPath("../Sounds"), // For directly loading wad files.
+                new OldWadSoundPath("../Sound"),
+                new OldWadSoundPath("../Sounds/Samples"),
+                new OldWadSoundPath("../Sound/Samples"),
+                new OldWadSoundPath("../../Sounds"), // For directly loading wad files.
+                new OldWadSoundPath("../../Sound"),
+                new OldWadSoundPath("../../Sounds/Samples"),
+                new OldWadSoundPath("../../Sound/Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "sound" + Dir + "Samples"),
+                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "sound" + Dir + "Samples"),
+                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "sound" + Dir + "Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
                 new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
@@ -119,8 +129,7 @@ namespace TombLib.LevelData
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
-
-        public Vector4 DefaultAmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 2.0f);
+        public Vector4 DefaultAmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 1.0f);
 
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
@@ -160,8 +169,8 @@ namespace TombLib.LevelData
                 case VariableType.LevelName:
                     if (!string.IsNullOrEmpty(LevelFilePath))
                         return FileSystemUtils.GetFileNameWithoutExtensionTry(LevelFilePath);
-                    if (!string.IsNullOrEmpty(WadFilePath))
-                        return FileSystemUtils.GetFileNameWithoutExtensionTry(WadFilePath);
+                    if (Wads.Count > 0 && !string.IsNullOrEmpty(Wads[0].Path))
+                        return FileSystemUtils.GetFileNameWithoutExtensionTry(Wads[0].Path);
                     return "Default";
                 case VariableType.EngineVersion:
                     return GameVersion.ToString();
@@ -221,7 +230,7 @@ namespace TombLib.LevelData
             }
         }
 
-        public Wad.WadGameVersion WadGameVersion
+        public WadGameVersion WadGameVersion
         {
             get
             {
@@ -289,6 +298,13 @@ namespace TombLib.LevelData
             }
         }
 
+        public Wad2 ComposeActualWad()
+        {
+            Wad2 result = new Wad2();
+            int TODO_ComposeActualWad;
+            throw new NotImplementedException();
+        }
+
         public ImageC LoadFontTexture()
         {
             string absolutePath = MakeAbsolute(FontTextureFilePath);
@@ -312,18 +328,6 @@ namespace TombLib.LevelData
                 return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Extra_Tr5_pc);
             return LoadRawExtraTexture(absolutePath);
         }
-
-        /*public string Tr2MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr2MainSamFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/MAIN.SAM");
-
-        public string Tr3MainSamFileNameAbsoluteOrDefault => MakeAbsolute(Tr3MainSamFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR3/MAIN.SAM");
-
-        public string Tr2SoundsXmlFileNameAbsoluteOrDefault => MakeAbsolute(Tr2SoundsXmlFilePath) ??
-           Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR2/Sounds.xml");
-
-        public string Tr3SoundsXmlFileNameAbsoluteOrDefault => MakeAbsolute(Tr3SoundsXmlFilePath) ??
-            Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location), "Sounds/TR3/Sounds.xml");*/
 
         public static ImageC LoadRawExtraTexture(string path)
         {
@@ -397,6 +401,93 @@ namespace TombLib.LevelData
                 if (importedGeometry.UniqueID == uniqueID)
                     return importedGeometry;
             return null;
+        }
+
+        public WadMoveable WadTryGetMoveable(WadMoveableId id)
+        {
+            WadMoveable result;
+            foreach (ReferencedWad wad in Wads)
+                if (wad.Wad != null && wad.Wad.Moveables.TryGetValue(id, out result))
+                    return result;
+            return null;
+        }
+
+        public WadStatic WadTryGetStatic(WadStaticId id)
+        {
+            WadStatic result;
+            foreach (ReferencedWad wad in Wads)
+                if (wad.Wad != null && wad.Wad.Statics.TryGetValue(id, out result))
+                    return result;
+            return null;
+        }
+
+        public WadFixedSoundInfo WadTryGetFixedSoundInfo(WadFixedSoundInfoId id)
+        {
+            WadFixedSoundInfo result;
+            foreach (ReferencedWad wad in Wads)
+                if (wad.Wad != null && wad.Wad.FixedSoundInfos.TryGetValue(id, out result))
+                    return result;
+            return null;
+        }
+
+        public WadSoundInfo WadTryGetSoundInfo(string soundName)
+        {
+            foreach (ReferencedWad wad in Wads)
+                if (wad.Wad != null)
+                {
+                    WadSoundInfo result = wad.Wad.TryGetSound(soundName);
+                    if (result != null)
+                        return result;
+                }
+            return null;
+        }
+
+        public SortedList<WadMoveableId, WadMoveable> WadGetAllMoveables()
+        {
+            SortedList<WadMoveableId, WadMoveable> result = new SortedList<WadMoveableId, WadMoveable>();
+            foreach (ReferencedWad wad in Wads)
+                foreach (KeyValuePair<WadMoveableId, WadMoveable> moveable in wad.Wad.Moveables)
+                    if (!result.ContainsKey(moveable.Key))
+                        result.Add(moveable.Key, moveable.Value);
+            return result;
+        }
+
+        public SortedList<WadStaticId, WadStatic> WadGetAllStatics()
+        {
+            SortedList<WadStaticId, WadStatic> result = new SortedList<WadStaticId, WadStatic>();
+            foreach (ReferencedWad wad in Wads)
+                foreach (KeyValuePair<WadStaticId, WadStatic> @static in wad.Wad.Statics)
+                    if (!result.ContainsKey(@static.Key))
+                        result.Add(@static.Key, @static.Value);
+            return result;
+        }
+
+        public SortedList<WadSpriteSequenceId, WadSpriteSequence> WadGetAllSpriteSequences()
+        {
+            SortedList<WadSpriteSequenceId, WadSpriteSequence> result = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
+            foreach (ReferencedWad wad in Wads)
+                foreach (KeyValuePair<WadSpriteSequenceId, WadSpriteSequence> moveable in wad.Wad.SpriteSequences)
+                    if (!result.ContainsKey(moveable.Key))
+                        result.Add(moveable.Key, moveable.Value);
+            return result;
+        }
+
+        public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> WadGetAllFixedSoundInfos()
+        {
+            SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> result = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
+            foreach (ReferencedWad wad in Wads)
+                foreach (KeyValuePair<WadFixedSoundInfoId, WadFixedSoundInfo> moveable in wad.Wad.FixedSoundInfos)
+                    if (!result.ContainsKey(moveable.Key))
+                        result.Add(moveable.Key, moveable.Value);
+            return result;
+        }
+
+        public HashSet<WadSoundInfo> WadGetAllSoundInfos()
+        {
+            HashSet<WadSoundInfo> result = new HashSet<WadSoundInfo>();
+            foreach (ReferencedWad wad in Wads)
+                result.UnionWith(wad.Wad.SoundInfosUnique);
+            return result;
         }
 
         public static IEnumerable<FileFormat> FileFormatsLoadRawExtraTexture =>

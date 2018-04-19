@@ -97,13 +97,21 @@ namespace TombLib.LevelData.IO
 
             LevelSettings settings = new LevelSettings { LevelFilePath = thisPath };
             var levelSettingsIds = new LevelSettingsIds();
-            var ImportedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>();
-            var LevelTexturesToLoad = new Dictionary<LevelTexture, string>();
+            var WadsToLoad = new Dictionary<ReferencedWad, string>();
+            var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>();
+            var levelTexturesToLoad = new Dictionary<LevelTexture, string>();
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
-                if (id == Prj2Chunks.WadFilePath)
-                    settings.WadFilePath = chunkIO.ReadChunkString(chunkSize);
+                if (id == Prj2Chunks.ObsoleteWadFilePath)
+                {
+                    string wadFilePath = chunkIO.ReadChunkString(chunkSize);
+                    ReferencedWad wad = new ReferencedWad(settings, "");
+                    WadsToLoad.Clear();
+                    WadsToLoad.Add(wad, wadFilePath);
+                    settings.Wads.Clear();
+                    settings.Wads.Add(wad);
+                }
                 else if (id == Prj2Chunks.FontTextureFilePath)
                     settings.FontTextureFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SkyTextureFilePath)
@@ -172,6 +180,35 @@ namespace TombLib.LevelData.IO
                     settings.DefaultAmbientLight = chunkIO.ReadChunkVector4(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.Wads)
+                {
+                    var toLoad = new Dictionary<ReferencedWad, string>();
+                    var list = new List<ReferencedWad>(); // Order matters
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 != Prj2Chunks.Wad)
+                            return false;
+
+                        string path = "";
+                        ReferencedWad newWad = new ReferencedWad();
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Prj2Chunks.WadPath)
+                                path = chunkIO.ReadChunkString(chunkSize3); // Don't set the path right away, to not load the texture until all information is available.
+                            else
+                                return false;
+                            return true;
+                        });
+
+                        // Add wad
+                        list.Add(newWad);
+                        toLoad.Add(newWad, path);
+                        return true;
+                    });
+
+                    WadsToLoad = toLoad;
+                    settings.Wads = list;
+                }
                 else if (id == Prj2Chunks.Textures)
                 {
                     var toLoad = new Dictionary<LevelTexture, string>();
@@ -218,7 +255,7 @@ namespace TombLib.LevelData.IO
                     });
                     settings.Textures = levelTextures.Values.ToList();
                     levelSettingsIds.LevelTextures = levelTextures;
-                    LevelTexturesToLoad = toLoad;
+                    levelTexturesToLoad = toLoad;
                 }
                 else if (id == Prj2Chunks.ImportedGeometries)
                 {
@@ -229,7 +266,6 @@ namespace TombLib.LevelData.IO
                         if (id2 != Prj2Chunks.ImportedGeometry)
                             return false;
 
-                        ImportedGeometry importedGeometry = new ImportedGeometry();
                         ImportedGeometryInfo importedGeometryInfo = ImportedGeometryInfo.Default;
                         long importedGeometryIndex = long.MinValue;
                         chunkIO.ReadChunks((id3, chunkSize3) =>
@@ -264,13 +300,14 @@ namespace TombLib.LevelData.IO
                             return true;
                         });
 
+                        ImportedGeometry importedGeometry = new ImportedGeometry();
                         importedGeometries.Add(importedGeometryIndex, importedGeometry);
                         toLoad.Add(importedGeometry, importedGeometryInfo);
                         return true;
                     });
                     settings.ImportedGeometries = importedGeometries.Values.ToList();
                     levelSettingsIds.ImportedGeometries = importedGeometries;
-                    ImportedGeometriesToLoad = toLoad;
+                    importedGeometriesToLoad = toLoad;
                 }
                 else if (id == Prj2Chunks.AnimatedTextureSets)
                 {
@@ -326,16 +363,17 @@ namespace TombLib.LevelData.IO
             });
 
             // Load wads
-            if (loadingSettings.IgnoreWads)
-                settings.WadFilePath = "";
+            if (!loadingSettings.IgnoreWads)
+                foreach (var wad in WadsToLoad)
+                    wad.Key.SetPath(settings, wad.Value);
 
             // Load level textures
             if (!loadingSettings.IgnoreTextures)
-                foreach (var levelTexture in LevelTexturesToLoad)
+                foreach (var levelTexture in levelTexturesToLoad)
                     levelTexture.Key.SetPath(settings, levelTexture.Value);
 
             // Load imported geoemtries
-            settings.ImportedGeometryUpdate(ImportedGeometriesToLoad);
+            settings.ImportedGeometryUpdate(importedGeometriesToLoad);
 
             // Apply settings
             levelSettingsIdsOuter = levelSettingsIds;

@@ -8,7 +8,7 @@ namespace TombLib.LevelData.IO
         public static readonly byte[] MagicNumber = new byte[] { 0x50, 0x52, 0x4A, 0x32 };
 
         public static readonly ChunkId Settings = ChunkId.FromString("TeSettings");
-        /**/public static readonly ChunkId WadFilePath = ChunkId.FromString("TeWadFilePath"); // UTF-8 string
+        /**/public static readonly ChunkId ObsoleteWadFilePath = ChunkId.FromString("TeWadFilePath"); // UTF-8 string
         /**/public static readonly ChunkId FontTextureFilePath = ChunkId.FromString("TeFontTextureFilePath"); // UTF-8 string
         /**/public static readonly ChunkId SkyTextureFilePath = ChunkId.FromString("TeSkyTextureFilePath"); // UTF-8 string
         /**/public static readonly ChunkId Tr5ExtraSpritesFilePath = ChunkId.FromString("TeTr5ExtraSpritesFilePath"); // UTF-8 string
@@ -25,6 +25,9 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId GameEnableQuickStartFeature = ChunkId.FromString("TeGameEnableQuickStartFeature"); // UTF-8 string
         /**/public static readonly ChunkId GameVersion = ChunkId.FromString("TeGameVersion");
         /**/public static readonly ChunkId DefaultAmbientLight = ChunkId.FromString("TeDefaultAmbientLight");
+        /**/public static readonly ChunkId Wads = ChunkId.FromString("TeWads");
+        /****/public static readonly ChunkId Wad = ChunkId.FromString("TeWad");
+        /******/public static readonly ChunkId WadPath = ChunkId.FromString("TePath");
         /**/public static readonly ChunkId Textures = ChunkId.FromString("TeTextures");
         /******/public static readonly ChunkId InvisibleTexture = ChunkId.FromString("TeInvisibleTexture");
         /******/public static readonly ChunkId LevelTexture = ChunkId.FromString("TeLvlTexture");

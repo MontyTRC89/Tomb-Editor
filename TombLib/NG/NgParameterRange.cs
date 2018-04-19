@@ -232,8 +232,8 @@ namespace TombLib.NG
         {
             Func<int, TriggerParameterUshort> formatSounds = i =>
             {
-                Wad.WadFixedSoundInfo fixedSoundInfo;
-                if (level?.Wad?.FixedSoundInfos != null && level.Wad.FixedSoundInfos.TryGetValue(new Wad.WadFixedSoundInfoId((ushort)i), out fixedSoundInfo))
+                Wad.WadFixedSoundInfo fixedSoundInfo = level?.Settings?.WadTryGetFixedSoundInfo(new Wad.WadFixedSoundInfoId((ushort)i));
+                if (fixedSoundInfo != null)
                     return new TriggerParameterUshort((ushort)i, i + ": " + fixedSoundInfo.SoundInfo.Name);
                 else
                     return new TriggerParameterUshort((ushort)i, i + ": --- Not present ---");
@@ -303,14 +303,14 @@ namespace TombLib.NG
                     return LoadStringsFromTxt(level, "Strings", 256);
 
                 case NgParameterKind.WadSlots:
-                    if (level.Wad == null)
+                    if (level?.Settings == null)
                         return new ITriggerParameter[0];
-                    return level.Wad.Moveables.Select(p => new TriggerParameterUshort(checked((ushort)p.Key.TypeId), p.Value.ToString()));
+                    return level.Settings.WadGetAllMoveables().Select(p => new TriggerParameterUshort(checked((ushort)p.Key.TypeId), p.Value.ToString()));
 
                 case NgParameterKind.StaticsSlots:
-                    if (level.Wad == null)
+                    if (level?.Settings == null)
                         return new ITriggerParameter[0];
-                    return level.Wad.Statics.Select(p => new TriggerParameterUshort(checked((ushort)p.Key.TypeId), p.Value.ToString()));
+                    return level.Settings.WadGetAllStatics().Select(p => new TriggerParameterUshort(checked((ushort)p.Key.TypeId), p.Value.ToString()));
 
                 case NgParameterKind.LaraStartPosOcb:
                     return level.Rooms.Where(room => room != null)
