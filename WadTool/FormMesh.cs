@@ -31,7 +31,6 @@ namespace WadTool
         private Wad2 _wad;
         private DeviceManager _deviceManager;
         private WadToolClass _tool;
-        private WadRenderer render;
 
         public FormMesh(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
         {

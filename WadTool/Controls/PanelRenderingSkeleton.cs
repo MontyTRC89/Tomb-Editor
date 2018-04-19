@@ -64,7 +64,6 @@ namespace WadTool.Controls
         private static readonly Vector4 _blue = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
         private Buffer<SolidVertex> _vertexBufferVisibility;
-        private Buffer<SolidVertex> _vertexBufferCollision;
 
         public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
         {
