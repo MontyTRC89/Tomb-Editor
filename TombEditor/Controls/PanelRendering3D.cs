@@ -2113,8 +2113,7 @@ namespace TombEditor.Controls
             {
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
-                    WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId);
-                    if (moveable == null)
+                    if (_editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId) != null)
                         continue;
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
@@ -2149,8 +2148,7 @@ namespace TombEditor.Controls
 
                 foreach (var instance in room.Objects.OfType<StaticInstance>())
                 {
-                    WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId);
-                    if (@static == null)
+                    if (_editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId) != null)
                         continue;
 
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
