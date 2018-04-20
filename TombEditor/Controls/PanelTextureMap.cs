@@ -276,7 +276,8 @@ namespace TombEditor.Controls
 
             if (!(VisibleTexture?.IsAvailable ?? false))
             {
-                EditorActions.LoadTextures(Parent);
+                int TODO_ADJUST_FOR_MULTI_TEXTURE_SUPPORT;
+                EditorActions.AddTexture(Parent);
                 return;
             }
 
