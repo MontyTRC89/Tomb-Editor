@@ -7,7 +7,7 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
-    public class ReferencedWad
+    public class ReferencedWad : ICloneable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -63,5 +63,8 @@ namespace TombLib.LevelData
             Path = path;
             Reload(settings);
         }
+
+        public ReferencedWad Clone() => (ReferencedWad)MemberwiseClone(); // Don't copy the data pointer
+        object ICloneable.Clone() => Clone();
     }
 }

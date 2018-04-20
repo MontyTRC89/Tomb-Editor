@@ -289,9 +289,6 @@ namespace TombLib.LevelData
                     throw new NotImplementedException("Unfortunately we can't remove level textures safely from the level at the moment!" +
                         "However this should not be triggered currently because there is no GUI for multi texture management.");
             }
-
-            // Wads
-            Settings.Wads = oldSettings.Wads;
         }
         public void ApplyNewLevelSettings(LevelSettings newSettings) => ApplyNewLevelSettings(newSettings, s => { });
     }

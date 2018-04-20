@@ -138,6 +138,7 @@ namespace TombLib.LevelData
         public LevelSettings Clone()
         {
             LevelSettings result = (LevelSettings)MemberwiseClone();
+            result.Wads = Wads.ConvertAll(wad => wad.Clone());
             result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll(soundPath => soundPath.Clone());
             result.Textures = Textures.ConvertAll(texture => (LevelTexture)texture.Clone());
             result.AnimatedTextureSets = AnimatedTextureSets.ConvertAll(set => set.Clone());
