@@ -326,7 +326,7 @@ namespace WadTool.Controls
                     Invalidate();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -349,8 +349,9 @@ namespace WadTool.Controls
 
         private Ray GetRay(float x, float y)
         {
-            return new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height).GetPickRay(new Vector2(x, y),
-                Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height));
+            Size size = ClientSize;
+            return SharpDxConversions.GetPickRay(new Vector2(x, y),
+                Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), 0, 0, size.Width, size.Height);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -406,7 +407,7 @@ namespace WadTool.Controls
 
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
                 Invalidate();
-            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), e.X, e.Y))
+            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)))
                 Invalidate();
 
             if (e.Button == MouseButtons.Right)

@@ -262,8 +262,8 @@ namespace WadTool.Controls
             // Draw debug strings
             if (SelectedNode != null)
             {
-                Vector3 screenPos = _device.Viewport.Project(SelectedNode.Centre - Vector3.UnitY * 128.0f,
-                                    SelectedNode.GlobalTransform * viewProjection);
+                Vector3 screenPos = SharpDxConversions.Project(SelectedNode.Centre - Vector3.UnitY * 128.0f,
+                                    SelectedNode.GlobalTransform * viewProjection, 0, 0, ClientSize.Width, ClientSize.Height);
                 _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
                 _spriteBatch.DrawString(_deviceManager.Font,
@@ -309,8 +309,9 @@ namespace WadTool.Controls
 
         private Ray GetRay(float x, float y)
         {
-            return new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height).GetPickRay(new Vector2(x, y),
-                Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height));
+            Size size = ClientSize;
+            return SharpDxConversions.GetPickRay(new Vector2(x, y),
+                Camera.GetViewProjectionMatrix(size.Width, size.Height), 0, 0, size.Width, size.Height);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -366,7 +367,7 @@ namespace WadTool.Controls
 
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
                 Invalidate();
-            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), e.X, e.Y))
+            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)))
                 Invalidate();
 
             if (e.Button == MouseButtons.Right)

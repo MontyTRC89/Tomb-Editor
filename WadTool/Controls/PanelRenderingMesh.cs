@@ -200,8 +200,9 @@ namespace WadTool.Controls
 
         private Ray GetRay(float x, float y)
         {
-            return new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height).GetPickRay(new Vector2(x, y),
-                Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height));
+            Size size = ClientSize;
+            return SharpDxConversions.GetPickRay(new Vector2(x, y),
+                Camera.GetViewProjectionMatrix(size.Width, size.Height), 0, 0, size.Width, size.Height);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

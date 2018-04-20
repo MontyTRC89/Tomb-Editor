@@ -131,13 +131,12 @@ namespace TombLib.Graphics
         }
 
         /// <returns>true, if an iteraction with the gizmo is happening</returns>
-        public bool MouseMoved(Matrix4x4 viewProjection, float x, float y)
+        public bool MouseMoved(Matrix4x4 viewProjection, Ray ray)
         {
             if (!DrawGizmo || _mode == GizmoMode.None)
                 return false;
 
             // First get the ray in 3D space from X, Y mouse coordinates
-            Ray ray = _device.Viewport.GetPickRay(new Vector2(x, y), viewProjection);
             switch (_mode)
             {
                 case GizmoMode.TranslateX:

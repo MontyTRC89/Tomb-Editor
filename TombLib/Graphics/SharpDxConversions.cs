@@ -24,7 +24,7 @@ namespace TombLib.Graphics
             matrix.M31, matrix.M32, matrix.M33, matrix.M34,
             matrix.M41, matrix.M42, matrix.M43, matrix.M44);
 
-        public static Vector3 Project(this SharpDX.ViewportF viewport, Vector3 vector, Matrix4x4 worldViewProjection)
+        public static Vector3 Project(Vector3 vector, Matrix4x4 worldViewProjection, float x, float y, float width, float height, float minDepth = 0, float maxDepth = 1)
         {
             var result = Vector3.Transform(vector, worldViewProjection);
             float a = vector.X * worldViewProjection.M14 + vector.Y * worldViewProjection.M24 + vector.Z * worldViewProjection.M34 + worldViewProjection.M44;
@@ -34,22 +34,22 @@ namespace TombLib.Graphics
                 result = result / a;
             }
 
-            result.X = (result.X + 1f) * 0.5f * viewport.Width + viewport.X;
-            result.Y = (-result.Y + 1f) * 0.5f * viewport.Height + viewport.Y;
-            result.Z = result.Z * (viewport.MaxDepth - viewport.MinDepth) + viewport.MinDepth;
+            result.X = (result.X + 1f) * 0.5f * width + x;
+            result.Y = (-result.Y + 1f) * 0.5f * height + x;
+            result.Z = result.Z * (maxDepth - minDepth) + minDepth;
             return result;
         }
 
-        public static Vector3 Unproject(this SharpDX.ViewportF viewport, Vector3 source, Matrix4x4 worldViewProjection)
+        public static Vector3 Unproject(Vector3 source, Matrix4x4 worldViewProjection, float x, float y, float width, float height, float minDepth = 0, float maxDepth = 1)
         {
             Matrix4x4 inverse;
             if (!Matrix4x4.Invert(worldViewProjection, out inverse))
                 return new Vector3();
 
             Vector3 vector = new Vector3(
-                (source.X - viewport.X) / viewport.Width * 2f - 1f,
-                -((source.Y - viewport.Y) / viewport.Height * 2f - 1f),
-                (source.Z - viewport.MinDepth) / (viewport.MaxDepth - viewport.MinDepth));
+                (source.X - x) / width * 2f - 1f,
+                -((source.Y - y) / height * 2f - 1f),
+                (source.Z - minDepth) / (maxDepth - minDepth));
 
             float a = vector.X * inverse.M14 + vector.Y * inverse.M24 + vector.Z * inverse.M34 + inverse.M44;
             vector = Vector3.Transform(vector, inverse);
@@ -61,10 +61,10 @@ namespace TombLib.Graphics
             return vector;
         }
 
-        public static Ray GetPickRay(this SharpDX.ViewportF viewport, Vector2 screenPos, Matrix4x4 worldViewProjection)
+        public static Ray GetPickRay(Vector2 screenPos, Matrix4x4 worldViewProjection, float x, float y, float width, float height, float minDepth = 0, float maxDepth = 1)
         {
-            Vector3 nearPoint = viewport.Unproject(new Vector3(screenPos.X, screenPos.Y, 0), worldViewProjection);
-            Vector3 farPoint = viewport.Unproject(new Vector3(screenPos.X, screenPos.Y, 1), worldViewProjection);
+            Vector3 nearPoint = Unproject(new Vector3(screenPos.X, screenPos.Y, 0), worldViewProjection, x, y, width, height, minDepth, maxDepth);
+            Vector3 farPoint = Unproject(new Vector3(screenPos.X, screenPos.Y, 1), worldViewProjection, x, y, width, height, minDepth, maxDepth);
             return new Ray(nearPoint, Vector3.Normalize(farPoint - nearPoint));
         }
     }
