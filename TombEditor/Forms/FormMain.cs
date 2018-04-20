@@ -595,14 +595,17 @@ namespace TombEditor.Forms
 
         private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.LoadTextures(this);
+            EditorActions.AddTexture(this);
         }
 
-        private void unloadTextureToolStripMenuItem_Click(object sender, EventArgs e)
+        private void removeTexturesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (var texture in _editor.Level.Settings.Textures)
-                texture.SetPath(_editor.Level.Settings, "");
-            _editor.LoadedTexturesChange();
+            EditorActions.RemoveTextures(this);
+        }
+
+        private void UnloadTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.UnloadTextures(this);
         }
 
         private void reloadTexturesToolStripMenuItem_Click(object sender, EventArgs e)

@@ -118,7 +118,7 @@ namespace TombLib.LevelData
         public void MergeFrom(Level otherLevel, bool unifyData, Action<LevelSettings> applyLevelSettings = null)
         {
             IReadOnlyList<ObjectInstance> oldObjects = Rooms.Where(room => room != null).SelectMany(room => room.AnyObjects).ToList();
-            IReadOnlyList <Room> otherRooms = otherLevel.Rooms.Where(room => room != null).ToList();
+            IReadOnlyList<Room> otherRooms = otherLevel.Rooms.Where(room => room != null).ToList();
 
             // Merge rooms
             for (int i = 0; i < otherRooms.Count; ++i)
@@ -232,6 +232,22 @@ namespace TombLib.LevelData
             return TransformRooms(rooms, transformation, new VectorInt2((coveredArea.X0 + coveredArea.X1) / 2, (coveredArea.Y0 + coveredArea.Y1) / 2));
         }
 
+        public void RemoveTextures(Predicate<LevelTexture> askIfTextureToRemove)
+        {
+            foreach (Room room in Rooms.Where(room => room != null))
+                foreach (Block sector in room.Blocks)
+                    for (BlockFace face = 0; face <= Block.FaceCount; ++face)
+                    {
+                        TextureArea currentTextureArea = sector.GetFaceTexture(face);
+                        LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;
+                        if (currentTexture != null && askIfTextureToRemove(currentTexture))
+                        {
+                            currentTextureArea.Texture = null;
+                            sector.SetFaceTexture(face, currentTextureArea);
+                        }
+                    }
+        }
+
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)
         {
             LevelSettings oldSettings = Settings;
@@ -286,8 +302,7 @@ namespace TombLib.LevelData
 
                 // Reset level texture objects if any objects are now missing
                 if (oldLookup.Count != 0)
-                    throw new NotImplementedException("Unfortunately we can't remove level textures safely from the level at the moment!" +
-                        "However this should not be triggered currently because there is no GUI for multi texture management.");
+                    RemoveTextures(texture => oldLookup.ContainsKey(texture.UniqueID));
             }
         }
         public void ApplyNewLevelSettings(LevelSettings newSettings) => ApplyNewLevelSettings(newSettings, s => { });

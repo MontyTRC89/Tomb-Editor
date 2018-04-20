@@ -2306,21 +2306,52 @@ namespace TombEditor
 
         }
 
-        public static void LoadTextures(IWin32Window owner)
+        public static void AddTexture(IWin32Window owner, LevelTexture toReplace = null)
         {
             var settings = _editor.Level.Settings;
-            string path = GraphicalDialogHandler.BrowseTextureFile(settings, settings.TextureFilePath, owner);
-            if (settings.TextureFilePath == path)
+            string path = GraphicalDialogHandler.BrowseTextureFile(settings, toReplace?.Path ?? _editor.Level.Settings.LevelFilePath, owner);
+            if (path == toReplace?.Path)
                 return;
 
+            if (toReplace != null)
+                toReplace.SetPath(_editor.Level.Settings, path);
+            else
+            {
+                var newTexture = new LevelTexture(_editor.Level.Settings, path);
+                if (newTexture.LoadException != null)
+                    return;
+                _editor.Level.Settings.Textures.Add(newTexture);
+            }
+
+
             settings.TextureFilePath = path;
+            _editor.LoadedTexturesChange();
+        }
+
+        public static void UnloadTextures(IWin32Window owner)
+        {
+            if (DarkMessageBox.Show(owner, "Are you sure to unload ALL " + _editor.Level.Settings.Textures.Count +
+                " texture files loaded?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+            foreach (LevelTexture texture in _editor.Level.Settings.Textures)
+                texture.SetPath(_editor.Level.Settings, null);
+            _editor.LoadedTexturesChange();
+        }
+
+        public static void RemoveTextures(IWin32Window owner)
+        {
+            if (DarkMessageBox.Show(owner, "Are you sure to DELETE ALL " + _editor.Level.Settings.Textures.Count +
+                " texture files loaded? Everything will be untextured.", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+            _editor.Level.Settings.Textures.Clear();
+            _editor.Level.RemoveTextures(texture => true);
             _editor.LoadedTexturesChange();
         }
 
         public static void AddWad(IWin32Window owner, ReferencedWad toReplace = null)
         {
             var settings = _editor.Level.Settings;
-            string path = GraphicalDialogHandler.BrowseObjectFile(settings, toReplace?.Path, owner);
+            string path = GraphicalDialogHandler.BrowseObjectFile(settings, toReplace?.Path ?? _editor.Level.Settings.LevelFilePath, owner);
             if (path == toReplace?.Path)
                 return;
 
@@ -2338,6 +2369,9 @@ namespace TombEditor
 
         public static void RemoveWads(IWin32Window owner)
         {
+            if (DarkMessageBox.Show(owner, "Are you sure to delete ALL " + _editor.Level.Settings.Wads.Count +
+                " wad files loaded?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
             _editor.Level.Settings.Wads.Clear();
             _editor.LoadedWadsChange();
         }
