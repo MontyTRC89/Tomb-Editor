@@ -1206,12 +1206,12 @@ namespace TombEditor.Controls
                             relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
                             -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
-                    _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), e.X, e.Y); // Update gizmo
+                    _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)); // Update gizmo
                     redrawWindow = true;
                     break;
 
                 case MouseButtons.Left:
-                    if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), e.X, e.Y))
+                    if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)))
                     {
                         // Process gizmo
                         redrawWindow = true;
@@ -1731,11 +1731,13 @@ namespace TombEditor.Controls
 
         private Ray GetRay(float x, float y)
         {
+            Size size = ClientSize;
+
             // Get the current ViewProjection matrix
-            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(size.Width, size.Height);
 
             // First get the ray in 3D space from X, Y mouse coordinates
-            Ray ray = _device.Viewport.GetPickRay(new Vector2(x, y), viewProjection);
+            Ray ray = SharpDxConversions.GetPickRay(new Vector2(x, y), viewProjection, 0, 0, size.Width, size.Height);
             return ray;
         }
 
@@ -2129,7 +2131,7 @@ namespace TombEditor.Controls
                         // Object position
                         message += "\n" + GetObjectPositionString(room, instance);
 
-                        Vector3 screenPos = _device.Viewport.Project(new Vector3(), instance.RotationPositionMatrix * viewProjection);
+                        Vector3 screenPos = SharpDxConversions.Project(new Vector3(), instance.RotationPositionMatrix * viewProjection, 0, 0, ClientSize.Width, ClientSize.Height);
 
                         BuildTriggeredByMessage(ref message, instance);
 
@@ -2525,7 +2527,8 @@ namespace TombEditor.Controls
 
         public void DrawDebugString(string message, Matrix4x4 transformation, Vector3 offset = new Vector3())
         {
-            Vector3 screenPos = _device.Viewport.Project(Vector3.Zero, transformation);
+            Size size = ClientSize;
+            Vector3 screenPos = SharpDxConversions.Project(Vector3.Zero, transformation, 0, 0, size.Width, size.Height);
             screenPos += offset; // Offset text a little bit
             _debug.AddString(message, screenPos);
         }
@@ -2960,6 +2963,7 @@ namespace TombEditor.Controls
 
         private void AddRoomNamesToDebug(Matrix4x4 viewProjection)
         {
+            Size size = ClientSize;
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
                 string message = _roomsToDraw[i].Name;
@@ -2967,7 +2971,7 @@ namespace TombEditor.Controls
                 var pos = _roomsToDraw[i].WorldPos;
                 var world = Matrix4x4.CreateTranslation(pos);
                 Matrix4x4 wvp = world * viewProjection;
-                Vector3 screenPos = _device.Viewport.Project(_roomsToDraw[i].GetLocalCenter(), wvp);
+                Vector3 screenPos = SharpDxConversions.Project(_roomsToDraw[i].GetLocalCenter(), wvp, 0, 0, size.Width, size.Height);
                 _debug.AddString(message, screenPos);
             }
         }
@@ -2989,9 +2993,10 @@ namespace TombEditor.Controls
             positions[3] = center + new Vector3(-xBlocks, 0, 0);
 
             Matrix4x4 wvp = Matrix4x4.CreateTranslation(pos) * viewProjection;
+            Size size = ClientSize;
             for (int i = 0; i < 4; i++)
             {
-                Vector3 screenPos = _device.Viewport.Project(positions[i], wvp);
+                Vector3 screenPos = SharpDxConversions.Project(positions[i], wvp, 0, 0, size.Width, size.Height);
                 _debug.AddString(messages[i], screenPos - new Vector3(45, 0, 0));
             }
         }
