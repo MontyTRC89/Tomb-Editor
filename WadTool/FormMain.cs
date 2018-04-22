@@ -268,7 +268,7 @@ namespace WadTool
 
             if (_playAnimation)
             {
-                int frameRate = Math.Max(animation.FrameDuration, (short)1);
+                int frameRate = Math.Max(animation.FrameRate, (short)1);
                 timerPlayAnimation.Stop();
                 timerPlayAnimation.Interval = 1000 / 30 / frameRate;
                 timerPlayAnimation.Start();
@@ -453,7 +453,7 @@ namespace WadTool
 
             // Start animation
             _playAnimation = true;
-            int frameRate = Math.Max(animation.FrameDuration, (short)1);
+            int frameRate = Math.Max(animation.FrameRate, (short)1);
             timerPlayAnimation.Stop();
             timerPlayAnimation.Interval = 1000 / 30 / frameRate;
             timerPlayAnimation.Start();

@@ -523,7 +523,7 @@ namespace TombLib.Wad
 
                         animation.StateId = LEB128.ReadUShort(chunkIO.Raw);
                         animation.RealNumberOfFrames = LEB128.ReadUShort(chunkIO.Raw);
-                        animation.FrameDuration = LEB128.ReadByte(chunkIO.Raw);
+                        animation.FrameRate = LEB128.ReadByte(chunkIO.Raw);
                         if (id2 == Wad2Chunks.AnimationObsolete)
                         {
                             LEB128.ReadUShort(chunkIO.Raw);

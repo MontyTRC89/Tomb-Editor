@@ -267,7 +267,7 @@ namespace TombLib.Wad
                             {
                                 LEB128.Write(chunkIO.Raw, animation.StateId);
                                 LEB128.Write(chunkIO.Raw, animation.RealNumberOfFrames);
-                                LEB128.Write(chunkIO.Raw, animation.FrameDuration);
+                                LEB128.Write(chunkIO.Raw, animation.FrameRate);
                                 LEB128.Write(chunkIO.Raw, animation.Speed);
                                 LEB128.Write(chunkIO.Raw, animation.Acceleration);
                                 LEB128.Write(chunkIO.Raw, animation.LateralSpeed);

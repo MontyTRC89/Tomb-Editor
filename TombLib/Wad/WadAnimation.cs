@@ -4,7 +4,7 @@ namespace TombLib.Wad
 {
     public class WadAnimation
     {
-        public byte FrameDuration { get; set; }
+        public byte FrameRate { get; set; }
         public ushort StateId { get; set; }
         public int Speed { get; set; }
         public int Acceleration { get; set; }
