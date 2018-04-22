@@ -87,6 +87,15 @@ namespace TombLib.Controls
             Controls.Add(_fixedSoundInfoEditor);
         }
 
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+
+            Rectangle clientRectangle = ClientRectangle;
+            clientRectangle.Inflate(new Size(-5, -5));
+            _fixedSoundInfoEditor.Bounds = clientRectangle;
+        }
+
 
         public void InitializePanel(DeviceManager deviceManager)
         {
