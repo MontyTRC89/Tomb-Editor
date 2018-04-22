@@ -302,7 +302,7 @@ namespace TombLib.LevelData.Compilers
                     if (j == 0)
                         newMoveable.FrameOffset = checked((uint)animationHelper.KeyFramesOffset);
                     newAnimation.FrameOffset = checked((uint)animationHelper.KeyFramesOffset);
-                    newAnimation.FrameRate = oldAnimation.FrameDuration;
+                    newAnimation.FrameRate = oldAnimation.FrameRate;
                     newAnimation.FrameSize = checked((byte)animationHelper.KeyFramesSize);
                     newAnimation.Speed = oldAnimation.Speed;
                     newAnimation.Accel = oldAnimation.Acceleration;

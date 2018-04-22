@@ -207,7 +207,7 @@ namespace WadTool.Controls
 
                 // Build animation transforms
                 var matrices = new List<Matrix4x4>();
-                if (Animation != null)
+                if (Animation != null && Animation.DirectXAnimation.KeyFrames.Count != 0)
                 {
                     for (var b = 0; b < _model.Meshes.Count; b++)
                         matrices.Add(_model.AnimationTransforms[b]);
@@ -255,7 +255,7 @@ namespace WadTool.Controls
                     _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
                 }
 
-                if (Animation != null)
+                if (Animation != null && Animation.DirectXAnimation.KeyFrames.Count != 0)
                 {
                     if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
                     _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Animation.DirectXAnimation.KeyFrames[CurrentKeyFrame].BoundingBox);

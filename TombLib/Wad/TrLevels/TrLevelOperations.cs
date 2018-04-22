@@ -454,7 +454,7 @@ namespace TombLib.Wad.TrLevels
                 newAnimation.Speed = oldAnimation.Speed;
                 newAnimation.LateralSpeed = oldAnimation.SpeedLateral;
                 newAnimation.LateralAcceleration = oldAnimation.AccelLateral;
-                newAnimation.FrameDuration = oldAnimation.FrameRate;
+                newAnimation.FrameRate = oldAnimation.FrameRate;
                 newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.Animation);
                 newAnimation.NextFrame = oldAnimation.NextFrame;
                 newAnimation.StateId = oldAnimation.StateID;
