@@ -24,6 +24,10 @@ namespace WadTool
         private WadRenderer _renderer;
         private AnimatedModel _model;
 
+        // Clipboard
+        private KeyFrame _clipboardKeyFrame = null;
+        private AnimationNode _clipboardNode = null;
+
         public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
         {
             InitializeComponent();
@@ -160,10 +164,56 @@ namespace WadTool
 
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (DarkMessageBox.Show(this, "Confirm", "Do you really want to save changes to animations?",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            SaveChanges();
+
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private void SaveChanges()
+        {
+            // Clear the old animations
             _moveable.Animations.Clear();
+
+            // Combine WadAnimation and Animation classes
             foreach (var animation in _workingAnimations)
             {
+                var wadAnim = animation.WadAnimation;
+                var directxAnim = animation.DirectXAnimation;
 
+                // I need only to convert DX keyframes to Wad2 keyframes
+                wadAnim.KeyFrames.Clear();
+                foreach (var directxKeyframe in directxAnim.KeyFrames)
+                {
+                    var keyframe = new WadKeyFrame();
+
+                    // Create the new bounding box
+                    keyframe.BoundingBox = new TombLib.BoundingBox(directxKeyframe.BoundingBox.Minimum,
+                                                                   directxKeyframe.BoundingBox.Maximum);
+
+                    // For now we take the first translation as offset
+                    keyframe.Offset = new System.Numerics.Vector3(directxKeyframe.Translations[0].X,
+                                                                  directxKeyframe.Translations[0].Y,
+                                                                  directxKeyframe.Translations[0].Z);
+
+                    // Convert angles from radians to degrees and save them
+                    foreach (var rot in directxKeyframe.Rotations)
+                    {
+                        var angle = new WadKeyFrameRotation();
+                        angle.Rotations = new System.Numerics.Vector3(rot.X * 180.0f / (float)Math.PI,
+                                                                      rot.Y * 180.0f / (float)Math.PI,
+                                                                      rot.Z * 180.0f / (float)Math.PI);
+                        keyframe.Angles.Add(angle);
+                    }
+
+                    wadAnim.KeyFrames.Add(keyframe);
+                }
+
+                _moveable.Animations.Add(wadAnim);
             }
         }
 
@@ -499,6 +549,44 @@ namespace WadTool
                 return;
             panelRendering.SelectedMesh = panelRendering.Model.Meshes[comboSkeleton.SelectedIndex - 1];
             panelRendering.Invalidate();
+        }
+
+        private void cutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count!=0)
+            {
+                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame];
+                DeleteFrame();
+            }
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
+            {
+                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame];
+            }
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_clipboardKeyFrame != null && _selectedNode != null)
+            {
+                _selectedNode.DirectXAnimation.KeyFrames.Insert(panelRendering.CurrentKeyFrame, _clipboardKeyFrame);
+                _clipboardKeyFrame = null;
+                trackFrames.Maximum++;
+                SelectFrame(panelRendering.CurrentKeyFrame);
+            }
+        }
+
+        private void pasteReplaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_clipboardKeyFrame != null && _selectedNode != null)
+            {
+                _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame] = _clipboardKeyFrame;
+                _clipboardKeyFrame = null;
+                SelectFrame(panelRendering.CurrentKeyFrame);
+            }
         }
     }
 }
