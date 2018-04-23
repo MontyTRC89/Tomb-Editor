@@ -5,7 +5,6 @@ namespace TombLib.Graphics
 {
     public class KeyFrame
     {
-        //public BoundingBox BoundingBox { get; set; }
         public List<Vector3> Translations { get; set; } = new List<Vector3>();
         public List<Vector3> Rotations { get; set; } = new List<Vector3>();
         public List<Matrix4x4> TranslationsMatrices { get; set; } = new List<Matrix4x4>();
