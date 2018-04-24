@@ -240,7 +240,7 @@ namespace WadTool
 
         private void FormStaticEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (DialogResult != DialogResult.OK)
+            if (DialogResult == DialogResult.OK)
                 _workingStatic.Version = DataVersion.GetNext();
         }
 
