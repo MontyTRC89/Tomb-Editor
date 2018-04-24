@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Graphics;
+using TombLib.Utils;
 using TombLib.Wad;
 
 namespace WadTool
@@ -164,7 +165,7 @@ namespace WadTool
 
         private void saveChangesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkMessageBox.Show(this, "Confirm", "Do you really want to save changes to animations?",
+            if (DarkMessageBox.Show(this, "Do you really want to save changes to animations?", "Save changes",
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
@@ -215,6 +216,8 @@ namespace WadTool
 
                 _moveable.Animations.Add(wadAnim);
             }
+
+            _moveable.Version = DataVersion.GetNext();
         }
 
         private void butCalculateCollisionBox_Click(object sender, EventArgs e)
