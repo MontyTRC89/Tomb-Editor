@@ -103,12 +103,12 @@ namespace TombEditor.Controls
             }
         }
 
-        public override Vector4 BackgroundColor => _editor.Configuration.Rendering3D_BackgroundColor;
-        public override float FieldOfView => _editor.Configuration.Rendering3D_FieldOfView;
-        public override float NavigationSpeedMouseWheelZoom => _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom;
-        public override float NavigationSpeedMouseZoom => _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom;
-        public override float NavigationSpeedMouseTranslate => _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate;
-        public override float NavigationSpeedMouseRotate => _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate;
+        public override Vector4 BackgroundColor => _editor.Configuration.RenderingItem_BackgroundColor;
+        public override float FieldOfView => _editor.Configuration.RenderingItem_FieldOfView;
+        public override float NavigationSpeedMouseWheelZoom => _editor.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom;
+        public override float NavigationSpeedMouseZoom => _editor.Configuration.RenderingItem_NavigationSpeedMouseZoom;
+        public override float NavigationSpeedMouseTranslate => _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate;
+        public override float NavigationSpeedMouseRotate => _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate;
         public override bool ReadOnly => true;
     }
 }

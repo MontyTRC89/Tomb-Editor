@@ -555,14 +555,17 @@ namespace TombEditor.Forms
             {
                 ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
                 string absolutePath = _levelSettings.MakeAbsolute(wad.Path);
-                soundDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = absolutePath;
+                objectFileDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = absolutePath;
             }
+            // TODO: I suggest to remove the following code
+            /*
             else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowContentColumn.Name)
             {
                 ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
                 var cell = objectFileDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                var button = (DarkDataGridViewButtonCell)cell;
                 ((DarkDataGridViewButtonCell)cell).Enabled = wad.LoadException == null;
-            }
+            }*/
         }
 
         private void objectFileDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
