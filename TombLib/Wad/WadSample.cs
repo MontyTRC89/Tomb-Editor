@@ -331,24 +331,11 @@ namespace TombLib.Wad
             return ((value + alignment - 1) / alignment) * alignment;
         }
 
-
-
-
-
-
         public static bool operator ==(WadSample first, WadSample second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : (first.Hash == second.Hash));
         public static bool operator !=(WadSample first, WadSample second) => !(first == second);
         public bool Equals(WadSample other) => Hash == other.Hash;
         public override bool Equals(object other) => (other is WadSample) && Hash == ((WadSample)other).Hash;
         public override int GetHashCode() { return Hash.GetHashCode(); }
-
-
-
-
-
-
-
-
 
         public static string LookupSound(string soundName, bool ignoreMissingSounds, string wadPath, List<string> oldWadSoundPaths)
         {

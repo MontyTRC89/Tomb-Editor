@@ -41,7 +41,7 @@ namespace TombLib.Wad
             WriteFixedSoundInfos(chunkIO, wad, soundInfoTable);
             WriteSprites(chunkIO, spriteTable);
             WriteSpriteSequences(chunkIO, wad, spriteTable);
-            WriteMoveables(chunkIO, wad, textureTable);
+            WriteMoveables(chunkIO, wad, textureTable, soundInfoTable);
             WriteStatics(chunkIO, wad, textureTable);
             chunkIO.WriteChunkEnd();
         }
@@ -243,7 +243,8 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteMoveables(ChunkWriter chunkIO, Wad2 wad, List<WadTexture> textureTable)
+        private static void WriteMoveables(ChunkWriter chunkIO, Wad2 wad, List<WadTexture> textureTable,
+                                           List<WadSoundInfo> soundInfos)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
             {
@@ -314,12 +315,16 @@ namespace TombLib.Wad
 
                                 foreach (var command in animation.AnimCommands)
                                 {
-                                    chunkIO.WriteChunk(Wad2Chunks.AnimCommand, () =>
+                                    chunkIO.WriteChunkWithChildren(Wad2Chunks.AnimCommand, () =>
                                     {
                                         LEB128.Write(chunkIO.Raw, (ushort)command.Type);
                                         LEB128.Write(chunkIO.Raw, command.Parameter1);
                                         LEB128.Write(chunkIO.Raw, command.Parameter2);
                                         LEB128.Write(chunkIO.Raw, command.Parameter3);
+                                        if (command.SoundInfo != null)
+                                            chunkIO.WriteChunkInt(Wad2Chunks.AnimCommandSoundInfo, soundInfos.IndexOf(command.SoundInfo));
+                                        else
+                                            chunkIO.WriteChunkInt(Wad2Chunks.AnimCommandSoundInfo, -1);
                                     });
                                 }
                             });
