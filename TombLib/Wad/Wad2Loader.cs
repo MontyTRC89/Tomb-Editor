@@ -612,17 +612,19 @@ namespace TombLib.Wad
                                 command.Parameter1 = LEB128.ReadUShort(chunkIO.Raw);
                                 command.Parameter2 = LEB128.ReadUShort(chunkIO.Raw);
                                 command.Parameter3 = LEB128.ReadUShort(chunkIO.Raw);
-                                long readCount = offset - chunkIO.Raw.BaseStream.Position;
 
-                                if (readCount < chunkSize3)
+                                chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
-                                    command.SoundInfo = soundInfos[LEB128.ReadInt(chunkIO.Raw)];
-                                }
-                                else
-                                { // Code to load obsolete *.wad2 files...
-                                    command.SoundInfo = soundInfos[command.Parameter2 & 0x3FFF];
-                                    command.Parameter2 &= 0xC000; // Clear sound ID
-                                }
+                                    if (id4 == Wad2Chunks.AnimCommandSoundInfo)
+                                    {
+                                        var info = chunkIO.ReadChunkInt(chunkSize4);
+                                        if (info != -1)
+                                            command.SoundInfo = soundInfos[info];
+                                        return true;
+                                    }
+                                    else
+                                        return false;
+                                });  
 
                                 animation.AnimCommands.Add(command);
                             }
