@@ -47,4 +47,19 @@ namespace TombLib.Wad
         public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
         IWadObjectId IWadObject.Id => Id;
     }
+
+    /*public class WadDynamicSoundInfo : IWadObject
+    {
+        public DataVersion Version { get; set; } = DataVersion.GetNext();
+        public WadSoundInfo SoundInfo { get; set; } = WadSoundInfo.Empty;
+
+        public WadDynamicSoundInfo()
+        {
+            
+        }
+
+        public string ToString(WadGameVersion gameVersion) => (SoundInfo?.Name);
+        public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
+        IWadObjectId IWadObject.Id => Id;
+    }*/
 }

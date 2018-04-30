@@ -50,10 +50,21 @@ namespace TombLib.Wad.TrLevels
             ConvertTrLevelSprites(wad, oldLevel);
             logger.Info("Sprite conversion complete.");
 
+            // Add additional dynamic sounds
+            AddAdditionalDynamicSounds(wad, oldLevel, soundInfos);
+
             return wad;
         }
 
         private static readonly Vector2[] _zero = new Vector2[4] { new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f) };
+
+        private static void AddAdditionalDynamicSounds(Wad2 wad, TrLevel oldLevel, WadSoundInfo[] infos)
+        {
+            var newSoundInfos = wad.SoundInfosUnique.ToList();
+            foreach (var oldInfo in infos)
+                if (oldInfo != null && !newSoundInfos.Contains(oldInfo))
+                    wad.AdditionalSoundInfos.Add(oldInfo);
+        }
 
         private static TextureArea[] ConvertTrLevelTexturesToWadTexture(TrLevel oldLevel)
         {
