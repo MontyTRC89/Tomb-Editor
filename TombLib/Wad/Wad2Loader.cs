@@ -65,6 +65,8 @@ namespace TombLib.Wad
                     return true;
                 else if (LoadSoundInfos(chunkIO, id, wad, ref soundInfos, samples))
                     return true;
+                else if (LoadAdditionalSoundInfos(chunkIO, id, wad, samples))
+                    return true;
                 else if (LoadFixedSoundInfos(chunkIO, id, wad, soundInfos))
                     return true;
                 else if (LoadSprites(chunkIO, id, wad, ref sprites))
@@ -169,71 +171,87 @@ namespace TombLib.Wad
             return true;
         }
 
+        private static bool LoadSoundInfo(ChunkReader chunkIO, Wad2 wad, Dictionary<long, WadSample> samples,
+                                          out WadSoundInfoMetaData soundInfo, out long index)
+        {
+            var tempSoundInfo = new WadSoundInfoMetaData("Unnamed");
+            long tempIndex = 0;
+            chunkIO.ReadChunks((id2, chunkSize2) =>
+            {
+                if (id2 == Wad2Chunks.SoundInfoIndex)
+                    tempIndex = chunkIO.ReadChunkLong(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoVolume)
+                    tempSoundInfo.Volume = chunkIO.ReadChunkFloat(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoRange)
+                    tempSoundInfo.RangeInSectors = chunkIO.ReadChunkFloat(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoPitch)
+                    tempSoundInfo.PitchFactor = chunkIO.ReadChunkFloat(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoChance)
+                    tempSoundInfo.Chance = chunkIO.ReadChunkFloat(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoDisablePanning)
+                    tempSoundInfo.DisablePanning = chunkIO.ReadChunkBool(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoRandomizePitch)
+                    tempSoundInfo.RandomizePitch = chunkIO.ReadChunkBool(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoRandomizeVolume)
+                    tempSoundInfo.RandomizeVolume = chunkIO.ReadChunkBool(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoLoopBehaviour)
+                    tempSoundInfo.LoopBehaviour = (WadSoundLoopBehaviour)(3 & chunkIO.ReadChunkByte(chunkSize2));
+                else if (id2 == Wad2Chunks.SoundInfoName || id2 == Wad2Chunks.SoundInfoNameObsolete)
+                    tempSoundInfo.Name = chunkIO.ReadChunkString(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoSampleIndex)
+                    tempSoundInfo.Samples.Add(samples[chunkIO.ReadChunkInt(chunkSize2)]);
+                else
+                    return false;
+                return true;
+            });
+
+            if (string.IsNullOrWhiteSpace(tempSoundInfo.Name))
+                tempSoundInfo.Name = TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, unchecked((uint)tempIndex));
+
+            index = tempIndex;
+            soundInfo = tempSoundInfo;
+
+            return true;
+        }
+
         private static bool LoadSoundInfos(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSoundInfo> outSoundInfos, Dictionary<long, WadSample> samples)
         {
-            if (idOuter != Wad2Chunks.SoundInfosObsolete && idOuter != Wad2Chunks.SoundInfos)
+            if (idOuter != Wad2Chunks.SoundInfos)
                 return false;
 
             var soundInfos = new Dictionary<long, WadSoundInfo>();
-            if (idOuter == Wad2Chunks.SoundInfosObsolete)
-                LEB128.ReadInt(chunkIO.Raw); // Read obsolete value
             chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (id != Wad2Chunks.SoundInfo)
                     return false;
 
-                var soundInfo = new WadSoundInfoMetaData("Unnamed");
-                long index = 0;
-                if (idOuter == Wad2Chunks.SoundInfosObsolete)
-                {
-                    index = LEB128.ReadLong(chunkIO.Raw);
-                    soundInfo.VolumeByte = LEB128.ReadByte(chunkIO.Raw);
-                    soundInfo.RangeInSectorsByte = LEB128.ReadByte(chunkIO.Raw);
-                    soundInfo.PitchFactorByte = LEB128.ReadByte(chunkIO.Raw);
-                    soundInfo.ChanceByte = LEB128.ReadByte(chunkIO.Raw);
-                    soundInfo.DisablePanning = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                    soundInfo.RandomizePitch = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                    soundInfo.RandomizeVolume = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                    soundInfo.LoopBehaviour = (WadSoundLoopBehaviour)LEB128.ReadUShort(chunkIO.Raw);
-                }
-
-                chunkIO.ReadChunks((id2, chunkSize2) =>
-                {
-                    if (id2 == Wad2Chunks.SoundInfoIndex)
-                        index = chunkIO.ReadChunkLong(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoVolume)
-                        soundInfo.Volume = chunkIO.ReadChunkFloat(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoRange)
-                        soundInfo.RangeInSectors = chunkIO.ReadChunkFloat(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoPitch)
-                        soundInfo.PitchFactor = chunkIO.ReadChunkFloat(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoChance)
-                        soundInfo.Chance = chunkIO.ReadChunkFloat(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoDisablePanning)
-                        soundInfo.DisablePanning = chunkIO.ReadChunkBool(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoRandomizePitch)
-                        soundInfo.RandomizePitch = chunkIO.ReadChunkBool(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoRandomizeVolume)
-                        soundInfo.RandomizeVolume = chunkIO.ReadChunkBool(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoLoopBehaviour)
-                        soundInfo.LoopBehaviour = (WadSoundLoopBehaviour)(3 & chunkIO.ReadChunkByte(chunkSize2));
-                    else if (id2 == Wad2Chunks.SoundInfoName || id2 == Wad2Chunks.SoundInfoNameObsolete)
-                        soundInfo.Name = chunkIO.ReadChunkString(chunkSize2);
-                    else if (id2 == Wad2Chunks.SoundInfoSampleIndex)
-                        soundInfo.Samples.Add(samples[chunkIO.ReadChunkInt(chunkSize2)]);
-                    else
-                        return false;
-                    return true;
-                });
-
-                if (string.IsNullOrWhiteSpace(soundInfo.Name))
-                    soundInfo.Name = TrCatalog.GetOriginalSoundName(WadGameVersion.TR4_TRNG, unchecked((uint)index));
-
+                LoadSoundInfo(chunkIO, wad, samples, out WadSoundInfoMetaData soundInfo, out long index);
                 soundInfos.Add(index, new WadSoundInfo(soundInfo));
+
                 return true;
             });
 
             outSoundInfos = soundInfos;
+            return true;
+        }
+
+        private static bool LoadAdditionalSoundInfos(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, Dictionary<long, WadSample> samples)
+        {
+            if (idOuter != Wad2Chunks.AdditionalSoundInfos)
+                return false;
+
+            var soundInfos = new Dictionary<long, WadSoundInfo>();
+            chunkIO.ReadChunks((id, chunkSize) =>
+            {
+                if (id != Wad2Chunks.SoundInfo)
+                    return false;
+
+                LoadSoundInfo(chunkIO, wad, samples, out WadSoundInfoMetaData soundInfo, out long index);
+                wad.AdditionalSoundInfos.Add(new WadSoundInfo(soundInfo));
+
+                return true;
+            });
+
             return true;
         }
 

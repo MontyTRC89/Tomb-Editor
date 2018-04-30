@@ -20,6 +20,7 @@ namespace TombLib.Wad
         /****/public static readonly ChunkId SampleData = ChunkId.FromString("W2WavData");
         public static readonly ChunkId SoundInfosObsolete = ChunkId.FromString("W2Sounds");
         public static readonly ChunkId SoundInfos = ChunkId.FromString("W2Sounds2");
+        public static readonly ChunkId AdditionalSoundInfos = ChunkId.FromString("W2Sounds3");
         /**/public static readonly ChunkId SoundInfo = ChunkId.FromString("W2Sound");
         /****/public static readonly ChunkId SoundInfoNameObsolete = ChunkId.FromString("W2SampleName");
         /****/public static readonly ChunkId SoundInfoName = ChunkId.FromString("W2Name");

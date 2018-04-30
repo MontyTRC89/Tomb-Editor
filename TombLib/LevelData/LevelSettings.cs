@@ -447,9 +447,10 @@ namespace TombLib.LevelData
         {
             SortedList<WadMoveableId, WadMoveable> result = new SortedList<WadMoveableId, WadMoveable>();
             foreach (ReferencedWad wad in Wads)
-                foreach (KeyValuePair<WadMoveableId, WadMoveable> moveable in wad.Wad.Moveables)
-                    if (!result.ContainsKey(moveable.Key))
-                        result.Add(moveable.Key, moveable.Value);
+                if (wad.Wad != null)
+                    foreach (KeyValuePair<WadMoveableId, WadMoveable> moveable in wad.Wad.Moveables)
+                        if (!result.ContainsKey(moveable.Key))
+                            result.Add(moveable.Key, moveable.Value);
             return result;
         }
 
@@ -457,9 +458,10 @@ namespace TombLib.LevelData
         {
             SortedList<WadStaticId, WadStatic> result = new SortedList<WadStaticId, WadStatic>();
             foreach (ReferencedWad wad in Wads)
-                foreach (KeyValuePair<WadStaticId, WadStatic> @static in wad.Wad.Statics)
-                    if (!result.ContainsKey(@static.Key))
-                        result.Add(@static.Key, @static.Value);
+                if (wad.Wad != null)
+                    foreach (KeyValuePair<WadStaticId, WadStatic> @static in wad.Wad.Statics)
+                        if (!result.ContainsKey(@static.Key))
+                            result.Add(@static.Key, @static.Value);
             return result;
         }
 

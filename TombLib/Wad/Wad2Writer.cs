@@ -38,6 +38,7 @@ namespace TombLib.Wad
             WriteTextures(chunkIO, textureTable);
             WriteSamples(chunkIO, sampleTable);
             WriteSoundInfos(chunkIO, soundInfoTable, sampleTable);
+            WriteAdditionalSoundInfos(chunkIO, wad, sampleTable);
             WriteFixedSoundInfos(chunkIO, wad, soundInfoTable);
             WriteSprites(chunkIO, spriteTable);
             WriteSpriteSequences(chunkIO, wad, spriteTable);
@@ -84,23 +85,40 @@ namespace TombLib.Wad
                 for (int i = 0; i < soundInfoTable.Count; ++i)
                 {
                     var soundInfo = soundInfoTable[i];
-                    chunkIO.WriteChunkWithChildren(Wad2Chunks.SoundInfo, () =>
-                    {
-                        chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoIndex, i);
-                        chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoVolume, soundInfo.Data.Volume);
-                        chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoRange, soundInfo.Data.RangeInSectors);
-                        chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoPitch, soundInfo.Data.PitchFactor);
-                        chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoChance, soundInfo.Data.Chance);
-                        chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoDisablePanning, soundInfo.Data.DisablePanning);
-                        chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoRandomizePitch, soundInfo.Data.RandomizePitch);
-                        chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoRandomizeVolume, soundInfo.Data.RandomizeVolume);
-                        chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoLoopBehaviour, (ushort)soundInfo.Data.LoopBehaviour);
-                        chunkIO.WriteChunkString(Wad2Chunks.SoundInfoName, soundInfo.Name);
-
-                        foreach (var sample in soundInfo.Data.Samples)
-                            chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoSampleIndex, sampleTable.IndexOf(sample));
-                    });
+                    WriteSoundInfo(chunkIO, soundInfo, i, sampleTable);
                 }
+            });
+        }
+
+        private static void WriteAdditionalSoundInfos(ChunkWriter chunkIO, Wad2 wad, List<WadSample> sampleTable)
+        {
+            chunkIO.WriteChunkWithChildren(Wad2Chunks.AdditionalSoundInfos, () =>
+            {
+                for (int i = 0; i < wad.AdditionalSoundInfos.Count; ++i)
+                {
+                    var soundInfo = wad.AdditionalSoundInfos[i];
+                    WriteSoundInfo(chunkIO, soundInfo, -1, sampleTable);
+                }
+            });
+        }
+
+        private static void WriteSoundInfo(ChunkWriter chunkIO, WadSoundInfo soundInfo, int index, List<WadSample> sampleTable)
+        {
+            chunkIO.WriteChunkWithChildren(Wad2Chunks.SoundInfo, () =>
+            {
+                chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoIndex, index);
+                chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoVolume, soundInfo.Data.Volume);
+                chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoRange, soundInfo.Data.RangeInSectors);
+                chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoPitch, soundInfo.Data.PitchFactor);
+                chunkIO.WriteChunkFloat(Wad2Chunks.SoundInfoChance, soundInfo.Data.Chance);
+                chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoDisablePanning, soundInfo.Data.DisablePanning);
+                chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoRandomizePitch, soundInfo.Data.RandomizePitch);
+                chunkIO.WriteChunkBool(Wad2Chunks.SoundInfoRandomizeVolume, soundInfo.Data.RandomizeVolume);
+                chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoLoopBehaviour, (ushort)soundInfo.Data.LoopBehaviour);
+                chunkIO.WriteChunkString(Wad2Chunks.SoundInfoName, soundInfo.Name);
+
+                foreach (var sample in soundInfo.Data.Samples)
+                    chunkIO.WriteChunkInt(Wad2Chunks.SoundInfoSampleIndex, sampleTable.IndexOf(sample));
             });
         }
 

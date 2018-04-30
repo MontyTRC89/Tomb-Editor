@@ -29,6 +29,8 @@ namespace TombLib.Wad
         public SortedList<WadStaticId, WadStatic> Statics { get; set; } = new SortedList<WadStaticId, WadStatic>();
         public SortedList<WadSpriteSequenceId, WadSpriteSequence> SpriteSequences { get; set; } = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
         public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> FixedSoundInfos { get; set; } = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
+        public List<WadSoundInfo> AdditionalSoundInfos { get; set; } = new List<WadSoundInfo>();
+
         public string FileName { get; set; }
 
         public HashSet<WadSoundInfo> SoundInfosUnique
@@ -43,6 +45,9 @@ namespace TombLib.Wad
                         foreach (WadAnimCommand animCommand in animation.AnimCommands)
                             if (animCommand.Type == WadAnimCommandType.PlaySound)
                                 soundInfos.Add(animCommand.SoundInfo);
+                foreach (var info in AdditionalSoundInfos)
+                    soundInfos.Add(info);
+
                 return soundInfos;
             }
         }
@@ -80,8 +85,11 @@ namespace TombLib.Wad
         public WadSoundInfo TryGetSound(string soundName)
         {
             foreach (var soundInfo in SoundInfosUnique)
+            {
+                Console.WriteLine(soundInfo.Name);
                 if (soundInfo.Name.Equals(soundName, StringComparison.InvariantCultureIgnoreCase))
                     return soundInfo;
+            }
             return null;
         }
 

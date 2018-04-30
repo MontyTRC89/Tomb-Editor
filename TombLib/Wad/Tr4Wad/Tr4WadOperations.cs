@@ -76,7 +76,18 @@ namespace TombLib.Wad.Tr4Wad
             ConvertTr4Sprites(wad, oldWad);
             logger.Info("Sprites read.");
 
+            // Insert also additional sounds
+            AddAdditionalDynamicSounds(wad, oldWad, soundInfos);
+
             return wad;
+        }
+
+        private static void AddAdditionalDynamicSounds(Wad2 wad, Tr4Wad oldWad, WadSoundInfo[] infos)
+        {
+            var newSoundInfos = wad.SoundInfosUnique.ToList();
+            foreach (var oldInfo in infos)
+                if (oldInfo != null && !newSoundInfos.Contains(oldInfo))
+                    wad.AdditionalSoundInfos.Add(oldInfo);
         }
 
         private static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad, Wad2 wad)
