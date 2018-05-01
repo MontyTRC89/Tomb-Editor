@@ -362,6 +362,44 @@ namespace WadTool
             }
         }
 
+        private void CutFrame()
+        {
+            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
+            {
+                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame];
+                DeleteFrame();
+            }
+        }
+
+        private void CopyFrame()
+        {
+            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
+            {
+                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame];
+            }
+        }
+
+        private void PasteFrame()
+        {
+            if (_clipboardKeyFrame != null && _selectedNode != null)
+            {
+                _selectedNode.DirectXAnimation.KeyFrames.Insert(panelRendering.CurrentKeyFrame, _clipboardKeyFrame);
+                _clipboardKeyFrame = null;
+                trackFrames.Maximum++;
+                SelectFrame(panelRendering.CurrentKeyFrame);
+            }
+        }
+
+        private void ReplaceFrame()
+        {
+            if (_clipboardKeyFrame != null && _selectedNode != null)
+            {
+                _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame] = _clipboardKeyFrame;
+                _clipboardKeyFrame = null;
+                SelectFrame(panelRendering.CurrentKeyFrame);
+            }
+        }
+
         private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
         {
             panelRendering.DrawGrid = !panelRendering.DrawGrid;
@@ -561,40 +599,22 @@ namespace WadTool
 
         private void cutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
-            {
-                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame];
-                DeleteFrame();
-            }
+            CutFrame();
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
-            {
-                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame];
-            }
+            CopyFrame();
         }
 
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_clipboardKeyFrame != null && _selectedNode != null)
-            {
-                _selectedNode.DirectXAnimation.KeyFrames.Insert(panelRendering.CurrentKeyFrame, _clipboardKeyFrame);
-                _clipboardKeyFrame = null;
-                trackFrames.Maximum++;
-                SelectFrame(panelRendering.CurrentKeyFrame);
-            }
+            PasteFrame();
         }
 
         private void pasteReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_clipboardKeyFrame != null && _selectedNode != null)
-            {
-                _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame] = _clipboardKeyFrame;
-                _clipboardKeyFrame = null;
-                SelectFrame(panelRendering.CurrentKeyFrame);
-            }
+            ReplaceFrame();
         }
 
         private void calculateCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -614,6 +634,41 @@ namespace WadTool
                 }
                 SelectFrame(startFrame);
             }
+        }
+
+        private void butTbAddAnimation_Click(object sender, EventArgs e)
+        {
+            AddNewAnimation();
+        }
+
+        private void butTbDeleteAnimation_Click(object sender, EventArgs e)
+        {
+            DeleteAnimation();
+        }
+
+        private void butTbAddFrame_Click(object sender, EventArgs e)
+        {
+            AddNewKeyFrame(panelRendering.CurrentKeyFrame + 1);
+        }
+
+        private void butTbDeleteFrame_Click(object sender, EventArgs e)
+        {
+            DeleteFrame();
+        }
+
+        private void butTbCutFrame_Click(object sender, EventArgs e)
+        {
+            CutFrame();
+        }
+
+        private void butTbCopyFrame_Click(object sender, EventArgs e)
+        {
+            CopyFrame();
+        }
+
+        private void butTbPasteFrame_Click(object sender, EventArgs e)
+        {
+            PasteFrame();
         }
     }
 }
