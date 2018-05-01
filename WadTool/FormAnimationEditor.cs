@@ -222,10 +222,15 @@ namespace WadTool
 
         private void butCalculateCollisionBox_Click(object sender, EventArgs e)
         {
+            CalculateKeyframeBoundingBox(panelRendering.CurrentKeyFrame);
+        }
+
+        private void CalculateKeyframeBoundingBox(int index)
+        {
             if (_selectedNode != null)
             {
-                var keyFrame = _selectedNode.DirectXAnimation.KeyFrames[trackFrames.Value];
-                keyFrame.CalculateBoundingBox(panelRendering.Model);
+                var keyFrame = _selectedNode.DirectXAnimation.KeyFrames[index];
+                keyFrame.CalculateBoundingBox(panelRendering.Model, panelRendering.Skin);
 
                 panelRendering.Invalidate();
 
@@ -276,7 +281,7 @@ namespace WadTool
         private void DeleteAnimation()
         {
             if (_selectedNode != null)
-            { 
+            {
                 if (DarkMessageBox.Show(this, "Do you really want to delete '" + _selectedNode.WadAnimation.Name + "'?",
                                         "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
@@ -335,14 +340,14 @@ namespace WadTool
                         var animation = _workingAnimations[i];
 
                         // Update NextAnimation
-                      /*  if (animation.WadAnimation.NextFrame > panelRendering.CurrentKeyFrame)
-                            animation.WadAnimation.NextFrame--;
+                        /*  if (animation.WadAnimation.NextFrame > panelRendering.CurrentKeyFrame)
+                              animation.WadAnimation.NextFrame--;
 
-                        // Update state changes
-                        foreach (var stateChange in animation.WadAnimation.StateChanges)
-                            foreach (var dispatch in stateChange.Dispatches)
-                                if (dispatch.NextAnimation > currentIndex)
-                                    dispatch.NextAnimation--;*/
+                          // Update state changes
+                          foreach (var stateChange in animation.WadAnimation.StateChanges)
+                              foreach (var dispatch in stateChange.Dispatches)
+                                  if (dispatch.NextAnimation > currentIndex)
+                                      dispatch.NextAnimation--;*/
                     }
 
                     // Remove the frame
@@ -365,7 +370,7 @@ namespace WadTool
 
         private void drawGizmoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            panelRendering.DrawGizmo= !panelRendering.DrawGizmo;
+            panelRendering.DrawGizmo = !panelRendering.DrawGizmo;
             panelRendering.Invalidate();
         }
 
@@ -392,7 +397,7 @@ namespace WadTool
                     keyFrame.Translations.Add(bone.Translation);
                     keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(bone.Translation));
                 }
-             
+
                 _selectedNode.DirectXAnimation.KeyFrames.Insert(index, keyFrame);
             }
         }
@@ -530,7 +535,7 @@ namespace WadTool
         {
             short result = 0;
             if (!short.TryParse(tbCollisionBoxMaxZ.Text, out result))
-                return; 
+                return;
 
             if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
             {
@@ -556,7 +561,7 @@ namespace WadTool
 
         private void cutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count!=0)
+            if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
             {
                 _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame];
                 DeleteFrame();
@@ -589,6 +594,25 @@ namespace WadTool
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame] = _clipboardKeyFrame;
                 _clipboardKeyFrame = null;
                 SelectFrame(panelRendering.CurrentKeyFrame);
+            }
+        }
+
+        private void calculateCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CalculateKeyframeBoundingBox(panelRendering.CurrentKeyFrame);
+        }
+
+        private void calculateBoundingBoxForAllFramesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode != null)
+            {
+                int startFrame = panelRendering.CurrentKeyFrame;
+                for (int i = 0; i < _selectedNode.DirectXAnimation.KeyFrames.Count; i++)
+                {
+                    SelectFrame(i);
+                    CalculateKeyframeBoundingBox(i);
+                }
+                SelectFrame(startFrame);
             }
         }
     }

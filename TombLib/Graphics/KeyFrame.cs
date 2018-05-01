@@ -11,16 +11,16 @@ namespace TombLib.Graphics
         public List<Matrix4x4> RotationsMatrices { get; set; } = new List<Matrix4x4>();
         public BoundingBox BoundingBox { get; set; }
 
-        public BoundingBox CalculateBoundingBox(AnimatedModel model)
+        public BoundingBox CalculateBoundingBox(AnimatedModel model, AnimatedModel skin)
         {
             Vector3 min = new Vector3(float.MaxValue);
             Vector3 max = new Vector3(float.MinValue);
 
-            foreach (var mesh in model.Meshes)
+            foreach (var mesh in skin.Meshes)
             {
                 foreach (var vertex in mesh.Vertices)
                 {
-                    var meshIndex = model.Meshes.IndexOf(mesh);
+                    var meshIndex = skin.Meshes.IndexOf(mesh);
                     var transformedPosition = MathC.HomogenousTransform(vertex.Position, model.AnimationTransforms[meshIndex]);
                     min = Vector3.Min(transformedPosition, min);
                     max = Vector3.Max(transformedPosition, max);
