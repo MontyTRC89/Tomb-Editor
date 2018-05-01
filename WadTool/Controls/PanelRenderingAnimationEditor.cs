@@ -244,7 +244,7 @@ namespace WadTool.Controls
                     if (_vertexBufferVisibility != null) _vertexBufferVisibility.Dispose();
                     int meshIndex = _model.Meshes.IndexOf(SelectedMesh);
                     var world = (Animation != null ? _model.AnimationTransforms[meshIndex] : _model.BindPoseTransforms[meshIndex]);
-                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(SelectedMesh.BoundingBox);
+                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Skin.Meshes[meshIndex].BoundingBox);
 
                     _device.SetVertexBuffer(_vertexBufferVisibility);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
@@ -456,7 +456,7 @@ namespace WadTool.Controls
             // Now do a ray - triangle intersection test
             bool hit = false;
             float minDistance = float.PositiveInfinity;
-            var mesh = _model.Meshes[meshIndex];
+            var mesh = _skinModel.Meshes[meshIndex];
             foreach (var submesh in mesh.Submeshes)
                 for (int k = 0; k < submesh.Value.Indices.Count; k += 3)
                 {
