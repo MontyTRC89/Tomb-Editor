@@ -2298,16 +2298,16 @@
             <sprite_sequence id="494" name="NG custom sprites"/>
         </sprite_sequences>
         <sounds max="370">
-            <sound id="0" name="Lara feet" fixed_by_default="true"/>
-            <sound id="1" name="Lara climb2" fixed_by_default="true"/>
+            <sound id="0" name="Lara feet"/>
+            <sound id="1" name="Lara climb2"/>
             <sound id="2" name="Lara no" fixed_by_default="true"/>
-            <sound id="3" name="Lara slipping" fixed_by_default="true"/>
-            <sound id="4" name="Lara land" fixed_by_default="true"/>
-            <sound id="5" name="Lara climb1" fixed_by_default="true"/>
+            <sound id="3" name="Lara slipping"/>
+            <sound id="4" name="Lara land"/>
+            <sound id="5" name="Lara climb1"/>
             <sound id="6" name="Lara draw" fixed_by_default="true"/>
             <sound id="7" name="Lara holster" fixed_by_default="true"/>
             <sound id="8" name="Lara fire" fixed_by_default="true"/>
-            <sound id="9" name="Lara reload" fixed_by_default="true"/>
+            <sound id="9" name="Lara reload"/>
             <sound id="10" name="Lara ricochet" fixed_by_default="true"/>
             <sound id="11" name="Push block end" fixed_by_default="true"/>
             <sound id="12" name="Metal scrape loop" fixed_by_default="true"/>
@@ -2315,46 +2315,46 @@
             <sound id="14" name="Big scarab attack"/>
             <sound id="15" name="Big scarab death"/>
             <sound id="16" name="Big scarab flying"/>
-            <sound id="17" name="Lara wet feet" fixed_by_default="true"/>
-            <sound id="18" name="Lara wade" fixed_by_default="true"/>
+            <sound id="17" name="Lara wet feet"/>
+            <sound id="18" name="Lara wade"/>
             <sound id="19" name="Rumble loop"/>
             <sound id="20" name="Metal scrape loop" fixed_by_default="true"/>
             <sound id="21" name="Cricket loop"/>
             <sound id="22" name="Wood bridge fall"/>
             <sound id="23" name="Stargate swirl" fixed_by_default="true"/>
-            <sound id="24" name="Lara knees shuffle" fixed_by_default="true"/>
+            <sound id="24" name="Lara knees shuffle"/>
             <sound id="25" name="Push spx switch"/>
-            <sound id="26" name="Lara climb3" fixed_by_default="true"/>
+            <sound id="26" name="Lara climb3"/>
             <sound id="27"/> <!--According to Gancian http://www.tombraiderforums.com/showpost.php?p=7843587&postcount=1181 -->
-            <sound id="28" name="Lara shimmy2" fixed_by_default="true"/>
-            <sound id="29" name="Lara jump" fixed_by_default="true"/>
+            <sound id="28" name="Lara shimmy2"/>
+            <sound id="29" name="Lara jump"/>
             <sound id="30" name="Lara fall" fixed_by_default="true"/>
             <sound id="31" name="Lara injury" fixed_by_default="true"/>
-            <sound id="32" name="Lara roll" fixed_by_default="true"/>
+            <sound id="32" name="Lara roll"/>
             <sound id="33" name="Lara splash" fixed_by_default="true"/>
-            <sound id="34" name="Lara getout" fixed_by_default="true"/>
-            <sound id="35" name="Lara swim" fixed_by_default="true"/>
+            <sound id="34" name="Lara getout"/>
+            <sound id="35" name="Lara swim"/>
             <sound id="36" name="Lara breath" fixed_by_default="true"/>
             <sound id="37" name="Lara bubbles" fixed_by_default="true"/>
             <sound id="38" name="Spinning puzzle" fixed_by_default="true"/>
-            <sound id="39" name="Lara key" fixed_by_default="true"/>
+            <sound id="39" name="Lara key"/>
             <sound id="40" name="Cog resaw library"/>
-            <sound id="41" name="Lara general death" fixed_by_default="true"/>
-            <sound id="42" name="Lara knees death" fixed_by_default="true"/>
-            <sound id="43" name="Lara uzi fire" fixed_by_default="true"/>
-            <sound id="44" name="Lara uzi stop" fixed_by_default="true"/>
-            <sound id="45" name="Lara shotgun" fixed_by_default="true"/>
-            <sound id="46" name="Lara block push1" fixed_by_default="true"/>
-            <sound id="47" name="Lara block push2" fixed_by_default="true"/>
+            <sound id="41" name="Lara general death"/>
+            <sound id="42" name="Lara knees death"/>
+            <sound id="43" name="Lara uzi fire"/>
+            <sound id="44" name="Lara uzi stop"/>
+            <sound id="45" name="Lara shotgun"/>
+            <sound id="46" name="Lara block push1"/>
+            <sound id="47" name="Lara block push2"/>
             <sound id="48" name="Sarlid palaces" fixed_by_default="true"/>
             <sound id="49" name="Lara shotgun shell" fixed_by_default="true"/>
             <sound id="50" name="Underwater door" fixed_by_default="true"/>
-            <sound id="51" name="Lara blkpull" fixed_by_default="true"/>
-            <sound id="52" name="Lara floating" fixed_by_default="true"/>
-            <sound id="53" name="Lara falldeth" fixed_by_default="true"/>
-            <sound id="54" name="Lara grabhand" fixed_by_default="true"/>
-            <sound id="55" name="Lara grabbody" fixed_by_default="true"/>
-            <sound id="56" name="Lara grabfeet" fixed_by_default="true"/>
+            <sound id="51" name="Lara blkpull"/>
+            <sound id="52" name="Lara floating"/>
+            <sound id="53" name="Lara falldeth"/>
+            <sound id="54" name="Lara grabhand"/>
+            <sound id="55" name="Lara grabbody"/>
+            <sound id="56" name="Lara grabfeet"/>
             <sound id="57" name="Ratchet 3shot"/>
             <sound id="58" name="Ratchet 1shot"/>
             <sound id="59" name="Water loop notinuse"/>
@@ -2369,19 +2369,19 @@
             <sound id="68" name="Pendulum blades"/>
             <sound id="69" name="Stalegtite"/>
             <sound id="70" name="Lara thud" fixed_by_default="true"/>
-            <sound id="71" name="Generic swoosh" fixed_by_default="true"/>
-            <sound id="72" name="Generic heavy thud" fixed_by_default="true"/>
+            <sound id="71" name="Generic swoosh"/>
+            <sound id="72" name="Generic heavy thud"/>
             <sound id="73" name="Croc feet"/>
             <sound id="74" name="Swinging flames"/>
-            <sound id="75" name="Stone scrape" fixed_by_default="true"/>
+            <sound id="75" name="Stone scrape"/>
             <sound id="76" name="Blast circle"/>
-            <sound id="77" name="Bazooka fire" fixed_by_default="true"/>
+            <sound id="77" name="Bazooka fire"/>
             <sound id="78" name="Hecklerandkoch fire" fixed_by_default="true"/>
             <sound id="79" name="Waterfall loop" fixed_by_default="true"/>
             <sound id="80" name="Croc attack"/>
             <sound id="81" name="Croc death"/>
-            <sound id="82" name="Portcullis up" fixed_by_default="true"/>
-            <sound id="83" name="Portcullis down" fixed_by_default="true"/>
+            <sound id="82" name="Portcullis up"/>
+            <sound id="83" name="Portcullis down"/>
             <sound id="84" name="Double doors bang"/>
             <sound id="85" name="Double doors creak"/>
             <sound id="86" name="Petes pyra stone"/>
@@ -3817,12 +3817,12 @@
             <sprite_sequence id="459" name="Misc sprites"/>
         </sprite_sequences>
         <sounds max="450">
-            <sound id="0" name="Lara feet" fixed_by_default="true"/>
-            <sound id="1" name="Lara climb2" fixed_by_default="true"/>
+            <sound id="0" name="Lara feet"/>
+            <sound id="1" name="Lara climb2"/>
             <sound id="2" name="Lara no" fixed_by_default="true"/>
-            <sound id="3" name="Lara slipping" fixed_by_default="true"/>
-            <sound id="4" name="Lara land" fixed_by_default="true"/>
-            <sound id="5" name="Lara climb1" fixed_by_default="true"/>
+            <sound id="3" name="Lara slipping"/>
+            <sound id="4" name="Lara land"/>
+            <sound id="5" name="Lara climb1"/>
             <sound id="6" name="Lara holster draw" fixed_by_default="true"/>
             <sound id="7" name="Lara holster away" fixed_by_default="true"/>
             <sound id="8" name="Lara fire" fixed_by_default="true"/>
