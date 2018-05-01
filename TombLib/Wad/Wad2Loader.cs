@@ -224,8 +224,10 @@ namespace TombLib.Wad
             {
                 if (id != Wad2Chunks.SoundInfo)
                     return false;
-
-                LoadSoundInfo(chunkIO, wad, samples, out WadSoundInfoMetaData soundInfo, out long index);
+                
+                WadSoundInfoMetaData soundInfo;
+                long index;
+                LoadSoundInfo(chunkIO, wad, samples, out soundInfo, out index);
                 soundInfos.Add(index, new WadSoundInfo(soundInfo));
 
                 return true;
@@ -246,7 +248,9 @@ namespace TombLib.Wad
                 if (id != Wad2Chunks.SoundInfo)
                     return false;
 
-                LoadSoundInfo(chunkIO, wad, samples, out WadSoundInfoMetaData soundInfo, out long index);
+                WadSoundInfoMetaData soundInfo;
+                long index;
+                LoadSoundInfo(chunkIO, wad, samples, out soundInfo, out index);
                 wad.AdditionalSoundInfos.Add(new WadSoundInfo(soundInfo));
 
                 return true;
