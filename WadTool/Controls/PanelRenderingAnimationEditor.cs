@@ -26,6 +26,8 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AnimatedModel Model { get { return _model; } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AnimatedModel Skin{ get { return _skinModel; } }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int CurrentKeyFrame { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool PlayAnimation { get; set; }
