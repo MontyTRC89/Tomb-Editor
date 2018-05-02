@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -24,6 +25,7 @@ namespace WadTool
         private AnimationNode _selectedNode;
         private WadRenderer _renderer;
         private AnimatedModel _model;
+        private bool _saved = true;
 
         // Clipboard
         private KeyFrame _clipboardKeyFrame = null;
@@ -68,6 +70,13 @@ namespace WadTool
             foreach (var animation in _moveable.Animations)
                 _workingAnimations.Add(new AnimationNode(animation.Clone(), Animation.FromWad2(_bones, animation)));
             ReloadAnimations();
+
+            tool.EditorEventRaised += Tool_EditorEventRaised;
+        }
+
+        private void Tool_EditorEventRaised(IEditorEvent obj)
+        {
+
         }
 
         protected override void Dispose(bool disposing)
@@ -75,7 +84,10 @@ namespace WadTool
             if (disposing)
                 _renderer.Dispose();
             if (disposing && (components != null))
+            {
                 components.Dispose();
+                _tool.EditorEventRaised -= Tool_EditorEventRaised;
+            }
             base.Dispose(disposing);
         }
 
@@ -124,8 +136,7 @@ namespace WadTool
             {
                 trackFrames.Visible = true;
 
-                trackFrames.Minimum = 0;
-                trackFrames.Maximum = node.DirectXAnimation.KeyFrames.Count - 1;
+                OnKeyframesListChanged();
                 SelectFrame(0);
             }
             else
@@ -152,7 +163,7 @@ namespace WadTool
                 panelRendering.Invalidate();
 
                 // Update GUI
-                statusFrame.Text = "Frame: " + (trackFrames.Value + 1) + "/" + _selectedNode.WadAnimation.KeyFrames.Count;
+                OnKeyframesListChanged();
 
                 tbCollisionBoxMinX.Text = keyFrame.BoundingBox.Minimum.X.ToString();
                 tbCollisionBoxMinY.Text = keyFrame.BoundingBox.Minimum.Y.ToString();
@@ -160,6 +171,16 @@ namespace WadTool
                 tbCollisionBoxMaxX.Text = keyFrame.BoundingBox.Maximum.X.ToString();
                 tbCollisionBoxMaxY.Text = keyFrame.BoundingBox.Maximum.Y.ToString();
                 tbCollisionBoxMaxZ.Text = keyFrame.BoundingBox.Maximum.Z.ToString();
+            }
+        }
+
+        private void OnKeyframesListChanged()
+        {
+            if (_selectedNode != null)
+            {
+                trackFrames.Minimum = 0;
+                trackFrames.Maximum = _selectedNode.DirectXAnimation.KeyFrames.Count - 1;
+                statusFrame.Text = "Frame: " + (trackFrames.Value + 1) + "/" + _selectedNode.DirectXAnimation.KeyFrames.Count;
             }
         }
 
@@ -218,6 +239,7 @@ namespace WadTool
             }
 
             _moveable.Version = DataVersion.GetNext();
+            _saved = true;
         }
 
         private void butCalculateCollisionBox_Click(object sender, EventArgs e)
@@ -240,6 +262,8 @@ namespace WadTool
                 tbCollisionBoxMaxX.Text = keyFrame.BoundingBox.Maximum.X.ToString();
                 tbCollisionBoxMaxY.Text = keyFrame.BoundingBox.Maximum.Y.ToString();
                 tbCollisionBoxMaxZ.Text = keyFrame.BoundingBox.Maximum.Z.ToString();
+
+                _saved = false;
             }
         }
 
@@ -276,6 +300,8 @@ namespace WadTool
 
             _workingAnimations.Add(node);
             treeAnimations.Nodes.Add(treeNode);
+
+            _saved = false;
         }
 
         private void DeleteAnimation()
@@ -317,6 +343,29 @@ namespace WadTool
                     else
                         _selectedNode = null;
                     panelRendering.Invalidate();
+
+                    _saved = false;
+                }
+            }
+        }
+
+        private void InsertMultipleFrames()
+        {
+            using (var form = new FormInputBox("Add (n) frames", "How many frames do you want to add to current animation?", "1"))
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    int framesCount = 0;
+                    if (!int.TryParse(form.Result, out framesCount) || framesCount <= 0)
+                    {
+                        DarkMessageBox.Show(this, "You must insert a number greater than 0",
+                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    // Add frames
+                    for (int i = 0; i < framesCount; i++)
+                        AddNewKeyFrame(panelRendering.CurrentKeyFrame + 1);
                 }
             }
         }
@@ -354,10 +403,12 @@ namespace WadTool
                     _selectedNode.DirectXAnimation.KeyFrames.RemoveAt(panelRendering.CurrentKeyFrame);
 
                     // Update GUI
+                    OnKeyframesListChanged();
                     if (_selectedNode.DirectXAnimation.KeyFrames.Count != 0)
                         SelectFrame(panelRendering.CurrentKeyFrame);
-                    trackFrames.Maximum--;
                     panelRendering.Invalidate();
+
+                    _saved = false;
                 }
             }
         }
@@ -385,8 +436,9 @@ namespace WadTool
             {
                 _selectedNode.DirectXAnimation.KeyFrames.Insert(panelRendering.CurrentKeyFrame, _clipboardKeyFrame);
                 _clipboardKeyFrame = null;
-                trackFrames.Maximum++;
+                OnKeyframesListChanged();
                 SelectFrame(panelRendering.CurrentKeyFrame);
+                _saved = false;
             }
         }
 
@@ -397,6 +449,7 @@ namespace WadTool
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame] = _clipboardKeyFrame;
                 _clipboardKeyFrame = null;
                 SelectFrame(panelRendering.CurrentKeyFrame);
+                _saved = false;
             }
         }
 
@@ -437,6 +490,8 @@ namespace WadTool
                 }
 
                 _selectedNode.DirectXAnimation.KeyFrames.Insert(index, keyFrame);
+                OnKeyframesListChanged();
+                _saved = false;
             }
         }
 
@@ -446,6 +501,7 @@ namespace WadTool
             {
                 _selectedNode.WadAnimation.Name = tbName.Text.Trim();
                 treeAnimations.SelectedNodes[0].Text = treeAnimations.SelectedNodes[0].VisibleIndex + ": " + _selectedNode.WadAnimation.Name;
+                _saved = false;
             }
         }
 
@@ -456,7 +512,10 @@ namespace WadTool
                 return;
 
             if (_selectedNode != null)
+            {
                 _selectedNode.WadAnimation.FrameRate = result;
+                _saved = false;
+            }
         }
 
         private void tbNextAnimation_Validated(object sender, EventArgs e)
@@ -466,7 +525,10 @@ namespace WadTool
                 return;
 
             if (_selectedNode != null)
+            {
                 _selectedNode.WadAnimation.NextAnimation = result;
+                _saved = false;
+            }
         }
 
         private void tbNextFrame_Validated(object sender, EventArgs e)
@@ -476,7 +538,10 @@ namespace WadTool
                 return;
 
             if (_selectedNode != null)
+            {
                 _selectedNode.WadAnimation.NextFrame = result;
+                _saved = false;
+            }
         }
 
         private void tbStateId_Validated(object sender, EventArgs e)
@@ -486,7 +551,10 @@ namespace WadTool
                 return;
 
             if (_selectedNode != null)
+            {
                 _selectedNode.WadAnimation.StateId = result;
+                _saved = false;
+            }
         }
 
         private void butDeleteFrame_Click(object sender, EventArgs e)
@@ -506,6 +574,7 @@ namespace WadTool
                 bb.Minimum = new Vector3(result, bb.Minimum.Y, bb.Minimum.Z);
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].BoundingBox = bb;
                 panelRendering.Invalidate();
+                _saved = false;
             }
         }
 
@@ -521,6 +590,7 @@ namespace WadTool
                 bb.Minimum = new Vector3(bb.Minimum.X, result, bb.Minimum.Z);
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].BoundingBox = bb;
                 panelRendering.Invalidate();
+                _saved = false;
             }
         }
 
@@ -536,6 +606,7 @@ namespace WadTool
                 bb.Minimum = new Vector3(bb.Minimum.X, bb.Minimum.Y, result);
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].BoundingBox = bb;
                 panelRendering.Invalidate();
+                _saved = false;
             }
         }
 
@@ -551,6 +622,7 @@ namespace WadTool
                 bb.Maximum = new Vector3(result, bb.Maximum.Y, bb.Maximum.Z);
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].BoundingBox = bb;
                 panelRendering.Invalidate();
+                _saved = false;
             }
         }
 
@@ -566,6 +638,7 @@ namespace WadTool
                 bb.Maximum = new Vector3(bb.Maximum.X, result, bb.Maximum.Z);
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].BoundingBox = bb;
                 panelRendering.Invalidate();
+                _saved = false;
             }
         }
 
@@ -581,6 +654,7 @@ namespace WadTool
                 bb.Maximum = new Vector3(bb.Maximum.X, bb.Maximum.Y, result);
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].BoundingBox = bb;
                 panelRendering.Invalidate();
+                _saved = false;
             }
         }
 
@@ -669,6 +743,27 @@ namespace WadTool
         private void butTbPasteFrame_Click(object sender, EventArgs e)
         {
             PasteFrame();
+        }
+
+        private void insertnFramesAfterCurrentOneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InsertMultipleFrames();
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!_saved)
+            {
+                var result = DarkMessageBox.Show(this, "Do you have unsaved changes. Do you want to save changes to animations?",
+                                                 "Confirm", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                    SaveChanges();
+                else if (result == DialogResult.Cancel)
+                    return;
+            }
+
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }
