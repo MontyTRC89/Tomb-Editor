@@ -174,9 +174,17 @@ namespace WadTool
 
         private void butDeleteObject_Click(object sender, EventArgs e)
         {
+            if (treeDestWad.SelectedWadObjectIds.Count() == 0)
+                return;
+
+            if (DarkMessageBox.Show(this, "Do you really want to delete selected objects?", "Delete objects",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
             StopAnimation();
             foreach (IWadObjectId id in treeDestWad.SelectedWadObjectIds)
                 _tool.DestinationWad.Remove(id);
+            _tool.MainSelection = null;
             _tool.DestinationWadChanged();
         }
 
