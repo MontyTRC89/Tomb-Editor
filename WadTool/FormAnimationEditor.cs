@@ -129,6 +129,10 @@ namespace WadTool
             tbNextAnimation.Text = node.WadAnimation.NextAnimation.ToString();
             tbNextFrame.Text = node.WadAnimation.NextFrame.ToString();
             tbStateId.Text = node.WadAnimation.StateId.ToString();
+            tbSpeed.Text = node.WadAnimation.Speed.ToString();
+            tbAccel.Text = node.WadAnimation.Acceleration.ToString();
+            tbLatSpeed.Text = node.WadAnimation.LateralSpeed.ToString();
+            tbLatAccel.Text = node.WadAnimation.LateralAcceleration.ToString();
 
             panelRendering.Animation = node;
 
@@ -846,6 +850,58 @@ namespace WadTool
         private void butTbPasteAnimation_Click(object sender, EventArgs e)
         {
             PasteAnimation();
+        }
+
+        private void tbSpeed_Validated(object sender, EventArgs e)
+        {
+            int result = 0;
+            if (!int.TryParse(tbSpeed.Text, out result))
+                return;
+
+            if (_selectedNode != null)
+            {
+                _selectedNode.WadAnimation.Speed = result;
+                _saved = false;
+            }
+        }
+
+        private void tbAccel_Validated(object sender, EventArgs e)
+        {
+            int result = 0;
+            if (!int.TryParse(tbAccel.Text, out result))
+                return;
+
+            if (_selectedNode != null)
+            {
+                _selectedNode.WadAnimation.Acceleration = result;
+                _saved = false;
+            }
+        }
+
+        private void tbLatSpeed_Validated(object sender, EventArgs e)
+        {
+            int result = 0;
+            if (!int.TryParse(tbLatSpeed.Text, out result))
+                return;
+
+            if (_selectedNode != null)
+            {
+                _selectedNode.WadAnimation.LateralSpeed = result;
+                _saved = false;
+            }
+        }
+
+        private void tbLatAccel_TextChanged(object sender, EventArgs e)
+        {
+            int result = 0;
+            if (!int.TryParse(tbLatAccel.Text, out result))
+                return;
+
+            if (_selectedNode != null)
+            {
+                _selectedNode.WadAnimation.LateralAcceleration = result;
+                _saved = false;
+            }
         }
     }
 }
