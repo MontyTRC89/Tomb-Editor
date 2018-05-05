@@ -18,5 +18,10 @@ namespace TombLib.Graphics
             WadAnimation = wadAnim;
             DirectXAnimation = dxAnim;
         }
+        
+        public AnimationNode Clone()
+        {
+            return new AnimationNode(WadAnimation.Clone(), DirectXAnimation.Clone());
+        }
     }
 }

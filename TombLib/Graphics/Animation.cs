@@ -54,5 +54,17 @@ namespace TombLib.Graphics
 
             return animation;
         }
+
+        public Animation Clone()
+        {
+            var animation = new Animation();
+            animation.Name = Name;
+            animation.Framerate = Framerate;
+            animation.Speed = Speed;
+            animation.Acceleration = Acceleration;
+            foreach (var keyframe in KeyFrames)
+                animation.KeyFrames.Add(keyframe.Clone());
+            return animation;
+        }
     }
 }
