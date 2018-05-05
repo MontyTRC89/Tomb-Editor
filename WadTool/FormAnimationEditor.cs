@@ -426,7 +426,7 @@ namespace WadTool
         {
             if (_selectedNode != null && _selectedNode.DirectXAnimation.KeyFrames.Count != 0)
             {
-                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame];
+                _clipboardKeyFrame = _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame].Clone();
             }
         }
 
@@ -449,6 +449,53 @@ namespace WadTool
                 _selectedNode.DirectXAnimation.KeyFrames[panelRendering.CurrentKeyFrame] = _clipboardKeyFrame;
                 _clipboardKeyFrame = null;
                 SelectFrame(panelRendering.CurrentKeyFrame);
+                _saved = false;
+            }
+        }
+
+        private void CutAnimation()
+        {
+            if (_selectedNode != null)
+            {
+                _clipboardNode = _selectedNode;
+                DeleteAnimation();
+            }
+        }
+
+        private void CopyAnimation()
+        {
+            if (_selectedNode != null)
+            {
+                _clipboardNode =_selectedNode.Clone();
+            }
+        }
+
+        private void PasteAnimation()
+        {
+            if (_clipboardNode != null && _selectedNode != null)
+            {
+                int animationIndex = _workingAnimations.IndexOf(_selectedNode) + 1;
+                _workingAnimations.Insert(animationIndex, _clipboardNode);
+                _clipboardNode.DirectXAnimation.Name += " - Copy";
+                _clipboardNode.WadAnimation.Name += " - Copy";
+                _clipboardNode = null;
+                ReloadAnimations();
+                SelectAnimation(_workingAnimations[animationIndex]);
+                _saved = false;
+            }
+        }
+
+        private void ReplaceAnimation()
+        {
+            if (_clipboardNode != null && _selectedNode != null)
+            {
+                int animationIndex = _workingAnimations.IndexOf(_selectedNode);
+                _workingAnimations[animationIndex] = _clipboardNode;
+                _clipboardNode.DirectXAnimation.Name += " - Copy";
+                _clipboardNode.WadAnimation.Name += " - Copy";
+                _clipboardNode = null;
+                ReloadAnimations();
+                SelectAnimation(_workingAnimations[animationIndex]);
                 _saved = false;
             }
         }
@@ -764,6 +811,41 @@ namespace WadTool
 
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void curToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CutAnimation();
+        }
+
+        private void copyToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            CopyAnimation();
+        }
+
+        private void pasteToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            PasteAnimation();
+        }
+
+        private void pasteReplaceToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            ReplaceAnimation();
+        }
+
+        private void butTbCutAnimation_Click(object sender, EventArgs e)
+        {
+            CutAnimation();
+        }
+
+        private void butTbCopyAnimation_Click(object sender, EventArgs e)
+        {
+            CopyAnimation();
+        }
+
+        private void butTbPasteAnimation_Click(object sender, EventArgs e)
+        {
+            PasteAnimation();
         }
     }
 }

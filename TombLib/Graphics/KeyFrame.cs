@@ -32,5 +32,23 @@ namespace TombLib.Graphics
 
             return BoundingBox;
         }
+
+        public KeyFrame Clone()
+        {
+            var keyframe = new KeyFrame();
+            foreach (var translation in Translations)
+            {
+                keyframe.Translations.Add(new Vector3(translation.X, translation.Y, translation.Z));
+                keyframe.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(translation));
+            }
+            foreach (var rotation in Rotations)
+            {
+                keyframe.Rotations.Add(new Vector3(rotation.X, rotation.Y, rotation.Z));
+                keyframe.RotationsMatrices.Add(Matrix4x4.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z));
+            }
+            keyframe.BoundingBox = new BoundingBox(new Vector3(BoundingBox.Minimum.X, BoundingBox.Minimum.Y, BoundingBox.Minimum.Z),
+                                                   new Vector3(BoundingBox.Maximum.X, BoundingBox.Maximum.Y, BoundingBox.Maximum.Z));
+            return keyframe;
+        }
     }
 }
