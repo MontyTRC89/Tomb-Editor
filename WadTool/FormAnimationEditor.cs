@@ -967,12 +967,18 @@ namespace WadTool
             var frame2 = _selectedNode.DirectXAnimation.KeyFrames[frameIndex2];
 
             // Slerp factor
-            float k = 1.0f / numFrames;
+            float k = 1.0f / (numFrames + 1);
 
             // Now I have the right number of frames and I can do slerp
             for (int i = 0; i < numFrames; i++)
             {
                 var keyframe = _selectedNode.DirectXAnimation.KeyFrames[frameIndex1 + i + 1];
+
+                // Lerp translation of root bone
+                keyframe.Translations[0] = Vector3.Lerp(frame1.Translations[0], frame2.Translations[0], k * (i + 1));
+                keyframe.TranslationsMatrices[0] = Matrix4x4.CreateTranslation(keyframe.Translations[0]);
+
+                // Slerp of quaternions
                 for (int j = 0; j < keyframe.Quaternions.Count; j++)
                 {
                     keyframe.Quaternions[j] = Quaternion.Slerp(frame1.Quaternions[j], frame2.Quaternions[j], k * (i + 1));
