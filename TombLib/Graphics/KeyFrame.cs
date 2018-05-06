@@ -8,8 +8,9 @@ namespace TombLib.Graphics
         public List<Vector3> Translations { get; set; } = new List<Vector3>();
         public List<Vector3> Rotations { get; set; } = new List<Vector3>();
         public List<Matrix4x4> TranslationsMatrices { get; set; } = new List<Matrix4x4>();
-        public List<Matrix4x4> RotationsMatrices { get; set; } = new List<Matrix4x4>();
+        //public List<Matrix4x4> RotationsMatrices { get; set; } = new List<Matrix4x4>();
         public BoundingBox BoundingBox { get; set; }
+        public List<Quaternion> Quaternions { get; set; } = new List<Quaternion>();
 
         public BoundingBox CalculateBoundingBox(AnimatedModel model, AnimatedModel skin)
         {
@@ -44,7 +45,8 @@ namespace TombLib.Graphics
             foreach (var rotation in Rotations)
             {
                 keyframe.Rotations.Add(new Vector3(rotation.X, rotation.Y, rotation.Z));
-                keyframe.RotationsMatrices.Add(Matrix4x4.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z));
+                //keyframe.RotationsMatrices.Add(Matrix4x4.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z));
+                keyframe.Quaternions.Add(Quaternion.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z));
             }
             keyframe.BoundingBox = new BoundingBox(new Vector3(BoundingBox.Minimum.X, BoundingBox.Minimum.Y, BoundingBox.Minimum.Z),
                                                    new Vector3(BoundingBox.Maximum.X, BoundingBox.Maximum.Y, BoundingBox.Maximum.Z));

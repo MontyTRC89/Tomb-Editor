@@ -18,7 +18,7 @@ namespace WadTool
         /// </summary>
         private void InitializeComponent()
         {
-            this.darkMenuStrip1 = new DarkUI.Controls.DarkMenuStrip();
+            this.topMenu = new DarkUI.Controls.DarkMenuStrip();
             this.fileeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -55,7 +55,7 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
-            this.panelBottom = new System.Windows.Forms.Panel();
+            this.panelRight = new System.Windows.Forms.Panel();
             this.tbLatAccel = new DarkUI.Controls.DarkTextBox();
             this.darkLabel14 = new DarkUI.Controls.DarkLabel();
             this.tbLatSpeed = new DarkUI.Controls.DarkTextBox();
@@ -98,7 +98,7 @@ namespace WadTool
             this.treeAnimations = new DarkUI.Controls.DarkTreeView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackFrames = new System.Windows.Forms.TrackBar();
-            this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
+            this.topBar = new DarkUI.Controls.DarkToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -118,29 +118,42 @@ namespace WadTool
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.comboSkeleton = new System.Windows.Forms.ToolStripComboBox();
             this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
-            this.darkMenuStrip1.SuspendLayout();
+            this.panelInterpolate = new System.Windows.Forms.Panel();
+            this.tbInterpolateNumFrames = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel18 = new DarkUI.Controls.DarkLabel();
+            this.tbInterpolateFrame2 = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel19 = new DarkUI.Controls.DarkLabel();
+            this.tbInterpolateFrame1 = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel20 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
+            this.butInterpolateSetCurrent1 = new DarkUI.Controls.DarkButton();
+            this.butInterpolateSetCurrent2 = new DarkUI.Controls.DarkButton();
+            this.butInterpolateFrames = new DarkUI.Controls.DarkButton();
+            this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
-            this.panelBottom.SuspendLayout();
+            this.panelRight.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackFrames)).BeginInit();
-            this.darkToolStrip1.SuspendLayout();
+            this.topBar.SuspendLayout();
+            this.panelRendering.SuspendLayout();
+            this.panelInterpolate.SuspendLayout();
             this.SuspendLayout();
             // 
-            // darkMenuStrip1
+            // topMenu
             // 
-            this.darkMenuStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkMenuStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.topMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.topMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.topMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileeToolStripMenuItem,
             this.animationToolStripMenuItem,
             this.frameToolStripMenuItem,
             this.renderingToolStripMenuItem});
-            this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.darkMenuStrip1.Name = "darkMenuStrip1";
-            this.darkMenuStrip1.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.darkMenuStrip1.Size = new System.Drawing.Size(1028, 24);
-            this.darkMenuStrip1.TabIndex = 0;
-            this.darkMenuStrip1.Text = "darkMenuStrip1";
+            this.topMenu.Location = new System.Drawing.Point(0, 0);
+            this.topMenu.Name = "topMenu";
+            this.topMenu.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
+            this.topMenu.Size = new System.Drawing.Size(1028, 24);
+            this.topMenu.TabIndex = 0;
+            this.topMenu.Text = "darkMenuStrip1";
             // 
             // fileeToolStripMenuItem
             // 
@@ -421,10 +434,12 @@ namespace WadTool
             // interpolateFramesToolStripMenuItem
             // 
             this.interpolateFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.interpolateFramesToolStripMenuItem.CheckOnClick = true;
             this.interpolateFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.interpolateFramesToolStripMenuItem.Name = "interpolateFramesToolStripMenuItem";
             this.interpolateFramesToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
             this.interpolateFramesToolStripMenuItem.Text = "Interpolate frames";
+            this.interpolateFramesToolStripMenuItem.Click += new System.EventHandler(this.interpolateFramesToolStripMenuItem_Click);
             // 
             // toolStripMenuItem6
             // 
@@ -464,7 +479,7 @@ namespace WadTool
             this.drawGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawGridToolStripMenuItem.Name = "drawGridToolStripMenuItem";
-            this.drawGridToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.drawGridToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.drawGridToolStripMenuItem.Text = "Draw grid";
             this.drawGridToolStripMenuItem.Click += new System.EventHandler(this.drawGridToolStripMenuItem_Click);
             // 
@@ -476,7 +491,7 @@ namespace WadTool
             this.drawGizmoToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawGizmoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawGizmoToolStripMenuItem.Name = "drawGizmoToolStripMenuItem";
-            this.drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.drawGizmoToolStripMenuItem.Text = "Draw gizmo";
             this.drawGizmoToolStripMenuItem.Click += new System.EventHandler(this.drawGizmoToolStripMenuItem_Click);
             // 
@@ -488,7 +503,7 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawCollisionBoxToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawCollisionBoxToolStripMenuItem.Name = "drawCollisionBoxToolStripMenuItem";
-            this.drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.drawCollisionBoxToolStripMenuItem.Text = "Draw collision box";
             this.drawCollisionBoxToolStripMenuItem.Click += new System.EventHandler(this.drawCollisionBoxToolStripMenuItem_Click);
             // 
@@ -511,55 +526,55 @@ namespace WadTool
             this.statusFrame.Size = new System.Drawing.Size(40, 23);
             this.statusFrame.Text = "Frame";
             // 
-            // panelBottom
+            // panelRight
             // 
-            this.panelBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.panelRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelBottom.Controls.Add(this.tbLatAccel);
-            this.panelBottom.Controls.Add(this.darkLabel14);
-            this.panelBottom.Controls.Add(this.tbLatSpeed);
-            this.panelBottom.Controls.Add(this.darkLabel15);
-            this.panelBottom.Controls.Add(this.tbAccel);
-            this.panelBottom.Controls.Add(this.darkLabel16);
-            this.panelBottom.Controls.Add(this.tbSpeed);
-            this.panelBottom.Controls.Add(this.darkLabel17);
-            this.panelBottom.Controls.Add(this.darkLabel2);
-            this.panelBottom.Controls.Add(this.tbStateId);
-            this.panelBottom.Controls.Add(this.butDeleteFrame);
-            this.panelBottom.Controls.Add(this.darkLabel7);
-            this.panelBottom.Controls.Add(this.tbNextFrame);
-            this.panelBottom.Controls.Add(this.darkLabel6);
-            this.panelBottom.Controls.Add(this.tbNextAnimation);
-            this.panelBottom.Controls.Add(this.darkLabel5);
-            this.panelBottom.Controls.Add(this.tbFramerate);
-            this.panelBottom.Controls.Add(this.darkLabel4);
-            this.panelBottom.Controls.Add(this.tbName);
-            this.panelBottom.Controls.Add(this.darkLabel3);
-            this.panelBottom.Controls.Add(this.darkButton3);
-            this.panelBottom.Controls.Add(this.butEditAnimCommands);
-            this.panelBottom.Controls.Add(this.butCalculateCollisionBox);
-            this.panelBottom.Controls.Add(this.tbCollisionBoxMaxZ);
-            this.panelBottom.Controls.Add(this.darkLabel8);
-            this.panelBottom.Controls.Add(this.tbCollisionBoxMaxY);
-            this.panelBottom.Controls.Add(this.darkLabel9);
-            this.panelBottom.Controls.Add(this.tbCollisionBoxMaxX);
-            this.panelBottom.Controls.Add(this.darkLabel10);
-            this.panelBottom.Controls.Add(this.tbCollisionBoxMinZ);
-            this.panelBottom.Controls.Add(this.darkLabel11);
-            this.panelBottom.Controls.Add(this.tbCollisionBoxMinY);
-            this.panelBottom.Controls.Add(this.darkLabel12);
-            this.panelBottom.Controls.Add(this.tbCollisionBoxMinX);
-            this.panelBottom.Controls.Add(this.darkLabel13);
-            this.panelBottom.Controls.Add(this.cbCollisionBox);
-            this.panelBottom.Controls.Add(this.butEditStateChanges);
-            this.panelBottom.Controls.Add(this.darkLabel1);
-            this.panelBottom.Controls.Add(this.butDeleteAnimation);
-            this.panelBottom.Controls.Add(this.treeAnimations);
-            this.panelBottom.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelBottom.Location = new System.Drawing.Point(785, 27);
-            this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Size = new System.Drawing.Size(243, 673);
-            this.panelBottom.TabIndex = 2;
+            this.panelRight.Controls.Add(this.tbLatAccel);
+            this.panelRight.Controls.Add(this.darkLabel14);
+            this.panelRight.Controls.Add(this.tbLatSpeed);
+            this.panelRight.Controls.Add(this.darkLabel15);
+            this.panelRight.Controls.Add(this.tbAccel);
+            this.panelRight.Controls.Add(this.darkLabel16);
+            this.panelRight.Controls.Add(this.tbSpeed);
+            this.panelRight.Controls.Add(this.darkLabel17);
+            this.panelRight.Controls.Add(this.darkLabel2);
+            this.panelRight.Controls.Add(this.tbStateId);
+            this.panelRight.Controls.Add(this.butDeleteFrame);
+            this.panelRight.Controls.Add(this.darkLabel7);
+            this.panelRight.Controls.Add(this.tbNextFrame);
+            this.panelRight.Controls.Add(this.darkLabel6);
+            this.panelRight.Controls.Add(this.tbNextAnimation);
+            this.panelRight.Controls.Add(this.darkLabel5);
+            this.panelRight.Controls.Add(this.tbFramerate);
+            this.panelRight.Controls.Add(this.darkLabel4);
+            this.panelRight.Controls.Add(this.tbName);
+            this.panelRight.Controls.Add(this.darkLabel3);
+            this.panelRight.Controls.Add(this.darkButton3);
+            this.panelRight.Controls.Add(this.butEditAnimCommands);
+            this.panelRight.Controls.Add(this.butCalculateCollisionBox);
+            this.panelRight.Controls.Add(this.tbCollisionBoxMaxZ);
+            this.panelRight.Controls.Add(this.darkLabel8);
+            this.panelRight.Controls.Add(this.tbCollisionBoxMaxY);
+            this.panelRight.Controls.Add(this.darkLabel9);
+            this.panelRight.Controls.Add(this.tbCollisionBoxMaxX);
+            this.panelRight.Controls.Add(this.darkLabel10);
+            this.panelRight.Controls.Add(this.tbCollisionBoxMinZ);
+            this.panelRight.Controls.Add(this.darkLabel11);
+            this.panelRight.Controls.Add(this.tbCollisionBoxMinY);
+            this.panelRight.Controls.Add(this.darkLabel12);
+            this.panelRight.Controls.Add(this.tbCollisionBoxMinX);
+            this.panelRight.Controls.Add(this.darkLabel13);
+            this.panelRight.Controls.Add(this.cbCollisionBox);
+            this.panelRight.Controls.Add(this.butEditStateChanges);
+            this.panelRight.Controls.Add(this.darkLabel1);
+            this.panelRight.Controls.Add(this.butDeleteAnimation);
+            this.panelRight.Controls.Add(this.treeAnimations);
+            this.panelRight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelRight.Location = new System.Drawing.Point(785, 27);
+            this.panelRight.Name = "panelRight";
+            this.panelRight.Size = new System.Drawing.Size(243, 673);
+            this.panelRight.TabIndex = 2;
             // 
             // tbLatAccel
             // 
@@ -1034,15 +1049,15 @@ namespace WadTool
             this.trackFrames.TabIndex = 0;
             this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
             // 
-            // darkToolStrip1
+            // topBar
             // 
-            this.darkToolStrip1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.topBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkToolStrip1.AutoSize = false;
-            this.darkToolStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkToolStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.topBar.AutoSize = false;
+            this.topBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.topBar.Dock = System.Windows.Forms.DockStyle.None;
+            this.topBar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.topBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton1,
             this.toolStripSeparator1,
             this.toolStripLabel1,
@@ -1061,12 +1076,12 @@ namespace WadTool
             this.toolStripSeparator3,
             this.toolStripLabel3,
             this.comboSkeleton});
-            this.darkToolStrip1.Location = new System.Drawing.Point(0, 28);
-            this.darkToolStrip1.Name = "darkToolStrip1";
-            this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(782, 28);
-            this.darkToolStrip1.TabIndex = 6;
-            this.darkToolStrip1.Text = "darkToolStrip1";
+            this.topBar.Location = new System.Drawing.Point(0, 28);
+            this.topBar.Name = "topBar";
+            this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
+            this.topBar.Size = new System.Drawing.Size(782, 28);
+            this.topBar.TabIndex = 6;
+            this.topBar.Text = "darkToolStrip1";
             // 
             // toolStripButton1
             // 
@@ -1261,6 +1276,7 @@ namespace WadTool
             this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRendering.Controls.Add(this.panelInterpolate);
             this.panelRendering.Location = new System.Drawing.Point(3, 54);
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.SelectedMesh = null;
@@ -1268,33 +1284,158 @@ namespace WadTool
             this.panelRendering.Skeleton = null;
             this.panelRendering.TabIndex = 4;
             // 
+            // panelInterpolate
+            // 
+            this.panelInterpolate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelInterpolate.Controls.Add(this.butInterpolateFrames);
+            this.panelInterpolate.Controls.Add(this.butInterpolateSetCurrent2);
+            this.panelInterpolate.Controls.Add(this.butInterpolateSetCurrent1);
+            this.panelInterpolate.Controls.Add(this.darkLabel21);
+            this.panelInterpolate.Controls.Add(this.tbInterpolateNumFrames);
+            this.panelInterpolate.Controls.Add(this.darkLabel18);
+            this.panelInterpolate.Controls.Add(this.tbInterpolateFrame2);
+            this.panelInterpolate.Controls.Add(this.darkLabel19);
+            this.panelInterpolate.Controls.Add(this.tbInterpolateFrame1);
+            this.panelInterpolate.Controls.Add(this.darkLabel20);
+            this.panelInterpolate.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelInterpolate.Location = new System.Drawing.Point(540, 5);
+            this.panelInterpolate.Name = "panelInterpolate";
+            this.panelInterpolate.Size = new System.Drawing.Size(236, 148);
+            this.panelInterpolate.TabIndex = 0;
+            this.panelInterpolate.Visible = false;
+            // 
+            // tbInterpolateNumFrames
+            // 
+            this.tbInterpolateNumFrames.Location = new System.Drawing.Point(73, 86);
+            this.tbInterpolateNumFrames.Name = "tbInterpolateNumFrames";
+            this.tbInterpolateNumFrames.Size = new System.Drawing.Size(60, 22);
+            this.tbInterpolateNumFrames.TabIndex = 59;
+            this.tbInterpolateNumFrames.Text = "0";
+            // 
+            // darkLabel18
+            // 
+            this.darkLabel18.AutoSize = true;
+            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel18.Location = new System.Drawing.Point(8, 88);
+            this.darkLabel18.Name = "darkLabel18";
+            this.darkLabel18.Size = new System.Drawing.Size(58, 13);
+            this.darkLabel18.TabIndex = 58;
+            this.darkLabel18.Text = "N. frames:";
+            // 
+            // tbInterpolateFrame2
+            // 
+            this.tbInterpolateFrame2.Location = new System.Drawing.Point(73, 58);
+            this.tbInterpolateFrame2.Name = "tbInterpolateFrame2";
+            this.tbInterpolateFrame2.ReadOnly = true;
+            this.tbInterpolateFrame2.Size = new System.Drawing.Size(60, 22);
+            this.tbInterpolateFrame2.TabIndex = 57;
+            this.tbInterpolateFrame2.Text = "0";
+            // 
+            // darkLabel19
+            // 
+            this.darkLabel19.AutoSize = true;
+            this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel19.Location = new System.Drawing.Point(8, 60);
+            this.darkLabel19.Name = "darkLabel19";
+            this.darkLabel19.Size = new System.Drawing.Size(50, 13);
+            this.darkLabel19.TabIndex = 56;
+            this.darkLabel19.Text = "Frame 2:";
+            // 
+            // tbInterpolateFrame1
+            // 
+            this.tbInterpolateFrame1.Location = new System.Drawing.Point(73, 30);
+            this.tbInterpolateFrame1.Name = "tbInterpolateFrame1";
+            this.tbInterpolateFrame1.ReadOnly = true;
+            this.tbInterpolateFrame1.Size = new System.Drawing.Size(60, 22);
+            this.tbInterpolateFrame1.TabIndex = 55;
+            this.tbInterpolateFrame1.Text = "0";
+            // 
+            // darkLabel20
+            // 
+            this.darkLabel20.AutoSize = true;
+            this.darkLabel20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel20.Location = new System.Drawing.Point(8, 32);
+            this.darkLabel20.Name = "darkLabel20";
+            this.darkLabel20.Size = new System.Drawing.Size(50, 13);
+            this.darkLabel20.TabIndex = 54;
+            this.darkLabel20.Text = "Frame 1:";
+            // 
+            // darkLabel21
+            // 
+            this.darkLabel21.AutoSize = true;
+            this.darkLabel21.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel21.Location = new System.Drawing.Point(8, 9);
+            this.darkLabel21.Name = "darkLabel21";
+            this.darkLabel21.Size = new System.Drawing.Size(102, 13);
+            this.darkLabel21.TabIndex = 60;
+            this.darkLabel21.Text = "Interpolate frames";
+            // 
+            // butInterpolateSetCurrent1
+            // 
+            this.butInterpolateSetCurrent1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butInterpolateSetCurrent1.Location = new System.Drawing.Point(139, 30);
+            this.butInterpolateSetCurrent1.Name = "butInterpolateSetCurrent1";
+            this.butInterpolateSetCurrent1.Size = new System.Drawing.Size(85, 22);
+            this.butInterpolateSetCurrent1.TabIndex = 94;
+            this.butInterpolateSetCurrent1.Text = "Set current";
+            this.butInterpolateSetCurrent1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butInterpolateSetCurrent1.Click += new System.EventHandler(this.butInterpolateSetCurrent1_Click);
+            // 
+            // butInterpolateSetCurrent2
+            // 
+            this.butInterpolateSetCurrent2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butInterpolateSetCurrent2.Location = new System.Drawing.Point(139, 58);
+            this.butInterpolateSetCurrent2.Name = "butInterpolateSetCurrent2";
+            this.butInterpolateSetCurrent2.Size = new System.Drawing.Size(85, 22);
+            this.butInterpolateSetCurrent2.TabIndex = 95;
+            this.butInterpolateSetCurrent2.Text = "Set current";
+            this.butInterpolateSetCurrent2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butInterpolateSetCurrent2.Click += new System.EventHandler(this.butInterpolateSetCurrent2_Click);
+            // 
+            // butInterpolateFrames
+            // 
+            this.butInterpolateFrames.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butInterpolateFrames.Location = new System.Drawing.Point(11, 112);
+            this.butInterpolateFrames.Name = "butInterpolateFrames";
+            this.butInterpolateFrames.Size = new System.Drawing.Size(213, 23);
+            this.butInterpolateFrames.TabIndex = 96;
+            this.butInterpolateFrames.Text = "Interpolate selected frames";
+            this.butInterpolateFrames.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butInterpolateFrames.Click += new System.EventHandler(this.butInterpolateFrames_Click);
+            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1028, 729);
-            this.Controls.Add(this.darkToolStrip1);
+            this.Controls.Add(this.topBar);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panelRendering);
-            this.Controls.Add(this.panelBottom);
+            this.Controls.Add(this.panelRight);
             this.Controls.Add(this.darkStatusStrip1);
-            this.Controls.Add(this.darkMenuStrip1);
-            this.MainMenuStrip = this.darkMenuStrip1;
+            this.Controls.Add(this.topMenu);
+            this.MainMenuStrip = this.topMenu;
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "FormAnimationEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Animation editor";
-            this.darkMenuStrip1.ResumeLayout(false);
-            this.darkMenuStrip1.PerformLayout();
+            this.topMenu.ResumeLayout(false);
+            this.topMenu.PerformLayout();
             this.darkStatusStrip1.ResumeLayout(false);
             this.darkStatusStrip1.PerformLayout();
-            this.panelBottom.ResumeLayout(false);
-            this.panelBottom.PerformLayout();
+            this.panelRight.ResumeLayout(false);
+            this.panelRight.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackFrames)).EndInit();
-            this.darkToolStrip1.ResumeLayout(false);
-            this.darkToolStrip1.PerformLayout();
+            this.topBar.ResumeLayout(false);
+            this.topBar.PerformLayout();
+            this.panelRendering.ResumeLayout(false);
+            this.panelInterpolate.ResumeLayout(false);
+            this.panelInterpolate.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1302,7 +1443,7 @@ namespace WadTool
 
         #endregion
 
-        private DarkUI.Controls.DarkMenuStrip darkMenuStrip1;
+        private DarkUI.Controls.DarkMenuStrip topMenu;
         private System.Windows.Forms.ToolStripMenuItem fileeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveChangesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
@@ -1331,7 +1472,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem drawGizmoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem drawCollisionBoxToolStripMenuItem;
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
-        private System.Windows.Forms.Panel panelBottom;
+        private System.Windows.Forms.Panel panelRight;
         private DarkUI.Controls.DarkTreeView treeAnimations;
         private Controls.PanelRenderingAnimationEditor panelRendering;
         private DarkUI.Controls.DarkButton butDeleteAnimation;
@@ -1372,7 +1513,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem calculateCollisionBoxForCurrentFrameToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
         private System.Windows.Forms.ToolStripMenuItem calculateBoundingBoxForAllFramesToolStripMenuItem;
-        private DarkUI.Controls.DarkToolStrip darkToolStrip1;
+        private DarkUI.Controls.DarkToolStrip topBar;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
@@ -1402,5 +1543,16 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel16;
         private DarkUI.Controls.DarkTextBox tbSpeed;
         private DarkUI.Controls.DarkLabel darkLabel17;
+        private System.Windows.Forms.Panel panelInterpolate;
+        private DarkUI.Controls.DarkButton butInterpolateFrames;
+        private DarkUI.Controls.DarkButton butInterpolateSetCurrent2;
+        private DarkUI.Controls.DarkButton butInterpolateSetCurrent1;
+        private DarkUI.Controls.DarkLabel darkLabel21;
+        private DarkUI.Controls.DarkTextBox tbInterpolateNumFrames;
+        private DarkUI.Controls.DarkLabel darkLabel18;
+        private DarkUI.Controls.DarkTextBox tbInterpolateFrame2;
+        private DarkUI.Controls.DarkLabel darkLabel19;
+        private DarkUI.Controls.DarkTextBox tbInterpolateFrame1;
+        private DarkUI.Controls.DarkLabel darkLabel20;
     }
 }

@@ -535,7 +535,8 @@ namespace WadTool
                 foreach (var bone in _moveable.Skeleton.LinearizedBones)
                 {
                     keyFrame.Rotations.Add(Vector3.Zero);
-                    keyFrame.RotationsMatrices.Add(Matrix4x4.CreateFromYawPitchRoll(0, 0, 0));
+                    // keyFrame.RotationsMatrices.Add(Matrix4x4.CreateFromYawPitchRoll(0, 0, 0));
+                    keyFrame.Quaternions.Add(Quaternion.Identity);
                     keyFrame.Translations.Add(bone.Translation);
                     keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(bone.Translation));
                 }
@@ -902,6 +903,84 @@ namespace WadTool
                 _selectedNode.WadAnimation.LateralAcceleration = result;
                 _saved = false;
             }
+        }
+
+        private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            panelInterpolate.Visible = !panelInterpolate.Visible;
+        }
+
+        private void butInterpolateSetCurrent1_Click(object sender, EventArgs e)
+        {
+            tbInterpolateFrame1.Text = panelRendering.CurrentKeyFrame.ToString();
+        }
+
+        private void butInterpolateSetCurrent2_Click(object sender, EventArgs e)
+        {
+            tbInterpolateFrame2.Text = panelRendering.CurrentKeyFrame.ToString();
+        }
+
+        private void butInterpolateFrames_Click(object sender, EventArgs e)
+        {
+            // Check for correct input by the designer
+            int numFrames = 0;
+            if (!int.TryParse(tbInterpolateNumFrames.Text, out numFrames) || numFrames <= 0)
+            {
+                DarkMessageBox.Show(this, "You must insert a valid value for frames count", "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            int frameIndex1 = int.Parse(tbInterpolateFrame1.Text);
+            int frameIndex2 = int.Parse(tbInterpolateFrame2.Text);
+
+            if (frameIndex1 >= frameIndex2)
+            {
+                DarkMessageBox.Show(this, "The first frame index can't be greater than the second frame index", "Error",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var frame1 = _selectedNode.DirectXAnimation.KeyFrames[frameIndex1];
+
+            // Now calculate how many frames I must insert
+            int numFramesToAdd = numFrames - (frameIndex2 - frameIndex1);
+            for (int i = 0; i < numFrames; i++)
+            {
+                var keyFrame = new KeyFrame();
+                foreach (var bone in _moveable.Skeleton.LinearizedBones)
+                {
+                    keyFrame.Rotations.Add(Vector3.Zero);
+                    // keyFrame.RotationsMatrices.Add(Matrix4x4.CreateFromYawPitchRoll(0, 0, 0));
+                    keyFrame.Quaternions.Add(Quaternion.Identity);
+                    keyFrame.Translations.Add(frame1.Translations[0] + bone.Translation);
+                    keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(frame1.Translations[0] + bone.Translation));
+                }
+
+                frameIndex2++;
+                _selectedNode.DirectXAnimation.KeyFrames.Insert(frameIndex1 + 1 + i, keyFrame);
+            }
+
+            OnKeyframesListChanged();
+            _saved = false;
+
+            var frame2 = _selectedNode.DirectXAnimation.KeyFrames[frameIndex2];
+
+            // Slerp factor
+            float k = 1.0f / numFrames;
+
+            // Now I have the right number of frames and I can do slerp
+            for (int i = 0; i < numFrames; i++)
+            {
+                var keyframe = _selectedNode.DirectXAnimation.KeyFrames[frameIndex1 + i + 1];
+                for (int j = 0; j < keyframe.Quaternions.Count; j++)
+                {
+                    keyframe.Quaternions[j] = Quaternion.Slerp(frame1.Quaternions[j], frame2.Quaternions[j], k * (i + 1));
+                }
+            }
+
+            // All done! Now I reset a bit the GUI
+            SelectFrame(panelRendering.CurrentKeyFrame);
         }
     }
 }

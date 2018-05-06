@@ -63,7 +63,7 @@ namespace TombLib.Graphics
         public void BuildAnimationPose(KeyFrame frame)
         {
             var globalScale = Matrix4x4.CreateTranslation(Offset) * frame.TranslationsMatrices[0];
-            AnimationTransforms[0] = frame.RotationsMatrices[0] * globalScale;
+            AnimationTransforms[0] = Matrix4x4.CreateFromQuaternion(frame.Quaternions[0]) * globalScale;
 
             foreach (var node in Root.Children)
                 BuildAnimationPose(node, AnimationTransforms[0], frame);
@@ -71,7 +71,7 @@ namespace TombLib.Graphics
 
         private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, KeyFrame frame)
         {
-            AnimationTransforms[node.Index] = frame.RotationsMatrices[node.Index] * node.Transform * parentTransform;
+            AnimationTransforms[node.Index] = Matrix4x4.CreateFromQuaternion(frame.Quaternions[node.Index]) * node.Transform * parentTransform;
 
             foreach (Bone child in node.Children)
                 BuildAnimationPose(child, AnimationTransforms[node.Index], frame);
@@ -80,7 +80,9 @@ namespace TombLib.Graphics
         public void BuildAnimationPose(KeyFrame frame1, KeyFrame frame2, float k)
         {
             Matrix4x4 translation = Matrix4x4.Lerp(frame1.TranslationsMatrices[0], frame2.TranslationsMatrices[0], k);
-            Matrix4x4 rotation = Matrix4x4.Lerp(frame1.RotationsMatrices[0], frame2.RotationsMatrices[0], k);
+            /*Matrix4x4 rotation = Matrix4x4.Lerp(Matrix4x4.CreateFromQuaternion(frame1.Quaternions[0]),
+                                                Matrix4x4.CreateFromQuaternion(frame2.Quaternions[0]), k);*/
+            Matrix4x4 rotation = Matrix4x4.CreateFromQuaternion(Quaternion.Slerp(frame1.Quaternions[0], frame2.Quaternions[0], k));
 
             var globalScale = Matrix4x4.CreateTranslation(Offset) * translation;
             AnimationTransforms[0] = rotation * globalScale;
@@ -91,7 +93,8 @@ namespace TombLib.Graphics
 
         private void BuildAnimationPose(Bone node, Matrix4x4 parentTransform, KeyFrame frame1, KeyFrame frame2, float k)
         {
-            Matrix4x4 rotation = Matrix4x4.Lerp(frame1.RotationsMatrices[node.Index], frame2.RotationsMatrices[node.Index], k);
+            //Matrix4x4 rotation = Matrix4x4.Lerp(frame1.RotationsMatrices[node.Index], frame2.RotationsMatrices[node.Index], k);
+            Matrix4x4 rotation = Matrix4x4.CreateFromQuaternion(Quaternion.Slerp(frame1.Quaternions[0], frame2.Quaternions[0], k));
 
             AnimationTransforms[node.Index] = rotation * node.Transform * parentTransform;
 
