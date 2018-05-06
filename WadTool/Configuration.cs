@@ -62,11 +62,9 @@ namespace WadTool
 
         public bool StartUpHelp_Show { get; set; } = true;
 
-        public List<string> OldWadSoundPaths {
-            get;
-            set; } = new List<string>
+        public List<string> OldWadSoundPaths2 { get; set; } = new List<string>
             {
-                /*"",
+                "",
                 "samples",
                 "sounds",
                 "sound",
@@ -79,7 +77,7 @@ namespace WadTool
                 "../../sounds",
                 "../../sound",
                 "../../sounds/samples",
-                "../../sound/samples",*/
+                "../../sound/samples",
                 "$(EditorDirectory)/sounds/TR4/samples"
             };
 
