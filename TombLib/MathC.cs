@@ -139,5 +139,31 @@ namespace TombLib
         {
             return Matrix4x4ChangeHandedness(Matrix4x4.CreatePerspectiveOffCenter(left, right, bottom, top, nearPlaneDistance, farPlaneDistance));
         }
+
+        // TODO: not working yet probably, code taken from Wikipedia at 
+        // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector3 QuaternionToEuler(Quaternion q)
+        {
+            // Toll (x-axis rotation)
+            double sinr = +2.0 * (q.W * q.X + q.Y * q.Z);
+            double cosr = +1.0 - 2.0 * (q.X * q.X + q.Y * q.Y);
+            double roll = Math.Atan2(sinr, cosr);
+
+            // Pitch (y-axis rotation)
+            double sinp = +2.0 * (q.W * q.Y - q.Z * q.X);
+            double pitch;
+            if (Math.Abs(sinp) >= 1)
+                pitch = Math.PI / 2.0f * (sinp > 0 ? 1 : -1);
+            else
+                pitch = Math.Asin(sinp);
+
+            // Yaw (z-axis rotation)
+            double siny = +2.0 * (q.W * q.Z + q.X * q.Y);
+            double cosy = +1.0 - 2.0 * (q.Y * q.Y + q.Z * q.Z);
+            double yaw = Math.Atan2(siny, cosy);
+
+            return new Vector3((float)pitch, (float)yaw, (float)roll);
+        }
     }
 }
