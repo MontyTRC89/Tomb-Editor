@@ -514,6 +514,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap toolbox_Pencil_16 {
+            get {
+                object obj = ResourceManager.GetObject("toolbox_Pencil-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap trash_16 {
             get {
                 object obj = ResourceManager.GetObject("trash-16", resourceCulture);

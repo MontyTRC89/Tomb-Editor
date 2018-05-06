@@ -28,7 +28,8 @@ namespace TombLib.Graphics
                 {
                     frame.Rotations.Add(Vector3.Zero);
                     frame.Translations.Add(Vector3.Zero);
-                    frame.RotationsMatrices.Add(Matrix4x4.Identity);
+                    //frame.RotationsMatrices.Add(Matrix4x4.Identity);
+                    frame.Quaternions.Add(Quaternion.Identity);
                     frame.TranslationsMatrices.Add(Matrix4x4.Identity);
                 }
 
@@ -38,13 +39,17 @@ namespace TombLib.Graphics
                 for (int k = 1; k < frame.Translations.Count; k++)
                 {
                     frame.Translations[k] = Vector3.Zero;
-                    frame.RotationsMatrices[k] = Matrix4x4.CreateTranslation(Vector3.Zero);
+                    frame.Quaternions[k] = Quaternion.Identity;
+                    //frame.RotationsMatrices[k] = Matrix4x4.CreateTranslation(Vector3.Zero);
                 }
 
                 for (int n = 0; n < frame.Rotations.Count; n++)
                 {
                     frame.Rotations[n] = wadFrame.Angles[n].RotationVectorInRadians;
-                    frame.RotationsMatrices[n] = wadFrame.Angles[n].RotationMatrix;
+                    //frame.RotationsMatrices[n] = wadFrame.Angles[n].RotationMatrix;
+                    frame.Quaternions[n] = Quaternion.CreateFromYawPitchRoll(wadFrame.Angles[n].RotationVectorInRadians.Y,
+                                                                             wadFrame.Angles[n].RotationVectorInRadians.X,
+                                                                             wadFrame.Angles[n].RotationVectorInRadians.Z);
                 }
 
                 frame.BoundingBox = new BoundingBox(wadFrame.BoundingBox.Minimum, wadFrame.BoundingBox.Maximum);

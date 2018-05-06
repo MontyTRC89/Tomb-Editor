@@ -42,6 +42,12 @@ namespace WadTool.Controls
         public bool DrawGizmo { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawLights { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool InterpolationMode { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public KeyFrame InterpolationKeyFrame1 { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public KeyFrame InterpolationKeyFrame2 { get; set; }
 
         private GraphicsDevice _device;
         private DeviceManager _deviceManager;
