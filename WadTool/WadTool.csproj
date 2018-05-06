@@ -120,12 +120,6 @@
     <Compile Include="FormFixedSoundInfoEditor.Designer.cs">
       <DependentUpon>FormFixedSoundInfoEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormInterpolateFrames.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormInterpolateFrames.Designer.cs">
-      <DependentUpon>FormInterpolateFrames.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,9 +193,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormFixedSoundInfoEditor.resx">
       <DependentUpon>FormFixedSoundInfoEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormInterpolateFrames.resx">
-      <DependentUpon>FormInterpolateFrames.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
