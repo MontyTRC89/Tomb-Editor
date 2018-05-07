@@ -998,5 +998,21 @@ namespace WadTool
             // All done! Now I reset a bit the GUI
             SelectFrame(panelRendering.CurrentKeyFrame);
         }
+
+        private void butEditStateChanges_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode != null)
+            {
+                using (var form = new FormStateChangesEditor(_selectedNode.WadAnimation.StateChanges))
+                {
+                    if (form.ShowDialog() != DialogResult.OK)
+                        return;
+
+                    // Add the new state changes
+                    _selectedNode.WadAnimation.StateChanges.Clear();
+                    _selectedNode.WadAnimation.StateChanges.AddRange(form.StateChanges);
+                }
+            }
+        }
     }
 }
