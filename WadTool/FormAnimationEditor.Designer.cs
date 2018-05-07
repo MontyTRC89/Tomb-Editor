@@ -991,6 +991,7 @@ namespace WadTool
             this.butEditStateChanges.TabIndex = 28;
             this.butEditStateChanges.Text = "State changes";
             this.butEditStateChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butEditStateChanges.Click += new System.EventHandler(this.butEditStateChanges_Click);
             // 
             // darkLabel1
             // 
