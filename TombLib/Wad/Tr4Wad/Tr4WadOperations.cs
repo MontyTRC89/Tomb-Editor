@@ -19,7 +19,7 @@ namespace TombLib.Wad.Tr4Wad
         public bool Found { get { return (!string.IsNullOrEmpty(FullPath)) && File.Exists(FullPath); } }
     }
 
-    public static class Tr4WadOperations
+    internal static class Tr4WadOperations
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -77,17 +77,20 @@ namespace TombLib.Wad.Tr4Wad
             logger.Info("Sprites read.");
 
             // Insert also additional sounds
-            AddAdditionalDynamicSounds(wad, oldWad, soundInfos);
+            AddAdditionalSoundInfos(wad, oldWad, soundInfos);
 
             return wad;
         }
 
-        private static void AddAdditionalDynamicSounds(Wad2 wad, Tr4Wad oldWad, WadSoundInfo[] infos)
+        private static void AddAdditionalSoundInfos(Wad2 wad, Tr4Wad oldWad, WadSoundInfo[] infos)
         {
             var newSoundInfos = wad.SoundInfosUnique.ToList();
-            foreach (var oldInfo in infos)
-                if (oldInfo != null && !newSoundInfos.Contains(oldInfo))
-                    wad.AdditionalSoundInfos.Add(oldInfo);
+            for (uint i = 0; i < infos.Length; ++i)
+                if (infos[i] != null && !newSoundInfos.Contains(infos[i]))
+                {
+                    var id = new WadAdditionalSoundInfoId(TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, i));
+                    wad.AdditionalSoundInfos.Add(id, new WadAdditionalSoundInfo(id) { SoundInfo = infos[i] });
+                }
         }
 
         private static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad, Wad2 wad)

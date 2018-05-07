@@ -38,8 +38,8 @@ namespace TombLib.Wad
             WriteTextures(chunkIO, textureTable);
             WriteSamples(chunkIO, sampleTable);
             WriteSoundInfos(chunkIO, soundInfoTable, sampleTable);
-            WriteAdditionalSoundInfos(chunkIO, wad, sampleTable);
             WriteFixedSoundInfos(chunkIO, wad, soundInfoTable);
+            WriteAdditionalSoundInfos(chunkIO, wad, soundInfoTable);
             WriteSprites(chunkIO, spriteTable);
             WriteSpriteSequences(chunkIO, wad, spriteTable);
             WriteMoveables(chunkIO, wad, textureTable, soundInfoTable);
@@ -90,18 +90,6 @@ namespace TombLib.Wad
             });
         }
 
-        private static void WriteAdditionalSoundInfos(ChunkWriter chunkIO, Wad2 wad, List<WadSample> sampleTable)
-        {
-            chunkIO.WriteChunkWithChildren(Wad2Chunks.AdditionalSoundInfos, () =>
-            {
-                for (int i = 0; i < wad.AdditionalSoundInfos.Count; ++i)
-                {
-                    var soundInfo = wad.AdditionalSoundInfos[i];
-                    WriteSoundInfo(chunkIO, soundInfo, -1, sampleTable);
-                }
-            });
-        }
-
         private static void WriteSoundInfo(ChunkWriter chunkIO, WadSoundInfo soundInfo, int index, List<WadSample> sampleTable)
         {
             chunkIO.WriteChunkWithChildren(Wad2Chunks.SoundInfo, () =>
@@ -132,6 +120,21 @@ namespace TombLib.Wad
                     {
                         chunkIO.WriteChunkInt(Wad2Chunks.FixedSoundInfoId, fixedSoundInfo.Id.TypeId);
                         chunkIO.WriteChunkInt(Wad2Chunks.FixedSoundInfoSoundInfoId, soundInfoTable.IndexOf(fixedSoundInfo.SoundInfo));
+                    });
+                }
+            });
+        }
+
+        private static void WriteAdditionalSoundInfos(ChunkWriter chunkIO, Wad2 wad, List<WadSoundInfo> soundInfoTable)
+        {
+            chunkIO.WriteChunkWithChildren(Wad2Chunks.AdditionalSoundInfos, () =>
+            {
+                foreach (WadAdditionalSoundInfo additionalSoundInfo in wad.AdditionalSoundInfos.Values)
+                {
+                    chunkIO.WriteChunkWithChildren(Wad2Chunks.AdditionalSoundInfo, () =>
+                    {
+                        chunkIO.WriteChunkString(Wad2Chunks.AdditionalSoundInfoName, additionalSoundInfo.Id.Name);
+                        chunkIO.WriteChunkInt(Wad2Chunks.AdditionalSoundInfoSoundInfoId, soundInfoTable.IndexOf(additionalSoundInfo.SoundInfo));
                     });
                 }
             });

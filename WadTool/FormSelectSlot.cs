@@ -30,6 +30,16 @@ namespace WadTool
                 chosenId.Value = ((WadSpriteSequenceId)currentId).TypeId;
             else if (TypeClass == typeof(WadFixedSoundInfoId))
                 chosenId.Value = ((WadFixedSoundInfoId)currentId).TypeId;
+            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
+            {
+                chosenId.Visible = false;
+                chosenIdText.Visible = true;
+                treeSlots.Enabled = false;
+                tbSearchLabel.Enabled = false;
+                tbSearch.Enabled = false;
+
+                chosenIdText.Text = ((WadAdditionalSoundInfoId)currentId).Name;
+            }
             else
                 throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 
@@ -58,6 +68,8 @@ namespace WadTool
                 allSoundNode.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllSounds(GameVersion)));
                 treeSlots.Nodes.Add(allSoundNode);
             }
+            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
+            { }
             else
                 throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 
@@ -86,14 +98,16 @@ namespace WadTool
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (TypeClass == typeof(WadMoveableId) || TypeClass == typeof(WadMoveable))
+            if (TypeClass == typeof(WadMoveableId))
                 NewId = new WadMoveableId((uint)chosenId.Value);
-            else if (TypeClass == typeof(WadStaticId) || TypeClass == typeof(WadStatic))
+            else if (TypeClass == typeof(WadStaticId))
                 NewId = new WadStaticId((uint)chosenId.Value);
-            else if (TypeClass == typeof(WadSpriteSequenceId) || TypeClass == typeof(WadSpriteSequence))
+            else if (TypeClass == typeof(WadSpriteSequenceId))
                 NewId = new WadSpriteSequenceId((uint)chosenId.Value);
-            else if (TypeClass == typeof(WadFixedSoundInfoId) || TypeClass == typeof(WadFixedSoundInfo))
+            else if (TypeClass == typeof(WadFixedSoundInfoId))
                 NewId = new WadFixedSoundInfoId((uint)chosenId.Value);
+            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
+                NewId = new WadAdditionalSoundInfoId(chosenIdText.Text);
             else
                 throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 

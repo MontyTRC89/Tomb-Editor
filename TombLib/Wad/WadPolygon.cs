@@ -2,6 +2,12 @@
 
 namespace TombLib.Wad
 {
+    public enum WadPolygonShape : ushort
+    {
+        Quad = 0,
+        Triangle = 1
+    }
+
     public struct WadPolygon
     {
         public WadPolygonShape Shape;

@@ -65,9 +65,9 @@ namespace TombLib.Wad
                     return true;
                 else if (LoadSoundInfos(chunkIO, id, wad, ref soundInfos, samples))
                     return true;
-                else if (LoadAdditionalSoundInfos(chunkIO, id, wad, samples))
-                    return true;
                 else if (LoadFixedSoundInfos(chunkIO, id, wad, soundInfos))
+                    return true;
+                else if (LoadAdditionalSoundInfos(chunkIO, id, wad, soundInfos, samples))
                     return true;
                 else if (LoadSprites(chunkIO, id, wad, ref sprites))
                     return true;
@@ -224,7 +224,7 @@ namespace TombLib.Wad
             {
                 if (id != Wad2Chunks.SoundInfo)
                     return false;
-                
+
                 WadSoundInfoMetaData soundInfo;
                 long index;
                 LoadSoundInfo(chunkIO, wad, samples, out soundInfo, out index);
@@ -234,28 +234,6 @@ namespace TombLib.Wad
             });
 
             outSoundInfos = soundInfos;
-            return true;
-        }
-
-        private static bool LoadAdditionalSoundInfos(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, Dictionary<long, WadSample> samples)
-        {
-            if (idOuter != Wad2Chunks.AdditionalSoundInfos)
-                return false;
-
-            var soundInfos = new Dictionary<long, WadSoundInfo>();
-            chunkIO.ReadChunks((id, chunkSize) =>
-            {
-                if (id != Wad2Chunks.SoundInfo)
-                    return false;
-
-                WadSoundInfoMetaData soundInfo;
-                long index;
-                LoadSoundInfo(chunkIO, wad, samples, out soundInfo, out index);
-                wad.AdditionalSoundInfos.Add(new WadSoundInfo(soundInfo));
-
-                return true;
-            });
-
             return true;
         }
 
@@ -291,6 +269,56 @@ namespace TombLib.Wad
 
             wad.FixedSoundInfos = fixedSoundInfos;
             return true;
+        }
+
+        private static bool LoadAdditionalSoundInfos(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, Dictionary<long, WadSoundInfo> soundInfos, Dictionary<long, WadSample> samples)
+        {
+            if (idOuter == Wad2Chunks.AdditionalSoundInfosObsolete)
+            {
+                chunkIO.ReadChunks((id, chunkSize) =>
+                {
+                    if (id != Wad2Chunks.SoundInfo)
+                        return false;
+
+                    WadSoundInfoMetaData soundInfoMetaData;
+                    long index;
+                    LoadSoundInfo(chunkIO, wad, samples, out soundInfoMetaData, out index);
+                    var wId = new WadAdditionalSoundInfoId("Unnamed " + soundInfoMetaData.Name);
+                    wad.AdditionalSoundInfos.Add(wId, new WadAdditionalSoundInfo(wId) { SoundInfo = new WadSoundInfo(soundInfoMetaData) });
+
+                    return true;
+                });
+                return true;
+            }
+            else if (idOuter == Wad2Chunks.AdditionalSoundInfos)
+            {
+                var additionalSoundInfos = new SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo>();
+                chunkIO.ReadChunks((id, chunkSize) =>
+                {
+                    if (id != Wad2Chunks.AdditionalSoundInfo)
+                        return false;
+                    string soundName = null;
+                    int SoundInfoId = -1;
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 == Wad2Chunks.AdditionalSoundInfoName)
+                            soundName = chunkIO.ReadChunkString(chunkSize2);
+                        else if (id2 == Wad2Chunks.AdditionalSoundInfoSoundInfoId)
+                            SoundInfoId = chunkIO.ReadChunkInt(chunkSize2);
+                        else
+                            return false;
+                        return true;
+                    });
+
+                    var Id = new WadAdditionalSoundInfoId(soundName);
+                    additionalSoundInfos.Add(Id, new WadAdditionalSoundInfo(Id) { SoundInfo = soundInfos[SoundInfoId] });
+                    return true;
+                });
+
+                wad.AdditionalSoundInfos = additionalSoundInfos;
+                return true;
+            }
+            return false;
         }
 
         private static WadMesh LoadMesh(ChunkReader chunkIO, long chunkSize, Dictionary<long, WadTexture> textures)
@@ -646,7 +674,7 @@ namespace TombLib.Wad
                                     }
                                     else
                                         return false;
-                                });  
+                                });
 
                                 animation.AnimCommands.Add(command);
                             }

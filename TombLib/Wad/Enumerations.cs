@@ -9,20 +9,6 @@
         TR5 = 5
     }
 
-    public enum WadLinkOpcode : ushort
-    {
-        NotUseStack = 0,
-        Push = 1,
-        Pop = 2,
-        Read = 3
-    }
-
-    public enum WadMeshShadeMode : short
-    {
-        Dynamic = 0,
-        Static = 1
-    }
-
     public enum WadAnimCommandType : short
     {
         PositionReference = 1,
@@ -31,17 +17,6 @@
         KillEntity = 4,
         PlaySound = 5,
         FlipEffect = 6
-    }
-
-    public enum WadPolygonShape : ushort
-    {
-        Quad = 0,
-        Triangle = 1
-    }
-
-    public enum WadChunkType : ushort
-    {
-        NoExtraChunk = 0xcdcd
     }
 
     public enum WadMeshLightingType : ushort

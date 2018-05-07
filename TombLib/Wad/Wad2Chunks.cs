@@ -20,7 +20,6 @@ namespace TombLib.Wad
         /****/public static readonly ChunkId SampleData = ChunkId.FromString("W2WavData");
         public static readonly ChunkId SoundInfosObsolete = ChunkId.FromString("W2Sounds");
         public static readonly ChunkId SoundInfos = ChunkId.FromString("W2Sounds2");
-        public static readonly ChunkId AdditionalSoundInfos = ChunkId.FromString("W2Sounds3");
         /**/public static readonly ChunkId SoundInfo = ChunkId.FromString("W2Sound");
         /****/public static readonly ChunkId SoundInfoNameObsolete = ChunkId.FromString("W2SampleName");
         /****/public static readonly ChunkId SoundInfoName = ChunkId.FromString("W2Name");
@@ -39,6 +38,11 @@ namespace TombLib.Wad
         /**/public static readonly ChunkId FixedSoundInfo = ChunkId.FromString("W2FixedSound");
         /****/public static readonly ChunkId FixedSoundInfoId = ChunkId.FromString("W2Id");
         /****/public static readonly ChunkId FixedSoundInfoSoundInfoId = ChunkId.FromString("W2Sound");
+        public static readonly ChunkId AdditionalSoundInfosObsolete = ChunkId.FromString("W2Sounds3");
+        public static readonly ChunkId AdditionalSoundInfos = ChunkId.FromString("W2AdditionalSoundInfos");
+        /**/public static readonly ChunkId AdditionalSoundInfo = ChunkId.FromString("W2AdditionalSoundInfo");
+        /****/public static readonly ChunkId AdditionalSoundInfoSoundInfoId = ChunkId.FromString("W2Id");
+        /****/public static readonly ChunkId AdditionalSoundInfoName = ChunkId.FromString("W2Name");
         public static readonly ChunkId Meshes = ChunkId.FromString("W2Meshes");
         /**/public static readonly ChunkId Mesh = ChunkId.FromString("W2Mesh");
         /****/public static readonly ChunkId MeshIndex = ChunkId.FromString("W2Index");

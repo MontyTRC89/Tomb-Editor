@@ -11,7 +11,7 @@ using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.TrLevels
 {
-    public static class TrLevelOperations
+    internal static class TrLevelOperations
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -61,9 +61,12 @@ namespace TombLib.Wad.TrLevels
         private static void AddAdditionalDynamicSounds(Wad2 wad, TrLevel oldLevel, WadSoundInfo[] infos)
         {
             var newSoundInfos = wad.SoundInfosUnique.ToList();
-            foreach (var oldInfo in infos)
-                if (oldInfo != null && !newSoundInfos.Contains(oldInfo))
-                    wad.AdditionalSoundInfos.Add(oldInfo);
+            for (uint i = 0; i < infos.Length; ++i)
+                if (infos[i] != null && !newSoundInfos.Contains(infos[i]))
+                {
+                    var id = new WadAdditionalSoundInfoId(TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, i));
+                    wad.AdditionalSoundInfos.Add(id, new WadAdditionalSoundInfo(id) { SoundInfo = infos[i] });
+                }
         }
 
         private static TextureArea[] ConvertTrLevelTexturesToWadTexture(TrLevel oldLevel)
@@ -396,21 +399,21 @@ namespace TombLib.Wad.TrLevels
             {
                 int j = mi + 1;
 
-                var opcode = (WadLinkOpcode)oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4)];
+                var opcode = (Tr4Wad.WadLinkOpcode)oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4)];
                 int linkX = oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 1];
                 int linkY = -oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 2];
                 int linkZ = oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 3];
 
                 switch (opcode)
                 {
-                    case WadLinkOpcode.NotUseStack:
+                    case Tr4Wad.WadLinkOpcode.NotUseStack:
                         bones[j].Translation = new Vector3(linkX, linkY, linkZ);
                         bones[j].Parent = currentBone;
                         currentBone.Children.Add(bones[j]);
                         currentBone = bones[j];
 
                         break;
-                    case WadLinkOpcode.Push:
+                    case Tr4Wad.WadLinkOpcode.Push:
                         if (stack.Count <= 0)
                             continue;
                         currentBone = stack.Pop();
@@ -421,7 +424,7 @@ namespace TombLib.Wad.TrLevels
                         currentBone = bones[j];
 
                         break;
-                    case WadLinkOpcode.Pop:
+                    case Tr4Wad.WadLinkOpcode.Pop:
                         stack.Push(currentBone);
 
                         bones[j].Translation = new Vector3(linkX, linkY, linkZ);
@@ -430,7 +433,7 @@ namespace TombLib.Wad.TrLevels
                         currentBone = bones[j];
 
                         break;
-                    case WadLinkOpcode.Read:
+                    case Tr4Wad.WadLinkOpcode.Read:
                         if (stack.Count <= 0)
                             continue;
                         WadBone bone = stack.Pop();

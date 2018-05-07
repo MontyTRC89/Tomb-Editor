@@ -46,7 +46,7 @@ namespace TombLib.Wad
         }
 
         public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
-        public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
+        public override string ToString() => Id.ToString();
         IWadObjectId IWadObject.Id => Id;
     }
 }

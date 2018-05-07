@@ -76,6 +76,13 @@ namespace TombLib.Controls
                         var mainNode = AddOrReuseChild(nodes, "Fixed sound infos");
                         UpdateList(mainNode, _wad.FixedSoundInfos.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
                     }
+                    if (_wad.AdditionalSoundInfos.Count > 0)
+                    {
+                        var mainNode = AddOrReuseChild(nodes, "Additional sound infos (legacy imported and not used by any object)");
+                        UpdateList(mainNode, _wad.AdditionalSoundInfos.Values.Select(o => o.Id), o => o.ToString(Wad.SuggestedGameVersion));
+                    }
+                    else
+                        nodes.RemoveAll((node) => node.Text.Contains("Additional sound infos"));
                     tree.Nodes.AddRange(nodes);
                 });
         }
@@ -185,12 +192,27 @@ namespace TombLib.Controls
 
         private void tree_DoubleClick(object sender, EventArgs e)
         {
-            OnDoubleClick(EventArgs.Empty);
+            OnDoubleClick(e);
         }
 
         private void tree_Click(object sender, EventArgs e)
         {
-            OnClick(EventArgs.Empty);
+            OnClick(e);
+        }
+
+        private void Tree_KeyUp(object sender, KeyEventArgs e)
+        {
+            OnKeyUp(e);
+        }
+
+        private void Tree_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            OnKeyPress(e);
+        }
+
+        private void Tree_KeyDown(object sender, KeyEventArgs e)
+        {
+            OnKeyDown(e);
         }
 
         private void InitializeComponent()
@@ -214,6 +236,9 @@ namespace TombLib.Controls
             this.tree.TabIndex = 1;
             this.tree.Click += new System.EventHandler(this.tree_Click);
             this.tree.DoubleClick += new System.EventHandler(this.tree_DoubleClick);
+            this.tree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Tree_KeyDown);
+            this.tree.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Tree_KeyPress);
+            this.tree.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Tree_KeyUp);
             //
             // suggestedGameVersionComboBox
             //
