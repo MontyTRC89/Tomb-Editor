@@ -299,13 +299,6 @@ namespace TombLib.LevelData
             }
         }
 
-        public Wad2 ComposeActualWad()
-        {
-            Wad2 result = new Wad2();
-            int TODO_ComposeActualWad;
-            throw new NotImplementedException();
-        }
-
         public ImageC LoadFontTexture()
         {
             string absolutePath = MakeAbsolute(FontTextureFilePath);
