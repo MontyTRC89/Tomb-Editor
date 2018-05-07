@@ -27,7 +27,7 @@ namespace WadTool
         private WadRenderer _renderer;
         private AnimatedModel _model;
         private bool _saved = true;
-
+        
         // Clipboard
         private KeyFrame _clipboardKeyFrame = null;
         private AnimationNode _clipboardNode = null;
@@ -138,10 +138,10 @@ namespace WadTool
             tbNextAnimation.Text = node.WadAnimation.NextAnimation.ToString();
             tbNextFrame.Text = node.WadAnimation.NextFrame.ToString();
             tbStateId.Text = node.WadAnimation.StateId.ToString();
-            tbSpeed.Text = node.WadAnimation.Speed.ToString();
-            tbAccel.Text = node.WadAnimation.Acceleration.ToString();
-            tbLatSpeed.Text = node.WadAnimation.LateralSpeed.ToString();
-            tbLatAccel.Text = node.WadAnimation.LateralAcceleration.ToString();
+            tbSpeed.Text = (node.WadAnimation.Speed / 65536.0f).ToString();
+            tbAccel.Text = (node.WadAnimation.Acceleration / 65536.0f).ToString();
+            tbLatSpeed.Text = (node.WadAnimation.LateralSpeed / 65536.0f).ToString();
+            tbLatAccel.Text = (node.WadAnimation.LateralAcceleration / 65536.0f).ToString();
 
             panelRendering.Animation = node;
 
@@ -864,52 +864,56 @@ namespace WadTool
 
         private void tbSpeed_Validated(object sender, EventArgs e)
         {
-            int result = 0;
-            if (!int.TryParse(tbSpeed.Text, out result))
+            float result = 0;
+            string toParse = tbSpeed.Text.Replace(",", ".");
+            if (!float.TryParse(toParse, out result))
                 return;
 
             if (_selectedNode != null)
             {
-                _selectedNode.WadAnimation.Speed = result;
+                _selectedNode.WadAnimation.Speed = (int)Math.Round(result * 65536.0f, 0);
                 _saved = false;
             }
         }
 
         private void tbAccel_Validated(object sender, EventArgs e)
         {
-            int result = 0;
-            if (!int.TryParse(tbAccel.Text, out result))
+            float result = 0;
+            string toParse = tbAccel.Text.Replace(",", ".");
+            if (!float.TryParse(toParse, out result))
                 return;
 
             if (_selectedNode != null)
             {
-                _selectedNode.WadAnimation.Acceleration = result;
+                _selectedNode.WadAnimation.Acceleration = (int)Math.Round(result * 65536.0f, 0);
                 _saved = false;
             }
         }
 
         private void tbLatSpeed_Validated(object sender, EventArgs e)
         {
-            int result = 0;
-            if (!int.TryParse(tbLatSpeed.Text, out result))
+            float result = 0;
+            string toParse = tbLatSpeed.Text.Replace(",", ".");
+            if (!float.TryParse(toParse, out result))
                 return;
 
             if (_selectedNode != null)
             {
-                _selectedNode.WadAnimation.LateralSpeed = result;
+                _selectedNode.WadAnimation.LateralSpeed = (int)Math.Round(result * 65536.0f, 0);
                 _saved = false;
             }
         }
 
         private void tbLatAccel_TextChanged(object sender, EventArgs e)
         {
-            int result = 0;
-            if (!int.TryParse(tbLatAccel.Text, out result))
+            float result = 0;
+            string toParse = tbLatAccel.Text.Replace(",", ".");
+            if (!float.TryParse(toParse, out result))
                 return;
 
             if (_selectedNode != null)
             {
-                _selectedNode.WadAnimation.LateralAcceleration = result;
+                _selectedNode.WadAnimation.LateralAcceleration = (int)Math.Round(result * 65536.0f, 0);
                 _saved = false;
             }
         }
@@ -1013,6 +1017,46 @@ namespace WadTool
                     _selectedNode.WadAnimation.StateChanges.AddRange(form.StateChanges);
                 }
             }
+        }
+
+        private void timerPlayAnimation_Tick(object sender, EventArgs e)
+        {
+            /*if (_playAnimation)
+            {
+                // Get selected moveable
+                var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
+                var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
+                var moveable = wad.Moveables[moveableId];
+                if (moveable == null || moveable.Animations.Count == 0)
+                {
+                    _playAnimation = false;
+                    return;
+                }
+
+                // Get selected animation
+                if (treeAnimations.SelectedNodes.Count == 0)
+                    return;
+                var node = treeAnimations.SelectedNodes[0];
+                var animationIndex = (int)node.Tag;
+                if (animationIndex >= moveable.Animations.Count)
+                {
+                    _playAnimation = false;
+                    return;
+                }
+                var animation = moveable.Animations[animationIndex];
+
+                // Update animation
+                if (panel3D.KeyFrameIndex >= animation.RealNumberOfFrames)
+                    panel3D.KeyFrameIndex = 0;
+                else
+                    panelRendering.KeyFrameIndex++;
+                panel3D.Draw();
+            }*/
+        }
+
+        private void StopAnimation()
+        {
+
         }
     }
 }
