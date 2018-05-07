@@ -42,12 +42,10 @@ namespace WadTool
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
                 var keyframe = _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame];
                 var rotationVector = keyframe.Rotations[meshIndex];
-                rotationVector = new Vector3(newAngle, rotationVector.Y, rotationVector.Z);
-                keyframe.Rotations[meshIndex] = rotationVector;
-                //keyframe.RotationsMatrices[meshIndex] = Matrix4x4.CreateFromYawPitchRoll(rotationVector.Y, rotationVector.X, rotationVector.Z);
-                keyframe.Quaternions[meshIndex] = Quaternion.CreateFromYawPitchRoll(rotationVector.Y, rotationVector.X, rotationVector.Z);
-
-
+                float delta = newAngle - rotationVector.X;
+                keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitX, delta);
+                keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
+                
                 _control.Model.BuildAnimationPose(keyframe);
                 _control.Invalidate();
             }
@@ -64,11 +62,10 @@ namespace WadTool
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
                 var keyframe = _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame];
                 var rotationVector = keyframe.Rotations[meshIndex];
-                rotationVector = new Vector3(rotationVector.X, newAngle, rotationVector.Z);
-                keyframe.Rotations[meshIndex] = rotationVector;
-                //keyframe.RotationsMatrices[meshIndex] = Matrix4x4.CreateFromYawPitchRoll(rotationVector.Y, rotationVector.X, rotationVector.Z);
-                keyframe.Quaternions[meshIndex] = Quaternion.CreateFromYawPitchRoll(rotationVector.Y, rotationVector.X, rotationVector.Z);
-
+                float delta = newAngle - rotationVector.Y;
+                keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitY, delta);
+                keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
+      
                 _control.Model.BuildAnimationPose(keyframe);
                 _control.Invalidate();
             }
@@ -85,11 +82,10 @@ namespace WadTool
                 var meshIndex = model.Meshes.IndexOf(_control.SelectedMesh);
                 var keyframe = _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame];
                 var rotationVector = keyframe.Rotations[meshIndex];
-                rotationVector = new Vector3(rotationVector.X, rotationVector.Y, newAngle);
-                keyframe.Rotations[meshIndex] = rotationVector;
-                // keyframe.RotationsMatrices[meshIndex] = Matrix4x4.CreateFromYawPitchRoll(rotationVector.Y, rotationVector.X, rotationVector.Z);
-                keyframe.Quaternions[meshIndex] = Quaternion.CreateFromYawPitchRoll(rotationVector.Y, rotationVector.X, rotationVector.Z);
-
+                float delta = newAngle - rotationVector.Z;
+                keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitZ, delta);
+                keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
+                
                 _control.Model.BuildAnimationPose(keyframe);
                 _control.Invalidate();
             }

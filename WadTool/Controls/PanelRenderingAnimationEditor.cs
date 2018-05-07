@@ -42,12 +42,6 @@ namespace WadTool.Controls
         public bool DrawGizmo { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawLights { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool InterpolationMode { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public KeyFrame InterpolationKeyFrame1 { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public KeyFrame InterpolationKeyFrame2 { get; set; }
 
         private GraphicsDevice _device;
         private DeviceManager _deviceManager;
@@ -300,24 +294,38 @@ namespace WadTool.Controls
                 _gizmo.Draw(viewProjection);
             }
 
-            // Draw debug strings
-            if (SelectedMesh != null)
+            if (Animation != null)
             {
-                /*Vector3 screenPos = _device.Viewport.Project(SelectedMesh.Centre - Vector3.UnitY * 128.0f,
-                                    SelectedMesh.GlobalTransform * viewProjection);
+                // Draw debug strings
                 _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
                 _spriteBatch.DrawString(_deviceManager.Font,
-                                        "Name: " + SelectedMesh.Bone.Name,
-                                        new Vector2(screenPos.X, screenPos.Y).ToSharpDX(),
+                                        "Frame: " + (CurrentKeyFrame + 1) + "/" +
+                                        (Animation.DirectXAnimation.KeyFrames.Count),
+                                        new Vector2(10, 10).ToSharpDX(),
                                         SharpDX.Color.White);
 
-                _spriteBatch.DrawString(_deviceManager.Font,
-                                        "Local offset: " + SelectedMesh.Bone.Translation,
-                                        new Vector2(screenPos.X, screenPos.Y + 20.0f).ToSharpDX(),
-                                        SharpDX.Color.White);
+                if (SelectedMesh != null)
+                {
+                    _spriteBatch.DrawString(_deviceManager.Font,
+                                            "Mesh: " + SelectedMesh.Name,
+                                            new Vector2(10, 25).ToSharpDX(),
+                                            SharpDX.Color.White);
 
-                _spriteBatch.End();*/
+                    _spriteBatch.DrawString(_deviceManager.Font,
+                                            "Bone: " + _model.Bones[_model.Meshes.IndexOf(SelectedMesh)].Name,
+                                            new Vector2(10, 40).ToSharpDX(),
+                                            SharpDX.Color.White);
+
+                    _spriteBatch.DrawString(_deviceManager.Font,
+                                            "Rotation: " +
+                                            Animation.DirectXAnimation.KeyFrames[CurrentKeyFrame].Rotations[Model.Meshes.IndexOf(SelectedMesh)]
+                                            * 180.0f / (float)Math.PI,
+                                            new Vector2(10, 55).ToSharpDX(),
+                                            SharpDX.Color.White);
+                }
+
+                _spriteBatch.End();
             }
 
             _device.Present();
@@ -396,6 +404,7 @@ namespace WadTool.Controls
                     }
                 }
                 SelectedMesh = foundMesh;
+                _tool.AnimationEditorMeshSelected(Model, SelectedMesh);
             }
 
             Invalidate();

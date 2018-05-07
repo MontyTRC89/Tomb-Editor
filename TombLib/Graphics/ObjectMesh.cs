@@ -68,7 +68,7 @@ namespace TombLib.Graphics
         public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture)
         {
             // Initialize the mesh
-            var mesh = new ObjectMesh(device, "ObjectMesh_" + msh.Hash.ToString());
+            var mesh = new ObjectMesh(device, msh.Name /*"ObjectMesh_" + msh.Hash.ToString()*/);
 
             // Prepare materials
             var materialOpaque = new Material(Material.Material_Opaque + "_0_0_0_0", null, false, false, 0);

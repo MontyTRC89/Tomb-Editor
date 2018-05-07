@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.Utils;
@@ -58,6 +59,7 @@ namespace WadTool
             _bones = _moveable.Skeleton.LinearizedBones.ToList<WadBone>();
 
             // Load skeleton in combobox
+            comboSkeleton.Items.Add("--- Select a mesh ---");
             foreach (var bone in panelRendering.Model.Bones)
                 comboSkeleton.Items.Add(bone.Name);
             comboSkeleton.SelectedIndex = 0;
@@ -76,7 +78,14 @@ namespace WadTool
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
-
+            if (obj is WadToolClass.AnimationEditorMeshSelectedEvent)
+            {
+                var e = obj as WadToolClass.AnimationEditorMeshSelectedEvent;
+                if (e != null)
+                    comboSkeleton.SelectedIndex = e.Model.Meshes.IndexOf(e.Mesh) + 1;
+                else
+                    comboSkeleton.SelectedIndex = 0;
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -944,8 +953,8 @@ namespace WadTool
             var frame1 = _selectedNode.DirectXAnimation.KeyFrames[frameIndex1];
 
             // Now calculate how many frames I must insert
-            int numFramesToAdd = numFrames - (frameIndex2 - frameIndex1);
-            for (int i = 0; i < numFrames; i++)
+            int numFramesToAdd = numFrames - (frameIndex2 - frameIndex1) + 1;
+            for (int i = 0; i < numFramesToAdd; i++)
             {
                 var keyFrame = new KeyFrame();
                 foreach (var bone in _moveable.Skeleton.LinearizedBones)
@@ -982,6 +991,7 @@ namespace WadTool
                 for (int j = 0; j < keyframe.Quaternions.Count; j++)
                 {
                     keyframe.Quaternions[j] = Quaternion.Slerp(frame1.Quaternions[j], frame2.Quaternions[j], k * (i + 1));
+                    keyframe.Rotations[j] = MathC.QuaternionToEuler(keyframe.Quaternions[j]);
                 }
             }
 
