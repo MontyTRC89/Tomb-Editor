@@ -567,64 +567,15 @@ namespace TombLib.Wad.Tr4Wad
                                                         new Vector3(oldWad.KeyFrames[frames + 1],
                                                                     -oldWad.KeyFrames[frames + 3],
                                                                     oldWad.KeyFrames[frames + 5]));
-
                     frames += 6;
 
                     frame.Offset = new Vector3(oldWad.KeyFrames[frames],
                                                (short)(-oldWad.KeyFrames[frames + 1]),
                                                oldWad.KeyFrames[frames + 2]);
-
                     frames += 3;
 
                     for (int n = 0; n < oldMoveable.NumPointers; n++)
-                    {
-                        short rot = oldWad.KeyFrames[frames];
-                        WadKeyFrameRotation kfAngle = new WadKeyFrameRotation();
-
-                        switch (rot & 0xc000)
-                        {
-                            case 0:
-                                int rotation = rot;
-                                int rotation2 = oldWad.KeyFrames[frames + 1];
-
-                                frames += 2;
-
-                                int rotX = (rotation & 0x3ff0) >> 4;
-                                int rotY = ((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6);
-                                int rotZ = (rotation2) & 0x3ff;
-
-                                kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.ThreeAxes, rotX, rotY, rotZ);
-
-                                break;
-
-                            case 0x4000:
-                                frames += 1;
-                                int rotationX = rot & 0x3fff;
-
-                                kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.AxisX, rotationX, 0, 0);
-
-                                break;
-
-                            case 0x8000:
-                                frames += 1;
-                                int rotationY = rot & 0x3fff;
-
-                                kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.AxisY, 0, rotationY, 0);
-
-                                break;
-
-                            case 0xc000:
-                                int rotationZ = rot & 0x3fff;
-                                frames += 1;
-
-                                kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.AxisZ, 0, 0, rotationZ);
-
-                                break;
-                        }
-
-                        frame.Angles.Add(kfAngle);
-                    }
-
+                        frame.Angles.Add(WadKeyFrameRotation.FromTrAngle(ref frames, oldWad.KeyFrames, false, true));
                     if ((frames - startOfFrame) < oldAnimation.KeyFrameSize)
                         frames += ((int)oldAnimation.KeyFrameSize - (frames - startOfFrame));
 
