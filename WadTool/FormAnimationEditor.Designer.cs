@@ -119,16 +119,16 @@ namespace WadTool
             this.comboSkeleton = new System.Windows.Forms.ToolStripComboBox();
             this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.panelInterpolate = new System.Windows.Forms.Panel();
+            this.butInterpolateFrames = new DarkUI.Controls.DarkButton();
+            this.butInterpolateSetCurrent2 = new DarkUI.Controls.DarkButton();
+            this.butInterpolateSetCurrent1 = new DarkUI.Controls.DarkButton();
+            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.tbInterpolateNumFrames = new DarkUI.Controls.DarkTextBox();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.tbInterpolateFrame2 = new DarkUI.Controls.DarkTextBox();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.tbInterpolateFrame1 = new DarkUI.Controls.DarkTextBox();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
-            this.butInterpolateSetCurrent1 = new DarkUI.Controls.DarkButton();
-            this.butInterpolateSetCurrent2 = new DarkUI.Controls.DarkButton();
-            this.butInterpolateFrames = new DarkUI.Controls.DarkButton();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -479,7 +479,7 @@ namespace WadTool
             this.drawGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawGridToolStripMenuItem.Name = "drawGridToolStripMenuItem";
-            this.drawGridToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.drawGridToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.drawGridToolStripMenuItem.Text = "Draw grid";
             this.drawGridToolStripMenuItem.Click += new System.EventHandler(this.drawGridToolStripMenuItem_Click);
             // 
@@ -491,7 +491,7 @@ namespace WadTool
             this.drawGizmoToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawGizmoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawGizmoToolStripMenuItem.Name = "drawGizmoToolStripMenuItem";
-            this.drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.drawGizmoToolStripMenuItem.Text = "Draw gizmo";
             this.drawGizmoToolStripMenuItem.Click += new System.EventHandler(this.drawGizmoToolStripMenuItem_Click);
             // 
@@ -503,7 +503,7 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawCollisionBoxToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawCollisionBoxToolStripMenuItem.Name = "drawCollisionBoxToolStripMenuItem";
-            this.drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.drawCollisionBoxToolStripMenuItem.Text = "Draw collision box";
             this.drawCollisionBoxToolStripMenuItem.Click += new System.EventHandler(this.drawCollisionBoxToolStripMenuItem_Click);
             // 
@@ -1268,7 +1268,7 @@ namespace WadTool
             this.comboSkeleton.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboSkeleton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.comboSkeleton.Name = "comboSkeleton";
-            this.comboSkeleton.Size = new System.Drawing.Size(121, 28);
+            this.comboSkeleton.Size = new System.Drawing.Size(200, 28);
             this.comboSkeleton.SelectedIndexChanged += new System.EventHandler(this.comboSkeleton_SelectedIndexChanged);
             // 
             // panelRendering
@@ -1303,6 +1303,52 @@ namespace WadTool
             this.panelInterpolate.Size = new System.Drawing.Size(236, 148);
             this.panelInterpolate.TabIndex = 0;
             this.panelInterpolate.Visible = false;
+            // 
+            // butInterpolateFrames
+            // 
+            this.butInterpolateFrames.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butInterpolateFrames.Location = new System.Drawing.Point(11, 112);
+            this.butInterpolateFrames.Name = "butInterpolateFrames";
+            this.butInterpolateFrames.Size = new System.Drawing.Size(213, 23);
+            this.butInterpolateFrames.TabIndex = 96;
+            this.butInterpolateFrames.Text = "Interpolate selected frames";
+            this.butInterpolateFrames.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butInterpolateFrames.Click += new System.EventHandler(this.butInterpolateFrames_Click);
+            // 
+            // butInterpolateSetCurrent2
+            // 
+            this.butInterpolateSetCurrent2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butInterpolateSetCurrent2.Location = new System.Drawing.Point(139, 58);
+            this.butInterpolateSetCurrent2.Name = "butInterpolateSetCurrent2";
+            this.butInterpolateSetCurrent2.Size = new System.Drawing.Size(85, 22);
+            this.butInterpolateSetCurrent2.TabIndex = 95;
+            this.butInterpolateSetCurrent2.Text = "Set current";
+            this.butInterpolateSetCurrent2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butInterpolateSetCurrent2.Click += new System.EventHandler(this.butInterpolateSetCurrent2_Click);
+            // 
+            // butInterpolateSetCurrent1
+            // 
+            this.butInterpolateSetCurrent1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butInterpolateSetCurrent1.Location = new System.Drawing.Point(139, 30);
+            this.butInterpolateSetCurrent1.Name = "butInterpolateSetCurrent1";
+            this.butInterpolateSetCurrent1.Size = new System.Drawing.Size(85, 22);
+            this.butInterpolateSetCurrent1.TabIndex = 94;
+            this.butInterpolateSetCurrent1.Text = "Set current";
+            this.butInterpolateSetCurrent1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butInterpolateSetCurrent1.Click += new System.EventHandler(this.butInterpolateSetCurrent1_Click);
+            // 
+            // darkLabel21
+            // 
+            this.darkLabel21.AutoSize = true;
+            this.darkLabel21.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel21.Location = new System.Drawing.Point(8, 9);
+            this.darkLabel21.Name = "darkLabel21";
+            this.darkLabel21.Size = new System.Drawing.Size(102, 13);
+            this.darkLabel21.TabIndex = 60;
+            this.darkLabel21.Text = "Interpolate frames";
             // 
             // tbInterpolateNumFrames
             // 
@@ -1359,52 +1405,6 @@ namespace WadTool
             this.darkLabel20.Size = new System.Drawing.Size(50, 13);
             this.darkLabel20.TabIndex = 54;
             this.darkLabel20.Text = "Frame 1:";
-            // 
-            // darkLabel21
-            // 
-            this.darkLabel21.AutoSize = true;
-            this.darkLabel21.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel21.Location = new System.Drawing.Point(8, 9);
-            this.darkLabel21.Name = "darkLabel21";
-            this.darkLabel21.Size = new System.Drawing.Size(102, 13);
-            this.darkLabel21.TabIndex = 60;
-            this.darkLabel21.Text = "Interpolate frames";
-            // 
-            // butInterpolateSetCurrent1
-            // 
-            this.butInterpolateSetCurrent1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.butInterpolateSetCurrent1.Location = new System.Drawing.Point(139, 30);
-            this.butInterpolateSetCurrent1.Name = "butInterpolateSetCurrent1";
-            this.butInterpolateSetCurrent1.Size = new System.Drawing.Size(85, 22);
-            this.butInterpolateSetCurrent1.TabIndex = 94;
-            this.butInterpolateSetCurrent1.Text = "Set current";
-            this.butInterpolateSetCurrent1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butInterpolateSetCurrent1.Click += new System.EventHandler(this.butInterpolateSetCurrent1_Click);
-            // 
-            // butInterpolateSetCurrent2
-            // 
-            this.butInterpolateSetCurrent2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.butInterpolateSetCurrent2.Location = new System.Drawing.Point(139, 58);
-            this.butInterpolateSetCurrent2.Name = "butInterpolateSetCurrent2";
-            this.butInterpolateSetCurrent2.Size = new System.Drawing.Size(85, 22);
-            this.butInterpolateSetCurrent2.TabIndex = 95;
-            this.butInterpolateSetCurrent2.Text = "Set current";
-            this.butInterpolateSetCurrent2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butInterpolateSetCurrent2.Click += new System.EventHandler(this.butInterpolateSetCurrent2_Click);
-            // 
-            // butInterpolateFrames
-            // 
-            this.butInterpolateFrames.Image = global::WadTool.Properties.Resources.edit_16;
-            this.butInterpolateFrames.Location = new System.Drawing.Point(11, 112);
-            this.butInterpolateFrames.Name = "butInterpolateFrames";
-            this.butInterpolateFrames.Size = new System.Drawing.Size(213, 23);
-            this.butInterpolateFrames.TabIndex = 96;
-            this.butInterpolateFrames.Text = "Interpolate selected frames";
-            this.butInterpolateFrames.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butInterpolateFrames.Click += new System.EventHandler(this.butInterpolateFrames_Click);
             // 
             // FormAnimationEditor
             // 
