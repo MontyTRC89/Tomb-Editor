@@ -607,84 +607,10 @@ namespace TombLib.Wad.TrLevels
                         frames++;
 
                     for (int n = 0; n < oldMoveable.NumMeshes; n++)
-                    {
-                        short rot = oldLevel.Frames[frames];
-                        WadKeyFrameRotation kfAngle = new WadKeyFrameRotation();
-
-                        if (oldLevel.Version == TrVersion.TR1)
-                        {
-                            int rotation = rot;
-                            int rotation2 = oldLevel.Frames[frames + 1];
-
-                            frames += 2;
-
-                            int rotX = (int)((rotation & 0x3ff0) >> 4);
-                            int rotZ = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
-                            int rotY = (int)((rotation2) & 0x3ff);
-
-                            kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.ThreeAxes, rotX, rotY, rotZ);
-
-                            break;
-
-                        }
-                        else
-                        {
-                            switch (rot & 0xc000)
-                            {
-                                case 0:
-                                    int rotation = rot;
-                                    int rotation2 = oldLevel.Frames[frames + 1];
-
-                                    frames += 2;
-
-                                    int rotX = (int)((rotation & 0x3ff0) >> 4);
-                                    int rotY = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
-                                    int rotZ = (int)((rotation2) & 0x3ff);
-
-                                    kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.ThreeAxes, rotX, rotY, rotZ);
-
-                                    break;
-
-                                case 0x4000:
-                                    frames += 1;
-                                    int rotationX;
-                                    if (oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5)
-                                        rotationX = rot & 0xfff;
-                                    else
-                                        rotationX = (rot & 0x3ff) * 4;
-
-                                    kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.AxisX, rotationX, 0, 0);
-
-                                    break;
-
-                                case 0x8000:
-                                    frames += 1;
-                                    int rotationY;
-                                    if (oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5)
-                                        rotationY = rot & 0xfff;
-                                    else
-                                        rotationY = (rot & 0x3ff) * 4;
-
-                                    kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.AxisY, 0, rotationY, 0);
-
-                                    break;
-
-                                case 0xc000:
-                                    frames += 1;
-                                    int rotationZ;
-                                    if (oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5)
-                                        rotationZ = rot & 0xfff;
-                                    else
-                                        rotationZ = (rot & 0x3ff) * 4;
-
-                                    kfAngle = WadKeyFrameRotation.FromTrAngle(WadKeyFrameRotationAxis.AxisZ, 0, 0, rotationZ);
-
-                                    break;
-                            }
-                        }
-
-                        frame.Angles.Add(kfAngle);
-                    }
+                        frame.Angles.Add(
+                            WadKeyFrameRotation.FromTrAngle(ref frames, oldLevel.Frames,
+                                oldLevel.Version == TrVersion.TR1,
+                                oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5));
 
                     if ((frames - startOfFrame) < oldAnimation.FrameSize)
                         frames += ((int)oldAnimation.FrameSize - (frames - startOfFrame));

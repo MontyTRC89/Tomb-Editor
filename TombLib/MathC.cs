@@ -8,6 +8,27 @@ namespace TombLib
     {
         public const float ZeroTolerance = 1e-6f; // Value a 8x higher than 1.19209290E-07F
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 Round(Vector2 v) => new Vector2((float)Math.Round(v.X), (float)Math.Round(v.Y));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 Round(Vector3 v) => new Vector3((float)Math.Round(v.X), (float)Math.Round(v.Y), (float)Math.Round(v.Z));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector4 Round(Vector4 v) => new Vector4((float)Math.Round(v.X), (float)Math.Round(v.Y), (float)Math.Round(v.Z), (float)Math.Round(v.W));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 Floor(Vector2 v) => new Vector2((float)Math.Floor(v.X), (float)Math.Floor(v.Y));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 Floor(Vector3 v) => new Vector3((float)Math.Floor(v.X), (float)Math.Floor(v.Y), (float)Math.Floor(v.Z));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector4 Floor(Vector4 v) => new Vector4((float)Math.Floor(v.X), (float)Math.Floor(v.Y), (float)Math.Floor(v.Z), (float)Math.Floor(v.W));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 Ceiling(Vector2 v) => new Vector2((float)Math.Ceiling(v.X), (float)Math.Ceiling(v.Y));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 Ceiling(Vector3 v) => new Vector3((float)Math.Ceiling(v.X), (float)Math.Ceiling(v.Y), (float)Math.Ceiling(v.Z));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector4 Ceiling(Vector4 v) => new Vector4((float)Math.Ceiling(v.X), (float)Math.Ceiling(v.Y), (float)Math.Ceiling(v.Z), (float)Math.Ceiling(v.W));
+
         /// <summary>
         /// Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike <see cref="WithinEpsilon"/> method). See Remarks.
         /// See remarks.
@@ -140,7 +161,7 @@ namespace TombLib
             return Matrix4x4ChangeHandedness(Matrix4x4.CreatePerspectiveOffCenter(left, right, bottom, top, nearPlaneDistance, farPlaneDistance));
         }
 
-        // TODO: not working yet probably, code taken from Wikipedia at 
+        // TODO: not working yet probably, code taken from Wikipedia at
         // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Vector3 QuaternionToEuler(Quaternion q)

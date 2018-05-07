@@ -120,7 +120,8 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            if (_level.Settings.GameVersion <= GameVersion.TR3) currentMeshSize += 4; // Num colored quads and triangles
+            if (_level.Settings.GameVersion <= GameVersion.TR3)
+                currentMeshSize += 4; // Num colored quads and triangles
 
             if (currentMeshSize % 4 != 0)
             {
@@ -140,8 +141,8 @@ namespace TombLib.LevelData.Compilers
 
         private class AnimationTr4HelperData
         {
-            public int KeyFramesOffset { get; set; }
-            public int KeyFramesSize { get; set; }
+            public int KeyFrameOffset { get; set; }
+            public int KeyFrameSize { get; set; }
         }
 
         public void ConvertWad2DataToTr4()
@@ -149,139 +150,57 @@ namespace TombLib.LevelData.Compilers
             SortedList<WadMoveableId, WadMoveable> moveables = _level.Settings.WadGetAllMoveables();
             SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
 
-            int lastAnimation = 0;
-            int lastAnimDispatch = 0;
-
             // First thing build frames
             var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>();
-            var keyFramesDictionary = new Dictionary<WadKeyFrame, uint>();
-
-            int currentKeyFrameSize = 0;
-            int totalKeyFrameSize = 0;
-
             foreach (WadMoveable moveable in moveables.Values)
-            {
                 foreach (var animation in moveable.Animations)
                 {
                     AnimationTr4HelperData animationHelper = animationDictionary.TryAdd(animation, new AnimationTr4HelperData());
-                    animationHelper.KeyFramesOffset = totalKeyFrameSize * 2;
+                    animationHelper.KeyFrameOffset = _frames.Count * 2;
 
-                    var axis = WadKeyFrameRotationAxis.ThreeAxes;
-                    int rotX = 0;
-                    int rotY = 0;
-                    int rotZ = 0;
-
-                    // First I need to calculate the max frame size because I will need to pad later with 0x00
-                    int maxKeyFrameSize = 0;
-                    foreach (var keyframe in animation.KeyFrames)
+                    // Store the frames in an intermediate data structure to pad them to the same size in the next step.
+                    var unpaddedFrames = new List<short>[animation.KeyFrames.Count];
+                    for (int i = 0; i < animation.KeyFrames.Count; ++i)
                     {
-                        currentKeyFrameSize = 9;
+                        var unpaddedFrame = new List<short>();
+                        WadKeyFrame wadFrame = animation.KeyFrames[i];
+                        unpaddedFrames[i] = unpaddedFrame;
 
-                        foreach (var angle in keyframe.Angles)
-                        {
-                            WadKeyFrameRotation.ToTrAngle(angle, out axis, out rotX, out rotY, out rotZ);
-                            if (axis == WadKeyFrameRotationAxis.ThreeAxes)
-                                currentKeyFrameSize += 2;
-                            else
-                                currentKeyFrameSize += 1;
-                        }
+                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.X)));
+                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.X)));
+                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.BoundingBox.Minimum.Y)));
+                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.BoundingBox.Maximum.Y)));
+                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.Z)));
+                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.Z)));
 
-                        if (currentKeyFrameSize > maxKeyFrameSize)
-                            maxKeyFrameSize = currentKeyFrameSize;
+                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.X)));
+                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.Offset.Y)));
+                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.Z)));
+
+                        foreach (var angle in wadFrame.Angles)
+                            WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
+                                false, //_level.Settings.GameVersion == GameVersion.TR1,
+                                _level.Settings.GameVersion == GameVersion.TR4 ||
+                                _level.Settings.GameVersion == GameVersion.TRNG ||
+                                _level.Settings.GameVersion == GameVersion.TR5);
                     }
 
-                    foreach (var keyframe in animation.KeyFrames)
+                    // Figure out padding of the frames
+                    int longestFrame = 0;
+                    foreach (List<short> unpaddedFrame in unpaddedFrames)
+                        longestFrame = Math.Max(longestFrame, unpaddedFrame.Count);
+
+                    // Add frames
+                    foreach (List<short> unpaddedFrame in unpaddedFrames)
                     {
-                        currentKeyFrameSize = 0;
-                        int baseFrame = _frames.Count;
-
-                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, keyframe.BoundingBox.Minimum.X)));
-                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, keyframe.BoundingBox.Maximum.X)));
-                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -keyframe.BoundingBox.Minimum.Y)));
-                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -keyframe.BoundingBox.Maximum.Y)));
-                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, keyframe.BoundingBox.Minimum.Z)));
-                        _frames.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, keyframe.BoundingBox.Maximum.Z)));
-
-                        currentKeyFrameSize += 6;
-
-                        _frames.Add((short)keyframe.Offset.X);
-                        _frames.Add((short)-keyframe.Offset.Y);
-                        _frames.Add((short)keyframe.Offset.Z);
-
-                        currentKeyFrameSize += 3;
-
-                        foreach (var angle in keyframe.Angles)
-                        {
-                            short rotation16 = 0;
-                             WadKeyFrameRotation.ToTrAngle(angle, out axis, out rotX, out rotY, out rotZ);
-
-                            switch (axis)
-                            {
-                                case WadKeyFrameRotationAxis.ThreeAxes:
-                                    rotation16 = (short)((rotX << 4) | ((rotY & 0xfc0) >> 6));
-                                    _frames.Add(rotation16);
-
-                                    rotation16 = (short)(((rotY & 0x3f) << 10) | (rotZ & 0x3ff));
-                                    _frames.Add(rotation16);
-
-                                    currentKeyFrameSize += 2;
-
-                                    break;
-
-                                case WadKeyFrameRotationAxis.AxisX:
-                                    rotation16 = 0x4000;
-                                    if (_level.Settings.GameVersion <= GameVersion.TR3) rotX = (short)(rotX / 4);
-                                    rotation16 |= (short)rotX;
-                                    _frames.Add(rotation16);
-
-                                    currentKeyFrameSize += 1;
-
-                                    break;
-
-                                case WadKeyFrameRotationAxis.AxisY:
-                                    rotation16 = unchecked((short)0x8000);
-                                    if (_level.Settings.GameVersion <= GameVersion.TR3) rotY = (short)(rotY / 4);
-                                    rotation16 |= (short)rotY;
-
-                                    _frames.Add(rotation16);
-
-                                    currentKeyFrameSize += 1;
-
-                                    break;
-
-                                case WadKeyFrameRotationAxis.AxisZ:
-                                    rotation16 = unchecked((short)0xc000);
-                                    if (_level.Settings.GameVersion <= GameVersion.TR3) rotZ = (short)(rotZ / 4);
-                                    rotation16 += (short)rotZ;
-
-                                    _frames.Add(rotation16);
-
-                                    currentKeyFrameSize += 1;
-
-                                    break;
-                            }
-                        }
-
-                        // Padding
-                        if (currentKeyFrameSize < maxKeyFrameSize)
-                        {
-                            for (int p = 0; p < maxKeyFrameSize - currentKeyFrameSize; p++)
-                            {
-                                _frames.Add(0);
-                            }
-                            currentKeyFrameSize += maxKeyFrameSize - currentKeyFrameSize;
-                        }
-
-                        int endFrame = _frames.Count;
-
-                        keyFramesDictionary.Add(keyframe, (uint)totalKeyFrameSize);
-                        totalKeyFrameSize += currentKeyFrameSize;
+                        _frames.AddRange(unpaddedFrame);
+                        _frames.AddRange(Enumerable.Repeat((short)0, longestFrame - unpaddedFrame.Count));
                     }
-
-                    animationHelper.KeyFramesSize = maxKeyFrameSize;
+                    animationHelper.KeyFrameSize = longestFrame;
                 }
-            }
 
+            int lastAnimation = 0;
+            int lastAnimDispatch = 0;
             foreach (WadMoveable oldMoveable in moveables.Values)
             {
                 var newMoveable = new tr_moveable();
@@ -300,10 +219,10 @@ namespace TombLib.LevelData.Compilers
 
                     // Setup the final animation
                     if (j == 0)
-                        newMoveable.FrameOffset = checked((uint)animationHelper.KeyFramesOffset);
-                    newAnimation.FrameOffset = checked((uint)animationHelper.KeyFramesOffset);
+                        newMoveable.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
+                    newAnimation.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
                     newAnimation.FrameRate = oldAnimation.FrameRate;
-                    newAnimation.FrameSize = checked((byte)animationHelper.KeyFramesSize);
+                    newAnimation.FrameSize = checked((byte)animationHelper.KeyFrameSize);
                     newAnimation.Speed = oldAnimation.Speed;
                     newAnimation.Accel = oldAnimation.Acceleration;
                     newAnimation.SpeedLateral = oldAnimation.LateralSpeed;

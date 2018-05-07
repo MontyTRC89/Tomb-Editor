@@ -17,14 +17,6 @@
         Read = 3
     }
 
-    public enum WadKeyFrameRotationAxis : short
-    {
-        ThreeAxes = 0,
-        AxisX = 1,
-        AxisY = 2,
-        AxisZ = 3
-    }
-
     public enum WadMeshShadeMode : short
     {
         Dynamic = 0,
