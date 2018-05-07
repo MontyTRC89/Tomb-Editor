@@ -36,7 +36,6 @@
             this.tbSearchLabel = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.chosenId = new DarkUI.Controls.DarkNumericUpDown();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.chosenIdText = new DarkUI.Controls.DarkTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chosenId)).BeginInit();
@@ -187,7 +186,6 @@
         private DarkUI.Controls.DarkLabel tbSearchLabel;
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkNumericUpDown chosenId;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private DarkUI.Controls.DarkTextBox chosenIdText;
     }
 }
