@@ -116,7 +116,7 @@ namespace WadTool
         {
             RaiseEvent(new SourceWadChangedEvent());
         }
-        
+
         // Selection
         public class MainSelectionChangedEvent : IWadChangedEvent
         { }

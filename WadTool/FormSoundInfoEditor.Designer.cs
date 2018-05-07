@@ -1,6 +1,6 @@
 ﻿namespace WadTool
 {
-    partial class FormFixedSoundInfoEditor
+    partial class FormSoundInfoEditor
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            TombLib.Wad.WadSoundInfo wadSoundInfo1 = new TombLib.Wad.WadSoundInfo();
             this.soundInfoEditor1 = new TombLib.Controls.SoundInfoEditor();
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.btOk = new DarkUI.Controls.DarkButton();
@@ -43,8 +42,8 @@
             this.soundInfoEditor1.Location = new System.Drawing.Point(12, 12);
             this.soundInfoEditor1.MinimumSize = new System.Drawing.Size(442, 346);
             this.soundInfoEditor1.Name = "soundInfoEditor1";
+            this.soundInfoEditor1.ReadOnly = true;
             this.soundInfoEditor1.Size = new System.Drawing.Size(656, 535);
-            this.soundInfoEditor1.SoundInfo = wadSoundInfo1;
             this.soundInfoEditor1.TabIndex = 0;
             // 
             // btCancel
@@ -67,7 +66,7 @@
             this.btOk.Text = "Ok";
             this.btOk.Click += new System.EventHandler(this.btOk_Click);
             // 
-            // FormFixedSoundInfoEditor
+            // FormSoundInfoEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -76,11 +75,11 @@
             this.Controls.Add(this.btOk);
             this.Controls.Add(this.soundInfoEditor1);
             this.MinimizeBox = false;
-            this.Name = "FormFixedSoundInfoEditor";
+            this.Name = "FormSoundInfoEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Fixed Sound Info Editor";
+            this.Text = "Sound Info Editor";
             this.ResumeLayout(false);
 
         }

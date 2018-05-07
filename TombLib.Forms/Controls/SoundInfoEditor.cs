@@ -435,6 +435,9 @@ namespace TombLib.Controls
                 dataGridView.ReadOnly = value;
                 comboSampleRate.Enabled = !value;
                 comboSampleRateTextBox.Enabled = !value;
+                comboSampleRateLabel.Enabled = !value;
+                dataGridViewControls.Enabled = !value;
+                dataGridView.ReadOnly = value;
             }
         }
     }

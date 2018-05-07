@@ -9,7 +9,7 @@ namespace TombLib.Wad.TrLevels
     // This is a class for loading objects data from original TR levels.
     // We are interested only in meshes, animations, textures.
     // Everything else will be ignored.
-    public class TrLevel
+    internal class TrLevel
     {
         internal TrVersion Version;
         internal bool IsNg;

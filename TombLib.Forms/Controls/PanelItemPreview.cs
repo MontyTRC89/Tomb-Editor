@@ -22,9 +22,18 @@ namespace TombLib.Controls
                 if (_currentObject == value)
                     return;
                 _currentObject = value;
-                _fixedSoundInfoEditor.Visible = value is WadFixedSoundInfo;
                 if (value is WadFixedSoundInfo)
-                    _fixedSoundInfoEditor.SoundInfo = ((WadFixedSoundInfo)value).SoundInfo;
+                {
+                    _soundInfoEditor.SoundInfo = ((WadFixedSoundInfo)value).SoundInfo;
+                    _soundInfoEditor.Visible = true;
+                }
+                else if (value is WadAdditionalSoundInfo)
+                {
+                    _soundInfoEditor.SoundInfo = ((WadAdditionalSoundInfo)value).SoundInfo;
+                    _soundInfoEditor.Visible = true;
+                }
+                else
+                    _soundInfoEditor.Visible = false;
                 Invalidate();
             }
         }
@@ -59,32 +68,37 @@ namespace TombLib.Controls
         private Texture2D _spriteTexture;
         private WadTexture _spriteTextureData;
         private WadRenderer _wadRenderer;
-        private SoundInfoEditor _fixedSoundInfoEditor;
+        private SoundInfoEditor _soundInfoEditor;
         private IWadObject _currentObject = null;
 
         public PanelItemPreview()
         {
             // Init fixed sound info editor
-            _fixedSoundInfoEditor = new SoundInfoEditor();
-            _fixedSoundInfoEditor.Name = "_fixedSoundInfoEditor";
-            _fixedSoundInfoEditor.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
+            _soundInfoEditor = new SoundInfoEditor();
+            _soundInfoEditor.Name = "_soundInfoEditor";
+            _soundInfoEditor.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
             Rectangle clientRectangle = ClientRectangle;
             clientRectangle.Inflate(new Size(-5, -5));
-            _fixedSoundInfoEditor.Bounds = clientRectangle;
-            _fixedSoundInfoEditor.Visible = false;
-            _fixedSoundInfoEditor.ReadOnly = ReadOnly;
-            _fixedSoundInfoEditor.SoundInfoChanged += delegate
+            _soundInfoEditor.Bounds = clientRectangle;
+            _soundInfoEditor.Visible = false;
+            _soundInfoEditor.ReadOnly = ReadOnly;
+            _soundInfoEditor.SoundInfoChanged += delegate
             {
                 if (ReadOnly)
                     return;
                 if (CurrentObject is WadFixedSoundInfo)
                 {
                     WadFixedSoundInfo fixedSoundInfo = (WadFixedSoundInfo)CurrentObject;
-                    fixedSoundInfo.SoundInfo = _fixedSoundInfoEditor.SoundInfo;
+                    fixedSoundInfo.SoundInfo = _soundInfoEditor.SoundInfo;
+                }
+                if (CurrentObject is WadAdditionalSoundInfo)
+                {
+                    WadAdditionalSoundInfo additionalSoundInfo = (WadAdditionalSoundInfo)CurrentObject;
+                    additionalSoundInfo.SoundInfo = _soundInfoEditor.SoundInfo;
                 }
                 ObjectWasModified(this, EventArgs.Empty);
             };
-            Controls.Add(_fixedSoundInfoEditor);
+            Controls.Add(_soundInfoEditor);
         }
 
         protected override void OnSizeChanged(EventArgs e)
@@ -93,7 +107,7 @@ namespace TombLib.Controls
 
             Rectangle clientRectangle = ClientRectangle;
             clientRectangle.Inflate(new Size(-5, -5));
-            _fixedSoundInfoEditor.Bounds = clientRectangle;
+            _soundInfoEditor.Bounds = clientRectangle;
         }
 
 
@@ -162,7 +176,7 @@ namespace TombLib.Controls
                 _spriteTexture?.Dispose();
                 _presenter?.Dispose();
                 _rasterizerWireframe?.Dispose();
-                _fixedSoundInfoEditor?.Dispose();
+                _soundInfoEditor?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -171,8 +185,8 @@ namespace TombLib.Controls
         {
             if (_device == null || _presenter == null)
                 e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
-            if (_fixedSoundInfoEditor.Visible)
-                using (var brush = new SolidBrush(_fixedSoundInfoEditor.BackColor))
+            if (_soundInfoEditor.Visible)
+                using (var brush = new SolidBrush(_soundInfoEditor.BackColor))
                     e.Graphics.FillRectangle(brush, ClientRectangle);
 
             // Don't paint the background
@@ -185,7 +199,7 @@ namespace TombLib.Controls
 
         public void Draw()
         {
-            if (_fixedSoundInfoEditor.Visible || _device == null || _presenter == null)
+            if (_soundInfoEditor.Visible || _device == null || _presenter == null)
                 return;
 
             _device.Presenter = _presenter;

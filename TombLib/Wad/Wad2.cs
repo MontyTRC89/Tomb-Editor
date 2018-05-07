@@ -29,7 +29,7 @@ namespace TombLib.Wad
         public SortedList<WadStaticId, WadStatic> Statics { get; set; } = new SortedList<WadStaticId, WadStatic>();
         public SortedList<WadSpriteSequenceId, WadSpriteSequence> SpriteSequences { get; set; } = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
         public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> FixedSoundInfos { get; set; } = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
-        public List<WadSoundInfo> AdditionalSoundInfos { get; set; } = new List<WadSoundInfo>();
+        public SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo> AdditionalSoundInfos { get; set; } = new SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo>();
 
         public string FileName { get; set; }
 
@@ -45,9 +45,8 @@ namespace TombLib.Wad
                         foreach (WadAnimCommand animCommand in animation.AnimCommands)
                             if (animCommand.Type == WadAnimCommandType.PlaySound)
                                 soundInfos.Add(animCommand.SoundInfo);
-                foreach (var info in AdditionalSoundInfos)
-                    soundInfos.Add(info);
-
+                foreach (var info in AdditionalSoundInfos.Values)
+                    soundInfos.Add(info.SoundInfo);
                 return soundInfos;
             }
         }
@@ -142,6 +141,8 @@ namespace TombLib.Wad
                 return SpriteSequences.TryGetOrDefault((WadSpriteSequenceId)wadObjectId);
             else if (wadObjectId is WadFixedSoundInfoId)
                 return FixedSoundInfos.TryGetOrDefault((WadFixedSoundInfoId)wadObjectId);
+            else if (wadObjectId is WadAdditionalSoundInfoId)
+                return AdditionalSoundInfos.TryGetOrDefault((WadAdditionalSoundInfoId)wadObjectId);
             else
                 throw new ArgumentException("Argument not of a valid type.");
 
@@ -157,6 +158,8 @@ namespace TombLib.Wad
                 SpriteSequences.Remove((WadSpriteSequenceId)wadObjectId);
             else if (wadObjectId is WadFixedSoundInfoId)
                 FixedSoundInfos.Remove((WadFixedSoundInfoId)wadObjectId);
+            else if (wadObjectId is WadAdditionalSoundInfoId)
+                AdditionalSoundInfos.Remove((WadAdditionalSoundInfoId)wadObjectId);
             else
                 throw new ArgumentException("Argument not of a valid type.");
         }
@@ -179,6 +182,8 @@ namespace TombLib.Wad
                 SpriteSequences.Add((WadSpriteSequenceId)newId, (WadSpriteSequence)wadObject);
             else if (newId is WadFixedSoundInfoId)
                 FixedSoundInfos.Add((WadFixedSoundInfoId)newId, (WadFixedSoundInfo)wadObject);
+            else if (newId is WadAdditionalSoundInfoId)
+                AdditionalSoundInfos.Add((WadAdditionalSoundInfoId)newId, (WadAdditionalSoundInfo)wadObject);
             else
                 throw new ArgumentException("Argument not of a valid type.");
         }

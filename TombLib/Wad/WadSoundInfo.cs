@@ -142,5 +142,14 @@ namespace TombLib.Wad
         public override int GetHashCode() { return Hash.GetHashCode(); }
 
         public static WadSoundInfo Empty { get; } = new WadSoundInfo();
+
+        public WadSoundInfo ChangeName(string newName)
+        {
+            if (Name == newName)
+                return this;
+            WadSoundInfoMetaData metaData = Data;
+            metaData.Name = newName;
+            return new WadSoundInfo(metaData);
+        }
     }
 }

@@ -531,7 +531,7 @@
         public ushort Characteristics;
     }
 
-    public struct tr_sample
+    internal struct tr_sample
     {
         public byte[] Data;
     }

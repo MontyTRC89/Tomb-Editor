@@ -114,11 +114,11 @@
     <Compile Include="FormAnimationEditor.Designer.cs">
       <DependentUpon>FormAnimationEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormFixedSoundInfoEditor.cs">
+    <Compile Include="FormSoundInfoEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormFixedSoundInfoEditor.Designer.cs">
-      <DependentUpon>FormFixedSoundInfoEditor.cs</DependentUpon>
+    <Compile Include="FormSoundInfoEditor.Designer.cs">
+      <DependentUpon>FormSoundInfoEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -191,8 +191,8 @@
     <EmbeddedResource Include="FormAnimationEditor.resx">
       <DependentUpon>FormAnimationEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormFixedSoundInfoEditor.resx">
-      <DependentUpon>FormFixedSoundInfoEditor.cs</DependentUpon>
+    <EmbeddedResource Include="FormSoundInfoEditor.resx">
+      <DependentUpon>FormSoundInfoEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>

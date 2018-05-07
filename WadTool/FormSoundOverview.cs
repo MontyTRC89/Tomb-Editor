@@ -11,6 +11,7 @@ namespace WadTool
     {
         private struct SoundUse
         {
+            public bool GrayedOut;
             public string Name { get; set; }
             public Func<WadSoundInfo> Get { get; set; }
             public Action<WadSoundInfo> Set { get; set; }
@@ -62,7 +63,7 @@ namespace WadTool
                                     animation.AnimCommands[iCapturedByLambda] = animCommand;
                                 }
                             });
-                    }
+                        }
                 }
             }
             foreach (WadFixedSoundInfo fixedSoundInfo in wad.FixedSoundInfos.Values)
@@ -72,6 +73,16 @@ namespace WadTool
                     Name = "Fixed sound slot - " + fixedSoundInfo.ToString(wad.SuggestedGameVersion),
                     Get = () => fixedSoundInfo.SoundInfo,
                     Set = soundInfo => fixedSoundInfo.SoundInfo = soundInfo
+                });
+            }
+            foreach (WadAdditionalSoundInfo additionalSoundInfos in wad.AdditionalSoundInfos.Values)
+            {
+                SoundUses.Add(new SoundUse
+                {
+                    Name = "Additional sound info - " + additionalSoundInfos.ToString(wad.SuggestedGameVersion),
+                    Get = () => additionalSoundInfos.SoundInfo,
+                    Set = soundInfo => additionalSoundInfos.SoundInfo = soundInfo,
+                    GrayedOut = true
                 });
             }
 
@@ -130,6 +141,16 @@ namespace WadTool
                 soundInfoEditor.SoundInfo = WadSoundInfo.Empty;
                 usedForDataGridView.Enabled = false;
                 soundInfoEditor.Enabled = false;
+            }
+        }
+
+        private void soundInfosDataGridView_CellFormattingSafe(object sender, DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventArgs e)
+        {
+            SoundInfo soundInfo = _soundInfos[e.RowIndex];
+            if (soundInfo.Uses.All(use => use.GrayedOut))
+            {
+                e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(100, 100, 100);
+                e.FormattingApplied = true;
             }
         }
 

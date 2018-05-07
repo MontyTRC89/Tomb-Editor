@@ -271,13 +271,24 @@ namespace WadTool
             }
             else if (wadObject is WadMoveable)
             {
-                // TODO Some kind of mesh tree, animation, ... editor maybe?
-                DarkMessageBox.Show(owner, "Sorry moveable editing is not supported right now! :(", "Feature not supported", MessageBoxIcon.Information);
+                using (var form = new FormAnimationEditor(tool, deviceManager, wad, ((WadMoveable)wadObject).Id))
+                {
+                    if (form.ShowDialog() != DialogResult.OK)
+                        return;
+                    tool.WadChanged(tool.MainSelection.Value.WadArea);
+                }
+            }
+            else if (wadObject is WadSpriteSequence)
+            {
+                using (var form = new FormSpriteSequenceEditor(wad, (WadSpriteSequence)wadObject))
+                    if (form.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
             else if (wadObject is WadFixedSoundInfo)
             {
                 WadFixedSoundInfo fixedSoundInfo = (WadFixedSoundInfo)wadObject;
-                using (var form = new FormFixedSoundInfoEditor { SoundInfo = fixedSoundInfo.SoundInfo })
+                using (var form = new FormSoundInfoEditor(true) { SoundInfo = fixedSoundInfo.SoundInfo })
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
@@ -285,11 +296,15 @@ namespace WadTool
                 }
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
-            else if (wadObject is WadSpriteSequence)
+            else if (wadObject is WadAdditionalSoundInfo)
             {
-                using (var form = new FormSpriteSequenceEditor(wad, (WadSpriteSequence)wadObject))
+                WadAdditionalSoundInfo additionalSoundInfo = (WadAdditionalSoundInfo)wadObject;
+                using (var form = new FormSoundInfoEditor(false) { SoundInfo = additionalSoundInfo.SoundInfo })
+                {
                     if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
+                    additionalSoundInfo.SoundInfo = form.SoundInfo;
+                }
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
         }

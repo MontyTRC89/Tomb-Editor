@@ -4,11 +4,12 @@ using TombLib.Wad;
 
 namespace WadTool
 {
-    public partial class FormFixedSoundInfoEditor : DarkForm
+    public partial class FormSoundInfoEditor : DarkForm
     {
-        public FormFixedSoundInfoEditor()
+        public FormSoundInfoEditor(bool @fixed)
         {
             InitializeComponent();
+            Text = (@fixed ? "Fixed " : "Additional ") + Text;
         }
 
         private void btOk_Click(object sender, System.EventArgs e)

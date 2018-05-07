@@ -8,6 +8,14 @@ using TombLib.IO;
 
 namespace TombLib.Wad.Tr4Wad
 {
+    internal enum WadLinkOpcode : ushort
+    {
+        NotUseStack = 0,
+        Push = 1,
+        Pop = 2,
+        Read = 3
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct wad_object_texture
     {

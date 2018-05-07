@@ -259,9 +259,10 @@
     <Compile Include="VectorInt2.cs" />
     <Compile Include="VectorInt3.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
+    <Compile Include="Wad\WadAdditionalSoundInfo.cs" />
     <Compile Include="Wad\WadLight.cs" />
     <Compile Include="Wad\IWadObject.cs" />
-    <Compile Include="Wad\TrLevels\Enumerations.cs" />
+    <Compile Include="Wad\TrLevels\TrVersion.cs" />
     <Compile Include="Wad\TrLevels\Structs.cs" />
     <Compile Include="Wad\TrLevels\TrLevel.cs" />
     <Compile Include="Wad\TrLevels\TrLevelOperations.cs" />

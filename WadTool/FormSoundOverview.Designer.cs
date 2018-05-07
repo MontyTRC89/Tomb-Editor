@@ -33,27 +33,27 @@
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.soundInfosDataGridViewTxtSearch = new DarkUI.Controls.DarkTextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.usedForDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.soundUseNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.soundSettingsGroupBox = new DarkUI.Controls.DarkGroupBox();
             this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.usedForDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.soundUseNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.btOk = new DarkUI.Controls.DarkButton();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.panel2 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.soundInfosDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.usedForDataGridView)).BeginInit();
-            this.soundSettingsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.soundSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.usedForDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // soundInfosDataGridView
@@ -76,6 +76,7 @@
             this.soundInfosDataGridView.RowHeadersWidth = 41;
             this.soundInfosDataGridView.Size = new System.Drawing.Size(320, 649);
             this.soundInfosDataGridView.TabIndex = 0;
+            this.soundInfosDataGridView.CellFormattingSafe += new DarkUI.Controls.DarkDataGridViewSafeCellFormattingEventHandler(this.soundInfosDataGridView_CellFormattingSafe);
             this.soundInfosDataGridView.SelectionChanged += new System.EventHandler(this.soundInfosDataGridView_SelectionChanged);
             // 
             // ColumnSoundInfoName
@@ -127,6 +128,73 @@
             this.splitContainer1.SplitterDistance = 335;
             this.splitContainer1.TabIndex = 3;
             // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel1.BackColor = System.Drawing.Color.Gray;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(2, 701);
+            this.panel1.TabIndex = 0;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.soundSettingsGroupBox);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.panel2);
+            this.splitContainer2.Panel2.Controls.Add(this.usedForDataGridView);
+            this.splitContainer2.Panel2.Controls.Add(this.darkLabel2);
+            this.splitContainer2.Size = new System.Drawing.Size(677, 702);
+            this.splitContainer2.SplitterDistance = 410;
+            this.splitContainer2.TabIndex = 23;
+            // 
+            // soundSettingsGroupBox
+            // 
+            this.soundSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundSettingsGroupBox.Controls.Add(this.soundInfoEditor);
+            this.soundSettingsGroupBox.Location = new System.Drawing.Point(8, 5);
+            this.soundSettingsGroupBox.Name = "soundSettingsGroupBox";
+            this.soundSettingsGroupBox.Size = new System.Drawing.Size(654, 402);
+            this.soundSettingsGroupBox.TabIndex = 23;
+            this.soundSettingsGroupBox.TabStop = false;
+            this.soundSettingsGroupBox.Text = "Sound settings";
+            // 
+            // soundInfoEditor
+            // 
+            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundInfoEditor.Location = new System.Drawing.Point(15, 19);
+            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(442, 346);
+            this.soundInfoEditor.Name = "soundInfoEditor";
+            this.soundInfoEditor.ReadOnly = true;
+            this.soundInfoEditor.Size = new System.Drawing.Size(633, 378);
+            this.soundInfoEditor.TabIndex = 22;
+            this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Location = new System.Drawing.Point(4, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(673, 2);
+            this.panel2.TabIndex = 2;
+            // 
             // usedForDataGridView
             // 
             this.usedForDataGridView.AllowUserToAddRows = false;
@@ -155,16 +223,6 @@
             this.soundUseNameColumn.Name = "soundUseNameColumn";
             this.soundUseNameColumn.ReadOnly = true;
             // 
-            // panel1
-            // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel1.BackColor = System.Drawing.Color.Gray;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(2, 701);
-            this.panel1.TabIndex = 0;
-            // 
             // darkLabel2
             // 
             this.darkLabel2.AutoSize = true;
@@ -174,32 +232,6 @@
             this.darkLabel2.Size = new System.Drawing.Size(50, 13);
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Used for:";
-            // 
-            // soundSettingsGroupBox
-            // 
-            this.soundSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundSettingsGroupBox.Controls.Add(this.soundInfoEditor);
-            this.soundSettingsGroupBox.Location = new System.Drawing.Point(8, 5);
-            this.soundSettingsGroupBox.Name = "soundSettingsGroupBox";
-            this.soundSettingsGroupBox.Size = new System.Drawing.Size(654, 402);
-            this.soundSettingsGroupBox.TabIndex = 23;
-            this.soundSettingsGroupBox.TabStop = false;
-            this.soundSettingsGroupBox.Text = "Sound settings";
-            // 
-            // soundInfoEditor
-            // 
-            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundInfoEditor.Location = new System.Drawing.Point(15, 19);
-            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(442, 346);
-            this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(633, 378);
-            this.soundInfoEditor.TabIndex = 22;
-            this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
             // 
             // btCancel
             // 
@@ -220,36 +252,6 @@
             this.btOk.TabIndex = 51;
             this.btOk.Text = "Ok";
             this.btOk.Click += new System.EventHandler(this.btOk_Click);
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.soundSettingsGroupBox);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.panel2);
-            this.splitContainer2.Panel2.Controls.Add(this.usedForDataGridView);
-            this.splitContainer2.Panel2.Controls.Add(this.darkLabel2);
-            this.splitContainer2.Size = new System.Drawing.Size(677, 702);
-            this.splitContainer2.SplitterDistance = 410;
-            this.splitContainer2.TabIndex = 23;
-            // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.BackColor = System.Drawing.Color.Gray;
-            this.panel2.Location = new System.Drawing.Point(4, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(673, 2);
-            this.panel2.TabIndex = 2;
             // 
             // FormSoundOverview
             // 
@@ -272,13 +274,13 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.usedForDataGridView)).EndInit();
-            this.soundSettingsGroupBox.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.soundSettingsGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.usedForDataGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
