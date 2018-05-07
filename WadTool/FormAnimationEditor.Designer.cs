@@ -18,6 +18,7 @@ namespace WadTool
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.topMenu = new DarkUI.Controls.DarkMenuStrip();
             this.fileeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -129,6 +130,8 @@ namespace WadTool
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.tbInterpolateFrame1 = new DarkUI.Controls.DarkTextBox();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
+            this.butPlay = new DarkUI.Controls.DarkButton();
+            this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -530,6 +533,7 @@ namespace WadTool
             // 
             this.panelRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRight.Controls.Add(this.butPlay);
             this.panelRight.Controls.Add(this.tbLatAccel);
             this.panelRight.Controls.Add(this.darkLabel14);
             this.panelRight.Controls.Add(this.tbLatSpeed);
@@ -1407,6 +1411,23 @@ namespace WadTool
             this.darkLabel20.TabIndex = 54;
             this.darkLabel20.Text = "Frame 1:";
             // 
+            // butPlay
+            // 
+            this.butPlay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butPlay.Image = global::WadTool.Properties.Resources.play_16;
+            this.butPlay.Location = new System.Drawing.Point(95, 298);
+            this.butPlay.Name = "butPlay";
+            this.butPlay.Size = new System.Drawing.Size(59, 23);
+            this.butPlay.TabIndex = 113;
+            this.butPlay.Text = "Play";
+            this.butPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            // 
+            // timerPlayAnimation
+            // 
+            this.timerPlayAnimation.Interval = 33;
+            this.timerPlayAnimation.Tick += new System.EventHandler(this.timerPlayAnimation_Tick);
+            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1555,5 +1576,7 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel19;
         private DarkUI.Controls.DarkTextBox tbInterpolateFrame1;
         private DarkUI.Controls.DarkLabel darkLabel20;
+        private DarkUI.Controls.DarkButton butPlay;
+        private System.Windows.Forms.Timer timerPlayAnimation;
     }
 }
