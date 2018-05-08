@@ -586,11 +586,21 @@ namespace TombLib.Wad
                         animation.NextAnimation = LEB128.ReadUShort(chunkIO.Raw);
                         animation.NextFrame = LEB128.ReadUShort(chunkIO.Raw);
 
+                        bool foundNewVelocitiesChunk = false;                        
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
                             if (id3 == Wad2Chunks.AnimationName)
                             {
                                 animation.Name = chunkIO.ReadChunkString(chunkSize3);
+                            }
+                            else if (id3 == Wad2Chunks.AnimationVelocities)
+                            {
+                                foundNewVelocitiesChunk = true;
+                                var velocities = chunkIO.ReadChunkVector4(chunkSize);
+                                animation.StartVelocity = velocities.X;
+                                animation.EndVelocity = velocities.Y;
+                                animation.StartLateralVelocity = velocities.Z;
+                                animation.EndLateralVelocity = velocities.W;
                             }
                             else if (id3 == Wad2Chunks.KeyFrame)
                             {
@@ -684,6 +694,21 @@ namespace TombLib.Wad
                             }
                             return true;
                         });
+
+                        // Legacy code for calculatin start and end velocities
+                        if (!foundNewVelocitiesChunk)
+                        {
+                            float acceleration = animation.Acceleration / 65536.0f;
+                            animation.EndVelocity = animation.Speed / 65536.0f;
+                            animation.StartVelocity = animation.EndVelocity - acceleration * 
+                                                      (animation.KeyFrames.Count + 1) * animation.FrameRate;
+
+                            float lateralAcceleration = animation.LateralAcceleration / 65536.0f;
+                            animation.EndLateralVelocity = animation.LateralSpeed / 65536.0f;
+                            animation.StartLateralVelocity = animation.EndLateralVelocity - lateralAcceleration * 
+                                                             (animation.KeyFrames.Count + 1) * animation.FrameRate;
+                        }
+
                         mov.Animations.Add(animation);
                     }
                     else

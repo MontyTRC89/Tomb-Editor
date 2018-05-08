@@ -290,10 +290,14 @@ namespace TombLib.Wad
                                 LEB128.Write(chunkIO.Raw, animation.StateId);
                                 LEB128.Write(chunkIO.Raw, animation.RealNumberOfFrames);
                                 LEB128.Write(chunkIO.Raw, animation.FrameRate);
+
+                                // Legacy stuff **********************************
                                 LEB128.Write(chunkIO.Raw, animation.Speed);
                                 LEB128.Write(chunkIO.Raw, animation.Acceleration);
                                 LEB128.Write(chunkIO.Raw, animation.LateralSpeed);
                                 LEB128.Write(chunkIO.Raw, animation.LateralAcceleration);
+                                // End of legacy stuff ***************************
+
                                 LEB128.Write(chunkIO.Raw, animation.NextAnimation);
                                 LEB128.Write(chunkIO.Raw, animation.NextFrame);
 
@@ -348,6 +352,13 @@ namespace TombLib.Wad
                                             chunkIO.WriteChunkInt(Wad2Chunks.AnimCommandSoundInfo, -1);
                                     });
                                 }
+
+                                // New chunk for velocities
+                                chunkIO.WriteChunkVector4(Wad2Chunks.AnimationVelocities,
+                                                          new System.Numerics.Vector4(animation.StartVelocity,
+                                                                                      animation.EndVelocity,
+                                                                                      animation.StartLateralVelocity,
+                                                                                      animation.EndLateralVelocity));
                             });
                         }
                     });

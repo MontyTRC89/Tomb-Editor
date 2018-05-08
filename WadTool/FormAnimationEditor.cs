@@ -138,10 +138,22 @@ namespace WadTool
             tbNextAnimation.Text = node.WadAnimation.NextAnimation.ToString();
             tbNextFrame.Text = node.WadAnimation.NextFrame.ToString();
             tbStateId.Text = node.WadAnimation.StateId.ToString();
+            tbStartVelocity.Text = node.WadAnimation.StartVelocity.ToString();
+            tbEndVelocity.Text = node.WadAnimation.EndVelocity.ToString();
+            tbLateralStartVelocity.Text = node.WadAnimation.StartLateralVelocity.ToString();
+            tbLateralEndVelocity.Text = node.WadAnimation.EndLateralVelocity.ToString();
+
+            // TODO: deprecated stuff
             tbSpeed.Text = (node.WadAnimation.Speed / 65536.0f).ToString();
             tbAccel.Text = (node.WadAnimation.Acceleration / 65536.0f).ToString();
             tbLatSpeed.Text = (node.WadAnimation.LateralSpeed / 65536.0f).ToString();
             tbLatAccel.Text = (node.WadAnimation.LateralAcceleration / 65536.0f).ToString();
+
+
+            Console.WriteLine(node.WadAnimation.StartVelocity);
+            Console.WriteLine(node.WadAnimation.EndVelocity);
+            Console.WriteLine(node.WadAnimation.StartLateralVelocity);
+            Console.WriteLine(node.WadAnimation.EndLateralVelocity);
 
             panelRendering.Animation = node;
 
@@ -964,7 +976,6 @@ namespace WadTool
                 foreach (var bone in _moveable.Skeleton.LinearizedBones)
                 {
                     keyFrame.Rotations.Add(Vector3.Zero);
-                    // keyFrame.RotationsMatrices.Add(Matrix4x4.CreateFromYawPitchRoll(0, 0, 0));
                     keyFrame.Quaternions.Add(Quaternion.Identity);
                     keyFrame.Translations.Add(frame1.Translations[0] + bone.Translation);
                     keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(frame1.Translations[0] + bone.Translation));
@@ -1057,6 +1068,62 @@ namespace WadTool
         private void StopAnimation()
         {
 
+        }
+
+        private void tbStartVelocity_Validated(object sender, EventArgs e)
+        {
+            float result = 0;
+            string toParse = tbStartVelocity.Text.Replace(",", ".");
+            if (!float.TryParse(toParse, out result))
+                return;
+
+            if (_selectedNode != null)
+            {
+                _selectedNode.WadAnimation.StartVelocity = result;
+                _saved = false;
+            }
+        }
+
+        private void tbEndVelocity_Validated(object sender, EventArgs e)
+        {
+            float result = 0;
+            string toParse = tbEndVelocity.Text.Replace(",", ".");
+            if (!float.TryParse(toParse, out result))
+                return;
+
+            if (_selectedNode != null)
+            {
+                _selectedNode.WadAnimation.EndVelocity = result;
+                _saved = false;
+            }
+        }
+
+        private void tbLateralStartVelocity_Validated(object sender, EventArgs e)
+        {
+            float result = 0;
+            string toParse = tbLateralStartVelocity.Text.Replace(",", ".");
+            if (!float.TryParse(toParse, out result))
+                return;
+
+            if (_selectedNode != null)
+            {
+                _selectedNode.WadAnimation.StartLateralVelocity = result;
+                _saved = false;
+            }
+        }
+
+        private void tbLateralEndVelocity_Validated(object sender, EventArgs e)
+        {
+            float result = 0;
+            string toParse = tbLateralEndVelocity.Text.Replace(",", ".");
+            if (!float.TryParse(toParse, out result))
+                return;
+
+            if (_selectedNode != null)
+            {
+                _selectedNode.WadAnimation.EndLateralVelocity = result;
+                _saved = false;
+            }
         }
     }
 }

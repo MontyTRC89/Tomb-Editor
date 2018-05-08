@@ -94,6 +94,7 @@ namespace TombLib.Wad
         /******/public static readonly ChunkId Animations = ChunkId.FromString("W2Animations");
         /********/public static readonly ChunkId AnimationObsolete = ChunkId.FromString("W2Anm");
         /********/public static readonly ChunkId Animation = ChunkId.FromString("W2Ani");
+        /**********/public static readonly ChunkId AnimationVelocities = ChunkId.FromString("W2AniV");
         /**********/public static readonly ChunkId AnimationName = ChunkId.FromString("W2AnmName");
         /**********/public static readonly ChunkId StateChanges = ChunkId.FromString("W2StChs");
         /************/public static readonly ChunkId StateChange = ChunkId.FromString("W2StCh");

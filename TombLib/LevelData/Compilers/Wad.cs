@@ -217,16 +217,32 @@ namespace TombLib.LevelData.Compilers
                     var newAnimation = new tr_animation();
                     var animationHelper = animationDictionary[oldAnimation];
 
+                    // Calculate accelerations from velocities
+                    int acceleration = 0;
+                    int lateralAcceleration = 0;
+                    int speed = 0;
+                    int lateralSpeed = 0;
+                    
+                    if (oldAnimation.KeyFrames.Count != 0 && oldAnimation.FrameRate != 0)
+                    {
+                        acceleration = (int)Math.Round((oldAnimation.EndVelocity - oldAnimation.StartVelocity) /
+                                                       ((oldAnimation.KeyFrames.Count + 1) * oldAnimation.FrameRate) * 65536.0f);
+                        lateralAcceleration = (int)Math.Round((oldAnimation.EndLateralVelocity - oldAnimation.StartLateralVelocity) /
+                                                              ((oldAnimation.KeyFrames.Count + 1) * oldAnimation.FrameRate) * 65536.0f);
+                    }
+                    speed = (int)Math.Round(oldAnimation.EndVelocity * 65536.0f);
+                    lateralSpeed = (int)Math.Round(oldAnimation.EndLateralVelocity * 65536.0f);
+
                     // Setup the final animation
                     if (j == 0)
                         newMoveable.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
                     newAnimation.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
                     newAnimation.FrameRate = oldAnimation.FrameRate;
                     newAnimation.FrameSize = checked((byte)animationHelper.KeyFrameSize);
-                    newAnimation.Speed = oldAnimation.Speed;
-                    newAnimation.Accel = oldAnimation.Acceleration;
-                    newAnimation.SpeedLateral = oldAnimation.LateralSpeed;
-                    newAnimation.AccelLateral = oldAnimation.LateralAcceleration;
+                    newAnimation.Speed = speed;
+                    newAnimation.Accel = acceleration;
+                    newAnimation.SpeedLateral = lateralSpeed;
+                    newAnimation.AccelLateral = lateralAcceleration;
                     newAnimation.FrameStart = unchecked((ushort)realFrameBase);
                     newAnimation.FrameEnd = unchecked((ushort)(realFrameBase + (oldAnimation.RealNumberOfFrames == 0 ? 0 : oldAnimation.RealNumberOfFrames - 1)));
                     newAnimation.AnimCommand = checked((ushort)_animCommands.Count);
