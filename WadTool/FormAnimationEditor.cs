@@ -525,6 +525,46 @@ namespace WadTool
             }
         }
 
+        private void SplitAnimation()
+        {
+            if (_selectedNode != null)
+            {
+                // I need at least 1 frame in the middle
+                if (_selectedNode.DirectXAnimation.KeyFrames.Count < 3)
+                {
+                    DarkMessageBox.Show(this, "You must have at least 3 frames for splitting the animation", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Check if we have selected the first or the last frame
+                int numFrames = _selectedNode.DirectXAnimation.KeyFrames.Count;
+                if (panelRendering.CurrentKeyFrame == 0 || panelRendering.CurrentKeyFrame == numFrames - 1)
+                {
+                    DarkMessageBox.Show(this, "You can't set the first or the last frame for splitting the animation", "Error",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                var newWadAnimation = _selectedNode.WadAnimation.Clone();
+                var newDirectXAnimation = _selectedNode.DirectXAnimation.Clone();
+
+                int numFrames1 = panelRendering.CurrentKeyFrame;
+                int numFrames2 = numFrames - numFrames1;
+
+                // Remove frames from the two animations
+                _selectedNode.DirectXAnimation.KeyFrames.RemoveRange(panelRendering.CurrentKeyFrame + 1, numFrames2 - 1);
+                newDirectXAnimation.KeyFrames.RemoveRange(0, panelRendering.CurrentKeyFrame);
+
+                // Add the new animation at the bottom of the list
+                newWadAnimation.Name += " - splitted";
+                _workingAnimations.Add(new AnimationNode(newWadAnimation, newDirectXAnimation));
+
+                // Update the GUI
+                ReloadAnimations();
+                SelectAnimation(_selectedNode);
+            }
+        }
+
         private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
         {
             panelRendering.DrawGrid = !panelRendering.DrawGrid;
@@ -1124,6 +1164,26 @@ namespace WadTool
                 _selectedNode.WadAnimation.EndLateralVelocity = result;
                 _saved = false;
             }
+        }
+
+        private void butTbReplaceAnimation_Click(object sender, EventArgs e)
+        {
+            ReplaceAnimation();
+        }
+
+        private void butTbReplaceFrame_Click(object sender, EventArgs e)
+        {
+            ReplaceFrame();
+        }
+
+        private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SplitAnimation();
+        }
+
+        private void butTbSplitAnimation_Click(object sender, EventArgs e)
+        {
+            SplitAnimation();
         }
     }
 }

@@ -113,6 +113,26 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap anim_commands_16 {
+            get {
+                object obj = ResourceManager.GetObject("anim-commands-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap animations_16 {
+            get {
+                object obj = ResourceManager.GetObject("animations-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Camera_161 {
             get {
                 object obj = ResourceManager.GetObject("Camera-161", resourceCulture);
@@ -233,6 +253,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap exit_16 {
+            get {
+                object obj = ResourceManager.GetObject("exit-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Fog_16 {
             get {
                 object obj = ResourceManager.GetObject("Fog-16", resourceCulture);
@@ -276,6 +306,16 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap import_16 {
             get {
                 object obj = ResourceManager.GetObject("import-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap interpolate_16 {
+            get {
+                object obj = ResourceManager.GetObject("interpolate-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -363,6 +403,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap paste_special_16 {
+            get {
+                object obj = ResourceManager.GetObject("paste-special-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap play_16 {
             get {
                 object obj = ResourceManager.GetObject("play-16", resourceCulture);
@@ -386,6 +436,16 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap rectangle_filled_16 {
             get {
                 object obj = ResourceManager.GetObject("rectangle_filled-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap replace_16 {
+            get {
+                object obj = ResourceManager.GetObject("replace-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -453,6 +513,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap skeleton_16 {
+            get {
+                object obj = ResourceManager.GetObject("skeleton-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap small_icons_16 {
             get {
                 object obj = ResourceManager.GetObject("small_icons-16", resourceCulture);
@@ -481,6 +551,16 @@ namespace WadTool.Properties {
         }
         
         /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap split_16 {
+            get {
+                object obj = ResourceManager.GetObject("split-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una stringa localizzata simile a {\rtf1\ansi\deff3\adeflang1025
         ///{\fonttbl{\f0\froman\fprq2\fcharset0 Times New Roman;}{\f1\froman\fprq2\fcharset2 Symbol;}{\f2\fswiss\fprq2\fcharset0 Arial;}{\f3\froman\fprq2\fcharset0 Liberation Serif{\*\falt Times New Roman};}{\f4\froman\fprq2\fcharset0 Liberation Sans{\*\falt Arial};}{\f5\froman\fprq2\fcharset0 Liberation Mono{\*\falt Courier New};}{\f6\froman\fprq2\fcharset0 Arial;}{\f7\fnil\fprq2\fcharset0 Arial;}{\f8\fnil\fprq2\fcharset0 Liberation Serif{\*\falt Times New Roman};}}
         ///{\colortbl;\red0\gre [stringa troncata]&quot;;.
@@ -488,6 +568,16 @@ namespace WadTool.Properties {
         internal static string StartUpText {
             get {
                 return ResourceManager.GetString("StartUpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap state_changes_16 {
+            get {
+                object obj = ResourceManager.GetObject("state-changes-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

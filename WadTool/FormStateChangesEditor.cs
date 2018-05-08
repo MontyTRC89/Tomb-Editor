@@ -65,6 +65,7 @@ namespace WadTool
                 if (!tempDictionary.ContainsKey(row.StateId))
                     tempDictionary.Add(row.StateId, new WadStateChange());
                 var sc = tempDictionary[row.StateId];
+                sc.StateId = row.StateId;
                 sc.Dispatches.Add(new WadAnimDispatch(row.LowFrame, row.HighFrame, row.NextAnimation, row.NextFrame));
                 tempDictionary[row.StateId] = sc;
             }

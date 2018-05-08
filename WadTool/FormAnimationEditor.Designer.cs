@@ -19,6 +19,7 @@ namespace WadTool
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAnimationEditor));
             this.topMenu = new DarkUI.Controls.DarkMenuStrip();
             this.fileeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveChangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -93,19 +94,10 @@ namespace WadTool
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.tbCollisionBoxMinX = new DarkUI.Controls.DarkTextBox();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
-            this.cbCollisionBox = new DarkUI.Controls.DarkCheckBox();
             this.butEditStateChanges = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
             this.treeAnimations = new DarkUI.Controls.DarkTreeView();
-            this.tbLatAccel = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel14 = new DarkUI.Controls.DarkLabel();
-            this.tbLatSpeed = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel15 = new DarkUI.Controls.DarkLabel();
-            this.tbAccel = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel16 = new DarkUI.Controls.DarkLabel();
-            this.tbSpeed = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackFrames = new System.Windows.Forms.TrackBar();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
@@ -117,6 +109,8 @@ namespace WadTool
             this.butTbCutAnimation = new System.Windows.Forms.ToolStripButton();
             this.butTbCopyAnimation = new System.Windows.Forms.ToolStripButton();
             this.butTbPasteAnimation = new System.Windows.Forms.ToolStripButton();
+            this.butTbReplaceAnimation = new System.Windows.Forms.ToolStripButton();
+            this.butTbSplitAnimation = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.butTbAddFrame = new System.Windows.Forms.ToolStripButton();
@@ -127,6 +121,9 @@ namespace WadTool
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.comboSkeleton = new System.Windows.Forms.ToolStripComboBox();
+            this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
+            this.butTbReplaceFrame = new System.Windows.Forms.ToolStripButton();
+            this.splitAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.panelInterpolate = new System.Windows.Forms.Panel();
             this.butInterpolateFrames = new DarkUI.Controls.DarkButton();
@@ -139,7 +136,14 @@ namespace WadTool
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.tbInterpolateFrame1 = new DarkUI.Controls.DarkTextBox();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
-            this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
+            this.tbLatAccel = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel14 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
+            this.tbLatSpeed = new DarkUI.Controls.DarkTextBox();
+            this.tbSpeed = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel15 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel16 = new DarkUI.Controls.DarkLabel();
+            this.tbAccel = new DarkUI.Controls.DarkTextBox();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -162,7 +166,7 @@ namespace WadTool
             this.topMenu.Location = new System.Drawing.Point(0, 0);
             this.topMenu.Name = "topMenu";
             this.topMenu.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.topMenu.Size = new System.Drawing.Size(1028, 24);
+            this.topMenu.Size = new System.Drawing.Size(1008, 24);
             this.topMenu.TabIndex = 0;
             this.topMenu.Text = "darkMenuStrip1";
             // 
@@ -184,7 +188,7 @@ namespace WadTool
             this.saveChangesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveChangesToolStripMenuItem.Image = global::WadTool.Properties.Resources.save_16;
             this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.saveChangesToolStripMenuItem.Text = "Save changes";
             this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
             // 
@@ -194,14 +198,14 @@ namespace WadTool
             this.toolStripMenuItem3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(142, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.closeToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -211,6 +215,7 @@ namespace WadTool
             this.animationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addNewToolStripMenuItem,
             this.deleteToolStripMenuItem,
+            this.splitAnimationToolStripMenuItem,
             this.toolStripMenuItem5,
             this.curToolStripMenuItem,
             this.copyToolStripMenuItem1,
@@ -288,6 +293,7 @@ namespace WadTool
             // 
             this.pasteReplaceToolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pasteReplaceToolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.pasteReplaceToolStripMenuItem1.Image = global::WadTool.Properties.Resources.paste_special_16;
             this.pasteReplaceToolStripMenuItem1.Name = "pasteReplaceToolStripMenuItem1";
             this.pasteReplaceToolStripMenuItem1.Size = new System.Drawing.Size(272, 22);
             this.pasteReplaceToolStripMenuItem1.Text = "Paste (Replace)";
@@ -429,6 +435,7 @@ namespace WadTool
             // 
             this.pasteReplaceToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pasteReplaceToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.pasteReplaceToolStripMenuItem.Image = global::WadTool.Properties.Resources.paste_special_16;
             this.pasteReplaceToolStripMenuItem.Name = "pasteReplaceToolStripMenuItem";
             this.pasteReplaceToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
             this.pasteReplaceToolStripMenuItem.Text = "Paste (Replace)";
@@ -445,7 +452,9 @@ namespace WadTool
             // interpolateFramesToolStripMenuItem
             // 
             this.interpolateFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.interpolateFramesToolStripMenuItem.Checked = true;
             this.interpolateFramesToolStripMenuItem.CheckOnClick = true;
+            this.interpolateFramesToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.interpolateFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.interpolateFramesToolStripMenuItem.Name = "interpolateFramesToolStripMenuItem";
             this.interpolateFramesToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
@@ -527,7 +536,7 @@ namespace WadTool
             this.darkStatusStrip1.Location = new System.Drawing.Point(0, 693);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(1028, 36);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(1008, 36);
             this.darkStatusStrip1.TabIndex = 1;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -577,13 +586,12 @@ namespace WadTool
             this.panelRight.Controls.Add(this.darkLabel12);
             this.panelRight.Controls.Add(this.tbCollisionBoxMinX);
             this.panelRight.Controls.Add(this.darkLabel13);
-            this.panelRight.Controls.Add(this.cbCollisionBox);
             this.panelRight.Controls.Add(this.butEditStateChanges);
             this.panelRight.Controls.Add(this.darkLabel1);
             this.panelRight.Controls.Add(this.butDeleteAnimation);
             this.panelRight.Controls.Add(this.treeAnimations);
             this.panelRight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelRight.Location = new System.Drawing.Point(785, 27);
+            this.panelRight.Location = new System.Drawing.Point(765, 27);
             this.panelRight.Name = "panelRight";
             this.panelRight.Size = new System.Drawing.Size(243, 673);
             this.panelRight.TabIndex = 2;
@@ -840,10 +848,10 @@ namespace WadTool
             // 
             this.butEditAnimCommands.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.butEditAnimCommands.Image = global::WadTool.Properties.Resources.save_16;
-            this.butEditAnimCommands.Location = new System.Drawing.Point(126, 471);
+            this.butEditAnimCommands.Image = global::WadTool.Properties.Resources.anim_commands_16;
+            this.butEditAnimCommands.Location = new System.Drawing.Point(116, 471);
             this.butEditAnimCommands.Name = "butEditAnimCommands";
-            this.butEditAnimCommands.Size = new System.Drawing.Size(110, 23);
+            this.butEditAnimCommands.Size = new System.Drawing.Size(120, 23);
             this.butEditAnimCommands.TabIndex = 92;
             this.butEditAnimCommands.Text = "Anim commands";
             this.butEditAnimCommands.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -993,25 +1001,14 @@ namespace WadTool
             this.darkLabel13.TabIndex = 79;
             this.darkLabel13.Text = "X min:";
             // 
-            // cbCollisionBox
-            // 
-            this.cbCollisionBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbCollisionBox.AutoSize = true;
-            this.cbCollisionBox.Location = new System.Drawing.Point(6, 531);
-            this.cbCollisionBox.Name = "cbCollisionBox";
-            this.cbCollisionBox.Size = new System.Drawing.Size(93, 17);
-            this.cbCollisionBox.TabIndex = 78;
-            this.cbCollisionBox.Text = "Collision Box";
-            // 
             // butEditStateChanges
             // 
             this.butEditStateChanges.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.butEditStateChanges.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butEditStateChanges.Image = global::WadTool.Properties.Resources.state_changes_16;
             this.butEditStateChanges.Location = new System.Drawing.Point(6, 471);
             this.butEditStateChanges.Name = "butEditStateChanges";
-            this.butEditStateChanges.Size = new System.Drawing.Size(114, 23);
+            this.butEditStateChanges.Size = new System.Drawing.Size(104, 23);
             this.butEditStateChanges.TabIndex = 28;
             this.butEditStateChanges.Text = "State changes";
             this.butEditStateChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1054,102 +1051,6 @@ namespace WadTool
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.treeAnimations_Click);
             // 
-            // tbLatAccel
-            // 
-            this.tbLatAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLatAccel.Location = new System.Drawing.Point(77, 93);
-            this.tbLatAccel.Name = "tbLatAccel";
-            this.tbLatAccel.Size = new System.Drawing.Size(51, 20);
-            this.tbLatAccel.TabIndex = 112;
-            this.tbLatAccel.Visible = false;
-            this.tbLatAccel.TextChanged += new System.EventHandler(this.tbLatAccel_TextChanged);
-            // 
-            // darkLabel14
-            // 
-            this.darkLabel14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel14.AutoSize = true;
-            this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel14.Location = new System.Drawing.Point(17, 95);
-            this.darkLabel14.Name = "darkLabel14";
-            this.darkLabel14.Size = new System.Drawing.Size(57, 13);
-            this.darkLabel14.TabIndex = 111;
-            this.darkLabel14.Text = "Lat. accel:";
-            this.darkLabel14.Visible = false;
-            // 
-            // tbLatSpeed
-            // 
-            this.tbLatSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLatSpeed.Location = new System.Drawing.Point(77, 65);
-            this.tbLatSpeed.Name = "tbLatSpeed";
-            this.tbLatSpeed.Size = new System.Drawing.Size(51, 20);
-            this.tbLatSpeed.TabIndex = 110;
-            this.tbLatSpeed.Visible = false;
-            this.tbLatSpeed.Validated += new System.EventHandler(this.tbLatSpeed_Validated);
-            // 
-            // darkLabel15
-            // 
-            this.darkLabel15.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel15.AutoSize = true;
-            this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel15.Location = new System.Drawing.Point(17, 67);
-            this.darkLabel15.Name = "darkLabel15";
-            this.darkLabel15.Size = new System.Drawing.Size(60, 13);
-            this.darkLabel15.TabIndex = 109;
-            this.darkLabel15.Text = "Lat. speed:";
-            this.darkLabel15.Visible = false;
-            // 
-            // tbAccel
-            // 
-            this.tbAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbAccel.Location = new System.Drawing.Point(77, 37);
-            this.tbAccel.Name = "tbAccel";
-            this.tbAccel.Size = new System.Drawing.Size(51, 20);
-            this.tbAccel.TabIndex = 108;
-            this.tbAccel.Visible = false;
-            this.tbAccel.Validated += new System.EventHandler(this.tbAccel_Validated);
-            // 
-            // darkLabel16
-            // 
-            this.darkLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel16.AutoSize = true;
-            this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(17, 39);
-            this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(37, 13);
-            this.darkLabel16.TabIndex = 107;
-            this.darkLabel16.Text = "Accel:";
-            this.darkLabel16.Visible = false;
-            // 
-            // tbSpeed
-            // 
-            this.tbSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSpeed.Location = new System.Drawing.Point(77, 9);
-            this.tbSpeed.Name = "tbSpeed";
-            this.tbSpeed.Size = new System.Drawing.Size(50, 20);
-            this.tbSpeed.TabIndex = 106;
-            this.tbSpeed.Visible = false;
-            this.tbSpeed.Validated += new System.EventHandler(this.tbSpeed_Validated);
-            // 
-            // darkLabel17
-            // 
-            this.darkLabel17.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel17.AutoSize = true;
-            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel17.Location = new System.Drawing.Point(17, 11);
-            this.darkLabel17.Name = "darkLabel17";
-            this.darkLabel17.Size = new System.Drawing.Size(41, 13);
-            this.darkLabel17.TabIndex = 105;
-            this.darkLabel17.Text = "Speed:";
-            this.darkLabel17.Visible = false;
-            // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -1157,7 +1058,7 @@ namespace WadTool
             this.panel1.Controls.Add(this.trackFrames);
             this.panel1.Location = new System.Drawing.Point(0, 635);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(782, 65);
+            this.panel1.Size = new System.Drawing.Size(762, 65);
             this.panel1.TabIndex = 5;
             // 
             // trackFrames
@@ -1166,7 +1067,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.trackFrames.Location = new System.Drawing.Point(3, 8);
             this.trackFrames.Name = "trackFrames";
-            this.trackFrames.Size = new System.Drawing.Size(668, 45);
+            this.trackFrames.Size = new System.Drawing.Size(756, 45);
             this.trackFrames.TabIndex = 0;
             this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
             // 
@@ -1187,6 +1088,8 @@ namespace WadTool
             this.butTbCutAnimation,
             this.butTbCopyAnimation,
             this.butTbPasteAnimation,
+            this.butTbReplaceAnimation,
+            this.butTbSplitAnimation,
             this.toolStripSeparator2,
             this.toolStripLabel2,
             this.butTbAddFrame,
@@ -1194,13 +1097,14 @@ namespace WadTool
             this.butTbCutFrame,
             this.butTbCopyFrame,
             this.butTbPasteFrame,
+            this.butTbReplaceFrame,
             this.toolStripSeparator3,
             this.toolStripLabel3,
             this.comboSkeleton});
             this.topBar.Location = new System.Drawing.Point(0, 28);
             this.topBar.Name = "topBar";
             this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.topBar.Size = new System.Drawing.Size(908, 28);
+            this.topBar.Size = new System.Drawing.Size(888, 28);
             this.topBar.TabIndex = 6;
             this.topBar.Text = "darkToolStrip1";
             // 
@@ -1290,6 +1194,30 @@ namespace WadTool
             this.butTbPasteAnimation.Size = new System.Drawing.Size(23, 25);
             this.butTbPasteAnimation.Text = "toolStripButton5";
             this.butTbPasteAnimation.Click += new System.EventHandler(this.butTbPasteAnimation_Click);
+            // 
+            // butTbReplaceAnimation
+            // 
+            this.butTbReplaceAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbReplaceAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbReplaceAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbReplaceAnimation.Image = global::WadTool.Properties.Resources.paste_special_16;
+            this.butTbReplaceAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbReplaceAnimation.Name = "butTbReplaceAnimation";
+            this.butTbReplaceAnimation.Size = new System.Drawing.Size(23, 25);
+            this.butTbReplaceAnimation.Text = "toolStripButton5";
+            this.butTbReplaceAnimation.Click += new System.EventHandler(this.butTbReplaceAnimation_Click);
+            // 
+            // butTbSplitAnimation
+            // 
+            this.butTbSplitAnimation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbSplitAnimation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbSplitAnimation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbSplitAnimation.Image = global::WadTool.Properties.Resources.split_16;
+            this.butTbSplitAnimation.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbSplitAnimation.Name = "butTbSplitAnimation";
+            this.butTbSplitAnimation.Size = new System.Drawing.Size(23, 25);
+            this.butTbSplitAnimation.Text = "toolStripButton5";
+            this.butTbSplitAnimation.Click += new System.EventHandler(this.butTbSplitAnimation_Click);
             // 
             // toolStripSeparator2
             // 
@@ -1392,6 +1320,33 @@ namespace WadTool
             this.comboSkeleton.Size = new System.Drawing.Size(200, 28);
             this.comboSkeleton.SelectedIndexChanged += new System.EventHandler(this.comboSkeleton_SelectedIndexChanged);
             // 
+            // timerPlayAnimation
+            // 
+            this.timerPlayAnimation.Interval = 33;
+            this.timerPlayAnimation.Tick += new System.EventHandler(this.timerPlayAnimation_Tick);
+            // 
+            // butTbReplaceFrame
+            // 
+            this.butTbReplaceFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbReplaceFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbReplaceFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbReplaceFrame.Image = global::WadTool.Properties.Resources.paste_special_16;
+            this.butTbReplaceFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbReplaceFrame.Name = "butTbReplaceFrame";
+            this.butTbReplaceFrame.Size = new System.Drawing.Size(23, 25);
+            this.butTbReplaceFrame.Text = "toolStripButton5";
+            this.butTbReplaceFrame.Click += new System.EventHandler(this.butTbReplaceFrame_Click);
+            // 
+            // splitAnimationToolStripMenuItem
+            // 
+            this.splitAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.splitAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.splitAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.split_16;
+            this.splitAnimationToolStripMenuItem.Name = "splitAnimationToolStripMenuItem";
+            this.splitAnimationToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.splitAnimationToolStripMenuItem.Text = "Split animation";
+            this.splitAnimationToolStripMenuItem.Click += new System.EventHandler(this.splitAnimationToolStripMenuItem_Click);
+            // 
             // panelRendering
             // 
             this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1409,7 +1364,7 @@ namespace WadTool
             this.panelRendering.Location = new System.Drawing.Point(3, 54);
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.SelectedMesh = null;
-            this.panelRendering.Size = new System.Drawing.Size(779, 575);
+            this.panelRendering.Size = new System.Drawing.Size(759, 575);
             this.panelRendering.Skeleton = null;
             this.panelRendering.TabIndex = 4;
             // 
@@ -1427,15 +1382,14 @@ namespace WadTool
             this.panelInterpolate.Controls.Add(this.tbInterpolateFrame1);
             this.panelInterpolate.Controls.Add(this.darkLabel20);
             this.panelInterpolate.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelInterpolate.Location = new System.Drawing.Point(432, 5);
+            this.panelInterpolate.Location = new System.Drawing.Point(520, 5);
             this.panelInterpolate.Name = "panelInterpolate";
             this.panelInterpolate.Size = new System.Drawing.Size(236, 148);
             this.panelInterpolate.TabIndex = 0;
-            this.panelInterpolate.Visible = false;
             // 
             // butInterpolateFrames
             // 
-            this.butInterpolateFrames.Image = global::WadTool.Properties.Resources.edit_16;
+            this.butInterpolateFrames.Image = global::WadTool.Properties.Resources.interpolate_16;
             this.butInterpolateFrames.Location = new System.Drawing.Point(11, 112);
             this.butInterpolateFrames.Name = "butInterpolateFrames";
             this.butInterpolateFrames.Size = new System.Drawing.Size(213, 23);
@@ -1535,25 +1489,119 @@ namespace WadTool
             this.darkLabel20.TabIndex = 54;
             this.darkLabel20.Text = "Frame 1:";
             // 
-            // timerPlayAnimation
+            // tbLatAccel
             // 
-            this.timerPlayAnimation.Interval = 33;
-            this.timerPlayAnimation.Tick += new System.EventHandler(this.timerPlayAnimation_Tick);
+            this.tbLatAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLatAccel.Location = new System.Drawing.Point(77, 93);
+            this.tbLatAccel.Name = "tbLatAccel";
+            this.tbLatAccel.Size = new System.Drawing.Size(31, 20);
+            this.tbLatAccel.TabIndex = 112;
+            this.tbLatAccel.Visible = false;
+            this.tbLatAccel.TextChanged += new System.EventHandler(this.tbLatAccel_TextChanged);
+            // 
+            // darkLabel14
+            // 
+            this.darkLabel14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel14.AutoSize = true;
+            this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel14.Location = new System.Drawing.Point(17, 95);
+            this.darkLabel14.Name = "darkLabel14";
+            this.darkLabel14.Size = new System.Drawing.Size(57, 13);
+            this.darkLabel14.TabIndex = 111;
+            this.darkLabel14.Text = "Lat. accel:";
+            this.darkLabel14.Visible = false;
+            // 
+            // darkLabel17
+            // 
+            this.darkLabel17.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel17.AutoSize = true;
+            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel17.Location = new System.Drawing.Point(17, 11);
+            this.darkLabel17.Name = "darkLabel17";
+            this.darkLabel17.Size = new System.Drawing.Size(41, 13);
+            this.darkLabel17.TabIndex = 105;
+            this.darkLabel17.Text = "Speed:";
+            this.darkLabel17.Visible = false;
+            // 
+            // tbLatSpeed
+            // 
+            this.tbLatSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLatSpeed.Location = new System.Drawing.Point(77, 65);
+            this.tbLatSpeed.Name = "tbLatSpeed";
+            this.tbLatSpeed.Size = new System.Drawing.Size(31, 20);
+            this.tbLatSpeed.TabIndex = 110;
+            this.tbLatSpeed.Visible = false;
+            this.tbLatSpeed.Validated += new System.EventHandler(this.tbLatSpeed_Validated);
+            // 
+            // tbSpeed
+            // 
+            this.tbSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSpeed.Location = new System.Drawing.Point(77, 9);
+            this.tbSpeed.Name = "tbSpeed";
+            this.tbSpeed.Size = new System.Drawing.Size(30, 20);
+            this.tbSpeed.TabIndex = 106;
+            this.tbSpeed.Visible = false;
+            this.tbSpeed.Validated += new System.EventHandler(this.tbSpeed_Validated);
+            // 
+            // darkLabel15
+            // 
+            this.darkLabel15.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel15.AutoSize = true;
+            this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel15.Location = new System.Drawing.Point(17, 67);
+            this.darkLabel15.Name = "darkLabel15";
+            this.darkLabel15.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel15.TabIndex = 109;
+            this.darkLabel15.Text = "Lat. speed:";
+            this.darkLabel15.Visible = false;
+            // 
+            // darkLabel16
+            // 
+            this.darkLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel16.AutoSize = true;
+            this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel16.Location = new System.Drawing.Point(17, 39);
+            this.darkLabel16.Name = "darkLabel16";
+            this.darkLabel16.Size = new System.Drawing.Size(37, 13);
+            this.darkLabel16.TabIndex = 107;
+            this.darkLabel16.Text = "Accel:";
+            this.darkLabel16.Visible = false;
+            // 
+            // tbAccel
+            // 
+            this.tbAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbAccel.Location = new System.Drawing.Point(77, 37);
+            this.tbAccel.Name = "tbAccel";
+            this.tbAccel.Size = new System.Drawing.Size(31, 20);
+            this.tbAccel.TabIndex = 108;
+            this.tbAccel.Visible = false;
+            this.tbAccel.Validated += new System.EventHandler(this.tbAccel_Validated);
             // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1028, 729);
+            this.ClientSize = new System.Drawing.Size(1008, 729);
             this.Controls.Add(this.topBar);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.panelRight);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.topMenu);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.topMenu;
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "FormAnimationEditor";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Animation editor";
             this.topMenu.ResumeLayout(false);
@@ -1629,7 +1677,6 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkTextBox tbCollisionBoxMinX;
         private DarkUI.Controls.DarkLabel darkLabel13;
-        private DarkUI.Controls.DarkCheckBox cbCollisionBox;
         private System.Windows.Forms.ToolStripStatusLabel statusFrame;
         private DarkUI.Controls.DarkButton butEditAnimCommands;
         private DarkUI.Controls.DarkButton darkButton3;
@@ -1699,5 +1746,9 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel23;
         private DarkUI.Controls.DarkLabel darkLabel24;
         private DarkUI.Controls.DarkLabel darkLabel25;
+        private System.Windows.Forms.ToolStripButton butTbReplaceAnimation;
+        private System.Windows.Forms.ToolStripButton butTbSplitAnimation;
+        private System.Windows.Forms.ToolStripButton butTbReplaceFrame;
+        private System.Windows.Forms.ToolStripMenuItem splitAnimationToolStripMenuItem;
     }
 }
