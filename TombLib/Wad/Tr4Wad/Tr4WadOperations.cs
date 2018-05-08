@@ -585,6 +585,21 @@ namespace TombLib.Wad.Tr4Wad
                     newAnimation.KeyFrames.Add(frame);
                 }
 
+                // New velocities
+                float acceleration = oldAnimation.Accel / 65536.0f;
+                newAnimation.EndVelocity = oldAnimation.Speed / 65536.0f;
+
+                float lateralAcceleration = oldAnimation.AccelLateral / 65536.0f;
+                newAnimation.EndLateralVelocity = oldAnimation.SpeedLateral / 65536.0f;
+
+                if (newAnimation.KeyFrames.Count != 0 && newAnimation.FrameRate != 0)
+                {
+                    newAnimation.StartVelocity = newAnimation.EndVelocity - acceleration *
+                                                 (newAnimation.KeyFrames.Count + 1) * newAnimation.FrameRate;
+                    newAnimation.StartLateralVelocity = newAnimation.EndLateralVelocity - lateralAcceleration *
+                                                        (newAnimation.KeyFrames.Count + 1) * newAnimation.FrameRate;
+                }
+
                 frameBases.Add(newAnimation, oldAnimation.FrameStart);
                 newMoveable.Animations.Add(newAnimation);
             }

@@ -57,14 +57,15 @@ namespace WadTool
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
             this.panelRight = new System.Windows.Forms.Panel();
-            this.tbLatAccel = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel14 = new DarkUI.Controls.DarkLabel();
-            this.tbLatSpeed = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel15 = new DarkUI.Controls.DarkLabel();
-            this.tbAccel = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel16 = new DarkUI.Controls.DarkLabel();
-            this.tbSpeed = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
+            this.tbLateralEndVelocity = new DarkUI.Controls.DarkTextBox();
+            this.tbLateralStartVelocity = new DarkUI.Controls.DarkTextBox();
+            this.tbStartVelocity = new DarkUI.Controls.DarkTextBox();
+            this.tbEndVelocity = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel22 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel23 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel24 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel25 = new DarkUI.Controls.DarkLabel();
+            this.butPlay = new DarkUI.Controls.DarkButton();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.tbStateId = new DarkUI.Controls.DarkTextBox();
             this.butDeleteFrame = new DarkUI.Controls.DarkButton();
@@ -97,6 +98,14 @@ namespace WadTool
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butDeleteAnimation = new DarkUI.Controls.DarkButton();
             this.treeAnimations = new DarkUI.Controls.DarkTreeView();
+            this.tbLatAccel = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel14 = new DarkUI.Controls.DarkLabel();
+            this.tbLatSpeed = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel15 = new DarkUI.Controls.DarkLabel();
+            this.tbAccel = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel16 = new DarkUI.Controls.DarkLabel();
+            this.tbSpeed = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.trackFrames = new System.Windows.Forms.TrackBar();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
@@ -130,7 +139,6 @@ namespace WadTool
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.tbInterpolateFrame1 = new DarkUI.Controls.DarkTextBox();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
-            this.butPlay = new DarkUI.Controls.DarkButton();
             this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
@@ -176,7 +184,7 @@ namespace WadTool
             this.saveChangesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.saveChangesToolStripMenuItem.Image = global::WadTool.Properties.Resources.save_16;
             this.saveChangesToolStripMenuItem.Name = "saveChangesToolStripMenuItem";
-            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.saveChangesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveChangesToolStripMenuItem.Text = "Save changes";
             this.saveChangesToolStripMenuItem.Click += new System.EventHandler(this.saveChangesToolStripMenuItem_Click);
             // 
@@ -186,14 +194,14 @@ namespace WadTool
             this.toolStripMenuItem3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(142, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(177, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.closeToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -533,15 +541,15 @@ namespace WadTool
             // 
             this.panelRight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRight.Controls.Add(this.tbLateralEndVelocity);
+            this.panelRight.Controls.Add(this.tbLateralStartVelocity);
+            this.panelRight.Controls.Add(this.tbStartVelocity);
+            this.panelRight.Controls.Add(this.tbEndVelocity);
+            this.panelRight.Controls.Add(this.darkLabel22);
+            this.panelRight.Controls.Add(this.darkLabel23);
+            this.panelRight.Controls.Add(this.darkLabel24);
+            this.panelRight.Controls.Add(this.darkLabel25);
             this.panelRight.Controls.Add(this.butPlay);
-            this.panelRight.Controls.Add(this.tbLatAccel);
-            this.panelRight.Controls.Add(this.darkLabel14);
-            this.panelRight.Controls.Add(this.tbLatSpeed);
-            this.panelRight.Controls.Add(this.darkLabel15);
-            this.panelRight.Controls.Add(this.tbAccel);
-            this.panelRight.Controls.Add(this.darkLabel16);
-            this.panelRight.Controls.Add(this.tbSpeed);
-            this.panelRight.Controls.Add(this.darkLabel17);
             this.panelRight.Controls.Add(this.darkLabel2);
             this.panelRight.Controls.Add(this.tbStateId);
             this.panelRight.Controls.Add(this.butDeleteFrame);
@@ -580,93 +588,105 @@ namespace WadTool
             this.panelRight.Size = new System.Drawing.Size(243, 673);
             this.panelRight.TabIndex = 2;
             // 
-            // tbLatAccel
+            // tbLateralEndVelocity
             // 
-            this.tbLatAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbLateralEndVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLatAccel.Location = new System.Drawing.Point(186, 443);
-            this.tbLatAccel.Name = "tbLatAccel";
-            this.tbLatAccel.Size = new System.Drawing.Size(51, 22);
-            this.tbLatAccel.TabIndex = 112;
-            this.tbLatAccel.TextChanged += new System.EventHandler(this.tbLatAccel_TextChanged);
+            this.tbLateralEndVelocity.Location = new System.Drawing.Point(177, 443);
+            this.tbLateralEndVelocity.Name = "tbLateralEndVelocity";
+            this.tbLateralEndVelocity.Size = new System.Drawing.Size(59, 22);
+            this.tbLateralEndVelocity.TabIndex = 121;
+            this.tbLateralEndVelocity.Validated += new System.EventHandler(this.tbLateralEndVelocity_Validated);
             // 
-            // darkLabel14
+            // tbLateralStartVelocity
             // 
-            this.darkLabel14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbLateralStartVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel14.AutoSize = true;
-            this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel14.Location = new System.Drawing.Point(126, 445);
-            this.darkLabel14.Name = "darkLabel14";
-            this.darkLabel14.Size = new System.Drawing.Size(56, 13);
-            this.darkLabel14.TabIndex = 111;
-            this.darkLabel14.Text = "Lat. accel:";
+            this.tbLateralStartVelocity.Location = new System.Drawing.Point(177, 415);
+            this.tbLateralStartVelocity.Name = "tbLateralStartVelocity";
+            this.tbLateralStartVelocity.Size = new System.Drawing.Size(59, 22);
+            this.tbLateralStartVelocity.TabIndex = 119;
+            this.tbLateralStartVelocity.Validated += new System.EventHandler(this.tbLateralStartVelocity_Validated);
             // 
-            // tbLatSpeed
+            // tbStartVelocity
             // 
-            this.tbLatSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbStartVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLatSpeed.Location = new System.Drawing.Point(186, 415);
-            this.tbLatSpeed.Name = "tbLatSpeed";
-            this.tbLatSpeed.Size = new System.Drawing.Size(51, 22);
-            this.tbLatSpeed.TabIndex = 110;
-            this.tbLatSpeed.Validated += new System.EventHandler(this.tbLatSpeed_Validated);
+            this.tbStartVelocity.Location = new System.Drawing.Point(177, 359);
+            this.tbStartVelocity.Name = "tbStartVelocity";
+            this.tbStartVelocity.Size = new System.Drawing.Size(58, 22);
+            this.tbStartVelocity.TabIndex = 115;
+            this.tbStartVelocity.Validated += new System.EventHandler(this.tbStartVelocity_Validated);
             // 
-            // darkLabel15
+            // tbEndVelocity
             // 
-            this.darkLabel15.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbEndVelocity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel15.AutoSize = true;
-            this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel15.Location = new System.Drawing.Point(126, 417);
-            this.darkLabel15.Name = "darkLabel15";
-            this.darkLabel15.Size = new System.Drawing.Size(62, 13);
-            this.darkLabel15.TabIndex = 109;
-            this.darkLabel15.Text = "Lat. speed:";
+            this.tbEndVelocity.Location = new System.Drawing.Point(177, 387);
+            this.tbEndVelocity.Name = "tbEndVelocity";
+            this.tbEndVelocity.Size = new System.Drawing.Size(59, 22);
+            this.tbEndVelocity.TabIndex = 117;
+            this.tbEndVelocity.Validated += new System.EventHandler(this.tbEndVelocity_Validated);
             // 
-            // tbAccel
+            // darkLabel22
             // 
-            this.tbAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.darkLabel22.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbAccel.Location = new System.Drawing.Point(186, 387);
-            this.tbAccel.Name = "tbAccel";
-            this.tbAccel.Size = new System.Drawing.Size(51, 22);
-            this.tbAccel.TabIndex = 108;
-            this.tbAccel.Validated += new System.EventHandler(this.tbAccel_Validated);
+            this.darkLabel22.AutoSize = true;
+            this.darkLabel22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel22.Location = new System.Drawing.Point(105, 445);
+            this.darkLabel22.Name = "darkLabel22";
+            this.darkLabel22.Size = new System.Drawing.Size(66, 13);
+            this.darkLabel22.TabIndex = 120;
+            this.darkLabel22.Text = "End lat. vel:";
             // 
-            // darkLabel16
+            // darkLabel23
             // 
-            this.darkLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.darkLabel23.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel16.AutoSize = true;
-            this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(126, 389);
-            this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(36, 13);
-            this.darkLabel16.TabIndex = 107;
-            this.darkLabel16.Text = "Accel:";
+            this.darkLabel23.AutoSize = true;
+            this.darkLabel23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel23.Location = new System.Drawing.Point(105, 361);
+            this.darkLabel23.Name = "darkLabel23";
+            this.darkLabel23.Size = new System.Drawing.Size(75, 13);
+            this.darkLabel23.TabIndex = 114;
+            this.darkLabel23.Text = "Start velocity:";
             // 
-            // tbSpeed
+            // darkLabel24
             // 
-            this.tbSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.darkLabel24.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSpeed.Location = new System.Drawing.Point(186, 359);
-            this.tbSpeed.Name = "tbSpeed";
-            this.tbSpeed.Size = new System.Drawing.Size(50, 22);
-            this.tbSpeed.TabIndex = 106;
-            this.tbSpeed.Validated += new System.EventHandler(this.tbSpeed_Validated);
+            this.darkLabel24.AutoSize = true;
+            this.darkLabel24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel24.Location = new System.Drawing.Point(105, 417);
+            this.darkLabel24.Name = "darkLabel24";
+            this.darkLabel24.Size = new System.Drawing.Size(70, 13);
+            this.darkLabel24.TabIndex = 118;
+            this.darkLabel24.Text = "Start lat. vel:";
             // 
-            // darkLabel17
+            // darkLabel25
             // 
-            this.darkLabel17.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.darkLabel25.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkLabel17.AutoSize = true;
-            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel17.Location = new System.Drawing.Point(126, 361);
-            this.darkLabel17.Name = "darkLabel17";
-            this.darkLabel17.Size = new System.Drawing.Size(42, 13);
-            this.darkLabel17.TabIndex = 105;
-            this.darkLabel17.Text = "Speed:";
+            this.darkLabel25.AutoSize = true;
+            this.darkLabel25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel25.Location = new System.Drawing.Point(105, 389);
+            this.darkLabel25.Name = "darkLabel25";
+            this.darkLabel25.Size = new System.Drawing.Size(71, 13);
+            this.darkLabel25.TabIndex = 116;
+            this.darkLabel25.Text = "End velocity:";
+            // 
+            // butPlay
+            // 
+            this.butPlay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butPlay.Image = global::WadTool.Properties.Resources.play_16;
+            this.butPlay.Location = new System.Drawing.Point(95, 298);
+            this.butPlay.Name = "butPlay";
+            this.butPlay.Size = new System.Drawing.Size(59, 23);
+            this.butPlay.TabIndex = 113;
+            this.butPlay.Text = "Play";
+            this.butPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             // 
             // darkLabel2
             // 
@@ -687,7 +707,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbStateId.Location = new System.Drawing.Point(69, 443);
             this.tbStateId.Name = "tbStateId";
-            this.tbStateId.Size = new System.Drawing.Size(51, 22);
+            this.tbStateId.Size = new System.Drawing.Size(30, 22);
             this.tbStateId.TabIndex = 103;
             this.tbStateId.Validated += new System.EventHandler(this.tbStateId_Validated);
             // 
@@ -722,7 +742,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbNextFrame.Location = new System.Drawing.Point(69, 415);
             this.tbNextFrame.Name = "tbNextFrame";
-            this.tbNextFrame.Size = new System.Drawing.Size(51, 22);
+            this.tbNextFrame.Size = new System.Drawing.Size(30, 22);
             this.tbNextFrame.TabIndex = 101;
             this.tbNextFrame.Validated += new System.EventHandler(this.tbNextFrame_Validated);
             // 
@@ -744,7 +764,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbNextAnimation.Location = new System.Drawing.Point(69, 387);
             this.tbNextAnimation.Name = "tbNextAnimation";
-            this.tbNextAnimation.Size = new System.Drawing.Size(51, 22);
+            this.tbNextAnimation.Size = new System.Drawing.Size(30, 22);
             this.tbNextAnimation.TabIndex = 99;
             this.tbNextAnimation.Validated += new System.EventHandler(this.tbNextAnimation_Validated);
             // 
@@ -766,7 +786,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbFramerate.Location = new System.Drawing.Point(69, 359);
             this.tbFramerate.Name = "tbFramerate";
-            this.tbFramerate.Size = new System.Drawing.Size(50, 22);
+            this.tbFramerate.Size = new System.Drawing.Size(29, 22);
             this.tbFramerate.TabIndex = 97;
             this.tbFramerate.Validated += new System.EventHandler(this.tbFramerate_Validated);
             // 
@@ -1034,6 +1054,102 @@ namespace WadTool
             this.treeAnimations.Text = "darkTreeView1";
             this.treeAnimations.Click += new System.EventHandler(this.treeAnimations_Click);
             // 
+            // tbLatAccel
+            // 
+            this.tbLatAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLatAccel.Location = new System.Drawing.Point(77, 93);
+            this.tbLatAccel.Name = "tbLatAccel";
+            this.tbLatAccel.Size = new System.Drawing.Size(51, 20);
+            this.tbLatAccel.TabIndex = 112;
+            this.tbLatAccel.Visible = false;
+            this.tbLatAccel.TextChanged += new System.EventHandler(this.tbLatAccel_TextChanged);
+            // 
+            // darkLabel14
+            // 
+            this.darkLabel14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel14.AutoSize = true;
+            this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel14.Location = new System.Drawing.Point(17, 95);
+            this.darkLabel14.Name = "darkLabel14";
+            this.darkLabel14.Size = new System.Drawing.Size(57, 13);
+            this.darkLabel14.TabIndex = 111;
+            this.darkLabel14.Text = "Lat. accel:";
+            this.darkLabel14.Visible = false;
+            // 
+            // tbLatSpeed
+            // 
+            this.tbLatSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLatSpeed.Location = new System.Drawing.Point(77, 65);
+            this.tbLatSpeed.Name = "tbLatSpeed";
+            this.tbLatSpeed.Size = new System.Drawing.Size(51, 20);
+            this.tbLatSpeed.TabIndex = 110;
+            this.tbLatSpeed.Visible = false;
+            this.tbLatSpeed.Validated += new System.EventHandler(this.tbLatSpeed_Validated);
+            // 
+            // darkLabel15
+            // 
+            this.darkLabel15.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel15.AutoSize = true;
+            this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel15.Location = new System.Drawing.Point(17, 67);
+            this.darkLabel15.Name = "darkLabel15";
+            this.darkLabel15.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel15.TabIndex = 109;
+            this.darkLabel15.Text = "Lat. speed:";
+            this.darkLabel15.Visible = false;
+            // 
+            // tbAccel
+            // 
+            this.tbAccel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbAccel.Location = new System.Drawing.Point(77, 37);
+            this.tbAccel.Name = "tbAccel";
+            this.tbAccel.Size = new System.Drawing.Size(51, 20);
+            this.tbAccel.TabIndex = 108;
+            this.tbAccel.Visible = false;
+            this.tbAccel.Validated += new System.EventHandler(this.tbAccel_Validated);
+            // 
+            // darkLabel16
+            // 
+            this.darkLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel16.AutoSize = true;
+            this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel16.Location = new System.Drawing.Point(17, 39);
+            this.darkLabel16.Name = "darkLabel16";
+            this.darkLabel16.Size = new System.Drawing.Size(37, 13);
+            this.darkLabel16.TabIndex = 107;
+            this.darkLabel16.Text = "Accel:";
+            this.darkLabel16.Visible = false;
+            // 
+            // tbSpeed
+            // 
+            this.tbSpeed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSpeed.Location = new System.Drawing.Point(77, 9);
+            this.tbSpeed.Name = "tbSpeed";
+            this.tbSpeed.Size = new System.Drawing.Size(50, 20);
+            this.tbSpeed.TabIndex = 106;
+            this.tbSpeed.Visible = false;
+            this.tbSpeed.Validated += new System.EventHandler(this.tbSpeed_Validated);
+            // 
+            // darkLabel17
+            // 
+            this.darkLabel17.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel17.AutoSize = true;
+            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel17.Location = new System.Drawing.Point(17, 11);
+            this.darkLabel17.Name = "darkLabel17";
+            this.darkLabel17.Size = new System.Drawing.Size(41, 13);
+            this.darkLabel17.TabIndex = 105;
+            this.darkLabel17.Text = "Speed:";
+            this.darkLabel17.Visible = false;
+            // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -1050,7 +1166,7 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Right)));
             this.trackFrames.Location = new System.Drawing.Point(3, 8);
             this.trackFrames.Name = "trackFrames";
-            this.trackFrames.Size = new System.Drawing.Size(776, 45);
+            this.trackFrames.Size = new System.Drawing.Size(668, 45);
             this.trackFrames.TabIndex = 0;
             this.trackFrames.ValueChanged += new System.EventHandler(this.trackFrames_ValueChanged);
             // 
@@ -1084,7 +1200,7 @@ namespace WadTool
             this.topBar.Location = new System.Drawing.Point(0, 28);
             this.topBar.Name = "topBar";
             this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.topBar.Size = new System.Drawing.Size(782, 28);
+            this.topBar.Size = new System.Drawing.Size(908, 28);
             this.topBar.TabIndex = 6;
             this.topBar.Text = "darkToolStrip1";
             // 
@@ -1282,6 +1398,14 @@ namespace WadTool
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelRendering.Controls.Add(this.panelInterpolate);
+            this.panelRendering.Controls.Add(this.tbLatAccel);
+            this.panelRendering.Controls.Add(this.darkLabel14);
+            this.panelRendering.Controls.Add(this.darkLabel17);
+            this.panelRendering.Controls.Add(this.tbLatSpeed);
+            this.panelRendering.Controls.Add(this.tbSpeed);
+            this.panelRendering.Controls.Add(this.darkLabel15);
+            this.panelRendering.Controls.Add(this.darkLabel16);
+            this.panelRendering.Controls.Add(this.tbAccel);
             this.panelRendering.Location = new System.Drawing.Point(3, 54);
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.SelectedMesh = null;
@@ -1303,7 +1427,7 @@ namespace WadTool
             this.panelInterpolate.Controls.Add(this.tbInterpolateFrame1);
             this.panelInterpolate.Controls.Add(this.darkLabel20);
             this.panelInterpolate.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelInterpolate.Location = new System.Drawing.Point(540, 5);
+            this.panelInterpolate.Location = new System.Drawing.Point(432, 5);
             this.panelInterpolate.Name = "panelInterpolate";
             this.panelInterpolate.Size = new System.Drawing.Size(236, 148);
             this.panelInterpolate.TabIndex = 0;
@@ -1411,18 +1535,6 @@ namespace WadTool
             this.darkLabel20.TabIndex = 54;
             this.darkLabel20.Text = "Frame 1:";
             // 
-            // butPlay
-            // 
-            this.butPlay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.butPlay.Image = global::WadTool.Properties.Resources.play_16;
-            this.butPlay.Location = new System.Drawing.Point(95, 298);
-            this.butPlay.Name = "butPlay";
-            this.butPlay.Size = new System.Drawing.Size(59, 23);
-            this.butPlay.TabIndex = 113;
-            this.butPlay.Text = "Play";
-            this.butPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            // 
             // timerPlayAnimation
             // 
             this.timerPlayAnimation.Interval = 33;
@@ -1456,6 +1568,7 @@ namespace WadTool
             this.topBar.ResumeLayout(false);
             this.topBar.PerformLayout();
             this.panelRendering.ResumeLayout(false);
+            this.panelRendering.PerformLayout();
             this.panelInterpolate.ResumeLayout(false);
             this.panelInterpolate.PerformLayout();
             this.ResumeLayout(false);
@@ -1578,5 +1691,13 @@ namespace WadTool
         private DarkUI.Controls.DarkLabel darkLabel20;
         private DarkUI.Controls.DarkButton butPlay;
         private System.Windows.Forms.Timer timerPlayAnimation;
+        private DarkUI.Controls.DarkTextBox tbLateralEndVelocity;
+        private DarkUI.Controls.DarkTextBox tbLateralStartVelocity;
+        private DarkUI.Controls.DarkTextBox tbStartVelocity;
+        private DarkUI.Controls.DarkTextBox tbEndVelocity;
+        private DarkUI.Controls.DarkLabel darkLabel22;
+        private DarkUI.Controls.DarkLabel darkLabel23;
+        private DarkUI.Controls.DarkLabel darkLabel24;
+        private DarkUI.Controls.DarkLabel darkLabel25;
     }
 }
