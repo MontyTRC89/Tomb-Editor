@@ -323,5 +323,32 @@
   <ItemGroup>
     <None Include="Resources\toolbox_Pencil-16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\anim-commands-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\interpolate-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\replace-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\split-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\animations-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\skeleton-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\state-changes-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\paste-special-16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

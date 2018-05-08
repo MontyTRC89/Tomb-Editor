@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSkeletonEditor));
             this.treeSkeleton = new DarkUI.Controls.DarkTreeView();
             this.panelRendering = new WadTool.Controls.PanelRenderingSkeleton();
             this.cbDrawGizmo = new DarkUI.Controls.DarkCheckBox();
@@ -36,12 +37,12 @@
             this.butRenameBone = new DarkUI.Controls.DarkButton();
             this.butDeleteBone = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
-            //
+            // 
             // treeSkeleton
-            //
+            // 
             this.treeSkeleton.AllowMoveNodes = true;
-            this.treeSkeleton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.treeSkeleton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeSkeleton.Location = new System.Drawing.Point(725, 12);
             this.treeSkeleton.MaxDragChange = 20;
@@ -50,9 +51,9 @@
             this.treeSkeleton.TabIndex = 0;
             this.treeSkeleton.Text = "darkTreeView1";
             this.treeSkeleton.Click += new System.EventHandler(this.treeSkeleton_Click);
-            //
+            // 
             // panelRendering
-            //
+            // 
             this.panelRendering.Location = new System.Drawing.Point(12, 12);
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.SelectedNode = null;
@@ -60,9 +61,9 @@
             this.panelRendering.Skeleton = null;
             this.panelRendering.StaticScale = 1F;
             this.panelRendering.TabIndex = 1;
-            //
+            // 
             // cbDrawGizmo
-            //
+            // 
             this.cbDrawGizmo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cbDrawGizmo.AutoSize = true;
             this.cbDrawGizmo.Checked = true;
@@ -73,9 +74,9 @@
             this.cbDrawGizmo.TabIndex = 82;
             this.cbDrawGizmo.Text = "Draw gizmo";
             this.cbDrawGizmo.CheckedChanged += new System.EventHandler(this.cbDrawGizmo_CheckedChanged);
-            //
+            // 
             // cbDrawGrid
-            //
+            // 
             this.cbDrawGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cbDrawGrid.AutoSize = true;
             this.cbDrawGrid.Checked = true;
@@ -86,9 +87,9 @@
             this.cbDrawGrid.TabIndex = 81;
             this.cbDrawGrid.Text = "Draw grid";
             this.cbDrawGrid.CheckedChanged += new System.EventHandler(this.cbDrawGrid_CheckedChanged);
-            //
+            // 
             // butSaveChanges
-            //
+            // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
             this.butSaveChanges.Location = new System.Drawing.Point(884, 667);
@@ -98,9 +99,9 @@
             this.butSaveChanges.Text = "Save changes";
             this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butSaveChanges.Click += new System.EventHandler(this.butSaveChanges_Click);
-            //
+            // 
             // butRenameBone
-            //
+            // 
             this.butRenameBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butRenameBone.Image = global::WadTool.Properties.Resources.edit_16;
             this.butRenameBone.Location = new System.Drawing.Point(725, 621);
@@ -110,9 +111,9 @@
             this.butRenameBone.Text = "Rename";
             this.butRenameBone.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butRenameBone.Click += new System.EventHandler(this.butRenameBone_Click);
-            //
+            // 
             // butDeleteBone
-            //
+            // 
             this.butDeleteBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butDeleteBone.Image = global::WadTool.Properties.Resources.trash_161;
             this.butDeleteBone.Location = new System.Drawing.Point(812, 621);
@@ -122,9 +123,9 @@
             this.butDeleteBone.Text = "Delete";
             this.butDeleteBone.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDeleteBone.Click += new System.EventHandler(this.butDeleteBone_Click);
-            //
+            // 
             // FormSkeletonEditor
-            //
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
@@ -135,9 +136,11 @@
             this.Controls.Add(this.butSaveChanges);
             this.Controls.Add(this.treeSkeleton);
             this.Controls.Add(this.panelRendering);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "FormSkeletonEditor";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Skeleton editor";
             this.ResumeLayout(false);
