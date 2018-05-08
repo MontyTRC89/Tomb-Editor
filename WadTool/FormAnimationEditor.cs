@@ -149,15 +149,11 @@ namespace WadTool
             tbLatSpeed.Text = (node.WadAnimation.LateralSpeed / 65536.0f).ToString();
             tbLatAccel.Text = (node.WadAnimation.LateralAcceleration / 65536.0f).ToString();
 
-
-            Console.WriteLine(node.WadAnimation.StartVelocity);
-            Console.WriteLine(node.WadAnimation.EndVelocity);
-            Console.WriteLine(node.WadAnimation.StartLateralVelocity);
-            Console.WriteLine(node.WadAnimation.EndLateralVelocity);
-
+            panelRendering.CurrentKeyFrame = 0;
+            panelRendering.SelectedMesh = null;
             panelRendering.Animation = node;
 
-            if (node.WadAnimation.KeyFrames.Count != 0)
+            if (node.DirectXAnimation.KeyFrames.Count != 0)
             {
                 trackFrames.Visible = true;
 
@@ -167,6 +163,7 @@ namespace WadTool
             else
             {
                 trackFrames.Visible = false;
+                statusFrame.Text = "";
             }
 
             panelRendering.Invalidate();
@@ -431,6 +428,8 @@ namespace WadTool
                     OnKeyframesListChanged();
                     if (_selectedNode.DirectXAnimation.KeyFrames.Count != 0)
                         SelectFrame(panelRendering.CurrentKeyFrame);
+                    else
+                        statusFrame.Text = "";
                     panelRendering.Invalidate();
 
                     _saved = false;
@@ -562,6 +561,8 @@ namespace WadTool
                 // Update the GUI
                 ReloadAnimations();
                 SelectAnimation(_selectedNode);
+
+                _saved = false;
             }
         }
 
@@ -601,6 +602,9 @@ namespace WadTool
                     keyFrame.Translations.Add(bone.Translation);
                     keyFrame.TranslationsMatrices.Add(Matrix4x4.CreateTranslation(bone.Translation));
                 }
+
+                if (_selectedNode.DirectXAnimation.KeyFrames.Count == 0)
+                    index = 0;
 
                 _selectedNode.DirectXAnimation.KeyFrames.Insert(index, keyFrame);
                 OnKeyframesListChanged();
@@ -1052,6 +1056,8 @@ namespace WadTool
 
             // All done! Now I reset a bit the GUI
             SelectFrame(panelRendering.CurrentKeyFrame);
+
+            _saved = false;
         }
 
         private void butEditStateChanges_Click(object sender, EventArgs e)
@@ -1066,6 +1072,8 @@ namespace WadTool
                     // Add the new state changes
                     _selectedNode.WadAnimation.StateChanges.Clear();
                     _selectedNode.WadAnimation.StateChanges.AddRange(form.StateChanges);
+
+                    _saved = false;
                 }
             }
         }

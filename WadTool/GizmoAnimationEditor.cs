@@ -137,7 +137,8 @@ namespace WadTool
         {
             get
             {
-                if (_control == null || _control.Animation == null || _control.SelectedMesh == null)
+                if (_control == null || _control.Animation == null || _control.SelectedMesh == null ||
+                    _control.CurrentKeyFrame >= _control.Animation.DirectXAnimation.KeyFrames.Count)
                     return 0;
                 var meshIndex = _control.Model.Meshes.IndexOf(_control.SelectedMesh);
                 return _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame].Rotations[meshIndex].Y;
@@ -148,7 +149,8 @@ namespace WadTool
         {
             get
             {
-                if (_control == null || _control.Animation == null || _control.SelectedMesh == null)
+                if (_control == null || _control.Animation == null || _control.SelectedMesh == null ||
+                    _control.CurrentKeyFrame >= _control.Animation.DirectXAnimation.KeyFrames.Count)
                     return 0;
                 var meshIndex = _control.Model.Meshes.IndexOf(_control.SelectedMesh);
                 return _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame].Rotations[meshIndex].X;
@@ -159,7 +161,8 @@ namespace WadTool
         {
             get
             {
-                if (_control == null || _control.Animation == null || _control.SelectedMesh == null)
+                if (_control == null || _control.Animation == null || _control.SelectedMesh == null ||
+                    _control.CurrentKeyFrame >= _control.Animation.DirectXAnimation.KeyFrames.Count)
                     return 0;
                 var meshIndex = _control.Model.Meshes.IndexOf(_control.SelectedMesh);
                 return _control.Animation.DirectXAnimation.KeyFrames[_control.CurrentKeyFrame].Rotations[meshIndex].Z;
