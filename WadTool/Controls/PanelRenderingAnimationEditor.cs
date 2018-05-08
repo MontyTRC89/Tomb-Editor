@@ -376,35 +376,43 @@ namespace WadTool.Controls
 
             if (e.Button == MouseButtons.Left)
             {
-                // Try to do gizmo picking
-                if (DrawGizmo)
+                if (Animation != null && Animation.DirectXAnimation.KeyFrames.Count != 0)
                 {
-                    var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
-                    if (result != null)
+                    // Try to do gizmo picking
+                    if (DrawGizmo)
                     {
-                        _gizmo.ActivateGizmo(result);
-                        Invalidate();
-                        return;
-                    }
-                }
-
-                // Try to do node picking
-                ObjectMesh foundMesh = null;
-                for (int i = 0; i < _model.Meshes.Count; i++)
-                {
-                    float distance = 0;
-                    float minDistance = float.PositiveInfinity;
-                    if (DoMeshPicking(GetRay(e.X, e.Y), i, out distance))
-                    {
-                        if (distance < minDistance)
+                        var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
+                        if (result != null)
                         {
-                            distance = minDistance;
-                            foundMesh = _model.Meshes[i];
+                            _gizmo.ActivateGizmo(result);
+                            Invalidate();
+                            return;
                         }
                     }
+
+                    // Try to do node picking
+                    ObjectMesh foundMesh = null;
+                    for (int i = 0; i < _model.Meshes.Count; i++)
+                    {
+                        float distance = 0;
+                        float minDistance = float.PositiveInfinity;
+                        if (DoMeshPicking(GetRay(e.X, e.Y), i, out distance))
+                        {
+                            if (distance < minDistance)
+                            {
+                                distance = minDistance;
+                                foundMesh = _model.Meshes[i];
+                            }
+                        }
+                    }
+                    SelectedMesh = foundMesh;
+                    _tool.AnimationEditorMeshSelected(Model, SelectedMesh);
                 }
-                SelectedMesh = foundMesh;
-                _tool.AnimationEditorMeshSelected(Model, SelectedMesh);
+                else
+                {
+                    SelectedMesh = null;
+                    _tool.AnimationEditorMeshSelected(Model, SelectedMesh);
+                }
             }
 
             Invalidate();
