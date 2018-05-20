@@ -237,7 +237,7 @@ namespace TombLib.LevelData.Compilers.Util
                 int[] uncompressedSizes = new int[_samples.Count];
                 Parallel.For(0, _samples.Count, delegate (int i)
                     {
-                        compressedSamples[i] = _samples[i].CompressToMsAdpcm(WadSample.GameSupportedSampleRate, out uncompressedSizes[i]);
+                       compressedSamples[i] = _samples[i].CompressToMsAdpcm(WadSample.GameSupportedSampleRate, out uncompressedSizes[i]);
                     });
                 for (int i = 0; i < _samples.Count; ++i)
                 {
