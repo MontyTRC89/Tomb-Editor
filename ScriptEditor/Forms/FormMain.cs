@@ -294,7 +294,7 @@ namespace ScriptEditor
 
 		private void ToolStrip_StringTableButton_Click(object sender, EventArgs e)
 		{
-			using (FormAbout form = new FormAbout())
+			using (FormStringTable form = new FormStringTable())
 			{
 				form.ShowDialog(this);
 			}
@@ -811,7 +811,7 @@ namespace ScriptEditor
 			{
 				DialogResult result = DarkMessageBox.Show(this,
 				string.Format(Resources.Messages.UnsavedChanges, Path.GetFileName(_currentFilePath)), "Unsaved changes!",
-				MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+				MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
 				if (result == DialogResult.Yes)
 				{
@@ -865,7 +865,7 @@ namespace ScriptEditor
 		{
 			using (FormAbout form = new FormAbout())
 			{
-				form.Show(this);
+				form.ShowDialog(this);
 			}
 		}
 
