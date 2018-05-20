@@ -34,7 +34,7 @@ namespace TombLib.Script
 
         // Levels
         public List<LevelScript> Levels { get; private set; } = new List<LevelScript>();
-        
+
         // English strings
         public List<LanguageScript> Strings { get; private set; } = new List<LanguageScript>();
 
@@ -261,7 +261,7 @@ namespace TombLib.Script
 
                 return script;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
