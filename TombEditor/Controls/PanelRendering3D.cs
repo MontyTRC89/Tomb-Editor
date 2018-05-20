@@ -626,6 +626,8 @@ namespace TombEditor.Controls
         private Effect _roomEffect;
         private bool _gizmoEnabled = false;
 
+        private bool _objectPlaced = false;
+
         public PanelRendering3D()
         {
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
@@ -996,6 +998,7 @@ namespace TombEditor.Controls
 
             _lastMousePosition = e.Location;
             _doSectorSelection = false;
+            _objectPlaced = false;
 
             //https://stackoverflow.com/questions/14191219/receive-mouse-move-even-cursor-is-outside-control
             Capture = true; // Capture mouse for zoom and panning
@@ -1021,6 +1024,7 @@ namespace TombEditor.Controls
                     {
                         var action = (IEditorActionPlace)_editor.Action;
                         EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos, action.CreateInstance(_editor.Level, _editor.SelectedRoom));
+                        _objectPlaced = true;
                         if (!action.ShouldBeActive)
                             _editor.Action = null;
                         return;
@@ -1153,6 +1157,8 @@ namespace TombEditor.Controls
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
+
+            _objectPlaced = false;
 
             switch (e.Button)
             {
@@ -1330,7 +1336,7 @@ namespace TombEditor.Controls
                                     }
                                 }
                             }
-                            else if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && _editor.Action == null && ModifierKeys == Keys.None)
+                            else if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && _editor.Action == null && ModifierKeys == Keys.None && !_objectPlaced)
                             {
                                 if (_editor.Tool.Tool == EditorToolType.Brush)
                                 {
@@ -1357,7 +1363,7 @@ namespace TombEditor.Controls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if (_editor.Mode == EditorMode.Geometry && !_gizmoEnabled)
+                    if (_editor.Mode == EditorMode.Geometry && !_gizmoEnabled && !_objectPlaced)
                     {
                         PickingResultBlock newBlockPicking = DoPicking(GetRay(e.X, e.Y)) as PickingResultBlock;
                         if (newBlockPicking != null && !_toolHandler.Dragged)
@@ -1416,7 +1422,6 @@ namespace TombEditor.Controls
 
                 case MouseButtons.Right:
                     var distance = new Vector2(_startMousePosition.X, _startMousePosition.Y) - new Vector2(e.Location.X, e.Location.Y);
-                    // EXPERIMENTAL: show context menus here
                     if (distance.Length() < 4.0f)
                     {
                         _currentContextMenu?.Dispose();
@@ -1844,30 +1849,6 @@ namespace TombEditor.Controls
 
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
-                /*if (light.Type==LightType.Spot)
-                {
-                    //_device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-                    _device.SetVertexBuffer(_littleWireframedCube.VertexBuffer);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleWireframedCube.VertexBuffer));
-                    _device.SetIndexBuffer(_littleWireframedCube.IndexBuffer, false);
-
-                    Effect effect = _deviceManager.Effects["Solid"];
-
-                    //effect.Parameters["TextureEnabled"].SetValue(true);
-                    //effect.Parameters["Texture"].SetResource<Texture2D>(_deviceManager.Textures["spotlight"]);
-
-                    effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
-
-                    Matrix4x4 model = Matrix4x4.CreateTranslation(light.Position) * Matrix4x4.CreateTranslation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
-                    effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-
-                    effect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.LineList, 49);
-
-                    continue;
-                }*/
-
                 solidEffect.Parameters["ModelViewProjection"].SetValue((light.ObjectMatrix * viewProjection).ToSharpDX());
 
                 if (light.Type == LightType.Point)

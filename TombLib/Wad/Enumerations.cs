@@ -11,8 +11,8 @@
 
     public enum WadAnimCommandType : short
     {
-        PositionReference = 1,
-        JumpReference = 2,
+        SetPosition = 1,
+        JumpDistance = 2,
         EmptyHands = 3,
         KillEntity = 4,
         PlaySound = 5,

@@ -869,7 +869,11 @@ namespace TombEditor
 
                     case BlockFace.Ceiling:
                         if (block.CeilingIsQuad)
+                        {
+                            Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord1);
+                            Swap.Do(ref processedTexture.TexCoord2, ref processedTexture.TexCoord3);
                             break;
+                        }
                         else
                         {
                             if (block.CeilingSplitDirectionIsXEqualsZ)

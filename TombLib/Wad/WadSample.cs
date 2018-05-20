@@ -260,7 +260,7 @@ namespace TombLib.Wad
             using (var pcmStream = new RawSourceWaveStream(anyWaveStream, pcmFormat))
             {
                 int sampleSize = ((pcmStream.WaveFormat.BitsPerSample * pcmStream.WaveFormat.Channels) / 8);
-                int uncompressedSampleCount = (int)pcmStream.Length / sampleSize;
+                int uncompressedSampleCount = (int)pcmStream.Length / (sampleSize != 0 ? sampleSize : 1);
                 uncompressedSampleCount = AlignTo(uncompressedSampleCount, adpcmFormat.SamplesPerBlock);
                 uncompressedSize = uncompressedSampleCount * 2; // Time 2 because 16 bit mono samples (2 byte per sample)
 

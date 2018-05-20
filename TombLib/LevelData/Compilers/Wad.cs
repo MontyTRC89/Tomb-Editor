@@ -258,7 +258,7 @@ namespace TombLib.LevelData.Compilers
                     {
                         switch (command.Type)
                         {
-                            case WadAnimCommandType.PositionReference:
+                            case WadAnimCommandType.SetPosition:
                                 _animCommands.Add(0x01);
 
                                 _animCommands.Add(command.Parameter1);
@@ -267,7 +267,7 @@ namespace TombLib.LevelData.Compilers
 
                                 break;
 
-                            case WadAnimCommandType.JumpReference:
+                            case WadAnimCommandType.JumpDistance:
                                 _animCommands.Add(0x02);
 
                                 _animCommands.Add(command.Parameter1);
@@ -291,15 +291,15 @@ namespace TombLib.LevelData.Compilers
                                 ushort soundIndex = _soundManager.AllocateSoundInfo(command.SoundInfo);
                                 if (soundIndex > 0x3FFF)
                                     throw new IndexOutOfRangeException("Sound index '" + soundIndex + "' too big.");
-                                _animCommands.Add(checked((ushort)(command.Parameter1 + newAnimation.FrameStart)));
-                                _animCommands.Add(checked((ushort)(soundIndex | (command.Parameter2 & 0xC000))));
+                                _animCommands.Add(unchecked((short)(command.Parameter1 + newAnimation.FrameStart)));
+                                _animCommands.Add(unchecked((short)(soundIndex | (command.Parameter2 & 0xC000))));
 
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
                                 _animCommands.Add(0x06);
 
-                                _animCommands.Add(checked((ushort)(command.Parameter1 + newAnimation.FrameStart)));
+                                _animCommands.Add(checked((short)(command.Parameter1 + newAnimation.FrameStart)));
                                 _animCommands.Add(command.Parameter2);
 
                                 break;

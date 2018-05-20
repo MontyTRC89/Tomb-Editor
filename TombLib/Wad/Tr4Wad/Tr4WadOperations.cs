@@ -491,16 +491,16 @@ namespace TombLib.Wad.Tr4Wad
                         switch (commandType)
                         {
                             case 1:
-                                command.Parameter1 = (ushort)oldWad.Commands[lastCommand + 1];
-                                command.Parameter2 = (ushort)oldWad.Commands[lastCommand + 2];
-                                command.Parameter3 = (ushort)oldWad.Commands[lastCommand + 3];
+                                command.Parameter1 = (short)oldWad.Commands[lastCommand + 1];
+                                command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
+                                command.Parameter3 = (short)oldWad.Commands[lastCommand + 3];
 
                                 lastCommand += 4;
                                 break;
 
                             case 2:
-                                command.Parameter1 = (ushort)oldWad.Commands[lastCommand + 1];
-                                command.Parameter2 = (ushort)oldWad.Commands[lastCommand + 2];
+                                command.Parameter1 = (short)oldWad.Commands[lastCommand + 1];
+                                command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
 
                                 lastCommand += 3;
                                 break;
@@ -514,8 +514,8 @@ namespace TombLib.Wad.Tr4Wad
                                 break;
 
                             case 5:
-                                command.Parameter1 = (ushort)(oldWad.Commands[lastCommand + 1] - oldAnimation.FrameStart);
-                                command.Parameter2 = (ushort)oldWad.Commands[lastCommand + 2];
+                                command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - oldAnimation.FrameStart);
+                                command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
 
                                 // Setup sound info reference
@@ -532,12 +532,12 @@ namespace TombLib.Wad.Tr4Wad
                                     logger.Warn("Sound with index " + (soundInfoIndex) + " missing but used by animation.");
                                     continue;
                                 }
-                                command.Parameter2 &= 0xC000; // Clear sound ID
+                                command.Parameter2 &= unchecked((short)0xC000); // Clear sound ID
                                 break;
 
                             case 6:
-                                command.Parameter1 = (ushort)(oldWad.Commands[lastCommand + 1] - oldAnimation.FrameStart);
-                                command.Parameter2 = (ushort)oldWad.Commands[lastCommand + 2];
+                                command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - oldAnimation.FrameStart);
+                                command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
                             default: // Ignore invalid anim commands (see for example karnak.wad)

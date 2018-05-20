@@ -6,9 +6,9 @@ namespace TombLib.Wad
     {
         public WadAnimCommandType Type { get; set; }
         public WadSoundInfo SoundInfo { get; set; }
-        public ushort Parameter1 { get; set; }
-        public ushort Parameter2 { get; set; }
-        public ushort Parameter3 { get; set; }
+        public short Parameter1 { get; set; }
+        public short Parameter2 { get; set; }
+        public short Parameter3 { get; set; }
 
         public override string ToString()
         {
@@ -16,11 +16,11 @@ namespace TombLib.Wad
             {
                 case WadAnimCommandType.EmptyHands:
                     return "Remove guns from hands";
-                case WadAnimCommandType.JumpReference:
+                case WadAnimCommandType.JumpDistance:
                     return "Set jump reference <V, H> = <" + Parameter1 + ", " + Parameter2 + ">";
                 case WadAnimCommandType.KillEntity:
                     return "Kill entity";
-                case WadAnimCommandType.PositionReference:
+                case WadAnimCommandType.SetPosition:
                     return "Set position reference <X, Y, Z> = " + Parameter1 + ", " + Parameter2 + ", " + Parameter3 + ">";
                 case WadAnimCommandType.PlaySound:
                     if ((Parameter1 & 0x8000) != 0)

@@ -509,16 +509,16 @@ namespace TombLib.Wad.TrLevels
                         switch (commandType)
                         {
                             case 1:
-                                command.Parameter1 = (ushort)oldLevel.AnimCommands[lastCommand + 1];
-                                command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
-                                command.Parameter3 = (ushort)oldLevel.AnimCommands[lastCommand + 3];
+                                command.Parameter1 = (short)oldLevel.AnimCommands[lastCommand + 1];
+                                command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
+                                command.Parameter3 = (short)oldLevel.AnimCommands[lastCommand + 3];
 
                                 lastCommand += 4;
                                 break;
 
                             case 2:
-                                command.Parameter1 = (ushort)oldLevel.AnimCommands[lastCommand + 1];
-                                command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
+                                command.Parameter1 = (short)oldLevel.AnimCommands[lastCommand + 1];
+                                command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
 
                                 lastCommand += 3;
                                 break;
@@ -532,12 +532,12 @@ namespace TombLib.Wad.TrLevels
                                 break;
 
                             case 5:
-                                command.Parameter1 = (ushort)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
-                                command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
+                                command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
+                                command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 lastCommand += 3;
 
                                 int soundInfoIndex = command.Parameter2 & 0x3fff;
-                                command.Parameter2 &= 0xC000;
+                                command.Parameter2 &= unchecked((short)0xC000);
                                 if (soundInfoIndex >= soundInfos.Length || soundInfos[soundInfoIndex] == null)
                                 {
                                     logger.Warn("Anim command uses " + soundInfoIndex + " which is unavailable.");
@@ -547,8 +547,8 @@ namespace TombLib.Wad.TrLevels
                                 break;
 
                             case 6:
-                                command.Parameter1 = (ushort)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
-                                command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
+                                command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
+                                command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
 
