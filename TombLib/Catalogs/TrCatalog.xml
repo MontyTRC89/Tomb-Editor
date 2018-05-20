@@ -1339,8 +1339,8 @@
             <sound id="79" name="Waterfall"/>
             <sound id="80" name="Crocodile biting"/>
             <sound id="81" name="Crocodile dying"/>
-            <sound id="82" name="Scraping?"/>
-            <sound id="83" name="Scraping?"/>
+            <sound id="82" name="Scraping 1?"/>
+            <sound id="83" name="Scraping 2?"/>
             <sound id="84" name="T-rex growl (biting, spitting out)"/>
             <sound id="86" name="Low hum"/>
             <sound id="87" name="T-rex roar"/>
@@ -1365,8 +1365,8 @@
             <sound id="107" name="Earthquake sound"/>
             <sound id="108" name="Menu-option movement"/>
             <sound id="109" name="Select a menu item"/>
-            <sound id="111" name="Go to menu"/>
-            <sound id="112" name="Go to menu"/>
+            <sound id="111" name="Go to menu 1"/>
+            <sound id="112" name="Go to menu 2"/>
             <sound id="114" name="Select a weapon in menu"/>
             <sound id="115" name="Menu game-page turn"/>
             <sound id="116" name="Lara sigh (Ha-a-a!) from recharge"/>
@@ -1378,8 +1378,8 @@
             <sound id="124" name="Grenade launcher load (grenade settling)"/>
             <sound id="125" name="Fire grenade launcher"/>
             <sound id="126" name="Metallic scraping (door opening/closing)"/>
-            <sound id="127" name="Buzz"/>
-            <sound id="128" name="Buzz"/>
+            <sound id="127" name="Buzz 1"/>
+            <sound id="128" name="Buzz 2"/>
             <sound id="129" name="Man in treehouse calling"/>
             <sound id="130" name="Overhead hook in motion"/>
             <sound id="131" name="Thames Wharf machine electric sparking"/>
