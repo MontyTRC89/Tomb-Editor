@@ -1193,5 +1193,23 @@ namespace WadTool
         {
             SplitAnimation();
         }
+
+        private void butEditAnimCommands_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode != null)
+            {
+                using (var form = new FormAnimCommandsEditor(_tool, _selectedNode.WadAnimation.AnimCommands))
+                {
+                    if (form.ShowDialog() != DialogResult.OK)
+                        return;
+
+                    // Add the new state changes
+                    _selectedNode.WadAnimation.AnimCommands.Clear();
+                    _selectedNode.WadAnimation.AnimCommands.AddRange(form.AnimCommands);
+
+                    _saved = false;
+                }
+            }
+        }
     }
 }

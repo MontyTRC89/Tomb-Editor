@@ -28,6 +28,7 @@ namespace WadTool
             this.animationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.curToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -118,12 +119,11 @@ namespace WadTool
             this.butTbCutFrame = new System.Windows.Forms.ToolStripButton();
             this.butTbCopyFrame = new System.Windows.Forms.ToolStripButton();
             this.butTbPasteFrame = new System.Windows.Forms.ToolStripButton();
+            this.butTbReplaceFrame = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.comboSkeleton = new System.Windows.Forms.ToolStripComboBox();
             this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
-            this.butTbReplaceFrame = new System.Windows.Forms.ToolStripButton();
-            this.splitAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelRendering = new WadTool.Controls.PanelRenderingAnimationEditor();
             this.panelInterpolate = new System.Windows.Forms.Panel();
             this.butInterpolateFrames = new DarkUI.Controls.DarkButton();
@@ -250,6 +250,16 @@ namespace WadTool
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
             this.deleteToolStripMenuItem.Text = "Delete animation";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // splitAnimationToolStripMenuItem
+            // 
+            this.splitAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.splitAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.splitAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.split_16;
+            this.splitAnimationToolStripMenuItem.Name = "splitAnimationToolStripMenuItem";
+            this.splitAnimationToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+            this.splitAnimationToolStripMenuItem.Text = "Split animation";
+            this.splitAnimationToolStripMenuItem.Click += new System.EventHandler(this.splitAnimationToolStripMenuItem_Click);
             // 
             // toolStripMenuItem5
             // 
@@ -855,6 +865,7 @@ namespace WadTool
             this.butEditAnimCommands.TabIndex = 92;
             this.butEditAnimCommands.Text = "Anim commands";
             this.butEditAnimCommands.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butEditAnimCommands.Click += new System.EventHandler(this.butEditAnimCommands_Click);
             // 
             // butCalculateCollisionBox
             // 
@@ -1295,6 +1306,18 @@ namespace WadTool
             this.butTbPasteFrame.Text = "toolStripButton5";
             this.butTbPasteFrame.Click += new System.EventHandler(this.butTbPasteFrame_Click);
             // 
+            // butTbReplaceFrame
+            // 
+            this.butTbReplaceFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbReplaceFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbReplaceFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbReplaceFrame.Image = global::WadTool.Properties.Resources.paste_special_16;
+            this.butTbReplaceFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbReplaceFrame.Name = "butTbReplaceFrame";
+            this.butTbReplaceFrame.Size = new System.Drawing.Size(23, 25);
+            this.butTbReplaceFrame.Text = "toolStripButton5";
+            this.butTbReplaceFrame.Click += new System.EventHandler(this.butTbReplaceFrame_Click);
+            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1324,28 +1347,6 @@ namespace WadTool
             // 
             this.timerPlayAnimation.Interval = 33;
             this.timerPlayAnimation.Tick += new System.EventHandler(this.timerPlayAnimation_Tick);
-            // 
-            // butTbReplaceFrame
-            // 
-            this.butTbReplaceFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbReplaceFrame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbReplaceFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbReplaceFrame.Image = global::WadTool.Properties.Resources.paste_special_16;
-            this.butTbReplaceFrame.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbReplaceFrame.Name = "butTbReplaceFrame";
-            this.butTbReplaceFrame.Size = new System.Drawing.Size(23, 25);
-            this.butTbReplaceFrame.Text = "toolStripButton5";
-            this.butTbReplaceFrame.Click += new System.EventHandler(this.butTbReplaceFrame_Click);
-            // 
-            // splitAnimationToolStripMenuItem
-            // 
-            this.splitAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.splitAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.splitAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.split_16;
-            this.splitAnimationToolStripMenuItem.Name = "splitAnimationToolStripMenuItem";
-            this.splitAnimationToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
-            this.splitAnimationToolStripMenuItem.Text = "Split animation";
-            this.splitAnimationToolStripMenuItem.Click += new System.EventHandler(this.splitAnimationToolStripMenuItem_Click);
             // 
             // panelRendering
             // 

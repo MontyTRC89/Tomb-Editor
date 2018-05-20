@@ -44,7 +44,7 @@ namespace TombLib.LevelData.Compilers
         private readonly List<tr_animation> _animations = new List<tr_animation>();
         private readonly List<tr_state_change> _stateChanges = new List<tr_state_change>();
         private readonly List<tr_anim_dispatch> _animDispatches = new List<tr_anim_dispatch>();
-        private readonly List<ushort> _animCommands = new List<ushort>();
+        private readonly List<short> _animCommands = new List<short>();
         private readonly List<int> _meshTrees = new List<int>();
         private readonly List<short> _frames = new List<short>();
         private List<tr_moveable> _moveables = new List<tr_moveable>();

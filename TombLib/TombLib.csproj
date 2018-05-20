@@ -208,6 +208,11 @@
     <Compile Include="LevelData\StaticInstance.cs" />
     <Compile Include="LevelData\TextureSound.cs" />
     <Compile Include="LevelData\TriggerInstance.cs" />
+    <Compile Include="Script\LanguageScript.cs" />
+    <Compile Include="Script\LevelScript.cs" />
+    <Compile Include="Script\LevelScriptCatalog.cs" />
+    <Compile Include="Script\Script.cs" />
+    <Compile Include="Script\ScriptBlocks.cs" />
     <Compile Include="Utils\DataVersion.cs" />
     <Compile Include="MathC.cs" />
     <Compile Include="NG\NgParameterInfo.cs" />

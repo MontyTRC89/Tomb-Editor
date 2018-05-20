@@ -12,6 +12,7 @@ using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Script;
 using TombLib.Utils;
 
 namespace TombEditor.Forms
@@ -1371,6 +1372,13 @@ namespace TombEditor.Forms
                     writer.WriteLine("</xml>");
                 }
             }*/
+        }
+
+        private void debugScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var script = Script.LoadFromTxt("E:\\trle\\script\\script.txt");
+            script.CompileScript("E:\\trle\\script\\");
+            //Script.Test();
         }
     }
 }

@@ -669,9 +669,9 @@ namespace TombLib.Wad
                                 var command = new WadAnimCommand();
                                 long offset = chunkIO.Raw.BaseStream.Position;
                                 command.Type = (WadAnimCommandType)LEB128.ReadUShort(chunkIO.Raw);
-                                command.Parameter1 = LEB128.ReadUShort(chunkIO.Raw);
-                                command.Parameter2 = LEB128.ReadUShort(chunkIO.Raw);
-                                command.Parameter3 = LEB128.ReadUShort(chunkIO.Raw);
+                                command.Parameter1 = LEB128.ReadShort(chunkIO.Raw);
+                                command.Parameter2 = LEB128.ReadShort(chunkIO.Raw);
+                                command.Parameter3 = LEB128.ReadShort(chunkIO.Raw);
 
                                 chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {

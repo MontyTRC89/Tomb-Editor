@@ -168,6 +168,12 @@
     <Compile Include="FormStartupHelp.Designer.cs">
       <DependentUpon>FormStartupHelp.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAnimCommandsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAnimCommandsEditor.Designer.cs">
+      <DependentUpon>FormAnimCommandsEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormStateChangesEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -223,6 +229,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormStartupHelp.resx">
       <DependentUpon>FormStartupHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAnimCommandsEditor.resx">
+      <DependentUpon>FormAnimCommandsEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormStateChangesEditor.resx">
       <DependentUpon>FormStateChangesEditor.cs</DependentUpon>
