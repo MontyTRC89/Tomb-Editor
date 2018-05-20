@@ -1,0 +1,81 @@
+32: JEEP               Arg1: Range=[-1000 / +1000]  Default=150  <Collision shock>
+35: SKELETON           Arg1: Range=[-128 / +127]  Default=80
+41: BADDY_1            Arg1: Range=[-1000 / +1000]  Default=15   <Uzi>
+			Arg2: Range=[-1000 / +1000]  Default=120   <Sword>
+43: BADDY_2            Arg1: Range=[-1000 / +1000]  Default=15   <Uzi>
+			Arg2: Range=[-1000 / +1000]  Default=120   <Sword>
+45: SETHA              Arg1: Range=[-1000 / +1000]  Default=200
+			Arg2: Range=[-128 / +127]  Default=250
+47: MUMMY              Arg1: Range=[-128 / +127]  Default=100
+49: SPHINX             Arg1: Range=[-128 / +127]  Default=200
+51: CROCODILE          Arg1: Range=[-128 / +127]  Default=120
+53: HORSEMAN           Arg1: Range=[-128 / +127]  Default=10
+			Arg2: Range=[-128 / +127]  Default=20
+			Arg3: Range=[-1000 / +1000]  Default=150
+55: SCORPION           Arg1: Range=[-128 / +127]  Default=120
+59: TROOPS             Arg1: Range=[0 / 255]  Default=23
+			Arg2: Range=[-128 / +127]  Default=15
+61: KNIGHTS_TEMPLAR    Arg1: Range=[-128 / +127]  Default=120
+65: HORSE              Arg1: Range=[-128 / +127]  Default=150
+			Arg2: Range=[-128 / +127]  Default=250
+			Arg3: Range=[-128 / +127]  Default=100
+67: BABOON_NORMAL      Arg1: Range=[-128 / +127]  Default=70
+73: WILD_BOAR          Arg1: Range=[-128 / +127]  Default=30
+75: HARPY              Arg1: Range=[-128 / +127]  Default=10
+			Arg2: Range=[-128 / +127]  Default=100
+83: LITTLE_BEETLE      Arg1: Range=[-1000 / +1000]  Default=1
+84: BIG_BEETLE         Arg1: Range=[-128 / +127]  Default=50
+86: WRAITH1            Arg1: Range=[-1000 / +1000]  Default=<Formula> ExtraFlame=ENABLED
+87: WRAITH2            Arg1: Range=[-1000 / +1000]  Default=<Formula> ExtraFlame=DISABLED
+88: WRAITH3            Arg1: Range=[-1000 / +1000]  Default=<Formula> ExtraFlame=DISABLED
+89: WRAITH4            Arg1: Range=[-1000 / +1000]  Default=<Formula> ExtraFlame=DISABLED
+90: BAT                Arg1: Range=[-128 / +127]  Default=2
+91: DOG                Arg1: Range=[-128 / +127]  Default=10
+			Arg2: Range=[-128 / +127]  Default=20
+93: HAMMERHEAD         Arg1: Range=[-128 / +127]  Default=120
+95: SAS                Arg1: Range=[0 / 255]  Default=15   <UZI>
+			Arg2: Range=[-1000 / +1000]  Default=50   <Grenade>
+102: AHMET              Arg1: Range=[-128 / +127]  Default=80
+			Arg2: Range=[-128 / +127]  Default=120
+104: LARA_DOUBLE        Arg1: Range=[-1000 / +1000]  Default=1000  <When she dies>
+106: SMALL_SCORPION     Arg1: Range=[-128 / +127]  Default=20
+107: LOCUST_EMITTER     Arg1: Range=[-128 / +127]  Default=3
+114: DARTS              Arg1: Range=[-128 / +127]  Default=25
+117: FALLING_CEILING    Arg1: Range=[-1000 / +1000]  Default=300
+130: ROLLINGBALL        Arg1: Range=[-128 / +127]  Default=8  <When lara is on jeep>
+132: TEETH_SPIKES       Arg1: Range=[-1000 / +1000]  Default=8
+134: SLICER_DICER       Arg1: Range=[0 / 255]  Default=50
+135: CHAIN              Arg1: Range=[0 / 255]  Default=75
+			Arg2: Range=[0 / 255]  Default=25
+136: PLOUGH             Arg1: Range=[0 / 255]  Default=50
+137: STARGATE           Arg1: Range=[0 / 255]  Default=50
+			Arg2: Range=[-128 / +127]  Default=100
+138: HAMMER             Arg1: Range=[0 / 255]  Default=150
+139: BURNING_FLOOR      Arg1: Range=[0 / 255]  Default=1
+140: COG                Arg1: Range=[-128 / +127]  Default=10
+141: SPIKEBALL          Arg1: Range=[0 / 255]  Default=150
+			Arg2: Range=[0 / 255]  Default=50
+143: FLAME_EMITTER      Arg1: Range=[-128 / +127]  Default=7
+144: FLAME_EMITTER2     Arg1: Range=[0 / 255]  Default=2
+145: FLAME_EMITTER3     Arg1: Range=[-128 / +127]  Default=5
+147: FIREROPE           Arg1: Range=[0 / 255]  Default=150
+162: SENTRY_GUN         Arg1: Range=[0 / 255]  Default=5
+166: FLOOR_4BLADE       Arg1: Range=[0 / 255]  Default=20
+			Arg2: Range=[0 / 255]  Default=200
+167: ROOF_4BLADE        Arg1: Range=[0 / 255]  Default=20
+			Arg2: Range=[0 / 255]  Default=200
+168: BIRD_BLADE         Arg1: Range=[0 / 255]  Default=100
+169: CATWALK_BLADE      Arg1: Range=[0 / 255]  Default=100
+			Arg2: Range=[0 / 255]  Default=0   <Blade is within wall>
+170: MOVING_BLADE       Arg1: Range=[0 / 255]  Default=50
+171: PLINTH_BLADE       Arg1: Range=[0 / 255]  Default=0   <Blade is within wall>
+			Arg2: Range=[0 / 255]  Default=200
+172: SETH_BLADE         Arg1: Range=[-1000 / +1000]  Default=0
+			Arg2: Range=[-1000 / +1000]  Default=1000
+174: ELEMENT_PUZZLE     Arg1: Range=[0 / 255]  Default=90
+372: FLARE_ITEM         Arg1: Range=[0 / 255]  Default=1   <Lara picks up burning flare>
+382: STEAM_EMITTER      Arg1: Range=[-128 / +127]  Default=2
+484: HYDRA              Arg1: Range=[0/+1000] Default=120  <Hydra hits with its beak>
+488: SUB_MARINE_MISSILE Arg1: Range=[0/+1000] Default=100
+490: FROG_MAN_HARPOON   Arg1: Range=[0/+1000] Default=120
+491: FISH_EMITTER       Arg1: Range=[0/+1000] Default=5 <Damage of single fish>

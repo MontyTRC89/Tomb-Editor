@@ -1,0 +1,362 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Horizon" xml:space="preserve">
+    <value>Enables / Disables the Skybox.
+The game will display the HORIZON object in every room where the Skybox is set as visible.
+
+Usage:
+Horizon = ENABLED / DISABLED</value>
+  </data>
+  <data name="Legend" xml:space="preserve">
+    <value>Displays a string of text on the bottom of the screen at the start of the level.
+The string must be identical to a string in the english.txt file.
+
+Usage:
+Legend = {MESSAGE_STRING}</value>
+  </data>
+  <data name="LevelLevel" xml:space="preserve">
+    <value>Defines the .TR4 level path and the ambient sound used at the start of the level.
+Level files are mainly stored in the game's "DATA" folder.
+
+Usage:
+Level = {LEVEL_PATH}, {SOUND_ID}</value>
+  </data>
+  <data name="LoadCamera" xml:space="preserve">
+    <value>Sets the framing to display during the ‘Load Game’ screen in game.
+The position of the camera and the target are set in global level coordinates.
+Enable FlyCheat mode and press F1 to display global coordinates in game.
+
+Usage:
+LoadCamera = {SOURCE_X_POS}, {SOURCE_Y_POS}, {SOURCE_Z_POS}, {TARGET_X_POS}, {TARGET_Y_POS}, {TARGET_Z_POS}, {ROOM_NUMBER}</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>The string of text displayed on the "Select Level", "Load Game" and "Save Game" screens for the level.
+The string must be identical to a string in the english.txt file.
+
+Usage:
+Name = {NAME_STRING}</value>
+  </data>
+  <data name="AnimatingMIP" xml:space="preserve">
+    <value>When the game displays ANIMATING[1-16] objects,
+it will display the corresponding ANIMATING[1-16]_MIP object when Lara (actually her chase camera)
+is at a certain distance away from them.
+
+The MIP objects are low-resolution polygon models that will use fewer resources.
+Distance works by blocks, so a value of 1 shows the MIP until Lara is about 1 block away.
+When she gets within that range, the MIP swaps with the actual object.
+A value of 2 makes it 2 blocks, 3 makes it 3 blocks, and so forth.
+
+Usage:
+AnimatingMIP = {1-16}, {DISTANCE}</value>
+  </data>
+  <data name="ColAddHorizon" xml:space="preserve">
+    <value>Enables / Disables additive blending to semi-transparent textures assigned to the HORIZON object.
+Remember, textures above the sky-sprite need to be assigned as Semi-Transparent, or the sky-sprite will not be visible.
+
+Usage:
+ColAddHorizon = ENABLED / DISABLED</value>
+  </data>
+  <data name="DemoDisc" xml:space="preserve">
+    <value>Specifies that the script.txt file is for a demo,
+therefore the resulting script.dat file will only have a title level and one playable level specified (the first one defined)
+regardless of how many playable levels are defined in the script.txt file.
+
+Usage:
+DemoDisc = ENABLED / DISABLED</value>
+  </data>
+  <data name="Examine" xml:space="preserve">
+    <value>Information about the EXAMINE[1-3] collectible items.
+
+The first parameter is the number of the EXAMINE object in the wad file.
+The second parameter is its name displayed in the inventory and must be identical to a string in the english.txt file.
+
+The {HEIGHT} parameter adjusts the height of the object viewed in the inventory.
+It calculates the position of the center of rotation from the top of the screen, converted in hexadecimal value.
+The larger the number, the lower the object.
+You can also use negative numbers, but you need to convert them in hex signed 2's complement. (-1 = $FFFF)
+
+The {SIZE} parameter adjusts the size of the object.
+It calculates the distance of the camera from the object in game units (1 block = 512 units), converted in hexadecimal values.
+The larger the number, the smaller the object.
+Acceptable values are between the range of $0200 and $0500.
+
+The {X_ORIENT} parameter adjusts the orientation of the X axis, in hexadecimal values.
+To convert it from angle degrees, use the proportion: 65536 * [DEGREE] / 360  and then convert in hexadecimal value.
+
+The {Y_ORIENT} parameter adjusts the orientation of the Y axis. See above.
+The {Z_ORIENT} parameter adjusts the orientation of the Z axis. See above.
+
+The {BIT_MASK} parameter enables / disables special functions:
+$0002 – enables the rotation of the object on its designated center;
+$000A – snaps the center of rotation to the pivot of its bounding box* and enables its rotation.
+*(required for items with special animations – like pry-off-wall animation)
+
+Usage:
+Examine = {1-3}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}</value>
+  </data>
+  <data name="FlyCheat" xml:space="preserve">
+    <value>Enables / Disables the DOZY cheat.
+
+Usage:
+FlyCheat = ENABLED / DISABLED</value>
+  </data>
+  <data name="FOG" xml:space="preserve">
+    <value>Set distance fog color for the current level.
+Distance Fog is visible only if VOLUMETRIC FX are disabled in the setup
+or if the level is set in TRAIN mode (in which Volumetric Effects are disabled by default).
+
+Usage:
+Fog = {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}</value>
+  </data>
+  <data name="InputTimeout" xml:space="preserve">
+    <value>Specifies the number of tick frames after which the game enters demo mode if the player doesn’t press any key.
+
+Usage:
+InputTimeout = {NUM_OF_FRAMES}</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KeyCombo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Layer1" xml:space="preserve">
+    <value>Sets the color and speed of the scrolling sky texture.
+Accepted values of speed are in a range between -16 and 16.
+
+Layer1 = {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}, {SPEED}</value>
+  </data>
+  <data name="LensFlare" xml:space="preserve">
+    <value>Enables a global Lens Flare in the level.
+The Lens Flare can be seen anywhere inside the level as long as it’s in a visible patch of sky.
+The origin of the Lens Flare is set in global level coordinates.
+Enable FlyCheat mode and press F1 to display global coordinates in game.
+
+Usage:
+LensFlare = {GLOBAL_COORD_X}, {GLOBAL_COORD_Y}, {GLOBAL_COORD_Z}, {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}</value>
+  </data>
+  <data name="Lightning" xml:space="preserve">
+    <value>Enables / Disables thunderstorm.
+The background audio will include thunder sounds and the sky texture will flash to simulate lightning.
+
+Usage:
+Lightning = ENABLED / DISABLED</value>
+  </data>
+  <data name="LoadSave" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Mirror" xml:space="preserve">
+    <value>Enables a mirror effect.
+
+Usage:
+Mirror = {ROOM_NUMBER}, {ROOM_ORIGIN}</value>
+  </data>
+  <data name="Pickup" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PickupCombo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlayAnyLevel" xml:space="preserve">
+    <value>Enables / Disables the player to select any level after entering the "New Game" menu.
+If disabled, the game won't open the "New Game" menu, but will directly open the first defined level instead.
+
+Usage:
+PlayAnyLevel = ENABLED / DISABLED</value>
+  </data>
+  <data name="Puzzle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PuzzleCombo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RemoveAmulet" xml:space="preserve">
+    <value>Removes QUEST_ITEM1 from Lara’s inventory at the start of the level.
+
+Usage:
+RemoveAmulet = ENABLED / DISABLED</value>
+  </data>
+  <data name="ResetHUB" xml:space="preserve">
+    <value>Resets the game memory (including FlipEffect info),
+removes any information on carried items (puzzles, keys and pickups only),
+and reinitialize Lara.
+
+Useful to free memory space and required if you change the LARA_SKIN object.
+Must be used in the level BEFORE the call for the reset
+and the parameter must point to the level ID number to be loaded after the reset.
+
+Usage:
+ResetHUB = {LEVEL_ID}</value>
+  </data>
+  <data name="ResidentCut" xml:space="preserve">
+    <value>Displays an in game cut-scene somewhere in the middle of the level.
+Used together with the Cutscene trigger.
+The first parameter is the index of the cutscene called by the trigger.
+The second parameter is the ID of the cut-scene in the cutseq.pak that will be used.
+The executable distributed with the official Level Editor can display these types of cut-scenes
+but currently there are no ways to create new ones.
+
+Usage:
+ResidentCut = {TRIGGER_ID}, {CUTSCENE_ID}</value>
+  </data>
+  <data name="Timer" xml:space="preserve">
+    <value>Shows a timer on the top of the screen, indicating the amount of time spent in the level.
+Only works in the second level of the game.
+
+Usage:
+Timer = ENABLED / DISABLED</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Specifies if a [Title] section exists.
+
+Usage:
+Title = ENABLED / DISABLED</value>
+  </data>
+  <data name="Train" xml:space="preserve">
+    <value>Enables / Disables the Train level mode.
+
+Usage:
+Train = ENABLED / DISABLED</value>
+  </data>
+  <data name="UVRotate" xml:space="preserve">
+    <value>Animates the first textures of your texture set with a scrolling animation.
+The parameter sets the speed of the scrolling animation.
+Accepted values of speed are in a range between -16 and 16.
+
+Usage:
+UVrotate = {SPEED}</value>
+  </data>
+  <data name="YoungLara" xml:space="preserve">
+    <value>It will disable all weapons, and the holsters will not appear.
+Also, Lara’s ponytail will appear as two pigtails instead.
+
+Usage:
+YoungLara = ENABLED / DISABLED</value>
+  </data>
+  <data name="LevelPC" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="LevelPSX" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="LevelTitle" xml:space="preserve">
+    <value>3</value>
+  </data>
+</root>
