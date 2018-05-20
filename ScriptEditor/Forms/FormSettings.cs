@@ -10,10 +10,7 @@ namespace ScriptEditor
 		public FormSettings()
 		{
 			InitializeComponent();
-		}
 
-		private void FormSettings_Load(object sender, EventArgs e)
-		{
 			fontSizeNumeric.Value = Properties.Settings.Default.FontSize;
 			fontFaceCombo.SelectedItem = Properties.Settings.Default.FontFace;
 
@@ -83,7 +80,7 @@ namespace ScriptEditor
 
 		private void resetDefaultButton_Click(object sender, EventArgs e)
 		{
-			DialogResult result = MessageBox.Show(
+			DialogResult result = DarkMessageBox.Show(this,
 				Resources.Messages.ResetSettings, "Reset?",
 				MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 

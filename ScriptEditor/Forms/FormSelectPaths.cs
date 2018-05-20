@@ -24,7 +24,7 @@ namespace ScriptEditor
 				Description = "Select script folder:"
 			};
 
-			if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+			if (fbd.ShowDialog(this) == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
 			{
 				scriptPathTextBox.Text = fbd.SelectedPath;
 			}
@@ -37,7 +37,7 @@ namespace ScriptEditor
 				Description = "Select game folder:"
 			};
 
-			if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+			if (fbd.ShowDialog(this) == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
 			{
 				gamePathTextBox.Text = fbd.SelectedPath;
 			}

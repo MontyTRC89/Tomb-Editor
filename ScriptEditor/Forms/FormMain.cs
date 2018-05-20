@@ -29,22 +29,7 @@ namespace ScriptEditor
 		public FormMain()
 		{
 			InitializeComponent();
-		}
 
-		/* Form actions */
-
-		private void FormMain_Closing(object sender, FormClosingEventArgs e)
-		{
-			// If the file has unsaved changes
-			if (!IsFileSaved())
-			{
-				// Stop closing the form if saving failed or the user clicked "Cancel"
-				e.Cancel = true;
-			}
-		}
-
-		private void FormMain_Load(object sender, EventArgs e)
-		{
 			// Disable the interface
 			ToggleInterface(false);
 
@@ -63,6 +48,18 @@ namespace ScriptEditor
 
 			// Apply saved user settings
 			ApplyUserSettings();
+		}
+
+		/* Form actions */
+
+		private void FormMain_Closing(object sender, FormClosingEventArgs e)
+		{
+			// If the file has unsaved changes
+			if (!IsFileSaved())
+			{
+				// Stop closing the form if saving failed or the user clicked "Cancel"
+				e.Cancel = true;
+			}
 		}
 
 		private void FormMain_Shown(object sender, EventArgs e) => CheckRequiredPaths(); // Check if required paths are set
@@ -153,12 +150,13 @@ namespace ScriptEditor
 
 		private void Tools_Settings_MenuItem_Click(object sender, EventArgs e)
 		{
-			FormSettings form = new FormSettings();
-
-			// If the user pressed "Apply"
-			if (form.ShowDialog() == DialogResult.OK)
+			using (FormSettings form = new FormSettings())
 			{
-				ApplyUserSettings();
+				// If the user pressed "Apply"
+				if (form.ShowDialog(this) == DialogResult.OK)
+				{
+					ApplyUserSettings();
+				}
 			}
 		}
 
@@ -169,19 +167,19 @@ namespace ScriptEditor
 			objectBrowser.Visible = !objectBrowser.Visible;
 			searchTextBox.Visible = !searchTextBox.Visible;
 			objectBrowserBox.Visible = !objectBrowserBox.Visible;
-			objectBrowserToolStripMenuItem.Checked = (objectBrowserBox.Visible) ? true : false;
+			objectBrowserToolStripMenuItem.Checked = objectBrowserBox.Visible;
 		}
 
 		private void View_ReferenceBrowser_MenuItem_Click(object sender, EventArgs e)
 		{
 			referenceBrowser.Visible = !referenceBrowser.Visible;
-			referenceBrowserToolStripMenuItem.Checked = (referenceBrowser.Visible) ? true : false;
+			referenceBrowserToolStripMenuItem.Checked = referenceBrowser.Visible;
 		}
 
 		private void View_DocumentMap_MenuItem_Click(object sender, EventArgs e)
 		{
 			documentMap.Visible = !documentMap.Visible;
-			documentMapToolStripMenuItem.Checked = (documentMap.Visible) ? true : false;
+			documentMapToolStripMenuItem.Checked = documentMap.Visible;
 		}
 
 		/* Help menu */
@@ -233,11 +231,9 @@ namespace ScriptEditor
 			// Update the label
 			zoomLabel.Text = "Zoom: " + textEditor.Zoom + "%";
 
-			// Limit the zoom
-			if (textEditor.Zoom == 100)
-				resetZoomButton.Visible = false;
-			else resetZoomButton.Visible = true;
+			resetZoomButton.Visible = textEditor.Zoom == 100;
 
+			// Limit the zoom
 			if (textEditor.Zoom > 500)
 				textEditor.Zoom = 500;
 
@@ -298,8 +294,10 @@ namespace ScriptEditor
 
 		private void ToolStrip_StringTableButton_Click(object sender, EventArgs e)
 		{
-			FormStringTable form = new FormStringTable();
-			form.Show();
+			using (FormAbout form = new FormAbout())
+			{
+				form.ShowDialog(this);
+			}
 		}
 
 		/* StatusStrip buttons */
@@ -332,7 +330,7 @@ namespace ScriptEditor
 			if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ScriptPath)
 				|| string.IsNullOrWhiteSpace(Properties.Settings.Default.GamePath))
 			{
-				DialogResult result = MessageBox.Show(Resources.Messages.PathsNotFound,
+				DialogResult result = DarkMessageBox.Show(this, Resources.Messages.PathsNotFound,
 					"Paths not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
 				if (result == DialogResult.Yes)
@@ -569,7 +567,7 @@ namespace ScriptEditor
 
 		private void ClearAllBookmarks()
 		{
-			DialogResult result = MessageBox.Show(
+			DialogResult result = DarkMessageBox.Show(this,
 				Resources.Messages.ClearBookmarks, "Delete all bookmarks?",
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -716,11 +714,12 @@ namespace ScriptEditor
 				return;
 			}
 
-			FormSelectPaths form = new FormSelectPaths();
-
-			if (form.ShowDialog() == DialogResult.OK)
+			using (FormSelectPaths form = new FormSelectPaths())
 			{
-				ReadScriptFolder();
+				if (form.ShowDialog(this) == DialogResult.OK)
+				{
+					ReadScriptFolder();
+				}
 			}
 		}
 
@@ -753,7 +752,7 @@ namespace ScriptEditor
 				// If no script file has been found
 				if (!folderHasScriptFile)
 				{
-					DialogResult result = MessageBox.Show(
+					DialogResult result = DarkMessageBox.Show(this,
 						Resources.Messages.NoScriptFile, "Script file not found.",
 						MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -774,7 +773,7 @@ namespace ScriptEditor
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				UnloadCurrentFile();
 			}
 		}
@@ -798,7 +797,7 @@ namespace ScriptEditor
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				UnloadCurrentFile();
 			}
 		}
@@ -810,7 +809,7 @@ namespace ScriptEditor
 			// If the current file has unsaved changes
 			if (textEditor.IsChanged)
 			{
-				DialogResult result = MessageBox.Show(
+				DialogResult result = DarkMessageBox.Show(this,
 				string.Format(Resources.Messages.UnsavedChanges, Path.GetFileName(_currentFilePath)), "Unsaved changes!",
 				MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
 
@@ -847,7 +846,7 @@ namespace ScriptEditor
 			}
 			catch (Exception ex) // Saving failed somehow
 			{
-				DialogResult result = MessageBox.Show(ex.Message, "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+				DialogResult result = DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
 				if (result == DialogResult.Retry)
 				{
@@ -864,8 +863,10 @@ namespace ScriptEditor
 
 		private void ShowAboutForm()
 		{
-			FormAbout form = new FormAbout();
-			form.Show();
+			using (FormAbout form = new FormAbout())
+			{
+				form.Show(this);
+			}
 		}
 
 		private void HandleUndo()

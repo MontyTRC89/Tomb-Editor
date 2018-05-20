@@ -1116,7 +1116,6 @@
 			this.Text = "ScriptEditor";
 			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_Closing);
-			this.Load += new System.EventHandler(this.FormMain_Load);
 			this.Shown += new System.EventHandler(this.FormMain_Shown);
 			((System.ComponentModel.ISupportInitialize)(this.textEditor)).EndInit();
 			this.editorContextMenu.ResumeLayout(false);

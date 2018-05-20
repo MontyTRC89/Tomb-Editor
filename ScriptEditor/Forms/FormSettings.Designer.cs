@@ -523,7 +523,6 @@
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "FormSettings";
-			this.Load += new System.EventHandler(this.FormSettings_Load);
 			((System.ComponentModel.ISupportInitialize)(this.fontSizeNumeric)).EndInit();
 			this.darkGroupBox1.ResumeLayout(false);
 			this.darkGroupBox1.PerformLayout();
