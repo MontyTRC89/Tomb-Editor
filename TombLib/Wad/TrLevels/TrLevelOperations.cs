@@ -205,7 +205,7 @@ namespace TombLib.Wad.TrLevels
             foreach (var oldPoly in oldMesh.ColoredTriangles)
             {
                 WadPolygon poly;
-                poly.Shape = WadPolygonShape.Quad;
+                poly.Shape = WadPolygonShape.Triangle;
                 poly.Index0 = oldPoly.Index0;
                 poly.Index1 = oldPoly.Index1;
                 poly.Index2 = oldPoly.Index2;
