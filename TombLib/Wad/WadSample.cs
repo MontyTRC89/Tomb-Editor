@@ -114,7 +114,6 @@ namespace TombLib.Wad
         public static byte[] ConvertSampleFormat(byte[] data, Func<uint, ResampleInfo> negotiateSampleRate)
         {
             // Check if the format is actually already correct.
-            // If it is we cou
             ResampleInfo? resampleInfo = null;
             if (CheckSampleDataForFormat(data))
             {
@@ -252,7 +251,7 @@ namespace TombLib.Wad
             CompressToMsAdpcm(Data, overwriteSampleRate, out uncompressedSize);
         public static byte[] CompressToMsAdpcm(byte[] data, uint overwriteSampleRate, out int uncompressedSize)
         {
-            AdpcmWaveFormat pcmFormat = new AdpcmWaveFormat((int)overwriteSampleRate, 1);
+            WaveFormat pcmFormat = new WaveFormat((int)overwriteSampleRate, 16, 1);
             AdpcmWaveFormat adpcmFormat = new AdpcmWaveFormat((int)overwriteSampleRate, 1);
 
             using (var inStream = new MemoryStream(data))
@@ -260,7 +259,7 @@ namespace TombLib.Wad
             using (var pcmStream = new RawSourceWaveStream(anyWaveStream, pcmFormat))
             {
                 int sampleSize = ((pcmStream.WaveFormat.BitsPerSample * pcmStream.WaveFormat.Channels) / 8);
-                int uncompressedSampleCount = (int)pcmStream.Length / (sampleSize != 0 ? sampleSize : 1);
+                int uncompressedSampleCount = (int)(pcmStream.Length / sampleSize);
                 uncompressedSampleCount = AlignTo(uncompressedSampleCount, adpcmFormat.SamplesPerBlock);
                 uncompressedSize = uncompressedSampleCount * 2; // Time 2 because 16 bit mono samples (2 byte per sample)
 
