@@ -30,7 +30,8 @@
 		{
 			this.refSelectionComboBox = new DarkUI.Controls.DarkComboBox();
 			this.refSearchTextBox = new DarkUI.Controls.DarkTextBox();
-			this.refTextBox = new System.Windows.Forms.RichTextBox();
+			this.refDataGrid = new DarkUI.Controls.DarkDataGridView();
+			((System.ComponentModel.ISupportInitialize)(this.refDataGrid)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// refSelectionComboBox
@@ -67,45 +68,49 @@
 			this.refSearchTextBox.GotFocus += new System.EventHandler(this.refSearchTextBox_GotFocus);
 			this.refSearchTextBox.LostFocus += new System.EventHandler(this.refSearchTextBox_LostFocus);
 			// 
-			// refTextBox
+			// refDataGrid
 			// 
-			this.refTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.refDataGrid.AllowUserToAddRows = false;
+			this.refDataGrid.AllowUserToDeleteRows = false;
+			this.refDataGrid.AllowUserToDragDropRows = false;
+			this.refDataGrid.AllowUserToOrderColumns = true;
+			this.refDataGrid.AllowUserToPasteCells = false;
+			this.refDataGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.refTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-			this.refTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.refTextBox.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.refTextBox.ForeColor = System.Drawing.Color.Gainsboro;
-			this.refTextBox.Location = new System.Drawing.Point(0, 30);
-			this.refTextBox.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
-			this.refTextBox.MaxLength = 34000;
-			this.refTextBox.Name = "refTextBox";
-			this.refTextBox.ReadOnly = true;
-			this.refTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.refTextBox.Size = new System.Drawing.Size(800, 130);
-			this.refTextBox.TabIndex = 0;
-			this.refTextBox.Text = "";
+			this.refDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+			this.refDataGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+			this.refDataGrid.ColumnHeadersHeight = 4;
+			this.refDataGrid.Location = new System.Drawing.Point(0, 31);
+			this.refDataGrid.Margin = new System.Windows.Forms.Padding(2);
+			this.refDataGrid.MultiSelect = false;
+			this.refDataGrid.Name = "refDataGrid";
+			this.refDataGrid.ReadOnly = true;
+			this.refDataGrid.RowHeadersWidth = 42;
+			this.refDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+			this.refDataGrid.Size = new System.Drawing.Size(800, 129);
+			this.refDataGrid.TabIndex = 3;
 			// 
 			// ReferenceBrowser
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.Controls.Add(this.refDataGrid);
 			this.Controls.Add(this.refSelectionComboBox);
 			this.Controls.Add(this.refSearchTextBox);
-			this.Controls.Add(this.refTextBox);
 			this.Name = "ReferenceBrowser";
 			this.Size = new System.Drawing.Size(800, 160);
 			this.Invalidated += new System.Windows.Forms.InvalidateEventHandler(this.ReferenceBrowser_Invalidated);
+			((System.ComponentModel.ISupportInitialize)(this.refDataGrid)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
 		}
 
 		#endregion
-
-		private System.Windows.Forms.RichTextBox refTextBox;
 		private DarkUI.Controls.DarkComboBox refSelectionComboBox;
 		private DarkUI.Controls.DarkTextBox refSearchTextBox;
+		private DarkUI.Controls.DarkDataGridView refDataGrid;
 	}
 }

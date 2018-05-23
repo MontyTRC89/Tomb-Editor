@@ -1,6 +1,8 @@
 ﻿using DarkUI.Forms;
 using System;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ScriptEditor
@@ -21,7 +23,20 @@ namespace ScriptEditor
 		{
 			try
 			{
-				refTextBox.Text = File.ReadAllText(@"References\" + refSelectionComboBox.Text + ".txt");
+				DataTable table = ReadCSV(@"References\" + refSelectionComboBox.Text + ".csv");
+
+				refDataGrid.Rows.Clear();
+				refDataGrid.Columns.Clear();
+
+				foreach (DataColumn dc in table.Columns)
+				{
+					refDataGrid.Columns.Add(new DataGridViewTextBoxColumn());
+				}
+
+				foreach (DataRow dr in table.Rows)
+				{
+					refDataGrid.Rows.Add(dr.ItemArray);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -43,6 +58,28 @@ namespace ScriptEditor
 			{
 				refSearchTextBox.Text = "Search references...";
 			}
+		}
+
+		private static DataTable ReadCSV(string filePath)
+		{
+			DataTable table = new DataTable();
+
+			// Creating the columns
+			foreach (string headerLine in File.ReadLines(filePath).Take(1))
+			{
+				foreach (string headerItem in headerLine.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					table.Columns.Add(headerItem.Trim());
+				}
+			}
+
+			// Adding the rows
+			foreach (string line in File.ReadLines(filePath).Skip(1))
+			{
+				table.Rows.Add(line.Split(';'));
+			}
+
+			return table;
 		}
 	}
 }
