@@ -1756,7 +1756,9 @@ namespace TombEditor.Controls
                                                           _editor.SelectedRoom.NumZSectors * 1024.0f
                                                           ));
 
-            _boundingBoxesToDraw.Add(new BoundingBoxToDraw(boundingBox, Vector3.Zero, true));
+            _boundingBoxesToDraw.Add(new BoundingBoxToDraw(boundingBox,
+                                                           new Vector3(0.0f, _editor.SelectedRoom.GetLowestCorner() * 256.0f, 0.0f),
+                                                           true));
         }
 
         private void DrawDebugLines(Matrix4x4 viewProjection)

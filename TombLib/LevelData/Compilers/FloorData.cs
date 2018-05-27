@@ -73,7 +73,18 @@ namespace TombLib.LevelData.Compilers
                             {
                                 var connectionInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z));
                                 if (connectionInfo.TraversableType == Room.RoomConnectionType.NoPortal)
-                                    continue;
+                                {
+                                    // Last chance: is above block climbable?
+                                    if (block.CeilingPortal != null)
+                                    {
+                                        Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
+                                        VectorInt2 adjoiningPos = new VectorInt2(x, z) + (room.SectorPos - adjoiningRoom.SectorPos);
+                                        if (adjoiningRoom.Blocks[adjoiningPos.X, adjoiningPos.Y].IsAnyWall)
+                                            continue;
+                                    }
+                                    else
+                                        continue;
+                                }
                             }
 
                             // Check if current wall is surrounded by walls
