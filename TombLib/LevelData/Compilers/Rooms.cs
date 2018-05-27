@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -37,6 +38,34 @@ namespace TombLib.LevelData.Compilers
             {
                 _tempRooms.Add(room, BuildRoom(room));
             }
+
+#if DEBUG
+            using (var writer = new StreamWriter(File.OpenWrite("Portals.txt")))
+            {
+                for (int r = 0; r < _tempRooms.Count; r++)
+                {
+                    var newRoom = _tempRooms.ElementAt(r).Value;
+
+                    writer.WriteLine("---------------------------------------");
+                    writer.WriteLine("Room #" + r);
+                    writer.WriteLine("---------------------------------------");
+
+                    for (int p = 0; p < newRoom.Portals.Count; p++)
+                    {
+                        var portal = newRoom.Portals[p];
+                        writer.WriteLine("\tPortal #" + p);
+                        writer.WriteLine("\t--------------------");
+
+                        for (int v = 0; v < portal.Vertices.Length; v++)
+                        {
+                            writer.WriteLine("\t\tVertex: " + v + " <" + portal.Vertices[v].X + ", " +
+                                                                         portal.Vertices[v].Y + ", " +
+                                                                         portal.Vertices[v].Z + ">");
+                        }
+                    }
+                }
+            }
+#endif 
 
             ReportProgress(25, "    Number of rooms: " + _roomsUnmapping.Count);
 
@@ -873,10 +902,10 @@ namespace TombLib.LevelData.Compilers
                 {
                     normal = new tr_vertex((short)-portalPlane.SlopeX, -4, (short)-portalPlane.SlopeZ);
 
-                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yAtXMaxZMax, (short)zMax);
-                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yAtXMinZMax, (short)zMax);
-                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yAtXMinZMin, (short)zMin);
-                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yAtXMaxZMin, (short)zMin);
+                    portalVertices[0] = new tr_vertex((short)xMax, (short)(-yAtXMaxZMax), (short)zMax);
+                    portalVertices[1] = new tr_vertex((short)xMin, (short)(-yAtXMinZMax), (short)zMax);
+                    portalVertices[2] = new tr_vertex((short)xMin, (short)(-yAtXMinZMin), (short)zMin);
+                    portalVertices[3] = new tr_vertex((short)xMax, (short)(-yAtXMaxZMin), (short)zMin);
                 }
 
                 // Make the normal vector as short as possible

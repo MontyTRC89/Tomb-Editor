@@ -3810,6 +3810,7 @@
             <moveable id="454" name="Horizon"/>
             <moveable id="456" name="Binoculars graphics"/>
             <moveable id="457" name="Target graphics"/>
+            <moveable id="484" name="TR3 Tiger"/>
         </moveables>
         <sprite_sequences>
             <sprite_sequence id="455" name="Sky graphics"/>
