@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
@@ -65,8 +66,8 @@ namespace TombEditor.Controls
         private static readonly Pen _roomBoundsPen = _outlinePen;
         private static readonly Pen _selectionPen = new Pen(Color.FromArgb(220, 40, 0, 120), 4);
         private static readonly Brush _selectionBrush = new SolidBrush(Color.FromArgb(40, 40, 0, 120));
-        private static readonly Brush _roomsNormalBrush = new SolidBrush(HighlightState.ColorFloor.ToWinFormsColor());
-        private static readonly Brush _roomsWallBrush = new SolidBrush(HighlightState.ColorWall.ToWinFormsColor());
+        private static readonly Brush _roomsNormalBrush = new SolidBrush(SectorColoringInfo.ColorFloor.ToWinFormsColor());
+        private static readonly Brush _roomsWallBrush = new SolidBrush(SectorColoringInfo.ColorWall.ToWinFormsColor());
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(180, 240, 240, 240));
 
         public class DepthProbe

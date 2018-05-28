@@ -36,9 +36,14 @@ namespace TombEditor
                     (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));
         }
 
-        public static Vector4 ToFloatColor(this Color color)
+        public static Color ToWinFormsColor(this Vector3 color)
         {
-            return new Vector4(color.R, color.G, color.B, color.A) / 255.0f;
+            return new Vector4(color, 255.0f).ToWinFormsColor();
+        }
+
+        public static Vector3 ToFloatColor(this Color color)
+        {
+            return new Vector3(color.R, color.G, color.B) / 255.0f;
         }
 
         public static Rectangle ToRectangle(this RectangleF area, float margin, Rectangle maxArea)

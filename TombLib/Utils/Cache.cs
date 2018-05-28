@@ -101,6 +101,22 @@ namespace TombLib.Utils
                 _availableItems.Remove(keys[i]);
         }
 
+        public bool Remove(KeyT key)
+        {
+            Entry entry;
+            if (!_availableItems.TryGetValue(key, out entry))
+                return false;
+            DisposeValue(entry._value);
+            return _availableItems.Remove(key);
+        }
+
+        public void Clear()
+        {
+            foreach (Entry entry in _availableItems.Values)
+                DisposeValue(entry._value);
+            _availableItems.Clear();
+        }
+
         public IEnumerator<KeyValuePair<KeyT, ValueT>> GetEnumerator()
         {
             foreach (var availableItem in _availableItems)

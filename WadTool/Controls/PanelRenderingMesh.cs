@@ -33,12 +33,12 @@ namespace WadTool.Controls
         private GeometricPrimitive _plane;
         private WadRenderer _wadRenderer;
 
-        public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
+        public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
         {
             _tool = tool;
-            _device = deviceManager.Device;
+            _device = deviceManager.___LegacyDevice;
             _deviceManager = deviceManager;
-            _wadRenderer = new WadRenderer(deviceManager.Device);
+            _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
 
             // Initialize the viewport, after the panel is added and sized on the form
             var pp = new PresentationParameters
@@ -127,7 +127,7 @@ namespace WadTool.Controls
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
 
-            Effect solidEffect = _deviceManager.Effects["Solid"];
+            Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
 
             _wadRenderer.Dispose();
             if (Mesh != null)
@@ -135,7 +135,7 @@ namespace WadTool.Controls
                 // TODO Keep data on GPU, optimize data upload
                 // Use new renderer
                 var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = Mesh });
-                var effect = _deviceManager.Effects["StaticModel"];
+                var effect = _deviceManager.___LegacyEffects["StaticModel"];
                 var world = Matrix4x4.Identity;
 
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());

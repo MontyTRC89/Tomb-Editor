@@ -7,11 +7,12 @@ using System.Drawing;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
+using TombLib.Rendering;
 using TombLib.Wad;
 
 namespace TombLib.Controls
 {
-    public abstract class PanelItemPreview : Panel
+    public abstract class PanelItemPreview : RenderingPanel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IWadObject CurrentObject
@@ -59,8 +60,6 @@ namespace TombLib.Controls
         }
 
         private GraphicsDevice _device;
-        private DeviceManager _deviceManager;
-        private SwapChainGraphicsPresenter _presenter;
         private RasterizerState _rasterizerWireframe;
         private float _lastX;
         private float _lastY;
@@ -110,30 +109,14 @@ namespace TombLib.Controls
             _soundInfoEditor.Bounds = clientRectangle;
         }
 
-
-        public void InitializePanel(DeviceManager deviceManager)
+        public override void InitializeRendering(RenderingDevice device)
         {
+            base.InitializeRendering(device);
+
             // Reset scrollbar
-            _device = deviceManager.Device;
-            _deviceManager = deviceManager;
-            _wadRenderer = new WadRenderer(deviceManager.Device, true);
+            _device = DeviceManager.DefaultDeviceManager.___LegacyDevice;
+            _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true);
 
-            // Initialize the viewport, after the panel is added and sized on the form
-            var pp = new PresentationParameters
-            {
-                BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm,
-                BackBufferWidth = Width,
-                BackBufferHeight = Height,
-                DepthStencilFormat = DepthFormat.Depth24Stencil8,
-                DeviceWindowHandle = this,
-                IsFullScreen = false,
-                MultiSampleCount = MSAALevel.None,
-                PresentationInterval = PresentInterval.Immediate,
-                RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer,
-                Flags = SharpDX.DXGI.SwapChainFlags.None
-            };
-
-            _presenter = new SwapChainGraphicsPresenter(_device, pp);
             ResetCamera();
 
             // Initialize the rasterizer state for wireframe drawing
@@ -153,13 +136,7 @@ namespace TombLib.Controls
                 };
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
-
             _spriteBatch = new SpriteBatch(_device);
-        }
-
-        private void _fixedSoundInfoEditor_SoundInfoChanged(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         public void ResetCamera()
@@ -174,7 +151,6 @@ namespace TombLib.Controls
                 _wadRenderer?.Dispose();
                 _spriteBatch?.Dispose();
                 _spriteTexture?.Dispose();
-                _presenter?.Dispose();
                 _rasterizerWireframe?.Dispose();
                 _soundInfoEditor?.Dispose();
             }
@@ -183,32 +159,23 @@ namespace TombLib.Controls
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            if (_device == null || _presenter == null)
-                e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
             if (_soundInfoEditor.Visible)
                 using (var brush = new SolidBrush(_soundInfoEditor.BackColor))
                     e.Graphics.FillRectangle(brush, ClientRectangle);
-
-            // Don't paint the background
+            else
+                base.OnPaintBackground(e);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Draw();
+            if (_soundInfoEditor.Visible || _device == null)
+                return;
+            base.OnPaint(e);
         }
 
-        public void Draw()
+        protected override void OnDraw()
         {
-            if (_soundInfoEditor.Visible || _device == null || _presenter == null)
-                return;
-
-            _device.Presenter = _presenter;
-            _device.SetViewports(new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height));
-            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target,
-                         BackgroundColor.ToSharpDX(),
-                         1.0f,
-                         0);
+            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).Bind();
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
             _device.SetBlendState(_device.BlendStates.Opaque);
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
@@ -221,7 +188,7 @@ namespace TombLib.Controls
                 // simpler than trying to figure out when it may be necessary.
                 model.UpdateAnimation(AnimationIndex, KeyFrameIndex);
 
-                var effect = _deviceManager.Effects["Model"];
+                var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
 
                 effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
@@ -262,7 +229,7 @@ namespace TombLib.Controls
             {
                 StaticModel model = _wadRenderer.GetStatic((WadStatic)CurrentObject);
 
-                var effect = _deviceManager.Effects["StaticModel"];
+                var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
 
                 effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                 effect.Parameters["Color"].SetValue(Vector4.One);
@@ -307,18 +274,6 @@ namespace TombLib.Controls
                     _spriteBatch.Draw(_spriteTexture, new SharpDX.DrawingRectangle(x, y, _spriteTextureData.Image.Width, _spriteTextureData.Image.Height), SharpDX.Color.White);
                     _spriteBatch.End();
                 }
-            }
-
-            _device.Present();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            if (_presenter != null)
-            {
-                _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
-                Invalidate();
             }
         }
 
@@ -399,7 +354,6 @@ namespace TombLib.Controls
             AnimationScrollBar.Invalidate();
         }
 
-        public abstract Vector4 BackgroundColor { get; }
         public abstract float FieldOfView { get; }
         public abstract float NavigationSpeedMouseWheelZoom { get; }
         public abstract float NavigationSpeedMouseZoom { get; }

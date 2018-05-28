@@ -12,18 +12,13 @@ namespace WadTool
         private readonly PanelRenderingSkeleton _control;
         private readonly WadToolClass _tool;
 
-        public GizmoSkeletonEditor(WadToolClass tool, Configuration configuration, GraphicsDevice device, 
+        public GizmoSkeletonEditor(WadToolClass tool, Configuration configuration, GraphicsDevice device,
                                    Effect effect, PanelRenderingSkeleton control)
-            : base(device, effect)
+            : base(device, effect, () => device.Clear(ClearOptions.DepthBuffer, SharpDX.Vector4.Zero, 1.0f, 0))
         {
             _configuration = configuration;
             _control = control;
             _tool = tool;
-        }
-
-        protected override void GizmoMove(Vector3 newPos)
-        {
-
         }
 
         protected override void GizmoRotateX(float newAngle) { }
@@ -31,6 +26,7 @@ namespace WadTool
         protected override void GizmoRotateZ(float newAngle) { }
         protected override void GizmoScale(float newScale) { }
 
+        protected override void GizmoMove(Vector3 newPos) { }
         protected override void GizmoMoveDelta(Vector3 delta)
         {
             // Move the bone offset

@@ -29,11 +29,11 @@ namespace TombEditor
             set { Log_MinLevel = LogLevel.FromString(value); }
         }
         public bool Log_WriteToFile { get; set; } = true;
-        public int Log_ArchiveN { get; set; } = 0;
+        public int Log_ArchiveN { get; set; } = 4;
 
         public bool Editor_DiscardSelectionOnModeSwitch { get; set; } = false;
         public bool Editor_ProbeAttributesThroughPortals { get; set; } = true;
-        public bool Editor_AutoSwitchHighlight { get; set; } = true;
+        public bool Editor_AutoSwitchSectorColoringInfo { get; set; } = true;
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;

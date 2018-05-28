@@ -10,7 +10,7 @@ namespace TombEditor.Controls
         private EventHandler _moveEvent;
 
         public float MoveMultiplier { get; private set; }
-        public Keys MoveDirection { get; private set; } = Keys.None;
+        public Keys MoveKey { get; private set; } = Keys.None;
 
         public MovementTimer(EventHandler moveEvent, float moveAcceleration = 0.02f)
         {
@@ -38,9 +38,9 @@ namespace TombEditor.Controls
             {
                 if (_moveTimer.Enabled == false)
                     _moveTimer.Enabled = true;
-                if (MoveDirection != moveDirection)
+                if (MoveKey != moveDirection)
                 {
-                    MoveDirection = moveDirection;
+                    MoveKey = moveDirection;
                     MoveMultiplier = 0.0f;
                 }
                 return true;
@@ -53,7 +53,7 @@ namespace TombEditor.Controls
         {
             _moveTimer.Enabled = false;
             MoveMultiplier = 0.0f;
-            MoveDirection = Keys.None;
+            MoveKey = Keys.None;
         }
 
         private void UpdateTimer(object sender, EventArgs e)

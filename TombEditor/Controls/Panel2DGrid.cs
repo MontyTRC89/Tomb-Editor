@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
@@ -18,7 +19,7 @@ namespace TombEditor.Controls
         private bool _doSectorSelection;
         private readonly Editor _editor;
 
-        private static readonly float _outlineHighlightWidth = 3;
+        private static readonly float _outlineSectorColoringInfoWidth = 3;
         private static readonly Pen _gridPen = Pens.Black;
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
@@ -50,7 +51,7 @@ namespace TombEditor.Controls
         private void EditorEventRaised(IEditorEvent obj)
         {   
             // Update drawing
-            if (obj is HighlightManager.ChangeHighlightEvent ||
+            if (obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
                 obj is Editor.SelectedRoomChangedEvent ||
                 obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent ||
@@ -225,63 +226,63 @@ namespace TombEditor.Controls
                     {
                         RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep, _gridStep);
 
-                        var currentHighlights = _editor.HighlightManager.GetColors(currentRoom, x, z, probePortals);
-                        if (currentHighlights != null)
+                        var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(currentRoom, x, z, probePortals);
+                        if (currentSectorColoringInfos != null)
                         {
-                            for (int i = 0; i < currentHighlights.Count; i++)
+                            for (int i = 0; i < currentSectorColoringInfos.Count; i++)
                             {
-                                e.Graphics.SmoothingMode = currentHighlights[i].Shape == HighlightShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias;
+                                e.Graphics.SmoothingMode = currentSectorColoringInfos[i].Shape == SectorColoringShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias;
 
-                                switch (currentHighlights[i].Shape)
+                                switch (currentSectorColoringInfos[i].Shape)
                                 {
-                                    case HighlightShape.Rectangle:
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                    case SectorColoringShape.Rectangle:
+                                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
                                             e.Graphics.FillRectangle(b, rectangle);
                                         break;
-                                    case HighlightShape.Frame:
+                                    case SectorColoringShape.Frame:
                                         RectangleF frameAttribRect = rectangle;
-                                        frameAttribRect.Inflate(-(_outlineHighlightWidth / 2), -(_outlineHighlightWidth / 2));
-                                        using (var b = new Pen(currentHighlights[i].Color.ToWinFormsColor(), _outlineHighlightWidth))
+                                        frameAttribRect.Inflate(-(_outlineSectorColoringInfoWidth / 2), -(_outlineSectorColoringInfoWidth / 2));
+                                        using (var b = new Pen(currentSectorColoringInfos[i].Color.ToWinFormsColor(), _outlineSectorColoringInfoWidth))
                                             e.Graphics.DrawRectangle(b, frameAttribRect);
                                         break;
-                                    case HighlightShape.Hatch:
-                                        using (var b = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, currentHighlights[i].Color.ToWinFormsColor()))
+                                    case SectorColoringShape.Hatch:
+                                        using (var b = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, currentSectorColoringInfos[i].Color.ToWinFormsColor()))
                                             e.Graphics.FillRectangle(b, rectangle);
                                         break;
-                                    case HighlightShape.EdgeZp:
-                                    case HighlightShape.EdgeZn:
-                                    case HighlightShape.EdgeXp:
-                                    case HighlightShape.EdgeXn:
+                                    case SectorColoringShape.EdgeZp:
+                                    case SectorColoringShape.EdgeZn:
+                                    case SectorColoringShape.EdgeXp:
+                                    case SectorColoringShape.EdgeXn:
                                         RectangleF edgeRect;
-                                        if (currentHighlights[i].Shape == HighlightShape.EdgeZp)
-                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, rectangle.Width, _outlineHighlightWidth);
-                                        else if (currentHighlights[i].Shape == HighlightShape.EdgeZn)
-                                            edgeRect = new RectangleF(rectangle.X, rectangle.Bottom - _outlineHighlightWidth, rectangle.Width, _outlineHighlightWidth);
-                                        else if (currentHighlights[i].Shape == HighlightShape.EdgeXp)
-                                            edgeRect = new RectangleF(rectangle.Right - _outlineHighlightWidth, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
+                                        if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeZp)
+                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, rectangle.Width, _outlineSectorColoringInfoWidth);
+                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeZn)
+                                            edgeRect = new RectangleF(rectangle.X, rectangle.Bottom - _outlineSectorColoringInfoWidth, rectangle.Width, _outlineSectorColoringInfoWidth);
+                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeXp)
+                                            edgeRect = new RectangleF(rectangle.Right - _outlineSectorColoringInfoWidth, rectangle.Y, _outlineSectorColoringInfoWidth, rectangle.Height);
                                         else
-                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, _outlineSectorColoringInfoWidth, rectangle.Height);
+                                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
                                             e.Graphics.FillRectangle(b, edgeRect);
                                         break;
-                                    case HighlightShape.TriangleXnZn:
-                                    case HighlightShape.TriangleXnZp:
-                                    case HighlightShape.TriangleXpZn:
-                                    case HighlightShape.TriangleXpZp:
+                                    case SectorColoringShape.TriangleXnZn:
+                                    case SectorColoringShape.TriangleXnZp:
+                                    case SectorColoringShape.TriangleXpZn:
+                                    case SectorColoringShape.TriangleXpZp:
                                         PointF[] points = new PointF[3];
-                                        if (currentHighlights[i].Shape == HighlightShape.TriangleXnZn)
+                                        if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXnZn)
                                         {
                                             points[0] = new PointF(rectangle.Left, rectangle.Top);
                                             points[1] = new PointF(rectangle.Left, rectangle.Bottom);
                                             points[2] = new PointF(rectangle.Right, rectangle.Bottom);
                                         }
-                                        else if (currentHighlights[i].Shape == HighlightShape.TriangleXnZp)
+                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXnZp)
                                         {
                                             points[0] = new PointF(rectangle.Left, rectangle.Bottom);
                                             points[1] = new PointF(rectangle.Left, rectangle.Top);
                                             points[2] = new PointF(rectangle.Right, rectangle.Top);
                                         }
-                                        else if (currentHighlights[i].Shape == HighlightShape.TriangleXpZn)
+                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXpZn)
                                         {
                                             points[0] = new PointF(rectangle.Left, rectangle.Bottom);
                                             points[1] = new PointF(rectangle.Right, rectangle.Top);
@@ -293,7 +294,7 @@ namespace TombEditor.Controls
                                             points[1] = new PointF(rectangle.Right, rectangle.Top);
                                             points[2] = new PointF(rectangle.Right, rectangle.Bottom);
                                         }
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
                                             e.Graphics.FillPolygon(b, points);
                                         break;
                                     default:

@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System.Linq;
 using TombLib.Graphics;
+using TombLib.Rendering;
 using TombLib.Wad;
 
 namespace TombEditor.Forms
@@ -9,12 +10,12 @@ namespace TombEditor.Forms
     {
         private Wad2 _wad;
 
-        public FormWadPreview(Wad2 wad, DeviceManager deviceManager, Editor editor)
+        public FormWadPreview(Wad2 wad, RenderingDevice device, Editor editor)
         {
             _wad = wad;
             InitializeComponent();
 
-            panelItem.InitializePanel(deviceManager);
+            panelItem.InitializeRendering(device);
             wadTree.Wad = wad;
             wadTree.MultiSelect = false;
             wadTree.SelectFirst();

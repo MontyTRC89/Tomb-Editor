@@ -154,7 +154,7 @@
     <Compile Include="Forms\FormWadPreview.Designer.cs">
       <DependentUpon>FormWadPreview.cs</DependentUpon>
     </Compile>
-    <Compile Include="Highlight.cs" />
+    <Compile Include="SectorColoringManager.cs" />
     <Compile Include="KeyboardLayout.cs" />
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
@@ -466,82 +466,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Editor\Textures\illegal_slope.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_ne_se.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_nw_sw.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Content Include="Editor\Shaders\RoomGeometry.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Editor\Textures\arrow_down.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_left.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_ne.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_nw.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_nw_se.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_right.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_se.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_sw.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_sw_ne.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_up.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\arrow_up_down.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\cross.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\slide_east.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\slide_west.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\slide_north.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\slide_south.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\slide_east_flip.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\slide_west_flip.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\slide_north_flip.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Textures\slide_south_flip.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Editor\Shaders\Model.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Shaders\Room.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Editor\Shaders\Solid.fx">
@@ -559,6 +487,10 @@
     <ProjectReference Include="..\TombLib.Forms\TombLib.Forms.csproj">
       <Project>{eb61dfac-51a6-44e3-869c-9bbde830a40e}</Project>
       <Name>TombLib.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TombLib.Rendering\TombLib.Rendering.csproj">
+      <Project>{e2f6f614-5007-471a-a22c-39b7d840376c}</Project>
+      <Name>TombLib.Rendering</Name>
     </ProjectReference>
     <ProjectReference Include="..\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>

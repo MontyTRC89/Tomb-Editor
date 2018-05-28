@@ -23,7 +23,7 @@ namespace TombLib.LevelData
         {
             AbsolutePath = absolutePath;
             Image = ImageC.FromFile(absolutePath);
-            DirectXTexture = TextureLoad.Load(DeviceManager.DefaultDeviceManager.Device, Image);
+            DirectXTexture = TextureLoad.Load(ImportedGeometry.TemporaryDevice, Image);
         }
 
         private ImportedGeometryTexture(ImportedGeometryTexture other)
@@ -44,8 +44,8 @@ namespace TombLib.LevelData
         //private readonly float _unusedPadding;
         [VertexElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 12)]
         public Vector2 UV;
-        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 20)]
-        public Vector4 Color;
+        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32_Float, 20)]
+        public Vector3 Color;
 
         Vector3 IVertex.Position => Position;
     }
@@ -79,6 +79,15 @@ namespace TombLib.LevelData
 
     public class ImportedGeometry : ICloneable, IEquatable<ImportedGeometry>
     {
+        // HACK
+        // HACK
+        // HACK
+        // HACK   Until we can update imported geometry we need this global here now. Ugh.
+        // HACK
+        // HACK
+        // HACK
+        public static GraphicsDevice TemporaryDevice;
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public class UniqueIDType { }
@@ -165,7 +174,7 @@ namespace TombLib.LevelData
                 var tmpModel = importer.ImportFromFile(importedGeometryPath);
 
                 // Create a new static model
-                DirectXModel = new Model(DeviceManager.DefaultDeviceManager.Device, info.Scale);
+                DirectXModel = new Model(TemporaryDevice, info.Scale);
                 DirectXModel.BoundingBox = tmpModel.BoundingBox;
 
                 // Create materials
@@ -181,7 +190,7 @@ namespace TombLib.LevelData
                 // Loop for each mesh loaded in scene
                 foreach (var mesh in tmpModel.Meshes)
                 {
-                    var modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, mesh.Name);
+                    var modelMesh = new ImportedGeometryMesh(TemporaryDevice, mesh.Name);
 
                     modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
 
@@ -200,7 +209,7 @@ namespace TombLib.LevelData
                                 {
                                     var vertex = new ImportedGeometryVertex();
                                     vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                    vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]] : Vector4.One;
+                                    vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
                                     vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                     modelMesh.Vertices.Add(vertex);
                                 }
@@ -221,7 +230,7 @@ namespace TombLib.LevelData
                                 {
                                     var vertex = new ImportedGeometryVertex();
                                     vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                    vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]] : Vector4.One;
+                                    vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
                                     vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                     modelMesh.Vertices.Add(vertex);
                                     submesh.Indices.Add(currentIndex);

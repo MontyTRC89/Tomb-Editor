@@ -1608,527 +1608,527 @@
     </game>
     <game id="TR4">
         <moveables>
-			<moveable id="0" name="Lara"/>
-			<moveable id="1" name="Pistols Anim"/>
-			<moveable id="2" name="Uzi Anim"/>
-			<moveable id="3" name="Shotgun Anim"/>
-			<moveable id="4" name="Crossbow Anim"/>
-			<moveable id="5" name="Grenade Gun Anim"/>
-			<moveable id="6" name="Sixshooter Anim"/>
-			<moveable id="7" name="Flare Anim"/>
-			<moveable id="8" name="Lara Skin"/>
-			<moveable id="9" name="Lara Skin Joints"/>
-			<moveable id="10" name="Lara Scream"/>
-			<moveable id="11" name="Lara Crossbow Laser"/>
-			<moveable id="12" name="Lara Revolver Laser"/>
-			<moveable id="13" name="Lara Holsters"/>
-			<moveable id="14" name="Lara Holsters Pistols"/>
-			<moveable id="15" name="Lara Holsters Uzis"/>
-			<moveable id="16" name="Lara Holsters Sixshooter"/>
-			<moveable id="17" name="Lara Speech Head1"/>
-			<moveable id="18" name="Lara Speech Head2"/>
-			<moveable id="19" name="Lara Speech Head3"/>
-			<moveable id="20" name="Lara Speech Head4"/>
-			<moveable id="21" name="Actor1 Speech Head1"/>
-			<moveable id="22" name="Actor1 Speech Head2"/>
-			<moveable id="23" name="Actor2 Speech Head1"/>
-			<moveable id="24" name="Actor2 Speech Head2"/>
-			<moveable id="25" name="Lara Water Mesh"/>
-			<moveable id="26" name="Lara Petrol Mesh"/>
-			<moveable id="27" name="Lara Dirt Mesh"/>
-			<moveable id="28" name="Crowbar Anim"/>
-			<moveable id="29" name="Torch Anim"/>
-			<moveable id="30" name="Hair"/>
-			<moveable id="31" name="Motorbike"/>
-			<moveable id="32" name="Jeep"/>
-			<moveable id="33" name="Vehicle Extra"/>
-			<moveable id="34" name="Enemy Jeep"/>
-			<moveable id="35" name="Skeleton"/>
-			<moveable id="36" name="Skeleton Mip"/>
-			<moveable id="37" name="Guide"/>
-			<moveable id="38" name="Guide Mip"/>
-			<moveable id="39" name="Von Croy"/>
-			<moveable id="40" name="Von Croy Mip"/>
-			<moveable id="41" name="Baddy 1"/>
-			<moveable id="42" name="Baddy 1 Mip"/>
-			<moveable id="43" name="Baddy 2"/>
-			<moveable id="44" name="Baddy 2 Mip"/>
-			<moveable id="45" name="Setha"/>
-			<moveable id="46" name="Setha Mip"/>
-			<moveable id="47" name="Mummy"/>
-			<moveable id="48" name="Mummy Mip"/>
-			<moveable id="49" name="Sphinx"/>
-			<moveable id="50" name="Sphinx Mip"/>
-			<moveable id="51" name="Crocodile"/>
-			<moveable id="52" name="Crocodile Mip"/>
-			<moveable id="53" name="Horseman"/>
-			<moveable id="54" name="Horseman Mip"/>
-			<moveable id="55" name="Scorpion"/>
-			<moveable id="56" name="Scorpion Mip"/>
-			<moveable id="57" name="Jean Yves"/>
-			<moveable id="58" name="Jean Yves Mip"/>
-			<moveable id="59" name="Troops"/>
-			<moveable id="60" name="Troops Mip"/>
-			<moveable id="61" name="Knights Templar"/>
-			<moveable id="62" name="Knights Templar Mip"/>
-			<moveable id="63" name="Mutant"/>
-			<moveable id="64" name="Mutant Mip"/>
-			<moveable id="65" name="Horse"/>
-			<moveable id="66" name="Horse Mip"/>
-			<moveable id="67" name="Baboon Normal"/>
-			<moveable id="68" name="Baboon Normal Mip"/>
-			<moveable id="69" name="Baboon Inv"/>
-			<moveable id="70" name="Baboon Inv Mip"/>
-			<moveable id="71" name="Baboon Silent"/>
-			<moveable id="72" name="Baboon Silent Mip"/>
-			<moveable id="73" name="Wild Boar"/>
-			<moveable id="74" name="Wild Boar Mip"/>
-			<moveable id="75" name="Harpy"/>
-			<moveable id="76" name="Harpy Mip"/>
-			<moveable id="77" name="Demigod1"/>
-			<moveable id="78" name="Demigod1 Mip"/>
-			<moveable id="79" name="Demigod2"/>
-			<moveable id="80" name="Demigod2 Mip"/>
-			<moveable id="81" name="Demigod3"/>
-			<moveable id="82" name="Demigod3 Mip"/>
-			<moveable id="83" name="Little Beetle"/>
-			<moveable id="84" name="Big Beetle"/>
-			<moveable id="85" name="Big Beetle Mip"/>
-			<moveable id="86" name="Wraith1"/>
-			<moveable id="87" name="Wraith2"/>
-			<moveable id="88" name="Wraith3"/>
-			<moveable id="89" name="Wraith4"/>
-			<moveable id="90" name="Bat"/>
-			<moveable id="91" name="Dog"/>
-			<moveable id="92" name="Dog Mip"/>
-			<moveable id="93" name="Hammerhead"/>
-			<moveable id="94" name="Hammerhead Mip"/>
-			<moveable id="95" name="Sas"/>
-			<moveable id="96" name="Sas Mip"/>
-			<moveable id="97" name="Sas Dying"/>
-			<moveable id="98" name="Sas Dying Mip"/>
-			<moveable id="99" name="Sas Captain"/>
-			<moveable id="100" name="Sas Captain Mip"/>
-			<moveable id="101" name="Sas Drag Bloke"/>
-			<moveable id="102" name="Ahmet"/>
-			<moveable id="103" name="Ahmet Mip"/>
-			<moveable id="104" name="Lara Double"/>
-			<moveable id="105" name="Lara Double Mip"/>
-			<moveable id="106" name="Small Scorpion"/>
-			<moveable id="107" name="Locust Emitter"/>
-			<moveable id="108" name="Game Piece1"/>
-			<moveable id="109" name="Game Piece2"/>
-			<moveable id="110" name="Game Piece3"/>
-			<moveable id="111" name="Enemy Piece"/>
-			<moveable id="112" name="Wheel Of Fortune"/>
-			<moveable id="113" name="Scales"/>
-			<moveable id="114" name="Darts"/>
-			<moveable id="115" name="Dart Emitter"/>
-			<moveable id="116" name="Homing Dart Emitter"/>
-			<moveable id="117" name="Falling Ceiling"/>
-			<moveable id="118" name="Falling Block"/>
-			<moveable id="119" name="Falling Block2"/>
-			<moveable id="120" name="Smashable Bike Wall"/>
-			<moveable id="121" name="Smashable Bike Floor"/>
-			<moveable id="122" name="Trapdoor1"/>
-			<moveable id="123" name="Trapdoor2"/>
-			<moveable id="124" name="Trapdoor3"/>
-			<moveable id="125" name="Floor Trapdoor1"/>
-			<moveable id="126" name="Floor Trapdoor2"/>
-			<moveable id="127" name="Ceiling Trapdoor1"/>
-			<moveable id="128" name="Ceiling Trapdoor2"/>
-			<moveable id="129" name="Scaling Trapdoor"/>
-			<moveable id="130" name="Rollingball"/>
-			<moveable id="131" name="Spikey Floor"/>
-			<moveable id="132" name="Teeth Spikes"/>
-			<moveable id="133" name="Joby Spikes"/>
-			<moveable id="134" name="Slicer Dicer"/>
-			<moveable id="135" name="Chain"/>
-			<moveable id="136" name="Plough"/>
-			<moveable id="137" name="Stargate"/>
-			<moveable id="138" name="Hammer"/>
-			<moveable id="139" name="Burning Floor"/>
-			<moveable id="140" name="Cog"/>
-			<moveable id="141" name="Spikeball"/>
-			<moveable id="142" name="Flame"/>
-			<moveable id="143" name="Flame Emitter"/>
-			<moveable id="144" name="Flame Emitter2"/>
-			<moveable id="145" name="Flame Emitter3"/>
-			<moveable id="146" name="Rope"/>
-			<moveable id="147" name="Firerope"/>
-			<moveable id="148" name="Polerope"/>
-			<moveable id="149" name="Oneblock Platform"/>
-			<moveable id="150" name="Twoblock Platform"/>
-			<moveable id="151" name="Raising Block1"/>
-			<moveable id="152" name="Raising Block2"/>
-			<moveable id="153" name="Expanding Platform"/>
-			<moveable id="154" name="Squishy Block1"/>
-			<moveable id="155" name="Squishy Block2"/>
-			<moveable id="156" name="Pushable Object1"/>
-			<moveable id="157" name="Pushable Object2"/>
-			<moveable id="158" name="Pushable Object3"/>
-			<moveable id="159" name="Pushable Object4"/>
-			<moveable id="160" name="Pushable Object5"/>
-			<moveable id="161" name="Tripwire"/>
-			<moveable id="162" name="Sentry Gun"/>
-			<moveable id="163" name="Mine"/>
-			<moveable id="164" name="Mapper"/>
-			<moveable id="165" name="Obelisk"/>
-			<moveable id="166" name="Floor 4blade"/>
-			<moveable id="167" name="Roof 4blade"/>
-			<moveable id="168" name="Bird Blade"/>
-			<moveable id="169" name="Catwalk Blade"/>
-			<moveable id="170" name="Moving Blade"/>
-			<moveable id="171" name="Plinth Blade"/>
-			<moveable id="172" name="Seth Blade"/>
-			<moveable id="173" name="Lightning Conductor"/>
-			<moveable id="174" name="Element Puzzle"/>
-			<moveable id="175" name="Puzzle Item1"/>
-			<moveable id="176" name="Puzzle Item2"/>
-			<moveable id="177" name="Puzzle Item3"/>
-			<moveable id="178" name="Puzzle Item4"/>
-			<moveable id="179" name="Puzzle Item5"/>
-			<moveable id="180" name="Puzzle Item6"/>
-			<moveable id="181" name="Puzzle Item7"/>
-			<moveable id="182" name="Puzzle Item8"/>
-			<moveable id="183" name="Puzzle Item9"/>
-			<moveable id="184" name="Puzzle Item10"/>
-			<moveable id="185" name="Puzzle Item11"/>
-			<moveable id="186" name="Puzzle Item12"/>
-			<moveable id="187" name="Puzzle Item1 Combo1"/>
-			<moveable id="188" name="Puzzle Item1 Combo2"/>
-			<moveable id="189" name="Puzzle Item2 Combo1"/>
-			<moveable id="190" name="Puzzle Item2 Combo2"/>
-			<moveable id="191" name="Puzzle Item3 Combo1"/>
-			<moveable id="192" name="Puzzle Item3 Combo2"/>
-			<moveable id="193" name="Puzzle Item4 Combo1"/>
-			<moveable id="194" name="Puzzle Item4 Combo2"/>
-			<moveable id="195" name="Puzzle Item5 Combo1"/>
-			<moveable id="196" name="Puzzle Item5 Combo2"/>
-			<moveable id="197" name="Puzzle Item6 Combo1"/>
-			<moveable id="198" name="Puzzle Item6 Combo2"/>
-			<moveable id="199" name="Puzzle Item7 Combo1"/>
-			<moveable id="200" name="Puzzle Item7 Combo2"/>
-			<moveable id="201" name="Puzzle Item8 Combo1"/>
-			<moveable id="202" name="Puzzle Item8 Combo2"/>
-			<moveable id="203" name="Key Item1"/>
-			<moveable id="204" name="Key Item2"/>
-			<moveable id="205" name="Key Item3"/>
-			<moveable id="206" name="Key Item4"/>
-			<moveable id="207" name="Key Item5"/>
-			<moveable id="208" name="Key Item6"/>
-			<moveable id="209" name="Key Item7"/>
-			<moveable id="210" name="Key Item8"/>
-			<moveable id="211" name="Key Item9"/>
-			<moveable id="212" name="Key Item10"/>
-			<moveable id="213" name="Key Item11"/>
-			<moveable id="214" name="Key Item12"/>
-			<moveable id="215" name="Key Item1 Combo1"/>
-			<moveable id="216" name="Key Item1 Combo2"/>
-			<moveable id="217" name="Key Item2 Combo1"/>
-			<moveable id="218" name="Key Item2 Combo2"/>
-			<moveable id="219" name="Key Item3 Combo1"/>
-			<moveable id="220" name="Key Item3 Combo2"/>
-			<moveable id="221" name="Key Item4 Combo1"/>
-			<moveable id="222" name="Key Item4 Combo2"/>
-			<moveable id="223" name="Key Item5 Combo1"/>
-			<moveable id="224" name="Key Item5 Combo2"/>
-			<moveable id="225" name="Key Item6 Combo1"/>
-			<moveable id="226" name="Key Item6 Combo2"/>
-			<moveable id="227" name="Key Item7 Combo1"/>
-			<moveable id="228" name="Key Item7 Combo2"/>
-			<moveable id="229" name="Key Item8 Combo1"/>
-			<moveable id="230" name="Key Item8 Combo2"/>
-			<moveable id="231" name="Pickup Item1"/>
-			<moveable id="232" name="Pickup Item2"/>
-			<moveable id="233" name="Pickup Item3"/>
-			<moveable id="234" name="Pickup Item4"/>
-			<moveable id="235" name="Pickup Item1 Combo1"/>
-			<moveable id="236" name="Pickup Item1 Combo2"/>
-			<moveable id="237" name="Pickup Item2 Combo1"/>
-			<moveable id="238" name="Pickup Item2 Combo2"/>
-			<moveable id="239" name="Pickup Item3 Combo1"/>
-			<moveable id="240" name="Pickup Item3 Combo2"/>
-			<moveable id="241" name="Pickup Item4 Combo1"/>
-			<moveable id="242" name="Pickup Item4 Combo2"/>
-			<moveable id="243" name="Examine1"/>
-			<moveable id="244" name="Examine2"/>
-			<moveable id="245" name="Examine3"/>
-			<moveable id="246" name="Crowbar Item"/>
-			<moveable id="247" name="Burning Torch Item"/>
-			<moveable id="248" name="Clockwork Beetle"/>
-			<moveable id="249" name="Clockwork Beetle Combo1"/>
-			<moveable id="250" name="Clockwork Beetle Combo2"/>
-			<moveable id="251" name="Mine Detector"/>
-			<moveable id="252" name="Quest Item1"/>
-			<moveable id="253" name="Quest Item2"/>
-			<moveable id="254" name="Quest Item3"/>
-			<moveable id="255" name="Quest Item4"/>
-			<moveable id="256" name="Quest Item5"/>
-			<moveable id="257" name="Quest Item6"/>
-			<moveable id="258" name="Map"/>
-			<moveable id="259" name="Secret Map"/>
-			<moveable id="260" name="Puzzle Hole1"/>
-			<moveable id="261" name="Puzzle Hole2"/>
-			<moveable id="262" name="Puzzle Hole3"/>
-			<moveable id="263" name="Puzzle Hole4"/>
-			<moveable id="264" name="Puzzle Hole5"/>
-			<moveable id="265" name="Puzzle Hole6"/>
-			<moveable id="266" name="Puzzle Hole7"/>
-			<moveable id="267" name="Puzzle Hole8"/>
-			<moveable id="268" name="Puzzle Hole9"/>
-			<moveable id="269" name="Puzzle Hole10"/>
-			<moveable id="270" name="Puzzle Hole11"/>
-			<moveable id="271" name="Puzzle Hole12"/>
-			<moveable id="272" name="Puzzle Done1"/>
-			<moveable id="273" name="Puzzle Done2"/>
-			<moveable id="274" name="Puzzle Done3"/>
-			<moveable id="275" name="Puzzle Done4"/>
-			<moveable id="276" name="Puzzle Done5"/>
-			<moveable id="277" name="Puzzle Done6"/>
-			<moveable id="278" name="Puzzle Done7"/>
-			<moveable id="279" name="Puzzle Done8"/>
-			<moveable id="280" name="Puzzle Done9"/>
-			<moveable id="281" name="Puzzle Done10"/>
-			<moveable id="282" name="Puzzle Done11"/>
-			<moveable id="283" name="Puzzle Done12"/>
-			<moveable id="284" name="Key Hole1"/>
-			<moveable id="285" name="Key Hole2"/>
-			<moveable id="286" name="Key Hole3"/>
-			<moveable id="287" name="Key Hole4"/>
-			<moveable id="288" name="Key Hole5"/>
-			<moveable id="289" name="Key Hole6"/>
-			<moveable id="290" name="Key Hole7"/>
-			<moveable id="291" name="Key Hole8"/>
-			<moveable id="292" name="Key Hole9"/>
-			<moveable id="293" name="Key Hole10"/>
-			<moveable id="294" name="Key Hole11"/>
-			<moveable id="295" name="Key Hole12"/>
-			<moveable id="296" name="Waterskin1 Empty"/>
-			<moveable id="297" name="Waterskin1_1"/>
-			<moveable id="298" name="Waterskin1_2"/>
-			<moveable id="299" name="Waterskin1_3"/>
-			<moveable id="300" name="Waterskin2 Empty"/>
-			<moveable id="301" name="Waterskin2_1"/>
-			<moveable id="302" name="Waterskin2_2"/>
-			<moveable id="303" name="Waterskin2_3"/>
-			<moveable id="304" name="Waterskin2_4"/>
-			<moveable id="305" name="Waterskin2_5"/>
-			<moveable id="306" name="Switch Type1"/>
-			<moveable id="307" name="Switch Type2"/>
-			<moveable id="308" name="Switch Type3"/>
-			<moveable id="309" name="Switch Type4"/>
-			<moveable id="310" name="Switch Type5"/>
-			<moveable id="311" name="Switch Type6"/>
-			<moveable id="312" name="Switch Type7"/>
-			<moveable id="313" name="Switch Type8"/>
-			<moveable id="314" name="Underwater Switch1"/>
-			<moveable id="315" name="Underwater Switch2"/>
-			<moveable id="316" name="Turn Switch"/>
-			<moveable id="317" name="Cog Switch"/>
-			<moveable id="318" name="Lever Switch"/>
-			<moveable id="319" name="Jump Switch"/>
-			<moveable id="320" name="Crowbar Switch"/>
-			<moveable id="321" name="Pulley"/>
-			<moveable id="322" name="Door Type1"/>
-			<moveable id="323" name="Door Type2"/>
-			<moveable id="324" name="Door Type3"/>
-			<moveable id="325" name="Door Type4"/>
-			<moveable id="326" name="Door Type5"/>
-			<moveable id="327" name="Door Type6"/>
-			<moveable id="328" name="Door Type7"/>
-			<moveable id="329" name="Door Type8"/>
-			<moveable id="330" name="Pushpull Door1"/>
-			<moveable id="331" name="Pushpull Door2"/>
-			<moveable id="332" name="Kick Door1"/>
-			<moveable id="333" name="Kick Door2"/>
-			<moveable id="334" name="Underwater Door"/>
-			<moveable id="335" name="Double Doors"/>
-			<moveable id="336" name="Bridge Flat"/>
-			<moveable id="337" name="Bridge Tilt1"/>
-			<moveable id="338" name="Bridge Tilt2"/>
-			<moveable id="339" name="Sarcophagus"/>
-			<moveable id="340" name="Sequence Door1"/>
-			<moveable id="341" name="Sequence Switch1"/>
-			<moveable id="342" name="Sequence Switch2"/>
-			<moveable id="343" name="Sequence Switch3"/>
-			<moveable id="344" name="Sarcophagus Cut"/>
-			<moveable id="345" name="Horus Statue"/>
-			<moveable id="346" name="God Head"/>
-			<moveable id="347" name="Seth Door"/>
-			<moveable id="348" name="Statue Plinth"/>
-			<moveable id="349" name="Pistols Item"/>
-			<moveable id="350" name="Pistols Ammo Item"/>
-			<moveable id="351" name="Uzi Item"/>
-			<moveable id="352" name="Uzi Ammo Item"/>
-			<moveable id="353" name="Shotgun Item"/>
-			<moveable id="354" name="Shotgun Ammo1 Item"/>
-			<moveable id="355" name="Shotgun Ammo2 Item"/>
-			<moveable id="356" name="Crossbow Item"/>
-			<moveable id="357" name="Crossbow Ammo1 Item"/>
-			<moveable id="358" name="Crossbow Ammo2 Item"/>
-			<moveable id="359" name="Crossbow Ammo3 Item"/>
-			<moveable id="360" name="Crossbow Bolt"/>
-			<moveable id="361" name="Grenade Gun Item"/>
-			<moveable id="362" name="Grenade Gun Ammo1 Item"/>
-			<moveable id="363" name="Grenade Gun Ammo2 Item"/>
-			<moveable id="364" name="Grenade Gun Ammo3 Item"/>
-			<moveable id="365" name="Grenade"/>
-			<moveable id="366" name="Sixshooter Item"/>
-			<moveable id="367" name="Sixshooter Ammo Item"/>
-			<moveable id="368" name="Bigmedi Item"/>
-			<moveable id="369" name="Smallmedi Item"/>
-			<moveable id="370" name="Lasersight Item"/>
-			<moveable id="371" name="Binoculars Item"/>
-			<moveable id="372" name="Flare Item"/>
-			<moveable id="373" name="Flare Inv Item"/>
-			<moveable id="374" name="Diary Item"/>
-			<moveable id="375" name="Compass Item"/>
-			<moveable id="376" name="Memcard Load Inv Item"/>
-			<moveable id="377" name="Memcard Save Inv Item"/>
-			<moveable id="378" name="Pc Load Inv Item"/>
-			<moveable id="379" name="Pc Save Inv Item"/>
-			<moveable id="380" name="Smoke Emitter White"/>
-			<moveable id="381" name="Smoke Emitter Black"/>
-			<moveable id="382" name="Steam Emitter"/>
-			<moveable id="383" name="Earthquake"/>
-			<moveable id="384" name="Bubbles"/>
-			<moveable id="385" name="Waterfallmist"/>
-			<moveable id="386" name="Gunshell"/>
-			<moveable id="387" name="Shotgunshell"/>
-			<moveable id="388" name="Gun Flash"/>
-			<moveable id="389" name="Butterfly"/>
-			<moveable id="390" name="Sprinkler"/>
-			<moveable id="391" name="Red Light"/>
-			<moveable id="392" name="Green Light"/>
-			<moveable id="393" name="Blue Light"/>
-			<moveable id="394" name="Amber Light"/>
-			<moveable id="395" name="White Light"/>
-			<moveable id="396" name="Blinking Light"/>
-			<moveable id="397" name="Lens Flare"/>
-			<moveable id="398" name="Ai Guard"/>
-			<moveable id="399" name="Ai Ambush"/>
-			<moveable id="400" name="Ai Patrol1"/>
-			<moveable id="401" name="Ai Modify"/>
-			<moveable id="402" name="Ai Follow"/>
-			<moveable id="403" name="Ai Patrol2"/>
-			<moveable id="404" name="Ai X1"/>
-			<moveable id="405" name="Ai X2"/>
-			<moveable id="406" name="Lara Start Pos"/>
-			<moveable id="407" name="Kill All Triggers"/>
-			<moveable id="408" name="Trigger Triggerer"/>
-			<moveable id="409" name="Smash Object1"/>
-			<moveable id="410" name="Smash Object2"/>
-			<moveable id="411" name="Smash Object3"/>
-			<moveable id="412" name="Smash Object4"/>
-			<moveable id="413" name="Smash Object5"/>
-			<moveable id="414" name="Smash Object6"/>
-			<moveable id="415" name="Smash Object7"/>
-			<moveable id="416" name="Smash Object8"/>
-			<moveable id="417" name="Meshswap1"/>
-			<moveable id="418" name="Meshswap2"/>
-			<moveable id="419" name="Meshswap3"/>
-			<moveable id="420" name="Death Slide"/>
-			<moveable id="421" name="Body Part"/>
-			<moveable id="422" name="Camera Target"/>
-			<moveable id="423" name="Waterfall1"/>
-			<moveable id="424" name="Waterfall2"/>
-			<moveable id="425" name="Waterfall3"/>
-			<moveable id="426" name="Planet Effect"/>
-			<moveable id="427" name="Animating1"/>
-			<moveable id="428" name="Animating1 Mip"/>
-			<moveable id="429" name="Animating2"/>
-			<moveable id="430" name="Animating2 Mip"/>
-			<moveable id="431" name="Animating3"/>
-			<moveable id="432" name="Animating3 Mip"/>
-			<moveable id="433" name="Animating4"/>
-			<moveable id="434" name="Animating4 Mip"/>
-			<moveable id="435" name="Animating5"/>
-			<moveable id="436" name="Animating5 Mip"/>
-			<moveable id="437" name="Animating6"/>
-			<moveable id="438" name="Animating6 Mip"/>
-			<moveable id="439" name="Animating7"/>
-			<moveable id="440" name="Animating7 Mip"/>
-			<moveable id="441" name="Animating8"/>
-			<moveable id="442" name="Animating8 Mip"/>
-			<moveable id="443" name="Animating9"/>
-			<moveable id="444" name="Animating9 Mip"/>
-			<moveable id="445" name="Animating10"/>
-			<moveable id="446" name="Animating10 Mip"/>
-			<moveable id="447" name="Animating11"/>
-			<moveable id="448" name="Animating11 Mip"/>
-			<moveable id="449" name="Animating12"/>
-			<moveable id="450" name="Animating12 Mip"/>
-			<moveable id="451" name="Animating13"/>
-			<moveable id="452" name="Animating13 Mip"/>
-			<moveable id="453" name="Animating14"/>
-			<moveable id="454" name="Animating14 Mip"/>
-			<moveable id="455" name="Animating15"/>
-			<moveable id="456" name="Animating15 Mip"/>
-			<moveable id="457" name="Animating16"/>
-			<moveable id="458" name="Animating16 Mip"/>
-			<moveable id="459" name="Horizon"/>
-			<moveable id="460" name="Sky Graphics"/>
-			<moveable id="461" name="Binocular Graphics"/>
-			<moveable id="462" name="Target Graphics"/>
-			<moveable id="463" name="Default sprites"/>
-			<moveable id="464" name="Misc sprites"/>
-			<moveable id="465" name="NG Motor Boat"/>
-			<moveable id="466" name="NG Motor Boat Lara"/>
-			<moveable id="467" name="NG Rubber Boat"/>
-			<moveable id="468" name="NG Rubber Boat Lara"/>
-			<moveable id="469" name="NG Motorbike Lara"/>
-			<moveable id="470" name="NG Font Graphics"/>
-			<moveable id="471" name="NG Parallel Bars"/>
-			<moveable id="472" name="NG Panel Border"/>
-			<moveable id="473" name="NG Panel Middle"/>
-			<moveable id="474" name="NG Panel Corner"/>
-			<moveable id="475" name="NG Panel Diagonal"/>
-			<moveable id="476" name="NG Panel Strip"/>
-			<moveable id="477" name="NG Panel Half Border1"/>
-			<moveable id="478" name="NG Panel Half Border2"/>
-			<moveable id="479" name="NG Panel Middle Corner"/>
-			<moveable id="480" name="NG Tight Rope"/>
-			<moveable id="481" name="NG Laser Head"/>
-			<moveable id="482" name="NG Laser Head Base"/>
-			<moveable id="483" name="NG Laser Head Tentacle"/>
-			<moveable id="484" name="NG Hydra"/>
-			<moveable id="485" name="NG Hydra Missile"/>
-			<moveable id="486" name="NG Enemy Sub Marine"/>
-			<moveable id="487" name="NG Enemy Sub Marine Mip"/>
-			<moveable id="488" name="NG Sub Marine Missile"/>
-			<moveable id="489" name="NG Frog Man"/>
-			<moveable id="490" name="NG Frog Man Harpoon"/>
-			<moveable id="491" name="NG Fish Emitter"/>
-			<moveable id="492" name="NG Kayak"/>
-			<moveable id="493" name="NG Kayak Lara"/>
-			<moveable id="494" name="NG Custom sprites"/>
-			<moveable id="495" name="NG Bridge Tilt3"/>
-			<moveable id="496" name="NG Bridge Tilt4"/>
-			<moveable id="497" name="NG Bridge Custom"/>
-			<moveable id="498" name="NG Robot Cleaner"/>
-			<moveable id="499" name="NG Robot Star Wars"/>
-			<moveable id="500" name="NG Mech Warrior"/>
-			<moveable id="501" name="NG Mech Warrior Lara"/>
-			<moveable id="502" name="NG Uw Propulsor"/>
-			<moveable id="503" name="NG Uw Propulsor Lara"/>
-			<moveable id="504" name="NG Mine Cart"/>
-			<moveable id="505" name="NG Mine Cart Lara"/>
-			<moveable id="506" name="NG New Slot5"/>
-			<moveable id="507" name="NG New Slot6"/>
-			<moveable id="508" name="NG New Slot7"/>
-			<moveable id="509" name="NG New Slot8"/>
-			<moveable id="510" name="NG New Slot9"/>
-			<moveable id="511" name="NG New Slot10"/>
-			<moveable id="512" name="NG New Slot11"/>
-			<moveable id="513" name="NG New Slot12"/>
-			<moveable id="514" name="NG New Slot13"/>
-			<moveable id="515" name="NG New Slot14"/>
-			<moveable id="516" name="NG New Slot15"/>
-			<moveable id="517" name="NG New Slot16"/>
-			<moveable id="518" name="NG New Slot17"/>
-			<moveable id="519" name="NG New Slot18"/>
-		</moveables>
+            <moveable id="0" name="Lara"/>
+            <moveable id="1" name="Pistols Anim"/>
+            <moveable id="2" name="Uzi Anim"/>
+            <moveable id="3" name="Shotgun Anim"/>
+            <moveable id="4" name="Crossbow Anim"/>
+            <moveable id="5" name="Grenade Gun Anim"/>
+            <moveable id="6" name="Sixshooter Anim"/>
+            <moveable id="7" name="Flare Anim"/>
+            <moveable id="8" name="Lara Skin"/>
+            <moveable id="9" name="Lara Skin Joints"/>
+            <moveable id="10" name="Lara Scream"/>
+            <moveable id="11" name="Lara Crossbow Laser"/>
+            <moveable id="12" name="Lara Revolver Laser"/>
+            <moveable id="13" name="Lara Holsters"/>
+            <moveable id="14" name="Lara Holsters Pistols"/>
+            <moveable id="15" name="Lara Holsters Uzis"/>
+            <moveable id="16" name="Lara Holsters Sixshooter"/>
+            <moveable id="17" name="Lara Speech Head1"/>
+            <moveable id="18" name="Lara Speech Head2"/>
+            <moveable id="19" name="Lara Speech Head3"/>
+            <moveable id="20" name="Lara Speech Head4"/>
+            <moveable id="21" name="Actor1 Speech Head1"/>
+            <moveable id="22" name="Actor1 Speech Head2"/>
+            <moveable id="23" name="Actor2 Speech Head1"/>
+            <moveable id="24" name="Actor2 Speech Head2"/>
+            <moveable id="25" name="Lara Water Mesh"/>
+            <moveable id="26" name="Lara Petrol Mesh"/>
+            <moveable id="27" name="Lara Dirt Mesh"/>
+            <moveable id="28" name="Crowbar Anim"/>
+            <moveable id="29" name="Torch Anim"/>
+            <moveable id="30" name="Hair"/>
+            <moveable id="31" name="Motorbike"/>
+            <moveable id="32" name="Jeep"/>
+            <moveable id="33" name="Vehicle Extra"/>
+            <moveable id="34" name="Enemy Jeep"/>
+            <moveable id="35" name="Skeleton"/>
+            <moveable id="36" name="Skeleton Mip"/>
+            <moveable id="37" name="Guide"/>
+            <moveable id="38" name="Guide Mip"/>
+            <moveable id="39" name="Von Croy"/>
+            <moveable id="40" name="Von Croy Mip"/>
+            <moveable id="41" name="Baddy 1"/>
+            <moveable id="42" name="Baddy 1 Mip"/>
+            <moveable id="43" name="Baddy 2"/>
+            <moveable id="44" name="Baddy 2 Mip"/>
+            <moveable id="45" name="Setha"/>
+            <moveable id="46" name="Setha Mip"/>
+            <moveable id="47" name="Mummy"/>
+            <moveable id="48" name="Mummy Mip"/>
+            <moveable id="49" name="Sphinx"/>
+            <moveable id="50" name="Sphinx Mip"/>
+            <moveable id="51" name="Crocodile"/>
+            <moveable id="52" name="Crocodile Mip"/>
+            <moveable id="53" name="Horseman"/>
+            <moveable id="54" name="Horseman Mip"/>
+            <moveable id="55" name="Scorpion"/>
+            <moveable id="56" name="Scorpion Mip"/>
+            <moveable id="57" name="Jean Yves"/>
+            <moveable id="58" name="Jean Yves Mip"/>
+            <moveable id="59" name="Troops"/>
+            <moveable id="60" name="Troops Mip"/>
+            <moveable id="61" name="Knights Templar"/>
+            <moveable id="62" name="Knights Templar Mip"/>
+            <moveable id="63" name="Mutant"/>
+            <moveable id="64" name="Mutant Mip"/>
+            <moveable id="65" name="Horse"/>
+            <moveable id="66" name="Horse Mip"/>
+            <moveable id="67" name="Baboon Normal"/>
+            <moveable id="68" name="Baboon Normal Mip"/>
+            <moveable id="69" name="Baboon Inv"/>
+            <moveable id="70" name="Baboon Inv Mip"/>
+            <moveable id="71" name="Baboon Silent"/>
+            <moveable id="72" name="Baboon Silent Mip"/>
+            <moveable id="73" name="Wild Boar"/>
+            <moveable id="74" name="Wild Boar Mip"/>
+            <moveable id="75" name="Harpy"/>
+            <moveable id="76" name="Harpy Mip"/>
+            <moveable id="77" name="Demigod1"/>
+            <moveable id="78" name="Demigod1 Mip"/>
+            <moveable id="79" name="Demigod2"/>
+            <moveable id="80" name="Demigod2 Mip"/>
+            <moveable id="81" name="Demigod3"/>
+            <moveable id="82" name="Demigod3 Mip"/>
+            <moveable id="83" name="Little Beetle"/>
+            <moveable id="84" name="Big Beetle"/>
+            <moveable id="85" name="Big Beetle Mip"/>
+            <moveable id="86" name="Wraith1"/>
+            <moveable id="87" name="Wraith2"/>
+            <moveable id="88" name="Wraith3"/>
+            <moveable id="89" name="Wraith4"/>
+            <moveable id="90" name="Bat"/>
+            <moveable id="91" name="Dog"/>
+            <moveable id="92" name="Dog Mip"/>
+            <moveable id="93" name="Hammerhead"/>
+            <moveable id="94" name="Hammerhead Mip"/>
+            <moveable id="95" name="Sas"/>
+            <moveable id="96" name="Sas Mip"/>
+            <moveable id="97" name="Sas Dying"/>
+            <moveable id="98" name="Sas Dying Mip"/>
+            <moveable id="99" name="Sas Captain"/>
+            <moveable id="100" name="Sas Captain Mip"/>
+            <moveable id="101" name="Sas Drag Bloke"/>
+            <moveable id="102" name="Ahmet"/>
+            <moveable id="103" name="Ahmet Mip"/>
+            <moveable id="104" name="Lara Double"/>
+            <moveable id="105" name="Lara Double Mip"/>
+            <moveable id="106" name="Small Scorpion"/>
+            <moveable id="107" name="Locust Emitter"/>
+            <moveable id="108" name="Game Piece1"/>
+            <moveable id="109" name="Game Piece2"/>
+            <moveable id="110" name="Game Piece3"/>
+            <moveable id="111" name="Enemy Piece"/>
+            <moveable id="112" name="Wheel Of Fortune"/>
+            <moveable id="113" name="Scales"/>
+            <moveable id="114" name="Darts"/>
+            <moveable id="115" name="Dart Emitter"/>
+            <moveable id="116" name="Homing Dart Emitter"/>
+            <moveable id="117" name="Falling Ceiling"/>
+            <moveable id="118" name="Falling Block"/>
+            <moveable id="119" name="Falling Block2"/>
+            <moveable id="120" name="Smashable Bike Wall"/>
+            <moveable id="121" name="Smashable Bike Floor"/>
+            <moveable id="122" name="Trapdoor1"/>
+            <moveable id="123" name="Trapdoor2"/>
+            <moveable id="124" name="Trapdoor3"/>
+            <moveable id="125" name="Floor Trapdoor1"/>
+            <moveable id="126" name="Floor Trapdoor2"/>
+            <moveable id="127" name="Ceiling Trapdoor1"/>
+            <moveable id="128" name="Ceiling Trapdoor2"/>
+            <moveable id="129" name="Scaling Trapdoor"/>
+            <moveable id="130" name="Rollingball"/>
+            <moveable id="131" name="Spikey Floor"/>
+            <moveable id="132" name="Teeth Spikes"/>
+            <moveable id="133" name="Joby Spikes"/>
+            <moveable id="134" name="Slicer Dicer"/>
+            <moveable id="135" name="Chain"/>
+            <moveable id="136" name="Plough"/>
+            <moveable id="137" name="Stargate"/>
+            <moveable id="138" name="Hammer"/>
+            <moveable id="139" name="Burning Floor"/>
+            <moveable id="140" name="Cog"/>
+            <moveable id="141" name="Spikeball"/>
+            <moveable id="142" name="Flame"/>
+            <moveable id="143" name="Flame Emitter"/>
+            <moveable id="144" name="Flame Emitter2"/>
+            <moveable id="145" name="Flame Emitter3"/>
+            <moveable id="146" name="Rope"/>
+            <moveable id="147" name="Firerope"/>
+            <moveable id="148" name="Polerope"/>
+            <moveable id="149" name="Oneblock Platform"/>
+            <moveable id="150" name="Twoblock Platform"/>
+            <moveable id="151" name="Raising Block1"/>
+            <moveable id="152" name="Raising Block2"/>
+            <moveable id="153" name="Expanding Platform"/>
+            <moveable id="154" name="Squishy Block1"/>
+            <moveable id="155" name="Squishy Block2"/>
+            <moveable id="156" name="Pushable Object1"/>
+            <moveable id="157" name="Pushable Object2"/>
+            <moveable id="158" name="Pushable Object3"/>
+            <moveable id="159" name="Pushable Object4"/>
+            <moveable id="160" name="Pushable Object5"/>
+            <moveable id="161" name="Tripwire"/>
+            <moveable id="162" name="Sentry Gun"/>
+            <moveable id="163" name="Mine"/>
+            <moveable id="164" name="Mapper"/>
+            <moveable id="165" name="Obelisk"/>
+            <moveable id="166" name="Floor 4blade"/>
+            <moveable id="167" name="Roof 4blade"/>
+            <moveable id="168" name="Bird Blade"/>
+            <moveable id="169" name="Catwalk Blade"/>
+            <moveable id="170" name="Moving Blade"/>
+            <moveable id="171" name="Plinth Blade"/>
+            <moveable id="172" name="Seth Blade"/>
+            <moveable id="173" name="Lightning Conductor"/>
+            <moveable id="174" name="Element Puzzle"/>
+            <moveable id="175" name="Puzzle Item1"/>
+            <moveable id="176" name="Puzzle Item2"/>
+            <moveable id="177" name="Puzzle Item3"/>
+            <moveable id="178" name="Puzzle Item4"/>
+            <moveable id="179" name="Puzzle Item5"/>
+            <moveable id="180" name="Puzzle Item6"/>
+            <moveable id="181" name="Puzzle Item7"/>
+            <moveable id="182" name="Puzzle Item8"/>
+            <moveable id="183" name="Puzzle Item9"/>
+            <moveable id="184" name="Puzzle Item10"/>
+            <moveable id="185" name="Puzzle Item11"/>
+            <moveable id="186" name="Puzzle Item12"/>
+            <moveable id="187" name="Puzzle Item1 Combo1"/>
+            <moveable id="188" name="Puzzle Item1 Combo2"/>
+            <moveable id="189" name="Puzzle Item2 Combo1"/>
+            <moveable id="190" name="Puzzle Item2 Combo2"/>
+            <moveable id="191" name="Puzzle Item3 Combo1"/>
+            <moveable id="192" name="Puzzle Item3 Combo2"/>
+            <moveable id="193" name="Puzzle Item4 Combo1"/>
+            <moveable id="194" name="Puzzle Item4 Combo2"/>
+            <moveable id="195" name="Puzzle Item5 Combo1"/>
+            <moveable id="196" name="Puzzle Item5 Combo2"/>
+            <moveable id="197" name="Puzzle Item6 Combo1"/>
+            <moveable id="198" name="Puzzle Item6 Combo2"/>
+            <moveable id="199" name="Puzzle Item7 Combo1"/>
+            <moveable id="200" name="Puzzle Item7 Combo2"/>
+            <moveable id="201" name="Puzzle Item8 Combo1"/>
+            <moveable id="202" name="Puzzle Item8 Combo2"/>
+            <moveable id="203" name="Key Item1"/>
+            <moveable id="204" name="Key Item2"/>
+            <moveable id="205" name="Key Item3"/>
+            <moveable id="206" name="Key Item4"/>
+            <moveable id="207" name="Key Item5"/>
+            <moveable id="208" name="Key Item6"/>
+            <moveable id="209" name="Key Item7"/>
+            <moveable id="210" name="Key Item8"/>
+            <moveable id="211" name="Key Item9"/>
+            <moveable id="212" name="Key Item10"/>
+            <moveable id="213" name="Key Item11"/>
+            <moveable id="214" name="Key Item12"/>
+            <moveable id="215" name="Key Item1 Combo1"/>
+            <moveable id="216" name="Key Item1 Combo2"/>
+            <moveable id="217" name="Key Item2 Combo1"/>
+            <moveable id="218" name="Key Item2 Combo2"/>
+            <moveable id="219" name="Key Item3 Combo1"/>
+            <moveable id="220" name="Key Item3 Combo2"/>
+            <moveable id="221" name="Key Item4 Combo1"/>
+            <moveable id="222" name="Key Item4 Combo2"/>
+            <moveable id="223" name="Key Item5 Combo1"/>
+            <moveable id="224" name="Key Item5 Combo2"/>
+            <moveable id="225" name="Key Item6 Combo1"/>
+            <moveable id="226" name="Key Item6 Combo2"/>
+            <moveable id="227" name="Key Item7 Combo1"/>
+            <moveable id="228" name="Key Item7 Combo2"/>
+            <moveable id="229" name="Key Item8 Combo1"/>
+            <moveable id="230" name="Key Item8 Combo2"/>
+            <moveable id="231" name="Pickup Item1"/>
+            <moveable id="232" name="Pickup Item2"/>
+            <moveable id="233" name="Pickup Item3"/>
+            <moveable id="234" name="Pickup Item4"/>
+            <moveable id="235" name="Pickup Item1 Combo1"/>
+            <moveable id="236" name="Pickup Item1 Combo2"/>
+            <moveable id="237" name="Pickup Item2 Combo1"/>
+            <moveable id="238" name="Pickup Item2 Combo2"/>
+            <moveable id="239" name="Pickup Item3 Combo1"/>
+            <moveable id="240" name="Pickup Item3 Combo2"/>
+            <moveable id="241" name="Pickup Item4 Combo1"/>
+            <moveable id="242" name="Pickup Item4 Combo2"/>
+            <moveable id="243" name="Examine1"/>
+            <moveable id="244" name="Examine2"/>
+            <moveable id="245" name="Examine3"/>
+            <moveable id="246" name="Crowbar Item"/>
+            <moveable id="247" name="Burning Torch Item"/>
+            <moveable id="248" name="Clockwork Beetle"/>
+            <moveable id="249" name="Clockwork Beetle Combo1"/>
+            <moveable id="250" name="Clockwork Beetle Combo2"/>
+            <moveable id="251" name="Mine Detector"/>
+            <moveable id="252" name="Quest Item1"/>
+            <moveable id="253" name="Quest Item2"/>
+            <moveable id="254" name="Quest Item3"/>
+            <moveable id="255" name="Quest Item4"/>
+            <moveable id="256" name="Quest Item5"/>
+            <moveable id="257" name="Quest Item6"/>
+            <moveable id="258" name="Map"/>
+            <moveable id="259" name="Secret Map"/>
+            <moveable id="260" name="Puzzle Hole1"/>
+            <moveable id="261" name="Puzzle Hole2"/>
+            <moveable id="262" name="Puzzle Hole3"/>
+            <moveable id="263" name="Puzzle Hole4"/>
+            <moveable id="264" name="Puzzle Hole5"/>
+            <moveable id="265" name="Puzzle Hole6"/>
+            <moveable id="266" name="Puzzle Hole7"/>
+            <moveable id="267" name="Puzzle Hole8"/>
+            <moveable id="268" name="Puzzle Hole9"/>
+            <moveable id="269" name="Puzzle Hole10"/>
+            <moveable id="270" name="Puzzle Hole11"/>
+            <moveable id="271" name="Puzzle Hole12"/>
+            <moveable id="272" name="Puzzle Done1"/>
+            <moveable id="273" name="Puzzle Done2"/>
+            <moveable id="274" name="Puzzle Done3"/>
+            <moveable id="275" name="Puzzle Done4"/>
+            <moveable id="276" name="Puzzle Done5"/>
+            <moveable id="277" name="Puzzle Done6"/>
+            <moveable id="278" name="Puzzle Done7"/>
+            <moveable id="279" name="Puzzle Done8"/>
+            <moveable id="280" name="Puzzle Done9"/>
+            <moveable id="281" name="Puzzle Done10"/>
+            <moveable id="282" name="Puzzle Done11"/>
+            <moveable id="283" name="Puzzle Done12"/>
+            <moveable id="284" name="Key Hole1"/>
+            <moveable id="285" name="Key Hole2"/>
+            <moveable id="286" name="Key Hole3"/>
+            <moveable id="287" name="Key Hole4"/>
+            <moveable id="288" name="Key Hole5"/>
+            <moveable id="289" name="Key Hole6"/>
+            <moveable id="290" name="Key Hole7"/>
+            <moveable id="291" name="Key Hole8"/>
+            <moveable id="292" name="Key Hole9"/>
+            <moveable id="293" name="Key Hole10"/>
+            <moveable id="294" name="Key Hole11"/>
+            <moveable id="295" name="Key Hole12"/>
+            <moveable id="296" name="Waterskin1 Empty"/>
+            <moveable id="297" name="Waterskin1_1"/>
+            <moveable id="298" name="Waterskin1_2"/>
+            <moveable id="299" name="Waterskin1_3"/>
+            <moveable id="300" name="Waterskin2 Empty"/>
+            <moveable id="301" name="Waterskin2_1"/>
+            <moveable id="302" name="Waterskin2_2"/>
+            <moveable id="303" name="Waterskin2_3"/>
+            <moveable id="304" name="Waterskin2_4"/>
+            <moveable id="305" name="Waterskin2_5"/>
+            <moveable id="306" name="Switch Type1"/>
+            <moveable id="307" name="Switch Type2"/>
+            <moveable id="308" name="Switch Type3"/>
+            <moveable id="309" name="Switch Type4"/>
+            <moveable id="310" name="Switch Type5"/>
+            <moveable id="311" name="Switch Type6"/>
+            <moveable id="312" name="Switch Type7"/>
+            <moveable id="313" name="Switch Type8"/>
+            <moveable id="314" name="Underwater Switch1"/>
+            <moveable id="315" name="Underwater Switch2"/>
+            <moveable id="316" name="Turn Switch"/>
+            <moveable id="317" name="Cog Switch"/>
+            <moveable id="318" name="Lever Switch"/>
+            <moveable id="319" name="Jump Switch"/>
+            <moveable id="320" name="Crowbar Switch"/>
+            <moveable id="321" name="Pulley"/>
+            <moveable id="322" name="Door Type1"/>
+            <moveable id="323" name="Door Type2"/>
+            <moveable id="324" name="Door Type3"/>
+            <moveable id="325" name="Door Type4"/>
+            <moveable id="326" name="Door Type5"/>
+            <moveable id="327" name="Door Type6"/>
+            <moveable id="328" name="Door Type7"/>
+            <moveable id="329" name="Door Type8"/>
+            <moveable id="330" name="Pushpull Door1"/>
+            <moveable id="331" name="Pushpull Door2"/>
+            <moveable id="332" name="Kick Door1"/>
+            <moveable id="333" name="Kick Door2"/>
+            <moveable id="334" name="Underwater Door"/>
+            <moveable id="335" name="Double Doors"/>
+            <moveable id="336" name="Bridge Flat"/>
+            <moveable id="337" name="Bridge Tilt1"/>
+            <moveable id="338" name="Bridge Tilt2"/>
+            <moveable id="339" name="Sarcophagus"/>
+            <moveable id="340" name="Sequence Door1"/>
+            <moveable id="341" name="Sequence Switch1"/>
+            <moveable id="342" name="Sequence Switch2"/>
+            <moveable id="343" name="Sequence Switch3"/>
+            <moveable id="344" name="Sarcophagus Cut"/>
+            <moveable id="345" name="Horus Statue"/>
+            <moveable id="346" name="God Head"/>
+            <moveable id="347" name="Seth Door"/>
+            <moveable id="348" name="Statue Plinth"/>
+            <moveable id="349" name="Pistols Item"/>
+            <moveable id="350" name="Pistols Ammo Item"/>
+            <moveable id="351" name="Uzi Item"/>
+            <moveable id="352" name="Uzi Ammo Item"/>
+            <moveable id="353" name="Shotgun Item"/>
+            <moveable id="354" name="Shotgun Ammo1 Item"/>
+            <moveable id="355" name="Shotgun Ammo2 Item"/>
+            <moveable id="356" name="Crossbow Item"/>
+            <moveable id="357" name="Crossbow Ammo1 Item"/>
+            <moveable id="358" name="Crossbow Ammo2 Item"/>
+            <moveable id="359" name="Crossbow Ammo3 Item"/>
+            <moveable id="360" name="Crossbow Bolt"/>
+            <moveable id="361" name="Grenade Gun Item"/>
+            <moveable id="362" name="Grenade Gun Ammo1 Item"/>
+            <moveable id="363" name="Grenade Gun Ammo2 Item"/>
+            <moveable id="364" name="Grenade Gun Ammo3 Item"/>
+            <moveable id="365" name="Grenade"/>
+            <moveable id="366" name="Sixshooter Item"/>
+            <moveable id="367" name="Sixshooter Ammo Item"/>
+            <moveable id="368" name="Bigmedi Item"/>
+            <moveable id="369" name="Smallmedi Item"/>
+            <moveable id="370" name="Lasersight Item"/>
+            <moveable id="371" name="Binoculars Item"/>
+            <moveable id="372" name="Flare Item"/>
+            <moveable id="373" name="Flare Inv Item"/>
+            <moveable id="374" name="Diary Item"/>
+            <moveable id="375" name="Compass Item"/>
+            <moveable id="376" name="Memcard Load Inv Item"/>
+            <moveable id="377" name="Memcard Save Inv Item"/>
+            <moveable id="378" name="Pc Load Inv Item"/>
+            <moveable id="379" name="Pc Save Inv Item"/>
+            <moveable id="380" name="Smoke Emitter White"/>
+            <moveable id="381" name="Smoke Emitter Black"/>
+            <moveable id="382" name="Steam Emitter"/>
+            <moveable id="383" name="Earthquake"/>
+            <moveable id="384" name="Bubbles"/>
+            <moveable id="385" name="Waterfallmist"/>
+            <moveable id="386" name="Gunshell"/>
+            <moveable id="387" name="Shotgunshell"/>
+            <moveable id="388" name="Gun Flash"/>
+            <moveable id="389" name="Butterfly"/>
+            <moveable id="390" name="Sprinkler"/>
+            <moveable id="391" name="Red Light"/>
+            <moveable id="392" name="Green Light"/>
+            <moveable id="393" name="Blue Light"/>
+            <moveable id="394" name="Amber Light"/>
+            <moveable id="395" name="White Light"/>
+            <moveable id="396" name="Blinking Light"/>
+            <moveable id="397" name="Lens Flare"/>
+            <moveable id="398" name="Ai Guard"/>
+            <moveable id="399" name="Ai Ambush"/>
+            <moveable id="400" name="Ai Patrol1"/>
+            <moveable id="401" name="Ai Modify"/>
+            <moveable id="402" name="Ai Follow"/>
+            <moveable id="403" name="Ai Patrol2"/>
+            <moveable id="404" name="Ai X1"/>
+            <moveable id="405" name="Ai X2"/>
+            <moveable id="406" name="Lara Start Pos"/>
+            <moveable id="407" name="Kill All Triggers"/>
+            <moveable id="408" name="Trigger Triggerer"/>
+            <moveable id="409" name="Smash Object1"/>
+            <moveable id="410" name="Smash Object2"/>
+            <moveable id="411" name="Smash Object3"/>
+            <moveable id="412" name="Smash Object4"/>
+            <moveable id="413" name="Smash Object5"/>
+            <moveable id="414" name="Smash Object6"/>
+            <moveable id="415" name="Smash Object7"/>
+            <moveable id="416" name="Smash Object8"/>
+            <moveable id="417" name="Meshswap1"/>
+            <moveable id="418" name="Meshswap2"/>
+            <moveable id="419" name="Meshswap3"/>
+            <moveable id="420" name="Death Slide"/>
+            <moveable id="421" name="Body Part"/>
+            <moveable id="422" name="Camera Target"/>
+            <moveable id="423" name="Waterfall1"/>
+            <moveable id="424" name="Waterfall2"/>
+            <moveable id="425" name="Waterfall3"/>
+            <moveable id="426" name="Planet Effect"/>
+            <moveable id="427" name="Animating1"/>
+            <moveable id="428" name="Animating1 Mip"/>
+            <moveable id="429" name="Animating2"/>
+            <moveable id="430" name="Animating2 Mip"/>
+            <moveable id="431" name="Animating3"/>
+            <moveable id="432" name="Animating3 Mip"/>
+            <moveable id="433" name="Animating4"/>
+            <moveable id="434" name="Animating4 Mip"/>
+            <moveable id="435" name="Animating5"/>
+            <moveable id="436" name="Animating5 Mip"/>
+            <moveable id="437" name="Animating6"/>
+            <moveable id="438" name="Animating6 Mip"/>
+            <moveable id="439" name="Animating7"/>
+            <moveable id="440" name="Animating7 Mip"/>
+            <moveable id="441" name="Animating8"/>
+            <moveable id="442" name="Animating8 Mip"/>
+            <moveable id="443" name="Animating9"/>
+            <moveable id="444" name="Animating9 Mip"/>
+            <moveable id="445" name="Animating10"/>
+            <moveable id="446" name="Animating10 Mip"/>
+            <moveable id="447" name="Animating11"/>
+            <moveable id="448" name="Animating11 Mip"/>
+            <moveable id="449" name="Animating12"/>
+            <moveable id="450" name="Animating12 Mip"/>
+            <moveable id="451" name="Animating13"/>
+            <moveable id="452" name="Animating13 Mip"/>
+            <moveable id="453" name="Animating14"/>
+            <moveable id="454" name="Animating14 Mip"/>
+            <moveable id="455" name="Animating15"/>
+            <moveable id="456" name="Animating15 Mip"/>
+            <moveable id="457" name="Animating16"/>
+            <moveable id="458" name="Animating16 Mip"/>
+            <moveable id="459" name="Horizon"/>
+            <moveable id="460" name="Sky Graphics"/>
+            <moveable id="461" name="Binocular Graphics"/>
+            <moveable id="462" name="Target Graphics"/>
+            <moveable id="463" name="Default sprites"/>
+            <moveable id="464" name="Misc sprites"/>
+            <moveable id="465" name="NG Motor Boat"/>
+            <moveable id="466" name="NG Motor Boat Lara"/>
+            <moveable id="467" name="NG Rubber Boat"/>
+            <moveable id="468" name="NG Rubber Boat Lara"/>
+            <moveable id="469" name="NG Motorbike Lara"/>
+            <moveable id="470" name="NG Font Graphics"/>
+            <moveable id="471" name="NG Parallel Bars"/>
+            <moveable id="472" name="NG Panel Border"/>
+            <moveable id="473" name="NG Panel Middle"/>
+            <moveable id="474" name="NG Panel Corner"/>
+            <moveable id="475" name="NG Panel Diagonal"/>
+            <moveable id="476" name="NG Panel Strip"/>
+            <moveable id="477" name="NG Panel Half Border1"/>
+            <moveable id="478" name="NG Panel Half Border2"/>
+            <moveable id="479" name="NG Panel Middle Corner"/>
+            <moveable id="480" name="NG Tight Rope"/>
+            <moveable id="481" name="NG Laser Head"/>
+            <moveable id="482" name="NG Laser Head Base"/>
+            <moveable id="483" name="NG Laser Head Tentacle"/>
+            <moveable id="484" name="NG Hydra"/>
+            <moveable id="485" name="NG Hydra Missile"/>
+            <moveable id="486" name="NG Enemy Sub Marine"/>
+            <moveable id="487" name="NG Enemy Sub Marine Mip"/>
+            <moveable id="488" name="NG Sub Marine Missile"/>
+            <moveable id="489" name="NG Frog Man"/>
+            <moveable id="490" name="NG Frog Man Harpoon"/>
+            <moveable id="491" name="NG Fish Emitter"/>
+            <moveable id="492" name="NG Kayak"/>
+            <moveable id="493" name="NG Kayak Lara"/>
+            <moveable id="494" name="NG Custom sprites"/>
+            <moveable id="495" name="NG Bridge Tilt3"/>
+            <moveable id="496" name="NG Bridge Tilt4"/>
+            <moveable id="497" name="NG Bridge Custom"/>
+            <moveable id="498" name="NG Robot Cleaner"/>
+            <moveable id="499" name="NG Robot Star Wars"/>
+            <moveable id="500" name="NG Mech Warrior"/>
+            <moveable id="501" name="NG Mech Warrior Lara"/>
+            <moveable id="502" name="NG Uw Propulsor"/>
+            <moveable id="503" name="NG Uw Propulsor Lara"/>
+            <moveable id="504" name="NG Mine Cart"/>
+            <moveable id="505" name="NG Mine Cart Lara"/>
+            <moveable id="506" name="NG New Slot5"/>
+            <moveable id="507" name="NG New Slot6"/>
+            <moveable id="508" name="NG New Slot7"/>
+            <moveable id="509" name="NG New Slot8"/>
+            <moveable id="510" name="NG New Slot9"/>
+            <moveable id="511" name="NG New Slot10"/>
+            <moveable id="512" name="NG New Slot11"/>
+            <moveable id="513" name="NG New Slot12"/>
+            <moveable id="514" name="NG New Slot13"/>
+            <moveable id="515" name="NG New Slot14"/>
+            <moveable id="516" name="NG New Slot15"/>
+            <moveable id="517" name="NG New Slot16"/>
+            <moveable id="518" name="NG New Slot17"/>
+            <moveable id="519" name="NG New Slot18"/>
+        </moveables>
         <statics>
             <static id="0" name="Plant 0"/>
             <static id="1" name="Plant 1"/>
@@ -2190,7 +2190,7 @@
             <static id="57" name="Shatter 7"/>
             <static id="58" name="Shatter 8"/>
             <static id="59" name="Shatter 9"/>
-			<static id="60" name="NG 00 Extra"/>
+            <static id="60" name="NG 00 Extra"/>
             <static id="61" name="NG 01 Extra"/>
             <static id="62" name="NG 02 Extra"/>
             <static id="63" name="NG 03 Extra"/>
@@ -2669,688 +2669,688 @@
             <sound id="368" name="Flame emitter" fixed_by_default="true"/>
             <sound id="369" name="Lara click switch"/>
         </sounds>
-		<original_names>
-			<org is_static="false" id="0" name="LARA"/>
-			<org is_static="false" id="1" name="PISTOLS_ANIM"/>
-			<org is_static="false" id="2" name="UZI_ANIM"/>
-			<org is_static="false" id="3" name="SHOTGUN_ANIM"/>
-			<org is_static="false" id="4" name="CROSSBOW_ANIM"/>
-			<org is_static="false" id="5" name="GRENADE_GUN_ANIM"/>
-			<org is_static="false" id="6" name="SIXSHOOTER_ANIM"/>
-			<org is_static="false" id="7" name="FLARE_ANIM"/>
-			<org is_static="false" id="8" name="LARA_SKIN"/>
-			<org is_static="false" id="9" name="LARA_SKIN_JOINTS"/>
-			<org is_static="false" id="10" name="LARA_SCREAM"/>
-			<org is_static="false" id="11" name="LARA_CROSSBOW_LASER"/>
-			<org is_static="false" id="12" name="LARA_REVOLVER_LASER"/>
-			<org is_static="false" id="13" name="LARA_HOLSTERS"/>
-			<org is_static="false" id="14" name="LARA_HOLSTERS_PISTOLS"/>
-			<org is_static="false" id="15" name="LARA_HOLSTERS_UZIS"/>
-			<org is_static="false" id="16" name="LARA_HOLSTERS_SIXSHOOTER"/>
-			<org is_static="false" id="17" name="LARA_SPEECH_HEAD1"/>
-			<org is_static="false" id="18" name="LARA_SPEECH_HEAD2"/>
-			<org is_static="false" id="19" name="LARA_SPEECH_HEAD3"/>
-			<org is_static="false" id="20" name="LARA_SPEECH_HEAD4"/>
-			<org is_static="false" id="21" name="ACTOR1_SPEECH_HEAD1"/>
-			<org is_static="false" id="22" name="ACTOR1_SPEECH_HEAD2"/>
-			<org is_static="false" id="23" name="ACTOR2_SPEECH_HEAD1"/>
-			<org is_static="false" id="24" name="ACTOR2_SPEECH_HEAD2"/>
-			<org is_static="false" id="25" name="LARA_WATER_MESH"/>
-			<org is_static="false" id="26" name="LARA_PETROL_MESH"/>
-			<org is_static="false" id="27" name="LARA_DIRT_MESH"/>
-			<org is_static="false" id="28" name="CROWBAR_ANIM"/>
-			<org is_static="false" id="29" name="TORCH_ANIM"/>
-			<org is_static="false" id="30" name="HAIR"/>
-			<org is_static="false" id="31" name="MOTORBIKE"/>
-			<org is_static="false" id="32" name="JEEP"/>
-			<org is_static="false" id="33" name="VEHICLE_EXTRA"/>
-			<org is_static="false" id="34" name="ENEMY_JEEP"/>
-			<org is_static="false" id="35" name="SKELETON"/>
-			<org is_static="false" id="36" name="SKELETON_MIP"/>
-			<org is_static="false" id="37" name="GUIDE"/>
-			<org is_static="false" id="38" name="GUIDE_MIP"/>
-			<org is_static="false" id="39" name="VON_CROY"/>
-			<org is_static="false" id="40" name="VON_CROY_MIP"/>
-			<org is_static="false" id="41" name="BADDY_1"/>
-			<org is_static="false" id="42" name="BADDY_1_MIP"/>
-			<org is_static="false" id="43" name="BADDY_2"/>
-			<org is_static="false" id="44" name="BADDY_2_MIP"/>
-			<org is_static="false" id="45" name="SETHA"/>
-			<org is_static="false" id="46" name="SETHA_MIP"/>
-			<org is_static="false" id="47" name="MUMMY"/>
-			<org is_static="false" id="48" name="MUMMY_MIP"/>
-			<org is_static="false" id="49" name="SPHINX"/>
-			<org is_static="false" id="50" name="SPHINX_MIP"/>
-			<org is_static="false" id="51" name="CROCODILE"/>
-			<org is_static="false" id="52" name="CROCODILE_MIP"/>
-			<org is_static="false" id="53" name="HORSEMAN"/>
-			<org is_static="false" id="54" name="HORSEMAN_MIP"/>
-			<org is_static="false" id="55" name="SCORPION"/>
-			<org is_static="false" id="56" name="SCORPION_MIP"/>
-			<org is_static="false" id="57" name="JEAN_YVES"/>
-			<org is_static="false" id="58" name="JEAN_YVES_MIP"/>
-			<org is_static="false" id="59" name="TROOPS"/>
-			<org is_static="false" id="60" name="TROOPS_MIP"/>
-			<org is_static="false" id="61" name="KNIGHTS_TEMPLAR"/>
-			<org is_static="false" id="62" name="KNIGHTS_TEMPLAR_MIP"/>
-			<org is_static="false" id="63" name="MUTANT"/>
-			<org is_static="false" id="64" name="MUTANT_MIP"/>
-			<org is_static="false" id="65" name="HORSE"/>
-			<org is_static="false" id="66" name="HORSE_MIP"/>
-			<org is_static="false" id="67" name="BABOON_NORMAL"/>
-			<org is_static="false" id="68" name="BABOON_NORMAL_MIP"/>
-			<org is_static="false" id="69" name="BABOON_INV"/>
-			<org is_static="false" id="70" name="BABOON_INV_MIP"/>
-			<org is_static="false" id="71" name="BABOON_SILENT"/>
-			<org is_static="false" id="72" name="BABOON_SILENT_MIP"/>
-			<org is_static="false" id="73" name="WILD_BOAR"/>
-			<org is_static="false" id="74" name="WILD_BOAR_MIP"/>
-			<org is_static="false" id="75" name="HARPY"/>
-			<org is_static="false" id="76" name="HARPY_MIP"/>
-			<org is_static="false" id="77" name="DEMIGOD1"/>
-			<org is_static="false" id="78" name="DEMIGOD1_MIP"/>
-			<org is_static="false" id="79" name="DEMIGOD2"/>
-			<org is_static="false" id="80" name="DEMIGOD2_MIP"/>
-			<org is_static="false" id="81" name="DEMIGOD3"/>
-			<org is_static="false" id="82" name="DEMIGOD3_MIP"/>
-			<org is_static="false" id="83" name="LITTLE_BEETLE"/>
-			<org is_static="false" id="84" name="BIG_BEETLE"/>
-			<org is_static="false" id="85" name="BIG_BEETLE_MIP"/>
-			<org is_static="false" id="86" name="WRAITH1"/>
-			<org is_static="false" id="87" name="WRAITH2"/>
-			<org is_static="false" id="88" name="WRAITH3"/>
-			<org is_static="false" id="89" name="WRAITH4"/>
-			<org is_static="false" id="90" name="BAT"/>
-			<org is_static="false" id="91" name="DOG"/>
-			<org is_static="false" id="92" name="DOG_MIP"/>
-			<org is_static="false" id="93" name="HAMMERHEAD"/>
-			<org is_static="false" id="94" name="HAMMERHEAD_MIP"/>
-			<org is_static="false" id="95" name="SAS"/>
-			<org is_static="false" id="96" name="SAS_MIP"/>
-			<org is_static="false" id="97" name="SAS_DYING"/>
-			<org is_static="false" id="98" name="SAS_DYING_MIP"/>
-			<org is_static="false" id="99" name="SAS_CAPTAIN"/>
-			<org is_static="false" id="100" name="SAS_CAPTAIN_MIP"/>
-			<org is_static="false" id="101" name="SAS_DRAG_BLOKE"/>
-			<org is_static="false" id="102" name="AHMET"/>
-			<org is_static="false" id="103" name="AHMET_MIP"/>
-			<org is_static="false" id="104" name="LARA_DOUBLE"/>
-			<org is_static="false" id="105" name="LARA_DOUBLE_MIP"/>
-			<org is_static="false" id="106" name="SMALL_SCORPION"/>
-			<org is_static="false" id="107" name="LOCUST_EMITTER"/>
-			<org is_static="false" id="108" name="GAME_PIECE1"/>
-			<org is_static="false" id="109" name="GAME_PIECE2"/>
-			<org is_static="false" id="110" name="GAME_PIECE3"/>
-			<org is_static="false" id="111" name="ENEMY_PIECE"/>
-			<org is_static="false" id="112" name="WHEEL_OF_FORTUNE"/>
-			<org is_static="false" id="113" name="SCALES"/>
-			<org is_static="false" id="114" name="DARTS"/>
-			<org is_static="false" id="115" name="DART_EMITTER"/>
-			<org is_static="false" id="116" name="HOMING_DART_EMITTER"/>
-			<org is_static="false" id="117" name="FALLING_CEILING"/>
-			<org is_static="false" id="118" name="FALLING_BLOCK"/>
-			<org is_static="false" id="119" name="FALLING_BLOCK2"/>
-			<org is_static="false" id="120" name="SMASHABLE_BIKE_WALL"/>
-			<org is_static="false" id="121" name="SMASHABLE_BIKE_FLOOR"/>
-			<org is_static="false" id="122" name="TRAPDOOR1"/>
-			<org is_static="false" id="123" name="TRAPDOOR2"/>
-			<org is_static="false" id="124" name="TRAPDOOR3"/>
-			<org is_static="false" id="125" name="FLOOR_TRAPDOOR1"/>
-			<org is_static="false" id="126" name="FLOOR_TRAPDOOR2"/>
-			<org is_static="false" id="127" name="CEILING_TRAPDOOR1"/>
-			<org is_static="false" id="128" name="CEILING_TRAPDOOR2"/>
-			<org is_static="false" id="129" name="SCALING_TRAPDOOR"/>
-			<org is_static="false" id="130" name="ROLLINGBALL"/>
-			<org is_static="false" id="131" name="SPIKEY_FLOOR"/>
-			<org is_static="false" id="132" name="TEETH_SPIKES"/>
-			<org is_static="false" id="133" name="JOBY_SPIKES"/>
-			<org is_static="false" id="134" name="SLICER_DICER"/>
-			<org is_static="false" id="135" name="CHAIN"/>
-			<org is_static="false" id="136" name="PLOUGH"/>
-			<org is_static="false" id="137" name="STARGATE"/>
-			<org is_static="false" id="138" name="HAMMER"/>
-			<org is_static="false" id="139" name="BURNING_FLOOR"/>
-			<org is_static="false" id="140" name="COG"/>
-			<org is_static="false" id="141" name="SPIKEBALL"/>
-			<org is_static="false" id="142" name="FLAME"/>
-			<org is_static="false" id="143" name="FLAME_EMITTER"/>
-			<org is_static="false" id="144" name="FLAME_EMITTER2"/>
-			<org is_static="false" id="145" name="FLAME_EMITTER3"/>
-			<org is_static="false" id="146" name="ROPE"/>
-			<org is_static="false" id="147" name="FIREROPE"/>
-			<org is_static="false" id="148" name="POLEROPE"/>
-			<org is_static="false" id="149" name="ONEBLOCK_PLATFORM"/>
-			<org is_static="false" id="150" name="TWOBLOCK_PLATFORM"/>
-			<org is_static="false" id="151" name="RAISING_BLOCK1"/>
-			<org is_static="false" id="152" name="RAISING_BLOCK2"/>
-			<org is_static="false" id="153" name="EXPANDING_PLATFORM"/>
-			<org is_static="false" id="154" name="SQUISHY_BLOCK1"/>
-			<org is_static="false" id="155" name="SQUISHY_BLOCK2"/>
-			<org is_static="false" id="156" name="PUSHABLE_OBJECT1"/>
-			<org is_static="false" id="157" name="PUSHABLE_OBJECT2"/>
-			<org is_static="false" id="158" name="PUSHABLE_OBJECT3"/>
-			<org is_static="false" id="159" name="PUSHABLE_OBJECT4"/>
-			<org is_static="false" id="160" name="PUSHABLE_OBJECT5"/>
-			<org is_static="false" id="161" name="TRIPWIRE"/>
-			<org is_static="false" id="162" name="SENTRY_GUN"/>
-			<org is_static="false" id="163" name="MINE"/>
-			<org is_static="false" id="164" name="MAPPER"/>
-			<org is_static="false" id="165" name="OBELISK"/>
-			<org is_static="false" id="166" name="FLOOR_4BLADE"/>
-			<org is_static="false" id="167" name="ROOF_4BLADE"/>
-			<org is_static="false" id="168" name="BIRD_BLADE"/>
-			<org is_static="false" id="169" name="CATWALK_BLADE"/>
-			<org is_static="false" id="170" name="MOVING_BLADE"/>
-			<org is_static="false" id="171" name="PLINTH_BLADE"/>
-			<org is_static="false" id="172" name="SETH_BLADE"/>
-			<org is_static="false" id="173" name="LIGHTNING_CONDUCTOR"/>
-			<org is_static="false" id="174" name="ELEMENT_PUZZLE"/>
-			<org is_static="false" id="175" name="PUZZLE_ITEM1"/>
-			<org is_static="false" id="176" name="PUZZLE_ITEM2"/>
-			<org is_static="false" id="177" name="PUZZLE_ITEM3"/>
-			<org is_static="false" id="178" name="PUZZLE_ITEM4"/>
-			<org is_static="false" id="179" name="PUZZLE_ITEM5"/>
-			<org is_static="false" id="180" name="PUZZLE_ITEM6"/>
-			<org is_static="false" id="181" name="PUZZLE_ITEM7"/>
-			<org is_static="false" id="182" name="PUZZLE_ITEM8"/>
-			<org is_static="false" id="183" name="PUZZLE_ITEM9"/>
-			<org is_static="false" id="184" name="PUZZLE_ITEM10"/>
-			<org is_static="false" id="185" name="PUZZLE_ITEM11"/>
-			<org is_static="false" id="186" name="PUZZLE_ITEM12"/>
-			<org is_static="false" id="187" name="PUZZLE_ITEM1_COMBO1"/>
-			<org is_static="false" id="188" name="PUZZLE_ITEM1_COMBO2"/>
-			<org is_static="false" id="189" name="PUZZLE_ITEM2_COMBO1"/>
-			<org is_static="false" id="190" name="PUZZLE_ITEM2_COMBO2"/>
-			<org is_static="false" id="191" name="PUZZLE_ITEM3_COMBO1"/>
-			<org is_static="false" id="192" name="PUZZLE_ITEM3_COMBO2"/>
-			<org is_static="false" id="193" name="PUZZLE_ITEM4_COMBO1"/>
-			<org is_static="false" id="194" name="PUZZLE_ITEM4_COMBO2"/>
-			<org is_static="false" id="195" name="PUZZLE_ITEM5_COMBO1"/>
-			<org is_static="false" id="196" name="PUZZLE_ITEM5_COMBO2"/>
-			<org is_static="false" id="197" name="PUZZLE_ITEM6_COMBO1"/>
-			<org is_static="false" id="198" name="PUZZLE_ITEM6_COMBO2"/>
-			<org is_static="false" id="199" name="PUZZLE_ITEM7_COMBO1"/>
-			<org is_static="false" id="200" name="PUZZLE_ITEM7_COMBO2"/>
-			<org is_static="false" id="201" name="PUZZLE_ITEM8_COMBO1"/>
-			<org is_static="false" id="202" name="PUZZLE_ITEM8_COMBO2"/>
-			<org is_static="false" id="203" name="KEY_ITEM1"/>
-			<org is_static="false" id="204" name="KEY_ITEM2"/>
-			<org is_static="false" id="205" name="KEY_ITEM3"/>
-			<org is_static="false" id="206" name="KEY_ITEM4"/>
-			<org is_static="false" id="207" name="KEY_ITEM5"/>
-			<org is_static="false" id="208" name="KEY_ITEM6"/>
-			<org is_static="false" id="209" name="KEY_ITEM7"/>
-			<org is_static="false" id="210" name="KEY_ITEM8"/>
-			<org is_static="false" id="211" name="KEY_ITEM9"/>
-			<org is_static="false" id="212" name="KEY_ITEM10"/>
-			<org is_static="false" id="213" name="KEY_ITEM11"/>
-			<org is_static="false" id="214" name="KEY_ITEM12"/>
-			<org is_static="false" id="215" name="KEY_ITEM1_COMBO1"/>
-			<org is_static="false" id="216" name="KEY_ITEM1_COMBO2"/>
-			<org is_static="false" id="217" name="KEY_ITEM2_COMBO1"/>
-			<org is_static="false" id="218" name="KEY_ITEM2_COMBO2"/>
-			<org is_static="false" id="219" name="KEY_ITEM3_COMBO1"/>
-			<org is_static="false" id="220" name="KEY_ITEM3_COMBO2"/>
-			<org is_static="false" id="221" name="KEY_ITEM4_COMBO1"/>
-			<org is_static="false" id="222" name="KEY_ITEM4_COMBO2"/>
-			<org is_static="false" id="223" name="KEY_ITEM5_COMBO1"/>
-			<org is_static="false" id="224" name="KEY_ITEM5_COMBO2"/>
-			<org is_static="false" id="225" name="KEY_ITEM6_COMBO1"/>
-			<org is_static="false" id="226" name="KEY_ITEM6_COMBO2"/>
-			<org is_static="false" id="227" name="KEY_ITEM7_COMBO1"/>
-			<org is_static="false" id="228" name="KEY_ITEM7_COMBO2"/>
-			<org is_static="false" id="229" name="KEY_ITEM8_COMBO1"/>
-			<org is_static="false" id="230" name="KEY_ITEM8_COMBO2"/>
-			<org is_static="false" id="231" name="PICKUP_ITEM1"/>
-			<org is_static="false" id="232" name="PICKUP_ITEM2"/>
-			<org is_static="false" id="233" name="PICKUP_ITEM3"/>
-			<org is_static="false" id="234" name="PICKUP_ITEM4"/>
-			<org is_static="false" id="235" name="PICKUP_ITEM1_COMBO1"/>
-			<org is_static="false" id="236" name="PICKUP_ITEM1_COMBO2"/>
-			<org is_static="false" id="237" name="PICKUP_ITEM2_COMBO1"/>
-			<org is_static="false" id="238" name="PICKUP_ITEM2_COMBO2"/>
-			<org is_static="false" id="239" name="PICKUP_ITEM3_COMBO1"/>
-			<org is_static="false" id="240" name="PICKUP_ITEM3_COMBO2"/>
-			<org is_static="false" id="241" name="PICKUP_ITEM4_COMBO1"/>
-			<org is_static="false" id="242" name="PICKUP_ITEM4_COMBO2"/>
-			<org is_static="false" id="243" name="EXAMINE1"/>
-			<org is_static="false" id="244" name="EXAMINE2"/>
-			<org is_static="false" id="245" name="EXAMINE3"/>
-			<org is_static="false" id="246" name="CROWBAR_ITEM"/>
-			<org is_static="false" id="247" name="BURNING_TORCH_ITEM"/>
-			<org is_static="false" id="248" name="CLOCKWORK_BEETLE"/>
-			<org is_static="false" id="249" name="CLOCKWORK_BEETLE_COMBO1"/>
-			<org is_static="false" id="250" name="CLOCKWORK_BEETLE_COMBO2"/>
-			<org is_static="false" id="251" name="MINE_DETECTOR"/>
-			<org is_static="false" id="252" name="QUEST_ITEM1"/>
-			<org is_static="false" id="253" name="QUEST_ITEM2"/>
-			<org is_static="false" id="254" name="QUEST_ITEM3"/>
-			<org is_static="false" id="255" name="QUEST_ITEM4"/>
-			<org is_static="false" id="256" name="QUEST_ITEM5"/>
-			<org is_static="false" id="257" name="QUEST_ITEM6"/>
-			<org is_static="false" id="258" name="MAP"/>
-			<org is_static="false" id="259" name="SECRET_MAP"/>
-			<org is_static="false" id="260" name="PUZZLE_HOLE1"/>
-			<org is_static="false" id="261" name="PUZZLE_HOLE2"/>
-			<org is_static="false" id="262" name="PUZZLE_HOLE3"/>
-			<org is_static="false" id="263" name="PUZZLE_HOLE4"/>
-			<org is_static="false" id="264" name="PUZZLE_HOLE5"/>
-			<org is_static="false" id="265" name="PUZZLE_HOLE6"/>
-			<org is_static="false" id="266" name="PUZZLE_HOLE7"/>
-			<org is_static="false" id="267" name="PUZZLE_HOLE8"/>
-			<org is_static="false" id="268" name="PUZZLE_HOLE9"/>
-			<org is_static="false" id="269" name="PUZZLE_HOLE10"/>
-			<org is_static="false" id="270" name="PUZZLE_HOLE11"/>
-			<org is_static="false" id="271" name="PUZZLE_HOLE12"/>
-			<org is_static="false" id="272" name="PUZZLE_DONE1"/>
-			<org is_static="false" id="273" name="PUZZLE_DONE2"/>
-			<org is_static="false" id="274" name="PUZZLE_DONE3"/>
-			<org is_static="false" id="275" name="PUZZLE_DONE4"/>
-			<org is_static="false" id="276" name="PUZZLE_DONE5"/>
-			<org is_static="false" id="277" name="PUZZLE_DONE6"/>
-			<org is_static="false" id="278" name="PUZZLE_DONE7"/>
-			<org is_static="false" id="279" name="PUZZLE_DONE8"/>
-			<org is_static="false" id="280" name="PUZZLE_DONE9"/>
-			<org is_static="false" id="281" name="PUZZLE_DONE10"/>
-			<org is_static="false" id="282" name="PUZZLE_DONE11"/>
-			<org is_static="false" id="283" name="PUZZLE_DONE12"/>
-			<org is_static="false" id="284" name="KEY_HOLE1"/>
-			<org is_static="false" id="285" name="KEY_HOLE2"/>
-			<org is_static="false" id="286" name="KEY_HOLE3"/>
-			<org is_static="false" id="287" name="KEY_HOLE4"/>
-			<org is_static="false" id="288" name="KEY_HOLE5"/>
-			<org is_static="false" id="289" name="KEY_HOLE6"/>
-			<org is_static="false" id="290" name="KEY_HOLE7"/>
-			<org is_static="false" id="291" name="KEY_HOLE8"/>
-			<org is_static="false" id="292" name="KEY_HOLE9"/>
-			<org is_static="false" id="293" name="KEY_HOLE10"/>
-			<org is_static="false" id="294" name="KEY_HOLE11"/>
-			<org is_static="false" id="295" name="KEY_HOLE12"/>
-			<org is_static="false" id="296" name="WATERSKIN1_EMPTY"/>
-			<org is_static="false" id="297" name="WATERSKIN1_1"/>
-			<org is_static="false" id="298" name="WATERSKIN1_2"/>
-			<org is_static="false" id="299" name="WATERSKIN1_3"/>
-			<org is_static="false" id="300" name="WATERSKIN2_EMPTY"/>
-			<org is_static="false" id="301" name="WATERSKIN2_1"/>
-			<org is_static="false" id="302" name="WATERSKIN2_2"/>
-			<org is_static="false" id="303" name="WATERSKIN2_3"/>
-			<org is_static="false" id="304" name="WATERSKIN2_4"/>
-			<org is_static="false" id="305" name="WATERSKIN2_5"/>
-			<org is_static="false" id="306" name="SWITCH_TYPE1"/>
-			<org is_static="false" id="307" name="SWITCH_TYPE2"/>
-			<org is_static="false" id="308" name="SWITCH_TYPE3"/>
-			<org is_static="false" id="309" name="SWITCH_TYPE4"/>
-			<org is_static="false" id="310" name="SWITCH_TYPE5"/>
-			<org is_static="false" id="311" name="SWITCH_TYPE6"/>
-			<org is_static="false" id="312" name="SWITCH_TYPE7"/>
-			<org is_static="false" id="313" name="SWITCH_TYPE8"/>
-			<org is_static="false" id="314" name="UNDERWATER_SWITCH1"/>
-			<org is_static="false" id="315" name="UNDERWATER_SWITCH2"/>
-			<org is_static="false" id="316" name="TURN_SWITCH"/>
-			<org is_static="false" id="317" name="COG_SWITCH"/>
-			<org is_static="false" id="318" name="LEVER_SWITCH"/>
-			<org is_static="false" id="319" name="JUMP_SWITCH"/>
-			<org is_static="false" id="320" name="CROWBAR_SWITCH"/>
-			<org is_static="false" id="321" name="PULLEY"/>
-			<org is_static="false" id="322" name="DOOR_TYPE1"/>
-			<org is_static="false" id="323" name="DOOR_TYPE2"/>
-			<org is_static="false" id="324" name="DOOR_TYPE3"/>
-			<org is_static="false" id="325" name="DOOR_TYPE4"/>
-			<org is_static="false" id="326" name="DOOR_TYPE5"/>
-			<org is_static="false" id="327" name="DOOR_TYPE6"/>
-			<org is_static="false" id="328" name="DOOR_TYPE7"/>
-			<org is_static="false" id="329" name="DOOR_TYPE8"/>
-			<org is_static="false" id="330" name="PUSHPULL_DOOR1"/>
-			<org is_static="false" id="331" name="PUSHPULL_DOOR2"/>
-			<org is_static="false" id="332" name="KICK_DOOR1"/>
-			<org is_static="false" id="333" name="KICK_DOOR2"/>
-			<org is_static="false" id="334" name="UNDERWATER_DOOR"/>
-			<org is_static="false" id="335" name="DOUBLE_DOORS"/>
-			<org is_static="false" id="336" name="BRIDGE_FLAT"/>
-			<org is_static="false" id="337" name="BRIDGE_TILT1"/>
-			<org is_static="false" id="338" name="BRIDGE_TILT2"/>
-			<org is_static="false" id="339" name="SARCOPHAGUS"/>
-			<org is_static="false" id="340" name="SEQUENCE_DOOR1"/>
-			<org is_static="false" id="341" name="SEQUENCE_SWITCH1"/>
-			<org is_static="false" id="342" name="SEQUENCE_SWITCH2"/>
-			<org is_static="false" id="343" name="SEQUENCE_SWITCH3"/>
-			<org is_static="false" id="344" name="SARCOPHAGUS_CUT"/>
-			<org is_static="false" id="345" name="HORUS_STATUE"/>
-			<org is_static="false" id="346" name="GOD_HEAD"/>
-			<org is_static="false" id="347" name="SETH_DOOR"/>
-			<org is_static="false" id="348" name="STATUE_PLINTH"/>
-			<org is_static="false" id="349" name="PISTOLS_ITEM"/>
-			<org is_static="false" id="350" name="PISTOLS_AMMO_ITEM"/>
-			<org is_static="false" id="351" name="UZI_ITEM"/>
-			<org is_static="false" id="352" name="UZI_AMMO_ITEM"/>
-			<org is_static="false" id="353" name="SHOTGUN_ITEM"/>
-			<org is_static="false" id="354" name="SHOTGUN_AMMO1_ITEM"/>
-			<org is_static="false" id="355" name="SHOTGUN_AMMO2_ITEM"/>
-			<org is_static="false" id="356" name="CROSSBOW_ITEM"/>
-			<org is_static="false" id="357" name="CROSSBOW_AMMO1_ITEM"/>
-			<org is_static="false" id="358" name="CROSSBOW_AMMO2_ITEM"/>
-			<org is_static="false" id="359" name="CROSSBOW_AMMO3_ITEM"/>
-			<org is_static="false" id="360" name="CROSSBOW_BOLT"/>
-			<org is_static="false" id="361" name="GRENADE_GUN_ITEM"/>
-			<org is_static="false" id="362" name="GRENADE_GUN_AMMO1_ITEM"/>
-			<org is_static="false" id="363" name="GRENADE_GUN_AMMO2_ITEM"/>
-			<org is_static="false" id="364" name="GRENADE_GUN_AMMO3_ITEM"/>
-			<org is_static="false" id="365" name="GRENADE"/>
-			<org is_static="false" id="366" name="SIXSHOOTER_ITEM"/>
-			<org is_static="false" id="367" name="SIXSHOOTER_AMMO_ITEM"/>
-			<org is_static="false" id="368" name="BIGMEDI_ITEM"/>
-			<org is_static="false" id="369" name="SMALLMEDI_ITEM"/>
-			<org is_static="false" id="370" name="LASERSIGHT_ITEM"/>
-			<org is_static="false" id="371" name="BINOCULARS_ITEM"/>
-			<org is_static="false" id="372" name="FLARE_ITEM"/>
-			<org is_static="false" id="373" name="FLARE_INV_ITEM"/>
-			<org is_static="false" id="374" name="DIARY_ITEM"/>
-			<org is_static="false" id="375" name="COMPASS_ITEM"/>
-			<org is_static="false" id="376" name="MEMCARD_LOAD_INV_ITEM"/>
-			<org is_static="false" id="377" name="MEMCARD_SAVE_INV_ITEM"/>
-			<org is_static="false" id="378" name="PC_LOAD_INV_ITEM"/>
-			<org is_static="false" id="379" name="PC_SAVE_INV_ITEM"/>
-			<org is_static="false" id="380" name="SMOKE_EMITTER_WHITE"/>
-			<org is_static="false" id="381" name="SMOKE_EMITTER_BLACK"/>
-			<org is_static="false" id="382" name="STEAM_EMITTER"/>
-			<org is_static="false" id="383" name="EARTHQUAKE"/>
-			<org is_static="false" id="384" name="BUBBLES"/>
-			<org is_static="false" id="385" name="WATERFALLMIST"/>
-			<org is_static="false" id="386" name="GUNSHELL"/>
-			<org is_static="false" id="387" name="SHOTGUNSHELL"/>
-			<org is_static="false" id="388" name="GUN_FLASH"/>
-			<org is_static="false" id="389" name="BUTTERFLY"/>
-			<org is_static="false" id="390" name="SPRINKLER"/>
-			<org is_static="false" id="391" name="RED_LIGHT"/>
-			<org is_static="false" id="392" name="GREEN_LIGHT"/>
-			<org is_static="false" id="393" name="BLUE_LIGHT"/>
-			<org is_static="false" id="394" name="AMBER_LIGHT"/>
-			<org is_static="false" id="395" name="WHITE_LIGHT"/>
-			<org is_static="false" id="396" name="BLINKING_LIGHT"/>
-			<org is_static="false" id="397" name="LENS_FLARE"/>
-			<org is_static="false" id="398" name="AI_GUARD"/>
-			<org is_static="false" id="399" name="AI_AMBUSH"/>
-			<org is_static="false" id="400" name="AI_PATROL1"/>
-			<org is_static="false" id="401" name="AI_MODIFY"/>
-			<org is_static="false" id="402" name="AI_FOLLOW"/>
-			<org is_static="false" id="403" name="AI_PATROL2"/>
-			<org is_static="false" id="404" name="AI_X1"/>
-			<org is_static="false" id="405" name="AI_X2"/>
-			<org is_static="false" id="406" name="LARA_START_POS"/>
-			<org is_static="false" id="407" name="KILL_ALL_TRIGGERS"/>
-			<org is_static="false" id="408" name="TRIGGER_TRIGGERER"/>
-			<org is_static="false" id="409" name="SMASH_OBJECT1"/>
-			<org is_static="false" id="410" name="SMASH_OBJECT2"/>
-			<org is_static="false" id="411" name="SMASH_OBJECT3"/>
-			<org is_static="false" id="412" name="SMASH_OBJECT4"/>
-			<org is_static="false" id="413" name="SMASH_OBJECT5"/>
-			<org is_static="false" id="414" name="SMASH_OBJECT6"/>
-			<org is_static="false" id="415" name="SMASH_OBJECT7"/>
-			<org is_static="false" id="416" name="SMASH_OBJECT8"/>
-			<org is_static="false" id="417" name="MESHSWAP1"/>
-			<org is_static="false" id="418" name="MESHSWAP2"/>
-			<org is_static="false" id="419" name="MESHSWAP3"/>
-			<org is_static="false" id="420" name="DEATH_SLIDE"/>
-			<org is_static="false" id="421" name="BODY_PART"/>
-			<org is_static="false" id="422" name="CAMERA_TARGET"/>
-			<org is_static="false" id="423" name="WATERFALL1"/>
-			<org is_static="false" id="424" name="WATERFALL2"/>
-			<org is_static="false" id="425" name="WATERFALL3"/>
-			<org is_static="false" id="426" name="PLANET_EFFECT"/>
-			<org is_static="false" id="427" name="ANIMATING1"/>
-			<org is_static="false" id="428" name="ANIMATING1_MIP"/>
-			<org is_static="false" id="429" name="ANIMATING2"/>
-			<org is_static="false" id="430" name="ANIMATING2_MIP"/>
-			<org is_static="false" id="431" name="ANIMATING3"/>
-			<org is_static="false" id="432" name="ANIMATING3_MIP"/>
-			<org is_static="false" id="433" name="ANIMATING4"/>
-			<org is_static="false" id="434" name="ANIMATING4_MIP"/>
-			<org is_static="false" id="435" name="ANIMATING5"/>
-			<org is_static="false" id="436" name="ANIMATING5_MIP"/>
-			<org is_static="false" id="437" name="ANIMATING6"/>
-			<org is_static="false" id="438" name="ANIMATING6_MIP"/>
-			<org is_static="false" id="439" name="ANIMATING7"/>
-			<org is_static="false" id="440" name="ANIMATING7_MIP"/>
-			<org is_static="false" id="441" name="ANIMATING8"/>
-			<org is_static="false" id="442" name="ANIMATING8_MIP"/>
-			<org is_static="false" id="443" name="ANIMATING9"/>
-			<org is_static="false" id="444" name="ANIMATING9_MIP"/>
-			<org is_static="false" id="445" name="ANIMATING10"/>
-			<org is_static="false" id="446" name="ANIMATING10_MIP"/>
-			<org is_static="false" id="447" name="ANIMATING11"/>
-			<org is_static="false" id="448" name="ANIMATING11_MIP"/>
-			<org is_static="false" id="449" name="ANIMATING12"/>
-			<org is_static="false" id="450" name="ANIMATING12_MIP"/>
-			<org is_static="false" id="451" name="ANIMATING13"/>
-			<org is_static="false" id="452" name="ANIMATING13_MIP"/>
-			<org is_static="false" id="453" name="ANIMATING14"/>
-			<org is_static="false" id="454" name="ANIMATING14_MIP"/>
-			<org is_static="false" id="455" name="ANIMATING15"/>
-			<org is_static="false" id="456" name="ANIMATING15_MIP"/>
-			<org is_static="false" id="457" name="ANIMATING16"/>
-			<org is_static="false" id="458" name="ANIMATING16_MIP"/>
-			<org is_static="false" id="459" name="HORIZON"/>
-			<org is_static="false" id="460" name="SKY_GRAPHICS"/>
-			<org is_static="false" id="461" name="BINOCULAR_GRAPHICS"/>
-			<org is_static="false" id="462" name="TARGET_GRAPHICS"/>
-			<org is_static="false" id="463" name="DEFAULT_sprite_sequences"/>
-			<org is_static="false" id="464" name="MISC_sprite_sequences"/>
-			<org is_static="false" id="465" name="MOTOR_BOAT"/>
-			<org is_static="false" id="466" name="MOTOR_BOAT_LARA"/>
-			<org is_static="false" id="467" name="RUBBER_BOAT"/>
-			<org is_static="false" id="468" name="RUBBER_BOAT_LARA"/>
-			<org is_static="false" id="469" name="MOTORBIKE_LARA"/>
-			<org is_static="false" id="470" name="FONT_GRAPHICS"/>
-			<org is_static="false" id="471" name="PARALLEL_BARS"/>
-			<org is_static="false" id="472" name="PANEL_BORDER"/>
-			<org is_static="false" id="473" name="PANEL_MIDDLE"/>
-			<org is_static="false" id="474" name="PANEL_CORNER"/>
-			<org is_static="false" id="475" name="PANEL_DIAGONAL"/>
-			<org is_static="false" id="476" name="PANEL_STRIP"/>
-			<org is_static="false" id="477" name="PANEL_HALF_BORDER1"/>
-			<org is_static="false" id="478" name="PANEL_HALF_BORDER2"/>
-			<org is_static="false" id="479" name="PANEL_MIDDLE_CORNER"/>
-			<org is_static="false" id="480" name="TIGHT_ROPE"/>
-			<org is_static="false" id="481" name="LASER_HEAD"/>
-			<org is_static="false" id="482" name="LASER_HEAD_BASE"/>
-			<org is_static="false" id="483" name="LASER_HEAD_TENTACLE"/>
-			<org is_static="false" id="484" name="HYDRA"/>
-			<org is_static="false" id="485" name="HYDRA_MISSILE"/>
-			<org is_static="false" id="486" name="ENEMY_SUB_MARINE"/>
-			<org is_static="false" id="487" name="ENEMY_SUB_MARINE_MIP"/>
-			<org is_static="false" id="488" name="SUB_MARINE_MISSILE"/>
-			<org is_static="false" id="489" name="FROG_MAN"/>
-			<org is_static="false" id="490" name="FROG_MAN_HARPOON"/>
-			<org is_static="false" id="491" name="FISH_EMITTER"/>
-			<org is_static="false" id="492" name="KAYAK"/>
-			<org is_static="false" id="493" name="KAYAK_LARA"/>
-			<org is_static="false" id="494" name="CUSTOM_sprite_sequences"/>
-			<org is_static="false" id="495" name="BRIDGE_TILT3"/>
-			<org is_static="false" id="496" name="BRIDGE_TILT4"/>
-			<org is_static="false" id="497" name="BRIDGE_CUSTOM"/>
-			<org is_static="false" id="498" name="ROBOT_CLEANER"/>
-			<org is_static="false" id="499" name="ROBOT_STAR_WARS"/>
-			<org is_static="false" id="500" name="MECH_WARRIOR"/>
-			<org is_static="false" id="501" name="MECH_WARRIOR_LARA"/>
-			<org is_static="false" id="502" name="UW_PROPULSOR"/>
-			<org is_static="false" id="503" name="UW_PROPULSOR_LARA"/>
-			<org is_static="false" id="504" name="MINE_CART"/>
-			<org is_static="false" id="505" name="MINE_CART_LARA"/>
-			<org is_static="false" id="506" name="NEW_SLOT5"/>
-			<org is_static="false" id="507" name="NEW_SLOT6"/>
-			<org is_static="false" id="508" name="NEW_SLOT7"/>
-			<org is_static="false" id="509" name="NEW_SLOT8"/>
-			<org is_static="false" id="510" name="NEW_SLOT9"/>
-			<org is_static="false" id="511" name="NEW_SLOT10"/>
-			<org is_static="false" id="512" name="NEW_SLOT11"/>
-			<org is_static="false" id="513" name="NEW_SLOT12"/>
-			<org is_static="false" id="514" name="NEW_SLOT13"/>
-			<org is_static="false" id="515" name="NEW_SLOT14"/>
-			<org is_static="false" id="516" name="NEW_SLOT15"/>
-			<org is_static="false" id="517" name="NEW_SLOT16"/>
-			<org is_static="false" id="518" name="NEW_SLOT17"/>
-			<org is_static="false" id="519" name="NEW_SLOT18"/>
-			<org is_static="true" id="0" name="PLANT0"/>
-			<org is_static="true" id="1" name="PLANT1"/>
-			<org is_static="true" id="2" name="PLANT2"/>
-			<org is_static="true" id="3" name="PLANT3"/>
-			<org is_static="true" id="4" name="PLANT4"/>
-			<org is_static="true" id="5" name="PLANT5"/>
-			<org is_static="true" id="6" name="PLANT6"/>
-			<org is_static="true" id="7" name="PLANT7"/>
-			<org is_static="true" id="8" name="PLANT8"/>
-			<org is_static="true" id="9" name="PLANT9"/>
-			<org is_static="true" id="10" name="FURNITURE0"/>
-			<org is_static="true" id="11" name="FURNITURE1"/>
-			<org is_static="true" id="12" name="FURNITURE2"/>
-			<org is_static="true" id="13" name="FURNITURE3"/>
-			<org is_static="true" id="14" name="FURNITURE4"/>
-			<org is_static="true" id="15" name="FURNITURE5"/>
-			<org is_static="true" id="16" name="FURNITURE6"/>
-			<org is_static="true" id="17" name="FURNITURE7"/>
-			<org is_static="true" id="18" name="FURNITURE8"/>
-			<org is_static="true" id="19" name="FURNITURE9"/>
-			<org is_static="true" id="20" name="ROCK0"/>
-			<org is_static="true" id="21" name="ROCK1"/>
-			<org is_static="true" id="22" name="ROCK2"/>
-			<org is_static="true" id="23" name="ROCK3"/>
-			<org is_static="true" id="24" name="ROCK4"/>
-			<org is_static="true" id="25" name="ROCK5"/>
-			<org is_static="true" id="26" name="ROCK6"/>
-			<org is_static="true" id="27" name="ROCK7"/>
-			<org is_static="true" id="28" name="ROCK8"/>
-			<org is_static="true" id="29" name="ROCK9"/>
-			<org is_static="true" id="30" name="ARCHITECTURE0"/>
-			<org is_static="true" id="31" name="ARCHITECTURE1"/>
-			<org is_static="true" id="32" name="ARCHITECTURE2"/>
-			<org is_static="true" id="33" name="ARCHITECTURE3"/>
-			<org is_static="true" id="34" name="ARCHITECTURE4"/>
-			<org is_static="true" id="35" name="ARCHITECTURE5"/>
-			<org is_static="true" id="36" name="ARCHITECTURE6"/>
-			<org is_static="true" id="37" name="ARCHITECTURE7"/>
-			<org is_static="true" id="38" name="ARCHITECTURE8"/>
-			<org is_static="true" id="39" name="ARCHITECTURE9"/>
-			<org is_static="true" id="40" name="DEBRIS0"/>
-			<org is_static="true" id="41" name="DEBRIS1"/>
-			<org is_static="true" id="42" name="DEBRIS2"/>
-			<org is_static="true" id="43" name="DEBRIS3"/>
-			<org is_static="true" id="44" name="DEBRIS4"/>
-			<org is_static="true" id="45" name="DEBRIS5"/>
-			<org is_static="true" id="46" name="DEBRIS6"/>
-			<org is_static="true" id="47" name="DEBRIS7"/>
-			<org is_static="true" id="48" name="DEBRIS8"/>
-			<org is_static="true" id="49" name="DEBRIS9"/>
-			<org is_static="true" id="50" name="SHATTER0"/>
-			<org is_static="true" id="51" name="SHATTER1"/>
-			<org is_static="true" id="52" name="SHATTER2"/>
-			<org is_static="true" id="53" name="SHATTER3"/>
-			<org is_static="true" id="54" name="SHATTER4"/>
-			<org is_static="true" id="55" name="SHATTER5"/>
-			<org is_static="true" id="56" name="SHATTER6"/>
-			<org is_static="true" id="57" name="SHATTER7"/>
-			<org is_static="true" id="58" name="SHATTER8"/>
-			<org is_static="true" id="59" name="SHATTER9"/>
-			<org is_static="true" id="60" name="EXTRA00"/>
-			<org is_static="true" id="61" name="EXTRA01"/>
-			<org is_static="true" id="62" name="EXTRA02"/>
-			<org is_static="true" id="63" name="EXTRA03"/>
-			<org is_static="true" id="64" name="EXTRA04"/>
-			<org is_static="true" id="65" name="EXTRA05"/>
-			<org is_static="true" id="66" name="EXTRA06"/>
-			<org is_static="true" id="67" name="EXTRA07"/>
-			<org is_static="true" id="68" name="EXTRA08"/>
-			<org is_static="true" id="69" name="EXTRA09"/>
-			<org is_static="true" id="70" name="EXTRA10"/>
-			<org is_static="true" id="71" name="EXTRA11"/>
-			<org is_static="true" id="72" name="EXTRA12"/>
-			<org is_static="true" id="73" name="EXTRA13"/>
-			<org is_static="true" id="74" name="EXTRA14"/>
-			<org is_static="true" id="75" name="EXTRA15"/>
-			<org is_static="true" id="76" name="EXTRA16"/>
-			<org is_static="true" id="77" name="EXTRA17"/>
-			<org is_static="true" id="78" name="EXTRA18"/>
-			<org is_static="true" id="79" name="EXTRA19"/>
-			<org is_static="true" id="80" name="EXTRA20"/>
-			<org is_static="true" id="81" name="EXTRA21"/>
-			<org is_static="true" id="82" name="EXTRA22"/>
-			<org is_static="true" id="83" name="EXTRA23"/>
-			<org is_static="true" id="84" name="EXTRA24"/>
-			<org is_static="true" id="85" name="EXTRA25"/>
-			<org is_static="true" id="86" name="EXTRA26"/>
-			<org is_static="true" id="87" name="EXTRA27"/>
-			<org is_static="true" id="88" name="EXTRA28"/>
-			<org is_static="true" id="89" name="EXTRA29"/>
-			<org is_static="true" id="90" name="EXTRA30"/>
-			<org is_static="true" id="91" name="EXTRA31"/>
-			<org is_static="true" id="92" name="EXTRA32"/>
-			<org is_static="true" id="93" name="EXTRA33"/>
-			<org is_static="true" id="94" name="EXTRA34"/>
-			<org is_static="true" id="95" name="EXTRA35"/>
-			<org is_static="true" id="96" name="EXTRA36"/>
-			<org is_static="true" id="97" name="EXTRA37"/>
-			<org is_static="true" id="98" name="EXTRA38"/>
-			<org is_static="true" id="99" name="EXTRA39"/>
-			<org is_static="true" id="100" name="EXTRA40"/>
-			<org is_static="true" id="101" name="EXTRA41"/>
-			<org is_static="true" id="102" name="EXTRA42"/>
-			<org is_static="true" id="103" name="EXTRA43"/>
-			<org is_static="true" id="104" name="EXTRA44"/>
-			<org is_static="true" id="105" name="EXTRA45"/>
-			<org is_static="true" id="106" name="EXTRA46"/>
-			<org is_static="true" id="107" name="EXTRA47"/>
-			<org is_static="true" id="108" name="EXTRA48"/>
-			<org is_static="true" id="109" name="EXTRA49"/>
-			<org is_static="true" id="110" name="EXTRA50"/>
-			<org is_static="true" id="111" name="EXTRA51"/>
-			<org is_static="true" id="112" name="EXTRA52"/>
-			<org is_static="true" id="113" name="EXTRA53"/>
-			<org is_static="true" id="114" name="EXTRA54"/>
-			<org is_static="true" id="115" name="EXTRA55"/>
-			<org is_static="true" id="116" name="EXTRA56"/>
-			<org is_static="true" id="117" name="EXTRA57"/>
-			<org is_static="true" id="118" name="EXTRA58"/>
-			<org is_static="true" id="119" name="EXTRA59"/>
-			<org is_static="true" id="120" name="EXTRA60"/>
-			<org is_static="true" id="121" name="EXTRA61"/>
-			<org is_static="true" id="122" name="EXTRA62"/>
-			<org is_static="true" id="123" name="EXTRA63"/>
-			<org is_static="true" id="124" name="EXTRA64"/>
-			<org is_static="true" id="125" name="EXTRA65"/>
-			<org is_static="true" id="126" name="EXTRA66"/>
-			<org is_static="true" id="127" name="EXTRA67"/>
-			<org is_static="true" id="128" name="EXTRA68"/>
-			<org is_static="true" id="129" name="EXTRA69"/>
-			<org is_static="true" id="130" name="EXTRA70"/>
-			<org is_static="true" id="131" name="EXTRA71"/>
-			<org is_static="true" id="132" name="EXTRA72"/>
-			<org is_static="true" id="133" name="EXTRA73"/>
-			<org is_static="true" id="134" name="EXTRA74"/>
-			<org is_static="true" id="135" name="EXTRA75"/>
-			<org is_static="true" id="136" name="EXTRA76"/>
-			<org is_static="true" id="137" name="EXTRA77"/>
-			<org is_static="true" id="138" name="EXTRA78"/>
-			<org is_static="true" id="139" name="EXTRA79"/>
-			<org is_static="true" id="140" name="EXTRA80"/>
-			<org is_static="true" id="141" name="EXTRA81"/>
-			<org is_static="true" id="142" name="EXTRA82"/>
-			<org is_static="true" id="143" name="EXTRA83"/>
-			<org is_static="true" id="144" name="EXTRA84"/>
-			<org is_static="true" id="145" name="EXTRA85"/>
-			<org is_static="true" id="146" name="EXTRA86"/>
-			<org is_static="true" id="147" name="EXTRA87"/>
-			<org is_static="true" id="148" name="EXTRA88"/>
-			<org is_static="true" id="149" name="EXTRA89"/>
-			<org is_static="true" id="150" name="EXTRA90"/>
-			<org is_static="true" id="151" name="EXTRA91"/>
-			<org is_static="true" id="152" name="EXTRA92"/>
-			<org is_static="true" id="153" name="EXTRA93"/>
-			<org is_static="true" id="154" name="EXTRA94"/>
-			<org is_static="true" id="155" name="EXTRA95"/>
-			<org is_static="true" id="156" name="EXTRA96"/>
-			<org is_static="true" id="157" name="EXTRA97"/>
-			<org is_static="true" id="158" name="EXTRA98"/>
-			<org is_static="true" id="159" name="EXTRA99"/>
-		</original_names>
+        <original_names>
+            <org is_static="false" id="0" name="LARA"/>
+            <org is_static="false" id="1" name="PISTOLS_ANIM"/>
+            <org is_static="false" id="2" name="UZI_ANIM"/>
+            <org is_static="false" id="3" name="SHOTGUN_ANIM"/>
+            <org is_static="false" id="4" name="CROSSBOW_ANIM"/>
+            <org is_static="false" id="5" name="GRENADE_GUN_ANIM"/>
+            <org is_static="false" id="6" name="SIXSHOOTER_ANIM"/>
+            <org is_static="false" id="7" name="FLARE_ANIM"/>
+            <org is_static="false" id="8" name="LARA_SKIN"/>
+            <org is_static="false" id="9" name="LARA_SKIN_JOINTS"/>
+            <org is_static="false" id="10" name="LARA_SCREAM"/>
+            <org is_static="false" id="11" name="LARA_CROSSBOW_LASER"/>
+            <org is_static="false" id="12" name="LARA_REVOLVER_LASER"/>
+            <org is_static="false" id="13" name="LARA_HOLSTERS"/>
+            <org is_static="false" id="14" name="LARA_HOLSTERS_PISTOLS"/>
+            <org is_static="false" id="15" name="LARA_HOLSTERS_UZIS"/>
+            <org is_static="false" id="16" name="LARA_HOLSTERS_SIXSHOOTER"/>
+            <org is_static="false" id="17" name="LARA_SPEECH_HEAD1"/>
+            <org is_static="false" id="18" name="LARA_SPEECH_HEAD2"/>
+            <org is_static="false" id="19" name="LARA_SPEECH_HEAD3"/>
+            <org is_static="false" id="20" name="LARA_SPEECH_HEAD4"/>
+            <org is_static="false" id="21" name="ACTOR1_SPEECH_HEAD1"/>
+            <org is_static="false" id="22" name="ACTOR1_SPEECH_HEAD2"/>
+            <org is_static="false" id="23" name="ACTOR2_SPEECH_HEAD1"/>
+            <org is_static="false" id="24" name="ACTOR2_SPEECH_HEAD2"/>
+            <org is_static="false" id="25" name="LARA_WATER_MESH"/>
+            <org is_static="false" id="26" name="LARA_PETROL_MESH"/>
+            <org is_static="false" id="27" name="LARA_DIRT_MESH"/>
+            <org is_static="false" id="28" name="CROWBAR_ANIM"/>
+            <org is_static="false" id="29" name="TORCH_ANIM"/>
+            <org is_static="false" id="30" name="HAIR"/>
+            <org is_static="false" id="31" name="MOTORBIKE"/>
+            <org is_static="false" id="32" name="JEEP"/>
+            <org is_static="false" id="33" name="VEHICLE_EXTRA"/>
+            <org is_static="false" id="34" name="ENEMY_JEEP"/>
+            <org is_static="false" id="35" name="SKELETON"/>
+            <org is_static="false" id="36" name="SKELETON_MIP"/>
+            <org is_static="false" id="37" name="GUIDE"/>
+            <org is_static="false" id="38" name="GUIDE_MIP"/>
+            <org is_static="false" id="39" name="VON_CROY"/>
+            <org is_static="false" id="40" name="VON_CROY_MIP"/>
+            <org is_static="false" id="41" name="BADDY_1"/>
+            <org is_static="false" id="42" name="BADDY_1_MIP"/>
+            <org is_static="false" id="43" name="BADDY_2"/>
+            <org is_static="false" id="44" name="BADDY_2_MIP"/>
+            <org is_static="false" id="45" name="SETHA"/>
+            <org is_static="false" id="46" name="SETHA_MIP"/>
+            <org is_static="false" id="47" name="MUMMY"/>
+            <org is_static="false" id="48" name="MUMMY_MIP"/>
+            <org is_static="false" id="49" name="SPHINX"/>
+            <org is_static="false" id="50" name="SPHINX_MIP"/>
+            <org is_static="false" id="51" name="CROCODILE"/>
+            <org is_static="false" id="52" name="CROCODILE_MIP"/>
+            <org is_static="false" id="53" name="HORSEMAN"/>
+            <org is_static="false" id="54" name="HORSEMAN_MIP"/>
+            <org is_static="false" id="55" name="SCORPION"/>
+            <org is_static="false" id="56" name="SCORPION_MIP"/>
+            <org is_static="false" id="57" name="JEAN_YVES"/>
+            <org is_static="false" id="58" name="JEAN_YVES_MIP"/>
+            <org is_static="false" id="59" name="TROOPS"/>
+            <org is_static="false" id="60" name="TROOPS_MIP"/>
+            <org is_static="false" id="61" name="KNIGHTS_TEMPLAR"/>
+            <org is_static="false" id="62" name="KNIGHTS_TEMPLAR_MIP"/>
+            <org is_static="false" id="63" name="MUTANT"/>
+            <org is_static="false" id="64" name="MUTANT_MIP"/>
+            <org is_static="false" id="65" name="HORSE"/>
+            <org is_static="false" id="66" name="HORSE_MIP"/>
+            <org is_static="false" id="67" name="BABOON_NORMAL"/>
+            <org is_static="false" id="68" name="BABOON_NORMAL_MIP"/>
+            <org is_static="false" id="69" name="BABOON_INV"/>
+            <org is_static="false" id="70" name="BABOON_INV_MIP"/>
+            <org is_static="false" id="71" name="BABOON_SILENT"/>
+            <org is_static="false" id="72" name="BABOON_SILENT_MIP"/>
+            <org is_static="false" id="73" name="WILD_BOAR"/>
+            <org is_static="false" id="74" name="WILD_BOAR_MIP"/>
+            <org is_static="false" id="75" name="HARPY"/>
+            <org is_static="false" id="76" name="HARPY_MIP"/>
+            <org is_static="false" id="77" name="DEMIGOD1"/>
+            <org is_static="false" id="78" name="DEMIGOD1_MIP"/>
+            <org is_static="false" id="79" name="DEMIGOD2"/>
+            <org is_static="false" id="80" name="DEMIGOD2_MIP"/>
+            <org is_static="false" id="81" name="DEMIGOD3"/>
+            <org is_static="false" id="82" name="DEMIGOD3_MIP"/>
+            <org is_static="false" id="83" name="LITTLE_BEETLE"/>
+            <org is_static="false" id="84" name="BIG_BEETLE"/>
+            <org is_static="false" id="85" name="BIG_BEETLE_MIP"/>
+            <org is_static="false" id="86" name="WRAITH1"/>
+            <org is_static="false" id="87" name="WRAITH2"/>
+            <org is_static="false" id="88" name="WRAITH3"/>
+            <org is_static="false" id="89" name="WRAITH4"/>
+            <org is_static="false" id="90" name="BAT"/>
+            <org is_static="false" id="91" name="DOG"/>
+            <org is_static="false" id="92" name="DOG_MIP"/>
+            <org is_static="false" id="93" name="HAMMERHEAD"/>
+            <org is_static="false" id="94" name="HAMMERHEAD_MIP"/>
+            <org is_static="false" id="95" name="SAS"/>
+            <org is_static="false" id="96" name="SAS_MIP"/>
+            <org is_static="false" id="97" name="SAS_DYING"/>
+            <org is_static="false" id="98" name="SAS_DYING_MIP"/>
+            <org is_static="false" id="99" name="SAS_CAPTAIN"/>
+            <org is_static="false" id="100" name="SAS_CAPTAIN_MIP"/>
+            <org is_static="false" id="101" name="SAS_DRAG_BLOKE"/>
+            <org is_static="false" id="102" name="AHMET"/>
+            <org is_static="false" id="103" name="AHMET_MIP"/>
+            <org is_static="false" id="104" name="LARA_DOUBLE"/>
+            <org is_static="false" id="105" name="LARA_DOUBLE_MIP"/>
+            <org is_static="false" id="106" name="SMALL_SCORPION"/>
+            <org is_static="false" id="107" name="LOCUST_EMITTER"/>
+            <org is_static="false" id="108" name="GAME_PIECE1"/>
+            <org is_static="false" id="109" name="GAME_PIECE2"/>
+            <org is_static="false" id="110" name="GAME_PIECE3"/>
+            <org is_static="false" id="111" name="ENEMY_PIECE"/>
+            <org is_static="false" id="112" name="WHEEL_OF_FORTUNE"/>
+            <org is_static="false" id="113" name="SCALES"/>
+            <org is_static="false" id="114" name="DARTS"/>
+            <org is_static="false" id="115" name="DART_EMITTER"/>
+            <org is_static="false" id="116" name="HOMING_DART_EMITTER"/>
+            <org is_static="false" id="117" name="FALLING_CEILING"/>
+            <org is_static="false" id="118" name="FALLING_BLOCK"/>
+            <org is_static="false" id="119" name="FALLING_BLOCK2"/>
+            <org is_static="false" id="120" name="SMASHABLE_BIKE_WALL"/>
+            <org is_static="false" id="121" name="SMASHABLE_BIKE_FLOOR"/>
+            <org is_static="false" id="122" name="TRAPDOOR1"/>
+            <org is_static="false" id="123" name="TRAPDOOR2"/>
+            <org is_static="false" id="124" name="TRAPDOOR3"/>
+            <org is_static="false" id="125" name="FLOOR_TRAPDOOR1"/>
+            <org is_static="false" id="126" name="FLOOR_TRAPDOOR2"/>
+            <org is_static="false" id="127" name="CEILING_TRAPDOOR1"/>
+            <org is_static="false" id="128" name="CEILING_TRAPDOOR2"/>
+            <org is_static="false" id="129" name="SCALING_TRAPDOOR"/>
+            <org is_static="false" id="130" name="ROLLINGBALL"/>
+            <org is_static="false" id="131" name="SPIKEY_FLOOR"/>
+            <org is_static="false" id="132" name="TEETH_SPIKES"/>
+            <org is_static="false" id="133" name="JOBY_SPIKES"/>
+            <org is_static="false" id="134" name="SLICER_DICER"/>
+            <org is_static="false" id="135" name="CHAIN"/>
+            <org is_static="false" id="136" name="PLOUGH"/>
+            <org is_static="false" id="137" name="STARGATE"/>
+            <org is_static="false" id="138" name="HAMMER"/>
+            <org is_static="false" id="139" name="BURNING_FLOOR"/>
+            <org is_static="false" id="140" name="COG"/>
+            <org is_static="false" id="141" name="SPIKEBALL"/>
+            <org is_static="false" id="142" name="FLAME"/>
+            <org is_static="false" id="143" name="FLAME_EMITTER"/>
+            <org is_static="false" id="144" name="FLAME_EMITTER2"/>
+            <org is_static="false" id="145" name="FLAME_EMITTER3"/>
+            <org is_static="false" id="146" name="ROPE"/>
+            <org is_static="false" id="147" name="FIREROPE"/>
+            <org is_static="false" id="148" name="POLEROPE"/>
+            <org is_static="false" id="149" name="ONEBLOCK_PLATFORM"/>
+            <org is_static="false" id="150" name="TWOBLOCK_PLATFORM"/>
+            <org is_static="false" id="151" name="RAISING_BLOCK1"/>
+            <org is_static="false" id="152" name="RAISING_BLOCK2"/>
+            <org is_static="false" id="153" name="EXPANDING_PLATFORM"/>
+            <org is_static="false" id="154" name="SQUISHY_BLOCK1"/>
+            <org is_static="false" id="155" name="SQUISHY_BLOCK2"/>
+            <org is_static="false" id="156" name="PUSHABLE_OBJECT1"/>
+            <org is_static="false" id="157" name="PUSHABLE_OBJECT2"/>
+            <org is_static="false" id="158" name="PUSHABLE_OBJECT3"/>
+            <org is_static="false" id="159" name="PUSHABLE_OBJECT4"/>
+            <org is_static="false" id="160" name="PUSHABLE_OBJECT5"/>
+            <org is_static="false" id="161" name="TRIPWIRE"/>
+            <org is_static="false" id="162" name="SENTRY_GUN"/>
+            <org is_static="false" id="163" name="MINE"/>
+            <org is_static="false" id="164" name="MAPPER"/>
+            <org is_static="false" id="165" name="OBELISK"/>
+            <org is_static="false" id="166" name="FLOOR_4BLADE"/>
+            <org is_static="false" id="167" name="ROOF_4BLADE"/>
+            <org is_static="false" id="168" name="BIRD_BLADE"/>
+            <org is_static="false" id="169" name="CATWALK_BLADE"/>
+            <org is_static="false" id="170" name="MOVING_BLADE"/>
+            <org is_static="false" id="171" name="PLINTH_BLADE"/>
+            <org is_static="false" id="172" name="SETH_BLADE"/>
+            <org is_static="false" id="173" name="LIGHTNING_CONDUCTOR"/>
+            <org is_static="false" id="174" name="ELEMENT_PUZZLE"/>
+            <org is_static="false" id="175" name="PUZZLE_ITEM1"/>
+            <org is_static="false" id="176" name="PUZZLE_ITEM2"/>
+            <org is_static="false" id="177" name="PUZZLE_ITEM3"/>
+            <org is_static="false" id="178" name="PUZZLE_ITEM4"/>
+            <org is_static="false" id="179" name="PUZZLE_ITEM5"/>
+            <org is_static="false" id="180" name="PUZZLE_ITEM6"/>
+            <org is_static="false" id="181" name="PUZZLE_ITEM7"/>
+            <org is_static="false" id="182" name="PUZZLE_ITEM8"/>
+            <org is_static="false" id="183" name="PUZZLE_ITEM9"/>
+            <org is_static="false" id="184" name="PUZZLE_ITEM10"/>
+            <org is_static="false" id="185" name="PUZZLE_ITEM11"/>
+            <org is_static="false" id="186" name="PUZZLE_ITEM12"/>
+            <org is_static="false" id="187" name="PUZZLE_ITEM1_COMBO1"/>
+            <org is_static="false" id="188" name="PUZZLE_ITEM1_COMBO2"/>
+            <org is_static="false" id="189" name="PUZZLE_ITEM2_COMBO1"/>
+            <org is_static="false" id="190" name="PUZZLE_ITEM2_COMBO2"/>
+            <org is_static="false" id="191" name="PUZZLE_ITEM3_COMBO1"/>
+            <org is_static="false" id="192" name="PUZZLE_ITEM3_COMBO2"/>
+            <org is_static="false" id="193" name="PUZZLE_ITEM4_COMBO1"/>
+            <org is_static="false" id="194" name="PUZZLE_ITEM4_COMBO2"/>
+            <org is_static="false" id="195" name="PUZZLE_ITEM5_COMBO1"/>
+            <org is_static="false" id="196" name="PUZZLE_ITEM5_COMBO2"/>
+            <org is_static="false" id="197" name="PUZZLE_ITEM6_COMBO1"/>
+            <org is_static="false" id="198" name="PUZZLE_ITEM6_COMBO2"/>
+            <org is_static="false" id="199" name="PUZZLE_ITEM7_COMBO1"/>
+            <org is_static="false" id="200" name="PUZZLE_ITEM7_COMBO2"/>
+            <org is_static="false" id="201" name="PUZZLE_ITEM8_COMBO1"/>
+            <org is_static="false" id="202" name="PUZZLE_ITEM8_COMBO2"/>
+            <org is_static="false" id="203" name="KEY_ITEM1"/>
+            <org is_static="false" id="204" name="KEY_ITEM2"/>
+            <org is_static="false" id="205" name="KEY_ITEM3"/>
+            <org is_static="false" id="206" name="KEY_ITEM4"/>
+            <org is_static="false" id="207" name="KEY_ITEM5"/>
+            <org is_static="false" id="208" name="KEY_ITEM6"/>
+            <org is_static="false" id="209" name="KEY_ITEM7"/>
+            <org is_static="false" id="210" name="KEY_ITEM8"/>
+            <org is_static="false" id="211" name="KEY_ITEM9"/>
+            <org is_static="false" id="212" name="KEY_ITEM10"/>
+            <org is_static="false" id="213" name="KEY_ITEM11"/>
+            <org is_static="false" id="214" name="KEY_ITEM12"/>
+            <org is_static="false" id="215" name="KEY_ITEM1_COMBO1"/>
+            <org is_static="false" id="216" name="KEY_ITEM1_COMBO2"/>
+            <org is_static="false" id="217" name="KEY_ITEM2_COMBO1"/>
+            <org is_static="false" id="218" name="KEY_ITEM2_COMBO2"/>
+            <org is_static="false" id="219" name="KEY_ITEM3_COMBO1"/>
+            <org is_static="false" id="220" name="KEY_ITEM3_COMBO2"/>
+            <org is_static="false" id="221" name="KEY_ITEM4_COMBO1"/>
+            <org is_static="false" id="222" name="KEY_ITEM4_COMBO2"/>
+            <org is_static="false" id="223" name="KEY_ITEM5_COMBO1"/>
+            <org is_static="false" id="224" name="KEY_ITEM5_COMBO2"/>
+            <org is_static="false" id="225" name="KEY_ITEM6_COMBO1"/>
+            <org is_static="false" id="226" name="KEY_ITEM6_COMBO2"/>
+            <org is_static="false" id="227" name="KEY_ITEM7_COMBO1"/>
+            <org is_static="false" id="228" name="KEY_ITEM7_COMBO2"/>
+            <org is_static="false" id="229" name="KEY_ITEM8_COMBO1"/>
+            <org is_static="false" id="230" name="KEY_ITEM8_COMBO2"/>
+            <org is_static="false" id="231" name="PICKUP_ITEM1"/>
+            <org is_static="false" id="232" name="PICKUP_ITEM2"/>
+            <org is_static="false" id="233" name="PICKUP_ITEM3"/>
+            <org is_static="false" id="234" name="PICKUP_ITEM4"/>
+            <org is_static="false" id="235" name="PICKUP_ITEM1_COMBO1"/>
+            <org is_static="false" id="236" name="PICKUP_ITEM1_COMBO2"/>
+            <org is_static="false" id="237" name="PICKUP_ITEM2_COMBO1"/>
+            <org is_static="false" id="238" name="PICKUP_ITEM2_COMBO2"/>
+            <org is_static="false" id="239" name="PICKUP_ITEM3_COMBO1"/>
+            <org is_static="false" id="240" name="PICKUP_ITEM3_COMBO2"/>
+            <org is_static="false" id="241" name="PICKUP_ITEM4_COMBO1"/>
+            <org is_static="false" id="242" name="PICKUP_ITEM4_COMBO2"/>
+            <org is_static="false" id="243" name="EXAMINE1"/>
+            <org is_static="false" id="244" name="EXAMINE2"/>
+            <org is_static="false" id="245" name="EXAMINE3"/>
+            <org is_static="false" id="246" name="CROWBAR_ITEM"/>
+            <org is_static="false" id="247" name="BURNING_TORCH_ITEM"/>
+            <org is_static="false" id="248" name="CLOCKWORK_BEETLE"/>
+            <org is_static="false" id="249" name="CLOCKWORK_BEETLE_COMBO1"/>
+            <org is_static="false" id="250" name="CLOCKWORK_BEETLE_COMBO2"/>
+            <org is_static="false" id="251" name="MINE_DETECTOR"/>
+            <org is_static="false" id="252" name="QUEST_ITEM1"/>
+            <org is_static="false" id="253" name="QUEST_ITEM2"/>
+            <org is_static="false" id="254" name="QUEST_ITEM3"/>
+            <org is_static="false" id="255" name="QUEST_ITEM4"/>
+            <org is_static="false" id="256" name="QUEST_ITEM5"/>
+            <org is_static="false" id="257" name="QUEST_ITEM6"/>
+            <org is_static="false" id="258" name="MAP"/>
+            <org is_static="false" id="259" name="SECRET_MAP"/>
+            <org is_static="false" id="260" name="PUZZLE_HOLE1"/>
+            <org is_static="false" id="261" name="PUZZLE_HOLE2"/>
+            <org is_static="false" id="262" name="PUZZLE_HOLE3"/>
+            <org is_static="false" id="263" name="PUZZLE_HOLE4"/>
+            <org is_static="false" id="264" name="PUZZLE_HOLE5"/>
+            <org is_static="false" id="265" name="PUZZLE_HOLE6"/>
+            <org is_static="false" id="266" name="PUZZLE_HOLE7"/>
+            <org is_static="false" id="267" name="PUZZLE_HOLE8"/>
+            <org is_static="false" id="268" name="PUZZLE_HOLE9"/>
+            <org is_static="false" id="269" name="PUZZLE_HOLE10"/>
+            <org is_static="false" id="270" name="PUZZLE_HOLE11"/>
+            <org is_static="false" id="271" name="PUZZLE_HOLE12"/>
+            <org is_static="false" id="272" name="PUZZLE_DONE1"/>
+            <org is_static="false" id="273" name="PUZZLE_DONE2"/>
+            <org is_static="false" id="274" name="PUZZLE_DONE3"/>
+            <org is_static="false" id="275" name="PUZZLE_DONE4"/>
+            <org is_static="false" id="276" name="PUZZLE_DONE5"/>
+            <org is_static="false" id="277" name="PUZZLE_DONE6"/>
+            <org is_static="false" id="278" name="PUZZLE_DONE7"/>
+            <org is_static="false" id="279" name="PUZZLE_DONE8"/>
+            <org is_static="false" id="280" name="PUZZLE_DONE9"/>
+            <org is_static="false" id="281" name="PUZZLE_DONE10"/>
+            <org is_static="false" id="282" name="PUZZLE_DONE11"/>
+            <org is_static="false" id="283" name="PUZZLE_DONE12"/>
+            <org is_static="false" id="284" name="KEY_HOLE1"/>
+            <org is_static="false" id="285" name="KEY_HOLE2"/>
+            <org is_static="false" id="286" name="KEY_HOLE3"/>
+            <org is_static="false" id="287" name="KEY_HOLE4"/>
+            <org is_static="false" id="288" name="KEY_HOLE5"/>
+            <org is_static="false" id="289" name="KEY_HOLE6"/>
+            <org is_static="false" id="290" name="KEY_HOLE7"/>
+            <org is_static="false" id="291" name="KEY_HOLE8"/>
+            <org is_static="false" id="292" name="KEY_HOLE9"/>
+            <org is_static="false" id="293" name="KEY_HOLE10"/>
+            <org is_static="false" id="294" name="KEY_HOLE11"/>
+            <org is_static="false" id="295" name="KEY_HOLE12"/>
+            <org is_static="false" id="296" name="WATERSKIN1_EMPTY"/>
+            <org is_static="false" id="297" name="WATERSKIN1_1"/>
+            <org is_static="false" id="298" name="WATERSKIN1_2"/>
+            <org is_static="false" id="299" name="WATERSKIN1_3"/>
+            <org is_static="false" id="300" name="WATERSKIN2_EMPTY"/>
+            <org is_static="false" id="301" name="WATERSKIN2_1"/>
+            <org is_static="false" id="302" name="WATERSKIN2_2"/>
+            <org is_static="false" id="303" name="WATERSKIN2_3"/>
+            <org is_static="false" id="304" name="WATERSKIN2_4"/>
+            <org is_static="false" id="305" name="WATERSKIN2_5"/>
+            <org is_static="false" id="306" name="SWITCH_TYPE1"/>
+            <org is_static="false" id="307" name="SWITCH_TYPE2"/>
+            <org is_static="false" id="308" name="SWITCH_TYPE3"/>
+            <org is_static="false" id="309" name="SWITCH_TYPE4"/>
+            <org is_static="false" id="310" name="SWITCH_TYPE5"/>
+            <org is_static="false" id="311" name="SWITCH_TYPE6"/>
+            <org is_static="false" id="312" name="SWITCH_TYPE7"/>
+            <org is_static="false" id="313" name="SWITCH_TYPE8"/>
+            <org is_static="false" id="314" name="UNDERWATER_SWITCH1"/>
+            <org is_static="false" id="315" name="UNDERWATER_SWITCH2"/>
+            <org is_static="false" id="316" name="TURN_SWITCH"/>
+            <org is_static="false" id="317" name="COG_SWITCH"/>
+            <org is_static="false" id="318" name="LEVER_SWITCH"/>
+            <org is_static="false" id="319" name="JUMP_SWITCH"/>
+            <org is_static="false" id="320" name="CROWBAR_SWITCH"/>
+            <org is_static="false" id="321" name="PULLEY"/>
+            <org is_static="false" id="322" name="DOOR_TYPE1"/>
+            <org is_static="false" id="323" name="DOOR_TYPE2"/>
+            <org is_static="false" id="324" name="DOOR_TYPE3"/>
+            <org is_static="false" id="325" name="DOOR_TYPE4"/>
+            <org is_static="false" id="326" name="DOOR_TYPE5"/>
+            <org is_static="false" id="327" name="DOOR_TYPE6"/>
+            <org is_static="false" id="328" name="DOOR_TYPE7"/>
+            <org is_static="false" id="329" name="DOOR_TYPE8"/>
+            <org is_static="false" id="330" name="PUSHPULL_DOOR1"/>
+            <org is_static="false" id="331" name="PUSHPULL_DOOR2"/>
+            <org is_static="false" id="332" name="KICK_DOOR1"/>
+            <org is_static="false" id="333" name="KICK_DOOR2"/>
+            <org is_static="false" id="334" name="UNDERWATER_DOOR"/>
+            <org is_static="false" id="335" name="DOUBLE_DOORS"/>
+            <org is_static="false" id="336" name="BRIDGE_FLAT"/>
+            <org is_static="false" id="337" name="BRIDGE_TILT1"/>
+            <org is_static="false" id="338" name="BRIDGE_TILT2"/>
+            <org is_static="false" id="339" name="SARCOPHAGUS"/>
+            <org is_static="false" id="340" name="SEQUENCE_DOOR1"/>
+            <org is_static="false" id="341" name="SEQUENCE_SWITCH1"/>
+            <org is_static="false" id="342" name="SEQUENCE_SWITCH2"/>
+            <org is_static="false" id="343" name="SEQUENCE_SWITCH3"/>
+            <org is_static="false" id="344" name="SARCOPHAGUS_CUT"/>
+            <org is_static="false" id="345" name="HORUS_STATUE"/>
+            <org is_static="false" id="346" name="GOD_HEAD"/>
+            <org is_static="false" id="347" name="SETH_DOOR"/>
+            <org is_static="false" id="348" name="STATUE_PLINTH"/>
+            <org is_static="false" id="349" name="PISTOLS_ITEM"/>
+            <org is_static="false" id="350" name="PISTOLS_AMMO_ITEM"/>
+            <org is_static="false" id="351" name="UZI_ITEM"/>
+            <org is_static="false" id="352" name="UZI_AMMO_ITEM"/>
+            <org is_static="false" id="353" name="SHOTGUN_ITEM"/>
+            <org is_static="false" id="354" name="SHOTGUN_AMMO1_ITEM"/>
+            <org is_static="false" id="355" name="SHOTGUN_AMMO2_ITEM"/>
+            <org is_static="false" id="356" name="CROSSBOW_ITEM"/>
+            <org is_static="false" id="357" name="CROSSBOW_AMMO1_ITEM"/>
+            <org is_static="false" id="358" name="CROSSBOW_AMMO2_ITEM"/>
+            <org is_static="false" id="359" name="CROSSBOW_AMMO3_ITEM"/>
+            <org is_static="false" id="360" name="CROSSBOW_BOLT"/>
+            <org is_static="false" id="361" name="GRENADE_GUN_ITEM"/>
+            <org is_static="false" id="362" name="GRENADE_GUN_AMMO1_ITEM"/>
+            <org is_static="false" id="363" name="GRENADE_GUN_AMMO2_ITEM"/>
+            <org is_static="false" id="364" name="GRENADE_GUN_AMMO3_ITEM"/>
+            <org is_static="false" id="365" name="GRENADE"/>
+            <org is_static="false" id="366" name="SIXSHOOTER_ITEM"/>
+            <org is_static="false" id="367" name="SIXSHOOTER_AMMO_ITEM"/>
+            <org is_static="false" id="368" name="BIGMEDI_ITEM"/>
+            <org is_static="false" id="369" name="SMALLMEDI_ITEM"/>
+            <org is_static="false" id="370" name="LASERSIGHT_ITEM"/>
+            <org is_static="false" id="371" name="BINOCULARS_ITEM"/>
+            <org is_static="false" id="372" name="FLARE_ITEM"/>
+            <org is_static="false" id="373" name="FLARE_INV_ITEM"/>
+            <org is_static="false" id="374" name="DIARY_ITEM"/>
+            <org is_static="false" id="375" name="COMPASS_ITEM"/>
+            <org is_static="false" id="376" name="MEMCARD_LOAD_INV_ITEM"/>
+            <org is_static="false" id="377" name="MEMCARD_SAVE_INV_ITEM"/>
+            <org is_static="false" id="378" name="PC_LOAD_INV_ITEM"/>
+            <org is_static="false" id="379" name="PC_SAVE_INV_ITEM"/>
+            <org is_static="false" id="380" name="SMOKE_EMITTER_WHITE"/>
+            <org is_static="false" id="381" name="SMOKE_EMITTER_BLACK"/>
+            <org is_static="false" id="382" name="STEAM_EMITTER"/>
+            <org is_static="false" id="383" name="EARTHQUAKE"/>
+            <org is_static="false" id="384" name="BUBBLES"/>
+            <org is_static="false" id="385" name="WATERFALLMIST"/>
+            <org is_static="false" id="386" name="GUNSHELL"/>
+            <org is_static="false" id="387" name="SHOTGUNSHELL"/>
+            <org is_static="false" id="388" name="GUN_FLASH"/>
+            <org is_static="false" id="389" name="BUTTERFLY"/>
+            <org is_static="false" id="390" name="SPRINKLER"/>
+            <org is_static="false" id="391" name="RED_LIGHT"/>
+            <org is_static="false" id="392" name="GREEN_LIGHT"/>
+            <org is_static="false" id="393" name="BLUE_LIGHT"/>
+            <org is_static="false" id="394" name="AMBER_LIGHT"/>
+            <org is_static="false" id="395" name="WHITE_LIGHT"/>
+            <org is_static="false" id="396" name="BLINKING_LIGHT"/>
+            <org is_static="false" id="397" name="LENS_FLARE"/>
+            <org is_static="false" id="398" name="AI_GUARD"/>
+            <org is_static="false" id="399" name="AI_AMBUSH"/>
+            <org is_static="false" id="400" name="AI_PATROL1"/>
+            <org is_static="false" id="401" name="AI_MODIFY"/>
+            <org is_static="false" id="402" name="AI_FOLLOW"/>
+            <org is_static="false" id="403" name="AI_PATROL2"/>
+            <org is_static="false" id="404" name="AI_X1"/>
+            <org is_static="false" id="405" name="AI_X2"/>
+            <org is_static="false" id="406" name="LARA_START_POS"/>
+            <org is_static="false" id="407" name="KILL_ALL_TRIGGERS"/>
+            <org is_static="false" id="408" name="TRIGGER_TRIGGERER"/>
+            <org is_static="false" id="409" name="SMASH_OBJECT1"/>
+            <org is_static="false" id="410" name="SMASH_OBJECT2"/>
+            <org is_static="false" id="411" name="SMASH_OBJECT3"/>
+            <org is_static="false" id="412" name="SMASH_OBJECT4"/>
+            <org is_static="false" id="413" name="SMASH_OBJECT5"/>
+            <org is_static="false" id="414" name="SMASH_OBJECT6"/>
+            <org is_static="false" id="415" name="SMASH_OBJECT7"/>
+            <org is_static="false" id="416" name="SMASH_OBJECT8"/>
+            <org is_static="false" id="417" name="MESHSWAP1"/>
+            <org is_static="false" id="418" name="MESHSWAP2"/>
+            <org is_static="false" id="419" name="MESHSWAP3"/>
+            <org is_static="false" id="420" name="DEATH_SLIDE"/>
+            <org is_static="false" id="421" name="BODY_PART"/>
+            <org is_static="false" id="422" name="CAMERA_TARGET"/>
+            <org is_static="false" id="423" name="WATERFALL1"/>
+            <org is_static="false" id="424" name="WATERFALL2"/>
+            <org is_static="false" id="425" name="WATERFALL3"/>
+            <org is_static="false" id="426" name="PLANET_EFFECT"/>
+            <org is_static="false" id="427" name="ANIMATING1"/>
+            <org is_static="false" id="428" name="ANIMATING1_MIP"/>
+            <org is_static="false" id="429" name="ANIMATING2"/>
+            <org is_static="false" id="430" name="ANIMATING2_MIP"/>
+            <org is_static="false" id="431" name="ANIMATING3"/>
+            <org is_static="false" id="432" name="ANIMATING3_MIP"/>
+            <org is_static="false" id="433" name="ANIMATING4"/>
+            <org is_static="false" id="434" name="ANIMATING4_MIP"/>
+            <org is_static="false" id="435" name="ANIMATING5"/>
+            <org is_static="false" id="436" name="ANIMATING5_MIP"/>
+            <org is_static="false" id="437" name="ANIMATING6"/>
+            <org is_static="false" id="438" name="ANIMATING6_MIP"/>
+            <org is_static="false" id="439" name="ANIMATING7"/>
+            <org is_static="false" id="440" name="ANIMATING7_MIP"/>
+            <org is_static="false" id="441" name="ANIMATING8"/>
+            <org is_static="false" id="442" name="ANIMATING8_MIP"/>
+            <org is_static="false" id="443" name="ANIMATING9"/>
+            <org is_static="false" id="444" name="ANIMATING9_MIP"/>
+            <org is_static="false" id="445" name="ANIMATING10"/>
+            <org is_static="false" id="446" name="ANIMATING10_MIP"/>
+            <org is_static="false" id="447" name="ANIMATING11"/>
+            <org is_static="false" id="448" name="ANIMATING11_MIP"/>
+            <org is_static="false" id="449" name="ANIMATING12"/>
+            <org is_static="false" id="450" name="ANIMATING12_MIP"/>
+            <org is_static="false" id="451" name="ANIMATING13"/>
+            <org is_static="false" id="452" name="ANIMATING13_MIP"/>
+            <org is_static="false" id="453" name="ANIMATING14"/>
+            <org is_static="false" id="454" name="ANIMATING14_MIP"/>
+            <org is_static="false" id="455" name="ANIMATING15"/>
+            <org is_static="false" id="456" name="ANIMATING15_MIP"/>
+            <org is_static="false" id="457" name="ANIMATING16"/>
+            <org is_static="false" id="458" name="ANIMATING16_MIP"/>
+            <org is_static="false" id="459" name="HORIZON"/>
+            <org is_static="false" id="460" name="SKY_GRAPHICS"/>
+            <org is_static="false" id="461" name="BINOCULAR_GRAPHICS"/>
+            <org is_static="false" id="462" name="TARGET_GRAPHICS"/>
+            <org is_static="false" id="463" name="DEFAULT_sprite_sequences"/>
+            <org is_static="false" id="464" name="MISC_sprite_sequences"/>
+            <org is_static="false" id="465" name="MOTOR_BOAT"/>
+            <org is_static="false" id="466" name="MOTOR_BOAT_LARA"/>
+            <org is_static="false" id="467" name="RUBBER_BOAT"/>
+            <org is_static="false" id="468" name="RUBBER_BOAT_LARA"/>
+            <org is_static="false" id="469" name="MOTORBIKE_LARA"/>
+            <org is_static="false" id="470" name="FONT_GRAPHICS"/>
+            <org is_static="false" id="471" name="PARALLEL_BARS"/>
+            <org is_static="false" id="472" name="PANEL_BORDER"/>
+            <org is_static="false" id="473" name="PANEL_MIDDLE"/>
+            <org is_static="false" id="474" name="PANEL_CORNER"/>
+            <org is_static="false" id="475" name="PANEL_DIAGONAL"/>
+            <org is_static="false" id="476" name="PANEL_STRIP"/>
+            <org is_static="false" id="477" name="PANEL_HALF_BORDER1"/>
+            <org is_static="false" id="478" name="PANEL_HALF_BORDER2"/>
+            <org is_static="false" id="479" name="PANEL_MIDDLE_CORNER"/>
+            <org is_static="false" id="480" name="TIGHT_ROPE"/>
+            <org is_static="false" id="481" name="LASER_HEAD"/>
+            <org is_static="false" id="482" name="LASER_HEAD_BASE"/>
+            <org is_static="false" id="483" name="LASER_HEAD_TENTACLE"/>
+            <org is_static="false" id="484" name="HYDRA"/>
+            <org is_static="false" id="485" name="HYDRA_MISSILE"/>
+            <org is_static="false" id="486" name="ENEMY_SUB_MARINE"/>
+            <org is_static="false" id="487" name="ENEMY_SUB_MARINE_MIP"/>
+            <org is_static="false" id="488" name="SUB_MARINE_MISSILE"/>
+            <org is_static="false" id="489" name="FROG_MAN"/>
+            <org is_static="false" id="490" name="FROG_MAN_HARPOON"/>
+            <org is_static="false" id="491" name="FISH_EMITTER"/>
+            <org is_static="false" id="492" name="KAYAK"/>
+            <org is_static="false" id="493" name="KAYAK_LARA"/>
+            <org is_static="false" id="494" name="CUSTOM_sprite_sequences"/>
+            <org is_static="false" id="495" name="BRIDGE_TILT3"/>
+            <org is_static="false" id="496" name="BRIDGE_TILT4"/>
+            <org is_static="false" id="497" name="BRIDGE_CUSTOM"/>
+            <org is_static="false" id="498" name="ROBOT_CLEANER"/>
+            <org is_static="false" id="499" name="ROBOT_STAR_WARS"/>
+            <org is_static="false" id="500" name="MECH_WARRIOR"/>
+            <org is_static="false" id="501" name="MECH_WARRIOR_LARA"/>
+            <org is_static="false" id="502" name="UW_PROPULSOR"/>
+            <org is_static="false" id="503" name="UW_PROPULSOR_LARA"/>
+            <org is_static="false" id="504" name="MINE_CART"/>
+            <org is_static="false" id="505" name="MINE_CART_LARA"/>
+            <org is_static="false" id="506" name="NEW_SLOT5"/>
+            <org is_static="false" id="507" name="NEW_SLOT6"/>
+            <org is_static="false" id="508" name="NEW_SLOT7"/>
+            <org is_static="false" id="509" name="NEW_SLOT8"/>
+            <org is_static="false" id="510" name="NEW_SLOT9"/>
+            <org is_static="false" id="511" name="NEW_SLOT10"/>
+            <org is_static="false" id="512" name="NEW_SLOT11"/>
+            <org is_static="false" id="513" name="NEW_SLOT12"/>
+            <org is_static="false" id="514" name="NEW_SLOT13"/>
+            <org is_static="false" id="515" name="NEW_SLOT14"/>
+            <org is_static="false" id="516" name="NEW_SLOT15"/>
+            <org is_static="false" id="517" name="NEW_SLOT16"/>
+            <org is_static="false" id="518" name="NEW_SLOT17"/>
+            <org is_static="false" id="519" name="NEW_SLOT18"/>
+            <org is_static="true" id="0" name="PLANT0"/>
+            <org is_static="true" id="1" name="PLANT1"/>
+            <org is_static="true" id="2" name="PLANT2"/>
+            <org is_static="true" id="3" name="PLANT3"/>
+            <org is_static="true" id="4" name="PLANT4"/>
+            <org is_static="true" id="5" name="PLANT5"/>
+            <org is_static="true" id="6" name="PLANT6"/>
+            <org is_static="true" id="7" name="PLANT7"/>
+            <org is_static="true" id="8" name="PLANT8"/>
+            <org is_static="true" id="9" name="PLANT9"/>
+            <org is_static="true" id="10" name="FURNITURE0"/>
+            <org is_static="true" id="11" name="FURNITURE1"/>
+            <org is_static="true" id="12" name="FURNITURE2"/>
+            <org is_static="true" id="13" name="FURNITURE3"/>
+            <org is_static="true" id="14" name="FURNITURE4"/>
+            <org is_static="true" id="15" name="FURNITURE5"/>
+            <org is_static="true" id="16" name="FURNITURE6"/>
+            <org is_static="true" id="17" name="FURNITURE7"/>
+            <org is_static="true" id="18" name="FURNITURE8"/>
+            <org is_static="true" id="19" name="FURNITURE9"/>
+            <org is_static="true" id="20" name="ROCK0"/>
+            <org is_static="true" id="21" name="ROCK1"/>
+            <org is_static="true" id="22" name="ROCK2"/>
+            <org is_static="true" id="23" name="ROCK3"/>
+            <org is_static="true" id="24" name="ROCK4"/>
+            <org is_static="true" id="25" name="ROCK5"/>
+            <org is_static="true" id="26" name="ROCK6"/>
+            <org is_static="true" id="27" name="ROCK7"/>
+            <org is_static="true" id="28" name="ROCK8"/>
+            <org is_static="true" id="29" name="ROCK9"/>
+            <org is_static="true" id="30" name="ARCHITECTURE0"/>
+            <org is_static="true" id="31" name="ARCHITECTURE1"/>
+            <org is_static="true" id="32" name="ARCHITECTURE2"/>
+            <org is_static="true" id="33" name="ARCHITECTURE3"/>
+            <org is_static="true" id="34" name="ARCHITECTURE4"/>
+            <org is_static="true" id="35" name="ARCHITECTURE5"/>
+            <org is_static="true" id="36" name="ARCHITECTURE6"/>
+            <org is_static="true" id="37" name="ARCHITECTURE7"/>
+            <org is_static="true" id="38" name="ARCHITECTURE8"/>
+            <org is_static="true" id="39" name="ARCHITECTURE9"/>
+            <org is_static="true" id="40" name="DEBRIS0"/>
+            <org is_static="true" id="41" name="DEBRIS1"/>
+            <org is_static="true" id="42" name="DEBRIS2"/>
+            <org is_static="true" id="43" name="DEBRIS3"/>
+            <org is_static="true" id="44" name="DEBRIS4"/>
+            <org is_static="true" id="45" name="DEBRIS5"/>
+            <org is_static="true" id="46" name="DEBRIS6"/>
+            <org is_static="true" id="47" name="DEBRIS7"/>
+            <org is_static="true" id="48" name="DEBRIS8"/>
+            <org is_static="true" id="49" name="DEBRIS9"/>
+            <org is_static="true" id="50" name="SHATTER0"/>
+            <org is_static="true" id="51" name="SHATTER1"/>
+            <org is_static="true" id="52" name="SHATTER2"/>
+            <org is_static="true" id="53" name="SHATTER3"/>
+            <org is_static="true" id="54" name="SHATTER4"/>
+            <org is_static="true" id="55" name="SHATTER5"/>
+            <org is_static="true" id="56" name="SHATTER6"/>
+            <org is_static="true" id="57" name="SHATTER7"/>
+            <org is_static="true" id="58" name="SHATTER8"/>
+            <org is_static="true" id="59" name="SHATTER9"/>
+            <org is_static="true" id="60" name="EXTRA00"/>
+            <org is_static="true" id="61" name="EXTRA01"/>
+            <org is_static="true" id="62" name="EXTRA02"/>
+            <org is_static="true" id="63" name="EXTRA03"/>
+            <org is_static="true" id="64" name="EXTRA04"/>
+            <org is_static="true" id="65" name="EXTRA05"/>
+            <org is_static="true" id="66" name="EXTRA06"/>
+            <org is_static="true" id="67" name="EXTRA07"/>
+            <org is_static="true" id="68" name="EXTRA08"/>
+            <org is_static="true" id="69" name="EXTRA09"/>
+            <org is_static="true" id="70" name="EXTRA10"/>
+            <org is_static="true" id="71" name="EXTRA11"/>
+            <org is_static="true" id="72" name="EXTRA12"/>
+            <org is_static="true" id="73" name="EXTRA13"/>
+            <org is_static="true" id="74" name="EXTRA14"/>
+            <org is_static="true" id="75" name="EXTRA15"/>
+            <org is_static="true" id="76" name="EXTRA16"/>
+            <org is_static="true" id="77" name="EXTRA17"/>
+            <org is_static="true" id="78" name="EXTRA18"/>
+            <org is_static="true" id="79" name="EXTRA19"/>
+            <org is_static="true" id="80" name="EXTRA20"/>
+            <org is_static="true" id="81" name="EXTRA21"/>
+            <org is_static="true" id="82" name="EXTRA22"/>
+            <org is_static="true" id="83" name="EXTRA23"/>
+            <org is_static="true" id="84" name="EXTRA24"/>
+            <org is_static="true" id="85" name="EXTRA25"/>
+            <org is_static="true" id="86" name="EXTRA26"/>
+            <org is_static="true" id="87" name="EXTRA27"/>
+            <org is_static="true" id="88" name="EXTRA28"/>
+            <org is_static="true" id="89" name="EXTRA29"/>
+            <org is_static="true" id="90" name="EXTRA30"/>
+            <org is_static="true" id="91" name="EXTRA31"/>
+            <org is_static="true" id="92" name="EXTRA32"/>
+            <org is_static="true" id="93" name="EXTRA33"/>
+            <org is_static="true" id="94" name="EXTRA34"/>
+            <org is_static="true" id="95" name="EXTRA35"/>
+            <org is_static="true" id="96" name="EXTRA36"/>
+            <org is_static="true" id="97" name="EXTRA37"/>
+            <org is_static="true" id="98" name="EXTRA38"/>
+            <org is_static="true" id="99" name="EXTRA39"/>
+            <org is_static="true" id="100" name="EXTRA40"/>
+            <org is_static="true" id="101" name="EXTRA41"/>
+            <org is_static="true" id="102" name="EXTRA42"/>
+            <org is_static="true" id="103" name="EXTRA43"/>
+            <org is_static="true" id="104" name="EXTRA44"/>
+            <org is_static="true" id="105" name="EXTRA45"/>
+            <org is_static="true" id="106" name="EXTRA46"/>
+            <org is_static="true" id="107" name="EXTRA47"/>
+            <org is_static="true" id="108" name="EXTRA48"/>
+            <org is_static="true" id="109" name="EXTRA49"/>
+            <org is_static="true" id="110" name="EXTRA50"/>
+            <org is_static="true" id="111" name="EXTRA51"/>
+            <org is_static="true" id="112" name="EXTRA52"/>
+            <org is_static="true" id="113" name="EXTRA53"/>
+            <org is_static="true" id="114" name="EXTRA54"/>
+            <org is_static="true" id="115" name="EXTRA55"/>
+            <org is_static="true" id="116" name="EXTRA56"/>
+            <org is_static="true" id="117" name="EXTRA57"/>
+            <org is_static="true" id="118" name="EXTRA58"/>
+            <org is_static="true" id="119" name="EXTRA59"/>
+            <org is_static="true" id="120" name="EXTRA60"/>
+            <org is_static="true" id="121" name="EXTRA61"/>
+            <org is_static="true" id="122" name="EXTRA62"/>
+            <org is_static="true" id="123" name="EXTRA63"/>
+            <org is_static="true" id="124" name="EXTRA64"/>
+            <org is_static="true" id="125" name="EXTRA65"/>
+            <org is_static="true" id="126" name="EXTRA66"/>
+            <org is_static="true" id="127" name="EXTRA67"/>
+            <org is_static="true" id="128" name="EXTRA68"/>
+            <org is_static="true" id="129" name="EXTRA69"/>
+            <org is_static="true" id="130" name="EXTRA70"/>
+            <org is_static="true" id="131" name="EXTRA71"/>
+            <org is_static="true" id="132" name="EXTRA72"/>
+            <org is_static="true" id="133" name="EXTRA73"/>
+            <org is_static="true" id="134" name="EXTRA74"/>
+            <org is_static="true" id="135" name="EXTRA75"/>
+            <org is_static="true" id="136" name="EXTRA76"/>
+            <org is_static="true" id="137" name="EXTRA77"/>
+            <org is_static="true" id="138" name="EXTRA78"/>
+            <org is_static="true" id="139" name="EXTRA79"/>
+            <org is_static="true" id="140" name="EXTRA80"/>
+            <org is_static="true" id="141" name="EXTRA81"/>
+            <org is_static="true" id="142" name="EXTRA82"/>
+            <org is_static="true" id="143" name="EXTRA83"/>
+            <org is_static="true" id="144" name="EXTRA84"/>
+            <org is_static="true" id="145" name="EXTRA85"/>
+            <org is_static="true" id="146" name="EXTRA86"/>
+            <org is_static="true" id="147" name="EXTRA87"/>
+            <org is_static="true" id="148" name="EXTRA88"/>
+            <org is_static="true" id="149" name="EXTRA89"/>
+            <org is_static="true" id="150" name="EXTRA90"/>
+            <org is_static="true" id="151" name="EXTRA91"/>
+            <org is_static="true" id="152" name="EXTRA92"/>
+            <org is_static="true" id="153" name="EXTRA93"/>
+            <org is_static="true" id="154" name="EXTRA94"/>
+            <org is_static="true" id="155" name="EXTRA95"/>
+            <org is_static="true" id="156" name="EXTRA96"/>
+            <org is_static="true" id="157" name="EXTRA97"/>
+            <org is_static="true" id="158" name="EXTRA98"/>
+            <org is_static="true" id="159" name="EXTRA99"/>
+        </original_names>
     </game>
     <game id="TR5">
         <moveables>
