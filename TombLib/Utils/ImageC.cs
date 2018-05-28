@@ -59,8 +59,8 @@ namespace TombLib.Utils
         public static ImageC Transparent { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0, 0 });
         public const int PixelSize = 4;
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
         private byte[] _data { get; set; }
 
         private ImageC(int width, int height, byte[] data)

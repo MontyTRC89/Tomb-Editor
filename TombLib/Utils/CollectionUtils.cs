@@ -59,7 +59,10 @@ namespace TombLib.Utils
             if (newCount < oldCount)
                 list.RemoveRange(newCount, oldCount - newCount);
             else if (newCount > oldCount)
+            {
+                list.Capacity = newCount;
                 list.AddRange(Enumerable.Repeat(newElement, newCount - oldCount));
+            }
         }
 
         public static IEnumerable<T> Unwrap<T>(this T[,] array)

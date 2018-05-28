@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
@@ -24,9 +25,9 @@ namespace TombEditor.ToolWindows
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
         }
 
-        public void Initialize(DeviceManager _deviceManager)
+        public void InitializeRendering(RenderingDevice device)
         {
-            panel3D.InitializePanel(_deviceManager);
+            panel3D.InitializeRendering(device);
         }
 
         public void AddToolbox(DarkFloatingToolbox toolbox)
@@ -82,11 +83,11 @@ namespace TombEditor.ToolWindows
 
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
-                //bool validSectorSelection = _editor.SelectedSectors.Valid;
+                bool validSectorSelection = _editor.SelectedSectors.Valid;
 
-                //butTextureFloor.Enabled = validSectorSelection;
-                //butTextureCeiling.Enabled = validSectorSelection;
-                //butTextureWalls.Enabled = validSectorSelection;
+                butTextureFloor.Enabled = validSectorSelection;
+                butTextureCeiling.Enabled = validSectorSelection;
+                butTextureWalls.Enabled = validSectorSelection;
             }
 
             // Update editor mode
@@ -101,12 +102,8 @@ namespace TombEditor.ToolWindows
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
                 panel3D.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Geometry || mode == EditorMode.Lighting;
-
-                butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
-                butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
-                butTextureWalls.Enabled = mode == EditorMode.FaceEdit;
-                butDoubleSided.Enabled = mode == EditorMode.FaceEdit;
-                butAdditiveBlending.Enabled = mode == EditorMode.FaceEdit;
+                butDoubleSided.Enabled = mode == EditorMode.FaceEdit || mode == EditorMode.Lighting;
+                butAdditiveBlending.Enabled = mode == EditorMode.FaceEdit || mode == EditorMode.Lighting;
             }
 
             // Update flipmap toolbar button

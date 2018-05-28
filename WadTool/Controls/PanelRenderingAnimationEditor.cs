@@ -84,12 +84,12 @@ namespace WadTool.Controls
 
         private Buffer<SolidVertex> _vertexBufferVisibility;
 
-        public void InitializePanel(WadToolClass tool, Wad2 wad, DeviceManager deviceManager, WadMoveableId moveableId,
+        public void InitializeRendering(WadToolClass tool, Wad2 wad, DeviceManager deviceManager, WadMoveableId moveableId,
                                     WadMoveableId skinMoveableId)
         {
             _tool = tool;
-            _wadRenderer = new WadRenderer(deviceManager.Device);
-            _device = deviceManager.Device;
+            _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
+            _device = deviceManager.___LegacyDevice;
             _deviceManager = deviceManager;
             _wad = wad;
             _moveableId = moveableId;
@@ -144,7 +144,7 @@ namespace WadTool.Controls
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
 
             _spriteBatch = new SpriteBatch(_device);
-            _gizmo = new GizmoAnimationEditor(_tool, _tool.Configuration, _device, _deviceManager.Effects["Solid"], this);
+            _gizmo = new GizmoAnimationEditor(_tool, _tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
             _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
             _cube = GeometricPrimitive.LinesCube.New(_device, 1024.0f, 1024.0f, 1024.0f);
             _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * 128.0f, 8);
@@ -258,7 +258,7 @@ namespace WadTool.Controls
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
 
-            if (Level != null && Room != null)
+            /*if (Level != null && Room != null)
             {
                 Effect roomsEffect = _deviceManager.Effects["Room"];
 
@@ -283,14 +283,14 @@ namespace WadTool.Controls
                 roomsEffect.Techniques[0].Passes[0].Apply();
                 _device.Draw(PrimitiveType.TriangleList, Room.VertexBuffer.ElementCount);
 
-            }
+            }*/
 
-            Effect solidEffect = _deviceManager.Effects["Solid"];
+            Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
 
             if (_model != null)
             {
                 var skin = (_skinModel != null ? _skinModel : _model);
-                var effect = _deviceManager.Effects["Model"];
+                var effect = _deviceManager.___LegacyEffects["Model"];
 
                 effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
@@ -388,7 +388,7 @@ namespace WadTool.Controls
                 // Draw debug strings
                 _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
-                _spriteBatch.DrawString(_deviceManager.Font,
+                _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                         "Frame: " + (CurrentKeyFrame + 1) + "/" +
                                         (Animation.DirectXAnimation.KeyFrames.Count),
                                         new Vector2(10, 10).ToSharpDX(),
@@ -396,17 +396,17 @@ namespace WadTool.Controls
 
                 if (SelectedMesh != null)
                 {
-                    _spriteBatch.DrawString(_deviceManager.Font,
+                    _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                             "Mesh: " + SelectedMesh.Name,
                                             new Vector2(10, 25).ToSharpDX(),
                                             SharpDX.Color.White);
 
-                    _spriteBatch.DrawString(_deviceManager.Font,
+                    _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                             "Bone: " + _model.Bones[_model.Meshes.IndexOf(SelectedMesh)].Name,
                                             new Vector2(10, 40).ToSharpDX(),
                                             SharpDX.Color.White);
 
-                    _spriteBatch.DrawString(_deviceManager.Font,
+                    _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                             "Rotation: " +
                                             Animation.DirectXAnimation.KeyFrames[CurrentKeyFrame].Rotations[Model.Meshes.IndexOf(SelectedMesh)]
                                             * 180.0f / (float)Math.PI,

@@ -14,6 +14,7 @@ using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Script;
 using TombLib.Utils;
+using TombLib.Rendering;
 
 namespace TombEditor.Forms
 {
@@ -39,7 +40,6 @@ namespace TombEditor.Forms
 
         private bool _pressedMoveCameraKey;
         private readonly Editor _editor;
-        private readonly DeviceManager _deviceManager = DeviceManager.DefaultDeviceManager;
 
         public FormMain(Editor editor)
         {
@@ -66,8 +66,8 @@ namespace TombEditor.Forms
             Application.AddMessageFilter(dockArea.DockResizeFilter);
 
             // Initialize panels
-            MainView.Initialize(_deviceManager);
-            ItemBrowser.Initialize(_deviceManager);
+            MainView.InitializeRendering(_editor.RenderingDevice);
+            ItemBrowser.InitializeRendering(_editor.RenderingDevice);
 
             // Restore window settings
             LoadWindowLayout(_editor.Configuration);
@@ -488,7 +488,7 @@ namespace TombEditor.Forms
                             break;
                         default:
                             if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
                             break;
                     }
                     break;
@@ -498,7 +498,7 @@ namespace TombEditor.Forms
                     {
                         case KeyboardLayout.Qwertz:
                             if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
                             break;
                         case KeyboardLayout.Azerty:
                             if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
@@ -512,15 +512,15 @@ namespace TombEditor.Forms
 
                 case Keys.H:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 0, (short)-(shift ? 4 : 1), alt, true);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 0, (short)-(shift ? 4 : 1), alt, true);
                     break;
                 case Keys.U:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 1, (short)(shift ? 4 : 1), alt, true);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 1, (short)(shift ? 4 : 1), alt, true);
                     break;
                 case Keys.J:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.EntireFace, 1, (short)-(shift ? 4 : 1), alt, true);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 1, (short)-(shift ? 4 : 1), alt, true);
                     break;
 
                 case Keys.OemMinus: // US keyboard key in documentation

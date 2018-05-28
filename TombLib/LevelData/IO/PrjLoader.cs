@@ -85,7 +85,7 @@ namespace TombLib.LevelData.IO
             public Vector3 Position;
             public short Ocb;
             public float RotationY;
-            public Vector4 Color;
+            public Vector3 Color;
             public bool Invisible;
         }
 
@@ -158,7 +158,7 @@ namespace TombLib.LevelData.IO
                     reader.ReadBytes(2);
 
                     // Create room
-                    var room = new Room(level, numXBlocks, numZBlocks, Vector4.One, roomName);
+                    var room = new Room(level, numXBlocks, numZBlocks, Vector3.One, roomName);
                     room.Position = new VectorInt3(posXBlocks, yPos / -256, posZBlocks);
                     var tempRoom = new PrjRoom();
 
@@ -279,11 +279,11 @@ namespace TombLib.LevelData.IO
                                 int red = objTint & 0x001f;
                                 int green = (objTint & 0x03e0) >> 5;
                                 int blue = (objTint & 0x7c00) >> 10;
-                                Vector4 color = new Vector4(
+                                Vector3 color = new Vector3(
                                     (red + (red == 0 ? 0.0f : 0.875f)) / 16.0f,
                                     (green + (green == 0 ? 0.0f : 0.875f)) / 16.0f,
-                                    (blue + (blue == 0 ? 0.0f : 0.875f)) / 16.0f, 1.0f);
-                                color -= new Vector4(new Vector3(1.0f / 32.0f), 0.0f); // Adjust for different rounding in TE *.tr4 output
+                                    (blue + (blue == 0 ? 0.0f : 0.875f)) / 16.0f);
+                                color -= new Vector3(1.0f / 32.0f); // Adjust for different rounding in TE *.tr4 output
 
                                 var obj = new PrjObject
                                 {
@@ -444,8 +444,8 @@ namespace TombLib.LevelData.IO
 
                     tempObjects.Add(i, objects);
 
-                    room.AmbientLight = new Vector4(reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, 1.0f) -
-                        new Vector4(new Vector3(1.0f / 32.0f), 0.0f); // Adjust for different rounding in TE *.tr4 output
+                    room.AmbientLight = new Vector3(reader.ReadByte(), reader.ReadByte(), reader.ReadByte())
+                        / 128.0f - new Vector3(1.0f / 32.0f); // Adjust for different rounding in TE *.tr4 output
                     reader.ReadByte();
 
                     short numObjects2 = reader.ReadInt16();
@@ -1840,11 +1840,7 @@ namespace TombLib.LevelData.IO
 
             // Update level geometry
             progressReporter.ReportProgress(95, "Building rooms");
-            Parallel.ForEach(level.Rooms.Where(r => r != null), room => room.UpdateOnlyGeometry());
-            foreach (var room in level.Rooms)
-                if (room != null)
-                    room.UpdateBuffers();
-
+            Parallel.ForEach(level.Rooms.Where(r => r != null), room => room.BuildGeometry());
             progressReporter.ReportProgress(100, "Level loaded correctly!");
             return level;
         }
@@ -1972,7 +1968,7 @@ namespace TombLib.LevelData.IO
                     }
 
                     ushort rotation = prjFace._txtRotation;
-                    if (room.GetFaceVertexRange(x, z, face).Count == 3)
+                    if (room.GetFaceShape(x, z, face) == Block.FaceShape.Triangle)
                     {
                         // Get UV coordinates for polygon
                         switch (prjFace._txtTriangle)

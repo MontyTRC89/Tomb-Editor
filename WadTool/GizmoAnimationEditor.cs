@@ -19,7 +19,7 @@ namespace WadTool
 
         public GizmoAnimationEditor(WadToolClass tool, Configuration configuration, GraphicsDevice device,
                                     Effect effect, PanelRenderingAnimationEditor control)
-            : base(device, effect)
+            : base(device, effect, () => device.Clear(ClearOptions.DepthBuffer, SharpDX.Vector4.Zero, 1.0f, 0))
         {
             _configuration = configuration;
             _control = control;
@@ -28,7 +28,7 @@ namespace WadTool
 
         protected override void GizmoMove(Vector3 newPos)
         {
-          
+
         }
 
         protected override void GizmoRotateX(float newAngle)
@@ -45,7 +45,7 @@ namespace WadTool
                 float delta = newAngle - rotationVector.X;
                 keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitX, delta);
                 keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
-                
+
                 _control.Model.BuildAnimationPose(keyframe);
                 _control.Invalidate();
             }
@@ -65,7 +65,7 @@ namespace WadTool
                 float delta = newAngle - rotationVector.Y;
                 keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitY, delta);
                 keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
-      
+
                 _control.Model.BuildAnimationPose(keyframe);
                 _control.Invalidate();
             }
@@ -85,7 +85,7 @@ namespace WadTool
                 float delta = newAngle - rotationVector.Z;
                 keyframe.Quaternions[meshIndex] *= Quaternion.CreateFromAxisAngle(Vector3.UnitZ, delta);
                 keyframe.Rotations[meshIndex] = MathC.QuaternionToEuler(keyframe.Quaternions[meshIndex]);
-                
+
                 _control.Model.BuildAnimationPose(keyframe);
                 _control.Invalidate();
             }
@@ -182,8 +182,8 @@ namespace WadTool
         {
             get
             {
-                return (_control != null && 
-                        _control.SelectedMesh != null && 
+                return (_control != null &&
+                        _control.SelectedMesh != null &&
                         _control.Model.Meshes.IndexOf(_control.SelectedMesh) == 0);
             }
         }

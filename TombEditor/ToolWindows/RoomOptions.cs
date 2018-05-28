@@ -70,7 +70,7 @@ namespace TombEditor.ToolWindows
                 else
                     comboRoomType.SelectedIndex = room.WaterLevel;
 
-                panelRoomAmbientLight.BackColor = (room.AmbientLight * new Vector4(0.5f, 0.5f, 0.5f, 1.0f)).ToWinFormsColor();
+                panelRoomAmbientLight.BackColor = (room.AmbientLight * new Vector3(0.5f, 0.5f, 0.5f)).ToWinFormsColor();
 
                 comboMist.SelectedIndex = room.MistLevel;
                 comboReflection.SelectedIndex = room.ReflectionLevel;
@@ -292,7 +292,7 @@ namespace TombEditor.ToolWindows
             panelRoomAmbientLight.BackColor = colorDialog.Color;
 
             _editor.SelectedRoom.AmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
-            _editor.SelectedRoom.UpdateCompletely();
+            _editor.SelectedRoom.BuildGeometry();
             _editor.RoomPropertiesChange(room);
         }
 

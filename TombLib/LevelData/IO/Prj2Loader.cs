@@ -177,7 +177,7 @@ namespace TombLib.LevelData.IO
                 else if (id == Prj2Chunks.Tr5Weather)
                     settings.Tr5WeatherType = (Tr5WeatherType)chunkIO.ReadChunkLong(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
-                    settings.DefaultAmbientLight = chunkIO.ReadChunkVector4(chunkSize);
+                    settings.DefaultAmbientLight = chunkIO.ReadChunkVector3(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.Wads)
@@ -409,7 +409,7 @@ namespace TombLib.LevelData.IO
                     return false;
 
                 // Read room
-                Room room = new Room(level, LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), Vector4.One);
+                Room room = new Room(level, LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), Vector3.One);
                 long roomIndex = long.MinValue;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
@@ -494,9 +494,7 @@ namespace TombLib.LevelData.IO
                     // Read room properties
                     else if (id2 == Prj2Chunks.RoomAmbientLight)
                     {
-                        room.AmbientLight = chunkIO.ReadChunkVector4(chunkSize2);
-                        // HACK: fixes old Prj2 versions
-                        room.AmbientLight = new Vector4(room.AmbientLight.X, room.AmbientLight.Y, room.AmbientLight.Z, 2.0f);
+                        room.AmbientLight = chunkIO.ReadChunkVector3(chunkSize2);
                     }
                     else if (id2 == Prj2Chunks.RoomFlagCold)
                         room.FlagCold = chunkIO.ReadChunkBool(chunkSize2);
@@ -596,10 +594,7 @@ namespace TombLib.LevelData.IO
                 }
 
             // Now build the real geometry and update geometry buffers
-            //Parallel.ForEach(level.Rooms.Where(room => room != null), room => room.UpdateCompletely());
-            foreach (var r in level.Rooms)
-                if (r != null)
-                    r.UpdateCompletely();
+            Parallel.ForEach(level.Rooms.Where(room => room != null), room => room.BuildGeometry());
 
             return true;
         }
@@ -636,7 +631,8 @@ namespace TombLib.LevelData.IO
                     instance.RotationY = chunkIO.Raw.ReadSingle();
                     instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
                     instance.WadObjectId = new Wad.WadStaticId(chunkIO.Raw.ReadUInt32());
-                    instance.Color = chunkIO.Raw.ReadVector4();
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    chunkIO.Raw.ReadSingle(); // Unused 32 bit value
                     instance.Ocb = chunkIO.Raw.ReadUInt16();
                     addObject(instance);
                 }

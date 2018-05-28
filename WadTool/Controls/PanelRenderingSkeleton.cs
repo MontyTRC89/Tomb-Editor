@@ -65,10 +65,10 @@ namespace WadTool.Controls
 
         private Buffer<SolidVertex> _vertexBufferVisibility;
 
-        public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
+        public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
         {
             _tool = tool;
-            _device = deviceManager.Device;
+            _device = deviceManager.___LegacyDevice;
             _deviceManager = deviceManager;
             _wadRenderer = new WadRenderer(_device);
 
@@ -113,7 +113,7 @@ namespace WadTool.Controls
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
 
             _spriteBatch = new SpriteBatch(_device);
-            _gizmo = new GizmoSkeletonEditor(_tool, _tool.Configuration, _device, _deviceManager.Effects["Solid"], this);
+            _gizmo = new GizmoSkeletonEditor(_tool, _tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
             _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
             _cube = GeometricPrimitive.LinesCube.New(_device, 1024.0f, 1024.0f, 1024.0f);
             _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * 128.0f, 8);
@@ -192,12 +192,12 @@ namespace WadTool.Controls
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
 
-            Effect solidEffect = _deviceManager.Effects["Solid"];
+            Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
 
             _wadRenderer.Dispose();
             if (Skeleton != null)
             {
-                var effect = _deviceManager.Effects["Model"];
+                var effect = _deviceManager.___LegacyEffects["Model"];
 
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
@@ -266,12 +266,12 @@ namespace WadTool.Controls
                                     SelectedNode.GlobalTransform * viewProjection, 0, 0, ClientSize.Width, ClientSize.Height);
                 _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
-                _spriteBatch.DrawString(_deviceManager.Font,
+                _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                         "Name: " + SelectedNode.Bone.Name,
                                         new Vector2(screenPos.X, screenPos.Y).ToSharpDX(),
                                         SharpDX.Color.White);
 
-                _spriteBatch.DrawString(_deviceManager.Font,
+                _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                         "Local offset: " + SelectedNode.Bone.Translation,
                                         new Vector2(screenPos.X, screenPos.Y + 20.0f).ToSharpDX(),
                                         SharpDX.Color.White);

@@ -40,7 +40,7 @@ namespace WadTool
             _wad = wad;
             _deviceManager = deviceManager;
 
-            panelMesh.InitializePanel(_tool, _deviceManager);
+            panelMesh.InitializeRendering(_tool, _deviceManager);
 
             var moveablesNode = new DarkUI.Controls.DarkTreeNode("Moveables");
             foreach (var moveable in _wad.Moveables)

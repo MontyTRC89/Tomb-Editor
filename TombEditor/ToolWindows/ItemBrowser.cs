@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -24,9 +25,9 @@ namespace TombEditor.ToolWindows
             _editor.EditorEventRaised += EditorEventRaised;
         }
 
-        public void Initialize(DeviceManager _deviceManager)
+        public void InitializeRendering(RenderingDevice device)
         {
-            panelItem.InitializePanel(_deviceManager);
+            panelItem.InitializeRendering(device);
         }
 
         protected override void Dispose(bool disposing)
@@ -77,7 +78,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.SelectedObjectChangedEvent)
             {
                 StaticInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as StaticInstance;
-                panelStaticMeshColor.BackColor = itemInstance == null ? Color.Black : (itemInstance.Color * new Vector4(0.5f, 0.5f, 0.5f, 1.0f)).ToWinFormsColor();
+                panelStaticMeshColor.BackColor = itemInstance == null ? Color.Black : (itemInstance.Color * 0.5f).ToWinFormsColor();
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using TombLib;
+using TombLib.Rendering;
 
 namespace TombEditor
 {
@@ -43,24 +44,11 @@ namespace TombEditor
         }
     }
 
-    public enum EditorArrowType
-    {
-        EntireFace,
-        EdgeN,
-        EdgeE,
-        EdgeS,
-        EdgeW,
-        CornerNW,
-        CornerNE,
-        CornerSE,
-        CornerSW
-    }
-
     public struct SectorSelection
     {
         public VectorInt2 Start { get; set; }
         public VectorInt2 End { get; set; }
-        public EditorArrowType Arrow { get; set; }
+        public ArrowType Arrow { get; set; }
 
         public static readonly SectorSelection None = new SectorSelection { Start = new VectorInt2(-1, 1), End = new VectorInt2(-1, 1) };
 
@@ -103,7 +91,7 @@ namespace TombEditor
 
         public bool Valid => Start.X != -1 && Start.Y != -1 && End.X != -1 && End.Y != -1;
 
-        public SectorSelection ChangeArrows(EditorArrowType Arrow)
+        public SectorSelection ChangeArrows(ArrowType Arrow)
         {
             SectorSelection result = this;
             result.Arrow = Arrow;

@@ -106,7 +106,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.GameVersion, (long)settings.GameVersion);
                 chunkIO.WriteChunkInt(Prj2Chunks.Tr5LaraType, (long)settings.Tr5LaraType);
                 chunkIO.WriteChunkInt(Prj2Chunks.Tr5Weather, (long)settings.Tr5WeatherType);
-                chunkIO.WriteChunkVector4(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
+                chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkWithChildren(Prj2Chunks.Wads, () =>
                 {
@@ -309,7 +309,7 @@ namespace TombLib.LevelData.IO
                         });
 
                         // Write room properties
-                        chunkIO.WriteChunkVector4(Prj2Chunks.RoomAmbientLight, room.AmbientLight);
+                        chunkIO.WriteChunkVector3(Prj2Chunks.RoomAmbientLight, room.AmbientLight);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagCold, room.FlagCold);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagDamage, room.FlagDamage);
                         chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagHorizon, room.FlagHorizon);
@@ -369,6 +369,7 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                             chunkIO.Raw.Write(instance.WadObjectId.TypeId);
                             chunkIO.Raw.Write(instance.Color);
+                            chunkIO.Raw.Write((int)0); // Unused 32 bit value
                             chunkIO.Raw.Write(instance.Ocb);
                         }, LEB128.MaximumSize1Byte);
                     else if (o is CameraInstance)

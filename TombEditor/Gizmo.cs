@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Rendering;
 
 namespace TombEditor
 {
@@ -11,8 +12,8 @@ namespace TombEditor
     {
         private readonly Editor _editor;
 
-        public Gizmo(GraphicsDevice device, Effect effect)
-            : base(device, effect)
+        public Gizmo(RenderingDevice device, RenderingSwapChain swapChain, Effect effect)
+            : base(DeviceManager.DefaultDeviceManager.___LegacyDevice, effect, () => swapChain.ClearDepth())
         {
             _editor = Editor.Instance;
         }
@@ -48,7 +49,7 @@ namespace TombEditor
 
         protected override void GizmoMoveDelta(Vector3 delta)
         {
-            
+
         }
 
         protected override Vector3 Position => ((PositionBasedObjectInstance)_editor.SelectedObject).Position + _editor.SelectedObject.Room.WorldPos;

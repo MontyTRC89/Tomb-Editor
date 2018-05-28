@@ -69,7 +69,7 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
             }
-#endif 
+#endif
 
             ReportProgress(25, "    Number of rooms: " + _roomsUnmapping.Count);
 
@@ -188,57 +188,43 @@ namespace TombLib.LevelData.Compilers
                     roomTriangles.Add(new tr_face3 { Vertices = new ushort[3] { vertex0Index, vertex1Index, vertex2Index }, Texture = texture });
                 }*/
 
-                var editorRoomVertices = room.GetRoomVertices();
-                for (int z = 0; z < room.NumZSectors; ++z)
-                    for (int x = 0; x < room.NumXSectors; ++x)
-                        for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                RoomGeometry roomGeometry = room.RoomGeometry;
+                var vertexPositions = roomGeometry.VertexPositions;
+                var vertexColors = roomGeometry.VertexColors;
+                int vertexCount = roomGeometry.VertexPositions.Count;
+                for (int i = 0; i < vertexCount; i += 3)
+                {
+                    ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i], roomGeometry.VertexColors[i]);
+                    ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i + 1], roomGeometry.VertexColors[i + 1]);
+
+                    // Check if 2 triangles can be combined to a quad
+                    if (!roomGeometry.TriangleTextureAreas[i / 3].TextureIsInvisble)
+                        if (roomGeometry.IsQuad(i))
                         {
-                            var range = room.GetFaceVertexRange(x, z, face);
-                            if (range.Count == 0)
-                                continue;
+                            ushort vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i + 2], roomGeometry.VertexColors[i + 2]);
+                            ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i + 3], roomGeometry.VertexColors[i + 3]);
+                            TextureArea textureArea0 = roomGeometry.TriangleTextureAreas[i / 3];
+                            TextureArea textureArea1 = roomGeometry.TriangleTextureAreas[i / 3 + 1];
+                            textureArea1.TexCoord2 = textureArea0.TexCoord0;
+                            textureArea1.TexCoord3 = textureArea0.TexCoord1;
 
-                            TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
-                            if (texture.TextureIsInvisble)
-                                continue;
+                            Util.ObjectTextureManager.Result result;
+                            lock (_objectTextureManager)
+                                result = _objectTextureManager.AddTexturePossiblyAnimated(textureArea1, false, true);
 
-                            int rangeEnd = range.Start + range.Count;
-                            for (int i = range.Start; i < rangeEnd; i += 3)
-                            {
-                                ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i].Position, editorRoomVertices[i].Color);
-                                ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].Color);
-                                texture.TexCoord0 = editorRoomVertices[i].UV;
-                                texture.TexCoord1 = editorRoomVertices[i + 1].UV;
-
-                                // Check if 2 triangles can be combined to a quad
-                                if (i + 6 <= rangeEnd &&
-                                    editorRoomVertices[i + 1].Equals(editorRoomVertices[i + 5]) &&
-                                    editorRoomVertices[i + 2].Equals(editorRoomVertices[i + 4]))
-                                {
-                                    ushort vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].Color);
-                                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 3].Position, editorRoomVertices[i + 3].Color);
-                                    texture.TexCoord3 = editorRoomVertices[i + 2].UV;
-                                    texture.TexCoord2 = editorRoomVertices[i + 3].UV;
-
-                                    Util.ObjectTextureManager.Result result;
-                                    lock (_objectTextureManager)
-                                        result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
-
-                                    roomQuads.Add(result.CreateFace4(vertex0Index, vertex1Index, vertex2Index, vertex3Index, 0));
-                                    i += 3;
-                                }
-                                else
-                                {
-                                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].Color);
-                                    texture.TexCoord2 = editorRoomVertices[i + 2].UV;
-
-                                    Util.ObjectTextureManager.Result result;
-                                    lock (_objectTextureManager)
-                                        result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
-
-                                    roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
-                                }
-                            }
+                            roomQuads.Add(result.CreateFace4(vertex0Index, vertex1Index, vertex2Index, vertex3Index, 0));
+                            i += 3;
                         }
+                        else
+                        {
+                            ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, roomGeometry.VertexPositions[i + 2], roomGeometry.VertexColors[i + 2]);
+                            Util.ObjectTextureManager.Result result;
+                            lock (_objectTextureManager)
+                                result = _objectTextureManager.AddTexturePossiblyAnimated(roomGeometry.TriangleTextureAreas[i / 3], true, true);
+
+                            roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
+                        }
+                }
 
                 // Add geometry imported objects
                 int geometryVertexIndexBase = roomVertices.Count;
@@ -421,7 +407,7 @@ namespace TombLib.LevelData.Compilers
                     Rotation = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                    Intensity1 = PackColorTo16Bit(new Vector4(instance.Color.Z, instance.Color.Y, instance.Color.X, instance.Color.W)),
+                    Intensity1 = PackColorTo16Bit(instance.Color),
                     Intensity2 = (ushort)(_level.Settings.GameVersion == GameVersion.TR5 ? 0x0001 : instance.Ocb)
                 });
             }
@@ -431,7 +417,7 @@ namespace TombLib.LevelData.Compilers
             return newRoom;
         }
 
-        private static ushort GetOrAddVertex(Room room, Dictionary<tr_room_vertex, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector4 Color)
+        private static ushort GetOrAddVertex(Room room, Dictionary<tr_room_vertex, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector3 Color)
         {
             tr_room_vertex trVertex;
             trVertex.Position = new tr_vertex
@@ -477,7 +463,7 @@ namespace TombLib.LevelData.Compilers
 
                 if (!light.Enabled || !light.IsDynamicallyUsed)
                     continue;
-                tr_color color = PackColorTo24Bit(new Vector4(light.Color, 1.0f));
+                tr_color color = PackColorTo24Bit(light.Color);
                 ushort intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f));
                 if (intensity == 0 || color.Red == 0 && color.Green == 0 && color.Blue == 0)
                     continue;
@@ -893,12 +879,27 @@ namespace TombLib.LevelData.Compilers
 
                     // HACK: this prevents flickering when camera is exactly on the portal
                     var n = new Vector3(normal.X, normal.Y, normal.Z);
-                    if (normal.X < 0.0f) n.X = -1; if (normal.X == 0.0f) n.X = 0; if (normal.X > 0.0f) n.X = 1;
-                    if (normal.Y < 0.0f) n.Y = -1; if (normal.Y == 0.0f) n.Y = 0; if (normal.Y > 0.0f) n.Y = 1;
-                    if (normal.Z < 0.0f) n.Z = -1; if (normal.Z == 0.0f) n.Z = 0; if (normal.Z > 0.0f) n.Z = 1;
+                    if (normal.X < 0.0f)
+                        n.X = -1;
+                    if (normal.X == 0.0f)
+                        n.X = 0;
+                    if (normal.X > 0.0f)
+                        n.X = 1;
+                    if (normal.Y < 0.0f)
+                        n.Y = -1;
+                    if (normal.Y == 0.0f)
+                        n.Y = 0;
+                    if (normal.Y > 0.0f)
+                        n.Y = 1;
+                    if (normal.Z < 0.0f)
+                        n.Z = -1;
+                    if (normal.Z == 0.0f)
+                        n.Z = 0;
+                    if (normal.Z > 0.0f)
+                        n.Z = 1;
 
                     //if (yAtXMaxZMin < 0.0f) n.Y = -n.Y;
-                   
+
                     portalVertices[0] = new tr_vertex((short)(xMax + n.X), (short)(-yAtXMaxZMin - n.Y), (short)(zMin + n.Z));
                     portalVertices[1] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMin - n.Y), (short)(zMin + n.Z));
                     portalVertices[2] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMax - n.Y), (short)(zMax + n.Z));
@@ -1012,7 +1013,7 @@ namespace TombLib.LevelData.Compilers
                     // Set color
                     if (Count > 1)
                     {
-                        Vector4 averageColor = new Vector4(R, G, B, 0.0f) * (1.0f / 16.0f / Count);
+                        Vector3 averageColor = new Vector3(R, G, B) * (1.0f / 16.0f / Count);
                         vertex.Lighting2 = PackColorTo16Bit(averageColor);
                         vertices[i] = vertex;
                     }
@@ -1080,11 +1081,11 @@ namespace TombLib.LevelData.Compilers
                 }
         }
 
-        private static ushort PackColorTo16Bit(Vector4 color)
+        private static ushort PackColorTo16Bit(Vector3 color)
         {
             color *= 16.0f;
-            color += new Vector4(0.5f); // Round correctly
-            color = Vector4.Min(new Vector4(31), Vector4.Max(new Vector4(0), color));
+            color += new Vector3(0.5f); // Round correctly
+            color = Vector3.Min(new Vector3(31), Vector3.Max(new Vector3(0), color));
 
             ushort tmp = 0;
             tmp |= (ushort)((ushort)color.X << 10);
@@ -1093,21 +1094,21 @@ namespace TombLib.LevelData.Compilers
             return tmp;
         }
 
-        private static uint PackColorTo32Bit(Vector4 color)
+        private static uint PackColorTo32Bit(Vector3 color)
         {
             color *= 128.0f;
-            color += new Vector4(0.5f); // Round correctly
-            color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color));
+            color += new Vector3(0.5f); // Round correctly
+            color = Vector3.Min(new Vector3(255), Vector3.Max(new Vector3(0), color));
 
             uint result = (uint)(0xff000000 + ((byte)color.X << 16) + ((byte)color.Y << 8) + (byte)color.Z);
             return result;
         }
 
-        private static tr_color PackColorTo24Bit(Vector4 color)
+        private static tr_color PackColorTo24Bit(Vector3 color)
         {
             color *= 128.0f;
-            color += new Vector4(0.5f); // Round correctly
-            color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color));
+            color += new Vector3(0.5f); // Round correctly
+            color = Vector3.Min(new Vector3(255), Vector3.Max(new Vector3(0), color));
 
             tr_color result;
             result.Red = (byte)color.X;

@@ -34,7 +34,7 @@ namespace WadTool
             _moveable = _wad.Moveables[moveableId];
             _tool = tool;
 
-            panelRendering.InitializePanel(tool, manager);
+            panelRendering.InitializeRendering(tool, manager);
 
             _tool.EditorEventRaised += Tool_EditorEventRaised;
 

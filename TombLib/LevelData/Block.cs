@@ -273,9 +273,9 @@ namespace TombLib.LevelData
 
         public enum FaceShape
         {
-            Unknown,
             Triangle,
-            Quad
+            Quad,
+            Unknown
         }
 
         private static DiagonalSplit TransformDiagonalSplit(DiagonalSplit split, RectTransformation transformation)

@@ -32,7 +32,7 @@ namespace WadTool
             _tool = tool;
 
             panel3D.Configuration = tool.Configuration;
-            panel3D.InitializePanel(_deviceManager);
+            panel3D.InitializeRendering(_deviceManager.Device);
             panel3D.AnimationScrollBar = scrollbarAnimations;
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
@@ -289,7 +289,7 @@ namespace WadTool
                 timerPlayAnimation.Start();
             }
 
-            panel3D.Draw();
+            panel3D.Refresh();
         }
 
         private void importModelAsStaticMeshToolStripMenuItem_Click(object sender, EventArgs e)
@@ -435,7 +435,7 @@ namespace WadTool
                     panel3D.KeyFrameIndex = 0;
                 else
                     panel3D.KeyFrameIndex++;
-                panel3D.Draw();
+                panel3D.Refresh();
             }
         }
 

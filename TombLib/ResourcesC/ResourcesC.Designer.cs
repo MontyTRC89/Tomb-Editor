@@ -22,7 +22,7 @@ namespace TombLib.ResourcesC {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ResourcesC {
+    public class ResourcesC {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TombLib.ResourcesC {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TombLib.ResourcesC.ResourcesC", typeof(ResourcesC).Assembly);
@@ -51,7 +51,7 @@ namespace TombLib.ResourcesC {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace TombLib.ResourcesC {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Extra_Tr5_pc {
+        public static System.Drawing.Bitmap Extra_Tr5_pc {
             get {
                 object obj = ResourceManager.GetObject("Extra_Tr5_pc", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +73,7 @@ namespace TombLib.ResourcesC {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] font {
+        public static byte[] font {
             get {
                 object obj = ResourceManager.GetObject("font", resourceCulture);
                 return ((byte[])(obj));
@@ -83,7 +83,7 @@ namespace TombLib.ResourcesC {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Font_pc {
+        public static System.Drawing.Bitmap Font_pc {
             get {
                 object obj = ResourceManager.GetObject("Font_pc", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -93,7 +93,7 @@ namespace TombLib.ResourcesC {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap pcsky_raw {
+        public static System.Drawing.Bitmap pcsky_raw {
             get {
                 object obj = ResourceManager.GetObject("pcsky_raw", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));

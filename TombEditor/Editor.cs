@@ -7,6 +7,7 @@ using System.Threading;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
+using TombLib.Rendering;
 using TombLib.Utils;
 
 namespace TombEditor
@@ -527,7 +528,7 @@ namespace TombEditor
         }
 
         // Change sector highlights
-        public HighlightManager HighlightManager { get; private set; }
+        public SectorColoringManager SectorColoringManager { get; private set; }
 
         // Notify all components that values of the configuration have changed
         public void ConfigurationChange()
@@ -707,13 +708,6 @@ namespace TombEditor
             public string InfoString { get; set; }
         }
 
-        public void Dispose()
-        {
-            configurationWatcher?.Dispose();
-            HighlightManager?.Dispose();
-            AutoSavingTimer?.Dispose();
-        }
-
         // Auto saving
         private readonly System.Windows.Forms.Timer AutoSavingTimer;
         private volatile bool currentlyAutoSaving;
@@ -795,6 +789,8 @@ namespace TombEditor
 
         // Construction
         public SynchronizationContext SynchronizationContext { get; }
+        public RenderingDevice RenderingDevice = TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device;
+
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
         {
             if (synchronizationContext == null)
@@ -802,13 +798,20 @@ namespace TombEditor
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
             Level = level;
-            HighlightManager = new HighlightManager(this);
+            SectorColoringManager = new SectorColoringManager(this);
 
             AutoSavingTimer = new System.Windows.Forms.Timer();
             AutoSavingTimer.Tick += (sender, e) => AutoSave();
 
             EditorEventRaised += Editor_EditorEventRaised;
             Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
+        }
+
+        public void Dispose()
+        {
+            configurationWatcher?.Dispose();
+            SectorColoringManager?.Dispose();
+            AutoSavingTimer?.Dispose();
         }
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration)

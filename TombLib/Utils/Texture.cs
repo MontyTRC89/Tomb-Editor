@@ -24,7 +24,7 @@ namespace TombLib.Utils
         public bool IsAvailable => Image != UnloadedPlaceholder;
     }
 
-    public class TextureInvisible : Texture
+    public sealed class TextureInvisible : Texture
     {
         public static Texture Instance { get; } = new TextureInvisible();
 

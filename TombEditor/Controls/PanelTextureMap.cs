@@ -226,7 +226,7 @@ namespace TombEditor.Controls
 
         private void MoveTimerTick(object sender, EventArgs e)
         {
-            switch (_movementTimer.MoveDirection)
+            switch (_movementTimer.MoveKey)
             {
                 case Keys.Down:
                     ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale * _movementTimer.MoveMultiplier);
