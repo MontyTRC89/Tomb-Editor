@@ -282,6 +282,10 @@
       <Project>{eb61dfac-51a6-44e3-869c-9bbde830a40e}</Project>
       <Name>TombLib.Forms</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TombLib.Rendering\TombLib.Rendering.csproj">
+      <Project>{e2f6f614-5007-471a-a22c-39b7d840376c}</Project>
+      <Name>TombLib.Rendering</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
       <Name>TombLib</Name>

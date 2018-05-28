@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Forms;
 using TombLib;
@@ -17,6 +18,7 @@ using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
 using TombLib.LevelData.IO;
+using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -67,7 +69,7 @@ namespace TombEditor
             Any
         }
 
-        public static void EditSectorGeometry(Room room, RectangleInt2 area, EditorArrowType arrow, int verticalSubdivision, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true)
+        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, int verticalSubdivision, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true)
         {
             if (smooth)
             {
@@ -99,32 +101,32 @@ namespace TombEditor
                 // This is a superset of the behaviour of the old editor to smooth edit a single edge or side.
                 switch (arrow)
                 {
-                    case EditorArrowType.EdgeE:
+                    case ArrowType.EdgeE:
                         area = new RectangleInt2(area.X0 + 1, area.Y0, area.X1, area.Y1);
                         break;
-                    case EditorArrowType.EdgeN:
+                    case ArrowType.EdgeN:
                         area = new RectangleInt2(area.X0, area.Y0 + 1, area.X1, area.Y1);
                         break;
-                    case EditorArrowType.EdgeW:
+                    case ArrowType.EdgeW:
                         area = new RectangleInt2(area.X0, area.Y0, area.X1 - 1, area.Y1);
                         break;
-                    case EditorArrowType.EdgeS:
+                    case ArrowType.EdgeS:
                         area = new RectangleInt2(area.X0, area.Y0, area.X1, area.Y1 - 1);
                         break;
-                    case EditorArrowType.CornerNE:
+                    case ArrowType.CornerNE:
                         area = new RectangleInt2(area.X0 + 1, area.Y0 + 1, area.X1, area.Y1);
                         break;
-                    case EditorArrowType.CornerNW:
+                    case ArrowType.CornerNW:
                         area = new RectangleInt2(area.X0, area.Y0 + 1, area.X1 - 1, area.Y1);
                         break;
-                    case EditorArrowType.CornerSW:
+                    case ArrowType.CornerSW:
                         area = new RectangleInt2(area.X0, area.Y0, area.X1 - 1, area.Y1 - 1);
                         break;
-                    case EditorArrowType.CornerSE:
+                    case ArrowType.CornerSE:
                         area = new RectangleInt2(area.X0 + 1, area.Y0, area.X1, area.Y1 - 1);
                         break;
                 }
-                arrow = EditorArrowType.EntireFace;
+                arrow = ArrowType.EntireFace;
 
                 Action<Block, int> smoothEdit = (Block block, int edge) =>
                 {
@@ -179,7 +181,7 @@ namespace TombEditor
 
                     EditBlock:
                     {
-                        if (arrow == EditorArrowType.EntireFace)
+                        if (arrow == ArrowType.EntireFace)
                         {
                             if (verticalSubdivision < 2)
                                 block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
@@ -197,37 +199,37 @@ namespace TombEditor
 
                             switch (arrow)
                             {
-                                case EditorArrowType.EdgeN:
-                                case EditorArrowType.CornerNW:
+                                case ArrowType.EdgeN:
+                                case ArrowType.CornerNW:
                                     corners[0] = 0;
                                     corners[1] = 1;
                                     splits[0] = DiagonalSplit.XpZn;
-                                    splits[1] = arrow == EditorArrowType.CornerNW ? DiagonalSplit.XnZp : DiagonalSplit.XnZn;
+                                    splits[1] = arrow == ArrowType.CornerNW ? DiagonalSplit.XnZp : DiagonalSplit.XnZn;
                                     break;
-                                case EditorArrowType.EdgeE:
-                                case EditorArrowType.CornerNE:
+                                case ArrowType.EdgeE:
+                                case ArrowType.CornerNE:
                                     corners[0] = 1;
                                     corners[1] = 2;
                                     splits[0] = DiagonalSplit.XnZn;
-                                    splits[1] = arrow == EditorArrowType.CornerNE ? DiagonalSplit.XpZp : DiagonalSplit.XnZp;
+                                    splits[1] = arrow == ArrowType.CornerNE ? DiagonalSplit.XpZp : DiagonalSplit.XnZp;
                                     break;
-                                case EditorArrowType.EdgeS:
-                                case EditorArrowType.CornerSE:
+                                case ArrowType.EdgeS:
+                                case ArrowType.CornerSE:
                                     corners[0] = 2;
                                     corners[1] = 3;
                                     splits[0] = DiagonalSplit.XnZp;
-                                    splits[1] = arrow == EditorArrowType.CornerSE ? DiagonalSplit.XpZn : DiagonalSplit.XpZp;
+                                    splits[1] = arrow == ArrowType.CornerSE ? DiagonalSplit.XpZn : DiagonalSplit.XpZp;
                                     break;
-                                case EditorArrowType.EdgeW:
-                                case EditorArrowType.CornerSW:
+                                case ArrowType.EdgeW:
+                                case ArrowType.CornerSW:
                                     corners[0] = 3;
                                     corners[1] = 0;
                                     splits[0] = DiagonalSplit.XpZp;
-                                    splits[1] = arrow == EditorArrowType.CornerSW ? DiagonalSplit.XnZn : DiagonalSplit.XpZn;
+                                    splits[1] = arrow == ArrowType.CornerSW ? DiagonalSplit.XnZn : DiagonalSplit.XpZn;
                                     break;
                             }
 
-                            if (arrow <= EditorArrowType.EdgeW)
+                            if (arrow <= ArrowType.EdgeW)
                             {
                                 if (block.Type != BlockType.Wall && currentSplit != DiagonalSplit.None)
                                     continue;
@@ -348,18 +350,18 @@ namespace TombEditor
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
         }
 
-        public static void ShapeGroup(Room room, RectangleInt2 area, EditorArrowType arrow, EditorToolType type, int verticalSubdivision, double heightScale, bool precise, bool stepped)
+        public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, int verticalSubdivision, double heightScale, bool precise, bool stepped)
         {
             if (precise)
                 heightScale /= 4;
 
             bool linearShape = type <= EditorToolType.HalfPipe;
             bool uniformShape = type >= EditorToolType.HalfPipe;
-            bool step90 = arrow <= EditorArrowType.EdgeW;
-            bool turn90 = arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE;
-            bool reverseX = (arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW) ^ uniformShape;
-            bool reverseZ = (arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE) ^ uniformShape;
-            bool uniformAlign = arrow != EditorArrowType.EntireFace && type > EditorToolType.HalfPipe && step90;
+            bool step90 = arrow <= ArrowType.EdgeW;
+            bool turn90 = arrow == ArrowType.EdgeW || arrow == ArrowType.EdgeE;
+            bool reverseX = (arrow == ArrowType.EdgeW || arrow == ArrowType.CornerSW || arrow == ArrowType.CornerNW) ^ uniformShape;
+            bool reverseZ = (arrow == ArrowType.EdgeS || arrow == ArrowType.CornerSW || arrow == ArrowType.CornerSE) ^ uniformShape;
+            bool uniformAlign = arrow != ArrowType.EntireFace && type > EditorToolType.HalfPipe && step90;
 
             double sizeX = area.Width + (stepped ? 0 : 1);
             double sizeZ = area.Height + (stepped ? 0 : 1);
@@ -402,16 +404,16 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void ApplyHeightmap(Room room, RectangleInt2 area, EditorArrowType arrow, int verticalSubdivision, float[,] heightmap, float heightScale, bool precise, bool raw)
+        public static void ApplyHeightmap(Room room, RectangleInt2 area, ArrowType arrow, int verticalSubdivision, float[,] heightmap, float heightScale, bool precise, bool raw)
         {
             if (precise)
                 heightScale /= 4;
 
-            bool allFace = arrow == EditorArrowType.EntireFace;
-            bool step90 = arrow <= EditorArrowType.EdgeW;
-            bool turn90 = arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.EdgeE;
-            bool reverseX = arrow == EditorArrowType.EdgeW || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerNW;
-            bool reverseZ = arrow == EditorArrowType.EdgeS || arrow == EditorArrowType.CornerSW || arrow == EditorArrowType.CornerSE;
+            bool allFace = arrow == ArrowType.EntireFace;
+            bool step90 = arrow <= ArrowType.EdgeW;
+            bool turn90 = arrow == ArrowType.EdgeW || arrow == ArrowType.EdgeE;
+            bool reverseX = arrow == ArrowType.EdgeW || arrow == ArrowType.CornerSW || arrow == ArrowType.CornerNW;
+            bool reverseZ = arrow == ArrowType.EdgeS || arrow == ArrowType.CornerSW || arrow == ArrowType.CornerSE;
 
             float smoothGrainX = (float)(allFace || step90 && !turn90 ? Math.PI : Math.PI * 0.5f) / (area.Width + 1);
             float smoothGrainZ = (float)(allFace || step90 && turn90 ? Math.PI : Math.PI * 0.5f) / (area.Height + 1);
@@ -498,8 +500,8 @@ namespace TombEditor
             _editor.ObjectChange(trigger, ObjectChangeType.Add);
             _editor.RoomSectorPropertiesChange(room);
 
-            if (_editor.Configuration.Editor_AutoSwitchHighlight)
-                _editor.HighlightManager.SetPriority(HighlightType.Trigger);
+            if (_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
         }
 
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
@@ -569,10 +571,7 @@ namespace TombEditor
 
             // Update state
             if (instance is LightInstance)
-            {
-                instance.Room.CalculateLightingForThisRoom();
-                instance.Room.UpdateBuffers();
-            }
+                instance.Room.RoomGeometry?.Relight(instance.Room);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -616,7 +615,7 @@ namespace TombEditor
                     break;
             }
             if (instance is LightInstance)
-                instance.Room.UpdateCompletely();
+                instance.Room.BuildGeometry();
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -730,13 +729,13 @@ namespace TombEditor
             if (instance is SectorBasedObjectInstance)
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
-                room.UpdateCompletely();
+                room.BuildGeometry();
             if (instance is PortalInstance)
             {
-                room.UpdateCompletely();
-                adjoiningRoom?.UpdateCompletely();
-                room.AlternateVersion?.UpdateCompletely();
-                adjoiningRoom?.AlternateVersion?.UpdateCompletely();
+                room.BuildGeometry();
+                adjoiningRoom?.BuildGeometry();
+                room.AlternateVersion?.BuildGeometry();
+                adjoiningRoom?.AlternateVersion?.BuildGeometry();
             }
 
             // Avoid having the removed object still selected
@@ -747,7 +746,7 @@ namespace TombEditor
         {
             Block blocks = room.GetBlock(pos);
             TextureArea textureArea = blocks.GetFaceTexture(face);
-            if (room.GetFaceVertexRange(pos.X, pos.Y, face).Count == 3)
+            if (room.GetFaceShape(pos.X, pos.Y, face) == Block.FaceShape.Triangle)
             {
                 Vector2 tempTexCoord = textureArea.TexCoord2;
                 textureArea.TexCoord2 = textureArea.TexCoord1;
@@ -767,8 +766,6 @@ namespace TombEditor
 
             // Update state
             room.BuildGeometry();
-            room.CalculateLightingForThisRoom();
-            room.UpdateBuffers();
             _editor.RoomTextureChange(room);
         }
 
@@ -776,7 +773,7 @@ namespace TombEditor
         {
             Block blocks = room.GetBlock(pos);
             TextureArea textureArea = blocks.GetFaceTexture(face);
-            if (room.GetFaceVertexRange(pos.X, pos.Y, face).Count == 3)
+            if (room.GetFaceShape(pos.X, pos.Y, face) == Block.FaceShape.Triangle)
             {
                 Swap.Do(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
                 textureArea.TexCoord3 = textureArea.TexCoord2;
@@ -790,8 +787,6 @@ namespace TombEditor
 
             // Update state
             room.BuildGeometry();
-            room.CalculateLightingForThisRoom();
-            room.UpdateBuffers();
             _editor.RoomTextureChange(room);
         }
 
@@ -830,9 +825,7 @@ namespace TombEditor
                 switch (face)
                 {
                     case BlockFace.Floor:
-                        if (block.FloorIsQuad)
-                            break;
-                        else
+                        if (!block.FloorIsQuad)
                         {
                             if (block.FloorSplitDirectionIsXEqualsZ)
                             {
@@ -893,9 +886,7 @@ namespace TombEditor
 
 
                     case BlockFace.CeilingTriangle2:
-                        if (block.CeilingIsQuad)
-                            break;
-                        else
+                        if (!block.CeilingIsQuad)
                         {
                             if (block.CeilingSplitDirectionIsXEqualsZ)
                             {
@@ -912,33 +903,49 @@ namespace TombEditor
                         break;
 
                     default:
+                        // This kind of correspondence is really fragile, I am not sure what to do, -TRTombLevBauer
+                        /*if (room.RoomGeometry != null)
                         {
-                            var indices = room.GetFaceIndices(pos.X, pos.Y, face);
-                            var vertices = room.GetRoomVertices();
+                            VertexRange vertexRange = room.RoomGeometry.VertexRangeLookup[new VertexRangeKey(pos.X, pos.Y, face)];
+                            if (indices.Count == 4)
+                            {
+                                float maxUp = Math.Max(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y);
+                                float minDown = Math.Min(vertices[indices[3]].Position.Y, vertices[indices[2]].Position.Y);
 
-                            if (indices.Count < 3)
-                                break;
+                                float difference = maxUp - minDown;
+
+                                float delta0 = (minDown - vertices[indices[3]].Position.Y) / difference;
+                                float delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
+                                float delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
+                                float delta3 = (minDown - vertices[indices[2]].Position.Y) / difference;
+
+                                if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
+                                {
+                                    processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
+                                    processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
+                                    processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
+                                    processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
+                                }
+                                else
+                                {
+                                    processedTexture.TexCoord0.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta0;
+                                    processedTexture.TexCoord1.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta1;
+                                    processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
+                                    processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
+                                }
+                            }
                             else
                             {
-                                float maxUp;
-                                float minDown;
-                                float delta0;
-                                float delta1;
-                                float delta2;
-                                float delta3;
-                                float difference;
+                                float maxUp = Math.Max(Math.Max(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y), vertices[indices[2]].Position.Y);
+                                float minDown = Math.Min(Math.Min(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y), vertices[indices[2]].Position.Y);
+                                float difference = maxUp - minDown;
 
-                                if (indices.Count == 4)
+                                if (vertices[indices[0]].Position.X == vertices[indices[2]].Position.X && vertices[indices[0]].Position.Z == vertices[indices[2]].Position.Z)
                                 {
-                                    maxUp = Math.Max(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y);
-                                    minDown = Math.Min(vertices[indices[3]].Position.Y, vertices[indices[2]].Position.Y);
-
-                                    difference = maxUp - minDown;
-
-                                    delta0 = (minDown - vertices[indices[3]].Position.Y) / difference;
-                                    delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
-                                    delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
-                                    delta3 = (minDown - vertices[indices[2]].Position.Y) / difference;
+                                    float delta0 = (minDown - vertices[indices[2]].Position.Y) / difference;
+                                    float delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
+                                    float delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
+                                    float delta3 = (minDown - vertices[indices[1]].Position.Y) / difference;
 
                                     if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
                                     {
@@ -954,79 +961,48 @@ namespace TombEditor
                                         processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
                                         processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
                                     }
+
+                                    processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                                    processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                                    processedTexture.TexCoord1 = processedTexture.TexCoord2;
+                                    processedTexture.TexCoord2 = processedTexture.TexCoord3;
+
                                 }
                                 else
                                 {
-                                    maxUp = Math.Max(Math.Max(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y), vertices[indices[2]].Position.Y);
-                                    minDown = Math.Min(Math.Min(vertices[indices[0]].Position.Y, vertices[indices[1]].Position.Y), vertices[indices[2]].Position.Y);
-                                    difference = maxUp - minDown;
+                                    float delta0 = (minDown - vertices[indices[0]].Position.Y) / difference;
+                                    float delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
+                                    float delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
+                                    float delta3 = (minDown - vertices[indices[2]].Position.Y) / difference;
 
-                                    if (vertices[indices[0]].Position.X == vertices[indices[2]].Position.X && vertices[indices[0]].Position.Z == vertices[indices[2]].Position.Z)
+                                    if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
                                     {
-                                        delta0 = (minDown - vertices[indices[2]].Position.Y) / difference;
-                                        delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
-                                        delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
-                                        delta3 = (minDown - vertices[indices[1]].Position.Y) / difference;
-
-                                        if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
-                                        {
-                                            processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
-                                            processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
-                                            processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
-                                            processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
-                                        }
-                                        else
-                                        {
-                                            processedTexture.TexCoord0.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta0;
-                                            processedTexture.TexCoord1.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta1;
-                                            processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
-                                            processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
-                                        }
-
-                                        processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                                        processedTexture.TexCoord0 = processedTexture.TexCoord1;
-                                        processedTexture.TexCoord1 = processedTexture.TexCoord2;
-                                        processedTexture.TexCoord2 = processedTexture.TexCoord3;
-
+                                        processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
+                                        processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
+                                        processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
+                                        processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
                                     }
                                     else
                                     {
-
-                                        delta0 = (minDown - vertices[indices[0]].Position.Y) / difference;
-                                        delta1 = (maxUp - vertices[indices[0]].Position.Y) / difference;
-                                        delta2 = (maxUp - vertices[indices[1]].Position.Y) / difference;
-                                        delta3 = (minDown - vertices[indices[2]].Position.Y) / difference;
-
-                                        if (texture.TexCoord0.X == texture.TexCoord1.X && texture.TexCoord3.X == texture.TexCoord2.X)
-                                        {
-                                            processedTexture.TexCoord0.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta0;
-                                            processedTexture.TexCoord1.Y += (texture.TexCoord0.Y - texture.TexCoord1.Y) * delta1;
-                                            processedTexture.TexCoord2.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta2;
-                                            processedTexture.TexCoord3.Y += (texture.TexCoord3.Y - texture.TexCoord2.Y) * delta3;
-                                        }
-                                        else
-                                        {
-                                            processedTexture.TexCoord0.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta0;
-                                            processedTexture.TexCoord1.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta1;
-                                            processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
-                                            processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
-                                        }
-
-                                        processedTexture.TexCoord0 = processedTexture.TexCoord3;
-
-                                        Vector2 tempTexCoord = processedTexture.TexCoord2;
-                                        processedTexture.TexCoord2 = processedTexture.TexCoord3;
-                                        processedTexture.TexCoord3 = processedTexture.TexCoord0;
-                                        processedTexture.TexCoord0 = processedTexture.TexCoord1;
-                                        processedTexture.TexCoord1 = tempTexCoord;
+                                        processedTexture.TexCoord0.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta0;
+                                        processedTexture.TexCoord1.X += (texture.TexCoord0.X - texture.TexCoord1.X) * delta1;
+                                        processedTexture.TexCoord2.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta2;
+                                        processedTexture.TexCoord3.X += (texture.TexCoord3.X - texture.TexCoord2.X) * delta3;
                                     }
+
+                                    processedTexture.TexCoord0 = processedTexture.TexCoord3;
+
+                                    Vector2 tempTexCoord = processedTexture.TexCoord2;
+                                    processedTexture.TexCoord2 = processedTexture.TexCoord3;
+                                    processedTexture.TexCoord3 = processedTexture.TexCoord0;
+                                    processedTexture.TexCoord0 = processedTexture.TexCoord1;
+                                    processedTexture.TexCoord1 = tempTexCoord;
                                 }
                             }
-                        }
+                        }*/
                         break;
                 }
             }
-
             return block.SetFaceTexture(face, processedTexture);
         }
 
@@ -1035,9 +1011,7 @@ namespace TombEditor
             var textureApplied = ApplyTextureAutomaticallyNoUpdated(room, pos, face, texture);
             if (textureApplied)
             {
-                room.BuildGeometry(new RectangleInt2(pos, pos));
-                room.CalculateLightingForThisRoom();
-                room.UpdateBuffers();
+                room.BuildGeometry();
                 _editor.RoomTextureChange(room);
             }
             return textureApplied;
@@ -1383,7 +1357,7 @@ namespace TombEditor
                 }
             }
 
-            room.UpdateCompletely();
+            room.BuildGeometry();
             _editor.RoomTextureChange(room);
         }
 
@@ -1415,7 +1389,7 @@ namespace TombEditor
 
                 }
 
-            room.UpdateCompletely();
+            room.BuildGeometry();
             _editor.RoomTextureChange(room);
         }
 
@@ -1427,7 +1401,7 @@ namespace TombEditor
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
             if (instance is LightInstance)
-                room.UpdateCompletely(); // Rebuild lighting!
+                room.BuildGeometry(); // Rebuild lighting!
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.SelectedObject = instance;
         }
@@ -1466,8 +1440,8 @@ namespace TombEditor
             // Update selection
             foreach (Room adjoiningRoom in adjoiningRooms)
             {
-                adjoiningRoom?.UpdateCompletely();
-                adjoiningRoom?.AlternateVersion?.UpdateCompletely();
+                adjoiningRoom?.BuildGeometry();
+                adjoiningRoom?.AlternateVersion?.BuildGeometry();
             }
             if (rooms.Contains(_editor.SelectedRoom))
                 _editor.SelectRoomAndResetCamera(_editor.Level.Rooms.FirstOrDefault(r => r != null));
@@ -1490,10 +1464,10 @@ namespace TombEditor
             if (room.AlternateVersion != null)
             {
                 room.AlternateVersion.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
-                room.AlternateVersion.UpdateCompletely();
+                room.AlternateVersion.BuildGeometry();
             }
             room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
-            room.UpdateCompletely();
+            room.BuildGeometry();
 
             // Fix selection if necessary
             if (_editor.SelectedRoom == room && _editor.SelectedSectors.Valid)
@@ -1953,7 +1927,7 @@ namespace TombEditor
 
             // Update
             foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
-                portalRoom.UpdateCompletely();
+                portalRoom.BuildGeometry();
             foreach (PortalInstance portal in portals)
                 _editor.ObjectChange(portal, ObjectChangeType.Add);
 
@@ -1972,7 +1946,7 @@ namespace TombEditor
             // Create new room
             var newRoom = room.Clone(_editor.Level, instance => instance.CopyToFlipRooms);
             newRoom.Name = "Flipped of " + room;
-            newRoom.UpdateCompletely();
+            newRoom.BuildGeometry();
 
             // Assign room
             _editor.Level.AssignRoomToFree(newRoom);
@@ -2166,7 +2140,7 @@ namespace TombEditor
             _editor.RoomListChange();
 
             // Build the geometry of the new room
-            newRoom.UpdateCompletely();
+            newRoom.BuildGeometry();
 
             // Update the UI
             if (_editor.SelectedRoom == room)
@@ -2230,7 +2204,7 @@ namespace TombEditor
         {
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
             newRoom.Name = _editor.SelectedRoom.Name + " (copy)";
-            newRoom.UpdateCompletely();
+            newRoom.BuildGeometry();
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
             _editor.SelectedRoom = newRoom;
@@ -2248,17 +2222,11 @@ namespace TombEditor
 
         public static void ApplyCurrentAmbientLightToAllRooms()
         {
+            foreach (var room in _editor.Level.Rooms.Where(room => room != null))
+                room.AmbientLight = _editor.SelectedRoom.AmbientLight;
+            Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => room.RoomGeometry?.Relight(room));
             foreach (var room in _editor.Level.Rooms)
-                if (room != null && room != _editor.SelectedRoom)
-                {
-                    room.AmbientLight = new Vector4(_editor.SelectedRoom.AmbientLight.X,
-                                                    _editor.SelectedRoom.AmbientLight.Y,
-                                                    _editor.SelectedRoom.AmbientLight.Z,
-                                                    _editor.SelectedRoom.AmbientLight.W);
-                    room.CalculateLightingForThisRoom();
-                    room.UpdateBuffers();
-                }
-            Editor.Instance.RaiseEvent(new Editor.ModeChangedEvent());
+                Editor.Instance.RaiseEvent(new Editor.RoomPropertiesChangedEvent { Room = room });
         }
 
         public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner)
@@ -2401,7 +2369,7 @@ namespace TombEditor
                 return false;
             var newRooms = _editor.Level.TransformRooms(_editor.SelectedRooms, transformation);
             foreach (Room room in newRooms)
-                room.UpdateCompletely();
+                room.BuildGeometry();
             _editor.SelectRoomsAndResetCamera(newRooms);
 
             _editor.RoomListChange();
@@ -2533,7 +2501,7 @@ namespace TombEditor
             }
 
             portal.Opacity = opacity;
-            _editor.SelectedRoom.UpdateCompletely();
+            _editor.SelectedRoom.BuildGeometry();
             _editor.ObjectChange(portal, ObjectChangeType.Change);
         }
 
@@ -2628,7 +2596,7 @@ namespace TombEditor
                                 var mesh = new IOMesh("TeRoom_" + _editor.Level.Rooms.ReferenceIndexOf(room));
                                 mesh.Position = room.WorldPos;
 
-                               // db.Rooms.Add(mesh.Name, new RoomXmlFile(mesh.Name, room.WorldPos, _editor.Level.Rooms.ReferenceIndexOf(room)));
+                                // db.Rooms.Add(mesh.Name, new RoomXmlFile(mesh.Name, room.WorldPos, _editor.Level.Rooms.ReferenceIndexOf(room)));
 
                                 // Add submeshes
                                 mesh.Submeshes.Add(materialOpaque, new IOSubmesh(materialOpaque));
@@ -2636,52 +2604,45 @@ namespace TombEditor
                                 mesh.Submeshes.Add(materialAdditiveBlending, new IOSubmesh(materialAdditiveBlending));
                                 mesh.Submeshes.Add(materialAdditiveBlendingDoubleSided, new IOSubmesh(materialAdditiveBlendingDoubleSided));
 
-                                var vertices = room.GetRoomVertices();
-                                var lastIndex = 0;
-                                for (var z = 0; z < room.NumZSectors; z++)
+                                if (room.RoomGeometry == null)
+                                    continue;
+                                for (var i = 0; i < room.RoomGeometry.VertexPositions.Count; i += 3)
                                 {
-                                    for (var x = 0; x < room.NumXSectors; x++)
+                                    // TODO: Detect quads with RoomGeometry.IsQuad( and reconstruct quads.
+                                    var textureArea = room.RoomGeometry.TriangleTextureAreas[i / 3];
+                                    var poly = new IOPolygon(IOPolygonShape.Triangle); //indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
+                                    poly.Indices.Add(i);
+                                    poly.Indices.Add(i + 1);
+                                    poly.Indices.Add(i + 2);
+
+                                    // Get the right submesh
+                                    var submesh = mesh.Submeshes[materialOpaque];
+                                    if (textureArea.BlendMode == BlendMode.Additive)
                                     {
-                                        for (var f = 0; f < 29; f++)
-                                        {
-                                            var textureArea = room.Blocks[x, z].GetFaceTexture((BlockFace)f);
-                                            if (room.IsFaceDefined(x, z, (BlockFace)f) && !room.Blocks[x, z].GetFaceTexture((BlockFace)f).TextureIsInvisble &&
-                                                !textureArea.TextureIsUnavailable)
-                                            {
-                                                var indices = room.GetFaceIndices(x, z, (BlockFace)f);
-                                                var poly = new IOPolygon(indices.Count == 3 ? IOPolygonShape.Triangle : IOPolygonShape.Quad);
-                                                for (var i = 0; i < indices.Count; i++)
-                                                {
-                                                    poly.Indices.Add(lastIndex);
-                                                    lastIndex++;
-                                                }
-
-                                                // Get the right submesh
-                                                var submesh = mesh.Submeshes[materialOpaque];
-                                                if (textureArea.BlendMode == BlendMode.Additive)
-                                                {
-                                                    if (textureArea.DoubleSided)
-                                                        submesh = mesh.Submeshes[materialAdditiveBlendingDoubleSided];
-                                                    else
-                                                        submesh = mesh.Submeshes[materialAdditiveBlending];
-                                                }
-                                                else
-                                                {
-                                                    if (textureArea.DoubleSided)
-                                                        submesh = mesh.Submeshes[materialOpaqueDoubleSided];
-                                                }
-
-                                                submesh.Polygons.Add(poly);
-
-                                                foreach (var index in indices)
-                                                {
-                                                    mesh.Positions.Add(vertices[index].Position + room.WorldPos);
-                                                    mesh.UV.Add(vertices[index].UV);
-                                                    mesh.Colors.Add(vertices[index].Color);
-                                                }
-                                            }
-                                        }
+                                        if (textureArea.DoubleSided)
+                                            submesh = mesh.Submeshes[materialAdditiveBlendingDoubleSided];
+                                        else
+                                            submesh = mesh.Submeshes[materialAdditiveBlending];
                                     }
+                                    else
+                                    {
+                                        if (textureArea.DoubleSided)
+                                            submesh = mesh.Submeshes[materialOpaqueDoubleSided];
+                                    }
+                                    submesh.Polygons.Add(poly);
+
+                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i] /*- deltaPos*/ + room.WorldPos /*- minPosition*/);
+                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 1] /*- deltaPos*/ + room.WorldPos /*- minPosition*/);
+                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] /*- deltaPos*/ + room.WorldPos /*- minPosition*/);
+
+
+                                    mesh.UV.Add(textureArea.TexCoord0);
+                                    mesh.UV.Add(textureArea.TexCoord1);
+                                    mesh.UV.Add(textureArea.TexCoord2);
+
+                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i], 1.0f));
+                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
+                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
                                 }
 
                                 model.Meshes.Add(mesh);
@@ -2757,22 +2718,22 @@ namespace TombEditor
 */
 
                 // Create a dictionary of the rooms by name
-               /* var roomDictionary = new Dictionary<string, IOMesh>();
-                foreach (var msh in newObject.DirectXModel)
+                /* var roomDictionary = new Dictionary<string, IOMesh>();
+                 foreach (var msh in newObject.DirectXModel)
 
-                // Translate rooms
-                for (int i=0;i<db.Rooms.Count;i++)
-                {
-                    string roomMeshName = db.Rooms.ElementAt(i).Key;
-                    foreach (var mesh in model.Meshes)
-                        for (int i = 0; i < mesh.Positions.Count; i++)
-                        {
-                            var pos = mesh.Positions[i];
-                            pos -= mesh.Origin;
-                            mesh.Positions[i] = pos;
-                        }
-                }
-                */
+                 // Translate rooms
+                 for (int i=0;i<db.Rooms.Count;i++)
+                 {
+                     string roomMeshName = db.Rooms.ElementAt(i).Key;
+                     foreach (var mesh in model.Meshes)
+                         for (int i = 0; i < mesh.Positions.Count; i++)
+                         {
+                             var pos = mesh.Positions[i];
+                             pos -= mesh.Origin;
+                             mesh.Positions[i] = pos;
+                         }
+                 }
+                 */
 
                 // Figure out the relevant rooms
                 Dictionary<int, int> roomIndices = new Dictionary<int, int>();
@@ -2893,7 +2854,7 @@ namespace TombEditor
             // Update
             foreach (Room room in roomsToUpdate)
             {
-                room.UpdateCompletely();
+                room.BuildGeometry();
                 _editor.RoomSectorPropertiesChange(room);
             }
 

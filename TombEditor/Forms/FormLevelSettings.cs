@@ -352,7 +352,7 @@ namespace TombEditor.Forms
             }
 
             // Update the default ambient light
-            panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector4(0.5f, 0.5f, 0.5f, 1.0f)).ToWinFormsColor();
+            panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector3(0.5f)).ToWinFormsColor();
         }
 
         private string GetLevelResourcePath(string file)
@@ -586,7 +586,7 @@ namespace TombEditor.Forms
 
                 // Open preview
                 _wadPreview?.Dispose();
-                _wadPreview = new FormWadPreview(wad.Wad, TombLib.Graphics.DeviceManager.DefaultDeviceManager, _editor);
+                _wadPreview = new FormWadPreview(wad.Wad, TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device, _editor);
 
                 // Set screen position
                 const int WindowBorderMargin = 5;

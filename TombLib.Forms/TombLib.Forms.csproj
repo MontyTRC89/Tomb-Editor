@@ -39,6 +39,7 @@
        -->
       .allowedextension
     </AllowedReferenceRelatedFileExtensions>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -96,6 +97,9 @@
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PanelItemPreview.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\RenderingPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\SoundInfoEditor.cs">
@@ -183,6 +187,10 @@
     <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TombLib.Rendering\TombLib.Rendering.csproj">
+      <Project>{e2f6f614-5007-471a-a22c-39b7d840376c}</Project>
+      <Name>TombLib.Rendering</Name>
     </ProjectReference>
     <ProjectReference Include="..\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>

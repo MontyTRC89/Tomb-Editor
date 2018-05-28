@@ -135,7 +135,6 @@
     <Compile Include="GeometryIO\IOSettingsPresets.cs" />
     <Compile Include="GeometryIO\IOSubmesh.cs" />
     <Compile Include="Graphics\AnimationNode.cs" />
-    <Compile Include="Graphics\DeviceManager.cs" />
     <Compile Include="Graphics\Material.cs" />
     <Compile Include="Graphics\ObjectMesh.cs" />
     <Compile Include="Graphics\ObjectVertex.cs" />
@@ -164,7 +163,6 @@
     <Compile Include="LevelData\Compilers\Util\SoundManager.cs" />
     <Compile Include="LevelData\Compilers\Util\TextureAllocator.cs" />
     <Compile Include="LevelData\Compilers\Wad.cs" />
-    <Compile Include="LevelData\EditorVertex.cs" />
     <Compile Include="LevelData\FlybyCameraInstance.cs" />
     <Compile Include="LevelData\ImportedGeometry.cs" />
     <Compile Include="LevelData\ImportedGeometryInstance.cs" />
@@ -202,6 +200,7 @@
     <Compile Include="LevelData\PortalInstance.cs" />
     <Compile Include="LevelData\ReferencedWad.cs" />
     <Compile Include="LevelData\Room.cs" />
+    <Compile Include="LevelData\RoomGeometry.cs" />
     <Compile Include="LevelData\ScriptID.cs" />
     <Compile Include="LevelData\SinkInstance.cs" />
     <Compile Include="LevelData\SoundSourceInstance.cs" />
@@ -259,7 +258,7 @@
     <Compile Include="Utils\RectPacker.cs" />
     <Compile Include="Utils\Swap.cs" />
     <Compile Include="Utils\Texture.cs" />
-    <Compile Include="Utils\TreePacker.cs" />
+    <Compile Include="Utils\RectPackerTree.cs" />
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="VectorInt2.cs" />
     <Compile Include="VectorInt3.cs" />
@@ -311,7 +310,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ResourcesC\ResourcesC.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcesC.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

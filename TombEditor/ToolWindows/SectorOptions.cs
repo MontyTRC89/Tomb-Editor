@@ -5,6 +5,7 @@ using NLog;
 using System;
 using System.Windows.Forms;
 using TombLib.LevelData;
+using TombLib.Rendering;
 
 namespace TombEditor.ToolWindows
 {
@@ -197,45 +198,45 @@ namespace TombEditor.ToolWindows
         private void toolTip_Popup(object sender, PopupEventArgs e)
         {
             if(e.AssociatedControl is DarkButton)
-                SetHighlightPriority((DarkButton)e.AssociatedControl);
+                SetSectorColoringInfoPriority((DarkButton)e.AssociatedControl);
         }
 
         private void sectorPropertyButton_Click(object sender, EventArgs e)
         {
             if (sender is DarkButton)
-                SetHighlightPriority((DarkButton)sender);
+                SetSectorColoringInfoPriority((DarkButton)sender);
         }
 
-        private void SetHighlightPriority(DarkButton button)
+        private void SetSectorColoringInfoPriority(DarkButton button)
         {
-            if (!_editor.Configuration.Editor_AutoSwitchHighlight)
+            if (!_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
                 return;
 
-            HighlightType typeToHighlight;
+            SectorColoringType typeToSectorColoringInfo;
 
             if (button == butBox)
-                typeToHighlight = HighlightType.Box;
+                typeToSectorColoringInfo = SectorColoringType.Box;
             else if (button == butDeath)
-                typeToHighlight = HighlightType.Death;
+                typeToSectorColoringInfo = SectorColoringType.Death;
             else if (button == butMonkey)
-                typeToHighlight = HighlightType.Monkey;
+                typeToSectorColoringInfo = SectorColoringType.Monkey;
             else if (button == butFlagBeetle)
-                typeToHighlight = HighlightType.Beetle;
+                typeToSectorColoringInfo = SectorColoringType.Beetle;
             else if (button == butFlagTriggerTriggerer)
-                typeToHighlight = HighlightType.TriggerTriggerer;
+                typeToSectorColoringInfo = SectorColoringType.TriggerTriggerer;
             else if (button == butNotWalkableBox)
-                typeToHighlight = HighlightType.NotWalkableFloor;
+                typeToSectorColoringInfo = SectorColoringType.NotWalkableFloor;
             else if (button == butPortal)
-                typeToHighlight = HighlightType.Portal;
+                typeToSectorColoringInfo = SectorColoringType.Portal;
             else if (button == butClimbNegativeX ||
                      button == butClimbNegativeZ ||
                      button == butClimbPositiveX ||
                      button == butClimbPositiveZ)
-                typeToHighlight = HighlightType.Climb;
+                typeToSectorColoringInfo = SectorColoringType.Climb;
             else
-                typeToHighlight = HighlightType.Wall;
+                typeToSectorColoringInfo = SectorColoringType.Wall;
 
-            _editor.HighlightManager.SetPriority(typeToHighlight);
+            _editor.SectorColoringManager.SetPriority(typeToSectorColoringInfo);
         }
     }
 }

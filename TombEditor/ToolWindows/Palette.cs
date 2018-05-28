@@ -21,9 +21,8 @@ namespace TombEditor.ToolWindows
                 LightInstance light = _editor.SelectedObject as LightInstance;
                 if (light == null)
                     return;
-                Vector4 result = lightPalette.SelectedColor.ToFloatColor();
-                light.Color = new Vector3(result.X, result.Y, result.Z) * 2.0f;
-                _editor.SelectedRoom.UpdateCompletely();
+                light.Color = lightPalette.SelectedColor.ToFloatColor();
+                _editor.SelectedRoom.BuildGeometry();
                 _editor.ObjectChange(light, ObjectChangeType.Change);
             };
         }

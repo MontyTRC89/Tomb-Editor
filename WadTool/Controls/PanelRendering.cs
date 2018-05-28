@@ -10,7 +10,7 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Configuration Configuration { get; set; }
 
-        public override Vector4 BackgroundColor => Configuration.RenderingItem_BackgroundColor;
+        protected override Vector4 ClearColor => Configuration.RenderingItem_BackgroundColor;
         public override float FieldOfView => Configuration.RenderingItem_FieldOfView;
         public override float NavigationSpeedMouseRotate => Configuration.RenderingItem_NavigationSpeedMouseRotate;
         public override float NavigationSpeedMouseTranslate => Configuration.RenderingItem_NavigationSpeedMouseTranslate;

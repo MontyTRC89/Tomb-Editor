@@ -49,6 +49,7 @@ namespace TombLib.Graphics
         private readonly RasterizerState _rasterizerWireframe;
 
         private readonly Effect _effect;
+        private Action _deviceClearDepth;
 
         // Geometry of the gizmo
         private readonly GraphicsDevice _device;
@@ -74,10 +75,11 @@ namespace TombLib.Graphics
 
         private GizmoMode _hoveredMode;
 
-        public BaseGizmo(GraphicsDevice device, Effect effect)
+        public BaseGizmo(GraphicsDevice device, Effect effect, Action deviceClearDepth)
         {
             _effect = effect;
             _device = device;
+            _deviceClearDepth = deviceClearDepth;
 
             // Create the gizmo geometry
             _rotationHelperGeometry = Buffer.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
@@ -397,7 +399,6 @@ namespace TombLib.Graphics
             if (!DrawGizmo)
                 return;
 
-            _device.Clear(ClearOptions.DepthBuffer, SharpDX.Vector4.Zero, 1.0f, 0);
             _device.SetRasterizerState(_device.RasterizerStates.CullNone);
 
             var solidEffect = _effect;
@@ -717,7 +718,6 @@ namespace TombLib.Graphics
         // They are called both, just leave the implementation empty if not needed, don't use exceptions
         protected abstract void GizmoMove(Vector3 newPos);
         protected abstract void GizmoMoveDelta(Vector3 delta);
-
         protected abstract void GizmoScale(float newScale);
         protected abstract void GizmoRotateY(float newAngle);
         protected abstract void GizmoRotateX(float newAngle);

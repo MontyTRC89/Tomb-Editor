@@ -16,7 +16,7 @@ namespace WadTool
         private readonly PanelRenderingStaticEditor _control;
 
         public GizmoStaticEditorLight(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingStaticEditor control)
-            : base(device, effect)
+            : base(device, effect, () => device.Clear(ClearOptions.DepthBuffer, SharpDX.Vector4.Zero, 1.0f, 0))
         {
             _configuration = configuration;
             _control = control;
@@ -27,6 +27,7 @@ namespace WadTool
             _control.SelectedLight.Position = newPos;
             _control.UpdateLights();
         }
+        protected override void GizmoMoveDelta(Vector3 delta) { }
         protected override void GizmoRotateX(float newAngle) { }
         protected override void GizmoRotateY(float newAngle) { }
         protected override void GizmoRotateZ(float newAngle) { }
@@ -41,11 +42,6 @@ namespace WadTool
 
             _control.SelectedLight.Radius = newScale;
             _control.UpdateLights();
-        }
-
-        protected override void GizmoMoveDelta(Vector3 delta)
-        {
-            
         }
 
         protected override Vector3 Position => _control != null && _control.SelectedLight != null ? _control.SelectedLight.Position : Vector3.Zero;

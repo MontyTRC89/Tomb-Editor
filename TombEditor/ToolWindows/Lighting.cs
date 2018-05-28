@@ -123,8 +123,7 @@ namespace TombEditor.ToolWindows
                 return;
 
             setLightValue(light, newValue.Value);
-            light.Room.CalculateLightingForThisRoom();
-            light.Room.UpdateBuffers();
+            light.Room.RoomGeometry?.Relight(light.Room);
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 
@@ -136,8 +135,7 @@ namespace TombEditor.ToolWindows
                     colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
                     if (colorDialog.ShowDialog(this) != DialogResult.OK)
                         return null;
-                    Vector4 result = colorDialog.Color.ToFloatColor() * 2.0f;
-                    return new Vector3(result.X, result.Y, result.Z);
+                    return colorDialog.Color.ToFloatColor() * 2.0f;
                 });
         }
 

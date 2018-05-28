@@ -35,24 +35,24 @@ namespace TombEditor
 
         public void Draw(DeviceManager deviceManager, string selectedItem, Vector4 textColor)
         {
-            using (SpriteBatch batch = new SpriteBatch(deviceManager.Device))
+            using (SpriteBatch batch = new SpriteBatch(deviceManager.___LegacyDevice))
             {
-                batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.AlphaBlend);
+                batch.Begin(SpriteSortMode.FrontToBack, deviceManager.___LegacyDevice.BlendStates.AlphaBlend);
 
-                batch.DrawStringOnOldSharpDx(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), new SharpDX.Color(textColor.ToSharpDX()));
-                batch.DrawStringOnOldSharpDx(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), new SharpDX.Color(textColor.ToSharpDX()));
+                batch.DrawStringOnOldSharpDx(deviceManager.___LegacyFont, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), new SharpDX.Color(textColor.ToSharpDX()));
+                batch.DrawStringOnOldSharpDx(deviceManager.___LegacyFont, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), new SharpDX.Color(textColor.ToSharpDX()));
                 if (!string.IsNullOrEmpty(selectedItem))
-                    batch.DrawStringOnOldSharpDx(deviceManager.Font, "Selected Object: " + selectedItem, new Vector2(0, 36), new SharpDX.Color(textColor.ToSharpDX()));
+                    batch.DrawStringOnOldSharpDx(deviceManager.___LegacyFont, "Selected Object: " + selectedItem, new Vector2(0, 36), new SharpDX.Color(textColor.ToSharpDX()));
 
                 for (int i = 0; i < Strings.Count; i++)
                 {
-                    batch.DrawStringOnOldSharpDx(deviceManager.Font, Strings[i].Content, Strings[i].Position, new SharpDX.Color(textColor.ToSharpDX()));
+                    batch.DrawStringOnOldSharpDx(deviceManager.___LegacyFont, Strings[i].Content, Strings[i].Position, new SharpDX.Color(textColor.ToSharpDX()));
                 }
 
                 batch.End();
             }
 
-            deviceManager.Device.SetBlendState(deviceManager.Device.BlendStates.Opaque);
+            deviceManager.___LegacyDevice.SetBlendState(deviceManager.___LegacyDevice.BlendStates.Opaque);
         }
     }
 

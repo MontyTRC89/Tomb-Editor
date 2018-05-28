@@ -33,12 +33,12 @@ namespace WadTool
 
             _wad = wad;
             _tool = tool;
-            _device = deviceManager.Device;
+            _device = deviceManager.___LegacyDevice;
 
             Static = @static;
 
             _workingStatic = @static.Clone();
-            panelRendering.InitializePanel(tool, deviceManager);
+            panelRendering.InitializeRendering(tool, deviceManager);
 
             panelRendering.Static = _workingStatic;
             panelRendering.DrawGrid = true;

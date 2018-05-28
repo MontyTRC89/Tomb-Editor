@@ -11,13 +11,14 @@ namespace WadTool
         private readonly PanelRenderingStaticEditor _control;
 
         public GizmoStaticEditor(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingStaticEditor control)
-            : base(device, effect)
+            : base(device, effect, () => device.Clear(ClearOptions.DepthBuffer, SharpDX.Vector4.Zero, 1.0f, 0))
         {
             _configuration = configuration;
             _control = control;
         }
 
         protected override void GizmoMove(Vector3 newPos) => _control.StaticPosition = newPos;
+        protected override void GizmoMoveDelta(Vector3 delta) { }
         protected override void GizmoRotateX(float newAngle) => _control.StaticRotation = new Vector3(newAngle, _control.StaticRotation.Y, _control.StaticRotation.Z);
         protected override void GizmoRotateY(float newAngle) => _control.StaticRotation = new Vector3(_control.StaticRotation.X, newAngle, _control.StaticRotation.Z);
         protected override void GizmoRotateZ(float newAngle) => _control.StaticRotation = new Vector3(_control.StaticRotation.X, _control.StaticRotation.Y, newAngle);
@@ -31,11 +32,6 @@ namespace WadTool
                 newScale = 128.0f;
 
             _control.StaticScale = newScale;
-        }
-
-        protected override void GizmoMoveDelta(Vector3 delta)
-        {
-            
         }
 
         protected override Vector3 Position => _control != null ? _control.StaticPosition : Vector3.Zero;

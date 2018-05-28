@@ -39,7 +39,7 @@ namespace WadTool
         {
             InitializeComponent();
 
-            _renderer = new WadRenderer(deviceManager.Device);
+            _renderer = new WadRenderer(deviceManager.___LegacyDevice);
             _tool = tool;
             _moveableId = id;
             _wad = wad;
@@ -56,7 +56,7 @@ namespace WadTool
                 if (_wad.SuggestedGameVersion == WadGameVersion.TR5 && _wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
                     skin = WadMoveableId.LaraSkin;
             }
-            panelRendering.InitializePanel(_tool, _wad, _deviceManager, _moveableId, skin);
+            panelRendering.InitializeRendering(_tool, _wad, _deviceManager, _moveableId, skin);
 
             // Get a copy of the skeleton in linearized form
             _bones = _moveable.Skeleton.LinearizedBones.ToList<WadBone>();
@@ -67,7 +67,7 @@ namespace WadTool
                 comboSkeleton.Items.Add(bone.Name);
             comboSkeleton.SelectedIndex = 0;
 
-            // NOTE: we work with a pair WadAnimation - Animation. All changes to animation data like name, 
+            // NOTE: we work with a pair WadAnimation - Animation. All changes to animation data like name,
             // framerate, next animation, state changes... will be saved directly to WadAnimation.
             // All changes to keyframes will be instead stored directly in the renderer's Animation class.
             // While saving, WadAnimation and Animation will be combined and original animations will be overwritten.

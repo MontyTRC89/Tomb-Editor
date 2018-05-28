@@ -79,10 +79,10 @@ namespace WadTool.Controls
         private Buffer<SolidVertex> _vertexBufferVisibility;
         private Buffer<SolidVertex> _vertexBufferCollision;
 
-        public void InitializePanel(WadToolClass tool, DeviceManager deviceManager)
+        public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
         {
             _tool = tool;
-            _device = deviceManager.Device;
+            _device = deviceManager.___LegacyDevice;
             _deviceManager = deviceManager;
             _wadRenderer = new WadRenderer(_device);
 
@@ -127,8 +127,8 @@ namespace WadTool.Controls
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
 
             _spriteBatch = new SpriteBatch(_device);
-            _gizmo = new GizmoStaticEditor(_tool.Configuration, _device, _deviceManager.Effects["Solid"], this);
-            _gizmoLight = new GizmoStaticEditorLight(_tool.Configuration, _device, _deviceManager.Effects["Solid"], this);
+            _gizmo = new GizmoStaticEditor(_tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
+            _gizmoLight = new GizmoStaticEditorLight(_tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
             _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
             _cube = GeometricPrimitive.LinesCube.New(_device, 1024.0f, 1024.0f, 1024.0f);
             _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * 128.0f, 8);
@@ -208,13 +208,13 @@ namespace WadTool.Controls
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
 
-            Effect solidEffect = _deviceManager.Effects["Solid"];
+            Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
 
             if (Static != null)
             {
                 var model = _wadRenderer.GetStatic(Static);
 
-                var effect = _deviceManager.Effects["StaticModel"];
+                var effect = _deviceManager.___LegacyEffects["StaticModel"];
 
                 var world = GizmoTransform;
 
@@ -343,15 +343,15 @@ namespace WadTool.Controls
             // Draw debug strings
             _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
-            _spriteBatch.DrawString(_deviceManager.Font,
+            _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                     "Position: " + StaticPosition,
                                     new SharpDX.Vector2(0, 0),
                                     SharpDX.Color.White);
-            _spriteBatch.DrawString(_deviceManager.Font,
+            _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                     "Rotation: " + StaticRotation.X * (180 / Math.PI),
                                     new SharpDX.Vector2(0, 18),
                                     SharpDX.Color.White);
-            _spriteBatch.DrawString(_deviceManager.Font,
+            _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                     "Scale: " + StaticScale,
                                     new SharpDX.Vector2(0, 36),
                                     SharpDX.Color.White);
