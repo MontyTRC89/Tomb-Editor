@@ -226,14 +226,25 @@ namespace WadTool
                 // Ask for the new slot
                 do
                 {
-                    if (DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.SuggestedGameVersion) + " is already occupied in the destination wad. You can now choose a new Id.",
-                        "Occupied slot", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+                    var result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.SuggestedGameVersion) + " is already occupied in the destination wad." + 
+                                                     "Do you want to replace it (Yes) or to select another Id (No)?",
+                                                     "Occupied slot", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    if (result == DialogResult.Cancel)
                         return;
-                    using (var form = new FormSelectSlot(newIds[i], destinationWad.SuggestedGameVersion))
+                    else if (result == DialogResult.No)
                     {
-                        if (form.ShowDialog(owner) != DialogResult.OK)
-                            return;
-                        newIds[i] = form.NewId;
+                        using (var form = new FormSelectSlot(newIds[i], destinationWad.SuggestedGameVersion))
+                        {
+                            if (form.ShowDialog(owner) != DialogResult.OK)
+                                return;
+                            newIds[i] = form.NewId;
+                        }
+                    }
+                    else
+                    {
+                        destinationWad.Remove(objectIdsToMove[i]);
+                        tool.DestinationWadChanged();
+                        break;
                     }
                 } while (destinationWad.Contains(newIds[i]) || newIds.Take(i).Contains(newIds[i])); // There also must not be collisions with the other custom assigned ids.
             }

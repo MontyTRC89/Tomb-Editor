@@ -151,5 +151,13 @@ namespace TombLib.Wad
             metaData.Name = newName;
             return new WadSoundInfo(metaData);
         }
+
+        public override string ToString()
+        {
+            if (Data.Name is null)
+                return base.ToString();
+            else
+                return Data.Name;
+        }
     }
 }
