@@ -15,7 +15,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();
         private int _totalMeshSize = 0;
 
-        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isWaterfall)
+        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isWaterfall, bool isStatic)
         {
             int currentMeshSize = 0;
 
@@ -45,10 +45,10 @@ namespace TombLib.LevelData.Compilers
                 currentMeshSize += 6;
             }
 
-            newMesh.NumNormals = (short)(oldMesh.VerticesNormals.Count > 0 ? oldMesh.VerticesNormals.Count : -oldMesh.VerticesShades.Count);
+            newMesh.NumNormals = (short)(!isStatic ? oldMesh.VerticesNormals.Count : -oldMesh.VerticesShades.Count);
             currentMeshSize += 2;
 
-            if (oldMesh.VerticesNormals.Count > 0)
+            if (!isStatic)
             {
                 newMesh.Normals = new tr_vertex[oldMesh.VerticesNormals.Count];
 
@@ -342,7 +342,7 @@ namespace TombLib.LevelData.Compilers
                 newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
                 foreach (var wadMesh in oldMoveable.Meshes)
-                    ConvertWadMesh(wadMesh, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion));
+                    ConvertWadMesh(wadMesh, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion), false);
 
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
@@ -405,7 +405,7 @@ namespace TombLib.LevelData.Compilers
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
-                ConvertWadMesh(oldStaticMesh.Mesh, false);
+                ConvertWadMesh(oldStaticMesh.Mesh, false, true);
 
                 _staticMeshes.Add(newStaticMesh);
             }
