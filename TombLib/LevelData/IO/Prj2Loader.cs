@@ -596,7 +596,10 @@ namespace TombLib.LevelData.IO
                 }
 
             // Now build the real geometry and update geometry buffers
-            Parallel.ForEach(level.Rooms.Where(room => room != null), room => room.UpdateCompletely());
+            //Parallel.ForEach(level.Rooms.Where(room => room != null), room => room.UpdateCompletely());
+            foreach (var r in level.Rooms)
+                if (r != null)
+                    r.UpdateCompletely();
 
             return true;
         }

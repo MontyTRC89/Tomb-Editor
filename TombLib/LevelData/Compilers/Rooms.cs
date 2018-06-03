@@ -55,6 +55,10 @@ namespace TombLib.LevelData.Compilers
                         var portal = newRoom.Portals[p];
                         writer.WriteLine("\tPortal #" + p);
                         writer.WriteLine("\t--------------------");
+                        writer.WriteLine("\tTo: Room #" + portal.AdjoiningRoom);
+                        writer.WriteLine("\tNormal: <" + portal.Normal.X + ", " +
+                                                         portal.Normal.Y + ", " +
+                                                         portal.Normal.Z + ">");
 
                         for (int v = 0; v < portal.Vertices.Length; v++)
                         {
@@ -893,6 +897,8 @@ namespace TombLib.LevelData.Compilers
                     if (normal.Y < 0.0f) n.Y = -1; if (normal.Y == 0.0f) n.Y = 0; if (normal.Y > 0.0f) n.Y = 1;
                     if (normal.Z < 0.0f) n.Z = -1; if (normal.Z == 0.0f) n.Z = 0; if (normal.Z > 0.0f) n.Z = 1;
 
+                    //if (yAtXMaxZMin < 0.0f) n.Y = -n.Y;
+                   
                     portalVertices[0] = new tr_vertex((short)(xMax + n.X), (short)(-yAtXMaxZMin - n.Y), (short)(zMin + n.Z));
                     portalVertices[1] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMin - n.Y), (short)(zMin + n.Z));
                     portalVertices[2] = new tr_vertex((short)(xMin + n.X), (short)(-yAtXMinZMax - n.Y), (short)(zMax + n.Z));
