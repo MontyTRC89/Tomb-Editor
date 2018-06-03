@@ -48,7 +48,7 @@ namespace TombEditor.Controls
         }
 
         private void EditorEventRaised(IEditorEvent obj)
-        {
+        {   
             // Update drawing
             if (obj is HighlightManager.ChangeHighlightEvent ||
                 obj is Editor.SelectedRoomChangedEvent ||

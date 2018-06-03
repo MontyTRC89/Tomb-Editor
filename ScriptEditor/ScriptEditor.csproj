@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\BuildRelease\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -87,6 +87,11 @@
     <Compile Include="Controls\ReferenceBrowser.Designer.cs">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -135,14 +140,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="Resources\KeyValueToolTips.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>KeyValueToolTips.Designer.cs</LastGenOutput>
@@ -163,15 +163,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="References\_MNEMONIC CONSTANTS.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="References\DAMAGE ENEMY LIST.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="References\KEYBOARD SCANCODES LIST.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <None Include="References\DamageEnemyList.csv" />
+    <None Include="References\KeyboardScancodeList.csv" />
+    <None Include="References\MnemonicConstants.csv" />
     <None Include="Resources\Images\general_AboutIcon-16.png" />
   </ItemGroup>
   <ItemGroup>
@@ -207,32 +201,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="References\OCB LIST.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="References\SCRIPT NEW commands.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="References\SCRIPT OLD commands.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="References\SLOT MOVEABLES indices list.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="References\SOUND SFX indices list.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="References\STATICS indices list.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="References\VARIABLE PLACEFOLDERS.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Images\general_Open-16.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="References\OcbList.txt" />
+    <Content Include="References\ScriptNewCommands.txt" />
+    <Content Include="References\ScriptOldCommands.txt" />
+    <Content Include="References\SlotMoveablesIndicesList.txt" />
+    <Content Include="References\SoundEffectsIndicesList.txt" />
+    <Content Include="References\StaticsIndicesList.txt" />
+    <Content Include="References\VariablePlaceholders.txt" />
     <Content Include="Resources\Images\clearBookmark-16.png" />
     <Content Include="Resources\Images\comment-16.png" />
     <Content Include="Resources\Images\general_plus_math-16.png" />

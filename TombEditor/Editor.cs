@@ -540,7 +540,7 @@ namespace TombEditor
         {
             if (SelectedRoom == newRoom)
                 return;
-
+            SelectedSectors = SectorSelection.None;
             SelectedRoom = newRoom;
             ResetCamera();
         }
