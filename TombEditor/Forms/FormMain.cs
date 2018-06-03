@@ -1240,8 +1240,8 @@ namespace TombEditor.Forms
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //level.Load("");
-            //var level = new TombRaider4Level("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
-            //level.Load("originale");
+            var level = new TestLevel("E:\\trle\\data\\coastal.tr4");
+
             //var level = new TrLevel();
             //level.LoadLevel("Game\\data\\title.tr4", "", "");
             // level = new TombRaider4Level("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
