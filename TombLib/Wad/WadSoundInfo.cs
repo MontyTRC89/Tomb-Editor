@@ -154,7 +154,7 @@ namespace TombLib.Wad
 
         public override string ToString()
         {
-            if (Data.Name is null)
+            if (Data.Name == null)
                 return base.ToString();
             else
                 return Data.Name;
