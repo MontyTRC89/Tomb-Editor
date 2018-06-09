@@ -13,7 +13,7 @@ namespace TombLib.Rendering
         public class Description
         {
             public Room Room;
-            public RenderingTextureAllocator Allocator;
+            public RenderingTextureAllocator TextureAllocator;
             /// <summary>
             /// Suggests that the rendering batch is probably only going to be used one time. This may stop
             /// certain slightly expensive rendering optimizations that are not advantageous if they are only going to be used once.
