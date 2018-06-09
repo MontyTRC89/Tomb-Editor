@@ -40,7 +40,7 @@ namespace RenderingTest_TemporaryProject
             TestBatch0 = Device.CreateDrawingRoom(new RenderingDrawingRoom.Description
             {
                 Room = Room,
-                Allocator = TextureAllocator,
+                TextureAllocator = TextureAllocator,
                 SectorTextureGet = new SectorTextureDefault { SelectionArea = new RectangleInt2(0, 0, 20, 20), SelectionArrow = ArrowType.EntireFace }.Get
             });
 

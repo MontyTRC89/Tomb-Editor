@@ -15,17 +15,20 @@ namespace TombLib.Rendering.DirectX11
     {
         public readonly Dx11RenderingDevice Device;
         public readonly ShaderResourceView TextureView;
-        public readonly RenderingTextureAllocatorUser User;
-        public readonly Buffer VertexBuffer;
+        public readonly RenderingTextureAllocator TextureAllocator;
+        public Buffer VertexBuffer;
         public readonly VertexBufferBinding[] VertexBufferBindings;
         public readonly int VertexCount;
+        public readonly int VertexBufferSize;
+        public bool TexturesInvalidated = false;
+        public bool TexturesInvalidatedRetried = false;
 
         public unsafe Dx11RenderingDrawingRoom(Dx11RenderingDevice device, Description description)
         {
             Device = device;
-            TextureView = ((Dx11RenderingTextureAllocator)(description.Allocator)).TextureView;
-            User = new RenderingTextureAllocatorUser(description.Allocator);
-            Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(description.Allocator.Size.X, description.Allocator.Size.Y);
+            TextureView = ((Dx11RenderingTextureAllocator)(description.TextureAllocator)).TextureView;
+            TextureAllocator = description.TextureAllocator;
+            Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
 
             RoomGeometry roomGeometry = description.Room.RoomGeometry;
 
@@ -33,8 +36,8 @@ namespace TombLib.Rendering.DirectX11
             Vector3 worldPos = description.Room.WorldPos + description.Offset;
             int singleSidedVertexCount = roomGeometry.VertexPositions.Count;
             int vertexCount = VertexCount = singleSidedVertexCount + roomGeometry.DoubleSidedTriangleCount * 3;
-            int size = vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(ulong) + sizeof(uint));
-            fixed (byte* data = new byte[size])
+            VertexBufferSize = vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(ulong) + sizeof(uint));
+            fixed (byte* data = new byte[vertexCount * VertexBufferSize])
             {
                 Vector3* positions = (Vector3*)(data);
                 uint* colors = (uint*)(data + vertexCount * sizeof(Vector3));
@@ -89,6 +92,9 @@ namespace TombLib.Rendering.DirectX11
                         editorUVAndSectorTexture[i * 3 + 2] |= lastSectorTexture;
                     }
                 }
+
+                RetryTexturing:
+                ;
                 {
                     int doubleSidedVertexIndex = singleSidedVertexCount;
                     for (int i = 0, triangleCount = singleSidedVertexCount / 3; i < triangleCount; ++i)
@@ -109,7 +115,7 @@ namespace TombLib.Rendering.DirectX11
                         }
                         else
                         {
-                            VectorInt3 position = User.AllocateTextureForTriangle(texture);
+                            VectorInt3 position = TextureAllocator.GetForTriangle(texture);
                             uvwAndBlendModes[i * 3 + 0] = CompressTextureCoordinate(position, textureScaling, texture.TexCoord0, texture.BlendMode);
                             uvwAndBlendModes[i * 3 + 1] = CompressTextureCoordinate(position, textureScaling, texture.TexCoord1, texture.BlendMode);
                             uvwAndBlendModes[i * 3 + 2] = CompressTextureCoordinate(position, textureScaling, texture.TexCoord2, texture.BlendMode);
@@ -136,12 +142,19 @@ namespace TombLib.Rendering.DirectX11
                     }
                     if (doubleSidedVertexIndex != vertexCount)
                         throw new ArgumentException("Double sided triangle count of RoomGeometry is wrong!");
+
+                    // Retry texturing once at max
+                    if (TexturesInvalidated && !TexturesInvalidatedRetried)
+                    {
+                        TexturesInvalidatedRetried = true;
+                        goto RetryTexturing;
+                    }
                 }
 
                 // Create GPU resources
                 VertexBuffer = new Buffer(device.Device, new IntPtr(data),
-                new BufferDescription(size, ResourceUsage.Immutable, BindFlags.VertexBuffer,
-                CpuAccessFlags.None, ResourceOptionFlags.None, 0));
+                    new BufferDescription(VertexBufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
+                    CpuAccessFlags.None, ResourceOptionFlags.None, 0));
                 VertexBufferBindings = new VertexBufferBinding[] {
                     new VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
                     new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)colors - data)),
@@ -149,11 +162,12 @@ namespace TombLib.Rendering.DirectX11
                     new VertexBufferBinding(VertexBuffer, sizeof(uint), (int)((byte*)editorUVAndSectorTexture - data))
                 };
             }
+            TextureAllocator.GarbageCollectionCollectEvent.Add(GarbageCollectTexture);
         }
 
         public override void Dispose()
         {
-            User.Dispose();
+            TextureAllocator.GarbageCollectionCollectEvent.Remove(GarbageCollectTexture);
             VertexBuffer.Dispose();
         }
 
@@ -164,6 +178,87 @@ namespace TombLib.Rendering.DirectX11
             uint x = (uint)((position.X + uv.X) * textureScaling.X);
             uint y = (uint)((position.Y + uv.Y) * textureScaling.Y);
             return x | ((ulong)y << 24) | ((ulong)position.Z << 48) | ((ulong)blendMode2 << 60);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private VectorInt3 UncompressTextureCoordinate(ulong value, Vector2 textureScaling)
+        {
+            Vector2 uv = new Vector2(value & 0xFFFFFF, (value >> 24) & 0xFFFFFF) / textureScaling;
+            int w = (int)((value >> 48) & 0x3FF);
+            return new VectorInt3((int)uv.X, (int)uv.Y, w);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void UncompressTextureCoordinate(ulong value, VectorInt3 position, Vector2 textureScaling, out Vector2 uv, out BlendMode blendMode)
+        {
+            uv = new Vector2(value & 0xFFFFFF, (value >> 24) & 0xFFFFFF) / textureScaling.X - new Vector2(position.X, position.Y);
+            blendMode = (BlendMode)(value >> 60);
+        }
+
+        public unsafe RenderingTextureAllocator.GarbageCollectionAdjustDelegate GarbageCollectTexture(RenderingTextureAllocator allocator,
+            RenderingTextureAllocator.Map map, HashSet<RenderingTextureAllocator.Map.Entry> inOutUsedTextures)
+        {
+            TexturesInvalidated = true;
+            if (VertexBuffer == null)
+                return null;
+
+            byte[] data = Device.ReadBuffer(VertexBuffer, VertexBufferSize);
+            Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
+            int uvwAndBlendModesOffset = VertexBufferBindings[2].Offset;
+
+            // Collect all used textures
+            fixed (byte* dataPtr = data)
+            {
+                ulong* uvwAndBlendModesPtr = (ulong*)(dataPtr + uvwAndBlendModesOffset);
+                for (int i = 0; i < VertexCount; ++i)
+                {
+                    if (uvwAndBlendModesPtr[i] < 0x1000000)
+                        continue;
+                    var texture = map.Lookup(UncompressTextureCoordinate(uvwAndBlendModesPtr[i], textureScaling));
+                    if (texture == null)
+#if DEBUG
+                        throw new ArgumentOutOfRangeException("Texture unrecognized.");
+#else
+                        continue;
+#endif
+                    inOutUsedTextures.Add(texture);
+                }
+            }
+
+            // Provide a methode to update the buffer with new UV coordinates
+            return delegate (RenderingTextureAllocator allocator2, RenderingTextureAllocator.Map map2)
+            {
+                Vector2 textureScaling2 = new Vector2(16777216.0f) / new Vector2(TextureAllocator.Size.X, TextureAllocator.Size.Y);
+
+                // Update data
+                fixed (byte* dataPtr = data)
+                {
+                    ulong* uvwAndBlendModesPtr = (ulong*)(dataPtr + uvwAndBlendModesOffset);
+                    for (int i = 0; i < VertexCount; ++i)
+                    {
+                        if (uvwAndBlendModesPtr[i] < 0x1000000)
+                            continue;
+                        var texture = map.Lookup(UncompressTextureCoordinate(uvwAndBlendModesPtr[i], textureScaling));
+                        Vector2 uv;
+                        BlendMode blendMode;
+                        UncompressTextureCoordinate(uvwAndBlendModesPtr[i], texture.Pos, textureScaling, out uv, out blendMode);
+                        uvwAndBlendModesPtr[i] = CompressTextureCoordinate(allocator2.Get(texture.Texture), textureScaling2, uv, blendMode);
+                    }
+                }
+
+                // Upload data
+                var oldVertexBuffer = VertexBuffer;
+                fixed (byte* dataPtr = data)
+                {
+                    VertexBuffer = new Buffer(Device.Device, new IntPtr(dataPtr),
+                        new BufferDescription(VertexBufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
+                        CpuAccessFlags.None, ResourceOptionFlags.None, 0));
+                    oldVertexBuffer.Dispose();
+                }
+                for (int i = 0; i < VertexBufferBindings.Length; ++i)
+                    if (VertexBufferBindings[i].Buffer == oldVertexBuffer)
+                        VertexBufferBindings[i].Buffer = VertexBuffer;
+            };
         }
 
         public override void Render(RenderArgs arg)
