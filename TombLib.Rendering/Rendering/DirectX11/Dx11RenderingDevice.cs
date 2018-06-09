@@ -1,21 +1,26 @@
-﻿using System;
+﻿using NLog;
+using SharpDX;
+using SharpDX.Direct3D;
+using SharpDX.Direct3D11;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using SharpDX.Direct3D11;
-using SharpDX.Direct3D;
+using TombLib.Utils;
+using Buffer = SharpDX.Direct3D11.Buffer;
 using Format = SharpDX.DXGI.Format;
 using SampleDescription = SharpDX.DXGI.SampleDescription;
-using System.Reflection;
-using System.IO;
-using TombLib.Utils;
-using SharpDX;
 
 namespace TombLib.Rendering.DirectX11
 {
     public class Dx11RenderingDevice : RenderingDevice
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public const int SectorTextureSize = 256;
         private static Assembly ThisAssembly = Assembly.GetExecutingAssembly();
         public readonly Device Device;
@@ -33,6 +38,7 @@ namespace TombLib.Rendering.DirectX11
 
         public unsafe Dx11RenderingDevice()
         {
+            logger.Info("Dx11 rendering device creating.");
 #if DEBUG
             const DeviceCreationFlags DebugFlags = DeviceCreationFlags.Debug;
 #else
@@ -136,6 +142,8 @@ namespace TombLib.Rendering.DirectX11
 
             // Set omni present state
             ResetState();
+
+            logger.Info("Dx11 rendering device created.");
         }
 
         public void ResetState()
@@ -164,6 +172,28 @@ namespace TombLib.Rendering.DirectX11
                 RoomShader.Dispose();
                 Context.Dispose();
                 Device.Dispose();
+            }
+        }
+
+        ///<summary>Works even on immutable buffers</summary>
+        public byte[] ReadBuffer(Buffer buffer, int size)
+        {
+            using (Buffer tempBuffer = new Buffer(Device,
+                new BufferDescription(size, ResourceUsage.Staging, BindFlags.None,
+                CpuAccessFlags.Read, ResourceOptionFlags.None, 0)))
+            {
+                Context.CopyResource(buffer, tempBuffer);
+                DataBox mappedBuffer = Context.MapSubresource(tempBuffer, 0, MapMode.Read, MapFlags.None);
+                try
+                {
+                    byte[] result = new byte[size];
+                    Marshal.Copy(mappedBuffer.DataPointer, result, 0, size);
+                    return result;
+                }
+                finally
+                {
+                    Context.UnmapSubresource(tempBuffer, 0);
+                }
             }
         }
 

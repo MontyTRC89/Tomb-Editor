@@ -143,7 +143,7 @@ namespace TombEditor.Controls
                          new RenderingDrawingRoom.Description
                          {
                              Room = room,
-                             Allocator = _renderingTextures,
+                             TextureAllocator = _renderingTextures,
                              SectorTextureGet = sectorTextures.Get
                          });
                 });
