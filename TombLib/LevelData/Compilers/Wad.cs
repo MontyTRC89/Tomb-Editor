@@ -45,10 +45,11 @@ namespace TombLib.LevelData.Compilers
                 currentMeshSize += 6;
             }
 
-            newMesh.NumNormals = (short)(!isStatic ? oldMesh.VerticesNormals.Count : -oldMesh.VerticesShades.Count);
+            bool useShades = isStatic && oldMesh.VerticesShades.Count != 0;
+            newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesShades.Count : oldMesh.VerticesNormals.Count);
             currentMeshSize += 2;
 
-            if (!isStatic)
+            if (!useShades)
             {
                 newMesh.Normals = new tr_vertex[oldMesh.VerticesNormals.Count];
 
