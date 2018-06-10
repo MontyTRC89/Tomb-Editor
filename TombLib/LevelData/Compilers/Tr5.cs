@@ -44,7 +44,7 @@ namespace TombLib.LevelData.Compilers
 
                 for (var i = 0; i < _meshes.Count; i++)
                 {
-                    var meshSize = _meshes[i].WriteTr4(writer);
+                    var meshSize = _meshes[i].WriteTr4AndTr5(writer);
                     totalMeshSize += (int)meshSize;
                 }
 

@@ -730,7 +730,7 @@ namespace TombLib.LevelData.Compilers
         public int MeshSize;
         public int MeshPointer;
 
-        public long WriteTr4(BinaryWriterEx writer)
+        public long WriteTr4AndTr5(BinaryWriterEx writer)
         {
             long meshOffset1 = writer.BaseStream.Position;
 
@@ -745,16 +745,18 @@ namespace TombLib.LevelData.Compilers
             {
                 writer.WriteBlockArray(Normals);
             }
-            else
+            else if (NumNormals < 0)
             {
                 writer.WriteBlockArray(Lights);
             }
 
             writer.Write(NumTexturedQuads);
-            writer.WriteBlockArray(TexturedQuads);
+            if (NumTexturedQuads != 0)
+                writer.WriteBlockArray(TexturedQuads);
 
             writer.Write(NumTexturedTriangles);
-            writer.WriteBlockArray(TexturedTriangles);
+            if (NumTexturedTriangles != 0)
+                writer.WriteBlockArray(TexturedTriangles);
 
             var meshOffset2 = writer.BaseStream.Position;
             var meshSize = meshOffset2 - meshOffset1;
