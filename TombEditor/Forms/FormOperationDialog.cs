@@ -51,8 +51,10 @@ namespace TombEditor.Forms
 
         private void Run()
         {
+#if !DEBUG
             try
             {
+#endif
                 _operation(this);
 
                 // Done
@@ -69,6 +71,7 @@ namespace TombEditor.Forms
                         }
                         lstLog.BackColor = Color.LightGreen;
                     });
+#if !DEBUG
             }
             catch (Exception ex)
             {
@@ -92,6 +95,7 @@ namespace TombEditor.Forms
                         butCancel.Focus();
                     });
             }
+#endif
         }
 
         void AddMessage(float? progress, string message, bool isWarning)

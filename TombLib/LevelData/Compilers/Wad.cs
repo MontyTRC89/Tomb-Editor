@@ -15,7 +15,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();
         private int _totalMeshSize = 0;
 
-        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isWaterfall, bool isStatic)
+        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isWaterfall, bool isStatic, int objectId)
         {
             int currentMeshSize = 0;
 
@@ -45,7 +45,23 @@ namespace TombLib.LevelData.Compilers
                 currentMeshSize += 6;
             }
 
-            bool useShades = isStatic && oldMesh.VerticesShades.Count != 0;
+            // FIX: the following code will check for valid normals and shades combinations.
+            // As last chance, I recalculate the normals on the fly.
+            bool useShades = false;
+            if (oldMesh.VerticesNormals.Count == 0 && oldMesh.VerticesShades.Count == 0)
+            {
+                if (!isStatic)
+                    _progressReporter.ReportWarn("Moveable '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
+                else
+                    _progressReporter.ReportWarn("Static '" + objectId + "' contains a mesh with invalid lighting data. Normals will be recalculated now on the fly.");
+                oldMesh.RecalculateNormals();
+                useShades = false;
+            }
+            else
+            {
+                useShades = isStatic && oldMesh.VerticesShades.Count != 0;
+            }
+
             newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesShades.Count : oldMesh.VerticesNormals.Count);
             currentMeshSize += 2;
 
@@ -343,7 +359,7 @@ namespace TombLib.LevelData.Compilers
                 newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
                 foreach (var wadMesh in oldMoveable.Meshes)
-                    ConvertWadMesh(wadMesh, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion), false);
+                    ConvertWadMesh(wadMesh, oldMoveable.Id.IsWaterfall(_level.Settings.WadGameVersion), false, (int)oldMoveable.Id.TypeId);
 
                 var meshTrees = new List<tr_meshtree>();
                 var usedMeshes = new List<WadMesh>();
@@ -406,7 +422,7 @@ namespace TombLib.LevelData.Compilers
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
-                ConvertWadMesh(oldStaticMesh.Mesh, false, true);
+                ConvertWadMesh(oldStaticMesh.Mesh, false, true, (int)oldStaticMesh.Id.TypeId);
 
                 _staticMeshes.Add(newStaticMesh);
             }
