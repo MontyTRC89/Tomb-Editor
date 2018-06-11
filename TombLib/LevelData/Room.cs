@@ -387,6 +387,9 @@ namespace TombLib.LevelData
             RoomBlockPair result = GetBlockTryThroughPortal(pos);
             if (result.Block?.FloorPortal == null)
                 return result;
+            // We must also check if floor portal is solid or not
+            if (!result.Block.FloorPortal.IsTraversable || GetFloorRoomConnectionInfo(pos).TraversableType != RoomConnectionType.FullPortal)
+                return result;
 
             Room adjoiningRoom = result.Block.FloorPortal.AdjoiningRoom;
             VectorInt2 adjoiningSectorCoordinate = pos + (SectorPos - adjoiningRoom.SectorPos);
