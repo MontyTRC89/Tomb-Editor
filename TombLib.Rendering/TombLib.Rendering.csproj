@@ -79,10 +79,7 @@
       <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +98,7 @@
     <Compile Include="Rendering\RenderingDevice.cs" />
     <Compile Include="Rendering\RenderingStateBuffer.cs" />
     <Compile Include="Rendering\RenderingSwapChain.cs" />
+    <Compile Include="Rendering\RenderingFont.cs" />
     <Compile Include="Rendering\RenderingTexture.cs" />
     <Compile Include="Rendering\RenderingTextureAllocator.cs" />
     <Compile Include="Rendering\SectorColoringInfo.cs" />
@@ -180,5 +178,15 @@
     <EmbeddedResource Include="Rendering\SectorTextures\slide_south_flip.png" />
     <EmbeddedResource Include="Rendering\SectorTextures\slide_west.png" />
     <EmbeddedResource Include="Rendering\SectorTextures\slide_west_flip.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <VertexShader Include="Rendering\DirectX11\TextShaderVS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </VertexShader>
+  </ItemGroup>
+  <ItemGroup>
+    <PixelShader Include="Rendering\DirectX11\TextShaderPS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </PixelShader>
   </ItemGroup>
 </Project>

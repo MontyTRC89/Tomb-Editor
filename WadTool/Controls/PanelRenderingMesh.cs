@@ -198,13 +198,6 @@ namespace WadTool.Controls
             Invalidate();
         }
 
-        private Ray GetRay(float x, float y)
-        {
-            Size size = ClientSize;
-            return SharpDxConversions.GetPickRay(new Vector2(x, y),
-                Camera.GetViewProjectionMatrix(size.Width, size.Height), 0, 0, size.Width, size.Height);
-        }
-
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);

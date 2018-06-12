@@ -21,6 +21,7 @@ namespace TombLib.Rendering
         public abstract RenderingStateBuffer CreateStateBuffer();
         public abstract RenderingDrawingTest CreateDrawingTest(RenderingDrawingTest.Description description);
         public abstract RenderingDrawingRoom CreateDrawingRoom(RenderingDrawingRoom.Description description);
+        public abstract RenderingFont CreateFont(RenderingFont.Description description);
 
         public RenderingTextureAllocator CreateTextureAllocator() => CreateTextureAllocator(new RenderingTextureAllocator.Description());
     }

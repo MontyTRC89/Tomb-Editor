@@ -12,18 +12,21 @@ namespace TombLib.Rendering
         public ImageC Image;
         public VectorInt2 From; // Inclusive
         public VectorInt2 To; // Exclusive
+        public object Tag;
 
         public RenderingTexture(ImageC image)
         {
             Image = image;
             From = new VectorInt2();
             To = image.Size;
+            Tag = null;
         }
         public RenderingTexture(ImageC image, VectorInt2 from, VectorInt2 to)
         {
             Image = image;
             From = from;
             To = to;
+            Tag = null;
         }
 
         public override int GetHashCode()

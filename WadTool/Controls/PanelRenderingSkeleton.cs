@@ -262,18 +262,22 @@ namespace WadTool.Controls
             // Draw debug strings
             if (SelectedNode != null)
             {
-                Vector3 screenPos = SharpDxConversions.Project(SelectedNode.Centre - Vector3.UnitY * 128.0f,
-                                    SelectedNode.GlobalTransform * viewProjection, 0, 0, ClientSize.Width, ClientSize.Height);
+                Matrix4x4 worldViewProjection = SelectedNode.GlobalTransform * viewProjection;
+                Vector3 vector = SelectedNode.Centre - Vector3.UnitY * 128.0f;
+                var screenPos = Vector3.Transform(vector, worldViewProjection);
+                screenPos /= vector.X * worldViewProjection.M14 + vector.Y * worldViewProjection.M24 + vector.Z * worldViewProjection.M34 + worldViewProjection.M44;
+                screenPos.X = (screenPos.X + 1f) * 0.5f * ClientSize.Width;
+                screenPos.Y = (-screenPos.Y + 1f) * 0.5f * ClientSize.Height;
                 _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
 
                 _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                         "Name: " + SelectedNode.Bone.Name,
-                                        new Vector2(screenPos.X, screenPos.Y).ToSharpDX(),
+                                        new SharpDX.Vector2(screenPos.X, screenPos.Y),
                                         SharpDX.Color.White);
 
                 _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                         "Local offset: " + SelectedNode.Bone.Translation,
-                                        new Vector2(screenPos.X, screenPos.Y + 20.0f).ToSharpDX(),
+                                        new SharpDX.Vector2(screenPos.X, screenPos.Y + 20.0f),
                                         SharpDX.Color.White);
 
                 _spriteBatch.End();
@@ -309,9 +313,7 @@ namespace WadTool.Controls
 
         private Ray GetRay(float x, float y)
         {
-            Size size = ClientSize;
-            return SharpDxConversions.GetPickRay(new Vector2(x, y),
-                Camera.GetViewProjectionMatrix(size.Width, size.Height), 0, 0, size.Width, size.Height);
+            return Ray.GetPickRay(new Vector2(x, y), Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
