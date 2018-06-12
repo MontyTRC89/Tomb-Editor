@@ -9,6 +9,22 @@ namespace TombLib
         public const float ZeroTolerance = 1e-6f; // Value a 8x higher than 1.19209290E-07F
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static VectorInt2 To2(this VectorInt3 vec) => new VectorInt2(vec.X, vec.Y);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 To2(this Vector3 vec) => new Vector2(vec.X, vec.Y);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 To2(this Vector4 vec) => new Vector2(vec.X, vec.Y);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 To3(this Vector4 vec) => new Vector3(vec.X, vec.Y, vec.Z);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 TransformPerspectively(this Matrix4x4 matrix, Vector3 vec)
+        {
+            Vector4 transformedVec = Vector4.Transform(new Vector4(vec, 1.0f), matrix);
+            return transformedVec.To3() / transformedVec.W;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Round(Vector2 v) => new Vector2((float)Math.Round(v.X), (float)Math.Round(v.Y));
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Round(Vector3 v) => new Vector3((float)Math.Round(v.X), (float)Math.Round(v.Y), (float)Math.Round(v.Z));

@@ -25,6 +25,7 @@ namespace RenderingTest_TemporaryProject
         RenderingStateBuffer StateBuffer;
         RenderingDrawingRoom TestBatch0;
         RenderingDrawingTest TestBatch1;
+        RenderingFont RegularFont;
 
         public Form1()
         {
@@ -46,6 +47,9 @@ namespace RenderingTest_TemporaryProject
 
             TestBatch1 = Device.CreateDrawingTest(new RenderingDrawingTest.Description { });
             renderingPanel1.InitializeRendering(Device);
+
+            RegularFont = Device.CreateFont(new RenderingFont.Description { TextureAllocator = TextureAllocator, FontSize = 40 });
+            TextureAllocator.RetriveTestImage().Save("T:\\Out.png");
         }
 
         protected override void Dispose(bool disposing)
@@ -70,6 +74,8 @@ namespace RenderingTest_TemporaryProject
             TestBatch0.Render(new RenderingDrawingRoom.RenderArgs { RenderTarget = renderingPanel1.SwapChain, StateBuffer = StateBuffer });
             StateBuffer.Set(new RenderingState { TransformMatrix = Matrix4x4.Identity });
             TestBatch1.Render(new RenderingDrawingTest.RenderArgs { RenderTarget = renderingPanel1.SwapChain, StateBuffer = StateBuffer });
+
+            renderingPanel1.SwapChain.RenderText(new Text { Font = RegularFont, Pos = new Vector2(), String = "Test! Hello developers, hello users\nTTT\nTTT\nTTT", Alignment = new Vector2(1.0f, 0.0f) });
         }
     }
 }

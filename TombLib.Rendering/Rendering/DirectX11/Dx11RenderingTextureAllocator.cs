@@ -3,6 +3,7 @@ using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
@@ -22,18 +23,18 @@ namespace TombLib.Rendering.DirectX11
         {
             Context = device.Context;
 
-            Texture2DDescription Dx11Description;
-            Dx11Description.ArraySize = description.Size.Z;
-            Dx11Description.BindFlags = BindFlags.ShaderResource;
-            Dx11Description.CpuAccessFlags = CpuAccessFlags.None;
-            Dx11Description.Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm;
-            Dx11Description.Height = description.Size.X;
-            Dx11Description.MipLevels = MipLevelCount;
-            Dx11Description.OptionFlags = ResourceOptionFlags.None;
-            Dx11Description.SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0);
-            Dx11Description.Usage = ResourceUsage.Default; // Perhaps dynamic could be used?
-            Dx11Description.Width = description.Size.Y;
-            Texture = new Texture2D(device.Device, Dx11Description);
+            Texture2DDescription dx11Description;
+            dx11Description.ArraySize = description.Size.Z;
+            dx11Description.BindFlags = BindFlags.ShaderResource;
+            dx11Description.CpuAccessFlags = CpuAccessFlags.None;
+            dx11Description.Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm;
+            dx11Description.Height = description.Size.X;
+            dx11Description.MipLevels = MipLevelCount;
+            dx11Description.OptionFlags = ResourceOptionFlags.None;
+            dx11Description.SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0);
+            dx11Description.Usage = ResourceUsage.Default; // Perhaps dynamic could be used?
+            dx11Description.Width = description.Size.Y;
+            Texture = new Texture2D(device.Device, dx11Description);
             TextureView = new ShaderResourceView(device.Device, Texture);
         }
 
@@ -47,8 +48,8 @@ namespace TombLib.Rendering.DirectX11
         {
             texture.Image.GetIntPtr(ptr =>
             {
-                const int MipLevel = 0;
-                int subresourceIndex = MipLevelCount * pos.Z + MipLevel;
+                const int mipLevelToUpload = 0;
+                int subresourceIndex = MipLevelCount * pos.Z + mipLevelToUpload;
                 ResourceRegion region;
                 region.Left = pos.X;
                 region.Right = pos.X + (texture.To.X - texture.From.X);
@@ -62,6 +63,42 @@ namespace TombLib.Rendering.DirectX11
                 box.SlicePitch = box.RowPitch * texture.Image.Height;
                 Context.UpdateSubresource(box, Texture, subresourceIndex, region);
             });
+        }
+
+        public override ImageC RetriveTestImage()
+        {
+            const int mipLevelToRetrive = 0;
+            Texture2DDescription dx11Description;
+            dx11Description.ArraySize = 1;
+            dx11Description.BindFlags = BindFlags.None;
+            dx11Description.CpuAccessFlags = CpuAccessFlags.Read;
+            dx11Description.Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm;
+            dx11Description.Height = Size.X >> mipLevelToRetrive;
+            dx11Description.MipLevels = 1;
+            dx11Description.OptionFlags = ResourceOptionFlags.None;
+            dx11Description.SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0);
+            dx11Description.Usage = ResourceUsage.Staging;
+            dx11Description.Width = Size.Y >> mipLevelToRetrive;
+            using (Texture2D tempTexture = new Texture2D(Context.Device, dx11Description))
+            {
+                int bytesPerSlice = (Size.X >> mipLevelToRetrive) * (Size.Y >> mipLevelToRetrive) * ImageC.PixelSize;
+                byte[] result = new byte[bytesPerSlice * Size.Z];
+                for (int z = 0; z < Size.Z; ++z)
+                {
+                    int subresourceIndex = MipLevelCount * z + mipLevelToRetrive;
+                    Context.CopySubresourceRegion(Texture, subresourceIndex, null, tempTexture, 0);
+                    DataBox mappedBuffer = Context.MapSubresource(tempTexture, 0, MapMode.Read, MapFlags.None);
+                    try
+                    {
+                        Marshal.Copy(mappedBuffer.DataPointer, result, bytesPerSlice * z, bytesPerSlice);
+                    }
+                    finally
+                    {
+                        Context.UnmapSubresource(tempTexture, 0);
+                    }
+                }
+                return ImageC.FromByteArray(result, Size.X >> mipLevelToRetrive, (Size.Y >> mipLevelToRetrive) * Size.Z);
+            }
         }
     }
 }

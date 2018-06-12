@@ -162,7 +162,6 @@
     <Compile Include="Controls\DarkTabbedContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Debug.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
     <Compile Include="Forms\FormCamera.cs">

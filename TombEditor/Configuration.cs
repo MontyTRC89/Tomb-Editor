@@ -55,7 +55,6 @@ namespace TombEditor
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;
         public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
-        public Vector4 Rendering3D_TextColor { get; set; } = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         public bool Rendering3D_ToolboxVisible { get; set; } = true;
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
 
