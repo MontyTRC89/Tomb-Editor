@@ -218,6 +218,42 @@ namespace WadTool
             Close();
         }
 
+        private WadAnimation SaveAnimationChanges(AnimationNode animation)
+        {
+            var wadAnim = animation.WadAnimation.Clone();
+            var directxAnim = animation.DirectXAnimation;
+
+            // I need only to convert DX keyframes to Wad2 keyframes
+            wadAnim.KeyFrames.Clear();
+            foreach (var directxKeyframe in directxAnim.KeyFrames)
+            {
+                var keyframe = new WadKeyFrame();
+
+                // Create the new bounding box
+                keyframe.BoundingBox = new TombLib.BoundingBox(directxKeyframe.BoundingBox.Minimum,
+                                                               directxKeyframe.BoundingBox.Maximum);
+
+                // For now we take the first translation as offset
+                keyframe.Offset = new System.Numerics.Vector3(directxKeyframe.Translations[0].X,
+                                                              directxKeyframe.Translations[0].Y,
+                                                              directxKeyframe.Translations[0].Z);
+
+                // Convert angles from radians to degrees and save them
+                foreach (var rot in directxKeyframe.Rotations)
+                {
+                    var angle = new WadKeyFrameRotation();
+                    angle.Rotations = new System.Numerics.Vector3(rot.X * 180.0f / (float)Math.PI,
+                                                                  rot.Y * 180.0f / (float)Math.PI,
+                                                                  rot.Z * 180.0f / (float)Math.PI);
+                    keyframe.Angles.Add(angle);
+                }
+
+                wadAnim.KeyFrames.Add(keyframe);
+            }
+
+            return wadAnim;
+        }
+
         private void SaveChanges()
         {
             // Clear the old animations
@@ -225,40 +261,9 @@ namespace WadTool
 
             // Combine WadAnimation and Animation classes
             foreach (var animation in _workingAnimations)
-            {
-                var wadAnim = animation.WadAnimation;
-                var directxAnim = animation.DirectXAnimation;
+                _moveable.Animations.Add(SaveAnimationChanges(animation));
 
-                // I need only to convert DX keyframes to Wad2 keyframes
-                wadAnim.KeyFrames.Clear();
-                foreach (var directxKeyframe in directxAnim.KeyFrames)
-                {
-                    var keyframe = new WadKeyFrame();
-
-                    // Create the new bounding box
-                    keyframe.BoundingBox = new TombLib.BoundingBox(directxKeyframe.BoundingBox.Minimum,
-                                                                   directxKeyframe.BoundingBox.Maximum);
-
-                    // For now we take the first translation as offset
-                    keyframe.Offset = new System.Numerics.Vector3(directxKeyframe.Translations[0].X,
-                                                                  directxKeyframe.Translations[0].Y,
-                                                                  directxKeyframe.Translations[0].Z);
-
-                    // Convert angles from radians to degrees and save them
-                    foreach (var rot in directxKeyframe.Rotations)
-                    {
-                        var angle = new WadKeyFrameRotation();
-                        angle.Rotations = new System.Numerics.Vector3(rot.X * 180.0f / (float)Math.PI,
-                                                                      rot.Y * 180.0f / (float)Math.PI,
-                                                                      rot.Z * 180.0f / (float)Math.PI);
-                        keyframe.Angles.Add(angle);
-                    }
-
-                    wadAnim.KeyFrames.Add(keyframe);
-                }
-
-                _moveable.Animations.Add(wadAnim);
-            }
+            ReloadAnimations();
 
             _moveable.Version = DataVersion.GetNext();
             _saved = true;
@@ -1209,6 +1214,51 @@ namespace WadTool
 
                     _saved = false;
                 }
+            }
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode == null)
+                return;
+
+            if (saveFileDialogExport.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            var animationToSave = SaveAnimationChanges(_selectedNode);
+
+            if (!WadActions.ExportAnimationToXml(animationToSave,saveFileDialogExport.FileName))
+            {
+                DarkMessageBox.Show(this, "Can't export current animation to XML file",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode == null)
+                return;
+
+            if (openFileDialogImport.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            var animation = WadActions.ImportAnimationFromXml(_wad, openFileDialogImport.FileName);
+            if (animation == null)
+            {
+                DarkMessageBox.Show(this, "Can't import a valid animation from this XML file",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (DarkMessageBox.Show(this, "Do you want to overwrite current animation?", "Import animation",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                _selectedNode.WadAnimation = animation;
+                _selectedNode.DirectXAnimation = Animation.FromWad2(_bones, animation);
+                SelectAnimation(_selectedNode);
+                SelectFrame(0);
+                panelRendering.Invalidate();
             }
         }
     }

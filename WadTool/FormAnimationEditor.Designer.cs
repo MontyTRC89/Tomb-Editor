@@ -144,6 +144,8 @@ namespace WadTool
             this.darkLabel15 = new DarkUI.Controls.DarkLabel();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.tbAccel = new DarkUI.Controls.DarkTextBox();
+            this.openFileDialogImport = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialogExport = new System.Windows.Forms.SaveFileDialog();
             this.topMenu.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -320,22 +322,22 @@ namespace WadTool
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.importToolStripMenuItem.Enabled = false;
-            this.importToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.importToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.importToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Import_16;
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
             this.importToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
             this.importToolStripMenuItem.Text = "Import";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.exportToolStripMenuItem.Enabled = false;
-            this.exportToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.exportToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.exportToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Export_16;
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
             this.exportToolStripMenuItem.Text = "Export";
+            this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
             // toolStripMenuItem7
             // 
@@ -1588,6 +1590,16 @@ namespace WadTool
             this.tbAccel.Visible = false;
             this.tbAccel.Validated += new System.EventHandler(this.tbAccel_Validated);
             // 
+            // openFileDialogImport
+            // 
+            this.openFileDialogImport.Filter = "Animation XML file (*.xml)|*.xml";
+            this.openFileDialogImport.Title = "Import animation";
+            // 
+            // saveFileDialogExport
+            // 
+            this.saveFileDialogExport.Filter = "Animation XML file (*.xml)|*.xml";
+            this.saveFileDialogExport.Title = "Export animation";
+            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1753,5 +1765,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripButton butTbSplitAnimation;
         private System.Windows.Forms.ToolStripButton butTbReplaceFrame;
         private System.Windows.Forms.ToolStripMenuItem splitAnimationToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialogImport;
+        private System.Windows.Forms.SaveFileDialog saveFileDialogExport;
     }
 }

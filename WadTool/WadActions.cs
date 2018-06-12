@@ -10,6 +10,8 @@ using TombLib.Utils;
 using NLog;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace WadTool
 {
@@ -371,6 +373,85 @@ namespace WadTool
                 if (form.ShowDialog(owner) != DialogResult.OK)
                     return;
             tool.WadChanged(wadArea);
+        }
+
+        public static bool ExportAnimationToXml(WadAnimation animation, string fileName)
+        {
+            try
+            {
+                if (File.Exists(fileName))
+                    File.Delete(fileName);
+
+                // Save sound names
+                foreach (var cmd in animation.AnimCommands)
+                    if (cmd.Type == WadAnimCommandType.PlaySound)
+                        cmd.SoundInfoName = (cmd.SoundInfo != null ? cmd.SoundInfo.Name : "");
+
+                // Serialize the animation to XML
+                var xmlSerializer = new XmlSerializer(typeof(WadAnimation));
+                var xml = "";
+
+                using (var sww = new StringWriter())
+                {
+                    using (var tw = new XmlTextWriter(sww))
+                    {
+                        tw.Formatting = Formatting.Indented;
+                        tw.Indentation = 4;
+
+                        using (var writer = XmlWriter.Create(tw))
+                        {
+                            xmlSerializer.Serialize(writer, animation);
+                            xml = sww.ToString();
+                        }
+                    }
+                }
+
+                // Write XML to file
+                using (var writer = new StreamWriter(File.OpenWrite(fileName)))
+                    writer.Write(xml);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public static WadAnimation ImportAnimationFromXml(Wad2 wad, string fileName)
+        {
+            try
+            {
+                // Read animation from XML
+                XmlSerializer deserializer = new XmlSerializer(typeof(WadAnimation));
+                TextReader reader = new StreamReader(fileName);
+                object obj = deserializer.Deserialize(reader);
+                WadAnimation animation = (WadAnimation)obj;
+                reader.Close();
+
+                // Try to link sounds
+                foreach (var cmd in animation.AnimCommands)
+                {
+                    if (cmd.Type == WadAnimCommandType.PlaySound)
+                    {
+                        // Try to get a sound with the same name
+                        foreach (var soundInfo in wad.SoundInfosUnique)
+                            if (soundInfo.Name == cmd.SoundInfoName)
+                            {
+                                cmd.SoundInfo = soundInfo;
+                                break;
+                            }
+                        if (cmd.SoundInfo == null)
+                            cmd.SoundInfo = wad.SoundInfosUnique.First();
+                    }
+                }
+
+                return animation;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace TombLib.Wad
 {
     public class WadAnimCommand
     {
         public WadAnimCommandType Type { get; set; }
-        public WadSoundInfo SoundInfo { get; set; }
         public short Parameter1 { get; set; }
         public short Parameter2 { get; set; }
         public short Parameter3 { get; set; }
+        public string SoundInfoName { get; set; }
 
+        [XmlIgnore]
+        public WadSoundInfo SoundInfo { get; set; }
+        
         public override string ToString()
         {
             switch (Type)
