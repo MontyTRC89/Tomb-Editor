@@ -3,13 +3,13 @@ using SharpDX.DXGI;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace TombLib.Rendering.DirectX11
 {
     public class Dx11RenderingSwapChain : RenderingSwapChain
     {
         public readonly Dx11RenderingDevice Device;
-        public VectorInt2 Size;
         public readonly Factory Factory;
         public readonly SwapChain SwapChain;
         public Texture2D BackBuffer;
@@ -83,10 +83,10 @@ namespace TombLib.Rendering.DirectX11
             Device.CurrentRenderTarget = this;
         }
 
-        public override void Clear(Vector4 Color)
+        public override void Clear(Vector4 color)
         {
             Device.Context.ClearDepthStencilView(DepthBufferView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
-            Device.Context.ClearRenderTargetView(BackBufferView, new SharpDX.Color4(Color.X, Color.Y, Color.Z, Color.W));
+            Device.Context.ClearRenderTargetView(BackBufferView, new SharpDX.Color4(color.X, color.Y, color.Z, color.W));
         }
 
         public override void ClearDepth()
@@ -118,6 +118,65 @@ namespace TombLib.Rendering.DirectX11
             SwapChain.ResizeBuffers(BufferCount, newSize.X, newSize.Y, Format, SwapChainFlags.None);
             CreateBuffersAndViews();
             // ResizeTarget is not the correct method!
+        }
+
+        public override unsafe void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos)
+        {
+            Vector2 posScaling = new Vector2(1.0f) / (Size / 2); // Divide the integer coordinates to avoid pixel mishmash.
+            Vector2 posOffset = VectorInt2.FromRounded(posScaling * 0.5f);
+            Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(textureAllocator.Size.X, textureAllocator.Size.Y);
+
+            // Build vertex buffer
+            int vertexCount = glyphRenderInfos.Count * 6;
+            int bufferSize = vertexCount * (sizeof(Vector2) + sizeof(ulong));
+            fixed (byte* data = new byte[bufferSize])
+            {
+                Vector2* positions = (Vector2*)(data);
+                ulong* uvws = (ulong*)(data + vertexCount * sizeof(Vector2));
+
+                // Setup vertices
+                int count = glyphRenderInfos.Count;
+                for (int i = 0; i < count; ++i)
+                {
+                    RenderingFont.GlyphRenderInfo info = glyphRenderInfos[i];
+                    Vector2 posStart = info.PosStart * posScaling + posOffset;
+                    Vector2 posEnd = (info.PosEnd - new Vector2(1)) * posScaling + posOffset;
+
+                    positions[i * 6 + 0] = new Vector2(posStart.X, posStart.Y);
+                    positions[i * 6 + 2] = positions[i * 6 + 3] = new Vector2(posEnd.X, posStart.Y);
+                    positions[i * 6 + 1] = positions[i * 6 + 4] = new Vector2(posStart.X, posEnd.Y);
+                    positions[i * 6 + 5] = new Vector2(posEnd.X, posEnd.Y);
+
+                    uvws[i * 6 + 0] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(0.5f, 0.5f));
+                    uvws[i * 6 + 2] = uvws[i * 6 + 3] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 0.5f, 0.5f));
+                    uvws[i * 6 + 1] = uvws[i * 6 + 4] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(0.5f, info.TexSize.Y - 0.5f));
+                    uvws[i * 6 + 5] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 0.5f, info.TexSize.Y - 0.5f));
+                }
+
+                // Create GPU resources
+                using (var VertexBuffer = new Buffer(Device.Device, new IntPtr(data),
+                    new BufferDescription(bufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
+                    CpuAccessFlags.None, ResourceOptionFlags.None, 0)))
+                {
+                    var VertexBufferBindings = new VertexBufferBinding[] {
+                        new VertexBufferBinding(VertexBuffer, sizeof(Vector2), (int)((byte*)positions - data)),
+                        new VertexBufferBinding(VertexBuffer, sizeof(ulong), (int)((byte*)uvws - data)) };
+
+                    // Render
+                    Bind();
+                    Device.TextShader.Apply(Device.Context);
+                    Device.Context.PixelShader.SetSampler(0, Device.SamplerRoundToNearest);
+                    Device.Context.PixelShader.SetShaderResources(0, ((Dx11RenderingTextureAllocator)(textureAllocator)).TextureView);
+                    Device.Context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
+                    Device.Context.OutputMerger.SetDepthStencilState(Device.DepthStencilNoZBuffer);
+
+                    // Render
+                    Device.Context.Draw(vertexCount, 0);
+
+                    // Reset state
+                    Device.Context.OutputMerger.SetDepthStencilState(Device.DepthStencilDefault);
+                }
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ struct PixelInputType
 
 Texture2DArray RoomTexture : register(t0);
 Texture2DArray SectorTexture : register(t1);
-SamplerState RoomTextureSampler : register(s0);
+SamplerState DefaultSampler : register(s0);
 
 
 
@@ -32,7 +32,7 @@ float4 main(PixelInputType input) : SV_TARGET
     float4 result;
     if (input.Uvw.x != 0 && !RoomGridForce)
     { // Textured view
-        result = RoomTexture.Sample(RoomTextureSampler, input.Uvw);
+        result = RoomTexture.Sample(DefaultSampler, input.Uvw);
 
 		float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
 		float3 colorMul = min(input.Color.xyz, 1.0f);
@@ -51,7 +51,7 @@ float4 main(PixelInputType input) : SV_TARGET
         else
 		{
 			if (input.EditorSectorTexture & 0x20) // Textured or colored?
-				result = SectorTexture.Sample(RoomTextureSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 6)));
+				result = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 6)));
 			else
 				result = float4(
 					((input.EditorSectorTexture >> 6) & 0xff) * (1.0f / 255.0f),

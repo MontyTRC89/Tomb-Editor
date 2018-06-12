@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using TombLib.Utils;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Format = SharpDX.DXGI.Format;
 using SampleDescription = SharpDX.DXGI.SampleDescription;
+using Vector2 = System.Numerics.Vector2;
 
 namespace TombLib.Rendering.DirectX11
 {
@@ -26,10 +28,13 @@ namespace TombLib.Rendering.DirectX11
         public readonly Device Device;
         public readonly DeviceContext Context;
         public readonly Dx11PipelineState TestShader;
+        public readonly Dx11PipelineState TextShader;
         public readonly Dx11PipelineState RoomShader;
         public readonly RasterizerState RasterizerBackCulling;
-        public readonly SamplerState Sampler;
+        public readonly SamplerState SamplerDefault;
+        public readonly SamplerState SamplerRoundToNearest;
         public readonly DepthStencilState DepthStencilDefault;
+        public readonly DepthStencilState DepthStencilNoZBuffer;
         public readonly BlendState BlendingDisabled;
         public readonly BlendState BlendingPremultipliedAlpha;
         public readonly Texture2D SectorTextureArray;
@@ -52,6 +57,11 @@ namespace TombLib.Rendering.DirectX11
                 new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
                 new InputElement("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0)
             });
+            TextShader = new Dx11PipelineState(this, "TextShader", new InputElement[]
+            {
+                new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
+                new InputElement("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
+            });
             RoomShader = new Dx11PipelineState(this, "RoomShader", new InputElement[]
             {
                 new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
@@ -64,12 +74,20 @@ namespace TombLib.Rendering.DirectX11
                 CullMode = CullMode.Back,
                 FillMode = FillMode.Solid,
             });
-            Sampler = new SamplerState(Device, new SamplerStateDescription
+            SamplerDefault = new SamplerState(Device, new SamplerStateDescription
             {
                 AddressU = TextureAddressMode.Mirror,
                 AddressV = TextureAddressMode.Mirror,
                 AddressW = TextureAddressMode.Wrap,
                 Filter = Filter.Anisotropic,
+                MaximumAnisotropy = 4,
+            });
+            SamplerRoundToNearest = new SamplerState(Device, new SamplerStateDescription
+            {
+                AddressU = TextureAddressMode.Wrap,
+                AddressV = TextureAddressMode.Wrap,
+                AddressW = TextureAddressMode.Wrap,
+                Filter = Filter.MinMagMipPoint,
                 MaximumAnisotropy = 4,
             });
             {
@@ -79,6 +97,14 @@ namespace TombLib.Rendering.DirectX11
                 desc.IsDepthEnabled = true;
                 desc.IsStencilEnabled = false;
                 DepthStencilDefault = new DepthStencilState(Device, desc);
+            }
+            {
+                DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
+                desc.DepthComparison = Comparison.Always;
+                desc.DepthWriteMask = DepthWriteMask.Zero;
+                desc.IsDepthEnabled = false;
+                desc.IsStencilEnabled = false;
+                DepthStencilNoZBuffer = new DepthStencilState(Device, desc);
             }
             BlendingDisabled = new BlendState(Device, BlendStateDescription.Default());
             {
@@ -165,14 +191,40 @@ namespace TombLib.Rendering.DirectX11
                 SectorTextureArrayView.Dispose();
                 SectorTextureArray.Dispose();
                 DepthStencilDefault.Dispose();
+                DepthStencilNoZBuffer.Dispose();
                 BlendingDisabled.Dispose();
                 BlendingPremultipliedAlpha.Dispose();
-                Sampler.Dispose();
+                SamplerDefault.Dispose();
+                SamplerRoundToNearest.Dispose();
                 RasterizerBackCulling.Dispose();
                 RoomShader.Dispose();
                 Context.Dispose();
                 Device.Dispose();
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong CompressUvw(VectorInt3 position, Vector2 textureScaling, Vector2 uv, uint highestBits = 0)
+        {
+            uint blendMode2 = Math.Min(highestBits, 15);
+            uint x = (uint)((position.X + uv.X) * textureScaling.X);
+            uint y = (uint)((position.Y + uv.Y) * textureScaling.Y);
+            return x | ((ulong)y << 24) | ((ulong)position.Z << 48) | ((ulong)blendMode2 << 60);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static VectorInt3 UncompressUvw(ulong value, Vector2 textureScaling)
+        {
+            Vector2 uv = new Vector2(value & 0xFFFFFF, (value >> 24) & 0xFFFFFF) / textureScaling;
+            int w = (int)((value >> 48) & 0x3FF);
+            return new VectorInt3((int)uv.X, (int)uv.Y, w);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void UncompressUvw(ulong value, VectorInt3 position, Vector2 textureScaling, out Vector2 uv, out uint highestBits)
+        {
+            uv = new Vector2(value & 0xFFFFFF, (value >> 24) & 0xFFFFFF) / textureScaling.X - new Vector2(position.X, position.Y);
+            highestBits = (uint)(value >> 60);
         }
 
         ///<summary>Works even on immutable buffers</summary>
@@ -215,6 +267,10 @@ namespace TombLib.Rendering.DirectX11
         public override RenderingTextureAllocator CreateTextureAllocator(RenderingTextureAllocator.Description description)
         {
             return new Dx11RenderingTextureAllocator(this, description);
+        }
+        public override RenderingFont CreateFont(RenderingFont.Description description)
+        {
+            return new RenderingFont(description);
         }
 
         public override RenderingStateBuffer CreateStateBuffer()

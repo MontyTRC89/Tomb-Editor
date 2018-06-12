@@ -388,9 +388,7 @@ namespace WadTool.Controls
 
         private Ray GetRay(float x, float y)
         {
-            Size size = ClientSize;
-            return SharpDxConversions.GetPickRay(new Vector2(x, y),
-                Camera.GetViewProjectionMatrix(size.Width, size.Height), 0, 0, size.Width, size.Height);
+            return Ray.GetPickRay(new Vector2(x, y), Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
         }
 
         private void PlaceLight(int x, int y)

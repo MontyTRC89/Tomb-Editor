@@ -116,9 +116,9 @@ namespace TombLib.Rendering.DirectX11
                         else
                         {
                             VectorInt3 position = TextureAllocator.GetForTriangle(texture);
-                            uvwAndBlendModes[i * 3 + 0] = CompressTextureCoordinate(position, textureScaling, texture.TexCoord0, texture.BlendMode);
-                            uvwAndBlendModes[i * 3 + 1] = CompressTextureCoordinate(position, textureScaling, texture.TexCoord1, texture.BlendMode);
-                            uvwAndBlendModes[i * 3 + 2] = CompressTextureCoordinate(position, textureScaling, texture.TexCoord2, texture.BlendMode);
+                            uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord0, (uint)texture.BlendMode);
+                            uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord1, (uint)texture.BlendMode);
+                            uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord2, (uint)texture.BlendMode);
 
                             // Duplicate double sided triangles
                             if (texture.DoubleSided)
@@ -171,30 +171,6 @@ namespace TombLib.Rendering.DirectX11
             VertexBuffer.Dispose();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ulong CompressTextureCoordinate(VectorInt3 position, Vector2 textureScaling, Vector2 uv, BlendMode blendMode)
-        {
-            uint blendMode2 = Math.Min((uint)blendMode, 15);
-            uint x = (uint)((position.X + uv.X) * textureScaling.X);
-            uint y = (uint)((position.Y + uv.Y) * textureScaling.Y);
-            return x | ((ulong)y << 24) | ((ulong)position.Z << 48) | ((ulong)blendMode2 << 60);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private VectorInt3 UncompressTextureCoordinate(ulong value, Vector2 textureScaling)
-        {
-            Vector2 uv = new Vector2(value & 0xFFFFFF, (value >> 24) & 0xFFFFFF) / textureScaling;
-            int w = (int)((value >> 48) & 0x3FF);
-            return new VectorInt3((int)uv.X, (int)uv.Y, w);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void UncompressTextureCoordinate(ulong value, VectorInt3 position, Vector2 textureScaling, out Vector2 uv, out BlendMode blendMode)
-        {
-            uv = new Vector2(value & 0xFFFFFF, (value >> 24) & 0xFFFFFF) / textureScaling.X - new Vector2(position.X, position.Y);
-            blendMode = (BlendMode)(value >> 60);
-        }
-
         public unsafe RenderingTextureAllocator.GarbageCollectionAdjustDelegate GarbageCollectTexture(RenderingTextureAllocator allocator,
             RenderingTextureAllocator.Map map, HashSet<RenderingTextureAllocator.Map.Entry> inOutUsedTextures)
         {
@@ -212,9 +188,9 @@ namespace TombLib.Rendering.DirectX11
                 ulong* uvwAndBlendModesPtr = (ulong*)(dataPtr + uvwAndBlendModesOffset);
                 for (int i = 0; i < VertexCount; ++i)
                 {
-                    if (uvwAndBlendModesPtr[i] < 0x1000000)
+                    if (uvwAndBlendModesPtr[i] < 0x1000000) // Very small coordinates make no sense, they are used as a placeholder
                         continue;
-                    var texture = map.Lookup(UncompressTextureCoordinate(uvwAndBlendModesPtr[i], textureScaling));
+                    var texture = map.Lookup(Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], textureScaling));
                     if (texture == null)
 #if DEBUG
                         throw new ArgumentOutOfRangeException("Texture unrecognized.");
@@ -236,13 +212,13 @@ namespace TombLib.Rendering.DirectX11
                     ulong* uvwAndBlendModesPtr = (ulong*)(dataPtr + uvwAndBlendModesOffset);
                     for (int i = 0; i < VertexCount; ++i)
                     {
-                        if (uvwAndBlendModesPtr[i] < 0x1000000)
+                        if (uvwAndBlendModesPtr[i] < 0x1000000) // Very small coordinates make no sense, they are used as a placeholder
                             continue;
-                        var texture = map.Lookup(UncompressTextureCoordinate(uvwAndBlendModesPtr[i], textureScaling));
+                        var texture = map.Lookup(Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], textureScaling));
                         Vector2 uv;
-                        BlendMode blendMode;
-                        UncompressTextureCoordinate(uvwAndBlendModesPtr[i], texture.Pos, textureScaling, out uv, out blendMode);
-                        uvwAndBlendModesPtr[i] = CompressTextureCoordinate(allocator2.Get(texture.Texture), textureScaling2, uv, blendMode);
+                        uint highestBits;
+                        Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], texture.Pos, textureScaling, out uv, out highestBits);
+                        uvwAndBlendModesPtr[i] = Dx11RenderingDevice.CompressUvw(allocator2.Get(texture.Texture), textureScaling2, uv, highestBits);
                     }
                 }
 
@@ -268,7 +244,7 @@ namespace TombLib.Rendering.DirectX11
             // Setup state
             ((Dx11RenderingSwapChain)arg.RenderTarget).Bind();
             Device.RoomShader.Apply(context, arg.StateBuffer);
-            context.PixelShader.SetSampler(0, Device.Sampler);
+            context.PixelShader.SetSampler(0, Device.SamplerDefault);
             context.PixelShader.SetShaderResources(0, TextureView, Device.SectorTextureArrayView);
             context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
 

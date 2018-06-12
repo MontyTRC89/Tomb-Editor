@@ -391,26 +391,26 @@ namespace WadTool.Controls
                 _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                         "Frame: " + (CurrentKeyFrame + 1) + "/" +
                                         (Animation.DirectXAnimation.KeyFrames.Count),
-                                        new Vector2(10, 10).ToSharpDX(),
+                                        new SharpDX.Vector2(10, 10),
                                         SharpDX.Color.White);
 
                 if (SelectedMesh != null)
                 {
                     _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                             "Mesh: " + SelectedMesh.Name,
-                                            new Vector2(10, 25).ToSharpDX(),
+                                            new SharpDX.Vector2(10, 25),
                                             SharpDX.Color.White);
 
                     _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                             "Bone: " + _model.Bones[_model.Meshes.IndexOf(SelectedMesh)].Name,
-                                            new Vector2(10, 40).ToSharpDX(),
+                                            new SharpDX.Vector2(10, 40),
                                             SharpDX.Color.White);
 
                     _spriteBatch.DrawString(_deviceManager.___LegacyFont,
                                             "Rotation: " +
                                             Animation.DirectXAnimation.KeyFrames[CurrentKeyFrame].Rotations[Model.Meshes.IndexOf(SelectedMesh)]
                                             * 180.0f / (float)Math.PI,
-                                            new Vector2(10, 55).ToSharpDX(),
+                                            new SharpDX.Vector2(10, 55),
                                             SharpDX.Color.White);
                 }
 
@@ -454,9 +454,7 @@ namespace WadTool.Controls
 
         private Ray GetRay(float x, float y)
         {
-            Size size = ClientSize;
-            return SharpDxConversions.GetPickRay(new Vector2(x, y),
-                Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), 0, 0, size.Width, size.Height);
+            return Ray.GetPickRay(new Vector2(x, y), Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

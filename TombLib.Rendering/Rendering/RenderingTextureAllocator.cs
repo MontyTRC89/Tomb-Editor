@@ -58,6 +58,7 @@ namespace TombLib.Rendering
         }
 
         public abstract void Dispose();
+        public abstract ImageC RetriveTestImage();
         protected abstract void UploadTexture(RenderingTexture Texture, VectorInt3 pos);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

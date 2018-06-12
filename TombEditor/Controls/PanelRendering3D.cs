@@ -96,6 +96,8 @@ namespace TombEditor.Controls
         // Rendering state
         private RenderingStateBuffer _renderingStateBuffer;
         private RenderingTextureAllocator _renderingTextures;
+        private RenderingTextureAllocator _fontTexture;
+        private RenderingFont _fontDefault;
         private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
 
 
@@ -156,6 +158,8 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised -= EditorEventRaised;
                 _renderingStateBuffer?.Dispose();
                 _renderingTextures?.Dispose();
+                _fontTexture?.Dispose();
+                _fontDefault?.Dispose();
                 _renderingCachedRooms?.Dispose();
                 _rasterizerWireframe?.Dispose();
                 _objectHeightLineVertexBuffer?.Dispose();
@@ -274,6 +278,8 @@ namespace TombEditor.Controls
 
             _renderingTextures = device.CreateTextureAllocator(new RenderingTextureAllocator.Description());
             _renderingStateBuffer = device.CreateStateBuffer();
+            _fontTexture = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
+            _fontDefault = device.CreateFont(new RenderingFont.Description { FontSize = 30, FontName = "Segoe UI", TextureAllocator = _fontTexture });
 
             // Legacy
             {
@@ -1094,14 +1100,7 @@ namespace TombEditor.Controls
 
         private Ray GetRay(float x, float y)
         {
-            Size size = ClientSize;
-
-            // Get the current ViewProjection matrix
-            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(size.Width, size.Height);
-
-            // First get the ray in 3D space from X, Y mouse coordinates
-            Ray ray = SharpDxConversions.GetPickRay(new Vector2(x, y), viewProjection, 0, 0, size.Width, size.Height);
-            return ray;
+            return Ray.GetPickRay(new Vector2(x, y), Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
         }
 
         private void DrawDebugLines(Matrix4x4 viewProjection)
@@ -1150,15 +1149,17 @@ namespace TombEditor.Controls
             }
         }
 
-        private void BuildTriggeredByMessage(ref string message, ObjectInstance instance)
+        private string BuildTriggeredByMessage(ObjectInstance instance)
         {
+            string message = "";
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 foreach (var trigger in room.Triggers)
-                    if (trigger.Target == instance)
+                    if (trigger.Target == instance || trigger.Timer == instance || trigger.Extra == instance)
                         message += "\nTriggered in Room " + trigger.Room + " on sectors " + trigger.Area;
+            return message;
         }
 
-        private void DrawLights(Matrix4x4 viewProjection, Room room, Debug debug)
+        private void DrawLights(Matrix4x4 viewProjection, Room room, List<Text> textToDraw)
         {
             if (room == null)
                 return;
@@ -1268,12 +1269,10 @@ namespace TombEditor.Controls
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
 
-                string message = light.Type + " Light";
-
-                // Object position
-                message += "\n" + GetObjectPositionString(light.Room, light);
-
-                DrawDebugString(debug, message, light.ObjectMatrix * viewProjection);
+                // Add text message
+                textToDraw.Add(CreateTextTagForObject(
+                    light.ObjectMatrix * viewProjection,
+                    light.Type + " Light" + "\n" + GetObjectPositionString(light.Room, light)));
 
                 // Add the line height of the object
                 AddObjectHeightLine(light.Room, light.Position);
@@ -1282,7 +1281,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawObjects(Matrix4x4 viewProjection, Room room, Debug debug)
+        private void DrawObjects(Matrix4x4 viewProjection, Room room, List<Text> textToDraw)
         {
             Effect effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
 
@@ -1299,13 +1298,12 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                    string message = "Camera " + (instance.Fixed ? "(Fixed)" : "") + " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
-
-                    // Object position
-                    message += "\n" + GetObjectPositionString(room, instance);
-
-                    BuildTriggeredByMessage(ref message, instance);
-                    DrawDebugString(debug, message, instance.ObjectMatrix * viewProjection);
+                    // Add text message
+                    textToDraw.Add(CreateTextTagForObject(
+                        instance.RotationPositionMatrix * viewProjection,
+                        "Camera " + (instance.Fixed ? "(Fixed)" : "") +
+                            " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                            "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                     // Add the line height of the object
                     AddObjectHeightLine(room, instance.Position);
@@ -1328,21 +1326,18 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                    FlybyCameraInstance flyby = instance;
-
-                    string message = "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
-
-                    // Object position
-                    message += "\n" + GetObjectPositionString(room, instance);
-
-                    BuildTriggeredByMessage(ref message, instance);
-                    DrawDebugString(debug, message, instance.ObjectMatrix * viewProjection);
+                    // Add text message
+                    textToDraw.Add(CreateTextTagForObject(
+                        instance.RotationPositionMatrix * viewProjection,
+                        "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") " +
+                            "[ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                            "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                     // Add the line height of the object
                     AddObjectHeightLine(room, instance.Position);
 
                     // Add the path of the flyby
-                    AddFlybyPath(flyby.Sequence);
+                    AddFlybyPath(instance.Sequence);
                 }
 
                 effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
@@ -1362,13 +1357,11 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                    var message = "Sink [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
-
-                    // Object position
-                    message += "\n" + GetObjectPositionString(room, instance);
-
-                    BuildTriggeredByMessage(ref message, instance);
-                    DrawDebugString(debug, message, instance.ObjectMatrix * viewProjection);
+                    // Add text message
+                    textToDraw.Add(CreateTextTagForObject(
+                        instance.RotationPositionMatrix * viewProjection,
+                        "Sink[ID = " + (instance.ScriptId?.ToString() ?? " < None > ") + "]" +
+                            "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                     // Add the line height of the object
                     AddObjectHeightLine(room, instance.Position);
@@ -1391,14 +1384,11 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                    string message = "Sound source [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
-                    message += " (" + instance.SoundNameToDisplay + ") ";
-
-                    // Object position
-                    message += "\n" + GetObjectPositionString(room, instance);
-
-                    BuildTriggeredByMessage(ref message, instance);
-                    DrawDebugString(debug, message, instance.ObjectMatrix * viewProjection);
+                    // Add text message
+                    textToDraw.Add(CreateTextTagForObject(
+                        instance.RotationPositionMatrix * viewProjection,
+                        "Sound source [ID = " + (instance.ScriptId?.ToString() ?? "<None>") +
+                            "](" + instance.SoundNameToDisplay + ")\n" + GetObjectPositionString(room, instance)));
 
                     // Add the line height of the object
                     AddObjectHeightLine(room, instance.Position);
@@ -1425,17 +1415,11 @@ namespace TombEditor.Controls
                         color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        string message = instance.ToString();
-                        message += "\nUnavailable " + instance.ItemType;
-
-                        // Object position
-                        message += "\n" + GetObjectPositionString(room, instance);
-
-                        Vector3 screenPos = SharpDxConversions.Project(new Vector3(), instance.RotationPositionMatrix * viewProjection, 0, 0, ClientSize.Width, ClientSize.Height);
-
-                        BuildTriggeredByMessage(ref message, instance);
-
-                        debug.AddString(message, screenPos);
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * viewProjection,
+                            instance + "\nUnavailable " + instance.ItemType +
+                                "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
                         AddObjectHeightLine(room, instance.Position);
@@ -1461,10 +1445,10 @@ namespace TombEditor.Controls
                         color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        string message = instance.ToString();
-                        message += "\nUnavailable " + instance.ItemType;
-
-                        DrawDebugString(debug, message, instance.RotationPositionMatrix * viewProjection);
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * viewProjection,
+                            instance + "\nUnavailable " + instance.ItemType + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
                         AddObjectHeightLine(room, instance.Position);
@@ -1489,7 +1473,10 @@ namespace TombEditor.Controls
                         color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
                         _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        DrawDebugString(debug, instance.ToString(), instance.RotationPositionMatrix * viewProjection);
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * viewProjection,
+                            instance.ToString()));
 
                         // Add the line height of the object
                         AddObjectHeightLine(room, instance.Position);
@@ -1527,7 +1514,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawMoveables(Matrix4x4 viewProjection, List<MoveableInstance> moveablesToDraw, Debug debug)
+        private void DrawMoveables(Matrix4x4 viewProjection, List<MoveableInstance> moveablesToDraw, List<Text> textToDraw)
         {
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
@@ -1551,8 +1538,6 @@ namespace TombEditor.Controls
                     if (skinMoveable != null)
                         skin = _wadRenderer.GetMoveable(skinMoveable);
                 }
-
-                debug.NumMoveables++;
 
                 Room room = instance.Room;
 
@@ -1588,27 +1573,20 @@ namespace TombEditor.Controls
                     foreach (var submesh in mesh.Submeshes)
                     {
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-
-                        debug.NumVerticesObjects += submesh.Value.NumIndices;
-                        debug.NumTrianglesObjects += submesh.Value.NumIndices / 3;
                     }
                 }
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = moveable.ToString(_editor.Level.Settings.WadGameVersion) +
-                                     " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
-
-                    // Object position
-                    message += "\n" + GetObjectPositionString(room, instance);
-                    message += "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2);
-
-                    // Add OCB
-                    if (instance.Ocb != 0)
-                        message += "\nOCB: " + instance.Ocb;
-
-                    BuildTriggeredByMessage(ref message, instance);
-                    DrawDebugString(debug, message, instance.ObjectMatrix * viewProjection);
+                    // Add text message
+                    textToDraw.Add(CreateTextTagForObject(
+                        instance.RotationPositionMatrix * viewProjection,
+                        moveable.ToString(_editor.Level.Settings.WadGameVersion) +
+                            " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                            "\n" + GetObjectPositionString(room, instance) +
+                            "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
+                            (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
+                            BuildTriggeredByMessage(instance)));
 
                     // Add the line height of the object
                     AddObjectHeightLine(room, instance.Position);
@@ -1618,7 +1596,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawRoomImportedGeometry(Matrix4x4 viewProjection, List<ImportedGeometryInstance> importedGeometryToDraw, Debug debug)
+        private void DrawRoomImportedGeometry(Matrix4x4 viewProjection, List<ImportedGeometryInstance> importedGeometryToDraw, List<Text> textToDraw)
         {
             var geometryEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["RoomGeometry"];
 
@@ -1679,17 +1657,15 @@ namespace TombEditor.Controls
 
                         geometryEffect.Techniques[0].Passes[0].Apply();
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-
-                        debug.NumVerticesRooms += submesh.Value.NumIndices;
-                        debug.NumTrianglesRooms += submesh.Value.NumIndices / 3;
                     }
                 }
 
                 if (_editor.SelectedObject == instance)
                 {
-                    // Object position
-                    DrawDebugString(debug, instance + "\n" +
-                        GetObjectPositionString(_editor.SelectedRoom, instance), instance.ObjectMatrix * viewProjection);
+                    // Add text message
+                    textToDraw.Add(CreateTextTagForObject(
+                        instance.RotationPositionMatrix * viewProjection,
+                        instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance)));
 
                     // Add the line height of the object
                     AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
@@ -1699,7 +1675,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawStatics(Matrix4x4 viewProjection, List<StaticInstance> staticsToDraw, Debug debug)
+        private void DrawStatics(Matrix4x4 viewProjection, List<StaticInstance> staticsToDraw, List<Text> textToDraw)
         {
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
@@ -1728,8 +1704,6 @@ namespace TombEditor.Controls
                     _legacyDevice.SetIndexBuffer(model.IndexBuffer, true);
                 }
 
-                debug.NumStaticMeshes++;
-
                 staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector3(1.0f));
                 staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 if (_editor.SelectedObject == instance)
@@ -1748,23 +1722,19 @@ namespace TombEditor.Controls
                     foreach (var submesh in mesh.Submeshes)
                     {
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-
-                        debug.NumVerticesObjects += submesh.Value.NumIndices;
-                        debug.NumTrianglesObjects += submesh.Value.NumIndices / 3;
                     }
                 }
 
                 if (_editor.SelectedObject == instance)
                 {
-                    string message = @static.ToString(_editor.Level.Settings.WadGameVersion) +
-                                     " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]";
-
-                    // Object position
-                    message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance);
-                    message += "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2);
-
-                    BuildTriggeredByMessage(ref message, instance);
-                    DrawDebugString(debug, message, instance.ObjectMatrix * viewProjection);
+                    // Add text message
+                    textToDraw.Add(CreateTextTagForObject(
+                        instance.RotationPositionMatrix * viewProjection,
+                        @static.ToString(_editor.Level.Settings.WadGameVersion) +
+                            " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                            "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) +
+                            "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
+                            BuildTriggeredByMessage(instance)));
 
                     // Add the line height of the object
                     AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
@@ -1774,13 +1744,18 @@ namespace TombEditor.Controls
             }
         }
 
-        public void DrawDebugString(Debug debug, string message, Matrix4x4 transformation, Vector3 offset = new Vector3())
+        private Text CreateTextTagForObject(Matrix4x4 matrix, string message)
         {
-            Size size = ClientSize;
-            Vector3 screenPos = SharpDxConversions.Project(Vector3.Zero, transformation, 0, 0, size.Width, size.Height);
-            screenPos += offset; // Offset text a little bit
-            debug.AddString(message, screenPos);
+            return new Text
+            {
+                Font = _fontDefault,
+                TextAlignment = new Vector2(0.0f, 0.0f),
+                PixelPos = new VectorInt2(10, -10),
+                Pos = matrix.TransformPerspectively(new Vector3()).To2(),
+                String = message
+            };
         }
+
 
         private List<Room> CollectRoomsToDraw(Room baseRoom)
         {
@@ -1900,7 +1875,7 @@ namespace TombEditor.Controls
             });
 
             // Reset
-            Debug debug = new Debug();
+            List<Text> textToDraw = new List<Text>();
             _drawHeightLine = false;
             _drawFlybyPath = false;
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).Bind();
@@ -1913,8 +1888,6 @@ namespace TombEditor.Controls
             for (int i = 0; i < roomsToDraw.Length; ++i)
                 roomsToDrawDistanceSquared[i] = Vector3.DistanceSquared(Camera.GetPosition(), roomsToDraw[i].WorldPos + roomsToDraw[i].GetLocalCenter());
             Array.Sort(roomsToDrawDistanceSquared, roomsToDraw);
-
-            debug.NumRooms = roomsToDraw.Length;
 
             // Collect objects to draw
             List<MoveableInstance> moveablesToDraw = new List<MoveableInstance>();
@@ -1935,40 +1908,34 @@ namespace TombEditor.Controls
             {
                 Size size = ClientSize;
                 for (int i = 0; i < roomsToDraw.Length; i++)
-                {
-                    string message = roomsToDraw[i].Name;
-
-                    var pos = roomsToDraw[i].WorldPos;
-                    var world = Matrix4x4.CreateTranslation(pos);
-                    Matrix4x4 wvp = world * viewProjection;
-                    Vector3 screenPos = SharpDxConversions.Project(roomsToDraw[i].GetLocalCenter(), wvp, 0, 0, size.Width, size.Height);
-                    debug.AddString(message, screenPos);
-                }
+                    textToDraw.Add(new Text
+                    {
+                        Font = _fontDefault,
+                        Pos = (Matrix4x4.CreateTranslation(roomsToDraw[i].WorldPos) * viewProjection).TransformPerspectively(roomsToDraw[i].GetLocalCenter()).To2(),
+                        String = roomsToDraw[i].Name
+                    });
             }
 
             // Draw North, South, East and West
             {
-                float xBlocks = _editor.SelectedRoom.NumXSectors / 2.0f * 1024.0f;
-                float zBlocks = _editor.SelectedRoom.NumZSectors / 2.0f * 1024.0f;
-
                 string[] messages = { "+Z (North)", "-Z (South)", "+X (East)", "-X (West)" };
-                Vector3[] positions = new Vector3[4];
+                Vector3[] positions = new Vector3[4]
+                    {
+                        new Vector3(0, 0, _editor.SelectedRoom.NumZSectors * 512.0f),
+                        new Vector3(0, 0, _editor.SelectedRoom.NumZSectors * -512.0f),
+                        new Vector3(_editor.SelectedRoom.NumXSectors * 512.0f, 0, 0),
+                        new Vector3(_editor.SelectedRoom.NumXSectors * -512.0f, 0, 0)
+                     };
 
                 Vector3 center = _editor.SelectedRoom.GetLocalCenter();
-                Vector3 pos = _editor.SelectedRoom.WorldPos;
-
-                positions[0] = center + new Vector3(0, 0, zBlocks);
-                positions[1] = center + new Vector3(0, 0, -zBlocks);
-                positions[2] = center + new Vector3(xBlocks, 0, 0);
-                positions[3] = center + new Vector3(-xBlocks, 0, 0);
-
-                Matrix4x4 wvp = Matrix4x4.CreateTranslation(pos) * viewProjection;
-                Size size = ClientSize;
+                Matrix4x4 matrix = Matrix4x4.CreateTranslation(_editor.SelectedRoom.WorldPos) * viewProjection;
                 for (int i = 0; i < 4; i++)
-                {
-                    Vector3 screenPos = SharpDxConversions.Project(positions[i], wvp, 0, 0, size.Width, size.Height);
-                    debug.AddString(messages[i], screenPos - new Vector3(45, 0, 0));
-                }
+                    textToDraw.Add(new Text
+                    {
+                        Font = _fontDefault,
+                        Pos = matrix.TransformPerspectively(center + positions[i]).To2(),
+                        String = messages[i]
+                    });
             }
 
             // Draw skybox
@@ -1990,9 +1957,9 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 if (ShowMoveables)
-                    DrawMoveables(viewProjection, moveablesToDraw, debug);
+                    DrawMoveables(viewProjection, moveablesToDraw, textToDraw);
                 if (ShowStatics)
-                    DrawStatics(viewProjection, staticsToDraw, debug);
+                    DrawStatics(viewProjection, staticsToDraw, textToDraw);
 
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
             }
@@ -2008,7 +1975,7 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 // Draw imported geometry
-                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, debug);
+                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw);
 
                 // Reset GPU states
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
@@ -2019,24 +1986,34 @@ namespace TombEditor.Controls
             if (ShowOtherObjects)
             {
                 // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
-                DrawObjects(viewProjection, _editor.SelectedRoom, debug);
+                DrawObjects(viewProjection, _editor.SelectedRoom, textToDraw);
                 // Draw light objects and bounding volumes only for current room
-                DrawLights(viewProjection, _editor.SelectedRoom, debug);
+                DrawLights(viewProjection, _editor.SelectedRoom, textToDraw);
             }
 
             // Draw the height of the object
             DrawDebugLines(viewProjection);
 
+            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+
             // Draw the gizmo
             _gizmo.Draw(viewProjection);
 
             watch.Stop();
-            debug.Fps = 1.0 / watch.Elapsed.TotalSeconds;
 
-            // Draw debug info
-            debug.Draw(DeviceManager.DefaultDeviceManager, _editor.SelectedObject?.ToString(), _editor.Configuration.Rendering3D_TextColor);
+            // Draw debug string
+            textToDraw.Add(new Text
+            {
+                Font = _fontDefault,
+                PixelPos = new Vector2(10, -10),
+                Alignment = new Vector2(0.0f, 0.0f),
+                String = "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + ", Rooms vertices: " + roomsToDraw.Sum(room => room.RoomGeometry.VertexPositions.Count) + "\n" +
+                    "Rooms: " + roomsToDraw.Length + ", Moveables: " + moveablesToDraw.Count + ", Static Meshes: " + staticsToDraw.Count + "\n" +
+                    "Selected Object: " + _editor.SelectedObject
+            });
 
-            //logger.Debug("Draw Call! " + watch.Elapsed.TotalSeconds + "ms");
+            // Finish strings
+            SwapChain.RenderText(textToDraw);
         }
 
         private static float GetFloorHeight(Room room, Vector3 position)

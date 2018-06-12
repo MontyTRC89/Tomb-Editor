@@ -22,6 +22,8 @@ namespace TombLib
         public static VectorInt2 operator -(VectorInt2 value) => new VectorInt2(-value.X, -value.Y);
         public static VectorInt2 operator *(VectorInt2 value, int scale) => new VectorInt2(value.X * scale, value.Y * scale);
         public static VectorInt2 operator /(VectorInt2 value, int scale) => new VectorInt2(value.X / scale, value.Y / scale);
+        public static VectorInt2 operator *(VectorInt2 first, VectorInt2 second) => new VectorInt2(first.X * second.X, first.Y * second.Y);
+        public static VectorInt2 operator /(VectorInt2 first, VectorInt2 second) => new VectorInt2(first.X / second.X, first.Y / second.Y);
         public static bool operator ==(VectorInt2 first, VectorInt2 second) => first.X == second.X && first.Y == second.Y;
         public static bool operator !=(VectorInt2 first, VectorInt2 second) => first.X != second.X || first.Y != second.Y;
         public static implicit operator Vector2(VectorInt2 value) => new Vector2(value.X, value.Y);
