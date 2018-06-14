@@ -14,6 +14,7 @@ using TombLib.Graphics.Primitives;
 using TombLib.Wad;
 using TombLib;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
+using TombLib.LevelData;
 
 namespace WadTool.Controls
 {
@@ -42,6 +43,15 @@ namespace WadTool.Controls
         public bool DrawGizmo { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawLights { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawRoom { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Level Level { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Room Room { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Vector3 RoomPosition { get; set; }
 
         private GraphicsDevice _device;
         private DeviceManager _deviceManager;
@@ -180,6 +190,58 @@ namespace WadTool.Controls
             return Buffer.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
         }
 
+        private List<ImageC> _textureAtlasImages =new List<ImageC>();
+        private Texture2D _textureAtlas;
+        private Vector2 _textureAtlasRemappingSize;
+
+        public void RebuildRoomsTextureAtlas()
+        {
+            if (_device == null)
+                return;
+            var textures = Level.Settings.Textures;
+
+
+            // Update texture list
+            _textureAtlasImages.Clear();
+            for (int i = 0; i < textures.Count; ++i)
+                _textureAtlasImages.Add(textures[i].Image);
+
+            // Delete old texture list
+            _textureAtlas?.Dispose();
+            _textureAtlas = null;
+
+            // Build texture atlas
+            if (textures.Count > 0)
+            {
+                // TODO Support more than 1 texture
+                ImageC texture = textures[0].Image;
+
+                const int maxTextureSize = 8096;
+                if (texture.Height > maxTextureSize)
+                {
+                    // HACK Split really high texture into multiple columns
+                    const int texturePageHeight = maxTextureSize - 256; // Subtract maximum tile size
+                    int pageCount = (texture.Height + texturePageHeight - 1) / texturePageHeight;
+                    var remappedTexture = ImageC.CreateNew(texture.Width * pageCount, maxTextureSize);
+
+                    for (int i = 0; i < pageCount; ++i)
+                    {
+                        int fromY = texturePageHeight * i;
+                        int fromHeight = Math.Min(texture.Height - texturePageHeight * i, 8096);
+                        remappedTexture.CopyFrom(texture.Width * i, 0, texture, 0, fromY, texture.Width, fromHeight);
+                    }
+
+                    _textureAtlas = TextureLoad.Load(_device, remappedTexture);
+                    _textureAtlasRemappingSize = new Vector2(texture.Width, texturePageHeight);
+                }
+                else
+                {
+                    _textureAtlas = TextureLoad.Load(_device, texture);
+                    _textureAtlasRemappingSize = new Vector2(float.MaxValue);
+                }
+            }
+        }
+
         public void Draw()
         {
             if (_device == null || _presenter == null)
@@ -195,6 +257,33 @@ namespace WadTool.Controls
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+
+            if (Level != null && Room != null)
+            {
+                Effect roomsEffect = _deviceManager.Effects["Room"];
+
+                roomsEffect.Parameters["TextureEnabled"].SetValue(true);
+                roomsEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
+                roomsEffect.Parameters["Highlight"].SetValue(false);
+                roomsEffect.Parameters["Dim"].SetValue(false);
+                roomsEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+                roomsEffect.Parameters["Texture"].SetResource(_textureAtlas);
+                roomsEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
+                roomsEffect.Parameters["UseVertexColors"].SetValue(true);
+                roomsEffect.Parameters["TextureAtlasRemappingSize"].SetValue(_textureAtlasRemappingSize);
+                roomsEffect.Parameters["TextureCoordinateFactor"].SetValue(_textureAtlas == null ? new Vector2(0) : new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
+
+                _device.SetVertexBuffer(0, Room.VertexBuffer);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, Room.VertexBuffer));
+
+                var world = Matrix4x4.CreateTranslation(new Vector3(-RoomPosition.X, 0, -RoomPosition.Z));
+
+                roomsEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+
+                roomsEffect.Techniques[0].Passes[0].Apply();
+                _device.Draw(PrimitiveType.TriangleList, Room.VertexBuffer.ElementCount);
+
+            }
 
             Effect solidEffect = _deviceManager.Effects["Solid"];
 

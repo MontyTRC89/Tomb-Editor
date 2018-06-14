@@ -72,6 +72,9 @@ namespace WadTool
                 tool.DestinationWad = newWad;
             else
                 tool.SourceWad = newWad;
+
+            if (destination && owner is FormMain)
+                ((Form)owner).Text = "Wad Tool - " + selectedFilePath;
         }
 
         public static void SaveWad(WadToolClass tool, IWin32Window owner, Wad2 wadToSave, bool ask)
