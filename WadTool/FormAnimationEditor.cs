@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;
+using TombLib.LevelData;
+using TombLib.LevelData.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -27,7 +29,8 @@ namespace WadTool
         private WadRenderer _renderer;
         private AnimatedModel _model;
         private bool _saved = true;
-        
+        private Level _level;
+
         // Clipboard
         private KeyFrame _clipboardKeyFrame = null;
         private AnimationNode _clipboardNode = null;
@@ -1260,6 +1263,41 @@ namespace WadTool
                 SelectFrame(0);
                 panelRendering.Invalidate();
             }
+        }
+
+        private void loadPrj2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _level = Prj2Loader.LoadFromPrj2("testwall.prj2", null, new Prj2Loader.Settings { IgnoreWads = true });
+            panelRendering.Level = _level;
+
+            // Load rooms into the combo box
+            comboRooms.Enabled = true;
+            comboRooms.Items.Clear();
+            comboRooms.Items.Add("--- Select room ---");
+            foreach (var room in _level.Rooms)
+                if (room != null)
+                    comboRooms.Items.Add(room);
+            
+            // Prepare the texture atlas
+            panelRendering.RebuildRoomsTextureAtlas();
+
+            panelRendering.Invalidate();
+        }
+
+        private void comboRooms_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboRooms.SelectedIndex == 0)
+            {
+                panelRendering.Room = null;
+                panelRendering.RoomPosition = Vector3.Zero;
+            }
+            else
+            {
+                panelRendering.Room = (Room)comboRooms.SelectedItem;
+                panelRendering.RoomPosition = panelRendering.Room.GetLocalCenter();
+            }
+
+            panelRendering.Invalidate();
         }
     }
 }

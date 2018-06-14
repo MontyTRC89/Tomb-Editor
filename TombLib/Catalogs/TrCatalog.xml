@@ -2341,9 +2341,9 @@
             <sound id="40" name="Cog resaw library"/>
             <sound id="41" name="Lara general death"/>
             <sound id="42" name="Lara knees death"/>
-            <sound id="43" name="Lara uzi fire"/>
-            <sound id="44" name="Lara uzi stop"/>
-            <sound id="45" name="Lara shotgun"/>
+            <sound id="43" name="Lara uzi fire" fixed_by_default="true"/>
+            <sound id="44" name="Lara uzi stop" fixed_by_default="true"/>
+            <sound id="45" name="Lara shotgun" fixed_by_default="true"/>
             <sound id="46" name="Lara block push1"/>
             <sound id="47" name="Lara block push2"/>
             <sound id="48" name="Sarlid palaces" fixed_by_default="true"/>
