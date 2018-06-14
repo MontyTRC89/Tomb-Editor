@@ -316,7 +316,7 @@ namespace TombEditor
 
             int[] adj = new int[8];
             for (int i = 0; i < 8; i++)
-                adj[i] = currBlock.Room.Position.Y - lookupBlocks[i].Room.Position.Y;
+                adj[i] = (currBlock.Room != null ? currBlock.Room.Position.Y : 0) - (lookupBlocks[i].Room != null ? lookupBlocks[i].Room.Position.Y : 0);
 
             short[] newFaces = new short[4];
 
