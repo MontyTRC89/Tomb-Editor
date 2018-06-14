@@ -407,6 +407,13 @@ namespace TombEditor.Controls
                             float posY0 = ToVisualY(groupArea, room.MaxDepth);
                             float posY1 = ToVisualY(groupArea, room.MinDepth);
 
+                            // HACK: if a rooms is full of walls (but why a designer should do this???) then 
+                            // MaxDepth or MinDepth can be int.MinValue or int.MaxValue and posY0 or posY1 get fucked...
+                            // However I'm solving the issue elsewhere, this hack is here as a really last chance for 
+                            // the 0.0000000001% of the cases that could be wrong
+                            if (Math.Abs(posY0) >= short.MaxValue || Math.Abs(posY1) >= short.MaxValue)
+                                continue;
+
                             // Draw fill color for room
                             Brush colorBrush = _roomsNormalBrush;
                             if (room.Block != null && room.Block.Type != BlockType.Floor)

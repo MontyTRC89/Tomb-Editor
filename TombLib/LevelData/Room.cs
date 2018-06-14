@@ -2844,7 +2844,7 @@ namespace TombLib.LevelData
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
                         max = Math.Max(max, Blocks[x, z].CeilingMax);
-            return max;
+            return (max == int.MinValue ? DefaultHeight : max);
         }
 
         public int GetHighestCorner()
@@ -2861,7 +2861,7 @@ namespace TombLib.LevelData
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
                         min = Math.Min(min, Blocks[x, z].FloorMin);
-            return min;
+            return (min == int.MaxValue ? 0 : min);
         }
 
         public int GetLowestCorner()
