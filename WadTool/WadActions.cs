@@ -415,7 +415,7 @@ namespace WadTool
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -451,7 +451,7 @@ namespace WadTool
 
                 return animation;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
