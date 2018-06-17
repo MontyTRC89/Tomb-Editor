@@ -17,13 +17,10 @@ namespace WadTool
     public partial class FormMain : DarkForm
     {
         private readonly WadToolClass _tool;
-        private readonly DeviceManager _deviceManager;
         private bool _playAnimation;
 
         public FormMain(WadToolClass tool)
         {
-            _deviceManager = new DeviceManager();
-
             InitializeComponent();
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             // Only how debug menu when a debugger is attached...
@@ -32,7 +29,7 @@ namespace WadTool
             _tool = tool;
 
             panel3D.Configuration = tool.Configuration;
-            panel3D.InitializeRendering(_deviceManager.Device);
+            panel3D.InitializeRendering(DeviceManager.DefaultDeviceManager.Device);
             panel3D.AnimationScrollBar = scrollbarAnimations;
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
@@ -312,13 +309,13 @@ namespace WadTool
         private void treeDestWad_DoubleClick(object sender, EventArgs e)
         {
             StopAnimation();
-            WadActions.EditObject(_tool, this, _deviceManager);
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
 
         private void treeSourceWad_DoubleClick(object sender, EventArgs e)
         {
             StopAnimation();
-            WadActions.EditObject(_tool, this, _deviceManager);
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
 
         private void treeDestWad_KeyDown(object sender, KeyEventArgs e)
@@ -400,7 +397,7 @@ namespace WadTool
 
         private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var form = new FormMesh(_tool, _deviceManager, _tool.DestinationWad))
+            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
                 form.ShowDialog();
         }
 
@@ -509,7 +506,7 @@ namespace WadTool
         {
             var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
             var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-            using (var form = new FormSkeletonEditor(_tool, _deviceManager, wad, moveableId))
+            using (var form = new FormSkeletonEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
             {
                 if (form.ShowDialog() != DialogResult.OK)
                     return;
@@ -521,7 +518,7 @@ namespace WadTool
         {
             var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
             var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
-            using (var form = new FormAnimationEditor(_tool, _deviceManager, wad, moveableId))
+            using (var form = new FormAnimationEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
             {
                 if (form.ShowDialog() != DialogResult.OK)
                     return;

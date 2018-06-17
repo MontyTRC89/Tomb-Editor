@@ -78,6 +78,11 @@ namespace TombLib.Rendering.DirectX11
         {
             if (Device.CurrentRenderTarget == this)
                 return;
+            BindForce();
+        }
+
+        public void BindForce()
+        {
             Device.Context.Rasterizer.SetViewport(0, 0, Size.X, Size.Y, 0.0f, 1.0f);
             Device.Context.OutputMerger.SetTargets(DepthBufferView, BackBufferView);
             Device.CurrentRenderTarget = this;
