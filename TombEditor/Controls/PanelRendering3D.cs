@@ -285,7 +285,6 @@ namespace TombEditor.Controls
             {
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
                 _wadRenderer = new WadRenderer(_legacyDevice, true);
-                logger.Info("Starting DirectX 11");
 
                 // Maybe I could use this as bounding box, scaling it properly before drawing
                 _linesCube = GeometricPrimitive.LinesCube.New(_legacyDevice, 128, 128, 128);
@@ -331,7 +330,6 @@ namespace TombEditor.Controls
 
                 ResetCamera();
             }
-            logger.Info("Graphic Device ready");
         }
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
@@ -1878,7 +1876,7 @@ namespace TombEditor.Controls
             List<Text> textToDraw = new List<Text>();
             _drawHeightLine = false;
             _drawFlybyPath = false;
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).Bind();
+            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 

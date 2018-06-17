@@ -59,7 +59,7 @@ namespace TombLib.Controls
             }
         }
 
-        private GraphicsDevice _device;
+        private GraphicsDevice _legacyDevice;
         private RasterizerState _rasterizerWireframe;
         private float _lastX;
         private float _lastY;
@@ -114,7 +114,7 @@ namespace TombLib.Controls
             base.InitializeRendering(device);
 
             // Reset scrollbar
-            _device = DeviceManager.DefaultDeviceManager.___LegacyDevice;
+            _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
             _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true);
 
             ResetCamera();
@@ -135,8 +135,8 @@ namespace TombLib.Controls
                     SlopeScaledDepthBias = 0
                 };
 
-            _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
-            _spriteBatch = new SpriteBatch(_device);
+            _rasterizerWireframe = RasterizerState.New(_legacyDevice, renderStateDesc);
+            _spriteBatch = new SpriteBatch(_legacyDevice);
         }
 
         public void ResetCamera()
@@ -168,17 +168,15 @@ namespace TombLib.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_soundInfoEditor.Visible || _device == null)
+            if (_soundInfoEditor.Visible || _legacyDevice == null)
                 return;
             base.OnPaint(e);
         }
 
         protected override void OnDraw()
         {
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).Bind();
-            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-            _device.SetBlendState(_device.BlendStates.Opaque);
-            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
+            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (CurrentObject is WadMoveable)
@@ -192,7 +190,7 @@ namespace TombLib.Controls
 
                 effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+                effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
                 // Build animation transforms
                 var matrices = new List<Matrix4x4>();
@@ -213,16 +211,16 @@ namespace TombLib.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
-                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
-                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
 
                     effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
 
                     effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var submesh in mesh.Submeshes)
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
             }
             else if (CurrentObject is WadStatic)
@@ -234,21 +232,21 @@ namespace TombLib.Controls
                 effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                 effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+                effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     var mesh = model.Meshes[i];
 
-                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
-                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
 
                     effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                     effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var submesh in mesh.Submeshes)
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
             }
             else if (CurrentObject is WadSpriteSequence)
@@ -263,14 +261,14 @@ namespace TombLib.Controls
                     if (_spriteTextureData != sprite.Texture)
                     {
                         _spriteTexture?.Dispose();
-                        _spriteTexture = TextureLoad.Load(_device, sprite.Texture.Image);
+                        _spriteTexture = TextureLoad.Load(_legacyDevice, sprite.Texture.Image);
                         _spriteTextureData = sprite.Texture;
                     }
 
                     // Draw
                     int x = (ClientSize.Width - _spriteTextureData.Image.Width) / 2;
                     int y = (ClientSize.Height - _spriteTextureData.Image.Height) / 2;
-                    _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
+                    _spriteBatch.Begin(SpriteSortMode.Immediate, _legacyDevice.BlendStates.AlphaBlend);
                     _spriteBatch.Draw(_spriteTexture, new SharpDX.DrawingRectangle(x, y, _spriteTextureData.Image.Width, _spriteTextureData.Image.Height), SharpDX.Color.White);
                     _spriteBatch.End();
                 }
