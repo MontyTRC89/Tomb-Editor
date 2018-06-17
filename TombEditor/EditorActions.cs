@@ -2587,19 +2587,14 @@ namespace TombEditor
                             model.Materials.Add(materialAdditiveBlending);
                             model.Materials.Add(materialAdditiveBlendingDoubleSided);
 
-                            /*var minPosition = Vector3.One * float.MaxValue;
-                            foreach (var room in rooms)
-                            {
-                                if (room.WorldPos.X < minPosition.X) minPosition.X = room.WorldPos.X;
-                                if (room.WorldPos.Y < minPosition.Y) minPosition.Y = room.WorldPos.Y;
-                                if (room.WorldPos.Z < minPosition.Z) minPosition.Z = room.WorldPos.Z;
-                            }*/
+                            //var db = new RoomXmlFile();
 
                             foreach (var room in rooms)
                             {
                                 var mesh = new IOMesh("TeRoom_" + _editor.Level.Rooms.ReferenceIndexOf(room));
                                 mesh.Position = room.WorldPos;
-                                //var deltaPos = new Vector3(room.GetLocalCenter().X, 0, room.GetLocalCenter().Z);
+
+                               // db.Rooms.Add(mesh.Name, new RoomXmlFile(mesh.Name, room.WorldPos, _editor.Level.Rooms.ReferenceIndexOf(room)));
 
                                 // Add submeshes
                                 mesh.Submeshes.Add(materialOpaque, new IOSubmesh(materialOpaque));
@@ -2646,7 +2641,7 @@ namespace TombEditor
 
                                                 foreach (var index in indices)
                                                 {
-                                                    mesh.Positions.Add(vertices[index].Position /*- deltaPos*/ + room.WorldPos /*- minPosition*/);
+                                                    mesh.Positions.Add(vertices[index].Position + room.WorldPos);
                                                     mesh.UV.Add(vertices[index].UV);
                                                     mesh.Colors.Add(vertices[index].Color);
                                                 }
@@ -2655,11 +2650,12 @@ namespace TombEditor
                                     }
                                 }
 
-                                //mesh.Texture = _editor.Level.Settings.Textures[0];
                                 model.Meshes.Add(mesh);
                             }
 
-                            if (exporter.ExportToFile(model, saveFileDialog.FileName))
+                            string dbFile = Path.GetDirectoryName(saveFileDialog.FileName) + "\\" + Path.GetFileNameWithoutExtension(saveFileDialog.FileName) + ".xml";
+
+                            if (exporter.ExportToFile(model, saveFileDialog.FileName) /*&& RoomsImportExportXmlDatabase.WriteToFile(dbFile, db)*/)
                             {
                                 DarkMessageBox.Show(owner, "Room exported correctly", "Information", MessageBoxButtons.OK,
                                                 MessageBoxIcon.Information);
@@ -2698,8 +2694,55 @@ namespace TombEditor
                 _editor.Level.Settings.ImportedGeometryUpdate(newObject, info);
                 _editor.Level.Settings.ImportedGeometries.Add(newObject);
 
+                // Translate the vertices to room's origin
+                foreach (var mesh in newObject.DirectXModel.Meshes)
+                {
+                    // Find the room
+                    int roomIndex = int.Parse(mesh.Name.Split('_')[1]);
+                    var room = _editor.Level.Rooms[roomIndex];
+
+                    // Translate vertices
+                    for (int j = 0; j < mesh.Vertices.Count; j++)
+                    {
+                        var vertex = mesh.Vertices[j];
+                        vertex.Position.X -= room.WorldPos.X;
+                        vertex.Position.Y -= room.WorldPos.Y;
+                        vertex.Position.Z -= room.WorldPos.Z;
+                        mesh.Vertices[j] = vertex;
+                    }
+                }
+
+                // Rebuild DirectX buffer
+                newObject.DirectXModel.UpdateBuffers();
+
+                // Load the XML db
+                /*string dbName = Path.GetDirectoryName(importedGeometryPath) + "\\" + Path.GetFileNameWithoutExtension(importedGeometryPath) + ".xml";
+                var db = RoomsImportExportXmlDatabase.LoadFromFile(dbName);
+                if (db == null)
+                    throw new FileNotFoundException("There must be also an XML file with the same name of the 3D file");
+*/
+
+                // Create a dictionary of the rooms by name
+               /* var roomDictionary = new Dictionary<string, IOMesh>();
+                foreach (var msh in newObject.DirectXModel)
+
+                // Translate rooms
+                for (int i=0;i<db.Rooms.Count;i++)
+                {
+                    string roomMeshName = db.Rooms.ElementAt(i).Key;
+                    foreach (var mesh in model.Meshes)
+                        for (int i = 0; i < mesh.Positions.Count; i++)
+                        {
+                            var pos = mesh.Positions[i];
+                            pos -= mesh.Origin;
+                            mesh.Positions[i] = pos;
+                        }
+                }
+                */
+
                 // Figure out the relevant rooms
-                List<int> roomIndices = new List<int>();
+                Dictionary<int, int> roomIndices = new Dictionary<int, int>();
+                int meshIndex = 0;
                 foreach (ImportedGeometryMesh mesh in newObject.DirectXModel.Meshes)
                 {
                     int currentIndex = 0;
@@ -2716,20 +2759,24 @@ namespace TombEditor
                         string roomIndexStr = mesh.Name.Substring(roomIndexStart + RoomIdentifier.Length, roomIndexEnd - (roomIndexStart + RoomIdentifier.Length));
                         ushort roomIndex;
                         if (ushort.TryParse(roomIndexStr, out roomIndex))
-                            roomIndices.Add(roomIndex);
+                        {
+                            roomIndices.Add(meshIndex, roomIndex);
+                            meshIndex++;
+                        }
 
                         currentIndex = roomIndexEnd;
                     } while (currentIndex < mesh.Name.Length);
                 }
-                roomIndices = roomIndices.Distinct().ToList();
+                //roomIndices = roomIndices.Distinct().ToList();
 
                 // Add rooms
-                foreach (int roomIndex in roomIndices)
+                foreach (var pair in roomIndices)
                 {
-                    Room room = _editor.Level.Rooms[roomIndex];
+                    Room room = _editor.Level.Rooms[pair.Value];
                     var newImported = new ImportedGeometryInstance();
                     newImported.Position = Vector3.Zero;
                     newImported.Model = newObject;
+                    newImported.MeshFilter = newObject.DirectXModel.Meshes[pair.Key].Name;
                     room.AddObject(_editor.Level, newImported);
                 }
             }

@@ -72,7 +72,7 @@ namespace TombLib.LevelData
 
         public bool MeshNameMatchesFilter(string meshName)
         {
-            return meshName.IndexOf(MeshFilter, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            return (meshName.ToLower() == MeshFilter.ToLower());
         }
     }
 }

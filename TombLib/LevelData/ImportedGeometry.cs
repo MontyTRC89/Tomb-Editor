@@ -52,6 +52,8 @@ namespace TombLib.LevelData
 
     public class ImportedGeometryMesh : Mesh<ImportedGeometryVertex>
     {
+        public bool HasVertexColors { get; set; }
+
         public ImportedGeometryMesh(GraphicsDevice device, string name)
             : base(device, name)
         { }
@@ -181,6 +183,8 @@ namespace TombLib.LevelData
                 {
                     var modelMesh = new ImportedGeometryMesh(DeviceManager.DefaultDeviceManager.Device, mesh.Name);
 
+                    modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
+
                     var currentIndex = 0;
                     var currPoly = 0;
                     foreach (var tmpSubmesh in mesh.Submeshes)
@@ -196,7 +200,7 @@ namespace TombLib.LevelData
                                 {
                                     var vertex = new ImportedGeometryVertex();
                                     vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                    vertex.Color = tmpPoly.Indices[i] > mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]] : Vector4.One;
+                                    vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]] : Vector4.One;
                                     vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                     modelMesh.Vertices.Add(vertex);
                                 }
@@ -217,6 +221,7 @@ namespace TombLib.LevelData
                                 {
                                     var vertex = new ImportedGeometryVertex();
                                     vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                    vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]] : Vector4.One;
                                     vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                     modelMesh.Vertices.Add(vertex);
                                     submesh.Indices.Add(currentIndex);
@@ -229,7 +234,7 @@ namespace TombLib.LevelData
 
                         modelMesh.Submeshes.Add(material, submesh);
                     }
-                    //modelMesh.Texture = mesh.Texture;
+
                     DirectXModel.Meshes.Add(modelMesh);
                 }
 
