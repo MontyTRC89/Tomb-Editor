@@ -53,5 +53,10 @@ namespace TombLib.Rendering
         {
             return first.Image != second.Image || first.From != second.From || first.To != second.To;
         }
+
+        public static implicit operator RenderingTexture(ImageC image)
+        {
+            return new RenderingTexture(image);
+        }
     };
 }
