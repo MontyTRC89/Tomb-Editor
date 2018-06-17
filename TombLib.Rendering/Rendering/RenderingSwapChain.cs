@@ -15,11 +15,18 @@ namespace TombLib.Rendering
         public Vector2 PixelPos = new Vector2();
         public Vector2 TextAlignment = new Vector2(0.5f);
         public Vector2 ScreenAlignment = new Vector2(0.5f);
-        public Vector2 Alignment
-        {
-            get { return ScreenAlignment; }
-            set { TextAlignment = ScreenAlignment = value; }
-        }
+        public Vector2 Alignment { set { TextAlignment = ScreenAlignment = value; } }
+    }
+
+    public class Sprite
+    {
+        public RenderingTexture Texture;
+        public Vector2 Pos00 = new Vector2(0.0f, 0.0f);
+        public Vector2 Pos10 = new Vector2(1.0f, 0.0f);
+        public Vector2 Pos01 = new Vector2(0.0f, 1.0f);
+        public Vector2 Pos11 = new Vector2(1.0f, 1.0f);
+        public Vector2 PosStart { set { Pos00 = value; Pos01.X = value.X; Pos10.Y = value.Y;  } }
+        public Vector2 PosEnd { set { Pos11 = value; Pos10.X = value.X; Pos01.Y = value.Y;  } }
     }
 
     public abstract class RenderingSwapChain : IDisposable
@@ -37,6 +44,7 @@ namespace TombLib.Rendering
         public abstract void ClearDepth();
         public abstract void Present();
         public abstract void Resize(VectorInt2 newSize);
+        public abstract void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, params Sprite[] sprites);
         /// <summary>Note that all fonts used in one call must be in the same texture allocator!</summary>
         public abstract void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos);
         public void RenderText(IEnumerable<Text> texts)

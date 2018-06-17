@@ -29,6 +29,7 @@ namespace TombLib.Rendering.DirectX11
         public readonly DeviceContext Context;
         public readonly Dx11PipelineState TestShader;
         public readonly Dx11PipelineState TextShader;
+        public readonly Dx11PipelineState SpriteShader;
         public readonly Dx11PipelineState RoomShader;
         public readonly RasterizerState RasterizerBackCulling;
         public readonly SamplerState SamplerDefault;
@@ -58,6 +59,11 @@ namespace TombLib.Rendering.DirectX11
                 new InputElement("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0)
             });
             TextShader = new Dx11PipelineState(this, "TextShader", new InputElement[]
+            {
+                new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
+                new InputElement("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
+            });
+            SpriteShader = new Dx11PipelineState(this, "SpriteShader", new InputElement[]
             {
                 new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
                 new InputElement("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
