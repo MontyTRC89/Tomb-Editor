@@ -93,7 +93,8 @@ namespace TombLib.GeometryIO.Importers
                     else if (chunk == "Object")
                     {
                         var name = line.Split(' ')[1];
-                        var mesh = new IOMesh(name);
+                        var mesh = new IOMesh(name.Replace("\"", ""));
+                        var tokensName = mesh.Name.Split('_');
                         positions = new List<Vector3>();
 
                         if (name.Contains("TeRoom_"))
@@ -121,10 +122,11 @@ namespace TombLib.GeometryIO.Importers
                                 for (var i = 0; i < numVertices; i++)
                                 {
                                     var tokensPosition = reader.ReadLine().Trim().Split(' ');
-                                    positions.Add(ApplyAxesTransforms(new Vector3(ParseFloatCultureInvariant(tokensPosition[0]),
-                                                                                  ParseFloatCultureInvariant(tokensPosition[1]),
-                                                                                  ParseFloatCultureInvariant(tokensPosition[2]))
-                                                                      )- translation);
+                                    var newPos = ApplyAxesTransforms(new Vector3(ParseFloatCultureInvariant(tokensPosition[0]),
+                                                                                 ParseFloatCultureInvariant(tokensPosition[1]),
+                                                                                 ParseFloatCultureInvariant(tokensPosition[2]))
+                                                                      );
+                                    positions.Add(newPos);
                                 }
                                 line = reader.ReadLine().Trim();
                             }
@@ -173,7 +175,7 @@ namespace TombLib.GeometryIO.Importers
                                         var tokensColor = stringColor.Split(' ');
                                         for (var k = 0; k < numVerticesInFace; k++)
                                         {
-                                            var color = ApplyColorTransform(GetColor(int.Parse(tokensVertices[k])));
+                                            var color = ApplyColorTransform(GetColor(long.Parse(tokensColor[k])));
                                             mesh.Colors.Add(color);
                                         }
                                     }
@@ -228,7 +230,7 @@ namespace TombLib.GeometryIO.Importers
             return s;
         }
 
-        private Vector4 GetColor(int color)
+        private Vector4 GetColor(long color)
         {
             var r = (float)(color & 0xFF);
             var g = (float)((color >> 8) & 0xFF);
