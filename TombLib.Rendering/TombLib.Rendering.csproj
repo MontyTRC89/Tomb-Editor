@@ -189,4 +189,12 @@
       <ShaderModel>4_0</ShaderModel>
     </PixelShader>
   </ItemGroup>
+  <ItemGroup>
+    <PixelShader Include="Rendering\DirectX11\SpriteShaderPS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </PixelShader>
+    <VertexShader Include="Rendering\DirectX11\SpriteShaderVS.hlsl">
+      <ShaderModel>4_0</ShaderModel>
+    </VertexShader>
+  </ItemGroup>
 </Project>

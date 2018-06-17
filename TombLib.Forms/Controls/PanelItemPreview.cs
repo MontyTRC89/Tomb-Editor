@@ -59,16 +59,18 @@ namespace TombLib.Controls
             }
         }
 
-        private GraphicsDevice _legacyDevice;
-        private RasterizerState _rasterizerWireframe;
+        // Interaction state
         private float _lastX;
         private float _lastY;
-        private SpriteBatch _spriteBatch;
-        private Texture2D _spriteTexture;
-        private WadTexture _spriteTextureData;
-        private WadRenderer _wadRenderer;
         private SoundInfoEditor _soundInfoEditor;
         private IWadObject _currentObject = null;
+
+        // Rendering state
+        private RenderingTextureAllocator _textureAllocator;
+
+        // Legacy rendering state
+        private GraphicsDevice _legacyDevice;
+        private WadRenderer _wadRenderer;
 
         public PanelItemPreview()
         {
@@ -113,30 +115,32 @@ namespace TombLib.Controls
         {
             base.InitializeRendering(device);
 
-            // Reset scrollbar
-            _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-            _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true);
+            _textureAllocator = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(1024, 1024, 1) });
 
-            ResetCamera();
+            // Legacy rendering state
+            {
+                // Reset scrollbar
+                _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
+                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true);
 
-            // Initialize the rasterizer state for wireframe drawing
-            SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
-                new SharpDX.Direct3D11.RasterizerStateDescription
-                {
-                    CullMode = SharpDX.Direct3D11.CullMode.None,
-                    DepthBias = 0,
-                    DepthBiasClamp = 0,
-                    FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                    IsAntialiasedLineEnabled = true,
-                    IsDepthClipEnabled = true,
-                    IsFrontCounterClockwise = false,
-                    IsMultisampleEnabled = true,
-                    IsScissorEnabled = false,
-                    SlopeScaledDepthBias = 0
-                };
+                ResetCamera();
 
-            _rasterizerWireframe = RasterizerState.New(_legacyDevice, renderStateDesc);
-            _spriteBatch = new SpriteBatch(_legacyDevice);
+                // Initialize the rasterizer state for wireframe drawing
+                SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
+                    new SharpDX.Direct3D11.RasterizerStateDescription
+                    {
+                        CullMode = SharpDX.Direct3D11.CullMode.None,
+                        DepthBias = 0,
+                        DepthBiasClamp = 0,
+                        FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
+                        IsAntialiasedLineEnabled = true,
+                        IsDepthClipEnabled = true,
+                        IsFrontCounterClockwise = false,
+                        IsMultisampleEnabled = true,
+                        IsScissorEnabled = false,
+                        SlopeScaledDepthBias = 0
+                    };
+            }
         }
 
         public void ResetCamera()
@@ -149,9 +153,7 @@ namespace TombLib.Controls
             if (disposing)
             {
                 _wadRenderer?.Dispose();
-                _spriteBatch?.Dispose();
-                _spriteTexture?.Dispose();
-                _rasterizerWireframe?.Dispose();
+                _textureAllocator?.Dispose();
                 _soundInfoEditor?.Dispose();
             }
             base.Dispose(disposing);
@@ -257,20 +259,17 @@ namespace TombLib.Controls
                 {
                     WadSprite sprite = spriteSequence.Sprites[spriteIndex];
 
-                    // Load texture
-                    if (_spriteTextureData != sprite.Texture)
-                    {
-                        _spriteTexture?.Dispose();
-                        _spriteTexture = TextureLoad.Load(_legacyDevice, sprite.Texture.Image);
-                        _spriteTextureData = sprite.Texture;
-                    }
+                    float aspectRatioViewport = (float)ClientSize.Width / ClientSize.Height;
+                    float aspectRatioImage = (float)sprite.Texture.Image.Width / sprite.Texture.Image.Height;
+                    float aspectRatioAdjust = aspectRatioViewport / aspectRatioImage;
+                    Vector2 factor = Vector2.Min(new Vector2(1.0f / aspectRatioAdjust, aspectRatioAdjust), new Vector2(1.0f));
 
-                    // Draw
-                    int x = (ClientSize.Width - _spriteTextureData.Image.Width) / 2;
-                    int y = (ClientSize.Height - _spriteTextureData.Image.Height) / 2;
-                    _spriteBatch.Begin(SpriteSortMode.Immediate, _legacyDevice.BlendStates.AlphaBlend);
-                    _spriteBatch.Draw(_spriteTexture, new SharpDX.DrawingRectangle(x, y, _spriteTextureData.Image.Width, _spriteTextureData.Image.Height), SharpDX.Color.White);
-                    _spriteBatch.End();
+                    SwapChain.RenderSprites(_textureAllocator, false, new Sprite
+                    {
+                        Texture = sprite.Texture.Image,
+                        PosStart = -0.9f * factor,
+                        PosEnd = 0.9f * factor
+                    });
                 }
             }
         }

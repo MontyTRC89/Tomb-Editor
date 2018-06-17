@@ -125,6 +125,62 @@ namespace TombLib.Rendering.DirectX11
             // ResizeTarget is not the correct method!
         }
 
+        public override unsafe void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, params Sprite[] sprites)
+        {
+            Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(textureAllocator.Size.X, textureAllocator.Size.Y);
+
+            // Build vertex buffer
+            int vertexCount = sprites.Length * 6;
+            int bufferSize = vertexCount * (sizeof(Vector2) + sizeof(ulong));
+            fixed (byte* data = new byte[bufferSize])
+            {
+                Vector2* positions = (Vector2*)(data);
+                ulong* uvws = (ulong*)(data + vertexCount * sizeof(Vector2));
+
+                // Setup vertices
+                int count = sprites.Length;
+                for (int i = 0; i < count; ++i)
+                {
+                    Sprite sprite = sprites[i];
+                    VectorInt3 texPos = textureAllocator.Get(sprite.Texture);
+                    VectorInt2 texSize = sprite.Texture.To - sprite.Texture.From;
+
+                    positions[i * 6 + 0] = sprite.Pos00;
+                    positions[i * 6 + 2] = positions[i * 6 + 3] = sprite.Pos10;
+                    positions[i * 6 + 1] = positions[i * 6 + 4] = sprite.Pos01;
+                    positions[i * 6 + 5] = sprite.Pos11;
+                    uvws[i * 6 + 0] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(0.5f, 0.5f));
+                    uvws[i * 6 + 2] = uvws[i * 6 + 3] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(texSize.X - 0.5f, 0.5f));
+                    uvws[i * 6 + 1] = uvws[i * 6 + 4] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(0.5f, texSize.Y - 0.5f));
+                    uvws[i * 6 + 5] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(texSize.X - 0.5f, texSize.Y - 0.5f));
+                }
+
+                // Create GPU resources
+                using (var VertexBuffer = new Buffer(Device.Device, new IntPtr(data),
+                    new BufferDescription(bufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
+                    CpuAccessFlags.None, ResourceOptionFlags.None, 0)))
+                {
+                    var VertexBufferBindings = new VertexBufferBinding[] {
+                        new VertexBufferBinding(VertexBuffer, sizeof(Vector2), (int)((byte*)positions - data)),
+                        new VertexBufferBinding(VertexBuffer, sizeof(ulong), (int)((byte*)uvws - data)) };
+
+                    // Render
+                    Bind();
+                    Device.SpriteShader.Apply(Device.Context);
+                    Device.Context.PixelShader.SetSampler(0, linearFilter ? Device.SamplerDefault : Device.SamplerRoundToNearest);
+                    Device.Context.PixelShader.SetShaderResources(0, ((Dx11RenderingTextureAllocator)(textureAllocator)).TextureView);
+                    Device.Context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
+                    Device.Context.OutputMerger.SetDepthStencilState(Device.DepthStencilNoZBuffer);
+
+                    // Render
+                    Device.Context.Draw(vertexCount, 0);
+
+                    // Reset state
+                    Device.Context.OutputMerger.SetDepthStencilState(Device.DepthStencilDefault);
+                }
+            }
+        }
+
         public override unsafe void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos)
         {
             Vector2 posScaling = new Vector2(1.0f) / (Size / 2); // Divide the integer coordinates to avoid pixel mishmash.
