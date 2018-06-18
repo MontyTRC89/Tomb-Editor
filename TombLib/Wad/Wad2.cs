@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TombLib.GeometryIO;
@@ -104,8 +105,15 @@ namespace TombLib.Wad
         {
             if (fileName.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase))
                 return Wad2Loader.LoadFromFile(fileName);
-            else if (fileName.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))
+            else if (fileName.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase) ||
+                fileName.EndsWith(".was", StringComparison.InvariantCultureIgnoreCase) ||
+                fileName.EndsWith(".sam", StringComparison.InvariantCultureIgnoreCase) ||
+                fileName.EndsWith(".sfx", StringComparison.InvariantCultureIgnoreCase) ||
+                fileName.EndsWith(".swd", StringComparison.InvariantCultureIgnoreCase))
             {
+                if (!fileName.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))
+                    fileName = Path.ChangeExtension(fileName, "wad");
+
                 var oldWad = new Tr4Wad.Tr4Wad();
                 oldWad.LoadWad(fileName);
                 return Tr4WadOperations.ConvertTr4Wad(oldWad, oldWadSoundPaths.ToList(), progressReporter);

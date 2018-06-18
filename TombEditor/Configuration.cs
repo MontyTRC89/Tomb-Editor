@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Numerics;
-using System.Windows.Forms;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -202,7 +202,7 @@ namespace TombEditor
 
         public static string GetDefaultPath()
         {
-            return Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "TombEditorConfiguration.xml");
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TombEditorConfiguration.xml");
         }
 
         public void Save(Stream stream)

@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using TombLib.GeometryIO;
+using System.Reflection;
 using TombLib.Utils;
 using TombLib.Wad;
 using ImportedGeometryUpdateInfo = System.Collections.Generic.KeyValuePair<TombLib.LevelData.ImportedGeometry, TombLib.LevelData.ImportedGeometryInfo>;
@@ -159,9 +159,9 @@ namespace TombLib.LevelData
             switch (type)
             {
                 case VariableType.EditorDirectory:
-                    return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);
+                    return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 case VariableType.ScriptDirectory:
-                    return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location) + Dir + "Script";
+                    return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + Dir + "Script";
                 case VariableType.LevelDirectory:
                     if (!string.IsNullOrEmpty(LevelFilePath))
                         return Path.GetDirectoryName(LevelFilePath);

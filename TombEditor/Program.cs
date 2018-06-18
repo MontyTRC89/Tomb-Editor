@@ -17,7 +17,7 @@ namespace TombEditor
         /// The main entry point of the application.
         /// </summary>
         [STAThread]
-        public static void Main()
+        public static void Main(string[] args)
         {
             // Load configuration
             var initialEvents = new List<LogEventInfo>();
@@ -34,13 +34,22 @@ namespace TombEditor
                 Application.AddMessageFilter(new ControlScrollFilter());
                 SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
-                TrCatalog.LoadCatalog("Catalogs\\TrCatalog.xml");
-                NgCatalog.LoadCatalog("Catalogs\\NgCatalog.xml");
+                TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TrCatalog.xml");
+                NgCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\NgCatalog.xml");
 
                 //Run
                 Editor editor = new Editor(SynchronizationContext.Current, configuration);
                 Editor.Instance = editor;
-                Application.Run(new FormMain(editor));
+                using (FormMain form = new FormMain(editor))
+                {
+                    form.Show();
+                    if (args.Length > 0) // Open files on start
+                        if (args[0].EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+                            EditorActions.OpenLevelPrj(form, args[0]);
+                        else
+                            EditorActions.OpenLevel(form, args[0]);
+                    Application.Run();
+                }
 
                 configuration.SaveTry();
             }

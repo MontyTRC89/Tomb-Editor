@@ -19,10 +19,36 @@ namespace WadTool
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static void LoadWad(WadToolClass tool, IWin32Window owner, bool destination)
+        public static void LoadWad(WadToolClass tool, IWin32Window owner, bool destination, string fileName)
+        {
+            // Load the WAD/Wad2
+            Wad2 newWad = null;
+            try
+            {
+                newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths2
+                    .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            catch (Exception exc)
+            {
+                logger.Info(exc, "Unable to load " + (destination ? "destination" : "source") + " file from '" + fileName + "'.");
+                DarkMessageBox.Show(owner, "Loading the file failed! \n" + exc.Message, "Loading failed", MessageBoxIcon.Error);
+                return;
+            }
+
+            // Set wad
+            if (destination)
+                tool.DestinationWad = newWad;
+            else
+                tool.SourceWad = newWad;
+        }
+
+        public static void LoadWadOpenFileDialog(WadToolClass tool, IWin32Window owner, bool destination)
         {
             // Open the file dialog
-            string selectedFilePath;
             using (var dialog = new OpenFileDialog())
             {
                 string previousFilePath;
@@ -46,35 +72,8 @@ namespace WadTool
                 dialog.Title = "Open " + (destination ? "destination" : "source") + " WAD - Wad2 - Level";
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
                     return;
-                selectedFilePath = dialog.FileName;
+                LoadWad(tool, owner, destination, dialog.FileName);
             }
-
-            // Load the WAD/Wad2
-            Wad2 newWad = null;
-            try
-            {
-                newWad = Wad2.ImportFromFile(selectedFilePath, tool.Configuration.OldWadSoundPaths2
-                    .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
-            }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
-            catch (Exception exc)
-            {
-                logger.Info(exc, "Unable to load " + (destination ? "destination" : "source") + " file from '" + selectedFilePath + "'.");
-                DarkMessageBox.Show(owner, "Loading the file failed! \n" + exc.Message, "Loading failed", MessageBoxIcon.Error);
-                return;
-            }
-
-            // Set wad
-            if (destination)
-                tool.DestinationWad = newWad;
-            else
-                tool.SourceWad = newWad;
-
-            if (destination && owner is FormMain)
-                ((Form)owner).Text = "Wad Tool - " + selectedFilePath;
         }
 
         public static void SaveWad(WadToolClass tool, IWin32Window owner, Wad2 wadToSave, bool ask)
@@ -231,7 +230,7 @@ namespace WadTool
                 // Ask for the new slot
                 do
                 {
-                    var result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.SuggestedGameVersion) + " is already occupied in the destination wad." + 
+                    var result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.SuggestedGameVersion) + " is already occupied in the destination wad." +
                                                      "Do you want to replace it (Yes) or to select another Id (No)?",
                                                      "Occupied slot", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     if (result == DialogResult.Cancel)

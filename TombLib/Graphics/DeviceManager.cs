@@ -20,7 +20,7 @@ namespace TombLib.Graphics
         {
             Device = GraphicsDevice.New(DriverType.Hardware, SharpDX.Direct3D11.DeviceCreationFlags.None, FeatureLevel.Level_10_0);
 
-            string resourcePath = Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);
+            string resourcePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
             // Load effects
             IEnumerable<string> effectFiles = Directory.EnumerateFiles(resourcePath + "\\Editor\\Shaders", "*.fx");

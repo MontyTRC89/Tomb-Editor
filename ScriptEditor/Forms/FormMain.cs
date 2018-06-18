@@ -778,7 +778,7 @@ namespace ScriptEditor
 			}
 		}
 
-		private void OpenFile(string filePath)
+		public void OpenFile(string filePath)
 		{
 			try
 			{

@@ -36,8 +36,12 @@ namespace WadTool
             panel3D.AnimationScrollBar = scrollbarAnimations;
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
+            Tool_EditorEventRaised(new InitEvent());
+
             int TODO_ALLOW_DRAG_DROP;
         }
+
+        private class InitEvent : IEditorEvent { };
 
         protected override void Dispose(bool disposing)
         {
@@ -51,19 +55,21 @@ namespace WadTool
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is WadToolClass.SelectedObjectEditedEvent)
+            if (obj is WadToolClass.SelectedObjectEditedEvent || obj is InitEvent)
             {
 
             }
-            if (obj is WadToolClass.DestinationWadChangedEvent)
+            if (obj is WadToolClass.DestinationWadChangedEvent || obj is InitEvent)
             {
                 treeDestWad.Wad = _tool.DestinationWad;
                 treeDestWad.UpdateContent();
 
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
+
+                Text = "Wad Tool - " + _tool.DestinationWad.FileName;
             }
-            if (obj is WadToolClass.SourceWadChangedEvent)
+            if (obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
             {
                 treeSourceWad.Wad = _tool.SourceWad;
                 treeSourceWad.UpdateContent();
@@ -73,7 +79,7 @@ namespace WadTool
             }
             if (obj is WadToolClass.MainSelectionChangedEvent ||
                 obj is WadToolClass.DestinationWadChangedEvent ||
-                obj is WadToolClass.SourceWadChangedEvent)
+                obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
             {
                 var mainSelection = _tool.MainSelection;
                 if (mainSelection == null)
@@ -151,19 +157,19 @@ namespace WadTool
         private void openDestinationWad2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StopAnimation();
-            WadActions.LoadWad(_tool, this, true);
+            WadActions.LoadWadOpenFileDialog(_tool, this, true);
         }
 
         private void butOpenDestWad_Click(object sender, EventArgs e)
         {
             StopAnimation();
-            WadActions.LoadWad(_tool, this, true);
+            WadActions.LoadWadOpenFileDialog(_tool, this, true);
         }
 
         private void butOpenSourceWad_Click(object sender, EventArgs e)
         {
             StopAnimation();
-            WadActions.LoadWad(_tool, this, false);
+            WadActions.LoadWadOpenFileDialog(_tool, this, false);
         }
 
         private void butAddObject_Click(object sender, EventArgs e)

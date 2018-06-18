@@ -39,7 +39,7 @@ namespace TombLib.Utils
                 AddTargetAndRule(config, minLogLevel, new FileTarget("File")
                 {
                     Layout = _layout,
-                    FileName = fileName,
+                    FileName = Assembly.GetExecutingAssembly() + "\\" + fileName,
                     KeepFileOpen = true,
                     DeleteOldFileOnStartup = true,
 

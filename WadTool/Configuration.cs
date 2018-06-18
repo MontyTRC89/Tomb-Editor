@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Windows.Forms;
+using System.Reflection;
 using System.Xml.Serialization;
 
 namespace WadTool
@@ -90,7 +90,7 @@ namespace WadTool
             switch (variableType)
             {
                 case VariableType.EditorDirectory:
-                    return Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);
+                    return Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
                 default:
                     throw new ArgumentException();
             }
@@ -130,7 +130,7 @@ namespace WadTool
 
         public static string GetDefaultPath()
         {
-            return Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "WadToolConfiguration.xml");
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "WadToolConfiguration.xml");
         }
 
         public void Save(Stream stream)
