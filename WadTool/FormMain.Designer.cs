@@ -75,7 +75,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.darkButton3 = new DarkUI.Controls.DarkButton();
             this.timerPlayAnimation = new System.Windows.Forms.Timer(this.components);
-            this.panel3D = new WadTool.Controls.PanelRendering();
+            this.panel3D = new WadTool.Controls.PanelRenderingMainPreview();
             this.splitSeam = new System.Windows.Forms.Panel();
             this.groupSelectedMoveable = new DarkUI.Controls.DarkGroupBox();
             this.panel4 = new System.Windows.Forms.Panel();
@@ -1004,7 +1004,7 @@
         private DarkUI.Controls.DarkLabel darkLabel2;
         private TombLib.Controls.WadTreeView treeDestWad;
         private TombLib.Controls.WadTreeView treeSourceWad;
-        private WadTool.Controls.PanelRendering panel3D;
+        private WadTool.Controls.PanelRenderingMainPreview panel3D;
         private System.Windows.Forms.ToolStripButton butOpenDestWad;
         private System.Windows.Forms.ToolStripButton butOpenSourceWad;
         private System.Windows.Forms.ToolStripButton butSave;

@@ -158,8 +158,6 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised -= EditorEventRaised;
                 _renderingStateBuffer?.Dispose();
                 _renderingTextures?.Dispose();
-                _fontTexture?.Dispose();
-                _fontDefault?.Dispose();
                 _renderingCachedRooms?.Dispose();
                 _rasterizerWireframe?.Dispose();
                 _objectHeightLineVertexBuffer?.Dispose();
@@ -176,6 +174,66 @@ namespace TombEditor.Controls
                 _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public override void InitializeRendering(RenderingDevice device)
+        {
+            base.InitializeRendering(device);
+
+            _renderingTextures = device.CreateTextureAllocator(new RenderingTextureAllocator.Description());
+            _renderingStateBuffer = device.CreateStateBuffer();
+            _fontTexture = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
+            _fontDefault = device.CreateFont(new RenderingFont.Description { FontSize = 30, FontName = "Segoe UI", TextureAllocator = _fontTexture });
+
+            // Legacy
+            {
+                _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
+                _wadRenderer = new WadRenderer(_legacyDevice, true);
+
+                // Maybe I could use this as bounding box, scaling it properly before drawing
+                _linesCube = GeometricPrimitive.LinesCube.New(_legacyDevice, 128, 128, 128);
+
+                // This sphere will be scaled up and down multiple times for using as In & Out of lights
+                _sphere = GeometricPrimitive.Sphere.New(_legacyDevice, 1024, 6);
+
+                //Little cubes and little spheres are used as mesh for lights, cameras, sinks, etc
+                _littleCube = GeometricPrimitive.Cube.New(_legacyDevice, 2 * _littleSphereRadius);
+                _littleSphere = GeometricPrimitive.Sphere.New(_legacyDevice, 2 * _littleCubeRadius, 8);
+
+                _cone = GeometricPrimitive.Cone.New(_legacyDevice, 1024, 1024, 18);
+
+                // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
+                new BasicEffect(_legacyDevice);
+
+                // Initialize the rasterizer state for wireframe drawing
+                var renderStateDesc =
+                    new SharpDX.Direct3D11.RasterizerStateDescription
+                    {
+                        CullMode = SharpDX.Direct3D11.CullMode.None,
+                        DepthBias = 0,
+                        DepthBiasClamp = 0,
+                        FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
+                        IsAntialiasedLineEnabled = true,
+                        IsDepthClipEnabled = true,
+                        IsFrontCounterClockwise = false,
+                        IsMultisampleEnabled = true,
+                        IsScissorEnabled = false,
+                        SlopeScaledDepthBias = 0
+                    };
+                _rasterizerWireframe = RasterizerState.New(_legacyDevice, renderStateDesc);
+
+                _rasterizerStateDepthBias = RasterizerState.New(_legacyDevice, new SharpDX.Direct3D11.RasterizerStateDescription
+                {
+                    CullMode = SharpDX.Direct3D11.CullMode.Back,
+                    FillMode = SharpDX.Direct3D11.FillMode.Solid,
+                    DepthBias = -2,
+                    SlopeScaledDepthBias = -2
+                });
+
+                _gizmo = new Gizmo(device, SwapChain, DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"]);
+
+                ResetCamera();
+            }
         }
 
         private void EditorEventRaised(IEditorEvent obj)
@@ -270,66 +328,6 @@ namespace TombEditor.Controls
             // Initialize a new camera
             Camera = new ArcBallCamera(target, 0.6f, (float)Math.PI, -(float)Math.PI / 2, (float)Math.PI / 2, cameraDistance, 2750, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
             Invalidate();
-        }
-
-        public override void InitializeRendering(RenderingDevice device)
-        {
-            base.InitializeRendering(device);
-
-            _renderingTextures = device.CreateTextureAllocator(new RenderingTextureAllocator.Description());
-            _renderingStateBuffer = device.CreateStateBuffer();
-            _fontTexture = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
-            _fontDefault = device.CreateFont(new RenderingFont.Description { FontSize = 30, FontName = "Segoe UI", TextureAllocator = _fontTexture });
-
-            // Legacy
-            {
-                _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(_legacyDevice, true);
-
-                // Maybe I could use this as bounding box, scaling it properly before drawing
-                _linesCube = GeometricPrimitive.LinesCube.New(_legacyDevice, 128, 128, 128);
-
-                // This sphere will be scaled up and down multiple times for using as In & Out of lights
-                _sphere = GeometricPrimitive.Sphere.New(_legacyDevice, 1024, 6);
-
-                //Little cubes and little spheres are used as mesh for lights, cameras, sinks, etc
-                _littleCube = GeometricPrimitive.Cube.New(_legacyDevice, 2 * _littleSphereRadius);
-                _littleSphere = GeometricPrimitive.Sphere.New(_legacyDevice, 2 * _littleCubeRadius, 8);
-
-                _cone = GeometricPrimitive.Cone.New(_legacyDevice, 1024, 1024, 18);
-
-                // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
-                new BasicEffect(_legacyDevice);
-
-                // Initialize the rasterizer state for wireframe drawing
-                var renderStateDesc =
-                    new SharpDX.Direct3D11.RasterizerStateDescription
-                    {
-                        CullMode = SharpDX.Direct3D11.CullMode.None,
-                        DepthBias = 0,
-                        DepthBiasClamp = 0,
-                        FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                        IsAntialiasedLineEnabled = true,
-                        IsDepthClipEnabled = true,
-                        IsFrontCounterClockwise = false,
-                        IsMultisampleEnabled = true,
-                        IsScissorEnabled = false,
-                        SlopeScaledDepthBias = 0
-                    };
-                _rasterizerWireframe = RasterizerState.New(_legacyDevice, renderStateDesc);
-
-                _rasterizerStateDepthBias = RasterizerState.New(_legacyDevice, new SharpDX.Direct3D11.RasterizerStateDescription
-                {
-                    CullMode = SharpDX.Direct3D11.CullMode.Back,
-                    FillMode = SharpDX.Direct3D11.FillMode.Solid,
-                    DepthBias = -2,
-                    SlopeScaledDepthBias = -2
-                });
-
-                _gizmo = new Gizmo(device, SwapChain, DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"]);
-
-                ResetCamera();
-            }
         }
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)

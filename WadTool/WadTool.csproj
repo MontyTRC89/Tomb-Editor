@@ -108,7 +108,7 @@
     <Compile Include="Controls\ContextMenus\MoveableContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelRendering.cs">
+    <Compile Include="Controls\PanelRenderingMainPreview.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\PanelRenderingAnimationEditor.cs">

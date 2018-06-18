@@ -1,70 +1,51 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Numerics;
 using System.Windows.Forms;
-using TombLib;
+using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
 using TombLib.Wad;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace WadTool.Controls
 {
-    public class PanelRenderingMesh : Panel
+    public class PanelRenderingMesh : RenderingPanel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadMesh Mesh { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ArcBallCamera Camera { get; set; }
+        public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 1536.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 0, 1000000, (float)Math.PI / 4.0f);
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawGrid { get; set; }
+        public bool DrawGrid { get; set; } = true;
 
-        private GraphicsDevice _device;
-        private DeviceManager _deviceManager;
-        private SwapChainGraphicsPresenter _presenter;
-        private RasterizerState _rasterizerWireframe;
+        // General state
         private WadToolClass _tool;
-        private VertexInputLayout _layout;
+
+        // Interaction state
         private float _lastX;
         private float _lastY;
-        private SpriteBatch _spriteBatch;
+
+        // Rendering state
+
+        // Legacy rendering state
+        private GraphicsDevice _device;
+        private RasterizerState _rasterizerWireframe;
+        private VertexInputLayout _layout;
         private GeometricPrimitive _plane;
         private WadRenderer _wadRenderer;
 
         public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
         {
+            base.InitializeRendering(deviceManager.Device);
             _tool = tool;
-            _device = deviceManager.___LegacyDevice;
-            _deviceManager = deviceManager;
-            _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
 
-            // Initialize the viewport, after the panel is added and sized on the form
-            var pp = new PresentationParameters
+            // Legacy rendering
             {
-                BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm,
-                BackBufferWidth = ClientSize.Width,
-                BackBufferHeight = ClientSize.Height,
-                DepthStencilFormat = DepthFormat.Depth24Stencil8,
-                DeviceWindowHandle = this,
-                IsFullScreen = false,
-                MultiSampleCount = MSAALevel.None,
-                PresentationInterval = PresentInterval.Immediate,
-                RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer,
-                Flags = SharpDX.DXGI.SwapChainFlags.None
-            };
-
-            _presenter = new SwapChainGraphicsPresenter(_device, pp);
-
-            Camera = new ArcBallCamera(new Vector3(0.0f, 1536.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 0, 1000000, (float)Math.PI / 4.0f);
-
-            // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
-            new BasicEffect(_device);
-
-            // Initialize the rasterizer state for wireframe drawing
-            SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
-                new SharpDX.Direct3D11.RasterizerStateDescription
+                _device = deviceManager.___LegacyDevice;
+                _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
+                new BasicEffect(_device); // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
+                _rasterizerWireframe = RasterizerState.New(_device, new SharpDX.Direct3D11.RasterizerStateDescription
                 {
                     CullMode = SharpDX.Direct3D11.CullMode.None,
                     DepthBias = 0,
@@ -76,58 +57,37 @@ namespace WadTool.Controls
                     IsMultisampleEnabled = true,
                     IsScissorEnabled = false,
                     SlopeScaledDepthBias = 0
-                };
-
-            _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
-
-            _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
-            _spriteBatch = new SpriteBatch(_device);
-
-            DrawGrid = true;
+                });
+                _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _presenter?.Dispose();
                 _rasterizerWireframe?.Dispose();
-                _spriteBatch?.Dispose();
                 _plane?.Dispose();
                 _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            if (_device == null || _presenter == null)
-                e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
-            // Don't paint the background
-        }
+        protected override Vector4 ClearColor => new Vector4(0.39f, 0.58f, 0.93f, 1.0f);
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnDraw()
         {
-            Draw();
-        }
+            // To make sure things are in a defined state for legacy rendering...
+            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
+            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
-        public void Draw()
-        {
-            if (_device == null || _presenter == null)
-                return;
-
-            _device.Presenter = _presenter;
-            _device.SetViewports(new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height));
-            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer,
-                _device.Presenter.BackBuffer);
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, SharpDX.Color.CornflowerBlue, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
 
-            Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
+            Effect solidEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
 
             _wadRenderer.Dispose();
             if (Mesh != null)
@@ -135,7 +95,7 @@ namespace WadTool.Controls
                 // TODO Keep data on GPU, optimize data upload
                 // Use new renderer
                 var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = Mesh });
-                var effect = _deviceManager.___LegacyEffects["StaticModel"];
+                var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
                 var world = Matrix4x4.Identity;
 
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
@@ -168,18 +128,6 @@ namespace WadTool.Controls
                 solidEffect.Techniques[0].Passes[0].Apply();
 
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
-            }
-
-            _device.Present();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            if (_presenter != null)
-            {
-                _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
-                Invalidate();
             }
         }
 
