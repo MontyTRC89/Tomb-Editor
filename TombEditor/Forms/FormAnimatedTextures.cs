@@ -39,7 +39,7 @@ namespace TombEditor.Forms
             public readonly int Key;
             public readonly string Value;
 
-            public NgAnimatedTextureSettingPair(int key,string value)
+            public NgAnimatedTextureSettingPair(int key, string value)
             {
                 Key = key;
                 Value = value;
@@ -53,6 +53,7 @@ namespace TombEditor.Forms
 
         private readonly Editor _editor;
         private readonly Cache<CachedImageInfo, Bitmap> _imageCache;
+        private readonly static ImageC transparentBackground = ImageC.FromSystemDrawingImage(Properties.Resources.misc_TransparentBackground);
 
         private readonly Timer _previewTimer = new Timer();
         private AnimatedTextureFrame _previewCurrentFrame;
@@ -63,7 +64,7 @@ namespace TombEditor.Forms
 
         private readonly bool _isNg;
 
-        public FormAnimatedTextures(Editor editor)
+        public FormAnimatedTextures(Editor editor, LevelTexture levelTextureToOpen)
         {
             InitializeComponent();
             _previewTimer.Tick += _previewTimer_Tick;
@@ -130,8 +131,17 @@ namespace TombEditor.Forms
         private void _editor_EditorEventRaised(IEditorEvent obj)
         {
             // Update texture combo box
-            if (obj is InitEvent || obj is Editor.LoadedTexturesChangedEvent)
+            if (obj is InitEvent || obj is Editor.LoadedTexturesChangedEvent || obj is Editor.LevelChangedEvent)
+            {
+                comboCurrentTexture.Items.Clear();
+                comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
+                comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
+
                 texturesDataGridViewColumnTexture.DataSource = new BindingList<LevelTexture>(_editor.Level.Settings.Textures);
+                if (obj is Editor.LoadedTexturesChangedEvent && ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect != null)
+                    comboCurrentTexture.SelectedItem = ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect;
+                textureMap.Invalidate();
+            }
 
             // Update animated texture set combo box
             if (obj is InitEvent || obj is Editor.AnimatedTexturesChanged)
@@ -155,6 +165,14 @@ namespace TombEditor.Forms
             // Invalidate texture view
             if (obj is Editor.AnimatedTexturesChanged)
                 textureMap.Invalidate();
+
+            // Reset texture map
+            if (obj is Editor.LevelChangedEvent)
+            {
+                comboCurrentTexture.Items.Clear();
+                comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
+                comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
+            }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -171,7 +189,7 @@ namespace TombEditor.Forms
         private void AddFrame()
         {
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
-            if(selectedSet == null)
+            if (selectedSet == null)
             {
                 selectedSet = new AnimatedTextureSet();
                 _editor.Level.Settings.AnimatedTextureSets.Add(selectedSet);
@@ -343,10 +361,12 @@ namespace TombEditor.Forms
         private void _onPicturePreviewPaint(object sender, PaintEventArgs args)
         {
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
-            if (selectedSet == null) return;
+            if (selectedSet == null)
+                return;
 
             var image = (sender as PictureBox).Image;
-            if (image == null) return;
+            if (image == null)
+                return;
 
             var g = args.Graphics;
 
@@ -356,8 +376,10 @@ namespace TombEditor.Forms
                 g.DrawImage(image, new Point(0, _lastY * 2));
 
                 _lastY += selectedSet.UvRotate;
-                if (_lastY == 64 && selectedSet.Fps > 0) _lastY = 0;
-                if (_lastY == 0 && selectedSet.Fps < 0) _lastY = 64;
+                if (_lastY == 64 && selectedSet.Fps > 0)
+                    _lastY = 0;
+                if (_lastY == 0 && selectedSet.Fps < 0)
+                    _lastY = 64;
             }
             else
             {
@@ -484,7 +506,7 @@ namespace TombEditor.Forms
             {
                 // Image column
                 CachedImageInfo info;
-                info._destinationSize = new Size(texturesDataGridView.Columns[e.ColumnIndex].Width, texturesDataGridView.Rows[e.RowIndex].Height);
+                info._destinationSize = new Size(texturesDataGridView.Columns[e.ColumnIndex].Width - 1, texturesDataGridView.Rows[e.RowIndex].Height - 1);
                 info._sourceTexCoord0 = frame.TexCoord0;
                 info._sourceTexCoord1 = frame.TexCoord1;
                 info._sourceTexCoord2 = frame.TexCoord2;
@@ -504,9 +526,9 @@ namespace TombEditor.Forms
 
         private static ImageC GetPerspectivePreview(ImageC input, Vector2 texCoord01, Vector2 texCoord00, Vector2 texCoord10, Vector2 texCoord11, Size size)
         {
-            // Project the chosen texture onto the rectangular preview ...
             ImageC output = ImageC.CreateNew(size.Width, size.Height);
 
+            // Project the chosen texture onto the rectangular preview ...
             float xTexCoordFactor = 1.0f / size.Width;
             float yTexCoordFactor = 1.0f / size.Width;
             Vector2 max = input.Size - new Vector2(1.0f);
@@ -533,12 +555,13 @@ namespace TombEditor.Forms
                     float secondFactorX = inputTexCoord.X - firstX;
                     float secondFactorY = inputTexCoord.Y - firstY;
 
-                    Vector4 outputPixel = (Vector4)input.GetPixel(secondX, secondY) * (secondFactorX * secondFactorY) +
-                                          (Vector4)input.GetPixel(secondX, firstY) * (secondFactorX * (1.0f - secondFactorY)) + (
-                            (Vector4)input.GetPixel(firstX, secondY) * ((1.0f - secondFactorX) * secondFactorY) +
-                            (Vector4)input.GetPixel(firstX, firstY) * ((1.0f - secondFactorX) * (1.0f - secondFactorY))
-                        );
-                    output.SetPixel(x, y, (ColorC)outputPixel);
+                    Vector4 foregroundPixel =
+                        (Vector4)input.GetPixel(secondX, secondY) * (secondFactorX * secondFactorY) +
+                        (Vector4)input.GetPixel(secondX, firstY) * (secondFactorX * (1.0f - secondFactorY)) + (
+                        (Vector4)input.GetPixel(firstX, secondY) * ((1.0f - secondFactorX) * secondFactorY) +
+                        (Vector4)input.GetPixel(firstX, firstY) * ((1.0f - secondFactorX) * (1.0f - secondFactorY)));
+                    ColorC backgroundPixel = transparentBackground.GetPixel(x % transparentBackground.Size.X, y % transparentBackground.Size.Y);
+                    output.SetPixel(x, y, (ColorC)ColorC.Mix(backgroundPixel, foregroundPixel));
                 }
             return output;
         }
@@ -606,7 +629,7 @@ namespace TombEditor.Forms
                 for (int i = 0; i < set.Frames.Count; ++i)
                 {
                     AnimatedTextureFrame frame = set.Frames[i];
-                    if (frame.Texture == SelectedTexture.Texture)
+                    if (frame.Texture == VisibleTexture)
                     {
                         PointF[] edges = new[]
                         {
@@ -629,7 +652,7 @@ namespace TombEditor.Forms
                             SizeF textSize = e.Graphics.MeasureString(counterString, textFont);
                             RectangleF textArea = RectangleF.FromLTRB(upperLeft.X, upperLeft.Y, lowerRight.X, lowerRight.Y);
 
-                            if(textArea.Width > textSize.Width && textArea.Height > textSize.Height)
+                            if (textArea.Width > textSize.Width && textArea.Height > textSize.Height)
                             {
                                 e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
                                 e.Graphics.DrawString(counterString, textFont, textShadowBrush, textArea, textFormat);
@@ -716,7 +739,8 @@ namespace TombEditor.Forms
         private void comboEffect_SelectionChangeCommitted(object sender, EventArgs e)
         {
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
-            if (selectedSet == null) return;
+            if (selectedSet == null)
+                return;
             selectedSet.AnimationType = (AnimatedTextureAnimationType)comboEffect.SelectedItem;
             _editor.AnimatedTexturesChange();
         }
@@ -724,7 +748,8 @@ namespace TombEditor.Forms
         private void comboFps_SelectionChangeCommitted(object sender, EventArgs e)
         {
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
-            if (selectedSet == null) return;
+            if (selectedSet == null)
+                return;
             selectedSet.Fps = (sbyte)((NgAnimatedTextureSettingPair)comboFps.SelectedItem).Key;
             _editor.AnimatedTexturesChange();
         }
@@ -732,9 +757,24 @@ namespace TombEditor.Forms
         private void comboUvRotate_SelectionChangeCommitted(object sender, EventArgs e)
         {
             var selectedSet = comboAnimatedTextureSets.SelectedItem as AnimatedTextureSet;
-            if (selectedSet == null) return;
+            if (selectedSet == null)
+                return;
             selectedSet.UvRotate = (sbyte)((NgAnimatedTextureSettingPair)comboUvRotate.SelectedItem).Key;
             _editor.AnimatedTexturesChange();
+        }
+
+        private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (textureMap.VisibleTexture != comboCurrentTexture.SelectedItem)
+                textureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
+        }
+
+        private void comboCurrentTexture_DropDown(object sender, EventArgs e)
+        {
+            // Make the combo box as wide as possible
+            Point screenPointLeft = comboCurrentTexture.PointToScreen(new Point(0, 0));
+            Rectangle screenPointRight = Screen.GetBounds(comboCurrentTexture.PointToScreen(new Point(0, comboCurrentTexture.Width)));
+            comboCurrentTexture.DropDownWidth = screenPointRight.Right - screenPointLeft.X - 15; // Margin
         }
     }
 }

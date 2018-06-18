@@ -378,10 +378,10 @@ namespace TombEditor
         }
 
         // This is invoked if the loaded textures changed for the level.
-        public class LoadedTexturesChangedEvent : IEditorEventCausesUnsavedChanges { }
-        public void LoadedTexturesChange()
+        public class LoadedTexturesChangedEvent : IEditorEventCausesUnsavedChanges { public LevelTexture NewToSelect { get; set; } = null; }
+        public void LoadedTexturesChange(LevelTexture newToSelect = null)
         {
-            RaiseEvent(new LoadedTexturesChangedEvent());
+            RaiseEvent(new LoadedTexturesChangedEvent { NewToSelect = newToSelect });
         }
 
         // This is invoked if the loaded imported geometries changed for the level.

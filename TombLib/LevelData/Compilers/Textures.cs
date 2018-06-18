@@ -28,7 +28,7 @@ namespace TombLib.LevelData.Compilers
             _texture32Data = texture32Data;
         }
 
-        private TextureSound? GetTextureSound(bool isTriangle, TextureArea area)
+        private TextureFootStepSound? GetTextureSound(bool isTriangle, TextureArea area)
         {
             LevelTexture texture = area.Texture as LevelTexture;
             if (texture == null)
@@ -39,19 +39,19 @@ namespace TombLib.LevelData.Compilers
             return texture.GetTextureSoundFromTexCoord(topRight);
         }
 
-        private TextureSound GetTextureSound(Room room, int x, int z)
+        private TextureFootStepSound GetTextureSound(Room room, int x, int z)
         {
             Block sector = room.Blocks[x, z];
 
-            TextureSound? result0 = GetTextureSound(!sector.FloorIsQuad, sector.GetFaceTexture(BlockFace.Floor));
+            TextureFootStepSound? result0 = GetTextureSound(!sector.FloorIsQuad, sector.GetFaceTexture(BlockFace.Floor));
             if (result0.HasValue)
                 return result0.Value;
 
-            TextureSound? result1 = GetTextureSound(!sector.FloorIsQuad, sector.GetFaceTexture(BlockFace.FloorTriangle2));
+            TextureFootStepSound? result1 = GetTextureSound(!sector.FloorIsQuad, sector.GetFaceTexture(BlockFace.FloorTriangle2));
             if (result1.HasValue)
                 return result1.Value;
 
-            return TextureSound.Stone;
+            return TextureFootStepSound.Stone;
         }
 
         private Stream PrepareFontAndSkyTexture()

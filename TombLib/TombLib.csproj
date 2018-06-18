@@ -205,7 +205,7 @@
     <Compile Include="LevelData\SinkInstance.cs" />
     <Compile Include="LevelData\SoundSourceInstance.cs" />
     <Compile Include="LevelData\StaticInstance.cs" />
-    <Compile Include="LevelData\TextureSound.cs" />
+    <Compile Include="LevelData\TextureFootStepSound.cs" />
     <Compile Include="LevelData\TriggerInstance.cs" />
     <Compile Include="Script\LanguageScript.cs" />
     <Compile Include="Script\LevelScript.cs" />

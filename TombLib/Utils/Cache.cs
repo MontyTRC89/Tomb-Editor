@@ -24,7 +24,7 @@ namespace TombLib.Utils
             : this(maxCachedCount, generateValue,
                   typeof(IDisposable).IsAssignableFrom(typeof(ValueT)) ?
                   (Action<ValueT>)(value => { ((IDisposable)value).Dispose(); }) : null)
-        {}
+        { }
 
         public Cache(int maxCachedCount, Func<KeyT, ValueT> generateValue, Action<ValueT> disposeValue)
         {
@@ -108,6 +108,20 @@ namespace TombLib.Utils
                 return false;
             DisposeValue(entry._value);
             return _availableItems.Remove(key);
+        }
+
+        public int RemoveAll(Predicate<KeyT> decision)
+        {
+            var toRemoves = new List<KeyValuePair<KeyT, ValueT>>();
+            foreach (KeyValuePair<KeyT, Entry> keyValue in _availableItems)
+                if (decision(keyValue.Key))
+                    toRemoves.Add(new KeyValuePair<KeyT, ValueT>(keyValue.Key, keyValue.Value._value));
+            foreach (KeyValuePair<KeyT, ValueT> toRemove in toRemoves)
+            {
+                _availableItems.Remove(toRemove.Key);
+                DisposeValue(toRemove.Value);
+            }
+            return toRemoves.Count;
         }
 
         public void Clear()

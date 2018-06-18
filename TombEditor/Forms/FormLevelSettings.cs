@@ -13,6 +13,7 @@ using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 using DarkUI.Controls;
+using System.Collections.Generic;
 
 namespace TombEditor.Forms
 {
@@ -80,21 +81,23 @@ namespace TombEditor.Forms
         {
             private readonly FormLevelSettings _parent;
             public ReferencedWad Wad;
+
             public ReferencedWadWrapper(FormLevelSettings parent, ReferencedWad wad)
             {
                 _parent = parent;
                 Wad = wad;
             }
+
             public string Path
             {
                 get { return Wad.Path; }
                 set
                 {
                     Wad = new ReferencedWad(_parent._levelSettings, value);
-                    for (int i = 0; i < _parent.objectFileDataGridView.ColumnCount; ++i)
-                        _parent.objectFileDataGridView.InvalidateColumn(i);
+                    _parent.objectFileDataGridView.InvalidateRow(_parent._objectFileDataGridViewDataSource.IndexOf(this));
                 }
             }
+
             public string Message
             {
                 get
@@ -106,19 +109,97 @@ namespace TombEditor.Forms
             }
         }
 
+        private class ReferencedTextureWrapper
+        {
+            private readonly FormLevelSettings _parent;
+            public LevelTexture Texture;
+
+            public ReferencedTextureWrapper(FormLevelSettings parent, LevelTexture texture)
+            {
+                _parent = parent;
+                Texture = texture;
+            }
+
+            public string Path
+            {
+                get { return Texture.Path; }
+                set
+                {
+                    Texture = (LevelTexture)Texture.Clone(); // We don't actually clone the image data array, so it's fine.
+                    Texture.SetPath(_parent._levelSettings, value);
+                    _parent._texturePreviewCache.RemoveAll(obj => obj.LevelTexture == Texture);
+                    _parent.textureFileDataGridView.InvalidateRow(_parent._textureFileDataGridViewDataSource.IndexOf(this));
+                }
+            }
+
+            public string Message
+            {
+                get
+                {
+                    if (Texture.LoadException == null)
+                        return "Successfully loaded";
+                    return Texture.LoadException.Message + " (" + Texture.LoadException.GetType().Name + ")";
+                }
+            }
+
+            public bool ReplaceMagentaWithTransparency
+            {
+                get { return Texture.ReplaceMagentaWithTransparency; }
+                set
+                {
+                    Texture = (LevelTexture)Texture.Clone(); // We don't actually clone the image data array, so it's fine.
+                    Texture.SetReplaceMagentaWithTransparency(_parent._levelSettings, value);
+                    _parent._texturePreviewCache.RemoveAll(obj => obj.LevelTexture == Texture);
+                    _parent.textureFileDataGridView.InvalidateRow(_parent._textureFileDataGridViewDataSource.IndexOf(this));
+                }
+            }
+
+            public bool Convert512PixelsToDoubleRows
+            {
+                get { return Texture.Convert512PixelsToDoubleRows; }
+                set
+                {
+                    Texture = (LevelTexture)Texture.Clone(); // We don't actually clone the image data array, so it's fine.
+                    Texture.SetConvert512PixelsToDoubleRows(_parent._levelSettings, value);
+                    _parent._texturePreviewCache.RemoveAll(obj => obj.LevelTexture == Texture);
+                    _parent.textureFileDataGridView.InvalidateRow(_parent._textureFileDataGridViewDataSource.IndexOf(this));
+                }
+            }
+        }
+        private struct TextureCachePreviewKey : IEquatable<TextureCachePreviewKey>
+        {
+            public Size RequiredSize { get; }
+            public LevelTexture LevelTexture { get { LevelTexture result = null; _levelTexture?.TryGetTarget(out result); return result; } }
+            private int _hashCode;
+            private WeakReference<LevelTexture> _levelTexture; // Use a weak reference to avoid keeping big images alive.
+            public TextureCachePreviewKey(Size size, LevelTexture levelTexture)
+            {
+                RequiredSize = size;
+                _levelTexture = new WeakReference<LevelTexture>(levelTexture);
+                _hashCode = RequiredSize.GetHashCode() + 866557253 * (levelTexture?.GetHashCode() ?? 0);
+            }
+            public bool Equals(TextureCachePreviewKey other) => RequiredSize == other.RequiredSize && (LevelTexture == null ? other.LevelTexture == null : LevelTexture.Equals(other.LevelTexture));
+            public override bool Equals(object other) => other is TextureCachePreviewKey && Equals((TextureCachePreviewKey)other);
+            public override int GetHashCode() => _hashCode;
+        }
+
         private readonly Color _correctColor;
         private readonly Color _wrongColor;
+        private readonly Color _columnMessageCorrectColor;
+        private readonly Color _columnMessageWrongColor;
         private readonly Editor _editor;
         private readonly LevelSettings _levelSettings;
+
         private string fontTextureFilePathPicPreviewCurrentPath;
         private string skyTextureFilePathPicPreviewCurrentPath;
         private string tr5ExtraSpritesFilePathPicPreviewCurrentPath;
         private readonly PictureTooltip _pictureTooltip;
-        private readonly BindingList<ReferencedWadWrapper> objectFileDataGridViewDataSource = new BindingList<ReferencedWadWrapper>();
-        private readonly BindingList<OldWadSoundPath> soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
-        private readonly Color _objectFileDataGridViewCorrectColor;
-        private readonly Color _objectFileDataGridViewWrongColor;
-        private FormWadPreview _wadPreview = null;
+        private readonly BindingList<ReferencedWadWrapper> _objectFileDataGridViewDataSource = new BindingList<ReferencedWadWrapper>();
+        private readonly BindingList<ReferencedTextureWrapper> _textureFileDataGridViewDataSource = new BindingList<ReferencedTextureWrapper>();
+        private readonly BindingList<OldWadSoundPath> _soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
+        private readonly Cache<TextureCachePreviewKey, Bitmap> _texturePreviewCache;
+        private FormPreviewWad _previewWad = null;
+        private FormPreviewTexture _previewTexture = null;
 
         public FormLevelSettings(Editor editor)
         {
@@ -129,37 +210,58 @@ namespace TombEditor.Forms
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            //MinimumSize = new Size(678, 331) + (Size - ClientSize);
-            //Size = MinimumSize;
+            MinimumSize = new Size(793, 533) + (Size - ClientSize);
+            Size = MinimumSize;
+
+            // Remember colors
+            _correctColor = gameLevelFilePathTxt.BackColor;
+            _wrongColor = _correctColor.MixWith(Color.DarkRed, 0.55);
+            _columnMessageCorrectColor = objectFileDataGridView.BackColor.MixWith(Color.LimeGreen, 0.55);
+            _columnMessageWrongColor = objectFileDataGridView.BackColor.MixWith(Color.DarkRed, 0.55);
+
+            // Initialize texture file data grid view
+            foreach (var texture in _levelSettings.Textures)
+                _textureFileDataGridViewDataSource.Add(new ReferencedTextureWrapper(this, texture)); // We don't need to clone because we don't modify the wad, we create new wads
+            _textureFileDataGridViewDataSource.ListChanged += delegate
+            {
+                _levelSettings.Textures.Clear();
+                _levelSettings.Textures.AddRange(_textureFileDataGridViewDataSource.Select(o => o.Texture));
+            };
+            textureFileDataGridView.DataSource = _textureFileDataGridViewDataSource;
+            textureFileDataGridViewControls.DataGridView = textureFileDataGridView;
+            textureFileDataGridViewControls.CreateNewRow = textureFileDataGridViewCreateNewRow;
+            textureFileDataGridViewControls.AllowUserDelete = true;
+            textureFileDataGridViewControls.AllowUserMove = true;
+            textureFileDataGridViewControls.AllowUserNew = true;
+            textureFileDataGridViewControls.Enabled = true;
+            _texturePreviewCache = new Cache<TextureCachePreviewKey, Bitmap>(1024, CreateTexturePreview);
 
             // Initialize object file data grid view
             foreach (var wad in _levelSettings.Wads)
-                objectFileDataGridViewDataSource.Add(new ReferencedWadWrapper(this, wad)); // We don't need to clone because we don't modify the wad, we create new wads
-            objectFileDataGridViewDataSource.ListChanged += delegate
+                _objectFileDataGridViewDataSource.Add(new ReferencedWadWrapper(this, wad)); // We don't need to clone because we don't modify the wad, we create new wads
+            _objectFileDataGridViewDataSource.ListChanged += delegate
             {
                 _levelSettings.Wads.Clear();
-                _levelSettings.Wads.AddRange(objectFileDataGridViewDataSource.Select(o => o.Wad));
+                _levelSettings.Wads.AddRange(_objectFileDataGridViewDataSource.Select(o => o.Wad));
             };
-            objectFileDataGridView.DataSource = objectFileDataGridViewDataSource;
+            objectFileDataGridView.DataSource = _objectFileDataGridViewDataSource;
             objectFileDataGridViewControls.DataGridView = objectFileDataGridView;
             objectFileDataGridViewControls.CreateNewRow = objectFileDataGridViewCreateNewRow;
             objectFileDataGridViewControls.AllowUserDelete = true;
             objectFileDataGridViewControls.AllowUserMove = true;
             objectFileDataGridViewControls.AllowUserNew = true;
             objectFileDataGridViewControls.Enabled = true;
-            _objectFileDataGridViewCorrectColor = objectFileDataGridView.BackColor.MixWith(Color.LimeGreen, 0.55);
-            _objectFileDataGridViewWrongColor = objectFileDataGridView.BackColor.MixWith(Color.DarkRed, 0.55);
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.OldWadSoundPaths)
-                soundDataGridViewDataSource.Add(soundPath.Clone());
-            soundDataGridViewDataSource.ListChanged += delegate
+                _soundDataGridViewDataSource.Add(soundPath.Clone());
+            _soundDataGridViewDataSource.ListChanged += delegate
                 {
                     _levelSettings.OldWadSoundPaths.Clear();
-                    foreach (var soundPath in soundDataGridViewDataSource)
+                    foreach (var soundPath in _soundDataGridViewDataSource)
                         _levelSettings.OldWadSoundPaths.Add(soundPath.Clone());
                 };
-            soundDataGridView.DataSource = soundDataGridViewDataSource;
+            soundDataGridView.DataSource = _soundDataGridViewDataSource;
             soundDataGridViewControls.DataGridView = soundDataGridView;
             soundDataGridViewControls.CreateNewRow = soundDataGridViewCreateNewRow;
             soundDataGridViewControls.AllowUserDelete = true;
@@ -168,8 +270,6 @@ namespace TombEditor.Forms
             soundDataGridViewControls.Enabled = true;
 
             // Initialize picture previews
-            _correctColor = gameLevelFilePathTxt.BackColor;
-            _wrongColor = _correctColor.MixWith(Color.DarkRed, 0.55);
             skyTextureFilePathPicPreview.BackColor = _wrongColor;
             fontTextureFilePathPicPreview.BackColor = _wrongColor;
             tr5SpritesTextureFilePathPicPreview.BackColor = _wrongColor;
@@ -198,7 +298,7 @@ namespace TombEditor.Forms
             comboLaraType.Items.AddRange(Enum.GetValues(typeof(Tr5LaraType)).Cast<object>().ToArray());
 
             // Initialize options list
-            optionsContainer.LinkedListView = optionsList;
+            tabbedContainer.LinkedListView = optionsList;
 
             // Initialize controls
             UpdateDialog();
@@ -208,7 +308,9 @@ namespace TombEditor.Forms
         {
             if (disposing)
             {
-                _wadPreview?.Dispose();
+                _previewWad?.Dispose();
+                _previewTexture?.Dispose();
+                _texturePreviewCache?.Dispose();
                 components?.Dispose();
             }
             base.Dispose(disposing);
@@ -217,7 +319,6 @@ namespace TombEditor.Forms
         private void UpdateDialog()
         {
             levelFilePathTxt.Text = _levelSettings.LevelFilePath;
-            textureFilePathTxt.Text = _levelSettings.TextureFilePath;
             gameDirectoryTxt.Text = _levelSettings.GameDirectory;
             gameLevelFilePathTxt.Text = _levelSettings.GameLevelFilePath;
             gameExecutableFilePathTxt.Text = _levelSettings.GameExecutableFilePath;
@@ -256,19 +357,16 @@ namespace TombEditor.Forms
 
             // Check correctness of the paths
             string levelFilePath = _levelSettings.LevelFilePath;
-            string textureFilePath = _levelSettings.MakeAbsolute(_levelSettings.TextureFilePath);
             string gameDirectory = _levelSettings.MakeAbsolute(_levelSettings.GameDirectory);
             string gameLevelFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameLevelFilePath);
             string gameExecutableFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameExecutableFilePath);
 
             levelFilePathTxt.BackColor = Directory.Exists(FileSystemUtils.GetDirectoryNameTry(levelFilePath)) ? _correctColor : _wrongColor;
-            textureFilePathTxt.BackColor = File.Exists(textureFilePath) ? _correctColor : _wrongColor;
             gameDirectoryTxt.BackColor = Directory.Exists(gameDirectory) ? _correctColor : _wrongColor;
             gameLevelFilePathTxt.BackColor = Directory.Exists(FileSystemUtils.GetDirectoryNameTry(gameLevelFilePath)) ? _correctColor : _wrongColor;
             gameExecutableFilePathTxt.BackColor = File.Exists(gameExecutableFilePath) ? _correctColor : _wrongColor;
 
             pathToolTip.SetToolTip(levelFilePathTxt, levelFilePath);
-            pathToolTip.SetToolTip(textureFilePathTxt, textureFilePath);
             pathToolTip.SetToolTip(gameDirectoryTxt, gameDirectory);
             pathToolTip.SetToolTip(gameLevelFilePathTxt, gameLevelFilePath);
             pathToolTip.SetToolTip(gameExecutableFilePathTxt, gameExecutableFilePath);
@@ -355,6 +453,18 @@ namespace TombEditor.Forms
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector3(0.5f)).ToWinFormsColor();
         }
 
+        private void FitPreview(Control form, Rectangle screenArea)
+        {
+            const int WindowBorderMargin = 5;
+            const int RightMargin = 5;
+            Point pos = screenArea.Location + new Size(0, screenArea.Height / 2);
+            pos -= new Size(form.Width + RightMargin, form.Height / 2);
+            Rectangle parentWindowBounds = Bounds;
+            pos.Y = Math.Max(pos.Y, parentWindowBounds.Top + WindowBorderMargin);
+            pos.Y = Math.Min(pos.Y, parentWindowBounds.Bottom - form.Height - WindowBorderMargin);
+            form.Location = pos;
+        }
+
         private string GetLevelResourcePath(string file)
         {
             return LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + file;
@@ -376,25 +486,6 @@ namespace TombEditor.Forms
             if (result != null)
             {
                 _levelSettings.LevelFilePath = result;
-                UpdateDialog();
-            }
-        }
-
-        // Texture path
-        private void textureFilePathTxt_TextChanged(object sender, EventArgs e)
-        {
-            if (_levelSettings.TextureFilePath == textureFilePathTxt.Text)
-                return;
-            _levelSettings.TextureFilePath = textureFilePathTxt.Text;
-            UpdateDialog();
-        }
-
-        private void textureFilePathBut_Click(object sender, EventArgs e)
-        {
-            string path = GraphicalDialogHandler.BrowseTextureFile(_levelSettings, _levelSettings.TextureFilePath, this);
-            if (path != _levelSettings.TextureFilePath)
-            {
-                _levelSettings.TextureFilePath = path;
                 UpdateDialog();
             }
         }
@@ -491,12 +582,12 @@ namespace TombEditor.Forms
 
         private void soundDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= soundDataGridViewDataSource.Count)
+            if (e.RowIndex < 0 || e.RowIndex >= _soundDataGridViewDataSource.Count)
                 return;
 
             if (soundDataGridView.Columns[e.ColumnIndex].Name == soundDataGridViewColumnPath.Name)
             {
-                OldWadSoundPath path = soundDataGridViewDataSource[e.RowIndex];
+                OldWadSoundPath path = _soundDataGridViewDataSource[e.RowIndex];
                 string parsedPath = _levelSettings.ParseVariables(path.Path);
                 string absolutePath = _levelSettings.MakeAbsolute(path.Path);
                 if (Path.IsPathRooted(parsedPath) && !Directory.Exists(absolutePath))
@@ -510,16 +601,126 @@ namespace TombEditor.Forms
 
         private void soundDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= soundDataGridViewDataSource.Count)
+            if (e.RowIndex < 0 || e.RowIndex >= _soundDataGridViewDataSource.Count)
                 return;
 
             if (soundDataGridView.Columns[e.ColumnIndex].Name == soundDataGridViewColumnSearch.Name)
             {
-                string result = LevelFileDialog.BrowseFolder(this, _levelSettings, soundDataGridViewDataSource[e.RowIndex].Path,
+                string result = LevelFileDialog.BrowseFolder(this, _levelSettings, _soundDataGridViewDataSource[e.RowIndex].Path,
                     "Select the sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
                 if (result != null)
-                    soundDataGridViewDataSource[e.RowIndex] = new OldWadSoundPath(result);
+                    _soundDataGridViewDataSource[e.RowIndex] = new OldWadSoundPath(result);
             }
+        }
+
+        // Texture list
+        private Bitmap CreateTexturePreview(TextureCachePreviewKey data)
+        {
+            // Create image
+            Bitmap result = new Bitmap(data.RequiredSize.Width, data.RequiredSize.Height);
+            try
+            {
+                using (Graphics g = Graphics.FromImage(result))
+                {
+                    using (TextureBrush brush = new TextureBrush(Properties.Resources.misc_TransparentBackground))
+                        g.FillRectangle(brush, new Rectangle(new Point(), result.Size));
+                    g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                    if (data.LevelTexture != null)
+                        data.LevelTexture.Image.GetTempSystemDrawingBitmap(temp => g.DrawImage(temp,
+                            new Rectangle(new Point(), result.Size),
+                            new Rectangle(new Point(), temp.Size), GraphicsUnit.Pixel));
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                result.Dispose();
+                throw;
+            }
+        }
+
+        private ReferencedTextureWrapper textureFileDataGridViewCreateNewRow()
+        {
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
+                "Select a new texture file", LevelTexture.FileExtensions, false, VariableType.LevelDirectory);
+            if (result != null)
+                return new ReferencedTextureWrapper(this, new LevelTexture(_levelSettings, result));
+            return null;
+        }
+
+        private void textureFileDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= _textureFileDataGridViewDataSource.Count)
+                return;
+            LevelTexture texture = _textureFileDataGridViewDataSource[e.RowIndex].Texture;
+
+            if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewMessageColumn.Name)
+            {
+                if (texture.LoadException == null)
+                {
+                    e.CellStyle.BackColor = _columnMessageCorrectColor;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_columnMessageCorrectColor, 0.4);
+                }
+                else
+                {
+                    e.CellStyle.BackColor = _columnMessageWrongColor;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_columnMessageWrongColor, 0.4);
+                }
+            }
+            else if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewPathColumn.Name)
+            {
+                string absolutePath = _levelSettings.MakeAbsolute(texture.Path);
+                textureFileDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = absolutePath;
+            }
+            else if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewPreviewColumn.Name)
+            {
+                var cell = (DataGridViewImageCell)(textureFileDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex]);
+                Size availableSpace = new Size(textureFileDataGridView.Columns[e.ColumnIndex].Width - 1, textureFileDataGridView.Rows[e.RowIndex].Height - 1);
+
+                // Figure out required size of preview image
+                float neededAspectRatio = (float)availableSpace.Width / availableSpace.Height;
+                float givenAspectRatio = (float)texture.Image.Width / texture.Image.Height;
+                float aspectRatioAdjust = neededAspectRatio / givenAspectRatio;
+                Vector2 factor = Vector2.Min(new Vector2(1.0f / aspectRatioAdjust, aspectRatioAdjust), new Vector2(1.0f));
+                Size previewImageSize = new Size((int)Math.Ceiling(availableSpace.Width * factor.X), (int)Math.Ceiling(availableSpace.Height * factor.Y));
+
+                // Request and asign image
+                e.Value = _texturePreviewCache[new TextureCachePreviewKey(previewImageSize, texture)];
+            }
+            else if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewShowColumn.Name)
+            {
+                var cell = textureFileDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                ((DarkDataGridViewButtonCell)cell).Enabled = texture.LoadException == null;
+            }
+        }
+
+        private void textureFileDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= _textureFileDataGridViewDataSource.Count)
+                return;
+            LevelTexture texture = _textureFileDataGridViewDataSource[e.RowIndex].Texture;
+
+            if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewSearchColumn.Name)
+            {
+                string result = LevelFileDialog.BrowseFile(this, _levelSettings, _textureFileDataGridViewDataSource[e.RowIndex].Path,
+                    "Select a new texture file", LevelTexture.FileExtensions, false, VariableType.LevelDirectory);
+                if (result != null)
+                    _textureFileDataGridViewDataSource[e.RowIndex].Path = result;
+            }
+            else if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewShowColumn.Name)
+            {
+                if (texture.LoadException != null)
+                    return;
+
+                // Open preview
+                _previewTexture?.Dispose();
+                _previewTexture = new FormPreviewTexture(texture, _editor);
+                var screenArea = textureFileDataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
+                FitPreview(_previewTexture, new Rectangle(textureFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size));
+                _previewTexture.Show(this);
+            }
+            else if (textureFileDataGridView.Columns[e.ColumnIndex] is DataGridViewCheckBoxColumn)
+                textureFileDataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
         // Object list
@@ -534,73 +735,59 @@ namespace TombEditor.Forms
 
         private void objectFileDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= objectFileDataGridViewDataSource.Count)
+            if (e.RowIndex < 0 || e.RowIndex >= _objectFileDataGridViewDataSource.Count)
                 return;
+            ReferencedWad wad = _objectFileDataGridViewDataSource[e.RowIndex].Wad;
 
             if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewMessageColumn.Name)
             {
-                ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
                 if (wad.LoadException == null)
                 {
-                    e.CellStyle.BackColor = _objectFileDataGridViewCorrectColor;
-                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_objectFileDataGridViewCorrectColor, 0.4);
+                    e.CellStyle.BackColor = _columnMessageCorrectColor;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_columnMessageCorrectColor, 0.4);
                 }
                 else
                 {
-                    e.CellStyle.BackColor = _objectFileDataGridViewWrongColor;
-                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_objectFileDataGridViewWrongColor, 0.4);
+                    e.CellStyle.BackColor = _columnMessageWrongColor;
+                    e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_columnMessageWrongColor, 0.4);
                 }
             }
             else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewPathColumn.Name)
             {
-                ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
                 string absolutePath = _levelSettings.MakeAbsolute(wad.Path);
                 objectFileDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = absolutePath;
             }
-            else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowContentColumn.Name)
+            else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowColumn.Name)
             {
-                ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
                 var cell = objectFileDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                var button = (DarkDataGridViewButtonCell)cell;
                 ((DarkDataGridViewButtonCell)cell).Enabled = wad.LoadException == null;
             }
         }
 
         private void objectFileDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0 || e.RowIndex >= objectFileDataGridViewDataSource.Count)
+            if (e.RowIndex < 0 || e.RowIndex >= _objectFileDataGridViewDataSource.Count)
                 return;
+            ReferencedWad wad = _objectFileDataGridViewDataSource[e.RowIndex].Wad;
 
             if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewSearchColumn.Name)
             {
-                string result = LevelFileDialog.BrowseFile(this, _levelSettings, objectFileDataGridViewDataSource[e.RowIndex].Path,
+                string result = LevelFileDialog.BrowseFile(this, _levelSettings, _objectFileDataGridViewDataSource[e.RowIndex].Path,
                     "Select a new object file", ReferencedWad.FileExtensions, false, VariableType.LevelDirectory);
                 if (result != null)
-                    objectFileDataGridViewDataSource[e.RowIndex] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, result, new GraphicalDialogHandler(this)));
+                    _objectFileDataGridViewDataSource[e.RowIndex].Path = result;
             }
-            else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowContentColumn.Name)
+            else if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewShowColumn.Name)
             {
-                ReferencedWad wad = objectFileDataGridViewDataSource[e.RowIndex].Wad;
                 if (wad.LoadException != null)
                     return;
 
                 // Open preview
-                _wadPreview?.Dispose();
-                _wadPreview = new FormWadPreview(wad.Wad, TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device, _editor);
-
-                // Set screen position
-                const int WindowBorderMargin = 5;
-                const int RightMargin = 5;
-                Rectangle screenArea = objectFileDataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
-                screenArea = new Rectangle(objectFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size);
-                Point pos = screenArea.Location + new Size(0, screenArea.Height / 2);
-                pos -= new Size(_wadPreview.Width + RightMargin, _wadPreview.Height / 2);
-                Rectangle parentWindowBounds = Bounds;
-                pos.Y = Math.Max(pos.Y, parentWindowBounds.Top + WindowBorderMargin);
-                pos.Y = Math.Min(pos.Y, parentWindowBounds.Bottom - _wadPreview.Height - WindowBorderMargin);
-                _wadPreview.Location = pos;
-
-                _wadPreview.Show(this);
+                _previewWad?.Dispose();
+                _previewWad = new FormPreviewWad(wad.Wad, TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device, _editor);
+                var screenArea = objectFileDataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
+                FitPreview(_previewWad, new Rectangle(objectFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size));
+                _previewWad.Show(this);
             }
         }
 
