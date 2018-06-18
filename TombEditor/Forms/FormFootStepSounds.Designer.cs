@@ -2,7 +2,7 @@
 
 namespace TombEditor.Forms
 {
-    partial class FormTextureSounds
+    partial class FormFootStepSounds
     {
         #region Windows Form Designer generated code
 
@@ -12,7 +12,7 @@ namespace TombEditor.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.textureMap = new FormTextureSounds.PanelTextureMapForSounds();
+            this.textureMap = new FormFootStepSounds.PanelTextureMapForSounds();
             this.butAssignSound = new DarkUI.Controls.DarkButton();
             this.comboSounds = new DarkUI.Controls.DarkComboBox();
             this.butOk = new DarkUI.Controls.DarkButton();
@@ -84,7 +84,7 @@ namespace TombEditor.Forms
         }
 
         #endregion
-        private FormTextureSounds.PanelTextureMapForSounds textureMap;
+        private FormFootStepSounds.PanelTextureMapForSounds textureMap;
         private DarkButton butAssignSound;
         private DarkComboBox comboSounds;
         private DarkButton butOk;

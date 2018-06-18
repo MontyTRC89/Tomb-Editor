@@ -1,5 +1,10 @@
 ﻿using DarkUI.Docking;
 using System;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using TombEditor.Forms;
+using TombLib.LevelData;
 
 namespace TombEditor.ToolWindows
 {
@@ -14,7 +19,9 @@ namespace TombEditor.ToolWindows
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
 
-            panelTextureMap.SelectedTextureChanged += delegate { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
+            butDeleteTexture.Enabled = butBrowseTexture.Enabled = butTextureSounds.Enabled = false;
+            panelTextureMap.SelectedTextureChanged += delegate
+            { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
             // Setup tile size options
             if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 64.0f)
@@ -41,21 +48,68 @@ namespace TombEditor.ToolWindows
         {
             // Update texture map
             if (obj is Editor.SelectedTexturesChangedEvent)
+            {
+                comboCurrentTexture.SelectedItem = ((Editor.SelectedTexturesChangedEvent)obj).Current.Texture as LevelTexture;
                 panelTextureMap.SelectedTexture = ((Editor.SelectedTexturesChangedEvent)obj).Current;
+            }
 
             // Center texture on texture map
             if (obj is Editor.SelectTextureAndCenterViewEvent)
+            {
+                comboCurrentTexture.SelectedItem = ((Editor.SelectTextureAndCenterViewEvent)obj).Texture.Texture as LevelTexture;
                 panelTextureMap.ShowTexture(((Editor.SelectTextureAndCenterViewEvent)obj).Texture);
+            }
+
+            // Reset texture map
+            if (obj is Editor.LevelChangedEvent)
+            {
+                comboCurrentTexture.Items.Clear();
+                comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
+                comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
+            }
+            if (obj is Editor.LoadedTexturesChangedEvent)
+            {
+                // Populate current texture combo box
+                LevelTexture current = comboCurrentTexture.SelectedItem as LevelTexture;
+                comboCurrentTexture.Items.Clear();
+                comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
+                if (_editor.Level.Settings.Textures.Contains(current))
+                    comboCurrentTexture.SelectedItem = current;
+                else
+                    panelTextureMap.ResetVisibleTexture(null);
+                if (((Editor.LoadedTexturesChangedEvent)obj).NewToSelect != null)
+                    comboCurrentTexture.SelectedItem = ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect;
+                panelTextureMap.Invalidate();
+            }
+        }
+
+        private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (panelTextureMap.VisibleTexture != comboCurrentTexture.SelectedItem)
+                panelTextureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
+            butDeleteTexture.Enabled = butBrowseTexture.Enabled = butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null;
+        }
+
+        private void comboCurrentTexture_DropDown(object sender, EventArgs e)
+        {
+            // Make the combo box as wide as possible
+            Point screenPointLeft = comboCurrentTexture.PointToScreen(new Point(0, 0));
+            Rectangle screenPointRight = Screen.GetBounds(comboCurrentTexture.PointToScreen(new Point(0, comboCurrentTexture.Width)));
+            comboCurrentTexture.DropDownWidth = screenPointRight.Right - screenPointLeft.X - 15; // Margin
         }
 
         private void butTextureSounds_Click(object sender, EventArgs e)
         {
-            EditorActions.ShowTextureSoundsDialog(this);
+            LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
+            if (texture != null)
+                using (var form = new FormFootStepSounds(_editor, texture))
+                    form.ShowDialog(this);
         }
 
         private void butAnimationRanges_Click(object sender, EventArgs e)
         {
-            EditorActions.ShowAnimationRangesDialog(this);
+            using (var form = new FormAnimatedTextures(_editor, comboCurrentTexture.SelectedItem as LevelTexture))
+                form.ShowDialog(this);
         }
 
         private void rbTileSize32_CheckedChanged(object sender, EventArgs e)
@@ -80,6 +134,23 @@ namespace TombEditor.ToolWindows
         {
             if (rbTileSize256.Checked)
                 panelTextureMap.TileSelectionSize = 256.0f;
+        }
+
+        private void butDeleteTexture_Click(object sender, EventArgs e)
+        {
+            LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
+            if (texture != null)
+                EditorActions.RemoveTexture(this, texture);
+        }
+
+        private void butAddTexture_Click(object sender, EventArgs e)
+        {
+            EditorActions.AddTexture(this);
+        }
+
+        private void butBrowseTexture_Click(object sender, EventArgs e)
+        {
+            EditorActions.AddTexture(this, comboCurrentTexture.SelectedItem as LevelTexture);
         }
     }
 }

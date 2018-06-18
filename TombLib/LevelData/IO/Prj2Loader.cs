@@ -230,19 +230,19 @@ namespace TombLib.LevelData.IO
                             else if (id3 == Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows)
                                 levelTexture.SetConvert512PixelsToDoubleRows(settings, chunkIO.ReadChunkBool(chunkSize3));
                             else if (id3 == Prj2Chunks.LevelTextureReplaceMagentaWithTransparency)
-                                levelTexture.SetReplaceWithTransparency(settings, chunkIO.ReadChunkBool(chunkSize3));
+                                levelTexture.SetReplaceMagentaWithTransparency(settings, chunkIO.ReadChunkBool(chunkSize3));
                             else if (id3 == Prj2Chunks.LevelTextureSounds)
                             {
                                 int width = chunkIO.Raw.ReadInt32();
                                 int height = chunkIO.Raw.ReadInt32();
-                                levelTexture.ResizeTextureSounds(width, height);
-                                for (int y = 0; y < levelTexture.TextureSoundHeight; ++y)
-                                    for (int x = 0; x < levelTexture.TextureSoundWidth; ++x)
+                                levelTexture.ResizeFootStepSounds(width, height);
+                                for (int y = 0; y < levelTexture.FootStepSoundHeight; ++y)
+                                    for (int x = 0; x < levelTexture.FootStepSoundWidth; ++x)
                                     {
                                         byte textureSoundByte = chunkIO.Raw.ReadByte();
                                         if (textureSoundByte > 15)
                                             textureSoundByte = 15;
-                                        levelTexture.SetTextureSound(x, y, (TextureSound)textureSoundByte);
+                                        levelTexture.SetFootStepSound(x, y, (TextureFootStepSound)textureSoundByte);
                                     }
                             }
                             else

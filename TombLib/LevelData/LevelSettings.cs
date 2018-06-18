@@ -215,23 +215,6 @@ namespace TombLib.LevelData
             return path;
         }
 
-        public string TextureFilePath
-        {
-            get
-            {
-                return Textures.Count > 0 ? Textures[0].Path : "";
-            }
-            set
-            {
-                if (string.IsNullOrEmpty(value))
-                    Textures.Clear();
-                else if (Textures.Count > 0)
-                    Textures[0].SetPath(this, value);
-                else
-                    Textures.Add(new LevelTexture(this, value));
-            }
-        }
-
         public WadGameVersion WadGameVersion
         {
             get

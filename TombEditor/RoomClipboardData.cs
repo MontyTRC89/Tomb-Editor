@@ -92,7 +92,7 @@ namespace TombEditor
             using (var stream = new MemoryStream(_data, false))
             {
                 Level level = Prj2Loader.LoadFromPrj2(_levelPath, stream, new ProgressReporterSimple(),
-                    new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+                    new Prj2Loader.Settings { IgnoreWads = true });
                 return level;
             }
         }

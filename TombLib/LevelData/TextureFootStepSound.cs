@@ -1,6 +1,6 @@
 ﻿namespace TombLib.LevelData
 {
-    public enum TextureSound : byte
+    public enum TextureFootStepSound : byte
     {
         Mud = 0,
         Snow = 1,

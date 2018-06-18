@@ -14,8 +14,8 @@ namespace TombLib.LevelData
         public UniqueIDType UniqueID { get; private set; } = new UniqueIDType();
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        public const float TextureSoundGranularity = 64.0f;
-        public const float BumpMappingGranularity = 64.0f;
+        public const float FootStepSoundGranularity = 64.0f;
+        //public const float BumpMappingGranularity = 64.0f;
 
         public string Path { get; private set; }
         public Exception LoadException { get; private set; }
@@ -24,8 +24,8 @@ namespace TombLib.LevelData
         private bool _replaceMagentaWithTransparency = true;
         public override bool ReplaceMagentaWithTransparency => _replaceMagentaWithTransparency;
 
-        private TextureSound[,] _textureSounds = new TextureSound[0, 0];
-        private BumpMappingLevel[,] _bumpMappingLevel = new BumpMappingLevel[0, 0];
+        private TextureFootStepSound[,] _footStepSounds = new TextureFootStepSound[0, 0];
+        //private BumpMappingLevel[,] _bumpMappingLevel = new BumpMappingLevel[0, 0];
 
         public LevelTexture()
         { }
@@ -35,6 +35,68 @@ namespace TombLib.LevelData
             Convert512PixelsToDoubleRows = convert512PixelsToDoubleRows;
             _replaceMagentaWithTransparency = replaceWithTransparency;
             SetPath(settings, path);
+        }
+
+        public override Texture Clone()
+        {
+            return new LevelTexture
+            {
+                UniqueID = UniqueID,
+                Image = Image,
+                Path = Path,
+                LoadException = LoadException,
+                Convert512PixelsToDoubleRows = Convert512PixelsToDoubleRows,
+                _replaceMagentaWithTransparency = _replaceMagentaWithTransparency,
+                _footStepSounds = _footStepSounds,
+                //_bumpMappingLevel = _bumpMappingLevel
+            };
+        }
+
+        public void Assign(LevelTexture other)
+        {
+            Image = other.Image;
+            Path = other.Path;
+            LoadException = other.LoadException;
+            Convert512PixelsToDoubleRows = other.Convert512PixelsToDoubleRows;
+            _replaceMagentaWithTransparency = other._replaceMagentaWithTransparency;
+            _footStepSounds = other._footStepSounds;
+            //_bumpMappingLevel = other._bumpMappingLevel;
+        }
+
+        public bool Equals(LevelTexture other)
+        {
+            if (!Path.Equals(other.Path, StringComparison.InvariantCultureIgnoreCase))
+                return false;
+            if (Convert512PixelsToDoubleRows != other.Convert512PixelsToDoubleRows)
+                return false;
+            if (ReplaceMagentaWithTransparency != other.ReplaceMagentaWithTransparency)
+                return false;
+            if (FootStepSoundWidth != other.FootStepSoundWidth || FootStepSoundHeight != other.FootStepSoundHeight)
+                return false;
+            for (int x = 0; x < FootStepSoundWidth; ++x)
+                for (int y = 0; y < FootStepSoundHeight; ++y)
+                    if (_footStepSounds[x, y] != other._footStepSounds[x, y])
+                        return false;
+            // Bump mapping!!!!!!!!!!!!!!!!!
+            return true;
+        }
+
+        public override bool Equals(object other) => other is LevelTexture && Equals((LevelTexture)other);
+
+        public override int GetHashCode() => Path == null ? 0 : Path.GetHashCode();
+
+        public override string ToString()
+        {
+            string Filename;
+            try
+            {
+                Filename = System.IO.Path.GetFileNameWithoutExtension(Path);
+            }
+            catch
+            {
+                Filename = "<Unnamed>";
+            }
+            return Filename + " (at " + Path + ")";
         }
 
         public void Reload(LevelSettings settings)
@@ -68,14 +130,14 @@ namespace TombLib.LevelData
                 Image = image;
 
                 // Resize sound array
-                ResizeTextureSounds(
-                    (int)Math.Ceiling(Image.Width / TextureSoundGranularity),
-                    (int)Math.Ceiling(Image.Height / TextureSoundGranularity));
+                ResizeFootStepSounds(
+                    (int)Math.Ceiling(Image.Width / FootStepSoundGranularity),
+                    (int)Math.Ceiling(Image.Height / FootStepSoundGranularity));
 
                 // Resize bump maps
-                ResizeBumpMappingInfos(
-                    (int)Math.Ceiling(Image.Width / BumpMappingGranularity),
-                    (int)Math.Ceiling(Image.Height / BumpMappingGranularity));
+                // ResizeBumpMappingInfos(
+                //    (int)Math.Ceiling(Image.Width / BumpMappingGranularity),
+                //    (int)Math.Ceiling(Image.Height / BumpMappingGranularity));
             }
             catch (Exception exc)
             {
@@ -100,7 +162,7 @@ namespace TombLib.LevelData
                 Reload(settings);
         }
 
-        public void SetReplaceWithTransparency(LevelSettings settings, bool value)
+        public void SetReplaceMagentaWithTransparency(LevelSettings settings, bool value)
         {
             if (_replaceMagentaWithTransparency == value)
                 return;
@@ -108,44 +170,53 @@ namespace TombLib.LevelData
             Reload(settings);
         }
 
-        public override Texture Clone()
+        public TextureFootStepSound GetFootStepSound(int x, int y)
         {
-            return new LevelTexture
+            return _footStepSounds[x, y];
+        }
+
+        public void SetFootStepSound(int x, int y, TextureFootStepSound value)
+        {
+            _footStepSounds[x, y] = value;
+        }
+
+        public TextureFootStepSound? GetTextureSoundFromTexCoord(Vector2 coord)
+        {
+            coord /= FootStepSoundGranularity;
+            if (!(coord.X >= 0 && coord.Y >= 0 && coord.X < FootStepSoundWidth && coord.Y < FootStepSoundHeight))
+                return null;
+            return _footStepSounds[(int)coord.X, (int)coord.Y];
+        }
+
+        public int FootStepSoundWidth => _footStepSounds.GetLength(0);
+        public int FootStepSoundHeight => _footStepSounds.GetLength(1);
+
+        public void ResizeFootStepSounds(int width, int height)
+        {
+            int requiredTextureSoundWidth = Math.Max(FootStepSoundWidth, width);
+            int requiredTextureSoundHeight = Math.Max(FootStepSoundHeight, height);
+            if (FootStepSoundWidth < requiredTextureSoundWidth ||
+                FootStepSoundHeight < requiredTextureSoundHeight)
             {
-                UniqueID = UniqueID,
-                Image = Image,
-                Path = Path,
-                LoadException = LoadException,
-                _replaceMagentaWithTransparency = _replaceMagentaWithTransparency
-            };
+                var newTextureSounds = new TextureFootStepSound[requiredTextureSoundWidth, requiredTextureSoundHeight];
+                for (int y = 0; y < requiredTextureSoundHeight; ++y)
+                    for (int x = 0; x < requiredTextureSoundWidth; ++x)
+                        newTextureSounds[x, y] = TextureFootStepSound.Stone;
+                for (int y = 0; y < FootStepSoundHeight; ++y)
+                    for (int x = 0; x < FootStepSoundWidth; ++x)
+                        newTextureSounds[x, y] = _footStepSounds[x, y];
+                _footStepSounds = newTextureSounds;
+            }
         }
 
-        public TextureSound GetTextureSound(int x, int y)
-        {
-            return _textureSounds[x, y];
-        }
-
-        public BumpMappingLevel GetBumpMapLevel(int x, int y)
+        /*public BumpMappingLevel GetBumpMapLevel(int x, int y)
         {
             return _bumpMappingLevel[x, y];
-        }
-
-        public void SetTextureSound(int x, int y, TextureSound value)
-        {
-            _textureSounds[x, y] = value;
         }
 
         public void SetBumpMappingLevel(int x, int y, BumpMappingLevel info)
         {
             _bumpMappingLevel[x, y] = info;
-        }
-
-        public TextureSound? GetTextureSoundFromTexCoord(Vector2 coord)
-        {
-            coord /= TextureSoundGranularity;
-            if (!(coord.X >= 0 && coord.Y >= 0 && coord.X < TextureSoundWidth && coord.Y < TextureSoundHeight))
-                return null;
-            return _textureSounds[(int)coord.X, (int)coord.Y];
         }
 
         public BumpMappingLevel? GetBumpMappingLevelFromTexCoord(Vector2 coord)
@@ -156,29 +227,8 @@ namespace TombLib.LevelData
             return _bumpMappingLevel[(int)coord.X, (int)coord.Y];
         }
 
-        public int TextureSoundWidth => _textureSounds.GetLength(0);
-        public int TextureSoundHeight => _textureSounds.GetLength(1);
-
         public int BumpMappingWidth => _bumpMappingLevel.GetLength(0);
         public int BumpMappingHeight => _bumpMappingLevel.GetLength(1);
-
-        public void ResizeTextureSounds(int width, int height)
-        {
-            int requiredTextureSoundWidth = Math.Max(TextureSoundWidth, width);
-            int requiredTextureSoundHeight = Math.Max(TextureSoundHeight, height);
-            if (TextureSoundWidth < requiredTextureSoundWidth ||
-                TextureSoundHeight < requiredTextureSoundHeight)
-            {
-                var newTextureSounds = new TextureSound[requiredTextureSoundWidth, requiredTextureSoundHeight];
-                for (int y = 0; y < requiredTextureSoundHeight; ++y)
-                    for (int x = 0; x < requiredTextureSoundWidth; ++x)
-                        newTextureSounds[x, y] = TextureSound.Stone;
-                for (int y = 0; y < TextureSoundHeight; ++y)
-                    for (int x = 0; x < TextureSoundWidth; ++x)
-                        newTextureSounds[x, y] = _textureSounds[x, y];
-                _textureSounds = newTextureSounds;
-            }
-        }
 
         public void ResizeBumpMappingInfos(int width, int height)
         {
@@ -196,31 +246,7 @@ namespace TombLib.LevelData
                         newBumpMappingInfos[x, y] = _bumpMappingLevel[x, y];
                 _bumpMappingLevel = newBumpMappingInfos;
             }
-        }
+        }*/
 
-        public bool Equals(LevelTexture other) => base.Equals(other);
-
-        public void Assign(LevelTexture other)
-        {
-            Image = other.Image;
-            Path = other.Path;
-            LoadException = other.LoadException;
-            Convert512PixelsToDoubleRows = other.Convert512PixelsToDoubleRows;
-            _replaceMagentaWithTransparency = other._replaceMagentaWithTransparency;
-        }
-
-        public override string ToString()
-        {
-            string Filename;
-            try
-            {
-                Filename = System.IO.Path.GetFileNameWithoutExtension(Path);
-            }
-            catch
-            {
-                Filename = "<Unnamed>";
-            }
-            return Filename + " (Level Texture with " + Path + ")";
-        }
     }
 }
