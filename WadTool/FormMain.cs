@@ -64,8 +64,7 @@ namespace WadTool
                 panel3D.UpdateAnimationScrollbar();
                 panel3D.Invalidate();
 
-                if (_tool.DestinationWad != null)
-                    Text = "Wad Tool - " + _tool.DestinationWad.FileName;
+                Text = "Wad Tool - " + (_tool.DestinationWad?.FileName ?? "New");
             }
             if (obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
             {
