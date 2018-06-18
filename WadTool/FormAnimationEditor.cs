@@ -1284,9 +1284,6 @@ namespace WadTool
             foreach (var room in _level.Rooms)
                 if (room != null)
                     comboRooms.Items.Add(room);
-            
-            // Prepare the texture atlas
-            panelRendering.RebuildRoomsTextureAtlas();
 
             panelRendering.Invalidate();
         }

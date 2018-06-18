@@ -1,13 +1,9 @@
 ﻿using NLog;
-using SharpDX;
-using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 using Vector2 = System.Numerics.Vector2;
 

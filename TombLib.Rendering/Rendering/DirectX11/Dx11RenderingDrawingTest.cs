@@ -1,8 +1,7 @@
-﻿using System;
-using SharpDX;
+﻿using SharpDX;
 using SharpDX.Direct3D11;
+using System;
 using Buffer = SharpDX.Direct3D11.Buffer;
-using System.Collections.Generic;
 
 namespace TombLib.Rendering.DirectX11
 {

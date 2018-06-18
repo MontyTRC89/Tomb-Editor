@@ -1,6 +1,5 @@
-﻿using System;
+﻿using SharpDX.Direct3D11;
 using System.Numerics;
-using SharpDX.Direct3D11;
 using System.Runtime.InteropServices;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
