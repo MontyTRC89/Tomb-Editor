@@ -13,7 +13,14 @@ namespace ScriptEditor
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new FormMain());
+
+            using (FormMain form = new FormMain())
+            {
+                form.Show();
+                if (args.Length > 1) // Open files on start
+                    form.OpenFile(args[0]);
+                Application.Run(form);
+            }
 		}
 	}
 }

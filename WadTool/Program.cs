@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Forms;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
@@ -13,7 +14,7 @@ namespace WadTool
         /// The main entry point of the application.
         /// </summary>
         [STAThread]
-        public static void Main()
+        public static void Main(string[] args)
         {
             // Load configuration
             var initialEvents = new List<LogEventInfo>();
@@ -41,11 +42,17 @@ namespace WadTool
                 }
                 configuration.SaveTry();
 
-
                 // Run
-                TrCatalog.LoadCatalog("Catalogs\\TRCatalog.xml");
+                TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TRCatalog.xml");
+                SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
                 using (WadToolClass tool = new WadToolClass(configuration))
-                    Application.Run(new FormMain(tool));
+                    using (FormMain form = new FormMain(tool))
+                    {
+                        form.Show();
+                        if (args.Length > 0)
+                            WadActions.LoadWad(tool, null, true, args[0]);
+                        Application.Run();
+                    }
             }
         }
     }
