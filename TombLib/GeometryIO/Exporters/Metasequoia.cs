@@ -55,11 +55,35 @@ namespace TombLib.GeometryIO.Exporters
                     writer.WriteLine("\tshading 1");
                     writer.WriteLine("\tfacet 59.5");
 
-                    // Save vertices
-                    writer.WriteLine("\tvertex " + mesh.Positions.Count + " {");
-                    foreach (var vertex in mesh.Positions)
+                    // Optimize vertices
+                    var optimizedPositions = new List<Vector3>();
+                    var optimizedIndices = new Dictionary<int, int>();
+
+                    for (int i = 0; i < mesh.Positions.Count; i++)
                     {
-                        var position = ApplyAxesTransforms(vertex);
+                        var position = ApplyAxesTransforms(mesh.Positions[i]);
+                        int found = -1;
+                        for (int j = 0; j < optimizedPositions.Count; j++)
+                            if (optimizedPositions[j] == position)
+                            {
+                                found = j;
+                                break;
+                            }
+
+                        if (found == -1)
+                        {
+                            found = optimizedPositions.Count;
+                            optimizedPositions.Add(position);
+                        }
+
+                        optimizedIndices.Add(i, found);
+                    }
+
+                    // Save vertices
+                    writer.WriteLine("\tvertex " + optimizedPositions.Count + " {");
+                    for (int i = 0; i < optimizedPositions.Count; i++)
+                    {
+                        var position = optimizedPositions[i];
                         writer.WriteLine("\t\t" + position.X.ToString(CultureInfo.InvariantCulture) + " " +
                                                   position.Y.ToString(CultureInfo.InvariantCulture) + " " +
                                                   position.Z.ToString(CultureInfo.InvariantCulture));
@@ -97,7 +121,7 @@ namespace TombLib.GeometryIO.Exporters
 
                             if (poly.Shape == IOPolygonShape.Triangle)
                             {
-                                writer.Write("\t\t3 V(" + v1 + " " + v2 + " " + v3 + ") ");
+                                writer.Write("\t\t3 V(" + optimizedIndices[v1] + " " + optimizedIndices[v2] + " " + optimizedIndices[v3] + ") ");
                                 writer.Write("M(" + model.Materials.IndexOf(submesh.Value.Material) + ") ");
                                 writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + ") ");
                                 writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + ") ");
@@ -107,7 +131,7 @@ namespace TombLib.GeometryIO.Exporters
                                 var uv4 = GetUV(ApplyUVTransform(mesh.UV[v4], texture.Image.Width, texture.Image.Height));
                                 var color4 = GetColor(ApplyColorTransform(mesh.Colors[v4]));
 
-                                writer.Write("\t\t4 V(" + v1 + " " + v2 + " " + v3 + " " + v4 + ") ");
+                                writer.Write("\t\t4 V(" + optimizedIndices[v1] + " " + optimizedIndices[v2] + " " + optimizedIndices[v3] + " " + optimizedIndices[v4] + ") ");
                                 writer.Write("M(" + model.Materials.IndexOf(submesh.Value.Material) + ") ");
                                 writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + " " + uv4 + ") ");
                                 writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + " " + color4 + ") ");
