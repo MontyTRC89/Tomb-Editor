@@ -11,7 +11,7 @@ using RectangleF = System.Drawing.RectangleF;
 
 namespace TombEditor.Forms
 {
-    public partial class FormTextureSounds : DarkForm
+    public partial class FormFootStepSounds : DarkForm
     {
         private const byte _alpha = 212;
         private static readonly Brush[] _textureSoundBrushes = new Brush[16]
@@ -39,7 +39,7 @@ namespace TombEditor.Forms
         private const float _textureSoundProportion = 1.0f / 4.0f;
         private Editor _editor;
 
-        public FormTextureSounds(Editor editor)
+        public FormFootStepSounds(Editor editor, LevelTexture texture)
         {
             InitializeComponent();
             _editor = editor;
@@ -50,12 +50,12 @@ namespace TombEditor.Forms
 
             // Initialize texture map
             if (editor.SelectedTexture.TextureIsInvisble)
-                textureMap.ResetVisibleTexture(editor.Level.Settings.Textures.Count > 0 ? editor.Level.Settings.Textures[0] : null);
+                textureMap.ResetVisibleTexture(texture);
             else
                 textureMap.ShowTexture(editor.SelectedTexture);
 
             // Add texture sounds to combo box
-            foreach (TextureSound sound in Enum.GetValues(typeof(TextureSound)))
+            foreach (TextureFootStepSound sound in Enum.GetValues(typeof(TextureFootStepSound)))
                 comboSounds.Items.Add(sound);
         }
 
@@ -67,20 +67,20 @@ namespace TombEditor.Forms
 
         private void butAssignSound_Click(object sender, EventArgs e)
         {
-            if (!(comboSounds.SelectedItem is TextureSound))
+            if (!(comboSounds.SelectedItem is TextureFootStepSound))
                 return;
 
-            var sound = (TextureSound)comboSounds.SelectedItem;
+            var sound = (TextureFootStepSound)comboSounds.SelectedItem;
             ConservativeRasterizer.RasterizeQuad(
-                textureMap.SelectedTexture.TexCoord0 / LevelTexture.TextureSoundGranularity,
-                textureMap.SelectedTexture.TexCoord1 / LevelTexture.TextureSoundGranularity,
-                textureMap.SelectedTexture.TexCoord2 / LevelTexture.TextureSoundGranularity,
-                textureMap.SelectedTexture.TexCoord3 / LevelTexture.TextureSoundGranularity,
+                textureMap.SelectedTexture.TexCoord0 / LevelTexture.FootStepSoundGranularity,
+                textureMap.SelectedTexture.TexCoord1 / LevelTexture.FootStepSoundGranularity,
+                textureMap.SelectedTexture.TexCoord2 / LevelTexture.FootStepSoundGranularity,
+                textureMap.SelectedTexture.TexCoord3 / LevelTexture.FootStepSoundGranularity,
                 (startX, startY, endX, endY) =>
                 {
                     for (int y = startY; y < endY; ++y)
                         for (int x = startX; x < endX; ++x)
-                            textureMap.VisibleTexture.SetTextureSound(x, y, sound);
+                            textureMap.VisibleTexture.SetFootStepSound(x, y, sound);
                 });
             textureMap.Invalidate();
             _editor.TextureSoundsChange();
@@ -90,7 +90,7 @@ namespace TombEditor.Forms
         {
             protected override SelectionPrecisionType GetSelectionPrecision(bool rectangularSelection)
             {
-                return new SelectionPrecisionType(LevelTexture.TextureSoundGranularity, true);
+                return new SelectionPrecisionType(LevelTexture.FootStepSoundGranularity, true);
             }
 
             protected override float MaxTextureSize => float.PositiveInfinity;
@@ -105,25 +105,25 @@ namespace TombEditor.Forms
                 Vector2 end = FromVisualCoord(new PointF() + ClientSize);
                 start = Vector2.Min(texture.Image.Size, Vector2.Max(new Vector2(0), start));
                 end = Vector2.Min(texture.Image.Size, Vector2.Max(new Vector2(0), end));
-                int soundTileStartX = (int)Math.Floor(start.X / LevelTexture.TextureSoundGranularity);
-                int soundTileStartY = (int)Math.Floor(start.Y / LevelTexture.TextureSoundGranularity);
-                int soundTileEndX = (int)Math.Ceiling(end.X / LevelTexture.TextureSoundGranularity);
-                int soundTileEndY = (int)Math.Ceiling(end.Y / LevelTexture.TextureSoundGranularity);
+                int soundTileStartX = (int)Math.Floor(start.X / LevelTexture.FootStepSoundGranularity);
+                int soundTileStartY = (int)Math.Floor(start.Y / LevelTexture.FootStepSoundGranularity);
+                int soundTileEndX = (int)Math.Ceiling(end.X / LevelTexture.FootStepSoundGranularity);
+                int soundTileEndY = (int)Math.Ceiling(end.Y / LevelTexture.FootStepSoundGranularity);
 
                 // Draw texture sounds
-                using (Font textureSoundFont = new Font(Font.FontFamily, _textureSoundStringSize * _textureSoundProportion * LevelTexture.TextureSoundGranularity * Math.Min(100, ViewScale)))
+                using (Font textureSoundFont = new Font(Font.FontFamily, _textureSoundStringSize * _textureSoundProportion * LevelTexture.FootStepSoundGranularity * Math.Min(100, ViewScale)))
                     for (int y = soundTileStartY; y <= soundTileEndY; ++y)
                         for (int x = soundTileStartX; x <= soundTileEndX; ++x)
                         {
-                            if (x < 0 || x >= texture.TextureSoundWidth || y < 0 || y >= texture.TextureSoundHeight)
+                            if (x < 0 || x >= texture.FootStepSoundWidth || y < 0 || y >= texture.FootStepSoundHeight)
                                 continue;
 
-                            TextureSound sound = texture.GetTextureSound(x, y);
+                            TextureFootStepSound sound = texture.GetFootStepSound(x, y);
                             Brush soundBrush = _textureSoundBrushes[(int)sound];
 
-                            Vector2 tileStartTexCoord = new Vector2(x, y) * LevelTexture.TextureSoundGranularity;
+                            Vector2 tileStartTexCoord = new Vector2(x, y) * LevelTexture.FootStepSoundGranularity;
                             PointF tileStart = ToVisualCoord(tileStartTexCoord);
-                            PointF tileEnd = ToVisualCoord(tileStartTexCoord + new Vector2(LevelTexture.TextureSoundGranularity));
+                            PointF tileEnd = ToVisualCoord(tileStartTexCoord + new Vector2(LevelTexture.FootStepSoundGranularity));
                             PointF descStart = new PointF(tileStart.X, tileStart.Y * _textureSoundProportion + tileEnd.Y * (1 - _textureSoundProportion));
 
                             RectangleF descArea = RectangleF.FromLTRB(descStart.X, descStart.Y, tileEnd.X, tileEnd.Y);
@@ -138,14 +138,14 @@ namespace TombEditor.Forms
 
                 // Fill covered tiles
                 ConservativeRasterizer.RasterizeQuadUniquely(
-                    SelectedTexture.TexCoord0 / LevelTexture.TextureSoundGranularity,
-                    SelectedTexture.TexCoord1 / LevelTexture.TextureSoundGranularity,
-                    SelectedTexture.TexCoord2 / LevelTexture.TextureSoundGranularity,
-                    SelectedTexture.TexCoord3 / LevelTexture.TextureSoundGranularity,
+                    SelectedTexture.TexCoord0 / LevelTexture.FootStepSoundGranularity,
+                    SelectedTexture.TexCoord1 / LevelTexture.FootStepSoundGranularity,
+                    SelectedTexture.TexCoord2 / LevelTexture.FootStepSoundGranularity,
+                    SelectedTexture.TexCoord3 / LevelTexture.FootStepSoundGranularity,
                     (startX, startY, endX, endY) =>
                     {
-                        PointF tileStart = ToVisualCoord(new Vector2(startX, startY) * LevelTexture.TextureSoundGranularity);
-                        PointF tileEnd = ToVisualCoord(new Vector2(endX, endY) * LevelTexture.TextureSoundGranularity);
+                        PointF tileStart = ToVisualCoord(new Vector2(startX, startY) * LevelTexture.FootStepSoundGranularity);
+                        PointF tileEnd = ToVisualCoord(new Vector2(endX, endY) * LevelTexture.FootStepSoundGranularity);
                         RectangleF tileArea = RectangleF.FromLTRB(tileStart.X, tileStart.Y, tileEnd.X, tileEnd.Y);
                         e.Graphics.FillRectangle(_coverBrush, tileArea);
                     });

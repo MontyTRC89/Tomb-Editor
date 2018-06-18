@@ -236,7 +236,7 @@ namespace TombLib.LevelData
         {
             foreach (Room room in Rooms.Where(room => room != null))
                 foreach (Block sector in room.Blocks)
-                    for (BlockFace face = 0; face <= Block.FaceCount; ++face)
+                    for (BlockFace face = 0; face < Block.FaceCount; ++face)
                     {
                         TextureArea currentTextureArea = sector.GetFaceTexture(face);
                         LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;
@@ -246,6 +246,8 @@ namespace TombLib.LevelData
                             sector.SetFaceTexture(face, currentTextureArea);
                         }
                     }
+            foreach (AnimatedTextureSet set in Settings.AnimatedTextureSets)
+                set.Frames.RemoveAll(frame => askIfTextureToRemove(frame.Texture));
         }
 
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)

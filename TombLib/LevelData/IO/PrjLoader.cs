@@ -1438,11 +1438,11 @@ namespace TombLib.LevelData.IO
                 }
 
                 // Read texture sounds
-                texture.ResizeTextureSounds(4, 64);
+                texture.ResizeFootStepSounds(4, 64);
                 for (int i = 0; i < 256; i++)
                 {
-                    TextureSound textureSound = (TextureSound)(reader.ReadByte() & 0xf);
-                    texture.SetTextureSound(i % 4, i / 4, textureSound);
+                    TextureFootStepSound textureSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
+                    texture.SetFootStepSound(i % 4, i / 4, textureSound);
                 }
 
                 // Try to parse bump mapping and recognize *.prj TRNG's
@@ -1451,10 +1451,11 @@ namespace TombLib.LevelData.IO
                 else
                 {
                     // Read bump mapping data
-                    texture.ResizeBumpMappingInfos(4, 64);
+                    //texture.ResizeBumpMappingInfos(4, 64);
                     for (int i = 0; i < 256; i++)
                     {
-                        texture.SetBumpMappingLevel(i % 4, i / 4, (BumpMappingLevel)reader.ReadByte());
+                        //texture.SetBumpMappingLevel(i % 4, i / 4, (BumpMappingLevel)reader.ReadByte());
+                        reader.ReadByte();
                     }
 
                     string offsetString = "offset 0x" + reader.BaseStream.Position.ToString("x") + ".";

@@ -2274,26 +2274,28 @@ namespace TombEditor
 
         }
 
-        public static void AddTexture(IWin32Window owner, LevelTexture toReplace = null)
+        public static LevelTexture AddTexture(IWin32Window owner, LevelTexture toReplace = null)
         {
             var settings = _editor.Level.Settings;
             string path = GraphicalDialogHandler.BrowseTextureFile(settings, toReplace?.Path ?? _editor.Level.Settings.LevelFilePath, owner);
             if (path == toReplace?.Path)
-                return;
+                return toReplace;
 
             if (toReplace != null)
+            {
                 toReplace.SetPath(_editor.Level.Settings, path);
+                _editor.LoadedTexturesChange(toReplace);
+                return toReplace;
+            }
             else
             {
                 var newTexture = new LevelTexture(_editor.Level.Settings, path);
                 if (newTexture.LoadException != null)
-                    return;
+                    return null;
                 _editor.Level.Settings.Textures.Add(newTexture);
+                _editor.LoadedTexturesChange(newTexture);
+                return newTexture;
             }
-
-
-            settings.TextureFilePath = path;
-            _editor.LoadedTexturesChange();
         }
 
         public static void UnloadTextures(IWin32Window owner)
@@ -2316,6 +2318,15 @@ namespace TombEditor
             _editor.LoadedTexturesChange();
         }
 
+        public static void RemoveTexture(IWin32Window owner, LevelTexture textureToDelete)
+        {
+            if (DarkMessageBox.Show(owner, "Are you sure to DELETE the texture " + textureToDelete +
+                "? Everything using the texture will be untextured.", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+            _editor.Level.Settings.Textures.Remove(textureToDelete);
+            _editor.Level.RemoveTextures(texture => texture == textureToDelete);
+            _editor.LoadedTexturesChange();
+        }
         public static void AddWad(IWin32Window owner, ReferencedWad toReplace = null)
         {
             var settings = _editor.Level.Settings;
@@ -2459,8 +2470,9 @@ namespace TombEditor
                     }
                     else if (LevelTexture.FileExtensions.Matches(file))
                     {
-                        _editor.Level.Settings.TextureFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
-                        _editor.LoadedTexturesChange();
+                        LevelTexture newLevelTexture = new LevelTexture(_editor.Level.Settings, _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory));
+                        _editor.Level.Settings.Textures.Add(newLevelTexture);
+                        _editor.LoadedTexturesChange(newLevelTexture);
                     }
                     else if (file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -2478,19 +2490,7 @@ namespace TombEditor
             else
                 return -1;
         }
-
-        public static void ShowTextureSoundsDialog(IWin32Window owner)
-        {
-            using (var form = new FormTextureSounds(_editor))
-                form.ShowDialog(owner);
-        }
-
-        public static void ShowAnimationRangesDialog(IWin32Window owner)
-        {
-            using (FormAnimatedTextures form = new FormAnimatedTextures(_editor))
-                form.ShowDialog(owner);
-        }
-
+        
         public static void SetPortalOpacity(PortalOpacity opacity, IWin32Window owner)
         {
             var portal = _editor.SelectedObject as PortalInstance;

@@ -31,19 +31,21 @@ namespace TombLib.Utils
 
         public static explicit operator ColorC(Vector4 this_)
         {
-            this_ = Vector4.Min(Vector4.Max(this_ * 255.99998f, new Vector4()),  new Vector4(255.0f));
+            this_ = Vector4.Min(Vector4.Max(this_ * 255.99998f, new Vector4()), new Vector4(255.0f));
             return new ColorC((byte)this_.X, (byte)this_.Y, (byte)this_.Z, (byte)this_.W);
         }
 
-        /*public static ColorC FromVector4(Vector4 color)
+        public static Vector4 Mix(Vector4 background, Vector4 foreground)
         {
-            return new ColorC(
-                    (byte)Math.Max(0, Math.Min(255, Math.Round(color.W * 255.0f))),
-                    (byte)Math.Max(0, Math.Min(255, Math.Round(color.X * 255.0f))),
-                    (byte)Math.Max(0, Math.Min(255, Math.Round(color.Y * 255.0f))),
-                    (byte)Math.Max(0, Math.Min(255, Math.Round(color.Z * 255.0f))));
-        }*/
-
+            // https://en.wikipedia.org/wiki/Alpha_compositing#Alpha_blending
+            float backgroundTotal = background.W * (1.0f - foreground.W);
+            float alpha = foreground.W + backgroundTotal;
+            Vector4 output = foreground * foreground.W + background * backgroundTotal;
+            if (alpha > float.Epsilon)
+                output /= alpha;
+            output.W = alpha;
+            return output;
+        }
     }
 
     // A very simple but very efficient image that is independent of GDI+.
@@ -127,7 +129,7 @@ namespace TombLib.Utils
 
         public int DataSize => Width * Height * PixelSize;
 
-        private static readonly byte[] Tga2_Signature = new byte [18] { 84, 82, 85, 69, 86, 73, 83, 73, 79, 78, 45, 88, 70, 73, 76, 69, 46, 0 };
+        private static readonly byte[] Tga2_Signature = new byte[18] { 84, 82, 85, 69, 86, 73, 83, 73, 79, 78, 45, 88, 70, 73, 76, 69, 46, 0 };
 
         private static bool IsTga(byte[] startBytes)
         {
@@ -391,7 +393,7 @@ namespace TombLib.Utils
         public unsafe void GetTempSystemDrawingBitmap(Action<Bitmap> bitmapAction)
         {
             fixed (void* dataPtr = _data)
-                using (var bitmap = new Bitmap(Width, Height, Width * PixelSize, PixelFormat.Format32bppArgb, new IntPtr(dataPtr))) // Temporaty bitmap
+                using (var bitmap = new Bitmap(Width, Height, Width * PixelSize, PixelFormat.Format32bppArgb, new IntPtr(dataPtr))) // Temporary bitmap
                     bitmapAction(bitmap);
         }
 

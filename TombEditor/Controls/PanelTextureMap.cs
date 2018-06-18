@@ -87,11 +87,7 @@ namespace TombEditor.Controls
         }
 
         private void EditorEventRaised(IEditorEvent obj)
-        {
-            // Reset texture map
-            if (obj is Editor.LevelChangedEvent || obj is Editor.LoadedTexturesChangedEvent)
-                ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
-        }
+        { }
 
         public void ShowTexture(TextureArea area)
         {
@@ -276,8 +272,7 @@ namespace TombEditor.Controls
 
             if (!(VisibleTexture?.IsAvailable ?? false))
             {
-                int TODO_ADJUST_FOR_MULTI_TEXTURE_SUPPORT;
-                EditorActions.AddTexture(Parent);
+                EditorActions.AddTexture(Parent, VisibleTexture);
                 return;
             }
 

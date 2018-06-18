@@ -68,11 +68,11 @@ namespace TombLib.LevelData
             Level = level;
             AmbientLight = ambientLight;
             Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
-		}
+        }
 
         public Room(Level level, VectorInt2 sectorSize, Vector3 ambientLight, string name = "Unnamed", short ceiling = DefaultHeight)
             : this(level, sectorSize.X, sectorSize.Y, ambientLight, name, ceiling)
-        {}
+        { }
 
         public void Resize(Level level, RectangleInt2 area, short floor = 0, short ceiling = DefaultHeight)
         {
@@ -672,7 +672,7 @@ namespace TombLib.LevelData
                     }
                 }
 
-                if(lookupBlock.Block.CeilingPortal == null)
+                if (lookupBlock.Block.CeilingPortal == null)
                 {
                     if (lookupBlock.Block.WS[heightsToCheck[0]] - sector.QA[heightsToCompare[0]] < absoluteLowestPassableHeight ||
                         lookupBlock.Block.WS[heightsToCheck[1]] - sector.QA[heightsToCompare[1]] < absoluteLowestPassableHeight ||
@@ -687,7 +687,7 @@ namespace TombLib.LevelData
 
         public bool IsFaceDefined(int x, int z, BlockFace face)
         {
-			return RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face)).Count != 0;
+            return RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face)).Count != 0;
         }
 
         public float GetFaceHighestPoint(int x, int z, BlockFace face)
@@ -1348,32 +1348,55 @@ namespace TombLib.LevelData
                 instance.CopyDependentLevelSettings(args);
 
             if (args.DestinationLevelSettings.Textures.Count == 0)
-                args.DestinationLevelSettings.Textures.AddRange(args.SourceLevelSettings.Textures);
-            else
             {
-                int TODO_Merge_Textures_Once_We_Support_More_Than_One_Texture;
-                if (args.UnifyData)
-                {
-                    for (int z = 0; z < NumZSectors; ++z)
-                        for (int x = 0; x < NumXSectors; ++x)
+                args.DestinationLevelSettings.Textures.AddRange(args.SourceLevelSettings.Textures);
+                args.DestinationLevelSettings.AnimatedTextureSets.AddRange(args.SourceLevelSettings.AnimatedTextureSets);
+            }
+            else if (args.UnifyData)
+            {
+                bool LookForAnimatedSets = false;
+                Cache<LevelTexture, LevelTexture> TextureRemap = null;
+                TextureRemap = new Cache<LevelTexture, LevelTexture>(32,
+                    sourceTexture =>
+                    {
+                        foreach (LevelTexture destinationTexture in args.DestinationLevelSettings.Textures)
+                            if (destinationTexture == sourceTexture || destinationTexture.Equals(sourceTexture))
+                                return destinationTexture;
+
+                        // Copy the texture
+                        args.DestinationLevelSettings.Textures.Add(sourceTexture);
+                        LookForAnimatedSets = true;
+                        return sourceTexture;
+                    });
+
+                for (int z = 0; z < NumZSectors; ++z)
+                    for (int x = 0; x < NumXSectors; ++x)
+                    {
+                        Block block = Blocks[x, z];
+                        for (BlockFace face = 0; face < Block.FaceCount; ++face)
                         {
-                            Block block = Blocks[x, z];
-                            for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                            TextureArea textureArea = block.GetFaceTexture(face);
+                            var sourceTexture = textureArea.Texture as LevelTexture;
+                            if (sourceTexture != null)
                             {
-                                TextureArea textureArea = block.GetFaceTexture(face);
-                                if (textureArea.Texture is LevelTexture)
+                                textureArea.Texture = TextureRemap[sourceTexture]; // Remap source texture to destination texture.
+                                if (LookForAnimatedSets)
                                 {
-                                    Vector2 maxSize = args.DestinationLevelSettings.Textures[0].Image.Size;
-                                    textureArea.Texture = args.DestinationLevelSettings.Textures[0];
-                                    textureArea.TexCoord0 = Vector2.Min(textureArea.TexCoord0, maxSize);
-                                    textureArea.TexCoord1 = Vector2.Min(textureArea.TexCoord1, maxSize);
-                                    textureArea.TexCoord2 = Vector2.Min(textureArea.TexCoord2, maxSize);
-                                    textureArea.TexCoord3 = Vector2.Min(textureArea.TexCoord3, maxSize);
-                                    block.SetFaceTexture(face, textureArea);
+                                    // Copy animated texture sets
+                                    var setsToCopy = args.SourceLevelSettings.AnimatedTextureSets.Where(set => set.Frames.Any(frame => frame.Texture == sourceTexture));
+                                    foreach (AnimatedTextureSet setToCopy in setsToCopy)
+                                    {
+                                        AnimatedTextureSet newSet = setToCopy.Clone();
+                                        foreach (AnimatedTextureFrame frame in newSet.Frames)
+                                            frame.Texture = TextureRemap[frame.Texture]; // Remap source textures to destination textures.
+                                        args.DestinationLevelSettings.AnimatedTextureSets.Add(newSet);
+                                    }
+                                    LookForAnimatedSets = false;
                                 }
+                                block.SetFaceTexture(face, textureArea);
                             }
                         }
-                }
+                    }
             }
         }
 
@@ -1392,18 +1415,18 @@ namespace TombLib.LevelData
 
         bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
 
-       /* public bool HasExternalRoomGeometry
-        {
-           / get
-            {
-                foreach (var obj in Objects)
-                    if (obj is ImportedGeometryInstance)
-                    {
-                        var imported = obj as ImportedGeometryInstance;
-                        if (imported.Model.)
-                    }
-            }
-        }*/
+        /* public bool HasExternalRoomGeometry
+         {
+            / get
+             {
+                 foreach (var obj in Objects)
+                     if (obj is ImportedGeometryInstance)
+                     {
+                         var imported = obj as ImportedGeometryInstance;
+                         if (imported.Model.)
+                     }
+             }
+         }*/
     }
 
     public struct VerticalSpace

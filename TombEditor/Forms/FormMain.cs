@@ -242,6 +242,19 @@ namespace TombEditor.Forms
                     LoadWindowLayout(_editor.Configuration);
             }
 
+            // Update texture controls
+            if (obj is Editor.LoadedTexturesChangedEvent)
+                remapTextureToolStripMenuItem.Enabled =
+                    removeTexturesToolStripMenuItem.Enabled =
+                    unloadTexturesToolStripMenuItem.Enabled =
+                    reloadTexturesToolStripMenuItem.Enabled =
+                    importConvertTexturesToPng.Enabled = _editor.Level.Settings.Textures.Count > 0;
+
+            // Update wad controls
+            if (obj is Editor.LoadedWadsChangedEvent)
+                removeWadsToolStripMenuItem.Enabled =
+                    reloadWadsToolStripMenuItem.Enabled = _editor.Level.Settings.Wads.Count > 0;
+
             // Update object bookmarks
             if (obj is Editor.BookmarkedObjectChanged)
             {
@@ -593,7 +606,7 @@ namespace TombEditor.Forms
                 _editor.Action = null;
         }
 
-        private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
+        private void addTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             EditorActions.AddTexture(this);
         }
@@ -630,7 +643,7 @@ namespace TombEditor.Forms
             EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
         }
 
-        private void importConvertTextureToPng_Click(object sender, EventArgs e)
+        private void importConvertTexturesToPng_Click(object sender, EventArgs e)
         {
             if (_editor.Level == null || _editor.Level.Settings.Textures.Count == 0)
             {
@@ -638,28 +651,36 @@ namespace TombEditor.Forms
                 return;
             }
 
-            LevelTexture texture = _editor.Level.Settings.Textures[0];
-            if (texture.LoadException != null)
+            foreach (LevelTexture texture in _editor.Level.Settings.Textures)
             {
-                DarkMessageBox.Show(this, "The texture that should be converted to *.png could not be loaded. " + texture.LoadException.Message, "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            string currentTexturePath = _editor.Level.Settings.MakeAbsolute(texture.Path);
-            string pngFilePath = Path.Combine(Path.GetDirectoryName(currentTexturePath), Path.GetFileNameWithoutExtension(currentTexturePath) + ".png");
-
-            if (File.Exists(pngFilePath))
-            {
-                if (DarkMessageBox.Show(this,
-                        "There is already a file at \"" + pngFilePath + "\". Continue and overwrite the file?",
-                        "File exist already", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                if (texture.LoadException != null)
+                {
+                    DarkMessageBox.Show(this, "The texture that should be converted to *.png could not be loaded. " + texture.LoadException.Message, "Error", MessageBoxIcon.Error);
                     return;
-            }
-            texture.Image.Save(pngFilePath);
+                }
 
-            DarkMessageBox.Show(this, "TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success", MessageBoxIcon.Information);
-            texture.SetPath(_editor.Level.Settings, pngFilePath);
+                string currentTexturePath = _editor.Level.Settings.MakeAbsolute(texture.Path);
+                string pngFilePath = Path.Combine(Path.GetDirectoryName(currentTexturePath), Path.GetFileNameWithoutExtension(currentTexturePath) + ".png");
+
+                if (File.Exists(pngFilePath))
+                {
+                    if (DarkMessageBox.Show(this,
+                            "There is already a file at \"" + pngFilePath + "\". Continue and overwrite the file?",
+                            "File exist already", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                        return;
+                }
+                texture.Image.Save(pngFilePath);
+
+                DarkMessageBox.Show(this, "TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success", MessageBoxIcon.Information);
+                texture.SetPath(_editor.Level.Settings, pngFilePath);
+            }
             _editor.LoadedTexturesChange();
+        }
+
+        private void remapTextureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormTextureRemap(_editor))
+                form.ShowDialog(this);
         }
 
         private void addWadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -762,12 +783,8 @@ namespace TombEditor.Forms
 
         private void animationRangesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.ShowAnimationRangesDialog(this);
-        }
-
-        private void textureSoundsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ShowTextureSoundsDialog(this);
+            using (FormAnimatedTextures form = new FormAnimatedTextures(_editor, null))
+                form.ShowDialog(this);
         }
 
         private void smoothRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1195,7 +1212,7 @@ namespace TombEditor.Forms
 
         private void applyCurrentAmbientLightToAllRoomsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkMessageBox.Show(this,"Do you really want to apply the ambient light of the current room to all rooms?",
+            if (DarkMessageBox.Show(this, "Do you really want to apply the ambient light of the current room to all rooms?",
                                     "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 EditorActions.ApplyCurrentAmbientLightToAllRooms();
