@@ -1,11 +1,10 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Numerics;
 using TombLib.Controls;
 
 namespace WadTool.Controls
 {
-    public class PanelRendering : PanelItemPreview
+    public class PanelRenderingMainPreview : PanelItemPreview
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Configuration Configuration { get; set; }

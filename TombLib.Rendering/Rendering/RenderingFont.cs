@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GlyphIndex = System.UInt16;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.Utils;
-using System.Numerics;
+using GlyphIndex = System.UInt16;
 
 namespace TombLib.Rendering
 {

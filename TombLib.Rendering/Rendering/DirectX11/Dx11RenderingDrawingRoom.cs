@@ -1,13 +1,11 @@
-﻿using System;
-using SharpDX;
-using SharpDX.Direct3D11;
-using Buffer = SharpDX.Direct3D11.Buffer;
+﻿using SharpDX.Direct3D11;
+using System;
 using System.Collections.Generic;
 using TombLib.LevelData;
+using TombLib.Utils;
+using Buffer = SharpDX.Direct3D11.Buffer;
 using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
-using TombLib.Utils;
-using System.Runtime.CompilerServices;
 
 namespace TombLib.Rendering.DirectX11
 {

@@ -1,5 +1,4 @@
-﻿using SharpDX.Direct3D;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;

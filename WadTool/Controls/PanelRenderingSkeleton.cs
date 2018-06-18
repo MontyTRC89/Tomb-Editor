@@ -1,31 +1,40 @@
-﻿using DarkUI.Controls;
-using DarkUI.Forms;
-using SharpDX.Toolkit.Graphics;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
+using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
-using TombLib.Utils;
+using TombLib.Rendering;
 using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace WadTool.Controls
 {
-    public class PanelRenderingSkeleton : Panel
+    public class PanelRenderingSkeleton : RenderingPanel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ArcBallCamera Camera { get; set; }
+        public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawGrid { get; set; }
+        public bool DrawGrid { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawGizmo { get; set; }
+        public bool DrawGizmo { get; set; } = true;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Vector3 StaticPosition { get; set; } = Vector3.Zero;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Vector3 StaticRotation { get; set; } = Vector3.Zero;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public float StaticScale { get; set; } = 1.0f;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<WadMeshBoneNode> Skeleton { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public WadMeshBoneNode SelectedNode { get; set; }
 
         public Matrix4x4 GizmoTransform
         {
@@ -37,66 +46,42 @@ namespace WadTool.Controls
             }
         }
 
-        private GraphicsDevice _device;
-        private DeviceManager _deviceManager;
-        private SwapChainGraphicsPresenter _presenter;
-        private RasterizerState _rasterizerWireframe;
+        // General state
         private WadToolClass _tool;
+
+        // Interaction state
         private float _lastX;
         private float _lastY;
-        private SpriteBatch _spriteBatch;
+
+        // Rendering state
+        private RenderingTextureAllocator _fontTexture;
+        private RenderingFont _fontDefault;
+
+        // Legacy rendering state
+        private GraphicsDevice _device;
+        private DeviceManager _deviceManager;
+        private RasterizerState _rasterizerWireframe;
         private GizmoSkeletonEditor _gizmo;
         private GeometricPrimitive _plane;
-        private GeometricPrimitive _cube;
-        private GeometricPrimitive _sphere;
-        private GeometricPrimitive _littleSphere;
         private WadRenderer _wadRenderer; // TODO Remove internal hack that destroys rendering encapsulation
-
-        public Vector3 StaticPosition { get; set; } = Vector3.Zero;
-        public Vector3 StaticRotation { get; set; } = Vector3.Zero;
-        public float StaticScale { get; set; } = 1.0f;
-
-        public List<WadMeshBoneNode> Skeleton { get; set; }
-        public WadMeshBoneNode SelectedNode { get; set; }
-
-        private static readonly Vector4 _red = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-        private static readonly Vector4 _green = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-        private static readonly Vector4 _blue = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-
         private Buffer<SolidVertex> _vertexBufferVisibility;
 
         public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
         {
+            base.InitializeRendering(deviceManager.Device);
             _tool = tool;
             _device = deviceManager.___LegacyDevice;
             _deviceManager = deviceManager;
-            _wadRenderer = new WadRenderer(_device);
 
-            // Initialize the viewport, after the panel is added and sized on the form
-            var pp = new PresentationParameters
+            // Actual "InitializeRendering"
+            _fontTexture = Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
+            _fontDefault = Device.CreateFont(new RenderingFont.Description { FontSize = 30, FontName = "Segoe UI", TextureAllocator = _fontTexture });
+
+            // Legacy rendering
             {
-                BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm,
-                BackBufferWidth = ClientSize.Width,
-                BackBufferHeight = ClientSize.Height,
-                DepthStencilFormat = DepthFormat.Depth24Stencil8,
-                DeviceWindowHandle = this,
-                IsFullScreen = false,
-                MultiSampleCount = MSAALevel.None,
-                PresentationInterval = PresentInterval.Immediate,
-                RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer,
-                Flags = SharpDX.DXGI.SwapChainFlags.None
-            };
-
-            _presenter = new SwapChainGraphicsPresenter(_device, pp);
-
-            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
-
-            // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
-            new BasicEffect(_device);
-
-            // Initialize the rasterizer state for wireframe drawing
-            SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
-                new SharpDX.Direct3D11.RasterizerStateDescription
+                _wadRenderer = new WadRenderer(_device);
+                new BasicEffect(_device); // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
+                _rasterizerWireframe = RasterizerState.New(_device, new SharpDX.Direct3D11.RasterizerStateDescription
                 {
                     CullMode = SharpDX.Direct3D11.CullMode.None,
                     DepthBias = 0,
@@ -108,48 +93,25 @@ namespace WadTool.Controls
                     IsMultisampleEnabled = true,
                     IsScissorEnabled = false,
                     SlopeScaledDepthBias = 0
-                };
-
-            _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
-
-            _spriteBatch = new SpriteBatch(_device);
-            _gizmo = new GizmoSkeletonEditor(_tool, _tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
-            _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
-            _cube = GeometricPrimitive.LinesCube.New(_device, 1024.0f, 1024.0f, 1024.0f);
-            _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * 128.0f, 8);
-            _sphere = GeometricPrimitive.Sphere.New(_device, 1024.0f, 6);
-
-            DrawGizmo = true;
-            DrawGrid = true;
+                });
+                _gizmo = new GizmoSkeletonEditor(_tool, _tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
+                _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _presenter?.Dispose();
+                _fontTexture?.Dispose();
+                _fontDefault?.Dispose();
                 _rasterizerWireframe?.Dispose();
-                _spriteBatch?.Dispose();
+                _vertexBufferVisibility?.Dispose();
                 _gizmo?.Dispose();
                 _plane?.Dispose();
-                _cube?.Dispose();
-                _sphere?.Dispose();
-                _littleSphere?.Dispose();
                 _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            if (_device == null || _presenter == null)
-                e.Graphics.FillRectangle(Brushes.White, ClientRectangle);
-            // Don't paint the background
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            Draw();
         }
 
         private Buffer<SolidVertex> GetVertexBufferFromBoundingBox(BoundingBox box)
@@ -176,22 +138,19 @@ namespace WadTool.Controls
             return Buffer.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
         }
 
-        public void Draw()
-        {
-            if (_device == null || _presenter == null)
-                return;
+        protected override Vector4 ClearColor => new Vector4(0.39f, 0.58f, 0.93f, 1.0f);
 
-            _device.Presenter = _presenter;
-            _device.SetViewports(new SharpDX.ViewportF(0, 0, ClientSize.Width, ClientSize.Height));
-            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer,
-                _device.Presenter.BackBuffer);
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, SharpDX.Color.CornflowerBlue, 1.0f, 0);
+        protected override void OnDraw()
+        {
+            // To make sure things are in a defined state for legacy rendering...
+            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
+            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-
             Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
 
             _wadRenderer.Dispose();
@@ -223,8 +182,7 @@ namespace WadTool.Controls
                 // Draw box
                 if (SelectedNode != null)
                 {
-                    if (_vertexBufferVisibility != null)
-                        _vertexBufferVisibility.Dispose();
+                    _vertexBufferVisibility?.Dispose();
                     _vertexBufferVisibility = GetVertexBufferFromBoundingBox(SelectedNode.WadMesh.BoundingBox);
 
                     _device.SetVertexBuffer(_vertexBufferVisibility);
@@ -232,7 +190,7 @@ namespace WadTool.Controls
                     _device.SetIndexBuffer(null, false);
 
                     solidEffect.Parameters["ModelViewProjection"].SetValue((SelectedNode.GlobalTransform * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
 
                     _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
@@ -262,37 +220,18 @@ namespace WadTool.Controls
             // Draw debug strings
             if (SelectedNode != null)
             {
+                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
                 Matrix4x4 worldViewProjection = SelectedNode.GlobalTransform * viewProjection;
-                Vector3 vector = SelectedNode.Centre - Vector3.UnitY * 128.0f;
-                var screenPos = Vector3.Transform(vector, worldViewProjection);
-                screenPos /= vector.X * worldViewProjection.M14 + vector.Y * worldViewProjection.M24 + vector.Z * worldViewProjection.M34 + worldViewProjection.M44;
-                screenPos.X = (screenPos.X + 1f) * 0.5f * ClientSize.Width;
-                screenPos.Y = (-screenPos.Y + 1f) * 0.5f * ClientSize.Height;
-                _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
-
-                _spriteBatch.DrawString(_deviceManager.___LegacyFont,
-                                        "Name: " + SelectedNode.Bone.Name,
-                                        new SharpDX.Vector2(screenPos.X, screenPos.Y),
-                                        SharpDX.Color.White);
-
-                _spriteBatch.DrawString(_deviceManager.___LegacyFont,
-                                        "Local offset: " + SelectedNode.Bone.Translation,
-                                        new SharpDX.Vector2(screenPos.X, screenPos.Y + 20.0f),
-                                        SharpDX.Color.White);
-
-                _spriteBatch.End();
-            }
-
-            _device.Present();
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            if (_presenter != null)
-            {
-                _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
-                Invalidate();
+                SwapChain.RenderText(new Text
+                {
+                    Font = _fontDefault,
+                    Pos = worldViewProjection.TransformPerspectively(SelectedNode.Centre - Vector3.UnitY * 128.0f).To2(),
+                    TextAlignment = new Vector2(0, 0),
+                    ScreenAlignment = new Vector2(0.5f, 0.5f),
+                    String =
+                        "Name: " + SelectedNode.Bone.Name +
+                        "\nLocal offset: " + SelectedNode.Bone.Translation
+                });
             }
         }
 
