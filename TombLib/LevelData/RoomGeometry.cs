@@ -43,8 +43,6 @@ namespace TombLib.LevelData
         public Dictionary<Vector3, List<int>> SharedVertices { get; } = new Dictionary<Vector3, List<int>>();
         public SortedList<SectorInfo, VertexRange> VertexRangeLookup { get; } = new SortedList<SectorInfo, VertexRange>();
 
-        public bool HasVertices { get { return (VertexPositions.Count != 0 && (VertexPositions.Count + DoubleSidedTriangleCount * 3 >= 0)); } }
-
         public RoomGeometry(Room room)
         {
             int xMin = 0;
