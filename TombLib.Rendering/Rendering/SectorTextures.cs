@@ -30,7 +30,9 @@ namespace TombLib.Rendering
         slide_south,
         slide_south_flip,
         slide_west,
-        slide_west_flip
+        slide_west_flip,
+        texture_coord_out_of_bounds,
+        texture_unavailable
     }
 
     public delegate SectorTextureResult SectorTextureGetDelegate(Room room, int x, int z, BlockFace face);

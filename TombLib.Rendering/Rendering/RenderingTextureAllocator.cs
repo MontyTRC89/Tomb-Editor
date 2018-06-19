@@ -75,13 +75,18 @@ namespace TombLib.Rendering
 
         private VectorInt3? AllocateTexture(RenderingTexture texture)
         {
+            if (texture.To.X < texture.From.X || texture.To.Y < texture.From.Y)
+                throw new ArgumentOutOfRangeException(); // Avoid totally currupted texture allocator state.
             for (int i = 0; i < Pages.Length; ++i)
             {
-                VectorInt2? allocatedPos = Pages[i].Packer.TryAdd(texture.To - texture.From);
+                VectorInt2? allocatedPos = Pages[i].Packer.TryAdd(VectorInt2.Max(texture.To - texture.From, new VectorInt2(1, 1)));
                 if (allocatedPos != null)
                 {
                     VectorInt3 pos = new VectorInt3(allocatedPos.Value.X, allocatedPos.Value.Y, i);
-                    UploadTexture(texture, pos);
+                    if (texture.To.X == texture.From.X || texture.To.Y == texture.From.Y)
+                        UploadTexture(ImageC.CreateNew(1, 1), pos); // Attempt to handle this situation
+                    else
+                        UploadTexture(texture, pos);
                     AvailableTextures.Add(texture, pos);
                     return pos;
                 }
@@ -135,7 +140,7 @@ namespace TombLib.Rendering
                 VectorInt3 allocatedTexture = Get(new RenderingTexture
                 {
                     From = new VectorInt2(),
-                    To = texture.Texture.Image.Size,
+                    To = imageSize,
                     Image = texture.Texture.Image
                 });
                 return allocatedTexture;
@@ -144,8 +149,8 @@ namespace TombLib.Rendering
             { // Allocate a part of the image...
                 Vector2 min = Vector2.Min(Vector2.Min(texture.TexCoord0, texture.TexCoord1), texture.TexCoord2);
                 Vector2 max = Vector2.Max(Vector2.Max(texture.TexCoord0, texture.TexCoord1), texture.TexCoord2) + new Vector2(254.0f / 256.0f);
-                VectorInt2 minInt = new VectorInt2((int)min.X, (int)min.Y);
-                VectorInt2 maxInt = VectorInt2.Min(new VectorInt2((int)max.X, (int)max.Y), texture.Texture.Image.Size);
+                VectorInt2 minInt = VectorInt2.Min(new VectorInt2((int)min.X, (int)min.Y), imageSize);
+                VectorInt2 maxInt = VectorInt2.Min(new VectorInt2((int)max.X, (int)max.Y), imageSize);
 
                 VectorInt3 allocatedTexture = Get(new RenderingTexture
                 {
@@ -197,7 +202,7 @@ namespace TombLib.Rendering
                     Pages[i] = new TexturePage(new VectorInt2(Size.X, Size.Y));
                 AvailableTextures.Clear();
 
-                // Readd textures that were still used
+                // Read textures that were still used
                 var usedTexturesSorted = usedTextures.ToArray();
                 Array.Sort(usedTexturesSorted, new GarbageCollectionTextureOrder());
                 foreach (Map.Entry usedTexture in usedTexturesSorted)
