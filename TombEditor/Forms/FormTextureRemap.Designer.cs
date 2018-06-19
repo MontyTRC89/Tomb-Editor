@@ -176,9 +176,10 @@
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(9, 9);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(334, 15);
+            this.darkLabel3.Size = new System.Drawing.Size(689, 19);
             this.darkLabel3.TabIndex = 25;
-            this.darkLabel3.Text = "Automated tool to remap texture areas throughout the level.";
+            this.darkLabel3.Text = "Automated tool to remap texture areas throughout the level. Use middle click and " +
+    "left click to change the selected texture area below.";
             // 
             // cbUntextureCompletely
             // 
