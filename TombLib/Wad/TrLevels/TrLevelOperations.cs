@@ -295,9 +295,6 @@ namespace TombLib.Wad.TrLevels
                 samples[i] = new WadSample(WadSample.ConvertSampleFormat(oldLevel.Samples[i].Data, oldLevel.Version != TrVersion.TR4));
             });
 
-            // For old TRs, we need to load the samples from MAIN.SFX
-            int TODO_LOAD_MAIN_SFX_SAMPLES;
-
             // Convert sound details
             var soundInfos = new WadSoundInfo[oldLevel.SoundMap.Count];
             for (int i = 0; i < oldLevel.SoundMap.Count; i++)
