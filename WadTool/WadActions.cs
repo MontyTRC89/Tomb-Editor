@@ -414,8 +414,9 @@ namespace WadTool
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
+                logger.Warn(exc, "'ExportAnimationToXml' failed.");
                 return false;
             }
         }
@@ -440,8 +441,9 @@ namespace WadTool
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
+                logger.Warn(exc, "'ExportAnimation' failed.");
                 return false;
             }
         }
@@ -476,8 +478,9 @@ namespace WadTool
 
                 return animation;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
+                logger.Warn(exc, "'ImportAnimationFromXml' failed.");
                 return null;
             }
         }
@@ -491,8 +494,9 @@ namespace WadTool
 
                 return wad.Moveables.ElementAt(0).Value.Animations[0];
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
+                logger.Warn(exc, "'ImportAnimation' failed.");
                 return null;
             }
         }
