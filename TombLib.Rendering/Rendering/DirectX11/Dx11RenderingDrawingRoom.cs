@@ -114,11 +114,30 @@ namespace TombLib.Rendering.DirectX11
                             uvwAndBlendModes[i * 3 + 2] = 0ul << 24;
                         }
                         else
-                        {
-                            VectorInt3 position = TextureAllocator.GetForTriangle(texture);
-                            uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord0, (uint)texture.BlendMode);
-                            uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord1, (uint)texture.BlendMode);
-                            uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord2, (uint)texture.BlendMode);
+                        { // Render as textured (the texture may turn out to be unavailable)
+                            if (texture.Texture.IsUnavailable)
+                            { // Texture is unvailable (i.e. file couldn't be loaded.
+                                ImageC image = Dx11RenderingDevice.TextureUnavailable;
+                                VectorInt3 position = TextureAllocator.Get(image);
+                                uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 1]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
+                            }
+                            else if (texture.TriangleCoordsOutOfBounds)
+                            { // Texture is available but coordinates are ouf of bounds
+                                ImageC image = Dx11RenderingDevice.TextureCoordOutOfBounds;
+                                VectorInt3 position = TextureAllocator.Get(image);
+                                uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 0]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 1]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, Vector2.Abs(roomGeometry.VertexEditorUVs[i * 3 + 2]) * (image.Size - new VectorInt2(1, 1)) + new Vector2(0.5f), (uint)texture.BlendMode);
+                            }
+                            else
+                            { // Texture is available
+                                VectorInt3 position = TextureAllocator.GetForTriangle(texture);
+                                uvwAndBlendModes[i * 3 + 0] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord0, (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 1] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord1, (uint)texture.BlendMode);
+                                uvwAndBlendModes[i * 3 + 2] = Dx11RenderingDevice.CompressUvw(position, textureScaling, texture.TexCoord2, (uint)texture.BlendMode);
+                            }
 
                             // Duplicate double sided triangles
                             if (texture.DoubleSided)

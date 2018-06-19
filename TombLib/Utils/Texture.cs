@@ -58,6 +58,7 @@ namespace TombLib.Utils
 
     public struct TextureArea : IEquatable<TextureArea>
     {
+        public const float SafetyMargin = 0.45f;
         public static readonly TextureArea None;
 
         public Texture Texture;
@@ -85,10 +86,32 @@ namespace TombLib.Utils
         public override bool Equals(object other) => other is TextureArea && this == (TextureArea)other;
         public override int GetHashCode() => base.GetHashCode();
 
-        public bool TextureIsUnavailable => Texture == null || Texture.IsUnavailable;
         public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
         public bool TextureIsRectangle => (TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length();
 
+        public bool TriangleCoordsOutOfBounds
+        {
+            get
+            {
+                if (TextureIsInvisble)
+                    return false;
+                Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2);
+                Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), TexCoord2);
+                return min.X < SafetyMargin || min.Y < SafetyMargin || max.X > (Texture.Image.Width - SafetyMargin) || (max.Y > Texture.Image.Height - SafetyMargin);
+            }
+        }
+
+        public bool QuadCoordsOutOfBounds
+        {
+            get
+            {
+                if (TextureIsInvisble)
+                    return false;
+                Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
+                Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
+                return min.X < SafetyMargin || min.Y < SafetyMargin || max.X > (Texture.Image.Width - SafetyMargin) || (max.Y > Texture.Image.Height - SafetyMargin);
+            }
+        }
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
         {
             get

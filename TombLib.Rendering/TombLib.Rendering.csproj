@@ -197,4 +197,8 @@
       <ShaderModel>4_0</ShaderModel>
     </VertexShader>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Rendering\SectorTextures\texture_coord_out_of_bounds.png" />
+    <EmbeddedResource Include="Rendering\SectorTextures\texture_unavailable.png" />
+  </ItemGroup>
 </Project>

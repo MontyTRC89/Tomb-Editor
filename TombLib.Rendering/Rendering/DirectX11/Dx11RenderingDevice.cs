@@ -22,6 +22,8 @@ namespace TombLib.Rendering.DirectX11
 
         public const int SectorTextureSize = 256;
         private static Assembly ThisAssembly = Assembly.GetExecutingAssembly();
+        public static ImageC TextureUnavailable = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_unavailable.png"));
+        public static ImageC TextureCoordOutOfBounds = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_coord_out_of_bounds.png"));
         public readonly Device Device;
         public readonly DeviceContext Context;
         public readonly Dx11PipelineState TestShader;
