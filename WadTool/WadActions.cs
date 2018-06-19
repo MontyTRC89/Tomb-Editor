@@ -25,7 +25,7 @@ namespace WadTool
             Wad2 newWad = null;
             try
             {
-                newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths2
+                newWad = Wad2.ImportFromFile(fileName, tool.Configuration.OldWadSoundPaths3
                     .Select(soundPath => tool.Configuration.ParseVariables(soundPath)), new GraphicalDialogHandler(owner));
             }
             catch (OperationCanceledException)
