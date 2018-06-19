@@ -51,7 +51,7 @@ namespace WadTool
                         form.Show();
                         if (args.Length > 0)
                             WadActions.LoadWad(tool, null, true, args[0]);
-                        Application.Run();
+                        Application.Run(form);
                     }
             }
         }
