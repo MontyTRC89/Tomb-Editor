@@ -34,8 +34,6 @@ namespace WadTool
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
             Tool_EditorEventRaised(new InitEvent());
-
-            int TODO_ALLOW_DRAG_DROP;
         }
 
         private class InitEvent : IEditorEvent { };
