@@ -420,6 +420,32 @@ namespace WadTool
             }
         }
 
+        public static bool ExportAnimation(WadMoveable moveable, WadAnimation animation, string fileName)
+        {
+            try
+            {
+                if (File.Exists(fileName))
+                    File.Delete(fileName);
+
+                // Create a new fake Wad2
+                var wad = new Wad2();
+
+                // Add a new fake moveable with animations
+                var newMoveable = new WadMoveable(moveable.Id);
+                newMoveable.Animations.Add(animation);
+                wad.Add(newMoveable.Id, newMoveable);
+
+                // Save the fake wad
+                Wad2Writer.SaveToFile(wad, fileName);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public static WadAnimation ImportAnimationFromXml(Wad2 wad, string fileName)
         {
             try
@@ -451,6 +477,21 @@ namespace WadTool
                 return animation;
             }
             catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static WadAnimation ImportAnimation(string fileName)
+        {
+            try
+            {
+                var wad = Wad2Loader.LoadFromFile(fileName);
+                if (wad == null || wad.Moveables.Count == 0 || wad.Moveables.ElementAt(0).Value.Animations.Count == 0) return null;
+
+                return wad.Moveables.ElementAt(0).Value.Animations[0];
+            }
+            catch (Exception ex)
             {
                 return null;
             }

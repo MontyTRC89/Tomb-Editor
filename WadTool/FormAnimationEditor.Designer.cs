@@ -1413,12 +1413,12 @@ namespace WadTool
             // 
             // openFileDialogImport
             // 
-            this.openFileDialogImport.Filter = "Animation XML file (*.xml)|*.xml";
+            this.openFileDialogImport.Filter = "Wad Tool animation (*.anim)|*.anim";
             this.openFileDialogImport.Title = "Import animation";
             // 
             // saveFileDialogExport
             // 
-            this.saveFileDialogExport.Filter = "Animation XML file (*.xml)|*.xml";
+            this.saveFileDialogExport.Filter = "Wad Tool animation (*.anim)|*.anim";
             this.saveFileDialogExport.Title = "Export animation";
             // 
             // panelRendering

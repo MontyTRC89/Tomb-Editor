@@ -1230,7 +1230,7 @@ namespace WadTool
 
             var animationToSave = SaveAnimationChanges(_selectedNode);
 
-            if (!WadActions.ExportAnimationToXml(animationToSave,saveFileDialogExport.FileName))
+            if (!WadActions.ExportAnimation(_moveable, animationToSave, saveFileDialogExport.FileName))
             {
                 DarkMessageBox.Show(this, "Can't export current animation to XML file",
                                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1249,8 +1249,15 @@ namespace WadTool
             var animation = WadActions.ImportAnimationFromXml(_wad, openFileDialogImport.FileName);
             if (animation == null)
             {
-                DarkMessageBox.Show(this, "Can't import a valid animation from this XML file",
+                DarkMessageBox.Show(this, "Can't import a valid animation",
                                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (animation.KeyFrames[0].Angles.Count != _bones.Count)
+            {
+                DarkMessageBox.Show(this, "You can only import an animation with the same number of bones of the current moveable",
+                                   "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
