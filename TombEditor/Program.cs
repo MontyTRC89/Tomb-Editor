@@ -48,7 +48,7 @@ namespace TombEditor
                             EditorActions.OpenLevelPrj(form, args[0]);
                         else
                             EditorActions.OpenLevel(form, args[0]);
-                    Application.Run();
+                    Application.Run(form);
                 }
 
                 configuration.SaveTry();
