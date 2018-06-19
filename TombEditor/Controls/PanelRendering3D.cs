@@ -1940,12 +1940,11 @@ namespace TombEditor.Controls
             // Draw rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
             foreach (Room room in roomsToDraw)
-                if (room.RoomGeometry.HasVertices)
-                    _renderingCachedRooms[room].Render(new RenderingDrawingRoom.RenderArgs
-                    {
-                        RenderTarget = SwapChain,
-                        StateBuffer = _renderingStateBuffer
-                    });
+                _renderingCachedRooms[room].Render(new RenderingDrawingRoom.RenderArgs
+                {
+                    RenderTarget = SwapChain,
+                    StateBuffer = _renderingStateBuffer
+                });
 
 
             // Draw moveables and static meshes

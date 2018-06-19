@@ -34,6 +34,8 @@ namespace TombLib.Rendering.DirectX11
             Vector3 worldPos = description.Room.WorldPos + description.Offset;
             int singleSidedVertexCount = roomGeometry.VertexPositions.Count;
             int vertexCount = VertexCount = singleSidedVertexCount + roomGeometry.DoubleSidedTriangleCount * 3;
+            if (vertexCount == 0)
+                return;
             VertexBufferSize = vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(ulong) + sizeof(uint));
             fixed (byte* data = new byte[vertexCount * VertexBufferSize])
             {
@@ -237,6 +239,8 @@ namespace TombLib.Rendering.DirectX11
 
         public override void Render(RenderArgs arg)
         {
+            if (VertexCount == 0)
+                return;
             var context = Device.Context;
 
             // Setup state
