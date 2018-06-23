@@ -37,7 +37,7 @@ namespace TombLib.Rendering.DirectX11
             if (vertexCount == 0)
                 return;
             VertexBufferSize = vertexCount * (sizeof(Vector3) + sizeof(uint) + sizeof(ulong) + sizeof(uint));
-            fixed (byte* data = new byte[vertexCount * VertexBufferSize])
+            fixed (byte* data = new byte[VertexBufferSize])
             {
                 Vector3* positions = (Vector3*)(data);
                 uint* colors = (uint*)(data + vertexCount * sizeof(Vector3));
@@ -187,7 +187,8 @@ namespace TombLib.Rendering.DirectX11
         public override void Dispose()
         {
             TextureAllocator.GarbageCollectionCollectEvent.Remove(GarbageCollectTexture);
-            VertexBuffer.Dispose();
+            if (VertexBuffer != null)
+                VertexBuffer.Dispose();
         }
 
         public unsafe RenderingTextureAllocator.GarbageCollectionAdjustDelegate GarbageCollectTexture(RenderingTextureAllocator allocator,

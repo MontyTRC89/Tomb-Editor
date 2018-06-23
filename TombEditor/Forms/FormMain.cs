@@ -142,6 +142,9 @@ namespace TombEditor.Forms
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
                 bool validSectorSelection = _editor.SelectedSectors.Valid;
+                copyToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Geometry || validSectorSelection;
+                if (obj is Editor.ModeChangedEvent)
+                    ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
                 transformToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomCeilingDownToolStripMenuItem.Enabled = validSectorSelection;
                 smoothRandomCeilingUpToolStripMenuItem.Enabled = validSectorSelection;
@@ -266,7 +269,8 @@ namespace TombEditor.Forms
         private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
         {
             if (_editor.Mode != EditorMode.Map2D)
-                pasteToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(ObjectClipboardData).FullName);
+                pasteToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(ObjectClipboardData).FullName) ||
+                                                 Clipboard.ContainsData(typeof(SectorsClipboardData).FullName);
             else
                 pasteToolStripMenuItem.Enabled = Clipboard.ContainsData(typeof(RoomClipboardData).FullName);
         }
@@ -1013,22 +1017,14 @@ namespace TombEditor.Forms
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.Mode != EditorMode.Map2D)
-                EditorActions.TryCopyObject(_editor.SelectedObject, this);
-            else
             {
-                /*try
-                {
-                    var data = new RoomClipboardData(_editor);
-                    var serializer = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                    serializer.Serialize(new MemoryStream(), data);
-                    DarkMessageBox.Show(this, "Working");
-                }
-                catch (Exception exc)
-                {
-                    DarkMessageBox.Show(this, "Broken: " + exc.Message);
-                }*/
-                Clipboard.SetDataObject(new RoomClipboardData(_editor), true);
+                if (_editor.SelectedObject != null)
+                    EditorActions.TryCopyObject(_editor.SelectedObject, this);
+                else if (_editor.SelectedSectors.Valid)
+                    EditorActions.TryCopySectors(_editor.SelectedSectors, this);
             }
+            else
+                Clipboard.SetDataObject(new RoomClipboardData(_editor), true);
         }
 
         private void stampToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1040,11 +1036,22 @@ namespace TombEditor.Forms
         {
             if (_editor.Mode != EditorMode.Map2D)
             {
-                var data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
-                if (data == null)
-                    MessageBox.Show("Clipboard contains no object data.");
-                else
-                    _editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(_editor));
+                if (Clipboard.ContainsData(typeof(ObjectClipboardData).FullName))
+                {
+                    var data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
+                    if (data == null)
+                        MessageBox.Show("Clipboard contains no object data.");
+                    else
+                        _editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(_editor));
+                }
+                else if (_editor.SelectedSectors.Valid && Clipboard.ContainsData(typeof(SectorsClipboardData).FullName))
+                {
+                    var data = Clipboard.GetDataObject().GetData(typeof(SectorsClipboardData)) as SectorsClipboardData;
+                    if (data == null)
+                        MessageBox.Show("Clipboard contains no sectors data.");
+                    else
+                        EditorActions.TryPasteSectors(data, this);
+                }
             }
             else
             {

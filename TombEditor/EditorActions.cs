@@ -2402,6 +2402,11 @@ namespace TombEditor
             Clipboard.SetDataObject(new ObjectClipboardData(_editor));
         }
 
+        public static void TryCopySectors(SectorSelection selection, IWin32Window owner)
+        {
+            Clipboard.SetDataObject(new SectorsClipboardData(_editor));
+        }
+
         public static void TryStampObject(ObjectInstance instance, IWin32Window owner)
         {
             if (!(instance is PositionBasedObjectInstance))
@@ -2410,6 +2415,25 @@ namespace TombEditor
                 return;
             }
             _editor.Action = new EditorActionPlace(false, (level, room) => (PositionBasedObjectInstance)instance.Clone());
+        }
+
+        public static void TryPasteSectors(SectorsClipboardData data, IWin32Window owner)
+        {
+            int x0 = _editor.SelectedSectors.Area.X0;
+            int z0 = _editor.SelectedSectors.Area.Y0;
+            int x1 = Math.Min(_editor.SelectedRoom.NumXSectors - 1, x0 + data.Width);
+            int z1 = Math.Min(_editor.SelectedRoom.NumZSectors - 1, z0 + data.Height);
+
+            var sectors = data.GetSectors();
+
+            for (int x = x0; x < x1; x++)
+                for (int z = z0; z < z1; z++)
+                {
+                    _editor.SelectedRoom.Blocks[x, z] = sectors[x - x0, z - z0].Clone();
+                }
+
+            _editor.SelectedRoom.BuildGeometry();
+            _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
         }
 
         public static bool DragDropFileSupported(DragEventArgs e, bool allow3DImport = false)

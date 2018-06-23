@@ -57,6 +57,7 @@ namespace TombLib.LevelData
         None = 0, PositiveZ = 1, PositiveX = 2, NegativeZ = 3, NegativeX = 4, Diagonal = 5
     }
 
+    [Serializable]
     public class Block : ICloneable
     {
         public static Block Empty { get; } = new Block();

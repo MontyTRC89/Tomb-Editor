@@ -274,6 +274,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RoomClipboardData.cs" />
+    <Compile Include="SectorsClipboardData.cs" />
     <Compile Include="ToolWindows\Lighting.cs">
       <SubType>UserControl</SubType>
     </Compile>
