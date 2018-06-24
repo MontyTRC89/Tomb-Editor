@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using TombLib.GeometryIO;
 //using TombLib.GeometryIO.Importers;
 using TombLib.Graphics;
@@ -16,14 +17,15 @@ namespace TombLib.LevelData
 {
     public class ImportedGeometryTexture : Texture
     {
-        public Texture2D DirectXTexture { get; }
-        public string AbsolutePath { get; }
+        public Texture2D DirectXTexture { get; private set; }
+        public string AbsolutePath { get; private set; }
 
         public ImportedGeometryTexture(string absolutePath)
         {
             AbsolutePath = absolutePath;
             Image = ImageC.FromFile(absolutePath);
-            DirectXTexture = TextureLoad.Load(ImportedGeometry.TemporaryDevice, Image);
+            SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
+                DirectXTexture = TextureLoad.Load(ImportedGeometry.TemporaryDevice, Image), null);
         }
 
         private ImportedGeometryTexture(ImportedGeometryTexture other)
@@ -31,6 +33,13 @@ namespace TombLib.LevelData
             DirectXTexture = other.DirectXTexture;
             AbsolutePath = other.AbsolutePath;
             Image = other.Image;
+        }
+
+        public void Assign(ImportedGeometryTexture other)
+        {
+            AbsolutePath = other.AbsolutePath;
+            Image = other.Image;
+            DirectXTexture = other.DirectXTexture;
         }
 
         public override Texture Clone() => new ImportedGeometryTexture(this);
@@ -173,81 +182,84 @@ namespace TombLib.LevelData
                 });
                 var tmpModel = importer.ImportFromFile(importedGeometryPath);
 
-                // Create a new static model
-                DirectXModel = new Model(TemporaryDevice, info.Scale);
-                DirectXModel.BoundingBox = tmpModel.BoundingBox;
+                SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
+                   {
+                       // Create a new static model
+                       DirectXModel = new Model(TemporaryDevice, info.Scale);
+                       DirectXModel.BoundingBox = tmpModel.BoundingBox;
 
-                // Create materials
-                foreach (var tmpMaterial in tmpModel.Materials)
-                {
-                    var material = new Material(tmpMaterial.Name);
-                    material.Texture = tmpMaterial.Texture;
-                    material.AdditiveBlending = tmpMaterial.AdditiveBlending;
-                    material.DoubleSided = tmpMaterial.DoubleSided;
-                    DirectXModel.Materials.Add(material);
-                }
+                       // Create materials
+                       foreach (var tmpMaterial in tmpModel.Materials)
+                       {
+                           var material = new Material(tmpMaterial.Name);
+                           material.Texture = tmpMaterial.Texture;
+                           material.AdditiveBlending = tmpMaterial.AdditiveBlending;
+                           material.DoubleSided = tmpMaterial.DoubleSided;
+                           DirectXModel.Materials.Add(material);
+                       }
 
-                // Loop for each mesh loaded in scene
-                foreach (var mesh in tmpModel.Meshes)
-                {
-                    var modelMesh = new ImportedGeometryMesh(TemporaryDevice, mesh.Name);
+                       // Loop for each mesh loaded in scene
+                       foreach (var mesh in tmpModel.Meshes)
+                       {
+                           var modelMesh = new ImportedGeometryMesh(TemporaryDevice, mesh.Name);
 
-                    modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
+                           modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
 
-                    var currentIndex = 0;
-                    var currPoly = 0;
-                    foreach (var tmpSubmesh in mesh.Submeshes)
-                    {
-                        var material = DirectXModel.Materials[tmpModel.Materials.IndexOf(tmpSubmesh.Value.Material)];
-                        var submesh = new Submesh(material);
+                           var currentIndex = 0;
+                           var currPoly = 0;
+                           foreach (var tmpSubmesh in mesh.Submeshes)
+                           {
+                               var material = DirectXModel.Materials[tmpModel.Materials.IndexOf(tmpSubmesh.Value.Material)];
+                               var submesh = new Submesh(material);
 
-                        foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
-                        {
-                            if (tmpPoly.Shape == IOPolygonShape.Quad)
-                            {
-                                for (var i = 0; i < 4; i++)
-                                {
-                                    var vertex = new ImportedGeometryVertex();
-                                    vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                    vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
-                                    vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
-                                    modelMesh.Vertices.Add(vertex);
-                                }
+                               foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
+                               {
+                                   if (tmpPoly.Shape == IOPolygonShape.Quad)
+                                   {
+                                       for (var i = 0; i < 4; i++)
+                                       {
+                                           var vertex = new ImportedGeometryVertex();
+                                           vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                           vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
+                                           vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
+                                           modelMesh.Vertices.Add(vertex);
+                                       }
 
-                                submesh.Indices.Add(currentIndex);
-                                submesh.Indices.Add(currentIndex + 1);
-                                submesh.Indices.Add(currentIndex + 2);
+                                       submesh.Indices.Add(currentIndex);
+                                       submesh.Indices.Add(currentIndex + 1);
+                                       submesh.Indices.Add(currentIndex + 2);
 
-                                submesh.Indices.Add(currentIndex);
-                                submesh.Indices.Add(currentIndex + 2);
-                                submesh.Indices.Add(currentIndex + 3);
+                                       submesh.Indices.Add(currentIndex);
+                                       submesh.Indices.Add(currentIndex + 2);
+                                       submesh.Indices.Add(currentIndex + 3);
 
-                                currentIndex += 4;
-                            }
-                            else
-                            {
-                                for (var i = 0; i < 3; i++)
-                                {
-                                    var vertex = new ImportedGeometryVertex();
-                                    vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
-                                    vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
-                                    vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
-                                    modelMesh.Vertices.Add(vertex);
-                                    submesh.Indices.Add(currentIndex);
-                                    currentIndex++;
-                                }
-                            }
+                                       currentIndex += 4;
+                                   }
+                                   else
+                                   {
+                                       for (var i = 0; i < 3; i++)
+                                       {
+                                           var vertex = new ImportedGeometryVertex();
+                                           vertex.Position = mesh.Positions[tmpPoly.Indices[i]];
+                                           vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
+                                           vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
+                                           modelMesh.Vertices.Add(vertex);
+                                           submesh.Indices.Add(currentIndex);
+                                           currentIndex++;
+                                       }
+                                   }
 
-                            currPoly++;
-                        }
+                                   currPoly++;
+                               }
 
-                        modelMesh.Submeshes.Add(material, submesh);
-                    }
+                               modelMesh.Submeshes.Add(material, submesh);
+                           }
 
-                    DirectXModel.Meshes.Add(modelMesh);
-                }
+                           DirectXModel.Meshes.Add(modelMesh);
+                       }
 
-                DirectXModel.UpdateBuffers();
+                       DirectXModel.UpdateBuffers();
+                   }, null);
             }
             catch (OperationCanceledException)
             {

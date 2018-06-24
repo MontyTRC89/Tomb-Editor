@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -234,7 +235,8 @@ namespace TombLib.LevelData
 
         public void RemoveTextures(Predicate<LevelTexture> askIfTextureToRemove)
         {
-            foreach (Room room in Rooms.Where(room => room != null))
+            Parallel.ForEach(Rooms.Where(room => room != null), room =>
+            {
                 foreach (Block sector in room.Blocks)
                     for (BlockFace face = 0; face < Block.FaceCount; ++face)
                     {
@@ -246,6 +248,8 @@ namespace TombLib.LevelData
                             sector.SetFaceTexture(face, currentTextureArea);
                         }
                     }
+                room.RoomGeometry = new RoomGeometry(room);
+            });
             foreach (AnimatedTextureSet set in Settings.AnimatedTextureSets)
                 set.Frames.RemoveAll(frame => askIfTextureToRemove(frame.Texture));
         }

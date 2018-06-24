@@ -231,7 +231,7 @@ namespace TombLib.LevelData.IO
                                 levelTexture.SetConvert512PixelsToDoubleRows(settings, chunkIO.ReadChunkBool(chunkSize3));
                             else if (id3 == Prj2Chunks.LevelTextureReplaceMagentaWithTransparency)
                                 levelTexture.SetReplaceMagentaWithTransparency(settings, chunkIO.ReadChunkBool(chunkSize3));
-                            else if (id3 == Prj2Chunks.LevelTextureSounds)
+                            else if (id3 == Prj2Chunks.LevelTextureFootStepSounds)
                             {
                                 int width = chunkIO.Raw.ReadInt32();
                                 int height = chunkIO.Raw.ReadInt32();
@@ -364,13 +364,13 @@ namespace TombLib.LevelData.IO
 
             // Load wads
             if (!loadingSettings.IgnoreWads)
-                foreach (var wad in WadsToLoad)
-                    wad.Key.SetPath(settings, wad.Value);
+                Parallel.ForEach(WadsToLoad, wad =>
+                    wad.Key.SetPath(settings, wad.Value));
 
             // Load level textures
             if (!loadingSettings.IgnoreTextures)
-                foreach (var levelTexture in levelTexturesToLoad)
-                    levelTexture.Key.SetPath(settings, levelTexture.Value);
+                Parallel.ForEach(levelTexturesToLoad, levelTexture =>
+                    levelTexture.Key.SetPath(settings, levelTexture.Value));
 
             // Load imported geoemtries
             settings.ImportedGeometryUpdate(importedGeometriesToLoad);

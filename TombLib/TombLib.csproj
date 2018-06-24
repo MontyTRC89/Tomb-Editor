@@ -193,6 +193,7 @@
     <Compile Include="LevelData\ItemInstance.cs" />
     <Compile Include="LevelData\Level.cs" />
     <Compile Include="LevelData\LevelSettings.cs" />
+    <Compile Include="LevelData\LevelSettingsWatcher.cs" />
     <Compile Include="LevelData\LevelTexture.cs" />
     <Compile Include="LevelData\LightInstance.cs" />
     <Compile Include="LevelData\MoveableInstance.cs" />
@@ -235,6 +236,7 @@
     <Compile Include="Utils\DictionarySelect.cs" />
     <Compile Include="Utils\FileFormat.cs" />
     <Compile Include="Utils\FileSystemUtils.cs" />
+    <Compile Include="Utils\FileSystemWatcherManager.cs" />
     <Compile Include="Utils\Hash.cs" />
     <Compile Include="Utils\IDialogDescription.cs" />
     <Compile Include="Utils\ImageC.cs" />

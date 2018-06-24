@@ -77,10 +77,12 @@ namespace TombEditor
                                               _level.Settings.DefaultAmbientLight, "Room 0");
 
                 // Reset state that was related to the old level
+                _levelSettingsWatcher?.StopReloading();
                 SelectedObject = null;
                 ChosenItem = null;
                 SelectedSectors = SectorSelection.None;
                 Action = null;
+                HasUnsavedChanges = false;
                 SelectedTexture = TextureArea.None;
 
                 // Delete old level after the new level is set
@@ -90,12 +92,14 @@ namespace TombEditor
                 RoomListChange();
                 SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
                 ResetCamera();
-                LoadedWadsChange();
-                LoadedTexturesChange();
-                LoadedImportedGeometriesChange();
+                LoadedWadsChange(false);
+                LoadedTexturesChange(null, false);
+                LoadedImportedGeometriesChange(false);
                 LevelFileNameChange();
-                HasUnsavedChanges = false;
-                AutoSavingTimer?.Stop();
+
+                // Start watching for file changes
+                _levelSettingsWatcher?.WatchLevelSettings(_level.Settings);
+                _levelSettingsWatcher?.RestartReloading();
             }
         }
 
@@ -371,24 +375,25 @@ namespace TombEditor
         }
 
         // This is invoked if the loaded wads changed for the level.
-        public class LoadedWadsChangedEvent : IEditorEventCausesUnsavedChanges { }
-        public void LoadedWadsChange()
+        public interface IUpdateLevelSettingsFileWatcher { bool UpdateLevelSettingsFileWatcher { get; set; } }
+        public class LoadedWadsChangedEvent : IEditorEventCausesUnsavedChanges, IUpdateLevelSettingsFileWatcher { public bool UpdateLevelSettingsFileWatcher { get; set; } }
+        public void LoadedWadsChange(bool updateLevelSettingsFileWatcher = true)
         {
-            RaiseEvent(new LoadedWadsChangedEvent());
+            RaiseEvent(new LoadedWadsChangedEvent { UpdateLevelSettingsFileWatcher = updateLevelSettingsFileWatcher });
         }
 
         // This is invoked if the loaded textures changed for the level.
-        public class LoadedTexturesChangedEvent : IEditorEventCausesUnsavedChanges { public LevelTexture NewToSelect { get; set; } = null; }
-        public void LoadedTexturesChange(LevelTexture newToSelect = null)
+        public class LoadedTexturesChangedEvent : IEditorEventCausesUnsavedChanges, IUpdateLevelSettingsFileWatcher { public LevelTexture NewToSelect { get; set; } = null; public bool UpdateLevelSettingsFileWatcher { get; set; } }
+        public void LoadedTexturesChange(LevelTexture newToSelect = null, bool updateLevelSettingsFileWatcher = true)
         {
-            RaiseEvent(new LoadedTexturesChangedEvent { NewToSelect = newToSelect });
+            RaiseEvent(new LoadedTexturesChangedEvent { NewToSelect = newToSelect, UpdateLevelSettingsFileWatcher = updateLevelSettingsFileWatcher });
         }
 
         // This is invoked if the loaded imported geometries changed for the level.
-        public class LoadedImportedGeometriesChangedEvent : IEditorEventCausesUnsavedChanges { }
-        public void LoadedImportedGeometriesChange()
+        public class LoadedImportedGeometriesChangedEvent : IEditorEventCausesUnsavedChanges, IUpdateLevelSettingsFileWatcher { public bool UpdateLevelSettingsFileWatcher { get; set; } }
+        public void LoadedImportedGeometriesChange(bool updateLevelSettingsFileWatcher = true)
         {
-            RaiseEvent(new LoadedImportedGeometriesChangedEvent());
+            RaiseEvent(new LoadedImportedGeometriesChangedEvent { UpdateLevelSettingsFileWatcher = updateLevelSettingsFileWatcher });
         }
 
         // This is invoked if the animated texture sets changed for the level.
@@ -583,7 +588,6 @@ namespace TombEditor
             bool importedGeometryChanged = !newSettings.ImportedGeometries.SequenceEqual(_level.Settings.ImportedGeometries);
             bool texturesChanged = !newSettings.Textures.SequenceEqual(_level.Settings.Textures);
             bool wadsChanged = !newSettings.Wads.SequenceEqual(_level.Settings.Wads);
-            // TODO Currently we reload wads a lot. We should try to reload less by comparing the content.
             bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
 
@@ -592,22 +596,27 @@ namespace TombEditor
 
             // Update state
             if (importedGeometryChanged)
-                LoadedImportedGeometriesChange();
+                LoadedImportedGeometriesChange(false);
 
             if (texturesChanged)
-                LoadedTexturesChange();
+                LoadedTexturesChange(null, false);
 
             if (wadsChanged)
-                LoadedWadsChange();
+                LoadedWadsChange(false);
 
             if (animatedTexturesChanged)
                 AnimatedTexturesChange();
 
             if (levelFilenameChanged)
                 LevelFileNameChange();
+
+            // Update file watchers
+            if (importedGeometryChanged || texturesChanged || wadsChanged)
+                _levelSettingsWatcher?.WatchLevelSettings(_level.Settings);
         }
 
         // Configuration
+        private LevelSettingsWatcher _levelSettingsWatcher { get; set; }
         FileSystemWatcher configurationWatcher;
         bool configurationIsLoadedFromFile;
         private void ConfigurationWatcher_Changed(object sender, FileSystemEventArgs e)
@@ -658,9 +667,24 @@ namespace TombEditor
                 if (!configurationIsLoadedFromFile)
                     current?.SaveTry();
                 if (previous == null || current.AutoSave_TimeInSeconds != previous.AutoSave_TimeInSeconds)
-                    AutoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
+                    _autoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
                 if (previous == null || current.AutoSave_Enable != previous.AutoSave_Enable)
-                    AutoSavingTimer.Enabled = current.AutoSave_Enable && HasUnsavedChanges;
+                    _autoSavingTimer.Enabled = current.AutoSave_Enable && HasUnsavedChanges;
+                if (current.Editor_ReloadFilesAutomaticallyWhenChanged != (_levelSettingsWatcher != null))
+                    if (current.Editor_ReloadFilesAutomaticallyWhenChanged)
+                    {
+                        _levelSettingsWatcher = new LevelSettingsWatcher(
+                            (sender, e) => LoadedTexturesChange(null, false),
+                            (sender, e) => LoadedWadsChange(false),
+                            (sender, e) => LoadedImportedGeometriesChange(true),
+                            (sender, e) => LoadedImportedGeometriesChange(false),
+                            SynchronizationContext);
+                    }
+                    else
+                    {
+                        _levelSettingsWatcher?.Dispose();
+                        _levelSettingsWatcher = null;
+                    }
             }
 
             // Update room selection so that no deleted rooms are selected
@@ -680,11 +704,7 @@ namespace TombEditor
 
             // Update unsaved changes state
             if (obj is IEditorEventCausesUnsavedChanges)
-            {
-                HasUnsavedChanges = true;
-                if (_configuration.AutoSave_Enable)
-                    AutoSavingTimer?.Start();
-            }
+                _autoSavingTimer.Enabled = _configuration.AutoSave_Enable && HasUnsavedChanges;
 
             // Make sure an object that was removed isn't selected
             if ((obj as IEditorObjectChangedEvent)?.ChangeType == ObjectChangeType.Remove)
@@ -692,6 +712,10 @@ namespace TombEditor
                 if (((IEditorObjectChangedEvent)obj).Object == SelectedObject)
                     SelectedObject = null;
             }
+
+            // Update level settings watcher
+            if (obj is IUpdateLevelSettingsFileWatcher && ((IUpdateLevelSettingsFileWatcher)obj).UpdateLevelSettingsFileWatcher)
+                _levelSettingsWatcher.WatchLevelSettings(_level.Settings);
 
             // Update bookmarks
             if (obj is LevelChangedEvent ||
@@ -709,8 +733,8 @@ namespace TombEditor
         }
 
         // Auto saving
-        private readonly System.Windows.Forms.Timer AutoSavingTimer;
-        private volatile bool currentlyAutoSaving;
+        private readonly System.Windows.Forms.Timer _autoSavingTimer = new System.Windows.Forms.Timer();
+        private volatile bool _currentlyAutoSaving;
         private void AutoSave()
         {
             Level level = Level; // Copy the member variables to local variables so that the we will have slightly higher chance to succeed in the parallel thread.
@@ -724,11 +748,11 @@ namespace TombEditor
             // This may be a little bit unsafe and produce a corrupt file but let's hope for the best :/
             var threadAutosave = new Thread(() =>
             {
-                if (currentlyAutoSaving)
+                if (_currentlyAutoSaving)
                     return;
                 try
                 {
-                    currentlyAutoSaving = true;
+                    _currentlyAutoSaving = true;
 
                     // Figure out data folder
                     string path;
@@ -781,7 +805,7 @@ namespace TombEditor
                 }
                 finally
                 {
-                    currentlyAutoSaving = false;
+                    _currentlyAutoSaving = false;
                 }
             });
             threadAutosave.Start();
@@ -799,9 +823,7 @@ namespace TombEditor
             Configuration = configuration;
             Level = level;
             SectorColoringManager = new SectorColoringManager(this);
-
-            AutoSavingTimer = new System.Windows.Forms.Timer();
-            AutoSavingTimer.Tick += (sender, e) => AutoSave();
+            _autoSavingTimer.Tick += (sender, e) => AutoSave();
 
             EditorEventRaised += Editor_EditorEventRaised;
             Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
@@ -811,7 +833,8 @@ namespace TombEditor
         {
             configurationWatcher?.Dispose();
             SectorColoringManager?.Dispose();
-            AutoSavingTimer?.Dispose();
+            _autoSavingTimer?.Dispose();
+            _levelSettingsWatcher?.Dispose();
         }
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration)

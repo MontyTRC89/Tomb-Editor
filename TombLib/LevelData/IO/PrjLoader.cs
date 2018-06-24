@@ -1403,7 +1403,7 @@ namespace TombLib.LevelData.IO
                 }
 
                 // Read animated textures
-                progressReporter.ReportProgress(61, "Loading animated textures and texture sounds");
+                progressReporter.ReportProgress(61, "Loading animated textures and foot step sounds");
                 int numAnimationRanges = reader.ReadInt32();
                 for (int i = 0; i < 40; i++)
                     reader.ReadInt32();
@@ -1437,12 +1437,12 @@ namespace TombLib.LevelData.IO
                     level.Settings.AnimatedTextureSets.Add(animatedTextureSet);
                 }
 
-                // Read texture sounds
+                // Read foot step sounds
                 texture.ResizeFootStepSounds(4, 64);
                 for (int i = 0; i < 256; i++)
                 {
-                    TextureFootStepSound textureSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
-                    texture.SetFootStepSound(i % 4, i / 4, textureSound);
+                    TextureFootStepSound FootStepSound = (TextureFootStepSound)(reader.ReadByte() & 0xf);
+                    texture.SetFootStepSound(i % 4, i / 4, FootStepSound);
                 }
 
                 // Try to parse bump mapping and recognize *.prj TRNG's
