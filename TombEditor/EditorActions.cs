@@ -2274,10 +2274,10 @@ namespace TombEditor
 
         }
 
-        public static LevelTexture AddTexture(IWin32Window owner, LevelTexture toReplace = null)
+        public static LevelTexture AddTexture(IWin32Window owner, LevelTexture toReplace = null, string predefinedPath = null)
         {
             var settings = _editor.Level.Settings;
-            string path = GraphicalDialogHandler.BrowseTextureFile(settings, toReplace?.Path ?? _editor.Level.Settings.LevelFilePath, owner);
+            string path = predefinedPath ?? GraphicalDialogHandler.BrowseTextureFile(settings, toReplace?.Path ?? _editor.Level.Settings.LevelFilePath, owner);
             if (path == toReplace?.Path)
                 return toReplace;
 
@@ -2289,9 +2289,16 @@ namespace TombEditor
             }
             else
             {
+                Retry:
+                ;
                 var newTexture = new LevelTexture(_editor.Level.Settings, path);
                 if (newTexture.LoadException != null)
-                    return null;
+                    if (DarkMessageBox.Show(owner, "An error occurred while loading texture file '" + path + "'." +
+                        "\nError message: " + newTexture.LoadException.GetType(), "Unable to load texture file.", MessageBoxButtons.RetryCancel,
+                        MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
+                        goto Retry;
+                    else
+                        return toReplace;
                 _editor.Level.Settings.Textures.Add(newTexture);
                 _editor.LoadedTexturesChange(newTexture);
                 return newTexture;
@@ -2327,10 +2334,10 @@ namespace TombEditor
             _editor.Level.RemoveTextures(texture => texture == textureToDelete);
             _editor.LoadedTexturesChange();
         }
-        public static void AddWad(IWin32Window owner, ReferencedWad toReplace = null)
+        public static void AddWad(IWin32Window owner, ReferencedWad toReplace = null, string predefinedPath = null)
         {
             var settings = _editor.Level.Settings;
-            string path = GraphicalDialogHandler.BrowseObjectFile(settings, toReplace?.Path ?? _editor.Level.Settings.LevelFilePath, owner);
+            string path = predefinedPath ?? GraphicalDialogHandler.BrowseObjectFile(settings, toReplace?.Path ?? _editor.Level.Settings.LevelFilePath, owner);
             if (path == toReplace?.Path)
                 return;
 
@@ -2338,9 +2345,15 @@ namespace TombEditor
                 toReplace.SetPath(_editor.Level.Settings, path);
             else
             {
+                Retry:;
                 var newWad = new ReferencedWad(_editor.Level.Settings, path, new GraphicalDialogHandler(owner));
                 if (newWad.LoadException != null)
-                    return;
+                    if (DarkMessageBox.Show(owner, "An error occurred while loading object file '" + path + "'." +
+                        "\nError message: " + newWad.LoadException.GetType(), "Unable to load object file.", MessageBoxButtons.RetryCancel,
+                        MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
+                        goto Retry;
+                    else
+                        return;
                 _editor.Level.Settings.Wads.Add(newWad);
             }
             _editor.LoadedWadsChange();
@@ -2483,29 +2496,13 @@ namespace TombEditor
                 foreach (string file in files)
                 {
                     if (Wad2.WadFormatExtensions.Matches(file))
-                    {
-                        string path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
-                        ReferencedWad wad = new ReferencedWad(_editor.Level.Settings, path, new GraphicalDialogHandler(owner));
-                        if (wad.LoadException != null)
-                        {
-                            _editor.Level.Settings.Wads.Add(wad);
-                            _editor.LoadedWadsChange();
-                        }
-                    }
+                        AddWad(owner, null, _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory));
                     else if (LevelTexture.FileExtensions.Matches(file))
-                    {
-                        LevelTexture newLevelTexture = new LevelTexture(_editor.Level.Settings, _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory));
-                        _editor.Level.Settings.Textures.Add(newLevelTexture);
-                        _editor.LoadedTexturesChange(newLevelTexture);
-                    }
+                        AddTexture(owner, null, _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory));
                     else if (file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-                    {
                         OpenLevelPrj(owner, file);
-                    }
                     else if (file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
-                    {
                         OpenLevel(owner, file);
-                    }
                     else
                         unsupportedFileCount++;
                 }
@@ -2514,7 +2511,7 @@ namespace TombEditor
             else
                 return -1;
         }
-        
+
         public static void SetPortalOpacity(PortalOpacity opacity, IWin32Window owner)
         {
             var portal = _editor.SelectedObject as PortalInstance;

@@ -20,9 +20,7 @@ namespace TombLib.LevelData
         public string Path { get; private set; }
         public Exception LoadException { get; private set; }
         public bool Convert512PixelsToDoubleRows { get; private set; }
-
-        private bool _replaceMagentaWithTransparency = true;
-        public override bool ReplaceMagentaWithTransparency => _replaceMagentaWithTransparency;
+        public bool ReplaceMagentaWithTransparency { get; private set; }
 
         private TextureFootStepSound[,] _footStepSounds = new TextureFootStepSound[0, 0];
         //private BumpMappingLevel[,] _bumpMappingLevel = new BumpMappingLevel[0, 0];
@@ -33,7 +31,7 @@ namespace TombLib.LevelData
         public LevelTexture(LevelSettings settings, string path, bool convert512PixelsToDoubleRows = false, bool replaceWithTransparency = true)
         {
             Convert512PixelsToDoubleRows = convert512PixelsToDoubleRows;
-            _replaceMagentaWithTransparency = replaceWithTransparency;
+            ReplaceMagentaWithTransparency = replaceWithTransparency;
             SetPath(settings, path);
         }
 
@@ -46,7 +44,7 @@ namespace TombLib.LevelData
                 Path = Path,
                 LoadException = LoadException,
                 Convert512PixelsToDoubleRows = Convert512PixelsToDoubleRows,
-                _replaceMagentaWithTransparency = _replaceMagentaWithTransparency,
+                ReplaceMagentaWithTransparency = ReplaceMagentaWithTransparency,
                 _footStepSounds = _footStepSounds,
                 //_bumpMappingLevel = _bumpMappingLevel
             };
@@ -58,7 +56,7 @@ namespace TombLib.LevelData
             Path = other.Path;
             LoadException = other.LoadException;
             Convert512PixelsToDoubleRows = other.Convert512PixelsToDoubleRows;
-            _replaceMagentaWithTransparency = other._replaceMagentaWithTransparency;
+            ReplaceMagentaWithTransparency = other.ReplaceMagentaWithTransparency;
             _footStepSounds = other._footStepSounds;
             //_bumpMappingLevel = other._bumpMappingLevel;
         }
@@ -164,9 +162,9 @@ namespace TombLib.LevelData
 
         public void SetReplaceMagentaWithTransparency(LevelSettings settings, bool value)
         {
-            if (_replaceMagentaWithTransparency == value)
+            if (ReplaceMagentaWithTransparency == value)
                 return;
-            _replaceMagentaWithTransparency = value;
+            ReplaceMagentaWithTransparency = value;
             Reload(settings);
         }
 

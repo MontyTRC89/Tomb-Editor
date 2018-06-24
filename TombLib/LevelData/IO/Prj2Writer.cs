@@ -127,7 +127,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkString(Prj2Chunks.LevelTexturePath, texture.Path ?? "");
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows, texture.Convert512PixelsToDoubleRows);
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureReplaceMagentaWithTransparency, texture.ReplaceMagentaWithTransparency);
-                            chunkIO.WriteChunk(Prj2Chunks.LevelTextureSounds, () =>
+                            chunkIO.WriteChunk(Prj2Chunks.LevelTextureFootStepSounds, () =>
                             {
                                 chunkIO.Raw.Write(texture.FootStepSoundWidth);
                                 chunkIO.Raw.Write(texture.FootStepSoundHeight);

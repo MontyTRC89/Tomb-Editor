@@ -11,8 +11,6 @@ namespace TombLib.Utils
         // Do not change the image with this methode
         public ImageC Image { get; protected set; } = UnloadedPlaceholder;
 
-        public virtual bool ReplaceMagentaWithTransparency => false;
-
         public abstract Texture Clone();
 
         object ICloneable.Clone()

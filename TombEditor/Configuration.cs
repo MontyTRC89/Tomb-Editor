@@ -31,6 +31,7 @@ namespace TombEditor
         public bool Log_WriteToFile { get; set; } = true;
         public int Log_ArchiveN { get; set; } = 4;
 
+        public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
         public bool Editor_DiscardSelectionOnModeSwitch { get; set; } = false;
         public bool Editor_ProbeAttributesThroughPortals { get; set; } = true;
         public bool Editor_AutoSwitchSectorColoringInfo { get; set; } = true;
