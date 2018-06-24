@@ -53,8 +53,8 @@ namespace TombLib.Rendering.DirectX11
                 region.Bottom = pos.Y + (texture.To.Y - texture.From.Y);
                 region.Front = 0;
                 region.Back = 1;
-                if (0 > region.Left || region.Left >= region.Right || region.Right >= Size.X ||
-                    0 > region.Top || region.Top >= region.Bottom || region.Bottom >= Size.Y)
+                if (0 > region.Left || region.Left >= region.Right || region.Right > Size.X ||
+                    0 > region.Top || region.Top >= region.Bottom || region.Bottom > Size.Y)
                     throw new ArgumentOutOfRangeException(); // This check is important, otherwise the graphics driver may crash the entire system as it turned out.
 
                 DataBox box;
