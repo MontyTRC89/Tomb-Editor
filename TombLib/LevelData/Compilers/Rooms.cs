@@ -640,16 +640,16 @@ namespace TombLib.LevelData.Compilers
                 switch (portal.Direction)
                 {
                     case PortalDirection.WallNegativeZ:
-                        ConvertWallPortal(room, portal, newRoom.Portals, Block.EdgeXnZn, Block.EdgeXpZn);
+                        ConvertWallPortal(room, portal, newRoom.Portals, BlockEdge.XnZn, BlockEdge.XpZn);
                         break;
                     case PortalDirection.WallNegativeX:
-                        ConvertWallPortal(room, portal, newRoom.Portals, Block.EdgeXnZn, Block.EdgeXnZp);
+                        ConvertWallPortal(room, portal, newRoom.Portals, BlockEdge.XnZn, BlockEdge.XnZp);
                         break;
                     case PortalDirection.WallPositiveZ:
-                        ConvertWallPortal(room, portal, newRoom.Portals, Block.EdgeXpZp, Block.EdgeXnZp);
+                        ConvertWallPortal(room, portal, newRoom.Portals, BlockEdge.XpZp, BlockEdge.XnZp);
                         break;
                     case PortalDirection.WallPositiveX:
-                        ConvertWallPortal(room, portal, newRoom.Portals, Block.EdgeXpZp, Block.EdgeXpZn);
+                        ConvertWallPortal(room, portal, newRoom.Portals, BlockEdge.XpZp, BlockEdge.XpZn);
                         break;
                     case PortalDirection.Floor:
                         ConvertFloorCeilingPortal(room, portal, newRoom.Portals, false);
@@ -663,7 +663,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void ConvertWallPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, params int[] relevantDirections)
+        private void ConvertWallPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, params BlockEdge[] relevantEdges)
         {
             // Calculate dimensions of portal
             var yMin = float.MaxValue;
@@ -706,7 +706,7 @@ namespace TombLib.LevelData.Compilers
                 for (var x = startX; x <= endX; ++x)
                 {
                     Block block = room.Blocks[x, z];
-                    foreach (var relevantDirection in relevantDirections)
+                    foreach (var relevantDirection in relevantEdges)
                     {
                         var floor = 256.0f * block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
                         var ceiling = 256.0f * block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;

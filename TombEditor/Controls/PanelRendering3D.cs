@@ -403,12 +403,12 @@ namespace TombEditor.Controls
                                 if (!ModifierKeys.HasFlag(Keys.Alt) && !ModifierKeys.HasFlag(Keys.Shift) && _toolHandler.Process(pos.X, pos.Y))
                                 {
                                     if (_editor.Tool.Tool == EditorToolType.Smooth)
-                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? 0 : 1);
+                                        EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling);
                                     else if (_editor.Tool.Tool < EditorToolType.Flatten)
                                         EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                             new RectangleInt2(pos, pos),
                                             ArrowType.EntireFace,
-                                            belongsToFloor ? 0 : 1,
+                                            belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
                                             (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
                                             _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
                                             false);
@@ -587,7 +587,9 @@ namespace TombEditor.Controls
                         var dragValue = _toolHandler.UpdateDragState(e.X, e.Y, _editor.Tool.Tool == EditorToolType.Drag);
                         if (dragValue.HasValue)
                         {
-                            int subdivisionToEdit = _toolHandler.ReferenceIsFloor ? (ModifierKeys.HasFlag(Keys.Control) ? 2 : 0) : (ModifierKeys.HasFlag(Keys.Control) ? 3 : 1);
+                            BlockVertical subdivisionToEdit = _toolHandler.ReferenceIsFloor ?
+                                (ModifierKeys.HasFlag(Keys.Control) ? BlockVertical.Ed : BlockVertical.Floor) :
+                                (ModifierKeys.HasFlag(Keys.Control) ? BlockVertical.Rf : BlockVertical.Ceiling);
 
                             switch (_editor.Tool.Tool)
                             {
@@ -658,24 +660,28 @@ namespace TombEditor.Controls
                                         switch (_editor.Tool.Tool)
                                         {
                                             case EditorToolType.Flatten:
-                                                for (int i = 0; i < 4; i++)
+                                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                                                 {
                                                     if (belongsToFloor && _toolHandler.ReferenceIsFloor)
                                                     {
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].Floor.SetHeight(i, _toolHandler.ReferenceBlock.Floor.Min);
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].ED[i] = _toolHandler.ReferenceBlock.ED.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].Floor.SetHeight(edge, _toolHandler.ReferenceBlock.Floor.Min);
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(BlockVertical.Ed, edge, Math.Min(
+                                                            Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZp)),
+                                                            Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZn))));
                                                     }
                                                     else if (!belongsToFloor && !_toolHandler.ReferenceIsFloor)
                                                     {
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].Ceiling.SetHeight(i, _toolHandler.ReferenceBlock.Ceiling.Min);
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].RF[i] = _toolHandler.ReferenceBlock.RF.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].Ceiling.SetHeight(edge, _toolHandler.ReferenceBlock.Ceiling.Min);
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].SetHeight(BlockVertical.Rf, edge, Math.Min(
+                                                            Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Rf, BlockEdge.XnZp), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZp)),
+                                                            Math.Min(_toolHandler.ReferenceBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZn), _toolHandler.ReferenceBlock.GetHeight(BlockVertical.Rf, BlockEdge.XnZn))));
                                                     }
                                                 }
                                                 EditorActions.SmartBuildGeometry(_editor.SelectedRoom, new RectangleInt2(pos, pos));
                                                 break;
 
                                             case EditorToolType.Smooth:
-                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? 0 : 1);
+                                                EditorActions.SmoothSector(_editor.SelectedRoom, pos.X, pos.Y, belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling);
                                                 break;
 
                                             case EditorToolType.Drag:
@@ -686,7 +692,7 @@ namespace TombEditor.Controls
                                                 EditorActions.EditSectorGeometry(_editor.SelectedRoom,
                                                     new RectangleInt2(pos, pos),
                                                     ArrowType.EntireFace,
-                                                    belongsToFloor ? 0 : 1,
+                                                    belongsToFloor ? BlockVertical.Floor : BlockVertical.Ceiling,
                                                     (short)((_editor.Tool.Tool == EditorToolType.Shovel || _editor.Tool.Tool == EditorToolType.Pencil && ModifierKeys.HasFlag(Keys.Control)) ^ belongsToFloor ? 1 : -1),
                                                     _editor.Tool.Tool == EditorToolType.Brush || _editor.Tool.Tool == EditorToolType.Shovel,
                                                     false);
@@ -2293,17 +2299,17 @@ namespace TombEditor.Controls
                     {
                         _actionGrid[x, z].Processed = false;
 
-                        for (int i = 0; i < 4; i++)
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
                         {
                             if (_referencePicking.BelongsToFloor)
                             {
-                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].Floor.GetHeight(i);
-                                _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].ED[i];
+                                _actionGrid[x, z].Heights[0, (int)edge] = _referenceRoom.Blocks[x, z].Floor.GetHeight(edge);
+                                _actionGrid[x, z].Heights[1, (int)edge] = _referenceRoom.Blocks[x, z].GetHeight(BlockVertical.Ed, edge);
                             }
                             else
                             {
-                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].Ceiling.GetHeight(i);
-                                _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].RF[i];
+                                _actionGrid[x, z].Heights[0, (int)edge] = _referenceRoom.Blocks[x, z].Ceiling.GetHeight(edge);
+                                _actionGrid[x, z].Heights[1, (int)edge] = _referenceRoom.Blocks[x, z].GetHeight(BlockVertical.Rf, edge);
                             }
                         }
                     }
@@ -2535,17 +2541,17 @@ namespace TombEditor.Controls
                 for (int x = 0; x < _referenceRoom.NumXSectors; x++)
                     for (int z = 0; z < _referenceRoom.NumZSectors; z++)
                     {
-                        for (int i = 0; i < 4; i++)
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
                         {
                             if (_referencePicking.BelongsToFloor)
                             {
-                                _referenceRoom.Blocks[x, z].Floor.SetHeight(i, _actionGrid[x, z].Heights[0, i]);
-                                _referenceRoom.Blocks[x, z].ED[i] = _actionGrid[x, z].Heights[1, i];
+                                _referenceRoom.Blocks[x, z].Floor.SetHeight(edge, _actionGrid[x, z].Heights[0, (int)edge]);
+                                _referenceRoom.Blocks[x, z].SetHeight(BlockVertical.Ed, edge, _actionGrid[x, z].Heights[1, (int)edge]);
                             }
                             else
                             {
-                                _referenceRoom.Blocks[x, z].Ceiling.SetHeight(i, _actionGrid[x, z].Heights[0, i]);
-                                _referenceRoom.Blocks[x, z].RF[i] = _actionGrid[x, z].Heights[1, i];
+                                _referenceRoom.Blocks[x, z].Ceiling.SetHeight(edge, _actionGrid[x, z].Heights[0, (int)edge]);
+                                _referenceRoom.Blocks[x, z].SetHeight(BlockVertical.Rf, edge, _actionGrid[x, z].Heights[1, (int)edge]);
                             }
                         }
                     }

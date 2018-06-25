@@ -504,10 +504,10 @@ namespace TombLib.LevelData
                     ob = room.Blocks[x, z + 1];
                     qA = b.Floor.XpZp;
                     qB = b.Floor.XnZp;
-                    eA = b.ED[1];
-                    eB = b.ED[0];
-                    rA = b.RF[1];
-                    rB = b.RF[0];
+                    eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+                    eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZp);
+                    rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
+                    rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZp);
                     wA = b.Ceiling.XpZp;
                     wB = b.Ceiling.XnZp;
                     fA = ob.Floor.XpZn;
@@ -577,10 +577,10 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - room.Position.Y;
                         wB = Math.Min(wB, wBportal) - room.Position.Y;
 
-                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.ED[1];
-                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.ED[0];
-                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.RF[1];
-                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.RF[0];
+                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZp);
+                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
+                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XnZp);
                     }
 
                     if (b.Floor.DiagonalSplit == DiagonalSplit.XpZn)
@@ -641,10 +641,10 @@ namespace TombLib.LevelData
                     ob = room.Blocks[x, z - 1];
                     qA = b.Floor.XnZn;
                     qB = b.Floor.XpZn;
-                    eA = b.ED[3];
-                    eB = b.ED[2];
-                    rA = b.RF[3];
-                    rB = b.RF[2];
+                    eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+                    eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+                    rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZn);
+                    rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
                     wA = b.Ceiling.XnZn;
                     wB = b.Ceiling.XpZn;
                     fA = ob.Floor.XnZp;
@@ -714,10 +714,10 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - room.Position.Y;
                         wB = Math.Min(wB, wBportal) - room.Position.Y;
 
-                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.ED[3];
-                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.ED[2];
-                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.RF[3];
-                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.RF[2];
+                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XnZn);
+                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
                     }
 
                     if (b.Floor.DiagonalSplit == DiagonalSplit.XpZp)
@@ -778,10 +778,10 @@ namespace TombLib.LevelData
                     ob = room.Blocks[x + 1, z];
                     qA = b.Floor.XpZn;
                     qB = b.Floor.XpZp;
-                    eA = b.ED[2];
-                    eB = b.ED[1];
-                    rA = b.RF[2];
-                    rB = b.RF[1];
+                    eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+                    eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+                    rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
+                    rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
                     wA = b.Ceiling.XpZn;
                     wB = b.Ceiling.XpZp;
                     fA = ob.Floor.XnZn;
@@ -851,10 +851,10 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - room.Position.Y;
                         wB = Math.Min(wB, wBportal) - room.Position.Y;
 
-                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.ED[2];
-                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.ED[1];
-                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.RF[2];
-                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.RF[1];
+                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
+                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
                     }
 
                     if (b.Floor.DiagonalSplit == DiagonalSplit.XnZn)
@@ -917,10 +917,10 @@ namespace TombLib.LevelData
                             zB = z;
                             qA = b.Floor.XpZp;
                             qB = b.Floor.XnZn;
-                            eA = b.ED[1];
-                            eB = b.ED[3];
-                            rA = b.RF[1];
-                            rB = b.RF[3];
+                            eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+                            eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+                            rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
+                            rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZn);
                             wA = b.Ceiling.XpZp;
                             wB = b.Ceiling.XnZn;
                             fA = b.Floor.XnZp;
@@ -940,10 +940,10 @@ namespace TombLib.LevelData
                             zB = z + 1;
                             qA = b.Floor.XpZn;
                             qB = b.Floor.XnZp;
-                            eA = b.ED[2];
-                            eB = b.ED[0];
-                            rA = b.RF[2];
-                            rB = b.RF[0];
+                            eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+                            eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZp);
+                            rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
+                            rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZp);
                             wA = b.Ceiling.XpZn;
                             wB = b.Ceiling.XnZp;
                             fA = b.Floor.XpZp;
@@ -963,10 +963,10 @@ namespace TombLib.LevelData
                             zB = z + 1;
                             qA = b.Floor.XnZn;
                             qB = b.Floor.XpZp;
-                            eA = b.ED[3];
-                            eB = b.ED[1];
-                            rA = b.RF[3];
-                            rB = b.RF[1];
+                            eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+                            eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+                            rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZn);
+                            rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
                             wA = b.Ceiling.XnZn;
                             wB = b.Ceiling.XpZp;
                             fA = b.Floor.XpZn;
@@ -986,10 +986,10 @@ namespace TombLib.LevelData
                             zB = z;
                             qA = b.Floor.XnZp;
                             qB = b.Floor.XpZn;
-                            eA = b.ED[0];
-                            eB = b.ED[2];
-                            rA = b.RF[0];
-                            rB = b.RF[2];
+                            eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZp);
+                            eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+                            rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZp);
+                            rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
                             wA = b.Ceiling.XnZp;
                             wB = b.Ceiling.XpZn;
                             fA = b.Floor.XnZn;
@@ -1016,10 +1016,10 @@ namespace TombLib.LevelData
                             zB = z;
                             qA = b.Floor.XpZp;
                             qB = b.Floor.XnZn;
-                            eA = b.ED[1];
-                            eB = b.ED[3];
-                            rA = b.RF[1];
-                            rB = b.RF[3];
+                            eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+                            eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+                            rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
+                            rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZn);
                             wA = b.Ceiling.XpZp;
                             wB = b.Ceiling.XnZn;
                             fA = b.Floor.XnZp;
@@ -1039,10 +1039,10 @@ namespace TombLib.LevelData
                             zB = z + 1;
                             qA = b.Floor.XpZn;
                             qB = b.Floor.XnZp;
-                            eA = b.ED[2];
-                            eB = b.ED[0];
-                            rA = b.RF[2];
-                            rB = b.RF[0];
+                            eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+                            eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZp);
+                            rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
+                            rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZp);
                             wA = b.Ceiling.XpZn;
                             wB = b.Ceiling.XnZp;
                             fA = b.Floor.XpZp;
@@ -1062,10 +1062,10 @@ namespace TombLib.LevelData
                             zB = z + 1;
                             qA = b.Floor.XnZn;
                             qB = b.Floor.XpZp;
-                            eA = b.ED[3];
-                            eB = b.ED[1];
-                            rA = b.RF[3];
-                            rB = b.RF[1];
+                            eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+                            eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+                            rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZn);
+                            rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
                             wA = b.Ceiling.XnZn;
                             wB = b.Ceiling.XpZp;
                             fA = b.Floor.XpZn;
@@ -1085,10 +1085,10 @@ namespace TombLib.LevelData
                             zB = z;
                             qA = b.Floor.XnZp;
                             qB = b.Floor.XpZn;
-                            eA = b.ED[0];
-                            eB = b.ED[2];
-                            rA = b.RF[0];
-                            rB = b.RF[2];
+                            eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZp);
+                            eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+                            rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZp);
+                            rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
                             wA = b.Ceiling.XnZp;
                             wB = b.Ceiling.XpZn;
                             fA = b.Floor.XnZn;
@@ -1113,10 +1113,10 @@ namespace TombLib.LevelData
                     ob = room.Blocks[x - 1, z];
                     qA = b.Floor.XnZp;
                     qB = b.Floor.XnZn;
-                    eA = b.ED[0];
-                    eB = b.ED[3];
-                    rA = b.RF[0];
-                    rB = b.RF[3];
+                    eA = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZp);
+                    eB = b.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+                    rA = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZp);
+                    rB = b.GetHeight(BlockVertical.Rf, BlockEdge.XnZn);
                     wA = b.Ceiling.XnZp;
                     wB = b.Ceiling.XnZn;
                     fA = ob.Floor.XpZp;
@@ -1186,10 +1186,10 @@ namespace TombLib.LevelData
                         wA = Math.Min(wA, wAportal) - room.Position.Y;
                         wB = Math.Min(wB, wBportal) - room.Position.Y;
 
-                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.ED[1];
-                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.ED[2];
-                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.RF[1];
-                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.RF[2];
+                        eA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+                        eB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+                        rA = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZp);
+                        rB = adjoiningRoom.Position.Y - room.Position.Y + adjoiningBlock.GetHeight(BlockVertical.Rf, BlockEdge.XpZn);
                     }
 
                     if (b.Floor.DiagonalSplit == DiagonalSplit.XpZn)

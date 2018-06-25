@@ -69,7 +69,7 @@ namespace TombEditor
             Any
         }
 
-        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, int verticalSubdivision, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true)
+        public static void EditSectorGeometry(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, short increment, bool smooth, bool oppositeDiagonalCorner = false, bool autoSwitchDiagonals = false, bool autoUpdateThroughPortal = true)
         {
             if (smooth)
             {
@@ -128,48 +128,48 @@ namespace TombEditor
                 }
                 arrow = ArrowType.EntireFace;
 
-                Action<Block, int> smoothEdit = (Block block, int edge) =>
+                Action<Block, BlockEdge> smoothEdit = (Block block, BlockEdge edge) =>
                 {
                     if (block == null)
                         return;
 
-                    if ((verticalSubdivision == 0 || verticalSubdivision == 2) && block.Floor.DiagonalSplit == DiagonalSplit.None ||
-                       (verticalSubdivision == 1 || verticalSubdivision == 3) && block.Ceiling.DiagonalSplit == DiagonalSplit.None)
+                    if (vertical.IsOnFloor() && block.Floor.DiagonalSplit == DiagonalSplit.None ||
+                       vertical.IsOnCeiling() && block.Ceiling.DiagonalSplit == DiagonalSplit.None)
                     {
                         if (smoothEditingType == SmoothGeometryEditingType.Any ||
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Floor ||
                            !block.IsAnyWall && smoothEditingType == SmoothGeometryEditingType.Wall)
                         {
-                            block.ChangeHeight(verticalSubdivision, edge, increment);
-                            block.FixHeights(verticalSubdivision);
+                            block.ChangeHeight(vertical, edge, increment);
+                            block.FixHeights(vertical);
                         }
                     }
                 };
 
 
                 // Smoothly change sectors on the corners
-                smoothEdit(room.GetBlockTry(area.X0 - 1, area.Y1 + 1), Block.EdgeXpZn);
-                smoothEdit(room.GetBlockTry(area.X1 + 1, area.Y1 + 1), Block.EdgeXnZn);
-                smoothEdit(room.GetBlockTry(area.X1 + 1, area.Y0 - 1), Block.EdgeXnZp);
-                smoothEdit(room.GetBlockTry(area.X0 - 1, area.Y0 - 1), Block.EdgeXpZp);
+                smoothEdit(room.GetBlockTry(area.X0 - 1, area.Y1 + 1), BlockEdge.XpZn);
+                smoothEdit(room.GetBlockTry(area.X1 + 1, area.Y1 + 1), BlockEdge.XnZn);
+                smoothEdit(room.GetBlockTry(area.X1 + 1, area.Y0 - 1), BlockEdge.XnZp);
+                smoothEdit(room.GetBlockTry(area.X0 - 1, area.Y0 - 1), BlockEdge.XpZp);
 
                 // Smoothly change sectors on the sides
                 for (int x = area.X0; x <= area.X1; x++)
                 {
-                    smoothEdit(room.GetBlockTry(x, area.Y0 - 1), Block.EdgeXnZp);
-                    smoothEdit(room.GetBlockTry(x, area.Y0 - 1), Block.EdgeXpZp);
+                    smoothEdit(room.GetBlockTry(x, area.Y0 - 1), BlockEdge.XnZp);
+                    smoothEdit(room.GetBlockTry(x, area.Y0 - 1), BlockEdge.XpZp);
 
-                    smoothEdit(room.GetBlockTry(x, area.Y1 + 1), Block.EdgeXnZn);
-                    smoothEdit(room.GetBlockTry(x, area.Y1 + 1), Block.EdgeXpZn);
+                    smoothEdit(room.GetBlockTry(x, area.Y1 + 1), BlockEdge.XnZn);
+                    smoothEdit(room.GetBlockTry(x, area.Y1 + 1), BlockEdge.XpZn);
                 }
 
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
-                    smoothEdit(room.GetBlockTry(area.X0 - 1, z), Block.EdgeXpZp);
-                    smoothEdit(room.GetBlockTry(area.X0 - 1, z), Block.EdgeXpZn);
+                    smoothEdit(room.GetBlockTry(area.X0 - 1, z), BlockEdge.XpZp);
+                    smoothEdit(room.GetBlockTry(area.X0 - 1, z), BlockEdge.XpZn);
 
-                    smoothEdit(room.GetBlockTry(area.X1 + 1, z), Block.EdgeXnZp);
-                    smoothEdit(room.GetBlockTry(area.X1 + 1, z), Block.EdgeXnZn);
+                    smoothEdit(room.GetBlockTry(area.X1 + 1, z), BlockEdge.XnZp);
+                    smoothEdit(room.GetBlockTry(area.X1 + 1, z), BlockEdge.XnZn);
                 }
             }
 
@@ -183,46 +183,45 @@ namespace TombEditor
                     {
                         if (arrow == ArrowType.EntireFace)
                         {
-                            if (verticalSubdivision < 2)
-                                block.RaiseStepWise(verticalSubdivision, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
+                            if (vertical == BlockVertical.Floor || vertical == BlockVertical.Ceiling)
+                                block.RaiseStepWise(vertical, oppositeDiagonalCorner, increment, autoSwitchDiagonals);
                             else
-                                block.Raise(verticalSubdivision, false, increment);
+                                block.Raise(vertical, false, increment);
                         }
                         else
                         {
-                            var floor = verticalSubdivision % 2 == 0;
-                            var currentSplit = floor ? block.Floor.DiagonalSplit : block.Ceiling.DiagonalSplit;
-                            var incrementInvalid = floor ? increment < 0 : increment > 0;
-                            int[] corners = new int[2] { 0, 0 };
+                            var currentSplit = vertical.IsOnFloor() ? block.Floor.DiagonalSplit : block.Ceiling.DiagonalSplit;
+                            var incrementInvalid = vertical.IsOnFloor() ? increment < 0 : increment > 0;
+                            BlockEdge[] corners = new BlockEdge[2] { BlockEdge.XnZp, BlockEdge.XnZp };
                             DiagonalSplit[] splits = new DiagonalSplit[2] { DiagonalSplit.None, DiagonalSplit.None };
 
                             switch (arrow)
                             {
                                 case ArrowType.EdgeN:
                                 case ArrowType.CornerNW:
-                                    corners[0] = 0;
-                                    corners[1] = 1;
+                                    corners[0] = BlockEdge.XnZp;
+                                    corners[1] = BlockEdge.XpZp;
                                     splits[0] = DiagonalSplit.XpZn;
                                     splits[1] = arrow == ArrowType.CornerNW ? DiagonalSplit.XnZp : DiagonalSplit.XnZn;
                                     break;
                                 case ArrowType.EdgeE:
                                 case ArrowType.CornerNE:
-                                    corners[0] = 1;
-                                    corners[1] = 2;
+                                    corners[0] = BlockEdge.XpZp;
+                                    corners[1] = BlockEdge.XpZn;
                                     splits[0] = DiagonalSplit.XnZn;
                                     splits[1] = arrow == ArrowType.CornerNE ? DiagonalSplit.XpZp : DiagonalSplit.XnZp;
                                     break;
                                 case ArrowType.EdgeS:
                                 case ArrowType.CornerSE:
-                                    corners[0] = 2;
-                                    corners[1] = 3;
+                                    corners[0] = BlockEdge.XpZn;
+                                    corners[1] = BlockEdge.XnZn;
                                     splits[0] = DiagonalSplit.XnZp;
                                     splits[1] = arrow == ArrowType.CornerSE ? DiagonalSplit.XpZn : DiagonalSplit.XpZp;
                                     break;
                                 case ArrowType.EdgeW:
                                 case ArrowType.CornerSW:
-                                    corners[0] = 3;
-                                    corners[1] = 0;
+                                    corners[0] = BlockEdge.XnZn;
+                                    corners[1] = BlockEdge.XnZp;
                                     splits[0] = DiagonalSplit.XpZp;
                                     splits[1] = arrow == ArrowType.CornerSW ? DiagonalSplit.XnZn : DiagonalSplit.XpZn;
                                     break;
@@ -234,7 +233,7 @@ namespace TombEditor
                                     continue;
                                 for (int i = 0; i < 2; i++)
                                     if (currentSplit != splits[i])
-                                        block.ChangeHeight(verticalSubdivision, corners[i], increment);
+                                        block.ChangeHeight(vertical, corners[i], increment);
                             }
                             else
                             {
@@ -242,18 +241,18 @@ namespace TombEditor
                                 {
                                     if (currentSplit == splits[1])
                                     {
-                                        if (block.GetHeight(verticalSubdivision, corners[0]) == block.GetHeight(verticalSubdivision, corners[1]) && incrementInvalid)
+                                        if (block.GetHeight(vertical, corners[0]) == block.GetHeight(vertical, corners[1]) && incrementInvalid)
                                             continue;
                                     }
-                                    else if (autoSwitchDiagonals && currentSplit == splits[0] && block.GetHeight(verticalSubdivision, corners[0]) == block.GetHeight(verticalSubdivision, corners[1]) && !incrementInvalid)
-                                        block.Transform(new RectTransformation { QuadrantRotation = 2 }, floor);
+                                    else if (autoSwitchDiagonals && currentSplit == splits[0] && block.GetHeight(vertical, corners[0]) == block.GetHeight(vertical, corners[1]) && !incrementInvalid)
+                                        block.Transform(new RectTransformation { QuadrantRotation = 2 }, vertical.IsOnFloor());
                                     else
                                         continue;
                                 }
-                                block.ChangeHeight(verticalSubdivision, corners[0], increment);
+                                block.ChangeHeight(vertical, corners[0], increment);
                             }
                         }
-                        block.FixHeights(verticalSubdivision);
+                        block.FixHeights(vertical);
                     }
 
                     if (autoUpdateThroughPortal && lookupBlock.Block != block)
@@ -295,12 +294,13 @@ namespace TombEditor
             _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
         }
 
-        public static void SmoothSector(Room room, int x, int z, int v)
+        public static void SmoothSector(Room room, int x, int z, BlockVertical vertical)
         {
-            var floor = v % 2 == 0;
             var currBlock = room.GetBlockTryThroughPortal(x, z);
 
-            if (currBlock.Room != room || floor && currBlock.Block.Floor.DiagonalSplit != DiagonalSplit.None || !floor && currBlock.Block.Ceiling.DiagonalSplit != DiagonalSplit.None)
+            if (currBlock.Room != room ||
+                vertical.IsOnFloor() && currBlock.Block.Floor.DiagonalSplit != DiagonalSplit.None ||
+                vertical.IsOnCeiling() && currBlock.Block.Ceiling.DiagonalSplit != DiagonalSplit.None)
                 return;
 
             Room.RoomBlockPair[] lookupBlocks = new Room.RoomBlockPair[8]
@@ -319,37 +319,35 @@ namespace TombEditor
             for (int i = 0; i < 8; i++)
                 adj[i] = (currBlock.Room != null ? currBlock.Room.Position.Y : 0) - (lookupBlocks[i].Room != null ? lookupBlocks[i].Room.Position.Y : 0);
 
-            short[] newFaces = new short[4];
+            int validBlockCntXnZp = (lookupBlocks[7].Room != null ? 1 : 0) + (lookupBlocks[0].Room != null ? 1 : 0) + (lookupBlocks[1].Room != null ? 1 : 0);
+            int newXnZp = ((lookupBlocks[7].Block?.GetHeight(vertical, BlockEdge.XpZp) ?? 0) + adj[7] +
+                                   (lookupBlocks[0].Block?.GetHeight(vertical, BlockEdge.XpZn) ?? 0) + adj[0] +
+                                   (lookupBlocks[1].Block?.GetHeight(vertical, BlockEdge.XnZn) ?? 0) + adj[1]) / validBlockCntXnZp;
 
-            int validBlockCnt = (lookupBlocks[7].Room != null ? 1 : 0) + (lookupBlocks[0].Room != null ? 1 : 0) + (lookupBlocks[1].Room != null ? 1 : 0);
-            newFaces[Block.EdgeXnZp] = (short)(((lookupBlocks[7].Block?.GetHeight(v, Block.EdgeXpZp) ?? 0) + adj[7] +
-                                   (lookupBlocks[0].Block?.GetHeight(v, Block.EdgeXpZn) ?? 0) + adj[0] +
-                                   (lookupBlocks[1].Block?.GetHeight(v, Block.EdgeXnZn) ?? 0) + adj[1]) / validBlockCnt);
+            int validBlockCntXpZp = (lookupBlocks[1].Room != null ? 1 : 0) + (lookupBlocks[2].Room != null ? 1 : 0) + (lookupBlocks[3].Room != null ? 1 : 0);
+            int newXpZp = ((lookupBlocks[1].Block?.GetHeight(vertical, BlockEdge.XpZn) ?? 0) + adj[2] +
+                                   (lookupBlocks[2].Block?.GetHeight(vertical, BlockEdge.XnZn) ?? 0) + adj[3] +
+                                   (lookupBlocks[3].Block?.GetHeight(vertical, BlockEdge.XnZp) ?? 0) + adj[0]) / validBlockCntXpZp;
 
-            validBlockCnt = (lookupBlocks[1].Room != null ? 1 : 0) + (lookupBlocks[2].Room != null ? 1 : 0) + (lookupBlocks[3].Room != null ? 1 : 0);
-            newFaces[Block.EdgeXpZp] = (short)(((lookupBlocks[1].Block?.GetHeight(v, Block.EdgeXpZn) ?? 0) + adj[2] +
-                                   (lookupBlocks[2].Block?.GetHeight(v, Block.EdgeXnZn) ?? 0) + adj[3] +
-                                   (lookupBlocks[3].Block?.GetHeight(v, Block.EdgeXnZp) ?? 0) + adj[0]) / validBlockCnt);
+            int validBlockCntXpZn = (lookupBlocks[3].Room != null ? 1 : 0) + (lookupBlocks[4].Room != null ? 1 : 0) + (lookupBlocks[5].Room != null ? 1 : 0);
+            int newXpZn = ((lookupBlocks[3].Block?.GetHeight(vertical, BlockEdge.XnZn) ?? 0) + adj[3] +
+                                   (lookupBlocks[4].Block?.GetHeight(vertical, BlockEdge.XnZp) ?? 0) + adj[0] +
+                                   (lookupBlocks[5].Block?.GetHeight(vertical, BlockEdge.XpZp) ?? 0) + adj[1]) / validBlockCntXpZn;
 
-            validBlockCnt = (lookupBlocks[3].Room != null ? 1 : 0) + (lookupBlocks[4].Room != null ? 1 : 0) + (lookupBlocks[5].Room != null ? 1 : 0);
-            newFaces[Block.EdgeXpZn] = (short)(((lookupBlocks[3].Block?.GetHeight(v, Block.EdgeXnZn) ?? 0) + adj[3] +
-                                   (lookupBlocks[4].Block?.GetHeight(v, Block.EdgeXnZp) ?? 0) + adj[0] +
-                                   (lookupBlocks[5].Block?.GetHeight(v, Block.EdgeXpZp) ?? 0) + adj[1]) / validBlockCnt);
+            int validBlockCntXnZn = (lookupBlocks[5].Room != null ? 1 : 0) + (lookupBlocks[6].Room != null ? 1 : 0) + (lookupBlocks[7].Room != null ? 1 : 0);
+            int newXnZn = ((lookupBlocks[5].Block?.GetHeight(vertical, BlockEdge.XnZp) ?? 0) + adj[0] +
+                                   (lookupBlocks[6].Block?.GetHeight(vertical, BlockEdge.XpZp) ?? 0) + adj[1] +
+                                   (lookupBlocks[7].Block?.GetHeight(vertical, BlockEdge.XpZn) ?? 0) + adj[2]) / validBlockCntXnZn;
 
-            validBlockCnt = (lookupBlocks[5].Room != null ? 1 : 0) + (lookupBlocks[6].Room != null ? 1 : 0) + (lookupBlocks[7].Room != null ? 1 : 0);
-            newFaces[Block.EdgeXnZn] = (short)(((lookupBlocks[5].Block?.GetHeight(v, Block.EdgeXnZp) ?? 0) + adj[0] +
-                                   (lookupBlocks[6].Block?.GetHeight(v, Block.EdgeXpZp) ?? 0) + adj[1] +
-                                   (lookupBlocks[7].Block?.GetHeight(v, Block.EdgeXpZn) ?? 0) + adj[2]) / validBlockCnt);
-
-            currBlock.Block.ChangeHeight(v, Block.EdgeXnZp, (short)Math.Sign(newFaces[Block.EdgeXnZp] - currBlock.Block.GetHeight(v, Block.EdgeXnZp)));
-            currBlock.Block.ChangeHeight(v, Block.EdgeXpZp, (short)Math.Sign(newFaces[Block.EdgeXpZp] - currBlock.Block.GetHeight(v, Block.EdgeXpZp)));
-            currBlock.Block.ChangeHeight(v, Block.EdgeXpZn, (short)Math.Sign(newFaces[Block.EdgeXpZn] - currBlock.Block.GetHeight(v, Block.EdgeXpZn)));
-            currBlock.Block.ChangeHeight(v, Block.EdgeXnZn, (short)Math.Sign(newFaces[Block.EdgeXnZn] - currBlock.Block.GetHeight(v, Block.EdgeXnZn)));
+            currBlock.Block.ChangeHeight(vertical, BlockEdge.XnZp, Math.Sign(newXnZp - currBlock.Block.GetHeight(vertical, BlockEdge.XnZp)));
+            currBlock.Block.ChangeHeight(vertical, BlockEdge.XpZp, Math.Sign(newXpZp - currBlock.Block.GetHeight(vertical, BlockEdge.XpZp)));
+            currBlock.Block.ChangeHeight(vertical, BlockEdge.XpZn, Math.Sign(newXpZn - currBlock.Block.GetHeight(vertical, BlockEdge.XpZn)));
+            currBlock.Block.ChangeHeight(vertical, BlockEdge.XnZn, Math.Sign(newXnZn - currBlock.Block.GetHeight(vertical, BlockEdge.XnZn)));
 
             SmartBuildGeometry(room, new RectangleInt2(x, z, x, z));
         }
 
-        public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, int verticalSubdivision, double heightScale, bool precise, bool stepped)
+        public static void ShapeGroup(Room room, RectangleInt2 area, ArrowType arrow, EditorToolType type, BlockVertical vertical, double heightScale, bool precise, bool stepped)
         {
             if (precise)
                 heightScale /= 4;
@@ -394,16 +392,16 @@ namespace TombEditor
 
                     if (stepped)
                     {
-                        room.Blocks[w, h].Raise(verticalSubdivision, false, (short)currentHeight);
+                        room.Blocks[w, h].Raise(vertical, false, (int)currentHeight);
                         room.Blocks[w, h].FixHeights();
                     }
                     else
-                        room.ModifyHeightThroughPortal(w, h, verticalSubdivision, (short)currentHeight, area);
+                        room.ModifyHeightThroughPortal(w, h, vertical, (int)currentHeight, area);
                 }
             SmartBuildGeometry(room, area);
         }
 
-        public static void ApplyHeightmap(Room room, RectangleInt2 area, ArrowType arrow, int verticalSubdivision, float[,] heightmap, float heightScale, bool precise, bool raw)
+        public static void ApplyHeightmap(Room room, RectangleInt2 area, ArrowType arrow, BlockVertical vertical, float[,] heightmap, float heightScale, bool precise, bool raw)
         {
             if (precise)
                 heightScale /= 4;
@@ -424,7 +422,7 @@ namespace TombEditor
 
                     int currX = x * (heightmap.GetLength(0) / (area.Width + 2));
                     int currZ = z * (heightmap.GetLength(1) / (area.Height + 2));
-                    room.ModifyHeightThroughPortal(w, h, verticalSubdivision, (short)Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale), area);
+                    room.ModifyHeightThroughPortal(w, h, vertical, (int)Math.Round(heightmap[currX, currZ] * smoothFactor * heightScale), area);
                 }
             SmartBuildGeometry(room, area);
         }
@@ -733,8 +731,8 @@ namespace TombEditor
             {
                 room.BuildGeometry();
                 adjoiningRoom?.BuildGeometry();
-                room.AlternateVersion?.BuildGeometry();
-                adjoiningRoom?.AlternateVersion?.BuildGeometry();
+                room.AlternateOpposite?.BuildGeometry();
+                adjoiningRoom?.AlternateOpposite?.BuildGeometry();
             }
 
             // Avoid having the removed object still selected
@@ -1411,7 +1409,7 @@ namespace TombEditor
             HashSet<Room> rooms = new HashSet<Room>(rooms_);
 
             // Check if is the last room
-            int remainingRoomCount = _editor.Level.Rooms.Count(r => r != null && !rooms.Contains(r) && !rooms.Contains(r.AlternateVersion));
+            int remainingRoomCount = _editor.Level.Rooms.Count(r => r != null && !rooms.Contains(r) && !rooms.Contains(r.AlternateOpposite));
             if (remainingRoomCount <= 0)
             {
                 DarkMessageBox.Show(owner, "You must have at least one room in your level.", "Error", MessageBoxIcon.Error);
@@ -1440,7 +1438,7 @@ namespace TombEditor
             foreach (Room adjoiningRoom in adjoiningRooms)
             {
                 adjoiningRoom?.BuildGeometry();
-                adjoiningRoom?.AlternateVersion?.BuildGeometry();
+                adjoiningRoom?.AlternateOpposite?.BuildGeometry();
             }
             if (rooms.Contains(_editor.SelectedRoom))
                 _editor.SelectRoomAndResetCamera(_editor.Level.Rooms.FirstOrDefault(r => r != null));
@@ -1460,10 +1458,10 @@ namespace TombEditor
                 return;
 
             // Resize room
-            if (room.AlternateVersion != null)
+            if (room.AlternateOpposite != null)
             {
-                room.AlternateVersion.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
-                room.AlternateVersion.BuildGeometry();
+                room.AlternateOpposite.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
+                room.AlternateOpposite.BuildGeometry();
             }
             room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
             room.BuildGeometry();
@@ -1845,13 +1843,21 @@ namespace TombEditor
                 return;
             }
 
-            // Check for possible candidates ...
-            VerticalSpace? verticalSpaceLocal = room.GetHeightInAreaMaxSpace(new RectangleInt2(area.X0, area.Y0, area.X1 + 1, area.Y1 + 1));
+            // Check vertical space
+            int floorLevel = int.MaxValue;
+            int ceilingLevel = int.MinValue;
+            for (int y = area.Y0; y <= area.Y1; ++y)
+                for (int x = area.X0; x <= area.X1; ++x)
+                    if (!room.Blocks[x, y].IsAnyWall)
+                    {
+                        floorLevel = Math.Min(floorLevel, room.Blocks[x, y].Floor.Min + room.Position.Y);
+                        ceilingLevel = Math.Max(floorLevel, room.Blocks[x, y].Ceiling.Max + room.Position.Y);
+                    }
 
+            // Check for possible candidates ...
             List<Tuple<PortalDirection, Room>> candidates = new List<Tuple<PortalDirection, Room>>();
-            if (verticalSpaceLocal != null)
+            if (floorLevel != int.MaxValue && ceilingLevel != int.MinValue)
             {
-                VerticalSpace verticalSpace = verticalSpaceLocal.Value + room.Position.Y;
                 bool couldBeFloorCeilingPortal = false;
                 if (new RectangleInt2(1, 1, room.NumXSectors - 2, room.NumZSectors - 2).Contains(area))
                     for (int z = area.Y0; z <= area.Y1; ++z)
@@ -1861,27 +1867,43 @@ namespace TombEditor
 
                 foreach (Room neighborRoom in _editor.Level.Rooms.Where(possibleNeighborRoom => possibleNeighborRoom != null))
                 {
-                    if (neighborRoom == room || neighborRoom == room.AlternateVersion)
+                    // Don't make a portal to the room itself
+                    // Don't list alternate rooms as seperate candidates
+                    if (neighborRoom == room || neighborRoom == room.AlternateOpposite || neighborRoom.AlternateBaseRoom != null)
                         continue;
                     RectangleInt2 neighborArea = area + (room.SectorPos - neighborRoom.SectorPos);
                     if (!new RectangleInt2(0, 0, neighborRoom.NumXSectors - 1, neighborRoom.NumZSectors - 1).Contains(neighborArea))
                         continue;
 
                     // Check if they vertically touch
-                    VerticalSpace? neighborVerticalSpaceLocal = neighborRoom.GetHeightInAreaMaxSpace(
-                        new RectangleInt2(neighborArea.Start, neighborArea.End + new VectorInt2(1, 1)));
-                    if (neighborVerticalSpaceLocal == null)
+                    int neighborFloorLevel = int.MaxValue;
+                    int neighborCeilingLevel = int.MinValue;
+                    for (int y = neighborArea.Y0; y <= neighborArea.Y1; ++y)
+                        for (int x = neighborArea.X0; x <= neighborArea.X1; ++x)
+                        {
+                            if (!neighborRoom.Blocks[x, y].IsAnyWall)
+                            {
+                                neighborFloorLevel = Math.Min(neighborFloorLevel, neighborRoom.Blocks[x, y].Floor.Min + room.Position.Y);
+                                neighborCeilingLevel = Math.Max(neighborCeilingLevel, neighborRoom.Blocks[x, y].Ceiling.Max + room.Position.Y);
+                            }
+                            if (neighborRoom.AlternateOpposite != null)
+                                if (!neighborRoom.AlternateOpposite.Blocks[x, y].IsAnyWall)
+                                {
+                                    neighborFloorLevel = Math.Min(neighborFloorLevel, neighborRoom.AlternateOpposite.Blocks[x, y].Floor.Min + room.Position.Y);
+                                    neighborCeilingLevel = Math.Max(neighborCeilingLevel, neighborRoom.AlternateOpposite.Blocks[x, y].Ceiling.Max + room.Position.Y);
+                                }
+                        }
+                    if (neighborFloorLevel == int.MaxValue || neighborCeilingLevel == int.MinValue)
                         continue;
-                    VerticalSpace neighborVerticalSpace = neighborVerticalSpaceLocal.Value + neighborRoom.Position.Y;
-                    if (!(verticalSpace.FloorY <= neighborVerticalSpace.CeilingY && verticalSpace.CeilingY >= neighborVerticalSpace.FloorY))
+                    if (!(floorLevel <= neighborCeilingLevel && ceilingLevel >= neighborFloorLevel))
                         continue;
 
                     // Decide on a direction
                     if (couldBeFloorCeilingPortal &&
                         new RectangleInt2(1, 1, neighborRoom.NumXSectors - 2, neighborRoom.NumZSectors - 2).Contains(neighborArea))
                     {
-                        if (Math.Abs(neighborVerticalSpace.CeilingY - verticalSpace.FloorY) <
-                            Math.Abs(neighborVerticalSpace.FloorY - verticalSpace.CeilingY))
+                        if (Math.Abs(neighborCeilingLevel - floorLevel) <
+                            Math.Abs(neighborFloorLevel - ceilingLevel))
                         { // Consider floor portal
                             candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Floor, neighborRoom));
                         }
@@ -1985,7 +2007,7 @@ namespace TombEditor
             _editor.RoomPropertiesChange(room);
         }
 
-        public static void SmoothRandom(Room room, RectangleInt2 area, float strengthDirection, int verticalSubdivision)
+        public static void SmoothRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical)
         {
             float[,] changes = new float[area.Width + 2, area.Height + 2];
             Random rng = new Random();
@@ -1995,36 +2017,36 @@ namespace TombEditor
 
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
-                    for (int i = 0; i < 4; ++i)
-                        room.Blocks[area.X0 + x, area.Y0 + z].ChangeHeight(verticalSubdivision, i,
-                            (short)Math.Round(changes[x + Block.FaceX[i], z + Block.FaceZ[i]]));
+                    for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                        room.Blocks[area.X0 + x, area.Y0 + z].ChangeHeight(vertical, edge,
+                            (int)Math.Round(changes[x + edge.DirectionX(), z + edge.DirectionZ()]));
 
             SmartBuildGeometry(room, area);
         }
 
-        public static void SharpRandom(Room room, RectangleInt2 area, float strengthDirection, int verticalSubdivision)
+        public static void SharpRandom(Room room, RectangleInt2 area, float strengthDirection, BlockVertical vertical)
         {
             Random rng = new Random();
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
-                    for (int i = 0; i < 4; ++i)
-                        room.Blocks[area.X0 + x, area.Y0 + z].ChangeHeight(verticalSubdivision, i,
-                            (short)Math.Round((float)rng.NextDouble() * strengthDirection));
+                    for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                        room.Blocks[area.X0 + x, area.Y0 + z].ChangeHeight(vertical, edge,
+                            (int)Math.Round((float)rng.NextDouble() * strengthDirection));
 
             SmartBuildGeometry(room, area);
         }
 
-        public static void Flatten(Room room, RectangleInt2 area, int verticalSubdivision)
+        public static void Flatten(Room room, RectangleInt2 area, BlockVertical vertical)
         {
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                 {
                     Block b = room.Blocks[x, z];
                     int sum = 0;
-                    for (int edge = 0; edge < 4; ++edge)
-                        sum += b.GetHeight(verticalSubdivision, edge);
-                    for (int edge = 0; edge < 4; ++edge)
-                        b.SetHeight(verticalSubdivision, edge, sum / 4);
+                    for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                        sum += b.GetHeight(vertical, edge);
+                    for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                        b.SetHeight(vertical, edge, sum / 4);
                 }
             SmartBuildGeometry(room, area);
         }
@@ -2037,41 +2059,51 @@ namespace TombEditor
                     Block block = room.Blocks[x, z];
                     if (block.IsAnyWall)
                     {
-                        int cornerToSkip = -1;
-
-                        switch (block.Floor.DiagonalSplit)
+                        // Figure out corner heights
+                        int?[] floorHeights = new int?[(int)BlockEdge.Count];
+                        int?[] ceilingHeights = new int?[(int)BlockEdge.Count];
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                         {
-                            case DiagonalSplit.XnZn:
-                                cornerToSkip = 1;
-                                break;
-                            case DiagonalSplit.XnZp:
-                                cornerToSkip = 2;
-                                break;
-                            case DiagonalSplit.XpZn:
-                                cornerToSkip = 0;
-                                break;
-                            case DiagonalSplit.XpZp:
-                                cornerToSkip = 3;
-                                break;
+                            int testX = x + edge.DirectionX(), testZ = z + edge.DirectionZ();
+                            floorHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Floor).Cast<int?>().Max();
+                            ceilingHeights[(int)edge] = room.GetHeightsAtPoint(testX, testZ, BlockVertical.Ceiling).Cast<int?>().Min();
                         }
 
-                        VerticalSpace?[] verticalAreas = new VerticalSpace?[4];
-                        for (int i = 0; i < 4; ++i)
-                            verticalAreas[i] = room.GetHeightAtPointMinSpace(x + Block.FaceX[i], z + Block.FaceZ[i]);
-                        if (verticalAreas.Any(verticalArea => verticalArea.HasValue)) // We can only do it if there is information available
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                // Skip opposite diagonal step corner
-                                if (i == cornerToSkip)
-                                    continue;
+                        if (!floorHeights.Any(floorHeight => floorHeight.HasValue) || !ceilingHeights.Any(floorHeight => floorHeight.HasValue))
+                            continue; // We can only do it if there is information available
 
-                                // Use the closest available vertical area information and divide it equally
-                                VerticalSpace verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
-                                block.ED[i] = (short)Math.Round(fiveDivisions ? (verticalArea.FloorY * 4.0f + verticalArea.CeilingY * 1.0f) / 5.0f : verticalArea.FloorY);
-                                block.Floor.SetHeight(i, (short)Math.Round(fiveDivisions ? (verticalArea.FloorY * 3.0f + verticalArea.CeilingY * 2.0f) / 5.0f : (verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 1.0f) / 3.0f));
-                                block.Ceiling.SetHeight(i, (short)Math.Round(fiveDivisions ? (verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f : (verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f));
-                                block.RF[i] = (short)Math.Round(fiveDivisions ? (verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 4.0f) / 5.0f : verticalArea.CeilingY);
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                        {
+                            // Skip opposite diagonal step corner
+                            switch (block.Floor.DiagonalSplit)
+                            {
+                                case DiagonalSplit.XnZn:
+                                    if (edge == BlockEdge.XpZp)
+                                        continue;
+                                    break;
+                                case DiagonalSplit.XnZp:
+                                    if (edge == BlockEdge.XpZn)
+                                        continue;
+                                    break;
+                                case DiagonalSplit.XpZn:
+                                    if (edge == BlockEdge.XnZp)
+                                        continue;
+                                    break;
+                                case DiagonalSplit.XpZp:
+                                    if (edge == BlockEdge.XnZn)
+                                        continue;
+                                    break;
                             }
+
+                            // Use the closest available vertical area information and divide it equally
+                            int floor = floorHeights[(int)edge] ?? floorHeights[((int)edge + 1) % 4] ?? floorHeights[((int)edge + 3) % 4] ?? floorHeights[((int)edge + 2) % 4].Value;
+                            int ceiling = ceilingHeights[(int)edge] ?? ceilingHeights[((int)edge + 1) % 4] ?? ceilingHeights[((int)edge + 3) % 4] ?? ceilingHeights[((int)edge + 2) % 4].Value;
+
+                            block.SetHeight(BlockVertical.Ed, edge, (short)Math.Round(fiveDivisions ? (floor * 4.0f + ceiling * 1.0f) / 5.0f : floor));
+                            block.Floor.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 3.0f + ceiling * 2.0f) / 5.0f : (floor * 2.0f + ceiling * 1.0f) / 3.0f));
+                            block.Ceiling.SetHeight(edge, (short)Math.Round(fiveDivisions ? (floor * 2.0f + ceiling * 3.0f) / 5.0f : (floor * 1.0f + ceiling * 2.0f) / 3.0f));
+                            block.SetHeight(BlockVertical.Rf, edge, (short)Math.Round(fiveDivisions ? (floor * 1.0f + ceiling * 4.0f) / 5.0f : ceiling));
+                        }
                     }
                 }
 
@@ -2294,7 +2326,8 @@ namespace TombEditor
                 toReplace.SetPath(_editor.Level.Settings, path);
             else
             {
-                Retry:;
+                Retry:
+                ;
                 var newWad = new ReferencedWad(_editor.Level.Settings, path, new GraphicalDialogHandler(owner));
                 if (newWad.LoadException != null)
                     if (DarkMessageBox.Show(owner, "An error occurred while loading object file '" + path + "'." +
@@ -2685,7 +2718,7 @@ namespace TombEditor
                 var db = RoomsImportExportXmlDatabase.LoadFromFile(dbName);
                 if (db == null)
                     throw new FileNotFoundException("There must be also an XML file with the same name of the 3D file");
-*/
+        */
 
                 // Create a dictionary of the rooms by name
                 /* var roomDictionary = new Dictionary<string, IOMesh>();
