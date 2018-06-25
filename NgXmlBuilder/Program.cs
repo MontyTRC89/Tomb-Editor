@@ -6,6 +6,7 @@ using TombLib.NG;
 using TombLib.Utils;
 using TombLib.LevelData;
 using System.Xml.Linq;
+using System.Text;
 
 namespace NgXmlBuilder
 {
@@ -37,7 +38,7 @@ namespace NgXmlBuilder
         }
     }
 
-    class Program
+    static class Program
     {
         private const string outPath = "..\\TombLib\\Catalogs\\NgCatalog.xml";
 
@@ -53,6 +54,99 @@ namespace NgXmlBuilder
 
             // Test
             NgCatalog.LoadCatalog(outPath);
+
+            // Adjust other files...
+            /*foreach (string fileName in Directory.EnumerateFiles("..\\ScriptEditor\\References", "*.txt"))
+            {
+                string content = File.ReadAllText(fileName, Encoding.UTF8);
+                string newContent = AdjustCardinalDirections(content);
+                File.WriteAllText(fileName, newContent, Encoding.UTF8);
+            }*/
+        }
+
+        // Earlier entries take priority
+        private static KeyValuePair<string, string>[] cardinalReplacementTable = new[]
+            {
+                new KeyValuePair<string, string>("North-South (in ngle)", "X-axis (east-west)"),
+                new KeyValuePair<string, string>("East-West (in ngle)", "Z-axis (north-south)"),
+                new KeyValuePair<string, string>("North-South", "X-axis (east-west)"),
+                new KeyValuePair<string, string>("East-West", "Z-axis (north-south)"),
+                new KeyValuePair<string, string>("East-Ovest", "Z-axis (north-south)"),
+
+                new KeyValuePair<string, string>("North East", "-X,+Z direction (north-west)"),
+                new KeyValuePair<string, string>("North West", "-X,-Z direction (south-west)"),
+                new KeyValuePair<string, string>("South West", "+X,-Z direction (south-east)"),
+                new KeyValuePair<string, string>("South East", "+X,+Z direction (north-east)"),
+
+                new KeyValuePair<string, string>("North-East", "-X,+Z direction (north-west)"),
+                new KeyValuePair<string, string>("North-West", "-X,-Z direction (south-west)"),
+                new KeyValuePair<string, string>("South-West", "+X,-Z direction (south-east)"),
+                new KeyValuePair<string, string>("South-East", "+X,+Z direction (north-east)"),
+
+                new KeyValuePair<string, string>("South (in ngle view)", "+X direction (east)"),
+                new KeyValuePair<string, string>("East (in ngle view)", "+Z direction (north)"),
+                new KeyValuePair<string, string>("North (in ngle view)", "-X direction (west)"),
+                new KeyValuePair<string, string>("West (in ngle view)", "-Z direction (south)"),
+
+                new KeyValuePair<string, string>("South", "+X direction (east)"),
+                new KeyValuePair<string, string>("East", "+Z direction (north)"),
+                new KeyValuePair<string, string>("North", "-X direction (west)"),
+                new KeyValuePair<string, string>("West", "-Z direction (south)"),
+            };
+
+        private static bool IsSeperator(char @char)
+        {
+            if (char.IsSeparator(@char))
+                return true;
+            if (@char == '(')
+                return true;
+            if (@char == ')')
+                return true;
+            if (@char == '-')
+                return true;
+            if (@char == ':')
+                return true;
+            if (@char == '.')
+                return true;
+            if (@char == '\n')
+                return true;
+            if (@char == '\r')
+                return true;
+            return false;
+        }
+
+        private static string AdjustCardinalDirections(string name, int startIndex = 0)
+        {
+            do
+            {
+                // Search for first occurance of a word we are going to replace
+                int matchStringIndex = -1;
+                int matchTableIndex = -1;
+                for (int i = 0; i < cardinalReplacementTable.Length; ++i)
+                {
+                    int newIndex = name.IndexOf(cardinalReplacementTable[i].Key, startIndex, StringComparison.InvariantCultureIgnoreCase);
+                    string dbgString = name.Substring(Math.Max(0, newIndex - 1));
+                    if (newIndex == -1)
+                        continue;
+                    if (newIndex != 0 && !IsSeperator(name[newIndex - 1])) // Must be an entire word
+                        continue;
+                    if (newIndex != (name.Length - cardinalReplacementTable[i].Key.Length) && !IsSeperator(name[newIndex + cardinalReplacementTable[i].Key.Length])) // Must be an entire word
+                        continue;
+                    if (matchStringIndex != -1 && matchStringIndex <= newIndex) // Discard matches later in the string for now.
+                        continue;
+                    matchStringIndex = newIndex;
+                    matchTableIndex = i;
+                }
+
+                string dbgString2 = name.Substring(Math.Max(0, matchStringIndex - 1));
+                if (matchTableIndex == -1)
+                    return name;
+
+                // Replace occurance
+                var replacement = cardinalReplacementTable[matchTableIndex];
+                name = name.Remove(matchStringIndex, replacement.Key.Length).Insert(matchStringIndex, replacement.Value);
+                startIndex = matchStringIndex + replacement.Value.Length;
+            } while (true);
         }
 
         private static SortedList<ushort, TriggerParameterUshort> GetListFromTxt(string name)
@@ -63,7 +157,7 @@ namespace NgXmlBuilder
                 while (!reader.EndOfStream)
                 {
                     var tokens = reader.ReadLine().Trim().Split(':');
-                    result.Add(ToU16(int.Parse(tokens[0])), new NgTriggerSubtype(ToU16(int.Parse(tokens[0])), XmlEncodeString(tokens[1].Trim())));
+                    result.Add(ToU16(int.Parse(tokens[0])), new NgTriggerSubtype(ToU16(int.Parse(tokens[0])), XmlEncodeString(AdjustCardinalDirections(tokens[1].Trim()))));
                 }
             }
             return result;
@@ -76,36 +170,50 @@ namespace NgXmlBuilder
             while (!reader.EndOfStream)
             {
                 line = reader.ReadLine().Trim();
-                if (line.StartsWith("<START")) break;
+                if (line.StartsWith("<START"))
+                    break;
             }
 
-            if (reader.EndOfStream) return null;
+            if (reader.EndOfStream)
+                return null;
 
             var tokens = line.Split('_');
             var block = new NgBlock();
 
             // Block type
-            if (tokens[1] == "TRIGGERWHAT" || tokens[1] == "TRIGGERTYPE" || tokens[1] == "TEXTS") block.Type = NgBlockType.Trigger;
-            else if (tokens[1] == "EFFECT") block.Type = NgBlockType.FlipEffect;
-            else if (tokens[1] == "ACTION") block.Type = NgBlockType.Action;
-            else if (tokens[1] == "CONDITION") block.Type = NgBlockType.Condition;
-            else throw new Exception("Unknown token[1]");
+            if (tokens[1] == "TRIGGERWHAT" || tokens[1] == "TRIGGERTYPE" || tokens[1] == "TEXTS")
+                block.Type = NgBlockType.Trigger;
+            else if (tokens[1] == "EFFECT")
+                block.Type = NgBlockType.FlipEffect;
+            else if (tokens[1] == "ACTION")
+                block.Type = NgBlockType.Action;
+            else if (tokens[1] == "CONDITION")
+                block.Type = NgBlockType.Condition;
+            else
+                throw new Exception("Unknown token[1]");
 
             // Parameter type
-            if (tokens[3].StartsWith("O")) block.ParameterType = NgParameterType.Object;
-            else if (tokens[3].StartsWith("E")) block.ParameterType = NgParameterType.Extra;
-            else if (tokens[3].StartsWith("T")) block.ParameterType = NgParameterType.Timer;
-            else if (tokens[3].StartsWith("B")) block.ParameterType = NgParameterType.Extra;
-            else throw new Exception("Unknown token[3]");
+            if (tokens[3].StartsWith("O"))
+                block.ParameterType = NgParameterType.Object;
+            else if (tokens[3].StartsWith("E"))
+                block.ParameterType = NgParameterType.Extra;
+            else if (tokens[3].StartsWith("T"))
+                block.ParameterType = NgParameterType.Timer;
+            else if (tokens[3].StartsWith("B"))
+                block.ParameterType = NgParameterType.Extra;
+            else
+                throw new Exception("Unknown token[3]");
 
             block.Id = ToU16(int.Parse(tokens[2]));
 
             while (!reader.EndOfStream)
             {
                 line = reader.ReadLine().Trim();
-                if (line.StartsWith(";") || line == "") continue;
-                if (line.StartsWith("<END")) break;
-                block.Items.Add(line);
+                if (line.StartsWith(";") || line == "")
+                    continue;
+                if (line.StartsWith("<END"))
+                    break;
+                block.Items.Add(AdjustCardinalDirections(line));
             }
 
             return block;
@@ -382,23 +490,40 @@ namespace NgXmlBuilder
                 // Special list
                 var list = block.Items[0];
                 // Dynamic list?
-                if (list == "#ROOMS_255#") return new NgParameterRange(NgParameterKind.Rooms255);
-                else if (list == "#SOUND_EFFECT_A#") return new NgParameterRange(NgParameterKind.SoundEffectsA);
-                else if (list == "#SOUND_EFFECT_B#") return new NgParameterRange(NgParameterKind.SoundEffectsB);
-                else if (list == "#SFX_1024#") return new NgParameterRange(NgParameterKind.Sfx1024);
-                else if (list == "#NG_STRING_LIST_255#") return new NgParameterRange(NgParameterKind.NgStringsList255);
-                else if (list == "#NG_STRING_LIST_ALL#") return new NgParameterRange(NgParameterKind.NgStringsAll);
-                else if (list == "#PSX_STRING_LIST#") return new NgParameterRange(NgParameterKind.PsxStringsList);
-                else if (list == "#PC_STRING_LIST#") return new NgParameterRange(NgParameterKind.PcStringsList);
-                else if (list == "#STRING_LIST_255#") return new NgParameterRange(NgParameterKind.StringsList255);
-                else if (list == "#MOVEABLES#") return new NgParameterRange(NgParameterKind.MoveablesInLevel);
-                else if (list == "#SINK_LIST#") return new NgParameterRange(NgParameterKind.SinksInLevel);
-                else if (list == "#STATIC_LIST#") return new NgParameterRange(NgParameterKind.StaticsInLevel);
-                else if (list == "#FLYBY_LIST#") return new NgParameterRange(NgParameterKind.FlybyCamerasInLevel);
-                else if (list == "#CAMERA_EFFECTS#") return new NgParameterRange(NgParameterKind.CamerasInLevel);
-                else if (list == "#WAD-SLOTS#") return new NgParameterRange(NgParameterKind.WadSlots);
-                else if (list == "#STATIC_SLOTS#") return new NgParameterRange(NgParameterKind.StaticsSlots);
-                else if (list == "#LARA_POS_OCB#") return new NgParameterRange(NgParameterKind.LaraStartPosOcb);
+                if (list == "#ROOMS_255#")
+                    return new NgParameterRange(NgParameterKind.Rooms255);
+                else if (list == "#SOUND_EFFECT_A#")
+                    return new NgParameterRange(NgParameterKind.SoundEffectsA);
+                else if (list == "#SOUND_EFFECT_B#")
+                    return new NgParameterRange(NgParameterKind.SoundEffectsB);
+                else if (list == "#SFX_1024#")
+                    return new NgParameterRange(NgParameterKind.Sfx1024);
+                else if (list == "#NG_STRING_LIST_255#")
+                    return new NgParameterRange(NgParameterKind.NgStringsList255);
+                else if (list == "#NG_STRING_LIST_ALL#")
+                    return new NgParameterRange(NgParameterKind.NgStringsAll);
+                else if (list == "#PSX_STRING_LIST#")
+                    return new NgParameterRange(NgParameterKind.PsxStringsList);
+                else if (list == "#PC_STRING_LIST#")
+                    return new NgParameterRange(NgParameterKind.PcStringsList);
+                else if (list == "#STRING_LIST_255#")
+                    return new NgParameterRange(NgParameterKind.StringsList255);
+                else if (list == "#MOVEABLES#")
+                    return new NgParameterRange(NgParameterKind.MoveablesInLevel);
+                else if (list == "#SINK_LIST#")
+                    return new NgParameterRange(NgParameterKind.SinksInLevel);
+                else if (list == "#STATIC_LIST#")
+                    return new NgParameterRange(NgParameterKind.StaticsInLevel);
+                else if (list == "#FLYBY_LIST#")
+                    return new NgParameterRange(NgParameterKind.FlybyCamerasInLevel);
+                else if (list == "#CAMERA_EFFECTS#")
+                    return new NgParameterRange(NgParameterKind.CamerasInLevel);
+                else if (list == "#WAD-SLOTS#")
+                    return new NgParameterRange(NgParameterKind.WadSlots);
+                else if (list == "#STATIC_SLOTS#")
+                    return new NgParameterRange(NgParameterKind.StaticsSlots);
+                else if (list == "#LARA_POS_OCB#")
+                    return new NgParameterRange(NgParameterKind.LaraStartPosOcb);
 
                 // Repeated strings
                 if (list.StartsWith("#REPEAT#"))
@@ -458,7 +583,7 @@ namespace NgXmlBuilder
                             // Trigger for action
                             foreach (var item in block.Items)
                                 NgCatalog.ActionTrigger.MainList.Add(ToU16(GetItemId(item)), new NgTriggerSubtype(ToU16(GetItemId(item)), GetItemValue(item))
-                                    { Target = new NgParameterRange(NgParameterKind.MoveablesInLevel) });
+                                { Target = new NgParameterRange(NgParameterKind.MoveablesInLevel) });
                         }
                         else if (block.Id == 12)
                         {

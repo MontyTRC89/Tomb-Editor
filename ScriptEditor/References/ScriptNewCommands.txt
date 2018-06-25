@@ -1,4 +1,4 @@
-
+ï»¿
 StaticMIP=
 **********
 Syntax: StaticMIP= MainStaticSlot, BStaticLimit, BStaticSlot, CStaticLimit, CStaticSlot
@@ -1302,7 +1302,7 @@ In radar mode all targets will be followed in same time, anyway only targets, en
 The radar panel show targets in different ways in according with them vertical position.
 When a target is at same height (floor) of Lara, the target will be showed like a little blinking circle.
 
-Differently, when target is upper than lara (of 4 or more meters) it will be showed like a triangle with apex pointing to north, while when target is downstairs of lara than 4 meters or more) the triangle will point to south.
+Differently, when target is upper than lara (of 4 or more meters) it will be showed like a triangle with apex pointing to north, while when target is downstairs of lara than 4 meters or more) the triangle will point to +X direction (east).
 Same shapes will be showed in vertical panel (the row at right of detector)
 
 Reading above description you may understand that the circle (for targets at same height of lara) will be really showed also when target is only a bit up or down of lara (+2 / -2 sectors).
@@ -3724,7 +3724,7 @@ WindowsFont= 1, Courier New, ...
 
 And then you have to type this text also in [Strings] or [ExtraNG] strings section.
 
-Note: when you set a charset number, also this number should be typed in the string. For example if you use in the windowsfont the composite font name "128:MS Gothic", you'll have to type this composite name also in the string section “128:MS Gothic”
+Note: when you set a charset number, also this number should be typed in the string. For example if you use in the windowsfont the composite font name "128:MS Gothic", you'll have to type this composite name also in the string section ï¿½128:MS Gothicï¿½
 
 Remark: If you omit the font name, typing IGNORE, trng will find a generic font responding to other settings, like bold and size.
 Anyway to get best results it's better type always a font name.

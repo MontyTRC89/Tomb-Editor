@@ -1821,17 +1821,17 @@
     <Subtrigger K="119" V="Camera. Set current CAMERA as follow camera on(&amp;)Axis until (E)condition">
       <Timer>
         <FixedEnumeration>
-          <Enum K="0" V="North-South (in ngle) fixed other East-Ovest and Up-Down coords" />
-          <Enum K="1" V="East-West (in ngle) fixed other North-South and Up-Down coords" />
-          <Enum K="2" V="Up-Down (3d space) fixed North-South and East-Ovest cords" />
+          <Enum K="0" V="X-axis (east-west) fixed other Z-axis (north-south) and Up-Down coords" />
+          <Enum K="1" V="Z-axis (north-south) fixed other X-axis (east-west) and Up-Down coords" />
+          <Enum K="2" V="Up-Down (3d space) fixed X-axis (east-west) and Z-axis (north-south) coords" />
           <Enum K="3" V="Horizontal axes fixed the Up-Down coordinate." />
-          <Enum K="4" V="North-South (in ngle) preserving East-Ovest distance and fixed Up-Down coords" />
-          <Enum K="5" V="East-West (in ngle) preserving North-South distance and fixed Up-Down coords" />
-          <Enum K="6" V="Up-Down (3d space) preserving North-South distance fixed East-Ovest coords" />
-          <Enum K="7" V="Up-Down (3d space) preserving East-Ovest distance and fixed North-South coords" />
+          <Enum K="4" V="X-axis (east-west) preserving Z-axis (north-south) distance and fixed Up-Down coords" />
+          <Enum K="5" V="Z-axis (north-south) preserving X-axis (east-west) distance and fixed Up-Down coords" />
+          <Enum K="6" V="Up-Down (3d space) preserving X-axis (east-west) distance fixed Z-axis (north-south) coords" />
+          <Enum K="7" V="Up-Down (3d space) preserving Z-axis (north-south) distance and fixed X-axis (east-west) coords" />
           <Enum K="8" V="Horizontal axes preserving Up-Down distance." />
-          <Enum K="9" V="North-South (in ngle) preserving Up-Down distance and fixed East-West coords" />
-          <Enum K="10" V="East-West (in ngle) preserving Up-Down distance and North-South coords" />
+          <Enum K="9" V="X-axis (east-west) preserving Up-Down distance and fixed Z-axis (north-south) coords" />
+          <Enum K="10" V="Z-axis (north-south) preserving Up-Down distance and X-axis (east-west) coords" />
         </FixedEnumeration>
       </Timer>
       <Extra>
@@ -2061,14 +2061,14 @@
     <Subtrigger K="134" V="Lara. (Physics) Pad Mode. Attract Lara in &lt;&amp;&gt;direction with (E)speed">
       <Timer>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="1" V=" North-East" />
-          <Enum K="2" V=" East" />
-          <Enum K="3" V=" South-East" />
-          <Enum K="4" V=" South" />
-          <Enum K="5" V=" South-West" />
-          <Enum K="6" V=" West" />
-          <Enum K="7" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="1" V=" -X,+Z direction (north-west)" />
+          <Enum K="2" V=" +Z direction (north)" />
+          <Enum K="3" V=" +X,+Z direction (north-east)" />
+          <Enum K="4" V=" +X direction (east)" />
+          <Enum K="5" V=" +X,-Z direction (south-east)" />
+          <Enum K="6" V=" -Z direction (south)" />
+          <Enum K="7" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Timer>
       <Extra>
@@ -2081,14 +2081,14 @@
     <Subtrigger K="135" V="Lara. (Physics) Over Mode. Attract Lara in &lt;&amp;&gt;direction with (E)speed">
       <Timer>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="1" V=" North-East" />
-          <Enum K="2" V=" East" />
-          <Enum K="3" V=" South-East" />
-          <Enum K="4" V=" South" />
-          <Enum K="5" V=" South-West" />
-          <Enum K="6" V=" West" />
-          <Enum K="7" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="1" V=" -X,+Z direction (north-west)" />
+          <Enum K="2" V=" +Z direction (north)" />
+          <Enum K="3" V=" +X,+Z direction (north-east)" />
+          <Enum K="4" V=" +X direction (east)" />
+          <Enum K="5" V=" +X,-Z direction (south-east)" />
+          <Enum K="6" V=" -Z direction (south)" />
+          <Enum K="7" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Timer>
       <Extra>
@@ -2160,7 +2160,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="140" V="ItemGroup. Move to north &lt;&amp;&gt;ItemGroup for (E) clicks">
+    <Subtrigger K="140" V="ItemGroup. Move to -X direction (west) &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
         <LinearModel Start="1" End="254">
           <Fixed>ItemGroup=</Fixed>
@@ -2174,7 +2174,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="141" V="ItemGroup. Move to east &lt;&amp;&gt;ItemGroup for (E) clicks">
+    <Subtrigger K="141" V="ItemGroup. Move to +Z direction (north) &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
         <LinearModel Start="1" End="254">
           <Fixed>ItemGroup=</Fixed>
@@ -2188,7 +2188,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="142" V="ItemGroup. Move to south &lt;&amp;&gt;ItemGroup for (E) clicks">
+    <Subtrigger K="142" V="ItemGroup. Move to +X direction (east) &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
         <LinearModel Start="1" End="254">
           <Fixed>ItemGroup=</Fixed>
@@ -2202,7 +2202,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="143" V="ItemGroup. Move to west &lt;&amp;&gt;ItemGroup for (E) clicks">
+    <Subtrigger K="143" V="ItemGroup. Move to -Z direction (south) &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
         <LinearModel Start="1" End="254">
           <Fixed>ItemGroup=</Fixed>
@@ -2387,14 +2387,14 @@
     <Subtrigger K="158" V="Lara. (Physics) Pad+Over Mode. Attract Lara in &lt;&amp;&gt;direction with (E)speed">
       <Timer>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="1" V=" North-East" />
-          <Enum K="2" V=" East" />
-          <Enum K="3" V=" South-East" />
-          <Enum K="4" V=" South" />
-          <Enum K="5" V=" South-West" />
-          <Enum K="6" V=" West" />
-          <Enum K="7" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="1" V=" -X,+Z direction (north-west)" />
+          <Enum K="2" V=" +Z direction (north)" />
+          <Enum K="3" V=" +X,+Z direction (north-east)" />
+          <Enum K="4" V=" +X direction (east)" />
+          <Enum K="5" V=" +X,-Z direction (south-east)" />
+          <Enum K="6" V=" -Z direction (south)" />
+          <Enum K="7" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Timer>
       <Extra>
@@ -7380,7 +7380,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="310" V="Collision. Set North-West &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
+    <Subtrigger K="310" V="Collision. Set -X,-Z direction (south-west) &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Triangular collision with height=</Fixed>
@@ -7405,7 +7405,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="311" V="Collision. Set North-East &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
+    <Subtrigger K="311" V="Collision. Set -X,+Z direction (north-west) &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Triangular collision with height=</Fixed>
@@ -7430,7 +7430,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="312" V="Collision. Set South-East &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
+    <Subtrigger K="312" V="Collision. Set +X,+Z direction (north-east) &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Triangular collision with height=</Fixed>
@@ -7455,7 +7455,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="313" V="Collision. Set South-West &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
+    <Subtrigger K="313" V="Collision. Set +X,-Z direction (south-east) &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Triangular collision with height=</Fixed>
@@ -7480,7 +7480,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="314" V="Collision. Set North &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
+    <Subtrigger K="314" V="Collision. Set -X direction (west) &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7505,7 +7505,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="315" V="Collision. Set South &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
+    <Subtrigger K="315" V="Collision. Set +X direction (east) &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7530,7 +7530,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="316" V="Collision. Set East &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
+    <Subtrigger K="316" V="Collision. Set +Z direction (north) &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7555,7 +7555,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="317" V="Collision. Set West &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
+    <Subtrigger K="317" V="Collision. Set -Z direction (south) &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7580,7 +7580,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="318" V="Collision. Set North &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
+    <Subtrigger K="318" V="Collision. Set -X direction (west) &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7605,7 +7605,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="319" V="Collision. Set South &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
+    <Subtrigger K="319" V="Collision. Set +X direction (east) &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7630,7 +7630,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="320" V="Collision. Set East &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
+    <Subtrigger K="320" V="Collision. Set +Z direction (north) &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7655,7 +7655,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="321" V="Collision. Set West &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
+    <Subtrigger K="321" V="Collision. Set -Z direction (south) &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7680,7 +7680,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="322" V="Collision. Set North-West &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
+    <Subtrigger K="322" V="Collision. Set -X,-Z direction (south-west) &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7705,7 +7705,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="323" V="Collision. Set North-East &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
+    <Subtrigger K="323" V="Collision. Set -X,+Z direction (north-west) &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7730,7 +7730,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="324" V="Collision. Set South-West &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
+    <Subtrigger K="324" V="Collision. Set +X,-Z direction (south-east) &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7755,7 +7755,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="325" V="Collision. Set South-East &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
+    <Subtrigger K="325" V="Collision. Set +X,+Z direction (north-east) &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Slope Collision with height=</Fixed>
@@ -7780,7 +7780,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="326" V="Collision. Set North-West &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
+    <Subtrigger K="326" V="Collision. Set -X,-Z direction (south-west) &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Triangular split collision with height=</Fixed>
@@ -7805,7 +7805,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="327" V="Collision. Set North-East &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
+    <Subtrigger K="327" V="Collision. Set -X,+Z direction (north-west) &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Triangular split collision with height=</Fixed>
@@ -7830,7 +7830,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="328" V="Collision. Set South-East &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
+    <Subtrigger K="328" V="Collision. Set +X,+Z direction (north-east) &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Triangular split collision with height=</Fixed>
@@ -7855,7 +7855,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="329" V="Collision. Set South-West &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
+    <Subtrigger K="329" V="Collision. Set +X,-Z direction (south-east) &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
       <Timer>
         <LinearModel Start="0" End="14">
           <Fixed>Triangular split collision with height=</Fixed>
@@ -7883,10 +7883,10 @@
     <Subtrigger K="330" V="Collision. Set the &lt;&amp;&gt;Side of closed sector as non-hangable from Lara">
       <Timer>
         <FixedEnumeration>
-          <Enum K="0" V="North Side" />
-          <Enum K="1" V="East Side" />
-          <Enum K="2" V="South Side" />
-          <Enum K="3" V="West Side" />
+          <Enum K="0" V="-X direction (west) Side" />
+          <Enum K="1" V="+Z direction (north) Side" />
+          <Enum K="2" V="+X direction (east) Side" />
+          <Enum K="3" V="-Z direction (south) Side" />
         </FixedEnumeration>
       </Timer>
     </Subtrigger>
@@ -8861,14 +8861,14 @@
     <Subtrigger K="381" V="Cutscene. Camera. Look Leading Actor from &lt;&amp;&gt;View angle and (E)Distance">
       <Timer>
         <FixedEnumeration>
-          <Enum K="0" V="Absolute. Camera placed at NORTH of target" />
-          <Enum K="1" V="Absolute. Camera placed at NORTH-EAST of target" />
-          <Enum K="2" V="Absolute. Camera placed at EAST of target" />
-          <Enum K="3" V="Absolute. Camera placed at SOUTH-EAST of target" />
-          <Enum K="4" V="Absolute. Camera placed at SOUTH of target" />
-          <Enum K="5" V="Absolute. Camera placed at SOUTH-WEST of target" />
-          <Enum K="6" V="Absolute. Camera placed at WEST of target" />
-          <Enum K="7" V="Absolute. Camera placed at NORTH-WEST of target" />
+          <Enum K="0" V="Absolute. Camera placed at -X direction (west) of target" />
+          <Enum K="1" V="Absolute. Camera placed at -X,+Z direction (north-west) of target" />
+          <Enum K="2" V="Absolute. Camera placed at +Z direction (north) of target" />
+          <Enum K="3" V="Absolute. Camera placed at +X,+Z direction (north-east) of target" />
+          <Enum K="4" V="Absolute. Camera placed at +X direction (east) of target" />
+          <Enum K="5" V="Absolute. Camera placed at +X,-Z direction (south-east) of target" />
+          <Enum K="6" V="Absolute. Camera placed at -Z direction (south) of target" />
+          <Enum K="7" V="Absolute. Camera placed at -X,-Z direction (south-west) of target" />
           <Enum K="8" V="Relative. Camera placed AHEAD of target" />
           <Enum K="9" V="Relative. Camera placed at RIGHT-AHEAD of target" />
           <Enum K="10" V="Relative. Camera placed at RIGHT of target" />
@@ -8889,14 +8889,14 @@
     <Subtrigger K="382" V="Cutscene. Camera. Look Extra Actor from &lt;&amp;&gt;View angle and (E)Distance">
       <Timer>
         <FixedEnumeration>
-          <Enum K="0" V="Absolute. Camera placed at NORTH of target" />
-          <Enum K="1" V="Absolute. Camera placed at NORTH-EAST of target" />
-          <Enum K="2" V="Absolute. Camera placed at EAST of target" />
-          <Enum K="3" V="Absolute. Camera placed at SOUTH-EAST of target" />
-          <Enum K="4" V="Absolute. Camera placed at SOUTH of target" />
-          <Enum K="5" V="Absolute. Camera placed at SOUTH-WEST of target" />
-          <Enum K="6" V="Absolute. Camera placed at WEST of target" />
-          <Enum K="7" V="Absolute. Camera placed at NORTH-WEST of target" />
+          <Enum K="0" V="Absolute. Camera placed at -X direction (west) of target" />
+          <Enum K="1" V="Absolute. Camera placed at -X,+Z direction (north-west) of target" />
+          <Enum K="2" V="Absolute. Camera placed at +Z direction (north) of target" />
+          <Enum K="3" V="Absolute. Camera placed at +X,+Z direction (north-east) of target" />
+          <Enum K="4" V="Absolute. Camera placed at +X direction (east) of target" />
+          <Enum K="5" V="Absolute. Camera placed at +X,-Z direction (south-east) of target" />
+          <Enum K="6" V="Absolute. Camera placed at -Z direction (south) of target" />
+          <Enum K="7" V="Absolute. Camera placed at -X,-Z direction (south-west) of target" />
           <Enum K="8" V="Relative. Camera placed AHEAD of target" />
           <Enum K="9" V="Relative. Camera placed at RIGHT-AHEAD of target" />
           <Enum K="10" V="Relative. Camera placed at RIGHT of target" />
@@ -8917,14 +8917,14 @@
     <Subtrigger K="383" V="Cutscene. Camera. Look Lara from &lt;&amp;&gt;View angle and (E)Distance">
       <Timer>
         <FixedEnumeration>
-          <Enum K="0" V="Absolute. Camera placed at NORTH of target" />
-          <Enum K="1" V="Absolute. Camera placed at NORTH-EAST of target" />
-          <Enum K="2" V="Absolute. Camera placed at EAST of target" />
-          <Enum K="3" V="Absolute. Camera placed at SOUTH-EAST of target" />
-          <Enum K="4" V="Absolute. Camera placed at SOUTH of target" />
-          <Enum K="5" V="Absolute. Camera placed at SOUTH-WEST of target" />
-          <Enum K="6" V="Absolute. Camera placed at WEST of target" />
-          <Enum K="7" V="Absolute. Camera placed at NORTH-WEST of target" />
+          <Enum K="0" V="Absolute. Camera placed at -X direction (west) of target" />
+          <Enum K="1" V="Absolute. Camera placed at -X,+Z direction (north-west) of target" />
+          <Enum K="2" V="Absolute. Camera placed at +Z direction (north) of target" />
+          <Enum K="3" V="Absolute. Camera placed at +X,+Z direction (north-east) of target" />
+          <Enum K="4" V="Absolute. Camera placed at +X direction (east) of target" />
+          <Enum K="5" V="Absolute. Camera placed at +X,-Z direction (south-east) of target" />
+          <Enum K="6" V="Absolute. Camera placed at -Z direction (south) of target" />
+          <Enum K="7" V="Absolute. Camera placed at -X,-Z direction (south-west) of target" />
           <Enum K="8" V="Relative. Camera placed AHEAD of target" />
           <Enum K="9" V="Relative. Camera placed at RIGHT-AHEAD of target" />
           <Enum K="10" V="Relative. Camera placed at RIGHT of target" />
@@ -9590,14 +9590,14 @@
       </Target>
       <Extra>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="2" V=" North-East" />
-          <Enum K="4" V=" East" />
-          <Enum K="6" V=" South-East" />
-          <Enum K="8" V=" South" />
-          <Enum K="10" V=" South-West" />
-          <Enum K="12" V=" West" />
-          <Enum K="14" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="2" V=" -X,+Z direction (north-west)" />
+          <Enum K="4" V=" +Z direction (north)" />
+          <Enum K="6" V=" +X,+Z direction (north-east)" />
+          <Enum K="8" V=" +X direction (east)" />
+          <Enum K="10" V=" +X,-Z direction (south-east)" />
+          <Enum K="12" V=" -Z direction (south)" />
+          <Enum K="14" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -9607,14 +9607,14 @@
       </Target>
       <Extra>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="2" V=" North-East" />
-          <Enum K="4" V=" East" />
-          <Enum K="6" V=" South-East" />
-          <Enum K="8" V=" South" />
-          <Enum K="10" V=" South-West" />
-          <Enum K="12" V=" West" />
-          <Enum K="14" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="2" V=" -X,+Z direction (north-west)" />
+          <Enum K="4" V=" +Z direction (north)" />
+          <Enum K="6" V=" +X,+Z direction (north-east)" />
+          <Enum K="8" V=" +X direction (east)" />
+          <Enum K="10" V=" +X,-Z direction (south-east)" />
+          <Enum K="12" V=" -Z direction (south)" />
+          <Enum K="14" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -9624,14 +9624,14 @@
       </Target>
       <Extra>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="2" V=" North-East" />
-          <Enum K="4" V=" East" />
-          <Enum K="6" V=" South-East" />
-          <Enum K="8" V=" South" />
-          <Enum K="10" V=" South-West" />
-          <Enum K="12" V=" West" />
-          <Enum K="14" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="2" V=" -X,+Z direction (north-west)" />
+          <Enum K="4" V=" +Z direction (north)" />
+          <Enum K="6" V=" +X,+Z direction (north-east)" />
+          <Enum K="8" V=" +X direction (east)" />
+          <Enum K="10" V=" +X,-Z direction (south-east)" />
+          <Enum K="12" V=" -Z direction (south)" />
+          <Enum K="14" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -9641,14 +9641,14 @@
       </Target>
       <Extra>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="2" V=" North-East" />
-          <Enum K="4" V=" East" />
-          <Enum K="6" V=" South-East" />
-          <Enum K="8" V=" South" />
-          <Enum K="10" V=" South-West" />
-          <Enum K="12" V=" West" />
-          <Enum K="14" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="2" V=" -X,+Z direction (north-west)" />
+          <Enum K="4" V=" +Z direction (north)" />
+          <Enum K="6" V=" +X,+Z direction (north-east)" />
+          <Enum K="8" V=" +X direction (east)" />
+          <Enum K="10" V=" +X,-Z direction (south-east)" />
+          <Enum K="12" V=" -Z direction (south)" />
+          <Enum K="14" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -9658,14 +9658,14 @@
       </Target>
       <Extra>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="2" V=" North-East" />
-          <Enum K="4" V=" East" />
-          <Enum K="6" V=" South-East" />
-          <Enum K="8" V=" South" />
-          <Enum K="10" V=" South-West" />
-          <Enum K="12" V=" West" />
-          <Enum K="14" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="2" V=" -X,+Z direction (north-west)" />
+          <Enum K="4" V=" +Z direction (north)" />
+          <Enum K="6" V=" +X,+Z direction (north-east)" />
+          <Enum K="8" V=" +X direction (east)" />
+          <Enum K="10" V=" +X,-Z direction (south-east)" />
+          <Enum K="12" V=" -Z direction (south)" />
+          <Enum K="14" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -9675,14 +9675,14 @@
       </Target>
       <Extra>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="2" V=" North-East" />
-          <Enum K="4" V=" East" />
-          <Enum K="6" V=" South-East" />
-          <Enum K="8" V=" South" />
-          <Enum K="10" V=" South-West" />
-          <Enum K="12" V=" West" />
-          <Enum K="14" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="2" V=" -X,+Z direction (north-west)" />
+          <Enum K="4" V=" +Z direction (north)" />
+          <Enum K="6" V=" +X,+Z direction (north-east)" />
+          <Enum K="8" V=" +X direction (east)" />
+          <Enum K="10" V=" +X,-Z direction (south-east)" />
+          <Enum K="12" V=" -Z direction (south)" />
+          <Enum K="14" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -9692,14 +9692,14 @@
       </Target>
       <Extra>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="2" V=" North-East" />
-          <Enum K="4" V=" East" />
-          <Enum K="6" V=" South-East" />
-          <Enum K="8" V=" South" />
-          <Enum K="10" V=" South-West" />
-          <Enum K="12" V=" West" />
-          <Enum K="14" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="2" V=" -X,+Z direction (north-west)" />
+          <Enum K="4" V=" +Z direction (north)" />
+          <Enum K="6" V=" +X,+Z direction (north-east)" />
+          <Enum K="8" V=" +X direction (east)" />
+          <Enum K="10" V=" +X,-Z direction (south-east)" />
+          <Enum K="12" V=" -Z direction (south)" />
+          <Enum K="14" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -9709,14 +9709,14 @@
       </Target>
       <Extra>
         <FixedEnumeration>
-          <Enum K="0" V=" North" />
-          <Enum K="2" V=" North-East" />
-          <Enum K="4" V=" East" />
-          <Enum K="6" V=" South-East" />
-          <Enum K="8" V=" South" />
-          <Enum K="10" V=" South-West" />
-          <Enum K="12" V=" West" />
-          <Enum K="14" V=" North-West" />
+          <Enum K="0" V=" -X direction (west)" />
+          <Enum K="2" V=" -X,+Z direction (north-west)" />
+          <Enum K="4" V=" +Z direction (north)" />
+          <Enum K="6" V=" +X,+Z direction (north-east)" />
+          <Enum K="8" V=" +X direction (east)" />
+          <Enum K="10" V=" +X,-Z direction (south-east)" />
+          <Enum K="12" V=" -Z direction (south)" />
+          <Enum K="14" V=" -X,-Z direction (south-west)" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -9788,7 +9788,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="32" V="Move. Move to north &lt;#&gt;animating for (E) clicks">
+    <Subtrigger K="32" V="Move. Move to -X direction (west) &lt;#&gt;animating for (E) clicks">
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -9799,7 +9799,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="33" V="Move. Move to east &lt;#&gt;animating for (E) clicks">
+    <Subtrigger K="33" V="Move. Move to +Z direction (north) &lt;#&gt;animating for (E) clicks">
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -9810,7 +9810,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="34" V="Move. Move to south &lt;#&gt;animating for (E) clicks">
+    <Subtrigger K="34" V="Move. Move to +X direction (east) &lt;#&gt;animating for (E) clicks">
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -9821,7 +9821,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="35" V="Move. Move to west &lt;#&gt;animating for (E) clicks">
+    <Subtrigger K="35" V="Move. Move to -Z direction (south) &lt;#&gt;animating for (E) clicks">
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10308,7 +10308,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="65" V="Move. Move to north &lt;#&gt;animating for (E)units (one sector = 1024)">
+    <Subtrigger K="65" V="Move. Move to -X direction (west) &lt;#&gt;animating for (E)units (one sector = 1024)">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10322,7 +10322,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="66" V="Move. Move to east &lt;#&gt;animating for (E)units (one sector = 1024)">
+    <Subtrigger K="66" V="Move. Move to +Z direction (north) &lt;#&gt;animating for (E)units (one sector = 1024)">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10336,7 +10336,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="67" V="Move. Move to south &lt;#&gt;animating for (E)units (one sector = 1024)">
+    <Subtrigger K="67" V="Move. Move to +X direction (east) &lt;#&gt;animating for (E)units (one sector = 1024)">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10350,7 +10350,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="68" V="Move. Move to west &lt;#&gt;animating for (E)units (one sector = 1024)">
+    <Subtrigger K="68" V="Move. Move to -Z direction (south) &lt;#&gt;animating for (E)units (one sector = 1024)">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10364,7 +10364,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="69" V="Enemy. (Physics) OVER Mode. Attract to North &lt;#&gt;Moveable with (E)speed">
+    <Subtrigger K="69" V="Enemy. (Physics) OVER Mode. Attract to -X direction (west) &lt;#&gt;Moveable with (E)speed">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10378,7 +10378,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="70" V="Enemy. (Physics) OVER Mode. Attract to South &lt;#&gt;Moveable with (E)speed">
+    <Subtrigger K="70" V="Enemy. (Physics) OVER Mode. Attract to +X direction (east) &lt;#&gt;Moveable with (E)speed">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10386,7 +10386,7 @@
         <MoveablesInLevel />
       </Target>
     </Subtrigger>
-    <Subtrigger K="71" V="Enemy. (Physics) OVER Mode. Attract to East &lt;#&gt;Moveable with (E)speed">
+    <Subtrigger K="71" V="Enemy. (Physics) OVER Mode. Attract to +Z direction (north) &lt;#&gt;Moveable with (E)speed">
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10397,21 +10397,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="72" V="Enemy. (Physics) OVER Mode. Attract to West &lt;#&gt;Moveable with (E)speed">
-      <Timer>
-        <MoveablesInLevel />
-      </Timer>
-      <Target>
-        <MoveablesInLevel />
-      </Target>
-      <Extra>
-        <LinearModel Start="1" End="126">
-          <Fixed>Speed=</Fixed>
-          <Linear Add="0" Factor="1" />
-        </LinearModel>
-      </Extra>
-    </Subtrigger>
-    <Subtrigger K="73" V="Enemy. (Physics) PAD Mode. Attract to North &lt;#&gt;Moveable with (E)speed">
+    <Subtrigger K="72" V="Enemy. (Physics) OVER Mode. Attract to -Z direction (south) &lt;#&gt;Moveable with (E)speed">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10425,7 +10411,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="74" V="Enemy. (Physics) PAD Mode. Attract to South &lt;#&gt;Moveable with (E)speed">
+    <Subtrigger K="73" V="Enemy. (Physics) PAD Mode. Attract to -X direction (west) &lt;#&gt;Moveable with (E)speed">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10439,7 +10425,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="75" V="Enemy. (Physics) PAD Mode. Attract to East &lt;#&gt;Moveable with (E)speed">
+    <Subtrigger K="74" V="Enemy. (Physics) PAD Mode. Attract to +X direction (east) &lt;#&gt;Moveable with (E)speed">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10453,7 +10439,21 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="76" V="Enemy. (Physics) PAD Mode. Attract to West &lt;#&gt;Moveable with (E)speed">
+    <Subtrigger K="75" V="Enemy. (Physics) PAD Mode. Attract to +Z direction (north) &lt;#&gt;Moveable with (E)speed">
+      <Timer>
+        <MoveablesInLevel />
+      </Timer>
+      <Target>
+        <MoveablesInLevel />
+      </Target>
+      <Extra>
+        <LinearModel Start="1" End="126">
+          <Fixed>Speed=</Fixed>
+          <Linear Add="0" Factor="1" />
+        </LinearModel>
+      </Extra>
+    </Subtrigger>
+    <Subtrigger K="76" V="Enemy. (Physics) PAD Mode. Attract to -Z direction (south) &lt;#&gt;Moveable with (E)speed">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10497,7 +10497,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="80" V="Turn. Turn &lt;#&gt;Animating around the center at North (E)Distance in circular way">
+    <Subtrigger K="80" V="Turn. Turn &lt;#&gt;Animating around the center at -X direction (west) (E)Distance in circular way">
       <Timer>
         <MoveablesInLevel />
       </Timer>
@@ -10522,11 +10522,11 @@
         <FixedEnumeration>
           <Enum K="1" V="Immediatly" />
           <Enum K="2" V="Slow down until stopping" />
-          <Enum K="3" V="Stop to next east,west,sud or north of the center" />
-          <Enum K="4" V="Stop when it reachs NORTH of the center" />
-          <Enum K="5" V="Stop when it reachs SOUTH of the center" />
-          <Enum K="6" V="Stop when it reachs EAST of the center" />
-          <Enum K="7" V="Stop when it reachs WEST of the center" />
+          <Enum K="3" V="Stop to next east,west,south or -X direction (west) of the center" />
+          <Enum K="4" V="Stop when it reachs -X direction (west) of the center" />
+          <Enum K="5" V="Stop when it reachs +X direction (east) of the center" />
+          <Enum K="6" V="Stop when it reachs +Z direction (north) of the center" />
+          <Enum K="7" V="Stop when it reachs -Z direction (south) of the center" />
           <Enum K="8" V="Pause. Stop temporary its movement" />
         </FixedEnumeration>
       </Extra>
@@ -12964,7 +12964,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="61" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in north-west corner and &lt;#&gt;Radius">
+    <Subtrigger K="61" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in -X,-Z direction (south-west) corner and &lt;#&gt;Radius">
       <Timer>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
@@ -12980,7 +12980,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="62" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in north-east corner and &lt;#&gt;Radius">
+    <Subtrigger K="62" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in -X,+Z direction (north-west) corner and &lt;#&gt;Radius">
       <Timer>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
@@ -12996,7 +12996,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="63" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in South-East corner and &lt;#&gt;Radius">
+    <Subtrigger K="63" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in +X,+Z direction (north-east) corner and &lt;#&gt;Radius">
       <Timer>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
@@ -13012,7 +13012,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="64" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in South-West corner and &lt;#&gt;Radius">
+    <Subtrigger K="64" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in +X,-Z direction (south-east) corner and &lt;#&gt;Radius">
       <Timer>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
@@ -13028,7 +13028,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="65" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-north side and &lt;#&gt;Radius">
+    <Subtrigger K="65" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle--X direction (west) side and &lt;#&gt;Radius">
       <Timer>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
@@ -13044,7 +13044,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="66" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-south side and &lt;#&gt;Radius">
+    <Subtrigger K="66" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-+X direction (east) side and &lt;#&gt;Radius">
       <Timer>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
@@ -13060,7 +13060,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="67" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-east side and &lt;#&gt;Radius">
+    <Subtrigger K="67" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-+Z direction (north) side and &lt;#&gt;Radius">
       <Timer>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
@@ -13076,7 +13076,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="68" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-west side and &lt;#&gt;Radius">
+    <Subtrigger K="68" V="Fragmented trigger. Check in (E) way if lara is in the sector with center in middle--Z direction (south) side and &lt;#&gt;Radius">
       <Timer>
         <LinearModel Start="1" End="1022">
           <Fixed>Circle Sector with radius=</Fixed>
@@ -13092,7 +13092,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="69" V="Fragmented trigger. Check in (E) way if lara is in the North-East corner triangle with &lt;#&gt;Size">
+    <Subtrigger K="69" V="Fragmented trigger. Check in (E) way if lara is in the -X,+Z direction (north-west) corner triangle with &lt;#&gt;Size">
       <Timer>
         <LinearModel Start="16" End="1022">
           <Fixed>Cathetus Size=</Fixed>
@@ -13108,7 +13108,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="70" V="Fragmented trigger. Check in (E) way if lara is in the North-West corner triangle with &lt;#&gt;Size">
+    <Subtrigger K="70" V="Fragmented trigger. Check in (E) way if lara is in the -X,-Z direction (south-west) corner triangle with &lt;#&gt;Size">
       <Timer>
         <LinearModel Start="16" End="1022">
           <Fixed>Cathetus Size=</Fixed>
@@ -13124,7 +13124,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="71" V="Fragmented trigger. Check in (E) way if lara is in the South-East corner triangle with &lt;#&gt;Size">
+    <Subtrigger K="71" V="Fragmented trigger. Check in (E) way if lara is in the +X,+Z direction (north-east) corner triangle with &lt;#&gt;Size">
       <Timer>
         <LinearModel Start="16" End="1022">
           <Fixed>Cathetus Size=</Fixed>
@@ -13140,7 +13140,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="72" V="Fragmented trigger. Check in (E) way if lara is in the South-West corner triangle with &lt;#&gt;Size">
+    <Subtrigger K="72" V="Fragmented trigger. Check in (E) way if lara is in the +X,-Z direction (south-east) corner triangle with &lt;#&gt;Size">
       <Timer>
         <LinearModel Start="16" End="1022">
           <Fixed>Cathetus Size=</Fixed>
@@ -13156,7 +13156,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="73" V="Fragmented trigger. Check in (E) way if lara is in the South side triangle with &lt;#&gt;Size">
+    <Subtrigger K="73" V="Fragmented trigger. Check in (E) way if lara is in the +X direction (east) side triangle with &lt;#&gt;Size">
       <Timer>
         <LinearModel Start="16" End="1022">
           <Fixed>Side Size=</Fixed>
@@ -13172,7 +13172,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="74" V="Fragmented trigger. Check in (E) way if lara is in the North side triangle with &lt;#&gt;Size">
+    <Subtrigger K="74" V="Fragmented trigger. Check in (E) way if lara is in the -X direction (west) side triangle with &lt;#&gt;Size">
       <Timer>
         <LinearModel Start="16" End="1022">
           <Fixed>Side Size=</Fixed>
@@ -13188,7 +13188,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="75" V="Fragmented trigger. Check in (E) way if lara is in the East side triangle with &lt;#&gt;Size">
+    <Subtrigger K="75" V="Fragmented trigger. Check in (E) way if lara is in the +Z direction (north) side triangle with &lt;#&gt;Size">
       <Timer>
         <LinearModel Start="16" End="1022">
           <Fixed>Side Size=</Fixed>
@@ -13204,7 +13204,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="76" V="Fragmented trigger. Check in (E) way if lara is in the West side triangle with &lt;#&gt;Size">
+    <Subtrigger K="76" V="Fragmented trigger. Check in (E) way if lara is in the -Z direction (south) side triangle with &lt;#&gt;Size">
       <Timer>
         <LinearModel Start="16" End="1022">
           <Fixed>Side Size=</Fixed>

@@ -1,4 +1,4 @@
-_NEW Animating                The OCB in animating will be used only when you use an ACTION trigger to move animating.
+ï»¿_NEW Animating                The OCB in animating will be used only when you use an ACTION trigger to move animating.
 In this circustance the OCB value will be used as speed for movement of animating.
 About the value to type you should remember that 1 sector are 1024 units, and the value you'll type will be added 30 times for second to current coordinate.
 For example if you type like speed the value 40 the animating will be moved of 1200 units (40 x 30 fps) for second, and this distance is a bit bigger than one sector.
@@ -72,7 +72,7 @@ Another feature of hydra's couple is that both hydras will be inclinated a bit i
 
 Remarks:
 
-* When you work with couple of Hydras you cann't chose the facing, since the engine will force the starting facing to South (in ngle view).
+* When you work with couple of Hydras you cann't chose the facing, since the engine will force the starting facing to +X direction (east).
 
 * If you omit 2 and 1 in OCB, the Hydra will work like single object and it will keep the facing and position set in the project.
 
@@ -205,7 +205,7 @@ For example if your custom animation to engage (first time) the switch is the nu
 
 Remark: n
 _NEW Teeth_Spikes             Really the ocb to set in TEETH_SPIKES are the same of old engine, anyway if you want enable teeth_spikes type tomb raider 1 where Lara is able to across if she moves slowly, you have to insert the OCB = 20.
-Ocb 20 means: spikes point to north and static spikes
+Ocb 20 means: spikes point to -X direction (west) and static spikes
 
 Then you have to add this line in your script.txt file in [Level] section:
 
@@ -339,7 +339,7 @@ Door type 3                   1 = Prevents door opening. Used in conjunction wit
 2= To open with a crowbar
 
 
-EarthQuake                    Remark: Earth quake is nullmesh object placed and triggered to create earthquake effects ­ rumbling and shaking.
+EarthQuake                    Remark: Earth quake is nullmesh object placed and triggered to create earthquake effects ï¿½ rumbling and shaking.
 
 333 = for 16 seconds (sound but not shaking)
 888 = for a 5 second quake and sound
@@ -449,7 +449,7 @@ To do fly it you must set ocb = 666 and use AI_FOLLOW is same way of Enemy Jeep 
 
 Helicopter (Mine)             "Mine" helicopter is the "static" half (only a side of meshs are visible) helicopter you find in Death City. Lara will can destroy it shotting.
 
-Enter 1 in OCB of the helicopter. To make it explode, use SHATTER3 and set it up as per room 73. The fuel can does not sit directly on the trigger ­ it won't activate the heavy trigger if it does.
+Enter 1 in OCB of the helicopter. To make it explode, use SHATTER3 and set it up as per room 73. The fuel can does not sit directly on the trigger ï¿½ it won't activate the heavy trigger if it does.
 
 Enter 0 in OCB of the helicoter if you want use only "mined field"
 With OCB = 0 the helicopter will be invisible and at its placement it will be created a mine field of 6 x 6 sectors. If lara walks over the mine field she will explode and die.
@@ -586,26 +586,26 @@ In ocb window press all buttons 1 through 5 in OCB.
 
 Teeth Spikes                  Remark: Vertical in Room Edit above view Horizontal
 
-0 = Pointing south
-1 = Pointing south west
-2 = Pointing west
-3 = Pointing north west
-4 = Pointing north
-5 = Pointing north east
-6 = Pointing east
-7 = Pointing south east
-8 = Pointing south
-9 = Pointing south west
-10 = Pointing west
-11 = Pointing north west
-12 = Pointing north
-13 = Pointing north east
-14 = Pointing east
-15 = Pointing south east
+0 = Pointing +X direction (east)
+1 = Pointing +X,-Z direction (south-east)
+2 = Pointing -Z direction (south)
+3 = Pointing -X,-Z direction (south-west)
+4 = Pointing -X direction (west)
+5 = Pointing -X,+Z direction (north-west)
+6 = Pointing +Z direction (north)
+7 = Pointing +X,+Z direction (north-east)
+8 = Pointing +X direction (east)
+9 = Pointing +X,-Z direction (south-east)
+10 = Pointing -Z direction (south)
+11 = Pointing -X,-Z direction (south-west)
+12 = Pointing -X direction (west)
+13 = Pointing -X,+Z direction (north-west)
+14 = Pointing +Z direction (north)
+15 = Pointing +X,+Z direction (north-east)
 16 +=  You can also add a value of 16 to the above to make the spikes stick out constantly (like the old TR spikes)
 32 += Adding 32 to the above will force the spikes out once and then retract forever.
 
-Remark: if you want use Teeth Spikes in conjunction with Mapper or ClockWork Beetle you must set OCB 4 (pointing north)
+Remark: if you want use Teeth Spikes in conjunction with Mapper or ClockWork Beetle you must set OCB 4 (pointing -X direction (west))
 
 
 
