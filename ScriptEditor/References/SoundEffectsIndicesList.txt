@@ -1,4 +1,4 @@
-   0  $0000:  LARA_FEET                foot01 foot02 foot03 foot04
+﻿   0  $0000:  LARA_FEET                foot01 foot02 foot03 foot04
    1  $0001:  LARA_CLIMB2              clim_up2
    2  $0002:  LARA_NO                  lara_no
    3  $0003:  LARA_SLIPPING            slipping

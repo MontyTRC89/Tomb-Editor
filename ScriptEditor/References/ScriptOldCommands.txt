@@ -1,4 +1,4 @@
-
+﻿
 [Language]
 **********
 Start Language section.
@@ -617,10 +617,10 @@ This argument set the orientation of cam on X axis.
 It's complicated to explain but if you try to change this value you'll understand what I mean.
 The values for this argument could be go from $0000 to $FFFF but usually will be used only four values:
 
-$0000 = North (top view)
-$4000 = East (right view)
-$8000 = South (bottom view)
-$C000 = West (left view)
+$0000 = -X direction (west) (top view)
+$4000 = +Z direction (north) (right view)
+$8000 = +X direction (east) (bottom view)
+$C000 = -Z direction (south) (left view)
 
 7 - D Number ("$0000")
 Same meaning of C Number but it regards the Y axis.
