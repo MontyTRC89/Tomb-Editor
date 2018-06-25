@@ -99,11 +99,13 @@ namespace TombLib.Utils
             catch (ObjectDisposedException) { }
         }
 
-        public void UpdateAllFiles(IEnumerable<WatchedObj> watchedObjs)
+        public void UpdateAllFiles(IEnumerable<WatchedObj> watchedObjs, Action whileLocked)
         {
             // Avoid concurrent reload.
             lock (_reloadLock)
             {
+                whileLocked();
+
                 // Remove old related files
                 foreach (DirectoryWatcher directoryWatcher in _directoryWatchers)
                 {
@@ -117,15 +119,17 @@ namespace TombLib.Utils
                     foreach (string file in watchedObj.Files ?? Enumerable.Empty<string>())
                         if (file != null)
                         {
-                            var directoryWatcher = GetDirectoryWatcher(Path.GetDirectoryName(file));
-                            directoryWatcher._watchedObjsPerFile = AddToArray(directoryWatcher._watchedObjsPerFile,
-                                new KeyValuePair<string, WatchedObj>(file.ToLowerInvariant(), watchedObj));
+                            var directoryWatcher = GetDirectoryWatcher(FileSystemUtils.GetDirectoryNameTry(file));
+                            if (directoryWatcher != null)
+                                directoryWatcher._watchedObjsPerFile = AddToArray(directoryWatcher._watchedObjsPerFile,
+                                    new KeyValuePair<string, WatchedObj>(file.ToLowerInvariant(), watchedObj));
                         }
                     foreach (string directory in watchedObj.Directories ?? Enumerable.Empty<string>())
                         if (directory != null)
                         {
                             var directoryWatcher = GetDirectoryWatcher(directory);
-                            directoryWatcher._watchedObjsPerDirectory = AddToArray(directoryWatcher._watchedObjsPerDirectory, watchedObj);
+                            if (directoryWatcher != null)
+                                directoryWatcher._watchedObjsPerDirectory = AddToArray(directoryWatcher._watchedObjsPerDirectory, watchedObj);
                         }
                 }
 
@@ -168,26 +172,37 @@ namespace TombLib.Utils
 
         private DirectoryWatcher GetDirectoryWatcher(string directoryName)
         {
-            // Unify directory name
-            directoryName = directoryName.ToLowerInvariant();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(directoryName) || !Directory.Exists(directoryName))
+                    return null;
 
-            // Find directory watcher
-            foreach (DirectoryWatcher directoryWatcher in _directoryWatchers)
-                if (directoryWatcher._directory == directoryName)
-                    return directoryWatcher;
+                // Unify directory name
+                directoryName = directoryName.ToLowerInvariant();
 
-            // Create new directory watcher
-            var newWatcher = new DirectoryWatcher();
-            newWatcher._parent = this;
-            newWatcher._directory = directoryName;
-            newWatcher._watcher = new FileSystemWatcher(directoryName);
-            newWatcher._watcher.Deleted += newWatcher.NotificationReceived;
-            newWatcher._watcher.Created += newWatcher.NotificationReceived;
-            newWatcher._watcher.Changed += newWatcher.NotificationReceived;
-            newWatcher._watcher.Renamed += newWatcher.NotificationReceivedRenamed;
-            newWatcher._watcher.EnableRaisingEvents = true;
-            _directoryWatchers.Add(newWatcher);
-            return newWatcher;
+                // Find directory watcher
+                foreach (DirectoryWatcher directoryWatcher in _directoryWatchers)
+                    if (directoryWatcher._directory == directoryName)
+                        return directoryWatcher;
+
+                // Create new directory watcher
+                var newWatcher = new DirectoryWatcher();
+                newWatcher._parent = this;
+                newWatcher._directory = directoryName;
+                newWatcher._watcher = new FileSystemWatcher(directoryName);
+                newWatcher._watcher.Deleted += newWatcher.NotificationReceived;
+                newWatcher._watcher.Created += newWatcher.NotificationReceived;
+                newWatcher._watcher.Changed += newWatcher.NotificationReceived;
+                newWatcher._watcher.Renamed += newWatcher.NotificationReceivedRenamed;
+                newWatcher._watcher.EnableRaisingEvents = true;
+                _directoryWatchers.Add(newWatcher);
+                return newWatcher;
+            }
+            catch (Exception exc)
+            {
+                logger.Warn(exc, "Unable to create FileSystemWatcher for directory '" + directoryName + "'.");
+                return null;
+            }
         }
 
         private static T[] AddToArray<T>(T[] oldArray, T newEntry)

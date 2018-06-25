@@ -61,9 +61,9 @@ namespace TombEditor
         {
             public LevelSettingsWatcher Parent;
             public LevelTexture Texture;
-            public override IEnumerable<string> Files => new[] { Texture.Path };
+            public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(Texture.Path) };
             public override IEnumerable<string> Directories => null;
-            public override string Name => FileSystemUtils.GetFileNameWithoutExtensionTry(Texture.Path);
+            public override string Name => FileSystemUtils.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(Texture.Path));
             public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => Texture.Equals((other as WatchedTexture)?.Texture);
             public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
             {
@@ -85,9 +85,9 @@ namespace TombEditor
         {
             public LevelSettingsWatcher Parent;
             public ReferencedWad Wad;
-            public override IEnumerable<string> Files => new[] { Wad.Path };
-            public override IEnumerable<string> Directories => Parent.Settings?.OldWadSoundPaths?.Select(path => path.Path);
-            public override string Name => FileSystemUtils.GetFileNameWithoutExtensionTry(Wad.Path);
+            public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(Wad.Path) };
+            public override IEnumerable<string> Directories => Parent.Settings?.OldWadSoundPaths?.Select(path => Parent.Settings?.MakeAbsolute(path.Path));
+            public override string Name => FileSystemUtils.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(Wad.Path));
             public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => Wad.Equals((other as WatchedWad)?.Wad);
             public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
             {
@@ -110,9 +110,9 @@ namespace TombEditor
         {
             public LevelSettingsWatcher Parent;
             public ImportedGeometry ImportedGeometry;
-            public override IEnumerable<string> Files => new[] { ImportedGeometry.Info.Path };
+            public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(ImportedGeometry.Info.Path) };
             public override IEnumerable<string> Directories => null;
-            public override string Name => FileSystemUtils.GetFileNameWithoutExtensionTry(ImportedGeometry.Info.Path);
+            public override string Name => FileSystemUtils.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(ImportedGeometry.Info.Path));
             public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => ImportedGeometry.Equals((other as WatchedImportedGeometry)?.ImportedGeometry);
             public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
             {
@@ -137,9 +137,9 @@ namespace TombEditor
         {
             public LevelSettingsWatcher Parent;
             public ImportedGeometryTexture ImportedGeometryTexture;
-            public override IEnumerable<string> Files => new[] { ImportedGeometryTexture.AbsolutePath };
+            public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(ImportedGeometryTexture.AbsolutePath) };
             public override IEnumerable<string> Directories => null;
-            public override string Name => FileSystemUtils.GetFileNameWithoutExtensionTry(ImportedGeometryTexture.AbsolutePath);
+            public override string Name => FileSystemUtils.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(ImportedGeometryTexture.AbsolutePath));
             public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => ImportedGeometryTexture.Equals((other as WatchedImportedGeometryTexture)?.ImportedGeometryTexture);
             public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
             {
@@ -167,8 +167,7 @@ namespace TombEditor
                 listOfWatchedObjs.Add(new WatchedImportedGeometry { Parent = this, ImportedGeometry = importedGeometry });
             foreach (ImportedGeometryTexture importedGeometryTexture in settings.ImportedGeometries.SelectMany(geometry => geometry.Textures).Distinct())
                 listOfWatchedObjs.Add(new WatchedImportedGeometryTexture { Parent = this, ImportedGeometryTexture = importedGeometryTexture });
-            _watcher.UpdateAllFiles(listOfWatchedObjs);
-            _settings.SetTarget(settings);
+            _watcher.UpdateAllFiles(listOfWatchedObjs, () => _settings.SetTarget(settings));
         }
 
         public void RestartReloading() => _watcher.RestartReloading();
