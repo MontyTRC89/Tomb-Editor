@@ -660,25 +660,25 @@ namespace TombLib.LevelData.IO
                                     break;
                             }
 
-                            block.QA[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYfloor);
-                            block.QA[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYfloor);
-                            block.QA[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYfloor);
-                            block.QA[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XpZn = (short)(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XnZn = (short)(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XnZp = (short)(reader.ReadSByte() + blockYfloor);
+                            block.Floor.XpZp = (short)(reader.ReadSByte() + blockYfloor);
 
-                            block.WS[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYceiling);
-                            block.WS[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYceiling);
-                            block.WS[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYceiling);
-                            block.WS[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XpZp = (short)(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XnZp = (short)(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XnZn = (short)(reader.ReadSByte() + blockYceiling);
+                            block.Ceiling.XpZn = (short)(reader.ReadSByte() + blockYceiling);
 
-                            block.ED[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYfloor);
-                            block.ED[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYfloor);
-                            block.ED[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYfloor);
-                            block.ED[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYfloor);
+                            block.ED[Block.EdgeXpZn] = (short)(reader.ReadSByte() + blockYfloor);
+                            block.ED[Block.EdgeXnZn] = (short)(reader.ReadSByte() + blockYfloor);
+                            block.ED[Block.EdgeXnZp] = (short)(reader.ReadSByte() + blockYfloor);
+                            block.ED[Block.EdgeXpZp] = (short)(reader.ReadSByte() + blockYfloor);
 
-                            block.RF[Block.FaceXpZp] = (short)(reader.ReadSByte() + blockYceiling);
-                            block.RF[Block.FaceXnZp] = (short)(reader.ReadSByte() + blockYceiling);
-                            block.RF[Block.FaceXnZn] = (short)(reader.ReadSByte() + blockYceiling);
-                            block.RF[Block.FaceXpZn] = (short)(reader.ReadSByte() + blockYceiling);
+                            block.RF[Block.EdgeXpZp] = (short)(reader.ReadSByte() + blockYceiling);
+                            block.RF[Block.EdgeXnZp] = (short)(reader.ReadSByte() + blockYceiling);
+                            block.RF[Block.EdgeXnZn] = (short)(reader.ReadSByte() + blockYceiling);
+                            block.RF[Block.EdgeXpZn] = (short)(reader.ReadSByte() + blockYceiling);
 
                             if ((blockFlags1 & 0x4000) != 0)
                                 block.Flags |= BlockFlags.Monkey;
@@ -735,7 +735,7 @@ namespace TombLib.LevelData.IO
                                 block.Flags |= BlockFlags.Beetle;
                             if ((blockFlags2 & 0x0020) != 0)
                                 block.Flags |= BlockFlags.TriggerTriggerer;
-                            block.FloorSplitDirectionToggled = (blockFlags3 & 0x1) != 0;
+                            block.Floor.SplitDirectionToggled = (blockFlags3 & 0x1) != 0;
 
                             tempRoom._blocks[x, z] = tempBlock;
                         }
@@ -1853,16 +1853,16 @@ namespace TombLib.LevelData.IO
             switch (face)
             {
                 case BlockFace.PositiveZ_QA:
-                    return !room.IsFaceDefined(x, z, face) && b.QA[0] >= b.ED[0] && b.QA[1] >= b.ED[1] && !(b.QA[0] == b.ED[0] && b.QA[1] == b.ED[1]);
+                    return !room.IsFaceDefined(x, z, face) && b.Floor.XnZp >= b.ED[0] && b.Floor.XpZp >= b.ED[1] && !(b.Floor.XnZp == b.ED[0] && b.Floor.XpZp == b.ED[1]);
 
                 case BlockFace.NegativeZ_QA:
-                    return !room.IsFaceDefined(x, z, face) && b.QA[3] >= b.ED[3] && b.QA[2] >= b.ED[2] && !(b.QA[3] == b.ED[3] && b.QA[2] == b.ED[2]);
+                    return !room.IsFaceDefined(x, z, face) && b.Floor.XnZn >= b.ED[3] && b.Floor.XpZn >= b.ED[2] && !(b.Floor.XnZn == b.ED[3] && b.Floor.XpZn == b.ED[2]);
 
                 case BlockFace.NegativeX_QA:
-                    return !room.IsFaceDefined(x, z, face) && b.QA[3] >= b.ED[3] && b.QA[0] >= b.ED[0] && !(b.QA[3] == b.ED[3] && b.QA[0] == b.ED[0]);
+                    return !room.IsFaceDefined(x, z, face) && b.Floor.XnZn >= b.ED[3] && b.Floor.XnZp >= b.ED[0] && !(b.Floor.XnZn == b.ED[3] && b.Floor.XnZp == b.ED[0]);
 
                 case BlockFace.PositiveX_QA:
-                    return !room.IsFaceDefined(x, z, face) && b.QA[1] >= b.ED[1] && b.QA[2] >= b.ED[2] && !(b.QA[1] == b.ED[1] && b.QA[2] == b.ED[2]);
+                    return !room.IsFaceDefined(x, z, face) && b.Floor.XpZp >= b.ED[1] && b.Floor.XpZn >= b.ED[2] && !(b.Floor.XpZp == b.ED[1] && b.Floor.XpZn == b.ED[2]);
             }
 
             return false;
@@ -2003,7 +2003,7 @@ namespace TombLib.LevelData.IO
                         // Fix floor and ceiling texturing in our coordinate system
                         if (face == BlockFace.Floor)
                         {
-                            rotation += block.FloorSplitDirectionIsXEqualsZ ? (byte)1 : (byte)2;
+                            rotation += block.Floor.SplitDirectionIsXEqualsZ ? (byte)1 : (byte)2;
                         }
                         else if (face == BlockFace.Ceiling)
                         {
@@ -2011,7 +2011,7 @@ namespace TombLib.LevelData.IO
                             texture.TexCoord2 = texture.TexCoord0;
                             texture.TexCoord0 = temp;
 
-                            rotation += block.CeilingSplitDirectionIsXEqualsZ ? (byte)2 : (byte)1;
+                            rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? (byte)2 : (byte)1;
                             rotation = (ushort)(3000 - rotation); // Change of rotation direction
                         }
                         else if (face == BlockFace.CeilingTriangle2)

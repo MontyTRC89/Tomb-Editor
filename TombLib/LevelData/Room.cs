@@ -100,8 +100,8 @@ namespace TombLib.LevelData
                     if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
                     {
                         newBlocks[x, z].Type = BlockType.BorderWall;
-                        newBlocks[x, z].FloorDiagonalSplit = DiagonalSplit.None;
-                        newBlocks[x, z].CeilingDiagonalSplit = DiagonalSplit.None;
+                        newBlocks[x, z].Floor.DiagonalSplit = DiagonalSplit.None;
+                        newBlocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.None;
                     }
                 }
 
@@ -382,78 +382,54 @@ namespace TombLib.LevelData
         }
         public RoomBlockPair GetBlockTryThroughPortal(int x, int z) => GetBlockTryThroughPortal(new VectorInt2(x, z));
 
-        public void ModifyPoint(int x, int z, int verticalSubdivision, short increment, RectangleInt2 area)
+        public void ModifyHeightThroughPortal(int x, int z, int verticalSubdivision, short increment, RectangleInt2 area)
         {
             bool floor = verticalSubdivision % 2 == 0;
-
             if (x <= 0 || z <= 0 || x >= NumXSectors || z >= NumZSectors)
                 return;
+
+            if (area.Contains(new VectorInt2(x, z)))
             {
-                if (area.Contains(new VectorInt2(x, z)))
+                if (floor && Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None || !floor && Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None)
                 {
-                    if (floor && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None || !floor && Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
-                    {
-                        Blocks[x, z].GetVerticalSubdivision(verticalSubdivision)[3] += increment;
-                        Blocks[x, z].FixHeights(verticalSubdivision);
-                    }
-                }
-                if (area.Contains(new VectorInt2(x - 1, z)))
-                {
-                    var adjacentLeftBlock = GetBlockTry(x - 1, z);
-                    if (adjacentLeftBlock != null && (floor && adjacentLeftBlock.FloorDiagonalSplit == DiagonalSplit.None || !floor && adjacentLeftBlock.CeilingDiagonalSplit == DiagonalSplit.None))
-                    {
-                        adjacentLeftBlock.GetVerticalSubdivision(verticalSubdivision)[2] += increment;
-                        adjacentLeftBlock.FixHeights(verticalSubdivision);
-                    }
-                }
-                if (area.Contains(new VectorInt2(x, z - 1)))
-                {
-                    var adjacentBottomBlock = GetBlockTry(x, z - 1);
-                    if (adjacentBottomBlock != null && (floor && adjacentBottomBlock.FloorDiagonalSplit == DiagonalSplit.None || !floor && adjacentBottomBlock.CeilingDiagonalSplit == DiagonalSplit.None))
-                    {
-                        adjacentBottomBlock.GetVerticalSubdivision(verticalSubdivision)[0] += increment;
-                        adjacentBottomBlock.FixHeights(verticalSubdivision);
-                    }
-                }
-                if (area.Contains(new VectorInt2(x - 1, z - 1)))
-                {
-                    var adjacentBottomLeftBlock = GetBlockTry(x - 1, z - 1);
-                    if (adjacentBottomLeftBlock != null && (floor && adjacentBottomLeftBlock.FloorDiagonalSplit == DiagonalSplit.None || !floor && adjacentBottomLeftBlock.CeilingDiagonalSplit == DiagonalSplit.None))
-                    {
-                        adjacentBottomLeftBlock.GetVerticalSubdivision(verticalSubdivision)[1] += increment;
-                        adjacentBottomLeftBlock.FixHeights(verticalSubdivision);
-                    }
+                    Blocks[x, z].ChangeHeight(verticalSubdivision, Block.EdgeXnZn, increment);
+                    Blocks[x, z].FixHeights(verticalSubdivision);
                 }
             }
-        }
-
-        public short GetMinHeight(RectangleInt2 area, int verticalSubdivision)
-        {
-            short minimum = short.MaxValue;
-
-            for (int x = area.X0; x <= area.X1; x++)
-                for (int z = area.Y0; z <= area.Y1; z++)
-                    minimum = Math.Min(minimum, Blocks[x, z].GetFaceMin(verticalSubdivision));
-
-            return minimum;
-        }
-
-        public short GetMaxHeight(RectangleInt2 area, int verticalSubdivision)
-        {
-            short maximum = short.MinValue;
-
-            for (int x = area.X0; x <= area.X1; x++)
-                for (int z = area.Y0; z <= area.Y1; z++)
-                    maximum = Math.Max(maximum, Blocks[x, z].GetFaceMin(verticalSubdivision));
-
-            return maximum;
+            if (area.Contains(new VectorInt2(x - 1, z)))
+            {
+                var adjacentLeftBlock = GetBlockTry(x - 1, z);
+                if (adjacentLeftBlock != null && (floor && adjacentLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || !floor && adjacentLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
+                {
+                    adjacentLeftBlock.ChangeHeight(verticalSubdivision, Block.EdgeXpZn, increment);
+                    adjacentLeftBlock.FixHeights(verticalSubdivision);
+                }
+            }
+            if (area.Contains(new VectorInt2(x, z - 1)))
+            {
+                var adjacentBottomBlock = GetBlockTry(x, z - 1);
+                if (adjacentBottomBlock != null && (floor && adjacentBottomBlock.Floor.DiagonalSplit == DiagonalSplit.None || !floor && adjacentBottomBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
+                {
+                    adjacentBottomBlock.ChangeHeight(verticalSubdivision, Block.EdgeXnZp, increment);
+                    adjacentBottomBlock.FixHeights(verticalSubdivision);
+                }
+            }
+            if (area.Contains(new VectorInt2(x - 1, z - 1)))
+            {
+                var adjacentBottomLeftBlock = GetBlockTry(x - 1, z - 1);
+                if (adjacentBottomLeftBlock != null && (floor && adjacentBottomLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || !floor && adjacentBottomLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
+                {
+                    adjacentBottomLeftBlock.ChangeHeight(verticalSubdivision, Block.EdgeXpZp, increment);
+                    adjacentBottomLeftBlock.FixHeights(verticalSubdivision);
+                }
+            }
         }
 
         public bool IsIllegalSlope(int x, int z)
         {
             Block sector = GetBlockTry(x, z);
 
-            if (WaterLevel > 0 || sector == null || sector.IsAnyWall || !sector.FloorHasSlope)
+            if (WaterLevel > 0 || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope)
                 return false;
 
             const int lowestPassableHeight = 4;
@@ -505,13 +481,13 @@ namespace TombLib.LevelData
 
                     case Direction.PositiveX:
                         lookupBlock = GetBlockTryThroughPortal(x + 1, z);
-                        heightsToCompare = new short[2] { 1, (short)(sector.FloorDiagonalSplit == DiagonalSplit.XnZp ? 1 : 2) };
+                        heightsToCompare = new short[2] { 1, (short)(sector.Floor.DiagonalSplit == DiagonalSplit.XnZp ? 1 : 2) };
                         heightsToCheck = new short[2] { 0, 3 };
                         break;
 
                     case Direction.NegativeX:
                         lookupBlock = GetBlockTryThroughPortal(x - 1, z);
-                        heightsToCompare = new short[2] { 3, (short)(sector.FloorDiagonalSplit == DiagonalSplit.XpZn ? 3 : 0) };
+                        heightsToCompare = new short[2] { 3, (short)(sector.Floor.DiagonalSplit == DiagonalSplit.XpZn ? 3 : 0) };
                         heightsToCheck = new short[2] { 2, 1 };
                         break;
                     default:
@@ -520,14 +496,14 @@ namespace TombLib.LevelData
 
                 // Diagonal split resolver
 
-                if (lookupBlock.Block.IsAnyWall && lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.None)
+                if (lookupBlock.Block.IsAnyWall && lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.None)
                 {
                     // If lookup block contains non-diagonal wall, we mark slope as illegal in any case.
 
                     slopeIsIllegal = true;
                     continue;
                 }
-                else if (lookupBlock.Block.FloorDiagonalSplit != DiagonalSplit.None)
+                else if (lookupBlock.Block.Floor.DiagonalSplit != DiagonalSplit.None)
                 {
                     // If lookup block has diagonal splits...
                     // For floor diagonal steps and diagonal walls, only steps/walls that are facing away
@@ -541,8 +517,8 @@ namespace TombLib.LevelData
                     switch (slopeDirections[i])
                     {
                         case Direction.PositiveZ:
-                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                            if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZn ||
+                                lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                             {
                                 if (lookupBlock.Block.IsAnyWall)
                                 {
@@ -550,14 +526,14 @@ namespace TombLib.LevelData
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            else if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                                 heightsToCheck[0] = 2;
                             else
                                 heightsToCheck[1] = 3;
                             break;
                         case Direction.PositiveX:
-                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
-                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZn ||
+                                lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                             {
                                 if (lookupBlock.Block.IsAnyWall)
                                 {
@@ -565,14 +541,14 @@ namespace TombLib.LevelData
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                            else if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZp)
                                 heightsToCheck[0] = 3;
                             else
                                 heightsToCheck[1] = 0;
                             break;
                         case Direction.NegativeZ:
-                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
-                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZp ||
+                                lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                             {
                                 if (lookupBlock.Block.IsAnyWall)
                                 {
@@ -580,14 +556,14 @@ namespace TombLib.LevelData
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                            else if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                                 heightsToCheck[0] = 0;
                             else
                                 heightsToCheck[1] = 1;
                             break;
                         case Direction.NegativeX:
-                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZp ||
-                                lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                            if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZp ||
+                                lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                             {
                                 if (lookupBlock.Block.IsAnyWall)
                                 {
@@ -595,7 +571,7 @@ namespace TombLib.LevelData
                                     continue;
                                 }
                             }
-                            else if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                            else if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZn)
                                 heightsToCheck[0] = 1;
                             else
                                 heightsToCheck[1] = 2;
@@ -611,8 +587,8 @@ namespace TombLib.LevelData
 
                 if (lookupBlock.Block.FloorPortal == null)
                 {
-                    if (lookupBlock.Block.QA[heightsToCheck[0]] - sector.QA[heightsToCompare[0]] > absoluteLowestPassableStep ||
-                        lookupBlock.Block.QA[heightsToCheck[1]] - sector.QA[heightsToCompare[1]] > absoluteLowestPassableStep)
+                    if (lookupBlock.Block.Floor.GetHeight(heightsToCheck[0]) - sector.Floor.GetHeight(heightsToCompare[0]) > absoluteLowestPassableStep ||
+                        lookupBlock.Block.Floor.GetHeight(heightsToCheck[1]) - sector.Floor.GetHeight(heightsToCompare[1]) > absoluteLowestPassableStep)
                         slopeIsIllegal = true;
                     else
                     {
@@ -623,14 +599,14 @@ namespace TombLib.LevelData
                             // If both current and lookup sector triangle split direction is the same, ignore far opposite triangles.
                             // FIXME: works only for normal sectors. Diagonal steps are broken!
 
-                            if (!sector.FloorIsQuad && !lookupBlock.Block.FloorIsQuad)
+                            if (!sector.Floor.IsQuad && !lookupBlock.Block.Floor.IsQuad)
                             {
-                                var sectorSplitDirection = sector.FloorDiagonalSplit == DiagonalSplit.None ? sector.FloorSplitDirectionIsXEqualsZ : (int)sector.FloorDiagonalSplit % 2 != 0;
-                                var lookupSplitDirection = lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.None ? lookupBlock.Block.FloorSplitDirectionIsXEqualsZ : (int)lookupBlock.Block.FloorDiagonalSplit % 2 != 0;
+                                var sectorSplitDirection = sector.Floor.DiagonalSplit == DiagonalSplit.None ? sector.Floor.SplitDirectionIsXEqualsZ : (int)sector.Floor.DiagonalSplit % 2 != 0;
+                                var lookupSplitDirection = lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.None ? lookupBlock.Block.Floor.SplitDirectionIsXEqualsZ : (int)lookupBlock.Block.Floor.DiagonalSplit % 2 != 0;
 
                                 if (sectorSplitDirection == lookupSplitDirection)
                                 {
-                                    if (sector.FloorDiagonalSplit != DiagonalSplit.None && lookupBlock.Block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    if (sector.Floor.DiagonalSplit != DiagonalSplit.None && lookupBlock.Block.Floor.DiagonalSplit != DiagonalSplit.None)
                                         continue;
 
                                     if (sectorSplitDirection)
@@ -652,7 +628,7 @@ namespace TombLib.LevelData
 
                             var realTriangleIndex = j;
 
-                            if (lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XpZn || lookupBlock.Block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                            if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZn || lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                                 realTriangleIndex = realTriangleIndex == 0 ? 1 : 0;
 
                             // Triangle is considered illegal only if its lowest point lies lower than lowest passable step height compared to opposite triangle minimum point.
@@ -674,10 +650,10 @@ namespace TombLib.LevelData
 
                 if (lookupBlock.Block.CeilingPortal == null)
                 {
-                    if (lookupBlock.Block.WS[heightsToCheck[0]] - sector.QA[heightsToCompare[0]] < absoluteLowestPassableHeight ||
-                        lookupBlock.Block.WS[heightsToCheck[1]] - sector.QA[heightsToCompare[1]] < absoluteLowestPassableHeight ||
-                        lookupBlock.Block.WS[heightsToCheck[0]] - lookupBlock.Block.QA[heightsToCheck[0]] < lowestPassableHeight ||
-                        lookupBlock.Block.WS[heightsToCheck[1]] - lookupBlock.Block.QA[heightsToCheck[1]] < lowestPassableHeight)
+                    if (lookupBlock.Block.Ceiling.GetHeight(heightsToCheck[0]) - sector.Floor.GetHeight(heightsToCompare[0]) < absoluteLowestPassableHeight ||
+                        lookupBlock.Block.Ceiling.GetHeight(heightsToCheck[1]) - sector.Floor.GetHeight(heightsToCompare[1]) < absoluteLowestPassableHeight ||
+                        lookupBlock.Block.Ceiling.GetHeight(heightsToCheck[0]) - lookupBlock.Block.Floor.GetHeight(heightsToCheck[0]) < lowestPassableHeight ||
+                        lookupBlock.Block.Ceiling.GetHeight(heightsToCheck[1]) - lookupBlock.Block.Floor.GetHeight(heightsToCheck[1]) < lowestPassableHeight)
                         slopeIsIllegal = true;
                 }
             }
@@ -736,7 +712,7 @@ namespace TombLib.LevelData
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
-                        max = Math.Max(max, Blocks[x, z].CeilingMax);
+                        max = Math.Max(max, Blocks[x, z].Ceiling.Max);
             return (max == int.MinValue ? DefaultHeight : max);
         }
 
@@ -753,7 +729,7 @@ namespace TombLib.LevelData
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
                     if (!Blocks[x, z].IsAnyWall)
-                        min = Math.Min(min, Blocks[x, z].FloorMin);
+                        min = Math.Min(min, Blocks[x, z].Floor.Min);
             return (min == int.MaxValue ? 0 : min);
         }
 
@@ -800,15 +776,15 @@ namespace TombLib.LevelData
             return new VerticalSpace
             {
                 FloorY = combineFloor(
-                    blockXnZn?.QA[Block.FaceXpZp],
-                    blockXnZp?.QA[Block.FaceXpZn],
-                    blockXpZn?.QA[Block.FaceXnZp],
-                    blockXpZp?.QA[Block.FaceXnZn]),
+                    blockXnZn?.Floor.XpZp,
+                    blockXnZp?.Floor.XpZn,
+                    blockXpZn?.Floor.XnZp,
+                    blockXpZp?.Floor.XnZn),
                 CeilingY = combineCeiling(
-                    blockXnZn?.WS[Block.FaceXpZp],
-                    blockXnZp?.WS[Block.FaceXpZn],
-                    blockXpZn?.WS[Block.FaceXnZp],
-                    blockXpZp?.WS[Block.FaceXnZn])
+                    blockXnZn?.Ceiling.XpZp,
+                    blockXnZp?.Ceiling.XpZn,
+                    blockXpZn?.Ceiling.XnZp,
+                    blockXpZp?.Ceiling.XnZn)
             };
         }
 
@@ -906,7 +882,7 @@ namespace TombLib.LevelData
                     var b = Blocks[x, z];
                     if (!b.IsAnyWall)
                         for (int i = 0; i < 4; i++)
-                            lowest = Math.Min(lowest, b.QA[i]);
+                            lowest = Math.Min(lowest, b.Floor.GetHeight(i));
                 }
 
             // Move room to new position
@@ -919,9 +895,9 @@ namespace TombLib.LevelData
                     var b = Blocks[x, z];
                     for (int i = 0; i < 4; i++)
                     {
-                        b.QA[i] -= lowest;
+                        b.Floor.SetHeight(i, b.Floor.GetHeight(i) - lowest);
+                        b.Ceiling.SetHeight(i, b.Ceiling.GetHeight(i) - lowest);
                         b.ED[i] -= lowest;
-                        b.WS[i] -= lowest;
                         b.RF[i] -= lowest;
                     }
                 }
@@ -1166,8 +1142,8 @@ namespace TombLib.LevelData
                 return RoomConnectionType.NoPortal;
 
             // Check walls
-            DiagonalSplit aboveDiagonalSplit = blockAbove.FloorDiagonalSplit;
-            DiagonalSplit belowDiagonalSplit = blockBelow.CeilingDiagonalSplit;
+            DiagonalSplit aboveDiagonalSplit = blockAbove.Floor.DiagonalSplit;
+            DiagonalSplit belowDiagonalSplit = blockBelow.Ceiling.DiagonalSplit;
             if (blockAbove.IsAnyWall && aboveDiagonalSplit == DiagonalSplit.None)
                 return RoomConnectionType.NoPortal;
             if (blockBelow.IsAnyWall && belowDiagonalSplit == DiagonalSplit.None)
@@ -1176,10 +1152,10 @@ namespace TombLib.LevelData
                 return RoomConnectionType.NoPortal;
 
             // Gather split data
-            bool belowSplitXEqualsZ = blockBelow.CeilingSplitDirectionIsXEqualsZWithDiagonalSplit;
-            bool aboveSplitXEqualsZ = blockAbove.FloorSplitDirectionIsXEqualsZWithDiagonalSplit;
-            bool belowIsQuad = blockBelow.CeilingIsQuad;
-            bool aboveIsQuad = blockAbove.FloorIsQuad;
+            bool belowSplitXEqualsZ = blockBelow.Ceiling.SplitDirectionIsXEqualsZWithDiagonalSplit;
+            bool aboveSplitXEqualsZ = blockAbove.Floor.SplitDirectionIsXEqualsZWithDiagonalSplit;
+            bool belowIsQuad = blockBelow.Ceiling.IsQuad;
+            bool aboveIsQuad = blockAbove.Floor.IsQuad;
 
             // Check where the geometry matches to create a portal
             if (belowIsQuad || aboveIsQuad || belowSplitXEqualsZ == aboveSplitXEqualsZ)
@@ -1187,10 +1163,10 @@ namespace TombLib.LevelData
                 DiagonalSplit diagonalSplit = aboveDiagonalSplit != DiagonalSplit.None ? aboveDiagonalSplit : belowDiagonalSplit;
                 bool splitXEqualsZ = belowIsQuad ? aboveSplitXEqualsZ : belowSplitXEqualsZ;
 
-                bool matchesAtXnYn = roomBelow.Position.Y + blockBelow.GetActualCeilingMax(Block.FaceXnZn) == roomAbove.Position.Y + blockAbove.GetActualFloorMin(Block.FaceXnZn);
-                bool matchesAtXpYn = roomBelow.Position.Y + blockBelow.GetActualCeilingMax(Block.FaceXpZn) == roomAbove.Position.Y + blockAbove.GetActualFloorMin(Block.FaceXpZn);
-                bool matchesAtXnYp = roomBelow.Position.Y + blockBelow.GetActualCeilingMax(Block.FaceXnZp) == roomAbove.Position.Y + blockAbove.GetActualFloorMin(Block.FaceXnZp);
-                bool matchesAtXpYp = roomBelow.Position.Y + blockBelow.GetActualCeilingMax(Block.FaceXpZp) == roomAbove.Position.Y + blockAbove.GetActualFloorMin(Block.FaceXpZp);
+                bool matchesAtXnYn = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(Block.EdgeXnZn) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(Block.EdgeXnZn);
+                bool matchesAtXpYn = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(Block.EdgeXpZn) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(Block.EdgeXpZn);
+                bool matchesAtXnYp = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(Block.EdgeXnZp) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(Block.EdgeXnZp);
+                bool matchesAtXpYp = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(Block.EdgeXpZp) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(Block.EdgeXpZp);
 
                 if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && !(blockAbove.IsAnyWall || blockBelow.IsAnyWall))
                     return RoomConnectionType.FullPortal;

@@ -293,10 +293,10 @@ namespace TombLib.LevelData.Compilers
                 return false;
             }
 
-            dec_q0 = block.QA[0];
-            dec_q1 = block.QA[1];
-            dec_q2 = block.QA[2];
-            dec_q3 = block.QA[3];
+            dec_q0 = block.Floor.XnZp;
+            dec_q1 = block.Floor.XpZp;
+            dec_q2 = block.Floor.XpZn;
+            dec_q3 = block.Floor.XnZn;
 
             int currentX = room.Position.X + x;
             int currentZ = room.Position.Z + z;
@@ -785,13 +785,13 @@ namespace TombLib.LevelData.Compilers
 
             if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
 
-            int sumHeights = block.QA[0] + block.QA[1] + block.QA[2] + block.QA[3];
+            int sumHeights = block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn;
             int meanFloorCornerHeight = sumHeights >> 2;
 
-            dec_q0 = block.QA[0];
-            dec_q1 = block.QA[1];
-            dec_q2 = block.QA[2];
-            dec_q3 = block.QA[3];
+            dec_q0 = block.Floor.XnZp;
+            dec_q1 = block.Floor.XpZp;
+            dec_q2 = block.Floor.XpZn;
+            dec_q3 = block.Floor.XnZn;
 
             int slope1 = Math.Abs(dec_q0 - dec_q1) >= 3 ? 1 : 0;
             int slope2 = Math.Abs(dec_q1 - dec_q2) >= 3 ? 1 : 0;
@@ -800,18 +800,18 @@ namespace TombLib.LevelData.Compilers
 
             bool someFlag = false;
 
-            if (block.QA[0] == block.QA[2])
+            if (block.Floor.XnZp == block.Floor.XpZn)
             {
                 someFlag = false;
             }
             else
             {
-                if (block.QA[1] != block.QA[3])
+                if (block.Floor.XpZp != block.Floor.XnZn)
                 {
-                    if (block.QA[0] < block.QA[1] && block.QA[0] < block.QA[3] ||
-                        block.QA[2] < block.QA[1] && block.QA[2] < block.QA[3] ||
-                        block.QA[0] > block.QA[1] && block.QA[0] > block.QA[3] ||
-                        block.QA[2] > block.QA[1] && block.QA[2] > block.QA[3])
+                    if (block.Floor.XnZp < block.Floor.XpZp && block.Floor.XnZp < block.Floor.XnZn ||
+                        block.Floor.XpZn < block.Floor.XpZp && block.Floor.XpZn < block.Floor.XnZn ||
+                        block.Floor.XnZp > block.Floor.XpZp && block.Floor.XnZp > block.Floor.XnZn ||
+                        block.Floor.XpZn > block.Floor.XpZp && block.Floor.XpZn > block.Floor.XnZn)
                     {
                         someFlag = true;
                     }
@@ -827,7 +827,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             int floorHeight = meanFloorCornerHeight + room.Position.Y;
-            int ceiling = block.CeilingMax + room.Position.Y;
+            int ceiling = block.Ceiling.Max + room.Position.Y;
 
             if (dec_water && room.WaterLevel != 0 && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
             {

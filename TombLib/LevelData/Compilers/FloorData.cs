@@ -136,7 +136,7 @@ namespace TombLib.LevelData.Compilers
                         sector.RoomBelow = 255;
                         sector.RoomAbove = 255;
 
-                        if (block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.None || block.Type == BlockType.BorderWall)
+                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None || block.Type == BlockType.BorderWall)
                         { // Sector is a complete wall
                             if (block.WallPortal != null)
                             { // Sector is a wall portal
@@ -164,8 +164,8 @@ namespace TombLib.LevelData.Compilers
                         { // Sector is not a complete wall
                             Room.RoomConnectionType floorPortalType = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z)).TraversableType;
                             Room.RoomConnectionType ceilingPortalType = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z)).TraversableType;
-                            var floorShape = new RoomSectorShape(block.QA, floorPortalType, block.FloorSplitDirectionIsXEqualsZWithDiagonalSplit, block.FloorDiagonalSplit, block.IsAnyWall);
-                            var ceilingShape = new RoomSectorShape(block.WS, ceilingPortalType, block.CeilingSplitDirectionIsXEqualsZWithDiagonalSplit, block.CeilingDiagonalSplit, block.IsAnyWall);
+                            var floorShape = new RoomSectorShape(block.Floor, floorPortalType, block.IsAnyWall);
+                            var ceilingShape = new RoomSectorShape(block.Ceiling, ceilingPortalType, block.IsAnyWall);
 
                             // Floor
                             int floorHeight = -room.Position.Y - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
@@ -546,13 +546,13 @@ namespace TombLib.LevelData.Compilers
             public readonly int HeightXpZp;
             public readonly int DiagonalStep;
 
-            public RoomSectorShape(short[] edgeArray, Room.RoomConnectionType portalType, bool splitDirectionWithDiagonalSplit, DiagonalSplit diagonalSplitType, bool wall)
+            public RoomSectorShape(BlockSurface surface, Room.RoomConnectionType portalType, bool wall)
             {
-                HeightXnZn = edgeArray[Block.FaceXnZn];
-                HeightXpZn = edgeArray[Block.FaceXpZn];
-                HeightXnZp = edgeArray[Block.FaceXnZp];
-                HeightXpZp = edgeArray[Block.FaceXpZp];
-                SplitDirectionIsXEqualsZ = splitDirectionWithDiagonalSplit;
+                HeightXnZn = surface.XnZn;
+                HeightXpZn = surface.XpZn;
+                HeightXnZp = surface.XnZp;
+                HeightXpZp = surface.XpZp;
+                SplitDirectionIsXEqualsZ = surface.SplitDirectionIsXEqualsZWithDiagonalSplit;
 
                 switch (portalType)
                 {
@@ -588,7 +588,7 @@ namespace TombLib.LevelData.Compilers
                         throw new ArgumentOutOfRangeException();
                 }
 
-                switch (diagonalSplitType)
+                switch (surface.DiagonalSplit)
                 {
                     case DiagonalSplit.None:
                         DiagonalStep = 0;
@@ -596,18 +596,18 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XnZn:
-                        DiagonalStep = edgeArray[Block.FaceXpZp] - edgeArray[Block.FaceXnZp];
+                        DiagonalStep = surface.XpZp - surface.XnZp;
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XnZp:
-                        DiagonalStep = edgeArray[Block.FaceXpZn] - edgeArray[Block.FaceXpZp];
+                        DiagonalStep = surface.XpZn - surface.XpZp;
 
                         SplitWallFirst = wall;
                         SplitWallSecond = false;
                         break;
                     case DiagonalSplit.XpZn:
-                        DiagonalStep = edgeArray[Block.FaceXnZp] - edgeArray[Block.FaceXnZn];
+                        DiagonalStep = surface.XnZp - surface.XnZn;
                         HeightXnZn += DiagonalStep;
                         HeightXpZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;
@@ -616,7 +616,7 @@ namespace TombLib.LevelData.Compilers
                         SplitWallSecond = wall;
                         break;
                     case DiagonalSplit.XpZp:
-                        DiagonalStep = edgeArray[Block.FaceXnZn] - edgeArray[Block.FaceXpZn];
+                        DiagonalStep = surface.XnZn - surface.XpZn;
                         HeightXpZn += DiagonalStep;
                         HeightXnZp += DiagonalStep;
                         DiagonalStep = -DiagonalStep;

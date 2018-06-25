@@ -263,19 +263,19 @@ namespace TombLib.LevelData.IO
                                         chunkIO.WriteChunkInt(Prj2Chunks.SectorProperties, combinedFlag);
                                         chunkIO.WriteChunk(Prj2Chunks.SectorFloor, () =>
                                         {
-                                            long flag = (b.FloorSplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.FloorDiagonalSplit << 1);
+                                            long flag = (b.Floor.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Floor.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.QA[n]);
+                                                LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(n));
                                             for (int n = 0; n < 4; n++)
                                                 LEB128.Write(chunkIO.Raw, b.ED[n]);
                                         }, LEB128.MaximumSize1Byte);
                                         chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, () =>
                                         {
-                                            long flag = (b.CeilingSplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.CeilingDiagonalSplit << 1);
+                                            long flag = (b.Ceiling.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Ceiling.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
                                             for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.WS[n]);
+                                                LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(n));
                                             for (int n = 0; n < 4; n++)
                                                 LEB128.Write(chunkIO.Raw, b.RF[n]);
                                         }, LEB128.MaximumSize1Byte);

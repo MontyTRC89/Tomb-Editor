@@ -37,9 +37,9 @@ namespace TombEditor
                             var b = editor.SelectedRoom.Blocks[currX, currZ];
 
                             for (int i = 0; i < 4; i++)
-                                writer.Write(b.QA[i]);
+                                writer.Write(b.Floor.GetHeight(i));
                             for (int i = 0; i < 4; i++)
-                                writer.Write(b.WS[i]);
+                                writer.Write(b.Ceiling.GetHeight(i));
                             for (int i = 0; i < 4; i++)
                                 writer.Write(b.ED[i]);
                             for (int i = 0; i < 4; i++)
@@ -47,12 +47,12 @@ namespace TombEditor
 
                             writer.Write((int)b.Type);
                             writer.Write(b.ForceFloorSolid);
-                            writer.Write(b.FloorSplitDirectionToggled);
-                            writer.Write(b.FloorSplitDirectionIsXEqualsZ);
-                            writer.Write((int)b.FloorDiagonalSplit);
-                            writer.Write(b.CeilingSplitDirectionToggled);
-                            writer.Write(b.CeilingSplitDirectionIsXEqualsZ);
-                            writer.Write((int)b.CeilingDiagonalSplit);
+                            writer.Write(b.Floor.SplitDirectionToggled);
+                            writer.Write(b.Floor.SplitDirectionIsXEqualsZ);
+                            writer.Write((int)b.Floor.DiagonalSplit);
+                            writer.Write(b.Ceiling.SplitDirectionToggled);
+                            writer.Write(b.Ceiling.SplitDirectionIsXEqualsZ);
+                            writer.Write((int)b.Ceiling.DiagonalSplit);
                             writer.Write((int)b.Flags);
                         }
                 }
@@ -78,9 +78,9 @@ namespace TombEditor
                             var b = sectors[x, z] = new Block(0, 12);
 
                             for (int i = 0; i < 4; i++)
-                                b.QA[i] = reader.ReadInt16();
+                                b.Floor.SetHeight(i, reader.ReadInt16());
                             for (int i = 0; i < 4; i++)
-                                b.WS[i] = reader.ReadInt16();
+                                b.Ceiling.SetHeight(i, reader.ReadInt16());
                             for (int i = 0; i < 4; i++)
                                 b.ED[i] = reader.ReadInt16();
                             for (int i = 0; i < 4; i++)
@@ -88,12 +88,12 @@ namespace TombEditor
 
                             b.Type = (BlockType)reader.ReadInt32();
                             b.ForceFloorSolid = reader.ReadBoolean();
-                            b.FloorSplitDirectionToggled = reader.ReadBoolean();
-                            b.FloorSplitDirectionIsXEqualsZ = reader.ReadBoolean();
-                            b.FloorDiagonalSplit = (DiagonalSplit)reader.ReadInt32();
-                            b.CeilingSplitDirectionToggled = reader.ReadBoolean();
-                            b.CeilingSplitDirectionIsXEqualsZ = reader.ReadBoolean();
-                            b.CeilingDiagonalSplit = (DiagonalSplit)reader.ReadInt32();
+                            b.Floor.SplitDirectionToggled = reader.ReadBoolean();
+                            b.Floor.SplitDirectionIsXEqualsZ = reader.ReadBoolean();
+                            b.Floor.DiagonalSplit = (DiagonalSplit)reader.ReadInt32();
+                            b.Ceiling.SplitDirectionToggled = reader.ReadBoolean();
+                            b.Ceiling.SplitDirectionIsXEqualsZ = reader.ReadBoolean();
+                            b.Ceiling.DiagonalSplit = (DiagonalSplit)reader.ReadInt32();
                             b.Flags = (BlockFlags)reader.ReadInt32();
 
                             sectors[x, z] = b;
