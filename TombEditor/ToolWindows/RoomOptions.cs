@@ -129,13 +129,13 @@ namespace TombEditor.ToolWindows
                 else
                 { // Change flipped map number, not much to do here
                     if (room.AlternateGroup != alternateGroupIndex &&
-                        room.AlternateVersion.AlternateGroup != alternateGroupIndex)
+                        room.AlternateOpposite.AlternateGroup != alternateGroupIndex)
                     {
 
                         room.AlternateGroup = alternateGroupIndex;
-                        room.AlternateVersion.AlternateGroup = alternateGroupIndex;
+                        room.AlternateOpposite.AlternateGroup = alternateGroupIndex;
                         _editor.RoomPropertiesChange(room);
-                        _editor.RoomPropertiesChange(room.AlternateVersion);
+                        _editor.RoomPropertiesChange(room.AlternateOpposite);
                     }
                 }
             }

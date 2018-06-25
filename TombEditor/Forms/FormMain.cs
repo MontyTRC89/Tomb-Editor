@@ -444,7 +444,7 @@ namespace TombEditor.Forms
                 case Keys.Q:
                     int qDirection = KeyboardLayoutDetector.KeyboardLayout == KeyboardLayout.Azerty ? -1 : 1;
                     if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)(qDirection * (shift ? 4 : 1)), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, (short)(qDirection * (shift ? 4 : 1)), alt);
                     else if (_editor.SelectedObject is PositionBasedObjectInstance && focused)
                         EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, qDirection * 256, 0), new Vector3(), true);
                     break;
@@ -452,7 +452,7 @@ namespace TombEditor.Forms
                 case Keys.A:
                     int aDirection = KeyboardLayoutDetector.KeyboardLayout == KeyboardLayout.Azerty ? 1 : -1;
                     if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)(aDirection * (shift ? 4 : 1)), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, (short)(aDirection * (shift ? 4 : 1)), alt);
                     else if (_editor.SelectedObject is PositionBasedObjectInstance && focused)
                         EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, -256, 0), new Vector3(), true);
                     break;
@@ -465,36 +465,36 @@ namespace TombEditor.Forms
                             break;
                         default:
                             if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(shift ? 4 : 1), alt);
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, (short)(shift ? 4 : 1), alt);
                             break;
                     }
                     break;
 
                 case Keys.S:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)-(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, (short)-(shift ? 4 : 1), alt);
                     break;
 
                 case Keys.E:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 2, (short)(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, (short)(shift ? 4 : 1), alt);
                     break;
 
                 case Keys.D:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 2, (short)-(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, (short)-(shift ? 4 : 1), alt);
                     break;
 
                 case Keys.R: // Rotate object
                     if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, (short)(shift ? 4 : 1), alt);
                     else if (_editor.SelectedObject != null && focused)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, shift ? 5.0f : 45.0f);
                     break;
 
                 case Keys.F:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)-(shift ? 4 : 1), alt);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, (short)-(shift ? 4 : 1), alt);
                     break;
 
                 case Keys.Y:
@@ -505,7 +505,7 @@ namespace TombEditor.Forms
                             break;
                         default:
                             if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Floor, (short)(shift ? 4 : 1), alt, true);
                             break;
                     }
                     break;
@@ -515,11 +515,11 @@ namespace TombEditor.Forms
                     {
                         case KeyboardLayout.Qwertz:
                             if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 0, (short)(shift ? 4 : 1), alt, true);
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Floor, (short)(shift ? 4 : 1), alt, true);
                             break;
                         case KeyboardLayout.Azerty:
                             if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(shift ? 4 : 1), alt);
+                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, (short)(shift ? 4 : 1), alt);
                             break;
                         default:
                             _pressedMoveCameraKey = true;
@@ -529,15 +529,15 @@ namespace TombEditor.Forms
 
                 case Keys.H:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 0, (short)-(shift ? 4 : 1), alt, true);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Floor, (short)-(shift ? 4 : 1), alt, true);
                     break;
                 case Keys.U:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 1, (short)(shift ? 4 : 1), alt, true);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Ceiling, (short)(shift ? 4 : 1), alt, true);
                     break;
                 case Keys.J:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, 1, (short)-(shift ? 4 : 1), alt, true);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Ceiling, (short)-(shift ? 4 : 1), alt, true);
                     break;
 
                 case Keys.OemMinus: // US keyboard key in documentation
@@ -795,84 +795,84 @@ namespace TombEditor.Forms
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, 0);
+            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Floor);
         }
 
         private void smoothRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, 0);
+            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Floor);
         }
 
         private void smoothRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, 1);
+            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
         }
 
         private void smoothRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, 1);
+            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
         }
 
         private void sharpRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, 0);
+            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Floor);
         }
 
         private void sharpRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, 0);
+            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Floor);
         }
 
         private void sharpRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, 1);
+            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
         }
 
         private void sharpRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, 1);
+            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
         }
 
         private void butFlattenFloor_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, 0);
+            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Floor);
         }
 
         private void butFlattenCeiling_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
+            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Ceiling);
         }
 
         private void flattenFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, 0);
+            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Floor);
         }
 
         private void flattenCeilingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
+            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Ceiling);
         }
 
         private void gridWallsIn3ToolStripMenuItem_Click(object sender, EventArgs e)

@@ -36,14 +36,9 @@ namespace TombEditor
                             var currZ = selection.Area.Y0 + z;
                             var b = editor.SelectedRoom.Blocks[currX, currZ];
 
-                            for (int i = 0; i < 4; i++)
-                                writer.Write(b.Floor.GetHeight(i));
-                            for (int i = 0; i < 4; i++)
-                                writer.Write(b.Ceiling.GetHeight(i));
-                            for (int i = 0; i < 4; i++)
-                                writer.Write(b.ED[i]);
-                            for (int i = 0; i < 4; i++)
-                                writer.Write(b.RF[i]);
+                            for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                    writer.Write((short)b.GetHeight(vertical, edge));
 
                             writer.Write((int)b.Type);
                             writer.Write(b.ForceFloorSolid);
@@ -77,14 +72,9 @@ namespace TombEditor
                         {
                             var b = sectors[x, z] = new Block(0, 12);
 
-                            for (int i = 0; i < 4; i++)
-                                b.Floor.SetHeight(i, reader.ReadInt16());
-                            for (int i = 0; i < 4; i++)
-                                b.Ceiling.SetHeight(i, reader.ReadInt16());
-                            for (int i = 0; i < 4; i++)
-                                b.ED[i] = reader.ReadInt16();
-                            for (int i = 0; i < 4; i++)
-                                b.RF[i] = reader.ReadInt16();
+                            for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+                                for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                    b.SetHeight(vertical, edge, reader.ReadInt16());
 
                             b.Type = (BlockType)reader.ReadInt32();
                             b.ForceFloorSolid = reader.ReadBoolean();

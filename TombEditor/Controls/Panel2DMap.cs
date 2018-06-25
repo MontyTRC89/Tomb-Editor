@@ -316,9 +316,9 @@ namespace TombEditor.Controls
                         IEnumerable<Room> connectedRooms = _editor.Level.GetConnectedRooms(clickedRoom);
                         connectedRooms = WinFormsUtils.BoolCombine(_editor.SelectedRooms, _editor.Level.GetConnectedRooms(clickedRoom), ModifierKeys);
                         connectedRooms = // Don't use the currently clicked room because it was already processed with the previous single click.
-                            _editor.SelectedRooms.Where(room => room == clickedRoom || room == clickedRoom.AlternateVersion)
+                            _editor.SelectedRooms.Where(room => room == clickedRoom || room == clickedRoom.AlternateOpposite)
                             .Concat(
-                                connectedRooms.Where(room => room != clickedRoom && room != clickedRoom.AlternateVersion));
+                                connectedRooms.Where(room => room != clickedRoom && room != clickedRoom.AlternateOpposite));
                         _editor.SelectRoomsAndResetCamera(connectedRooms);
                     }
                     _selectionArea = null;

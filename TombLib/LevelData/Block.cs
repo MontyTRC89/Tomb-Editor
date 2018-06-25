@@ -31,7 +31,6 @@ namespace TombLib.LevelData
         ClimbAny = ClimbPositiveZ | ClimbNegativeZ | ClimbPositiveX | ClimbNegativeX
     }
 
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum DiagonalSplit : byte
     {
         None = 0,
@@ -41,6 +40,42 @@ namespace TombLib.LevelData
         XnZn = 4
     }
 
+    public enum BlockEdge : byte
+    {
+        /// <summary> Index of edges on the negative X and positive Z direction </summary>
+        XnZp,
+        /// <summary> Index of edges on the positive X and positive Z direction </summary>
+        XpZp,
+        /// <summary> Index of edges on the positive X and negative Z direction </summary>
+        XpZn,
+        /// <summary> Index of edges on the negative X and negative Z direction </summary>
+        XnZn,
+
+        Count
+    }
+
+    public static class BlockEdgeExtensions
+    {
+        public static int DirectionX(this BlockEdge edge) => (edge == BlockEdge.XpZn || edge == BlockEdge.XpZp) ? 1 : 0;
+        public static int DirectionZ(this BlockEdge edge) => (edge == BlockEdge.XnZp || edge == BlockEdge.XpZp) ? 1 : 0;
+    }
+
+    public enum BlockVertical : byte
+    {
+        Floor,
+        Ceiling,
+        Ed,
+        Rf,
+        Count
+    }
+
+    public static class BlockVerticalExtensions
+    {
+        public static bool IsOnFloor(this BlockVertical vertical) => vertical == BlockVertical.Floor || vertical == BlockVertical.Ed;
+        public static bool IsOnCeiling(this BlockVertical vertical) => vertical == BlockVertical.Ceiling || vertical == BlockVertical.Rf;
+    }
+
+
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum BlockFace : byte
     {
@@ -49,7 +84,9 @@ namespace TombLib.LevelData
         PositiveZ_Middle = 10, NegativeZ_Middle = 11, NegativeX_Middle = 12, PositiveX_Middle = 13, DiagonalMiddle = 14,
         PositiveZ_WS = 15, NegativeZ_WS = 16, NegativeX_WS = 17, PositiveX_WS = 18, DiagonalWS = 19,
         PositiveZ_RF = 20, NegativeZ_RF = 21, NegativeX_RF = 22, PositiveX_RF = 23, DiagonalRF = 24,
-        Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
+        Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28,
+
+        Count
     }
 
     public enum Direction : byte
@@ -74,37 +111,37 @@ namespace TombLib.LevelData
         public short Max => Math.Max(Math.Max(XnZp, XpZp), Math.Max(XpZn, XnZn));
         public short Min => Math.Min(Math.Min(XnZp, XpZp), Math.Min(XpZn, XnZn));
 
-        public short GetHeight(int face)
+        public short GetHeight(BlockEdge edge)
         {
-            switch (face)
+            switch (edge)
             {
-                case Block.EdgeXnZp:
+                case BlockEdge.XnZp:
                     return XnZp;
-                case Block.EdgeXpZp:
+                case BlockEdge.XpZp:
                     return XpZp;
-                case Block.EdgeXpZn:
+                case BlockEdge.XpZn:
                     return XpZn;
-                case Block.EdgeXnZn:
+                case BlockEdge.XnZn:
                     return XnZn;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public void SetHeight(int face, int value)
+        public void SetHeight(BlockEdge edge, int value)
         {
-            switch (face)
+            switch (edge)
             {
-                case Block.EdgeXnZp:
+                case BlockEdge.XnZp:
                     XnZp = checked((short)value);
                     return;
-                case Block.EdgeXpZp:
+                case BlockEdge.XpZp:
                     XpZp = checked((short)value);
                     return;
-                case Block.EdgeXpZn:
+                case BlockEdge.XpZn:
                     XpZn = checked((short)value);
                     return;
-                case Block.EdgeXnZn:
+                case BlockEdge.XnZn:
                     XnZn = checked((short)value);
                     return;
                 default:
@@ -195,26 +232,26 @@ namespace TombLib.LevelData
         }
 
         /// <summary>Returns the height of the 4 edges if the sector is split</summary>
-        public int GetActualMax(int edge)
+        public int GetActualMax(BlockEdge edge)
         {
             switch (DiagonalSplit)
             {
                 case DiagonalSplit.None:
                     return GetHeight(edge);
                 case DiagonalSplit.XnZn:
-                    if (edge == Block.EdgeXnZp || edge == Block.EdgeXpZn)
+                    if (edge == BlockEdge.XnZp || edge == BlockEdge.XpZn)
                         return Math.Max(GetHeight(edge), XpZp);
                     return GetHeight(edge);
                 case DiagonalSplit.XpZp:
-                    if (edge == Block.EdgeXnZp || edge == Block.EdgeXpZn)
+                    if (edge == BlockEdge.XnZp || edge == BlockEdge.XpZn)
                         return Math.Max(GetHeight(edge), XnZn);
                     return GetHeight(edge);
                 case DiagonalSplit.XpZn:
-                    if (edge == Block.EdgeXpZp || edge == Block.EdgeXnZn)
+                    if (edge == BlockEdge.XpZp || edge == BlockEdge.XnZn)
                         return Math.Max(GetHeight(edge), XnZp);
                     return GetHeight(edge);
                 case DiagonalSplit.XnZp:
-                    if (edge == Block.EdgeXpZp || edge == Block.EdgeXnZn)
+                    if (edge == BlockEdge.XpZp || edge == BlockEdge.XnZn)
                         return Math.Max(GetHeight(edge), XpZn);
                     return GetHeight(edge);
                 default:
@@ -223,28 +260,28 @@ namespace TombLib.LevelData
         }
 
         /// <summary>Returns the height of the 4 edges if the sector is split</summary>
-        public int GetActualMin(int face)
+        public int GetActualMin(BlockEdge edge)
         {
             switch (DiagonalSplit)
             {
                 case DiagonalSplit.None:
-                    return GetHeight(face);
+                    return GetHeight(edge);
                 case DiagonalSplit.XnZn:
-                    if (face == Block.EdgeXnZp || face == Block.EdgeXpZn)
-                        return Math.Min(GetHeight(face), XpZp);
-                    return GetHeight(face);
+                    if (edge == BlockEdge.XnZp || edge == BlockEdge.XpZn)
+                        return Math.Min(GetHeight(edge), XpZp);
+                    return GetHeight(edge);
                 case DiagonalSplit.XpZp:
-                    if (face == Block.EdgeXnZp || face == Block.EdgeXpZn)
-                        return Math.Min(GetHeight(face), XnZn);
-                    return GetHeight(face);
+                    if (edge == BlockEdge.XnZp || edge == BlockEdge.XpZn)
+                        return Math.Min(GetHeight(edge), XnZn);
+                    return GetHeight(edge);
                 case DiagonalSplit.XpZn:
-                    if (face == Block.EdgeXpZp || face == Block.EdgeXnZn)
-                        return Math.Min(GetHeight(face), XnZp);
-                    return GetHeight(face);
+                    if (edge == BlockEdge.XpZp || edge == BlockEdge.XnZn)
+                        return Math.Min(GetHeight(edge), XnZp);
+                    return GetHeight(edge);
                 case DiagonalSplit.XnZp:
-                    if (face == Block.EdgeXpZp || face == Block.EdgeXnZn)
-                        return Math.Min(GetHeight(face), XpZn);
-                    return GetHeight(face);
+                    if (edge == BlockEdge.XpZp || edge == BlockEdge.XnZn)
+                        return Math.Min(GetHeight(edge), XpZn);
+                    return GetHeight(edge);
                 default:
                     throw new ApplicationException("\"splitType\" in unknown state.");
             }
@@ -256,32 +293,12 @@ namespace TombLib.LevelData
     {
         public static Block Empty { get; } = new Block();
 
-        public const BlockFace FaceCount = (BlockFace)29;
-
-        /// <summary> Index of edges on the negative X and positive Z direction </summary>
-        public const int EdgeXnZp = 0;
-        /// <summary> Index of edges on the positive X and positive Z direction </summary>
-        public const int EdgeXpZp = 1;
-        /// <summary> Index of edges on the positive X and negative Z direction </summary>
-        public const int EdgeXpZn = 2;
-        /// <summary> Index of edges on the negative X and negative Z direction </summary>
-        public const int EdgeXnZn = 3;
-
-        /// <summary> Maximum normal height for non-slidable slopes </summary>
-        public const float CriticalSlantComponent = 0.8f;
-        /// <summary> The x offset of each face index in [0, 4). </summary>
-        public static readonly int[] FaceX = new[] { 0, 1, 1, 0 };
-        /// <summary> The x offset of each face index in [0, 4). </summary>
-        public static readonly int[] FaceZ = new[] { 1, 1, 0, 0 };
-
         public BlockType Type { get; set; } = BlockType.Floor;
         public BlockFlags Flags { get; set; } = BlockFlags.None;
         public bool ForceFloorSolid { get; set; } // If this is set to true, portals are overwritten for this sector.
-        // ReSharper disable once InconsistentNaming
-        public short[] ED { get; } = new short[4];
-        // ReSharper disable once InconsistentNaming
-        public short[] RF { get; } = new short[4];
-        private TextureArea[] _faceTextures { get; } = new TextureArea[(int)FaceCount];
+        private short[] _ed { get; } = new short[4];
+        private short[] _rf { get; } = new short[4];
+        private TextureArea[] _faceTextures { get; } = new TextureArea[(int)BlockFace.Count];
 
         public BlockSurface Floor;
         public BlockSurface Ceiling;
@@ -297,8 +314,8 @@ namespace TombLib.LevelData
         public Block(int floor, int ceiling)
         {
             Floor.XnZp = Floor.XpZp = Floor.XpZn = Floor.XnZn = (short)floor;
-            ED[EdgeXnZp] = ED[EdgeXpZp] = ED[EdgeXpZn] = ED[EdgeXnZn] = (short)floor;
-            RF[EdgeXnZp] = RF[EdgeXpZp] = RF[EdgeXpZn] = RF[EdgeXnZn] = (short)ceiling;
+            _ed[0] = _ed[1] = _ed[2] = _ed[3] = (short)floor;
+            _rf[0] = _rf[0] = _rf[2] = _rf[3] = (short)ceiling;
             Ceiling.XnZp = Ceiling.XpZp = Ceiling.XpZn = Ceiling.XnZn = (short)ceiling;
         }
 
@@ -308,18 +325,27 @@ namespace TombLib.LevelData
             result.Type = Type;
             result.Flags = Flags;
             result.ForceFloorSolid = ForceFloorSolid;
-            for (int i = 0; i < (int)FaceCount; i++)
-                result._faceTextures[i] = _faceTextures[i];
+            for (BlockFace face = 0; face < BlockFace.Count; face++)
+                result._faceTextures[(int)face] = _faceTextures[(int)face];
             for (int i = 0; i < 4; i++)
-                result.ED[i] = ED[i];
+                result._ed[i] = _ed[i];
             for (int i = 0; i < 4; i++)
-                result.RF[i] = RF[i];
+                result._rf[i] = _rf[i];
             result.Floor = Floor;
             result.Ceiling = Ceiling;
             return result;
         }
 
         object ICloneable.Clone() => Clone();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HasFlag(BlockFlags flag)
+        {
+            return (Flags & flag) == flag;
+        }
+
+        public bool IsAnyWall => Type != BlockType.Floor;
+        public bool IsAnyPortal => FloorPortal != null || CeilingPortal != null || WallPortal != null;
 
         public bool SetFaceTexture(BlockFace face, TextureArea texture)
         {
@@ -350,112 +376,111 @@ namespace TombLib.LevelData
             }
         }
 
-        public short GetHeight(int verticalSubdivision, int edge)
+        public short GetHeight(BlockVertical vertical, BlockEdge edge)
         {
-            switch (verticalSubdivision)
+            switch (vertical)
             {
-                case 0:
+                case BlockVertical.Floor:
                     return Floor.GetHeight(edge);
-                case 1:
+                case BlockVertical.Ceiling:
                     return Ceiling.GetHeight(edge);
-                case 2:
-                    return ED[edge];
-                case 3:
-                    return RF[edge];
+                case BlockVertical.Ed:
+                    return _ed[(int)edge];
+                case BlockVertical.Rf:
+                    return _rf[(int)edge];
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public void SetHeight(int verticalSubdivision, int edge, int newValue)
+        public void SetHeight(BlockVertical vertical, BlockEdge edge, int newValue)
         {
-            switch (verticalSubdivision)
+            switch (vertical)
             {
-                case 0:
+                case BlockVertical.Floor:
                     Floor.SetHeight(edge, newValue);
                     return;
-                case 1:
+                case BlockVertical.Ceiling:
                     Ceiling.SetHeight(edge, newValue);
                     return;
-                case 2:
-                    ED[edge] = checked((short)newValue);
+                case BlockVertical.Ed:
+                    _ed[(int)edge] = checked((short)newValue);
                     return;
-                case 3:
-                    RF[edge] = checked((short)newValue);
+                case BlockVertical.Rf:
+                    _rf[(int)edge] = checked((short)newValue);
                     return;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public void ChangeHeight(int verticalSubdivision, int edge, short increment)
+        public void ChangeHeight(BlockVertical vertical, BlockEdge edge, int increment)
         {
-            SetHeight(verticalSubdivision, edge, (short)(GetHeight(verticalSubdivision, edge) + increment));
+            SetHeight(vertical, edge, (short)(GetHeight(vertical, edge) + increment));
         }
 
-        public void Raise(int verticalSubdivision, bool diagonalStep, short increment)
+        public void Raise(BlockVertical vertical, bool diagonalStep, int increment)
         {
-            var split = verticalSubdivision == 0 || verticalSubdivision == 2 ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
+            var split = vertical == BlockVertical.Floor || vertical == BlockVertical.Ed ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
             if (diagonalStep)
             {
                 switch (split)
                 {
                     case DiagonalSplit.XpZn:
-                        ChangeHeight(verticalSubdivision, Block.EdgeXnZp, increment);
+                        ChangeHeight(vertical, BlockEdge.XnZp, increment);
                         break;
                     case DiagonalSplit.XnZn:
-                        ChangeHeight(verticalSubdivision, Block.EdgeXpZp, increment);
+                        ChangeHeight(vertical, BlockEdge.XpZp, increment);
                         break;
                     case DiagonalSplit.XnZp:
-                        ChangeHeight(verticalSubdivision, Block.EdgeXpZn, increment);
+                        ChangeHeight(vertical, BlockEdge.XpZn, increment);
                         break;
                     case DiagonalSplit.XpZp:
-                        ChangeHeight(verticalSubdivision, Block.EdgeXnZn, increment);
+                        ChangeHeight(vertical, BlockEdge.XnZn, increment);
                         break;
                 }
             }
             else
             {
-                for (int i = 0; i < 4; i++)
+                for (BlockEdge edge = 0; edge < BlockEdge.Count; edge++)
                 {
-                    if (i == 0 && split == DiagonalSplit.XpZn ||
-                        i == 1 && split == DiagonalSplit.XnZn ||
-                        i == 2 && split == DiagonalSplit.XnZp ||
-                        i == 3 && split == DiagonalSplit.XpZp)
+                    if (edge == BlockEdge.XnZp && split == DiagonalSplit.XpZn ||
+                        edge == BlockEdge.XnZn && split == DiagonalSplit.XnZn ||
+                        edge == BlockEdge.XpZn && split == DiagonalSplit.XnZp ||
+                        edge == BlockEdge.XpZp && split == DiagonalSplit.XpZp)
                         continue;
-                    ChangeHeight(verticalSubdivision, i, increment);
+                    ChangeHeight(vertical, edge, increment);
                 }
             }
         }
 
-        public void RaiseStepWise(int verticalSubdivision, bool diagonalStep, short increment, bool autoSwitch = false)
+        public void RaiseStepWise(BlockVertical vertical, bool diagonalStep, int increment, bool autoSwitch = false)
         {
-            var floor = verticalSubdivision % 2 == 0;
-            var split = floor ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
+            var split = vertical.IsOnFloor() ? Floor.DiagonalSplit : Ceiling.DiagonalSplit;
 
             if (split != DiagonalSplit.None)
             {
-                var stepIsLimited = increment != 0 && increment > 0 == (!floor ^ diagonalStep);
+                var stepIsLimited = increment != 0 && increment > 0 == (vertical.IsOnCeiling() ^ diagonalStep);
 
-                if (split == DiagonalSplit.XpZn && GetHeight(verticalSubdivision, Block.EdgeXnZp) == GetHeight(verticalSubdivision, Block.EdgeXpZp) && stepIsLimited ||
-                    split == DiagonalSplit.XnZn && GetHeight(verticalSubdivision, Block.EdgeXpZp) == GetHeight(verticalSubdivision, Block.EdgeXpZn) && stepIsLimited ||
-                    split == DiagonalSplit.XnZp && GetHeight(verticalSubdivision, Block.EdgeXpZn) == GetHeight(verticalSubdivision, Block.EdgeXnZn) && stepIsLimited ||
-                    split == DiagonalSplit.XpZp && GetHeight(verticalSubdivision, Block.EdgeXnZn) == GetHeight(verticalSubdivision, Block.EdgeXnZp) && stepIsLimited)
+                if (split == DiagonalSplit.XpZn && GetHeight(vertical, BlockEdge.XnZp) == GetHeight(vertical, BlockEdge.XpZp) && stepIsLimited ||
+                    split == DiagonalSplit.XnZn && GetHeight(vertical, BlockEdge.XpZp) == GetHeight(vertical, BlockEdge.XpZn) && stepIsLimited ||
+                    split == DiagonalSplit.XnZp && GetHeight(vertical, BlockEdge.XpZn) == GetHeight(vertical, BlockEdge.XnZn) && stepIsLimited ||
+                    split == DiagonalSplit.XpZp && GetHeight(vertical, BlockEdge.XnZn) == GetHeight(vertical, BlockEdge.XnZp) && stepIsLimited)
                 {
                     if (IsAnyWall && autoSwitch)
-                        Raise(verticalSubdivision, !diagonalStep, increment);
+                        Raise(vertical, !diagonalStep, increment);
                     else
                     {
                         if (autoSwitch)
                         {
-                            Transform(new RectTransformation { QuadrantRotation = 2 }, floor);
-                            Raise(verticalSubdivision, !diagonalStep, increment);
+                            Transform(new RectTransformation { QuadrantRotation = 2 }, vertical.IsOnFloor());
+                            Raise(vertical, !diagonalStep, increment);
                         }
                         return;
                     }
                 }
             }
-            Raise(verticalSubdivision, diagonalStep, increment);
+            Raise(vertical, diagonalStep, increment);
         }
 
         public enum FaceShape
@@ -546,7 +571,7 @@ namespace TombLib.LevelData
                 bool requiredFloorSplitDirectionIsXEqualsZ = Floor.SplitDirectionIsXEqualsZ != diagonalChange;
                 Floor.DiagonalSplit = TransformDiagonalSplit(Floor.DiagonalSplit, transformation);
                 transformation.TransformValueDiagonalQuad(ref Floor.XpZp, ref Floor.XnZp, ref Floor.XnZn, ref Floor.XpZn);
-                transformation.TransformValueDiagonalQuad(ref ED[EdgeXpZp], ref ED[EdgeXnZp], ref ED[EdgeXnZn], ref ED[EdgeXpZn]);
+                transformation.TransformValueDiagonalQuad(ref _ed[(int)BlockEdge.XpZp], ref _ed[(int)BlockEdge.XnZp], ref _ed[(int)BlockEdge.XnZn], ref _ed[(int)BlockEdge.XpZn]);
                 if (requiredFloorSplitDirectionIsXEqualsZ != Floor.SplitDirectionIsXEqualsZ)
                     Floor.SplitDirectionToggled = !Floor.SplitDirectionToggled;
             }
@@ -556,7 +581,7 @@ namespace TombLib.LevelData
                 bool requiredCeilingSplitDirectionIsXEqualsZ = Ceiling.SplitDirectionIsXEqualsZ != diagonalChange;
                 Ceiling.DiagonalSplit = TransformDiagonalSplit(Ceiling.DiagonalSplit, transformation);
                 transformation.TransformValueDiagonalQuad(ref Ceiling.XpZp, ref Ceiling.XnZp, ref Ceiling.XnZn, ref Ceiling.XpZn);
-                transformation.TransformValueDiagonalQuad(ref RF[EdgeXpZp], ref RF[EdgeXnZp], ref RF[EdgeXnZn], ref RF[EdgeXpZn]);
+                transformation.TransformValueDiagonalQuad(ref _rf[(int)BlockEdge.XpZp], ref _rf[(int)BlockEdge.XnZp], ref _rf[(int)BlockEdge.XnZn], ref _rf[(int)BlockEdge.XpZn]);
                 if (requiredCeilingSplitDirectionIsXEqualsZ != Ceiling.SplitDirectionIsXEqualsZ)
                     Ceiling.SplitDirectionToggled = !Ceiling.SplitDirectionToggled;
             }
@@ -685,20 +710,20 @@ namespace TombLib.LevelData
             }
         }
 
-        public void FixHeights(int verticalSubdivision = -1)
+        public void FixHeights(BlockVertical? vertical = null)
         {
-            for (int i = 0; i < 4; i++)
+            for (BlockEdge i = 0; i < BlockEdge.Count; i++)
             {
-                ED[i] = Math.Min(ED[i], Floor.GetHeight(i));
-                RF[i] = Math.Max(RF[i], Ceiling.GetHeight(i));
+                SetHeight(BlockVertical.Ed, i, Math.Min(GetHeight(BlockVertical.Ed, i), Floor.GetHeight(i)));
+                SetHeight(BlockVertical.Rf, i, Math.Max(GetHeight(BlockVertical.Rf, i), Ceiling.GetHeight(i)));
 
-                if (verticalSubdivision == 0 || verticalSubdivision == 2 || verticalSubdivision == -1)
+                if (vertical == null || vertical.Value.IsOnFloor())
                     if (Floor.DiagonalSplit != DiagonalSplit.None)
                         Floor.SetHeight(i, Math.Min(Floor.GetHeight(i), Ceiling.Min));
                     else
                         Floor.SetHeight(i, Math.Min(Floor.GetHeight(i), Ceiling.GetHeight(i)));
 
-                if (verticalSubdivision == 1 || verticalSubdivision == 3 || verticalSubdivision == -1)
+                if (vertical == null || vertical.Value.IsOnCeiling())
                     if (Ceiling.DiagonalSplit != DiagonalSplit.None)
                         Ceiling.SetHeight(i, Math.Max(Ceiling.GetHeight(i), Floor.Max));
                     else
@@ -754,6 +779,8 @@ namespace TombLib.LevelData
 
         public Direction[] GetFloorTriangleSlopeDirections()
         {
+            const float CriticalSlantYComponent = 0.8f;
+
             var normals = GetFloorTriangleNormals();
 
             // Initialize slope directions as unslidable by default (EntireFace means unslidable in our case).
@@ -764,7 +791,7 @@ namespace TombLib.LevelData
             {
                 for (int i = 0; i < (Floor.IsQuad ? 1 : 2); i++) // If floor is quad, we don't solve second triangle
                 {
-                    if (Math.Abs(normals[i].Y) <= CriticalSlantComponent) // Triangle is slidable
+                    if (Math.Abs(normals[i].Y) <= CriticalSlantYComponent) // Triangle is slidable
                     {
                         bool angleNotDefined = true;
                         var angle = (float)(Math.Atan2(normals[i].X, normals[i].Z) * (180 / Math.PI));
@@ -849,14 +876,5 @@ namespace TombLib.LevelData
 
             return slopeDirections;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool HasFlag(BlockFlags flag)
-        {
-            return (Flags & flag) == flag;
-        }
-
-        public bool IsAnyWall => Type != BlockType.Floor;
-        public bool IsAnyPortal => FloorPortal != null || CeilingPortal != null || WallPortal != null;
     }
 }

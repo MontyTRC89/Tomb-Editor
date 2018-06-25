@@ -248,7 +248,7 @@ namespace TombLib.LevelData
         }
 
         public bool Flipped => AlternateRoom != null || AlternateBaseRoom != null;
-        public Room AlternateVersion => AlternateRoom ?? AlternateBaseRoom;
+        public Room AlternateOpposite => AlternateRoom ?? AlternateBaseRoom;
         public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
         public RectangleInt2 WorldArea => new RectangleInt2(Position.X, Position.Z, Position.X + NumXSectors - 1, Position.Z + NumZSectors - 1);
         public RectangleInt2 LocalArea => new RectangleInt2(0, 0, NumXSectors - 1, NumZSectors - 1);
@@ -257,7 +257,7 @@ namespace TombLib.LevelData
             get
             {
                 yield return this;
-                Room alternateVersion = AlternateVersion;
+                Room alternateVersion = AlternateOpposite;
                 if (alternateVersion != null)
                     yield return alternateVersion;
             }
@@ -338,6 +338,20 @@ namespace TombLib.LevelData
             return GetBlockTry(pos.X, pos.Y);
         }
 
+        ///<param name="x">The X-coordinate. The point at room.Position is it at (0, 0)</param>
+        ///<param name="z">The Z-coordinate. The point at room.Position is it at (0, 0)</param>
+        public List<int> GetHeightsAtPoint(int x, int z, BlockVertical vertical)
+        {
+            List<int> values = new List<int>();
+            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+            {
+                Block block = GetBlockTry(x - edge.DirectionX(), z - edge.DirectionZ());
+                if (block != null && !block.IsAnyWall)
+                    values.Add(block.GetHeight(vertical, edge));
+            }
+            return values;
+        }
+
         public struct RoomBlockPair
         {
             public Room Room { get; set; }
@@ -382,45 +396,44 @@ namespace TombLib.LevelData
         }
         public RoomBlockPair GetBlockTryThroughPortal(int x, int z) => GetBlockTryThroughPortal(new VectorInt2(x, z));
 
-        public void ModifyHeightThroughPortal(int x, int z, int verticalSubdivision, short increment, RectangleInt2 area)
+        public void ModifyHeightThroughPortal(int x, int z, BlockVertical vertical, int increment, RectangleInt2 area)
         {
-            bool floor = verticalSubdivision % 2 == 0;
             if (x <= 0 || z <= 0 || x >= NumXSectors || z >= NumZSectors)
                 return;
 
             if (area.Contains(new VectorInt2(x, z)))
             {
-                if (floor && Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None || !floor && Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None)
+                if (vertical.IsOnFloor() && Blocks[x, z].Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && Blocks[x, z].Ceiling.DiagonalSplit == DiagonalSplit.None)
                 {
-                    Blocks[x, z].ChangeHeight(verticalSubdivision, Block.EdgeXnZn, increment);
-                    Blocks[x, z].FixHeights(verticalSubdivision);
+                    Blocks[x, z].ChangeHeight(vertical, BlockEdge.XnZn, increment);
+                    Blocks[x, z].FixHeights(vertical);
                 }
             }
             if (area.Contains(new VectorInt2(x - 1, z)))
             {
                 var adjacentLeftBlock = GetBlockTry(x - 1, z);
-                if (adjacentLeftBlock != null && (floor && adjacentLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || !floor && adjacentLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
+                if (adjacentLeftBlock != null && (vertical.IsOnFloor() && adjacentLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && adjacentLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
                 {
-                    adjacentLeftBlock.ChangeHeight(verticalSubdivision, Block.EdgeXpZn, increment);
-                    adjacentLeftBlock.FixHeights(verticalSubdivision);
+                    adjacentLeftBlock.ChangeHeight(vertical, BlockEdge.XpZn, increment);
+                    adjacentLeftBlock.FixHeights(vertical);
                 }
             }
             if (area.Contains(new VectorInt2(x, z - 1)))
             {
                 var adjacentBottomBlock = GetBlockTry(x, z - 1);
-                if (adjacentBottomBlock != null && (floor && adjacentBottomBlock.Floor.DiagonalSplit == DiagonalSplit.None || !floor && adjacentBottomBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
+                if (adjacentBottomBlock != null && (vertical.IsOnFloor() && adjacentBottomBlock.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && adjacentBottomBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
                 {
-                    adjacentBottomBlock.ChangeHeight(verticalSubdivision, Block.EdgeXnZp, increment);
-                    adjacentBottomBlock.FixHeights(verticalSubdivision);
+                    adjacentBottomBlock.ChangeHeight(vertical, BlockEdge.XnZp, increment);
+                    adjacentBottomBlock.FixHeights(vertical);
                 }
             }
             if (area.Contains(new VectorInt2(x - 1, z - 1)))
             {
                 var adjacentBottomLeftBlock = GetBlockTry(x - 1, z - 1);
-                if (adjacentBottomLeftBlock != null && (floor && adjacentBottomLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || !floor && adjacentBottomLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
+                if (adjacentBottomLeftBlock != null && (vertical.IsOnFloor() && adjacentBottomLeftBlock.Floor.DiagonalSplit == DiagonalSplit.None || vertical.IsOnCeiling() && adjacentBottomLeftBlock.Ceiling.DiagonalSplit == DiagonalSplit.None))
                 {
-                    adjacentBottomLeftBlock.ChangeHeight(verticalSubdivision, Block.EdgeXpZp, increment);
-                    adjacentBottomLeftBlock.FixHeights(verticalSubdivision);
+                    adjacentBottomLeftBlock.ChangeHeight(vertical, BlockEdge.XpZp, increment);
+                    adjacentBottomLeftBlock.FixHeights(vertical);
                 }
             }
         }
@@ -459,21 +472,21 @@ namespace TombLib.LevelData
                     continue;
 
                 RoomBlockPair lookupBlock;
-                short[] heightsToCompare;
-                short[] heightsToCheck;
+                BlockEdge[] heightsToCompare;
+                BlockEdge[] heightsToCheck;
 
                 switch (slopeDirections[i])
                 {
                     case Direction.PositiveZ:
                         lookupBlock = GetBlockTryThroughPortal(x, z + 1);
-                        heightsToCompare = new short[2] { 0, 1 };
-                        heightsToCheck = new short[2] { 3, 2 };
+                        heightsToCompare = new BlockEdge[2] { BlockEdge.XnZp, BlockEdge.XpZp };
+                        heightsToCheck = new BlockEdge[2] { BlockEdge.XnZn, BlockEdge.XpZn };
                         break;
 
                     case Direction.NegativeZ:
                         lookupBlock = GetBlockTryThroughPortal(x, z - 1);
-                        heightsToCompare = new short[2] { 2, 3 };
-                        heightsToCheck = new short[2] { 1, 0 };
+                        heightsToCompare = new BlockEdge[2] { BlockEdge.XpZn, BlockEdge.XnZn };
+                        heightsToCheck = new BlockEdge[2] { BlockEdge.XpZp, BlockEdge.XnZp };
                         break;
 
                     // We only need to override east and west diagonal split HeightsToCompare[1] cases, because
@@ -481,14 +494,14 @@ namespace TombLib.LevelData
 
                     case Direction.PositiveX:
                         lookupBlock = GetBlockTryThroughPortal(x + 1, z);
-                        heightsToCompare = new short[2] { 1, (short)(sector.Floor.DiagonalSplit == DiagonalSplit.XnZp ? 1 : 2) };
-                        heightsToCheck = new short[2] { 0, 3 };
+                        heightsToCompare = new BlockEdge[2] { BlockEdge.XpZp, sector.Floor.DiagonalSplit == DiagonalSplit.XnZp ? BlockEdge.XpZp : BlockEdge.XpZn };
+                        heightsToCheck = new BlockEdge[2] { BlockEdge.XnZp, BlockEdge.XnZn };
                         break;
 
                     case Direction.NegativeX:
                         lookupBlock = GetBlockTryThroughPortal(x - 1, z);
-                        heightsToCompare = new short[2] { 3, (short)(sector.Floor.DiagonalSplit == DiagonalSplit.XpZn ? 3 : 0) };
-                        heightsToCheck = new short[2] { 2, 1 };
+                        heightsToCompare = new BlockEdge[2] { BlockEdge.XnZn, sector.Floor.DiagonalSplit == DiagonalSplit.XpZn ? BlockEdge.XnZn : BlockEdge.XnZp };
+                        heightsToCheck = new BlockEdge[2] { BlockEdge.XpZn, BlockEdge.XpZp };
                         break;
                     default:
                         continue;
@@ -527,9 +540,9 @@ namespace TombLib.LevelData
                                 }
                             }
                             else if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
-                                heightsToCheck[0] = 2;
+                                heightsToCheck[0] = BlockEdge.XpZn;
                             else
-                                heightsToCheck[1] = 3;
+                                heightsToCheck[1] = BlockEdge.XnZn;
                             break;
                         case Direction.PositiveX:
                             if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZn ||
@@ -542,9 +555,9 @@ namespace TombLib.LevelData
                                 }
                             }
                             else if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZp)
-                                heightsToCheck[0] = 3;
+                                heightsToCheck[0] = BlockEdge.XnZn;
                             else
-                                heightsToCheck[1] = 0;
+                                heightsToCheck[1] = BlockEdge.XnZp;
                             break;
                         case Direction.NegativeZ:
                             if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZp ||
@@ -557,9 +570,9 @@ namespace TombLib.LevelData
                                 }
                             }
                             else if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
-                                heightsToCheck[0] = 0;
+                                heightsToCheck[0] = BlockEdge.XnZp;
                             else
-                                heightsToCheck[1] = 1;
+                                heightsToCheck[1] = BlockEdge.XpZp;
                             break;
                         case Direction.NegativeX:
                             if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XpZp ||
@@ -572,9 +585,9 @@ namespace TombLib.LevelData
                                 }
                             }
                             else if (lookupBlock.Block.Floor.DiagonalSplit == DiagonalSplit.XnZn)
-                                heightsToCheck[0] = 1;
+                                heightsToCheck[0] = BlockEdge.XpZp;
                             else
-                                heightsToCheck[1] = 2;
+                                heightsToCheck[1] = BlockEdge.XpZn;
                             break;
                     }
                 }
@@ -754,108 +767,6 @@ namespace TombLib.LevelData
                 NumZSectors * (0.5f * 1024.0f));
         }
 
-        private Block GetBlockIfFloor(int x, int z)
-        {
-            Block block = Blocks.TryGet(x, z);
-            if (block != null && block.IsAnyWall)
-                return null;
-            return block;
-        }
-
-        ///<param name="x">The X-coordinate. The point at room.Position it at (0, 0)</param>
-        ///<param name="z">The Z-coordinate. The point at room.Position it at (0, 0)</param>
-        public VerticalSpace? GetHeightAtPoint(int x, int z, Func<float?, float?, float?, float?, float> combineFloor, Func<float?, float?, float?, float?, float> combineCeiling)
-        {
-            Block blockXnZn = GetBlockIfFloor(x - 1, z - 1);
-            Block blockXnZp = GetBlockIfFloor(x - 1, z);
-            Block blockXpZn = GetBlockIfFloor(x, z - 1);
-            Block blockXpZp = GetBlockIfFloor(x, z);
-            if (blockXnZn == null && blockXnZp == null && blockXpZn == null && blockXpZp == null)
-                return null;
-
-            return new VerticalSpace
-            {
-                FloorY = combineFloor(
-                    blockXnZn?.Floor.XpZp,
-                    blockXnZp?.Floor.XpZn,
-                    blockXpZn?.Floor.XnZp,
-                    blockXpZp?.Floor.XnZn),
-                CeilingY = combineCeiling(
-                    blockXnZn?.Ceiling.XpZp,
-                    blockXnZp?.Ceiling.XpZn,
-                    blockXpZn?.Ceiling.XnZp,
-                    blockXpZp?.Ceiling.XnZn)
-            };
-        }
-
-        public VerticalSpace? GetHeightInArea(RectangleInt2 area, Func<float?, float?, float?, float?, float> combineFloor, Func<float?, float?, float?, float?, float> combineCeiling)
-        {
-            VerticalSpace? result = null;
-            for (int x = area.X0; x <= area.X1; x++)
-                for (int z = area.Y0; z <= area.Y1; z++)
-                {
-                    VerticalSpace? verticalSpace = GetHeightAtPoint(x, z, combineFloor, combineCeiling);
-                    if (verticalSpace == null)
-                        continue;
-                    result = new VerticalSpace
-                    {
-                        FloorY = combineFloor(verticalSpace.Value.FloorY, result?.FloorY, null, null),
-                        CeilingY = combineCeiling(verticalSpace.Value.CeilingY, result?.CeilingY, null, null)
-                    };
-                }
-            return result;
-        }
-
-
-        private static float Average(float? Height0, float? Height1, float? Height2, float? Height3)
-        {
-            int Count = (Height0.HasValue ? 1 : 0) + (Height1.HasValue ? 1 : 0) + (Height2.HasValue ? 1 : 0) + (Height3.HasValue ? 1 : 0);
-            float Sum = (Height0 ?? 0) + (Height1 ?? 0) + (Height2 ?? 0) + (Height3 ?? 0);
-            return Sum / Count;
-        }
-
-        private static float Max(float? Height0, float? Height1, float? Height2, float? Height3)
-        {
-            return Math.Max(Math.Max(Height0 ?? float.NegativeInfinity, Height1 ?? float.NegativeInfinity),
-                Math.Max(Height2 ?? float.NegativeInfinity, Height3 ?? float.NegativeInfinity));
-        }
-
-        private static float Min(float? Height0, float? Height1, float? Height2, float? Height3)
-        {
-            return Math.Min(Math.Min(Height0 ?? float.PositiveInfinity, Height1 ?? float.PositiveInfinity),
-                Math.Min(Height2 ?? float.PositiveInfinity, Height3 ?? float.PositiveInfinity));
-        }
-
-        public VerticalSpace? GetHeightAtPointAverage(int x, int z)
-        {
-            return GetHeightAtPoint(x, z, Average, Average);
-        }
-
-        public VerticalSpace? GetHeightAtPointMinSpace(int x, int z)
-        {
-            return GetHeightAtPoint(x, z, Max, Min);
-        }
-
-        public VerticalSpace? GetHeightAtPointMaxSpace(int x, int z)
-        {
-            return GetHeightAtPoint(x, z, Min, Max);
-        }
-
-        public VerticalSpace? GetHeightInAreaAverage(RectangleInt2 area)
-        {
-            return GetHeightInArea(area, Average, Average);
-        }
-
-        public VerticalSpace? GetHeightInAreaMinSpace(RectangleInt2 area)
-        {
-            return GetHeightInArea(area, Max, Min);
-        }
-
-        public VerticalSpace? GetHeightInAreaMaxSpace(RectangleInt2 area)
-        {
-            return GetHeightInArea(area, Min, Max);
-        }
-
         public byte NumXSectors
         {
             get { return (byte)Blocks.GetLength(0); }
@@ -881,8 +792,8 @@ namespace TombLib.LevelData
                 {
                     var b = Blocks[x, z];
                     if (!b.IsAnyWall)
-                        for (int i = 0; i < 4; i++)
-                            lowest = Math.Min(lowest, b.Floor.GetHeight(i));
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                            lowest = Math.Min(lowest, b.Floor.GetHeight(edge));
                 }
 
             // Move room to new position
@@ -893,13 +804,9 @@ namespace TombLib.LevelData
                 for (int x = 0; x < NumXSectors; x++)
                 {
                     var b = Blocks[x, z];
-                    for (int i = 0; i < 4; i++)
-                    {
-                        b.Floor.SetHeight(i, b.Floor.GetHeight(i) - lowest);
-                        b.Ceiling.SetHeight(i, b.Ceiling.GetHeight(i) - lowest);
-                        b.ED[i] -= lowest;
-                        b.RF[i] -= lowest;
-                    }
+                    for (BlockVertical vertical = 0; vertical < BlockVertical.Count; ++vertical)
+                        for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                            b.SetHeight(vertical, edge, b.GetHeight(vertical, edge) - lowest);
                 }
 
             foreach (var instance in _objects)
@@ -1002,12 +909,12 @@ namespace TombLib.LevelData
                 try
                 {
                     addedObjects.Add(AddObjectAndSingularPortal(level, portal));
-                    if (AlternateVersion != null)
-                        addedObjects.Add(AlternateVersion.AddObjectAndSingularPortal(level, portal.Clone()));
+                    if (AlternateOpposite != null)
+                        addedObjects.Add(AlternateOpposite.AddObjectAndSingularPortal(level, portal.Clone()));
 
                     addedObjects.Add(portal.AdjoiningRoom.AddObjectAndSingularPortal(level, oppositePortal));
-                    if (portal.AdjoiningRoom.AlternateVersion != null)
-                        addedObjects.Add(portal.AdjoiningRoom.AlternateVersion.AddObjectAndSingularPortal(level, oppositePortal.Clone()));
+                    if (portal.AdjoiningRoom.AlternateOpposite != null)
+                        addedObjects.Add(portal.AdjoiningRoom.AlternateOpposite.AddObjectAndSingularPortal(level, oppositePortal.Clone()));
                 }
                 catch
                 {
@@ -1032,15 +939,15 @@ namespace TombLib.LevelData
             var portal = instance as PortalInstance;
             if (portal != null)
             {
-                var alternatePortal = portal.FindAlternatePortal(this.AlternateVersion);
+                var alternatePortal = portal.FindAlternatePortal(this.AlternateOpposite);
                 if (alternatePortal != null)
-                    result.Add(AlternateVersion.RemoveObjectAndSingularPortal(level, alternatePortal));
+                    result.Add(AlternateOpposite.RemoveObjectAndSingularPortal(level, alternatePortal));
 
                 var oppositePortal = portal.FindOppositePortal(this);
                 if (oppositePortal != null)
                     result.Add(portal.AdjoiningRoom.RemoveObjectAndSingularPortal(level, oppositePortal));
 
-                var oppositeAlternatePortal = oppositePortal?.FindAlternatePortal(portal.AdjoiningRoom?.AlternateVersion);
+                var oppositeAlternatePortal = oppositePortal?.FindAlternatePortal(portal.AdjoiningRoom?.AlternateOpposite);
                 if (oppositeAlternatePortal != null)
                     result.Add(oppositeAlternatePortal.Room.RemoveObjectAndSingularPortal(level, oppositeAlternatePortal));
             }
@@ -1100,22 +1007,22 @@ namespace TombLib.LevelData
 
         public static IEnumerable<KeyValuePair<Room, Room>> GetPossibleAlternateRoomPairs(Room firstRoom, Room secondRoom, bool lookingFromSecond = false)
         {
-            if (firstRoom.AlternateVersion == null)
+            if (firstRoom.AlternateOpposite == null)
             {
-                if (secondRoom.AlternateVersion == null)
+                if (secondRoom.AlternateOpposite == null)
                     yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
                 else
                 {
                     yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
-                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom.AlternateVersion);
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom.AlternateOpposite);
                 }
             }
             else
             {
-                if (secondRoom.AlternateVersion == null)
+                if (secondRoom.AlternateOpposite == null)
                 {
                     yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
-                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateVersion, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateOpposite, secondRoom);
                 }
                 else if (firstRoom.AlternateGroup == secondRoom.AlternateGroup)
                 {
@@ -1128,9 +1035,9 @@ namespace TombLib.LevelData
                 else
                 {
                     yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
-                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateVersion, secondRoom);
-                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom.AlternateVersion);
-                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateVersion, secondRoom.AlternateVersion);
+                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateOpposite, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom.AlternateOpposite);
+                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateOpposite, secondRoom.AlternateOpposite);
                 }
             }
         }
@@ -1163,10 +1070,10 @@ namespace TombLib.LevelData
                 DiagonalSplit diagonalSplit = aboveDiagonalSplit != DiagonalSplit.None ? aboveDiagonalSplit : belowDiagonalSplit;
                 bool splitXEqualsZ = belowIsQuad ? aboveSplitXEqualsZ : belowSplitXEqualsZ;
 
-                bool matchesAtXnYn = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(Block.EdgeXnZn) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(Block.EdgeXnZn);
-                bool matchesAtXpYn = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(Block.EdgeXpZn) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(Block.EdgeXpZn);
-                bool matchesAtXnYp = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(Block.EdgeXnZp) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(Block.EdgeXnZp);
-                bool matchesAtXpYp = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(Block.EdgeXpZp) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(Block.EdgeXpZp);
+                bool matchesAtXnYn = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(BlockEdge.XnZn) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(BlockEdge.XnZn);
+                bool matchesAtXpYn = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(BlockEdge.XpZn) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(BlockEdge.XpZn);
+                bool matchesAtXnYp = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(BlockEdge.XnZp) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(BlockEdge.XnZp);
+                bool matchesAtXpYp = roomBelow.Position.Y + blockBelow.Ceiling.GetActualMax(BlockEdge.XpZp) == roomAbove.Position.Y + blockAbove.Floor.GetActualMin(BlockEdge.XpZp);
 
                 if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && !(blockAbove.IsAnyWall || blockBelow.IsAnyWall))
                     return RoomConnectionType.FullPortal;
@@ -1349,7 +1256,7 @@ namespace TombLib.LevelData
                     for (int x = 0; x < NumXSectors; ++x)
                     {
                         Block block = Blocks[x, z];
-                        for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                        for (BlockFace face = 0; face < BlockFace.Count; ++face)
                         {
                             TextureArea textureArea = block.GetFaceTexture(face);
                             var sourceTexture = textureArea.Texture as LevelTexture;
@@ -1383,7 +1290,7 @@ namespace TombLib.LevelData
                 for (int x = 0; x < NumXSectors; ++x)
                 {
                     Block block = Blocks[x, z];
-                    for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                    for (BlockFace face = 0; face < BlockFace.Count; ++face)
                         result.Add(block.GetFaceTexture(face).Texture);
                 }
             return result;
@@ -1403,16 +1310,5 @@ namespace TombLib.LevelData
                      }
              }
          }*/
-    }
-
-    public struct VerticalSpace
-    {
-        public float FloorY;
-        public float CeilingY;
-
-        public static VerticalSpace operator +(VerticalSpace old, float offset)
-        {
-            return new VerticalSpace { FloorY = old.FloorY + offset, CeilingY = old.CeilingY + offset };
-        }
     }
 }

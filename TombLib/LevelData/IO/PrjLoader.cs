@@ -670,15 +670,15 @@ namespace TombLib.LevelData.IO
                             block.Ceiling.XnZn = (short)(reader.ReadSByte() + blockYceiling);
                             block.Ceiling.XpZn = (short)(reader.ReadSByte() + blockYceiling);
 
-                            block.ED[Block.EdgeXpZn] = (short)(reader.ReadSByte() + blockYfloor);
-                            block.ED[Block.EdgeXnZn] = (short)(reader.ReadSByte() + blockYfloor);
-                            block.ED[Block.EdgeXnZp] = (short)(reader.ReadSByte() + blockYfloor);
-                            block.ED[Block.EdgeXpZp] = (short)(reader.ReadSByte() + blockYfloor);
+                            block.SetHeight(BlockVertical.Ed, BlockEdge.XpZn, (short)(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.Ed, BlockEdge.XnZn, (short)(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.Ed, BlockEdge.XnZp, (short)(reader.ReadSByte() + blockYfloor));
+                            block.SetHeight(BlockVertical.Ed, BlockEdge.XpZp, (short)(reader.ReadSByte() + blockYfloor));
 
-                            block.RF[Block.EdgeXpZp] = (short)(reader.ReadSByte() + blockYceiling);
-                            block.RF[Block.EdgeXnZp] = (short)(reader.ReadSByte() + blockYceiling);
-                            block.RF[Block.EdgeXnZn] = (short)(reader.ReadSByte() + blockYceiling);
-                            block.RF[Block.EdgeXpZn] = (short)(reader.ReadSByte() + blockYceiling);
+                            block.SetHeight(BlockVertical.Rf, BlockEdge.XpZp, (short)(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.Rf, BlockEdge.XnZp, (short)(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.Rf, BlockEdge.XnZn, (short)(reader.ReadSByte() + blockYceiling));
+                            block.SetHeight(BlockVertical.Rf, BlockEdge.XpZn, (short)(reader.ReadSByte() + blockYceiling));
 
                             if ((blockFlags1 & 0x4000) != 0)
                                 block.Flags |= BlockFlags.Monkey;
@@ -793,8 +793,8 @@ namespace TombLib.LevelData.IO
                         {
                             PrjPortal prjPortal = tempPortals[portalId];
 
-                                // Link to the opposite room
-                                if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
+                            // Link to the opposite room
+                            if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
                             {
                                 progressReporter.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
                                 return;
@@ -802,8 +802,8 @@ namespace TombLib.LevelData.IO
                             Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
                             adjoiningRoom = adjoiningRoom.AlternateBaseRoom ?? adjoiningRoom;
 
-                                // Ignore duplicates from the point of view from bidirectional portals
-                                switch (prjPortal._direction)
+                            // Ignore duplicates from the point of view from bidirectional portals
+                            switch (prjPortal._direction)
                             {
                                 case PortalDirection.Ceiling:
                                 case PortalDirection.WallNegativeX:
@@ -811,13 +811,13 @@ namespace TombLib.LevelData.IO
                                     return;
                             }
 
-                                // Process linking information
-                                portalAreaSuggestions.Add(prjPortal._area);
+                            // Process linking information
+                            portalAreaSuggestions.Add(prjPortal._area);
                             var linkArray = isAlternate ? alternatePortalLinks : basePortalLinks;
                             var currentLink = new KeyValuePair<Room, PortalDirection>(adjoiningRoom, prjPortal._direction);
 
-                                // Add portal link information to sectors
-                                string errorMessage = null;
+                            // Add portal link information to sectors
+                            string errorMessage = null;
                             var collidingLinks = new List<KeyValuePair<Room, PortalDirection>>();
                             for (int z = prjPortal._area.Y0; z <= prjPortal._area.Y1; ++z)
                                 for (int x = prjPortal._area.X0; x <= prjPortal._area.X1; ++x)
@@ -839,8 +839,8 @@ namespace TombLib.LevelData.IO
                                     }
                                 }
 
-                                // Output diagonostics
-                                if (errorMessage != null)
+                            // Output diagonostics
+                            if (errorMessage != null)
                                 progressReporter.ReportWarn(errorMessage);
                         };
                         foreach (var portalId in tempRoom._portals)
@@ -1129,8 +1129,8 @@ namespace TombLib.LevelData.IO
                                 break;
 
                             PortalInstance oppositePortal = portal.FindOppositePortal(room);
-                            PortalInstance alternatePortal = portal.FindAlternatePortal(room.AlternateVersion);
-                            PortalInstance alternateOppositePortal = oppositePortal.FindAlternatePortal(oppositePortal.AdjoiningRoom.AlternateVersion);
+                            PortalInstance alternatePortal = portal.FindAlternatePortal(room.AlternateOpposite);
+                            PortalInstance alternateOppositePortal = oppositePortal.FindAlternatePortal(oppositePortal.AdjoiningRoom.AlternateOpposite);
                             if ((portal?.IsTraversable ?? false) ||
                                 (oppositePortal?.IsTraversable ?? false) ||
                                 (alternatePortal?.IsTraversable ?? false) ||
@@ -1342,9 +1342,9 @@ namespace TombLib.LevelData.IO
                                 ushort index = ((TriggerParameterUshort)parameter).Key;
                                 if (range.IsObject)
                                 {
-                                        // Special lookup for flybys.
-                                        // Triggers marked as flyby can point to a sequence directly instead an object ID
-                                        if (instance.TargetType == TriggerTargetType.FlyByCamera)
+                                    // Special lookup for flybys.
+                                    // Triggers marked as flyby can point to a sequence directly instead an object ID
+                                    if (instance.TargetType == TriggerTargetType.FlyByCamera)
                                     {
                                         if (flyByLookup == null)
                                             flyByLookup = objectLookup.Values
@@ -1357,8 +1357,8 @@ namespace TombLib.LevelData.IO
                                             return foundFlyBy;
                                     }
 
-                                        // Undo object indexing
-                                        PositionBasedObjectInstance @object;
+                                    // Undo object indexing
+                                    PositionBasedObjectInstance @object;
                                     if (!objectLookup.TryGetValue(index, out @object))
                                     {
                                         progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + index + " that is unavailable.");
@@ -1368,8 +1368,8 @@ namespace TombLib.LevelData.IO
                                 }
                                 else if (range.IsRoom)
                                 {
-                                        // Undo room indexing
-                                        Room room3 = level.Rooms.Where(room2 => room2 != null).ElementAtOrDefault(index);
+                                    // Undo room indexing
+                                    Room room3 = level.Rooms.Where(room2 => room2 != null).ElementAtOrDefault(index);
                                     if (room3 == null)
                                     {
                                         progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to a room with ID " + index + " that is unavailable.");
@@ -1572,8 +1572,7 @@ namespace TombLib.LevelData.IO
                                 room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
                             {
                                 if (room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) &&
-                                    room.IsFaceDefined(x, z, BlockFace.NegativeX_ED) ||
-                                    !IsUndefinedButHasArea(room, x, z, BlockFace.NegativeX_QA))
+                                    room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
                                 {
                                     LoadTextureArea(room, x, z, BlockFace.NegativeX_ED, texture, tempTextures, prjBlock._faces[10]);
                                 }
@@ -1582,8 +1581,7 @@ namespace TombLib.LevelData.IO
                             {
                                 if (x > 0)
                                     if (room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
-                                        room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED) ||
-                                        !IsUndefinedButHasArea(room, x - 1, z, BlockFace.PositiveX_QA))
+                                        room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED))
                                     {
                                         LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[10]);
                                     }
@@ -1644,8 +1642,7 @@ namespace TombLib.LevelData.IO
                                 room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
                             {
                                 if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
-                                    room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED) ||
-                                    !IsUndefinedButHasArea(room, x, z, BlockFace.NegativeZ_QA))
+                                    room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
                                 {
                                     LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[12]);
                                 }
@@ -1654,8 +1651,7 @@ namespace TombLib.LevelData.IO
                             {
                                 if (z > 0)
                                     if (room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
-                                        room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED) ||
-                                        !IsUndefinedButHasArea(room, x, z - 1, BlockFace.PositiveZ_QA))
+                                        room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED))
                                     {
                                         LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[12]);
                                     }
@@ -1726,8 +1722,7 @@ namespace TombLib.LevelData.IO
                                     LoadTextureArea(room, x, z, BlockFace.NegativeX_QA, texture, tempTextures, prjBlock._faces[2]);
                                 }
                                 else if (!room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) &&
-                                         room.IsFaceDefined(x, z, BlockFace.NegativeX_ED) &&
-                                         IsUndefinedButHasArea(room, x, z, BlockFace.NegativeX_QA))
+                                         room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
                                 {
                                     LoadTextureArea(room, x, z, BlockFace.NegativeX_ED, texture, tempTextures, prjBlock._faces[2]);
                                 }
@@ -1745,8 +1740,7 @@ namespace TombLib.LevelData.IO
                                         LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_QA, texture, tempTextures, prjBlock._faces[2]);
                                     }
                                     else if (!room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
-                                             room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED) &&
-                                             IsUndefinedButHasArea(room, x - 1, z, BlockFace.PositiveX_QA))
+                                             room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED))
                                     {
                                         LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[2]);
                                     }
@@ -1786,8 +1780,7 @@ namespace TombLib.LevelData.IO
                                     LoadTextureArea(room, x, z, BlockFace.NegativeZ_QA, texture, tempTextures, prjBlock._faces[5]);
                                 }
                                 else if (!room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
-                                         room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED) &&
-                                         IsUndefinedButHasArea(room, x, z, BlockFace.NegativeZ_QA))
+                                         room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
                                 {
                                     LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[5]);
                                 }
@@ -1805,8 +1798,7 @@ namespace TombLib.LevelData.IO
                                         LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_QA, texture, tempTextures, prjBlock._faces[5]);
                                     }
                                     else if (!room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
-                                             room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED) &&
-                                             IsUndefinedButHasArea(room, x, z - 1, BlockFace.PositiveZ_QA))
+                                             room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED))
                                     {
                                         LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[5]);
                                     }
@@ -1844,28 +1836,6 @@ namespace TombLib.LevelData.IO
             Parallel.ForEach(level.Rooms.Where(r => r != null), room => room.BuildGeometry());
             progressReporter.ReportProgress(100, "Level loaded correctly!");
             return level;
-        }
-
-        private static bool IsUndefinedButHasArea(Room room, int x, int z, BlockFace face)
-        {
-            var b = room.Blocks[x, z];
-
-            switch (face)
-            {
-                case BlockFace.PositiveZ_QA:
-                    return !room.IsFaceDefined(x, z, face) && b.Floor.XnZp >= b.ED[0] && b.Floor.XpZp >= b.ED[1] && !(b.Floor.XnZp == b.ED[0] && b.Floor.XpZp == b.ED[1]);
-
-                case BlockFace.NegativeZ_QA:
-                    return !room.IsFaceDefined(x, z, face) && b.Floor.XnZn >= b.ED[3] && b.Floor.XpZn >= b.ED[2] && !(b.Floor.XnZn == b.ED[3] && b.Floor.XpZn == b.ED[2]);
-
-                case BlockFace.NegativeX_QA:
-                    return !room.IsFaceDefined(x, z, face) && b.Floor.XnZn >= b.ED[3] && b.Floor.XnZp >= b.ED[0] && !(b.Floor.XnZn == b.ED[3] && b.Floor.XnZp == b.ED[0]);
-
-                case BlockFace.PositiveX_QA:
-                    return !room.IsFaceDefined(x, z, face) && b.Floor.XpZp >= b.ED[1] && b.Floor.XpZn >= b.ED[2] && !(b.Floor.XpZp == b.ED[1] && b.Floor.XpZn == b.ED[2]);
-            }
-
-            return false;
         }
 
         private static void ProcessTexturedNoCollisions(PortalInstance portal, Room room, PrjRoom tempRoom, int triangle1FaceTexIndex,

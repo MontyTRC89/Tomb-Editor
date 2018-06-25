@@ -34,7 +34,7 @@ namespace TombLib.LevelData
             foreach (Room startingRoom in startingRooms)
             {
                 GetConnectedRoomsRecursively(result, startingRoom);
-                GetConnectedRoomsRecursively(result, startingRoom.AlternateVersion);
+                GetConnectedRoomsRecursively(result, startingRoom.AlternateOpposite);
             }
             return result;
         }
@@ -43,7 +43,7 @@ namespace TombLib.LevelData
         {
             var result = new HashSet<Room>();
             GetConnectedRoomsRecursively(result, startingRoom);
-            GetConnectedRoomsRecursively(result, startingRoom.AlternateVersion);
+            GetConnectedRoomsRecursively(result, startingRoom.AlternateOpposite);
             return result;
         }
 
@@ -66,7 +66,7 @@ namespace TombLib.LevelData
             foreach (var portal in startingRoom.Portals)
             {
                 GetConnectedRoomsRecursively(result, portal.AdjoiningRoom);
-                GetConnectedRoomsRecursively(result, portal.AdjoiningRoom?.AlternateVersion);
+                GetConnectedRoomsRecursively(result, portal.AdjoiningRoom?.AlternateOpposite);
             }
         }
 
@@ -112,8 +112,8 @@ namespace TombLib.LevelData
         public void DeleteRoom(Room room)
         {
             DeleteAlternateRoom(room);
-            if (room.AlternateVersion != null)
-                DeleteAlternateRoom(room.AlternateVersion);
+            if (room.AlternateOpposite != null)
+                DeleteAlternateRoom(room.AlternateOpposite);
         }
 
         public void MergeFrom(Level otherLevel, bool unifyData, Action<LevelSettings> applyLevelSettings = null)
@@ -238,7 +238,7 @@ namespace TombLib.LevelData
             Parallel.ForEach(Rooms.Where(room => room != null), room =>
             {
                 foreach (Block sector in room.Blocks)
-                    for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                    for (BlockFace face = 0; face < BlockFace.Count; ++face)
                     {
                         TextureArea currentTextureArea = sector.GetFaceTexture(face);
                         LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;

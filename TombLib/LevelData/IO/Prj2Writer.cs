@@ -265,21 +265,21 @@ namespace TombLib.LevelData.IO
                                         {
                                             long flag = (b.Floor.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Floor.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
-                                            for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(n));
-                                            for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.ED[n]);
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                LEB128.Write(chunkIO.Raw, b.Floor.GetHeight(edge));
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Ed, edge));
                                         }, LEB128.MaximumSize1Byte);
                                         chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, () =>
                                         {
                                             long flag = (b.Ceiling.SplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.Ceiling.DiagonalSplit << 1);
                                             LEB128.Write(chunkIO.Raw, flag);
-                                            for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(n));
-                                            for (int n = 0; n < 4; n++)
-                                                LEB128.Write(chunkIO.Raw, b.RF[n]);
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                LEB128.Write(chunkIO.Raw, b.Ceiling.GetHeight(edge));
+                                            for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
+                                                LEB128.Write(chunkIO.Raw, b.GetHeight(BlockVertical.Rf, edge));
                                         }, LEB128.MaximumSize1Byte);
-                                        for (BlockFace face = 0; face < Block.FaceCount; face++)
+                                        for (BlockFace face = 0; face < BlockFace.Count; face++)
                                         {
                                             var texture = b.GetFaceTexture(face);
                                             if (texture.Texture == null)
