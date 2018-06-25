@@ -94,7 +94,7 @@ namespace NgXmlBuilder
                 new KeyValuePair<string, string>("West", "-Z direction (south)"),
             };
 
-        private static bool IsSeperator(char @char)
+        private static bool IsSeparator(char @char)
         {
             if (char.IsSeparator(@char))
                 return true;
@@ -128,9 +128,9 @@ namespace NgXmlBuilder
                     string dbgString = name.Substring(Math.Max(0, newIndex - 1));
                     if (newIndex == -1)
                         continue;
-                    if (newIndex != 0 && !IsSeperator(name[newIndex - 1])) // Must be an entire word
+                    if (newIndex != 0 && !IsSeparator(name[newIndex - 1])) // Must be an entire word
                         continue;
-                    if (newIndex != (name.Length - cardinalReplacementTable[i].Key.Length) && !IsSeperator(name[newIndex + cardinalReplacementTable[i].Key.Length])) // Must be an entire word
+                    if (newIndex != (name.Length - cardinalReplacementTable[i].Key.Length) && !IsSeparator(name[newIndex + cardinalReplacementTable[i].Key.Length])) // Must be an entire word
                         continue;
                     if (matchStringIndex != -1 && matchStringIndex <= newIndex) // Discard matches later in the string for now.
                         continue;
