@@ -447,21 +447,21 @@ namespace TombLib.LevelData.IO
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (int j = 0; j < 4; j++)
-                                            block.QA[j] = LEB128.ReadShort(chunkIO.Raw);
+                                            block.Floor.SetHeight(j, LEB128.ReadShort(chunkIO.Raw));
                                         for (int j = 0; j < 4; j++)
                                             block.ED[j] = LEB128.ReadShort(chunkIO.Raw);
-                                        block.FloorSplitDirectionIsXEqualsZ = (flag & 1) != 0;
-                                        block.FloorDiagonalSplit = (DiagonalSplit)(flag >> 1);
+                                        block.Floor.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
+                                        block.Floor.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
                                     else if (id4 == Prj2Chunks.SectorCeiling)
                                     {
                                         long flag = LEB128.ReadLong(chunkIO.Raw);
                                         for (int j = 0; j < 4; j++)
-                                            block.WS[j] = LEB128.ReadShort(chunkIO.Raw);
+                                            block.Ceiling.SetHeight(j, LEB128.ReadShort(chunkIO.Raw));
                                         for (int j = 0; j < 4; j++)
                                             block.RF[j] = LEB128.ReadShort(chunkIO.Raw);
-                                        block.CeilingSplitDirectionIsXEqualsZ = (flag & 1) != 0;
-                                        block.CeilingDiagonalSplit = (DiagonalSplit)(flag >> 1);
+                                        block.Ceiling.SplitDirectionIsXEqualsZ = (flag & 1) != 0;
+                                        block.Ceiling.DiagonalSplit = (DiagonalSplit)(flag >> 1);
                                     }
                                     else if (id4 == Prj2Chunks.TextureLevelTexture)
                                     {

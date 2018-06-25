@@ -192,7 +192,7 @@ namespace TombLib.Rendering
                 if (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)
                 {
                     var slopeDirection = room.Blocks[x, z].GetFloorTriangleSlopeDirections()[face == BlockFace.Floor ? 0 : 1];
-                    bool flipped = room.Blocks[x, z].FloorSplitDirectionIsXEqualsZ;
+                    bool flipped = room.Blocks[x, z].Floor.SplitDirectionIsXEqualsZ;
                     switch (slopeDirection)
                     {
                         case Direction.PositiveX:

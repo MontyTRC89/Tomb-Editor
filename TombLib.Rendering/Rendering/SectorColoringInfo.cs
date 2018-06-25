@@ -118,15 +118,15 @@ namespace TombLib.Rendering
                                     return ColorBorderWall;
                                 break;
                             case SectorColoringType.Wall:
-                                if (block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.None)
+                                if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.None)
                                     return ColorWall;
                                 break;
                             case SectorColoringType.Floor:
-                                if (!(block.FloorDiagonalSplit == DiagonalSplit.None && block.IsAnyWall) && block.FloorPortal == null)
+                                if (!(block.Floor.DiagonalSplit == DiagonalSplit.None && block.IsAnyWall) && block.FloorPortal == null)
                                     return ColorFloor;
                                 break;
                             case SectorColoringType.Ceiling:
-                                if (!(block.CeilingDiagonalSplit == DiagonalSplit.None && block.IsAnyWall) && block.CeilingPortal == null)
+                                if (!(block.Ceiling.DiagonalSplit == DiagonalSplit.None && block.IsAnyWall) && block.CeilingPortal == null)
                                     return ColorFloor;
                                 break;
                             case SectorColoringType.Portal:
@@ -157,19 +157,19 @@ namespace TombLib.Rendering
                             return ColorForceSolidFloor;
                         break;
                     case SectorColoringShape.TriangleXnZn:
-                        if (block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XnZn)
+                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XnZn)
                             return ColorWall;
                         break;
                     case SectorColoringShape.TriangleXnZp:
-                        if (block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XnZp)
+                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XnZp)
                             return ColorWall;
                         break;
                     case SectorColoringShape.TriangleXpZn:
-                        if (block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XpZn)
+                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XpZn)
                             return ColorWall;
                         break;
                     case SectorColoringShape.TriangleXpZp:
-                        if (block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.XpZp)
+                        if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XpZp)
                             return ColorWall;
                         break;
                     case SectorColoringShape.EdgeXn:

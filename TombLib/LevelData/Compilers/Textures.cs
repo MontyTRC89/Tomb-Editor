@@ -43,11 +43,11 @@ namespace TombLib.LevelData.Compilers
         {
             Block sector = room.Blocks[x, z];
 
-            TextureFootStepSound? result0 = GetTextureSound(!sector.FloorIsQuad, sector.GetFaceTexture(BlockFace.Floor));
+            TextureFootStepSound? result0 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.Floor));
             if (result0.HasValue)
                 return result0.Value;
 
-            TextureFootStepSound? result1 = GetTextureSound(!sector.FloorIsQuad, sector.GetFaceTexture(BlockFace.FloorTriangle2));
+            TextureFootStepSound? result1 = GetTextureSound(!sector.Floor.IsQuad, sector.GetFaceTexture(BlockFace.FloorTriangle2));
             if (result1.HasValue)
                 return result1.Value;
 

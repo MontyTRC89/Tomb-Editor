@@ -795,84 +795,84 @@ namespace TombEditor.Forms
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SmoothRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
+            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, 0);
         }
 
         private void smoothRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SmoothRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
+            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, 0);
         }
 
         private void smoothRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SmoothRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
+            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, 1);
         }
 
         private void smoothRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SmoothRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
+            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, 1);
         }
 
         private void sharpRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SharpRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
+            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, 0);
         }
 
         private void sharpRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SharpRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
+            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, 0);
         }
 
         private void sharpRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SharpRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
+            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, 1);
         }
 
         private void sharpRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SharpRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
+            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, 1);
         }
 
         private void butFlattenFloor_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.FlattenFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, 0);
         }
 
         private void butFlattenCeiling_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.FlattenCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void flattenFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.FlattenFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, 0);
         }
 
         private void flattenCeilingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.FlattenCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void gridWallsIn3ToolStripMenuItem_Click(object sender, EventArgs e)

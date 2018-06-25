@@ -583,12 +583,12 @@ namespace TombLib.LevelData.Compilers
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.WaterLevel == 0 && (Math.Abs(block.FloorIfQuadSlopeX) == 1 ||
-                                            Math.Abs(block.FloorIfQuadSlopeX) == 2 ||
-                                            Math.Abs(block.FloorIfQuadSlopeZ) == 1 ||
-                                            Math.Abs(block.FloorIfQuadSlopeZ) == 2))
+                    if (room.WaterLevel == 0 && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
+                                            Math.Abs(block.Floor.IfQuadSlopeX) == 2 ||
+                                            Math.Abs(block.Floor.IfQuadSlopeZ) == 1 ||
+                                            Math.Abs(block.Floor.IfQuadSlopeZ) == 2))
                         aux.SoftSlope = true;
-                    if (room.WaterLevel == 0 && (Math.Abs(block.FloorIfQuadSlopeX) > 2 || Math.Abs(block.FloorIfQuadSlopeZ) > 2))
+                    if (room.WaterLevel == 0 && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
@@ -597,33 +597,33 @@ namespace TombLib.LevelData.Compilers
                     if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
                         block.Type == BlockType.BorderWall || block.Type == BlockType.Wall)
                     {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.CeilingMin);
+                        sector.Floor = (sbyte)(-room.Position.Y - block.Floor.Max);
+                        sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
                     }
                     else
                     {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.CeilingMin);
+                        sector.Floor = (sbyte)(-room.Position.Y - block.Floor.Max);
+                        sector.Ceiling = (sbyte)(-room.Position.Y - block.Ceiling.Min);
                     }
 
-                    aux.LowestFloor = (sbyte)(-room.Position.Y - block.FloorMin);
-                    var q0 = block.QA[Block.FaceXnZp];
-                    var q1 = block.QA[Block.FaceXpZp];
-                    var q2 = block.QA[Block.FaceXpZn];
-                    var q3 = block.QA[Block.FaceXnZn];
+                    aux.LowestFloor = (sbyte)(-room.Position.Y - block.Floor.Min);
+                    var q0 = block.Floor.XnZp;
+                    var q1 = block.Floor.XpZp;
+                    var q2 = block.Floor.XpZn;
+                    var q3 = block.Floor.XnZn;
 
-                    if (!Block.IsQuad(q0, q1, q2, q3) && block.FloorIfQuadSlopeX == 0 &&
-                        block.FloorIfQuadSlopeZ == 0)
+                    if (!BlockSurface.IsQuad2(q0, q1, q2, q3) && block.Floor.IfQuadSlopeX == 0 &&
+                        block.Floor.IfQuadSlopeZ == 0)
                     {
-                        if (!block.FloorSplitDirectionIsXEqualsZ)
+                        if (!block.Floor.SplitDirectionIsXEqualsZ)
                         {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QA[Block.FaceXnZp],
-                                                           block.QA[Block.FaceXpZn]));
+                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XnZp,
+                                                           block.Floor.XpZn));
                         }
                         else
                         {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QA[Block.FaceXpZp],
-                                                           block.QA[Block.FaceXnZn]));
+                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.Floor.XpZp,
+                                                           block.Floor.XnZn));
                         }
                     }
 
@@ -640,16 +640,16 @@ namespace TombLib.LevelData.Compilers
                 switch (portal.Direction)
                 {
                     case PortalDirection.WallNegativeZ:
-                        ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXnZn, Block.FaceXpZn);
+                        ConvertWallPortal(room, portal, newRoom.Portals, Block.EdgeXnZn, Block.EdgeXpZn);
                         break;
                     case PortalDirection.WallNegativeX:
-                        ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXnZn, Block.FaceXnZp);
+                        ConvertWallPortal(room, portal, newRoom.Portals, Block.EdgeXnZn, Block.EdgeXnZp);
                         break;
                     case PortalDirection.WallPositiveZ:
-                        ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXpZp, Block.FaceXnZp);
+                        ConvertWallPortal(room, portal, newRoom.Portals, Block.EdgeXpZp, Block.EdgeXnZp);
                         break;
                     case PortalDirection.WallPositiveX:
-                        ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXpZp, Block.FaceXpZn);
+                        ConvertWallPortal(room, portal, newRoom.Portals, Block.EdgeXpZp, Block.EdgeXpZn);
                         break;
                     case PortalDirection.Floor:
                         ConvertFloorCeilingPortal(room, portal, newRoom.Portals, false);
@@ -708,8 +708,8 @@ namespace TombLib.LevelData.Compilers
                     Block block = room.Blocks[x, z];
                     foreach (var relevantDirection in relevantDirections)
                     {
-                        var floor = 256.0f * block.QA[relevantDirection] + room.WorldPos.Y;
-                        var ceiling = 256.0f * block.WS[relevantDirection] + room.WorldPos.Y;
+                        var floor = 256.0f * block.Floor.GetHeight(relevantDirection) + room.WorldPos.Y;
+                        var ceiling = 256.0f * block.Ceiling.GetHeight(relevantDirection) + room.WorldPos.Y;
                         yMin = Math.Min(yMin, Math.Min(floor, ceiling));
                         yMax = Math.Max(yMax, Math.Max(floor, ceiling));
                     }
@@ -828,28 +828,24 @@ namespace TombLib.LevelData.Compilers
 
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
-                        short[] heights = isCeiling ? block.WS : block.QA;
-                        short XnZn = heights[Block.FaceXnZn];
-                        short XpZn = heights[Block.FaceXpZn];
-                        short XnZp = heights[Block.FaceXnZp];
-                        short XpZp = heights[Block.FaceXpZp];
-                        if (Block.IsQuad(XnZn, XpZn, XnZp, XpZp))
+                        BlockSurface s = isCeiling ? block.Ceiling : block.Floor;
+                        if (BlockSurface.IsQuad2(s.XnZn, s.XpZn, s.XnZp, s.XpZp))
                         { // Diagonal is split, one face
-                            AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, XnZn, z, XpZn - XnZn, XnZp - XnZn));
+                            AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZn - s.XnZn, s.XnZp - s.XnZn));
                         }
-                        else if (isCeiling ? block.CeilingSplitDirectionIsXEqualsZ : block.FloorSplitDirectionIsXEqualsZ)
+                        else if (isCeiling ? block.Ceiling.SplitDirectionIsXEqualsZ : block.Floor.SplitDirectionIsXEqualsZ)
                         { // Diagonal is split X = Y
                             if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXnZp)
-                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, XnZn, z, XpZp - XnZp, XnZp - XnZn));
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZp - s.XnZp, s.XnZp - s.XnZn));
                             if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXpZn)
-                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, XnZn, z, XpZn - XnZn, XpZp - XpZn));
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZn - s.XnZn, s.XpZp - s.XpZn));
                         }
                         else
                         { // Diagonal is split X = -Y
                             if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXnZn)
-                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, XnZn, z, XpZn - XnZn, XnZp - XnZn));
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZn - s.XnZn, s.XnZp - s.XnZn));
                             if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXpZp)
-                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x + 1, XpZp, z + 1, XpZp - XnZp, XpZp - XpZn));
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x + 1, s.XpZp, z + 1, s.XpZp - s.XnZp, s.XpZp - s.XpZn));
                         }
                     }
                 }

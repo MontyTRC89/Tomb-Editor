@@ -662,12 +662,12 @@ namespace TombEditor.Controls
                                                 {
                                                     if (belongsToFloor && _toolHandler.ReferenceIsFloor)
                                                     {
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].QA[i] = _toolHandler.ReferenceBlock.QA.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].Floor.SetHeight(i, _toolHandler.ReferenceBlock.Floor.Min);
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].ED[i] = _toolHandler.ReferenceBlock.ED.Min();
                                                     }
                                                     else if (!belongsToFloor && !_toolHandler.ReferenceIsFloor)
                                                     {
-                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].WS[i] = _toolHandler.ReferenceBlock.WS.Min();
+                                                        _editor.SelectedRoom.Blocks[pos.X, pos.Y].Ceiling.SetHeight(i, _toolHandler.ReferenceBlock.Ceiling.Min);
                                                         _editor.SelectedRoom.Blocks[pos.X, pos.Y].RF[i] = _toolHandler.ReferenceBlock.RF.Min();
                                                     }
                                                 }
@@ -2018,7 +2018,7 @@ namespace TombEditor.Controls
             int zBlock = (int)Math.Max(0, Math.Min(room.NumZSectors - 1, Math.Floor(position.Z / 1024.0f)));
 
             // Get the base floor height
-            return room.Blocks[xBlock, zBlock].FloorMin * 256.0f;
+            return room.Blocks[xBlock, zBlock].Floor.Min * 256.0f;
         }
 
         private static string GetObjectPositionString(Room room, PositionBasedObjectInstance instance)
@@ -2188,7 +2188,7 @@ namespace TombEditor.Controls
             public bool Dragged { get; private set; }
             public Block ReferenceBlock => _parent._editor.SelectedRoom.GetBlockTry(_referencePicking.Pos.X, _referencePicking.Pos.Y);
             public bool ReferenceIsFloor => _referencePicking.BelongsToFloor;
-            public bool ReferenceIsDiagonalStep => _referencePicking.BelongsToFloor ? ReferenceBlock.FloorDiagonalSplit != DiagonalSplit.None : ReferenceBlock.CeilingDiagonalSplit != DiagonalSplit.None;
+            public bool ReferenceIsDiagonalStep => _referencePicking.BelongsToFloor ? ReferenceBlock.Floor.DiagonalSplit != DiagonalSplit.None : ReferenceBlock.Ceiling.DiagonalSplit != DiagonalSplit.None;
             public bool ReferenceIsOppositeDiagonalStep
             {
                 get
@@ -2197,7 +2197,7 @@ namespace TombEditor.Controls
                     {
                         if (_referencePicking.BelongsToFloor)
                         {
-                            switch (ReferenceBlock.FloorDiagonalSplit)
+                            switch (ReferenceBlock.Floor.DiagonalSplit)
                             {
                                 case DiagonalSplit.XnZp:
                                     if (_referencePicking.Face == BlockFace.FloorTriangle2 ||
@@ -2235,7 +2235,7 @@ namespace TombEditor.Controls
                         }
                         else
                         {
-                            switch (ReferenceBlock.CeilingDiagonalSplit)
+                            switch (ReferenceBlock.Ceiling.DiagonalSplit)
                             {
                                 case DiagonalSplit.XnZp:
                                     if (_referencePicking.Face == BlockFace.CeilingTriangle2 ||
@@ -2297,12 +2297,12 @@ namespace TombEditor.Controls
                         {
                             if (_referencePicking.BelongsToFloor)
                             {
-                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].QA[i];
+                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].Floor.GetHeight(i);
                                 _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].ED[i];
                             }
                             else
                             {
-                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].WS[i];
+                                _actionGrid[x, z].Heights[0, i] = _referenceRoom.Blocks[x, z].Ceiling.GetHeight(i);
                                 _actionGrid[x, z].Heights[1, i] = _referenceRoom.Blocks[x, z].RF[i];
                             }
                         }
@@ -2388,7 +2388,7 @@ namespace TombEditor.Controls
                 if (_referencePicking.Face == BlockFace.DiagonalED ||
                     _referencePicking.Face == BlockFace.DiagonalQA)
                 {
-                    switch (ReferenceBlock.FloorDiagonalSplit)
+                    switch (ReferenceBlock.Floor.DiagonalSplit)
                     {
                         case DiagonalSplit.XnZp:
                         case DiagonalSplit.XpZp:
@@ -2403,7 +2403,7 @@ namespace TombEditor.Controls
                 else if (_referencePicking.Face == BlockFace.DiagonalWS ||
                          _referencePicking.Face == BlockFace.DiagonalRF)
                 {
-                    switch (ReferenceBlock.CeilingDiagonalSplit)
+                    switch (ReferenceBlock.Ceiling.DiagonalSplit)
                     {
                         case DiagonalSplit.XnZp:
                         case DiagonalSplit.XpZp:
@@ -2444,7 +2444,7 @@ namespace TombEditor.Controls
                     var face = EditorActions.GetFaces(_parent._editor.SelectedRoom, _referencePicking.Pos, direction, BlockFaceType.Wall).First(item => item.Key == _referencePicking.Face);
 
                     if (face.Value[0] - _referencePicking.VerticalCoord > _referencePicking.VerticalCoord - face.Value[1])
-                        switch (ReferenceBlock.FloorDiagonalSplit)
+                        switch (ReferenceBlock.Floor.DiagonalSplit)
                         {
                             default:
                             case DiagonalSplit.XnZp:
@@ -2457,7 +2457,7 @@ namespace TombEditor.Controls
                                 break;
                         }
                     else
-                        switch (ReferenceBlock.CeilingDiagonalSplit)
+                        switch (ReferenceBlock.Ceiling.DiagonalSplit)
                         {
                             default:
                             case DiagonalSplit.XnZp:
@@ -2539,12 +2539,12 @@ namespace TombEditor.Controls
                         {
                             if (_referencePicking.BelongsToFloor)
                             {
-                                _referenceRoom.Blocks[x, z].QA[i] = _actionGrid[x, z].Heights[0, i];
+                                _referenceRoom.Blocks[x, z].Floor.SetHeight(i, _actionGrid[x, z].Heights[0, i]);
                                 _referenceRoom.Blocks[x, z].ED[i] = _actionGrid[x, z].Heights[1, i];
                             }
                             else
                             {
-                                _referenceRoom.Blocks[x, z].WS[i] = _actionGrid[x, z].Heights[0, i];
+                                _referenceRoom.Blocks[x, z].Ceiling.SetHeight(i, _actionGrid[x, z].Heights[0, i]);
                                 _referenceRoom.Blocks[x, z].RF[i] = _actionGrid[x, z].Heights[1, i];
                             }
                         }
