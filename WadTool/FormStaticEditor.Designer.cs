@@ -122,6 +122,7 @@
             this.tbVisibilityBoxMinX.Name = "tbVisibilityBoxMinX";
             this.tbVisibilityBoxMinX.Size = new System.Drawing.Size(73, 22);
             this.tbVisibilityBoxMinX.TabIndex = 52;
+            this.tbVisibilityBoxMinX.Validated += new System.EventHandler(this.tbVisibilityBoxMinX_Validated);
             // 
             // tbVisibilityBoxMinY
             // 
@@ -130,6 +131,7 @@
             this.tbVisibilityBoxMinY.Name = "tbVisibilityBoxMinY";
             this.tbVisibilityBoxMinY.Size = new System.Drawing.Size(73, 22);
             this.tbVisibilityBoxMinY.TabIndex = 54;
+            this.tbVisibilityBoxMinY.Validated += new System.EventHandler(this.tbVisibilityBoxMinY_Validated);
             // 
             // darkLabel3
             // 
@@ -149,6 +151,7 @@
             this.tbVisibilityBoxMinZ.Name = "tbVisibilityBoxMinZ";
             this.tbVisibilityBoxMinZ.Size = new System.Drawing.Size(72, 22);
             this.tbVisibilityBoxMinZ.TabIndex = 56;
+            this.tbVisibilityBoxMinZ.Validated += new System.EventHandler(this.tbVisibilityBoxMinZ_Validated);
             // 
             // darkLabel4
             // 
@@ -168,6 +171,7 @@
             this.tbVisibilityBoxMaxZ.Name = "tbVisibilityBoxMaxZ";
             this.tbVisibilityBoxMaxZ.Size = new System.Drawing.Size(72, 22);
             this.tbVisibilityBoxMaxZ.TabIndex = 62;
+            this.tbVisibilityBoxMaxZ.Validated += new System.EventHandler(this.tbVisibilityBoxMaxZ_Validated);
             // 
             // darkLabel5
             // 
@@ -187,6 +191,7 @@
             this.tbVisibilityBoxMaxY.Name = "tbVisibilityBoxMaxY";
             this.tbVisibilityBoxMaxY.Size = new System.Drawing.Size(73, 22);
             this.tbVisibilityBoxMaxY.TabIndex = 60;
+            this.tbVisibilityBoxMaxY.Validated += new System.EventHandler(this.tbVisibilityBoxMaxY_Validated);
             // 
             // darkLabel6
             // 
@@ -206,6 +211,7 @@
             this.tbVisibilityBoxMaxX.Name = "tbVisibilityBoxMaxX";
             this.tbVisibilityBoxMaxX.Size = new System.Drawing.Size(73, 22);
             this.tbVisibilityBoxMaxX.TabIndex = 58;
+            this.tbVisibilityBoxMaxX.Validated += new System.EventHandler(this.tbVisibilityBoxMaxX_Validated);
             // 
             // darkLabel7
             // 
@@ -225,6 +231,7 @@
             this.tbCollisionBoxMaxZ.Name = "tbCollisionBoxMaxZ";
             this.tbCollisionBoxMaxZ.Size = new System.Drawing.Size(72, 22);
             this.tbCollisionBoxMaxZ.TabIndex = 76;
+            this.tbCollisionBoxMaxZ.Validated += new System.EventHandler(this.tbCollisionBoxMaxZ_Validated);
             // 
             // darkLabel8
             // 
@@ -244,6 +251,7 @@
             this.tbCollisionBoxMaxY.Name = "tbCollisionBoxMaxY";
             this.tbCollisionBoxMaxY.Size = new System.Drawing.Size(73, 22);
             this.tbCollisionBoxMaxY.TabIndex = 74;
+            this.tbCollisionBoxMaxY.TextChanged += new System.EventHandler(this.tbCollisionBoxMaxY_TextChanged);
             // 
             // darkLabel9
             // 
@@ -263,6 +271,7 @@
             this.tbCollisionBoxMaxX.Name = "tbCollisionBoxMaxX";
             this.tbCollisionBoxMaxX.Size = new System.Drawing.Size(73, 22);
             this.tbCollisionBoxMaxX.TabIndex = 72;
+            this.tbCollisionBoxMaxX.Validated += new System.EventHandler(this.tbCollisionBoxMaxX_Validated);
             // 
             // darkLabel10
             // 
@@ -282,6 +291,7 @@
             this.tbCollisionBoxMinZ.Name = "tbCollisionBoxMinZ";
             this.tbCollisionBoxMinZ.Size = new System.Drawing.Size(72, 22);
             this.tbCollisionBoxMinZ.TabIndex = 70;
+            this.tbCollisionBoxMinZ.Validated += new System.EventHandler(this.tbCollisionBoxMinZ_Validated);
             // 
             // darkLabel11
             // 
@@ -301,6 +311,7 @@
             this.tbCollisionBoxMinY.Name = "tbCollisionBoxMinY";
             this.tbCollisionBoxMinY.Size = new System.Drawing.Size(73, 22);
             this.tbCollisionBoxMinY.TabIndex = 68;
+            this.tbCollisionBoxMinY.Validated += new System.EventHandler(this.tbCollisionBoxMinY_Validated);
             // 
             // darkLabel12
             // 
@@ -320,6 +331,7 @@
             this.tbCollisionBoxMinX.Name = "tbCollisionBoxMinX";
             this.tbCollisionBoxMinX.Size = new System.Drawing.Size(73, 22);
             this.tbCollisionBoxMinX.TabIndex = 66;
+            this.tbCollisionBoxMinX.Validated += new System.EventHandler(this.tbCollisionBoxMinX_Validated);
             // 
             // darkLabel13
             // 
@@ -633,14 +645,12 @@
             // 
             // panelRendering
             // 
-            this.panelRendering.Action = WadTool.Controls.PanelRenderingStaticEditor.StaticEditorAction.Normal;
             this.panelRendering.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelRendering.Location = new System.Drawing.Point(13, 13);
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.Size = new System.Drawing.Size(743, 678);
-            this.panelRendering.StaticScale = 1F;
             this.panelRendering.TabIndex = 1;
             // 
             // butImportMeshFromFile
