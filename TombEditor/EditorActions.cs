@@ -1846,13 +1846,12 @@ namespace TombEditor
             // Check vertical space
             int floorLevel = int.MaxValue;
             int ceilingLevel = int.MinValue;
-            for (int y = area.Y0; y <= area.Y1; ++y)
-                for (int x = area.X0; x <= area.X1; ++x)
-                    if (!room.Blocks[x, y].IsAnyWall)
-                    {
-                        floorLevel = Math.Min(floorLevel, room.Blocks[x, y].Floor.Min + room.Position.Y);
-                        ceilingLevel = Math.Max(floorLevel, room.Blocks[x, y].Ceiling.Max + room.Position.Y);
-                    }
+            for (int y = area.Y0; y <= area.Y1 + 1; ++y)
+                for (int x = area.X0; x <= area.X1 + 1; ++x)
+                {
+                    floorLevel = room.GetHeightsAtPoint(x, y, BlockVertical.Floor).Select(v => v + room.Position.Y).Concat(new int[] { floorLevel }).Min();
+                    ceilingLevel = room.GetHeightsAtPoint(x, y, BlockVertical.Ceiling).Select(v => v + room.Position.Y).Concat(new int[] { ceilingLevel }).Max();
+                }
 
             // Check for possible candidates ...
             List<Tuple<PortalDirection, Room>> candidates = new List<Tuple<PortalDirection, Room>>();
@@ -1878,20 +1877,16 @@ namespace TombEditor
                     // Check if they vertically touch
                     int neighborFloorLevel = int.MaxValue;
                     int neighborCeilingLevel = int.MinValue;
-                    for (int y = neighborArea.Y0; y <= neighborArea.Y1; ++y)
-                        for (int x = neighborArea.X0; x <= neighborArea.X1; ++x)
+                    for (int y = neighborArea.Y0; y <= neighborArea.Y1 + 1; ++y)
+                        for (int x = neighborArea.X0; x <= neighborArea.X1 + 1; ++x)
                         {
-                            if (!neighborRoom.Blocks[x, y].IsAnyWall)
-                            {
-                                neighborFloorLevel = Math.Min(neighborFloorLevel, neighborRoom.Blocks[x, y].Floor.Min + room.Position.Y);
-                                neighborCeilingLevel = Math.Max(neighborCeilingLevel, neighborRoom.Blocks[x, y].Ceiling.Max + room.Position.Y);
-                            }
+                            neighborFloorLevel = room.GetHeightsAtPoint(x, y, BlockVertical.Floor).Select(v => v + room.Position.Y).Concat(new int[] { floorLevel }).Min();
+                            neighborCeilingLevel = room.GetHeightsAtPoint(x, y, BlockVertical.Ceiling).Select(v => v + room.Position.Y).Concat(new int[] { ceilingLevel }).Max();
                             if (neighborRoom.AlternateOpposite != null)
-                                if (!neighborRoom.AlternateOpposite.Blocks[x, y].IsAnyWall)
-                                {
-                                    neighborFloorLevel = Math.Min(neighborFloorLevel, neighborRoom.AlternateOpposite.Blocks[x, y].Floor.Min + room.Position.Y);
-                                    neighborCeilingLevel = Math.Max(neighborCeilingLevel, neighborRoom.AlternateOpposite.Blocks[x, y].Ceiling.Max + room.Position.Y);
-                                }
+                            {
+                                neighborFloorLevel = neighborRoom.GetHeightsAtPoint(x, y, BlockVertical.Floor).Select(v => v + neighborRoom.Position.Y).Concat(new int[] { neighborFloorLevel }).Min();
+                                neighborCeilingLevel = neighborRoom.GetHeightsAtPoint(x, y, BlockVertical.Ceiling).Select(v => v + neighborRoom.Position.Y).Concat(new int[] { neighborCeilingLevel }).Max();
+                            }
                         }
                     if (neighborFloorLevel == int.MaxValue || neighborCeilingLevel == int.MinValue)
                         continue;
