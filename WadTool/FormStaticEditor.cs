@@ -287,5 +287,185 @@ namespace WadTool
                 }
             }
         }
+
+        private void tbVisibilityBoxMinX_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbVisibilityBoxMinX.Text, out result))
+                return;
+
+            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(result,
+                                                                     _workingStatic.VisibilityBox.Minimum.Y,
+                                                                     _workingStatic.VisibilityBox.Minimum.Z),
+                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
+                                                                     _workingStatic.VisibilityBox.Maximum.Y,
+                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbVisibilityBoxMinY_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbVisibilityBoxMinY.Text, out result))
+                return;
+
+            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
+                                                                     result,
+                                                                     _workingStatic.VisibilityBox.Minimum.Z),
+                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
+                                                                     _workingStatic.VisibilityBox.Maximum.Y,
+                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbVisibilityBoxMinZ_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbVisibilityBoxMinZ.Text, out result))
+                return;
+
+            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
+                                                                     _workingStatic.VisibilityBox.Minimum.Y,
+                                                                     result),
+                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
+                                                                     _workingStatic.VisibilityBox.Maximum.Y,
+                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbVisibilityBoxMaxX_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbVisibilityBoxMaxX.Text, out result))
+                return;
+
+            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
+                                                                     _workingStatic.VisibilityBox.Minimum.Y,
+                                                                     _workingStatic.VisibilityBox.Minimum.Z),
+                                                         new Vector3(result,
+                                                                     _workingStatic.VisibilityBox.Maximum.Y,
+                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbVisibilityBoxMaxY_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbVisibilityBoxMaxY.Text, out result))
+                return;
+
+            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
+                                                                     _workingStatic.VisibilityBox.Minimum.Y,
+                                                                     _workingStatic.VisibilityBox.Minimum.Z),
+                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
+                                                                     result,
+                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbVisibilityBoxMaxZ_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbVisibilityBoxMaxZ.Text, out result))
+                return;
+
+            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
+                                                                     _workingStatic.VisibilityBox.Minimum.Y,
+                                                                     _workingStatic.VisibilityBox.Minimum.Z),
+                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
+                                                                     _workingStatic.VisibilityBox.Maximum.Y,
+                                                                     result));
+            panelRendering.Invalidate();
+        }
+
+        private void tbCollisionBoxMinX_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbCollisionBoxMinX.Text, out result))
+                return;
+
+            _workingStatic.CollisionBox = new BoundingBox(new Vector3(result,
+                                                                     _workingStatic.CollisionBox.Minimum.Y,
+                                                                     _workingStatic.CollisionBox.Minimum.Z),
+                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
+                                                                     _workingStatic.CollisionBox.Maximum.Y,
+                                                                     _workingStatic.CollisionBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbCollisionBoxMinY_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbCollisionBoxMinY.Text, out result))
+                return;
+
+            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
+                                                                     result,
+                                                                     _workingStatic.CollisionBox.Minimum.Z),
+                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
+                                                                     _workingStatic.CollisionBox.Maximum.Y,
+                                                                     _workingStatic.CollisionBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbCollisionBoxMinZ_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbCollisionBoxMinZ.Text, out result))
+                return;
+
+            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
+                                                                     _workingStatic.CollisionBox.Minimum.Y,
+                                                                     result),
+                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
+                                                                     _workingStatic.CollisionBox.Maximum.Y,
+                                                                     _workingStatic.CollisionBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbCollisionBoxMaxX_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbCollisionBoxMaxX.Text, out result))
+                return;
+
+            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
+                                                                     _workingStatic.CollisionBox.Minimum.Y,
+                                                                     _workingStatic.CollisionBox.Minimum.Z),
+                                                         new Vector3(result,
+                                                                     _workingStatic.CollisionBox.Maximum.Y,
+                                                                     _workingStatic.CollisionBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbCollisionBoxMaxY_TextChanged(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbCollisionBoxMaxY.Text, out result))
+                return;
+
+            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
+                                                                     _workingStatic.CollisionBox.Minimum.Y,
+                                                                     _workingStatic.CollisionBox.Minimum.Z),
+                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
+                                                                     result,
+                                                                     _workingStatic.CollisionBox.Maximum.Z));
+            panelRendering.Invalidate();
+        }
+
+        private void tbCollisionBoxMaxZ_Validated(object sender, EventArgs e)
+        {
+            short result = 0;
+            if (!short.TryParse(tbCollisionBoxMaxZ.Text, out result))
+                return;
+
+            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
+                                                                     _workingStatic.CollisionBox.Minimum.Y,
+                                                                     _workingStatic.CollisionBox.Minimum.Z),
+                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
+                                                                     _workingStatic.CollisionBox.Maximum.Y,
+                                                                     result));
+            panelRendering.Invalidate();
+        }
     }
 }
