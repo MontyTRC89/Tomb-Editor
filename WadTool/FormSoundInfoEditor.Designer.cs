@@ -42,7 +42,6 @@
             this.soundInfoEditor1.Location = new System.Drawing.Point(12, 12);
             this.soundInfoEditor1.MinimumSize = new System.Drawing.Size(442, 346);
             this.soundInfoEditor1.Name = "soundInfoEditor1";
-            this.soundInfoEditor1.ReadOnly = true;
             this.soundInfoEditor1.Size = new System.Drawing.Size(656, 535);
             this.soundInfoEditor1.TabIndex = 0;
             // 

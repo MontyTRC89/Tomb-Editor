@@ -180,7 +180,6 @@
             this.soundInfoEditor.Location = new System.Drawing.Point(15, 19);
             this.soundInfoEditor.MinimumSize = new System.Drawing.Size(442, 346);
             this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.ReadOnly = true;
             this.soundInfoEditor.Size = new System.Drawing.Size(633, 378);
             this.soundInfoEditor.TabIndex = 22;
             this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);

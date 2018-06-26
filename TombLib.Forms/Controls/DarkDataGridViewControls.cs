@@ -136,25 +136,28 @@ namespace TombLib.Controls
             UpdateEnable();
         }
 
+        private bool _allowUserMove = true;
         [DefaultValue(true)]
         public bool AllowUserMove
         {
-            get { return butDown.Visible; }
-            set { butDown.Visible = butUp.Visible = value; }
+            get { return _allowUserMove; }
+            set { butDown.Visible = butUp.Visible = _allowUserMove = value; }
         }
 
+        private bool _allowUserDelete = true;
         [DefaultValue(true)]
         public bool AllowUserDelete
         {
-            get { return butDelete.Visible; }
-            set { butDelete.Visible = value; }
+            get { return _allowUserDelete; }
+            set { butDelete.Visible = _allowUserDelete = value; }
         }
 
+        private bool _allowUserNew = true;
         [DefaultValue(true)]
         public bool AllowUserNew
         {
-            get { return butNew.Visible; }
-            set { butNew.Visible = value; }
+            get { return _allowUserNew; }
+            set { butNew.Visible = _allowUserNew = value; }
         }
     }
 }
