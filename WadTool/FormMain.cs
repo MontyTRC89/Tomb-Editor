@@ -104,16 +104,19 @@ namespace WadTool
                     if (mainSelection.Value.Id is WadMoveableId)
                     {
                         var moveableId = (WadMoveableId)mainSelection.Value.Id;
-                        var moveable = wad.Moveables[moveableId];
-                        var animationsNodes = new List<DarkTreeNode>();
-                        for (int i = 0; i < moveable.Animations.Count; i++)
-                        {
-                            var nodeAnimation = new DarkTreeNode(moveable.Animations[i].Name);
-                            nodeAnimation.Tag = i;
-                            animationsNodes.Add(nodeAnimation);
-                        }
+                        var moveable = wad.Moveables.TryGetOrDefault(moveableId);
                         treeAnimations.Nodes.Clear();
-                        treeAnimations.Nodes.AddRange(animationsNodes);
+                        if (moveable != null)
+                        {
+                            var animationsNodes = new List<DarkTreeNode>();
+                            for (int i = 0; i < moveable.Animations.Count; i++)
+                            {
+                                var nodeAnimation = new DarkTreeNode(moveable.Animations[i].Name);
+                                nodeAnimation.Tag = i;
+                                animationsNodes.Add(nodeAnimation);
+                            }
+                            treeAnimations.Nodes.AddRange(animationsNodes);
+                        }
                     }
 
                     panel3D.Invalidate();

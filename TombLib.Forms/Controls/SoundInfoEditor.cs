@@ -24,6 +24,7 @@ namespace TombLib.Controls
         private Cache<Tuple<WadSample, Size, int>, Bitmap> sampleImageCache = new Cache<Tuple<WadSample, Size, int>, Bitmap>(256, DrawWaveform);
         private string _currentPath = null;
         private bool _soundInfoCurrentlyChanging = false;
+        private bool _readonly = false;
         private uint _targetSampleRate = WadSample.GameSupportedSampleRate;
 
         public SoundInfoEditor()
@@ -420,9 +421,10 @@ namespace TombLib.Controls
         [DefaultValue(false)]
         public bool ReadOnly
         {
-            get { return tbName.Enabled; }
+            get { return _readonly; }
             set
             {
+                _readonly = value;
                 tbName.Enabled = !value;
                 numericVolume.Enabled = !value;
                 numericPitch.Enabled = !value;

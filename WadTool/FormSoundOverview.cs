@@ -134,7 +134,6 @@ namespace WadTool
                 usedForDataGridView.DataSource = soundInfo.Uses;
                 usedForDataGridView.Enabled = true;
                 soundInfoEditor.Enabled = true;
-                soundInfoEditor.ReadOnly = false;
             }
             else
             {
@@ -142,7 +141,6 @@ namespace WadTool
                 soundInfoEditor.SoundInfo = WadSoundInfo.Empty;
                 usedForDataGridView.Enabled = false;
                 soundInfoEditor.Enabled = false;
-                soundInfoEditor.ReadOnly = true;
             }
         }
 

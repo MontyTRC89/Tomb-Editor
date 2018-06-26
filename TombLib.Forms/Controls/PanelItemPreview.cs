@@ -20,8 +20,6 @@ namespace TombLib.Controls
             get { return _currentObject; }
             set
             {
-                if (_currentObject == value)
-                    return;
                 _currentObject = value;
                 if (value is WadFixedSoundInfo)
                 {
@@ -97,7 +95,6 @@ namespace TombLib.Controls
                     WadAdditionalSoundInfo additionalSoundInfo = (WadAdditionalSoundInfo)CurrentObject;
                     additionalSoundInfo.SoundInfo = _soundInfoEditor.SoundInfo;
                 }
-                ObjectWasModified(this, EventArgs.Empty);
             };
             Controls.Add(_soundInfoEditor);
         }
@@ -358,6 +355,5 @@ namespace TombLib.Controls
         public abstract float NavigationSpeedMouseTranslate { get; }
         public abstract float NavigationSpeedMouseRotate { get; }
         public abstract bool ReadOnly { get; }
-        public event EventHandler ObjectWasModified;
     }
 }
