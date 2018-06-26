@@ -86,14 +86,23 @@ namespace TombLib.Wad.TrLevels
                     isTriangle = (oldTexture.Vertices[3].X == 0) && (oldTexture.Vertices[3].Y == 0);
 
                 // Calculate UV coordinates...
-                Vector2[] coordAddArray;
-                if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
-                    coordAddArray = _zero;
-                else
-                    coordAddArray = LevelData.Compilers.Util.ObjectTextureManager.GetTexCoordModificationFromNewFlags(oldTexture.NewFlags, isTriangle);
                 Vector2[] coords = new Vector2[isTriangle ? 3 : 4];
-                for (int j = 0; j < coords.Length; ++j)
-                    coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256f) + coordAddArray[j];
+                if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                { // In old TR games there are no new flags
+                    // Perhaps there is a better way that will support subpixel addressing
+                    // but according to the fileformat documentation
+                    // it should work on original TR games https://opentomb.earvillage.net/TRosettaStone3/trosettastone.html#_object_textures
+                    for (int j = 0; j < coords.Length; ++j)
+                        coords[j] = new Vector2(
+                            ((oldTexture.Vertices[j].X & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].X >> 8),
+                            ((oldTexture.Vertices[j].Y & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].Y >> 8));
+                }
+                else
+                { // In new TR games we can to use new flags
+                    Vector2[] coordAddArray = LevelData.Compilers.Util.ObjectTextureManager.GetTexCoordModificationFromNewFlags(oldTexture.NewFlags, isTriangle);
+                    for (int j = 0; j < coords.Length; ++j)
+                        coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256f) + coordAddArray[j];
+                }
 
                 // Find the corners of the texture
                 Vector2 min = coords[0], max = coords[0];
@@ -322,10 +331,10 @@ namespace TombLib.Wad.TrLevels
                 {
                     int soundIndexIndex = j + oldInfo.Sample;
                     int sampleIndex;
-                        if (oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
-                            sampleIndex = (int)oldLevel.SamplesIndices[soundIndexIndex];
-                        else
-                            sampleIndex = soundIndexIndex;
+                    if (oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                        sampleIndex = (int)oldLevel.SamplesIndices[soundIndexIndex];
+                    else
+                        sampleIndex = soundIndexIndex;
                     if (sampleIndex >= oldLevel.Samples.Count)
                     {
                         logger.Warn("Sample index out of range.");
