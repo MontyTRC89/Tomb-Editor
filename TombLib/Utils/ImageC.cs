@@ -520,7 +520,7 @@ namespace TombLib.Utils
 
         public byte[] ToByteArray()
         {
-            return new MemoryStream(_data).ToArray();
+            return _data;
         }
 
         public Stream ToRawStream(int yStart, int Height)
