@@ -49,7 +49,9 @@ namespace TombEditor.ToolWindows
             // Update texture map
             if (obj is Editor.SelectedTexturesChangedEvent)
             {
-                comboCurrentTexture.SelectedItem = ((Editor.SelectedTexturesChangedEvent)obj).Current.Texture as LevelTexture;
+                LevelTexture toSelect = ((Editor.SelectedTexturesChangedEvent)obj).Current.Texture as LevelTexture;
+                if (toSelect != null)
+                    comboCurrentTexture.SelectedItem = toSelect;
                 panelTextureMap.SelectedTexture = ((Editor.SelectedTexturesChangedEvent)obj).Current;
             }
 
