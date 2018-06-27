@@ -41,7 +41,7 @@ namespace TombLib.Rendering.DirectX11
         public readonly ShaderResourceView SectorTextureArrayView;
         public Dx11RenderingSwapChain CurrentRenderTarget = null;
 
-        public unsafe Dx11RenderingDevice()
+        public Dx11RenderingDevice()
         {
             logger.Info("Dx11 rendering device creating.");
 #if DEBUG
@@ -124,50 +124,62 @@ namespace TombLib.Rendering.DirectX11
             }
 
             // Sector textures
+            bool support16BitTexture = Device.CheckFormatSupport(Format.B5G5R5A1_UNorm).HasFlag(FormatSupport.Texture2D); // For some reason not all DirectX devices support 16 bit textures.
             string[] sectorTextureNames = Enum.GetNames(typeof(SectorTexture)).Skip(1).ToArray();
-            ushort[,] sectorTextureData = new ushort[sectorTextureNames.Length, SectorTextureSize * SectorTextureSize];
-            for (int i = 0; i < sectorTextureNames.Length; ++i)
-            {
-                string name = nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures." + sectorTextureNames[i] + ".png";
-                using (Stream stream = ThisAssembly.GetManifestResourceStream(name))
-                {
-                    ImageC image = ImageC.FromStream(stream);
-                    if ((image.Width != SectorTextureSize) || (image.Height != SectorTextureSize))
-                        throw new ArgumentOutOfRangeException("The embedded resource '" + name + "' is not of a valid size.");
-
-                    // Compress image data into B5G5R5A1 format to save a bit of GPU memory. (3 MB saved with currently 23 images)
-                    for (int j = 0; j < (SectorTextureSize * SectorTextureSize); ++j)
-                    {
-                        ColorC Color = image.Get(j);
-                        sectorTextureData[i, j] = (ushort)(
-                            ((Color.B >> 3) << 0) |
-                            ((Color.G >> 3) << 5) |
-                            ((Color.R >> 3) << 10) |
-                            ((Color.A >> 7) << 15));
-                    }
-                }
-            }
-            fixed (ushort* sectorTextureDataPtr = sectorTextureData)
+            GCHandle[] handles = new GCHandle[sectorTextureNames.Length];
+            try
             {
                 DataBox[] dataBoxes = new DataBox[sectorTextureNames.Length];
                 for (int i = 0; i < sectorTextureNames.Length; ++i)
-                    dataBoxes[i] = new DataBox(
-                        new IntPtr(sectorTextureDataPtr + SectorTextureSize * SectorTextureSize * i),
-                        sizeof(ushort) * SectorTextureSize,
-                        sizeof(ushort) * SectorTextureSize * SectorTextureSize);
+                {
+                    string name = nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures." + sectorTextureNames[i] + ".png";
+                    using (Stream stream = ThisAssembly.GetManifestResourceStream(name))
+                    {
+                        ImageC image = ImageC.FromStream(stream);
+                        if ((image.Width != SectorTextureSize) || (image.Height != SectorTextureSize))
+                            throw new ArgumentOutOfRangeException("The embedded resource '" + name + "' is not of a valid size.");
+
+                        if (support16BitTexture)
+                        { // Compress image data into B5G5R5A1 format to save a bit of GPU memory. (3 MB saved with currently 23 images)
+                            ushort[] sectorTextureData = new ushort[SectorTextureSize * SectorTextureSize];
+                            for (int j = 0; j < (SectorTextureSize * SectorTextureSize); ++j)
+                            {
+                                ColorC Color = image.Get(j);
+                                sectorTextureData[j] = (ushort)(
+                                    ((Color.B >> 3) << 0) |
+                                    ((Color.G >> 3) << 5) |
+                                    ((Color.R >> 3) << 10) |
+                                    ((Color.A >> 7) << 15));
+                            }
+                            handles[i] = GCHandle.Alloc(sectorTextureData, GCHandleType.Pinned);
+                            dataBoxes[i] = new DataBox(handles[i].AddrOfPinnedObject(), sizeof(ushort) * SectorTextureSize, 0);
+                        }
+                        else
+                        {
+                            handles[i] = GCHandle.Alloc(image.ToByteArray(), GCHandleType.Pinned);
+                            dataBoxes[i] = new DataBox(handles[i].AddrOfPinnedObject(), sizeof(uint) * SectorTextureSize, 0);
+                        }
+                    }
+                }
+
                 SectorTextureArray = new Texture2D(Device, new Texture2DDescription
                 {
                     Width = SectorTextureSize,
                     Height = SectorTextureSize,
                     MipLevels = 1,
                     ArraySize = sectorTextureNames.Length,
-                    Format = Format.B5G5R5A1_UNorm,
+                    Format = support16BitTexture ? Format.B5G5R5A1_UNorm : Format.B8G8R8A8_UNorm,
                     SampleDescription = new SampleDescription(1, 0),
                     Usage = ResourceUsage.Immutable,
                     BindFlags = BindFlags.ShaderResource,
                     CpuAccessFlags = CpuAccessFlags.None,
                     OptionFlags = ResourceOptionFlags.None
                 }, dataBoxes);
+            }
+            finally
+            {
+                foreach (GCHandle handle in handles)
+                    handle.Free();
             }
             SectorTextureArrayView = new ShaderResourceView(Device, SectorTextureArray);
 
