@@ -27,8 +27,7 @@ namespace TombEditor.Controls
 
         private float _gridSize => Math.Min(ClientSize.Width, ClientSize.Height);
         private float _gridStep => _gridSize / Room.MaxRoomDimensions;
-
-        public string Message;
+        private ToolTip _toolTip = new ToolTip();
 
         public Panel2DGrid()
         {
@@ -46,10 +45,11 @@ namespace TombEditor.Controls
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
             base.Dispose(disposing);
+            _toolTip.Dispose();
         }
 
         private void EditorEventRaised(IEditorEvent obj)
-        {   
+        {
             // Update drawing
             if (obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
                 obj is Editor.SelectedRoomChangedEvent ||
@@ -73,7 +73,7 @@ namespace TombEditor.Controls
             return e.Previous is SectorBasedObjectInstance || e.Current is SectorBasedObjectInstance;
         }
 
-        private RectangleF getVisualAreaTotal()
+        private RectangleF GetVisualAreaTotal()
         {
             return new RectangleF(
                 (ClientSize.Width - _gridSize) * 0.5f,
@@ -82,10 +82,10 @@ namespace TombEditor.Controls
                 _gridSize);
         }
 
-        private RectangleF getVisualAreaRoom()
+        private RectangleF GetVisualAreaRoom()
         {
             Room currentRoom = _editor.SelectedRoom;
-            RectangleF totalArea = getVisualAreaTotal();
+            RectangleF totalArea = GetVisualAreaTotal();
 
             return new RectangleF(
                 totalArea.X + _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumXSectors) / 2),
@@ -94,24 +94,24 @@ namespace TombEditor.Controls
                 _gridStep * currentRoom.NumZSectors);
         }
 
-        public PointF toVisualCoord(VectorInt2 sectorCoord)
+        private PointF ToVisualCoord(VectorInt2 sectorCoord)
         {
-            RectangleF roomArea = getVisualAreaRoom();
+            RectangleF roomArea = GetVisualAreaRoom();
             return new PointF(sectorCoord.X * _gridStep + roomArea.X, roomArea.Bottom - (sectorCoord.Y + 1) * _gridStep);
         }
 
-        public RectangleF ToVisualCoord(RectangleInt2 sectorArea)
+        private RectangleF ToVisualCoord(RectangleInt2 sectorArea)
         {
-            PointF convertedPoint0 = toVisualCoord(sectorArea.Start);
-            PointF convertedPoint1 = toVisualCoord(sectorArea.End);
+            PointF convertedPoint0 = ToVisualCoord(sectorArea.Start);
+            PointF convertedPoint1 = ToVisualCoord(sectorArea.End);
             return RectangleF.FromLTRB(
                 Math.Min(convertedPoint0.X, convertedPoint1.X), Math.Min(convertedPoint0.Y, convertedPoint1.Y),
                 Math.Max(convertedPoint0.X, convertedPoint1.X) + _gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + _gridStep);
         }
 
-        public VectorInt2 FromVisualCoord(PointF point)
+        private VectorInt2 FromVisualCoord(PointF point)
         {
-            RectangleF roomArea = getVisualAreaRoom();
+            RectangleF roomArea = GetVisualAreaRoom();
             return new VectorInt2(
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / _gridStep)),
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / _gridStep)));
@@ -120,6 +120,7 @@ namespace TombEditor.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            _toolTip.Hide(this);
 
             if (_editor == null || _editor.SelectedRoom == null)
                 return;
@@ -175,10 +176,8 @@ namespace TombEditor.Controls
                 if (nextPortalOrTrigger != null)
                 {
                     _editor.SelectedObject = nextPortalOrTrigger;
-                    Message = nextPortalOrTrigger.ToString();
+                    _toolTip.Show(nextPortalOrTrigger.ToString(), this, e.Location + new Size(5, 5));
                 }
-                else
-                    Message = null;
             }
         }
 
@@ -196,8 +195,13 @@ namespace TombEditor.Controls
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-
             _doSectorSelection = false;
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            _toolTip.Hide(this);
         }
 
         protected override void OnResize(EventArgs eventargs)
@@ -214,8 +218,8 @@ namespace TombEditor.Controls
                     return;
 
                 Room currentRoom = _editor.SelectedRoom;
-                RectangleF totalArea = getVisualAreaTotal();
-                RectangleF roomArea = getVisualAreaRoom();
+                RectangleF totalArea = GetVisualAreaTotal();
+                RectangleF roomArea = GetVisualAreaRoom();
                 bool probePortals = _editor.Configuration.Editor_ProbeAttributesThroughPortals;
 
                 e.Graphics.FillRectangle(Brushes.White, totalArea);

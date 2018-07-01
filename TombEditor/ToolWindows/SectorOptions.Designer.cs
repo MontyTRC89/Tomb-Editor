@@ -2,15 +2,15 @@
 {
     partial class SectorOptions
     {
-        /// <summary> 
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
@@ -53,9 +53,6 @@
             this.panel2DGrid.Name = "panel2DGrid";
             this.panel2DGrid.Size = new System.Drawing.Size(224, 225);
             this.panel2DGrid.TabIndex = 103;
-            this.panel2DGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel2DGrid_MouseDown);
-            this.panel2DGrid.MouseLeave += new System.EventHandler(this.panel2DGrid_MouseLeave);
-            this.panel2DGrid.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel2DGrid_MouseUp);
             // 
             // panelRight
             // 
@@ -94,6 +91,7 @@
             this.butCeiling.TabIndex = 1;
             this.toolTip.SetToolTip(this.butCeiling, "Set sector ceiling");
             this.butCeiling.Click += new System.EventHandler(this.butCeiling_Click);
+            this.butCeiling.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butClimbPositiveZ
             // 
@@ -105,6 +103,7 @@
             this.butClimbPositiveZ.TabIndex = 10;
             this.toolTip.SetToolTip(this.butClimbPositiveZ, "Climb on North side");
             this.butClimbPositiveZ.Click += new System.EventHandler(this.butClimbPositiveZ_Click);
+            this.butClimbPositiveZ.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butClimbPositiveX
             // 
@@ -116,6 +115,7 @@
             this.butClimbPositiveX.TabIndex = 13;
             this.toolTip.SetToolTip(this.butClimbPositiveX, "Climb on East side");
             this.butClimbPositiveX.Click += new System.EventHandler(this.butClimbPositiveX_Click);
+            this.butClimbPositiveX.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butClimbNegativeZ
             // 
@@ -127,6 +127,7 @@
             this.butClimbNegativeZ.TabIndex = 11;
             this.toolTip.SetToolTip(this.butClimbNegativeZ, "Climb on South side");
             this.butClimbNegativeZ.Click += new System.EventHandler(this.butClimbNegativeZ_Click);
+            this.butClimbNegativeZ.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butClimbNegativeX
             // 
@@ -138,6 +139,7 @@
             this.butClimbNegativeX.TabIndex = 12;
             this.toolTip.SetToolTip(this.butClimbNegativeX, "Climb on West side");
             this.butClimbNegativeX.Click += new System.EventHandler(this.butClimbNegativeX_Click);
+            this.butClimbNegativeX.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butNotWalkableBox
             // 
@@ -152,6 +154,7 @@
             this.butNotWalkableBox.TabIndex = 3;
             this.toolTip.SetToolTip(this.butNotWalkableBox, "Not walkable");
             this.butNotWalkableBox.Click += new System.EventHandler(this.butNotWalkableBox_Click);
+            this.butNotWalkableBox.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butPortal
             // 
@@ -166,6 +169,7 @@
             this.butPortal.TabIndex = 6;
             this.toolTip.SetToolTip(this.butPortal, "Portal");
             this.butPortal.Click += new System.EventHandler(this.butPortal_Click);
+            this.butPortal.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butFlagTriggerTriggerer
             // 
@@ -177,6 +181,7 @@
             this.butFlagTriggerTriggerer.TabIndex = 9;
             this.toolTip.SetToolTip(this.butFlagTriggerTriggerer, "Delay trigger until Trigger Triggerer is used");
             this.butFlagTriggerTriggerer.Click += new System.EventHandler(this.butFlagTriggerTriggerer_Click);
+            this.butFlagTriggerTriggerer.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butDeath
             // 
@@ -191,6 +196,7 @@
             this.butDeath.TabIndex = 5;
             this.toolTip.SetToolTip(this.butDeath, "Death");
             this.butDeath.Click += new System.EventHandler(this.butDeath_Click);
+            this.butDeath.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butForceSolidFloor
             // 
@@ -202,6 +208,7 @@
             this.butForceSolidFloor.TabIndex = 14;
             this.toolTip.SetToolTip(this.butForceSolidFloor, "Force solid floor");
             this.butForceSolidFloor.Click += new System.EventHandler(this.butForceSolidFloor_Click);
+            this.butForceSolidFloor.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butMonkey
             // 
@@ -216,6 +223,7 @@
             this.butMonkey.TabIndex = 4;
             this.toolTip.SetToolTip(this.butMonkey, "Monkeyswing");
             this.butMonkey.Click += new System.EventHandler(this.butMonkey_Click);
+            this.butMonkey.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butFlagBeetle
             // 
@@ -227,6 +235,7 @@
             this.butFlagBeetle.TabIndex = 8;
             this.toolTip.SetToolTip(this.butFlagBeetle, "Beetle checkpoint");
             this.butFlagBeetle.Click += new System.EventHandler(this.butFlagBeetle_Click);
+            this.butFlagBeetle.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butBox
             // 
@@ -241,6 +250,7 @@
             this.butBox.TabIndex = 2;
             this.toolTip.SetToolTip(this.butBox, "Set box sector");
             this.butBox.Click += new System.EventHandler(this.butBox_Click);
+            this.butBox.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butFloor
             // 
@@ -255,6 +265,7 @@
             this.butFloor.TabIndex = 0;
             this.toolTip.SetToolTip(this.butFloor, "Set sector floor");
             this.butFloor.Click += new System.EventHandler(this.butFloor_Click);
+            this.butFloor.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // butWall
             // 
@@ -269,6 +280,7 @@
             this.butWall.TabIndex = 7;
             this.toolTip.SetToolTip(this.butWall, "Wall");
             this.butWall.Click += new System.EventHandler(this.butWall_Click);
+            this.butWall.MouseEnter += new System.EventHandler(this.but_MouseEnter);
             // 
             // panel2DGrid_sub
             // 
@@ -359,7 +371,6 @@
             this.toolTip.AutoPopDelay = 5000;
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
-            this.toolTip.Popup += new System.Windows.Forms.PopupEventHandler(this.toolTip_Popup);
             // 
             // SectorOptions
             // 
