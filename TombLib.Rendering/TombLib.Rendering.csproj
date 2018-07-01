@@ -37,7 +37,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowedReferenceRelatedFileExtensions>
-      <!-- Prevent default XML and PDB files copied to output in RELEASE. 
+      <!-- Prevent default XML and PDB files copied to output in RELEASE.
            Only *.allowedextension files will be included, which doesn't exist in my case.
        -->
       .allowedextension
@@ -136,19 +136,38 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.HLSL.CSharpVB.1.0.1\build\Microsoft.HLSL.CSharpVB.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.HLSL.CSharpVB.1.0.1\build\Microsoft.HLSL.CSharpVB.targets'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <EmbeddedResource Include="$(IntermediateOutputPath)\**\*.cso">
-      <LogicalName>DxShaders.$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</LogicalName>
-      <Visible>false</Visible>
-    </EmbeddedResource>
-  </ItemGroup>
+  <Target Name="EmbedShaderFilesTarget" AfterTargets="FxCompile;FxExport" BeforeTargets="EmbeddedResource">
+    <!--<Message Importance="High" Text="VertexShader: $(IntermediateOutputPath)%(VertexShader.Identity)"/>
+    <Message Importance="High" Text="PixelShader: $(IntermediateOutputPath)%(PixelShader.Identity)"/>
+    <Message Importance="High" Text="GeometryShader: $(IntermediateOutputPath)%(GeometryShader.Identity)"/>
+    <Message Importance="High" Text="ComputeShader: $(IntermediateOutputPath)%(ComputeShader.Identity)"/>-->
+	<ItemGroup>
+      <EmbeddedResource Include="$(IntermediateOutputPath)$([System.IO.Path]::ChangeExtension('%(VertexShader.Identity)', '.cso'))" Condition="'%(VertexShader.Identity)'!=''">
+        <LogicalName>DxShaders.$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</LogicalName>
+        <Visible>false</Visible>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(IntermediateOutputPath)$([System.IO.Path]::ChangeExtension('%(PixelShader.Identity)', '.cso'))" Condition="'%(PixelShader.Identity)'!=''">
+        <LogicalName>DxShaders.$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</LogicalName>
+        <Visible>false</Visible>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(IntermediateOutputPath)$([System.IO.Path]::ChangeExtension('%(GeometryShader.Identity)', '.cso'))" Condition="'%(GeometryShader.Identity)'!=''">
+        <LogicalName>DxShaders.$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</LogicalName>
+        <Visible>false</Visible>
+      </EmbeddedResource>
+      <EmbeddedResource Include="$(IntermediateOutputPath)$([System.IO.Path]::ChangeExtension('%(ComputeShader.Identity)', '.cso'))" Condition="'%(ComputeShader.Identity)'!=''">
+        <LogicalName>DxShaders.$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)'))</LogicalName>
+        <Visible>false</Visible>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+  
   <ItemGroup>
     <VertexShader Include="Rendering\DirectX11\RoomShaderVS.hlsl">
       <ShaderModel>4_0</ShaderModel>
