@@ -11,7 +11,7 @@ namespace WadTool
         private readonly PanelRenderingStaticEditor _control;
 
         public GizmoStaticEditor(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingStaticEditor control)
-            : base(device, effect, () => device.Clear(ClearOptions.DepthBuffer, SharpDX.Vector4.Zero, 1.0f, 0))
+            : base(device, effect)
         {
             _configuration = configuration;
             _control = control;

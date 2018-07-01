@@ -307,6 +307,7 @@ namespace WadTool.Controls
             if (DrawGizmo && SelectedMesh != null)
             {
                 // Draw the gizmo
+                SwapChain.ClearDepth();
                 _gizmo.Draw(viewProjection);
             }
 

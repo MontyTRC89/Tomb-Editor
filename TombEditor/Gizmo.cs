@@ -12,8 +12,8 @@ namespace TombEditor
     {
         private readonly Editor _editor;
 
-        public Gizmo(RenderingDevice device, RenderingSwapChain swapChain, Effect effect)
-            : base(DeviceManager.DefaultDeviceManager.___LegacyDevice, effect, () => swapChain.ClearDepth())
+        public Gizmo(RenderingDevice device, Effect effect)
+            : base(DeviceManager.DefaultDeviceManager.___LegacyDevice, effect)
         {
             _editor = Editor.Instance;
         }
