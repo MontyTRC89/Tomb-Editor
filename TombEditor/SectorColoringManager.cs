@@ -11,8 +11,8 @@ namespace TombEditor
 
         private readonly Editor _editor;
 
-        private const float _transitionSpeed = 0.4f;
-        private readonly Timer _transitionAnimator = new Timer() { Interval = 60 };
+        private const float _transitionSpeed = 0.335f;
+        private readonly Timer _transitionAnimator = new Timer() { Interval = 50 };
 
         public SectorColoringManager(Editor editor)
         {

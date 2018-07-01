@@ -197,8 +197,8 @@ namespace TombLib.Rendering
                 shapesToList = _allShapes;
             for (int i = 0; i < shapesToList.Count; i++)
             {
-                Vector4? prevColor = GetSectorColoringInfoColor(CurrentPriority, room, x, z, probeThroughPortals, shapesToList[i], typesToIgnore);
-                Vector4? currColor = GetSectorColoringInfoColor(PreviousPriority, room, x, z, probeThroughPortals, shapesToList[i], typesToIgnore);
+                Vector4? currColor = GetSectorColoringInfoColor(CurrentPriority, room, x, z, probeThroughPortals, shapesToList[i], typesToIgnore);
+                Vector4? prevColor = GetSectorColoringInfoColor(PreviousPriority, room, x, z, probeThroughPortals, shapesToList[i], typesToIgnore);
                 if (!prevColor.HasValue || !currColor.HasValue)
                     continue;
 

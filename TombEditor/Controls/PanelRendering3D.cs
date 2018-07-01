@@ -271,13 +271,15 @@ namespace TombEditor.Controls
                 obj is Editor.LevelChangedEvent ||
                 obj is Editor.ConfigurationChangedEvent) // "ProbeAttributesThroughPortals"
                 _renderingCachedRooms.Clear();
+            if (obj is SectorColoringManager.ChangeSectorColoringInfoEvent)
+                _renderingCachedRooms.Clear();
 
             // Update drawing
             if (obj is IEditorObjectChangedEvent ||
+                obj is Editor.SelectedObjectChangedEvent ||
                 obj is IEditorRoomChangedEvent ||
                 obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
                 obj is Editor.ConfigurationChangedEvent ||
-                obj is Editor.SelectedObjectChangedEvent ||
                 obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.SelectedRoomChangedEvent ||
                 obj is Editor.ModeChangedEvent ||
