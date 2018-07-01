@@ -300,12 +300,14 @@ namespace WadTool.Controls
             if (DrawGizmo)
             {
                 // Draw the gizmo
+                SwapChain.ClearDepth();
                 _gizmo.Draw(viewProjection);
             }
 
             if (SelectedLight != null)
             {
                 // Draw the gizmo of selected light
+                SwapChain.ClearDepth();
                 _gizmoLight.Draw(viewProjection);
             }
 

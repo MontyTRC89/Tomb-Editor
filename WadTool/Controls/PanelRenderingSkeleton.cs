@@ -214,6 +214,7 @@ namespace WadTool.Controls
             if (DrawGizmo && SelectedNode != null)
             {
                 // Draw the gizmo
+                SwapChain.ClearDepth();
                 _gizmo.Draw(viewProjection);
             }
 

@@ -19,7 +19,7 @@ namespace WadTool
 
         public GizmoAnimationEditor(WadToolClass tool, Configuration configuration, GraphicsDevice device,
                                     Effect effect, PanelRenderingAnimationEditor control)
-            : base(device, effect, () => device.Clear(ClearOptions.DepthBuffer, SharpDX.Vector4.Zero, 1.0f, 0))
+            : base(device, effect)
         {
             _configuration = configuration;
             _control = control;

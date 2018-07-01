@@ -230,7 +230,7 @@ namespace TombEditor.Controls
                     SlopeScaledDepthBias = -2
                 });
 
-                _gizmo = new Gizmo(device, SwapChain, DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"]);
+                _gizmo = new Gizmo(device, DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"]);
 
                 ResetCamera();
             }
@@ -1999,6 +1999,7 @@ namespace TombEditor.Controls
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
             // Draw the gizmo
+            SwapChain.ClearDepth();
             _gizmo.Draw(viewProjection);
 
             watch.Stop();

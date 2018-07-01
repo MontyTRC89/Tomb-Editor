@@ -49,7 +49,6 @@ namespace TombLib.Graphics
         private readonly RasterizerState _rasterizerWireframe;
 
         private readonly Effect _effect;
-        private Action _deviceClearDepth;
 
         // Geometry of the gizmo
         private readonly GraphicsDevice _device;
@@ -75,11 +74,10 @@ namespace TombLib.Graphics
 
         private GizmoMode _hoveredMode;
 
-        public BaseGizmo(GraphicsDevice device, Effect effect, Action deviceClearDepth)
+        public BaseGizmo(GraphicsDevice device, Effect effect)
         {
             _effect = effect;
             _device = device;
-            _deviceClearDepth = deviceClearDepth;
 
             // Create the gizmo geometry
             _rotationHelperGeometry = Buffer.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
