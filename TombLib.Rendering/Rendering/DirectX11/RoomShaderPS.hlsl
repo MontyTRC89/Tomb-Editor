@@ -93,13 +93,10 @@ float4 main(PixelInputType input) : SV_TARGET
 
 		float sectorAreaStrength = clamp(min(min(lineX, lineY), lineDiagonal), 0.0F, 1.0f);
 
+		result.xyz *= sectorAreaStrength;
 		if (drawOutline == 2)
-		{
-			result.xyz *= sectorAreaStrength;
 			result.x -= sectorAreaStrength - 1.0f;
-		}
-		else
-			result.xyz *= sectorAreaStrength;
+
 		result.w = 1.0f - (1.0f - result.w) * sectorAreaStrength;
 	}
 
