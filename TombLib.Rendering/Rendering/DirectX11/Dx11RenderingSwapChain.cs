@@ -226,7 +226,7 @@ namespace TombLib.Rendering.DirectX11
                     // Render
                     Bind();
                     Device.TextShader.Apply(Device.Context);
-                    Device.Context.PixelShader.SetSampler(0, Device.SamplerRoundToNearest);
+                    Device.Context.PixelShader.SetSampler(0, Device.SamplerDefault);
                     Device.Context.PixelShader.SetShaderResources(0, ((Dx11RenderingTextureAllocator)(textureAllocator)).TextureView);
                     Device.Context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
                     Device.Context.OutputMerger.SetDepthStencilState(Device.DepthStencilNoZBuffer);
