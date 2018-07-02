@@ -73,8 +73,6 @@ namespace TombLib.Rendering.DirectX11
 
                             lastSectorInfo = currentSectorInfo;
                             lastSectorTexture = 0;
-                            if (result.HighlightedSelection)
-                                lastSectorTexture |= 0x10;
                             if (result.SectorTexture != SectorTexture.None)
                             { // Use sector texture
                                 lastSectorTexture = 0x20 | (((uint)result.SectorTexture - 1) << 6);
@@ -85,6 +83,9 @@ namespace TombLib.Rendering.DirectX11
                                     (((uint)(result.Color.X * 255)) << 6) |
                                     (((uint)(result.Color.Y * 255)) << 14) |
                                     (((uint)(result.Color.Z * 255)) << 22);
+                                // Highlight dragged sectors
+                                if (result.Selection == SelectionType.Highlight)
+                                    lastSectorTexture |= 0x10;
                             }
                         }
                         editorUVAndSectorTexture[i * 3 + 0] |= lastSectorTexture;
@@ -115,6 +116,14 @@ namespace TombLib.Rendering.DirectX11
                         }
                         else
                         { // Render as textured (the texture may turn out to be unavailable)
+                            // Indicate selected textured faces
+                            SectorInfo currentSectorInfo = roomGeometry.TriangleSectorInfo[i];
+                            if (description.SectorTextureGet(description.Room, currentSectorInfo.Pos.X, currentSectorInfo.Pos.Y, currentSectorInfo.Face).Selection == SelectionType.Selected)
+                            {
+                                editorUVAndSectorTexture[i * 3 + 0] |= 0x10;
+                                editorUVAndSectorTexture[i * 3 + 1] |= 0x10;
+                                editorUVAndSectorTexture[i * 3 + 2] |= 0x10;
+                            }
                             if (texture.Texture.IsUnavailable)
                             { // Texture is unvailable (i.e. file couldn't be loaded.
                                 ImageC image = Dx11RenderingDevice.TextureUnavailable;
