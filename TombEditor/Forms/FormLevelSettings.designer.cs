@@ -30,25 +30,6 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
-            this.textureFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
-            this.textureFileDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.textureFileDataGridViewPreviewColumn = new System.Windows.Forms.DataGridViewImageColumn();
-            this.textureFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.textureFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.textureFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.textureFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.darkLabel4 = new DarkUI.Controls.DarkLabel();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.objectFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
-            this.objectFileDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.objectFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.objectFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.objectFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.objectFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
@@ -68,6 +49,25 @@
             this.panel7 = new System.Windows.Forms.Panel();
             this.comboGameVersion = new DarkUI.Controls.DarkComboBox();
             this.darkLabel14 = new DarkUI.Controls.DarkLabel();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.textureFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
+            this.textureFileDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.textureFileDataGridViewPreviewColumn = new System.Windows.Forms.DataGridViewImageColumn();
+            this.textureFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.textureFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.textureFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.textureFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.darkLabel4 = new DarkUI.Controls.DarkLabel();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.objectFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
+            this.objectFileDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.objectFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.objectFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.objectFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.objectFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
@@ -128,15 +128,15 @@
             this.darkSectionPanel1.SuspendLayout();
             this.panel11.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
-            this.tabPage8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.textureFileDataGridView)).BeginInit();
-            this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.objectFileDataGridView)).BeginInit();
             this.tabPage5.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel7.SuspendLayout();
+            this.tabPage8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.textureFileDataGridView)).BeginInit();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.objectFileDataGridView)).BeginInit();
             this.tabPage4.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.panelTr5Sprites.SuspendLayout();
@@ -285,9 +285,9 @@
             // 
             // tabbedContainer
             // 
+            this.tabbedContainer.Controls.Add(this.tabPage5);
             this.tabbedContainer.Controls.Add(this.tabPage8);
             this.tabbedContainer.Controls.Add(this.tabPage1);
-            this.tabbedContainer.Controls.Add(this.tabPage5);
             this.tabbedContainer.Controls.Add(this.tabPage4);
             this.tabbedContainer.Controls.Add(this.tabPage2);
             this.tabbedContainer.Controls.Add(this.tabPage3);
@@ -300,215 +300,6 @@
             this.tabbedContainer.SelectedIndex = 0;
             this.tabbedContainer.Size = new System.Drawing.Size(571, 464);
             this.tabbedContainer.TabIndex = 2;
-            // 
-            // tabPage8
-            // 
-            this.tabPage8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabPage8.Controls.Add(this.textureFileDataGridViewControls);
-            this.tabPage8.Controls.Add(this.textureFileDataGridView);
-            this.tabPage8.Controls.Add(this.darkLabel4);
-            this.tabPage8.Location = new System.Drawing.Point(4, 22);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(563, 438);
-            this.tabPage8.TabIndex = 7;
-            this.tabPage8.Text = "Texture files (eg *.png)";
-            // 
-            // textureFileDataGridViewControls
-            // 
-            this.textureFileDataGridViewControls.AllowUserDelete = false;
-            this.textureFileDataGridViewControls.AllowUserMove = false;
-            this.textureFileDataGridViewControls.AllowUserNew = false;
-            this.textureFileDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textureFileDataGridViewControls.Enabled = false;
-            this.textureFileDataGridViewControls.Location = new System.Drawing.Point(535, 51);
-            this.textureFileDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
-            this.textureFileDataGridViewControls.Name = "textureFileDataGridViewControls";
-            this.textureFileDataGridViewControls.Size = new System.Drawing.Size(24, 363);
-            this.textureFileDataGridViewControls.TabIndex = 7;
-            // 
-            // textureFileDataGridView
-            // 
-            this.textureFileDataGridView.AllowUserToAddRows = false;
-            this.textureFileDataGridView.AllowUserToDragDropRows = false;
-            this.textureFileDataGridView.AllowUserToResizeRows = true;
-            this.textureFileDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textureFileDataGridView.AutoGenerateColumns = false;
-            this.textureFileDataGridView.ColumnHeadersHeight = 17;
-            this.textureFileDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.textureFileDataGridViewPreviewColumn,
-            this.textureFileDataGridViewPathColumn,
-            this.textureFileDataGridViewSearchColumn,
-            this.textureFileDataGridViewShowColumn,
-            this.textureFileDataGridViewMessageColumn,
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn,
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn});
-            this.textureFileDataGridView.Location = new System.Drawing.Point(6, 51);
-            this.textureFileDataGridView.Name = "textureFileDataGridView";
-            this.textureFileDataGridView.RowHeadersWidth = 41;
-            this.textureFileDataGridView.RowTemplate.Height = 40;
-            this.textureFileDataGridView.Size = new System.Drawing.Size(524, 363);
-            this.textureFileDataGridView.TabIndex = 6;
-            this.textureFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.textureFileDataGridView_CellContentClick);
-            this.textureFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.textureFileDataGridView_CellFormatting);
-            // 
-            // textureFileDataGridViewPreviewColumn
-            // 
-            this.textureFileDataGridViewPreviewColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.textureFileDataGridViewPreviewColumn.HeaderText = "Preview";
-            this.textureFileDataGridViewPreviewColumn.Name = "textureFileDataGridViewPreviewColumn";
-            this.textureFileDataGridViewPreviewColumn.ReadOnly = true;
-            this.textureFileDataGridViewPreviewColumn.Width = 60;
-            // 
-            // textureFileDataGridViewPathColumn
-            // 
-            this.textureFileDataGridViewPathColumn.DataPropertyName = "Path";
-            this.textureFileDataGridViewPathColumn.HeaderText = "Path";
-            this.textureFileDataGridViewPathColumn.Name = "textureFileDataGridViewPathColumn";
-            this.textureFileDataGridViewPathColumn.Width = 200;
-            // 
-            // textureFileDataGridViewSearchColumn
-            // 
-            this.textureFileDataGridViewSearchColumn.HeaderText = "";
-            this.textureFileDataGridViewSearchColumn.Name = "textureFileDataGridViewSearchColumn";
-            this.textureFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.textureFileDataGridViewSearchColumn.Text = "Search";
-            this.textureFileDataGridViewSearchColumn.Width = 80;
-            // 
-            // textureFileDataGridViewShowColumn
-            // 
-            this.textureFileDataGridViewShowColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.textureFileDataGridViewShowColumn.FillWeight = 45F;
-            this.textureFileDataGridViewShowColumn.HeaderText = "Show";
-            this.textureFileDataGridViewShowColumn.Name = "textureFileDataGridViewShowColumn";
-            this.textureFileDataGridViewShowColumn.Text = "◀";
-            this.textureFileDataGridViewShowColumn.Width = 45;
-            // 
-            // textureFileDataGridViewMessageColumn
-            // 
-            this.textureFileDataGridViewMessageColumn.DataPropertyName = "Message";
-            this.textureFileDataGridViewMessageColumn.HeaderText = "Message";
-            this.textureFileDataGridViewMessageColumn.Name = "textureFileDataGridViewMessageColumn";
-            this.textureFileDataGridViewMessageColumn.ReadOnly = true;
-            this.textureFileDataGridViewMessageColumn.Width = 300;
-            // 
-            // textureFileDataGridViewReplaceMagentaWithTransparencyColumn
-            // 
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.DataPropertyName = "ReplaceMagentaWithTransparency";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.FalseValue = "false";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.HeaderText = "Convert magenta transparency";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Name = "textureFileDataGridViewReplaceMagentaWithTransparencyColumn";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.TrueValue = "true";
-            // 
-            // textureFileDataGridViewConvert512PixelsToDoubleRowsColumn
-            // 
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.DataPropertyName = "Convert512PixelsToDoubleRows";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.FalseValue = "false";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.HeaderText = "Convert 512 pixel columns";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Name = "textureFileDataGridViewConvert512PixelsToDoubleRowsColumn";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.TrueValue = "true";
-            // 
-            // darkLabel4
-            // 
-            this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel4.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(520, 45);
-            this.darkLabel4.TabIndex = 5;
-            this.darkLabel4.Text = resources.GetString("darkLabel4.Text");
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabPage1.Controls.Add(this.objectFileDataGridViewControls);
-            this.tabPage1.Controls.Add(this.objectFileDataGridView);
-            this.tabPage1.Controls.Add(this.darkLabel5);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(563, 438);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Object files (eg *.wad)";
-            // 
-            // objectFileDataGridViewControls
-            // 
-            this.objectFileDataGridViewControls.AllowUserDelete = false;
-            this.objectFileDataGridViewControls.AllowUserMove = false;
-            this.objectFileDataGridViewControls.AllowUserNew = false;
-            this.objectFileDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.objectFileDataGridViewControls.Enabled = false;
-            this.objectFileDataGridViewControls.Location = new System.Drawing.Point(536, 36);
-            this.objectFileDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
-            this.objectFileDataGridViewControls.Name = "objectFileDataGridViewControls";
-            this.objectFileDataGridViewControls.Size = new System.Drawing.Size(24, 378);
-            this.objectFileDataGridViewControls.TabIndex = 5;
-            // 
-            // objectFileDataGridView
-            // 
-            this.objectFileDataGridView.AllowUserToAddRows = false;
-            this.objectFileDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.objectFileDataGridView.AutoGenerateColumns = false;
-            this.objectFileDataGridView.ColumnHeadersHeight = 17;
-            this.objectFileDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.objectFileDataGridViewPathColumn,
-            this.objectFileDataGridViewSearchColumn,
-            this.objectFileDataGridViewShowColumn,
-            this.objectFileDataGridViewMessageColumn});
-            this.objectFileDataGridView.Location = new System.Drawing.Point(6, 36);
-            this.objectFileDataGridView.Name = "objectFileDataGridView";
-            this.objectFileDataGridView.RowHeadersWidth = 41;
-            this.objectFileDataGridView.Size = new System.Drawing.Size(524, 378);
-            this.objectFileDataGridView.TabIndex = 4;
-            this.objectFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.objectFileDataGridView_CellContentClick);
-            this.objectFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.objectFileDataGridView_CellFormatting);
-            // 
-            // objectFileDataGridViewPathColumn
-            // 
-            this.objectFileDataGridViewPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.objectFileDataGridViewPathColumn.DataPropertyName = "Path";
-            this.objectFileDataGridViewPathColumn.HeaderText = "Path";
-            this.objectFileDataGridViewPathColumn.Name = "objectFileDataGridViewPathColumn";
-            // 
-            // objectFileDataGridViewSearchColumn
-            // 
-            this.objectFileDataGridViewSearchColumn.HeaderText = "";
-            this.objectFileDataGridViewSearchColumn.Name = "objectFileDataGridViewSearchColumn";
-            this.objectFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.objectFileDataGridViewSearchColumn.Text = "Search";
-            this.objectFileDataGridViewSearchColumn.Width = 80;
-            // 
-            // objectFileDataGridViewShowColumn
-            // 
-            this.objectFileDataGridViewShowColumn.HeaderText = "Show";
-            this.objectFileDataGridViewShowColumn.Name = "objectFileDataGridViewShowColumn";
-            this.objectFileDataGridViewShowColumn.Text = "◀";
-            this.objectFileDataGridViewShowColumn.Width = 45;
-            // 
-            // objectFileDataGridViewMessageColumn
-            // 
-            this.objectFileDataGridViewMessageColumn.DataPropertyName = "Message";
-            this.objectFileDataGridViewMessageColumn.FillWeight = 200F;
-            this.objectFileDataGridViewMessageColumn.HeaderText = "Message";
-            this.objectFileDataGridViewMessageColumn.Name = "objectFileDataGridViewMessageColumn";
-            this.objectFileDataGridViewMessageColumn.ReadOnly = true;
-            this.objectFileDataGridViewMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.objectFileDataGridViewMessageColumn.Width = 200;
-            // 
-            // darkLabel5
-            // 
-            this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel5.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(520, 43);
-            this.darkLabel5.TabIndex = 1;
-            this.darkLabel5.Text = "List of object resources (eg *.wad2, *.wad).\r\nObjects inside the files mentioned " +
-    "earlier in the list take priority over later files.";
             // 
             // tabPage5
             // 
@@ -709,6 +500,215 @@
             this.darkLabel14.TabIndex = 1;
             this.darkLabel14.Text = "Game version to target:";
             // 
+            // tabPage8
+            // 
+            this.tabPage8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage8.Controls.Add(this.textureFileDataGridViewControls);
+            this.tabPage8.Controls.Add(this.textureFileDataGridView);
+            this.tabPage8.Controls.Add(this.darkLabel4);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(563, 438);
+            this.tabPage8.TabIndex = 7;
+            this.tabPage8.Text = "Texture Files";
+            // 
+            // textureFileDataGridViewControls
+            // 
+            this.textureFileDataGridViewControls.AllowUserDelete = false;
+            this.textureFileDataGridViewControls.AllowUserMove = false;
+            this.textureFileDataGridViewControls.AllowUserNew = false;
+            this.textureFileDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textureFileDataGridViewControls.Enabled = false;
+            this.textureFileDataGridViewControls.Location = new System.Drawing.Point(535, 51);
+            this.textureFileDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
+            this.textureFileDataGridViewControls.Name = "textureFileDataGridViewControls";
+            this.textureFileDataGridViewControls.Size = new System.Drawing.Size(24, 384);
+            this.textureFileDataGridViewControls.TabIndex = 7;
+            // 
+            // textureFileDataGridView
+            // 
+            this.textureFileDataGridView.AllowUserToAddRows = false;
+            this.textureFileDataGridView.AllowUserToDragDropRows = false;
+            this.textureFileDataGridView.AllowUserToResizeRows = true;
+            this.textureFileDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textureFileDataGridView.AutoGenerateColumns = false;
+            this.textureFileDataGridView.ColumnHeadersHeight = 17;
+            this.textureFileDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.textureFileDataGridViewPreviewColumn,
+            this.textureFileDataGridViewPathColumn,
+            this.textureFileDataGridViewSearchColumn,
+            this.textureFileDataGridViewShowColumn,
+            this.textureFileDataGridViewMessageColumn,
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn,
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn});
+            this.textureFileDataGridView.Location = new System.Drawing.Point(6, 51);
+            this.textureFileDataGridView.Name = "textureFileDataGridView";
+            this.textureFileDataGridView.RowHeadersWidth = 41;
+            this.textureFileDataGridView.RowTemplate.Height = 40;
+            this.textureFileDataGridView.Size = new System.Drawing.Size(523, 384);
+            this.textureFileDataGridView.TabIndex = 6;
+            this.textureFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.textureFileDataGridView_CellContentClick);
+            this.textureFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.textureFileDataGridView_CellFormatting);
+            // 
+            // textureFileDataGridViewPreviewColumn
+            // 
+            this.textureFileDataGridViewPreviewColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.textureFileDataGridViewPreviewColumn.HeaderText = "Preview";
+            this.textureFileDataGridViewPreviewColumn.Name = "textureFileDataGridViewPreviewColumn";
+            this.textureFileDataGridViewPreviewColumn.ReadOnly = true;
+            this.textureFileDataGridViewPreviewColumn.Width = 60;
+            // 
+            // textureFileDataGridViewPathColumn
+            // 
+            this.textureFileDataGridViewPathColumn.DataPropertyName = "Path";
+            this.textureFileDataGridViewPathColumn.HeaderText = "Path";
+            this.textureFileDataGridViewPathColumn.Name = "textureFileDataGridViewPathColumn";
+            this.textureFileDataGridViewPathColumn.Width = 200;
+            // 
+            // textureFileDataGridViewSearchColumn
+            // 
+            this.textureFileDataGridViewSearchColumn.HeaderText = "";
+            this.textureFileDataGridViewSearchColumn.Name = "textureFileDataGridViewSearchColumn";
+            this.textureFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.textureFileDataGridViewSearchColumn.Text = "Search";
+            this.textureFileDataGridViewSearchColumn.Width = 80;
+            // 
+            // textureFileDataGridViewShowColumn
+            // 
+            this.textureFileDataGridViewShowColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.textureFileDataGridViewShowColumn.FillWeight = 45F;
+            this.textureFileDataGridViewShowColumn.HeaderText = "Show";
+            this.textureFileDataGridViewShowColumn.Name = "textureFileDataGridViewShowColumn";
+            this.textureFileDataGridViewShowColumn.Text = "◀";
+            this.textureFileDataGridViewShowColumn.Width = 45;
+            // 
+            // textureFileDataGridViewMessageColumn
+            // 
+            this.textureFileDataGridViewMessageColumn.DataPropertyName = "Message";
+            this.textureFileDataGridViewMessageColumn.HeaderText = "Message";
+            this.textureFileDataGridViewMessageColumn.Name = "textureFileDataGridViewMessageColumn";
+            this.textureFileDataGridViewMessageColumn.ReadOnly = true;
+            this.textureFileDataGridViewMessageColumn.Width = 300;
+            // 
+            // textureFileDataGridViewReplaceMagentaWithTransparencyColumn
+            // 
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.DataPropertyName = "ReplaceMagentaWithTransparency";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.FalseValue = "false";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.HeaderText = "Convert magenta transparency";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Name = "textureFileDataGridViewReplaceMagentaWithTransparencyColumn";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.TrueValue = "true";
+            // 
+            // textureFileDataGridViewConvert512PixelsToDoubleRowsColumn
+            // 
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.DataPropertyName = "Convert512PixelsToDoubleRows";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.FalseValue = "false";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.HeaderText = "Convert 512 pixel columns";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Name = "textureFileDataGridViewConvert512PixelsToDoubleRowsColumn";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.TrueValue = "true";
+            // 
+            // darkLabel4
+            // 
+            this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel4.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel4.Name = "darkLabel4";
+            this.darkLabel4.Size = new System.Drawing.Size(520, 45);
+            this.darkLabel4.TabIndex = 5;
+            this.darkLabel4.Text = resources.GetString("darkLabel4.Text");
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage1.Controls.Add(this.objectFileDataGridViewControls);
+            this.tabPage1.Controls.Add(this.objectFileDataGridView);
+            this.tabPage1.Controls.Add(this.darkLabel5);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(563, 438);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Object Files";
+            // 
+            // objectFileDataGridViewControls
+            // 
+            this.objectFileDataGridViewControls.AllowUserDelete = false;
+            this.objectFileDataGridViewControls.AllowUserMove = false;
+            this.objectFileDataGridViewControls.AllowUserNew = false;
+            this.objectFileDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.objectFileDataGridViewControls.Enabled = false;
+            this.objectFileDataGridViewControls.Location = new System.Drawing.Point(535, 36);
+            this.objectFileDataGridViewControls.MinimumSize = new System.Drawing.Size(24, 100);
+            this.objectFileDataGridViewControls.Name = "objectFileDataGridViewControls";
+            this.objectFileDataGridViewControls.Size = new System.Drawing.Size(24, 399);
+            this.objectFileDataGridViewControls.TabIndex = 5;
+            // 
+            // objectFileDataGridView
+            // 
+            this.objectFileDataGridView.AllowUserToAddRows = false;
+            this.objectFileDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.objectFileDataGridView.AutoGenerateColumns = false;
+            this.objectFileDataGridView.ColumnHeadersHeight = 17;
+            this.objectFileDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.objectFileDataGridViewPathColumn,
+            this.objectFileDataGridViewSearchColumn,
+            this.objectFileDataGridViewShowColumn,
+            this.objectFileDataGridViewMessageColumn});
+            this.objectFileDataGridView.Location = new System.Drawing.Point(6, 36);
+            this.objectFileDataGridView.Name = "objectFileDataGridView";
+            this.objectFileDataGridView.RowHeadersWidth = 41;
+            this.objectFileDataGridView.Size = new System.Drawing.Size(523, 399);
+            this.objectFileDataGridView.TabIndex = 4;
+            this.objectFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.objectFileDataGridView_CellContentClick);
+            this.objectFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.objectFileDataGridView_CellFormatting);
+            // 
+            // objectFileDataGridViewPathColumn
+            // 
+            this.objectFileDataGridViewPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.objectFileDataGridViewPathColumn.DataPropertyName = "Path";
+            this.objectFileDataGridViewPathColumn.HeaderText = "Path";
+            this.objectFileDataGridViewPathColumn.Name = "objectFileDataGridViewPathColumn";
+            // 
+            // objectFileDataGridViewSearchColumn
+            // 
+            this.objectFileDataGridViewSearchColumn.HeaderText = "";
+            this.objectFileDataGridViewSearchColumn.Name = "objectFileDataGridViewSearchColumn";
+            this.objectFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.objectFileDataGridViewSearchColumn.Text = "Search";
+            this.objectFileDataGridViewSearchColumn.Width = 80;
+            // 
+            // objectFileDataGridViewShowColumn
+            // 
+            this.objectFileDataGridViewShowColumn.HeaderText = "Show";
+            this.objectFileDataGridViewShowColumn.Name = "objectFileDataGridViewShowColumn";
+            this.objectFileDataGridViewShowColumn.Text = "◀";
+            this.objectFileDataGridViewShowColumn.Width = 45;
+            // 
+            // objectFileDataGridViewMessageColumn
+            // 
+            this.objectFileDataGridViewMessageColumn.DataPropertyName = "Message";
+            this.objectFileDataGridViewMessageColumn.FillWeight = 200F;
+            this.objectFileDataGridViewMessageColumn.HeaderText = "Message";
+            this.objectFileDataGridViewMessageColumn.Name = "objectFileDataGridViewMessageColumn";
+            this.objectFileDataGridViewMessageColumn.ReadOnly = true;
+            this.objectFileDataGridViewMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.objectFileDataGridViewMessageColumn.Width = 200;
+            // 
+            // darkLabel5
+            // 
+            this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel5.Location = new System.Drawing.Point(3, 3);
+            this.darkLabel5.Name = "darkLabel5";
+            this.darkLabel5.Size = new System.Drawing.Size(520, 43);
+            this.darkLabel5.TabIndex = 1;
+            this.darkLabel5.Text = "List of object resources (eg *.wad2, *.wad).\r\nObjects inside the files mentioned " +
+    "earlier in the list take priority over later files.";
+            // 
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.Transparent;
@@ -719,7 +719,7 @@
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage4.Size = new System.Drawing.Size(563, 438);
             this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Imported geometry";
+            this.tabPage4.Text = "Imported Geometry";
             // 
             // importedGeometryManager
             // 
@@ -727,10 +727,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.importedGeometryManager.LevelSettings = null;
-            this.importedGeometryManager.Location = new System.Drawing.Point(3, 23);
+            this.importedGeometryManager.Location = new System.Drawing.Point(6, 23);
             this.importedGeometryManager.Name = "importedGeometryManager";
             this.importedGeometryManager.SelectedImportedGeometry = null;
-            this.importedGeometryManager.Size = new System.Drawing.Size(557, 412);
+            this.importedGeometryManager.Size = new System.Drawing.Size(556, 412);
             this.importedGeometryManager.TabIndex = 2;
             // 
             // darkLabel11
@@ -1067,7 +1067,7 @@
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage6.Size = new System.Drawing.Size(563, 438);
             this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "Path placeholders";
+            this.tabPage6.Text = "Path Placeholders";
             // 
             // darkLabel1
             // 
@@ -1280,7 +1280,7 @@
             this.darkLabel16.AutoSize = true;
             this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(3, 15);
+            this.darkLabel16.Location = new System.Drawing.Point(0, 15);
             this.darkLabel16.Name = "darkLabel16";
             this.darkLabel16.Size = new System.Drawing.Size(120, 13);
             this.darkLabel16.TabIndex = 90;
@@ -1318,10 +1318,6 @@
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel11.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
-            this.tabPage8.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.textureFileDataGridView)).EndInit();
-            this.tabPage1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.objectFileDataGridView)).EndInit();
             this.tabPage5.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
@@ -1330,6 +1326,10 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel7.ResumeLayout(false);
+            this.tabPage8.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.textureFileDataGridView)).EndInit();
+            this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.objectFileDataGridView)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.panelTr5Sprites.ResumeLayout(false);
