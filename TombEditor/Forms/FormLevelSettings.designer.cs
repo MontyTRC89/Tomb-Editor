@@ -32,8 +32,8 @@
             this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.darkLabel13 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel12 = new DarkUI.Controls.DarkLabel();
+            this.lblGameEnableQuickStartFeature2 = new DarkUI.Controls.DarkLabel();
+            this.lblGameEnableQuickStartFeature1 = new DarkUI.Controls.DarkLabel();
             this.GameEnableQuickStartFeatureCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.gameExecutableFilePathBut = new DarkUI.Controls.DarkButton();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
@@ -76,7 +76,7 @@
             this.tr5SpritesTextureFilePathPicPreview = new System.Windows.Forms.PictureBox();
             this.tr5SpritesTextureFilePathBut = new DarkUI.Controls.DarkButton();
             this.tr5SpritesFilePathOptCustom = new DarkUI.Controls.DarkRadioButton();
-            this.darkLabel18 = new DarkUI.Controls.DarkLabel();
+            this.lblTr5ExtraSprites = new DarkUI.Controls.DarkLabel();
             this.tr5SpritesFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
             this.tr5SpritesTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.panel8 = new System.Windows.Forms.Panel();
@@ -107,10 +107,10 @@
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.panelTr5Weather = new System.Windows.Forms.Panel();
             this.comboTr5Weather = new DarkUI.Controls.DarkComboBox();
-            this.darkLabel19 = new DarkUI.Controls.DarkLabel();
+            this.lblTr5Weather = new DarkUI.Controls.DarkLabel();
             this.panelTr5LaraType = new System.Windows.Forms.Panel();
             this.comboLaraType = new DarkUI.Controls.DarkComboBox();
-            this.darkLabel17 = new DarkUI.Controls.DarkLabel();
+            this.lblLaraType = new DarkUI.Controls.DarkLabel();
             this.panel10 = new System.Windows.Forms.Panel();
             this.scriptPathBut = new DarkUI.Controls.DarkButton();
             this.darkLabel15 = new DarkUI.Controls.DarkLabel();
@@ -317,8 +317,8 @@
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.darkLabel13);
-            this.panel3.Controls.Add(this.darkLabel12);
+            this.panel3.Controls.Add(this.lblGameEnableQuickStartFeature2);
+            this.panel3.Controls.Add(this.lblGameEnableQuickStartFeature1);
             this.panel3.Controls.Add(this.GameEnableQuickStartFeatureCheckBox);
             this.panel3.Controls.Add(this.gameExecutableFilePathBut);
             this.panel3.Controls.Add(this.darkLabel3);
@@ -329,25 +329,25 @@
             this.panel3.Size = new System.Drawing.Size(557, 282);
             this.panel3.TabIndex = 3;
             // 
-            // darkLabel13
+            // lblGameEnableQuickStartFeature2
             // 
-            this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel13.Location = new System.Drawing.Point(16, 137);
-            this.darkLabel13.Name = "darkLabel13";
-            this.darkLabel13.Size = new System.Drawing.Size(404, 31);
-            this.darkLabel13.TabIndex = 5;
-            this.darkLabel13.Text = "If you are using TRNG, to speed up level load and exit further, it is recommended" +
+            this.lblGameEnableQuickStartFeature2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblGameEnableQuickStartFeature2.Location = new System.Drawing.Point(16, 137);
+            this.lblGameEnableQuickStartFeature2.Name = "lblGameEnableQuickStartFeature2";
+            this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(404, 31);
+            this.lblGameEnableQuickStartFeature2.TabIndex = 5;
+            this.lblGameEnableQuickStartFeature2.Text = "If you are using TRNG, to speed up level load and exit further, it is recommended" +
     " to enable \'soft fullscreen\' mode in the TRNG settings.";
             // 
-            // darkLabel12
+            // lblGameEnableQuickStartFeature1
             // 
-            this.darkLabel12.AutoSize = true;
-            this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel12.Location = new System.Drawing.Point(42, 65);
-            this.darkLabel12.Name = "darkLabel12";
-            this.darkLabel12.Size = new System.Drawing.Size(268, 65);
-            this.darkLabel12.TabIndex = 5;
-            this.darkLabel12.Text = "This includes:\n  - Automatically loads into the currently open level\n  - Speeds u" +
+            this.lblGameEnableQuickStartFeature1.AutoSize = true;
+            this.lblGameEnableQuickStartFeature1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblGameEnableQuickStartFeature1.Location = new System.Drawing.Point(42, 65);
+            this.lblGameEnableQuickStartFeature1.Name = "lblGameEnableQuickStartFeature1";
+            this.lblGameEnableQuickStartFeature1.Size = new System.Drawing.Size(268, 65);
+            this.lblGameEnableQuickStartFeature1.TabIndex = 5;
+            this.lblGameEnableQuickStartFeature1.Text = "This includes:\n  - Automatically loads into the currently open level\n  - Speeds u" +
     "p loading and saving times\n  - Suppresses asking for settings dialog in TRNG\n  -" +
     " Prevents removal of taskbar in TRNG";
             // 
@@ -761,7 +761,7 @@
             this.panelTr5Sprites.Controls.Add(this.tr5SpritesTextureFilePathPicPreview);
             this.panelTr5Sprites.Controls.Add(this.tr5SpritesTextureFilePathBut);
             this.panelTr5Sprites.Controls.Add(this.tr5SpritesFilePathOptCustom);
-            this.panelTr5Sprites.Controls.Add(this.darkLabel18);
+            this.panelTr5Sprites.Controls.Add(this.lblTr5ExtraSprites);
             this.panelTr5Sprites.Controls.Add(this.tr5SpritesFilePathOptAuto);
             this.panelTr5Sprites.Controls.Add(this.tr5SpritesTextureFilePathTxt);
             this.panelTr5Sprites.Dock = System.Windows.Forms.DockStyle.Top;
@@ -802,14 +802,14 @@
             this.tr5SpritesFilePathOptCustom.TabStop = true;
             this.tr5SpritesFilePathOptCustom.Text = "Custom file (has to be 256²)";
             // 
-            // darkLabel18
+            // lblTr5ExtraSprites
             // 
-            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel18.Location = new System.Drawing.Point(0, 0);
-            this.darkLabel18.Name = "darkLabel18";
-            this.darkLabel18.Size = new System.Drawing.Size(381, 17);
-            this.darkLabel18.TabIndex = 1;
-            this.darkLabel18.Text = "TR5 extra sprites texture";
+            this.lblTr5ExtraSprites.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblTr5ExtraSprites.Location = new System.Drawing.Point(0, 0);
+            this.lblTr5ExtraSprites.Name = "lblTr5ExtraSprites";
+            this.lblTr5ExtraSprites.Size = new System.Drawing.Size(381, 17);
+            this.lblTr5ExtraSprites.TabIndex = 1;
+            this.lblTr5ExtraSprites.Text = "TR5 extra sprites texture";
             // 
             // tr5SpritesFilePathOptAuto
             // 
@@ -1134,9 +1134,9 @@
             // panelTr5Weather
             // 
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
-            this.panelTr5Weather.Controls.Add(this.darkLabel19);
+            this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 203);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 194);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(563, 59);
             this.panelTr5Weather.TabIndex = 97;
@@ -1146,28 +1146,28 @@
             this.comboTr5Weather.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboTr5Weather.FormattingEnabled = true;
-            this.comboTr5Weather.Location = new System.Drawing.Point(20, 23);
+            this.comboTr5Weather.Location = new System.Drawing.Point(19, 23);
             this.comboTr5Weather.Name = "comboTr5Weather";
-            this.comboTr5Weather.Size = new System.Drawing.Size(437, 23);
+            this.comboTr5Weather.Size = new System.Drawing.Size(443, 23);
             this.comboTr5Weather.TabIndex = 4;
             // 
-            // darkLabel19
+            // lblTr5Weather
             // 
-            this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel19.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel19.Name = "darkLabel19";
-            this.darkLabel19.Size = new System.Drawing.Size(439, 17);
-            this.darkLabel19.TabIndex = 3;
-            this.darkLabel19.Text = "TR5 weather:";
+            this.lblTr5Weather.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblTr5Weather.Location = new System.Drawing.Point(0, 3);
+            this.lblTr5Weather.Name = "lblTr5Weather";
+            this.lblTr5Weather.Size = new System.Drawing.Size(439, 17);
+            this.lblTr5Weather.TabIndex = 3;
+            this.lblTr5Weather.Text = "TR5 weather:";
             // 
             // panelTr5LaraType
             // 
             this.panelTr5LaraType.Controls.Add(this.comboLaraType);
-            this.panelTr5LaraType.Controls.Add(this.darkLabel17);
+            this.panelTr5LaraType.Controls.Add(this.lblLaraType);
             this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTr5LaraType.Location = new System.Drawing.Point(0, 144);
             this.panelTr5LaraType.Name = "panelTr5LaraType";
-            this.panelTr5LaraType.Size = new System.Drawing.Size(563, 59);
+            this.panelTr5LaraType.Size = new System.Drawing.Size(563, 50);
             this.panelTr5LaraType.TabIndex = 96;
             // 
             // comboLaraType
@@ -1175,19 +1175,19 @@
             this.comboLaraType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboLaraType.FormattingEnabled = true;
-            this.comboLaraType.Location = new System.Drawing.Point(20, 23);
+            this.comboLaraType.Location = new System.Drawing.Point(19, 23);
             this.comboLaraType.Name = "comboLaraType";
-            this.comboLaraType.Size = new System.Drawing.Size(437, 23);
+            this.comboLaraType.Size = new System.Drawing.Size(443, 23);
             this.comboLaraType.TabIndex = 4;
             // 
-            // darkLabel17
+            // lblLaraType
             // 
-            this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel17.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel17.Name = "darkLabel17";
-            this.darkLabel17.Size = new System.Drawing.Size(439, 17);
-            this.darkLabel17.TabIndex = 3;
-            this.darkLabel17.Text = "TR5 Lara type:";
+            this.lblLaraType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblLaraType.Location = new System.Drawing.Point(0, 3);
+            this.lblLaraType.Name = "lblLaraType";
+            this.lblLaraType.Size = new System.Drawing.Size(439, 17);
+            this.lblLaraType.TabIndex = 3;
+            this.lblLaraType.Text = "TR5 Lara type:";
             // 
             // panel10
             // 
@@ -1416,8 +1416,8 @@
         private DarkUI.Controls.DarkListView optionsList;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
-        private DarkUI.Controls.DarkLabel darkLabel12;
-        private DarkUI.Controls.DarkLabel darkLabel13;
+        private DarkUI.Controls.DarkLabel lblGameEnableQuickStartFeature1;
+        private DarkUI.Controls.DarkLabel lblGameEnableQuickStartFeature2;
         private System.Windows.Forms.Panel panel1;
         private DarkUI.Controls.DarkComboBox comboGameVersion;
         private DarkUI.Controls.DarkLabel darkLabel14;
@@ -1430,7 +1430,7 @@
         private System.Windows.Forms.PictureBox tr5SpritesTextureFilePathPicPreview;
         private DarkUI.Controls.DarkButton tr5SpritesTextureFilePathBut;
         private DarkUI.Controls.DarkRadioButton tr5SpritesFilePathOptCustom;
-        private DarkUI.Controls.DarkLabel darkLabel18;
+        private DarkUI.Controls.DarkLabel lblTr5ExtraSprites;
         private DarkUI.Controls.DarkRadioButton tr5SpritesFilePathOptAuto;
         private DarkUI.Controls.DarkTextBox tr5SpritesTextureFilePathTxt;
         private TombLib.Controls.DarkDataGridViewControls objectFileDataGridViewControls;
@@ -1438,10 +1438,10 @@
         private System.Windows.Forms.TabPage tabPage8;
         private System.Windows.Forms.Panel panelTr5Weather;
         private DarkUI.Controls.DarkComboBox comboTr5Weather;
-        private DarkUI.Controls.DarkLabel darkLabel19;
+        private DarkUI.Controls.DarkLabel lblTr5Weather;
         private System.Windows.Forms.Panel panelTr5LaraType;
         private DarkUI.Controls.DarkComboBox comboLaraType;
-        private DarkUI.Controls.DarkLabel darkLabel17;
+        private DarkUI.Controls.DarkLabel lblLaraType;
         private System.Windows.Forms.Panel panel10;
         private DarkUI.Controls.DarkButton scriptPathBut;
         private DarkUI.Controls.DarkLabel darkLabel15;

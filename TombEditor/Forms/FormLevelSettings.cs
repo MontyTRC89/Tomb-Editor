@@ -451,6 +451,22 @@ namespace TombEditor.Forms
 
             // Update the default ambient light
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector3(0.5f)).ToWinFormsColor();
+
+            // Hide version-specific controls
+
+            bool currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TRNG);
+            GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
+            lblGameEnableQuickStartFeature1.Visible = currentVersionToCheck;
+            lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
+
+            currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TR5);
+            lblLaraType.Visible = currentVersionToCheck;
+            comboLaraType.Visible = currentVersionToCheck;
+            lblTr5Weather.Visible = currentVersionToCheck;
+            comboTr5Weather.Visible = currentVersionToCheck;
+            panelTr5Sprites.Visible = currentVersionToCheck;
+
+
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
