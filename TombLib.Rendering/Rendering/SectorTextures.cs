@@ -35,13 +35,20 @@ namespace TombLib.Rendering
         texture_unavailable
     }
 
+    public enum SelectionType
+    {
+        None,
+        Selected,
+        Highlight
+    }
+
     public delegate SectorTextureResult SectorTextureGetDelegate(Room room, int x, int z, BlockFace face);
 
     public struct SectorTextureResult
     {
         public Vector4 Color;
         public SectorTexture SectorTexture;
-        public bool HighlightedSelection;
+        public SelectionType Selection;
     }
 
     public class SectorTextureDefault
@@ -439,7 +446,7 @@ namespace TombLib.Rendering
             {
                 Color = Color,
                 SectorTexture = SectorTexture,
-                HighlightedSelection = SelectionArea.Contains(new VectorInt2(x, z)) && HighlightSelection
+                Selection = (SelectionArea.Contains(new VectorInt2(x, z)) ? (HighlightSelection ? SelectionType.Highlight : SelectionType.Selected) : SelectionType.None)
             };
         }
     }

@@ -29,6 +29,7 @@ float ddAny(float value)
 
 float4 main(PixelInputType input) : SV_TARGET
 {
+	int drawOutline = 0;
     float4 result;
     if (input.Uvw.x != 0 && !RoomGridForce)
     { // Textured view
@@ -43,9 +44,17 @@ float4 main(PixelInputType input) : SV_TARGET
 
 		if (input.BlendMode == 2)
 			result.w = 0.0f; // Additive blending
+
+		if (input.EditorSectorTexture & 0x10) // Highlight?
+		{
+			result.x += 0.2f;
+			drawOutline = 2;
+		}
     }
     else
     { // Geometric view
+		drawOutline = 1;
+
         if (input.Uvw.y == 0 && !RoomGridForce)
             result = float4(0.0f, 0.0f, 0.0f, 0.0f);
         else
@@ -61,30 +70,39 @@ float4 main(PixelInputType input) : SV_TARGET
 			if (input.EditorSectorTexture & 0x10) // Highlight?
 				result.xyz += 0.2f;
 		}
+	}
 
-        // Draw outline
-        float2 absUV = abs(input.EditorUv);
+	if (drawOutline > 0)
+	{	// Draw outline
+		float2 absUV = abs(input.EditorUv);
 
-        float lineWidth = (RoomGridLineWidth * 1024) / input.Position.w - 0.5f;
-        float resolutionX = ddAny(input.EditorUv.x);
-        float resolutionY = ddAny(input.EditorUv.y);
-        float resolutionDiagonal = ddAny(input.EditorUv.x + input.EditorUv.y);
+		float lineWidth = (RoomGridLineWidth * 1024) / input.Position.w - 0.5f;
+		float resolutionX = ddAny(input.EditorUv.x);
+		float resolutionY = ddAny(input.EditorUv.y);
+		float resolutionDiagonal = ddAny(input.EditorUv.x + input.EditorUv.y);
 
-        float distanceX = min(absUV.x, 1.0f - absUV.x);
-        float distanceY = min(absUV.y, 1.0f - absUV.y);
-        float distanceDiagonal = min(
-            abs(input.EditorUv.x + input.EditorUv.y + 1.0f),
-            abs(input.EditorUv.x + input.EditorUv.y));
+		float distanceX = min(absUV.x, 1.0f - absUV.x);
+		float distanceY = min(absUV.y, 1.0f - absUV.y);
+		float distanceDiagonal = min(
+			abs(input.EditorUv.x + input.EditorUv.y + 1.0f),
+			abs(input.EditorUv.x + input.EditorUv.y));
 
-        float lineX = distanceX / resolutionX - lineWidth;
-        float lineY = distanceY / resolutionY - lineWidth;
-        float lineDiagonal = distanceDiagonal / resolutionDiagonal - lineWidth;
+		float lineX = distanceX / resolutionX - lineWidth;
+		float lineY = distanceY / resolutionY - lineWidth;
+		float lineDiagonal = distanceDiagonal / resolutionDiagonal - lineWidth;
 
-        float sectorAreaStrength = clamp(min(min(lineX, lineY), lineDiagonal), 0.0F, 1.0f);
+		float sectorAreaStrength = clamp(min(min(lineX, lineY), lineDiagonal), 0.0F, 1.0f);
 
-		result.xyz *= sectorAreaStrength;
+		if (drawOutline == 2)
+		{
+			result.xyz *= sectorAreaStrength;
+			result.x -= sectorAreaStrength - 1.0f;
+		}
+		else
+			result.xyz *= sectorAreaStrength;
 		result.w = 1.0f - (1.0f - result.w) * sectorAreaStrength;
 	}
+
     if ((result.x + result.y + result.z + result.w) < 0.02f)
         discard;
     return result;
