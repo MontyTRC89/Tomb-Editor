@@ -17,7 +17,7 @@ namespace TombLib.Rendering.DirectX11
         public Texture2D DepthBuffer;
         public DepthStencilView DepthBufferView;
 
-        public static readonly SampleDescription SampleDescription = new SampleDescription(2, 0);
+        public static readonly SampleDescription SampleDescription = new SampleDescription(1, 0);
         public static readonly Rational RefreshRate = new Rational(60, 1);
         public static readonly Format Format = Format.R8G8B8A8_UNorm;
         public static readonly Format DepthFormat = Format.D32_Float;
