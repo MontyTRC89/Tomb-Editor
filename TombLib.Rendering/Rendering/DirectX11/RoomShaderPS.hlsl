@@ -45,7 +45,7 @@ float4 main(PixelInputType input) : SV_TARGET
 		if (input.BlendMode == 2)
 			result.w = 0.0f; // Additive blending
 
-		if (input.EditorSectorTexture & 0x10) // Highlight?
+		if (input.EditorSectorTexture & 0x40) // Selected?
 		{
 			result.x += 0.2f;
 			drawOutline = 2;
@@ -60,12 +60,12 @@ float4 main(PixelInputType input) : SV_TARGET
         else
 		{
 			if (input.EditorSectorTexture & 0x20) // Textured or colored?
-				result = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 6)));
+				result = SectorTexture.Sample(DefaultSampler, float3(input.EditorUv, (float)(input.EditorSectorTexture >> 7)));
 			else
 				result = float4(
-					((input.EditorSectorTexture >> 6) & 0xff) * (1.0f / 255.0f),
-					((input.EditorSectorTexture >> 14) & 0xff) * (1.0f / 255.0f),
-					((input.EditorSectorTexture >> 22) & 0xff) * (1.0f / 255.0f),
+					((input.EditorSectorTexture >> 7) & 0xff) * (1.0f / 255.0f),
+					((input.EditorSectorTexture >> 15) & 0xff) * (1.0f / 255.0f),
+					((input.EditorSectorTexture >> 23) & 0xff) * (1.0f / 255.0f),
 					1.0f);
 			if (input.EditorSectorTexture & 0x10) // Highlight?
 				result.xyz += 0.2f;
