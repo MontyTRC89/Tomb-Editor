@@ -58,6 +58,7 @@ namespace TombEditor
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
         public bool Rendering3D_ToolboxVisible { get; set; } = true;
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
+        public bool Rendering3D_ShowFPS { get; set; } = false;
 
         public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
         public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;
