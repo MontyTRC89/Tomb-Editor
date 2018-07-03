@@ -17,7 +17,6 @@ namespace TombLib.Rendering.DirectX11
         public Texture2D DepthBuffer;
         public DepthStencilView DepthBufferView;
 
-        public static readonly SampleDescription SampleDescription = new SampleDescription(1, 0);
         public static readonly Rational RefreshRate = new Rational(60, 1);
         public static readonly Format Format = Format.R8G8B8A8_UNorm;
         public static readonly Format DepthFormat = Format.D32_Float;
@@ -35,7 +34,7 @@ namespace TombLib.Rendering.DirectX11
                     ModeDescription = new ModeDescription(Size.X, Size.Y, RefreshRate, Format),
                     IsWindowed = true,
                     OutputHandle = description.WindowHandle,
-                    SampleDescription = SampleDescription,
+                    SampleDescription = new SampleDescription(GetAntialiasQuality(description.Antialias ? 4 : 1), 0),
                     SwapEffect = SwapEffect.Sequential,
                     Usage = Usage.RenderTargetOutput
                 });
@@ -55,13 +54,26 @@ namespace TombLib.Rendering.DirectX11
                 MipLevels = 1,
                 Width = Size.X,
                 Height = Size.Y,
-                SampleDescription = SampleDescription,
+                SampleDescription = new SampleDescription(SwapChain.Description.SampleDescription.Count, 0),
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.DepthStencil,
                 CpuAccessFlags = CpuAccessFlags.None,
                 OptionFlags = ResourceOptionFlags.None
             });
             DepthBufferView = new DepthStencilView(Device.Device, DepthBuffer);
+        }
+
+        private int GetAntialiasQuality(int maxQuality)
+        {
+            int AntialiasQuality = maxQuality;
+            while (AntialiasQuality > 1)
+            {
+                if (Device.Device.CheckMultisampleQualityLevels(Format.R8G8B8A8_UNorm, AntialiasQuality) != 0)
+                    break;
+                else
+                    AntialiasQuality /= 2;
+            }
+            return AntialiasQuality;
         }
 
         public override void Dispose()

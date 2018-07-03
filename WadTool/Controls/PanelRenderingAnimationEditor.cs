@@ -85,7 +85,7 @@ namespace WadTool.Controls
         public void InitializeRendering(WadToolClass tool, Wad2 wad, DeviceManager deviceManager, WadMoveableId moveableId,
                                     WadMoveableId skinMoveableId)
         {
-            base.InitializeRendering(deviceManager.Device);
+            base.InitializeRendering(deviceManager.Device, false);
 
             _tool = tool;
             _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);

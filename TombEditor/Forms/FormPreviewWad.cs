@@ -17,7 +17,7 @@ namespace TombEditor.Forms
             InitializeComponent();
 
             panelItem.Editor = editor;
-            panelItem.InitializeRendering(device);
+            panelItem.InitializeRendering(device, editor.Configuration.RenderingItem_Antialias);
             wadTree.Wad = wad;
             wadTree.MultiSelect = false;
             wadTree.SelectFirst();

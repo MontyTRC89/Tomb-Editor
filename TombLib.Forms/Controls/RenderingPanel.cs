@@ -17,13 +17,14 @@ namespace TombLib.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public RenderingDevice Device { get; private set; }
 
-        public virtual void InitializeRendering(RenderingDevice device)
+        public virtual void InitializeRendering(RenderingDevice device, bool antialias)
         {
             Device = device;
             SwapChain = device.CreateSwapChain(new RenderingSwapChain.Description
             {
                 Size = new VectorInt2(ClientSize.Width, ClientSize.Height),
-                WindowHandle = Handle
+                WindowHandle = Handle,
+                Antialias = antialias
             });
         }
 

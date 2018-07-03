@@ -42,6 +42,7 @@ namespace TombEditor
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
         public Vector4 RenderingItem_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
+        public bool RenderingItem_Antialias { get; set; } = false;
 
         public int Rendering3D_DrawRoomsMaxDepth { get; set; } = 6;
         public float Rendering3D_NavigationSpeedKeyRotate { get; set; } = 0.30f;
@@ -62,6 +63,7 @@ namespace TombEditor
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
         public int Rendering3D_FontSize { get; set; } = 24;
         public bool Rendering3D_FontIsBold { get; set; } = true;
+        public bool Rendering3D_Antialias { get; set; } = true;
 
         public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
         public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;

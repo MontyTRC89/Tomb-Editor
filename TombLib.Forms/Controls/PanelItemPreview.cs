@@ -108,9 +108,9 @@ namespace TombLib.Controls
             _soundInfoEditor.Bounds = clientRectangle;
         }
 
-        public override void InitializeRendering(RenderingDevice device)
+        public override void InitializeRendering(RenderingDevice device, bool antialias)
         {
-            base.InitializeRendering(device);
+            base.InitializeRendering(device, antialias);
 
             _textureAllocator = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(1024, 1024, 1) });
 
