@@ -183,8 +183,11 @@ namespace TombEditor.Controls
             _renderingTextures = device.CreateTextureAllocator(new RenderingTextureAllocator.Description());
             _renderingStateBuffer = device.CreateStateBuffer();
             _fontTexture = device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
-            _fontDefault = device.CreateFont(new RenderingFont.Description { FontName = "Segoe UI", FontSize = 24, FontIsBold = true, TextureAllocator = _fontTexture });
 
+            _fontDefault = device.CreateFont(new RenderingFont.Description { FontName   = _editor.Configuration.Rendering3D_FontName,
+                                                                             FontSize   = _editor.Configuration.Rendering3D_FontSize,
+                                                                             FontIsBold = _editor.Configuration.Rendering3D_FontIsBold,
+                                                                             TextureAllocator = _fontTexture });
             // Legacy
             {
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;

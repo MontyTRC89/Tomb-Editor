@@ -59,6 +59,9 @@ namespace TombEditor
         public bool Rendering3D_ToolboxVisible { get; set; } = true;
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
         public bool Rendering3D_ShowFPS { get; set; } = false;
+        public string Rendering3D_FontName { get; set; } = "Segoe UI";
+        public int Rendering3D_FontSize { get; set; } = 24;
+        public bool Rendering3D_FontIsBold { get; set; } = true;
 
         public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
         public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;
