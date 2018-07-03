@@ -2019,7 +2019,7 @@ namespace TombEditor.Controls
             textToDraw.Add(new Text
             {
                 Font = _fontDefault,
-                PixelPos = new Vector2(10, -10),
+                PixelPos = new Vector2(10, -5),
                 Alignment = new Vector2(0.0f, 0.0f),
                 String = DebugString
             });
