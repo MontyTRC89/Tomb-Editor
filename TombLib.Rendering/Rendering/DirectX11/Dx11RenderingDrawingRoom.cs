@@ -75,7 +75,7 @@ namespace TombLib.Rendering.DirectX11
                             lastSectorTexture = 0;
                             if (result.SectorTexture != SectorTexture.None)
                             { // Use sector texture
-                                lastSectorTexture = 0x20 | (((uint)result.SectorTexture - 1) << 6);
+                                lastSectorTexture = 0x20 | (((uint)result.SectorTexture - 1) << 7);
                             }
                             else
                             { // Use sector color
