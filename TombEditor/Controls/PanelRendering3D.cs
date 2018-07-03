@@ -2006,15 +2006,22 @@ namespace TombEditor.Controls
 
             watch.Stop();
 
+            // Construct debug string
+
+            string DebugString = "";
+            if (_editor.Configuration.Rendering3D_ShowFPS)
+                DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + ", Rooms vertices: " + roomsToDraw.Sum(room => room.RoomGeometry.VertexPositions.Count) + "\n";
+            DebugString += "Rooms: " + roomsToDraw.Length + ", Moveables: " + moveablesToDraw.Count + ", Static Meshes: " + staticsToDraw.Count + "\n";
+            if(_editor.SelectedObject != null)
+                DebugString += "Selected Object: " + _editor.SelectedObject;
+                    
             // Draw debug string
             textToDraw.Add(new Text
             {
                 Font = _fontDefault,
                 PixelPos = new Vector2(10, -10),
                 Alignment = new Vector2(0.0f, 0.0f),
-                String = "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + ", Rooms vertices: " + roomsToDraw.Sum(room => room.RoomGeometry.VertexPositions.Count) + "\n" +
-                    "Rooms: " + roomsToDraw.Length + ", Moveables: " + moveablesToDraw.Count + ", Static Meshes: " + staticsToDraw.Count + "\n" +
-                    "Selected Object: " + _editor.SelectedObject
+                String = DebugString
             });
 
             // Finish strings
