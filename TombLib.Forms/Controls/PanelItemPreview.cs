@@ -108,7 +108,7 @@ namespace TombLib.Controls
             _soundInfoEditor.Bounds = clientRectangle;
         }
 
-        public override void InitializeRendering(RenderingDevice device, bool antialias)
+        public override void InitializeRendering(RenderingDevice device, bool antialias = false)
         {
             base.InitializeRendering(device, antialias);
 

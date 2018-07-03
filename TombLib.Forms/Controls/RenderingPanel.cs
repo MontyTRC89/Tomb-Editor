@@ -17,7 +17,7 @@ namespace TombLib.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public RenderingDevice Device { get; private set; }
 
-        public virtual void InitializeRendering(RenderingDevice device, bool antialias)
+        public virtual void InitializeRendering(RenderingDevice device, bool antialias = false)
         {
             Device = device;
             SwapChain = device.CreateSwapChain(new RenderingSwapChain.Description
