@@ -47,7 +47,7 @@ float4 main(PixelInputType input) : SV_TARGET
 
 		if (input.EditorSectorTexture & 0x40) // Selected?
 		{
-			result.x += 0.2f;
+			result.x += 0.05f;
 			drawOutline = 2;
 		}
     }
