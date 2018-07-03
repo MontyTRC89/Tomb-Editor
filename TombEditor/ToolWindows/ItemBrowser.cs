@@ -27,7 +27,7 @@ namespace TombEditor.ToolWindows
 
         public void InitializeRendering(RenderingDevice device)
         {
-            panelItem.InitializeRendering(device);
+            panelItem.InitializeRendering(device, _editor.Configuration.RenderingItem_Antialias);
         }
 
         protected override void Dispose(bool disposing)

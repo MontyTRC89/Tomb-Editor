@@ -27,7 +27,7 @@ namespace TombEditor.ToolWindows
 
         public void InitializeRendering(RenderingDevice device)
         {
-            panel3D.InitializeRendering(device);
+            panel3D.InitializeRendering(device, _editor.Configuration.Rendering3D_Antialias);
         }
 
         public void AddToolbox(DarkFloatingToolbox toolbox)

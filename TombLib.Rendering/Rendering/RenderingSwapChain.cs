@@ -32,6 +32,7 @@ namespace TombLib.Rendering
         {
             public IntPtr WindowHandle;
             public VectorInt2 Size;
+            public bool Antialias;
         }
 
         public VectorInt2 Size { get; protected set; }

@@ -101,20 +101,6 @@ namespace TombEditor.Controls
         private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public PanelRendering3D()
         {
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
@@ -176,9 +162,9 @@ namespace TombEditor.Controls
             base.Dispose(disposing);
         }
 
-        public override void InitializeRendering(RenderingDevice device)
+        public override void InitializeRendering(RenderingDevice device, bool antialias)
         {
-            base.InitializeRendering(device);
+            base.InitializeRendering(device, antialias);
 
             _renderingTextures = device.CreateTextureAllocator(new RenderingTextureAllocator.Description());
             _renderingStateBuffer = device.CreateStateBuffer();
