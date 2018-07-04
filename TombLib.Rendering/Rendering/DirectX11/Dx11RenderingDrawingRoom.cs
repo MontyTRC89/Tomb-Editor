@@ -87,6 +87,9 @@ namespace TombLib.Rendering.DirectX11
                             // Highlight dragged sectors
                             if (result.Selection == SelectionType.Highlight)
                                 lastSectorTexture |= 0x10;
+                            // Indicate selected textured faces
+                            else if (result.Selection == SelectionType.Selected && roomGeometry.TriangleTextureAreas[i].Texture != null)
+                                lastSectorTexture |= 0x40;
                         }
                         editorUVAndSectorTexture[i * 3 + 0] |= lastSectorTexture;
                         editorUVAndSectorTexture[i * 3 + 1] |= lastSectorTexture;
@@ -116,14 +119,6 @@ namespace TombLib.Rendering.DirectX11
                         }
                         else
                         { // Render as textured (the texture may turn out to be unavailable)
-                            // Indicate selected textured faces
-                            SectorInfo currentSectorInfo = roomGeometry.TriangleSectorInfo[i];
-                            if (description.SectorTextureGet(description.Room, currentSectorInfo.Pos.X, currentSectorInfo.Pos.Y, currentSectorInfo.Face).Selection == SelectionType.Selected)
-                            {
-                                editorUVAndSectorTexture[i * 3 + 0] |= 0x40;
-                                editorUVAndSectorTexture[i * 3 + 1] |= 0x40;
-                                editorUVAndSectorTexture[i * 3 + 2] |= 0x40;
-                            }
                             if (texture.Texture.IsUnavailable)
                             { // Texture is unvailable (i.e. file couldn't be loaded.
                                 ImageC image = Dx11RenderingDevice.TextureUnavailable;
