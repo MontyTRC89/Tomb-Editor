@@ -44,12 +44,6 @@ float4 main(PixelInputType input) : SV_TARGET
 
 		if (input.BlendMode == 2)
 			result.w = 0.0f; // Additive blending
-
-		if (input.EditorSectorTexture & 0x40) // Selected?
-		{
-			result.x += 0.05f;
-			drawOutline = 2;
-		}
     }
     else
     { // Geometric view
@@ -70,6 +64,12 @@ float4 main(PixelInputType input) : SV_TARGET
 			if (input.EditorSectorTexture & 0x10) // Highlight?
 				result.xyz += 0.2f;
 		}
+	}
+
+	if (input.EditorSectorTexture & 0x40 && !RoomGridForce) // Selected and textured?
+	{
+		result.x += 0.1f * result.w;
+		drawOutline = 2;
 	}
 
 	if (drawOutline > 0)
