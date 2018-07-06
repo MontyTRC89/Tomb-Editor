@@ -85,13 +85,13 @@ namespace TombEditor.ToolWindows
 
                 if (room.AlternateBaseRoom != null)
                 {
-                    cbLocked.Enabled = false;
-                    cbLocked.Checked = room.AlternateBaseRoom.Locked;
+                    butLocked.Enabled = false;
+                    butLocked.BackColorUseGeneric = !room.AlternateBaseRoom.Locked;
                 }
                 else
                 {
-                    cbLocked.Enabled = true;
-                    cbLocked.Checked = room.Locked;
+                    butLocked.Enabled = true;
+                    butLocked.BackColorUseGeneric = !room.Locked;
                 }
 
                 comboFlipMap.SelectedIndex = room.Flipped ? room.AlternateGroup + 1 : 0;
@@ -344,12 +344,14 @@ namespace TombEditor.ToolWindows
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
-        private void cbLocked_CheckedChanged(object sender, EventArgs e)
+        private void butLocked_Click(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom.Locked == cbLocked.Checked)
+            butLocked.BackColorUseGeneric = !butLocked.BackColorUseGeneric;
+
+            if (_editor.SelectedRoom.Locked == !butLocked.BackColorUseGeneric)
                 return;
 
-            _editor.SelectedRoom.Locked = cbLocked.Checked;
+            _editor.SelectedRoom.Locked = !butLocked.BackColorUseGeneric;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }
