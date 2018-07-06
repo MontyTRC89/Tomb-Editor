@@ -709,6 +709,8 @@ namespace TombLib.Graphics
                     _device.SetRasterizerState(_rasterizerWireframe);
                     _device.Draw(PrimitiveType.LineList, 2, _rotationTrianglesCount * 3);
 
+                    // FIXME: Temporary fix for text corruption problem! Remove when SharpDX is not used.
+                    _device.SetRasterizerState(_device.RasterizerStates.Default);
                     break;
             }
         }
