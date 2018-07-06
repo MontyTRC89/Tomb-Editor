@@ -371,6 +371,9 @@ namespace TombEditor.Controls
                             Invalidate();
                         }
                         UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
+
+                        foreach (Room room in _roomsToMove)
+                            _editor.RoomPropertiesChange(room);
                     }
                     break;
 

@@ -135,9 +135,8 @@ namespace TombEditor.Controls
                 return false;
 
             // Inform user and offer an option to unlock the room position
-            string message = "Room movement is disabled because some room positions are locked. Do you really want to continue? " +
-                "Those are the rooms that are currently locked: " + rooms.Where(room => room.Locked)
-                .Aggregate("", (str, room) => str + ", " + room, str => str.Substring(str.Length - 2));
+            string message = "Can't move rooms because some rooms are locked. Unlock and continue?\n" +
+                "Locked rooms: " + string.Join(" ,", rooms.Where(room => room.Locked).Select(s => s.Name));
             if (DarkMessageBox.Show(window, message, "Locked rooms", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return true;
