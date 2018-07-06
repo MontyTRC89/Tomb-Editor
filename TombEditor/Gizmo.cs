@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpDX;
-using TombLib.Graphics;
-using SharpDX.Toolkit.Graphics;
-using TombEditor.Geometry;
+﻿using SharpDX.Toolkit.Graphics;
+using System;
+using System.Numerics;
 using System.Windows.Forms;
+using TombLib.Graphics;
+using TombLib.LevelData;
+using TombLib.Rendering;
 
 namespace TombEditor
 {
     public class Gizmo : BaseGizmo
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
-        public Gizmo(GraphicsDevice device, Effect effect)
-            : base(device, effect)
+        public Gizmo(RenderingDevice device, Effect effect)
+            : base(DeviceManager.DefaultDeviceManager.___LegacyDevice, effect)
         {
             _editor = Editor.Instance;
         }
@@ -27,7 +24,7 @@ namespace TombEditor
                                      newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
         }
 
-        private float RotationQuanization => (Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift)) ? 22.5f : 0.0f;
+        private float RotationQuanization => Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift) ? 22.5f : 0.0f;
 
         protected override void GizmoRotateY(float newAngle)
         {
@@ -48,6 +45,11 @@ namespace TombEditor
         {
             bool quantized = Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift);
             EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, quantized ? Math.Sqrt(2) : 0.0f);
+        }
+
+        protected override void GizmoMoveDelta(Vector3 delta)
+        {
+
         }
 
         protected override Vector3 Position => ((PositionBasedObjectInstance)_editor.SelectedObject).Position + _editor.SelectedObject.Room.WorldPos;

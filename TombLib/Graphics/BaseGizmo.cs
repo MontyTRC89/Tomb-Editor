@@ -1,8 +1,9 @@
-﻿using SharpDX;
-using SharpDX.Toolkit.Graphics;
-using System.Windows.Forms;
+﻿using SharpDX.Toolkit.Graphics;
 using System;
-using Buffer = SharpDX.Toolkit.Graphics;
+using System.Numerics;
+using TombLib.Graphics.Primitives;
+using TombLib.Utils;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
@@ -51,17 +52,17 @@ namespace TombLib.Graphics
 
         // Geometry of the gizmo
         private readonly GraphicsDevice _device;
-        private Buffer<SolidVertex> _rotationHelperGeometry;
+        private readonly Buffer<SolidVertex> _rotationHelperGeometry;
         private readonly GeometricPrimitive _cylinder;
         private readonly GeometricPrimitive _cube;
         private readonly GeometricPrimitive _cone;
         private GeometricPrimitive _torus;
         private float _torusRadius = float.MinValue;
-        private static readonly Color4 _xAxisColor = new Color4(1.0f, 0.0f, 0.0f, 1.0f);
-        private static readonly Color4 _yAxisColor = new Color4(0.0f, 1.0f, 0.0f, 1.0f);
-        private static readonly Color4 _zAxisColor = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
-        private static readonly Color4 _centerColor = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
-        private static readonly Color4 _hoveredAddition = new Color4(0.6f, 0.6f, 0.6f, 1.0f);
+        private static readonly Vector4 _xAxisColor = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+        private static readonly Vector4 _yAxisColor = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+        private static readonly Vector4 _zAxisColor = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+        private static readonly Vector4 _centerColor = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+        private static readonly Vector4 _hoveredAddition = new Vector4(0.6f, 0.6f, 0.6f, 1.0f);
         private static readonly float _arrowHeadOffsetMultiplier = 1.13f;
 
         private GizmoMode _mode;
@@ -79,7 +80,7 @@ namespace TombLib.Graphics
             _device = device;
 
             // Create the gizmo geometry
-            _rotationHelperGeometry = Buffer<SolidVertex>.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
+            _rotationHelperGeometry = Buffer.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
             _cylinder = GeometricPrimitive.Cylinder.New(_device, 1.0f, 1.0f, _lineRadiusTesselation);
             _cube = GeometricPrimitive.Cube.New(_device, 1.0f);
             _cone = GeometricPrimitive.Cone.New(_device, 1.0f, 1.3f, 16);
@@ -111,19 +112,17 @@ namespace TombLib.Graphics
             _torus?.Dispose();
         }
 
-        private static Vector3 ConstructPlaneIntersection(Vector3 Position, Matrix viewProjection, Ray ray, Vector3 perpendicularVector0, Vector3 perpendicularVector1)
+        private static bool ConstructPlaneIntersection(Vector3 Position, Matrix4x4 viewProjection, Ray ray, Vector3 perpendicularVector0, Vector3 perpendicularVector1, out Vector3 intersection)
         {
             // Choose the perpendicular plane that is more parallel to the camera plane to
             // maximize the available accuracy in the view space.
-            Vector3 viewDirection = new Vector3(viewProjection.Row3.X, viewProjection.Row3.Y, viewProjection.Row3.Z);
+            Vector3 viewDirection = new Vector3(viewProjection.M31, viewProjection.M32, viewProjection.M33);
             float perpendicularVector0Dot = Math.Abs(Vector3.Dot(viewDirection, perpendicularVector0));
             float perpendicularVector1Dot = Math.Abs(Vector3.Dot(viewDirection, perpendicularVector1));
-            Plane plane = new Plane(Position, perpendicularVector0Dot > perpendicularVector1Dot ? perpendicularVector0 : perpendicularVector1);
+            Plane plane = MathC.CreatePlaneAtPoint(Position, perpendicularVector0Dot > perpendicularVector1Dot ? perpendicularVector0 : perpendicularVector1);
 
             // Construct intersection
-            Vector3 intersection;
-            ray.Intersects(ref plane, out intersection);
-            return intersection;
+            return Collision.RayIntersectsPlane(ray, plane, out intersection);
         }
 
         private static float SimplifyAngle(float angle)
@@ -132,97 +131,115 @@ namespace TombLib.Graphics
         }
 
         /// <returns>true, if an iteraction with the gizmo is happening</returns>
-        public bool MouseMoved(Matrix viewProjection, int x, int y)
+        public bool MouseMoved(Matrix4x4 viewProjection, Ray ray)
         {
-            if ((!DrawGizmo) || (_mode == GizmoMode.None))
+            if (!DrawGizmo || _mode == GizmoMode.None)
                 return false;
 
             // First get the ray in 3D space from X, Y mouse coordinates
-            Ray ray = Ray.GetPickRay(x, y, _device.Viewport, viewProjection);
             switch (_mode)
             {
                 case GizmoMode.TranslateX:
                     {
-                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ);
-                        GizmoMove(new Vector3(intersection.X - Size * _arrowHeadOffsetMultiplier, Position.Y, Position.Z));
+                        Vector3 intersection;
+                        if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ, out intersection))
+                        {
+                            GizmoMove(new Vector3(intersection.X - Size * _arrowHeadOffsetMultiplier, Position.Y, Position.Z));
+                            GizmoMoveDelta(new Vector3(intersection.X - Size * _arrowHeadOffsetMultiplier - Position.X, 0.0f, 0.0f));
+                        }
                     }
                     break;
                 case GizmoMode.TranslateY:
                     {
-                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ);
-                        GizmoMove(new Vector3(Position.X, intersection.Y - Size * _arrowHeadOffsetMultiplier, Position.Z));
+                        Vector3 intersection;
+                        if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ, out intersection))
+                        {
+                            GizmoMove(new Vector3(Position.X, intersection.Y - Size * _arrowHeadOffsetMultiplier, Position.Z));
+                            GizmoMoveDelta(new Vector3(0.0f, intersection.Y - Size * _arrowHeadOffsetMultiplier - Position.Y, 0.0f));
+                        }
                     }
                     break;
                 case GizmoMode.TranslateZ:
                     {
-                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY);
-                        GizmoMove(new Vector3(Position.X, Position.Y, intersection.Z + Size * _arrowHeadOffsetMultiplier));
+                        Vector3 intersection;
+                        if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY, out intersection))
+                        {
+                            GizmoMove(new Vector3(Position.X, Position.Y, intersection.Z + Size * _arrowHeadOffsetMultiplier));
+                            GizmoMoveDelta(new Vector3(0.0f, 0.0f, intersection.Z + Size * _arrowHeadOffsetMultiplier - Position.Z));
+                        }
                     }
                     break;
                 case GizmoMode.ScaleX:
                     {
-                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ);
-                        GizmoScale(_scaleBase * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
+                        Vector3 intersection;
+                        if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ, out intersection))
+                            GizmoScale(_scaleBase * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
                     }
                     break;
                 case GizmoMode.ScaleY:
                     {
-                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ);
-                        GizmoScale(_scaleBase * (float)Math.Exp(_scaleSpeed * (intersection.Y - Position.Y)));
+                        Vector3 intersection;
+                        if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ, out intersection))
+                            GizmoScale(_scaleBase * (float)Math.Exp(_scaleSpeed * (intersection.Y - Position.Y)));
                     }
                     break;
                 case GizmoMode.ScaleZ:
                     {
-                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY);
-                        GizmoScale(_scaleBase * (float)Math.Exp(_scaleSpeed / (intersection.Z - Position.Z)));
+                        Vector3 intersection;
+                        if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY, out intersection))
+                            GizmoScale(_scaleBase * (float)Math.Exp(_scaleSpeed / (intersection.Z - Position.Z)));
                     }
                     break;
                 case GizmoMode.RotateY:
                     {
+                        Plane rotationPlane = MathC.CreatePlaneAtPoint(Position, MathC.HomogenousTransform(Vector3.UnitY, RotateMatrixY));
                         Vector3 rotationIntersection;
-                        Plane rotationPlane = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitY, RotateMatrixY));
-                        ray.Intersects(ref rotationPlane, out rotationIntersection);
+                        if (Collision.RayIntersectsPlane(ray, rotationPlane, out rotationIntersection))
+                        {
+                            Vector3 direction = rotationIntersection - Position;
+                            _rotationLastMouseRadius = direction.Length();
+                            direction = Vector3.Normalize(direction);
 
-                        Vector3 direction = rotationIntersection - Position;
-                        _rotationLastMouseRadius = direction.Length();
-                        direction.Normalize();
-
-                        float sin = Vector3.Dot(Vector3.UnitZ, direction);
-                        float cos = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitZ, direction));
-                        _rotationLastMouseAngle = (float)Math.Atan2(-sin, cos);
-                        GizmoRotateY(SimplifyAngle(_rotationPickAngleOffset + _rotationLastMouseAngle));
+                            float sin = Vector3.Dot(Vector3.UnitZ, direction);
+                            float cos = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitZ, direction));
+                            _rotationLastMouseAngle = (float)Math.Atan2(-sin, cos);
+                            GizmoRotateY(SimplifyAngle(_rotationPickAngleOffset + _rotationLastMouseAngle));
+                        }
                     }
                     break;
                 case GizmoMode.RotateX:
                     {
+                        Plane rotationPlane = MathC.CreatePlaneAtPoint(Position, MathC.HomogenousTransform(Vector3.UnitX, RotateMatrixX));
                         Vector3 rotationIntersection;
-                        Plane rotationPlane = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitX, RotateMatrixX));
-                        ray.Intersects(ref rotationPlane, out rotationIntersection);
+                        if (Collision.RayIntersectsPlane(ray, rotationPlane, out rotationIntersection))
+                        {
+                            Vector3 direction = rotationIntersection - Position;
+                            _rotationLastMouseRadius = direction.Length();
+                            direction = Vector3.Normalize(direction);
 
-                        Vector3 direction = rotationIntersection - Position;
-                        _rotationLastMouseRadius = direction.Length();
-                        direction.Normalize();
-
-                        float sin = Vector3.Dot(Vector3.UnitY, direction);
-                        float cos = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitY, direction));
-                        _rotationLastMouseAngle = (float)Math.Atan2(-sin, cos);
-                        GizmoRotateX(SimplifyAngle(_rotationPickAngleOffset + _rotationLastMouseAngle));
+                            float sin = Vector3.Dot(Vector3.UnitY, direction);
+                            float cos = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitY, direction));
+                            _rotationLastMouseAngle = (float)Math.Atan2(-sin, cos);
+                            GizmoRotateX(SimplifyAngle(_rotationPickAngleOffset + _rotationLastMouseAngle));
+                        }
                     }
                     break;
                 case GizmoMode.RotateZ:
                     {
+                        Plane rotationPlane = MathC.CreatePlaneAtPoint(Position, MathC.HomogenousTransform(Vector3.UnitZ, RotateMatrixZ));
                         Vector3 rotationIntersection;
-                        Plane rotationPlane = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitZ, RotateMatrixZ));
-                        ray.Intersects(ref rotationPlane, out rotationIntersection);
+                        if (Collision.RayIntersectsPlane(ray, rotationPlane, out rotationIntersection))
+                        {
 
-                        Vector3 direction = rotationIntersection - Position;
-                        _rotationLastMouseRadius = direction.Length();
-                        direction.Normalize();
+                            Vector3 direction = rotationIntersection - Position;
+                            _rotationLastMouseRadius = direction.Length();
+                            direction = Vector3.Normalize(direction);
 
-                        float sin = Vector3.Dot(Vector3.UnitY, direction);
-                        float cos = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitY, direction));
-                        _rotationLastMouseAngle = (float)Math.Atan2(-sin, cos);
-                        GizmoRotateZ(SimplifyAngle(_rotationPickAngleOffset + _rotationLastMouseAngle));
+                            float sin = Vector3.Dot(Vector3.UnitY, direction);
+                            float cos = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitY, direction));
+                            _rotationLastMouseAngle = (float)Math.Atan2(-sin, cos);
+                            GizmoRotateZ(SimplifyAngle(_rotationPickAngleOffset + _rotationLastMouseAngle));
+                        }
                     }
                     break;
             }
@@ -248,15 +265,15 @@ namespace TombLib.Graphics
             {
                 float unused;
                 BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * Size * _arrowHeadOffsetMultiplier, TranslationConeSize / 1.7f);
-                if (ray.Intersects(ref sphereX, out unused))
+                if (Collision.RayIntersectsSphere(ray, sphereX, out unused))
                     return new PickingResultGizmo(GizmoMode.TranslateX);
 
                 BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * Size * _arrowHeadOffsetMultiplier, TranslationConeSize / 1.7f);
-                if (ray.Intersects(ref sphereY, out unused))
+                if (Collision.RayIntersectsSphere(ray, sphereY, out unused))
                     return new PickingResultGizmo(GizmoMode.TranslateY);
 
                 BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * Size * _arrowHeadOffsetMultiplier, TranslationConeSize / 1.7f);
-                if (ray.Intersects(ref sphereZ, out unused))
+                if (Collision.RayIntersectsSphere(ray, sphereZ, out unused))
                     return new PickingResultGizmo(GizmoMode.TranslateZ);
             }
 
@@ -266,17 +283,17 @@ namespace TombLib.Graphics
                 float unused;
                 BoundingBox scaleX = new BoundingBox(Position + Vector3.UnitX * Size / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
                                                      Position + Vector3.UnitX * Size / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
-                if (ray.Intersects(ref scaleX, out unused))
+                if (Collision.RayIntersectsBox(ray, scaleX, out unused))
                     return new PickingResultGizmo(GizmoMode.ScaleX);
 
                 BoundingBox scaleY = new BoundingBox(Position + Vector3.UnitY * Size / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
                                                      Position + Vector3.UnitY * Size / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
-                if (ray.Intersects(ref scaleY, out unused))
+                if (Collision.RayIntersectsBox(ray, scaleY, out unused))
                     return new PickingResultGizmo(GizmoMode.ScaleY);
 
                 BoundingBox scaleZ = new BoundingBox(Position - Vector3.UnitZ * Size / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
                                                      Position - Vector3.UnitZ * Size / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
-                if (ray.Intersects(ref scaleZ, out unused))
+                if (Collision.RayIntersectsBox(ray, scaleZ, out unused))
                     return new PickingResultGizmo(GizmoMode.ScaleZ);
             }
 
@@ -285,15 +302,14 @@ namespace TombLib.Graphics
 
             if (SupportRotationZ)
             {
-                Plane planeZ = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitZ, RotateMatrixZ));
+                Plane planeZ = MathC.CreatePlaneAtPoint(Position, MathC.HomogenousTransform(Vector3.UnitZ, RotateMatrixZ));
                 Vector3 intersectionPoint;
-                if (ray.Intersects(ref planeZ, out intersectionPoint))
+                if (Collision.RayIntersectsPlane(ray, planeZ, out intersectionPoint))
                 {
                     var distance = (intersectionPoint - Position).Length();
-                    if (distance >= (Size - pickRadius) && distance <= (Size + pickRadius))
+                    if (distance >= Size - pickRadius && distance <= Size + pickRadius)
                     {
-                        Vector3 startDirection = intersectionPoint - Position;
-                        startDirection.Normalize();
+                        Vector3 startDirection = Vector3.Normalize(intersectionPoint - Position);
 
                         float sin = Vector3.Dot(Vector3.UnitY, startDirection);
                         float cos = Vector3.Dot(planeZ.Normal, Vector3.Cross(Vector3.UnitY, startDirection));
@@ -304,15 +320,14 @@ namespace TombLib.Graphics
 
             if (SupportRotationX)
             {
-                Plane planeX = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitX, RotateMatrixX));
+                Plane planeX = MathC.CreatePlaneAtPoint(Position, MathC.HomogenousTransform(Vector3.UnitX, RotateMatrixX));
                 Vector3 intersectionPoint;
-                if (ray.Intersects(ref planeX, out intersectionPoint))
+                if (Collision.RayIntersectsPlane(ray, planeX, out intersectionPoint))
                 {
                     var distance = (intersectionPoint - Position).Length();
-                    if (distance >= (Size - pickRadius) && distance <= (Size + pickRadius))
+                    if (distance >= Size - pickRadius && distance <= Size + pickRadius)
                     {
-                        Vector3 startDirection = intersectionPoint - Position;
-                        startDirection.Normalize();
+                        Vector3 startDirection = Vector3.Normalize(intersectionPoint - Position);
 
                         float sin = Vector3.Dot(Vector3.UnitY, startDirection);
                         float cos = Vector3.Dot(planeX.Normal, Vector3.Cross(Vector3.UnitY, startDirection));
@@ -323,15 +338,14 @@ namespace TombLib.Graphics
 
             if (SupportRotationY)
             {
-                Plane planeY = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitY, RotateMatrixY));
+                Plane planeY = MathC.CreatePlaneAtPoint(Position, MathC.HomogenousTransform(Vector3.UnitY, RotateMatrixY));
                 Vector3 intersectionPoint;
-                if (ray.Intersects(ref planeY, out intersectionPoint))
+                if (Collision.RayIntersectsPlane(ray, planeY, out intersectionPoint))
                 {
                     var distance = (intersectionPoint - Position).Length();
-                    if (distance >= (Size - pickRadius) && distance <= (Size + pickRadius))
+                    if (distance >= Size - pickRadius && distance <= Size + pickRadius)
                     {
-                        Vector3 startDirection = intersectionPoint - Position;
-                        startDirection.Normalize();
+                        Vector3 startDirection = Vector3.Normalize(intersectionPoint - Position);
 
                         float sin = Vector3.Dot(Vector3.UnitZ, startDirection);
                         float cos = Vector3.Dot(planeY.Normal, Vector3.Cross(Vector3.UnitZ, startDirection));
@@ -350,9 +364,9 @@ namespace TombLib.Graphics
             _scaleBase = SupportScale ? Scale : 1.0f;
             _rotationPickAngle = SimplifyAngle(pickingResult.RotationPickAngle);
             _rotationPickAngleOffset = SimplifyAngle(
-                ((pickingResult.Mode == GizmoMode.RotateY) ? RotationY :
-                (pickingResult.Mode == GizmoMode.RotateX) ? RotationX :
-                (pickingResult.Mode == GizmoMode.RotateZ) ? RotationZ : 0.0f) - pickingResult.RotationPickAngle);
+                (pickingResult.Mode == GizmoMode.RotateY ? RotationY :
+                pickingResult.Mode == GizmoMode.RotateX ? RotationX :
+                pickingResult.Mode == GizmoMode.RotateZ ? RotationZ : 0.0f) - pickingResult.RotationPickAngle);
             _rotationLastMouseAngle = SimplifyAngle(pickingResult.RotationPickAngle);
             _rotationLastMouseRadius = pickingResult.Distance;
         }
@@ -374,16 +388,15 @@ namespace TombLib.Graphics
             return oldHoveredMode != _hoveredMode;
         }
 
-        private Matrix RotateMatrixY => Matrix.Identity;
-        private Matrix RotateMatrixX => RotateMatrixY * Matrix.RotationY(SupportRotationY ? RotationY : 0.0f);
-        private Matrix RotateMatrixZ => RotateMatrixX * Matrix.RotationX(SupportRotationX ? RotationX : 0.0f);
+        private Matrix4x4 RotateMatrixY => Matrix4x4.Identity;
+        private Matrix4x4 RotateMatrixX => RotateMatrixY * Matrix4x4.CreateRotationY(SupportRotationY ? RotationY : 0.0f);
+        private Matrix4x4 RotateMatrixZ => RotateMatrixX * Matrix4x4.CreateRotationX(SupportRotationX ? RotationX : 0.0f);
 
-        public void Draw(Matrix viewProjection)
+        public void Draw(Matrix4x4 viewProjection)
         {
             if (!DrawGizmo)
                 return;
 
-            _device.Clear(ClearOptions.DepthBuffer, Color4.Black, 1.0f, 0);
             _device.SetRasterizerState(_device.RasterizerStates.CullNone);
 
             var solidEffect = _effect;
@@ -405,11 +418,11 @@ namespace TombLib.Graphics
                 // Rotation Y
                 if (SupportRotationY)
                 {
-                    var model = Matrix.Scaling(Size * 2.0f) *
+                    var model = Matrix4x4.CreateScale(Size * 2.0f) *
                         RotateMatrixY *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.RotateY ? _hoveredAddition : new Color4()));
+                        Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.RotateY ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
                 }
@@ -417,12 +430,12 @@ namespace TombLib.Graphics
                 // Rotation X
                 if (SupportRotationX)
                 {
-                    var model = Matrix.Scaling(Size * 2.0f) *
-                        Matrix.RotationZ((float)Math.PI / 2.0f) *
+                    var model = Matrix4x4.CreateScale(Size * 2.0f) *
+                        Matrix4x4.CreateRotationZ((float)Math.PI / 2.0f) *
                         RotateMatrixX *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.RotateX ? _hoveredAddition : new Color4()));
+                        Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.RotateX ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
                 }
@@ -430,12 +443,12 @@ namespace TombLib.Graphics
                 // Rotation Z
                 if (SupportRotationZ)
                 {
-                    var model = Matrix.Scaling(Size * 2.0f) *
-                        Matrix.RotationX((float)Math.PI / 2.0f) *
+                    var model = Matrix4x4.CreateScale(Size * 2.0f) *
+                        Matrix4x4.CreateRotationX((float)Math.PI / 2.0f) *
                         RotateMatrixZ *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.RotateZ ? _hoveredAddition : new Color4()));
+                        Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.RotateZ ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
 
                     _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
@@ -449,35 +462,35 @@ namespace TombLib.Graphics
 
                 // X axis
                 {
-                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix.Scaling(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
-                        Matrix.RotationZ(-(float)Math.PI / 2.0f) *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.ScaleX ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                        Matrix4x4.CreateScale(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
+                        Matrix4x4.CreateRotationZ(-(float)Math.PI / 2.0f) *
+                        Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.ScaleX ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
 
                 // Y axis
                 {
-                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix.Scaling(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                        Matrix4x4.CreateScale(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
+                        Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
 
                 // Z axis
                 {
-                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix.Scaling(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
-                        Matrix.RotationX(-(float)Math.PI / 2.0f) *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.ScaleZ ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                        Matrix4x4.CreateScale(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
+                        Matrix4x4.CreateRotationX(-(float)Math.PI / 2.0f) *
+                        Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.ScaleZ ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
@@ -486,30 +499,30 @@ namespace TombLib.Graphics
 
                 // X axis scale
                 {
-                    var model = Matrix.Scaling(ScaleCubeSize) *
-                        Matrix.Translation(Position + Vector3.UnitX * Size / 2.0f);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.ScaleX ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateScale(ScaleCubeSize) *
+                        Matrix4x4.CreateTranslation(Position + Vector3.UnitX * Size / 2.0f);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.ScaleX ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
                 }
 
                 // Y axis scale
                 {
-                    var model = Matrix.Scaling(ScaleCubeSize) *
-                        Matrix.Translation(Position + Vector3.UnitY * Size / 2.0f);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateScale(ScaleCubeSize) *
+                        Matrix4x4.CreateTranslation(Position + Vector3.UnitY * Size / 2.0f);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
                 }
 
                 // Z axis scale
                 {
-                    var model = Matrix.Scaling(ScaleCubeSize) *
-                        Matrix.Translation(Position - Vector3.UnitZ * Size / 2.0f);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.ScaleZ ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateScale(ScaleCubeSize) *
+                        Matrix4x4.CreateTranslation(Position - Vector3.UnitZ * Size / 2.0f);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.ScaleZ ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
                 }
@@ -522,35 +535,35 @@ namespace TombLib.Graphics
 
                 // X axis
                 {
-                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix.Scaling(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
-                        Matrix.RotationZ(-(float)Math.PI / 2.0f) *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.TranslateX ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                        Matrix4x4.CreateScale(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
+                        Matrix4x4.CreateRotationZ(-(float)Math.PI / 2.0f) *
+                        Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.TranslateX ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
 
                 // Y axis
                 {
-                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix.Scaling(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                        Matrix4x4.CreateScale(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
+                        Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
 
                 // Z axis
                 {
-                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix.Scaling(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
-                        Matrix.RotationX(-(float)Math.PI / 2.0f) *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.TranslateZ ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateTranslation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                        Matrix4x4.CreateScale(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
+                        Matrix4x4.CreateRotationX(-(float)Math.PI / 2.0f) *
+                        Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.TranslateZ ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
@@ -559,32 +572,32 @@ namespace TombLib.Graphics
 
                 // X axis translation
                 {
-                    var model = Matrix.RotationY((float)-Math.PI * 0.5f) *
-                        Matrix.Scaling(TranslationConeSize) *
-                        Matrix.Translation(Position + (Vector3.UnitX + new Vector3(0.1f, 0, 0)) * (Size * _arrowHeadOffsetMultiplier));
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.TranslateX ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateRotationY((float)-Math.PI * 0.5f) *
+                        Matrix4x4.CreateScale(TranslationConeSize) *
+                        Matrix4x4.CreateTranslation(Position + (Vector3.UnitX + new Vector3(0.1f, 0, 0)) * (Size * _arrowHeadOffsetMultiplier));
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.TranslateX ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
 
                 // Y axis translation
                 {
-                    var model = Matrix.RotationX((float)Math.PI * 0.5f) *
-                        Matrix.Scaling(TranslationConeSize) *
-                        Matrix.Translation(Position + (Vector3.UnitY + new Vector3(0, 0.1f, 0)) * (Size * _arrowHeadOffsetMultiplier));
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateRotationX((float)Math.PI * 0.5f) *
+                        Matrix4x4.CreateScale(TranslationConeSize) *
+                        Matrix4x4.CreateTranslation(Position + (Vector3.UnitY + new Vector3(0, 0.1f, 0)) * (Size * _arrowHeadOffsetMultiplier));
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
 
                 // Z axis translation
                 {
-                    var model = Matrix.Scaling(TranslationConeSize) *
-                        Matrix.Translation(Position - (Vector3.UnitZ + new Vector3(0, 0, 0.1f)) * (Size * _arrowHeadOffsetMultiplier));
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.TranslateZ ? _hoveredAddition : new Color4()));
+                    var model = Matrix4x4.CreateScale(TranslationConeSize) *
+                        Matrix4x4.CreateTranslation(Position - (Vector3.UnitZ + new Vector3(0, 0, 0.1f)) * (Size * _arrowHeadOffsetMultiplier));
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.TranslateZ ? _hoveredAddition : new Vector4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
@@ -598,8 +611,8 @@ namespace TombLib.Graphics
 
                 // center cube
                 {
-                    var model = Matrix.Scaling(CentreCubeSize) * Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    var model = Matrix4x4.CreateScale(CentreCubeSize) * Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
                     solidEffect.Parameters["Color"].SetValue(_centerColor);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
 
@@ -620,8 +633,8 @@ namespace TombLib.Graphics
                     float startAngle;
                     float endAngle;
                     float lastMouseAngle;
-                    Matrix baseMatrix;
-                    Color4 color;
+                    Matrix4x4 baseMatrix;
+                    Vector4 color;
                     switch (_mode)
                     {
                         case GizmoMode.RotateY:
@@ -632,17 +645,17 @@ namespace TombLib.Graphics
                             color = _yAxisColor;
                             break;
                         case GizmoMode.RotateX:
-                            startAngle = -MathUtil.PiOverTwo - (_rotationPickAngle);
-                            endAngle = -MathUtil.PiOverTwo - (RotationX - _rotationPickAngleOffset);
-                            lastMouseAngle = -MathUtil.PiOverTwo - _rotationLastMouseAngle;
-                            baseMatrix = Matrix.RotationZ((float)Math.PI / 2.0f) * RotateMatrixX;
+                            startAngle = -((float)Math.PI * 0.5f) - _rotationPickAngle;
+                            endAngle = -((float)Math.PI * 0.5f) - (RotationX - _rotationPickAngleOffset);
+                            lastMouseAngle = -((float)Math.PI * 0.5f) - _rotationLastMouseAngle;
+                            baseMatrix = Matrix4x4.CreateRotationZ((float)Math.PI / 2.0f) * RotateMatrixX;
                             color = _xAxisColor;
                             break;
                         case GizmoMode.RotateZ:
-                            startAngle = MathUtil.Pi + _rotationPickAngle;
-                            endAngle = MathUtil.Pi + RotationZ - _rotationPickAngleOffset;
-                            lastMouseAngle = MathUtil.Pi + _rotationLastMouseAngle;
-                            baseMatrix = Matrix.RotationX((float)Math.PI / 2.0f) * RotateMatrixZ;
+                            startAngle = (float)Math.PI + _rotationPickAngle;
+                            endAngle = (float)Math.PI + RotationZ - _rotationPickAngleOffset;
+                            lastMouseAngle = (float)Math.PI + _rotationLastMouseAngle;
+                            baseMatrix = Matrix4x4.CreateRotationX((float)Math.PI / 2.0f) * RotateMatrixZ;
                             color = _zAxisColor;
                             break;
                         default:
@@ -676,8 +689,8 @@ namespace TombLib.Graphics
                     }
 
                     rotationHelperGeometry[_rotationTrianglesCount * 3] = new SolidVertex(new Vector3(
-                        (_rotationLastMouseRadius / Size) * (float)Math.Cos(lastMouseAngle), 0,
-                        (_rotationLastMouseRadius / Size) * (float)-Math.Sin(lastMouseAngle)));
+                        _rotationLastMouseRadius / Size * (float)Math.Cos(lastMouseAngle), 0,
+                        _rotationLastMouseRadius / Size * (float)-Math.Sin(lastMouseAngle)));
                     rotationHelperGeometry[_rotationTrianglesCount * 3 + 1] = middleVertex;
                     _rotationHelperGeometry.SetData(rotationHelperGeometry);
 
@@ -685,8 +698,8 @@ namespace TombLib.Graphics
                     _device.SetRasterizerState(_device.RasterizerStates.CullNone);
                     _device.SetVertexBuffer(_rotationHelperGeometry);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _rotationHelperGeometry));
-                    var model = Matrix.Scaling(Size) * baseMatrix * Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    var model = Matrix4x4.CreateScale(Size) * baseMatrix * Matrix4x4.CreateTranslation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
                     solidEffect.Parameters["Color"].SetValue(color * _rotationAlpha);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.Draw(PrimitiveType.TriangleList, _rotationTrianglesCount * 3);
@@ -696,11 +709,15 @@ namespace TombLib.Graphics
                     _device.SetRasterizerState(_rasterizerWireframe);
                     _device.Draw(PrimitiveType.LineList, 2, _rotationTrianglesCount * 3);
 
+                    // FIXME: Temporary fix for text corruption problem! Remove when SharpDX is not used.
+                    _device.SetRasterizerState(_device.RasterizerStates.Default);
                     break;
             }
         }
 
+        // They are called both, just leave the implementation empty if not needed, don't use exceptions
         protected abstract void GizmoMove(Vector3 newPos);
+        protected abstract void GizmoMoveDelta(Vector3 delta);
         protected abstract void GizmoScale(float newScale);
         protected abstract void GizmoRotateY(float newAngle);
         protected abstract void GizmoRotateX(float newAngle);

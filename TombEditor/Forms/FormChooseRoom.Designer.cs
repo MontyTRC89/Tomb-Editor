@@ -1,4 +1,4 @@
-﻿namespace TombEditor
+﻿namespace TombEditor.Forms
 {
     partial class FormChooseRoom
     {
@@ -85,10 +85,10 @@
             // 
             // butCancel
             // 
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butCancel.Location = new System.Drawing.Point(201, 3);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(192, 26);
             this.butCancel.TabIndex = 2;
             this.butCancel.Text = "Cancel";
@@ -101,7 +101,6 @@
             this.butOk.Enabled = false;
             this.butOk.Location = new System.Drawing.Point(3, 3);
             this.butOk.Name = "butOk";
-            this.butOk.Padding = new System.Windows.Forms.Padding(5);
             this.butOk.Size = new System.Drawing.Size(192, 26);
             this.butOk.TabIndex = 1;
             this.butOk.Text = "Ok";
@@ -110,8 +109,10 @@
             // 
             // FormChooseRoom
             // 
+            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(399, 244);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.titelLabel);

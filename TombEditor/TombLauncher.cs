@@ -7,9 +7,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TombEditor.Geometry;
+using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor
 {
@@ -73,7 +73,7 @@ namespace TombEditor
 
                 // Show message
                 string message = "Go to tools, level settings, game paths to set a valid executable path.";
-                if (Utils.IsFileNotFoundException(exc) || !File.Exists(executablePath))
+                if (FileSystemUtils.IsFileNotFoundException(exc) || !File.Exists(executablePath))
                     message = "Unable to find '" + executablePath + "'. " + message;
                 else
                     message = "Unable to start '" + executablePath + "' because a " + exc.GetType().Name + " occurred (" + exc.Message + "). " + message;
@@ -119,10 +119,10 @@ namespace TombEditor
             [StructLayout(LayoutKind.Sequential)]
             private struct RECT
             {
-                public int Left;
-                public int Top;
-                public int Right;
-                public int Bottom;
+                public readonly int Left;
+                public readonly int Top;
+                public readonly int Right;
+                public readonly int Bottom;
             }
             private const uint WM_CLOSE = 0x0010;
             private const int SW_HIDE = 0;
@@ -174,7 +174,7 @@ namespace TombEditor
                     timer.Start();
                     int currentWaitMilliseconds = 0;
                     bool closedWindow = false;
-                    while ((timer.ElapsedMilliseconds < maxWaitMilliseconds) && !closedWindow)
+                    while (timer.ElapsedMilliseconds < maxWaitMilliseconds && !closedWindow)
                     {
                         // Look for any window of Tomb4.exe
                         EnumWindowsProc onEnumWindowDelegate = (IntPtr hWnd, IntPtr lParam) =>
@@ -190,8 +190,8 @@ namespace TombEditor
                             ReportError(GetWindowRect(hWnd, out area), "GetWindowRect");
                             int width = area.Right - area.Left;
                             int height = area.Bottom - area.Top;
-                            if ((width > windowIdenficicationMaxWidth) ||
-                                (height > windowIdenficicationMaxHeight))
+                            if (width > windowIdenficicationMaxWidth ||
+                                height > windowIdenficicationMaxHeight)
                                 return 1;
 
                             // Close window
@@ -204,7 +204,7 @@ namespace TombEditor
 
                         // Wait
                         Thread.Sleep(currentWaitMilliseconds);
-                        currentWaitMilliseconds = ((currentWaitMilliseconds + 1) * 4) / 3;
+                        currentWaitMilliseconds = (currentWaitMilliseconds + 1) * 4 / 3;
                     }
                 }
 
@@ -313,7 +313,7 @@ namespace TombEditor
                     Address = address;
                     OldCode = oldCode;
                     NewCode = newCode;
-                    if (oldCode != null && newCode != null && (oldCode.Length != NewCode.Length))
+                    if (oldCode != null && newCode != null && oldCode.Length != NewCode.Length)
                         throw new ArgumentException();
                 }
 

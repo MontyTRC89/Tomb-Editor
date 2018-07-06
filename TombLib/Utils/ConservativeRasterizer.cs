@@ -1,6 +1,6 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace TombLib.Utils
 {
@@ -10,7 +10,7 @@ namespace TombLib.Utils
 
         private static bool IsFinite(float value)
         {
-            return (value - value) == (value - value); // Convert infinity to NaN and detect NaN
+            return value - value == value - value; // Convert infinity to NaN and detect NaN
         }
         private static void RasterizeBetweenLines(
             float yStart, float yEnd,
@@ -31,7 +31,7 @@ namespace TombLib.Utils
                     int yStartInt = (int)Math.Floor(yStart);
                     int yEndInt = (int)Math.Ceiling(yEnd);
 
-                    for (int y = yStartInt; y < yEndInt ; ++y)
+                    for (int y = yStartInt; y < yEndInt; ++y)
                     {
                         float thisY = Math.Min(yEnd, Math.Max(yStart, y));
                         float thisLine0 = Line0BaseX + thisY * Line0StepX;
@@ -40,7 +40,7 @@ namespace TombLib.Utils
                         float nextY = Math.Min(yEnd, Math.Max(yStart, y + 1));
                         float nextLine0 = Line0BaseX + nextY * Line0StepX;
                         float nextLine1 = Line1BaseX + nextY * Line1StepX;
-                        
+
                         float fromX = Math.Min(Math.Min(thisLine0, nextLine0), Math.Min(thisLine1, nextLine1));
                         float toX = Math.Max(Math.Max(thisLine0, nextLine0), Math.Max(thisLine1, nextLine1));
 
@@ -54,7 +54,7 @@ namespace TombLib.Utils
                     float fromX = Math.Min(line0x, Math.Min(Line1Start.X, Line1End.X));
                     float toX = Math.Max(line0x, Math.Max(Line1Start.X, Line1End.X));
                     int yInt = (int)Math.Floor(y);
-                    scanarea((int)Math.Floor(fromX),  yInt, (int)Math.Ceiling(toX), yInt + 1);
+                    scanarea((int)Math.Floor(fromX), yInt, (int)Math.Ceiling(toX), yInt + 1);
                 }
             }
             else
@@ -70,7 +70,6 @@ namespace TombLib.Utils
                 }
                 else
                 { // Line 0 and 1 have undefined slope
-                    return;
                 }
             }
         }
@@ -95,7 +94,7 @@ namespace TombLib.Utils
                 Swap(ref p1, ref p2);
             if (p0.Y > p1.Y)
                 Swap(ref p0, ref p1);
-            
+
             RasterizeBetweenLines(p0.Y, p1.Y, p0, p1, p0, p2, scanarea);
             RasterizeBetweenLines(p1.Y, p2.Y, p1, p2, p0, p2, scanarea);
         }

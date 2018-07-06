@@ -1,171 +1,119 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Xml;
+using TombLib.LevelData;
 
 namespace TombLib.NG
 {
     public class NgCatalog
     {
-        public static NgTrigger FlipEffectTrigger { get; private set; }
-        public static NgTrigger ActionTrigger { get; private set; }
-        public static NgTrigger TimerFieldTrigger { get; private set; }
-        public static NgTrigger ConditionTrigger { get; private set; }
+        public static NgTriggerSubtypes FlipEffectTrigger { get; set; } = new NgTriggerSubtypes();
+        public static NgTriggerSubtypes ActionTrigger { get; set; } = new NgTriggerSubtypes();
+        public static NgTriggerSubtypes ConditionTrigger { get; set; } = new NgTriggerSubtypes();
+        public static NgParameterRange TimerFieldTrigger { get; set; }
 
         public static void LoadCatalog(string fileName)
         {
-            var xml = new XmlDocument();
-            xml.Load(fileName);
+            XmlDocument document = new XmlDocument();
+            document.Load(fileName);
+            XmlNode documentElement = document.GetElementsByTagName("TriggerDescription").Item(0);
+            foreach (XmlNode triggerNode in documentElement.ChildNodes)
+                switch (triggerNode.Name)
+                {
+                    case "TimerFieldTrigger":
+                        TimerFieldTrigger = ReadNgParameterRange(triggerNode.ChildNodes[0]);
+                        break;
+                    case "FlipEffectTrigger":
+                        FlipEffectTrigger = ReadNgTriggerSubtypes(triggerNode);
+                        break;
+                    case "ActionTrigger":
+                        ActionTrigger = ReadNgTriggerSubtypes(triggerNode);
+                        break;
+                    case "ConditionTrigger":
+                        ConditionTrigger = ReadNgTriggerSubtypes(triggerNode);
+                        break;
+                }
+        }
 
-            var triggersNode = xml.ChildNodes[0].ChildNodes[0];
-            foreach (XmlNode triggerNode in triggersNode.ChildNodes)
+        private static NgTriggerSubtypes ReadNgTriggerSubtypes(XmlNode parentNode)
+        {
+            var result = new NgTriggerSubtypes();
+            foreach (XmlNode timerNode in parentNode.ChildNodes)
             {
-                if (triggerNode.Name == "TimerTrigger")
-                {
-                    TimerFieldTrigger = new NgTrigger();
+                var key = ushort.Parse(timerNode.Attributes["K"].Value, CultureInfo.InvariantCulture);
+                var value = timerNode.Attributes["V"].Value;
+                var triggerSubtype = new NgTriggerSubtype(key, value);
 
-                    var objectList = triggerNode.ChildNodes[0];
-                    foreach (XmlNode objectNode in objectList.ChildNodes)
+                foreach (XmlNode nodeList in timerNode.ChildNodes)
+                    switch (nodeList.Name)
                     {
-                        var key = int.Parse(objectNode.Attributes["K"].Value);
-                        var value = objectNode.Attributes["V"].Value;
-                        TimerFieldTrigger.MainList.Add(key, new NgTriggerMainKeyValuePair(key, value));
+                        case "Target":
+                            triggerSubtype.Target = ReadNgParameterRange(nodeList.ChildNodes[0]);
+                            break;
+                        case "Extra":
+                            triggerSubtype.Extra = ReadNgParameterRange(nodeList.ChildNodes[0]);
+                            break;
+                        case "Timer":
+                            triggerSubtype.Timer = ReadNgParameterRange(nodeList.ChildNodes[0]);
+                            break;
                     }
-                }
-                else if (triggerNode.Name == "FlipEffectTrigger")
-                {
-                    FlipEffectTrigger = new NgTrigger();
 
-                    var objectList = triggerNode.ChildNodes[0];
-                    foreach (XmlNode objectNode in objectList.ChildNodes)
+                result.MainList.Add(triggerSubtype.Key, triggerSubtype);
+            }
+            return result;
+        }
+
+        private static NgParameterRange ReadNgParameterRange(XmlNode node)
+        {
+            var listKind = (NgParameterKind)Enum.Parse(typeof(NgParameterKind), node.Name);
+            switch (listKind)
+            {
+                case NgParameterKind.FixedEnumeration:
+                    var fixedList = new SortedList<ushort, TriggerParameterUshort>(node.ChildNodes.Count);
+                    foreach (XmlNode objectNode in node.ChildNodes)
                     {
-                        var key = int.Parse(objectNode.Attributes["K"].Value);
-                        var value = objectNode.Attributes["V"].Value;
-                        var node = new NgTriggerMainKeyValuePair(key, value);
-
-                        foreach (XmlNode nodeList in objectNode.ChildNodes)
+                        var key = ushort.Parse(objectNode.Attributes["K"].Value, CultureInfo.InvariantCulture);
+                        var name = objectNode.Attributes["V"].Value;
+                        fixedList.Add(key, new TriggerParameterUshort(key, name));
+                    }
+                    return new NgParameterRange(fixedList);
+                case NgParameterKind.LinearModel:
+                    var linearParameters = new List<NgLinearParameter>(node.ChildNodes.Count);
+                    foreach (XmlNode objectNode in node.ChildNodes)
+                    {
+                        switch (objectNode.Name)
                         {
-                            if (nodeList.Name == "TimerList")
-                            {
-                                var listKind = (NgListKind)Enum.Parse(typeof(NgListKind), nodeList.Attributes["Kind"].Value);
-                                node.TimerListKind = listKind;
-
-                                foreach (XmlNode timerNode in nodeList.ChildNodes)
+                            case "Fixed":
+                                linearParameters.Add(new NgLinearParameter { FixedStr = objectNode.InnerText });
+                                break;
+                            case "Linear":
+                                linearParameters.Add(new NgLinearParameter
                                 {
-                                    var key2 = int.Parse(timerNode.Attributes["K"].Value);
-                                    var value2 = timerNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
-                                    node.TimerList.Add(key2, node2);
-                                }
-                            }
-                            else if (nodeList.Name == "ExtraList")
-                            {
-                                var listKind = (NgListKind)Enum.Parse(typeof(NgListKind), nodeList.Attributes["Kind"].Value);
-                                node.ExtraListKind = listKind;
-
-                                foreach (XmlNode extraNode in nodeList.ChildNodes)
-                                {
-                                    var key2 = int.Parse(extraNode.Attributes["K"].Value);
-                                    var value2 = extraNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
-                                    node.ExtraList.Add(key2, node2);
-                                }
-                            }
+                                    Add = decimal.Parse(objectNode.Attributes["Add"].Value),
+                                    Factor = decimal.Parse(objectNode.Attributes["Factor"].Value)
+                                });
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
                         }
-
-                        FlipEffectTrigger.MainList.Add(node.Key, node);
                     }
-                }
-                else if (triggerNode.Name == "ActionTrigger")
-                {
-                    ActionTrigger = new NgTrigger();
-
-                    var timerList = triggerNode.ChildNodes[0];
-                    foreach (XmlNode timerNode in timerList.ChildNodes)
+                    NgLinearModel linearModel = new NgLinearModel
                     {
-                        var key = int.Parse(timerNode.Attributes["K"].Value);
-                        var value = timerNode.Attributes["V"].Value;
-                        var node = new NgTriggerMainKeyValuePair(key, value);
+                        Parameters = linearParameters,
+                        Start = ushort.Parse(node.Attributes["Start"].Value),
+                        EndInclusive = ushort.Parse(node.Attributes["End"].Value)
+                    };
+                    return new NgParameterRange(linearModel);
 
-                        foreach (XmlNode nodeList in timerNode.ChildNodes)
-                        {
-                            if (nodeList.Name == "ObjectList")
-                            {
-                                var listKind = (NgListKind)Enum.Parse(typeof(NgListKind), nodeList.Attributes["Kind"].Value);
-                                node.ObjectListKind = listKind;
+                case NgParameterKind.Choice:
+                    var choices = new List<NgParameterRange>(node.ChildNodes.Count);
+                    foreach (XmlNode objectNode in node.ChildNodes)
+                        choices.Add(ReadNgParameterRange(objectNode));
+                    return new NgParameterRange(choices);
 
-                                foreach (XmlNode objectNode in nodeList.ChildNodes)
-                                {
-                                    var key2 = int.Parse(objectNode.Attributes["K"].Value);
-                                    var value2 = objectNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
-                                    node.ObjectList.Add(key2, node2);
-                                }
-                            }
-                            else if (nodeList.Name == "ExtraList")
-                            {
-                                var listKind = (NgListKind)Enum.Parse(typeof(NgListKind), nodeList.Attributes["Kind"].Value);
-                                node.ExtraListKind = listKind;
-
-                                foreach (XmlNode extraNode in nodeList.ChildNodes)
-                                {
-                                    var key2 = int.Parse(extraNode.Attributes["K"].Value);
-                                    var value2 = extraNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
-                                    node.ExtraList.Add(key2, node2);
-                                }
-                            }
-                        }
-
-                        ActionTrigger.MainList.Add(node.Key, node);
-                    }
-                }
-                else if (triggerNode.Name == "ConditionTrigger")
-                {
-                    ConditionTrigger = new NgTrigger();
-
-                    var timerList = triggerNode.ChildNodes[0];
-                    foreach (XmlNode timerNode in timerList.ChildNodes)
-                    {
-                        var key = int.Parse(timerNode.Attributes["K"].Value);
-                        var value = timerNode.Attributes["V"].Value;
-                        var node = new NgTriggerMainKeyValuePair(key, value);
-
-                        foreach (XmlNode nodeList in timerNode.ChildNodes)
-                        {
-                            if (nodeList.Name == "ObjectList")
-                            {
-                                var listKind = (NgListKind)Enum.Parse(typeof(NgListKind), nodeList.Attributes["Kind"].Value);
-                                node.ObjectListKind = listKind;
-
-                                foreach (XmlNode objectNode in nodeList.ChildNodes)
-                                {
-                                    var key2 = int.Parse(objectNode.Attributes["K"].Value);
-                                    var value2 = objectNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
-                                    node.ObjectList.Add(key2, node2);
-                                }
-                            }
-                            else if (nodeList.Name == "ExtraList")
-                            {
-                                var listKind = (NgListKind)Enum.Parse(typeof(NgListKind), nodeList.Attributes["Kind"].Value);
-                                node.ExtraListKind = listKind;
-
-                                foreach (XmlNode buttonNode in nodeList.ChildNodes)
-                                {
-                                    var key2 = int.Parse(buttonNode.Attributes["K"].Value);
-                                    var value2 = buttonNode.Attributes["V"].Value;
-                                    var node2 = new NgTriggerKeyValuePair(key2, value2);
-                                    node.ExtraList.Add(key2, node2);
-                                }
-                            }
-                        }
-
-                        ConditionTrigger.MainList.Add(node.Key, node);
-                    }
-                }
+                default:
+                    return new NgParameterRange(listKind);
             }
         }
     }

@@ -70,10 +70,13 @@
 // contributors exclude the implied warranties of merchantability, fitness for a
 // particular purpose and non-infringement.
 
-using TombLib.Graphics;
+using SharpDX;
+using SharpDX.Toolkit.Graphics;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
+    using Vector3 = System.Numerics.Vector3;
+
     public partial class GeometricPrimitive
     {
         /// <summary>
@@ -110,7 +113,7 @@ namespace SharpDX.Toolkit.Graphics
             /// <returns>A cube.</returns>
             public static GeometricPrimitive New(GraphicsDevice device, float sizeX, float sizeY, float sizeZ)
             {
-                var vertices = new SolidVertex[]
+                var vertices = new[]
                 {
                     new SolidVertex(new Vector3(-sizeX, -sizeY, -sizeZ)),
                     new SolidVertex(new Vector3(sizeX, -sizeY, -sizeZ)),

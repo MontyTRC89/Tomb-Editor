@@ -1,9 +1,4 @@
-﻿using NLog;
-using SharpDX;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 
 namespace TombLib.IO
@@ -48,8 +43,8 @@ namespace TombLib.IO
         public static readonly ChunkId Empty = new ChunkId(new byte[0], 0);
         private static readonly Encoding _encoding = Encoding.ASCII;
 
-        private byte[] _idBytes; // Actually store the chunk ID as bytes. We don't want fancy Unicode comparison (different id bytes would compare identical, also big overhead)
-        private int _idLength; // Extra field to allow only part of the array
+        private readonly byte[] _idBytes; // Actually store the chunk ID as bytes. We don't want fancy Unicode comparison (different id bytes would compare identical, also big overhead)
+        private readonly int _idLength; // Extra field to allow only part of the array
 
         public ChunkId(byte[] idBytes)
         {
@@ -102,6 +97,8 @@ namespace TombLib.IO
 
         public override bool Equals(object obj)
         {
+            if (!(obj is ChunkId))
+                return false;
             return this == (ChunkId)obj;
         }
 
@@ -109,7 +106,7 @@ namespace TombLib.IO
         {
             int hash = unchecked(_idLength * (int)3239679517); // Random prime
             for (int i = 0; i < _idLength; ++i)
-                hash = unchecked((hash * 1321196299) + _idBytes[i]); // Random prime
+                hash = unchecked(hash * 1321196299 + _idBytes[i]); // Random prime
             return hash;
         }
 
@@ -144,5 +141,5 @@ namespace TombLib.IO
             }
             return str.ToString();
         }
-    };
+    }
 }

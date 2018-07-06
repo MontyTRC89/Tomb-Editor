@@ -26,17 +26,25 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\BuildRelease\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowedReferenceRelatedFileExtensions>
+      <!-- Prevent default XML and PDB files copied to output in RELEASE. 
+           Only *.allowedextension files will be included, which doesn't exist in my case.
+       -->
+      .allowedextension
+    </AllowedReferenceRelatedFileExtensions>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AssimpNet, Version=3.3.2.0, Culture=neutral, PublicKeyToken=3edc10cb77b1bca2, processorArchitecture=MSIL">
@@ -51,8 +59,23 @@
       <HintPath>..\packages\MiniZ.Net.1.0.0\lib\MiniZ.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio.Flac, Version=1.0.5702.29018, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Flac.1.0.5702.29018\lib\net45\NAudio.Flac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NAudio.Vorbis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.Vorbis.1.0.0.0\lib\net35\NAudio.Vorbis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NVorbis, Version=0.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NVorbis.0.8.4.0\lib\NVorbis.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Pfim, Version=0.4.4.0, Culture=neutral, processorArchitecture=MSIL">
@@ -62,8 +85,14 @@
     <Reference Include="SharpDX">
       <HintPath>..\Libs\SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX.D3DCompiler">
+      <HintPath>..\Libs\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX.Direct3D11">
       <HintPath>..\Libs\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11.Effects">
+      <HintPath>..\Libs\SharpDX.Direct3D11.Effects.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DXGI">
       <HintPath>..\Libs\SharpDX.DXGI.dll</HintPath>
@@ -71,54 +100,77 @@
     <Reference Include="SharpDX.Toolkit">
       <HintPath>..\Libs\SharpDX.Toolkit.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Toolkit.Compiler, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\SharpDX.Toolkit.Compiler.dll</HintPath>
+    <Reference Include="SharpDX.Toolkit.Compiler">
+      <HintPath>..\Libs\SharpDX.Toolkit.Compiler.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Toolkit.Graphics">
       <HintPath>..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoundingBox.cs" />
+    <Compile Include="BoundingSphere.cs" />
     <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
     <Compile Include="GeometryIO\BaseGeometryImporter.cs" />
-    <Compile Include="GeometryIO\Exporters\RoomExporterCollada.cs" />
-    <Compile Include="GeometryIO\Exporters\RoomExporterMetasequoia.cs" />
-    <Compile Include="GeometryIO\Exporters\RoomExporterObj.cs" />
-    <Compile Include="GeometryIO\Exporters\RoomExporterPly.cs" />
-    <Compile Include="Forms\GeometryIOSettingsDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\GeometryIOSettingsDialog.Designer.cs">
-      <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GeometryIO\Importers\AssimpImporter.cs" />
-    <Compile Include="GeometryIO\Importers\MetasequoiaRoomImporter.cs" />
-    <Compile Include="GeometryIO\Importers\PlyRoomImporter.cs" />
+    <Compile Include="GeometryIO\Exporters\Collada.cs" />
+    <Compile Include="GeometryIO\Exporters\Metasequoia.cs" />
+    <Compile Include="GeometryIO\Exporters\Obj.cs" />
+    <Compile Include="GeometryIO\Exporters\Ply.cs" />
+    <Compile Include="GeometryIO\Importers\Assimp.cs" />
+    <Compile Include="GeometryIO\Importers\Metasequoia.cs" />
     <Compile Include="GeometryIO\IOGeometrySettings.cs" />
     <Compile Include="GeometryIO\IOMaterial.cs" />
     <Compile Include="GeometryIO\IOMesh.cs" />
     <Compile Include="GeometryIO\IOModel.cs" />
     <Compile Include="GeometryIO\IOPolygon.cs" />
     <Compile Include="GeometryIO\IOSettingsPresets.cs" />
+    <Compile Include="GeometryIO\IOSubmesh.cs" />
+    <Compile Include="Graphics\AnimationNode.cs" />
+    <Compile Include="Graphics\Material.cs" />
+    <Compile Include="Graphics\ObjectMesh.cs" />
+    <Compile Include="Graphics\ObjectVertex.cs" />
+    <Compile Include="Graphics\SharpDxConversions.cs" />
+    <Compile Include="Graphics\Submesh.cs" />
+    <Compile Include="Graphics\WadRenderer.cs" />
+    <Compile Include="LevelData\AnimatedTextureSet.cs" />
+    <Compile Include="LevelData\Block.cs" />
+    <Compile Include="LevelData\BumpMappingInfo.cs" />
+    <Compile Include="LevelData\CameraInstance.cs" />
+    <Compile Include="LevelData\Compilers\FloorData.cs" />
+    <Compile Include="LevelData\Compilers\LevelCompiler.cs" />
+    <Compile Include="LevelData\Compilers\LevelCompilerClassicTR.cs" />
+    <Compile Include="LevelData\Compilers\Ng.cs" />
+    <Compile Include="LevelData\Compilers\Pathfinding.cs" />
+    <Compile Include="LevelData\Compilers\PathfindingDecompiled.cs" />
+    <Compile Include="LevelData\Compilers\Rooms.cs" />
+    <Compile Include="LevelData\Compilers\Structs.cs" />
+    <Compile Include="LevelData\Compilers\Textures.cs" />
+    <Compile Include="LevelData\Compilers\Tr2.cs" />
+    <Compile Include="LevelData\Compilers\Tr3.cs" />
+    <Compile Include="LevelData\Compilers\Tr4.cs" />
+    <Compile Include="LevelData\Compilers\Tr5.cs" />
+    <Compile Include="LevelData\Compilers\Util\ObjectTextureManager.cs" />
+    <Compile Include="LevelData\Compilers\Util\ObjectTextureManagerWithAnimations.cs" />
+    <Compile Include="LevelData\Compilers\Util\SoundManager.cs" />
+    <Compile Include="LevelData\Compilers\Util\TextureAllocator.cs" />
+    <Compile Include="LevelData\Compilers\Wad.cs" />
+    <Compile Include="LevelData\FlybyCameraInstance.cs" />
+    <Compile Include="LevelData\ImportedGeometry.cs" />
+    <Compile Include="LevelData\ImportedGeometryInstance.cs" />
+    <Compile Include="LevelData\IO\Prj2Chunks.cs" />
+    <Compile Include="LevelData\IO\Prj2Loader.cs" />
+    <Compile Include="LevelData\IO\Prj2Writer.cs" />
+    <Compile Include="LevelData\IO\PrjLoader.cs" />
     <Compile Include="Graphics\Animation.cs" />
-    <Compile Include="Graphics\AnimDispatch.cs" />
     <Compile Include="Graphics\ArcBallCamera.cs" />
     <Compile Include="Graphics\Bone.cs" />
     <Compile Include="Graphics\Camera.cs" />
@@ -137,72 +189,110 @@
     <Compile Include="IO\ChunkId.cs" />
     <Compile Include="IO\ChunkReader.cs" />
     <Compile Include="IO\ChunkWriter.cs" />
-    <Compile Include="IO\FileFormat.cs" />
     <Compile Include="IO\LEB128.cs" />
-    <Compile Include="NG\NgParameterType.cs" />
-    <Compile Include="NG\NgTrigger.cs" />
+    <Compile Include="LevelData\ItemInstance.cs" />
+    <Compile Include="LevelData\Level.cs" />
+    <Compile Include="LevelData\LevelSettings.cs" />
+    <Compile Include="LevelData\LevelSettingsWatcher.cs" />
+    <Compile Include="LevelData\LevelTexture.cs" />
+    <Compile Include="LevelData\LightInstance.cs" />
+    <Compile Include="LevelData\MoveableInstance.cs" />
+    <Compile Include="LevelData\ObjectInstance.cs" />
+    <Compile Include="LevelData\PortalInstance.cs" />
+    <Compile Include="LevelData\ReferencedWad.cs" />
+    <Compile Include="LevelData\Room.cs" />
+    <Compile Include="LevelData\RoomGeometry.cs" />
+    <Compile Include="LevelData\ScriptID.cs" />
+    <Compile Include="LevelData\SinkInstance.cs" />
+    <Compile Include="LevelData\SoundSourceInstance.cs" />
+    <Compile Include="LevelData\StaticInstance.cs" />
+    <Compile Include="LevelData\TextureFootStepSound.cs" />
+    <Compile Include="LevelData\TriggerInstance.cs" />
+    <Compile Include="Script\LanguageScript.cs" />
+    <Compile Include="Script\LevelScript.cs" />
+    <Compile Include="Script\LevelScriptCatalog.cs" />
+    <Compile Include="Script\Script.cs" />
+    <Compile Include="Script\ScriptBlocks.cs" />
+    <Compile Include="Utils\DataVersion.cs" />
+    <Compile Include="MathC.cs" />
+    <Compile Include="NG\NgParameterInfo.cs" />
+    <Compile Include="NG\NgParameterRange.cs" />
+    <Compile Include="NG\NgTriggerSubtypes.cs" />
     <Compile Include="NG\NgCatalog.cs" />
-    <Compile Include="NG\NgListKind.cs" />
-    <Compile Include="NG\NgTriggerKeyValuePair.cs" />
-    <Compile Include="NG\NgTriggerMainKeyValuePair.cs" />
+    <Compile Include="NG\NgTriggerSubtype.cs" />
+    <Compile Include="Ray.cs" />
+    <Compile Include="RectangleInt2.cs" />
+    <Compile Include="Rectangle2.cs" />
+    <Compile Include="ResourcesC\ResourcesC.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResourcesC.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utils\Cache.cs" />
+    <Compile Include="Utils\CollectionUtils.cs" />
+    <Compile Include="Utils\Collision.cs" />
+    <Compile Include="Utils\ConditionallyOwned.cs" />
+    <Compile Include="Utils\DictionaryWhere.cs" />
+    <Compile Include="Utils\DictionarySelect.cs" />
+    <Compile Include="Utils\FileFormat.cs" />
+    <Compile Include="Utils\FileSystemUtils.cs" />
+    <Compile Include="Utils\FileSystemWatcherManager.cs" />
     <Compile Include="Utils\Hash.cs" />
+    <Compile Include="Utils\IDialogDescription.cs" />
     <Compile Include="Utils\ImageC.cs" />
     <Compile Include="Graphics\TextureLoad.cs" />
     <Compile Include="Graphics\InputLayouts.cs" />
     <Compile Include="Graphics\KeyFrame.cs" />
     <Compile Include="Graphics\Mesh.cs" />
     <Compile Include="Graphics\Model.cs" />
-    <Compile Include="Graphics\SkinnedMesh.cs" />
-    <Compile Include="Graphics\SkinnedModel.cs" />
-    <Compile Include="Graphics\SkinnedVertex.cs" />
-    <Compile Include="Graphics\StateChange.cs" />
-    <Compile Include="Graphics\StaticMesh.cs" />
+    <Compile Include="Graphics\AnimatedModel.cs" />
     <Compile Include="Graphics\StaticModel.cs" />
-    <Compile Include="Graphics\StaticVertex.cs" />
     <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="IO\BinaryReaderEx.cs" />
     <Compile Include="IO\BinaryWriterEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\Collision.cs" />
-    <Compile Include="Utils\MathUtilsEx.cs" />
+    <Compile Include="Utils\IProgressReporter.cs" />
     <Compile Include="Utils\ConservativeRasterizer.cs" />
+    <Compile Include="Utils\Logging.cs" />
     <Compile Include="Utils\PathC.cs" />
     <Compile Include="Utils\PolygonFunctions.cs" />
+    <Compile Include="Utils\RectTransformation.cs" />
     <Compile Include="Utils\RectPacker.cs" />
+    <Compile Include="Utils\Swap.cs" />
     <Compile Include="Utils\Texture.cs" />
-    <Compile Include="Utils\TreePacker.cs" />
+    <Compile Include="Utils\RectPackerTree.cs" />
     <Compile Include="Utils\ZLib.cs" />
+    <Compile Include="VectorInt2.cs" />
+    <Compile Include="VectorInt3.cs" />
+    <Compile Include="Wad\AnimationFile.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
-    <Compile Include="Wad\Catalog\TrCatalogGame.cs" />
-    <Compile Include="Wad\Catalog\TrCatalogItem.cs" />
-    <Compile Include="Wad\Catalog\TrCatalogItemSound.cs" />
-    <Compile Include="Wad\OriginalSoundsDefinitions.cs" />
-    <Compile Include="Wad\OriginalSound.cs" />
-    <Compile Include="Wad\TrLevels\Enumerations.cs" />
+    <Compile Include="Wad\WadAdditionalSoundInfo.cs" />
+    <Compile Include="Wad\WadLight.cs" />
+    <Compile Include="Wad\IWadObject.cs" />
+    <Compile Include="Wad\TrLevels\TrVersion.cs" />
     <Compile Include="Wad\TrLevels\Structs.cs" />
     <Compile Include="Wad\TrLevels\TrLevel.cs" />
     <Compile Include="Wad\TrLevels\TrLevelOperations.cs" />
-    <Compile Include="Wad\Wad2Actions.cs" />
+    <Compile Include="Wad\WadBone.cs" />
     <Compile Include="Wad\Wad2Chunks.cs" />
     <Compile Include="Wad\Wad2Loader.cs" />
     <Compile Include="Wad\Wad2Writer.cs" />
     <Compile Include="Wad\WadAnimCommand.cs" />
     <Compile Include="Wad\Tr4Wad\Tr4WadOperations.cs" />
+    <Compile Include="Wad\WadFixedSoundInfo.cs" />
     <Compile Include="Wad\WadSample.cs" />
     <Compile Include="Wad\WadSoundInfo.cs" />
+    <Compile Include="Wad\WadSoundPlayer.cs" />
     <Compile Include="Wad\WadSprite.cs" />
     <Compile Include="Wad\WadSpriteSequence.cs" />
     <Compile Include="Wad\Enumerations.cs" />
     <Compile Include="Wad\Tr4Wad\Tr4Wad.cs" />
     <Compile Include="Wad\Wad2.cs" />
-    <Compile Include="Wad\WadObject.cs" />
     <Compile Include="Wad\WadTexture.cs" />
     <Compile Include="Wad\WadAnimation.cs" />
     <Compile Include="Wad\WadAnimDispatch.cs" />
     <Compile Include="Wad\WadKeyFrame.cs" />
     <Compile Include="Wad\WadKeyFrameRotation.cs" />
-    <Compile Include="Wad\WadLink.cs" />
     <Compile Include="Wad\WadMesh.cs" />
     <Compile Include="Wad\WadMoveable.cs" />
     <Compile Include="Wad\WadPolygon.cs" />
@@ -215,21 +305,29 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\GeometryIOSettingsDialog.resx">
-      <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
+    <None Include="ResourcesC\Extra.Tr5.pc.png" />
+    <None Include="ResourcesC\font.bin" />
+    <None Include="ResourcesC\Font.pc.png" />
+    <None Include="ResourcesC\pcsky.raw.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ResourcesC\ResourcesC.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourcesC.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
+    <None Include="Catalogs\TrCatalog.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Catalogs\NgCatalog.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>Questo progetto fa riferimento a uno o più pacchetti NuGet che non sono presenti in questo computer. Usare lo strumento di ripristino dei pacchetti NuGet per scaricarli. Per altre informazioni, vedere http://go.microsoft.com/fwlink/?LinkID=322105. Il file mancante è {0}.</ErrorText>
-    </PropertyGroup>
     <Error Condition="!Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets'))" />
     <Error Condition="!Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AssimpNet.3.3.2\build\AssimpNet.targets'))" />
   </Target>

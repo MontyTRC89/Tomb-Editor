@@ -5,12 +5,12 @@ namespace TombEditor.Controls
 {
     public class MovementTimer : IDisposable
     {
-        private Timer _moveTimer = new Timer() { Interval = 16 };
-        private float _moveAcceleration;
-        private EventHandler _moveEvent = null;
+        private readonly Timer _moveTimer = new Timer() { Interval = 16 };
+        private readonly float _moveAcceleration;
+        private EventHandler _moveEvent;
 
-        public float MoveMultiplier { get; private set; } = 0.0f;
-        public Keys MoveDirection { get; private set; } = Keys.None;
+        public float MoveMultiplier { get; private set; }
+        public Keys MoveKey { get; private set; } = Keys.None;
 
         public MovementTimer(EventHandler moveEvent, float moveAcceleration = 0.02f)
         {
@@ -38,9 +38,9 @@ namespace TombEditor.Controls
             {
                 if (_moveTimer.Enabled == false)
                     _moveTimer.Enabled = true;
-                if (MoveDirection != moveDirection)
+                if (MoveKey != moveDirection)
                 {
-                    MoveDirection = moveDirection;
+                    MoveKey = moveDirection;
                     MoveMultiplier = 0.0f;
                 }
                 return true;
@@ -53,7 +53,7 @@ namespace TombEditor.Controls
         {
             _moveTimer.Enabled = false;
             MoveMultiplier = 0.0f;
-            MoveDirection = Keys.None;
+            MoveKey = Keys.None;
         }
 
         private void UpdateTimer(object sender, EventArgs e)

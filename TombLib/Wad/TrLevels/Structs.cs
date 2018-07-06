@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TombLib.Wad.TrLevels
+﻿namespace TombLib.Wad.TrLevels
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Runtime.InteropServices;
-    using TombLib.IO;
+    using IO;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct tr_color
@@ -45,9 +38,9 @@ namespace TombLib.Wad.TrLevels
 
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-        public static unsafe bool operator ==(tr_vertex first, tr_vertex second)
+        public static bool operator ==(tr_vertex first, tr_vertex second)
         {
-            return (first.X == second.X) && (first.Y == second.Y) && (first.Z == second.Z);
+            return first.X == second.X && first.Y == second.Y && first.Z == second.Z;
         }
 
         public static bool operator !=(tr_vertex first, tr_vertex second)
@@ -60,9 +53,11 @@ namespace TombLib.Wad.TrLevels
             return this == other;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object other)
         {
-            return this == (tr_vertex)obj;
+            if (!(other is tr_vertex))
+                return false;
+            return this == (tr_vertex)other;
         }
 
         public override int GetHashCode()
@@ -74,16 +69,19 @@ namespace TombLib.Wad.TrLevels
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct tr_face4
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public ushort[] Vertices;
+        public ushort Index0;
+        public ushort Index1;
+        public ushort Index2;
+        public ushort Index3;
         public ushort Texture;
         public ushort LightingEffect;
 
         public void Write(BinaryWriterEx writer)
         {
-            writer.Write(Vertices[0]);
-            writer.Write(Vertices[1]);
-            writer.Write(Vertices[2]);
-            writer.Write(Vertices[3]);
+            writer.Write(Index0);
+            writer.Write(Index1);
+            writer.Write(Index2);
+            writer.Write(Index3);
             writer.Write(Texture);
         }
     }
@@ -91,15 +89,17 @@ namespace TombLib.Wad.TrLevels
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct tr_face3
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public ushort[] Vertices;
+        public ushort Index0;
+        public ushort Index1;
+        public ushort Index2;
         public ushort Texture;
         public ushort LightingEffect;
 
         public void Write(BinaryWriterEx writer)
         {
-            writer.Write(Vertices[0]);
-            writer.Write(Vertices[1]);
-            writer.Write(Vertices[2]);
+            writer.Write(Index0);
+            writer.Write(Index1);
+            writer.Write(Index2);
             writer.Write(Texture);
         }
     }
@@ -162,7 +162,7 @@ namespace TombLib.Wad.TrLevels
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
         public static unsafe bool operator ==(tr_room_vertex first, tr_room_vertex second)
         {
-            return (*(ulong*)&first == *(ulong*)&second) && (*(uint*)&first.Attributes == *(uint*)&second.Attributes);
+            return *(ulong*)&first == *(ulong*)&second && *(uint*)&first.Attributes == *(uint*)&second.Attributes;
         }
 
         public static bool operator !=(tr_room_vertex first, tr_room_vertex second)
@@ -175,9 +175,11 @@ namespace TombLib.Wad.TrLevels
             return this == other;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object other)
         {
-            return this == (tr_room_vertex)obj;
+            if (!(other is tr_room_vertex))
+                return false;
+            return this == (tr_room_vertex)other;
         }
 
         public override int GetHashCode()
@@ -271,7 +273,7 @@ namespace TombLib.Wad.TrLevels
             writer.WriteBlockArray(TexturedTriangles);
 
             var meshOffset2 = writer.BaseStream.Position;
-            var meshSize = (meshOffset2 - meshOffset1);
+            var meshSize = meshOffset2 - meshOffset1;
             if (meshSize % 4 != 0)
             {
                 const ushort tempFiller = 0;
@@ -349,10 +351,8 @@ namespace TombLib.Wad.TrLevels
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct tr_object_texture_vert
     {
-        public byte Xc;
-        public byte Xp;
-        public byte Yc;
-        public byte Yp;
+        public ushort X;
+        public ushort Y;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

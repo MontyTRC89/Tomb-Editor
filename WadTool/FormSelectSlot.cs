@@ -1,69 +1,92 @@
-﻿using System;
+﻿using DarkUI.Controls;
+using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
-    public partial class FormSelectSlot : DarkUI.Forms.DarkForm
+    public partial class FormSelectSlot : DarkForm
     {
-        public bool IsMoveable { get; set; }
-        public int ObjectId { get; set; }
-        public string ObjectName { get; set; }
+        public Type TypeClass { get; }
+        public WadGameVersion GameVersion { get; }
+        public IWadObjectId NewId { get; set; }
 
-        private WadToolClass _tool = WadToolClass.Instance;
-
-        public FormSelectSlot()
+        public FormSelectSlot(IWadObjectId currentId, WadGameVersion gameVersion)
         {
             InitializeComponent();
-        }
 
-        private void FormSelectSlot_Load(object sender, EventArgs e)
-        {
+            NewId = currentId;
+            TypeClass = currentId.GetType();
+            GameVersion = gameVersion;
+
+            if (TypeClass == typeof(WadMoveableId))
+                chosenId.Value = ((WadMoveableId)currentId).TypeId;
+            else if (TypeClass == typeof(WadStaticId))
+                chosenId.Value = ((WadStaticId)currentId).TypeId;
+            else if (TypeClass == typeof(WadSpriteSequenceId))
+                chosenId.Value = ((WadSpriteSequenceId)currentId).TypeId;
+            else if (TypeClass == typeof(WadFixedSoundInfoId))
+                chosenId.Value = ((WadFixedSoundInfoId)currentId).TypeId;
+            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
+            {
+                chosenId.Visible = false;
+                chosenIdText.Visible = true;
+                treeSlots.Enabled = false;
+                tbSearchLabel.Enabled = false;
+                tbSearch.Enabled = false;
+
+                chosenIdText.Text = ((WadAdditionalSoundInfoId)currentId).Name;
+            }
+            else
+                throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
+
             ReloadSlots();
         }
 
         private void ReloadSlots()
         {
             treeSlots.Nodes.Clear();
-            treeSlots.Invalidate();
 
-            if (IsMoveable)
+            // Decide on ID type
+            if (TypeClass == typeof(WadMoveableId))
+                treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllMoveables(GameVersion)));
+            else if (TypeClass == typeof(WadStaticId))
+                treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllStatics(GameVersion)));
+            else if (TypeClass == typeof(WadSpriteSequenceId))
+                treeSlots.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllSpriteSequences(GameVersion)));
+            else if (TypeClass == typeof(WadFixedSoundInfoId))
             {
-                var moveables = TrCatalog.GetAllMoveables(_tool.DestinationWad.Version);
-                var nodes = new List<DarkUI.Controls.DarkTreeNode>();
-                foreach (var moveable in moveables)
-                {
-                    if (tbSearch.Text != "" && !moveable.Value.ToString().ToLower().Contains(tbSearch.Text.ToLower())) continue;
+                DarkTreeNode usedSoundNode = new DarkTreeNode("Sounds used by the game");
+                usedSoundNode.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllFixedByDefaultSounds(GameVersion)));
+                usedSoundNode.Expanded = true;
+                treeSlots.Nodes.Add(usedSoundNode);
 
-                    var nodeMoveable = new DarkUI.Controls.DarkTreeNode(moveable.Value.ToString());
-                    nodeMoveable.Tag = moveable.Key;
-
-                    nodes.Add(nodeMoveable);
-                }
-                treeSlots.Nodes.AddRange(nodes);
+                DarkTreeNode allSoundNode = new DarkTreeNode("All sound slots");
+                allSoundNode.Nodes.AddRange(PopulateSlots(TrCatalog.GetAllSounds(GameVersion)));
+                treeSlots.Nodes.Add(allSoundNode);
             }
+            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
+            { }
             else
+                throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
+
+            // Make sure it redraws
+            treeSlots.Invalidate();
+        }
+
+        private IEnumerable<DarkTreeNode> PopulateSlots(IDictionary<uint, string> objectSlotSuggestions)
+        {
+            string searchKeyword = tbSearch.Text;
+            foreach (var objectSlotSuggestion in objectSlotSuggestions)
             {
-                var staticMeshes = TrCatalog.GetAllStaticMeshes(_tool.DestinationWad.Version);
-                var nodes = new List<DarkUI.Controls.DarkTreeNode>();
-                foreach (var staticMesh in staticMeshes)
-                {
-                    if (tbSearch.Text != "" && !staticMesh.Value.ToString().ToLower().Contains(tbSearch.Text.ToLower())) continue;
-
-                    var nodeStatic = new DarkUI.Controls.DarkTreeNode(staticMesh.Value.ToString());
-                    nodeStatic.Tag = staticMesh.Key;
-
-                    nodes.Add(nodeStatic);
-                }
-                treeSlots.Nodes.AddRange(nodes);
+                if (!string.IsNullOrEmpty(searchKeyword))
+                    if (objectSlotSuggestion.Value.IndexOf(searchKeyword, StringComparison.OrdinalIgnoreCase) == -1)
+                        continue;
+                string label = "(" + objectSlotSuggestion.Key + ") " + objectSlotSuggestion.Value;
+                yield return new DarkTreeNode(label) { Tag = objectSlotSuggestion.Key };
             }
         }
 
@@ -75,20 +98,47 @@ namespace WadTool
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (treeSlots.SelectedNodes.Count == 0) return;
-
-            var node = treeSlots.SelectedNodes[0];
-
-            if (node.Tag == null) return;
-
-            ObjectId = (int)node.Tag;  
-            ObjectName = node.Text;
+            if (TypeClass == typeof(WadMoveableId))
+                NewId = new WadMoveableId((uint)chosenId.Value);
+            else if (TypeClass == typeof(WadStaticId))
+                NewId = new WadStaticId((uint)chosenId.Value);
+            else if (TypeClass == typeof(WadSpriteSequenceId))
+                NewId = new WadSpriteSequenceId((uint)chosenId.Value);
+            else if (TypeClass == typeof(WadFixedSoundInfoId))
+                NewId = new WadFixedSoundInfoId((uint)chosenId.Value);
+            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
+                NewId = new WadAdditionalSoundInfoId(chosenIdText.Text);
+            else
+                throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void tbSearch_KeyUp(object sender, KeyEventArgs e)
+        private void chosenId_ValueChanged(object sender, EventArgs e)
+        {
+            foreach (DarkTreeNode node in treeSlots.Nodes)
+                if (node.Tag is uint)
+                    if ((uint)node.Tag == (uint)chosenId.Value)
+                    {
+                        treeSlots.SelectNode(node);
+                        return;
+                    }
+            if (treeSlots.SelectedNodes.Count > 0)
+            {
+                treeSlots.SelectedNodes.Clear();
+                treeSlots.Invalidate();
+            }
+        }
+
+        private void treeSlots_SelectedNodesChanged(object sender, EventArgs e)
+        {
+            if (treeSlots.SelectedNodes.Count > 0)
+                if (treeSlots.SelectedNodes[0].Tag is uint)
+                    chosenId.Value = (uint)treeSlots.SelectedNodes[0].Tag;
+        }
+
+        private void tbSearch_TextChanged(object sender, EventArgs e)
         {
             ReloadSlots();
         }

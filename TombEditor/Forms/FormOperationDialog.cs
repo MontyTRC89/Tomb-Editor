@@ -1,21 +1,23 @@
-﻿using DarkUI.Extensions;
-using DarkUI.Forms;
-using NLog;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using DarkUI.Extensions;
+using DarkUI.Forms;
+using NLog;
+using TombLib.Forms;
+using TombLib.Utils;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormOperationDialog : DarkForm, IProgressReporter
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private Action<IProgressReporter> _operation;
+        private readonly Action<IProgressReporter> _operation;
         private Thread _thread;
-        private volatile bool _threadShouldAbort = false;
-        private bool _autoCloseWhenDone = false;
+        private volatile bool _threadShouldAbort;
+        private readonly bool _autoCloseWhenDone;
 
         public FormOperationDialog(string operationName, bool autoCloseWhenDone, Action<IProgressReporter> operation)
         {
@@ -40,7 +42,7 @@ namespace TombEditor
 
         private void FormImportPRJ_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if ((e.CloseReason == CloseReason.UserClosing) && _thread.IsAlive && !_threadShouldAbort)
+            if (e.CloseReason == CloseReason.UserClosing && _thread.IsAlive && !_threadShouldAbort)
             {
                 EndThread();
                 e.Cancel = true;
@@ -49,12 +51,14 @@ namespace TombEditor
 
         private void Run()
         {
+#if !DEBUG
             try
             {
+#endif
                 _operation(this);
 
                 // Done
-                this?.BeginInvoke((Action)delegate
+                BeginInvoke((Action)delegate
                     {
                         pbStato.Value = 100;
                         butOk.Enabled = true;
@@ -67,6 +71,7 @@ namespace TombEditor
                         }
                         lstLog.BackColor = Color.LightGreen;
                     });
+#if !DEBUG
             }
             catch (Exception ex)
             {
@@ -76,7 +81,7 @@ namespace TombEditor
                 logger.Error(ex, "PRJ loading failed");
 
                 string message = "There was an error. Message: " + ex.Message;
-                this?.Invoke((Action)delegate
+                Invoke((Action)delegate
                     {
                         pbStato.Value = 0;
 
@@ -90,11 +95,12 @@ namespace TombEditor
                         butCancel.Focus();
                     });
             }
+#endif
         }
 
         void AddMessage(float? progress, string message, bool isWarning)
         {
-            if (!(bool)this?.Invoke((Func<bool>)delegate
+            if (!(bool)Invoke((Func<bool>)delegate
             {
                 if (progress.HasValue)
                     pbStato.SetProgressNoAnimation((int)Math.Round(progress.Value, 0));
@@ -125,16 +131,13 @@ namespace TombEditor
 
         void IProgressReporter.ReportProgress(float progress, string message)
         {
-            logger.Info(progress.ToString() + " - " + message);
+            logger.Info(progress + " - " + message);
             AddMessage(progress, message, false);
         }
 
-        void IProgressReporter.InvokeGui(Action<IWin32Window> action)
+        void IDialogHandler.RaiseDialog(IDialogDescription description)
         {
-            if (InvokeRequired)
-                Invoke(action, this);
-            else
-                action(this);
+            GraphicalDialogHandler.HandleDialog(description, this);
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -175,7 +178,8 @@ namespace TombEditor
             lstLog.SelectionBackColor = Color.Tomato;
             lstLog.AppendText("Forcefully stopping process.\n");
             _thread.Abort();
-            _thread.Join();
+            while ((_thread.ThreadState & (ThreadState.Stopped | ThreadState.Aborted)) != 0)
+                Thread.Sleep(5);
         }
     }
 }

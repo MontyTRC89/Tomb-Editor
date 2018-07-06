@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SharpDX.DXGI;
 using SharpDX.Toolkit.Graphics;
-using SharpDX.DXGI;
 
 namespace TombLib.Graphics
 {

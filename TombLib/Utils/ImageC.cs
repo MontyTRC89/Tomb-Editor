@@ -1,11 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
-using SharpDX;
 
 namespace TombLib.Utils
 {
@@ -31,8 +31,20 @@ namespace TombLib.Utils
 
         public static explicit operator ColorC(Vector4 this_)
         {
-            this_ = Vector4.Min(Vector4.Max(this_ * 255.99998f, new Vector4()),  new Vector4(255.0f));
-            return new ColorC((byte)(this_.X), (byte)(this_.Y), (byte)(this_.Z), (byte)(this_.W));
+            this_ = Vector4.Min(Vector4.Max(this_ * 255.99998f, new Vector4()), new Vector4(255.0f));
+            return new ColorC((byte)this_.X, (byte)this_.Y, (byte)this_.Z, (byte)this_.W);
+        }
+
+        public static Vector4 Mix(Vector4 background, Vector4 foreground)
+        {
+            // https://en.wikipedia.org/wiki/Alpha_compositing#Alpha_blending
+            float backgroundTotal = background.W * (1.0f - foreground.W);
+            float alpha = foreground.W + backgroundTotal;
+            Vector4 output = foreground * foreground.W + background * backgroundTotal;
+            if (alpha > float.Epsilon)
+                output /= alpha;
+            output.W = alpha;
+            return output;
         }
     }
 
@@ -49,8 +61,8 @@ namespace TombLib.Utils
         public static ImageC Transparent { get; } = new ImageC(1, 1, new byte[] { 0, 0, 0, 0 });
         public const int PixelSize = 4;
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
         private byte[] _data { get; set; }
 
         private ImageC(int width, int height, byte[] data)
@@ -60,35 +72,13 @@ namespace TombLib.Utils
             _data = data;
         }
 
-        public static bool operator ==(ImageC first, ImageC second)
-        {
-            return (first.Width == second.Width) && (first.Height == second.Height) && (first._data == second._data);
-        }
-
-        public static bool operator !=(ImageC first, ImageC second)
-        {
-            return !(first == second);
-        }
-
-        public bool Equals(ImageC other)
-        {
-            return this == other;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this == (ImageC)obj;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return "Image (Width=" + Width + ", Height=" + Height + ")";
-        }
+        public static bool operator ==(ImageC first, ImageC second) =>
+            first.Width == second.Width && first.Height == second.Height && first._data == second._data;
+        public static bool operator !=(ImageC first, ImageC second) => !(first == second);
+        public bool Equals(ImageC other) => this == other;
+        public override bool Equals(object other) => other is ImageC && this == (ImageC)other;
+        public override int GetHashCode() => base.GetHashCode();
+        public override string ToString() => "Image (Width=" + Width + ", Height=" + Height + ")";
 
         public static ImageC CreateNew(int width, int height)
         {
@@ -150,23 +140,23 @@ namespace TombLib.Utils
                     for (int dx = 0; dx < kernel_width; dx++)
                         for (int dy = 0; dy < kernel_height; dy++)
                         {
-                            int sourceX = MathUtilEx.Clamp(x + dx - 1, 0, width - 1);
-                            int sourceY = MathUtilEx.Clamp(y + dy - 1, 0, height - 1);
+                            int sourceX = MathC.Clamp(x + dx - 1, 0, width - 1);
+                            int sourceY = MathC.Clamp(y + dy - 1, 0, height - 1);
                             ColorC clr = oldImage.GetPixel(sourceX, sourceY);
                             r += (int)clr.R * kernel[dx, dy];
                             g += (int)clr.G * kernel[dx, dy];
                             b += (int)clr.B * kernel[dx, dy];
                         }
-                    r = MathUtilEx.Clamp((int)(127 + r / weight), 0, 255);
-                    g = MathUtilEx.Clamp((int)(127 + g / weight), 0, 255);
-                    b = MathUtilEx.Clamp((int)(127 + b / weight), 0, 255);
+                    r = MathC.Clamp((int)(127 + r / weight), 0, 255);
+                    g = MathC.Clamp((int)(127 + g / weight), 0, 255);
+                    b = MathC.Clamp((int)(127 + b / weight), 0, 255);
                     SetPixel(xReal, yReal, new ColorC((byte)r, (byte)g, (byte)b, (byte)255));
                 }
         }
 
         public void Emboss(int xStart, int yStart, int width, int height, int weight, int size)
         {
-            size = MathUtilEx.Clamp(size, 2, 8);
+            size = MathC.Clamp(size, 2, 8);
             int[,] kernel = new int[size, size];
             kernel[0, 0] = -1;
             kernel[size - 1, size - 1] = 1;
@@ -174,11 +164,11 @@ namespace TombLib.Utils
             ApplyKernel(xStart, yStart, width, height, weight, kernel);
         }
 
-        public Vector2 Size => new Vector2(Width, Height);
+        public VectorInt2 Size => new VectorInt2(Width, Height);
 
         public int DataSize => Width * Height * PixelSize;
 
-        private static readonly byte[] Tga2_Signature = new byte [18] { 84, 82, 85, 69, 86, 73, 83, 73, 79, 78, 45, 88, 70, 73, 76, 69, 46, 0 };
+        private static readonly byte[] Tga2_Signature = new byte[18] { 84, 82, 85, 69, 86, 73, 83, 73, 79, 78, 45, 88, 70, 73, 76, 69, 46, 0 };
 
         private static bool IsTga(byte[] startBytes)
         {
@@ -197,16 +187,16 @@ namespace TombLib.Utils
             ushort height = BitConverter.ToUInt16(startBytes, 14);
             byte pixelDepth = startBytes[16];
 
-            if ((colorMapType != 0) && (colorMapType != 1))
+            if (colorMapType != 0 && colorMapType != 1)
                 return false;
             if (colorMapType == 1)
             {
                 if (colorMapFirstEntry >= colorMapLength)
                     return false;
-                if ((colorMapSize == 0) || (colorMapSize > 32))
+                if (colorMapSize == 0 || colorMapSize > 32)
                     return false;
             }
-            if ((width == 0) || (height == 0))
+            if (width == 0 || height == 0)
                 return false;
 
             switch (imageType)
@@ -279,7 +269,7 @@ namespace TombLib.Utils
             stream.Position = startPos;
 
             // Detect special image types
-            if ((startBytes[0] == 0x44) && (startBytes[1] == 0x44) && (startBytes[2] == 0x53) && (startBytes[3] == 0x20))
+            if (startBytes[0] == 0x44 && startBytes[1] == 0x44 && startBytes[2] == 0x53 && startBytes[3] == 0x20)
             {
                 // dds image
                 return FromPfimImage(Pfim.Dds.Create(stream));
@@ -311,9 +301,26 @@ namespace TombLib.Utils
                 return FromStream(stream);
         }
 
+        public static IReadOnlyList<FileFormat> FromFileFileExtensions { get; } = new List<FileFormat>()
+        {
+            new FileFormat("Portable Network Graphics", "png"),
+            new FileFormat("Truevision Targa", "tga"),
+            new FileFormat("Windows Bitmap", "bmp", "dib"),
+            new FileFormat("Jpeg Image (Not recommended)", "jpg", "jpeg", "jpe", "jif", "jfif", "jfi"),
+            new FileFormat("Graphics Interchange Format (Not recommended)", "gif")
+        };
+
+        public static IReadOnlyList<FileFormat> SaveFileFileExtensions { get; } = new List<FileFormat>()
+        {
+            new FileFormat("Portable Network Graphics", "png"),
+            new FileFormat("Windows Bitmap", "bmp", "dib"),
+            new FileFormat("Jpeg Image", "jpg", "jpeg", "jpe", "jif", "jfif", "jfi"),
+            new FileFormat("Graphics Interchange Format (Not recommended)", "gif")
+        };
+
         private static ImageC FromSystemDrawingBitmapMatchingPixelFormat(Bitmap bitmap)
         {
-            BitmapData bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             try
             {
                 ImageC result = CreateNew(bitmap.Width, bitmap.Height);
@@ -329,7 +336,7 @@ namespace TombLib.Utils
         public static ImageC FromSystemDrawingImage(Image image)
         {
             Bitmap imageAsBitmap = image as Bitmap;
-            if ((imageAsBitmap != null) && (imageAsBitmap.PixelFormat == PixelFormat.Format32bppArgb))
+            if (imageAsBitmap != null && imageAsBitmap.PixelFormat == PixelFormat.Format32bppArgb)
                 return FromSystemDrawingBitmapMatchingPixelFormat(imageAsBitmap);
 
             using (var convertedBitmap = new Bitmap(image.Width, image.Height))
@@ -342,14 +349,14 @@ namespace TombLib.Utils
 
         public static ImageC FromStreamRaw(Stream stream, int width, int height)
         {
-            ImageC result = ImageC.CreateNew(width, height);
+            ImageC result = CreateNew(width, height);
             stream.Read(result._data, 0, width * height * PixelSize);
             return result;
         }
 
         public static ImageC FromByteArray(byte[] data, int width, int height)
         {
-            ImageC result = ImageC.CreateNew(width, height);
+            ImageC result = CreateNew(width, height);
             Array.Copy(data, result._data, data.Length);
             return result;
         }
@@ -361,7 +368,38 @@ namespace TombLib.Utils
 
         public void Save(string fileName)
         {
-            GetTempSystemDrawingBitmap((bitmap) => bitmap.Save(fileName));
+            // Figure out image format
+            string extension = Path.GetExtension(fileName).Remove(0, 1).ToLowerInvariant();
+            switch (extension)
+            {
+                case "png":
+                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, ImageFormat.Png));
+                    break;
+                case "bmp":
+                case "dib":
+                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, ImageFormat.Bmp));
+                    break;
+                case "jpg":
+                case "jpeg":
+                case "jpe":
+                case "jif":
+                case "jfif":
+                case "jfi":
+                    using (EncoderParameters encoderParameters = new EncoderParameters(1))
+                    using (EncoderParameter encoderParameter = new EncoderParameter(Encoder.Quality, 95L))
+                    {
+                        ImageCodecInfo codecInfo = ImageCodecInfo.GetImageDecoders().First(codec => codec.FormatID == ImageFormat.Jpeg.Guid);
+                        encoderParameters.Param[0] = encoderParameter;
+                        GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, codecInfo, encoderParameters));
+                    }
+                    break;
+                case "gif":
+                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName, ImageFormat.Gif));
+                    break;
+                default:
+                    GetTempSystemDrawingBitmap(bitmap => bitmap.Save(fileName));
+                    break;
+            }
         }
 
         // Try to use 'GetTempSystemDrawingBitmap' instead if possible to avoid unnecessary data allocation
@@ -372,7 +410,7 @@ namespace TombLib.Utils
             Bitmap result = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
             try
             {
-                BitmapData resultData = result.LockBits(new System.Drawing.Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+                BitmapData resultData = result.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
                 try
                 {
                     Marshal.Copy(_data, 0, resultData.Scan0, resultData.Height * resultData.Stride);
@@ -394,7 +432,7 @@ namespace TombLib.Utils
         public unsafe void GetTempSystemDrawingBitmap(Action<Bitmap> bitmapAction)
         {
             fixed (void* dataPtr = _data)
-                using (var bitmap = new Bitmap(Width, Height, Width * PixelSize, PixelFormat.Format32bppArgb, new IntPtr(dataPtr))) // Temporaty bitmap
+                using (var bitmap = new Bitmap(Width, Height, Width * PixelSize, PixelFormat.Format32bppArgb, new IntPtr(dataPtr))) // Temporary bitmap
                     bitmapAction(bitmap);
         }
 
@@ -407,9 +445,9 @@ namespace TombLib.Utils
         public unsafe void CopyFrom(int toX, int toY, ImageC fromImage, int fromX, int fromY, int width, int height)
         {
             // Check coordinates
-            if ((toX < 0) || (toY < 0) || (fromX < 0) || (fromY < 0) || (width < 0) || (height < 0) ||
-                (toX + width > Width) || (toY + height > Height) ||
-                (fromX + width > fromImage.Width) || (fromY + height > fromImage.Height))
+            if (toX < 0 || toY < 0 || fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
+                toX + width > Width || toY + height > Height ||
+                fromX + width > fromImage.Width || fromY + height > fromImage.Height)
                 throw new ArgumentOutOfRangeException();
 
             // Copy data quickly
@@ -487,9 +525,10 @@ namespace TombLib.Utils
         public unsafe bool HasAlpha(int X, int Y, int width, int height)
         {
             // Check coordinates
-            if ((X < 0) || (Y < 0) || (width < 0) || (height < 0) ||
-                (X + width > Width) || (Y + height > Height))
-                throw new ArgumentOutOfRangeException();
+            // TODO: check Woops bug
+            if (X < 0 || Y < 0 || width < 0 || height < 0 ||
+                X + width > Width || Y + height > Height)
+                return false; // throw new ArgumentOutOfRangeException();
 
             // Check for alpha
             uint alphaBits = ColorToUint(new ColorC(0, 0, 0, 255));
@@ -520,12 +559,12 @@ namespace TombLib.Utils
 
         public byte[] ToByteArray()
         {
-            return (new MemoryStream(_data)).ToArray();
+            return _data;
         }
 
         public Stream ToRawStream(int yStart, int Height)
         {
-            return new MemoryStream(_data, yStart * (Width * PixelSize), Height * (Width * PixelSize));
+            return new MemoryStream(_data, yStart * Width * PixelSize, Height * Width * PixelSize);
         }
 
         public ulong HashImageData(System.Security.Cryptography.HashAlgorithm hashAlgorithm)

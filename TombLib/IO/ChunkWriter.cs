@@ -1,10 +1,7 @@
-﻿using SharpDX;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
+using System.Numerics;
 using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 
 namespace TombLib.IO
@@ -17,10 +14,10 @@ namespace TombLib.IO
             Zlib = 1
         }
 
-        private BinaryWriterEx _writer;
-        private Compression _compression;
-        private int _compressionLevel;
-        private Stream _baseStream;
+        private readonly BinaryWriterEx _writer;
+        private readonly Compression _compression;
+        private readonly int _compressionLevel;
+        private readonly Stream _baseStream;
 
         public ChunkWriter(byte[] magicNumber, Stream stream, Compression compression = Compression.None, int compressionLevel = ZLib.DefaultCompressionLevel)
         {
@@ -75,7 +72,7 @@ namespace TombLib.IO
             // Write chunk ID
             chunkID.ToStream(_writer);
 
-            // Write chunk size (reserved for later)
+            // Write chunk size
             long chunkSizePosition = _writer.BaseStream.Position;
             LEB128.Write(_writer, 0, maximumSize);
 
@@ -103,6 +100,12 @@ namespace TombLib.IO
         public void WriteChunkEnd()
         {
             _writer.Write((byte)0);
+        }
+
+        public void WriteChunkEmpty(ChunkId chunkID)
+        {
+            chunkID.ToStream(_writer);
+            LEB128.Write(_writer, 0);
         }
 
         public void WriteChunkBool(ChunkId chunkID, bool value)
@@ -158,6 +161,13 @@ namespace TombLib.IO
         {
             chunkID.ToStream(_writer);
             LEB128.Write(_writer, 16);
+            _writer.Write(value);
+        }
+
+        public void WriteChunkMatrix4x4(ChunkId chunkID, Matrix4x4 value)
+        {
+            chunkID.ToStream(_writer);
+            LEB128.Write(_writer, 64);
             _writer.Write(value);
         }
 

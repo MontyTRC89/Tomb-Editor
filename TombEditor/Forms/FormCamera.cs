@@ -1,20 +1,13 @@
-﻿using DarkUI.Forms;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
-using TombEditor.Geometry;
+using DarkUI.Forms;
+using TombLib.LevelData;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormCamera : DarkForm
     {
-        private CameraInstance _instance;
+        private readonly CameraInstance _instance;
 
         public FormCamera(CameraInstance instance)
         {

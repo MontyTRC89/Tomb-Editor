@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using NLog;
+﻿using DarkUI.Controls;
 using DarkUI.Docking;
-using TombEditor.Geometry;
 using DarkUI.Forms;
-using DarkUI.Controls;
+using NLog;
+using System;
+using System.Windows.Forms;
+using TombLib.LevelData;
+using TombLib.Rendering;
 
 namespace TombEditor.ToolWindows
 {
     public partial class SectorOptions : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public SectorOptions()
@@ -26,21 +20,13 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-
-            butBox.Click += sectorPropertyButton_Click;
-            butPortal.Click += sectorPropertyButton_Click;
-            butDeath.Click += sectorPropertyButton_Click;
-            butFlagBeetle.Click += sectorPropertyButton_Click;
-            butFlagTriggerTriggerer.Click += sectorPropertyButton_Click;
-            butMonkey.Click += sectorPropertyButton_Click;
-            butNotWalkableBox.Click += sectorPropertyButton_Click;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -185,64 +171,37 @@ namespace TombEditor.ToolWindows
             EditorActions.ToggleForceFloorSolid(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
-        private void panel2DGrid_MouseUp(object sender, MouseEventArgs e)
+        private void but_MouseEnter(object sender, EventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-                toolTip.Show(panel2DGrid.Message, panel2DGrid, e.X, e.Y + Cursor.Size.Height / 2, 4000);
+            SetSectorColoringInfoPriority(sender as Control);
         }
 
-        private void panel2DGrid_MouseDown(object sender, MouseEventArgs e)
+        private void SetSectorColoringInfoPriority(Control button)
         {
-            toolTip.Hide(panel2DGrid);
-        }
-
-        private void panel2DGrid_MouseLeave(object sender, EventArgs e)
-        {
-            toolTip.Hide(panel2DGrid);
-        }
-
-        private void toolTip_Popup(object sender, PopupEventArgs e)
-        {
-            if(e.AssociatedControl is DarkButton)
-                SetHighlightPriority((DarkButton)e.AssociatedControl);
-        }
-
-        private void sectorPropertyButton_Click(object sender, EventArgs e)
-        {
-            if (sender is DarkButton)
-                SetHighlightPriority((DarkButton)sender);
-        }
-
-        private void SetHighlightPriority(DarkButton button)
-        {
-            if (!_editor.Configuration.Editor_AutoSwitchHighlight)
+            if (!_editor.Configuration.Editor_AutoSwitchSectorColoringInfo)
                 return;
 
-            HighlightType typeToHighlight;
-
             if (button == butBox)
-                typeToHighlight = HighlightType.Box;
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Box);
             else if (button == butDeath)
-                typeToHighlight = HighlightType.Death;
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Death);
             else if (button == butMonkey)
-                typeToHighlight = HighlightType.Monkey;
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Monkey);
             else if (button == butFlagBeetle)
-                typeToHighlight = HighlightType.Beetle;
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Beetle);
             else if (button == butFlagTriggerTriggerer)
-                typeToHighlight = HighlightType.TriggerTriggerer;
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.TriggerTriggerer);
             else if (button == butNotWalkableBox)
-                typeToHighlight = HighlightType.NotWalkableFloor;
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.NotWalkableFloor);
             else if (button == butPortal)
-                typeToHighlight = HighlightType.Portal;
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Portal);
             else if (button == butClimbNegativeX ||
                      button == butClimbNegativeZ ||
                      button == butClimbPositiveX ||
                      button == butClimbPositiveZ)
-                typeToHighlight = HighlightType.Climb;
-            else
-                typeToHighlight = HighlightType.Wall;
-
-            _editor.HighlightManager.SetPriority(typeToHighlight);
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Climb);
+            else if (button == butWall)
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.Wall);
         }
     }
 }

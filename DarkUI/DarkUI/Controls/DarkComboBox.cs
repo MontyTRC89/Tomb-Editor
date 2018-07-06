@@ -21,7 +21,6 @@ namespace DarkUI.Controls
         private Bitmap _buttonIcon = DefaultButtonIcon;
 
         // Text
-        private string _text;
         private Padding _textPadding = new Padding(2);
         #endregion Fields
 
@@ -161,16 +160,6 @@ namespace DarkUI.Controls
             }
         }
 
-        [Category("Appearance")]
-        public override string Text
-        {
-            get { return _text; }
-            set
-            {
-                _text = value;
-                Invalidate();
-            }
-        }
         #endregion Properties
 
         #region Methods
@@ -222,7 +211,12 @@ namespace DarkUI.Controls
                 return;
 
             using (var foreBrush = new SolidBrush(ForeColor))
-                e.Graphics.DrawString(Items[e.Index].ToString(), e.Font, foreBrush, e.Bounds, StringFormat.GenericDefault);
+            {
+                var formatE = new ListControlConvertEventArgs(null, typeof(string), Items[e.Index]);
+                OnFormat(formatE);
+                string text = formatE.Value?.ToString() ?? Items[e.Index].ToString();
+                e.Graphics.DrawString(text, e.Font, foreBrush, e.Bounds, StringFormat.GenericDefault);
+            }
 
             if (DrawDropdownHoverOutline)
             {
@@ -244,10 +238,17 @@ namespace DarkUI.Controls
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, _borderColor, ButtonBorderStyle.Solid);
 
             // Draw text
+            string text = Text;
+            if (SelectedItem != null)
+            {
+                var formatE = new ListControlConvertEventArgs(null, typeof(string), SelectedItem);
+                OnFormat(formatE);
+                text = formatE.Value?.ToString() ?? SelectedItem.ToString();
+            }
             using (var backBrush = new SolidBrush(BackColor))
-                e.Graphics.FillRectangle((Focused && DrawFocusRectangle) ? _focusBrush : backBrush, textRect);
+                e.Graphics.FillRectangle(Focused && DrawFocusRectangle ? _focusBrush : backBrush, textRect);
             using (var foreBrush = new SolidBrush(ForeColor))
-                e.Graphics.DrawString(SelectedItem?.ToString() ?? Text, Font, foreBrush, textRect, StringFormat.GenericDefault);
+                e.Graphics.DrawString(text ?? Text, Font, foreBrush, textRect, StringFormat.GenericDefault);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)

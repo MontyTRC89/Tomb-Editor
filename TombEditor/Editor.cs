@@ -1,17 +1,18 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using SharpDX;
-using TombEditor.Geometry;
-using TombLib.Utils;
 using System.IO;
-using System.Diagnostics;
+using System.Linq;
 using System.Threading;
-using NLog;
+using TombLib;
+using TombLib.LevelData;
+using TombLib.LevelData.IO;
+using TombLib.Rendering;
+using TombLib.Utils;
 
 namespace TombEditor
 {
-    public interface IEditorEvent { };
+    public interface IEditorEvent { }
 
     public interface IEditorPropertyChangedEvent : IEditorEvent { }
 
@@ -19,7 +20,7 @@ namespace TombEditor
 
     public interface IEditorEventCausesUnsavedChanges : IEditorEvent { }
 
-    public interface IEditorRoomChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
+    public interface IEditorRoomChangedEvent : IEditorEventCausesUnsavedChanges
     {
         Room Room { get; }
     }
@@ -31,7 +32,7 @@ namespace TombEditor
         Change
     }
 
-    public interface IEditorObjectChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
+    public interface IEditorObjectChangedEvent : IEditorEventCausesUnsavedChanges
     {
         Room Room { get; }
         ObjectInstance Object { get; }
@@ -46,7 +47,7 @@ namespace TombEditor
 
         public void RaiseEvent(IEditorEvent eventObj)
         {
-            EditorEventRaised?.Invoke(eventObj);
+            SynchronizationContext.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
         }
 
         // --- State of the editor ---
@@ -56,9 +57,10 @@ namespace TombEditor
 
         public class LevelChangedEvent : IEditorPropertyChangedEvent
         {
-            public Level Previous { get; set; }
-            public Level Current { get; set; }
+            public Level Previous { get; internal set; }
+            public Level Current { get; internal set; }
         }
+
         private Level _level;
         public Level Level
         {
@@ -69,46 +71,52 @@ namespace TombEditor
                     return;
 
                 // Validate level
-                int roomCount = value.Rooms.Count((room) => room != null);
+                int roomCount = value.Rooms.Count(room => room != null);
                 if (roomCount <= 0)
-                    value.Rooms[0] = new Room(value, Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room 0");
+                    value.Rooms[0] = new Room(value, Room.MaxRoomDimensions, Room.MaxRoomDimensions,
+                                              _level.Settings.DefaultAmbientLight, "Room 0");
 
                 // Reset state that was related to the old level
+                _levelSettingsWatcher?.StopReloading();
                 SelectedObject = null;
                 ChosenItem = null;
                 SelectedSectors = SectorSelection.None;
-                Action = EditorAction.None;
+                Action = null;
+                HasUnsavedChanges = false;
                 SelectedTexture = TextureArea.None;
 
                 // Delete old level after the new level is set
-                using (var previousLevel = Level)
-                {
-                    _level = value;
-                    EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
-                }
+                var previousLevel = Level;
+                _level = value;
+                EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
                 RoomListChange();
-                SelectedRoom = _level.Rooms.First((room) => room != null);
+                SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
                 ResetCamera();
-                LoadedWadsChange(value.Wad);
-                LoadedTexturesChange();
-                LoadedImportedGeometriesChange();
+                LoadedWadsChange(false);
+                LoadedTexturesChange(null, false);
+                LoadedImportedGeometriesChange(false);
                 LevelFileNameChange();
-                HasUnsavedChanges = false;
+
+                // Start watching for file changes
+                _levelSettingsWatcher?.WatchLevelSettings(_level.Settings);
+                _levelSettingsWatcher?.RestartReloading();
             }
         }
 
         public class ActionChangedEvent : IEditorPropertyChangedEvent
         {
-            public EditorAction Previous { get; set; }
-            public EditorAction Current { get; set; }
+            public IEditorAction Previous { get; internal set; }
+            public IEditorAction Current { get; internal set; }
         }
-        private EditorAction _action;
-        public EditorAction Action
+        private IEditorAction _action;
+        public IEditorAction Action
         {
             get { return _action; }
             set
             {
                 if (value == _action)
+                    return;
+                if (value != null && _action != null && value.Equals(_action))
                     return;
                 var previous = _action;
                 _action = value;
@@ -118,8 +126,8 @@ namespace TombEditor
 
         public class ChosenItemChangedEvent : IEditorPropertyChangedEvent
         {
-            public ItemType? Previous { get; set; }
-            public ItemType? Current { get; set; }
+            public ItemType? Previous { get; internal set; }
+            public ItemType? Current { get; internal set; }
         }
         private ItemType? _chosenItem;
         public ItemType? ChosenItem
@@ -137,8 +145,8 @@ namespace TombEditor
 
         public class ModeChangedEvent : IEditorPropertyChangedEvent
         {
-            public EditorMode Previous { get; set; }
-            public EditorMode Current { get; set; }
+            public EditorMode Previous { get; internal set; }
+            public EditorMode Current { get; internal set; }
         }
         private EditorMode _mode = EditorMode.Geometry;
         public EditorMode Mode
@@ -156,8 +164,8 @@ namespace TombEditor
 
         public class ToolChangedEvent : IEditorPropertyChangedEvent
         {
-            public EditorTool Previous { get; set; }
-            public EditorTool Current { get; set; }
+            public EditorTool Previous { get; internal set; }
+            public EditorTool Current { get; internal set; }
         }
         private EditorTool _tool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true };
         public EditorTool Tool
@@ -173,25 +181,54 @@ namespace TombEditor
             }
         }
 
-        public class SelectedRoomChangedEvent : IEditorPropertyChangedEvent
+        public class SelectedRoomsChangedEvent : IEditorPropertyChangedEvent
         {
-            public Room Previous { get; set; }
-            public Room Current { get; set; }
+            public IReadOnlyList<Room> Previous { get; internal set; }
+            public IReadOnlyList<Room> Current { get; internal set; }
         }
-        private Room _selectedRoom;
-        public Room SelectedRoom
+        private Room[] _selectedRooms;
+        public IReadOnlyList<Room> SelectedRooms
         {
-            get { return _selectedRoom; }
+            get { return _selectedRooms; }
             set
             {
-                if (value == _selectedRoom)
+                if (_selectedRooms != null && _selectedRooms.SequenceEqual(value))
                     return;
-                if (value == null)
-                    throw new ArgumentNullException();
-                SelectedSectors = SectorSelection.None;
-                var previous = _selectedRoom;
-                _selectedRoom = value;
-                RaiseEvent(new SelectedRoomChangedEvent { Previous = previous, Current = value });
+                if (value.Count < 0)
+                    throw new ArgumentException("The selected room list must contain at least 1 room.");
+                if (value.Any(room => room == null))
+                    throw new ArgumentNullException(nameof(value), "The selected room list may not contain null.");
+                var roomSet = new HashSet<Room>(new Room[] { null });
+                if (value.Any(room => !roomSet.Add(room)))
+                    throw new ArgumentNullException(nameof(value), "The selected room list may not contain duplicates.");
+                var previous = _selectedRooms;
+                _selectedRooms = value.ToArray();
+                if (previous == null || previous[0] != _selectedRooms[0])
+                    RaiseEvent(new SelectedRoomChangedEvent(previous, value));
+                else
+                    RaiseEvent(new SelectedRoomsChangedEvent { Previous = previous, Current = value });
+            }
+        }
+        public bool SelectedRoomsContains(Room room) => Array.IndexOf(_selectedRooms, room) != -1;
+
+        public class SelectedRoomChangedEvent : SelectedRoomsChangedEvent
+        {
+            public new Room Previous => base.Previous[0];
+            public new Room Current => base.Current[0];
+            internal SelectedRoomChangedEvent(IReadOnlyList<Room> previous, IReadOnlyList<Room> current)
+            {
+                base.Current = current;
+                base.Previous = previous;
+            }
+        }
+        public Room SelectedRoom
+        {
+            get { return _selectedRooms[0]; }
+            set
+            {
+                if (value == _selectedRooms[0])
+                    return;
+                SelectedRooms = new[] { value };
             }
         }
 
@@ -202,13 +239,13 @@ namespace TombEditor
             var roomEvent = eventObj as IEditorRoomChangedEvent;
             if (roomEvent == null)
                 return true;
-            return (SelectedRoom != null) && (roomEvent.Room == SelectedRoom);
+            return SelectedRoom != null && roomEvent.Room == SelectedRoom;
         }
 
         public class SelectedObjectChangedEvent : IEditorPropertyChangedEvent
         {
-            public ObjectInstance Previous { get; set; }
-            public ObjectInstance Current { get; set; }
+            public ObjectInstance Previous { get; internal set; }
+            public ObjectInstance Current { get; internal set; }
         }
         private ObjectInstance _selectedObject;
         public ObjectInstance SelectedObject
@@ -218,6 +255,15 @@ namespace TombEditor
             {
                 if (value == _selectedObject)
                     return;
+
+                // Check that selected object is a valid choice
+                if (value != null)
+                {
+                    if (value.Room == null)
+                        throw new ArgumentException("The object to be selected is not inside a room.");
+                    if (Array.IndexOf(Level.Rooms, value.Room) == -1)
+                        throw new ArgumentException("The object to be selected is not part of the level.");
+                }
                 var previous = _selectedObject;
                 _selectedObject = value;
                 RaiseEvent(new SelectedObjectChangedEvent { Previous = previous, Current = value });
@@ -226,8 +272,8 @@ namespace TombEditor
 
         public class SelectedSectorsChangedEvent : IEditorPropertyChangedEvent
         {
-            public SectorSelection Previous { get; set; }
-            public SectorSelection Current { get; set; }
+            public SectorSelection Previous { get; internal set; }
+            public SectorSelection Current { get; internal set; }
         }
         private SectorSelection _selectedSectors = SectorSelection.None;
         public SectorSelection SelectedSectors
@@ -245,8 +291,8 @@ namespace TombEditor
 
         public class SelectedTexturesChangedEvent : IEditorPropertyChangedEvent
         {
-            public TextureArea Previous { get; set; }
-            public TextureArea Current { get; set; }
+            public TextureArea Previous { get; internal set; }
+            public TextureArea Current { get; internal set; }
         }
         private TextureArea _selectedTexture = TextureArea.None;
         public TextureArea SelectedTexture
@@ -264,28 +310,56 @@ namespace TombEditor
 
         public class ConfigurationChangedEvent : IEditorPropertyChangedEvent
         {
-            public Configuration Previous { get; set; }
-            public Configuration Current { get; set; }
+            public Configuration Previous { get; internal set; }
+            public Configuration Current { get; internal set; }
         }
-        private Configuration _Configuration;
+        private Configuration _configuration;
         public Configuration Configuration
         {
-            get { return _Configuration; }
+            get { return _configuration; }
             set
             {
-                if (value == _Configuration)
+                if (value == _configuration)
                     return;
-                var previous = _Configuration;
-                _Configuration = value;
+                var previous = _configuration;
+                _configuration = value;
                 RaiseEvent(new ConfigurationChangedEvent { Previous = previous, Current = value });
+            }
+        }
+
+        public class BookmarkedObjectChanged : IEditorPropertyChangedEvent
+        {
+            public ObjectInstance Previous { get; internal set; }
+            public ObjectInstance Current { get; internal set; }
+        }
+        private ObjectInstance _bookmarkedObject = null;
+        public ObjectInstance BookmarkedObject
+        {
+            get
+            {
+                // Check that it's still part of the project
+                if (Level == null)
+                    return null;
+                if (!Level.Rooms.Where(room => room != null).SelectMany(room => room.AnyObjects).Contains(_bookmarkedObject))
+                    return null;
+                return _bookmarkedObject;
+            }
+            set
+            {
+                if (value == _bookmarkedObject)
+                    return;
+                var previous = _bookmarkedObject;
+                _bookmarkedObject = value;
+                RaiseEvent(new BookmarkedObjectChanged { Previous = previous, Current = value });
             }
         }
 
         public class HasUnsavedChangesChangedEvent : IEditorPropertyChangedEvent
         {
-            public bool Previous { get; set; }
-            public bool Current { get; set; }
+            public bool Previous { get; internal set; }
+            public bool Current { get; internal set; }
         }
+
         private bool _hasUnsavedChanges;
         public bool HasUnsavedChanges
         {
@@ -301,41 +375,58 @@ namespace TombEditor
         }
 
         // This is invoked if the loaded wads changed for the level.
-        public class LoadedWadsChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges
+        public interface IUpdateLevelSettingsFileWatcher { bool UpdateLevelSettingsFileWatcher { get; set; } }
+        public class LoadedWadsChangedEvent : IEditorEventCausesUnsavedChanges, IUpdateLevelSettingsFileWatcher { public bool UpdateLevelSettingsFileWatcher { get; set; } }
+        public void LoadedWadsChange(bool updateLevelSettingsFileWatcher = true)
         {
-            public TombLib.Wad.Wad2 Current { get; set; }
-        }
-        public void LoadedWadsChange(TombLib.Wad.Wad2 wad)
-        {
-            RaiseEvent(new LoadedWadsChangedEvent { Current = wad });
+            RaiseEvent(new LoadedWadsChangedEvent { UpdateLevelSettingsFileWatcher = updateLevelSettingsFileWatcher });
         }
 
         // This is invoked if the loaded textures changed for the level.
-        public class LoadedTexturesChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
-        public void LoadedTexturesChange()
+        public class LoadedTexturesChangedEvent : IEditorEventCausesUnsavedChanges, IUpdateLevelSettingsFileWatcher { public LevelTexture NewToSelect { get; set; } = null; public bool UpdateLevelSettingsFileWatcher { get; set; } }
+        public void LoadedTexturesChange(LevelTexture newToSelect = null, bool updateLevelSettingsFileWatcher = true)
         {
-            RaiseEvent(new LoadedTexturesChangedEvent { });
+            RaiseEvent(new LoadedTexturesChangedEvent { NewToSelect = newToSelect, UpdateLevelSettingsFileWatcher = updateLevelSettingsFileWatcher });
         }
 
         // This is invoked if the loaded imported geometries changed for the level.
-        public class LoadedImportedGeometriesChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
-        public void LoadedImportedGeometriesChange()
+        public class LoadedImportedGeometriesChangedEvent : IEditorEventCausesUnsavedChanges, IUpdateLevelSettingsFileWatcher { public bool UpdateLevelSettingsFileWatcher { get; set; } }
+        public void LoadedImportedGeometriesChange(bool updateLevelSettingsFileWatcher = true)
         {
-            RaiseEvent(new LoadedImportedGeometriesChangedEvent { });
+            RaiseEvent(new LoadedImportedGeometriesChangedEvent { UpdateLevelSettingsFileWatcher = updateLevelSettingsFileWatcher });
         }
 
         // This is invoked if the animated texture sets changed for the level.
-        public class AnimatedTexturesChanged : IEditorEvent { }
+        public class AnimatedTexturesChanged : IEditorEventCausesUnsavedChanges { }
         public void AnimatedTexturesChange()
         {
-            RaiseEvent(new AnimatedTexturesChanged { });
+            RaiseEvent(new AnimatedTexturesChanged());
+        }
+
+        // This is invoked if the animated texture sets changed for the level.
+        public class TextureSoundsChanged : IEditorEventCausesUnsavedChanges { }
+        public void TextureSoundsChange()
+        {
+            RaiseEvent(new TextureSoundsChanged());
+        }
+
+        // This is invoke after an autosave
+        public class AutosaveEvent : IEditorEvent
+        {
+            public string FileName { get; set; }
+            public Exception Exception { get; set; }
+            public DateTime Time { get; set; }
+        }
+        public void AutoSaveCompleted(Exception exception, string fileName, DateTime time)
+        {
+            RaiseEvent(new AutosaveEvent { Exception = exception, FileName = fileName, Time = time });
         }
 
         // This is invoked when ever the applied textures in a room change.
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomTextureChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
+        public class RoomTextureChangedEvent : IEditorRoomChangedEvent
         {
-            public Room Room { get; set; }
+            public Room Room { get; internal set; }
         }
         public void RoomTextureChange(Room room)
         {
@@ -345,9 +436,9 @@ namespace TombEditor
         // This is invoked when ever the geometry of the room changed. (eg the room is moved, individual sectors are moved up or down, ...)
         // This is not invoked when other the properties of the room change
         // Textures, room properties like reverbration, objects changed, ...
-        public class RoomGeometryChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
+        public class RoomGeometryChangedEvent : IEditorRoomChangedEvent
         {
-            public Room Room { get; set; }
+            public Room Room { get; internal set; }
         }
         public void RoomGeometryChange(Room room)
         {
@@ -358,22 +449,22 @@ namespace TombEditor
         public class LevelFileNameChangedEvent : IEditorEvent { }
         public void LevelFileNameChange()
         {
-            RaiseEvent(new LevelFileNameChangedEvent { });
+            RaiseEvent(new LevelFileNameChangedEvent());
         }
 
         // This is invoked when the amount of rooms is changed. (Rooms have been added or removed)
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomListChangedEvent : IEditorEvent, IEditorEventCausesUnsavedChanges { }
+        public class RoomListChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void RoomListChange()
         {
-            RaiseEvent(new RoomListChangedEvent { });
+            RaiseEvent(new RoomListChangedEvent());
         }
 
         // This is invoked for all changes to room flags, "Reverbration", ...
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
+        public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent
         {
-            public Room Room { get; set; }
+            public Room Room { get; internal set; }
         }
         public void RoomPropertiesChange(Room room)
         {
@@ -384,9 +475,9 @@ namespace TombEditor
 
         // This is invoked for all changes to sectors. (eg setting a trigger, adding a portal, setting a sector to monkey, ...)
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent, IEditorEventCausesUnsavedChanges
+        public class RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent
         {
-            public Room Room { get; set; }
+            public Room Room { get; internal set; }
         }
         public void RoomSectorPropertiesChange(Room room)
         {
@@ -395,13 +486,13 @@ namespace TombEditor
             RaiseEvent(new RoomSectorPropertiesChangedEvent { Room = room });
         }
 
-        // This is invoked for all changes to objects. (eg changing a light, changing a movable, moving a static, ...)
+        // This is invoked for all changes to objects. (eg changing a light, changing a moveable, moving a static, ...)
         // "null" can be passed, if it is not determinable what object changed.
-        public class ObjectChangedEvent : IEditorObjectChangedEvent, IEditorEventCausesUnsavedChanges
+        public class ObjectChangedEvent : IEditorObjectChangedEvent
         {
-            public Room Room { get; set; }
-            public ObjectInstance Object { get; set; }
-            public ObjectChangeType ChangeType { get; set; }
+            public Room Room { get; internal set; }
+            public ObjectInstance Object { get; internal set; }
+            public ObjectChangeType ChangeType { get; internal set; }
         }
         public void ObjectChange(ObjectInstance @object, ObjectChangeType changeType)
         {
@@ -417,9 +508,9 @@ namespace TombEditor
         // Move the camera to the center of a specific sector.
         public class MoveCameraToSectorEvent : IEditorCameraEvent
         {
-            public DrawingPoint Sector { get; set; }
+            public VectorInt2 Sector { get; set; }
         }
-        public void MoveCameraToSector(DrawingPoint sector)
+        public void MoveCameraToSector(VectorInt2 sector)
         {
             RaiseEvent(new MoveCameraToSectorEvent { Sector = sector });
         }
@@ -428,13 +519,13 @@ namespace TombEditor
         public class ResetCameraEvent : IEditorCameraEvent { }
         public void ResetCamera()
         {
-            RaiseEvent(new ResetCameraEvent { });
+            RaiseEvent(new ResetCameraEvent());
         }
 
         // Select a texture and center the view
         public class SelectTextureAndCenterViewEvent : IEditorEvent
         {
-            public TextureArea Texture { get; set; }
+            public TextureArea Texture { get; internal set; }
         }
         public void SelectTextureAndCenterView(TextureArea texture)
         {
@@ -442,12 +533,12 @@ namespace TombEditor
         }
 
         // Change sector highlights
-        public HighlightManager HighlightManager { get; private set; }
+        public SectorColoringManager SectorColoringManager { get; private set; }
 
         // Notify all components that values of the configuration have changed
         public void ConfigurationChange()
         {
-            RaiseEvent(new ConfigurationChangedEvent { Previous = _Configuration, Current = _Configuration });
+            RaiseEvent(new ConfigurationChangedEvent { Previous = _configuration, Current = _configuration });
         }
 
         // Select a room and center the camera
@@ -455,9 +546,26 @@ namespace TombEditor
         {
             if (SelectedRoom == newRoom)
                 return;
-
+            SelectedSectors = SectorSelection.None;
             SelectedRoom = newRoom;
             ResetCamera();
+        }
+
+        // Select rooms
+        public void SelectRooms(IEnumerable<Room> newRooms)
+        {
+            if (newRooms.FirstOrDefault() != null)
+                SelectedRooms = newRooms.ToList();
+        }
+
+        // Select rooms and center the camera
+        public void SelectRoomsAndResetCamera(IEnumerable<Room> newRooms)
+        {
+            Room oldRoom = SelectedRoom;
+            SelectRooms(newRooms);
+            Room newRoom = SelectedRoom;
+            if (oldRoom != newRoom)
+                ResetCamera();
         }
 
         // Show an object by going to the room it, selecting it and centering the camera appropriately.
@@ -472,46 +580,51 @@ namespace TombEditor
         // All required update methods will be invoked automatically.
         public void UpdateLevelSettings(LevelSettings newSettings)
         {
-            if ((_level == null) || newSettings == null)
+            if (_level == null || newSettings == null)
                 return;
 
             // Determine what will change when the new settings are applied
             // This has to be done now, because the old state will be lost after the new settings are applied
             bool importedGeometryChanged = !newSettings.ImportedGeometries.SequenceEqual(_level.Settings.ImportedGeometries);
             bool texturesChanged = !newSettings.Textures.SequenceEqual(_level.Settings.Textures);
-            bool wadsChanged = newSettings.MakeAbsolute(newSettings.WadFilePath) != _level.Settings.MakeAbsolute(_level.Settings.WadFilePath);
+            bool wadsChanged = !newSettings.Wads.SequenceEqual(_level.Settings.Wads);
+            bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
-            bool animatedTexturesChanged = newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
 
             // Update the current settings
-            _level.ApplyNewLevelSettings(newSettings, (instance) => ObjectChange(instance, ObjectChangeType.Change));
+            _level.ApplyNewLevelSettings(newSettings, instance => ObjectChange(instance, ObjectChangeType.Change));
 
             // Update state
             if (importedGeometryChanged)
-                LoadedImportedGeometriesChange();
+                LoadedImportedGeometriesChange(false);
 
             if (texturesChanged)
-                LoadedTexturesChange();
+                LoadedTexturesChange(null, false);
 
             if (wadsChanged)
-                LoadedWadsChange(_level.Wad);
+                LoadedWadsChange(false);
+
+            if (animatedTexturesChanged)
+                AnimatedTexturesChange();
 
             if (levelFilenameChanged)
                 LevelFileNameChange();
 
-            if (animatedTexturesChanged)
-                AnimatedTexturesChange();
+            // Update file watchers
+            if (importedGeometryChanged || texturesChanged || wadsChanged)
+                _levelSettingsWatcher?.WatchLevelSettings(_level.Settings);
         }
 
         // Configuration
-        FileSystemWatcher configurationWatcher = null;
-        bool configurationIsLoadedFromFile = false;
+        private LevelSettingsWatcher _levelSettingsWatcher { get; set; }
+        FileSystemWatcher configurationWatcher;
+        bool configurationIsLoadedFromFile;
         private void ConfigurationWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             if (Path.GetFullPath(e.FullPath) == Path.GetFullPath(Configuration.FilePath))
             {
                 Configuration configuration = Configuration;
-                if (!Utils.RetryFor(500, () => configuration = Configuration.Load(Configuration.FilePath)))
+                if (!FileSystemUtils.RetryFor(500, () => configuration = Configuration.Load(Configuration.FilePath)))
                     logger.Warn("Unable to load configuration from '" + Path.GetFullPath(Configuration.FilePath) + "' after it changed.");
 
                 // Update configuration
@@ -553,41 +666,175 @@ namespace TombEditor
                 }
                 if (!configurationIsLoadedFromFile)
                     current?.SaveTry();
+                if (previous == null || current.AutoSave_TimeInSeconds != previous.AutoSave_TimeInSeconds)
+                    _autoSavingTimer.Interval = current.AutoSave_TimeInSeconds * 1000;
+                if (previous == null || current.AutoSave_Enable != previous.AutoSave_Enable)
+                    _autoSavingTimer.Enabled = current.AutoSave_Enable && HasUnsavedChanges;
+                if (current.Editor_ReloadFilesAutomaticallyWhenChanged != (_levelSettingsWatcher != null))
+                    if (current.Editor_ReloadFilesAutomaticallyWhenChanged)
+                    {
+                        _levelSettingsWatcher = new LevelSettingsWatcher(
+                            (sender, e) => LoadedTexturesChange(null, false),
+                            (sender, e) => LoadedWadsChange(false),
+                            (sender, e) => LoadedImportedGeometriesChange(true),
+                            (sender, e) => LoadedImportedGeometriesChange(false),
+                            SynchronizationContext);
+                    }
+                    else
+                    {
+                        _levelSettingsWatcher?.Dispose();
+                        _levelSettingsWatcher = null;
+                    }
+            }
+
+            // Update room selection so that no deleted rooms are selected
+            if (obj is RoomListChangedEvent)
+            {
+                List<Room> newSelection = SelectedRooms.Intersect(_level.Rooms.Where(room => room != null)).ToList();
+                if (newSelection.FirstOrDefault() == null)
+                    SelectRoomAndResetCamera(_level.Rooms.Where(room => room != null).First());
+                else if (newSelection.Contains(SelectedRoom))
+                    SelectRooms(newSelection);
+                else
+                    SelectRoomsAndResetCamera(newSelection);
+
+                if (SelectedObject != null && !newSelection.Contains(SelectedObject.Room))
+                    SelectedObject = null;
             }
 
             // Update unsaved changes state
             if (obj is IEditorEventCausesUnsavedChanges)
-            {
-                HasUnsavedChanges = true;
-            }
+                _autoSavingTimer.Enabled = _configuration.AutoSave_Enable && HasUnsavedChanges;
 
             // Make sure an object that was removed isn't selected
             if ((obj as IEditorObjectChangedEvent)?.ChangeType == ObjectChangeType.Remove)
             {
-                SelectedObject = null;
+                if (((IEditorObjectChangedEvent)obj).Object == SelectedObject)
+                    SelectedObject = null;
             }
+
+            // Update level settings watcher
+            if (obj is IUpdateLevelSettingsFileWatcher && ((IUpdateLevelSettingsFileWatcher)obj).UpdateLevelSettingsFileWatcher)
+                _levelSettingsWatcher.WatchLevelSettings(_level.Settings);
+
+            // Update bookmarks
+            if (obj is LevelChangedEvent ||
+                (obj is ObjectChangedEvent &&
+                    ((ObjectChangedEvent)obj).ChangeType == ObjectChangeType.Remove) &&
+                    ((ObjectChangedEvent)obj).Object == _bookmarkedObject)
+            {
+                BookmarkedObject = null;
+            }
+        }
+
+        public class LevelCompilationCompletedEvent : IEditorEvent
+        {
+            public string InfoString { get; set; }
+        }
+
+        // Auto saving
+        private readonly System.Windows.Forms.Timer _autoSavingTimer = new System.Windows.Forms.Timer();
+        private volatile bool _currentlyAutoSaving;
+        private void AutoSave()
+        {
+            Level level = Level; // Copy the member variables to local variables so that the we will have slightly higher chance to succeed in the parallel thread.
+            Configuration configuration = Configuration;
+            if (!configuration.AutoSave_Enable)
+                return;
+            if (!HasUnsavedChanges || level == null)
+                return;
+
+            // Start a new thread
+            // This may be a little bit unsafe and produce a corrupt file but let's hope for the best :/
+            var threadAutosave = new Thread(() =>
+            {
+                if (_currentlyAutoSaving)
+                    return;
+                try
+                {
+                    _currentlyAutoSaving = true;
+
+                    // Figure out data folder
+                    string path;
+                    string fileNameBase;
+                    if (string.IsNullOrEmpty(level.Settings.LevelFilePath))
+                    {
+                        path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                        fileNameBase = "Unnamed";
+                    }
+                    else
+                    {
+                        path = Path.GetDirectoryName(level.Settings.LevelFilePath);
+                        fileNameBase = Path.GetFileNameWithoutExtension(level.Settings.LevelFilePath);
+                    }
+
+                    // Create the new filename
+                    DateTime Now = DateTime.Now;
+                    string fileName;
+                    if (configuration.AutoSave_NamePutDateFirst)
+                        fileName = Now.ToString(configuration.AutoSave_DateTimeFormat, System.Globalization.CultureInfo.CurrentCulture) + configuration.AutoSave_NameSeparator + fileNameBase;
+                    else
+                        fileName = fileNameBase + configuration.AutoSave_NameSeparator + Now.ToString(configuration.AutoSave_DateTimeFormat, System.Globalization.CultureInfo.CurrentCulture);
+                    fileName = Path.Combine(path, fileName + ".prj2");
+
+                    // Save the level
+                    Prj2Writer.SaveToPrj2(fileName, level);
+
+                    // Consider cleaning up directory
+                    if (configuration.AutoSave_CleanupEnable)
+                    {
+                        // Get all compatible projects
+                        var directory = new DirectoryInfo(path);
+                        var filesOrdered = directory.EnumerateFiles(configuration.AutoSave_NamePutDateFirst ? "*" + configuration.AutoSave_NameSeparator + fileNameBase + ".prj2" : fileNameBase + configuration.AutoSave_NameSeparator + "*.prj2")
+                                                    .OrderBy(d => d.Name)
+                                                    .Select(d => d.Name)
+                                                    .ToList();
+
+                        // Clean a bit the directory
+                        int numFilesToDelete = filesOrdered.Count - configuration.AutoSave_CleanupMaxAutoSaves;
+                        for (int i = 0; i < numFilesToDelete; i++)
+                            File.Delete(Path.Combine(path, filesOrdered[i]));
+                    }
+
+                    AutoSaveCompleted(null, fileName, Now);
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "Auto save failed!");
+                    AutoSaveCompleted(exc, "", DateTime.Now);
+                }
+                finally
+                {
+                    _currentlyAutoSaving = false;
+                }
+            });
+            threadAutosave.Start();
+        }
+
+        // Construction
+        public SynchronizationContext SynchronizationContext { get; }
+        public RenderingDevice RenderingDevice = TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device;
+
+        public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
+        {
+            if (synchronizationContext == null)
+                throw new ArgumentNullException(nameof(synchronizationContext));
+            SynchronizationContext = synchronizationContext;
+            Configuration = configuration;
+            Level = level;
+            SectorColoringManager = new SectorColoringManager(this);
+            _autoSavingTimer.Tick += (sender, e) => AutoSave();
+
+            EditorEventRaised += Editor_EditorEventRaised;
+            Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
         }
 
         public void Dispose()
         {
             configurationWatcher?.Dispose();
-            HighlightManager?.Dispose();
-            Level?.Dispose();
-        }
-
-        // Construction
-        public SynchronizationContext SynchronizationContext { get; }
-        public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
-        {
-            if (synchronizationContext == null)
-                throw new ArgumentNullException("synchronizationContext");
-            SynchronizationContext = synchronizationContext;
-            Configuration = configuration;
-            Level = level;
-            HighlightManager = new HighlightManager(this);
-
-            EditorEventRaised += Editor_EditorEventRaised;
-            Editor_EditorEventRaised(new ConfigurationChangedEvent { Current = configuration, Previous = null });
+            SectorColoringManager?.Dispose();
+            _autoSavingTimer?.Dispose();
+            _levelSettingsWatcher?.Dispose();
         }
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration)

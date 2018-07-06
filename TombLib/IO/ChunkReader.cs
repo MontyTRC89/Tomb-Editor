@@ -1,21 +1,18 @@
 ﻿using NLog;
-using SharpDX;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 
 namespace TombLib.IO
 {
-
     public class ChunkReader : IDisposable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private BinaryReaderEx _reader;
+        private readonly BinaryReaderEx _reader;
 
         public ChunkReader(byte[] expectedMagicNumber, Stream stream)
         {
@@ -189,6 +186,11 @@ namespace TombLib.IO
         public Vector4 ReadChunkVector4(long length)
         {
             return _reader.ReadVector4();
+        }
+
+        public Matrix4x4 ReadChunkMatrix4x4(long length)
+        {
+            return _reader.ReadMatrix();
         }
     }
 }

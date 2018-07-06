@@ -1,108 +1,176 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
+using TombLib.Utils;
 
 namespace TombLib.Wad.Catalog
 {
     public class TrCatalog
     {
-        internal static Dictionary<TombRaiderVersion, TrCatalogGame> Games { get; private set; } = new Dictionary<TombRaiderVersion, TrCatalogGame>();
-
-        public static string GetMoveableName(TombRaiderVersion version, uint id)
+        public struct OriginalNameInfo
         {
-            if (!Games.ContainsKey(version)) return "Unknown #" + id;
-            if (!Games[version].Moveables.ContainsKey((int)id)) return "Unknown #" + id;
-            return Games[version].Moveables[(int)id].Name;
+            public bool IsStatic { get; set; }
+            public uint Id { get; set; }
         }
 
-        public static string GetStaticName(TombRaiderVersion version, uint id)
+        private struct Item
         {
-            if (!Games.ContainsKey(version)) return "Unknown #" + id;
-            if (!Games[version].StaticMeshes.ContainsKey((int)id)) return "Unknown #" + id;
-            return Games[version].StaticMeshes[(int)id].Name;
+            public string Name { get; set; }
         }
 
-        public static string GetSoundName(TombRaiderVersion version, uint id)
+        private struct ItemSound
         {
-            if (!Games.ContainsKey(version)) return "Unknown #" + id;
-            if (!Games[version].Sounds.ContainsKey((int)id)) return "Unknown #" + id;
-            return Games[version].Sounds[(int)id].Name;
+            public string Name { get; set; }
+            public bool FixedByDefault { get; set; }
         }
 
-        public static string GetSpriteName(TombRaiderVersion version, uint id)
+        private class Game
         {
-            if (!Games.ContainsKey(version)) return "Unknown #" + id;
-            if (!Games[version].Sprites.ContainsKey((int)id)) return "Unknown #" + id;
-            return Games[version].Sprites[(int)id].Name;
+            internal WadGameVersion Version { get; private set; }
+            internal SortedList<uint, Item> Moveables { get; private set; } = new SortedList<uint, Item>();
+            internal SortedList<uint, Item> SpriteSequences { get; private set; } = new SortedList<uint, Item>();
+            internal SortedList<uint, Item> Statics { get; private set; } = new SortedList<uint, Item>();
+            internal SortedList<uint, ItemSound> Sounds { get; private set; } = new SortedList<uint, ItemSound>();
+            internal SortedList<string, OriginalNameInfo> OriginalNames { get; private set; } = new SortedList<string, OriginalNameInfo>();
+            //internal int SoundMapSize { get; set; }
+
+            public Game(WadGameVersion version)
+            {
+                Version = version;
+            }
         }
 
-        public static bool IsSoundMandatory(TombRaiderVersion version, uint id)
+        private static readonly Dictionary<WadGameVersion, Game> Games = new Dictionary<WadGameVersion, Game>();
+
+        public static int PredictSoundMapSize(WadGameVersion wadVersion, bool IsNg, int numDemoData)
         {
-            if (!Games.ContainsKey(version)) return false;
-            if (!Games[version].StaticMeshes.ContainsKey((int)id)) return false;
-            return Games[version].Sounds[(int)id].Mandatory;
+            switch (wadVersion)
+            {
+                case WadGameVersion.TR1:
+                    return 256;
+                case WadGameVersion.TR2:
+                case WadGameVersion.TR3:
+                    return 370;
+                case WadGameVersion.TR4_TRNG:
+                    return IsNg && numDemoData != 0 ? numDemoData : 370;
+                case WadGameVersion.TR5:
+                    return 450;
+                default:
+                    throw new ArgumentOutOfRangeException("Unknown game version.");
+            }
         }
 
-        public static Dictionary<int, string> GetAllMoveables(TombRaiderVersion version)
+        public static string GetMoveableName(WadGameVersion version, uint id)
         {
-            var result = new Dictionary<int, string>();
-            foreach (var item in Games[version].Moveables)
-                result.Add(item.Key, item.Value.Name);
-            return result;
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+                return "Unknown #" + id;
+            Item entry;
+            if (!game.Moveables.TryGetValue(id, out entry))
+                return "Unknown #" + id;
+            return game.Moveables[id].Name;
         }
 
-        public static Dictionary<int, string> GetAllStaticMeshes(TombRaiderVersion version)
+        public static string GetStaticName(WadGameVersion version, uint id)
         {
-            var result = new Dictionary<int, string>();
-            foreach (var item in Games[version].StaticMeshes)
-                result.Add(item.Key, item.Value.Name);
-            return result;
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+                return "Unknown #" + id;
+            Item entry;
+            if (!game.Statics.TryGetValue(id, out entry))
+                return "Unknown #" + id;
+            return game.Statics[id].Name;
         }
 
-        public static Dictionary<int, string> GetAllSprites(TombRaiderVersion version)
+        public static string GetOriginalSoundName(WadGameVersion version, uint id)
         {
-            var result = new Dictionary<int, string>();
-            foreach (var item in Games[version].Sprites)
-                result.Add(item.Key, item.Value.Name);
-            return result;
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+                return "Unknown #" + id;
+            ItemSound entry;
+            if (!game.Sounds.TryGetValue(id, out entry))
+                return "Unknown #" + id;
+            return game.Sounds[id].Name;
         }
 
-        public static Dictionary<int, string> GetAllSounds(TombRaiderVersion version)
+        public static string GetSpriteSequenceName(WadGameVersion version, uint id)
         {
-            var result = new Dictionary<int, string>();
-            foreach (var item in Games[version].Sounds)
-                result.Add(item.Key, item.Value.Name);
-            return result;
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+                return "Unknown #" + id;
+            Item entry;
+            if (!game.SpriteSequences.TryGetValue(id, out entry))
+                return "Unknown #" + id;
+            return game.SpriteSequences[id].Name;
         }
 
-        public static int GetSoundMapSize(TombRaiderVersion version, bool isNgWad130)
+        public static OriginalNameInfo? GetSlotFromOriginalName(WadGameVersion version, string name)
+        {
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+                return null;
+            OriginalNameInfo entry;
+            if (!game.OriginalNames.TryGetValue(name, out entry))
+                return null;
+            return entry;
+        }
+
+        public static bool IsSoundFixedByDefault(WadGameVersion version, uint id)
+        {
+            Game game;
+            if (!Games.TryGetValue(version, out game))
+                return false;
+            ItemSound entry;
+            if (!game.Sounds.TryGetValue(id, out entry))
+                return false;
+            return game.Sounds[id].FixedByDefault;
+        }
+
+        public static IDictionary<uint, string> GetAllMoveables(WadGameVersion version)
+        {
+            return Games[version].Moveables.DicSelect(item => item.Value.Name);
+        }
+
+        public static IDictionary<uint, string> GetAllStatics(WadGameVersion version)
+        {
+            return Games[version].Statics.DicSelect(item => item.Value.Name);
+        }
+
+        public static IDictionary<uint, string> GetAllSpriteSequences(WadGameVersion version)
+        {
+            return Games[version].SpriteSequences.DicSelect(item => item.Value.Name);
+        }
+
+        public static IDictionary<uint, string> GetAllSounds(WadGameVersion version)
+        {
+            return Games[version].Sounds.DicSelect(item => item.Value.Name);
+        }
+
+        public static IDictionary<uint, string> GetAllFixedByDefaultSounds(WadGameVersion version)
+        {
+            return Games[version].Sounds
+                .DicWhere(sound => sound.Value.FixedByDefault)
+                .DicSelect(item => item.Value.Name);
+        }
+
+        public static string GetVersionString(WadGameVersion version)
         {
             switch (version)
             {
-                case TombRaiderVersion.TR1:
-                    return 256;
-                case TombRaiderVersion.TR2:
-                case TombRaiderVersion.TR3:
-                    return 370;
-                case TombRaiderVersion.TR4:
-                    return (isNgWad130 ? 2048 : 370);
+                case WadGameVersion.TR1:
+                    return "Tomb Raider";
+                case WadGameVersion.TR2:
+                    return "Tomb Raider 2";
+                case WadGameVersion.TR3:
+                    return "Tomb Raider 3";
+                case WadGameVersion.TR4_TRNG:
+                    return "Tomb Raider 4";
+                case WadGameVersion.TR5:
+                    return "Tomb Raider 5";
                 default:
-                    return 450;
+                    throw new ArgumentOutOfRangeException();
             }
-            //return Games[version].SoundMapSize;
-        }
-
-        public static string GetVersionString(TombRaiderVersion version)
-        {
-            if (version == TombRaiderVersion.TR1) return "Tomb Raider I";
-            if (version == TombRaiderVersion.TR2) return "Tomb Raider II";
-            if (version == TombRaiderVersion.TR3) return "Tomb Raider III";
-            if (version == TombRaiderVersion.TR4) return "Tomb Raider The Last Revelation";
-            return "Tomb Raider Chronicles";
         }
 
         public static void LoadCatalog(string fileName)
@@ -113,95 +181,92 @@ namespace TombLib.Wad.Catalog
             XmlNodeList gamesNodes = document.DocumentElement.SelectNodes("/game");
             foreach (XmlNode gameNode in document.DocumentElement.ChildNodes)
             {
-                if (gameNode.Name != "game") continue;
+                if (gameNode.Name != "game")
+                    continue;
 
                 var stringVersion = gameNode.Attributes["id"].Value;
-
-                TombRaiderVersion version;
+                WadGameVersion version;
                 if (stringVersion == "TR1")
-                    version = TombRaiderVersion.TR1;
+                    version = WadGameVersion.TR1;
                 else if (stringVersion == "TR2")
-                    version = TombRaiderVersion.TR2;
+                    version = WadGameVersion.TR2;
                 else if (stringVersion == "TR3")
-                    version = TombRaiderVersion.TR3;
+                    version = WadGameVersion.TR3;
                 else if (stringVersion == "TR4")
-                    version = TombRaiderVersion.TR4;
+                    version = WadGameVersion.TR4_TRNG;
                 else if (stringVersion == "TR5")
-                    version = TombRaiderVersion.TR5;
+                    version = WadGameVersion.TR5;
                 else
                     continue;
 
-                var game = new TrCatalogGame(version);
+                Game game = new Game(version);
 
-                foreach (XmlNode node in gameNode.ChildNodes)
-                {
-                    if (node.Name != "moveables") continue;
-
-                    // Parse moveables
-                    foreach (XmlNode moveableNode in node.ChildNodes)
+                // Parse moveables
+                XmlNode moveables = gameNode.SelectSingleNode("moveables");
+                if (moveables != null)
+                    foreach (XmlNode moveableNode in moveables.ChildNodes)
                     {
-                        if (moveableNode.Name != "moveable") continue;
+                        if (moveableNode.Name != "moveable")
+                            continue;
 
-                        var objectId = Int32.Parse(moveableNode.Attributes["id"].Value);
-                        var objectName = moveableNode.Attributes["name"].Value;
-
-                        var moveable = new TrCatalogItem(objectId, objectName);
-                        game.Moveables.Add(objectId, moveable);
+                        uint id = uint.Parse(moveableNode.Attributes["id"].Value);
+                        string name = moveableNode.Attributes["name"].Value;
+                        game.Moveables.Add(id, new Item { Name = name });
                     }
-                }
 
-                // Add standard static
-                for (var i = 0; i < 100; i++)
-                {
-                    var staticMesh = new TrCatalogItem(i, "Static #" + i);
-                    game.StaticMeshes.Add(i, staticMesh);
-                }
-
-                foreach (XmlNode node in gameNode.ChildNodes)
-                {
-                    if (node.Name != "sounds") continue;
-
-                    // Size of the soundmap
-                    var soundMapSize = 0;
-                    if (version == TombRaiderVersion.TR1) soundMapSize = 256;
-                    else if (version == TombRaiderVersion.TR2) soundMapSize = 370;
-                    else if (version == TombRaiderVersion.TR3) soundMapSize = 370;
-                    else if (version == TombRaiderVersion.TR4) soundMapSize = 370;
-                    else if (version == TombRaiderVersion.TR5) soundMapSize = 450;
-
-                    //game.SoundMapSize = soundMapSize;
-
-                    // Parse sounds
-                    foreach (XmlNode soundNode in node.ChildNodes)
+                // Parse statics
+                XmlNode statics = gameNode.SelectSingleNode("statics");
+                if (statics != null)
+                    foreach (XmlNode staticNode in statics.ChildNodes)
                     {
-                        if (soundNode.Name != "sound") continue;
+                        if (staticNode.Name != "static")
+                            continue;
 
-                        var soundId = Int32.Parse(soundNode.Attributes["id"].Value);
-                        var objectName = soundNode.Attributes["name"].Value;
-                        var mandatory = (soundNode.Attributes["mandatory"] != null ? Boolean.Parse(soundNode.Attributes["mandatory"].Value) : false);
-
-                        var sound = new TrCatalogItemSound(soundId, objectName, mandatory);
-                        game.Sounds.Add(soundId, sound);
+                        uint id = uint.Parse(staticNode.Attributes["id"].Value);
+                        string name = staticNode.Attributes["name"]?.Value ?? "";
+                        game.Statics.Add(id, new Item { Name = name });
                     }
-                }
 
-                foreach (XmlNode node in gameNode.ChildNodes)
-                {
-                    if (node.Name != "sprites") continue;
-
-                    // Parse sounds
-                    foreach (XmlNode spriteNode in node.ChildNodes)
+                // Parse sprite sequences
+                XmlNode sounds = gameNode.SelectSingleNode("sounds");
+                if (sounds != null)
+                    foreach (XmlNode soundNode in sounds.ChildNodes)
                     {
-                        if (spriteNode.Name != "sprite") continue;
+                        if (soundNode.Name != "sound")
+                            continue;
 
-                        var spriteId = Int32.Parse(spriteNode.Attributes["id"].Value);
-                        var objectName = spriteNode.Attributes["name"].Value;
-                        
-                        var sprite = new TrCatalogItem(spriteId, objectName);
-                        game.Sprites.Add(spriteId, sprite);
+                        uint id = uint.Parse(soundNode.Attributes["id"].Value);
+                        string name = soundNode.Attributes["name"]?.Value ?? "";
+                        bool fixedByDefault = bool.Parse(soundNode.Attributes["fixed_by_default"]?.Value ?? "false");
+                        game.Sounds.Add(id, new ItemSound { Name = name, FixedByDefault = fixedByDefault });
                     }
-                }
 
+                // Parse sprite sequences
+                XmlNode spriteSequences = gameNode.SelectSingleNode("sprite_sequences");
+                if (spriteSequences != null)
+                    foreach (XmlNode spriteSequenceNode in spriteSequences.ChildNodes)
+                    {
+                        if (spriteSequenceNode.Name != "sprite_sequence")
+                            continue;
+
+                        uint id = uint.Parse(spriteSequenceNode.Attributes["id"].Value);
+                        string name = spriteSequenceNode.Attributes["name"].Value;
+                        game.SpriteSequences.Add(id, new Item { Name = name });
+                    }
+
+                // Parse original names
+                XmlNode originalNames = gameNode.SelectSingleNode("original_names");
+                if (originalNames != null)
+                    foreach (XmlNode originalNameNode in originalNames.ChildNodes)
+                    {
+                        if (originalNameNode.Name != "org")
+                            continue;
+
+                        bool isStatic = bool.Parse(originalNameNode.Attributes["is_static"].Value);
+                        uint id = uint.Parse(originalNameNode.Attributes["id"].Value);
+                        string name = originalNameNode.Attributes["name"].Value;
+                        game.OriginalNames.Add(name, new OriginalNameInfo { IsStatic = isStatic, Id = id });
+                    }
                 Games.Add(version, game);
             }
         }

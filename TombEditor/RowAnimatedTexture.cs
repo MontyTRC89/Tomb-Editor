@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TombEditor
+﻿namespace TombEditor
 {
     public class RowAnimatedTexture
     {
@@ -14,10 +9,10 @@ namespace TombEditor
 
         public RowAnimatedTexture(short x, short y, short page, int txt)
         {
-            this.X = x;
-            this.Y = y;
-            this.Page = page;
-            this.Texture = txt;
+            X = x;
+            Y = y;
+            Page = page;
+            Texture = txt;
         }
     }
 }

@@ -1,19 +1,21 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TombLib.IO;
 using System.IO;
+using System.Numerics;
 using System.Runtime.InteropServices;
-using TombLib.Wad;
-using SharpDX;
-using TombLib.Graphics;
-using TombLib.Utils;
-using TombLib.Wad.Catalog;
+using TombLib.IO;
 
 namespace TombLib.Wad.Tr4Wad
 {
+    internal enum WadLinkOpcode : ushort
+    {
+        NotUseStack = 0,
+        Push = 1,
+        Pop = 2,
+        Read = 3
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct wad_object_texture
     {
@@ -187,8 +189,8 @@ namespace TombLib.Wad.Tr4Wad
         internal List<int> Links = new List<int>();
         internal List<short> KeyFrames = new List<short>();
         internal List<wad_moveable> Moveables = new List<wad_moveable>();
-        internal List<wad_static_mesh> StaticMeshes = new List<wad_static_mesh>();
-        internal short[] SoundMap = new short[370];
+        internal List<wad_static_mesh> Statics = new List<wad_static_mesh>();
+        internal short[] SoundMap;
         internal List<wad_sound_info> SoundInfo = new List<wad_sound_info>();
         internal List<wad_sprite_sequence> SpriteSequences = new List<wad_sprite_sequence>();
         internal List<wad_sprite_texture> SpriteTextures = new List<wad_sprite_texture>();
@@ -224,7 +226,7 @@ namespace TombLib.Wad.Tr4Wad
                 for (int i = 0; i < numTextures; i++)
                 {
                     wad_object_texture text;
-                    reader.ReadBlock<wad_object_texture>(out text);
+                    reader.ReadBlock(out text);
                     Textures.Add(text);
                 }
 
@@ -461,7 +463,7 @@ namespace TombLib.Wad.Tr4Wad
                     staticMesh.CollisionZ1 = reader.ReadInt16();
                     staticMesh.CollisionZ2 = reader.ReadInt16();
                     staticMesh.Flags = reader.ReadUInt16();
-                    StaticMeshes.Add(staticMesh);
+                    Statics.Add(staticMesh);
                 }
 
                 reader.Close();
@@ -470,7 +472,7 @@ namespace TombLib.Wad.Tr4Wad
 
             // Read sounds
             logger.Info("Reading sound (sfx/sam) files associated with wad.");
-            var soundMapSize = TrCatalog.GetSoundMapSize(TombRaiderVersion.TR4, Version == 130);
+            int soundMapSize = Version == 130 ? 4096 : 370;
             using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
                     while (!readerSounds.EndOfStream)
                         Sounds.Add(readerSounds.ReadLine());
@@ -519,8 +521,8 @@ namespace TombLib.Wad.Tr4Wad
                         Tile = buffer[2],
                         X = buffer[0],
                         Y = buffer[1],
-                        Width = (ushort)(buffer[5]),
-                        Height = (ushort)(buffer[7]),
+                        Width = buffer[5],
+                        Height = buffer[7],
                         LeftSide = buffer[0],
                         TopSide = buffer[1],
                         RightSide = (short)(buffer[0] + buffer[5] + 1),
@@ -552,7 +554,7 @@ namespace TombLib.Wad.Tr4Wad
             using (var reader = new StreamReader(File.OpenRead(BasePath + Path.DirectorySeparatorChar + BaseName + ".was")))
             {
                 while (!reader.EndOfStream)
-                    LegacyNames.Add(reader.ReadLine().Split(':')[0].Replace(" ", ""));
+                    LegacyNames.Add(reader.ReadLine().Split(':')[0].Replace(" ", "").Replace("EXTRA0", "EXTRA"));
             }
         }
 

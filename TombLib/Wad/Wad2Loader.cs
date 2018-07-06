@@ -1,75 +1,115 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
-    partial class Wad2
+    public static class Wad2Loader
     {
-        public static Wad2 LoadFromFile(string filename)
+        public static Wad2 LoadFromFile(string fileName)
         {
-            using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return LoadFromStream(fileStream);
+            Wad2 result;
+            using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                result = LoadFromStream(fileStream);
+            result.FileName = fileName;
+            return result;
         }
 
         public static Wad2 LoadFromStream(Stream stream)
         {
-            using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, stream))
-                return LoadWad2(chunkIO);
+            byte[] magicNumber = new byte[4];
+            stream.Read(magicNumber, 0, 4);
+            stream.Seek(-4, SeekOrigin.Current);
+            if (magicNumber.SequenceEqual(Wad2Chunks.MagicNumberObsolete))
+            {
+                // TODO In the long term it would be good to get rid of this obsolete code.
+                using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumberObsolete, stream))
+                    return LoadWad2(chunkIO, true);
+            }
+            else
+            {
+                using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, stream))
+                    return LoadWad2(chunkIO, false);
+            }
         }
 
-        private static Wad2 LoadWad2(ChunkReader chunkIO)
+        private static Wad2 LoadWad2(ChunkReader chunkIO, bool obsolete)
         {
-            var wad = new Wad2((TombRaiderVersion)LEB128.ReadUInt(chunkIO.Raw));
-            
+            if (obsolete)
+                LEB128.ReadUInt(chunkIO.Raw);
+            var wad = new Wad2();
+
+            Dictionary<long, WadTexture> textures = null;
+            Dictionary<long, WadSample> samples = null;
+            Dictionary<long, WadSoundInfo> soundInfos = null;
+            Dictionary<long, WadSprite> sprites = null;
+
             chunkIO.ReadChunks((id, chunkSize) =>
             {
-                if (LoadTextures(chunkIO, id, wad))
+                if (id == Wad2Chunks.SuggestedGameVersion)
+                {
+                    wad.SuggestedGameVersion = (WadGameVersion)chunkIO.ReadChunkLong(chunkSize);
                     return true;
-                else if (LoadSprites(chunkIO, id, wad))
+                }
+                if (LoadTextures(chunkIO, id, wad, ref textures))
                     return true;
-                else if (LoadMeshes(chunkIO, id, wad))
+                else if (LoadSamples(chunkIO, id, wad, ref samples, obsolete))
                     return true;
-                else if (LoadSamples(chunkIO, id, wad))
+                else if (LoadSoundInfos(chunkIO, id, wad, ref soundInfos, samples))
                     return true;
-                else if (LoadMoveables(chunkIO, id, wad))
+                else if (LoadFixedSoundInfos(chunkIO, id, wad, soundInfos))
                     return true;
-                else if (LoadStatics(chunkIO, id, wad))
+                else if (LoadAdditionalSoundInfos(chunkIO, id, wad, soundInfos, samples))
                     return true;
-                else if (LoadSpriteSequences(chunkIO, id, wad))
+                else if (LoadSprites(chunkIO, id, wad, ref sprites))
                     return true;
-                else if (LoadSounds(chunkIO, id, wad))
+                else if (LoadSpriteSequences(chunkIO, id, wad, sprites))
                     return true;
-
+                else if (LoadMoveables(chunkIO, id, wad, soundInfos, textures))
+                    return true;
+                else if (LoadStatics(chunkIO, id, wad, textures))
+                    return true;
                 return false;
             });
 
+            if (obsolete)
+                foreach (KeyValuePair<long, WadSoundInfo> soundInfo in soundInfos)
+                    if (TrCatalog.IsSoundFixedByDefault(WadGameVersion.TR4_TRNG, checked((uint)soundInfo.Key)))
+                    {
+                        var Id = new WadFixedSoundInfoId(checked((uint)soundInfo.Key));
+                        wad.FixedSoundInfos.Add(Id, new WadFixedSoundInfo(Id) { SoundInfo = soundInfo.Value });
+                    }
             return wad;
         }
 
-        private static bool LoadTextures(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
+        private static bool LoadTextures(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadTexture> outTextures)
         {
             if (idOuter != Wad2Chunks.Textures)
                 return false;
+
+            Dictionary<long, WadTexture> textures = new Dictionary<long,  WadTexture>();
+            long obsoleteIndex = 0; // Move this into each chunk once we got rid of old style *.wad2 files.
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (id != Wad2Chunks.Texture)
                     return false;
 
-                var texture = new WadTexture();
                 var width = LEB128.ReadInt(chunkIO.Raw);
                 var height = LEB128.ReadInt(chunkIO.Raw);
-                byte[] textureData = new byte[1];
-
+                byte[] textureData = null;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
+                    if (id2 == Wad2Chunks.TextureIndex)
+                        obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
                     if (id2 == Wad2Chunks.TextureData)
                         textureData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
                     else
@@ -77,221 +117,435 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                texture.Image = ImageC.FromByteArray(textureData, width, height);
-                texture.UpdateHash();
-
-                wad.Textures.Add(texture.Hash, texture);
-
+                textures.Add(obsoleteIndex++, new WadTexture(ImageC.FromByteArray(textureData, width, height)));
                 return true;
             });
 
+            outTextures = textures;
             return true;
         }
 
-        private static bool LoadSprites(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
+        private static bool LoadSamples(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSample> outSamples, bool obsolete)
         {
-            if (idOuter != Wad2Chunks.Sprites)
+            if (idOuter != Wad2Chunks.Samples)
                 return false;
+
+            var samples = new Dictionary<long, WadSample>();
+            long obsoleteIndex = 0; // Move this into each chunk once we got rid of old style *.wad2 files.
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
-                if (id != Wad2Chunks.Sprite)
+                if (id != Wad2Chunks.Sample)
                     return false;
 
-                var texture = new WadSprite();
-                var width = LEB128.ReadInt(chunkIO.Raw);
-                var height = LEB128.ReadInt(chunkIO.Raw);
-                byte[] textureData = new byte[1];
+                string FilenameObsolete = null;
+                byte[] data = null;
 
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
-                    if (id2 == Wad2Chunks.TextureData)
-                        textureData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
-                    else
-                        return false;
-                    return true;
-                });
-
-                texture.Image = ImageC.FromByteArray(textureData, width, height);
-                texture.UpdateHash();
-
-                wad.SpriteTextures.Add(texture.Hash, texture);
-
-                return true;
-            });
-
-            return true;
-        }
-
-        private static bool LoadSamples(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
-        {
-            if (idOuter != Wad2Chunks.Waves)
-                return false;
-
-            chunkIO.ReadChunks((id, chunkSize) =>
-            {
-                if (id != Wad2Chunks.Wave)
-                    return false;
-
-                string name = "";
-                byte[] data = new byte[1];
-
-                chunkIO.ReadChunks((id2, chunkSize2) =>
-                {
-                    if (id2 == Wad2Chunks.WaveName)
-                        name = chunkIO.ReadChunkString(chunkSize2);
-                    else if (id2 == Wad2Chunks.WaveData)
+                    if (id2 == Wad2Chunks.SampleIndex)
+                        obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
+                    else if (id2 == Wad2Chunks.SampleFilenameObsolete)
+                        FilenameObsolete = chunkIO.ReadChunkString(chunkSize2);
+                    else if (id2 == Wad2Chunks.SampleData)
                         data = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
                     else
                         return false;
                     return true;
                 });
 
-                var sample = new WadSample(name, data);
-                sample.UpdateHash();
+                if (data == null && !string.IsNullOrEmpty(FilenameObsolete))
+                {
+                    string fullPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().FullName), "Sounds\\TR4\\Samples", FilenameObsolete + ".wav");
+                    data = File.ReadAllBytes(fullPath);
+                }
 
-                wad.Samples.Add(sample.Hash, sample);
-
+                samples.Add(obsoleteIndex++, new WadSample(WadSample.ConvertSampleFormat(data,
+                    sampleRate => obsolete ?
+                        new WadSample.ResampleInfo { Resample = false, SampleRate = WadSample.GameSupportedSampleRate } :
+                        new WadSample.ResampleInfo { Resample = true, SampleRate = sampleRate })));
                 return true;
             });
+
+            outSamples = samples;
+            return true;
+        }
+
+        private static bool LoadSoundInfo(ChunkReader chunkIO, Wad2 wad, Dictionary<long, WadSample> samples,
+                                          out WadSoundInfoMetaData soundInfo, out long index)
+        {
+            var tempSoundInfo = new WadSoundInfoMetaData("Unnamed");
+            long tempIndex = 0;
+            chunkIO.ReadChunks((id2, chunkSize2) =>
+            {
+                if (id2 == Wad2Chunks.SoundInfoIndex)
+                    tempIndex = chunkIO.ReadChunkLong(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoVolume)
+                    tempSoundInfo.Volume = chunkIO.ReadChunkFloat(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoRange)
+                    tempSoundInfo.RangeInSectors = chunkIO.ReadChunkFloat(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoPitch)
+                    tempSoundInfo.PitchFactor = chunkIO.ReadChunkFloat(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoChance)
+                    tempSoundInfo.Chance = chunkIO.ReadChunkFloat(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoDisablePanning)
+                    tempSoundInfo.DisablePanning = chunkIO.ReadChunkBool(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoRandomizePitch)
+                    tempSoundInfo.RandomizePitch = chunkIO.ReadChunkBool(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoRandomizeVolume)
+                    tempSoundInfo.RandomizeVolume = chunkIO.ReadChunkBool(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoLoopBehaviour)
+                    tempSoundInfo.LoopBehaviour = (WadSoundLoopBehaviour)(3 & chunkIO.ReadChunkByte(chunkSize2));
+                else if (id2 == Wad2Chunks.SoundInfoName || id2 == Wad2Chunks.SoundInfoNameObsolete)
+                    tempSoundInfo.Name = chunkIO.ReadChunkString(chunkSize2);
+                else if (id2 == Wad2Chunks.SoundInfoSampleIndex)
+                    tempSoundInfo.Samples.Add(samples[chunkIO.ReadChunkInt(chunkSize2)]);
+                else
+                    return false;
+                return true;
+            });
+
+            if (string.IsNullOrWhiteSpace(tempSoundInfo.Name))
+                tempSoundInfo.Name = TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, unchecked((uint)tempIndex));
+
+            index = tempIndex;
+            soundInfo = tempSoundInfo;
 
             return true;
         }
 
-        private static bool LoadMeshes(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
+        private static bool LoadSoundInfos(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSoundInfo> outSoundInfos, Dictionary<long, WadSample> samples)
         {
-            if (idOuter != Wad2Chunks.Meshes)
+            if (idOuter != Wad2Chunks.SoundInfos)
                 return false;
 
+            var soundInfos = new Dictionary<long, WadSoundInfo>();
             chunkIO.ReadChunks((id, chunkSize) =>
             {
-                if (id != Wad2Chunks.Mesh)
+                if (id != Wad2Chunks.SoundInfo)
                     return false;
 
-                var mesh = new WadMesh();
+                WadSoundInfoMetaData soundInfo;
+                long index;
+                LoadSoundInfo(chunkIO, wad, samples, out soundInfo, out index);
+                soundInfos.Add(index, new WadSoundInfo(soundInfo));
 
+                return true;
+            });
+
+            outSoundInfos = soundInfos;
+            return true;
+        }
+
+        private static bool LoadFixedSoundInfos(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, Dictionary<long, WadSoundInfo> soundInfos)
+        {
+            if (idOuter != Wad2Chunks.FixedSoundInfos)
+                return false;
+
+            var fixedSoundInfos = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
+            chunkIO.ReadChunks((id, chunkSize) =>
+            {
+                if (id != Wad2Chunks.FixedSoundInfo)
+                    return false;
+                int soundId = -1;
+                int SoundInfoId = -1;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
-                    if (id2 == Wad2Chunks.Sphere)
-                    {
-                        // Read bounding sphere
-                        float radius = 0;
-                        Vector3 center = Vector3.Zero;
-                        chunkIO.ReadChunks((id3, chunkSize3) =>
-                        {
-                            if (id3 == Wad2Chunks.SphereCentre)
-                                center = chunkIO.ReadChunkVector3(chunkSize3);
-                            else if (id3 == Wad2Chunks.SphereRadius)
-                                radius = chunkIO.ReadChunkFloat(chunkSize3);
-                            else
-                                return false;
-                            return true;
-                        });
-                        mesh.BoundingSphere = new BoundingSphere(center, radius);
-                    }
-                    else if (id2 == Wad2Chunks.BoundingBox)
-                    {
-                        // Read bounding box
-                        Vector3 min = Vector3.Zero;
-                        Vector3 max = Vector3.Zero;
-                        chunkIO.ReadChunks((id3, chunkSize3) =>
-                        {
-                            if (id3 == Wad2Chunks.BoundingBoxMin)
-                                min = chunkIO.ReadChunkVector3(chunkSize3);
-                            else if (id3 == Wad2Chunks.BoundingBoxMax)
-                                max = chunkIO.ReadChunkVector3(chunkSize3);
-                            else
-                                return false;
-                            return true;
-                        });
-                        mesh.BoundingBox = new BoundingBox(min, max);
-                    }
-                    else if (id2 == Wad2Chunks.MeshVertexPositions)
-                    {
-                        chunkIO.ReadChunks((id3, chunkSize3) =>
-                        {
-                            if (id3 == Wad2Chunks.MeshVertexPosition)
-                                mesh.VerticesPositions.Add(chunkIO.ReadChunkVector3(chunkSize3));
-                            else
-                                return false;
-                            return true;
-                        });
-                    }
-                    else if (id2 == Wad2Chunks.MeshVertexNormals)
-                    {
-                        chunkIO.ReadChunks((id3, chunkSize3) =>
-                        {
-                            if (id3 == Wad2Chunks.MeshVertexNormal)
-                                mesh.VerticesNormals.Add(chunkIO.ReadChunkVector3(chunkSize3));
-                            else
-                                return false;
-                            return true;
-                        });
-                    }
-                    else if (id2 == Wad2Chunks.MeshVertexShades)
-                    {
-                        chunkIO.ReadChunks((id3, chunkSize3) =>
-                        {
-                            if (id3 == Wad2Chunks.MeshVertexShade)
-                                mesh.VerticesShades.Add(chunkIO.ReadChunkShort(chunkSize3));
-                            else
-                                return false;
-                            return true;
-                        });
-                    }
-                    else if (id2 == Wad2Chunks.MeshPolygons)
-                    {
-                        chunkIO.ReadChunks((id3, chunkSize3) =>
-                        {
-                            if ((id3 == Wad2Chunks.MeshQuad) ||
-                                (id3 == Wad2Chunks.MeshTriangle))
-                            {
-                                var polygon = new WadPolygon(id3 == Wad2Chunks.MeshQuad ? WadPolygonShape.Quad : WadPolygonShape.Triangle);
-                                polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                if (id3 == Wad2Chunks.MeshQuad)
-                                    polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                polygon.ShineStrength = LEB128.ReadByte(chunkIO.Raw);
-
-                                TextureArea textureArea = new TextureArea();
-                                textureArea.Texture = wad.Textures.ElementAt(LEB128.ReadInt(chunkIO.Raw)).Value;
-                                textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
-                                textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
-                                textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
-                                if (id3 == Wad2Chunks.MeshQuad)
-                                    textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
-                                textureArea.BlendMode = (BlendMode)LEB128.ReadLong(chunkIO.Raw);
-                                textureArea.DoubleSided = chunkIO.Raw.ReadBoolean();
-                                polygon.Texture = textureArea;
-
-                                mesh.Polys.Add(polygon);
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                            return true;
-                        });
-                    }
+                    if (id2 == Wad2Chunks.FixedSoundInfoId)
+                        soundId = chunkIO.ReadChunkInt(chunkSize2);
+                    else if (id2 == Wad2Chunks.FixedSoundInfoSoundInfoId)
+                        SoundInfoId = chunkIO.ReadChunkInt(chunkSize2);
                     else
-                    {
                         return false;
-                    }
+                    return true;
+                });
+                if (soundId == -1 || SoundInfoId == -1)
+                    throw new Exception("Invalid fixed sound info.");
+
+                var Id = new WadFixedSoundInfoId(checked((uint)soundId));
+                fixedSoundInfos.Add(Id, new WadFixedSoundInfo(Id) { SoundInfo = soundInfos[SoundInfoId] });
+                return true;
+            });
+
+            wad.FixedSoundInfos = fixedSoundInfos;
+            return true;
+        }
+
+        private static bool LoadAdditionalSoundInfos(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, Dictionary<long, WadSoundInfo> soundInfos, Dictionary<long, WadSample> samples)
+        {
+            if (idOuter == Wad2Chunks.AdditionalSoundInfosObsolete)
+            {
+                chunkIO.ReadChunks((id, chunkSize) =>
+                {
+                    if (id != Wad2Chunks.SoundInfo)
+                        return false;
+
+                    WadSoundInfoMetaData soundInfoMetaData;
+                    long index;
+                    LoadSoundInfo(chunkIO, wad, samples, out soundInfoMetaData, out index);
+                    var wId = new WadAdditionalSoundInfoId("Unnamed " + soundInfoMetaData.Name);
+                    wad.AdditionalSoundInfos.Add(wId, new WadAdditionalSoundInfo(wId) { SoundInfo = new WadSoundInfo(soundInfoMetaData) });
 
                     return true;
                 });
+                return true;
+            }
+            else if (idOuter == Wad2Chunks.AdditionalSoundInfos)
+            {
+                var additionalSoundInfos = new SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo>();
+                chunkIO.ReadChunks((id, chunkSize) =>
+                {
+                    if (id != Wad2Chunks.AdditionalSoundInfo)
+                        return false;
+                    string soundName = null;
+                    int SoundInfoId = -1;
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 == Wad2Chunks.AdditionalSoundInfoName)
+                            soundName = chunkIO.ReadChunkString(chunkSize2);
+                        else if (id2 == Wad2Chunks.AdditionalSoundInfoSoundInfoId)
+                            SoundInfoId = chunkIO.ReadChunkInt(chunkSize2);
+                        else
+                            return false;
+                        return true;
+                    });
 
-                mesh.UpdateHash();
-                wad.Meshes.Add(mesh.Hash, mesh);
+                    var Id = new WadAdditionalSoundInfoId(soundName);
+                    additionalSoundInfos.Add(Id, new WadAdditionalSoundInfo(Id) { SoundInfo = soundInfos[SoundInfoId] });
+                    return true;
+                });
+
+                wad.AdditionalSoundInfos = additionalSoundInfos;
+                return true;
+            }
+            return false;
+        }
+
+        private static WadMesh LoadMesh(ChunkReader chunkIO, long chunkSize, Dictionary<long, WadTexture> textures)
+        {
+            var mesh = new WadMesh();
+            long obsoleteIndex = 0;
+
+            chunkIO.ReadChunks((id2, chunkSize2) =>
+            {
+                if (id2 == Wad2Chunks.MeshIndex)
+                    obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
+                else if (id2 == Wad2Chunks.MeshName)
+                    mesh.Name = chunkIO.ReadChunkString(chunkSize2);
+                else if (id2 == Wad2Chunks.MeshSphere)
+                {
+                    // Read bounding sphere
+                    float radius = 0;
+                    Vector3 center = Vector3.Zero;
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.MeshSphereCenter)
+                            center = chunkIO.ReadChunkVector3(chunkSize3);
+                        else if (id3 == Wad2Chunks.MeshSphereRadius)
+                            radius = chunkIO.ReadChunkFloat(chunkSize3);
+                        else
+                            return false;
+                        return true;
+                    });
+                    mesh.BoundingSphere = new BoundingSphere(center, radius);
+                }
+                else if (id2 == Wad2Chunks.MeshBoundingBox)
+                {
+                    // Read bounding box
+                    Vector3 min = Vector3.Zero;
+                    Vector3 max = Vector3.Zero;
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.MeshBoundingBoxMin)
+                            min = chunkIO.ReadChunkVector3(chunkSize3);
+                        else if (id3 == Wad2Chunks.MeshBoundingBoxMax)
+                            max = chunkIO.ReadChunkVector3(chunkSize3);
+                        else
+                            return false;
+                        return true;
+                    });
+                    mesh.BoundingBox = new BoundingBox(min, max);
+                }
+                else if (id2 == Wad2Chunks.MeshVertexPositions)
+                {
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.MeshVertexPosition)
+                            mesh.VerticesPositions.Add(chunkIO.ReadChunkVector3(chunkSize3));
+                        else
+                            return false;
+                        return true;
+                    });
+                }
+                else if (id2 == Wad2Chunks.MeshVertexNormals)
+                {
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.MeshVertexNormal)
+                            mesh.VerticesNormals.Add(chunkIO.ReadChunkVector3(chunkSize3));
+                        else
+                            return false;
+                        return true;
+                    });
+                }
+                else if (id2 == Wad2Chunks.MeshVertexShades)
+                {
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.MeshVertexShade)
+                            mesh.VerticesShades.Add(chunkIO.ReadChunkShort(chunkSize3));
+                        else
+                            return false;
+                        return true;
+                    });
+                }
+                else if (id2 == Wad2Chunks.MeshPolygons)
+                {
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.MeshQuad ||
+                            id3 == Wad2Chunks.MeshTriangle)
+                        {
+                            var polygon = new WadPolygon();
+                            polygon.Shape = id3 == Wad2Chunks.MeshQuad ? WadPolygonShape.Quad : WadPolygonShape.Triangle;
+                            polygon.Index0 = LEB128.ReadInt(chunkIO.Raw);
+                            polygon.Index1 = LEB128.ReadInt(chunkIO.Raw);
+                            polygon.Index2 = LEB128.ReadInt(chunkIO.Raw);
+                            if (id3 == Wad2Chunks.MeshQuad)
+                                polygon.Index3 = LEB128.ReadInt(chunkIO.Raw);
+                            polygon.ShineStrength = LEB128.ReadByte(chunkIO.Raw);
+
+                            TextureArea textureArea = new TextureArea();
+                            textureArea.Texture = textures[LEB128.ReadInt(chunkIO.Raw)];
+                            textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
+                            textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
+                            textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
+                            if (id3 == Wad2Chunks.MeshQuad)
+                                textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
+                            textureArea.BlendMode = (BlendMode)LEB128.ReadLong(chunkIO.Raw);
+                            textureArea.DoubleSided = chunkIO.Raw.ReadBoolean();
+                            polygon.Texture = textureArea;
+
+                            chunkIO.ReadChunks((id4, chunkSize4) =>
+                            {
+                                return false;
+                            });
+
+                            mesh.Polys.Add(polygon);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                        return true;
+                    });
+                }
+                else
+                {
+                    return false;
+                }
 
                 return true;
             });
 
+            return mesh;
+        }
+
+        private static bool LoadSprites(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, ref Dictionary<long, WadSprite> outSprites)
+        {
+            if (idOuter != Wad2Chunks.Sprites)
+                return false;
+
+            var sprites = new Dictionary<long, WadSprite>();
+            long obsoleteIndex = 0; // Move this into each chunk once we got rid of old style *.wad2 files.
+            chunkIO.ReadChunks((id, chunkSize) =>
+            {
+                if (id != Wad2Chunks.Sprite)
+                    return false;
+
+                int width = LEB128.ReadInt(chunkIO.Raw);
+                int height = LEB128.ReadInt(chunkIO.Raw);
+                byte[] imageData = null;
+
+                chunkIO.ReadChunks((id2, chunkSize2) =>
+                {
+                    if (id2 == Wad2Chunks.SpriteIndex)
+                        obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
+                    else if (id2 == Wad2Chunks.SpriteData)
+                        imageData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
+                    else
+                        return false;
+                    return true;
+                });
+
+                sprites.Add(obsoleteIndex++, new WadSprite { Texture = new WadTexture(ImageC.FromByteArray(imageData, width, height)) });
+                return true;
+            });
+
+            outSprites = sprites;
             return true;
         }
 
-        private static bool LoadMoveables(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
+        private static bool LoadSpriteSequences(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, Dictionary<long, WadSprite> sprites)
+        {
+            if (idOuter != Wad2Chunks.SpriteSequences)
+                return false;
+
+            var spriteSequences = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
+            chunkIO.ReadChunks((id, chunkSize) =>
+            {
+                if (id != Wad2Chunks.SpriteSequence)
+                    return false;
+
+                var s = new WadSpriteSequence(new WadSpriteSequenceId(LEB128.ReadUInt(chunkIO.Raw)));
+                chunkIO.ReadChunks((id2, chunkSize2) =>
+                {
+                    if (id2 == Wad2Chunks.SpriteSequenceSpriteIndex)
+                        s.Sprites.Add(sprites[chunkIO.ReadChunkInt(chunkSize2)]);
+                    else
+                        return false;
+                    return true;
+                });
+
+                spriteSequences.Add(s.Id, s);
+                return true;
+            });
+
+            wad.SpriteSequences = spriteSequences;
+            return true;
+        }
+
+        private static WadBone LoadBone(ChunkReader chunkIO, WadMoveable mov, List<WadMesh> meshes)
+        {
+            WadBone bone = new WadBone();
+
+            chunkIO.ReadChunks((id, chunkSize) =>
+            {
+                if (id == Wad2Chunks.MoveableBoneName)
+                {
+                    bone.Name = chunkIO.ReadChunkString(chunkSize);
+                    //Console.WriteLine("Processing " + bone.Name);
+                }
+                else if (id == Wad2Chunks.MoveableBoneTranslation)
+                    bone.Translation = chunkIO.ReadChunkVector3(chunkSize);
+                else if (id == Wad2Chunks.MoveableBoneMeshPointer)
+                    bone.Mesh = meshes[chunkIO.ReadChunkInt(chunkSize)];
+                else if (id == Wad2Chunks.MoveableBone)
+                    bone.Children.Add(LoadBone(chunkIO, mov, meshes));
+                else
+                    return false;
+                return true;
+            });
+
+            foreach (var childBone in bone.Children)
+                childBone.Parent = bone;
+
+            return bone;
+        }
+
+        private static bool LoadMoveables(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad,
+                                          Dictionary<long, WadSoundInfo> soundInfos, /*Dictionary<long, WadMesh> meshes*/
+                                          Dictionary<long, WadTexture> textures)
         {
             if (idOuter != Wad2Chunks.Moveables)
                 return false;
@@ -301,46 +555,30 @@ namespace TombLib.Wad
                 if (id != Wad2Chunks.Moveable)
                     return false;
 
-                var mov = new WadMoveable(wad);
-
-                mov.ObjectID = LEB128.ReadUInt(chunkIO.Raw);
+                uint objTypeId = LEB128.ReadUInt(chunkIO.Raw);
+                var mov = new WadMoveable(new WadMoveableId(objTypeId));
+                var meshes = new List<WadMesh>();
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
-                    if (id2 == Wad2Chunks.MoveableOffset)
+                    if (id2 == Wad2Chunks.Mesh)
                     {
-                        mov.Offset = chunkIO.ReadChunkVector3(chunkSize2);
+                        var mesh = LoadMesh(chunkIO, chunkSize2, textures);
+                        meshes.Add(mesh);
                     }
-                    else if (id2 == Wad2Chunks.MoveableMesh)
-                    {
-                        mov.Meshes.Add(wad.Meshes.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
-                    }
-                    if (id2 == Wad2Chunks.MoveableName)
-                    {
-                        /*mov.Name =*/ chunkIO.ReadChunkString(chunkSize2);
-                    }
-                    else if (id2 == Wad2Chunks.MoveableLink)
-                    {
-                        var opcode = (WadLinkOpcode)LEB128.ReadUShort(chunkIO.Raw);
-                        Vector3 offset = Vector3.Zero;
-                        chunkIO.ReadChunks((id3, chunkSize3) =>
-                        {
-                            if (id3 == Wad2Chunks.MoveableLinkOffset)
-                                offset = chunkIO.ReadChunkVector3(chunkSize3);
-                            else
-                                return false;
-                            return true;
-                        });
-                        mov.Links.Add(new WadLink(opcode, offset));
-                    }
-                    else if (id2 == Wad2Chunks.Animation)
+                    else if (id2 == Wad2Chunks.MoveableBone)
+                        mov.Skeleton = LoadBone(chunkIO, mov, meshes);
+                    else if (id2 == Wad2Chunks.AnimationObsolete || id2 == Wad2Chunks.Animation)
                     {
                         var animation = new WadAnimation();
 
                         animation.StateId = LEB128.ReadUShort(chunkIO.Raw);
                         animation.RealNumberOfFrames = LEB128.ReadUShort(chunkIO.Raw);
-                        animation.FrameDuration = LEB128.ReadByte(chunkIO.Raw);
-                        animation.FrameStart = LEB128.ReadUShort(chunkIO.Raw);
-                        animation.FrameEnd = LEB128.ReadUShort(chunkIO.Raw);
+                        animation.FrameRate = LEB128.ReadByte(chunkIO.Raw);
+                        if (id2 == Wad2Chunks.AnimationObsolete)
+                        {
+                            LEB128.ReadUShort(chunkIO.Raw);
+                            LEB128.ReadUShort(chunkIO.Raw);
+                        }
                         animation.Speed = LEB128.ReadInt(chunkIO.Raw);
                         animation.Acceleration = LEB128.ReadInt(chunkIO.Raw);
                         animation.LateralSpeed = LEB128.ReadInt(chunkIO.Raw);
@@ -348,11 +586,21 @@ namespace TombLib.Wad
                         animation.NextAnimation = LEB128.ReadUShort(chunkIO.Raw);
                         animation.NextFrame = LEB128.ReadUShort(chunkIO.Raw);
 
+                        bool foundNewVelocitiesChunk = false;                        
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
                             if (id3 == Wad2Chunks.AnimationName)
                             {
                                 animation.Name = chunkIO.ReadChunkString(chunkSize3);
+                            }
+                            else if (id3 == Wad2Chunks.AnimationVelocities)
+                            {
+                                foundNewVelocitiesChunk = true;
+                                var velocities = chunkIO.ReadChunkVector4(chunkSize);
+                                animation.StartVelocity = velocities.X;
+                                animation.EndVelocity = velocities.Y;
+                                animation.StartLateralVelocity = velocities.Z;
+                                animation.EndLateralVelocity = velocities.W;
                             }
                             else if (id3 == Wad2Chunks.KeyFrame)
                             {
@@ -369,9 +617,9 @@ namespace TombLib.Wad
                                         var kfMax = Vector3.Zero;
                                         chunkIO.ReadChunks((id5, chunkSize5) =>
                                         {
-                                            if (id5 == Wad2Chunks.BoundingBoxMin)
+                                            if (id5 == Wad2Chunks.MeshBoundingBoxMin)
                                                 kfMin = chunkIO.ReadChunkVector3(chunkSize5);
-                                            else if (id5 == Wad2Chunks.BoundingBoxMax)
+                                            else if (id5 == Wad2Chunks.MeshBoundingBoxMax)
                                                 kfMax = chunkIO.ReadChunkVector3(chunkSize5);
                                             else
                                                 return false;
@@ -382,10 +630,7 @@ namespace TombLib.Wad
                                     else if (id4 == Wad2Chunks.KeyFrameAngle)
                                     {
                                         var angle = new WadKeyFrameRotation();
-                                        angle.Axis = (WadKeyFrameRotationAxis)LEB128.ReadUShort(chunkIO.Raw);
-                                        angle.X = LEB128.ReadInt(chunkIO.Raw);
-                                        angle.Y = LEB128.ReadInt(chunkIO.Raw);
-                                        angle.Z = LEB128.ReadInt(chunkIO.Raw);
+                                        angle.Rotations = chunkIO.ReadChunkVector3(chunkSize4);
                                         keyframe.Angles.Add(angle);
                                     }
                                     else
@@ -421,10 +666,26 @@ namespace TombLib.Wad
                             }
                             else if (id3 == Wad2Chunks.AnimCommand)
                             {
-                                var command = new WadAnimCommand((WadAnimCommandType)LEB128.ReadUShort(chunkIO.Raw));
-                                command.Parameter1 = LEB128.ReadUShort(chunkIO.Raw);
-                                command.Parameter2 = LEB128.ReadUShort(chunkIO.Raw);
-                                command.Parameter3 = LEB128.ReadUShort(chunkIO.Raw);
+                                var command = new WadAnimCommand();
+                                long offset = chunkIO.Raw.BaseStream.Position;
+                                command.Type = (WadAnimCommandType)LEB128.ReadUShort(chunkIO.Raw);
+                                command.Parameter1 = LEB128.ReadShort(chunkIO.Raw);
+                                command.Parameter2 = LEB128.ReadShort(chunkIO.Raw);
+                                command.Parameter3 = LEB128.ReadShort(chunkIO.Raw);
+
+                                chunkIO.ReadChunks((id4, chunkSize4) =>
+                                {
+                                    if (id4 == Wad2Chunks.AnimCommandSoundInfo)
+                                    {
+                                        var info = chunkIO.ReadChunkInt(chunkSize4);
+                                        if (info != -1)
+                                            command.SoundInfo = soundInfos[info];
+                                        return true;
+                                    }
+                                    else
+                                        return false;
+                                });
+
                                 animation.AnimCommands.Add(command);
                             }
                             else
@@ -433,6 +694,21 @@ namespace TombLib.Wad
                             }
                             return true;
                         });
+
+                        // Legacy code for calculatin start and end velocities
+                        if (!foundNewVelocitiesChunk)
+                        {
+                            float acceleration = animation.Acceleration / 65536.0f;
+                            animation.EndVelocity = animation.Speed / 65536.0f;
+                            animation.StartVelocity = animation.EndVelocity - acceleration * 
+                                                      (animation.KeyFrames.Count + 1) * animation.FrameRate;
+
+                            float lateralAcceleration = animation.LateralAcceleration / 65536.0f;
+                            animation.EndLateralVelocity = animation.LateralSpeed / 65536.0f;
+                            animation.StartLateralVelocity = animation.EndLateralVelocity - lateralAcceleration * 
+                                                             (animation.KeyFrames.Count + 1) * animation.FrameRate;
+                        }
+
                         mov.Animations.Add(animation);
                     }
                     else
@@ -441,14 +717,17 @@ namespace TombLib.Wad
                     }
                     return true;
                 });
-                wad.Moveables.Add(mov.ObjectID, mov);
+
+                wad.Moveables.Add(mov.Id, mov);
+
                 return true;
             });
 
             return true;
         }
 
-        private static bool LoadStatics(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
+        private static bool LoadStatics(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad, /*Dictionary<long, WadMesh> meshes*/
+                                        Dictionary<long, WadTexture> textures)
         {
             if (idOuter != Wad2Chunks.Statics)
                 return false;
@@ -458,10 +737,10 @@ namespace TombLib.Wad
                 if (id != Wad2Chunks.Static)
                     return false;
 
-                var s = new WadStatic(wad);
-                s.ObjectID = LEB128.ReadUInt(chunkIO.Raw);
-                s.Mesh = wad.Meshes.ElementAt(LEB128.ReadInt(chunkIO.Raw)).Value;
+                var s = new WadStatic(new WadStaticId(LEB128.ReadUInt(chunkIO.Raw)));
+                //s.Mesh = meshes[LEB128.ReadInt(chunkIO.Raw)];
                 s.Flags = LEB128.ReadShort(chunkIO.Raw);
+                s.LightingType = (WadMeshLightingType)LEB128.ReadShort(chunkIO.Raw);
 
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
@@ -471,9 +750,9 @@ namespace TombLib.Wad
                         var max = Vector3.Zero;
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            if (id3 == Wad2Chunks.BoundingBoxMin)
+                            if (id3 == Wad2Chunks.MeshBoundingBoxMin)
                                 min = chunkIO.ReadChunkVector3(chunkSize3);
-                            else if (id3 == Wad2Chunks.BoundingBoxMax)
+                            else if (id3 == Wad2Chunks.MeshBoundingBoxMax)
                                 max = chunkIO.ReadChunkVector3(chunkSize3);
                             else
                                 return false;
@@ -487,9 +766,9 @@ namespace TombLib.Wad
                         var max = Vector3.Zero;
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            if (id3 == Wad2Chunks.BoundingBoxMin)
+                            if (id3 == Wad2Chunks.MeshBoundingBoxMin)
                                 min = chunkIO.ReadChunkVector3(chunkSize3);
-                            else if (id3 == Wad2Chunks.BoundingBoxMax)
+                            else if (id3 == Wad2Chunks.MeshBoundingBoxMax)
                                 max = chunkIO.ReadChunkVector3(chunkSize3);
                             else
                                 return false;
@@ -497,9 +776,26 @@ namespace TombLib.Wad
                         });
                         s.CollisionBox = new BoundingBox(min, max);
                     }
-                    else if (id2 == Wad2Chunks.StaticName)
+                    else if (id2 == Wad2Chunks.Mesh)
+                        s.Mesh = LoadMesh(chunkIO, chunkSize2, textures);
+                    else if (id2 == Wad2Chunks.StaticAmbientLight)
+                        s.AmbientLight = chunkIO.ReadChunkShort(chunkSize2);
+                    else if (id2 == Wad2Chunks.StaticLight)
                     {
-                        /*s.Name =*/ chunkIO.ReadChunkString(chunkSize2);
+                        var light = new WadLight();
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Wad2Chunks.StaticLightPosition)
+                                light.Position = chunkIO.ReadChunkVector3(chunkSize3);
+                            else if (id3 == Wad2Chunks.StaticLightRadius)
+                                light.Radius = chunkIO.ReadChunkFloat(chunkSize3);
+                            else if (id3 == Wad2Chunks.StaticLightIntensity)
+                                light.Intensity = chunkIO.ReadChunkFloat(chunkSize3);
+                            else
+                                return false;
+                            return true;
+                        });
+                        s.Lights.Add(light);
                     }
                     else
                     {
@@ -508,90 +804,7 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                wad.Statics.Add(s.ObjectID, s);
-                return true;
-            });
-
-            return true;
-        }
-
-        private static bool LoadSpriteSequences(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
-        {
-            if (idOuter != Wad2Chunks.SpriteSequences)
-                return false;
-
-            chunkIO.ReadChunks((id, chunkSize) =>
-            {
-                if (id != Wad2Chunks.SpriteSequence)
-                    return false;
-
-                var s = new WadSpriteSequence();
-                s.ObjectID = LEB128.ReadUInt(chunkIO.Raw);
-                chunkIO.ReadChunks((id2, chunkSize2) =>
-                {
-                    if (id2 == Wad2Chunks.SpriteSequenceSprite)
-                    {
-                        s.Sprites.Add(wad.SpriteTextures.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
-                    }
-                    else if (id2 == Wad2Chunks.SpriteSequenceName)
-                    {
-                        s.Name = chunkIO.ReadChunkString(chunkSize2);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                    return true;
-                });
-
-                wad.SpriteSequences.Add(s);
-                return true;
-            });
-
-            return true;
-        }
-
-        private static bool LoadSounds(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad)
-        {
-            if (idOuter != Wad2Chunks.Sounds)
-                return false;
-
-            wad.SoundMapSize = LEB128.ReadInt(chunkIO.Raw);
-
-            chunkIO.ReadChunks((id, chunkSize) =>
-            {
-                if (id != Wad2Chunks.Sound)
-                    return false;
-
-                var s = new WadSoundInfo();
-                var soundId = LEB128.ReadUShort(chunkIO.Raw);
-                s.Volume = LEB128.ReadByte(chunkIO.Raw);
-                s.Range = LEB128.ReadByte(chunkIO.Raw);
-                s.Pitch = LEB128.ReadByte(chunkIO.Raw);
-                s.Chance = LEB128.ReadByte(chunkIO.Raw);
-                s.FlagN = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                s.RandomizePitch = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                s.RandomizeGain = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                s.Loop = (WadSoundLoopType)LEB128.ReadUShort(chunkIO.Raw);
-
-                chunkIO.ReadChunks((id2, chunkSize2) =>
-                {
-                    if (id2 == Wad2Chunks.SoundName)
-                    {
-                        s.Name = chunkIO.ReadChunkString(chunkSize2);
-                    }
-                    else if (id2 == Wad2Chunks.SoundSample)
-                    {
-                        s.Samples.Add(wad.Samples.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                    return true;
-                });
-
-                wad.SoundInfo.Add(soundId, s);
+                wad.Statics.Add(s.Id, s);
                 return true;
             });
 

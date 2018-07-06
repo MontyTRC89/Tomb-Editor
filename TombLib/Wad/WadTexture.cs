@@ -1,65 +1,34 @@
-﻿using SharpDX;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using TombLib.Utils;
 using TombLib.Graphics;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class WadTexture : Texture, IRenderableObject, IEquatable<WadTexture>
+    public class WadTexture : Texture, IRenderableObject, IEquatable<WadTexture>, TextureHashed
     {
-        private Hash _hash;
-        
-        public override bool ReplaceMagentaWithTransparency => true;
+        public Hash Hash { get; }
 
-        public new ImageC Image
+        public WadTexture(ImageC image)
         {
-            get { return base.Image; }
-            set { base.Image = value; }
-        }
+            Image = image;
 
-        public override Texture Clone()
-        {
-            var texture = new WadTexture { Image = Image };
-            texture.UpdateHash();
-
-            return texture;
-        }
-
-        public byte[] ToByteArray()
-        {
             using (var ms = new MemoryStream())
             {
                 var writer = new BinaryWriter(ms);
-                writer.Write(Width);
-                writer.Write(Height);
-
+                writer.Write(Image.Size.X);
+                writer.Write(Image.Size.Y);
                 Image.WriteToStreamRaw(ms);
-                return ms.ToArray();
+                Hash = Hash.FromByteArray(ms.ToArray());
             }
         }
 
-        public Hash UpdateHash()
-        {
-            _hash = Hash.FromByteArray(this.ToByteArray());
-            return _hash;
-        }
+        public override Texture Clone() => this;
 
-        public bool Equals(WadTexture other)
-        {
-            return (Hash == other.Hash);
-        }
-
-        public Hash Hash { get { return _hash; } }
-        public int Width { get { return Image.Width; } }
-        public int Height { get { return Image.Height; } }
-
-        // Helper data
-        public Vector2 PositionInPackedTexture { get; set; }
-        public Vector2 PositionInOriginalTexturePage { get; set; }
-        public ushort Tile { get; set; }
+        public static bool operator==(WadTexture first, WadTexture second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);
+        public static bool operator!=(WadTexture first, WadTexture second) => !(first == second);
+        public bool Equals(WadTexture other) => Hash == other.Hash;
+        public override bool Equals(object other) => other is WadTexture && Hash == ((WadTexture)other).Hash;
+        public override int GetHashCode() => Hash.GetHashCode();
     }
 }

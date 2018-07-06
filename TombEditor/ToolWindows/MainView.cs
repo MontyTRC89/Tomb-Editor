@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using DarkUI.Controls;
 using DarkUI.Docking;
-using TombEditor.Geometry;
+using System;
+using System.Numerics;
+using System.Windows.Forms;
+using TombLib.Graphics;
+using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Utils;
-using DarkUI.Controls;
-using SharpDX;
 
 namespace TombEditor.ToolWindows
 {
     public partial class MainView : DarkDocument
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public MainView()
         {
@@ -25,11 +20,14 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
+
+            ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
+            ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
         }
 
-        public void Initialize(DeviceManager _deviceManager)
+        public void InitializeRendering(RenderingDevice device)
         {
-            panel3D.InitializePanel(_deviceManager);
+            panel3D.InitializeRendering(device, _editor.Configuration.Rendering3D_Antialias);
         }
 
         public void AddToolbox(DarkFloatingToolbox toolbox)
@@ -46,13 +44,13 @@ namespace TombEditor.ToolWindows
 
         public void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
         {
-            if (panel3D.Camera.RotationY < (Math.PI * (1.0 / 4.0)))
+            if (panel3D.Camera.RotationY < Math.PI * (1.0 / 4.0))
                 EditorActions.MoveObjectRelative(instance, pos, precision, canGoOutsideRoom);
-            else if (panel3D.Camera.RotationY < (Math.PI * (3.0 / 4.0)))
+            else if (panel3D.Camera.RotationY < Math.PI * (3.0 / 4.0))
                 EditorActions.MoveObjectRelative(instance, new Vector3(pos.Z, pos.Y, -pos.X), new Vector3(precision.Z, precision.Y, -precision.X), canGoOutsideRoom);
-            else if (panel3D.Camera.RotationY < (Math.PI * (5.0 / 4.0)))
+            else if (panel3D.Camera.RotationY < Math.PI * (5.0 / 4.0))
                 EditorActions.MoveObjectRelative(instance, new Vector3(-pos.X, pos.Y, -pos.Z), new Vector3(-precision.X, precision.Y, -precision.Z), canGoOutsideRoom);
-            else if (panel3D.Camera.RotationY < (Math.PI * (7.0 / 4.0)))
+            else if (panel3D.Camera.RotationY < Math.PI * (7.0 / 4.0))
                 EditorActions.MoveObjectRelative(instance, new Vector3(-pos.Z, pos.Y, pos.X), new Vector3(-precision.Z, precision.Y, precision.X), canGoOutsideRoom);
             else
                 EditorActions.MoveObjectRelative(instance, pos, precision, canGoOutsideRoom);
@@ -61,8 +59,11 @@ namespace TombEditor.ToolWindows
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+                ClipboardEvents.ClipboardChanged -= ClipboardEvents_ClipboardChanged;
+            }
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -77,13 +78,16 @@ namespace TombEditor.ToolWindows
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
             }
 
+            if (obj is Editor.ModeChangedEvent)
+                ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
+
             if (obj is Editor.SelectedSectorsChangedEvent)
             {
-                //bool validSectorSelection = _editor.SelectedSectors.Valid;
+                bool validSectorSelection = _editor.SelectedSectors.Valid;
 
-                //butTextureFloor.Enabled = validSectorSelection;
-                //butTextureCeiling.Enabled = validSectorSelection;
-                //butTextureWalls.Enabled = validSectorSelection;
+                butTextureFloor.Enabled = validSectorSelection;
+                butTextureCeiling.Enabled = validSectorSelection;
+                butTextureWalls.Enabled = validSectorSelection;
             }
 
             // Update editor mode
@@ -97,7 +101,7 @@ namespace TombEditor.ToolWindows
                 butFaceEdit.Checked = mode == EditorMode.FaceEdit;
 
                 panel2DMap.Visible = mode == EditorMode.Map2D;
-                panel3D.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry) || (mode == EditorMode.Lighting);
+                panel3D.Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Geometry || mode == EditorMode.Lighting;
 
                 butTextureFloor.Enabled = mode == EditorMode.FaceEdit;
                 butTextureCeiling.Enabled = mode == EditorMode.FaceEdit;
@@ -105,7 +109,7 @@ namespace TombEditor.ToolWindows
             }
 
             // Update flipmap toolbar button
-            if ((obj is Editor.SelectedRoomChangedEvent) ||
+            if (obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
                 butFlipMap.Enabled = _editor.SelectedRoom.Flipped;
@@ -113,18 +117,23 @@ namespace TombEditor.ToolWindows
             }
 
             // Update portal opacity controls
-            if ((obj is Editor.ObjectChangedEvent) ||
-               (obj is Editor.SelectedObjectChangedEvent))
+            if (obj is Editor.ObjectChangedEvent ||
+               obj is Editor.SelectedObjectChangedEvent)
             {
                 var portal = _editor.SelectedObject as PortalInstance;
                 butOpacityNone.Enabled = portal != null;
                 butOpacitySolidFaces.Enabled = portal != null;
                 butOpacityTraversableFaces.Enabled = portal != null;
 
-                butOpacityNone.Checked = portal == null ? false : portal.Opacity == PortalOpacity.None;
-                butOpacitySolidFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.SolidFaces;
-                butOpacityTraversableFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.TraversableFaces;
+                butOpacityNone.Checked = portal != null && portal.Opacity == PortalOpacity.None;
+                butOpacitySolidFaces.Checked = portal != null && portal.Opacity == PortalOpacity.SolidFaces;
+                butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
             }
+        }
+
+        private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
+        {
+            butPaste.Enabled = _editor.Mode != EditorMode.Map2D && Clipboard.ContainsData(typeof(ObjectClipboardData).FullName);
         }
 
         // Opens editor's 3D view
@@ -186,27 +195,32 @@ namespace TombEditor.ToolWindows
 
         private void butAddCamera_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceCamera };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new CameraInstance());
         }
 
         private void butAddFlybyCamera_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceFlyByCamera };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance());
         }
 
         private void butAddSoundSource_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new SoundSourceInstance());
         }
 
         private void butAddSink_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
+            _editor.Action = new EditorActionPlace(false, (l, r) => new SinkInstance());
+        }
+
+        private void butAddImportedGeometry_Click(object sender, EventArgs e)
+        {
+            _editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
         }
 
         private void butCompileLevel_Click(object sender, EventArgs e)
         {
-            EditorActions.BuildLevel(false);
+            EditorActions.BuildLevel(false, this);
         }
 
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
@@ -232,22 +246,21 @@ namespace TombEditor.ToolWindows
 
         private void butCopy_Click(object sender, EventArgs e)
         {
-            EditorActions.Copy(this.ParentForm);
-        }
-
-        private void butPaste_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.Paste };
+            EditorActions.TryCopyObject(_editor.SelectedObject, ParentForm);
         }
 
         private void butStamp_Click(object sender, EventArgs e)
         {
-            EditorActions.Clone(this.ParentForm);
+            EditorActions.TryStampObject(_editor.SelectedObject, ParentForm);
         }
 
-        private void butAddImportedGeometry_Click(object sender, EventArgs e)
+        private void butPaste_Click(object sender, EventArgs e)
         {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
+            ObjectClipboardData data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
+            if (data == null)
+                MessageBox.Show("Clipboard contains no object data.");
+            else
+                _editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(_editor));
         }
 
         private void butDrawPortals_Click(object sender, EventArgs e)
@@ -327,6 +340,12 @@ namespace TombEditor.ToolWindows
             panel3D.DisablePickingForImportedGeometry = !panel3D.DisablePickingForImportedGeometry;
             butDisableGeometryPicking.Checked = panel3D.DisablePickingForImportedGeometry;
             if (_editor.SelectedObject is ImportedGeometryInstance) _editor.SelectedObject = null;
+            panel3D.Invalidate();
+        }
+
+        private void drawAllRoomsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawAllRooms = !panel3D.DrawAllRooms;
             panel3D.Invalidate();
         }
     }

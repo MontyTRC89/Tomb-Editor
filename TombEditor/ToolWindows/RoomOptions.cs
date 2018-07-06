@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DarkUI.Docking;
+using System;
+using System.Numerics;
 using System.Windows.Forms;
-using DarkUI.Docking;
-using TombEditor.Geometry;
-using SharpDX;
+using TombEditor.Forms;
+using TombLib;
+using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
 {
     public partial class RoomOptions : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
-        private class InitEvent : IEditorEvent { };
+        private class InitEvent : IEditorEvent { }
 
         public RoomOptions()
         {
@@ -32,7 +28,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -40,7 +36,7 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update the room list
-            if ((obj is InitEvent) || (obj is Editor.RoomListChangedEvent))
+            if (obj is InitEvent || obj is Editor.RoomListChangedEvent)
             {
                 // Adjust the amount of entries in the combo list
                 while (comboRoom.Items.Count > _editor.Level.Rooms.GetLength(0))
@@ -57,24 +53,24 @@ namespace TombEditor.ToolWindows
             }
 
             // Update the room property controls
-            if ((obj is InitEvent) || (obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.LevelChangedEvent) ||
+            if (obj is InitEvent || obj is Editor.SelectedRoomChangedEvent || obj is Editor.LevelChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
                 Room room = _editor.SelectedRoom;
-                if ((obj is InitEvent) || (obj is Editor.SelectedRoomChangedEvent))
+                if (obj is InitEvent || obj is Editor.SelectedRoomChangedEvent)
                     comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
                 // Update the state of other controls
-                if (room.FlagQuickSand)
-                    comboRoomType.SelectedIndex = 7;
-                else if (room.FlagSnow)
-                    comboRoomType.SelectedIndex = 6;
-                else if (room.FlagRain)
-                    comboRoomType.SelectedIndex = 5;
+                if (room.QuickSandLevel > 0)
+                    comboRoomType.SelectedIndex = 12 + room.QuickSandLevel;
+                else if (room.SnowLevel > 0)
+                    comboRoomType.SelectedIndex = 8 + room.SnowLevel;
+                else if (room.RainLevel > 0)
+                    comboRoomType.SelectedIndex = 4 + room.RainLevel;
                 else
                     comboRoomType.SelectedIndex = room.WaterLevel;
 
-                panelRoomAmbientLight.BackColor = (room.AmbientLight * 0.5f).ToWinFormsColor();
+                panelRoomAmbientLight.BackColor = (room.AmbientLight * new Vector3(0.5f, 0.5f, 0.5f)).ToWinFormsColor();
 
                 comboMist.SelectedIndex = room.MistLevel;
                 comboReflection.SelectedIndex = room.ReflectionLevel;
@@ -89,16 +85,16 @@ namespace TombEditor.ToolWindows
 
                 if (room.AlternateBaseRoom != null)
                 {
-                    cbLocked.Enabled = false;
-                    cbLocked.Checked = room.AlternateBaseRoom.Locked;
+                    butLocked.Enabled = false;
+                    butLocked.BackColorUseGeneric = !room.AlternateBaseRoom.Locked;
                 }
                 else
                 {
-                    cbLocked.Enabled = true;
-                    cbLocked.Checked = room.Locked;
+                    butLocked.Enabled = true;
+                    butLocked.BackColorUseGeneric = !room.Locked;
                 }
 
-                comboFlipMap.SelectedIndex = room.Flipped ? (room.AlternateGroup + 1) : 0;
+                comboFlipMap.SelectedIndex = room.Flipped ? room.AlternateGroup + 1 : 0;
             }
         }
 
@@ -107,7 +103,9 @@ namespace TombEditor.ToolWindows
             Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
             if (selectedRoom == null)
             {
-                selectedRoom = new Room(_editor.Level, Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room " + comboRoom.SelectedIndex);
+                selectedRoom = new Room(_editor.Level, Room.MaxRoomDimensions, Room.MaxRoomDimensions,
+                                        _editor.Level.Settings.DefaultAmbientLight,
+                                        "Room " + comboRoom.SelectedIndex);
                 _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
                 _editor.RoomListChange();
             }
@@ -130,14 +128,14 @@ namespace TombEditor.ToolWindows
                 }
                 else
                 { // Change flipped map number, not much to do here
-                    if ((room.AlternateGroup != alternateGroupIndex) &&
-                        (room.AlternateVersion.AlternateGroup != alternateGroupIndex))
+                    if (room.AlternateGroup != alternateGroupIndex &&
+                        room.AlternateOpposite.AlternateGroup != alternateGroupIndex)
                     {
 
                         room.AlternateGroup = alternateGroupIndex;
-                        room.AlternateVersion.AlternateGroup = alternateGroupIndex;
+                        room.AlternateOpposite.AlternateGroup = alternateGroupIndex;
                         _editor.RoomPropertiesChange(room);
-                        _editor.RoomPropertiesChange(room.AlternateVersion);
+                        _editor.RoomPropertiesChange(room.AlternateOpposite);
                     }
                 }
             }
@@ -201,89 +199,65 @@ namespace TombEditor.ToolWindows
 
         private void comboReverberation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom.Reverberation == (Reverberation)(comboReverberation.SelectedIndex))
+            if (_editor.SelectedRoom.Reverberation == (Reverberation)comboReverberation.SelectedIndex)
                 return;
 
-            _editor.SelectedRoom.Reverberation = (Reverberation)(comboReverberation.SelectedIndex);
+            _editor.SelectedRoom.Reverberation = (Reverberation)comboReverberation.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool flagRain = false;
-            bool flagSnow = false;
-            bool flagQuicksand = false;
-            byte waterLevel = 0;
+            byte waterLevel, rainLevel, snowLevel, quicksandLevel;
 
-            switch (comboRoomType.SelectedIndex)
+            var i = (byte)comboRoomType.SelectedIndex;
+
+            if (i == 0)
             {
-                case 0:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 0;
-                    break;
-
-                case 1:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 1;
-                    break;
-
-                case 2:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 2;
-                    break;
-
-                case 3:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 3;
-                    break;
-
-                case 4:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 4;
-                    break;
-
-                case 5:
-                    flagRain = true;
-                    flagSnow = false;
-                    flagQuicksand = false;
-                    waterLevel = 0;
-                    break;
-
-                case 6:
-                    flagRain = false;
-                    flagSnow = true;
-                    flagQuicksand = false;
-                    waterLevel = 0;
-                    break;
-
-                case 7:
-                    flagRain = false;
-                    flagSnow = false;
-                    flagQuicksand = true;
-                    waterLevel = 0;
-                    break;
+                waterLevel = 0;
+                rainLevel = 0;
+                snowLevel = 0;
+                quicksandLevel = 0;
+            }
+            else if (i >= 1 && i <= 4)
+            {
+                waterLevel = i;
+                rainLevel = 0;
+                snowLevel = 0;
+                quicksandLevel = 0;
+            }
+            else if (i >= 5 && i <= 8)
+            {
+                waterLevel = 0;
+                rainLevel = (byte)(i - 4);
+                snowLevel = 0;
+                quicksandLevel = 0;
+            }
+            else if (i >= 9 && i <= 12)
+            {
+                waterLevel = 0;
+                rainLevel = 0;
+                snowLevel = (byte)(i - 8);
+                quicksandLevel = 0;
+            }
+            else
+            {
+                waterLevel = 0;
+                rainLevel = 0;
+                snowLevel = 0;
+                quicksandLevel = (byte)(i - 12);
             }
 
-            if ((_editor.SelectedRoom.FlagRain == flagRain) &&
-                (_editor.SelectedRoom.FlagSnow == flagSnow) &&
-                (_editor.SelectedRoom.FlagQuickSand == flagQuicksand) &&
-                (_editor.SelectedRoom.WaterLevel == waterLevel))
+            if (_editor.SelectedRoom.WaterLevel == waterLevel &&
+                _editor.SelectedRoom.RainLevel == rainLevel &&
+                _editor.SelectedRoom.SnowLevel == snowLevel &&
+                _editor.SelectedRoom.QuickSandLevel == quicksandLevel)
                 return;
 
-            _editor.SelectedRoom.FlagRain = flagRain;
-            _editor.SelectedRoom.FlagSnow = flagSnow;
-            _editor.SelectedRoom.FlagQuickSand = flagQuicksand;
             _editor.SelectedRoom.WaterLevel = waterLevel;
+            _editor.SelectedRoom.RainLevel = rainLevel;
+            _editor.SelectedRoom.SnowLevel = snowLevel;
+            _editor.SelectedRoom.QuickSandLevel = quicksandLevel;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -318,7 +292,7 @@ namespace TombEditor.ToolWindows
             panelRoomAmbientLight.BackColor = colorDialog.Color;
 
             _editor.SelectedRoom.AmbientLight = colorDialog.Color.ToFloatColor() * 2.0f;
-            _editor.SelectedRoom.UpdateCompletely();
+            _editor.SelectedRoom.BuildGeometry();
             _editor.RoomPropertiesChange(room);
         }
 
@@ -332,11 +306,6 @@ namespace TombEditor.ToolWindows
         private void butSplitRoom_Click(object sender, EventArgs e)
         {
             EditorActions.SplitRoom(this);
-        }
-
-        private void butCopyRoom_Click(object sender, EventArgs e)
-        {
-            EditorActions.CopyRoom(this);
         }
 
         private void butEditRoomName_Click(object sender, EventArgs e)
@@ -356,23 +325,14 @@ namespace TombEditor.ToolWindows
             }
         }
 
-        private void butDeleteRoom_Click(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom == null)
-                return;
-            EditorActions.DeleteRoom(_editor.SelectedRoom, this);
-        }
-
         private void butRoomUp_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f),
-                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
+            EditorActions.MoveRooms(new VectorInt3(0, 1, 0), _editor.SelectedRoom.Versions);
         }
 
         private void butRoomDown_Click(object sender, EventArgs e)
         {
-            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f),
-                new Room[] { _editor.SelectedRoom, _editor.SelectedRoom.AlternateVersion }.Where(room => room != null));
+            EditorActions.MoveRooms(new VectorInt3(0, -1, 0), _editor.SelectedRoom.Versions);
         }
 
         private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)
@@ -384,12 +344,14 @@ namespace TombEditor.ToolWindows
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
-        private void cbLocked_CheckedChanged(object sender, EventArgs e)
+        private void butLocked_Click(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom.Locked == cbLocked.Checked)
+            butLocked.BackColorUseGeneric = !butLocked.BackColorUseGeneric;
+
+            if (_editor.SelectedRoom.Locked == !butLocked.BackColorUseGeneric)
                 return;
 
-            _editor.SelectedRoom.Locked = cbLocked.Checked;
+            _editor.SelectedRoom.Locked = !butLocked.BackColorUseGeneric;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }

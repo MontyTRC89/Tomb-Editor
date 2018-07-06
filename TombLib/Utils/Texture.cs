@@ -1,9 +1,6 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Numerics;
 
 namespace TombLib.Utils
 {
@@ -13,8 +10,6 @@ namespace TombLib.Utils
 
         // Do not change the image with this methode
         public ImageC Image { get; protected set; } = UnloadedPlaceholder;
-
-        public virtual bool ReplaceMagentaWithTransparency => false;
 
         public abstract Texture Clone();
 
@@ -27,7 +22,7 @@ namespace TombLib.Utils
         public bool IsAvailable => Image != UnloadedPlaceholder;
     }
 
-    public class TextureInvisible : Texture
+    public sealed class TextureInvisible : Texture
     {
         public static Texture Instance { get; } = new TextureInvisible();
 
@@ -42,30 +37,27 @@ namespace TombLib.Utils
         }
     }
 
+    public interface TextureHashed
+    {
+        Hash Hash { get; }
+    }
+
     public enum BlendMode : ushort
     {
         Normal = 0,
+        AlphaTest = 1,
         Additive = 2,
         NoZTest = 4,
         Subtract = 5,
         Wireframe = 6,
         Exclude = 8,
         Screen = 9,
-        Lighten = 10,
-        AlphaTest = 100
-        // By using FLEP, more BlendMode mode indices can be assigned meaning.
-        // We probably want support for those in the future.
+        Lighten = 10
     }
 
-    public enum BumpMapMode : ushort
+    public struct TextureArea : IEquatable<TextureArea>
     {
-        None = 0,
-        Level1 = 1,
-        Level2 = 2
-    }
-
-    public struct TextureArea
-    {
+        public const float SafetyMargin = 0.45f;
         public static readonly TextureArea None;
 
         public Texture Texture;
@@ -74,42 +66,52 @@ namespace TombLib.Utils
         public Vector2 TexCoord2; //    - No array bounds checks
         public Vector2 TexCoord3; //    - 'Clone', 'GetHashCode' and so on work by default
         public BlendMode BlendMode;
-        public BumpMapMode BumpMode;
         public bool DoubleSided;
 
         public static bool operator ==(TextureArea first, TextureArea second)
         {
             return
-                (first.Texture == second.Texture) &&
-                (first.TexCoord0.Equals(second.TexCoord0)) &&
-                (first.TexCoord1.Equals(second.TexCoord1)) &&
-                (first.TexCoord2.Equals(second.TexCoord2)) &&
-                (first.TexCoord3.Equals(second.TexCoord3)) &&
-                (first.BlendMode == second.BlendMode) &&
-                (first.BumpMode == second.BumpMode) &&
-                (first.DoubleSided == second.DoubleSided);
+                first.Texture == second.Texture &&
+                first.TexCoord0.Equals(second.TexCoord0) &&
+                first.TexCoord1.Equals(second.TexCoord1) &&
+                first.TexCoord2.Equals(second.TexCoord2) &&
+                first.TexCoord3.Equals(second.TexCoord3) &&
+                first.BlendMode == second.BlendMode &&
+                first.DoubleSided == second.DoubleSided;
         }
 
-        public static bool operator !=(TextureArea first, TextureArea second)
-        {
-            return !(first == second);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this == (TextureArea)obj;
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public static bool operator !=(TextureArea first, TextureArea second) => !(first == second);
+        public bool Equals(TextureArea other) => this == other;
+        public override bool Equals(object other) => other is TextureArea && this == (TextureArea)other;
+        public override int GetHashCode() => base.GetHashCode();
 
         public bool TextureIsUnavailable => (Texture == null) || (Texture.IsUnavailable);
+        public bool TextureIsInvisble => Texture == null || Texture == TextureInvisible.Instance || Texture.IsUnavailable;
+        public bool TextureIsRectangle => (TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length();
 
-        public bool TextureIsInvisble => (Texture == null) || (Texture == TextureInvisible.Instance) || (Texture.IsUnavailable);
+        public bool TriangleCoordsOutOfBounds
+        {
+            get
+            {
+                if (TextureIsInvisble)
+                    return false;
+                Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), TexCoord2);
+                Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), TexCoord2);
+                return min.X < SafetyMargin || min.Y < SafetyMargin || max.X > (Texture.Image.Width - SafetyMargin) || (max.Y > Texture.Image.Height - SafetyMargin);
+            }
+        }
 
-        public bool TextureIsRectangle => ((TexCoord0 + TexCoord2).Length() == (TexCoord1 + TexCoord3).Length());
+        public bool QuadCoordsOutOfBounds
+        {
+            get
+            {
+                if (TextureIsInvisble)
+                    return false;
+                Vector2 max = Vector2.Max(Vector2.Max(TexCoord0, TexCoord1), Vector2.Max(TexCoord2, TexCoord3));
+                Vector2 min = Vector2.Min(Vector2.Min(TexCoord0, TexCoord1), Vector2.Min(TexCoord2, TexCoord3));
+                return min.X < SafetyMargin || min.Y < SafetyMargin || max.X > (Texture.Image.Width - SafetyMargin) || (max.Y > Texture.Image.Height - SafetyMargin);
+            }
+        }
         
         public IEnumerable<KeyValuePair<int, Vector2>> TexCoords
         {
@@ -163,6 +165,13 @@ namespace TombLib.Utils
         private static float CalculateArea(Vector2 texCoord0, Vector2 texCoord1)
         {
             return (texCoord1.X - texCoord0.X) * (texCoord1.Y + texCoord0.Y);
+        }
+
+        public TextureArea Transform(RectTransformation transformation)
+        {
+            TextureArea result = this;
+            transformation.TransformValueDiagonalQuad(ref result.TexCoord0, ref result.TexCoord1, ref result.TexCoord2, ref result.TexCoord3);
+            return result;
         }
 
         public float TriangleArea

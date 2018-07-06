@@ -1,13 +1,10 @@
-﻿using System;
+﻿using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpDX;
-using SharpDX.Toolkit;
-using SharpDX.Toolkit.Graphics;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
+using System.Numerics;
+using TombLib.Utils;
 using TombLib.Wad;
+using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
@@ -29,6 +26,8 @@ namespace TombLib.Graphics
         public List<U> Vertices { get; set; }
         public List<int> Indices { get; set; }
         public string Name { get; set; }
+        public List<Material> Materials { get; private set; } = new List<Material>();
+        public DataVersion Version { get; set; } = DataVersion.GetNext();
 
         public Model(GraphicsDevice device, ModelType type)
         {
@@ -43,39 +42,22 @@ namespace TombLib.Graphics
             IndexBuffer?.Dispose();
         }
 
-        public abstract void BuildBuffers();
+        public abstract void UpdateBuffers();
 
-        protected static void PutSkinnedVertexAndIndex(Vector3 v, SkinnedMesh mesh, Vector2 uv,
-                                                       int submeshIndex, int boneIndex, Vector2 positionInAtlas)
-        {
-            SkinnedVertex newVertex = new SkinnedVertex();
-
-            newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.Normal = Vector3.Zero;
-            newVertex.Tangent = Vector3.Zero;
-            newVertex.Binormal = Vector3.Zero;
-            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / (float)Wad2.TextureAtlasSize, 
-                                       (positionInAtlas.Y + uv.Y) / (float)Wad2.TextureAtlasSize);
-
-            mesh.Vertices.Add(newVertex);
-            mesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
-        }
-
-        protected static void PutStaticVertexAndIndex(Vector3 v, StaticMesh mesh, Vector2 uv, int submeshIndex,
+        protected static void PutObjectVertexAndIndex(Vector3 v, ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
                                                       short color, Vector2 positionInAtlas)
         {
-            StaticVertex newVertex = new StaticVertex();
+            var newVertex = new ObjectVertex();
 
             newVertex.Position = new Vector3(v.X, v.Y, v.Z);
-            newVertex.Normal = Vector3.Zero;
-            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / (float)Wad2.TextureAtlasSize, 
-                                       (positionInAtlas.Y + uv.Y) / (float)Wad2.TextureAtlasSize);
+            newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / WadRenderer.TextureAtlasSize,
+                                       (positionInAtlas.Y + uv.Y) / WadRenderer.TextureAtlasSize);
 
             var shade = 1.0f - color / 8191.0f;
             newVertex.Shade = new Vector2(shade, 0.0f);
 
             mesh.Vertices.Add(newVertex);
-            mesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
+            submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
         }
     }
 }
