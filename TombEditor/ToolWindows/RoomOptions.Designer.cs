@@ -172,7 +172,7 @@
             this.panelRoomAmbientLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panelRoomAmbientLight.Location = new System.Drawing.Point(3, 168);
             this.panelRoomAmbientLight.Name = "panelRoomAmbientLight";
-            this.panelRoomAmbientLight.Size = new System.Drawing.Size(67, 24);
+            this.panelRoomAmbientLight.Size = new System.Drawing.Size(67, 23);
             this.panelRoomAmbientLight.TabIndex = 15;
             this.panelRoomAmbientLight.Click += new System.EventHandler(this.panelRoomAmbientLight_Click);
             // 
