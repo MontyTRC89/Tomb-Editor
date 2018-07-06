@@ -1,15 +1,13 @@
-﻿using NLog;
-using SharpDX;
-using DarkUI.Docking;
+﻿using DarkUI.Docking;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
-
-using System.Xml.Serialization;
+using System.Numerics;
+using System.Reflection;
 using System.Xml;
-using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace TombEditor
 {
@@ -20,7 +18,7 @@ namespace TombEditor
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         [XmlIgnore]
-        public string FilePath { get; set; } = null;
+        public string FilePath { get; set; }
 
         [XmlIgnore]
         public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
@@ -31,17 +29,20 @@ namespace TombEditor
             set { Log_MinLevel = LogLevel.FromString(value); }
         }
         public bool Log_WriteToFile { get; set; } = true;
-        public int Log_ArchiveN { get; set; } = 0;
+        public int Log_ArchiveN { get; set; } = 4;
 
+        public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
         public bool Editor_DiscardSelectionOnModeSwitch { get; set; } = false;
         public bool Editor_ProbeAttributesThroughPortals { get; set; } = true;
-        public bool Editor_AutoSwitchHighlight { get; set; } = true;
+        public bool Editor_AutoSwitchSectorColoringInfo { get; set; } = true;
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
+        public Vector4 RenderingItem_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
+        public bool RenderingItem_Antialias { get; set; } = false;
 
         public int Rendering3D_DrawRoomsMaxDepth { get; set; } = 6;
         public float Rendering3D_NavigationSpeedKeyRotate { get; set; } = 0.30f;
@@ -56,9 +57,13 @@ namespace TombEditor
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;
         public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
-        public Vector4 Rendering3D_TextColor { get; set; } = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         public bool Rendering3D_ToolboxVisible { get; set; } = true;
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
+        public bool Rendering3D_ShowFPS { get; set; } = false;
+        public string Rendering3D_FontName { get; set; } = "Segoe UI";
+        public int Rendering3D_FontSize { get; set; } = 24;
+        public bool Rendering3D_FontIsBold { get; set; } = true;
+        public bool Rendering3D_Antialias { get; set; } = true;
 
         public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
         public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;
@@ -75,7 +80,6 @@ namespace TombEditor
         public float TextureMap_NavigationSpeedKeyMove { get; set; } = 107.0f;
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
         public float TextureMap_DefaultTileSelectionSize { get; set; } = 64.0f;
-        public bool TextureMap_UseAdvancedTexturingByDefault { get; set; } = false;
 
         public EditorToolType Tool_DefaultGeometry { get; set; } = EditorToolType.Selection;
         public EditorToolType Tool_DefaultFaceEdit { get; set; } = EditorToolType.Brush;
@@ -90,6 +94,14 @@ namespace TombEditor
         public Size Window_Size { get; set; } = Window_SizeDefault;
         public bool Window_Maximized { get; set; } = true;
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
+
+        public bool AutoSave_Enable { get; set; } = true;
+        public int AutoSave_TimeInSeconds { get; set; } = 500;
+        public string AutoSave_DateTimeFormat { get; set; } = "yyyy-MM-dd HH-mm";
+        public bool AutoSave_CleanupEnable { get; set; } = true;
+        public int AutoSave_CleanupMaxAutoSaves { get; set; } = 10;
+        public bool AutoSave_NamePutDateFirst { get; set; } = true;
+        public string AutoSave_NameSeparator { get; set; } = " ";
 
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
@@ -136,12 +148,12 @@ namespace TombEditor
                             Contents = new List<string> { "RoomOptions" },
                             VisibleContent = "RoomOptions",
                             Order = 1,
-                            Size = new Size(284,218)
+                            Size = new Size(284,194)
                         },
                         new DockGroupState
                         {
-                            Contents = new List<string> { "ObjectBrowser" },
-                            VisibleContent = "ObjectBrowser",
+                            Contents = new List<string> { "ItemBrowser" },
+                            VisibleContent = "ItemBrowser",
                             Order = 2,
                             Size = new Size(284,259)
                         },
@@ -165,7 +177,7 @@ namespace TombEditor
                             Contents = new List<string> { "TexturePanel" },
                             VisibleContent = "TexturePanel",
                             Order = 0,
-                            Size = new Size(301,700)
+                            Size = new Size(286,700)
                         }
                     }
                 },
@@ -196,7 +208,7 @@ namespace TombEditor
 
         public static string GetDefaultPath()
         {
-            return Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "TombEditorConfiguration.xml");
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TombEditorConfiguration.xml");
         }
 
         public void Save(Stream stream)
@@ -231,7 +243,8 @@ namespace TombEditor
 
         public static Configuration Load(Stream stream)
         {
-            return (Configuration)(new XmlSerializer(typeof(Configuration)).Deserialize(stream));
+            using (XmlReader reader = XmlReader.Create(stream, new XmlReaderSettings { IgnoreWhitespace = false }))
+                return (Configuration)new XmlSerializer(typeof(Configuration)).Deserialize(reader);
         }
 
         public static Configuration Load(string filePath)
@@ -250,14 +263,21 @@ namespace TombEditor
 
         public static Configuration LoadOrUseDefault(ICollection<LogEventInfo> log = null)
         {
+            string path = GetDefaultPath();
+            if (!File.Exists(path))
+            {
+                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
+                return new Configuration { FilePath = path };
+            }
+
             try
             {
                 return Load();
             }
             catch (Exception exc)
             {
-                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + GetDefaultPath() + "\"", null, exc));
-                return new Configuration { FilePath = GetDefaultPath() };
+                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
+                return new Configuration { FilePath = path };
             }
         }
     }

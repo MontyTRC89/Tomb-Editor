@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
+﻿using DarkUI.Docking;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using DarkUI.Docking;
-using TombEditor.Geometry;
+using TombLib.LevelData;
 
 namespace TombEditor.ToolWindows
 {
     public partial class ObjectList : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public ObjectList()
         {
@@ -28,7 +22,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }
@@ -36,7 +30,7 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update the trigger control
-            if ((obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.ObjectChangedEvent))
+            if (obj is Editor.SelectedRoomChangedEvent || obj is Editor.ObjectChangedEvent)
             {
                 lstObjects.BeginUpdate();
                 lstObjects.Items.Clear();
@@ -45,17 +39,17 @@ namespace TombEditor.ToolWindows
             }
 
             // Update the object control selection
-            if ((obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.SelectedObjectChangedEvent))
+            if (obj is Editor.SelectedRoomChangedEvent || obj is Editor.SelectedObjectChangedEvent)
             {
-                lstObjects.SelectedItem = (_editor.SelectedObject?.Room == _editor.SelectedRoom) ? _editor.SelectedObject : null;
+                lstObjects.SelectedItem = _editor.SelectedObject?.Room == _editor.SelectedRoom ? _editor.SelectedObject : null;
             }
         }
 
         private void lstObjects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ((_editor.SelectedRoom == null) || (lstObjects.SelectedItem == null))
+            if (_editor.SelectedRoom == null || lstObjects.SelectedItem == null)
                 return;
-            _editor.SelectedObject = (ObjectInstance)(lstObjects.SelectedItem);
+            _editor.SelectedObject = (ObjectInstance)lstObjects.SelectedItem;
         }
 
         private void lstObjects_MouseDoubleClick(object sender, MouseEventArgs e)

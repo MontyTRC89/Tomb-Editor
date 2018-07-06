@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DarkUI.Controls;
+﻿using DarkUI.Controls;
+using System;
 using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
@@ -16,7 +8,7 @@ namespace TombEditor.ToolWindows
     {
         private class InitEvent : IEditorEvent { }
 
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public ToolPaletteFloating()
         {
@@ -84,11 +76,11 @@ namespace TombEditor.ToolWindows
 
                 toolPalette.AutoSize = true;
                 Height = toolPalette.Size.Height + Padding.Size.Height;
-                Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry);
+                Visible = mode == EditorMode.FaceEdit || mode == EditorMode.Lighting || mode == EditorMode.Geometry;
                 FixPosition();
 
                 // Select classic winroomedit controls by default
-                SwitchTool(mode == EditorMode.FaceEdit ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
+                SwitchTool(mode == EditorMode.FaceEdit || mode == EditorMode.Lighting ? _editor.Configuration.Tool_DefaultFaceEdit : _editor.Configuration.Tool_DefaultGeometry);
             }
 
             if (obj is Editor.ConfigurationChangedEvent)

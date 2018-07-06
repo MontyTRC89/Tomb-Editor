@@ -1,6 +1,6 @@
 ﻿using DarkUI.Controls;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     partial class FormStaticMesh
     {
@@ -51,7 +51,6 @@ namespace TombEditor
             // 
             this.butOK.Location = new System.Drawing.Point(53, 291);
             this.butOK.Name = "butOK";
-            this.butOK.Padding = new System.Windows.Forms.Padding(5);
             this.butOK.Size = new System.Drawing.Size(86, 23);
             this.butOK.TabIndex = 0;
             this.butOK.Text = "OK";
@@ -60,9 +59,9 @@ namespace TombEditor
             // 
             // butCancel
             // 
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(145, 291);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(86, 23);
             this.butCancel.TabIndex = 1;
             this.butCancel.Text = "Cancel";
@@ -171,9 +170,6 @@ namespace TombEditor
             // 
             // tbScalable
             // 
-            this.tbScalable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbScalable.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbScalable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbScalable.Location = new System.Drawing.Point(86, 251);
             this.tbScalable.Name = "tbScalable";
             this.tbScalable.Size = new System.Drawing.Size(53, 22);
@@ -182,8 +178,10 @@ namespace TombEditor
             // 
             // FormStaticMesh
             // 
+            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(291, 326);
             this.Controls.Add(this.tbScalable);
             this.Controls.Add(this.cbScalable);

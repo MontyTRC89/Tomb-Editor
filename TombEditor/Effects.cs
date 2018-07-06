@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SharpDX.Direct3D11;
-using SharpDX.D3DCompiler;
+﻿using NLog;
 using SharpDX.Toolkit.Graphics;
-using System.Reflection;
+using System;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
-using NLog;
 
 namespace TombEditor
 {
@@ -18,7 +13,7 @@ namespace TombEditor
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static string _path;
         public static GraphicsDevice GraphicsDevice { get; set; }
-        public static SharpDX.Toolkit.Graphics.Effect Picking { get; set; }
+        public static Effect Picking { get; set; }
 
         public static bool Initialize(GraphicsDevice device)
         {
@@ -42,7 +37,7 @@ namespace TombEditor
             return true;
         }
 
-        private static SharpDX.Toolkit.Graphics.Effect LoadEffect(string name)
+        private static Effect LoadEffect(string name)
         {
             EffectCompilerResult result = EffectCompiler.CompileFromFile(_path + "\\Editor\\" + name + ".fx");
 
@@ -53,12 +48,12 @@ namespace TombEditor
                 foreach (SharpDX.Toolkit.Diagnostics.LogMessage err in result.Logger.Messages)
                     errors += err + Environment.NewLine;
 
-                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, "Could not compile effect '" + name + ".fx'");
+                LogManager.GetCurrentClassLogger().Log(LogLevel.Error, "Could not compile effect '" + name + ".fx'");
                 MessageBox.Show("Could not compile effect '" + name + ".fx'" + Environment.NewLine + errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
 
-            SharpDX.Toolkit.Graphics.Effect effect = new SharpDX.Toolkit.Graphics.Effect(GraphicsDevice, result.EffectData);
+            Effect effect = new Effect(GraphicsDevice, result.EffectData);
             return effect;
         }
     }

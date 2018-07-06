@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DarkUI.Docking;
-using TombEditor.Geometry;
-using SharpDX;
+﻿using DarkUI.Docking;
+using System.Numerics;
+using TombLib.LevelData;
 
 namespace TombEditor.ToolWindows
 {
     public partial class Palette : DarkToolWindow
     {
-        private Editor _editor;
+        private readonly Editor _editor;
 
         public Palette()
         {
@@ -30,8 +21,8 @@ namespace TombEditor.ToolWindows
                 LightInstance light = _editor.SelectedObject as LightInstance;
                 if (light == null)
                     return;
-                light.Color = (Vector3)lightPalette.SelectedColor.ToFloatColor() * 2.0f;
-                _editor.SelectedRoom.UpdateCompletely();
+                light.Color = lightPalette.SelectedColor.ToFloatColor();
+                _editor.SelectedRoom.BuildGeometry();
                 _editor.ObjectChange(light, ObjectChangeType.Change);
             };
         }
@@ -40,7 +31,7 @@ namespace TombEditor.ToolWindows
         {
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
+            if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
         }

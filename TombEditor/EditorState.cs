@@ -1,13 +1,11 @@
-﻿using SharpDX;
-using System;
-using System.Collections.Generic;
-using TombEditor.Geometry;
+﻿using TombLib;
+using TombLib.Rendering;
 
 namespace TombEditor
 {
     public enum EditorMode
     {
-        None, Geometry, Map2D, FaceEdit, Lighting
+        Geometry, Map2D, FaceEdit, Lighting
     }
 
     public enum EditorToolType
@@ -25,16 +23,18 @@ namespace TombEditor
 
         public static bool operator == (EditorTool first, EditorTool second)
         {
-            return (first.Tool == second.Tool && first.TextureUVFixer == second.TextureUVFixer);
+            return first.Tool == second.Tool && first.TextureUVFixer == second.TextureUVFixer;
         }
 
         public static bool operator !=(EditorTool first, EditorTool second)
         {
-            return (first.Tool != second.Tool || first.TextureUVFixer != second.TextureUVFixer);
+            return first.Tool != second.Tool || first.TextureUVFixer != second.TextureUVFixer;
         }
 
         public override bool Equals(object obj)
         {
+            if (!(obj is EditorTool))
+                return false;
             return this == (EditorTool)obj;
         }
 
@@ -44,88 +44,28 @@ namespace TombEditor
         }
     }
 
-    public enum EditorActionType
-    {
-        None,
-        PlaceItem,
-        PlaceLight,
-        PlaceCamera,
-        PlaceImportedGeometry,
-        PlaceFlyByCamera,
-        PlaceSoundSource,
-        PlaceSink,
-        Paste,
-        Stamp
-    }
-
-    public struct EditorAction
-    {
-        public EditorActionType Action { get; set; }
-        public LightType LightType { get; set; }
-        public ItemType ItemType { get; set; }
-        public bool RelocateCameraActive { get; set; }
-
-        public static readonly EditorAction None = new EditorAction();
-
-        public static bool operator ==(EditorAction first, EditorAction second)
-        {
-            return (first.Action == second.Action) && (first.LightType == second.LightType) && (first.ItemType == second.ItemType) && (first.RelocateCameraActive == second.RelocateCameraActive);
-        }
-
-        public static bool operator !=(EditorAction first, EditorAction second)
-        {
-            return (first.Action != second.Action) || (first.LightType != second.LightType) || (first.ItemType != second.ItemType) || (first.RelocateCameraActive != second.RelocateCameraActive);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this == (EditorAction)obj;
-        }
-
-        public override int GetHashCode()
-        {
-            return Action.GetHashCode() ^ (LightType.GetHashCode() * unchecked((int)3062904283)) ^ (ItemType.GetHashCode() * 1334740973) ^ (RelocateCameraActive ? 0 : 0x3ce0dc8f);
-        }
-    };
-
-    public enum EditorArrowType
-    {
-        EntireFace,
-        EdgeN,
-        EdgeE,
-        EdgeS,
-        EdgeW,
-        CornerNW,
-        CornerNE,
-        CornerSE,
-        CornerSW
-    }
-
-    public enum SmoothGeometryEditingType
-    {
-        None, Floor, Wall, Any
-    }
-
     public struct SectorSelection
     {
-        public DrawingPoint Start { get; set; }
-        public DrawingPoint End { get; set; }
-        public EditorArrowType Arrow { get; set; }
+        public VectorInt2 Start { get; set; }
+        public VectorInt2 End { get; set; }
+        public ArrowType Arrow { get; set; }
 
-        public static readonly SectorSelection None = new SectorSelection { Start = new DrawingPoint(-1, 1), End = new DrawingPoint(-1, 1) };
+        public static readonly SectorSelection None = new SectorSelection { Start = new VectorInt2(-1, 1), End = new VectorInt2(-1, 1) };
 
         public static bool operator ==(SectorSelection first, SectorSelection second)
         {
-            return (first.Start == second.Start) && (first.End == second.End) && (first.Arrow == second.Arrow);
+            return first.Start == second.Start && first.End == second.End && first.Arrow == second.Arrow;
         }
 
         public static bool operator !=(SectorSelection first, SectorSelection second)
         {
-            return (first.Start != second.Start) || (first.End != second.End) || (first.Arrow != second.Arrow);
+            return first.Start != second.Start || first.End != second.End || first.Arrow != second.Arrow;
         }
 
         public override bool Equals(object obj)
         {
+            if (!(obj is SectorSelection))
+                return false;
             return this == (SectorSelection)obj;
         }
 
@@ -136,24 +76,22 @@ namespace TombEditor
 
         // The rectangle is (-1, -1, -1, 1) when nothing is selected.
         // The "Right" and "Bottom" point of the rectangle is inclusive.
-        public SharpDX.Rectangle Area
+        public RectangleInt2 Area
         {
             get
             {
-                return new SharpDX.Rectangle(
-                    Math.Min(Start.X, End.X), Math.Min(Start.Y, End.Y),
-                    Math.Max(Start.X, End.X), Math.Max(Start.Y, End.Y));
+                return new RectangleInt2(VectorInt2.Min(Start, End), VectorInt2.Max(Start, End));
             }
             set
             {
-                Start = new SharpDX.DrawingPoint(value.X, value.Y);
-                End = new SharpDX.DrawingPoint(value.Right, value.Bottom);
+                Start = value.Start;
+                End = value.End;
             }
         }
 
-        public bool Valid => (Start.X != -1) && (Start.Y != -1) && (End.X != -1) && (End.Y != -1);
+        public bool Valid => Start.X != -1 && Start.Y != -1 && End.X != -1 && End.Y != -1;
 
-        public SectorSelection ChangeArrows(EditorArrowType Arrow)
+        public SectorSelection ChangeArrows(ArrowType Arrow)
         {
             SectorSelection result = this;
             result.Arrow = Arrow;
@@ -173,18 +111,20 @@ namespace TombEditor
 
         public static bool operator ==(TextureSelection first, TextureSelection second)
         {
-            return (first.Index == second.Index) && (first.Triangle == second.Triangle) &&
-                (first.Invisible == second.Invisible) && (first.DoubleSided == second.DoubleSided) && (first.Transparent == second.Transparent);
+            return first.Index == second.Index && first.Triangle == second.Triangle &&
+                first.Invisible == second.Invisible && first.DoubleSided == second.DoubleSided && first.Transparent == second.Transparent;
         }
 
         public static bool operator !=(TextureSelection first, TextureSelection second)
         {
-            return (first.Index != second.Index) || (first.Triangle != second.Triangle) ||
-                (first.Invisible != second.Invisible) || (first.DoubleSided != second.DoubleSided) || (first.Transparent != second.Transparent);
+            return first.Index != second.Index || first.Triangle != second.Triangle ||
+                first.Invisible != second.Invisible || first.DoubleSided != second.DoubleSided || first.Transparent != second.Transparent;
         }
 
         public override bool Equals(object obj)
         {
+            if (!(obj is TextureSelection))
+                return false;
             return this == (TextureSelection)obj;
         }
 

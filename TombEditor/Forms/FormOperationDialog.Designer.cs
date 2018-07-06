@@ -1,6 +1,6 @@
 ﻿using DarkUI.Controls;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     partial class FormOperationDialog
     {
@@ -78,6 +78,7 @@ namespace TombEditor
             // 
             // butCancel
             // 
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butCancel.Location = new System.Drawing.Point(326, 3);
             this.butCancel.Name = "butCancel";
@@ -102,8 +103,10 @@ namespace TombEditor
             // 
             // FormOperationDialog
             // 
+            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(654, 402);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.pbStato);

@@ -1,29 +1,52 @@
-﻿using SharpDX;
-using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
-    public class WadSpriteSequence
+    public struct WadSpriteSequenceId : IWadObjectId, IEquatable<WadSpriteSequenceId>, IComparable<WadSpriteSequenceId>
     {
-        public uint ObjectID { get; set; }
-        public List<WadSprite> Sprites { get; private set; }
-        public string Name { get; set; }
+        public uint TypeId;
 
-        public WadSpriteSequence()
+        public WadSpriteSequenceId(uint objTypeId)
         {
-            Sprites = new List<WadSprite>();
+            TypeId = objTypeId;
         }
 
-        public override string ToString()
+        public int CompareTo(WadSpriteSequenceId other) => TypeId.CompareTo(other.TypeId);
+        public int CompareTo(object other) => CompareTo((WadSpriteSequenceId)other);
+        public static bool operator <(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId < second.TypeId;
+        public static bool operator <=(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId <= second.TypeId;
+        public static bool operator >(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId > second.TypeId;
+        public static bool operator >=(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId >= second.TypeId;
+        public static bool operator ==(WadSpriteSequenceId first, WadSpriteSequenceId second) => first.TypeId == second.TypeId;
+        public static bool operator !=(WadSpriteSequenceId first, WadSpriteSequenceId second) => !(first == second);
+        public bool Equals(WadSpriteSequenceId other) => this == other;
+        public override bool Equals(object other) => other is WadSpriteSequenceId && this == (WadSpriteSequenceId)other;
+        public override int GetHashCode() => unchecked((int)TypeId);
+
+        public string ToString(WadGameVersion gameVersion)
         {
-            return Name;
+            return "(" + TypeId + ") " + TrCatalog.GetSpriteSequenceName(gameVersion, TypeId);
         }
+        public override string ToString() => "Uncertain game version - " + ToString(WadGameVersion.TR4_TRNG);
+    }
+
+    public class WadSpriteSequence : IWadObject
+    {
+        public WadSpriteSequenceId Id { get; private set; }
+        public DataVersion Version { get; set; } = DataVersion.GetNext();
+
+        public List<WadSprite> Sprites { get; private set; } = new List<WadSprite>();
+
+        public WadSpriteSequence(WadSpriteSequenceId id)
+        {
+            Id = id;
+        }
+
+        public string ToString(WadGameVersion gameVersion) => Id.ToString(gameVersion);
+        public override string ToString() => Id.ToString();
+        IWadObjectId IWadObject.Id => Id;
     }
 }

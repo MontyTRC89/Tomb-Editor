@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TombLib.GeometryIO
+﻿namespace TombLib.GeometryIO
 {
     public struct IOGeometrySettingsPreset
     {
@@ -26,6 +20,6 @@ namespace TombLib.GeometryIO
         public bool WrapUV { get; set; } = true;
         public bool PremultiplyUV { get; set; } = true;
         public bool InvertFaces { get; set; } = false;
-        public bool UseVertexColor { get; set; } = false;
+        public bool UseVertexColor { get; set; } = true;
     }
 }

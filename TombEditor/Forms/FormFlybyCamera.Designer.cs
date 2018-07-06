@@ -1,6 +1,6 @@
 ﻿using DarkUI.Controls;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     partial class FormFlybyCamera
     {
@@ -68,9 +68,9 @@ namespace TombEditor
             // 
             // butCancel
             // 
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(251, 418);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(86, 23);
             this.butCancel.TabIndex = 1;
             this.butCancel.Text = "Cancel";
@@ -81,7 +81,6 @@ namespace TombEditor
             // 
             this.butOK.Location = new System.Drawing.Point(159, 418);
             this.butOK.Name = "butOK";
-            this.butOK.Padding = new System.Windows.Forms.Padding(5);
             this.butOK.Size = new System.Drawing.Size(86, 23);
             this.butOK.TabIndex = 0;
             this.butOK.Text = "OK";
@@ -228,9 +227,6 @@ namespace TombEditor
             // 
             // tbSequence
             // 
-            this.tbSequence.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbSequence.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbSequence.Location = new System.Drawing.Point(81, 19);
             this.tbSequence.Name = "tbSequence";
             this.tbSequence.Size = new System.Drawing.Size(71, 22);
@@ -238,9 +234,6 @@ namespace TombEditor
             // 
             // tbNumber
             // 
-            this.tbNumber.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbNumber.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbNumber.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbNumber.Location = new System.Drawing.Point(81, 45);
             this.tbNumber.Name = "tbNumber";
             this.tbNumber.Size = new System.Drawing.Size(71, 22);
@@ -258,9 +251,6 @@ namespace TombEditor
             // 
             // tbFOV
             // 
-            this.tbFOV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbFOV.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbFOV.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbFOV.Location = new System.Drawing.Point(81, 124);
             this.tbFOV.Name = "tbFOV";
             this.tbFOV.Size = new System.Drawing.Size(71, 22);
@@ -278,9 +268,6 @@ namespace TombEditor
             // 
             // tbRoll
             // 
-            this.tbRoll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbRoll.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbRoll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbRoll.Location = new System.Drawing.Point(81, 151);
             this.tbRoll.Name = "tbRoll";
             this.tbRoll.Size = new System.Drawing.Size(71, 22);
@@ -298,9 +285,6 @@ namespace TombEditor
             // 
             // tbTimer
             // 
-            this.tbTimer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbTimer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbTimer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbTimer.Location = new System.Drawing.Point(81, 71);
             this.tbTimer.Name = "tbTimer";
             this.tbTimer.Size = new System.Drawing.Size(71, 22);
@@ -318,9 +302,6 @@ namespace TombEditor
             // 
             // tbSpeed
             // 
-            this.tbSpeed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbSpeed.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbSpeed.Location = new System.Drawing.Point(81, 97);
             this.tbSpeed.Name = "tbSpeed";
             this.tbSpeed.Size = new System.Drawing.Size(71, 22);
@@ -348,9 +329,6 @@ namespace TombEditor
             // 
             // tbRotationX
             // 
-            this.tbRotationX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbRotationX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbRotationX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbRotationX.Location = new System.Drawing.Point(81, 178);
             this.tbRotationX.Name = "tbRotationX";
             this.tbRotationX.Size = new System.Drawing.Size(71, 22);
@@ -368,9 +346,6 @@ namespace TombEditor
             // 
             // tbRotationY
             // 
-            this.tbRotationY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbRotationY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbRotationY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbRotationY.Location = new System.Drawing.Point(81, 205);
             this.tbRotationY.Name = "tbRotationY";
             this.tbRotationY.Size = new System.Drawing.Size(71, 22);
@@ -378,8 +353,10 @@ namespace TombEditor
             // 
             // FormFlybyCamera
             // 
+            this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(494, 453);
             this.Controls.Add(this.tbSpeed);
             this.Controls.Add(this.label6);

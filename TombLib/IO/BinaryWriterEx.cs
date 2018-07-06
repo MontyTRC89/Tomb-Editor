@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.IO;
-using SharpDX;
+using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Text;
+using TombLib.Utils;
 
 namespace TombLib.IO
 {
@@ -35,7 +34,7 @@ namespace TombLib.IO
             Write(value.W);
         }
 
-        public void Write(Matrix value)
+        public void Write(Matrix4x4 value)
         {
             Write(value.M11);
             Write(value.M12);
@@ -59,6 +58,12 @@ namespace TombLib.IO
         {
             Write(value.Minimum);
             Write(value.Maximum);
+        }
+
+        public void Write(Hash hash)
+        {
+            Write(hash.HashLow);
+            Write(hash.HashHigh);
         }
 
         public void WriteFiller(byte value, int sizeInBytes)

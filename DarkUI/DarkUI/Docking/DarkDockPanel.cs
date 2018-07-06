@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace DarkUI.Docking
 {
-    public sealed class DarkDockPanel : UserControl
+    public class DarkDockPanel : UserControl
     {
         #region Event Region
 
@@ -24,7 +24,7 @@ namespace DarkUI.Docking
         private readonly Dictionary<DarkDockArea, DarkDockRegion> _regions;
 
         private DarkDockContent _activeContent;
-        private bool _switchingContent = false;
+        private bool _switchingContent;
 
         #endregion
 

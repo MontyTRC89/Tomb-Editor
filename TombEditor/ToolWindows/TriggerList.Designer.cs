@@ -43,10 +43,9 @@
             this.butAddTrigger.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAddTrigger.Location = new System.Drawing.Point(3, 4);
             this.butAddTrigger.Name = "butAddTrigger";
-            this.butAddTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butAddTrigger.Size = new System.Drawing.Size(24, 24);
             this.butAddTrigger.TabIndex = 1;
-            this.toolTip.SetToolTip(this.butAddTrigger, "Add trigger");
+            this.toolTip.SetToolTip(this.butAddTrigger, "Add trigger (Shift to use bookmarked object)");
             this.butAddTrigger.Click += new System.EventHandler(this.butAddTrigger_Click);
             // 
             // butEditTrigger
@@ -54,7 +53,6 @@
             this.butEditTrigger.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditTrigger.Location = new System.Drawing.Point(33, 4);
             this.butEditTrigger.Name = "butEditTrigger";
-            this.butEditTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butEditTrigger.Size = new System.Drawing.Size(24, 24);
             this.butEditTrigger.TabIndex = 2;
             this.toolTip.SetToolTip(this.butEditTrigger, "Edit selected trigger");
@@ -65,7 +63,6 @@
             this.butDeleteTrigger.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteTrigger.Location = new System.Drawing.Point(63, 4);
             this.butDeleteTrigger.Name = "butDeleteTrigger";
-            this.butDeleteTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteTrigger.Size = new System.Drawing.Size(24, 24);
             this.butDeleteTrigger.TabIndex = 3;
             this.toolTip.SetToolTip(this.butDeleteTrigger, "Delete trigger");

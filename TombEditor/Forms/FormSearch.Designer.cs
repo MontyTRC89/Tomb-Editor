@@ -1,4 +1,4 @@
-﻿namespace TombEditor
+﻿namespace TombEditor.Forms
 {
     partial class FormSearch
     {
@@ -126,8 +126,10 @@
             //
             // FormSearch
             //
+            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butOk;
             this.ClientSize = new System.Drawing.Size(650, 268);
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.objectList);

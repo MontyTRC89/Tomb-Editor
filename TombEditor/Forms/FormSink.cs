@@ -1,20 +1,14 @@
-﻿using DarkUI.Forms;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Windows.Forms;
-using TombEditor.Geometry;
+using DarkUI.Forms;
+using TombLib.LevelData;
 
-namespace TombEditor
+namespace TombEditor.Forms
 {
     public partial class FormSink : DarkForm
     {
         public bool IsNew { get; set; }
-        private SinkInstance _sink;
+        private readonly SinkInstance _sink;
 
         public FormSink(SinkInstance sink)
         {
@@ -25,7 +19,7 @@ namespace TombEditor
         private void butCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            this.Close();
+            Close();
         }
 
         private void FormSink_Load(object sender, EventArgs e)
@@ -38,7 +32,7 @@ namespace TombEditor
             _sink.Strength = (short)comboStrength.SelectedIndex;
 
             DialogResult = DialogResult.OK;
-            this.Close();
+            Close();
         }
     }
 }

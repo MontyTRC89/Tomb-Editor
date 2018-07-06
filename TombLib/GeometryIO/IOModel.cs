@@ -1,17 +1,15 @@
-﻿using SharpDX;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TombLib.Utils;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace TombLib.GeometryIO
 {
     public class IOModel
     {
         public List<IOMesh> Meshes { get; private set; } = new List<IOMesh>();
-        public List<Texture> Textures { get; private set; } = new List<Texture>();
+        public List<IOMaterial> Materials { get; private set; } = new List<IOMaterial>();
+
+        // Used only by Tomb Editor for mananging the special case of multiple rooms
+        public bool HasMultipleRooms { get; set; }
 
         public BoundingBox BoundingBox
         {

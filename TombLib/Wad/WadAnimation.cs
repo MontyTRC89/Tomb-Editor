@@ -1,72 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using TombLib.Graphics;
+﻿using System.Collections.Generic;
 
 namespace TombLib.Wad
 {
     public class WadAnimation
     {
-        public byte FrameDuration { get; set; }
+        public byte FrameRate { get; set; }
         public ushort StateId { get; set; }
+        public ushort NextAnimation { get; set; }
+        public ushort NextFrame { get; set; }
+        public ushort RealNumberOfFrames { get; set; }
+        public string Name { get; set; } = "Animation";
+
+        // TODO: old deprecated stuff
         public int Speed { get; set; }
         public int Acceleration { get; set; }
         public int LateralSpeed { get; set; }
         public int LateralAcceleration { get; set; }
-        public ushort NextAnimation { get; set; }
-        public ushort NextFrame { get; set; }
-        public ushort FrameStart { get; set; }
-        public ushort FrameEnd { get; set; }
-        public string Name { get; set; }
 
-        public List<WadKeyFrame> KeyFrames { get; private set; }
-        public List<WadStateChange> StateChanges { get; private set; }
-        public List<WadAnimCommand> AnimCommands { get; private set; }
+        // New velocities. Originally Core's AnimEdit had Start Velocity and End Velocity pairs and 
+        // acceleration is obtained used the equations of motion: v = v0 + a * t where in our case 
+        // t is (Number of KeyFrames + 1) * FrameRate
+        public float StartVelocity { get; set; }
+        public float EndVelocity { get; set; }
+        public float StartLateralVelocity { get; set; }
+        public float EndLateralVelocity { get; set; }
 
-        // Helper fields for level compiler
-        public int KeyFramesOffset { get; set; }
-        public int KeyFramesSize { get; set; }
-        public ushort RealNumberOfFrames { get; set; }
-        public ushort FrameBase { get; set; }
-
-        public WadAnimation()
-        {
-            KeyFrames = new List<WadKeyFrame>();
-            StateChanges = new List<WadStateChange>();
-            AnimCommands = new List<WadAnimCommand>();
-            Name = "Animation";
-        }
+        public List<WadKeyFrame> KeyFrames { get; private set; } = new List<WadKeyFrame>();
+        public List<WadStateChange> StateChanges { get; private set; } = new List<WadStateChange>();
+        public List<WadAnimCommand> AnimCommands { get; private set; } = new List<WadAnimCommand>();
 
         public WadAnimation Clone()
         {
-            var animation = new WadAnimation();
+            // TODO Investigate if we actually need 'RealNumberOfFrames'.
 
-            animation.FrameDuration = FrameDuration;
-            animation.StateId = StateId;
-            animation.Speed = Speed;
-            animation.Acceleration = Acceleration;
-            animation.LateralSpeed = LateralSpeed;
-            animation.LateralAcceleration = LateralAcceleration;
-            animation.NextAnimation = NextAnimation;
-            animation.NextFrame = NextFrame;
-            animation.FrameStart = FrameStart;
-            animation.FrameEnd = FrameEnd;
-            animation.Name = Name;
-
-            animation.RealNumberOfFrames = RealNumberOfFrames;
-            animation.FrameBase = FrameBase;
-            
-            foreach (var keyframe in KeyFrames)
-                animation.KeyFrames.Add(keyframe.Clone());
-
-            foreach (var change in StateChanges)
-                animation.StateChanges.Add(change.Clone());
-
-            foreach (var command in AnimCommands)
-                animation.AnimCommands.Add(command.Clone());
-
+            var animation = (WadAnimation)MemberwiseClone();
+            animation.KeyFrames = KeyFrames.ConvertAll(keyFrame => keyFrame.Clone());
+            animation.StateChanges = new List<WadStateChange>(StateChanges);
+            animation.AnimCommands = new List<WadAnimCommand>(AnimCommands);
             return animation;
         }
     }

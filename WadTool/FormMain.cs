@@ -1,54 +1,134 @@
-﻿using DarkUI.Forms;
-using SharpDX;
+﻿using DarkUI.Controls;
+using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Media;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
-using TombLib.GeometryIO;
-using TombLib.IO;
+using TombLib.Forms;
+using TombLib.Graphics;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
-using TombLib.Wad.Tr4Wad;
-using TombLib.Wad.TrLevels;
+using TombLib.Utils;
 
 namespace WadTool
 {
     public partial class FormMain : DarkForm
     {
-        private WadToolClass _tool;
-        private WadObject _selectedObject;
+        private readonly WadToolClass _tool;
+        private bool _playAnimation;
 
-        // TODO ask the user for the paths
-        private readonly static List<string> wadSoundPaths =
-            new List<string>
-            {
-                "Sounds",
-                "",
-                Path.Combine(Application.StartupPath, "Sounds\\Samples")
-            };
-
-        public FormMain()
+        public FormMain(WadToolClass tool)
         {
             InitializeComponent();
-
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+            // Only how debug menu when a debugger is attached...
+            debugToolStripMenuItem.Visible = Debugger.IsAttached;
 
-            _tool = WadToolClass.Instance;
-            _tool.Initialize();
+            _tool = tool;
 
-            panel3D.InitializePanel(_tool.Device);
+            panel3D.Configuration = tool.Configuration;
+            panel3D.InitializeRendering(DeviceManager.DefaultDeviceManager.Device);
+            panel3D.AnimationScrollBar = scrollbarAnimations;
+            tool.EditorEventRaised += Tool_EditorEventRaised;
+
+            Tool_EditorEventRaised(new InitEvent());
         }
 
-        private void butTest_Click(object sender, EventArgs e)
-        {
+        private class InitEvent : IEditorEvent { };
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && components != null)
+            {
+                _tool.EditorEventRaised -= Tool_EditorEventRaised;
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void Tool_EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is WadToolClass.SelectedObjectEditedEvent || obj is InitEvent)
+            {
+
+            }
+            if (obj is WadToolClass.DestinationWadChangedEvent || obj is InitEvent)
+            {
+                treeDestWad.Wad = _tool.DestinationWad;
+                treeDestWad.UpdateContent();
+
+                panel3D.UpdateAnimationScrollbar();
+                panel3D.Invalidate();
+
+                Text = "Wad Tool - " + (_tool.DestinationWad?.FileName ?? "New");
+            }
+            if (obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
+            {
+                treeSourceWad.Wad = _tool.SourceWad;
+                treeSourceWad.UpdateContent();
+
+                panel3D.UpdateAnimationScrollbar();
+                panel3D.Invalidate();
+            }
+            if (obj is WadToolClass.MainSelectionChangedEvent ||
+                obj is WadToolClass.DestinationWadChangedEvent ||
+                obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
+            {
+                var mainSelection = _tool.MainSelection;
+                if (mainSelection == null)
+                {
+                    panel3D.CurrentObject = null;
+                }
+                else
+                {
+                    Wad2 wad = _tool.GetWad(mainSelection.Value.WadArea);
+
+                    // Display the object (or set it to Lara's skin instead if it's Lara)
+                    if (mainSelection.Value.Id is WadMoveableId &&
+                        ((WadMoveableId)mainSelection.Value.Id) == WadMoveableId.Lara &&
+                        (wad.SuggestedGameVersion == WadGameVersion.TR4_TRNG || wad.SuggestedGameVersion == WadGameVersion.TR5) &&
+                        wad.Moveables.ContainsKey(WadMoveableId.LaraSkin))
+                    {
+                        panel3D.CurrentObject = wad.TryGet(WadMoveableId.LaraSkin);
+                    }
+                    else
+                    {
+                        panel3D.CurrentObject = wad.TryGet(mainSelection.Value.Id);
+                    }
+                    panel3D.AnimationIndex = 0;
+                    panel3D.KeyFrameIndex = 0;
+
+                    // Update animations list
+                    if (mainSelection.Value.Id is WadMoveableId)
+                    {
+                        var moveableId = (WadMoveableId)mainSelection.Value.Id;
+                        var moveable = wad.Moveables.TryGetOrDefault(moveableId);
+                        treeAnimations.Nodes.Clear();
+                        if (moveable != null)
+                        {
+                            var animationsNodes = new List<DarkTreeNode>();
+                            for (int i = 0; i < moveable.Animations.Count; i++)
+                            {
+                                var nodeAnimation = new DarkTreeNode(moveable.Animations[i].Name);
+                                nodeAnimation.Tag = i;
+                                animationsNodes.Add(nodeAnimation);
+                            }
+                            treeAnimations.Nodes.AddRange(animationsNodes);
+                        }
+                    }
+
+                    panel3D.Invalidate();
+                }
+
+                panel3D.UpdateAnimationScrollbar();
+                panel3D.Invalidate();
+            }
+        }
+
+        private void Panel3D_ObjectWasModified(object sender, System.EventArgs e)
+        {
         }
 
         private void openSourceWADToolStripMenuItem_Click(object sender, EventArgs e)
@@ -56,512 +136,84 @@ namespace WadTool
             butOpenSourceWad_Click(null, null);
         }
 
-        private void treeSourceWad_MouseClick(object sender, MouseEventArgs e)
+        private void treeDestWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
         {
-            if (treeSourceWad.SelectedNodes.Count == 0)
-                return;
+            StopAnimation();
+            IWadObjectId currentSelection = treeDestWad.SelectedWadObjectIds.FirstOrDefault();
+            if (currentSelection != null)
+                _tool.MainSelection = new MainSelection { WadArea = WadArea.Destination, Id = currentSelection };
+        }
 
-            var node = treeSourceWad.SelectedNodes[0];
-
-            if (node.Tag == null ||
-                (node.Tag.GetType() != typeof(WadMoveable) &&
-                 node.Tag.GetType() != typeof(WadStatic) &&
-                 node.Tag.GetType() != typeof(WadSprite)))
-                return;
-
-            panel3D.CurrentWad = _tool.SourceWad;
-            panel3D.Animation = -1;
-            panel3D.KeyFrame = 0;
-
-            if (node.Tag.GetType() == typeof(WadMoveable))
-            {
-                var moveable = (WadMoveable)node.Tag;
-                panel3D.CurrentObject = _tool.SourceWad.DirectXMoveables[moveable.ObjectID];
-                if (moveable.Animations.Count != 0) panel3D.Animation = 0;
-            }
-            else if (node.Tag.GetType() == typeof(WadStatic))
-            {
-                var staticMesh = (WadStatic)node.Tag;
-                panel3D.CurrentObject = _tool.SourceWad.DirectXStatics[staticMesh.ObjectID];
-            }
-            else
-            {
-                var sprite = (WadSprite)node.Tag;
-                panel3D.CurrentObject = sprite;
-            }
-
-            panel3D.Invalidate();
+        private void treeSourceWad_SelectedWadObjectIdsChanged(object sender, EventArgs e)
+        {
+            StopAnimation();
+            IWadObjectId currentSelection = treeSourceWad.SelectedWadObjectIds.FirstOrDefault();
+            if (currentSelection != null)
+                _tool.MainSelection = new MainSelection { WadArea = WadArea.Source, Id = currentSelection };
         }
 
         private void openDestinationWad2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            butOpenDestWad2_Click(null, null);
+            StopAnimation();
+            WadActions.LoadWadOpenFileDialog(_tool, this, true);
         }
 
-        private void treeDestWad_MouseClick(object sender, MouseEventArgs e)
+        private void butOpenDestWad_Click(object sender, EventArgs e)
         {
-            if (treeDestWad.SelectedNodes.Count == 0)
-                return;
-
-            var node = treeDestWad.SelectedNodes[0];
-            var isMoveable = node.Tag?.GetType() == typeof(WadMoveable);
-
-            if (node.Tag == null ||
-                (node.Tag.GetType() != typeof(WadMoveable) &&
-                 node.Tag.GetType() != typeof(WadStatic) &&
-                 node.Tag.GetType() != typeof(WadSprite)))
-                return;
-
-            if (node.Tag.GetType() != typeof(WadSprite)) _selectedObject = (WadObject)node.Tag;
-            panel3D.Animation = -1;
-            panel3D.KeyFrame = 0;
-
-            // Load sounds
-            treeSounds.Nodes.Clear();
-            treeAnimations.Nodes.Clear();
-
-            if (isMoveable)
-            {
-                var moveable = (WadMoveable)node.Tag;
-                var sounds = moveable.GetSounds(_tool.DestinationWad);
-
-                // Load sounds in UI
-                foreach (var sound in sounds)
-                {
-                    var nodeSound = new DarkUI.Controls.DarkTreeNode(sound.Name);
-                    nodeSound.Tag = sound;
-                    treeSounds.Nodes.Add(nodeSound);
-
-                    int i = 0;
-
-                    foreach (var wave in sound.Samples)
-                    {
-                        var nodeWave = new DarkUI.Controls.DarkTreeNode("Sample " + i);
-                        nodeWave.Tag = wave;
-                        treeSounds.Nodes[treeSounds.Nodes.Count - 1].Nodes.Add(nodeWave);
-
-                        i++;
-                    }
-                }
-
-                // Load animations in UI
-                var animationsNodes = new List<DarkUI.Controls.DarkTreeNode>();
-                for (int i = 0; i < moveable.Animations.Count; i++)
-                {
-                    var nodeAnimation = new DarkUI.Controls.DarkTreeNode(moveable.Animations[i].Name);
-                    nodeAnimation.Tag = i;
-                    animationsNodes.Add(nodeAnimation);
-                }               
-                treeAnimations.Nodes.AddRange(animationsNodes);
-
-                groupSelectedMoveable.Enabled = true;
-                groupSelectedMoveable.Text = "Selected moveable: " + moveable.ToString();
-
-                if (moveable.Animations.Count != 0)
-                {
-                    // Reset scrollbar
-                    scrollbarAnimations.Value = 0;
-                    scrollbarAnimations.Maximum = (_selectedObject as WadMoveable).Animations[0].KeyFrames.Count - 1;
-                    panel3D.Animation = 0;
-                    panel3D.KeyFrame = 0;
-                }
-            }
-            else
-            {
-                groupSelectedMoveable.Enabled = false;
-                groupSelectedMoveable.Text = "Selected moveable: ";
-            }
-
-            panel3D.CurrentWad = _tool.DestinationWad;
-
-            if (node.Tag.GetType() == typeof(WadMoveable))
-            {
-                var moveable = (WadMoveable)node.Tag;
-                panel3D.CurrentObject = _tool.DestinationWad.DirectXMoveables[moveable.ObjectID];
-            }
-            else if (node.Tag.GetType() == typeof(WadStatic))
-            {
-                var staticMesh = (WadStatic)node.Tag;
-                panel3D.CurrentObject = _tool.DestinationWad.DirectXStatics[staticMesh.ObjectID];
-            }
-            else
-            {
-                var sprite = (WadSprite)node.Tag;
-                panel3D.CurrentObject = sprite;
-            }
-
-            panel3D.Invalidate();
-        }
-
-        private void butOpenDestWad2_Click(object sender, EventArgs e)
-        {
-            // Open the file dialog
-            openFileDialogWad.Filter = "Tomb Editor Wad2 (*.wad2)|*.wad2";
-            openFileDialogWad.Title = "Open destination Wad2";
-            if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
-                return;
-
-            // Load the Wad2
-            string fileName = openFileDialogWad.FileName.ToLower();
-            using (var stream = File.OpenRead(fileName))
-            {
-                var newWad = Wad2.LoadFromStream(stream);
-                if (newWad == null)
-                    return;
-
-                if (_tool.DestinationWad != null)
-                    _tool.DestinationWad.Dispose();
-
-                newWad.FileName = openFileDialogWad.FileName;
-                newWad.GraphicsDevice = _tool.Device;
-                newWad.PrepareDataForDirectX();
-                _tool.DestinationWad = newWad;
-            }
-
-            // Update the UI
-            UpdateDestinationWad2UI();
-        }
-
-        private void UpdateDestinationWad2UI()
-        {
-            // Disable rendering
-            treeDestWad.SelectedNodes.Clear();
-            panel3D.CurrentObject = null;
-            panel3D.CurrentWad = null;
-            panel3D.Invalidate();
-            
-            treeDestWad.Nodes.Clear();
-
-            var nodeMoveables = new DarkUI.Controls.DarkTreeNode("Moveables");
-            treeDestWad.Nodes.Add(nodeMoveables);
-
-            foreach (var moveable in _tool.DestinationWad.Moveables)
-            {
-                var nodeMoveable = new DarkUI.Controls.DarkTreeNode(moveable.Value.ToString());
-                nodeMoveable.Tag = moveable.Value;
-
-                treeDestWad.Nodes[0].Nodes.Add(nodeMoveable);
-            }
-
-            var nodeStatics = new DarkUI.Controls.DarkTreeNode("Statics");
-            treeDestWad.Nodes.Add(nodeStatics);
-
-            foreach (var staticMesh in _tool.DestinationWad.Statics)
-            {
-                var nodeStatic = new DarkUI.Controls.DarkTreeNode(staticMesh.Value.ToString());
-                nodeStatic.Tag = staticMesh.Value;
-
-                treeDestWad.Nodes[1].Nodes.Add(nodeStatic);
-            }
-
-            var nodeSprites = new DarkUI.Controls.DarkTreeNode("Sprites");
-            treeDestWad.Nodes.Add(nodeSprites);
-
-            foreach (var sequence in _tool.DestinationWad.SpriteSequences)
-            {
-                var nodeSequence = new DarkUI.Controls.DarkTreeNode(sequence.ToString());
-                nodeSequence.Tag = sequence;
-
-                treeDestWad.Nodes[2].Nodes.Add(nodeSequence);
-
-                int spriteIndex = 0;
-                int currentNode = treeDestWad.Nodes[2].Nodes.Count - 1;
-
-                foreach (var sprite in sequence.Sprites)
-                {
-                    var nodeSprite = new DarkUI.Controls.DarkTreeNode("Sprite #" + spriteIndex);
-                    nodeSprite.Tag = sprite;
-
-                    treeDestWad.Nodes[2].Nodes[currentNode].Nodes.Add(nodeSprite);
-
-                    spriteIndex++;
-                }
-            }
+            StopAnimation();
+            WadActions.LoadWadOpenFileDialog(_tool, this, true);
         }
 
         private void butOpenSourceWad_Click(object sender, EventArgs e)
         {
-            // Open the file dialog
-            openFileDialogWad.Filter = SupportedFormats.GetFilter(FileFormatType.ObjectForWadTool);
-            openFileDialogWad.Title = "Open source WAD - Wad2 - Level";
-            if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
-                return;
-
-            // Load the WAD/Wad2
-            string fileName = openFileDialogWad.FileName.ToLower();
-            if (fileName.EndsWith(".wad"))
-            {
-                var originalWad = new Tr4Wad();
-                originalWad.LoadWad(fileName);
-
-                var newWad = Tr4WadOperations.ConvertTr4Wad(originalWad, wadSoundPaths);
-                if (newWad == null)
-                    return;
-
-                if (_tool.SourceWad != null)
-                    _tool.SourceWad.Dispose();
-
-                newWad.GraphicsDevice = _tool.Device;
-                newWad.PrepareDataForDirectX();
-                _tool.SourceWad = newWad;
-
-                labelType.Text = "WAD";
-            }
-            else if (fileName.EndsWith("wad2"))
-            {
-                using (var stream = File.OpenRead(fileName))
-                {
-                    var newWad = Wad2.LoadFromStream(stream);
-                    if (newWad == null)
-                        return;
-
-                    if (_tool.SourceWad != null)
-                        _tool.SourceWad.Dispose();
-
-                    newWad.FileName = openFileDialogWad.FileName;
-                    newWad.GraphicsDevice = _tool.Device;
-                    newWad.PrepareDataForDirectX();
-                    _tool.SourceWad = newWad;
-
-                    labelType.Text = "Wad2";
-                }
-            }
-            else
-            {
-                var originalLevel = new TrLevel();
-                originalLevel.LoadLevel(fileName, _tool.Configuration.Sounds_Tr2MainSfxPath, _tool.Configuration.Sounds_Tr3MainSfxPath);
-
-                var newWad = TrLevelOperations.ConvertTrLevel(originalLevel);
-                if (newWad == null)
-                    return;
-
-                if (_tool.SourceWad != null)
-                    _tool.SourceWad.Dispose();
-
-                newWad.GraphicsDevice = _tool.Device;
-                newWad.PrepareDataForDirectX();
-                _tool.SourceWad = newWad;
-
-                labelType.Text = TrCatalog.GetVersionString(newWad.Version) + " level";
-            }
-
-            // Disable rendering
-            treeSourceWad.SelectedNodes.Clear();
-            panel3D.CurrentObject = null;
-            panel3D.CurrentWad = null;
-            panel3D.Invalidate();
-
-            // Update the UI
-            treeSourceWad.Nodes.Clear();
-
-            var nodeMoveables = new DarkUI.Controls.DarkTreeNode("Moveables");
-            treeSourceWad.Nodes.Add(nodeMoveables);
-
-            foreach (var moveable in _tool.SourceWad.Moveables)
-            {
-                var nodeMoveable = new DarkUI.Controls.DarkTreeNode(moveable.Value.ToString());
-                nodeMoveable.Tag = moveable.Value;
-
-                treeSourceWad.Nodes[0].Nodes.Add(nodeMoveable);
-            }
-
-            var nodeStatics = new DarkUI.Controls.DarkTreeNode("Statics");
-            treeSourceWad.Nodes.Add(nodeStatics);
-
-            foreach (var staticMesh in _tool.SourceWad.Statics)
-            {
-                var nodeStatic = new DarkUI.Controls.DarkTreeNode(staticMesh.Value.ToString());
-                nodeStatic.Tag = staticMesh.Value;
-
-                treeSourceWad.Nodes[1].Nodes.Add(nodeStatic);
-            }
-
-            var nodeSprites = new DarkUI.Controls.DarkTreeNode("Sprites");
-            treeSourceWad.Nodes.Add(nodeSprites);
-
-            foreach (var sequence in _tool.SourceWad.SpriteSequences)
-            {
-                var nodeSequence = new DarkUI.Controls.DarkTreeNode(sequence.ToString());
-                nodeSequence.Tag = sequence;
-
-                treeSourceWad.Nodes[2].Nodes.Add(nodeSequence);
-
-                int spriteIndex = 0;
-                int currentNode = treeSourceWad.Nodes[2].Nodes.Count - 1;
-
-                foreach (var sprite in sequence.Sprites)
-                {
-                    var nodeSprite = new DarkUI.Controls.DarkTreeNode("Sprite #" + spriteIndex);
-                    nodeSprite.Tag = sprite;
-
-                    treeSourceWad.Nodes[2].Nodes[currentNode].Nodes.Add(nodeSprite);
-
-                    spriteIndex++;
-                }
-            }
+            StopAnimation();
+            WadActions.LoadWadOpenFileDialog(_tool, this, false);
         }
 
         private void butAddObject_Click(object sender, EventArgs e)
         {
-            if (_tool.DestinationWad == null)
-            {
-                DarkMessageBox.Show(this, "You must load or create a new destination Wad2", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            // Get the selected object
-            if (treeSourceWad.SelectedNodes.Count == 0)
-                return;
-            var node = treeSourceWad.SelectedNodes[0];
-            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic)))
-                return;
-
-            var currentObject = (WadObject)node.Tag;
-            var isMoveable = (currentObject.GetType() == typeof(WadMoveable));
-
-            // Check if object could be overwritten
-            if (isMoveable && _tool.DestinationWad.Moveables.ContainsKey(currentObject.ObjectID) ||
-                !isMoveable && _tool.DestinationWad.Statics.ContainsKey(currentObject.ObjectID))
-            {
-                if (DarkMessageBox.Show(this,
-                   "Destination Wad2 already contains '" + currentObject.ToString() + "'. Do you want to overwrite it?",
-                   "Copy object", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                    return;
-            }
-
-            // Copy the object
-            _tool.DestinationWad.AddObject(currentObject, _tool.SourceWad, currentObject.ObjectID);
-
-            // Update UI
-            UpdateDestinationWad2UI();
-
-            // Rebuild DirectX data
-            _tool.DestinationWad.PrepareDataForDirectX();
+            StopAnimation();
+            WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), false);
         }
 
         private void butDeleteObject_Click(object sender, EventArgs e)
         {
-            // Get the selected object
-            if (treeDestWad.SelectedNodes.Count == 0)
-                return;
-            var node = treeDestWad.SelectedNodes[0];
-            if (!(node.Tag is WadMoveable || node.Tag is WadStatic))
+            if (treeDestWad.SelectedWadObjectIds.Count() == 0)
                 return;
 
-            var currentObject = (WadObject)node.Tag;
-            var isMoveable = currentObject is WadMoveable;
-
-            // Ask to the user the permission to delete object
-            if (DarkMessageBox.Show(this,
-                   "Are you really sure to delete '" + currentObject.ToString() + "'?",
-                   "Delete object", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (DarkMessageBox.Show(this, "Do you really want to delete selected objects?", "Delete objects",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            // Delete the object
-            _tool.DestinationWad.DeleteObject(currentObject);
-
-            // Update UI
-            UpdateDestinationWad2UI();
-
-            // Rebuild DirectX data
-            _tool.DestinationWad.PrepareDataForDirectX();
+            StopAnimation();
+            foreach (IWadObjectId id in treeDestWad.SelectedWadObjectIds)
+                _tool.DestinationWad.Remove(id);
+            _tool.MainSelection = null;
+            _tool.DestinationWadChanged();
         }
 
         private void butSave_Click(object sender, EventArgs e)
         {
-            if (_tool.DestinationWad == null)
-            {
-                DarkMessageBox.Show(this, "You don't have a valid opened Wad2", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                using (var stream = new FileStream(_tool.DestinationWad.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    Wad2.SaveToStream(_tool.DestinationWad, stream);
-                }
-            }
-            catch (Exception exc)
-            {
-                DarkMessageBox.Show(this, "Unable to save Wad2: " + exc.Message, "Error", MessageBoxIcon.Error);
-            }
+            StopAnimation();
+            WadActions.SaveWad(_tool, this, _tool.DestinationWad, false);
         }
 
         private void butSaveAs_Click(object sender, EventArgs e)
         {
-            if (_tool.DestinationWad == null)
-            {
-                DarkMessageBox.Show(this, "You don't have a valid opened Wad2", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel)
-                return;
-
-            try
-            {
-                using (var stream = new FileStream(saveFileDialogWad2.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    Wad2.SaveToStream(_tool.DestinationWad, stream);
-                }
-            }
-            catch (Exception exc)
-            {
-                DarkMessageBox.Show(this, "Unable to save Wad2: " + exc.Message, "Error", MessageBoxIcon.Error);
-            }
+            StopAnimation();
+            WadActions.SaveWad(_tool, this, _tool.DestinationWad, true);
         }
 
         private void saveWad2AsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            StopAnimation();
             butSaveAs_Click(null, null);
         }
 
         private void butAddObjectToDifferentSlot_Click(object sender, EventArgs e)
         {
-            if (_tool.DestinationWad == null)
-            {
-                DarkMessageBox.Show(this, "You must load or create a new destination Wad2", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            // Get the selected object
-            if (treeSourceWad.SelectedNodes.Count == 0)
-                return;
-            var node = treeSourceWad.SelectedNodes[0];
-            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic)))
-                return;
-
-            var currentObject = (WadObject)node.Tag;
-            var isMoveable = (currentObject.GetType() == typeof(WadMoveable));
-
-            // Ask for the new slot
-            var form = new FormSelectSlot();
-            form.IsMoveable = isMoveable;
-            if (form.ShowDialog() != DialogResult.OK)
-                return;
-
-            var objectId = (uint)form.ObjectId;
-            var objectName = form.ObjectName;
-
-            // Check if object could be overwritten
-            if (isMoveable && _tool.DestinationWad.Moveables.ContainsKey(objectId) ||
-                !isMoveable && _tool.DestinationWad.Statics.ContainsKey(objectId))
-            {
-                if (DarkMessageBox.Show(this,
-                   "Destination Wad2 already contains '" + objectName + "'. Do you want to overwrite it?",
-                   "Copy object", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                    return;
-            }
-
-            // Copy the object
-            _tool.DestinationWad.AddObject(currentObject, _tool.SourceWad, objectId);
-
-            // Update UI
-            UpdateDestinationWad2UI();
-
-            // Rebuild DirectX data
-            _tool.DestinationWad.PrepareDataForDirectX();
+            StopAnimation();
+            WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), true);
         }
 
         private void butPlaySound_Click(object sender, EventArgs e)
@@ -576,140 +228,154 @@ namespace WadTool
             if (treeSounds.SelectedNodes.Count == 0)
                 return;
             var node = treeSounds.SelectedNodes[0];
-            if (node.Tag == null || node.Tag.GetType() != typeof(WadSample))
+            if (node.Tag == null || !(node.Tag is WadSample))
                 return;
 
-            var currentSound = (WadSample)node.Tag;
-
-            currentSound.Play();
+            var currentSample = (WadSample)node.Tag;
+            WadSoundPlayer.PlaySample(currentSample);
         }
 
-        private void convertWADToWad2ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void StopAnimation()
         {
-            if (_tool.SourceWad == null)
-            {
-                DarkMessageBox.Show(this, "You must load a source WAD file", "Error", MessageBoxIcon.Error);
+            timerPlayAnimation.Stop();
+            _playAnimation = false;
+            butPlayAnimation.Enabled = true;
+            butStop.Enabled = false;
+        }
+
+        private void butNewWad_Click(object sender, EventArgs e)
+        {
+            StopAnimation();
+            WadActions.CreateNewWad(_tool, this);
+        }
+
+        private void butChangeSlot_Click(object sender, EventArgs e)
+        {
+            StopAnimation();
+            WadActions.ChangeSlot(_tool, this);
+        }
+
+        private void lstAnimations_Click(object sender, EventArgs e)
+        {
+            Wad2 wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
+            var moveable = wad.Moveables[moveableId];
+            if (moveable == null)
                 return;
+
+            // Get selected animation
+            if (treeAnimations.SelectedNodes.Count == 0)
+                return;
+            var node = treeAnimations.SelectedNodes[0];
+            int animationIndex = (int)node.Tag;
+            var animation = moveable.Animations[animationIndex];
+
+            // Reset scrollbar
+            scrollbarAnimations.Value = 0;
+            scrollbarAnimations.Maximum = animation.RealNumberOfFrames - 1;
+
+            // Reset panel 3D
+            panel3D.AnimationIndex = animationIndex;
+            panel3D.KeyFrameIndex = 0;
+
+            if (_playAnimation)
+            {
+                int frameRate = Math.Max(animation.FrameRate, (short)1);
+                timerPlayAnimation.Stop();
+                timerPlayAnimation.Interval = 1000 / 30 / frameRate;
+                timerPlayAnimation.Start();
             }
 
-            if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel)
-                return;
-
-            using (var stream = new FileStream(saveFileDialogWad2.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                Wad2.SaveToStream(_tool.SourceWad, stream);
-            }
+            panel3D.Refresh();
         }
 
-        private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void importModelAsStaticMeshToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //_tool.DestinationWad.ImportWadMeshTest("tank.3ds", 1.0f);
-            UpdateDestinationWad2UI();
+            WadActions.ImportModelAsStaticMesh(_tool, this);
         }
 
-        private void butSoundEditor_Click(object sender, EventArgs e)
+        private void aboutWadToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_tool.DestinationWad == null)
-            {
-                DarkMessageBox.Show(this, "You must load a destination Wad2 file", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            var form = new FormSoundEditor();
-            form.ShowDialog();
+            using (var form = new FormAbout(Properties.Resources.AboutScreen_800))
+                form.ShowDialog(this);
         }
 
-        private void spriteEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void newWad2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            butSpriteEditor_Click(null, null);
-        }
-
-        private void butSpriteEditor_Click(object sender, EventArgs e)
-        {
-            if (_tool.DestinationWad == null)
-            {
-                DarkMessageBox.Show(this, "You must load a destination Wad2 file", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            var form = new FormSpriteSequencesEditor();
-            form.ShowDialog();
-
-            UpdateDestinationWad2UI();
-        }
-
-        private void addNewSpriteSequenceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_tool.DestinationWad == null)
-            {
-                DarkMessageBox.Show(this, "You must load a destination Wad2 file", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            var sequence = new WadSpriteSequence();
-
-            var form = new FormSpriteEditor();
-            form.SpriteSequence = sequence;
-            if (form.ShowDialog() == DialogResult.Cancel)
-                return;
-
-            _tool.DestinationWad.SpriteSequences.Add(form.SpriteSequence);
-
-            UpdateDestinationWad2UI();
-        }
-
-        private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //_tool.DestinationWad.CreateNewStaticMeshFromExternalModel("tank.3ds", 1.0f);
-            UpdateDestinationWad2UI();
-        }
-
-        private void debugAction1ToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            //_tool.DestinationWad.DirectXTexture.Save("E:\\atlas.png", SharpDX.Toolkit.Graphics.ImageFileType.Png);
-            Wad2.SaveToFile(_tool.SourceWad, "E:\\testchunk.wad2");
-            var newWad = Wad2.LoadFromFile("E:\\testchunk.wad2");
-            if (_tool.DestinationWad != null)
-                _tool.DestinationWad.Dispose();
-
-            newWad.FileName = "E:\\testchunk.wad2";
-            newWad.GraphicsDevice = _tool.Device;
-            newWad.PrepareDataForDirectX();
-            _tool.DestinationWad = newWad;
-
-
-            // Update the UI
-            UpdateDestinationWad2UI();
+            StopAnimation();
+            WadActions.CreateNewWad(_tool, this);
         }
 
         private void treeDestWad_DoubleClick(object sender, EventArgs e)
         {
-            // Get the selected sound
-            if (treeDestWad.SelectedNodes.Count == 0)
-                return;
-            var node = treeDestWad.SelectedNodes[0];
-            if (node.Tag == null || node.Tag.GetType() != typeof(WadStatic))
-                return;
+            StopAnimation();
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+        }
 
-            var staticMesh = (WadStatic)node.Tag;
+        private void treeSourceWad_DoubleClick(object sender, EventArgs e)
+        {
+            StopAnimation();
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+        }
 
-            using (var form = new FormStaticMeshEditor(staticMesh))
+        private void treeDestWad_KeyDown(object sender, KeyEventArgs e)
+        {
+            StopAnimation();
+            switch (e.KeyCode)
             {
-                if (form.ShowDialog() == DialogResult.Cancel) return;
-
-                UpdateDestinationWad2UI();
+                case Keys.Delete:
+                    WadActions.DeleteObjects(_tool, this, WadArea.Destination, treeDestWad.SelectedWadObjectIds.ToList());
+                    break;
             }
+        }
+
+        private void treeSourceWad_KeyDown(object sender, KeyEventArgs e)
+        {
+            StopAnimation();
+        }
+
+        private void newMoveableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StopAnimation();
+            WadActions.CreateObject(_tool, this, new WadMoveable(new WadMoveableId()));
+        }
+
+        private void newStaticToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StopAnimation();
+            WadActions.CreateObject(_tool, this, new WadStatic(new WadStaticId()));
+        }
+
+        private void newSpriteSequenceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StopAnimation();
+            WadActions.CreateObject(_tool, this, new WadSpriteSequence(new WadSpriteSequenceId()));
+        }
+
+        private void newFixedSoundInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StopAnimation();
+            WadActions.CreateObject(_tool, this, new WadFixedSoundInfo(new WadFixedSoundInfoId()));
+        }
+
+        private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void debugAction2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void debugAction3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
         }
 
         private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var level = new TrLevel();
-            //level.LoadLevel("E:\\Andrea1.trc");
-        }
-
-        private void soundManagerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            butSoundEditor_Click(null, null);
         }
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -719,262 +385,144 @@ namespace WadTool
 
         private void debugAction6ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var level = new TrLevel();
-            //level.LoadLevel("E:\\TR2\\data\\venice.tr2");
-            var newWad = TrLevelOperations.ConvertTrLevel(level);
-
-            if (_tool.SourceWad != null)
-                _tool.SourceWad.Dispose();
-
-            newWad.GraphicsDevice = _tool.Device;
-            newWad.PrepareDataForDirectX();
-            _tool.SourceWad = newWad;
-
-            // Update the UI
-            treeSourceWad.Nodes.Clear();
-
-            var nodeMoveables = new DarkUI.Controls.DarkTreeNode("Moveables");
-            treeSourceWad.Nodes.Add(nodeMoveables);
-
-            foreach (var moveable in _tool.SourceWad.Moveables)
-            {
-                var nodeMoveable = new DarkUI.Controls.DarkTreeNode(moveable.Value.ToString());
-                nodeMoveable.Tag = moveable.Value;
-
-                treeSourceWad.Nodes[0].Nodes.Add(nodeMoveable);
-            }
-
-            var nodeStatics = new DarkUI.Controls.DarkTreeNode("Statics");
-            treeSourceWad.Nodes.Add(nodeStatics);
-
-            foreach (var staticMesh in _tool.SourceWad.Statics)
-            {
-                var nodeStatic = new DarkUI.Controls.DarkTreeNode(staticMesh.Value.ToString());
-                nodeStatic.Tag = staticMesh.Value;
-
-                treeSourceWad.Nodes[1].Nodes.Add(nodeStatic);
-            }
-        }
-
-        private void aboutWadToolToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (FormAbout form = new FormAbout())
-                form.ShowDialog(this);
         }
 
         private void debugAction7ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            /*for (var i = 1; i <= 4; i++)
-            {
-                var addedSounds = new List<int>();
-
-                using (var reader = new StreamReader(File.OpenRead("E:\\SFX_TR" + i + ".txt")))
-                {
-                    if (File.Exists("E:\\TR" + i + ".xml")) File.Delete("E:\\TR" + i + ".xml");
-
-                    using (var writer = new StreamWriter(File.OpenWrite("E:\\TR" + i + ".xml")))
-                    {
-                        while (!reader.EndOfStream)
-                        {
-                            var s = reader.ReadLine();
-                            int id = Int32.Parse(s.Split(' ')[0]);
-                            if (addedSounds.Contains(id)) continue;
-                            addedSounds.Add(id);
-
-                            s = s.Substring(4, s.Length - 4);
-                            s = s.Replace("\"", "");
-                            s = s.Replace(" -- ", "\" name=\"");
-                            s = "<sound id=\"" + id + s + "\" ";
-                            if (i == 4 && Wad2.MandatorySounds.Contains((ushort)id)) s += "mandatory=\"true\"";
-                            s+= "/>";
-                            writer.WriteLine(s);
-                        }
-                    }
-                }
-            }*/
-
-            using (var reader = new StreamReader(File.OpenRead("E:\\sounds.txt")))
-            {
-                using (var writer = new StreamWriter(File.OpenWrite("E:\\TR5.xml")))
-                {
-                    int i = 0;
-                    while (!reader.EndOfStream)
-                    {
-                        var s = reader.ReadLine();
-                        s = s.Substring(0, s.IndexOf(":"));
-                        s = s[0] + s.Replace("_", " ").Substring(1, s.Length - 1).ToLower();
-                        writer.WriteLine("<sound id=\"" +i + "\" name=\"" + s + "\"/>");
-                        i++;
-                    }
-                }
-            }
         }
 
         private void debugAction8ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var wad = _tool.SourceWad;
-            wad.Textures.Clear();
-            wad.Moveables.Clear();
-            wad.Statics.Clear();
-            wad.Meshes.Clear();
-
-            var newSounds = new Dictionary<ushort, WadSoundInfo>();
-
-            foreach(var info in wad.SoundInfo)
-            {
-                if (TrCatalog.IsSoundMandatory(wad.Version, info.Key))
-                {
-                    newSounds.Add(info.Key, info.Value);
-                }
-            }
-
-            wad.SoundInfo.Clear();
-            wad.Samples.Clear();
-
-            foreach (var info in newSounds)
-            {
-                wad.SoundInfo.Add(info.Key, info.Value);
-
-                foreach (var sample in info.Value.Samples)
-                {
-                    if (!wad.Samples.ContainsKey(sample.Hash)) wad.Samples.Add(sample.Hash, sample);
-                }
-            }
-
-            Wad2.SaveToFile(wad, "E:\\BaseWad.wad2");
         }
 
         private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var sounds = TrCatalog.GetAllSounds(TombRaiderVersion.TR4);
-            int numMandatory = 0;
-            foreach (var sound in sounds)
+            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
+                form.ShowDialog();
+        }
+
+        private void timerPlayAnimation_Tick(object sender, EventArgs e)
+        {
+            if (_playAnimation)
             {
-                if (TrCatalog.IsSoundMandatory(TombRaiderVersion.TR4, (uint)sound.Key)) numMandatory++;
+                // Get selected moveable
+                var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
+                var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
+                var moveable = wad.Moveables[moveableId];
+                if (moveable == null || moveable.Animations.Count == 0)
+                {
+                    _playAnimation = false;
+                    return;
+                }
+
+                // Get selected animation
+                if (treeAnimations.SelectedNodes.Count == 0)
+                    return;
+                var node = treeAnimations.SelectedNodes[0];
+                var animationIndex = (int)node.Tag;
+                if (animationIndex >= moveable.Animations.Count)
+                {
+                    _playAnimation = false;
+                    return;
+                }
+                var animation = moveable.Animations[animationIndex];
+
+                // Update animation
+                if (panel3D.KeyFrameIndex >= animation.RealNumberOfFrames)
+                    panel3D.KeyFrameIndex = 0;
+                else
+                    panel3D.KeyFrameIndex++;
+                panel3D.Refresh();
             }
         }
 
-        private void newEmptyWad2ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void butPlayAnimation_Click(object sender, EventArgs e)
         {
-            butNewWad2_Click(null, null);
-        }
-
-        private void newEmptyWad2WithSystemSoundsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            butNewWad2ForLevel_Click(null, null);
-        }
-
-        private void butNewWad2_Click(object sender, EventArgs e)
-        {
-            if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
-            var wad = new Wad2(TombRaiderVersion.TR4);
-            wad.GraphicsDevice = _tool.Device;
-            wad.PrepareDataForDirectX();
-            _tool.DestinationWad = wad;
-
-            UpdateDestinationWad2UI();
-        }
-
-        private void butNewWad2ForLevel_Click(object sender, EventArgs e)
-        {
-            if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
-            var wad = Wad2.LoadFromFile("Editor\\BaseWad2\\BaseTR4.wad2");
-            if (wad == null)
+            // Get selected moveable
+            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
+            var moveable = wad.Moveables[moveableId];
+            if (moveable == null || moveable.Animations.Count == 0)
             {
-                DarkMessageBox.Show(this,
-                                    "There was an error while creating the new Wad2",
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            wad.GraphicsDevice = _tool.Device;
-            wad.PrepareDataForDirectX();
-            _tool.DestinationWad = wad;
-
-            UpdateDestinationWad2UI();
-        }
-
-        private void butChangeSlot_Click(object sender, EventArgs e)
-        {
-            /*if (_tool.DestinationWad == null)
-            {
-                DarkMessageBox.Show(this, "You must load or create a new destination Wad2", "Error", MessageBoxIcon.Error);
+                _playAnimation = false;
                 return;
             }
 
-            // Get the selected object
-            if (treeSourceWad.SelectedNodes.Count == 0)
-                return;
-            var node = treeSourceWad.SelectedNodes[0];
-            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic)))
-                return;
-
-            var currentObject = (WadObject)node.Tag;
-            var isMoveable = (currentObject.GetType() == typeof(WadMoveable));
-
-            // Ask for the new slot
-            var form = new FormSelectSlot();
-            form.IsMoveable = isMoveable;
-            if (form.ShowDialog() != DialogResult.OK)
-                return;
-
-            var objectId = (uint)form.ObjectId;
-            var objectName = form.ObjectName;
-
-            if (objectId == currentObject.ObjectID)
-            {
-                DarkMessageBox.Show(this, "The slot that you have selected is the same of the current object", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            currentObject.ObjectID = objectId;
-
-            UpdateDestinationWad2UI();*/
-        }
-
-        private void lstAnimations_Click(object sender, EventArgs e)
-        {
             // Get selected animation
-            if (treeAnimations.SelectedNodes.Count == 0) return;
+            if (treeAnimations.SelectedNodes.Count == 0)
+                return;
             var node = treeAnimations.SelectedNodes[0];
             var animationIndex = (int)node.Tag;
-
-            // Reset scrollbar
-            scrollbarAnimations.Value = 0;
-            scrollbarAnimations.Maximum = (_selectedObject as WadMoveable).Animations[animationIndex].KeyFrames.Count - 1;
-
-            // Reset panel 3D
-            panel3D.Animation = animationIndex;
-            panel3D.KeyFrame = 0;
-            panel3D.Invalidate();
-        }
-
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void scrollbarAnimations_ValueChanged(object sender, DarkUI.Controls.ScrollValueEventArgs e)
-        {
-            panel3D.KeyFrame = scrollbarAnimations.Value;
-            panel3D.Invalidate();
-        }
-
-        private void importModelAsStaticMeshToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (FileDialog dialog = new OpenFileDialog())
+            if (animationIndex >= moveable.Animations.Count)
             {
-                dialog.Filter = SupportedFormats.GetFilter(FileFormatType.GeometryImport);
-                dialog.Title = "Select a 3D file that you want to see imported.";
-                if (dialog.ShowDialog(this) != DialogResult.OK) return;
+                _playAnimation = false;
+                return;
+            }
+            var animation = moveable.Animations[animationIndex];
 
-                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    form.AddPreset(IOSettingsPresets.SettingsPresets);
-                    if (form.ShowDialog() == DialogResult.Cancel) return;
-                    _tool.DestinationWad.CreateNewStaticMeshFromExternalModel(dialog.FileName, form.Settings);
-                    UpdateDestinationWad2UI();
-                }
-                    
+            panel3D.AnimationIndex = animationIndex;
+            panel3D.KeyFrameIndex = 0;
+
+            // Start animation
+            _playAnimation = true;
+            int frameRate = Math.Max(animation.FrameRate, (short)1);
+            timerPlayAnimation.Stop();
+            timerPlayAnimation.Interval = 1000 / 30 / frameRate;
+            timerPlayAnimation.Start();
+
+            butPlayAnimation.Enabled = false;
+            butStop.Enabled = true;
+        }
+
+        private void butStop_Click(object sender, EventArgs e)
+        {
+            _playAnimation = false;
+            timerPlayAnimation.Stop();
+            butStop.Enabled = false;
+            butPlayAnimation.Enabled = true;
+        }
+
+        private void butEditItem_Click(object sender, EventArgs e)
+        {
+            StopAnimation();
+        }
+
+        private void butRenameAnimation_Click(object sender, EventArgs e)
+        {
+            StopAnimation();
+        }
+
+        private void butRenameSound_Click(object sender, EventArgs e)
+        {
+            StopAnimation();
+        }
+
+        private void soundInfoOverviewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.ShowSoundOverview(_tool, this, WadArea.Destination);
+        }
+
+        private void darkButton1_Click(object sender, EventArgs e)
+        {
+            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
+            using (var form = new FormSkeletonEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
+            {
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
+                _tool.SelectedObjectEdited();
+            }
+        }
+
+        private void darkButton3_Click(object sender, EventArgs e)
+        {
+            var wad = _tool.GetWad(_tool.MainSelection.Value.WadArea);
+            var moveableId = (WadMoveableId)_tool.MainSelection.Value.Id;
+            using (var form = new FormAnimationEditor(_tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
+            {
+                if (form.ShowDialog() != DialogResult.OK)
+                    return;
+                _tool.SelectedObjectEdited();
             }
         }
     }

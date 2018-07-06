@@ -1,104 +1,193 @@
-﻿using SharpDX.Direct3D;
-using SharpDX.Toolkit.Graphics;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System;
+using System.Threading;
+using TombLib.Graphics;
 using TombLib.Wad;
-using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
-    internal class WadToolClass : IDisposable
+    public interface IEditorEvent { }
+    public interface IWadChangedEvent : IEditorEvent { }
+
+    public enum WadArea
     {
-        public Wad2 DestinationWad { get; set; }
-        public Wad2 SourceWad { get; set; }
+        Source,
+        Destination
+    }
 
-        public GraphicsDevice Device { get; set; }
-        public Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
-        public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
-        public SpriteFont Font { get; set; }
+    public struct MainSelection
+    {
+        public WadArea WadArea;
+        public IWadObjectId Id;
+    }
 
-        public Configuration Configuration { get { return _configuration; } }
+    public class WadToolClass : IDisposable
+    {
+        // The editor event
+        public event Action<IEditorEvent> EditorEventRaised;
 
-        private Configuration _configuration;
-        private static WadToolClass _instance;
-
-        public static WadToolClass Instance
+        public void RaiseEvent(IEditorEvent eventObj)
         {
-            get
+            SynchronizationContext.Current.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
+        }
+
+        // The configuration
+        public Configuration Configuration { get; }
+
+        // Open wads
+        private Wad2 _destinationWad;
+        public Wad2 DestinationWad
+        {
+            get { return _destinationWad; }
+            set
             {
-                if (_instance == null)
-                {
-                    _instance = new WadToolClass();
-                    return _instance;
-                }
-                else
-                {
-                    return _instance;
-                }
+                if (_destinationWad == value)
+                    return;
+                _destinationWad = value;
+                DestinationWadChanged();
+
+                // Update selection
+                if (_mainSelection.HasValue)
+                    if (_mainSelection.Value.WadArea == WadArea.Destination)
+                        if (value.Contains(_mainSelection.Value.Id))
+                            RaiseEvent(new MainSelectionChangedEvent());
+                        else
+                            MainSelection = null;
             }
         }
 
-        public void Initialize()
+        private Wad2 _sourceWad;
+        public Wad2 SourceWad
         {
-            Device = GraphicsDevice.New(DriverType.Hardware, SharpDX.Direct3D11.DeviceCreationFlags.None, FeatureLevel.Level_10_0);
-
-            string resourcePath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-
-            // Load effects
-            IEnumerable<string> effectFiles = Directory.EnumerateFiles(resourcePath + "\\Editor\\Shaders", "*.fx");
-            foreach (string fileName in effectFiles)
+            get { return _sourceWad; }
+            set
             {
-                string effectName = Path.GetFileNameWithoutExtension(fileName);
-                Effects.Add(effectName, LoadEffect(fileName));
+                if (_sourceWad == value)
+                    return;
+                _sourceWad = value;
+
+                SourceWadChanged();
+
+                // Update selection
+                if (_mainSelection.HasValue)
+                    if (_mainSelection.Value.WadArea == WadArea.Source)
+                        if (value.Contains(_mainSelection.Value.Id))
+                            RaiseEvent(new MainSelectionChangedEvent());
+                        else
+                            MainSelection = null;
             }
-
-            // Load BasicEffect
-            BasicEffect bEffect = new BasicEffect(Device);
-            Effects.Add("Toolkit.BasicEffect", bEffect);
-
-            // Load images
-            IEnumerable<string> textureFiles = Directory.EnumerateFiles(resourcePath + "\\Editor\\Textures", "*.png");
-            foreach (string fileName in textureFiles)
-            {
-                string textureName = Path.GetFileNameWithoutExtension(fileName);
-                Textures.Add(textureName, TombLib.Graphics.TextureLoad.Load(Device, fileName));
-            }
-
-            // Load default font
-            SpriteFontData fontData = SpriteFontData.Load("Editor\\Misc\\Font.bin");
-            fontData.DefaultCharacter = '\n'; // Don't crash on uncommon Unicode values
-            Font = SpriteFont.New(Device, fontData);
-
-            // Load configuration
-            _configuration = Configuration.LoadOrUseDefault();
-
-            // Load items catalog
-            TrCatalog.LoadCatalog("Editor\\Misc\\TRCatalog.xml");
         }
 
-        private Effect LoadEffect(string fileName)
+        public Wad2 GetWad(WadArea? wadArea)
         {
-            EffectCompilerResult result = EffectCompiler.CompileFromFile(fileName);
-
-            if (result.HasErrors)
+            if (!wadArea.HasValue)
+                return null;
+            switch (wadArea.Value)
             {
-                string errors = "";
-                foreach (var err in result.Logger.Messages)
-                    errors += err + Environment.NewLine;
-                throw new Exception("Could not compile effect '" + fileName + "'" + Environment.NewLine + errors);
+                case WadArea.Source: return SourceWad;
+                case WadArea.Destination: return DestinationWad;
+                default: throw new ArgumentOutOfRangeException();
             }
+        }
 
-            return new Effect(Device, result.EffectData);
+        public void WadChanged(WadArea wadArea)
+        {
+            switch (wadArea)
+            {
+                case WadArea.Source:
+                    SourceWadChanged();
+                    break;
+                case WadArea.Destination:
+                    DestinationWadChanged();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public class DestinationWadChangedEvent : IWadChangedEvent
+        { }
+        public void DestinationWadChanged()
+        {
+            RaiseEvent(new DestinationWadChangedEvent());
+        }
+
+        public class SourceWadChangedEvent : IWadChangedEvent
+        { }
+        public void SourceWadChanged()
+        {
+            RaiseEvent(new SourceWadChangedEvent());
+        }
+
+        // Selection
+        public class MainSelectionChangedEvent : IWadChangedEvent
+        { }
+        private MainSelection? _mainSelection;
+        public MainSelection? MainSelection
+        {
+            get { return _mainSelection; }
+            set
+            {
+                if (_mainSelection == null && value == null)
+                    return;
+                if (_mainSelection != null && value != null && _mainSelection.Equals(value))
+                    return;
+                _mainSelection = value;
+                RaiseEvent(new MainSelectionChangedEvent());
+            }
+        }
+
+        public class StaticSelectedLightChangedEvent : IEditorEvent
+        { }
+        public void StaticSelectedLightChanged()
+        {
+            RaiseEvent(new StaticSelectedLightChangedEvent());
+        }
+
+        public class StaticLightsChangedEvent : IEditorEvent
+        { }
+        public void StaticLightsChanged()
+        {
+            RaiseEvent(new StaticLightsChangedEvent());
+        }
+
+        public class BoneOffsetMovedEvent : IEditorEvent
+        { }
+        public void BoneOffsetMoved()
+        {
+            RaiseEvent(new BoneOffsetMovedEvent());
+        }
+
+        public class SelectedObjectEditedEvent : IEditorEvent
+        { }
+        public void SelectedObjectEdited()
+        {
+            RaiseEvent(new SelectedObjectEditedEvent());
+        }
+
+        public class AnimationEditorMeshSelectedEvent : IEditorEvent
+        {
+            public ObjectMesh Mesh { get; set; }
+            public AnimatedModel Model { get; set; }
+            public AnimationEditorMeshSelectedEvent(AnimatedModel model, ObjectMesh mesh)
+            {
+                Model = model;
+                Mesh = mesh;
+            }
+        }
+        public void AnimationEditorMeshSelected(AnimatedModel model, ObjectMesh mesh)
+        {
+            RaiseEvent(new AnimationEditorMeshSelectedEvent(model, mesh));
+        }
+
+        // Construction and destruction
+        public WadToolClass(Configuration configuration)
+        {
+            Configuration = configuration;
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+
         }
     }
 }

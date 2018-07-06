@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-
-namespace TombLib.Wad
+﻿namespace TombLib.Wad
 {
     public class WadAnimDispatch
     {
@@ -13,16 +7,14 @@ namespace TombLib.Wad
         public ushort NextAnimation { get; set; }
         public ushort NextFrame { get; set; }
 
-        public WadAnimDispatch Clone()
+        public WadAnimDispatch() { }
+
+        public WadAnimDispatch(ushort inFrame, ushort outFrame, ushort nextAnimation, ushort nextFrame)
         {
-            var dispatch = new WadAnimDispatch();
-
-            dispatch.InFrame = InFrame;
-            dispatch.OutFrame = OutFrame;
-            dispatch.NextAnimation = NextAnimation;
-            dispatch.NextFrame = NextFrame;
-
-            return dispatch;
+            InFrame = inFrame;
+            OutFrame = outFrame;
+            NextAnimation = nextAnimation;
+            NextFrame = nextFrame;
         }
     }
 }

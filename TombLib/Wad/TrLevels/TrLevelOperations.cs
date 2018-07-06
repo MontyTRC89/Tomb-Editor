@@ -1,120 +1,158 @@
 ﻿using NLog;
-using SharpDX;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
-using TombLib.Wad.TrLevels;
 
 namespace TombLib.Wad.TrLevels
 {
-    public static class TrLevelOperations
+    internal static class TrLevelOperations
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static Dictionary<int, WadTexture> ConvertTrLevelTexturesToWadTexture(TrLevel oldLevel)
+        public static Wad2 ConvertTrLevel(TrLevel oldLevel)
         {
-            var textures = new ConcurrentDictionary<int, WadTexture>();
+            var wad = new Wad2();
+            wad.SuggestedGameVersion = TrLevel.GetWadGameVersion(oldLevel.Version);
 
+            logger.Info("Converting TR level to WAD2");
+
+            // Convert textures
+            TextureArea[] objectTextures = ConvertTrLevelTexturesToWadTexture(oldLevel);
+            logger.Info("Texture conversion complete.");
+
+            // Convert sounds
+            WadSoundInfo[] soundInfos = ConvertTrLevelSounds(wad, oldLevel);
+            logger.Info("Sound conversion complete.");
+
+            // Then convert moveables and static meshes
+            // Meshes will be converted inside each model
+            for (int i = 0; i < oldLevel.Moveables.Count; i++)
+            {
+                WadMoveable moveable = ConvertTrLevelMoveableToWadMoveable(wad, oldLevel, i, objectTextures, soundInfos);
+                wad.Moveables.Add(moveable.Id, moveable);
+            }
+            logger.Info("Moveable conversion complete.");
+
+            for (int i = 0; i < oldLevel.StaticMeshes.Count; i++)
+            {
+                WadStatic @static = ConvertTrLevelStaticMeshToWadStatic(wad, oldLevel, i, objectTextures);
+                wad.Statics.Add(@static.Id, @static);
+            }
+            logger.Info("Static mesh conversion complete.");
+
+            // Convert sprites
+            ConvertTrLevelSprites(wad, oldLevel);
+            logger.Info("Sprite conversion complete.");
+
+            // Add additional dynamic sounds
+            AddAdditionalDynamicSounds(wad, oldLevel, soundInfos);
+
+            return wad;
+        }
+
+        private static readonly Vector2[] _zero = new Vector2[4] { new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f) };
+
+        private static void AddAdditionalDynamicSounds(Wad2 wad, TrLevel oldLevel, WadSoundInfo[] infos)
+        {
+            var newSoundInfos = wad.SoundInfosUnique.ToList();
+            for (uint i = 0; i < infos.Length; ++i)
+                if (infos[i] != null && !newSoundInfos.Contains(infos[i]))
+                {
+                    var id = new WadAdditionalSoundInfoId(TrCatalog.GetOriginalSoundName(wad.SuggestedGameVersion, i));
+                    wad.AdditionalSoundInfos.Add(id, new WadAdditionalSoundInfo(id) { SoundInfo = infos[i] });
+                }
+        }
+
+        private static TextureArea[] ConvertTrLevelTexturesToWadTexture(TrLevel oldLevel)
+        {
+            var objectTextures = new TextureArea[oldLevel.ObjectTextures.Count];
+            ImageC tiles = ImageC.FromByteArray(oldLevel.TextureMap32, 256, oldLevel.TextureMap32.Length / 1024);
+
+            // for (int i = 0; i < oldLevel.ObjectTextures.Count; ++i)
             Parallel.For(0, oldLevel.ObjectTextures.Count, i =>
             {
                 var oldTexture = oldLevel.ObjectTextures[i];
-                var texture = new WadTexture();
 
-                // Find the corners of the texture
-                var minX = Math.Min(Math.Min(oldTexture.Vertices[0].Xp, oldTexture.Vertices[1].Xp), oldTexture.Vertices[2].Xp);
-                if (oldTexture.Vertices[3].Xc != 0) minX = Math.Min(minX, oldTexture.Vertices[3].Xp);
-                var minY = Math.Min(Math.Min(oldTexture.Vertices[0].Yp, oldTexture.Vertices[1].Yp), oldTexture.Vertices[2].Yp);
-                if (oldTexture.Vertices[3].Yc != 0) minY = Math.Min(minY, oldTexture.Vertices[3].Yp);
+                int textureTileIndex = oldTexture.TileAndFlags & 0x7fff;
+                // We can't use this bit in TR2...
+                bool isTriangle = (oldTexture.TileAndFlags & 0x8000) != 0;
+                if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2)
+                    isTriangle = (oldTexture.Vertices[3].X == 0) && (oldTexture.Vertices[3].Y == 0);
 
-                var maxX = Math.Max(Math.Max(oldTexture.Vertices[0].Xp, oldTexture.Vertices[1].Xp), oldTexture.Vertices[2].Xp);
-                if (oldTexture.Vertices[3].Xc != 0) maxX = Math.Max(maxX, oldTexture.Vertices[3].Xp);
-                var maxY = Math.Max(Math.Max(oldTexture.Vertices[0].Yp, oldTexture.Vertices[1].Yp), oldTexture.Vertices[2].Yp);
-                if (oldTexture.Vertices[3].Yc != 0) maxY = Math.Max(maxY, oldTexture.Vertices[3].Yp);
-
-                texture.PositionInOriginalTexturePage = new Vector2(minX, minY);
-
-                var width = (int)(maxX - minX + 1);
-                var height = (int)(maxY - minY + 1);
-                var tile = oldTexture.TileAndFlags & 0xFF;
-
-                // Create the texture ImageC
-                var textureData = ImageC.CreateNew(width, height);
-
-                for (int y = 0; y < textureData.Height; y++)
-                {
-                    for (int x = 0; x < textureData.Width; x++)
-                    {
-                        byte b = oldLevel.TextureMap32[tile * 65536 * 4 + (y + minY) * 1024 + (x + minX) * 4 + 0];
-                        byte g = oldLevel.TextureMap32[tile * 65536 * 4 + (y + minY) * 1024 + (x + minX) * 4 + 1];
-                        byte r = oldLevel.TextureMap32[tile * 65536 * 4 + (y + minY) * 1024 + (x + minX) * 4 + 2];
-                        byte a = oldLevel.TextureMap32[tile * 65536 * 4 + (y + minY) * 1024 + (x + minX) * 4 + 3];
-
-                        var color = new ColorC(r, g, b, a);
-                        textureData.SetPixel(x, y, color);
-                    }
+                // Calculate UV coordinates...
+                Vector2[] coords = new Vector2[isTriangle ? 3 : 4];
+                if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                { // In old TR games there are no new flags
+                    // Perhaps there is a better way that will support subpixel addressing
+                    // but according to the fileformat documentation
+                    // it should work on original TR games https://opentomb.earvillage.net/TRosettaStone3/trosettastone.html#_object_textures
+                    for (int j = 0; j < coords.Length; ++j)
+                        coords[j] = new Vector2(
+                            ((oldTexture.Vertices[j].X & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].X >> 8),
+                            ((oldTexture.Vertices[j].Y & 0xff) < 128 ? 0.5f : -0.5f) + (oldTexture.Vertices[j].Y >> 8));
+                }
+                else
+                { // In new TR games we can to use new flags
+                    Vector2[] coordAddArray = LevelData.Compilers.Util.ObjectTextureManager.GetTexCoordModificationFromNewFlags(oldTexture.NewFlags, isTriangle);
+                    for (int j = 0; j < coords.Length; ++j)
+                        coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256f) + coordAddArray[j];
                 }
 
-                // Replace magenta color with alpha transparent black
-                //textureData.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+                // Find the corners of the texture
+                Vector2 min = coords[0], max = coords[0];
+                for (int j = 1; j < coords.Length; ++j)
+                {
+                    min = Vector2.Min(min, coords[j]);
+                    max = Vector2.Max(max, coords[j]);
+                }
+                const float margin = 0.49f;
+                VectorInt2 start = VectorInt2.FromFloor(min - new Vector2(margin));
+                VectorInt2 end = VectorInt2.FromCeiling(max + new Vector2(margin));
+                start = VectorInt2.Min(VectorInt2.Max(start, new VectorInt2()), new VectorInt2(256, 256));
+                end = VectorInt2.Min(VectorInt2.Max(end, new VectorInt2()), new VectorInt2(256, 256));
 
-                texture.Image = textureData;
+                // Create image
+                ImageC image = ImageC.CreateNew(end.X - start.X, end.Y - start.Y);
+                image.CopyFrom(0, 0, tiles, start.X, start.Y + textureTileIndex * 256, end.X - start.X, end.Y - start.Y);
+                WadTexture texture = new WadTexture(image);
 
-                // Update the hash of the texture
-                texture.UpdateHash();
+                // Create texture area
+                TextureArea textureArea;
+                textureArea.DoubleSided = false;
+                textureArea.BlendMode = (BlendMode)(oldTexture.Attributes);
+                textureArea.TexCoord0 = coords[0] - start;
+                textureArea.TexCoord1 = coords[1] - start;
+                textureArea.TexCoord2 = coords[2] - start;
+                textureArea.TexCoord3 = isTriangle ? new Vector2() : (coords[3] - start);
+                textureArea.Texture = texture;
 
-                textures.TryAdd(i, texture);
-
-                i++;
+                objectTextures[i] = textureArea;
             });
 
-            return new Dictionary<int, WadTexture>(textures);
+            return objectTextures;
         }
 
-        internal static WadMesh ConvertTrLevelMeshToWadMesh(Wad2 wad, TrLevel oldLevel, tr_mesh oldMesh,
-                                                      Dictionary<int, WadTexture> convertedTextures)
+        private static WadMesh ConvertTrLevelMeshToWadMesh(Wad2 wad, TrLevel oldLevel, tr_mesh oldMesh, TextureArea[] objectTextures)
         {
             WadMesh mesh = new WadMesh();
 
-            int xMin = Int32.MaxValue;
-            int yMin = Int32.MaxValue;
-            int zMin = Int32.MaxValue;
-            int xMax = Int32.MinValue;
-            int yMax = Int32.MinValue;
-            int zMax = Int32.MinValue;
-
-            // Create the bounding sphere
-            mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.Center.X, oldMesh.Center.Y, oldMesh.Center.Z),
-                                                     oldMesh.Radius);
+            mesh.Name = "Mesh_" + oldLevel.Meshes.IndexOf(oldMesh);
 
             // Add positions
             foreach (var oldVertex in oldMesh.Vertices)
             {
                 mesh.VerticesPositions.Add(new Vector3(oldVertex.X, -oldVertex.Y, oldVertex.Z));
-
-                if (oldVertex.X < xMin)
-                    xMin = oldVertex.X;
-                if (-oldVertex.Y < yMin)
-                    yMin = -oldVertex.Y;
-                if (oldVertex.Z < zMin)
-                    zMin = oldVertex.Z;
-
-                if (oldVertex.X > xMax)
-                    xMax = oldVertex.X;
-                if (-oldVertex.Y > yMax)
-                    yMax = -oldVertex.Y;
-                if (oldVertex.Z > zMax)
-                    zMax = oldVertex.Z;
             }
 
-            Vector3 minVertex = new Vector3(xMin, yMin, zMin);
-            Vector3 maxVertex = new Vector3(xMax, yMax, zMax);
+            // Create the bounding areas
+            mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.Center.X, oldMesh.Center.Y, oldMesh.Center.Z), oldMesh.Radius);
+            mesh.BoundingBox = mesh.CalculateBoundingBox();
 
             // Add normals
             foreach (var oldNormal in oldMesh.Normals)
@@ -131,361 +169,288 @@ namespace TombLib.Wad.TrLevels
             // Add polygons
             foreach (var oldPoly in oldMesh.TexturedQuads)
             {
-                WadPolygon poly = new WadPolygon(WadPolygonShape.Quad);
+                TextureArea textureArea = objectTextures[oldPoly.Texture & 0x7fff];
+                textureArea.DoubleSided = (oldPoly.Texture & 0x8000) != 0;
 
-                // Polygon indices
-                poly.Indices.Add(oldPoly.Vertices[0]);
-                poly.Indices.Add(oldPoly.Vertices[1]);
-                poly.Indices.Add(oldPoly.Vertices[2]);
-                poly.Indices.Add(oldPoly.Vertices[3]);
-
-                // Polygon special effects
-                poly.ShineStrength = (byte)((oldPoly.LightingEffect & 0x7c) >> 2);
-
-                // Add the texture
-                TextureArea textureArea = new TextureArea();
-                textureArea.DoubleSided = false;
-                var textureId = oldPoly.Texture & 0x7fff;
-                var newTexture = convertedTextures[textureId];
-                var oldTexture = oldLevel.ObjectTextures[textureId];
-                if (wad.Textures.ContainsKey(newTexture.Hash))
-                {
-                    textureArea.Texture = wad.Textures[newTexture.Hash];
-                }
-                else
-                {
-                    wad.Textures.Add(newTexture.Hash, newTexture);
-                    textureArea.Texture = newTexture;
-                }
-                textureArea.TexCoord0 = new Vector2(oldTexture.Vertices[0].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f, 
-                                                    oldTexture.Vertices[0].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
-                textureArea.TexCoord1 = new Vector2(oldTexture.Vertices[1].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
-                                                    oldTexture.Vertices[1].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
-                textureArea.TexCoord2 = new Vector2(oldTexture.Vertices[2].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
-                                                    oldTexture.Vertices[2].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
-                textureArea.TexCoord3 = new Vector2(oldTexture.Vertices[3].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
-                                                    oldTexture.Vertices[3].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
+                WadPolygon poly;
+                poly.Shape = WadPolygonShape.Quad;
+                poly.Index0 = oldPoly.Index0;
+                poly.Index1 = oldPoly.Index1;
+                poly.Index2 = oldPoly.Index2;
+                poly.Index3 = oldPoly.Index3;
+                poly.ShineStrength = (byte)((oldPoly.LightingEffect & 0xfe) >> 1);
                 poly.Texture = textureArea;
-
                 mesh.Polys.Add(poly);
             }
-
             foreach (var oldPoly in oldMesh.TexturedTriangles)
             {
-                WadPolygon poly = new WadPolygon(WadPolygonShape.Triangle);
+                TextureArea textureArea = objectTextures[oldPoly.Texture & 0x7fff];
+                textureArea.DoubleSided = (oldPoly.Texture & 0x8000) != 0;
 
-                // Polygon indices
-                poly.Indices.Add(oldPoly.Vertices[0]);
-                poly.Indices.Add(oldPoly.Vertices[1]);
-                poly.Indices.Add(oldPoly.Vertices[2]);
-
-                // Polygon special effects
-                poly.ShineStrength = (byte)((oldPoly.LightingEffect & 0x7c) >> 2);
-
-                // Add the texture
-                TextureArea textureArea = new TextureArea();
-                textureArea.DoubleSided = false;
-                var textureId = oldPoly.Texture & 0x7fff;
-                var newTexture = convertedTextures[textureId];
-                var oldTexture = oldLevel.ObjectTextures[textureId];
-                if (wad.Textures.ContainsKey(newTexture.Hash))
-                {
-                    textureArea.Texture = wad.Textures[newTexture.Hash];
-                }
-                else
-                {
-                    wad.Textures.Add(newTexture.Hash, newTexture);
-                    textureArea.Texture = newTexture;
-                }
-                textureArea.TexCoord0 = new Vector2(oldTexture.Vertices[0].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
-                                                    oldTexture.Vertices[0].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
-                textureArea.TexCoord1 = new Vector2(oldTexture.Vertices[1].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
-                                                    oldTexture.Vertices[1].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
-                textureArea.TexCoord2 = new Vector2(oldTexture.Vertices[2].Xp - newTexture.PositionInOriginalTexturePage.X + 0.5f,
-                                                    oldTexture.Vertices[2].Yp - newTexture.PositionInOriginalTexturePage.Y + 0.5f);
+                WadPolygon poly;
+                poly.Shape = WadPolygonShape.Triangle;
+                poly.Index0 = oldPoly.Index0;
+                poly.Index1 = oldPoly.Index1;
+                poly.Index2 = oldPoly.Index2;
+                poly.Index3 = 0;
+                poly.ShineStrength = (byte)((oldPoly.LightingEffect & 0xfe) >> 1);
                 poly.Texture = textureArea;
-
                 mesh.Polys.Add(poly);
             }
 
             foreach (var oldPoly in oldMesh.ColoredRectangles)
             {
-                WadPolygon poly = new WadPolygon(WadPolygonShape.Quad);
-
-                // Polygon indices
-                poly.Indices.Add(oldPoly.Vertices[0]);
-                poly.Indices.Add(oldPoly.Vertices[1]);
-                poly.Indices.Add(oldPoly.Vertices[2]);
-                poly.Indices.Add(oldPoly.Vertices[3]);
-                
-                // Add the colored surface
-                TextureArea textureArea = new TextureArea();
-                var paletteIndex8 = oldPoly.Texture & 0xff;
-                textureArea.Texture = ConvertColoredFaceToTexture(wad, oldLevel, paletteIndex8);
-                textureArea.TexCoord0 = new Vector2(0.5f, 0.5f);
-                textureArea.TexCoord1 = new Vector2(3.5f, 0.5f);
-                textureArea.TexCoord2 = new Vector2(3.5f, 3.5f);
-                textureArea.TexCoord3 = new Vector2(0.5f, 3.5f);
-                poly.Texture = textureArea;
-
+                WadPolygon poly;
+                poly.Shape = WadPolygonShape.Quad;
+                poly.Index0 = oldPoly.Index0;
+                poly.Index1 = oldPoly.Index1;
+                poly.Index2 = oldPoly.Index2;
+                poly.Index3 = oldPoly.Index3;
+                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture & 0xff);
+                poly.ShineStrength = 0;
                 mesh.Polys.Add(poly);
             }
 
             foreach (var oldPoly in oldMesh.ColoredTriangles)
             {
-                WadPolygon poly = new WadPolygon(WadPolygonShape.Triangle);
-
-                // Polygon indices
-                poly.Indices.Add(oldPoly.Vertices[0]);
-                poly.Indices.Add(oldPoly.Vertices[1]);
-                poly.Indices.Add(oldPoly.Vertices[2]);
-
-                // Add the colored surface
-                TextureArea textureArea = new TextureArea();
-                var paletteIndex8 = oldPoly.Texture & 0xff;
-                textureArea.Texture = ConvertColoredFaceToTexture(wad, oldLevel, paletteIndex8);
-                textureArea.TexCoord0 = new Vector2(0.5f, 0.5f);
-                textureArea.TexCoord1 = new Vector2(3.5f, 0.5f);
-                textureArea.TexCoord2 = new Vector2(3.5f, 3.5f);
-                poly.Texture = textureArea;
-
+                WadPolygon poly;
+                poly.Shape = WadPolygonShape.Triangle;
+                poly.Index0 = oldPoly.Index0;
+                poly.Index1 = oldPoly.Index1;
+                poly.Index2 = oldPoly.Index2;
+                poly.Index3 = 0;
+                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture & 0xff);
+                poly.ShineStrength = 0;
                 mesh.Polys.Add(poly);
             }
 
-            mesh.BoundingBox = new BoundingBox(minVertex, maxVertex);
+            // Usually only for static meshes
+            if (mesh.VerticesNormals.Count == 0)
+                mesh.RecalculateNormals();
 
-            // Calculate hash
-            mesh.UpdateHash();
-
-            // Now add to the dictionary only if it doesn't contain a mesh with this hash
-            if (wad.Meshes.ContainsKey(mesh.Hash))
-            {
-                return wad.Meshes[mesh.Hash];
-            }
-            else
-            {
-                wad.Meshes.Add(mesh.Hash, mesh);
-                return mesh;
-            }
+            return mesh;
         }
 
-        private static WadTexture ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, int palette8)
+        private static TextureArea ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, int palette8)
         {
-            var texture = new WadTexture();
-            var image = ImageC.CreateNew(4, 4);
-            var color = oldLevel.Palette8[palette8];
-            for (var x = 0; x < 4; x++)
-                for (var y = 0; y < 4; y++)
-                    image.SetPixel(x, y, new ColorC(color.Red, color.Green, color.Blue, 255));
-            texture.Image = image;
-            texture.UpdateHash();
-            if (!wad.Textures.ContainsKey(texture.Hash))
-                wad.Textures.Add(texture.Hash, texture);
-            return wad.Textures[texture.Hash];
-        }
+            tr_color color = oldLevel.Palette8[palette8];
+            ColorC color2 = new ColorC(color.Red, color.Green, color.Blue, 255);
+            var image = ImageC.CreateNew(2, 2);
+            image.SetPixel(0, 0, color2);
+            image.SetPixel(1, 0, color2);
+            image.SetPixel(0, 1, color2);
+            image.SetPixel(1, 1, color2);
 
-        public static Wad2 ConvertTrLevel(TrLevel oldLevel)
-        {
-            Wad2 wad = new Wad2(GetTrVersion(oldLevel.Version));
-
-            logger.Info("Converting TR level to WAD2");
-
-            // First convert all textures
-            Dictionary<int, WadTexture> textures = ConvertTrLevelTexturesToWadTexture(oldLevel);
-            for (int i = 0; i < textures.Count; i++)
-            {
-                if (!wad.Textures.ContainsKey(textures.ElementAt(i).Value.Hash))
-                    wad.Textures.Add(textures.ElementAt(i).Value.Hash, textures.ElementAt(i).Value);
-            }
-            logger.Info("Texture conversion complete.");
-
-            // Then convert moveables and static meshes
-            // Meshes will be converted inside each model
-            for (int i = 0; i < oldLevel.Moveables.Count; i++)
-            {
-                ConvertTrLevelMoveableToWadMoveable(wad, oldLevel, i, textures);
-            }
-            logger.Info("Moveable conversion complete.");
-
-            for (int i = 0; i < oldLevel.StaticMeshes.Count; i++)
-            {
-                ConvertTrLevelStaticMeshToWadStatic(wad, oldLevel, i, textures);
-            }
-            logger.Info("Static mesh conversion complete.");
-
-            // Convert sounds
-            ConvertTrLevelSounds(wad, oldLevel);
-            logger.Info("Sound conversion complete.");
-
-            // Convert sprites
-            ConvertTrLevelSprites(wad, oldLevel);
-            logger.Info("Sprite conversion complete.");
-
-            return wad;
+            TextureArea textureArea;
+            textureArea.Texture = new WadTexture(image);
+            textureArea.TexCoord0 = new Vector2(0.5f, 0.5f);
+            textureArea.TexCoord1 = new Vector2(1.5f, 0.5f);
+            textureArea.TexCoord2 = new Vector2(1.5f, 1.5f);
+            textureArea.TexCoord3 = new Vector2(0.5f, 1.5f);
+            textureArea.BlendMode = BlendMode.Normal;
+            textureArea.DoubleSided = false;
+            return textureArea;
         }
 
         private static void ConvertTrLevelSprites(Wad2 wad, TrLevel oldLevel)
         {
+            ImageC tiles = ImageC.FromByteArray(oldLevel.TextureMap32, 256, oldLevel.TextureMap32.Length / 1024);
+
             foreach (var oldSequence in oldLevel.SpriteSequences)
             {
                 int lengthOfSequence = -oldSequence.NegativeLength;
                 int startIndex = oldSequence.Offset;
 
-                var newSequence = new WadSpriteSequence();
-                newSequence.ObjectID = (uint)oldSequence.ObjectID;
-                newSequence.Name = TrCatalog.GetSpriteName(GetTrVersion(oldLevel.Version), (uint)oldSequence.ObjectID);
-
+                var newSequence = new WadSpriteSequence(new WadSpriteSequenceId((uint)oldSequence.ObjectID));
                 for (int i = startIndex; i < startIndex + lengthOfSequence; i++)
                 {
-                    var oldSpriteTexture = oldLevel.SpriteTextures[i];
+                    tr_sprite_texture oldSpriteTexture = oldLevel.SpriteTextures[i];
 
-                    int spriteWidth = 0;
-                    int spriteHeight = 0;
-                    int spriteX = 0;
-                    int spriteY = 0;
+                    int spriteX, spriteY, spriteWidth, spriteHeight;
 
-                    if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                    if (oldLevel.Version == TrVersion.TR1 ||
+                        oldLevel.Version == TrVersion.TR2 ||
+                        oldLevel.Version == TrVersion.TR3)
                     {
                         spriteX = oldSpriteTexture.X;
                         spriteY = oldSpriteTexture.Y;
-                        spriteWidth = (oldSpriteTexture.Width - 255) / 256;
-                        spriteHeight = (oldSpriteTexture.Height - 255) / 256;
+                        spriteWidth = ((oldSpriteTexture.Width - 255) / 256 + 1);
+                        spriteHeight = ((oldSpriteTexture.Height - 255) / 256 + 1);
                     }
                     else
                     {
                         spriteX = oldSpriteTexture.LeftSide;
                         spriteY = oldSpriteTexture.TopSide;
-                        spriteWidth = (oldSpriteTexture.Width / 256) + 1;
-                        spriteHeight = (oldSpriteTexture.Height / 256) + 1;
+                        spriteWidth = ((oldSpriteTexture.Width / 256) + 1);
+                        spriteHeight = ((oldSpriteTexture.Height / 256) + 1);
                     }
 
-                    var spriteImage = ImageC.CreateNew(spriteWidth, spriteHeight);
-
-                    for (int y = 0; y < spriteHeight; y++)
-                        for (int x = 0; x < spriteWidth; x++)
-                        {
-                            byte b = oldLevel.TextureMap32[oldSpriteTexture.Tile * 65536 * 4 + (spriteY + y) * 1024 + (spriteX + x) * 4 + 0];
-                            byte g = oldLevel.TextureMap32[oldSpriteTexture.Tile * 65536 * 4 + (spriteY + y) * 1024 + (spriteX + x) * 4 + 1];
-                            byte r = oldLevel.TextureMap32[oldSpriteTexture.Tile * 65536 * 4 + (spriteY + y) * 1024 + (spriteX + x) * 4 + 2];
-                            byte a = oldLevel.TextureMap32[oldSpriteTexture.Tile * 65536 * 4 + (spriteY + y) * 1024 + (spriteX + x) * 4 + 3];
-
-                            spriteImage.SetPixel(x, y, new ColorC(r, g, b, a));
-                        }
-
-                    // Create the texture
-                    var texture = new WadSprite();
-                    texture.Image = spriteImage;
-                    texture.UpdateHash();
-
-                    // Check if texture already exists in Wad2 and eventually add it
-                    if (wad.SpriteTextures.ContainsKey(texture.Hash))
-                        texture = wad.SpriteTextures[texture.Hash];
-                    else
-                        wad.SpriteTextures.Add(texture.Hash, texture);
-
                     // Add current sprite to the sequence
-                    newSequence.Sprites.Add(texture);
+                    var spriteImage = ImageC.CreateNew(spriteWidth, spriteHeight);
+                    spriteImage.CopyFrom(0, 0, tiles, spriteX, spriteY + oldSpriteTexture.Tile * 256, spriteWidth, spriteHeight);
+                    newSequence.Sprites.Add(new WadSprite { Texture = new WadTexture(spriteImage) });
                 }
 
-                wad.SpriteSequences.Add(newSequence);
+                wad.SpriteSequences.Add(newSequence.Id, newSequence);
             }
         }
 
-        private static void ConvertTrLevelSounds(Wad2 wad, TrLevel oldLevel)
+        private static WadSoundInfo[] ConvertTrLevelSounds(Wad2 wad, TrLevel oldLevel)
         {
+            // Convert samples...
+            var samples = new WadSample[oldLevel.Samples.Count];
+            Parallel.For(0, oldLevel.Samples.Count, delegate (int i)
+            {
+                samples[i] = new WadSample(WadSample.ConvertSampleFormat(oldLevel.Samples[i].Data, oldLevel.Version != TrVersion.TR4));
+            });
+
+            // Convert sound details
+            var soundInfos = new WadSoundInfo[oldLevel.SoundMap.Count];
             for (int i = 0; i < oldLevel.SoundMap.Count; i++)
             {
                 // Check if sound was used
-                if (oldLevel.SoundMap[i] == -1) continue;
+                if (oldLevel.SoundMap[i] == -1)
+                    continue;
 
-                var oldInfo = oldLevel.SoundDetails[oldLevel.SoundMap[i]];
-                var newInfo = new WadSoundInfo();
+                tr_sound_details oldInfo = oldLevel.SoundDetails[oldLevel.SoundMap[i]];
 
                 // Fill the new sound info
-                newInfo.Name = TrCatalog.GetSoundName(GetTrVersion(oldLevel.Version), (uint)i);
-                newInfo.Volume = (byte)oldInfo.Volume;
-                newInfo.Range = oldInfo.Range;
-                newInfo.Chance = (byte)oldInfo.Chance;
-                newInfo.Pitch = oldInfo.Pitch;
+                var newInfo = new WadSoundInfoMetaData(TrCatalog.GetOriginalSoundName(TrLevel.GetWadGameVersion(oldLevel.Version), (uint)i));
+                newInfo.Volume = oldInfo.Volume / 255.0f;
+                newInfo.RangeInSectors = oldInfo.Range;
+                newInfo.ChanceByte = (byte)Math.Min((ushort)255, oldInfo.Chance);
+                newInfo.PitchFactorByte = oldInfo.Pitch;
                 newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0); // TODO: loop meaning changed between TR versions
-                newInfo.RandomizeGain = ((oldInfo.Characteristics & 0x4000) != 0);
-                newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);
-                newInfo.Loop = (WadSoundLoopType)(oldInfo.Characteristics & 0x03);
-
-                int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
+                newInfo.RandomizeVolume = ((oldInfo.Characteristics & 0x4000) != 0);
+                newInfo.DisablePanning = ((oldInfo.Characteristics & 0x1000) != 0);
+                newInfo.LoopBehaviour = (WadSoundLoopBehaviour)(oldInfo.Characteristics & 0x03);
 
                 // Read all samples linked to this sound info (for example footstep has 4 samples)
-                for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
+                int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
+                for (int j = 0; j < numSamplesInGroup; j++)
                 {
-                    var soundName = j + ".wav";
-
-                    if (j < oldLevel.Samples.Count)
-                    {
-                        var theSoundIndex = 0;
-                        if (oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
-                            theSoundIndex = (int)oldLevel.SamplesIndices[j];
-                        else
-                            theSoundIndex = j;
-
-                        var sound = new WadSample(soundName, oldLevel.Samples[theSoundIndex].Data);
-                        if (wad.Samples.ContainsKey(sound.Hash))
-                        {
-                            newInfo.Samples.Add(wad.Samples[sound.Hash]);
-                        }
-                        else
-                        {
-                            wad.Samples.Add(sound.Hash, sound);
-                            newInfo.Samples.Add(sound);
-                        }
-                    }
+                    int soundIndexIndex = j + oldInfo.Sample;
+                    int sampleIndex;
+                    if (oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                        sampleIndex = (int)oldLevel.SamplesIndices[soundIndexIndex];
                     else
+                        sampleIndex = soundIndexIndex;
+                    if (sampleIndex >= oldLevel.Samples.Count)
                     {
-                        logger.Warn("Unable to find sample " + j);
+                        logger.Warn("Sample index out of range.");
+                        continue;
                     }
+                    newInfo.Samples.Add(samples[sampleIndex]);
                 }
 
-                newInfo.UpdateHash();
-
-                wad.SoundInfo.Add((ushort)i, newInfo);
+                soundInfos[i] = new WadSoundInfo(newInfo);
             }
+
+            // Fix some sounds
+            for (int i = 0; i < soundInfos.Length; i++)
+                if (soundInfos[i] != null)
+                    if (TrCatalog.IsSoundFixedByDefault(TrLevel.GetWadGameVersion(oldLevel.Version), (uint)i))
+                    {
+                        var id = new WadFixedSoundInfoId((uint)i);
+                        wad.FixedSoundInfos.Add(id, new WadFixedSoundInfo(id) { SoundInfo = soundInfos[i] });
+                    }
+
+            return soundInfos;
         }
 
         public static WadMoveable ConvertTrLevelMoveableToWadMoveable(Wad2 wad, TrLevel oldLevel, int moveableIndex,
-                                                                      Dictionary<int, WadTexture> textures)
+                                                                 TextureArea[] objectTextures, WadSoundInfo[] soundInfos)
         {
-            WadMoveable moveable = new WadMoveable(wad);
-            var m = oldLevel.Moveables[moveableIndex];
+            Console.WriteLine("Converting Moveable " + moveableIndex);
 
-            moveable.ObjectID = m.ObjectID;
-            //moveable.Name = TrCatalog.GetMoveableName(GetTrVersion(oldLevel.Version), m.ObjectID);
+            var oldMoveable = oldLevel.Moveables[moveableIndex];
+            WadMoveable newMoveable = new WadMoveable(new WadMoveableId(oldMoveable.ObjectID));
 
-            // First I build a list of meshes for this moveable
-            var meshes = new List<tr_mesh>();
-            for (int j = 0; j < m.NumMeshes; j++)
-                meshes.Add(oldLevel.Meshes[(int)oldLevel.RealPointers[(int)(m.StartingMesh + j)]]);
+            // First a list of meshes for this moveable is built
+            var oldMeshes = new List<tr_mesh>();
+            for (int j = 0; j < oldMoveable.NumMeshes; j++)
+                oldMeshes.Add(oldLevel.Meshes[(int)oldLevel.RealPointers[(int)(oldMoveable.StartingMesh + j)]]);
 
-            // Then I convert them to WadMesh
-            foreach (var oldMesh in meshes)
-            {
-                WadMesh newMesh = ConvertTrLevelMeshToWadMesh(wad, oldLevel, oldMesh, textures);
-                moveable.Meshes.Add(newMesh);
-            }
-
-            int currentLink = (int)m.MeshTree;
-
-            moveable.Offset = Vector3.Zero;
+            // Convert the WadMesh
+            var newMeshes = new List<WadMesh>();
+            foreach (var oldMesh in oldMeshes)
+                newMeshes.Add(ConvertTrLevelMeshToWadMesh(wad, oldLevel, oldMesh, objectTextures));
 
             // Build the skeleton
-            for (int j = 0; j < meshes.Count - 1; j++)
+            var root = new WadBone();
+            root.Name = "bone_root";
+            root.Parent = null;
+            root.Translation = Vector3.Zero;
+            root.Mesh = newMeshes[0];
+
+            var bones = new List<WadBone>();
+            bones.Add(root);
+            newMoveable.Skeleton = root;
+
+            for (int j = 0; j < oldMoveable.NumMeshes - 1; j++)
             {
-                WadLink link = new WadLink((WadLinkOpcode)oldLevel.MeshTrees[currentLink],
-                                           new Vector3(oldLevel.MeshTrees[currentLink + 1],
-                                                       -oldLevel.MeshTrees[currentLink + 2],
-                                                       oldLevel.MeshTrees[currentLink + 3]));
+                var bone = new WadBone();
+                bone.Name = "bone_" + (j + 1).ToString();
+                bone.Parent = null;
+                bone.Translation = Vector3.Zero;
+                bone.Mesh = newMeshes[j + 1];
+                bones.Add(bone);
+            }
 
-                currentLink += 4;
+            WadBone currentBone = root;
+            WadBone stackBone = root;
+            Stack<WadBone> stack = new Stack<WadBone>();
 
-                moveable.Links.Add(link);
+            for (int mi = 0; mi < (oldMeshes.Count - 1); mi++)
+            {
+                int j = mi + 1;
+
+                var opcode = (Tr4Wad.WadLinkOpcode)oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4)];
+                int linkX = oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 1];
+                int linkY = -oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 2];
+                int linkZ = oldLevel.MeshTrees[(int)(oldMoveable.MeshTree + mi * 4) + 3];
+
+                switch (opcode)
+                {
+                    case Tr4Wad.WadLinkOpcode.NotUseStack:
+                        bones[j].Translation = new Vector3(linkX, linkY, linkZ);
+                        bones[j].Parent = currentBone;
+                        currentBone.Children.Add(bones[j]);
+                        currentBone = bones[j];
+
+                        break;
+                    case Tr4Wad.WadLinkOpcode.Push:
+                        if (stack.Count <= 0)
+                            continue;
+                        currentBone = stack.Pop();
+
+                        bones[j].Translation = new Vector3(linkX, linkY, linkZ);
+                        bones[j].Parent = currentBone;
+                        currentBone.Children.Add(bones[j]);
+                        currentBone = bones[j];
+
+                        break;
+                    case Tr4Wad.WadLinkOpcode.Pop:
+                        stack.Push(currentBone);
+
+                        bones[j].Translation = new Vector3(linkX, linkY, linkZ);
+                        bones[j].Parent = currentBone;
+                        currentBone.Children.Add(bones[j]);
+                        currentBone = bones[j];
+
+                        break;
+                    case Tr4Wad.WadLinkOpcode.Read:
+                        if (stack.Count <= 0)
+                            continue;
+                        WadBone bone = stack.Pop();
+                        bones[j].Translation = new Vector3(linkX, linkY, linkZ);
+                        bones[j].Parent = bone;
+                        bone.Children.Add(bones[j]);
+                        currentBone = bones[j];
+                        stack.Push(bone);
+
+                        break;
+                }
             }
 
             // Convert animations
@@ -493,34 +458,33 @@ namespace TombLib.Wad.TrLevels
             int nextMoveable = oldLevel.GetNextMoveableWithAnimations(moveableIndex);
 
             if (nextMoveable == -1)
-                numAnimations = oldLevel.Animations.Count - m.Animation;
+                numAnimations = oldLevel.Animations.Count - oldMoveable.Animation;
             else
-                numAnimations = oldLevel.Moveables[nextMoveable].Animation - m.Animation;
+                numAnimations = oldLevel.Moveables[nextMoveable].Animation - oldMoveable.Animation;
 
+            var frameBases = new Dictionary<WadAnimation, ushort>();
             for (int j = 0; j < numAnimations; j++)
             {
-                if (m.Animation == -1)
+                if (oldMoveable.Animation == -1)
                     break;
 
-                WadAnimation animation = new WadAnimation();
-                var anim = oldLevel.Animations[j + m.Animation];
-                animation.Acceleration = anim.Accel;
-                animation.Speed = anim.Speed;
-                animation.LateralSpeed = anim.SpeedLateral;
-                animation.LateralAcceleration = anim.AccelLateral;
-                animation.FrameDuration = anim.FrameRate;
-                animation.FrameStart = anim.FrameStart;
-                animation.FrameEnd = anim.FrameEnd;
-                animation.NextAnimation = (ushort)(anim.NextAnimation - m.Animation);
-                animation.NextFrame = anim.NextFrame;
-                animation.StateId = anim.StateID;
-                animation.RealNumberOfFrames = (ushort)(anim.FrameEnd - anim.FrameStart + 1);
-                animation.Name = "Animation " + j;
+                WadAnimation newAnimation = new WadAnimation();
+                var oldAnimation = oldLevel.Animations[j + oldMoveable.Animation];
+                newAnimation.Acceleration = oldAnimation.Accel;
+                newAnimation.Speed = oldAnimation.Speed;
+                newAnimation.LateralSpeed = oldAnimation.SpeedLateral;
+                newAnimation.LateralAcceleration = oldAnimation.AccelLateral;
+                newAnimation.FrameRate = oldAnimation.FrameRate;
+                newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.Animation);
+                newAnimation.NextFrame = oldAnimation.NextFrame;
+                newAnimation.StateId = oldAnimation.StateID;
+                newAnimation.RealNumberOfFrames = (ushort)(oldAnimation.FrameEnd - oldAnimation.FrameStart + 1);
+                newAnimation.Name = "Animation " + j;
 
-                for (int k = 0; k < anim.NumStateChanges; k++)
+                for (int k = 0; k < oldAnimation.NumStateChanges; k++)
                 {
                     WadStateChange sc = new WadStateChange();
-                    var wadSc = oldLevel.StateChanges[(int)anim.StateChangeOffset + k];
+                    var wadSc = oldLevel.StateChanges[(int)oldAnimation.StateChangeOffset + k];
                     sc.StateId = wadSc.StateID;
 
                     for (int n = 0; n < wadSc.NumAnimDispatches; n++)
@@ -528,43 +492,39 @@ namespace TombLib.Wad.TrLevels
                         WadAnimDispatch ad = new WadAnimDispatch();
                         var wadAd = oldLevel.AnimDispatches[(int)wadSc.AnimDispatch + n];
 
-                        ad.InFrame = (ushort)(wadAd.Low - anim.FrameStart);
-                        ad.OutFrame = (ushort)(wadAd.High - anim.FrameStart);
-                        ad.NextAnimation = (ushort)((wadAd.NextAnimation - m.Animation) % numAnimations);
+                        ad.InFrame = (ushort)(wadAd.Low - oldAnimation.FrameStart);
+                        ad.OutFrame = (ushort)(wadAd.High - oldAnimation.FrameStart);
+                        ad.NextAnimation = (ushort)((wadAd.NextAnimation - oldMoveable.Animation) % numAnimations);
                         ad.NextFrame = (ushort)wadAd.NextFrame;
 
                         sc.Dispatches.Add(ad);
                     }
 
-                    animation.StateChanges.Add(sc);
+                    newAnimation.StateChanges.Add(sc);
                 }
 
-                if (anim.NumAnimCommands < oldLevel.AnimCommands.Count)
+                if (oldAnimation.NumAnimCommands < oldLevel.AnimCommands.Count)
                 {
-                    int lastCommand = anim.AnimCommand;
+                    int lastCommand = oldAnimation.AnimCommand;
 
-                    for (int k = 0; k < anim.NumAnimCommands; k++)
+                    for (int k = 0; k < oldAnimation.NumAnimCommands; k++)
                     {
-                        var commandType = oldLevel.AnimCommands[lastCommand + 0];
+                        short commandType = oldLevel.AnimCommands[lastCommand + 0];
 
-                        // Ignore invalid anim commands (see for example karnak.wad)
-                        if (commandType < 1 || commandType > 6) continue;
-
-                        WadAnimCommand command = new WadAnimCommand((WadAnimCommandType)commandType);
-
+                        WadAnimCommand command = new WadAnimCommand { Type = (WadAnimCommandType)commandType };
                         switch (commandType)
                         {
                             case 1:
-                                command.Parameter1 = (ushort)oldLevel.AnimCommands[lastCommand + 1];
-                                command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
-                                command.Parameter3 = (ushort)oldLevel.AnimCommands[lastCommand + 3];
+                                command.Parameter1 = (short)oldLevel.AnimCommands[lastCommand + 1];
+                                command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
+                                command.Parameter3 = (short)oldLevel.AnimCommands[lastCommand + 3];
 
                                 lastCommand += 4;
                                 break;
 
                             case 2:
-                                command.Parameter1 = (ushort)oldLevel.AnimCommands[lastCommand + 1];
-                                command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
+                                command.Parameter1 = (short)oldLevel.AnimCommands[lastCommand + 1];
+                                command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
 
                                 lastCommand += 3;
                                 break;
@@ -578,41 +538,56 @@ namespace TombLib.Wad.TrLevels
                                 break;
 
                             case 5:
-                                command.Parameter1 = (ushort)oldLevel.AnimCommands[lastCommand + 1];
-                                command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
+                                command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
+                                command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 lastCommand += 3;
+
+                                int soundInfoIndex = command.Parameter2 & 0x3fff;
+                                command.Parameter2 &= unchecked((short)0xC000);
+                                if (soundInfoIndex >= soundInfos.Length || soundInfos[soundInfoIndex] == null)
+                                {
+                                    logger.Warn("Anim command uses " + soundInfoIndex + " which is unavailable.");
+                                    continue;
+                                }
+                                command.SoundInfo = soundInfos[soundInfoIndex];
                                 break;
 
                             case 6:
-                                command.Parameter1 = (ushort)oldLevel.AnimCommands[lastCommand + 1];
-                                command.Parameter2 = (ushort)oldLevel.AnimCommands[lastCommand + 2];
+                                command.Parameter1 = (short)(oldLevel.AnimCommands[lastCommand + 1] - oldAnimation.FrameStart);
+                                command.Parameter2 = (short)oldLevel.AnimCommands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
+
+                            default: // Ignore invalid anim commands (see for example karnak.wad)
+                                logger.Warn("Unknown anim command " + commandType);
+                                goto ExitForLoop;
                         }
 
-                        animation.AnimCommands.Add(command);
+                        newAnimation.AnimCommands.Add(command);
                     }
+                    ExitForLoop:
+                    ;
                 }
 
-                int frames = (int)anim.FrameOffset / 2;
+                int frames = (int)oldAnimation.FrameOffset / 2;
                 uint numFrames;
 
-                if (j + m.Animation == oldLevel.Animations.Count - 1)
+                if (j + oldMoveable.Animation == oldLevel.Animations.Count - 1)
                 {
-                    if (anim.FrameSize == 0)
+                    if (oldAnimation.FrameSize == 0)
                         numFrames = 0;
                     else
-                        numFrames = ((uint)(2 * oldLevel.Frames.Count) - anim.FrameOffset) / (uint)(2 * anim.FrameSize);
+                        numFrames = ((uint)(2 * oldLevel.Frames.Count) - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
                 else
                 {
-                    if (anim.FrameSize == 0)
+                    if (oldAnimation.FrameSize == 0)
                     {
                         numFrames = 0;
                     }
                     else
                     {
-                        numFrames = (oldLevel.Animations[m.Animation + j + 1].FrameOffset - anim.FrameOffset) / (uint)(2 * anim.FrameSize);
+                        numFrames = (oldLevel.Animations[oldMoveable.Animation + j + 1].FrameOffset - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                     }
                 }
 
@@ -637,214 +612,114 @@ namespace TombLib.Wad.TrLevels
                     frames += 3;
 
                     // TR1 has also the number of angles to follow
-                    if (oldLevel.Version == TrVersion.TR1) frames++;
+                    if (oldLevel.Version == TrVersion.TR1)
+                        frames++;
 
-                    for (int n = 0; n < m.NumMeshes; n++)
-                    {
-                        short rot = oldLevel.Frames[frames];
-                        WadKeyFrameRotation kfAngle = new WadKeyFrameRotation();
+                    for (int n = 0; n < oldMoveable.NumMeshes; n++)
+                        frame.Angles.Add(
+                            WadKeyFrameRotation.FromTrAngle(ref frames, oldLevel.Frames,
+                                oldLevel.Version == TrVersion.TR1,
+                                oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5));
 
-                        if (oldLevel.Version == TrVersion.TR1)
-                        {
-                            int rotation = rot;
-                            int rotation2 = oldLevel.Frames[frames + 1];
+                    if ((frames - startOfFrame) < oldAnimation.FrameSize)
+                        frames += ((int)oldAnimation.FrameSize - (frames - startOfFrame));
 
-                            frames += 2;
-
-                            int rotX = (int)((rotation & 0x3ff0) >> 4);
-                            int rotZ = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
-                            int rotY = (int)((rotation2) & 0x3ff);
-
-                            kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
-                            kfAngle.X = rotX;
-                            kfAngle.Y = rotY;
-                            kfAngle.Z = rotZ;
-
-                            break;
-
-                        }
-                        else
-                        {
-                            switch (rot & 0xc000)
-                            {
-                                case 0:
-                                    int rotation = rot;
-                                    int rotation2 = oldLevel.Frames[frames + 1];
-
-                                    frames += 2;
-
-                                    int rotX = (int)((rotation & 0x3ff0) >> 4);
-                                    int rotY = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
-                                    int rotZ = (int)((rotation2) & 0x3ff);
-
-                                    kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
-                                    kfAngle.X = rotX;
-                                    kfAngle.Y = rotY;
-                                    kfAngle.Z = rotZ;
-
-                                    break;
-
-                                case 0x4000:
-                                    frames += 1;
-                                    int rotationX;
-                                    if (oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5)
-                                        rotationX = rot & 0xfff;
-                                    else
-                                        rotationX = (rot & 0x3ff) * 4;
-
-                                    kfAngle.Axis = WadKeyFrameRotationAxis.AxisX;
-                                    kfAngle.X = rotationX;
-
-                                    break;
-
-                                case 0x8000:
-                                    frames += 1;
-                                    int rotationY;
-                                    if (oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5)
-                                        rotationY = rot & 0xfff;
-                                    else
-                                        rotationY = (rot & 0x3ff) * 4;
-
-                                    kfAngle.Axis = WadKeyFrameRotationAxis.AxisY;
-                                    kfAngle.Y = rotationY;
-
-                                    break;
-
-                                case 0xc000:
-                                    frames += 1;
-                                    int rotationZ;
-                                    if (oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5)
-                                        rotationZ = rot & 0xfff;
-                                    else
-                                        rotationZ = (rot & 0x3ff) * 4;
-
-                                    kfAngle.Axis = WadKeyFrameRotationAxis.AxisZ;
-                                    kfAngle.Z = rotationZ;
-
-                                    break;
-                            }
-                        }
-
-                        frame.Angles.Add(kfAngle);
-                    }
-
-                    if ((frames - startOfFrame) < anim.FrameSize)
-                        frames += ((int)anim.FrameSize - (frames - startOfFrame));
-
-                    animation.KeyFrames.Add(frame);
+                    newAnimation.KeyFrames.Add(frame);
                 }
 
-                // TODO: check if this hack work well
-                // In original WADs animations with no keyframes had some random FrameEnd values
-                if (animation.KeyFrames.Count == 0)
+                frameBases.Add(newAnimation, oldAnimation.FrameStart);
+
+                // New velocities
+                float acceleration = oldAnimation.Accel / 65536.0f;
+                newAnimation.EndVelocity = oldAnimation.Speed / 65536.0f;
+
+                float lateralAcceleration = oldAnimation.AccelLateral / 65536.0f;
+                newAnimation.EndLateralVelocity = oldAnimation.SpeedLateral / 65536.0f;
+
+                if (newAnimation.KeyFrames.Count != 0 && newAnimation.FrameRate != 0)
                 {
-                    animation.FrameEnd = anim.FrameStart;
+                    newAnimation.StartVelocity = newAnimation.EndVelocity - acceleration *
+                                                 (newAnimation.KeyFrames.Count + 1) * newAnimation.FrameRate;
+                    newAnimation.StartLateralVelocity = newAnimation.EndLateralVelocity - lateralAcceleration *
+                                                        (newAnimation.KeyFrames.Count + 1) * newAnimation.FrameRate;
                 }
 
-                animation.FrameBase = animation.FrameStart;
-
-                moveable.Animations.Add(animation);
+                newMoveable.Animations.Add(newAnimation);
             }
 
-            for (int i = 0; i < moveable.Animations.Count; i++)
+            for (int i = 0; i < newMoveable.Animations.Count; i++)
             {
-                var animation = moveable.Animations[i];
+                var animation = newMoveable.Animations[i];
 
-                if (animation.KeyFrames.Count == 0) animation.RealNumberOfFrames = 0;
+                if (animation.KeyFrames.Count == 0)
+                    animation.RealNumberOfFrames = 0;
 
                 // HACK: this fixes some invalid NextAnimations values
-                animation.NextAnimation %= (ushort)moveable.Animations.Count;
+                animation.NextAnimation %= (ushort)newMoveable.Animations.Count;
 
-                ushort baseFrame = animation.FrameStart;
-
-                // Frames become relative to current animation
-                animation.FrameEnd -= baseFrame;
-                animation.FrameStart -= baseFrame;
-
-                moveable.Animations[i] = animation;
+                newMoveable.Animations[i] = animation;
             }
 
-            for (int i = 0; i < moveable.Animations.Count; i++)
+            for (int i = 0; i < newMoveable.Animations.Count; i++)
             {
-                var animation = moveable.Animations[i];
+                var animation = newMoveable.Animations[i];
 
                 // HACK: this fixes some invalid NextFrame values
-                if (moveable.Animations[animation.NextAnimation].FrameBase != 0)
-                    animation.NextFrame %= moveable.Animations[animation.NextAnimation].FrameBase;
+                if (frameBases[newMoveable.Animations[animation.NextAnimation]] != 0)
+                    animation.NextFrame %= frameBases[newMoveable.Animations[animation.NextAnimation]];
 
                 foreach (var stateChange in animation.StateChanges)
                 {
-                    foreach (var animDispatch in stateChange.Dispatches)
+                    for (int J = 0; J < stateChange.Dispatches.Count; ++J)
                     {
-                        if (moveable.Animations[animDispatch.NextAnimation].FrameBase != 0)
+                        WadAnimDispatch animDispatch = stateChange.Dispatches[J];
+                        if (frameBases[newMoveable.Animations[animDispatch.NextAnimation]] != 0)
                         {
-                            ushort newFrame = (ushort)(animDispatch.NextFrame % moveable.Animations[animDispatch.NextAnimation].FrameBase);
+                            ushort newFrame = (ushort)(animDispatch.NextFrame % frameBases[newMoveable.Animations[animDispatch.NextAnimation]]);
 
                             // In some cases dispatches have invalid NextFrame.
                             // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to zero.
-                            if (newFrame > moveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames) newFrame = 0;
+                            if (newFrame > newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames)
+                                newFrame = 0;
 
                             animDispatch.NextFrame = newFrame;
                         }
+                        stateChange.Dispatches[J] = animDispatch;
                     }
                 }
 
-                moveable.Animations[i] = animation;
+                newMoveable.Animations[i] = animation;
             }
 
-            wad.Moveables.Add(m.ObjectID, moveable);
-
-            return moveable;
+            return newMoveable;
         }
 
-        internal static TombRaiderVersion GetTrVersion(TrVersion version)
+        public static WadStatic ConvertTrLevelStaticMeshToWadStatic(Wad2 wad, TrLevel oldLevel, int staticIndex, TextureArea[] objectTextures)
         {
-            if (version == TrVersion.TR1)
-                return TombRaiderVersion.TR1;
-            else if (version == TrVersion.TR2)
-                return TombRaiderVersion.TR2;
-            else if (version == TrVersion.TR3)
-                return TombRaiderVersion.TR3;
-            else if (version == TrVersion.TR4)
-                return TombRaiderVersion.TR4;
-            else
-                return TombRaiderVersion.TR5;
-        }
-
-        public static WadStatic ConvertTrLevelStaticMeshToWadStatic(Wad2 wad, TrLevel oldLevel, int staticIndex,
-                                                                Dictionary<int, WadTexture> textures)
-        {
-            var staticMesh = new WadStatic(wad);
-            var oldStaticMesh = oldLevel.StaticMeshes[staticIndex];
-
-            //staticMesh.Name = TrCatalog.GetStaticName(GetTrVersion(oldLevel.Version), oldStaticMesh.ObjectID);
+            tr_staticmesh oldStatic = oldLevel.StaticMeshes[staticIndex];
+            var newStatic = new WadStatic(new WadStaticId(oldStatic.ObjectID));
 
             // First setup collisional and visibility bounding boxes
-            staticMesh.CollisionBox = new BoundingBox(new Vector3(oldStaticMesh.CollisionBox.X1,
-                                                                  -oldStaticMesh.CollisionBox.Y1,
-                                                                  oldStaticMesh.CollisionBox.Z1),
-                                                      new Vector3(oldStaticMesh.CollisionBox.X2,
-                                                                  -oldStaticMesh.CollisionBox.Y2,
-                                                                  oldStaticMesh.CollisionBox.Z2));
+            newStatic.CollisionBox = new BoundingBox(new Vector3(oldStatic.CollisionBox.X1,
+                                                                  -oldStatic.CollisionBox.Y1,
+                                                                  oldStatic.CollisionBox.Z1),
+                                                      new Vector3(oldStatic.CollisionBox.X2,
+                                                                  -oldStatic.CollisionBox.Y2,
+                                                                  oldStatic.CollisionBox.Z2));
 
-            staticMesh.VisibilityBox = new BoundingBox(new Vector3(oldStaticMesh.VisibilityBox.X1,
-                                                                   -oldStaticMesh.VisibilityBox.Y1,
-                                                                   oldStaticMesh.VisibilityBox.Z1),
-                                                       new Vector3(oldStaticMesh.VisibilityBox.X2,
-                                                                   -oldStaticMesh.VisibilityBox.Y2,
-                                                                   oldStaticMesh.VisibilityBox.Z2));
+            newStatic.VisibilityBox = new BoundingBox(new Vector3(oldStatic.VisibilityBox.X1,
+                                                                   -oldStatic.VisibilityBox.Y1,
+                                                                   oldStatic.VisibilityBox.Z1),
+                                                       new Vector3(oldStatic.VisibilityBox.X2,
+                                                                   -oldStatic.VisibilityBox.Y2,
+                                                                   oldStatic.VisibilityBox.Z2));
 
             // Then import the mesh. If it was already added, the mesh will not be added to the dictionary.
-            staticMesh.Mesh = ConvertTrLevelMeshToWadMesh(wad,
+            newStatic.Mesh = ConvertTrLevelMeshToWadMesh(wad,
                                                       oldLevel,
-                                                      oldLevel.GetMeshFromPointer(oldStaticMesh.Mesh),
-                                                      textures);
-
-            staticMesh.ObjectID = oldStaticMesh.ObjectID;
-
-            wad.Statics.Add(staticMesh.ObjectID, staticMesh);
-
-            return staticMesh;
+                                                      oldLevel.GetMeshFromPointer(oldStatic.Mesh),
+                                                      objectTextures);
+            return newStatic;
         }
     }
 }

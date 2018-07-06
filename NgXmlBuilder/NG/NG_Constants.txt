@@ -1120,7 +1120,7 @@
 <START_EFFECT_119_T_H>
 0:North-South (in ngle) fixed other East-Ovest and Up-Down coords
 1:East-West (in ngle) fixed other North-South and Up-Down coords
-2:Up-Down (3d space) fixed North-South and East-Ovest cords
+2:Up-Down (3d space) fixed North-South and East-Ovest coords
 3:Horizontal axes fixed the Up-Down coordinate.
 4:North-South (in ngle) preserving East-Ovest distance and fixed Up-Down coords
 5:East-West (in ngle) preserving North-South distance and fixed Up-Down coords
@@ -3924,7 +3924,7 @@
 <START_ACTION_81_E_H>
 1:Immediatly
 2:Slow down until stopping
-3:Stop to next east,west,sud or north of the center
+3:Stop to next east,west,south or north of the center
 4:Stop when it reachs NORTH of the center
 5:Stop when it reachs SOUTH of the center
 6:Stop when it reachs EAST of the center

@@ -71,10 +71,13 @@
 // particular purpose and non-infringement.
 
 using System;
-using TombLib.Graphics;
+using SharpDX;
+using SharpDX.Toolkit.Graphics;
 
-namespace SharpDX.Toolkit.Graphics
+namespace TombLib.Graphics.Primitives
 {
+    using Vector3 = System.Numerics.Vector3;
+
     public partial class GeometricPrimitive
     {
         /// <summary>
@@ -94,13 +97,13 @@ namespace SharpDX.Toolkit.Graphics
             public static GeometricPrimitive New(GraphicsDevice device, float diameter = 1.0f, int tessellation = 16, bool toLeftHanded = false)
             {
                 if (tessellation < 3)
-                    throw new ArgumentOutOfRangeException("tessellation", "Must be >= 3");
+                    throw new ArgumentOutOfRangeException(nameof(tessellation), "Must be >= 3");
 
                 int verticalSegments = tessellation;
                 int horizontalSegments = tessellation * 2;
 
                 var vertices = new SolidVertex[(verticalSegments + 1) * (horizontalSegments + 1)];
-                var indices = new int[(verticalSegments) * (horizontalSegments + 1) * 6];
+                var indices = new int[verticalSegments * (horizontalSegments + 1) * 6];
 
                 float radius = diameter / 2;
 
@@ -110,7 +113,7 @@ namespace SharpDX.Toolkit.Graphics
                 {
                     float v = 1.0f - (float)i / verticalSegments;
 
-                    var latitude = (float)((i * Math.PI / verticalSegments) - Math.PI / 2.0);
+                    var latitude = (float)(i * Math.PI / verticalSegments - Math.PI / 2.0);
                     var dy = (float)Math.Sin(latitude);
                     var dxz = (float)Math.Cos(latitude);
 
@@ -144,13 +147,13 @@ namespace SharpDX.Toolkit.Graphics
                         int nextI = i + 1;
                         int nextJ = (j + 1) % stride;
 
-                        indices[indexCount++] = (i * stride + nextJ);
-                        indices[indexCount++] = (nextI * stride + j);
-                        indices[indexCount++] = (i * stride + j);
+                        indices[indexCount++] = i * stride + nextJ;
+                        indices[indexCount++] = nextI * stride + j;
+                        indices[indexCount++] = i * stride + j;
 
-                        indices[indexCount++] = (nextI * stride + nextJ);
-                        indices[indexCount++] = (nextI * stride + j);
-                        indices[indexCount++] = (i * stride + nextJ);
+                        indices[indexCount++] = nextI * stride + nextJ;
+                        indices[indexCount++] = nextI * stride + j;
+                        indices[indexCount++] = i * stride + nextJ;
                     }
                 }
 

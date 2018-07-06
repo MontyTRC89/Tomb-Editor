@@ -25,7 +25,7 @@ namespace DarkUI.Controls
 
         private Rectangle _viewport;
 
-        private int _maxDragChange = 0;
+        private int _maxDragChange;
         private readonly Timer _dragTimer;
 
         private bool _hideScrollBars = true;
@@ -34,6 +34,12 @@ namespace DarkUI.Controls
 
         #region Property Region
 
+
+        [DefaultValue(0.42f)]
+        public float MouseWheelScrollSpeedV { get; set; } = 0.42f;
+
+        [DefaultValue(0.42f)]
+        public float MouseWheelScrollSpeedH { get; set; } = 0.42f;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -318,17 +324,19 @@ namespace DarkUI.Controls
 
             if (!horizontal)
             {
-                if (e.Delta > 0)
-                    VScrollBar.ScrollByPhysical(3);
-                else if (e.Delta < 0)
-                    VScrollBar.ScrollByPhysical(-3);
+                float speed = MouseWheelScrollSpeedV * e.Delta;
+                int speedInt = (int)Math.Min(1073741824, Math.Max(-1073741824, speed));
+                if (speedInt == 0)
+                    speedInt = speed > 0 ? 1 : -1;
+                VScrollBar.ScrollByPhysical(speedInt);
             }
             else
             {
-                if (e.Delta > 0)
-                    HScrollBar.ScrollByPhysical(3);
-                else if (e.Delta < 0)
-                    HScrollBar.ScrollByPhysical(-3);
+                float speed = MouseWheelScrollSpeedH * e.Delta;
+                int speedInt = (int)Math.Min(1073741824, Math.Max(-1073741824, speed));
+                if (speedInt == 0)
+                    speedInt = speed > 0 ? 1 : -1;
+                HScrollBar.ScrollByPhysical(speedInt);
             }
         }
 

@@ -353,6 +353,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_Lock_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_Lock_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_Open_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Open_16", resourceCulture);
@@ -587,6 +597,16 @@ namespace TombEditor.Properties {
             get {
                 object obj = ResourceManager.GetObject("objects_tornado_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Palette {
+            get {
+                object obj = ResourceManager.GetObject("Palette", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

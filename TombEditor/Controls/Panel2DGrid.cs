@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Drawing;
+﻿using NLog;
+using System;
 using System.ComponentModel;
-using NLog;
-using TombLib.Graphics;
-using TombEditor.Geometry;
+using System.Drawing;
 using System.Drawing.Drawing2D;
-using Vector4 = SharpDX.Vector4;
+using System.Linq;
+using System.Windows.Forms;
+using TombLib;
+using TombLib.LevelData;
+using TombLib.Rendering;
+using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
@@ -17,10 +16,10 @@ namespace TombEditor.Controls
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private bool _doSectorSelection = false;
-        private Editor _editor;
+        private bool _doSectorSelection;
+        private readonly Editor _editor;
 
-        private static readonly float _outlineHighlightWidth = 3;
+        private static readonly float _outlineSectorColoringInfoWidth = 3;
         private static readonly Pen _gridPen = Pens.Black;
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
@@ -28,8 +27,7 @@ namespace TombEditor.Controls
 
         private float _gridSize => Math.Min(ClientSize.Width, ClientSize.Height);
         private float _gridStep => _gridSize / Room.MaxRoomDimensions;
-
-        public string Message;
+        private ToolTip _toolTip = new ToolTip();
 
         public Panel2DGrid()
         {
@@ -47,16 +45,17 @@ namespace TombEditor.Controls
             if (disposing)
                 _editor.EditorEventRaised -= EditorEventRaised;
             base.Dispose(disposing);
+            _toolTip.Dispose();
         }
 
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update drawing
-            if ((obj is HighlightManager.ChangeHighlightEvent) ||
-                (obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.SelectedSectorsChangedEvent) ||
-                (obj is Editor.RoomSectorPropertiesChangedEvent) ||
-                ((obj is Editor.SelectedObjectChangedEvent) && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj)))
+            if (obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
+                obj is Editor.SelectedRoomChangedEvent ||
+                obj is Editor.SelectedSectorsChangedEvent ||
+                obj is Editor.RoomSectorPropertiesChangedEvent ||
+                obj is Editor.SelectedObjectChangedEvent && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj))
             {
                 Invalidate();
             }
@@ -64,17 +63,17 @@ namespace TombEditor.Controls
             // Update curser
             if (obj is Editor.ActionChangedEvent)
             {
-                EditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
-                Cursor = currentAction.RelocateCameraActive ? Cursors.Cross : Cursors.Arrow;
+                IEditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
+                Cursor = currentAction is EditorActionRelocateCamera ? Cursors.Cross : Cursors.Arrow;
             }
         }
 
         private static bool IsObjectChangeRelevant(Editor.SelectedObjectChangedEvent e)
         {
-            return (e.Previous is SectorBasedObjectInstance) || (e.Current is SectorBasedObjectInstance);
+            return e.Previous is SectorBasedObjectInstance || e.Current is SectorBasedObjectInstance;
         }
 
-        private RectangleF getVisualAreaTotal()
+        private RectangleF GetVisualAreaTotal()
         {
             return new RectangleF(
                 (ClientSize.Width - _gridSize) * 0.5f,
@@ -83,10 +82,10 @@ namespace TombEditor.Controls
                 _gridSize);
         }
 
-        private RectangleF getVisualAreaRoom()
+        private RectangleF GetVisualAreaRoom()
         {
             Room currentRoom = _editor.SelectedRoom;
-            RectangleF totalArea = getVisualAreaTotal();
+            RectangleF totalArea = GetVisualAreaTotal();
 
             return new RectangleF(
                 totalArea.X + _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumXSectors) / 2),
@@ -95,25 +94,25 @@ namespace TombEditor.Controls
                 _gridStep * currentRoom.NumZSectors);
         }
 
-        public PointF toVisualCoord(SharpDX.DrawingPoint sectorCoord)
+        private PointF ToVisualCoord(VectorInt2 sectorCoord)
         {
-            RectangleF roomArea = getVisualAreaRoom();
+            RectangleF roomArea = GetVisualAreaRoom();
             return new PointF(sectorCoord.X * _gridStep + roomArea.X, roomArea.Bottom - (sectorCoord.Y + 1) * _gridStep);
         }
 
-        public RectangleF ToVisualCoord(SharpDX.Rectangle sectorArea)
+        private RectangleF ToVisualCoord(RectangleInt2 sectorArea)
         {
-            PointF convertedPoint0 = toVisualCoord(new SharpDX.DrawingPoint(sectorArea.Left, sectorArea.Top));
-            PointF convertedPoint1 = toVisualCoord(new SharpDX.DrawingPoint(sectorArea.Right, sectorArea.Bottom));
+            PointF convertedPoint0 = ToVisualCoord(sectorArea.Start);
+            PointF convertedPoint1 = ToVisualCoord(sectorArea.End);
             return RectangleF.FromLTRB(
                 Math.Min(convertedPoint0.X, convertedPoint1.X), Math.Min(convertedPoint0.Y, convertedPoint1.Y),
                 Math.Max(convertedPoint0.X, convertedPoint1.X) + _gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + _gridStep);
         }
 
-        public SharpDX.DrawingPoint FromVisualCoord(PointF point)
+        private VectorInt2 FromVisualCoord(PointF point)
         {
-            RectangleF roomArea = getVisualAreaRoom();
-            return new SharpDX.DrawingPoint(
+            RectangleF roomArea = GetVisualAreaRoom();
+            return new VectorInt2(
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / _gridStep)),
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / _gridStep)));
         }
@@ -121,17 +120,18 @@ namespace TombEditor.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            _toolTip.Hide(this);
 
-            if ((_editor == null) || (_editor.SelectedRoom == null))
+            if (_editor == null || _editor.SelectedRoom == null)
                 return;
 
             // Move camera to selected sector
-            if (_editor.Action.RelocateCameraActive)
+            if (_editor.Action is EditorActionRelocateCamera)
             {
                 _editor.MoveCameraToSector(FromVisualCoord(e.Location));
                 return;
             }
-            SharpDX.DrawingPoint sectorPos = FromVisualCoord(e.Location);
+            VectorInt2 sectorPos = FromVisualCoord(e.Location);
 
             // Find existing sector based object (eg portal or trigger)
             SectorBasedObjectInstance selectedSectorObject = _editor.SelectedObject as SectorBasedObjectInstance;
@@ -139,8 +139,8 @@ namespace TombEditor.Controls
             // Choose action
             if (e.Button == MouseButtons.Left)
             {
-                if ((selectedSectorObject != null) &&
-                    (selectedSectorObject.Room == _editor.SelectedRoom) &&
+                if (selectedSectorObject != null &&
+                    selectedSectorObject.Room == _editor.SelectedRoom &&
                     selectedSectorObject.Area.Contains(sectorPos))
                 {
                     if (selectedSectorObject is PortalInstance)
@@ -151,7 +151,7 @@ namespace TombEditor.Controls
                     }
                     else if (selectedSectorObject is TriggerInstance)
                     { // Open trigger options
-                        EditorActions.EditObject(selectedSectorObject, this.Parent);
+                        EditorActions.EditObject(selectedSectorObject, Parent);
                     }
                 }
                 else
@@ -169,17 +169,15 @@ namespace TombEditor.Controls
                 var portalsInRoom = _editor.SelectedRoom.Portals.Cast<SectorBasedObjectInstance>();
                 var triggersInRoom = _editor.SelectedRoom.Triggers.Cast<SectorBasedObjectInstance>();
                 var relevantTriggersAndPortals = portalsInRoom.Concat(triggersInRoom)
-                    .Where((obj) => obj.Area.Contains(sectorPos));
+                    .Where(obj => obj.Area.Contains(sectorPos));
 
                 SectorBasedObjectInstance nextPortalOrTrigger = relevantTriggersAndPortals.
-                    FindFirstAfterWithWrapAround((obj) => obj == selectedSectorObject, (obj) => true);
+                    FindFirstAfterWithWrapAround(obj => obj == selectedSectorObject, obj => true);
                 if (nextPortalOrTrigger != null)
                 {
                     _editor.SelectedObject = nextPortalOrTrigger;
-                    Message = nextPortalOrTrigger.ToString();
+                    _toolTip.Show(nextPortalOrTrigger.ToString(), this, e.Location + new Size(5, 5));
                 }
-                else
-                    Message = null;
             }
         }
 
@@ -187,18 +185,23 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
-            if ((_editor?.SelectedRoom == null) || _editor.Action.RelocateCameraActive)
+            if (_editor?.SelectedRoom == null || _editor.Action is EditorActionRelocateCamera)
                 return;
 
-            if ((e.Button == MouseButtons.Left) && _doSectorSelection)
+            if (e.Button == MouseButtons.Left && _doSectorSelection)
                 _editor.SelectedSectors = new SectorSelection { Start = _editor.SelectedSectors.Start, End = FromVisualCoord(e.Location) };
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-
             _doSectorSelection = false;
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            _toolTip.Hide(this);
         }
 
         protected override void OnResize(EventArgs eventargs)
@@ -211,12 +214,12 @@ namespace TombEditor.Controls
         {
             try
             {
-                if ((_editor == null) || (_editor.SelectedRoom == null))
+                if (_editor == null || _editor.SelectedRoom == null)
                     return;
 
                 Room currentRoom = _editor.SelectedRoom;
-                RectangleF totalArea = getVisualAreaTotal();
-                RectangleF roomArea = getVisualAreaRoom();
+                RectangleF totalArea = GetVisualAreaTotal();
+                RectangleF roomArea = GetVisualAreaRoom();
                 bool probePortals = _editor.Configuration.Editor_ProbeAttributesThroughPortals;
 
                 e.Graphics.FillRectangle(Brushes.White, totalArea);
@@ -227,63 +230,63 @@ namespace TombEditor.Controls
                     {
                         RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep, _gridStep);
 
-                        var currentHighlights = _editor.HighlightManager.GetColors(currentRoom, x, z, probePortals);
-                        if (currentHighlights != null)
+                        var currentSectorColoringInfos = _editor.SectorColoringManager.ColoringInfo.GetColors(currentRoom, x, z, probePortals);
+                        if (currentSectorColoringInfos != null)
                         {
-                            for (int i = 0; i < currentHighlights.Count; i++)
+                            for (int i = 0; i < currentSectorColoringInfos.Count; i++)
                             {
-                                e.Graphics.SmoothingMode = (currentHighlights[i].Shape == HighlightShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias);
+                                e.Graphics.SmoothingMode = currentSectorColoringInfos[i].Shape == SectorColoringShape.Rectangle ? SmoothingMode.Default : SmoothingMode.AntiAlias;
 
-                                switch (currentHighlights[i].Shape)
+                                switch (currentSectorColoringInfos[i].Shape)
                                 {
-                                    case HighlightShape.Rectangle:
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                    case SectorColoringShape.Rectangle:
+                                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
                                             e.Graphics.FillRectangle(b, rectangle);
                                         break;
-                                    case HighlightShape.Frame:
+                                    case SectorColoringShape.Frame:
                                         RectangleF frameAttribRect = rectangle;
-                                        frameAttribRect.Inflate(-(_outlineHighlightWidth / 2), -(_outlineHighlightWidth / 2));
-                                        using (var b = new Pen(currentHighlights[i].Color.ToWinFormsColor(), _outlineHighlightWidth))
+                                        frameAttribRect.Inflate(-(_outlineSectorColoringInfoWidth / 2), -(_outlineSectorColoringInfoWidth / 2));
+                                        using (var b = new Pen(currentSectorColoringInfos[i].Color.ToWinFormsColor(), _outlineSectorColoringInfoWidth))
                                             e.Graphics.DrawRectangle(b, frameAttribRect);
                                         break;
-                                    case HighlightShape.Hatch:
-                                        using (var b = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, currentHighlights[i].Color.ToWinFormsColor()))
+                                    case SectorColoringShape.Hatch:
+                                        using (var b = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, currentSectorColoringInfos[i].Color.ToWinFormsColor()))
                                             e.Graphics.FillRectangle(b, rectangle);
                                         break;
-                                    case HighlightShape.EdgeZp:
-                                    case HighlightShape.EdgeZn:
-                                    case HighlightShape.EdgeXp:
-                                    case HighlightShape.EdgeXn:
+                                    case SectorColoringShape.EdgeZp:
+                                    case SectorColoringShape.EdgeZn:
+                                    case SectorColoringShape.EdgeXp:
+                                    case SectorColoringShape.EdgeXn:
                                         RectangleF edgeRect;
-                                        if (currentHighlights[i].Shape == HighlightShape.EdgeZp)
-                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, rectangle.Width, _outlineHighlightWidth);
-                                        else if (currentHighlights[i].Shape == HighlightShape.EdgeZn)
-                                            edgeRect = new RectangleF(rectangle.X, rectangle.Bottom - _outlineHighlightWidth, rectangle.Width, _outlineHighlightWidth);
-                                        else if (currentHighlights[i].Shape == HighlightShape.EdgeXp)
-                                            edgeRect = new RectangleF(rectangle.Right - _outlineHighlightWidth, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
+                                        if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeZp)
+                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, rectangle.Width, _outlineSectorColoringInfoWidth);
+                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeZn)
+                                            edgeRect = new RectangleF(rectangle.X, rectangle.Bottom - _outlineSectorColoringInfoWidth, rectangle.Width, _outlineSectorColoringInfoWidth);
+                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.EdgeXp)
+                                            edgeRect = new RectangleF(rectangle.Right - _outlineSectorColoringInfoWidth, rectangle.Y, _outlineSectorColoringInfoWidth, rectangle.Height);
                                         else
-                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, _outlineHighlightWidth, rectangle.Height);
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                            edgeRect = new RectangleF(rectangle.X, rectangle.Y, _outlineSectorColoringInfoWidth, rectangle.Height);
+                                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
                                             e.Graphics.FillRectangle(b, edgeRect);
                                         break;
-                                    case HighlightShape.TriangleXnZn:
-                                    case HighlightShape.TriangleXnZp:
-                                    case HighlightShape.TriangleXpZn:
-                                    case HighlightShape.TriangleXpZp:
+                                    case SectorColoringShape.TriangleXnZn:
+                                    case SectorColoringShape.TriangleXnZp:
+                                    case SectorColoringShape.TriangleXpZn:
+                                    case SectorColoringShape.TriangleXpZp:
                                         PointF[] points = new PointF[3];
-                                        if(currentHighlights[i].Shape == HighlightShape.TriangleXnZn)
+                                        if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXnZn)
                                         {
                                             points[0] = new PointF(rectangle.Left, rectangle.Top);
                                             points[1] = new PointF(rectangle.Left, rectangle.Bottom);
                                             points[2] = new PointF(rectangle.Right, rectangle.Bottom);
                                         }
-                                        else if (currentHighlights[i].Shape == HighlightShape.TriangleXnZp)
+                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXnZp)
                                         {
                                             points[0] = new PointF(rectangle.Left, rectangle.Bottom);
                                             points[1] = new PointF(rectangle.Left, rectangle.Top);
                                             points[2] = new PointF(rectangle.Right, rectangle.Top);
                                         }
-                                        else if (currentHighlights[i].Shape == HighlightShape.TriangleXpZn)
+                                        else if (currentSectorColoringInfos[i].Shape == SectorColoringShape.TriangleXpZn)
                                         {
                                             points[0] = new PointF(rectangle.Left, rectangle.Bottom);
                                             points[1] = new PointF(rectangle.Right, rectangle.Top);
@@ -295,7 +298,7 @@ namespace TombEditor.Controls
                                             points[1] = new PointF(rectangle.Right, rectangle.Top);
                                             points[2] = new PointF(rectangle.Right, rectangle.Bottom);
                                         }
-                                        using (var b = new SolidBrush(currentHighlights[i].Color.ToWinFormsColor()))
+                                        using (var b = new SolidBrush(currentSectorColoringInfos[i].Color.ToWinFormsColor()))
                                             e.Graphics.FillPolygon(b, points);
                                         break;
                                     default:
@@ -316,7 +319,7 @@ namespace TombEditor.Controls
                     e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_editor.SelectedSectors.Area));
 
                 var instance = _editor.SelectedObject as SectorBasedObjectInstance;
-                if ((instance != null) && (instance.Room == _editor.SelectedRoom))
+                if (instance != null && instance.Room == _editor.SelectedRoom)
                 {
                     Pen pen = instance is PortalInstance ? _selectedPortalPen : _selectedTriggerPen;
                     RectangleF visualArea = ToVisualCoord(instance.Area);

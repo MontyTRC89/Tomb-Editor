@@ -1,23 +1,21 @@
-﻿using SharpDX;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using TombLib.Utils;
+﻿using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class WadPolygon
+    public enum WadPolygonShape : ushort
     {
-        public WadPolygonShape Shape { get; }
-        public List<int> Indices { get; } = new List<int>();
-        public TextureArea Texture { get; set; }
-        public byte ShineStrength { get; set; }
+        Quad = 0,
+        Triangle = 1
+    }
 
-        public WadPolygon(WadPolygonShape shape)
-        {
-            Shape = shape;
-        }
+    public struct WadPolygon
+    {
+        public WadPolygonShape Shape;
+        public int Index0;
+        public int Index1;
+        public int Index2;
+        public int Index3;
+        public TextureArea Texture;
+        public byte ShineStrength;
     }
 }

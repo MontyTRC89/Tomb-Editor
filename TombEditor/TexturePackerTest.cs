@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -50,8 +47,8 @@ namespace TombEditor
             }
             PngInfo temp;
 
-            for (int j = 0; j < (Textures.Count - 1); j++)
-                for (int i = 0; i < (Textures.Count - 1); i++)
+            for (int j = 0; j < Textures.Count - 1; j++)
+                for (int i = 0; i < Textures.Count - 1; i++)
                     if (infos[i].Height < infos[i + 1].Height)
                     {
                         temp = infos[i];
@@ -78,7 +75,7 @@ namespace TombEditor
                 info.NewHeight = info.Height / 2;
 
 
-                Bitmap bmp = (Bitmap)Bitmap.FromFile("textures\\" + info.Name);
+                Bitmap bmp = (Bitmap)Image.FromFile("textures\\" + info.Name);
                 for (int x = 0; x < bmp.Width; x += 2)
                 {
                     for (int y = 0; y < bmp.Height; y += 2)

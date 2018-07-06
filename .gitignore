@@ -1,5 +1,6 @@
 thumbs.db
 /Build
+/BuildRelease
 *.user
 *.cache
 *.VC.db
@@ -9,3 +10,5 @@ bin/
 .vs/
 packages/
 *.vspx
+/BuildNgXmlBuilder
+/BuildNgXmlBuilderRelease

@@ -29,4 +29,4 @@
  28: Transparency = 112
  29: Transparency = 116
  30: Transparency = 120
- 31: Transparency = 126
+ 31: Transparency = 124

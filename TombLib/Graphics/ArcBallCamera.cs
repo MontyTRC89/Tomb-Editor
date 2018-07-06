@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SharpDX;
+using System.Numerics;
 
 namespace TombLib.Graphics
 {
@@ -35,7 +32,7 @@ namespace TombLib.Graphics
         public float FieldOfView { get; set; } = 0.872f;
 
         // Default camera distance, used for internal zoom/panning multiplier calculation
-        private float DefaultDistance;
+        private readonly float DefaultDistance;
 
         public ArcBallCamera(Vector3 target, float rotationX,
             float rotationY, float minRotationX, float maxRotationX,
@@ -46,13 +43,13 @@ namespace TombLib.Graphics
             MaxRotationX = maxRotationX;
 
             // Lock the y axis rotation between the min and max values
-            RotationX = MathUtil.Clamp(rotationX, minRotationX, maxRotationX);
+            RotationX = Math.Min(Math.Max(rotationX, minRotationX), maxRotationX);
             RotationY = rotationY;
             MinDistance = minDistance;
             MaxDistance = maxDistance;
 
             // Lock the distance between the min and max values
-            Distance = MathUtil.Clamp(distance, minDistance, maxDistance);
+            Distance = Math.Min(Math.Max(distance, minDistance), maxDistance);
 
             DefaultDistance = distance;
 
@@ -63,20 +60,20 @@ namespace TombLib.Graphics
         {
             float distanceMultiplier = Distance / DefaultDistance;
             Distance += distanceChange * distanceMultiplier;
-            Distance = MathUtil.Clamp(Distance, MinDistance, MaxDistance);
+            Distance = Math.Min(Math.Max(Distance, MinDistance), MaxDistance);
         }
 
         public void Rotate(float rotationXChange, float rotationYChange)
         {
             RotationY += rotationXChange;
             RotationX -= rotationYChange;
-            RotationX = MathUtil.Clamp(RotationX, MinRotationX, MaxRotationX);
+            RotationX = Math.Min(Math.Max(RotationX, MinRotationX), MaxRotationX);
         }
 
         public void MoveCameraPlane(Vector3 movementVec)
         {
-            float distanceMultiplier = (float)Math.Pow((Distance / DefaultDistance), (float)2 / (float)3);
-            Target += Vector3.TransformCoordinate(movementVec * distanceMultiplier, GetRotationMatrix());
+            float distanceMultiplier = (float)Math.Pow(Distance / DefaultDistance, 2 / (float)3);
+            Target += MathC.HomogenousTransform(movementVec * distanceMultiplier, GetRotationMatrix());
         }
 
         public void MoveCameraLinear(Vector3 movementVec)
@@ -84,22 +81,23 @@ namespace TombLib.Graphics
             Target += movementVec;
         }
 
-        public override Matrix GetViewProjectionMatrix(float width, float height)
+        public override Matrix4x4 GetViewProjectionMatrix(float width, float height)
         {
             // Calculate up vector
-            Matrix rotation = Matrix.RotationYawPitchRoll(RotationY, -RotationX, 0);
-            Vector3 up = Vector3.TransformCoordinate(Vector3.UnitY, rotation);
+            Matrix4x4 rotation = Matrix4x4.CreateFromYawPitchRoll(RotationY, -RotationX, 0);
+            Vector3 up = MathC.HomogenousTransform(Vector3.UnitY, rotation);
 
             //new Vector3(0, 150, 0), Vector3.Up);
-            Matrix View = Matrix.LookAtLH(GetPosition(), Target, up);
+            Matrix4x4 View = MathC.Matrix4x4CreateLookAtLH(GetPosition(), Target, up);
             float aspectRatio = width / height;
-            Matrix Projection = Matrix.PerspectiveFovLH(FieldOfView, aspectRatio, 20.0f, 1000000.0f);
-            return View * Projection;
+            Matrix4x4 Projection = MathC.Matrix4x4CreatePerspectiveFieldOfViewLH(FieldOfView, aspectRatio, 20.0f, 1000000.0f);
+            Matrix4x4 result = View * Projection;
+            return result;
         }
 
-        public Matrix GetRotationMatrix()
+        public Matrix4x4 GetRotationMatrix()
         {
-            return Matrix.RotationYawPitchRoll(RotationY, -RotationX, 0);
+            return Matrix4x4.CreateFromYawPitchRoll(RotationY, -RotationX, 0);
         }
 
         public Vector3 GetDirection()
@@ -107,7 +105,7 @@ namespace TombLib.Graphics
             // Translate down the Z axis by the desired distance
             // between the camera and object, then rotate that
             // vector to find the camera offset from the target
-            return Vector3.TransformCoordinate(new Vector3(0, 0, Distance), GetRotationMatrix());
+            return MathC.HomogenousTransform(new Vector3(0, 0, Distance), GetRotationMatrix());
         }
 
         public Vector3 GetPosition()

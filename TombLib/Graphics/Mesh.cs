@@ -1,36 +1,33 @@
-﻿using System;
+﻿using SharpDX.Toolkit.Graphics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpDX.Toolkit.Graphics;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
-using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
-using SharpDX;
+using System.Numerics;
 
 namespace TombLib.Graphics
 {
     public abstract class Mesh<T> : GraphicsResource, IRenderableObject where T : struct, IVertex
     {
-        public int BaseIndex { get; set; }
-        public int NumIndices { get; set; }
         public List<T> Vertices { get; set; } = new List<T>();
         public List<int> Indices { get; set; } = new List<int>();
-        public Buffer<T> VertexBuffer { get; protected set; }
-        public Buffer IndexBuffer { get; protected set; }
+        public Dictionary<Material, Submesh> Submeshes { get; private set; } = new Dictionary<Material, Submesh>();
 
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
-        
-        protected Buffer<T> _vb;
-        protected Buffer _ib;
 
         public Mesh(GraphicsDevice device, string name)
             : base(device, name)
-        {
-            
-        }
+        { }
 
-        public abstract void BuildBuffers();
+        public void UpdateBoundingBox()
+        {
+            // Calculate bounding box
+            Vector3 minVertex = new Vector3(float.MaxValue);
+            Vector3 maxVertex = new Vector3(float.MinValue);
+            foreach (var vertex in Vertices)
+            {
+                minVertex = Vector3.Min(minVertex, vertex.Position);
+                maxVertex = Vector3.Max(maxVertex, vertex.Position);
+            }
+            BoundingBox = new BoundingBox(minVertex, maxVertex);
+        }
     }
 }
