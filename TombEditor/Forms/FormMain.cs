@@ -381,15 +381,25 @@ namespace TombEditor.Forms
                         EditorActions.EditObject(_editor.SelectedObject, this);
                     break;
 
-                case Keys.NumPad1: // Switch additive blending
+                case Keys.NumPad1: // Switch blending modes
                 case Keys.D1:
                     if (modifierKeys == Keys.Shift)
                     {
                         var texture = _editor.SelectedTexture;
-                        if (texture.BlendMode == BlendMode.Additive)
-                            texture.BlendMode = BlendMode.Normal;
-                        else
+
+                        if (texture.BlendMode == BlendMode.Normal)
                             texture.BlendMode = BlendMode.Additive;
+                        else if(texture.BlendMode == BlendMode.Additive)
+                            texture.BlendMode = BlendMode.Subtract;
+                        else if (texture.BlendMode == BlendMode.Subtract)
+                            texture.BlendMode = BlendMode.Exclude;
+                        else if (texture.BlendMode == BlendMode.Exclude)
+                            texture.BlendMode = BlendMode.Screen;
+                        else if (texture.BlendMode == BlendMode.Screen)
+                            texture.BlendMode = BlendMode.Lighten;
+                        else if (texture.BlendMode == BlendMode.Lighten)
+                            texture.BlendMode = BlendMode.Normal;
+                        
                         _editor.SelectedTexture = texture;
                     }
                     break;
