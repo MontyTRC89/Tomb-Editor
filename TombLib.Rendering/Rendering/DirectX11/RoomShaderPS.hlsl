@@ -42,7 +42,7 @@ float4 main(PixelInputType input) : SV_TARGET
 
 		result.xyz *= input.Color.w; // Turn into premultiplied alpha
 
-		if (input.BlendMode == 2)
+		if (input.BlendMode >= 2)
 			result.w = 0.0f; // Additive blending
     }
     else
