@@ -1899,12 +1899,12 @@ namespace TombEditor
                     {
                         if (Math.Abs(neighborCeilingLevel - floorLevel) <
                             Math.Abs(neighborFloorLevel - ceilingLevel))
-                        { // Consider floor portal
-                            candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Floor, neighborRoom));
-                        }
-                        else
                         { // Consider ceiling portal
                             candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Ceiling, neighborRoom));
+                        }
+                        else
+                        { // Consider floor portal
+                            candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Floor, neighborRoom));
                         }
                     }
                     if (area.Width == 0 && area.X0 == 0)

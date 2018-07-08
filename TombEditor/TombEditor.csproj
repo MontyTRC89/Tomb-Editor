@@ -140,7 +140,7 @@
     <Compile Include="Controls\ImportedGeometryManager.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ImportedGeometryManager.designer.cs">
+    <Compile Include="Controls\ImportedGeometryManager.Designer.cs">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\MovementTimer.cs" />
