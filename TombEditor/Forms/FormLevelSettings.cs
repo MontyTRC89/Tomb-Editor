@@ -142,6 +142,16 @@ namespace TombEditor.Forms
                 }
             }
 
+            public string Size
+            {
+                get
+                {
+                    if (Texture.LoadException != null || Texture.Image == TombLib.Utils.Texture.UnloadedPlaceholder)
+                        return "-";
+                    return Texture.Image.Width + " × " + Texture.Image.Height;
+                }
+            }
+
             public bool ReplaceMagentaWithTransparency
             {
                 get { return Texture.ReplaceMagentaWithTransparency; }
