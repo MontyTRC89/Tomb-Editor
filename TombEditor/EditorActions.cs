@@ -789,7 +789,10 @@ namespace TombEditor
 
         public static void PickTexture(Room room, VectorInt2 pos, BlockFace face)
         {
-            _editor.SelectTextureAndCenterView(room.GetBlock(pos).GetFaceTexture(face));
+            var area = room.GetBlock(pos).GetFaceTexture(face);
+            if (area == null || area.TextureIsInvisble || area.Texture == null)
+                return;
+            _editor.SelectTextureAndCenterView(area);
         }
 
         public static void RotateSelectedTexture()
