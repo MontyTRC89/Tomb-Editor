@@ -99,8 +99,18 @@ namespace ScriptEditor
 			// Get current scroll position
 			int scrollPosition = textEditor.VerticalScroll.Value;
 
-			// Reindent the script
-			textEditor.Text = SyntaxTidy.ReindentScript(textEditor.Text);
+			// Reindent all lines
+			string[] tidiedlines = SyntaxTidy.ReindentLines(textEditor.Text);
+
+			// Scan all lines
+			for (int i = 0; i < textEditor.LinesCount; i++)
+			{
+				if (textEditor.GetLineText(i) != tidiedlines[i])
+				{
+					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+					textEditor.InsertText(tidiedlines[i]);
+				}
+			}
 
 			// Go to last scroll position
 			textEditor.VerticalScroll.Value = scrollPosition;
@@ -124,8 +134,18 @@ namespace ScriptEditor
 			// Get current scroll position
 			int scrollPosition = textEditor.VerticalScroll.Value;
 
-			// Trim whitespace
-			textEditor.Text = SyntaxTidy.TrimWhitespace(textEditor.Text);
+			// Trim whitespace on every line
+			string[] trimmedlines = SyntaxTidy.TrimLines(textEditor.Text);
+
+			// Scan all lines
+			for (int i = 0; i < textEditor.LinesCount; i++)
+			{
+				if (textEditor.GetLineText(i) != trimmedlines[i])
+				{
+					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+					textEditor.InsertText(trimmedlines[i]);
+				}
+			}
 
 			// Go to last scroll position
 			textEditor.VerticalScroll.Value = scrollPosition;
