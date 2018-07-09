@@ -46,10 +46,11 @@ namespace TombLib.Controls
             toolTip.SetToolTip(numericVolumeLabel, toolTip.GetToolTip(numericVolume));
         }
 
-        private object CreateNewSample()
+        private IEnumerable<WadSample> CreateNewSample()
         {
             using (var fileDialog = new OpenFileDialog())
             {
+                fileDialog.Multiselect = true;
                 fileDialog.Filter = WadSample.FileFormatsToRead.GetFilter();
                 if (!string.IsNullOrWhiteSpace(_currentPath))
                     try
@@ -58,7 +59,7 @@ namespace TombLib.Controls
                         fileDialog.FileName = Path.GetFileName(_currentPath);
                     }
                     catch { }
-                fileDialog.Title = "Select a sound file that you want to see imported.";
+                fileDialog.Title = "Select sound files that you want to see imported.";
 
                 DialogResult dialogResult = fileDialog.ShowDialog(this);
                 _currentPath = fileDialog.FileName;
@@ -66,40 +67,55 @@ namespace TombLib.Controls
                     return null;
 
                 // Load sounds
-                try
+                List<WadSample> results = new List<WadSample>();
+                foreach (string fileName in fileDialog.FileNames)
                 {
-                    WadSample result = new WadSample(WadSample.ConvertSampleFormat(File.ReadAllBytes(fileDialog.FileName), fileSampleRate =>
+                    Retry:
+                    ;
+                    try
                     {
-                        if (fileSampleRate == TargetSampleRate)
-                            return new WadSample.ResampleInfo { Resample = false, SampleRate = TargetSampleRate };
-                        if (((ICollection<WadSample>)dataGridView.DataSource).Count == 0)
-                            return new WadSample.ResampleInfo { Resample = false, SampleRate = fileSampleRate };
-
-                        // Ask the user about how to proceed if the sample rate mismatches...
-                        switch (DarkMessageBox.Show(this, "The file '" + fileDialog.FileName + "' sample rate does not match the sound info sample rate." +
-                            "\nDo you want to resample it? This process is lossy, but otherwise the length and pitch of the sound will change.", "Sample rate does not match", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                        WadSample result = new WadSample(WadSample.ConvertSampleFormat(File.ReadAllBytes(fileName), fileSampleRate =>
                         {
-                            case DialogResult.Yes:
-                                return new WadSample.ResampleInfo { Resample = true, SampleRate = TargetSampleRate };
-                            case DialogResult.No:
+                            if (fileSampleRate == TargetSampleRate)
                                 return new WadSample.ResampleInfo { Resample = false, SampleRate = TargetSampleRate };
-                            default:
-                                throw new OperationCanceledException();
-                        }
-                    }));
+                            if (((ICollection<WadSample>)dataGridView.DataSource).Count == 0)
+                                return new WadSample.ResampleInfo { Resample = false, SampleRate = fileSampleRate };
 
-                    // Update sample rate if it changed
-                    if (TargetSampleRate != result.SampleRate)
-                        TargetSampleRate = result.SampleRate;
-                    return result;
+                            // Ask the user about how to proceed if the sample rate mismatches...
+                            switch (DarkMessageBox.Show(this, "The file '" + fileName + "' sample rate does not match the sound info sample rate." +
+                                "\nDo you want to resample it? This process is lossy, but otherwise the length and pitch of the sound will change.",
+                                "Sample rate does not match", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                            {
+                                case DialogResult.Yes:
+                                    return new WadSample.ResampleInfo { Resample = true, SampleRate = TargetSampleRate };
+                                case DialogResult.No:
+                                    return new WadSample.ResampleInfo { Resample = false, SampleRate = TargetSampleRate };
+                                default:
+                                    throw new OperationCanceledException();
+                            }
+                        }));
+
+                        // Update sample rate if it changed
+                        if (TargetSampleRate != result.SampleRate)
+                            TargetSampleRate = result.SampleRate;
+                        results.Add(result);
+                    }
+                    catch (OperationCanceledException) { return null; }
+                    catch (Exception exc)
+                    {
+                        logger.Error(exc, "Unable to open file '" + fileName + "'.");
+                        switch (DarkMessageBox.Show(this, "Unable to load sound from file '" + fileName + "'. " + exc.ToString(), "Unable to load sound file.",
+                            fileDialog.FileNames.Length == 1 ? MessageBoxButtons.RetryCancel : MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error,
+                            fileDialog.FileNames.Length == 1 ? MessageBoxDefaultButton.Button2 : MessageBoxDefaultButton.Button1))
+                        {
+                            case DialogResult.Retry:
+                                goto Retry;
+                            case DialogResult.Ignore:
+                                continue;
+                        }
+                    }
                 }
-                catch (OperationCanceledException) { return null; }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "Unable to open file '" + fileDialog.FileName + "'.");
-                    DarkMessageBox.Show(this, "Unable to load sprite from file '" + fileDialog.FileName + "'. " + exc.ToString(), "Unable to load sprite.", MessageBoxIcon.Error);
-                    return null;
-                }
+                return results;
             }
         }
 
