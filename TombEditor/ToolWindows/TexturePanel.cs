@@ -152,7 +152,9 @@ namespace TombEditor.ToolWindows
 
         private void butBrowseTexture_Click(object sender, EventArgs e)
         {
-            EditorActions.AddTexture(this, comboCurrentTexture.SelectedItem as LevelTexture);
+            LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
+            if (texture != null)
+                EditorActions.UpdateTextureFilepath(this, texture);
         }
     }
 }

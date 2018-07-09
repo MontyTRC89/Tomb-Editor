@@ -2271,35 +2271,51 @@ namespace TombEditor
 
         }
 
-        public static LevelTexture AddTexture(IWin32Window owner, LevelTexture toReplace = null, string predefinedPath = null)
+        public static IEnumerable<LevelTexture> AddTexture(IWin32Window owner, IEnumerable<string> predefinedPaths = null)
+        {
+            List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(owner, _editor.Level.Settings,
+                FileSystemUtils.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
+                "Load texture files", LevelTexture.FileExtensions, VariableType.LevelDirectory)).ToList();
+            if (paths.Count == 0) // Fast track to avoid unnecessary updates
+                return new LevelTexture[0];
+
+            // Load textures concurrently
+            LevelTexture[] results = new LevelTexture[paths.Count];
+            Parallel.For(0, paths.Count, i => results[i] = new LevelTexture(_editor.Level.Settings, paths[i]));
+
+            // Open GUI for texture that couldn't be loaded
+            for (int i = 0; i < results.Length; ++i)
+                while (results[i]?.LoadException != null)
+                    switch (DarkMessageBox.Show(owner, "An error occurred while loading texture file '" + paths[i] + "'." +
+                        "\nError message: " + results[i].LoadException.GetType(), "Unable to load texture file.",
+                        paths.Count == 1 ? MessageBoxButtons.RetryCancel : MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error,
+                        paths.Count == 1 ? MessageBoxDefaultButton.Button2 : MessageBoxDefaultButton.Button1))
+                    {
+                        case DialogResult.Retry:
+                            results[i].Reload(_editor.Level.Settings);
+                            break;
+                        case DialogResult.Ignore:
+                            results[i] = null;
+                            break;
+                        default:
+                            return new LevelTexture[0];
+                    }
+
+            // Update level
+            _editor.Level.Settings.Textures.AddRange(results.Where(result => result != null));
+            _editor.LoadedTexturesChange(results.FirstOrDefault(result => result != null));
+            return results.Where(result => result != null);
+        }
+
+        public static void UpdateTextureFilepath(IWin32Window owner, LevelTexture toReplace)
         {
             var settings = _editor.Level.Settings;
-            string path = predefinedPath ?? GraphicalDialogHandler.BrowseTextureFile(settings, toReplace?.Path ?? _editor.Level.Settings.LevelFilePath, owner);
+            string path = LevelFileDialog.BrowseFile(owner, settings, toReplace.Path, "Load a texture", LevelTexture.FileExtensions, VariableType.LevelDirectory, false);
             if (path == toReplace?.Path)
-                return toReplace;
+                return;
 
-            if (toReplace != null)
-            {
-                toReplace.SetPath(_editor.Level.Settings, path);
-                _editor.LoadedTexturesChange(toReplace);
-                return toReplace;
-            }
-            else
-            {
-                Retry:
-                ;
-                var newTexture = new LevelTexture(_editor.Level.Settings, path);
-                if (newTexture.LoadException != null)
-                    if (DarkMessageBox.Show(owner, "An error occurred while loading texture file '" + path + "'." +
-                        "\nError message: " + newTexture.LoadException.GetType(), "Unable to load texture file.", MessageBoxButtons.RetryCancel,
-                        MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
-                        goto Retry;
-                    else
-                        return toReplace;
-                _editor.Level.Settings.Textures.Add(newTexture);
-                _editor.LoadedTexturesChange(newTexture);
-                return newTexture;
-            }
+            toReplace.SetPath(_editor.Level.Settings, path);
+            _editor.LoadedTexturesChange(toReplace);
         }
 
         public static void UnloadTextures(IWin32Window owner)
@@ -2331,29 +2347,52 @@ namespace TombEditor
             _editor.Level.RemoveTextures(texture => texture == textureToDelete);
             _editor.LoadedTexturesChange();
         }
-        public static void AddWad(IWin32Window owner, ReferencedWad toReplace = null, string predefinedPath = null)
+
+        public static IEnumerable<ReferencedWad> AddWad(IWin32Window owner, IEnumerable<string> predefinedPaths = null)
         {
-            var settings = _editor.Level.Settings;
-            string path = predefinedPath ?? GraphicalDialogHandler.BrowseObjectFile(settings, toReplace?.Path ?? _editor.Level.Settings.LevelFilePath, owner);
+            List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(owner, _editor.Level.Settings,
+                FileSystemUtils.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
+                "Load object files (*.wad)", Wad2.WadFormatExtensions, VariableType.LevelDirectory)).ToList();
+            if (paths.Count == 0) // Fast track to avoid unnecessary updates
+                return new ReferencedWad[0];
+
+            // Load objects (*.wad files) concurrently
+            ReferencedWad[] results = new ReferencedWad[paths.Count];
+            GraphicalDialogHandler synchronizedDialogHandler = new GraphicalDialogHandler(owner); // Have only one to synchronize the messages.
+            Parallel.For(0, paths.Count, i => results[i] = new ReferencedWad(_editor.Level.Settings, paths[i], synchronizedDialogHandler));
+
+            // Open GUI for objects (*.wad files) that couldn't be loaded
+            for (int i = 0; i < results.Length; ++i)
+                while (results[i]?.LoadException != null)
+                    switch (DarkMessageBox.Show(owner, "An error occurred while loading object file '" + paths[i] + "'." +
+                        "\nError message: " + results[i].LoadException.GetType(), "Unable to load object file.",
+                        paths.Count == 1 ? MessageBoxButtons.RetryCancel : MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error,
+                        paths.Count == 1 ? MessageBoxDefaultButton.Button2 : MessageBoxDefaultButton.Button1))
+                    {
+                        case DialogResult.Retry:
+                            results[i].Reload(_editor.Level.Settings);
+                            break;
+                        case DialogResult.Ignore:
+                            results[i] = null;
+                            break;
+                        default:
+                            return new ReferencedWad[0];
+                    }
+
+
+            // Update level
+            _editor.Level.Settings.Wads.AddRange(results.Where(result => result != null));
+            _editor.LoadedWadsChange();
+            return results.Where(result => result != null);
+        }
+
+        public static void UpdateWadFilepath(IWin32Window owner, ReferencedWad toReplace)
+        {
+            string path = LevelFileDialog.BrowseFile(owner, _editor.Level.Settings, toReplace.Path,
+                "Load an object file (*.wad)", Wad2.WadFormatExtensions, VariableType.LevelDirectory, false);
             if (path == toReplace?.Path)
                 return;
-
-            if (toReplace != null)
-                toReplace.SetPath(_editor.Level.Settings, path);
-            else
-            {
-                Retry:
-                ;
-                var newWad = new ReferencedWad(_editor.Level.Settings, path, new GraphicalDialogHandler(owner));
-                if (newWad.LoadException != null)
-                    if (DarkMessageBox.Show(owner, "An error occurred while loading object file '" + path + "'." +
-                        "\nError message: " + newWad.LoadException.GetType(), "Unable to load object file.", MessageBoxButtons.RetryCancel,
-                        MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
-                        goto Retry;
-                    else
-                        return;
-                _editor.Level.Settings.Wads.Add(newWad);
-            }
+            toReplace.SetPath(_editor.Level.Settings, path);
             _editor.LoadedWadsChange();
         }
 
@@ -2487,27 +2526,33 @@ namespace TombEditor
 
         public static int DragDropCommonFiles(DragEventArgs e, IWin32Window owner)
         {
-            int unsupportedFileCount = 0;
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                foreach (string file in files)
-                {
-                    if (Wad2.WadFormatExtensions.Matches(file))
-                        AddWad(owner, null, _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory));
-                    else if (LevelTexture.FileExtensions.Matches(file))
-                        AddTexture(owner, null, _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory));
-                    else if (file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-                        OpenLevelPrj(owner, file);
-                    else if (file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
-                        OpenLevel(owner, file);
-                    else
-                        unsupportedFileCount++;
-                }
-                return unsupportedFileCount;
-            }
-            else
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
                 return -1;
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            // Is there a prj file to open?
+            string prjFile = files.FirstOrDefault(file => file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase));
+            if (prjFile != null)
+            {
+                OpenLevelPrj(owner, prjFile);
+                return files.Length - 1;
+            }
+
+            // Is there a prj2 file to open?
+            string prj2File = files.FirstOrDefault(file => file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase));
+            if (prjFile != null)
+            {
+                OpenLevel(owner, prj2File);
+                return files.Length - 1;
+            }
+
+            // Are there any more specific files to open?
+            // (Process the ones of the same type concurrently)
+            IEnumerable<string> wadFiles = files.Where(file => Wad2.WadFormatExtensions.Matches(file));
+            IEnumerable<string> textureFiles = files.Where(file => LevelTexture.FileExtensions.Matches(file));
+            AddWad(owner, wadFiles.Select(file => _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory)));
+            AddTexture(owner, textureFiles.Select(file => _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory)));
+            return files.Length - (wadFiles.Count() + textureFiles.Count()); // Unsupported file count
         }
 
         public static void SetPortalOpacity(PortalOpacity opacity, IWin32Window owner)
@@ -2530,7 +2575,7 @@ namespace TombEditor
 
             // Show save dialog if necessary
             if (askForPath || string.IsNullOrEmpty(filePath))
-                filePath = LevelFileDialog.BrowseFile(owner, null, filePath, "Save level", LevelSettings.FileFormatsLevel, true, null);
+                filePath = LevelFileDialog.BrowseFile(owner, null, filePath, "Save level", LevelSettings.FileFormatsLevel, null, true);
             if (string.IsNullOrEmpty(filePath))
                 return false;
 
@@ -2807,7 +2852,7 @@ namespace TombEditor
                 return;
 
             if (string.IsNullOrEmpty(fileName))
-                fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, false, null);
+                fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, null, false);
             if (string.IsNullOrEmpty(fileName))
                 return;
 
@@ -2830,7 +2875,7 @@ namespace TombEditor
                 return;
 
             if (string.IsNullOrEmpty(fileName))
-                fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevelPrj, false, null);
+                fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevelPrj, null, false);
             if (string.IsNullOrEmpty(fileName))
                 return;
 

@@ -132,28 +132,23 @@ namespace TombEditor.Controls
             dataGridViewControls.DataGridView = dataGridView;
             dataGridViewControls.Enabled = true;
             dataGridViewControls.CreateNewRow = delegate
+            {
+                List<string> paths = LevelFileDialog.BrowseFiles(this, LevelSettings, FileSystemUtils.GetDirectoryNameTry(LevelSettings.LevelFilePath),
+                    "Select the 3D files that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory).ToList();
+
+                // Load imported geometries
+                var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
+                foreach (string path in paths)
                 {
-                    string path = BrowseFile(null);
-                    if (string.IsNullOrEmpty(path))
-                        return null;
-
-              /*  using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    foreach (var preset in IOSettingsPresets.SettingsPresets)
-                        settingsDialog.AddPreset(preset);
-
-                    if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
-                    {*/
-
-                        var info = ImportedGeometryInfo.Default;
+                    ImportedGeometryInfo info = ImportedGeometryInfo.Default;
                     info.Path = path;
-                    info.Name = Path.GetFileNameWithoutExtension(path);
-
-                    ImportedGeometry newObject = new ImportedGeometry();
-                    LevelSettings.ImportedGeometryUpdate(newObject, info);
-                    LevelSettings.ImportedGeometries.Add(newObject);
-                    return new ImportedGeometryWrapper(this, newObject);
-                };
+                    info.Name = FileSystemUtils.GetFileNameWithoutExtensionTry(path);
+                    importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
+                }
+                LevelSettings.ImportedGeometryUpdate(importInfos);
+                LevelSettings.ImportedGeometries.AddRange(importInfos.Select(entry => entry.Key));
+                return importInfos.Select(entry => new ImportedGeometryWrapper(this, entry.Key));
+            };
             dataGridView.DataSource = _dataGridViewDataSource;
             dataGridViewControls.DeleteRowCheckIfCancel = MessageUserAboutHimDeletingRows;
             _dataGridViewDataSource.ListChanged += delegate (object sender, ListChangedEventArgs e)
@@ -178,21 +173,6 @@ namespace TombEditor.Controls
                     _dataGridViewDataSource.Add(new ImportedGeometryWrapper(this, importedGeometry));
         }
 
-        private string BrowseFile(string path)
-        {
-            path = LevelSettings.MakeAbsolute(path);
-            using (FileDialog dialog = new OpenFileDialog())
-            {
-                dialog.Filter = ImportedGeometry.FileExtensions.GetFilter();
-                dialog.Title = "Select a 3D file that you want to see imported.";
-                dialog.FileName = string.IsNullOrEmpty(path) ? "" : Path.GetFileName(path);
-                dialog.InitialDirectory = string.IsNullOrEmpty(path) ? path : Path.GetDirectoryName(path);
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                    return null;
-                return LevelSettings.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
-            }
-        }
-
         private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= _dataGridViewDataSource.Count)
@@ -200,7 +180,8 @@ namespace TombEditor.Controls
 
             if (dataGridView.Columns[e.ColumnIndex].Name == searchButtonColumn.Name)
             {
-                string path = BrowseFile(_dataGridViewDataSource[e.RowIndex].Path);
+                string path = LevelFileDialog.BrowseFile(this, LevelSettings, _dataGridViewDataSource[e.RowIndex].Path,
+                    "Select a 3D file that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory, false);
                 if (!string.IsNullOrEmpty(path))
                 {
                     var info = _dataGridViewDataSource[e.RowIndex];
@@ -253,7 +234,7 @@ namespace TombEditor.Controls
                     {
                         dataGridView.ClearSelection();
                         dataGridView.SelectedRows[i].Selected = true;
-                    return;
+                        return;
                     }
             }
         }
