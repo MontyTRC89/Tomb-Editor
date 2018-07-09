@@ -20,7 +20,7 @@ namespace TombEditor.Forms
             Everything,
             Rooms,
             AllObjects,
-            ObjectsInCurrentRoom,
+            ObjectsInSelectedRooms,
             ItemTypes
         }
 
@@ -112,10 +112,10 @@ namespace TombEditor.Forms
                     ResetCompletely();
                 if (obj is Editor.RoomListChangedEvent) // Always rebuild completely when rooms change for now.
                     ResetCompletely(); // We don't get precise object messages for objects removed with rooms otherwise.
-                else if (obj is Editor.SelectedRoomChangedEvent && scope == ScopeMode.ObjectsInCurrentRoom)
+                else if (obj is Editor.SelectedRoomChangedEvent && scope == ScopeMode.ObjectsInSelectedRooms)
                     ResetCompletely();
                 else if (obj is IEditorObjectChangedEvent && (scope == ScopeMode.AllObjects || scope == ScopeMode.Everything ||
-                    scope == ScopeMode.ObjectsInCurrentRoom && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom))
+                    scope == ScopeMode.ObjectsInSelectedRooms && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom))
                 {
                     var @event = (IEditorObjectChangedEvent)obj;
                     switch (@event.ChangeType)
@@ -404,9 +404,9 @@ namespace TombEditor.Forms
                     foreach (ObjectInstance instance in room.AnyObjects)
                         yield return instance;
             }
-            else if (scope == ScopeMode.ObjectsInCurrentRoom)
+            else if (scope == ScopeMode.ObjectsInSelectedRooms)
             {
-                foreach (ObjectInstance instance in _editor.SelectedRoom.AnyObjects)
+                foreach (ObjectInstance instance in _editor.SelectedRooms.SelectMany(room => room.AnyObjects))
                     yield return instance;
             }
 
