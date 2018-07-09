@@ -34,8 +34,12 @@
             this.versionLabel = new DarkUI.Controls.DarkLabel();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel20 = new DarkUI.Controls.DarkLabel();
             this.darkLabel17 = new DarkUI.Controls.DarkLabel();
+            this.linkLabel15 = new System.Windows.Forms.LinkLabel();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
+            this.linkLabel14 = new System.Windows.Forms.LinkLabel();
             this.linkLabel11 = new System.Windows.Forms.LinkLabel();
             this.linkLabel13 = new System.Windows.Forms.LinkLabel();
             this.linkLabel8 = new System.Windows.Forms.LinkLabel();
@@ -67,8 +71,6 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel20 = new DarkUI.Controls.DarkLabel();
-            this.linkLabel14 = new System.Windows.Forms.LinkLabel();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.panel1.SuspendLayout();
@@ -83,18 +85,18 @@
             this.tableLayoutPanel1.Controls.Add(this.butOk, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.darkLabel1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 406);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 421);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(612, 32);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(614, 32);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // butOk
             // 
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.butOk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butOk.Location = new System.Drawing.Point(506, 3);
+            this.butOk.Location = new System.Drawing.Point(508, 3);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(103, 26);
             this.butOk.TabIndex = 3;
@@ -120,7 +122,7 @@
             this.versionLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.versionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.versionLabel.Location = new System.Drawing.Point(540, 44);
+            this.versionLabel.Location = new System.Drawing.Point(542, 44);
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(69, 17);
             this.versionLabel.TabIndex = 0;
@@ -133,15 +135,17 @@
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.pictureBox.Location = new System.Drawing.Point(0, 0);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(612, 64);
+            this.pictureBox.Size = new System.Drawing.Size(614, 64);
             this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox.TabIndex = 7;
             this.pictureBox.TabStop = false;
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.darkLabel21);
             this.panel1.Controls.Add(this.darkLabel20);
             this.panel1.Controls.Add(this.darkLabel17);
+            this.panel1.Controls.Add(this.linkLabel15);
             this.panel1.Controls.Add(this.darkLabel5);
             this.panel1.Controls.Add(this.linkLabel14);
             this.panel1.Controls.Add(this.linkLabel11);
@@ -176,8 +180,28 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 64);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(612, 342);
+            this.panel1.Size = new System.Drawing.Size(614, 357);
             this.panel1.TabIndex = 8;
+            // 
+            // darkLabel21
+            // 
+            this.darkLabel21.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel21.Location = new System.Drawing.Point(16, 279);
+            this.darkLabel21.Name = "darkLabel21";
+            this.darkLabel21.Size = new System.Drawing.Size(267, 13);
+            this.darkLabel21.TabIndex = 51;
+            this.darkLabel21.Text = "System.Drawing.PSD is used under BSD 3-clause license.";
+            // 
+            // darkLabel20
+            // 
+            this.darkLabel20.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel20.Location = new System.Drawing.Point(16, 266);
+            this.darkLabel20.Name = "darkLabel20";
+            this.darkLabel20.Size = new System.Drawing.Size(267, 13);
+            this.darkLabel20.TabIndex = 51;
+            this.darkLabel20.Text = "FastColoredTextBox is used under LGPLv3 license.";
             // 
             // darkLabel17
             // 
@@ -189,6 +213,20 @@
             this.darkLabel17.TabIndex = 51;
             this.darkLabel17.Text = "CH.SipHash is used under Public Domain.";
             // 
+            // linkLabel15
+            // 
+            this.linkLabel15.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel15.AutoEllipsis = true;
+            this.linkLabel15.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel15.Location = new System.Drawing.Point(289, 279);
+            this.linkLabel15.Name = "linkLabel15";
+            this.linkLabel15.Size = new System.Drawing.Size(300, 13);
+            this.linkLabel15.TabIndex = 49;
+            this.linkLabel15.TabStop = true;
+            this.linkLabel15.Text = "github.com/bizzehdee/System.Drawing.PSD";
+            this.linkLabel15.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel15.Click += new System.EventHandler(this.btnLink_Click);
+            // 
             // darkLabel5
             // 
             this.darkLabel5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -198,6 +236,20 @@
             this.darkLabel5.Size = new System.Drawing.Size(267, 13);
             this.darkLabel5.TabIndex = 50;
             this.darkLabel5.Text = "OpenFolderDialog is used under MIT license.";
+            // 
+            // linkLabel14
+            // 
+            this.linkLabel14.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel14.AutoEllipsis = true;
+            this.linkLabel14.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel14.Location = new System.Drawing.Point(289, 266);
+            this.linkLabel14.Name = "linkLabel14";
+            this.linkLabel14.Size = new System.Drawing.Size(300, 13);
+            this.linkLabel14.TabIndex = 49;
+            this.linkLabel14.TabStop = true;
+            this.linkLabel14.Text = "codeproject.com/Articles/161871/Fast-Colored-TextBox-for-syntax-highlighting";
+            this.linkLabel14.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel14.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // linkLabel11
             // 
@@ -211,6 +263,7 @@
             this.linkLabel11.TabStop = true;
             this.linkLabel11.Text = "github.com/tanglebones/ch-siphash";
             this.linkLabel11.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel11.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // linkLabel13
             // 
@@ -224,6 +277,7 @@
             this.linkLabel13.TabStop = true;
             this.linkLabel13.Text = "medo64.com/2011/12/openfolderdialog";
             this.linkLabel13.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel13.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // linkLabel8
             // 
@@ -237,6 +291,7 @@
             this.linkLabel8.TabStop = true;
             this.linkLabel8.Text = "nuget.org/packages/AssimpNet";
             this.linkLabel8.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel8.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // darkLabel13
             // 
@@ -260,6 +315,7 @@
             this.linkLabel7.TabStop = true;
             this.linkLabel7.Text = "github.com/assimp/assimp";
             this.linkLabel7.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel7.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // darkLabel12
             // 
@@ -283,6 +339,7 @@
             this.linkLabel12.TabStop = true;
             this.linkLabel12.Text = "github.com/naudio/NAudio";
             this.linkLabel12.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel12.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // linkLabel6
             // 
@@ -296,6 +353,7 @@
             this.linkLabel6.TabStop = true;
             this.linkLabel6.Text = "nlog-project.org";
             this.linkLabel6.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel6.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // darkLabel18
             // 
@@ -329,6 +387,7 @@
             this.linkLabel5.TabStop = true;
             this.linkLabel5.Text = "github.com/RobinPerris/DarkUI";
             this.linkLabel5.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel5.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // darkLabel9
             // 
@@ -352,6 +411,7 @@
             this.linkLabel4.TabStop = true;
             this.linkLabel4.Text = "sharpdx.org";
             this.linkLabel4.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel4.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // darkLabel8
             // 
@@ -375,6 +435,7 @@
             this.linkLabel3.TabStop = true;
             this.linkLabel3.Text = "github.com/nickbabcock/Pfim";
             this.linkLabel3.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel3.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // darkLabel7
             // 
@@ -398,6 +459,7 @@
             this.linkLabel2.TabStop = true;
             this.linkLabel2.Text = "github.com/richgel999/miniz";
             this.linkLabel2.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel2.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // darkLabel6
             // 
@@ -421,6 +483,7 @@
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "github.com/ActuallyaDeviloper/MiniZ.Net";
             this.linkLabel1.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel1.Click += new System.EventHandler(this.btnLink_Click);
             // 
             // darkLabel19
             // 
@@ -434,10 +497,11 @@
             // 
             // darkLabel16
             // 
+            this.darkLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel16.AutoSize = true;
             this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(8, 312);
+            this.darkLabel16.Location = new System.Drawing.Point(8, 327);
             this.darkLabel16.Name = "darkLabel16";
             this.darkLabel16.Size = new System.Drawing.Size(362, 24);
             this.darkLabel16.TabIndex = 28;
@@ -451,7 +515,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.darkSeparator2.Location = new System.Drawing.Point(10, 100);
             this.darkSeparator2.Name = "darkSeparator2";
-            this.darkSeparator2.Size = new System.Drawing.Size(593, 2);
+            this.darkSeparator2.Size = new System.Drawing.Size(595, 2);
             this.darkSeparator2.TabIndex = 24;
             this.darkSeparator2.Text = "darkSeparator2";
             // 
@@ -483,9 +547,10 @@
             // linkLabel9
             // 
             this.linkLabel9.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
+            this.linkLabel9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel9.AutoSize = true;
             this.linkLabel9.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel9.Location = new System.Drawing.Point(365, 292);
+            this.linkLabel9.Location = new System.Drawing.Point(365, 307);
             this.linkLabel9.Name = "linkLabel9";
             this.linkLabel9.Size = new System.Drawing.Size(64, 13);
             this.linkLabel9.TabIndex = 21;
@@ -496,10 +561,11 @@
             // 
             // darkLabel14
             // 
+            this.darkLabel14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel14.AutoSize = true;
             this.darkLabel14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel14.Location = new System.Drawing.Point(7, 292);
+            this.darkLabel14.Location = new System.Drawing.Point(7, 307);
             this.darkLabel14.Name = "darkLabel14";
             this.darkLabel14.Size = new System.Drawing.Size(361, 13);
             this.darkLabel14.TabIndex = 20;
@@ -563,36 +629,13 @@
             this.darkLabel2.TabIndex = 1;
             this.darkLabel2.Text = "Original idea and code:\r\nProgramming:\r\nAdditional design:\r\nBeta testing:";
             // 
-            // darkLabel20
-            // 
-            this.darkLabel20.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel20.Location = new System.Drawing.Point(16, 266);
-            this.darkLabel20.Name = "darkLabel20";
-            this.darkLabel20.Size = new System.Drawing.Size(267, 13);
-            this.darkLabel20.TabIndex = 51;
-            this.darkLabel20.Text = "FastColoredTextBox is used under LGPLv3 license.";
-            // 
-            // linkLabel14
-            // 
-            this.linkLabel14.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel14.AutoEllipsis = true;
-            this.linkLabel14.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel14.Location = new System.Drawing.Point(289, 266);
-            this.linkLabel14.Name = "linkLabel14";
-            this.linkLabel14.Size = new System.Drawing.Size(300, 13);
-            this.linkLabel14.TabIndex = 49;
-            this.linkLabel14.TabStop = true;
-            this.linkLabel14.Text = "codeproject.com/Articles/161871/Fast-Colored-TextBox-for-syntax-highlighting";
-            this.linkLabel14.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            // 
             // FormAbout
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butOk;
-            this.ClientSize = new System.Drawing.Size(612, 438);
+            this.ClientSize = new System.Drawing.Size(614, 453);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.pictureBox);
@@ -606,7 +649,6 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Load += new System.EventHandler(this.FormAbout_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
@@ -662,5 +704,7 @@
         private DarkUI.Controls.DarkLabel darkLabel19;
         private DarkUI.Controls.DarkLabel darkLabel20;
         private System.Windows.Forms.LinkLabel linkLabel14;
+        private DarkUI.Controls.DarkLabel darkLabel21;
+        private System.Windows.Forms.LinkLabel linkLabel15;
     }
 }
