@@ -360,20 +360,15 @@ namespace TombEditor.Controls
                         }
 
                         if (_roomsToMove == null)
+                            _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new[] { _roomMouseClicked }));
+
+                        if(_roomsToMove != null && UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove))
                         {
-                            HashSet<Room> roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new[] { _roomMouseClicked }));
-                            if (DepthBar.CheckForLockedRooms(this, roomsToMove))
-                            {
-                                _roomMouseClicked = null;
-                                break;
-                            }
-                            _roomsToMove = roomsToMove;
+                            foreach (Room room in _roomsToMove)
+                                _editor.RoomPropertiesChange(room);
+                            _editor.ResetCamera();
                             Invalidate();
                         }
-                        UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
-
-                        foreach (Room room in _roomsToMove)
-                            _editor.RoomPropertiesChange(room);
                     }
                     break;
 
@@ -770,15 +765,22 @@ namespace TombEditor.Controls
                 return baseBrush;
         }
 
-        private void UpdateRoomPosition(Vector2 newRoomPos, Room roomReference, HashSet<Room> roomsToMove)
+        private bool UpdateRoomPosition(Vector2 newRoomPos, Room roomReference, HashSet<Room> roomsToMove)
         {
             VectorInt2 newRoomPosInt = VectorInt2.FromRounded(newRoomPos);
             VectorInt2 roomMovement = newRoomPosInt - roomReference.SectorPos;
+
             if (roomMovement != new VectorInt2())
             {
-                EditorActions.MoveRooms(new VectorInt3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
-                _editor.ResetCamera();
+                if (EditorActions.CheckForLockedRooms(this, _roomsToMove))
+                    _roomMouseClicked = null;
+                else
+                {
+                    EditorActions.MoveRooms(new VectorInt3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
+                    return true;
+                }
             }
+            return false;
         }
 
         private Room DoPicking(Vector2 pos)

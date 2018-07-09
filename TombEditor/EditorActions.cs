@@ -2199,6 +2199,24 @@ namespace TombEditor
             return true;
         }
 
+        public static bool CheckForLockedRooms(IWin32Window owner, IEnumerable<Room> rooms)
+        {
+            if (rooms.All(room => !room.Locked))
+                return false;
+
+            // Inform user and offer an option to unlock the room position
+            string message = "Can't move rooms because some rooms are locked. Unlock and continue?\n" +
+                "Locked rooms: " + string.Join(" ,", rooms.Where(room => room.Locked).Select(s => s.Name));
+            if (DarkMessageBox.Show(owner, message, "Locked rooms", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
+                return true;
+
+            // Unlock rooms
+            foreach (Room room in rooms)
+                room.Locked = false;
+            return true;
+        }
+
         public static void ApplyCurrentAmbientLightToAllRooms()
         {
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))

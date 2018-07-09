@@ -129,24 +129,6 @@ namespace TombEditor.Controls
             return (MaxDepth - depth) / (MaxDepth - MinDepth) * barArea.Height + barArea.Y;
         }
 
-        public static bool CheckForLockedRooms(IWin32Window window, IEnumerable<Room> rooms)
-        {
-            if (rooms.All(room => !room.Locked))
-                return false;
-
-            // Inform user and offer an option to unlock the room position
-            string message = "Can't move rooms because some rooms are locked. Unlock and continue?\n" +
-                "Locked rooms: " + string.Join(" ,", rooms.Where(room => room.Locked).Select(s => s.Name));
-            if (DarkMessageBox.Show(window, message, "Locked rooms", MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
-                return true;
-
-            // Unlock rooms
-            foreach (Room room in rooms)
-                room.Locked = false;
-            return false;
-        }
-
         /// <returns>true, if the selection should continue in the background of the bar.</returns>
         public bool MouseDown(MouseEventArgs e, Size parentControlSize, Level level, Vector2 clickPos)
         {
@@ -269,7 +251,7 @@ namespace TombEditor.Controls
                     if (_roomsToMove == null)
                     {
                         HashSet<Room> roomsToMove = level.GetConnectedRooms(_roomMouseClicked);
-                        if (CheckForLockedRooms(GetParent?.Invoke(), roomsToMove))
+                        if (EditorActions.CheckForLockedRooms(GetParent?.Invoke(), roomsToMove))
                         {
                             _roomsToMove = null;
                             _selectionMode = SelectionMode.None;
