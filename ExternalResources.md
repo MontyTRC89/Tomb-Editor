@@ -15,7 +15,8 @@ A big thank you to all the authors for making their work publicly available and 
 | Assimp                 | NuGet through Assimp.?Net  | 3.1.1      | BSD 3-clause  | http://assimp.org |
 | OpenFolderDialog       | Copy (OpenFolderDialog.cs) | 2012-02-12 | MIT           | https://www.medo64.com/2011/12/openfolderdialog |
 | CH.SipHash             | NuGet                      | 1.0.2      | Public Domain | https://github.com/tanglebones/ch-siphash |
-| FTCB                   | NuGet                      | 2.16.21    | LGPLv3        | https://www.codeproject.com/Articles/161871/Fast-Colored-TextBox-for-syntax-highlighting |
+| FastColoredTextBox     | NuGet                      | 2.16.21    | LGPLv3        | https://www.codeproject.com/Articles/161871/Fast-Colored-TextBox-for-syntax-highlighting |
+| System.Drawing.PSD     | NuGet                      | 1.1        | BSD 3-clause  | https://github.com/bizzehdee/System.Drawing.PSD |
 
 ### Main Software Documentation
   

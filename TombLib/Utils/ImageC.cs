@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.PSD;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -231,28 +232,24 @@ namespace TombLib.Utils
 
             // Detect special image types
             if (startBytes[0] == 0x44 && startBytes[1] == 0x44 && startBytes[2] == 0x53 && startBytes[3] == 0x20)
-            {
-                // dds image
+            { // dds image
                 return FromPfimImage(Pfim.Dds.Create(stream));
             }
+            else if (startBytes[0] == 0x38 && startBytes[1] == 0x42 && startBytes[2] == 0x50 && startBytes[3] == 0x53)
+            { // psd image
+                PsdFile image = new PsdFile();
+                image.Load(stream);
+                using (Image image2 = ImageDecoder.DecodeImage(image))
+                    return FromSystemDrawingImage(image2);
+            }
             else if (IsTga(startBytes))
-            {
-                // Tga image
+            { // tga image
                 return FromPfimImage(Pfim.Targa.Create(stream));
             }
             else
-            {
-                // Other image
-                Image image = null;
-                try
-                {
-                    image = Image.FromStream(stream);
+            { // other image
+                using (Image image = Image.FromStream(stream))
                     return FromSystemDrawingImage(image);
-                }
-                finally
-                {
-                    image?.Dispose();
-                }
             }
         }
 
@@ -268,7 +265,9 @@ namespace TombLib.Utils
             new FileFormat("Truevision Targa", "tga"),
             new FileFormat("Windows Bitmap", "bmp", "dib"),
             new FileFormat("Jpeg Image (Not recommended)", "jpg", "jpeg", "jpe", "jif", "jfif", "jfi"),
-            new FileFormat("Graphics Interchange Format (Not recommended)", "gif")
+            new FileFormat("Graphics Interchange Format (Not recommended)", "gif"),
+            new FileFormat("Photoshop File", "psd"),
+            new FileFormat("Windows Meta File (Not recommended)", "wmf", "emf")
         };
 
         public static IReadOnlyList<FileFormat> SaveFileFileExtensions { get; } = new List<FileFormat>()
