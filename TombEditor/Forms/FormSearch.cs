@@ -31,6 +31,7 @@ namespace TombEditor.Forms
         private static readonly Color _bigTypoColor = Color.FromArgb(130, 110, 110);
         private static readonly RateType _smallTypoThreshold = ((RateType)1 * 256) << _matchBitShift;
         private static readonly RateType _bigTypoThreshold = ((RateType)3 * 256) << _matchBitShift;
+        private static readonly Icon _icon = Icon.FromHandle(Properties.Resources.general_search_16.GetHicon());
 
         private class RateTypeClass
         {
@@ -50,6 +51,7 @@ namespace TombEditor.Forms
             _editor = editor;
             _editor.EditorEventRaised += _editor_EditorEventRaised;
             InitializeComponent();
+            Icon = _icon;
 
             // Populate scope combo box
             comboScope.Items.AddRange(Enum.GetValues(typeof(ScopeMode)).Cast<object>().ToArray());
