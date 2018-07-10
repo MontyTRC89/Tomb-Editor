@@ -903,11 +903,6 @@ namespace TombEditor.Forms
             ItemBrowser.FindItem();
         }
 
-        private void resetFilterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ItemBrowser.ResetSearch();
-        }
-
         private void moveLaraToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
