@@ -363,6 +363,7 @@ namespace TombLib.LevelData
                     if (!absolutePathTextureLookup.ContainsKey(importedGeometryTexture.AbsolutePath))
                         absolutePathTextureLookup.Add(importedGeometryTexture.AbsolutePath, importedGeometryTexture);
 
+            // TODO Ideally we could load these concurrently
             // Load geometries
             foreach (ImportedGeometryUpdateInfo geometryToUpdate in geometriesToUpdate)
                 geometryToUpdate.Key.Update(this, absolutePathTextureLookup, geometryToUpdate.Value);
