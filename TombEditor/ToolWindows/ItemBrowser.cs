@@ -3,9 +3,8 @@ using DarkUI.Forms;
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Numerics;
 using System.Windows.Forms;
-using TombLib.Graphics;
+using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
@@ -16,6 +15,7 @@ namespace TombEditor.ToolWindows
     public partial class ItemBrowser : DarkToolWindow
     {
         private readonly Editor _editor;
+        private FormPopUpSearch searchPopUp;
 
         public ItemBrowser()
         {
@@ -112,32 +112,12 @@ namespace TombEditor.ToolWindows
                 _editor.ShowObject(instance);
         }
 
-        public void ResetSearch()
+        private void butSearch_Click(object sender, EventArgs e)
         {
-            _editor.SelectedObject = null;
-        }
-
-
-        private void butItemsBack_Click(object sender, EventArgs e)
-        {
-            if (comboItems.Items.Count == 0)
-                return;
-
-            if (comboItems.SelectedIndex - 1 < 0)
-                comboItems.SelectedIndex = comboItems.Items.Count - 1;
-            else
-                comboItems.SelectedIndex = comboItems.SelectedIndex - 1;
-        }
-
-        private void butItemsNext_Click(object sender, EventArgs e)
-        {
-            if (comboItems.Items.Count == 0)
-                return;
-
-            if (comboItems.SelectedIndex + 1 >= comboItems.Items.Count)
-                comboItems.SelectedIndex = 0;
-            else
-                comboItems.SelectedIndex = comboItems.SelectedIndex + 1;
+            if (searchPopUp != null)
+                searchPopUp.Close();
+            searchPopUp = new FormPopUpSearch(comboItems);
+            searchPopUp.Show(this);
         }
 
         private void butAddItem_Click(object sender, EventArgs e)
@@ -173,11 +153,6 @@ namespace TombEditor.ToolWindows
         private void butFindItem_Click(object sender, EventArgs e)
         {
             FindItem();
-        }
-
-        private void butResetSearch_Click(object sender, EventArgs e)
-        {
-            ResetSearch();
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)

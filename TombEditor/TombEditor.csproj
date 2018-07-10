@@ -363,7 +363,6 @@
       <DependentUpon>FormTrigger.cs</DependentUpon>
     </Compile>
     <Compile Include="TexturePackerTest.cs" />
-    <Compile Include="WinFormsUtils.cs" />
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </EmbeddedResource>

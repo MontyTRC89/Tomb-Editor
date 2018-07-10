@@ -5,9 +5,9 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 
-namespace TombEditor
+namespace TombLib.Utils
 {
-    internal static class WinFormsUtils
+    public static class WinFormsUtils
     {
         public static Color MixWith(this Color firstColor, Color secondColor, double mixFactor)
         {
@@ -22,7 +22,7 @@ namespace TombEditor
                 (int)Math.Round(firstColor.B * (1 - mixFactor) + secondColor.B * mixFactor));
         }
 
-        public static void DrawRectangle(this Graphics g, Pen pen, RectangleF rectangle)
+        public static void DrawRectangle(this System.Drawing.Graphics g, Pen pen, RectangleF rectangle)
         {
             g.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
         }

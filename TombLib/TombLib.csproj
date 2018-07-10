@@ -118,6 +118,7 @@
       <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -265,6 +266,7 @@
     <Compile Include="Utils\Swap.cs" />
     <Compile Include="Utils\Texture.cs" />
     <Compile Include="Utils\RectPackerTree.cs" />
+    <Compile Include="Utils\WinFormsUtils.cs" />
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="VectorInt2.cs" />
     <Compile Include="VectorInt3.cs" />
