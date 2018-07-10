@@ -22,13 +22,6 @@
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.optionsList = new DarkUI.Controls.DarkListView();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.butApply = new DarkUI.Controls.DarkButton();
-            this.butOk = new DarkUI.Controls.DarkButton();
-            this.butCancel = new DarkUI.Controls.DarkButton();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.tabbedContainer = new TombEditor.Controls.DarkTabbedContainer();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -52,13 +45,6 @@
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.textureFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.textureFileDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.textureFileDataGridViewPreviewColumn = new System.Windows.Forms.DataGridViewImageColumn();
-            this.textureFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.textureFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.textureFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.textureFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.objectFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
@@ -122,11 +108,24 @@
             this.panel12 = new System.Windows.Forms.Panel();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
+            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.optionsList = new DarkUI.Controls.DarkListView();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.butApply = new DarkUI.Controls.DarkButton();
+            this.butOk = new DarkUI.Controls.DarkButton();
+            this.butCancel = new DarkUI.Controls.DarkButton();
+            this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.textureFileDataGridViewPreviewColumn = new System.Windows.Forms.DataGridViewImageColumn();
+            this.textureFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.textureFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.textureFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.textureFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.textureFileDataGridViewSizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
-            this.darkSectionPanel1.SuspendLayout();
-            this.panel11.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -155,6 +154,8 @@
             this.panel10.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
+            this.darkSectionPanel1.SuspendLayout();
+            this.panel11.SuspendLayout();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -211,77 +212,6 @@
             this.darkSectionPanel2.SectionHeader = null;
             this.darkSectionPanel2.Size = new System.Drawing.Size(573, 466);
             this.darkSectionPanel2.TabIndex = 2;
-            // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Controls.Add(this.optionsList);
-            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 466);
-            this.darkSectionPanel1.TabIndex = 7;
-            // 
-            // optionsList
-            // 
-            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.optionsList.Location = new System.Drawing.Point(1, 1);
-            this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 464);
-            this.optionsList.TabIndex = 6;
-            // 
-            // panel11
-            // 
-            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel11.Controls.Add(this.butApply);
-            this.panel11.Controls.Add(this.butOk);
-            this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Location = new System.Drawing.Point(522, 475);
-            this.panel11.Name = "panel11";
-            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panel11.Size = new System.Drawing.Size(260, 28);
-            this.panel11.TabIndex = 5;
-            // 
-            // butApply
-            // 
-            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butApply.Location = new System.Drawing.Point(3, 1);
-            this.butApply.Name = "butApply";
-            this.butApply.Size = new System.Drawing.Size(80, 24);
-            this.butApply.TabIndex = 3;
-            this.butApply.Text = "Apply";
-            this.butApply.Click += new System.EventHandler(this.butApply_Click);
-            // 
-            // butOk
-            // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butOk.Location = new System.Drawing.Point(89, 1);
-            this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(80, 24);
-            this.butOk.TabIndex = 3;
-            this.butOk.Text = "Ok";
-            this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // butCancel
-            // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butCancel.Location = new System.Drawing.Point(175, 1);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 24);
-            this.butCancel.TabIndex = 3;
-            this.butCancel.Text = "Cancel";
-            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
-            // 
-            // colorDialog
-            // 
-            this.colorDialog.AnyColor = true;
-            this.colorDialog.FullOpen = true;
             // 
             // tabbedContainer
             // 
@@ -543,6 +473,7 @@
             this.textureFileDataGridViewSearchColumn,
             this.textureFileDataGridViewShowColumn,
             this.textureFileDataGridViewMessageColumn,
+            this.textureFileDataGridViewSizeColumn,
             this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn,
             this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn});
             this.textureFileDataGridView.Location = new System.Drawing.Point(6, 51);
@@ -553,62 +484,6 @@
             this.textureFileDataGridView.TabIndex = 6;
             this.textureFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.textureFileDataGridView_CellContentClick);
             this.textureFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.textureFileDataGridView_CellFormatting);
-            // 
-            // textureFileDataGridViewPreviewColumn
-            // 
-            this.textureFileDataGridViewPreviewColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.textureFileDataGridViewPreviewColumn.HeaderText = "Preview";
-            this.textureFileDataGridViewPreviewColumn.Name = "textureFileDataGridViewPreviewColumn";
-            this.textureFileDataGridViewPreviewColumn.ReadOnly = true;
-            this.textureFileDataGridViewPreviewColumn.Width = 60;
-            // 
-            // textureFileDataGridViewPathColumn
-            // 
-            this.textureFileDataGridViewPathColumn.DataPropertyName = "Path";
-            this.textureFileDataGridViewPathColumn.HeaderText = "Path";
-            this.textureFileDataGridViewPathColumn.Name = "textureFileDataGridViewPathColumn";
-            this.textureFileDataGridViewPathColumn.Width = 200;
-            // 
-            // textureFileDataGridViewSearchColumn
-            // 
-            this.textureFileDataGridViewSearchColumn.HeaderText = "";
-            this.textureFileDataGridViewSearchColumn.Name = "textureFileDataGridViewSearchColumn";
-            this.textureFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.textureFileDataGridViewSearchColumn.Text = "Search";
-            this.textureFileDataGridViewSearchColumn.Width = 80;
-            // 
-            // textureFileDataGridViewShowColumn
-            // 
-            this.textureFileDataGridViewShowColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.textureFileDataGridViewShowColumn.FillWeight = 45F;
-            this.textureFileDataGridViewShowColumn.HeaderText = "Show";
-            this.textureFileDataGridViewShowColumn.Name = "textureFileDataGridViewShowColumn";
-            this.textureFileDataGridViewShowColumn.Text = "◀";
-            this.textureFileDataGridViewShowColumn.Width = 45;
-            // 
-            // textureFileDataGridViewMessageColumn
-            // 
-            this.textureFileDataGridViewMessageColumn.DataPropertyName = "Message";
-            this.textureFileDataGridViewMessageColumn.HeaderText = "Message";
-            this.textureFileDataGridViewMessageColumn.Name = "textureFileDataGridViewMessageColumn";
-            this.textureFileDataGridViewMessageColumn.ReadOnly = true;
-            this.textureFileDataGridViewMessageColumn.Width = 300;
-            // 
-            // textureFileDataGridViewReplaceMagentaWithTransparencyColumn
-            // 
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.DataPropertyName = "ReplaceMagentaWithTransparency";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.FalseValue = "false";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.HeaderText = "Convert magenta transparency";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Name = "textureFileDataGridViewReplaceMagentaWithTransparencyColumn";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.TrueValue = "true";
-            // 
-            // textureFileDataGridViewConvert512PixelsToDoubleRowsColumn
-            // 
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.DataPropertyName = "Convert512PixelsToDoubleRows";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.FalseValue = "false";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.HeaderText = "Convert 512 pixel columns";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Name = "textureFileDataGridViewConvert512PixelsToDoubleRowsColumn";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.TrueValue = "true";
             // 
             // darkLabel4
             // 
@@ -1296,6 +1171,146 @@
             this.panelRoomAmbientLight.TabIndex = 89;
             this.panelRoomAmbientLight.Click += new System.EventHandler(this.panelRoomAmbientLight_Click);
             // 
+            // darkSectionPanel1
+            // 
+            this.darkSectionPanel1.Controls.Add(this.optionsList);
+            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
+            this.darkSectionPanel1.Name = "darkSectionPanel1";
+            this.darkSectionPanel1.SectionHeader = null;
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 466);
+            this.darkSectionPanel1.TabIndex = 7;
+            // 
+            // optionsList
+            // 
+            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.optionsList.Location = new System.Drawing.Point(1, 1);
+            this.optionsList.Name = "optionsList";
+            this.optionsList.Size = new System.Drawing.Size(198, 464);
+            this.optionsList.TabIndex = 6;
+            // 
+            // panel11
+            // 
+            this.panel11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel11.Controls.Add(this.butApply);
+            this.panel11.Controls.Add(this.butOk);
+            this.panel11.Controls.Add(this.butCancel);
+            this.panel11.Location = new System.Drawing.Point(522, 475);
+            this.panel11.Name = "panel11";
+            this.panel11.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panel11.Size = new System.Drawing.Size(260, 28);
+            this.panel11.TabIndex = 5;
+            // 
+            // butApply
+            // 
+            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butApply.Location = new System.Drawing.Point(3, 1);
+            this.butApply.Name = "butApply";
+            this.butApply.Size = new System.Drawing.Size(80, 24);
+            this.butApply.TabIndex = 3;
+            this.butApply.Text = "Apply";
+            this.butApply.Click += new System.EventHandler(this.butApply_Click);
+            // 
+            // butOk
+            // 
+            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butOk.Location = new System.Drawing.Point(89, 1);
+            this.butOk.Name = "butOk";
+            this.butOk.Size = new System.Drawing.Size(80, 24);
+            this.butOk.TabIndex = 3;
+            this.butOk.Text = "Ok";
+            this.butOk.Click += new System.EventHandler(this.butOk_Click);
+            // 
+            // butCancel
+            // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butCancel.Location = new System.Drawing.Point(175, 1);
+            this.butCancel.Name = "butCancel";
+            this.butCancel.Size = new System.Drawing.Size(80, 24);
+            this.butCancel.TabIndex = 3;
+            this.butCancel.Text = "Cancel";
+            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
+            // 
+            // colorDialog
+            // 
+            this.colorDialog.AnyColor = true;
+            this.colorDialog.FullOpen = true;
+            // 
+            // textureFileDataGridViewPreviewColumn
+            // 
+            this.textureFileDataGridViewPreviewColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.textureFileDataGridViewPreviewColumn.HeaderText = "Preview";
+            this.textureFileDataGridViewPreviewColumn.Name = "textureFileDataGridViewPreviewColumn";
+            this.textureFileDataGridViewPreviewColumn.ReadOnly = true;
+            this.textureFileDataGridViewPreviewColumn.Width = 60;
+            // 
+            // textureFileDataGridViewPathColumn
+            // 
+            this.textureFileDataGridViewPathColumn.DataPropertyName = "Path";
+            this.textureFileDataGridViewPathColumn.HeaderText = "Path";
+            this.textureFileDataGridViewPathColumn.Name = "textureFileDataGridViewPathColumn";
+            this.textureFileDataGridViewPathColumn.Width = 200;
+            // 
+            // textureFileDataGridViewSearchColumn
+            // 
+            this.textureFileDataGridViewSearchColumn.HeaderText = "";
+            this.textureFileDataGridViewSearchColumn.Name = "textureFileDataGridViewSearchColumn";
+            this.textureFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.textureFileDataGridViewSearchColumn.Text = "Search";
+            this.textureFileDataGridViewSearchColumn.Width = 80;
+            // 
+            // textureFileDataGridViewShowColumn
+            // 
+            this.textureFileDataGridViewShowColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.textureFileDataGridViewShowColumn.FillWeight = 45F;
+            this.textureFileDataGridViewShowColumn.HeaderText = "Show";
+            this.textureFileDataGridViewShowColumn.Name = "textureFileDataGridViewShowColumn";
+            this.textureFileDataGridViewShowColumn.Text = "◀";
+            this.textureFileDataGridViewShowColumn.Width = 45;
+            // 
+            // textureFileDataGridViewMessageColumn
+            // 
+            this.textureFileDataGridViewMessageColumn.DataPropertyName = "Message";
+            this.textureFileDataGridViewMessageColumn.HeaderText = "Message";
+            this.textureFileDataGridViewMessageColumn.Name = "textureFileDataGridViewMessageColumn";
+            this.textureFileDataGridViewMessageColumn.ReadOnly = true;
+            this.textureFileDataGridViewMessageColumn.Width = 300;
+            // 
+            // textureFileDataGridViewSizeColumn
+            // 
+            this.textureFileDataGridViewSizeColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.textureFileDataGridViewSizeColumn.DataPropertyName = "Size";
+            this.textureFileDataGridViewSizeColumn.HeaderText = "Size";
+            this.textureFileDataGridViewSizeColumn.Name = "textureFileDataGridViewSizeColumn";
+            this.textureFileDataGridViewSizeColumn.ReadOnly = true;
+            this.textureFileDataGridViewSizeColumn.Width = 51;
+            // 
+            // textureFileDataGridViewReplaceMagentaWithTransparencyColumn
+            // 
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.DataPropertyName = "ReplaceMagentaWithTransparency";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.FalseValue = "false";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.HeaderText = "Convert magenta transparency";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Name = "textureFileDataGridViewReplaceMagentaWithTransparencyColumn";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.TrueValue = "true";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Width = 169;
+            // 
+            // textureFileDataGridViewConvert512PixelsToDoubleRowsColumn
+            // 
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.DataPropertyName = "Convert512PixelsToDoubleRows";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.FalseValue = "false";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.HeaderText = "Convert 512 pixel columns";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Name = "textureFileDataGridViewConvert512PixelsToDoubleRowsColumn";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.TrueValue = "true";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Width = 146;
+            // 
             // FormLevelSettings
             // 
             this.AcceptButton = this.butOk;
@@ -1315,8 +1330,6 @@
             this.pathVariablesDataGridViewContextMenu.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.darkSectionPanel2.ResumeLayout(false);
-            this.darkSectionPanel1.ResumeLayout(false);
-            this.panel11.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
@@ -1354,6 +1367,8 @@
             this.panel6.PerformLayout();
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
+            this.darkSectionPanel1.ResumeLayout(false);
+            this.panel11.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1462,6 +1477,7 @@
         private DarkUI.Controls.DarkDataGridViewButtonColumn textureFileDataGridViewSearchColumn;
         private DarkUI.Controls.DarkDataGridViewButtonColumn textureFileDataGridViewShowColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewMessageColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewSizeColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewReplaceMagentaWithTransparencyColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewConvert512PixelsToDoubleRowsColumn;
     }

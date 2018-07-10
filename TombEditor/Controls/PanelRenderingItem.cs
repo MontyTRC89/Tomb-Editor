@@ -96,7 +96,13 @@ namespace TombEditor.Controls
                 case MouseButtons.Left:
                     LevelSettings settings = _editor?.Level?.Settings;
                     if (settings != null && settings.Wads.All(wad => wad.LoadException != null))
-                        EditorActions.AddWad(Parent, settings.Wads.FirstOrDefault(wad => wad.LoadException != null));
+                    {
+                        ReferencedWad wadToUpdate = settings.Wads.FirstOrDefault(wad => wad.LoadException != null);
+                        if (wadToUpdate != null)
+                            EditorActions.UpdateWadFilepath(Parent, wadToUpdate);
+                        else
+                            EditorActions.AddWad(Parent);
+                    }
                     else if (_editor.ChosenItem != null)
                         DoDragDrop(_editor.ChosenItem, DragDropEffects.Copy);
                     break;

@@ -14,6 +14,7 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using DarkUI.Controls;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TombEditor.Forms
 {
@@ -139,6 +140,16 @@ namespace TombEditor.Forms
                     if (Texture.LoadException == null)
                         return "Successfully loaded";
                     return Texture.LoadException.Message + " (" + Texture.LoadException.GetType().Name + ")";
+                }
+            }
+
+            public string Size
+            {
+                get
+                {
+                    if (Texture.LoadException != null || Texture.Image == TombLib.Utils.Texture.UnloadedPlaceholder)
+                        return "-";
+                    return Texture.Image.Width + " × " + Texture.Image.Height;
                 }
             }
 
@@ -498,7 +509,7 @@ namespace TombEditor.Forms
         private void levelFilePathBut_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
-                "Select the level name", LevelSettings.FileFormatsLevel, true, null);
+                "Select the level name", LevelSettings.FileFormatsLevel, null, true);
             if (result != null)
             {
                 _levelSettings.LevelFilePath = result;
@@ -528,7 +539,7 @@ namespace TombEditor.Forms
         private void fontTextureFilePathBut_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.FontTextureFilePath,
-                "Select a font texture", LevelSettings.FileFormatsLoadRawExtraTexture, false, VariableType.LevelDirectory);
+                "Select a font texture", LevelSettings.FileFormatsLoadRawExtraTexture, VariableType.LevelDirectory, false);
             if (result != null)
             {
                 _levelSettings.FontTextureFilePath = result;
@@ -558,7 +569,7 @@ namespace TombEditor.Forms
         private void skyTextureFilePathBut_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.SkyTextureFilePath,
-                "Select a sky texture", LevelSettings.FileFormatsLoadRawExtraTexture, false, VariableType.LevelDirectory);
+                "Select a sky texture", LevelSettings.FileFormatsLoadRawExtraTexture, VariableType.LevelDirectory, false);
             if (result != null)
             {
                 _levelSettings.SkyTextureFilePath = result;
@@ -655,13 +666,15 @@ namespace TombEditor.Forms
             }
         }
 
-        private ReferencedTextureWrapper textureFileDataGridViewCreateNewRow()
+        private IEnumerable<ReferencedTextureWrapper> textureFileDataGridViewCreateNewRow()
         {
-            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
-                "Select a new texture file", LevelTexture.FileExtensions, false, VariableType.LevelDirectory);
-            if (result != null)
-                return new ReferencedTextureWrapper(this, new LevelTexture(_levelSettings, result));
-            return null;
+            List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
+                "Select new texture files", LevelTexture.FileExtensions, VariableType.LevelDirectory).ToList();
+
+            // Load textures concurrently
+            ReferencedTextureWrapper[] results = new ReferencedTextureWrapper[paths.Count];
+            Parallel.For(0, paths.Count, i => results[i] = new ReferencedTextureWrapper(this, new LevelTexture(_levelSettings, paths[i])));
+            return results;
         }
 
         private void textureFileDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -719,7 +732,7 @@ namespace TombEditor.Forms
             if (textureFileDataGridView.Columns[e.ColumnIndex].Name == textureFileDataGridViewSearchColumn.Name)
             {
                 string result = LevelFileDialog.BrowseFile(this, _levelSettings, _textureFileDataGridViewDataSource[e.RowIndex].Path,
-                    "Select a new texture file", LevelTexture.FileExtensions, false, VariableType.LevelDirectory);
+                    "Select a new texture file", LevelTexture.FileExtensions, VariableType.LevelDirectory, false);
                 if (result != null)
                     _textureFileDataGridViewDataSource[e.RowIndex].Path = result;
             }
@@ -740,13 +753,16 @@ namespace TombEditor.Forms
         }
 
         // Object list
-        private ReferencedWadWrapper objectFileDataGridViewCreateNewRow()
+        private IEnumerable<ReferencedWadWrapper> objectFileDataGridViewCreateNewRow()
         {
-            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.LevelFilePath,
-                "Select a new object file", ReferencedWad.FileExtensions, false, VariableType.LevelDirectory);
-            if (result != null)
-                return new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, result, new GraphicalDialogHandler(this)));
-            return null;
+            List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
+                "Select new object files", ReferencedWad.FileExtensions, VariableType.LevelDirectory).ToList();
+
+            // Load objects concurrently
+            ReferencedWadWrapper[] results = new ReferencedWadWrapper[paths.Count];
+            var synchronizedDialog = new GraphicalDialogHandler(this);
+            Parallel.For(0, paths.Count, i => results[i] = new ReferencedWadWrapper(this, new ReferencedWad(_levelSettings, paths[i], synchronizedDialog)));
+            return results;
         }
 
         private void objectFileDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -789,7 +805,7 @@ namespace TombEditor.Forms
             if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewSearchColumn.Name)
             {
                 string result = LevelFileDialog.BrowseFile(this, _levelSettings, _objectFileDataGridViewDataSource[e.RowIndex].Path,
-                    "Select a new object file", ReferencedWad.FileExtensions, false, VariableType.LevelDirectory);
+                    "Select a new object file", ReferencedWad.FileExtensions, VariableType.LevelDirectory, false);
                 if (result != null)
                     _objectFileDataGridViewDataSource[e.RowIndex].Path = result;
             }
@@ -830,7 +846,7 @@ namespace TombEditor.Forms
         private void gameLevelFilePathBut_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.GameLevelFilePath,
-                "Select place for compiled level", LevelSettings.FileFormatsLevelCompiled, true, VariableType.GameDirectory);
+                "Select place for compiled level", LevelSettings.FileFormatsLevelCompiled, VariableType.GameDirectory, true);
             if (result != null)
             {
                 _levelSettings.GameLevelFilePath = result;
@@ -850,7 +866,7 @@ namespace TombEditor.Forms
         private void gameExecutableFilePathBut_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.GameExecutableFilePath,
-                "Select an executable", new[] { new FileFormat("Windows executables", "exe") }, false, VariableType.GameDirectory);
+                "Select an executable", new[] { new FileFormat("Windows executables", "exe") }, VariableType.GameDirectory, false);
             if (result != null)
             {
                 _levelSettings.GameExecutableFilePath = result;
@@ -940,7 +956,7 @@ namespace TombEditor.Forms
         private void tr5SpritesTextureFilePathBut_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.Tr5ExtraSpritesFilePath,
-                "Select a font texture", LevelSettings.FileFormatsLoadRawExtraTexture, false, VariableType.LevelDirectory);
+                "Select a font texture", LevelSettings.FileFormatsLoadRawExtraTexture, VariableType.LevelDirectory, false);
             if (result != null)
             {
                 _levelSettings.Tr5ExtraSpritesFilePath = result;

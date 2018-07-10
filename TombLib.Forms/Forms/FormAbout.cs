@@ -12,7 +12,10 @@ namespace TombLib.Forms
             Text = "About " + Application.ProductName;
 
             InitializeComponent();
+
             pictureBox.BackgroundImage = image;
+            versionLabel.Text = "Version " + Application.ProductVersion;
+            versionLabel.Location = new Point(ClientSize.Width - versionLabel.Width, versionLabel.Location.Y);
         }
 
         private void btnLink_Click(object sender, EventArgs e)
@@ -28,12 +31,6 @@ namespace TombLib.Forms
             {
                 // ignored
             }
-        }
-
-        private void FormAbout_Load(object sender, EventArgs e)
-        {
-            versionLabel.Text = "Version " + Application.ProductVersion;
-            versionLabel.Location = new Point(ClientSize.Width - versionLabel.Width, versionLabel.Location.Y);
         }
     }
 }

@@ -17,8 +17,8 @@ namespace TombLib.Wad
         public int LateralSpeed { get; set; }
         public int LateralAcceleration { get; set; }
 
-        // New velocities. Originally Core's AnimEdit had Start Velocity and End Velocity pairs and 
-        // acceleration is obtained used the equations of motion: v = v0 + a * t where in our case 
+        // New velocities. Originally Core's AnimEdit had Start Velocity and End Velocity pairs and
+        // acceleration is obtained used the equations of motion: v = v0 + a * t where in our case
         // t is (Number of KeyFrames + 1) * FrameRate
         public float StartVelocity { get; set; }
         public float EndVelocity { get; set; }

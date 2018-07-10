@@ -1572,7 +1572,8 @@ namespace TombLib.LevelData.IO
                                 room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
                             {
                                 if (room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) &&
-                                    room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
+                                    room.IsFaceDefined(x, z, BlockFace.NegativeX_ED) ||
+                                    !IsUndefinedButHasArea(room, x, z, BlockFace.NegativeX_QA))
                                 {
                                     LoadTextureArea(room, x, z, BlockFace.NegativeX_ED, texture, tempTextures, prjBlock._faces[10]);
                                 }
@@ -1581,7 +1582,8 @@ namespace TombLib.LevelData.IO
                             {
                                 if (x > 0)
                                     if (room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
-                                        room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED))
+                                        room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED) ||
+                                        !IsUndefinedButHasArea(room, x - 1, z, BlockFace.PositiveX_QA))
                                     {
                                         LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[10]);
                                     }
@@ -1642,7 +1644,8 @@ namespace TombLib.LevelData.IO
                                 room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
                             {
                                 if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
-                                    room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
+                                    room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED) ||
+                                    !IsUndefinedButHasArea(room, x, z, BlockFace.NegativeZ_QA))
                                 {
                                     LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[12]);
                                 }
@@ -1651,7 +1654,8 @@ namespace TombLib.LevelData.IO
                             {
                                 if (z > 0)
                                     if (room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
-                                        room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED))
+                                        room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED) ||
+                                        !IsUndefinedButHasArea(room, x, z - 1, BlockFace.PositiveZ_QA))
                                     {
                                         LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[12]);
                                     }
@@ -1722,7 +1726,8 @@ namespace TombLib.LevelData.IO
                                     LoadTextureArea(room, x, z, BlockFace.NegativeX_QA, texture, tempTextures, prjBlock._faces[2]);
                                 }
                                 else if (!room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) &&
-                                         room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
+                                         room.IsFaceDefined(x, z, BlockFace.NegativeX_ED) &&
+                                         IsUndefinedButHasArea(room, x, z, BlockFace.NegativeX_QA))
                                 {
                                     LoadTextureArea(room, x, z, BlockFace.NegativeX_ED, texture, tempTextures, prjBlock._faces[2]);
                                 }
@@ -1740,7 +1745,8 @@ namespace TombLib.LevelData.IO
                                         LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_QA, texture, tempTextures, prjBlock._faces[2]);
                                     }
                                     else if (!room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
-                                             room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED))
+                                             room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED) &&
+                                             IsUndefinedButHasArea(room, x - 1, z, BlockFace.PositiveX_QA))
                                     {
                                         LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[2]);
                                     }
@@ -1780,7 +1786,8 @@ namespace TombLib.LevelData.IO
                                     LoadTextureArea(room, x, z, BlockFace.NegativeZ_QA, texture, tempTextures, prjBlock._faces[5]);
                                 }
                                 else if (!room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
-                                         room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
+                                         room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED) &&
+                                         IsUndefinedButHasArea(room, x, z, BlockFace.NegativeZ_QA))
                                 {
                                     LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[5]);
                                 }
@@ -1798,7 +1805,8 @@ namespace TombLib.LevelData.IO
                                         LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_QA, texture, tempTextures, prjBlock._faces[5]);
                                     }
                                     else if (!room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
-                                             room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED))
+                                             room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED) &&
+                                             IsUndefinedButHasArea(room, x, z - 1, BlockFace.PositiveZ_QA))
                                     {
                                         LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[5]);
                                     }
@@ -1836,6 +1844,37 @@ namespace TombLib.LevelData.IO
             Parallel.ForEach(level.Rooms.Where(r => r != null), room => room.BuildGeometry());
             progressReporter.ReportProgress(100, "Level loaded correctly!");
             return level;
+        }
+
+        private static bool IsUndefinedButHasArea(Room room, int x, int z, BlockFace face)
+        {
+            Block block = room.Blocks[x, z];
+            int edXnZp = block.GetHeight(BlockVertical.Ed, BlockEdge.XnZp);
+            int edXpZp = block.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
+            int edXpZn = block.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
+            int edXnZn = block.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+            switch (face)
+            {
+                case BlockFace.PositiveZ_QA:
+                    return !room.IsFaceDefined(x, z, face) &&
+                        (block.Floor.XnZp >= edXnZp && block.Floor.XpZp >= edXpZp) &&
+                        !(block.Floor.XnZp == edXnZp && block.Floor.XpZp == edXpZp);
+                case BlockFace.NegativeZ_QA:
+                    return !room.IsFaceDefined(x, z, face) &&
+                        (block.Floor.XnZn >= edXnZn && block.Floor.XpZn >= edXpZn) &&
+                        !(block.Floor.XnZn == edXnZn && block.Floor.XpZn == edXpZn);
+                case BlockFace.NegativeX_QA:
+                    return !room.IsFaceDefined(x, z, face) &&
+                        (block.Floor.XnZn >= edXnZn && block.Floor.XnZp >= edXnZp) &&
+                        !(block.Floor.XnZn == edXnZn && block.Floor.XnZp == edXnZp);
+                case BlockFace.PositiveX_QA:
+                    return !room.IsFaceDefined(x, z, face) &&
+                        (block.Floor.XpZp >= edXpZp && block.Floor.XpZn >= edXpZn) &&
+                        !(block.Floor.XpZp == edXpZp && block.Floor.XpZn == edXpZn);
+                default:
+                    return false;
+            }
+
         }
 
         private static void ProcessTexturedNoCollisions(PortalInstance portal, Room room, PrjRoom tempRoom, int triangle1FaceTexIndex,

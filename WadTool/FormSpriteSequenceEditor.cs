@@ -53,13 +53,14 @@ namespace WadTool
             using (var fileDialog = new OpenFileDialog())
             {
                 fileDialog.Filter = ImageC.FromFileFileExtensions.GetFilter();
+                fileDialog.Multiselect = true;
                 if (!string.IsNullOrWhiteSpace(_currentPath))
                     try
                     {
                         fileDialog.InitialDirectory = Path.GetDirectoryName(_currentPath);
                         fileDialog.FileName = Path.GetFileName(_currentPath);
                     } catch { }
-                fileDialog.Title = "Select a sprite file that you want to see imported.";
+                fileDialog.Title = "Select sprite files that you want to see imported.";
 
                 DialogResult dialogResult = fileDialog.ShowDialog(this);
                 _currentPath = fileDialog.FileName;
@@ -67,16 +68,31 @@ namespace WadTool
                     return null;
 
                 // Load sprites
-                try
+                List<WadSprite> sprites = new List<WadSprite>();
+                foreach (string fileName in fileDialog.FileNames)
                 {
-                    return new WadSprite { Texture = new WadTexture(ImageC.FromFile(fileDialog.FileName)) };
+                    Retry:
+                    ;
+                    try
+                    {
+                        sprites.Add(new WadSprite { Texture = new WadTexture(ImageC.FromFile(fileName)) });
+                    }
+                    catch (Exception exc)
+                    {
+                        logger.Error(exc, "Unable to open file '" + fileName + "'.");
+                        switch (DarkMessageBox.Show(this, "Unable to load sprite from file '" + fileName + "'. " + exc, "Unable to load sprite.",
+                            fileDialog.FileNames.Length == 1 ? MessageBoxButtons.RetryCancel : MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Error,
+                            fileDialog.FileNames.Length == 1 ? MessageBoxDefaultButton.Button2 : MessageBoxDefaultButton.Button1))
+                        {
+                            case DialogResult.Ignore:
+                                continue;
+                            case DialogResult.Retry:
+                                goto Retry;
+                        }
+                        return null;
+                    }
                 }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "Unable to open file '" + fileDialog.FileName + "'.");
-                    DarkMessageBox.Show(this, "Unable to load sprite from file '" + fileDialog.FileName + "'. " + exc, "Unable to load sprite.", MessageBoxIcon.Error);
-                    return null;
-                }
+                return sprites;
             }
         }
 
