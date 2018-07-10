@@ -842,7 +842,6 @@
             this.findObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.findObjectToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_target_16;
             this.findObjectToolStripMenuItem.Name = "findObjectToolStripMenuItem";
-            this.findObjectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
             this.findObjectToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.findObjectToolStripMenuItem.Text = "Locate item";
             this.findObjectToolStripMenuItem.Click += new System.EventHandler(this.findObjectToolStripMenuItem_Click);
