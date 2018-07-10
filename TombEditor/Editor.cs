@@ -207,6 +207,7 @@ namespace TombEditor
                     RaiseEvent(new SelectedRoomChangedEvent(previous, value));
                 else
                     RaiseEvent(new SelectedRoomsChangedEvent { Previous = previous, Current = value });
+                SelectedSectors = SectorSelection.None;
             }
         }
         public bool SelectedRoomsContains(Room room) => Array.IndexOf(_selectedRooms, room) != -1;

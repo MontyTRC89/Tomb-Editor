@@ -21,21 +21,20 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.objectList)).BeginInit();
             this.SuspendLayout();
-            //
+            // 
             // comboScope
-            //
-            this.comboScope.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.comboScope.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboScope.FormattingEnabled = true;
             this.comboScope.Location = new System.Drawing.Point(102, 36);
             this.comboScope.Name = "comboScope";
             this.comboScope.Size = new System.Drawing.Size(536, 21);
             this.comboScope.TabIndex = 1;
-            this.comboScope.Text = null;
             this.comboScope.SelectedIndexChanged += new System.EventHandler(this.comboScope_SelectedIndexChanged);
-            //
+            // 
             // darkLabel1
-            //
+            // 
             this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(12, 9);
@@ -44,9 +43,9 @@
             this.darkLabel1.TabIndex = 79;
             this.darkLabel1.Text = "Keywords:";
             this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            //
+            // 
             // darkLabel2
-            //
+            // 
             this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(12, 35);
@@ -55,25 +54,25 @@
             this.darkLabel2.TabIndex = 79;
             this.darkLabel2.Text = "Scope:";
             this.darkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            //
+            // 
             // txtKeywords
-            //
-            this.txtKeywords.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            // 
+            this.txtKeywords.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtKeywords.Location = new System.Drawing.Point(102, 9);
             this.txtKeywords.Name = "txtKeywords";
             this.txtKeywords.Size = new System.Drawing.Size(536, 20);
             this.txtKeywords.TabIndex = 0;
             this.txtKeywords.TextChanged += new System.EventHandler(this.txtKeywords_TextChanged);
-            //
+            // 
             // objectList
-            //
+            // 
             this.objectList.AllowUserToAddRows = false;
             this.objectList.AllowUserToDeleteRows = false;
             this.objectList.AllowUserToDragDropRows = false;
             this.objectList.AllowUserToPasteCells = false;
-            this.objectList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.objectList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.objectList.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
             this.objectList.ColumnHeadersHeight = 17;
@@ -93,39 +92,40 @@
             this.objectList.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.objectList_CellValueNeeded);
             this.objectList.SelectionChanged += new System.EventHandler(this.objectList_SelectionChanged);
             this.objectList.Paint += new System.Windows.Forms.PaintEventHandler(this.objectList_Paint);
-            //
+            // 
             // objectListColumnType
-            //
+            // 
             this.objectListColumnType.HeaderText = "Type";
             this.objectListColumnType.Name = "objectListColumnType";
             this.objectListColumnType.ReadOnly = true;
             this.objectListColumnType.Width = 70;
-            //
+            // 
             // objectListColumnRoom
-            //
+            // 
             this.objectListColumnRoom.HeaderText = "Room";
             this.objectListColumnRoom.Name = "objectListColumnRoom";
             this.objectListColumnRoom.ReadOnly = true;
-            //
+            // 
             // objectListColumnName
-            //
+            // 
             this.objectListColumnName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.objectListColumnName.HeaderText = "Name";
             this.objectListColumnName.Name = "objectListColumnName";
             this.objectListColumnName.ReadOnly = true;
-            //
+            // 
             // butOk
-            //
+            // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butOk.Location = new System.Drawing.Point(368, 233);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(270, 26);
             this.butOk.TabIndex = 3;
             this.butOk.Text = "Ok";
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            //
+            // 
             // FormSearch
-            //
+            // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -140,7 +140,6 @@
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(302, 238);
             this.Name = "FormSearch";
-            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Search";

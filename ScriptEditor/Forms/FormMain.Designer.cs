@@ -339,7 +339,7 @@
 			this.textEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
 			this.textEditor.BookmarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.textEditor.CaretColor = System.Drawing.Color.Gainsboro;
-			this.textEditor.ChangedLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+			this.textEditor.ChangedLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(96)))));
 			this.textEditor.CharHeight = 18;
 			this.textEditor.CharWidth = 9;
 			this.textEditor.CommentPrefix = ";";

@@ -5,7 +5,7 @@ namespace ScriptEditor
 {
 	public class SyntaxTidy
 	{
-		public static string ReindentScript(string editorContent)
+		public static string[] ReindentLines(string editorContent)
 		{
 			editorContent = editorContent.Replace("=", " = ");
 			editorContent = editorContent.Replace(",", ", ");
@@ -27,26 +27,23 @@ namespace ScriptEditor
 				}
 			}
 
-			return TrimWhitespace(editorContent);
+			return TrimLines(editorContent);
 		}
 
-		public static string TrimWhitespace(string editorContent)
+		public static string[] TrimLines(string editorContent)
 		{
 			// Get every single line and create a list that will store them
 			string[] lines = editorContent.Replace("\r", "").Split('\n');
 			List<string> trimmedText = new List<string>();
 
-			int i = 0;
-
 			// Trim whitespace on every line and add it to the list
-			while (i < lines.Length)
+			for (int i = 0; i < lines.Length; i++)
 			{
 				string currentLineText = (lines.Length >= i) ? lines[i] : Environment.NewLine;
 				trimmedText.Add(currentLineText.Trim());
-				i++;
 			}
 
-			return String.Join(Environment.NewLine, trimmedText.ToArray());
+			return trimmedText.ToArray();
 		}
 	}
 }

@@ -272,7 +272,10 @@ namespace TombEditor.Controls
 
             if (!(VisibleTexture?.IsAvailable ?? false))
             {
-                EditorActions.AddTexture(Parent, VisibleTexture);
+                if (VisibleTexture != null)
+                    EditorActions.UpdateTextureFilepath(Parent, VisibleTexture);
+                else
+                    EditorActions.AddTexture(Parent);
                 return;
             }
 
