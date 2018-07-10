@@ -3,6 +3,7 @@ using System;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
 {

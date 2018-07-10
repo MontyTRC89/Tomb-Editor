@@ -76,7 +76,6 @@
             this.addTriggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.findObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.resetFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveLaraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -702,7 +701,6 @@
             this.addTriggerToolStripMenuItem,
             this.toolStripMenuSeparator8,
             this.findObjectToolStripMenuItem,
-            this.resetFilterToolStripMenuItem,
             this.moveLaraToolStripMenuItem});
             this.itemsToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.itemsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -842,23 +840,11 @@
             // 
             this.findObjectToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.findObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.findObjectToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.findObjectToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_target_16;
             this.findObjectToolStripMenuItem.Name = "findObjectToolStripMenuItem";
-            this.findObjectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
             this.findObjectToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.findObjectToolStripMenuItem.Text = "Find object";
+            this.findObjectToolStripMenuItem.Text = "Locate item";
             this.findObjectToolStripMenuItem.Click += new System.EventHandler(this.findObjectToolStripMenuItem_Click);
-            // 
-            // resetFilterToolStripMenuItem
-            // 
-            this.resetFilterToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.resetFilterToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.resetFilterToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_undo_16;
-            this.resetFilterToolStripMenuItem.Name = "resetFilterToolStripMenuItem";
-            this.resetFilterToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.resetFilterToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.resetFilterToolStripMenuItem.Text = "Reset filter";
-            this.resetFilterToolStripMenuItem.Click += new System.EventHandler(this.resetFilterToolStripMenuItem_Click);
             // 
             // moveLaraToolStripMenuItem
             // 
@@ -1733,7 +1719,6 @@
         private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator12;
-        private System.Windows.Forms.ToolStripMenuItem resetFilterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textureMapBuilderToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator5;
