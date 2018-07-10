@@ -124,9 +124,10 @@
             // 
             // butFindItem
             // 
+            this.butFindItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butFindItem.Image = global::TombEditor.Properties.Resources.general_target_16;
-            this.butFindItem.Location = new System.Drawing.Point(192, 6);
+            this.butFindItem.Location = new System.Drawing.Point(191, 6);
             this.butFindItem.Name = "butFindItem";
             this.butFindItem.Size = new System.Drawing.Size(91, 23);
             this.butFindItem.TabIndex = 5;
