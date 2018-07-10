@@ -816,9 +816,9 @@ namespace TombLib.LevelData.IO
                     instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
                     instance.Roll = chunkIO.Raw.ReadSingle();
                     instance.Scale = chunkIO.Raw.ReadSingle();
-                    instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
-                    if (id3 != Prj2Chunks.ObjectImportedGeometry)
+                    if (!(id3 == Prj2Chunks.ObjectImportedGeometry && chunkSize3 == 30)) // For some time we accidentally emitted MeshFilter but still emitted the old ObjectImportedGeometry chunk name unfortunately. Thus we need to check chunk size too.
                         instance.MeshFilter = chunkIO.Raw.ReadStringUTF8();
+                    instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

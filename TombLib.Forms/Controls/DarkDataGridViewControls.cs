@@ -1,5 +1,6 @@
 ﻿using DarkUI.Controls;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace TombLib.Controls
             }
         }
 
-        // Must return a suitable object if data binding is used, other a DataGridViewRow object must be returned.
+        // Must return a suitable object if data binding is used, otherwise a DataGridViewRow object must be returned. A IEnumerable of multiple rows can be returned alternatively.
         public Func<object> CreateNewRow;
         public Func<bool> DeleteRowCheckIfCancel = () => false;
 
@@ -39,17 +40,22 @@ namespace TombLib.Controls
 
         private void butNew_Click(object sender, EventArgs e)
         {
-            // Create new row
-            object newRow = CreateNewRow();
-            if (newRow == null)
+            // Create new row(s)
+            object newRowsOrSingleRow = CreateNewRow();
+            if (newRowsOrSingleRow == null)
                 return;
-            int newIndex = DataGridView.EditableRowCollection.Add(newRow);
 
-            // Select new row
+            // Select new row(s)
             foreach (var row in DataGridView.SelectedRows.Cast<DataGridViewRow>().ToList())
                 row.Selected = false;
-            DataGridView.Rows[newIndex].Selected = true;
-            DataGridView.FirstDisplayedScrollingRowIndex = newIndex;
+            int startIndex = DataGridView.EditableRowCollection.Count;
+            foreach (object newRow in (newRowsOrSingleRow as IEnumerable) ?? new[] { newRowsOrSingleRow })
+            {
+                int newIndex = DataGridView.EditableRowCollection.Add(newRow);
+                DataGridView.Rows[newIndex].Selected = true;
+            }
+            if (startIndex > 0)
+                DataGridView.FirstDisplayedScrollingRowIndex = startIndex;
         }
 
         private void butDelete_Click(object sender, EventArgs e)
