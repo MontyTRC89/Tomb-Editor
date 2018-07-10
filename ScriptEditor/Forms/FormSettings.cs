@@ -16,7 +16,7 @@ namespace ScriptEditor
 
 			if (Properties.Settings.Default.AutoSaveTime == 0)
 			{
-				autoSaveCombo.SelectedItem = "None.";
+				autoSaveCombo.SelectedItem = "None";
 			}
 			else
 			{
@@ -50,7 +50,7 @@ namespace ScriptEditor
 			Properties.Settings.Default.FontSize = fontSizeNumeric.Value;
 			Properties.Settings.Default.FontFace = fontFaceCombo.SelectedItem.ToString();
 
-			if (autoSaveCombo.SelectedItem.ToString() == "None.")
+			if (autoSaveCombo.SelectedItem.ToString() == "None")
 			{
 				Properties.Settings.Default.AutoSaveTime = 0;
 			}
@@ -93,7 +93,7 @@ namespace ScriptEditor
 
 			fontSizeNumeric.Value = 12;
 			fontFaceCombo.SelectedItem = "Consolas";
-			autoSaveCombo.SelectedItem = "None.";
+			autoSaveCombo.SelectedItem = "None";
 
 			reindentCheck.Checked = false;
 			closeBracketsCheck.Checked = true;
@@ -194,6 +194,7 @@ namespace ScriptEditor
 			}
 		}
 
+		private void autoSaveCombo_SelectedIndexChanged(object sender, EventArgs e) => restartLabel.Visible = true;
 		private void autocompleteCheck_CheckedChanged(object sender, EventArgs e) => restartLabel.Visible = true;
 		private void toolTipCheck_CheckedChanged(object sender, EventArgs e) => restartLabel.Visible = true;
 	}

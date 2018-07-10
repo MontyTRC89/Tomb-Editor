@@ -90,75 +90,8 @@ namespace ScriptEditor
 
 		/* Tools menu */
 
-		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e)
-		{
-			// Save set bookmarks to prevent a bug
-			int[] bookmarkLines = GetBookmarkedLines();
-			textEditor.Bookmarks.Clear();
-
-			// Get current scroll position
-			int scrollPosition = textEditor.VerticalScroll.Value;
-
-			// Reindent all lines
-			string[] tidiedlines = SyntaxTidy.ReindentLines(textEditor.Text);
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				if (textEditor.GetLineText(i) != tidiedlines[i])
-				{
-					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-					textEditor.InsertText(tidiedlines[i]);
-				}
-			}
-
-			// Go to last scroll position
-			textEditor.VerticalScroll.Value = scrollPosition;
-			textEditor.UpdateScrollbars();
-
-			// Add lost bookmarks
-			foreach (int line in bookmarkLines)
-			{
-				textEditor.BookmarkLine(line);
-			}
-
-			textEditor.Invalidate();
-		}
-
-		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e)
-		{
-			// Save set bookmarks to prevent a bug
-			int[] bookmarkLines = GetBookmarkedLines();
-			textEditor.Bookmarks.Clear();
-
-			// Get current scroll position
-			int scrollPosition = textEditor.VerticalScroll.Value;
-
-			// Trim whitespace on every line
-			string[] trimmedlines = SyntaxTidy.TrimLines(textEditor.Text);
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				if (textEditor.GetLineText(i) != trimmedlines[i])
-				{
-					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-					textEditor.InsertText(trimmedlines[i]);
-				}
-			}
-
-			// Go to last scroll position
-			textEditor.VerticalScroll.Value = scrollPosition;
-			textEditor.UpdateScrollbars();
-
-			// Add lost bookmarks
-			foreach (int line in bookmarkLines)
-			{
-				textEditor.BookmarkLine(line);
-			}
-
-			textEditor.Invalidate();
-		}
+		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e) => TidyScript();
+		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e) => TidyScript(true);
 
 		private void Tools_CommentLines_MenuItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
 		private void Tools_Uncomment_MenuItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
@@ -251,7 +184,7 @@ namespace ScriptEditor
 			// Update the label
 			zoomLabel.Text = "Zoom: " + textEditor.Zoom + "%";
 
-			resetZoomButton.Visible = textEditor.Zoom == 100;
+			resetZoomButton.Visible = textEditor.Zoom != 100;
 
 			// Limit the zoom
 			if (textEditor.Zoom > 500)
@@ -545,6 +478,71 @@ namespace ScriptEditor
 			selectedCharsLabel.Text = "Selected: " + textEditor.SelectedText.Length;
 		}
 
+		/* Syntax tidy methods */
+
+		private void TidyScript(bool trimOnly = false)
+		{
+			// Save set bookmarks to prevent a bug
+			int[] bookmarkLines = GetBookmarkedLines();
+			textEditor.Bookmarks.Clear();
+
+			// Get current scroll position
+			int scrollPosition = textEditor.VerticalScroll.Value;
+
+			if (trimOnly)
+			{
+				TrimWhitespace();
+			}
+			else
+			{
+				DoFullReindent();
+			}
+
+			// Go to last scroll position
+			textEditor.VerticalScroll.Value = scrollPosition;
+			textEditor.UpdateScrollbars();
+
+			// Add lost bookmarks
+			foreach (int line in bookmarkLines)
+			{
+				textEditor.BookmarkLine(line);
+			}
+
+			textEditor.Invalidate();
+		}
+
+		private void DoFullReindent()
+		{
+			// Reindent all lines
+			string[] tidiedlines = SyntaxTidy.ReindentLines(textEditor.Text);
+
+			// Scan all lines
+			for (int i = 0; i < textEditor.LinesCount; i++)
+			{
+				if (textEditor.GetLineText(i) != tidiedlines[i])
+				{
+					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+					textEditor.InsertText(tidiedlines[i]);
+				}
+			}
+		}
+
+		private void TrimWhitespace()
+		{
+			// Trim whitespace on every line
+			string[] trimmedlines = SyntaxTidy.TrimLines(textEditor.Text);
+
+			// Scan all lines
+			for (int i = 0; i < textEditor.LinesCount; i++)
+			{
+				if (textEditor.GetLineText(i) != trimmedlines[i])
+				{
+					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+					textEditor.InsertText(trimmedlines[i]);
+				}
+			}
+		}
+
 		/* Bookmark methods */
 
 		private void ToggleBookmark()
@@ -740,7 +738,7 @@ namespace ScriptEditor
 					}
 
 					// Open the script file if exists
-					if (Path.GetFileName(file).ToLower().Contains("script"))
+					if (Path.GetFileName(file).ToLower() == "script")
 					{
 						folderHasScriptFile = true;
 						OpenFile(file);
@@ -792,11 +790,91 @@ namespace ScriptEditor
 
 				// Update the object browser with levels (if they exist)
 				UpdateObjectBrowser(string.Empty);
+
+				int autoSaveTime = Properties.Settings.Default.AutoSaveTime;
+
+				if (autoSaveTime != 0)
+				{
+					HandleAutoSave(autoSaveTime);
+				}
 			}
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				UnloadCurrentFile();
+			}
+		}
+
+		private void HandleAutoSave(int autoSaveTime)
+		{
+			var saveTimer = new System.Timers.Timer();
+			saveTimer.Elapsed += saveTimer_Elapsed;
+
+			switch (autoSaveTime)
+			{
+				case 1:
+				{
+					saveTimer.Interval = 60 * 1000;
+					break;
+				}
+				case 3:
+				{
+					saveTimer.Interval = 3 * (60 * 1000);
+					break;
+				}
+				case 5:
+				{
+					saveTimer.Interval = 5 * (60 * 1000);
+					break;
+				}
+				case 10:
+				{
+					saveTimer.Interval = 10 * (60 * 1000);
+					break;
+				}
+				case 15:
+				{
+					saveTimer.Interval = 15 * (60 * 1000);
+					break;
+				}
+				case 30:
+				{
+					saveTimer.Interval = 30 * (60 * 1000);
+					break;
+				}
+			}
+
+			saveTimer.Enabled = true;
+		}
+
+		private void saveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			string currentFolder = Path.GetDirectoryName(_currentFilePath);
+			string currentFileName = Path.GetFileNameWithoutExtension(_currentFilePath);
+			string autosaveFilePath = currentFolder + "\\" + currentFileName + ".autosave";
+
+			try
+			{
+				File.WriteAllText(autosaveFilePath, textEditor.Text, Encoding.GetEncoding(1252));
+				autoSaveLabel.Invoke(new Action(() => autoSaveLabel_Show(true)));
+			}
+			catch (Exception)
+			{
+				autoSaveLabel.Invoke(new Action(() => autoSaveLabel_Show(false)));
+			}
+		}
+
+		private void autoSaveLabel_Show(bool success)
+		{
+			if (success)
+			{
+				string currentTime = DateTime.Now.TimeOfDay.ToString().Substring(0, 5);
+				autoSaveLabel.Text = "Autosave Completed! (" + currentTime + ")";
+				autoSaveLabel.Visible = true;
+			}
+			else
+			{
+				autoSaveLabel.Text = "ERROR: Autosave Failed!";
 			}
 		}
 
@@ -830,6 +908,11 @@ namespace ScriptEditor
 
 		private bool SaveFile()
 		{
+			if (Properties.Settings.Default.ReindentOnSave)
+			{
+				TidyScript();
+			}
+
 			try
 			{
 				// Save changes to file

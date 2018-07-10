@@ -28,46 +28,14 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.scriptPathTextBox = new DarkUI.Controls.DarkTextBox();
-			this.gamePathTextBox = new DarkUI.Controls.DarkTextBox();
-			this.browseScriptButton = new DarkUI.Controls.DarkButton();
-			this.browseGameButton = new DarkUI.Controls.DarkButton();
 			this.applyButton = new DarkUI.Controls.DarkButton();
+			this.browseGameButton = new DarkUI.Controls.DarkButton();
+			this.browseScriptButton = new DarkUI.Controls.DarkButton();
 			this.darkLabel1 = new DarkUI.Controls.DarkLabel();
 			this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+			this.gamePathTextBox = new DarkUI.Controls.DarkTextBox();
+			this.scriptPathTextBox = new DarkUI.Controls.DarkTextBox();
 			this.SuspendLayout();
-			// 
-			// scriptPathTextBox
-			// 
-			this.scriptPathTextBox.Location = new System.Drawing.Point(84, 12);
-			this.scriptPathTextBox.Name = "scriptPathTextBox";
-			this.scriptPathTextBox.Size = new System.Drawing.Size(300, 20);
-			this.scriptPathTextBox.TabIndex = 0;
-			// 
-			// gamePathTextBox
-			// 
-			this.gamePathTextBox.Location = new System.Drawing.Point(84, 40);
-			this.gamePathTextBox.Name = "gamePathTextBox";
-			this.gamePathTextBox.Size = new System.Drawing.Size(300, 20);
-			this.gamePathTextBox.TabIndex = 1;
-			// 
-			// browseScriptButton
-			// 
-			this.browseScriptButton.Location = new System.Drawing.Point(391, 9);
-			this.browseScriptButton.Name = "browseScriptButton";
-			this.browseScriptButton.Size = new System.Drawing.Size(75, 22);
-			this.browseScriptButton.TabIndex = 2;
-			this.browseScriptButton.Text = "Browse...";
-			this.browseScriptButton.Click += new System.EventHandler(this.browseScriptButton_Click);
-			// 
-			// browseGameButton
-			// 
-			this.browseGameButton.Location = new System.Drawing.Point(391, 37);
-			this.browseGameButton.Name = "browseGameButton";
-			this.browseGameButton.Size = new System.Drawing.Size(75, 22);
-			this.browseGameButton.TabIndex = 3;
-			this.browseGameButton.Text = "Browse...";
-			this.browseGameButton.Click += new System.EventHandler(this.browseGameButton_Click);
 			// 
 			// applyButton
 			// 
@@ -78,6 +46,24 @@
 			this.applyButton.TabIndex = 4;
 			this.applyButton.Text = "Apply";
 			this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
+			// 
+			// browseGameButton
+			// 
+			this.browseGameButton.Location = new System.Drawing.Point(391, 38);
+			this.browseGameButton.Name = "browseGameButton";
+			this.browseGameButton.Size = new System.Drawing.Size(75, 22);
+			this.browseGameButton.TabIndex = 3;
+			this.browseGameButton.Text = "Browse...";
+			this.browseGameButton.Click += new System.EventHandler(this.browseGameButton_Click);
+			// 
+			// browseScriptButton
+			// 
+			this.browseScriptButton.Location = new System.Drawing.Point(391, 10);
+			this.browseScriptButton.Name = "browseScriptButton";
+			this.browseScriptButton.Size = new System.Drawing.Size(75, 22);
+			this.browseScriptButton.TabIndex = 2;
+			this.browseScriptButton.Text = "Browse...";
+			this.browseScriptButton.Click += new System.EventHandler(this.browseScriptButton_Click);
 			// 
 			// darkLabel1
 			// 
@@ -98,6 +84,20 @@
 			this.darkLabel2.Size = new System.Drawing.Size(67, 13);
 			this.darkLabel2.TabIndex = 6;
 			this.darkLabel2.Text = "Game folder:";
+			// 
+			// gamePathTextBox
+			// 
+			this.gamePathTextBox.Location = new System.Drawing.Point(84, 40);
+			this.gamePathTextBox.Name = "gamePathTextBox";
+			this.gamePathTextBox.Size = new System.Drawing.Size(300, 20);
+			this.gamePathTextBox.TabIndex = 1;
+			// 
+			// scriptPathTextBox
+			// 
+			this.scriptPathTextBox.Location = new System.Drawing.Point(84, 12);
+			this.scriptPathTextBox.Name = "scriptPathTextBox";
+			this.scriptPathTextBox.Size = new System.Drawing.Size(300, 20);
+			this.scriptPathTextBox.TabIndex = 0;
 			// 
 			// FormSelectPaths
 			// 
@@ -126,12 +126,12 @@
 
 		#endregion
 
-		private DarkUI.Controls.DarkTextBox scriptPathTextBox;
-		private DarkUI.Controls.DarkTextBox gamePathTextBox;
-		private DarkUI.Controls.DarkButton browseScriptButton;
-		private DarkUI.Controls.DarkButton browseGameButton;
 		private DarkUI.Controls.DarkButton applyButton;
+		private DarkUI.Controls.DarkButton browseGameButton;
+		private DarkUI.Controls.DarkButton browseScriptButton;
 		private DarkUI.Controls.DarkLabel darkLabel1;
 		private DarkUI.Controls.DarkLabel darkLabel2;
+		private DarkUI.Controls.DarkTextBox gamePathTextBox;
+		private DarkUI.Controls.DarkTextBox scriptPathTextBox;
 	}
 }

@@ -102,11 +102,18 @@
 			// 
 			this.autoSaveCombo.FormattingEnabled = true;
 			this.autoSaveCombo.Items.AddRange(new object[] {
-            "None."});
+            "None",
+            "1",
+            "3",
+            "5",
+            "10",
+            "15",
+            "30"});
 			this.autoSaveCombo.Location = new System.Drawing.Point(6, 131);
 			this.autoSaveCombo.Name = "autoSaveCombo";
 			this.autoSaveCombo.Size = new System.Drawing.Size(150, 21);
 			this.autoSaveCombo.TabIndex = 5;
+			this.autoSaveCombo.SelectedIndexChanged += new System.EventHandler(this.autoSaveCombo_SelectedIndexChanged);
 			// 
 			// autoSaveLabel
 			// 
@@ -413,13 +420,7 @@
             "Consolas",
             "Courier New",
             "Lucida Console",
-            "Lucida Sans Typewriter",
-            "MingLiU-ExtB",
-            "MS Gothic",
-            "MS Mincho",
-            "OCR A Extended",
-            "SimSun",
-            "SimSun-ExtB"});
+            "Lucida Sans Typewriter"});
 			this.fontFaceCombo.Location = new System.Drawing.Point(6, 83);
 			this.fontFaceCombo.Name = "fontFaceCombo";
 			this.fontFaceCombo.Size = new System.Drawing.Size(150, 21);
