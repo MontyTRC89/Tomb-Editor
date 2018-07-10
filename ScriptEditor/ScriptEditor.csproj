@@ -104,10 +104,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\KeyValueToolTips.Designer.cs">
+    <Compile Include="Resources\CommandToolTips.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>KeyValueToolTips.resx</DependentUpon>
+      <DependentUpon>CommandToolTips.resx</DependentUpon>
     </Compile>
     <Compile Include="SyntaxColors.cs" />
     <Compile Include="SyntaxKeyWords.cs" />
@@ -143,9 +143,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\KeyValueToolTips.resx">
+    <EmbeddedResource Include="Resources\CommandToolTips.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>KeyValueToolTips.Designer.cs</LastGenOutput>
+      <LastGenOutput>CommandToolTips.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\FormMainWindow.datasource" />

@@ -34,11 +34,12 @@ namespace ScriptEditor
 			showToolbarCheck.Checked = Properties.Settings.Default.ShowToolbar;
 			showStatusCheck.Checked = Properties.Settings.Default.ShowStatusbar;
 
-			commentColorButton.BackColor = Properties.Settings.Default.CommentsColor;
-			refColorButton.BackColor = Properties.Settings.Default.ReferencesColor;
-			valueColorButton.BackColor = Properties.Settings.Default.ValuesColor;
+			commentColorButton.BackColor = Properties.Settings.Default.CommentColor;
+			refColorButton.BackColor = Properties.Settings.Default.ReferenceColor;
+			valueColorButton.BackColor = Properties.Settings.Default.ValueColor;
 			headerColorButton.BackColor = Properties.Settings.Default.HeaderColor;
-			keyColorButton.BackColor = Properties.Settings.Default.KeyValueColor;
+			newColorButton.BackColor = Properties.Settings.Default.NewCommandColor;
+			oldColorButton.BackColor = Properties.Settings.Default.OldCommandColor;
 			unknownColorButton.BackColor = Properties.Settings.Default.UnknownColor;
 
 			restartLabel.Visible = false;
@@ -69,11 +70,12 @@ namespace ScriptEditor
 			Properties.Settings.Default.ShowToolbar = showToolbarCheck.Checked;
 			Properties.Settings.Default.ShowStatusbar = showStatusCheck.Checked;
 
-			Properties.Settings.Default.CommentsColor = commentColorButton.BackColor;
-			Properties.Settings.Default.ReferencesColor = refColorButton.BackColor;
-			Properties.Settings.Default.ValuesColor = valueColorButton.BackColor;
+			Properties.Settings.Default.CommentColor = commentColorButton.BackColor;
+			Properties.Settings.Default.ReferenceColor = refColorButton.BackColor;
+			Properties.Settings.Default.ValueColor = valueColorButton.BackColor;
 			Properties.Settings.Default.HeaderColor = headerColorButton.BackColor;
-			Properties.Settings.Default.KeyValueColor = keyColorButton.BackColor;
+			Properties.Settings.Default.NewCommandColor = newColorButton.BackColor;
+			Properties.Settings.Default.OldCommandColor = oldColorButton.BackColor;
 			Properties.Settings.Default.UnknownColor = unknownColorButton.BackColor;
 			Properties.Settings.Default.Save();
 		}
@@ -108,7 +110,8 @@ namespace ScriptEditor
 			refColorButton.BackColor = Color.Orchid;
 			valueColorButton.BackColor = Color.LightSalmon;
 			headerColorButton.BackColor = Color.SteelBlue;
-			keyColorButton.BackColor = Color.MediumAquamarine;
+			newColorButton.BackColor = Color.SpringGreen;
+			oldColorButton.BackColor = Color.MediumAquamarine;
 			unknownColorButton.BackColor = Color.Red;
 
 			restartLabel.Visible = true;
@@ -158,13 +161,24 @@ namespace ScriptEditor
 			}
 		}
 
-		private void keyColorButton_Click(object sender, EventArgs e)
+		private void newColorButton_Click(object sender, EventArgs e)
 		{
-			DialogResult result = keyColorDialog.ShowDialog();
+			DialogResult result = newColorDialog.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				keyColorButton.BackColor = keyColorDialog.Color;
+				newColorButton.BackColor = newColorDialog.Color;
+				restartLabel.Visible = true;
+			}
+		}
+
+		private void oldColorButton_Click(object sender, EventArgs e)
+		{
+			DialogResult result = oldColorDialog.ShowDialog();
+
+			if (result == DialogResult.OK)
+			{
+				oldColorButton.BackColor = oldColorDialog.Color;
 				restartLabel.Visible = true;
 			}
 		}

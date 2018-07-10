@@ -403,7 +403,7 @@ namespace ScriptEditor
 				}
 				else
 				{
-					ShowKeyValueToolTips(e);
+					ShowCommandToolTips(e);
 				}
 			}
 		}
@@ -413,45 +413,30 @@ namespace ScriptEditor
 			// ToolTip title with brackets added
 			e.ToolTipTitle = "[" + e.HoveredWord + "]";
 
-			// Get header key words
-			List<string> headers = SyntaxKeyWords.Headers();
-
 			// Get resources from the HeaderToolTips.resx file
 			ResourceManager headerToolTipResource = new ResourceManager(typeof(Resources.HeaderToolTips));
 			ResourceSet resourceSet = headerToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
-			foreach (string key in headers)
+			// Loop through resources
+			foreach (DictionaryEntry entry in resourceSet)
 			{
 				// Remove brackets
-				string headerKey = key.Trim(new char[] { '[', ']' });
+				string headerKey = entry.Key.ToString().Trim(new char[] { '[', ']' });
 
-				// If the hovered word doesn't match the "header key" without brackets
-				if (e.HoveredWord != headerKey)
+				// If the hovered word matches a "header key" without brackets
+				if (e.HoveredWord == headerKey)
 				{
-					continue;
-				}
-
-				// Loop through resources
-				foreach (DictionaryEntry entry in resourceSet)
-				{
-					// If the the "resource entry key" matches the "header key" without brackets
-					if (entry.Key.ToString() == headerKey)
-					{
-						e.ToolTipText = entry.Value.ToString();
-						return;
-					}
+					e.ToolTipText = entry.Value.ToString();
+					return;
 				}
 			}
 		}
 
-		private void ShowKeyValueToolTips(ToolTipNeededEventArgs e)
+		private void ShowCommandToolTips(ToolTipNeededEventArgs e)
 		{
-			// Get "key value" key words
-			List<string> keyValues = SyntaxKeyWords.KeyValues();
-
-			// Get resources from the KeyValueToolTips.resx file
-			ResourceManager keyValueToolTipResource = new ResourceManager(typeof(Resources.KeyValueToolTips));
-			ResourceSet resourceSet = keyValueToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+			// Get resources from the CommandToolTips.resx file
+			ResourceManager commandToolTipResource = new ResourceManager(typeof(Resources.CommandToolTips));
+			ResourceSet resourceSet = commandToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
 			// There are different definitions for the "Level" key, so handle them all!
 			if (e.HoveredWord == "Level")
@@ -462,23 +447,14 @@ namespace ScriptEditor
 			{
 				e.ToolTipTitle = e.HoveredWord;
 
-				foreach (string key in keyValues)
+				// Loop through resources
+				foreach (DictionaryEntry entry in resourceSet)
 				{
-					// If the hovered word doesn't match the "keyValue key"
-					if (e.HoveredWord != key)
+					// If the hovered word matches a "command key"
+					if (e.HoveredWord == entry.Key.ToString())
 					{
-						continue;
-					}
-
-					// Loop through resources
-					foreach (DictionaryEntry entry in resourceSet)
-					{
-						// If the the "resource entry key" matches the "keyValue key"
-						if (entry.Key.ToString() == key)
-						{
-							e.ToolTipText = entry.Value.ToString();
-							return;
-						}
+						e.ToolTipText = entry.Value.ToString();
+						return;
 					}
 				}
 			}
@@ -499,26 +475,26 @@ namespace ScriptEditor
 
 				if (textEditor.GetLineText(i).StartsWith("[PSXExtensions]"))
 				{
-					e.ToolTipTitle = "Level (PSXExtensions)";
-					e.ToolTipText = Resources.KeyValueToolTips.LevelPSX;
+					e.ToolTipTitle = "Level [PSXExtensions]";
+					e.ToolTipText = Resources.CommandToolTips.LevelPSX;
 					return;
 				}
 				else if (textEditor.GetLineText(i).StartsWith("[PCExtensions]"))
 				{
-					e.ToolTipTitle = "Level (PCExtensions)";
-					e.ToolTipText = Resources.KeyValueToolTips.LevelPC;
+					e.ToolTipTitle = "Level [PCExtensions]";
+					e.ToolTipText = Resources.CommandToolTips.LevelPC;
 					return;
 				}
 				else if (textEditor.GetLineText(i).StartsWith("[Title]"))
 				{
-					e.ToolTipTitle = "Level (Title)";
-					e.ToolTipText = Resources.KeyValueToolTips.LevelTitle;
+					e.ToolTipTitle = "Level [Title]";
+					e.ToolTipText = Resources.CommandToolTips.LevelTitle;
 					return;
 				}
 				else if (textEditor.GetLineText(i).StartsWith("[Level]"))
 				{
 					e.ToolTipTitle = "Level";
-					e.ToolTipText = Resources.KeyValueToolTips.LevelLevel;
+					e.ToolTipText = Resources.CommandToolTips.LevelLevel;
 					return;
 				}
 
@@ -533,7 +509,8 @@ namespace ScriptEditor
 		{
 			// Get key words
 			List<string> headers = SyntaxKeyWords.Headers();
-			List<string> keyValues = SyntaxKeyWords.KeyValues();
+			List<string> newCommands = SyntaxKeyWords.NewCommands();
+			List<string> oldCommands = SyntaxKeyWords.OldCommands();
 			List<string> unknown = SyntaxKeyWords.Unknown();
 
 			// Remove brackets from header key words
@@ -547,8 +524,8 @@ namespace ScriptEditor
 
 			// Clear styles
 			e.ChangedRange.ClearStyle(
-				SyntaxColors.Comments, SyntaxColors.Keys, SyntaxColors.Headers, SyntaxColors.References,
-				SyntaxColors.Regular, SyntaxColors.Unknown, SyntaxColors.Values);
+				SyntaxColors.Comments, SyntaxColors.Regular, SyntaxColors.References, SyntaxColors.Values,
+				SyntaxColors.Headers, SyntaxColors.NewCommands, SyntaxColors.OldCommands, SyntaxColors.Unknown);
 
 			// Apply styles (THE ORDER IS IMPORTANT!)
 			e.ChangedRange.SetStyle(SyntaxColors.Comments, @";.*$", RegexOptions.Multiline);
@@ -556,7 +533,8 @@ namespace ScriptEditor
 			e.ChangedRange.SetStyle(SyntaxColors.References, @"\$[a-fA-F0-9][a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?");
 			e.ChangedRange.SetStyle(SyntaxColors.Values, @"=\s?.*$", RegexOptions.Multiline);
 			e.ChangedRange.SetStyle(SyntaxColors.Headers, @"\[(" + headerString + @")\]");
-			e.ChangedRange.SetStyle(SyntaxColors.Keys, @"\b(" + string.Join("|", keyValues) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.NewCommands, @"\b(" + string.Join("|", newCommands) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.OldCommands, @"\b(" + string.Join("|", oldCommands) + ")");
 			e.ChangedRange.SetStyle(SyntaxColors.Unknown, @"\b(" + string.Join("|", unknown) + ")");
 		}
 
