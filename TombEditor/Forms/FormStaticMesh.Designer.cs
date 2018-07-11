@@ -49,9 +49,10 @@ namespace TombEditor.Forms
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(53, 291);
+            this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOK.Location = new System.Drawing.Point(56, 288);
             this.butOK.Name = "butOK";
-            this.butOK.Size = new System.Drawing.Size(86, 23);
+            this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
             this.butOK.Text = "OK";
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -59,10 +60,11 @@ namespace TombEditor.Forms
             // 
             // butCancel
             // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(145, 291);
+            this.butCancel.Location = new System.Drawing.Point(142, 288);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(86, 23);
+            this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -182,7 +184,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(291, 326);
+            this.ClientSize = new System.Drawing.Size(228, 318);
             this.Controls.Add(this.tbScalable);
             this.Controls.Add(this.cbScalable);
             this.Controls.Add(this.cbGlassTrasparency);

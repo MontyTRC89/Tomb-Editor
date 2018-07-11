@@ -58,7 +58,7 @@
             this.sourcePanel.Controls.Add(this.sourceTextureMap);
             this.sourcePanel.Location = new System.Drawing.Point(3, 3);
             this.sourcePanel.Name = "sourcePanel";
-            this.sourcePanel.Size = new System.Drawing.Size(340, 537);
+            this.sourcePanel.Size = new System.Drawing.Size(333, 537);
             this.sourcePanel.TabIndex = 22;
             // 
             // darkLabel1
@@ -79,7 +79,7 @@
             this.comboSourceTexture.FormattingEnabled = true;
             this.comboSourceTexture.Location = new System.Drawing.Point(4, 32);
             this.comboSourceTexture.Name = "comboSourceTexture";
-            this.comboSourceTexture.Size = new System.Drawing.Size(330, 21);
+            this.comboSourceTexture.Size = new System.Drawing.Size(323, 23);
             this.comboSourceTexture.TabIndex = 4;
             this.comboSourceTexture.DropDown += new System.EventHandler(this.comboSourceTexture_DropDown);
             this.comboSourceTexture.SelectedValueChanged += new System.EventHandler(this.comboSourceTexture_SelectedValueChanged);
@@ -94,7 +94,7 @@
             this.sourceTextureMap.Location = new System.Drawing.Point(4, 59);
             this.sourceTextureMap.Margin = new System.Windows.Forms.Padding(3, 30, 3, 3);
             this.sourceTextureMap.Name = "sourceTextureMap";
-            this.sourceTextureMap.Size = new System.Drawing.Size(330, 475);
+            this.sourceTextureMap.Size = new System.Drawing.Size(323, 475);
             this.sourceTextureMap.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -111,7 +111,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(692, 543);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(679, 543);
             this.tableLayoutPanel1.TabIndex = 23;
             // 
             // destinationPanel
@@ -119,9 +119,9 @@
             this.destinationPanel.Controls.Add(this.darkLabel2);
             this.destinationPanel.Controls.Add(this.comboDestinationTexture);
             this.destinationPanel.Controls.Add(this.destinationTextureMap);
-            this.destinationPanel.Location = new System.Drawing.Point(349, 3);
+            this.destinationPanel.Location = new System.Drawing.Point(342, 3);
             this.destinationPanel.Name = "destinationPanel";
-            this.destinationPanel.Size = new System.Drawing.Size(340, 537);
+            this.destinationPanel.Size = new System.Drawing.Size(334, 537);
             this.destinationPanel.TabIndex = 23;
             // 
             // darkLabel2
@@ -142,7 +142,7 @@
             this.comboDestinationTexture.FormattingEnabled = true;
             this.comboDestinationTexture.Location = new System.Drawing.Point(4, 32);
             this.comboDestinationTexture.Name = "comboDestinationTexture";
-            this.comboDestinationTexture.Size = new System.Drawing.Size(330, 21);
+            this.comboDestinationTexture.Size = new System.Drawing.Size(324, 23);
             this.comboDestinationTexture.TabIndex = 4;
             this.comboDestinationTexture.DropDown += new System.EventHandler(this.comboDestinationTexture_DropDown);
             this.comboDestinationTexture.SelectedValueChanged += new System.EventHandler(this.comboDestinationTexture_SelectedValueChanged);
@@ -157,14 +157,14 @@
             this.destinationTextureMap.Location = new System.Drawing.Point(4, 59);
             this.destinationTextureMap.Margin = new System.Windows.Forms.Padding(3, 30, 3, 3);
             this.destinationTextureMap.Name = "destinationTextureMap";
-            this.destinationTextureMap.Size = new System.Drawing.Size(330, 475);
+            this.destinationTextureMap.Size = new System.Drawing.Size(324, 475);
             this.destinationTextureMap.TabIndex = 0;
             // 
             // cbRestrictToSelectedRooms
             // 
             this.cbRestrictToSelectedRooms.Checked = true;
             this.cbRestrictToSelectedRooms.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbRestrictToSelectedRooms.Location = new System.Drawing.Point(33, 54);
+            this.cbRestrictToSelectedRooms.Location = new System.Drawing.Point(15, 54);
             this.cbRestrictToSelectedRooms.Name = "cbRestrictToSelectedRooms";
             this.cbRestrictToSelectedRooms.Size = new System.Drawing.Size(277, 17);
             this.cbRestrictToSelectedRooms.TabIndex = 24;
@@ -172,18 +172,18 @@
             // 
             // darkLabel3
             // 
-            this.darkLabel3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(9, 9);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(689, 19);
+            this.darkLabel3.Size = new System.Drawing.Size(703, 19);
             this.darkLabel3.TabIndex = 25;
             this.darkLabel3.Text = "Automated tool to remap texture areas throughout the level. Use middle click and " +
     "left click to change the selected texture area below.";
             // 
             // cbUntextureCompletely
             // 
-            this.cbUntextureCompletely.Location = new System.Drawing.Point(33, 31);
+            this.cbUntextureCompletely.Location = new System.Drawing.Point(15, 31);
             this.cbUntextureCompletely.Name = "cbUntextureCompletely";
             this.cbUntextureCompletely.Size = new System.Drawing.Size(277, 17);
             this.cbUntextureCompletely.TabIndex = 24;
@@ -193,19 +193,19 @@
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Location = new System.Drawing.Point(418, 668);
+            this.butOk.Location = new System.Drawing.Point(516, 667);
             this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(141, 25);
+            this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 26;
-            this.butOk.Text = "Ok";
+            this.butOk.Text = "OK";
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Location = new System.Drawing.Point(565, 668);
+            this.butCancel.Location = new System.Drawing.Point(602, 667);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(137, 25);
+            this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 26;
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
@@ -220,7 +220,7 @@
             0,
             0,
             65536});
-            this.scalingFactor.Location = new System.Drawing.Point(33, 99);
+            this.scalingFactor.Location = new System.Drawing.Point(15, 99);
             this.scalingFactor.Maximum = new decimal(new int[] {
             1024,
             0,
@@ -233,7 +233,7 @@
             196608});
             this.scalingFactor.MousewheelSingleIncrement = true;
             this.scalingFactor.Name = "scalingFactor";
-            this.scalingFactor.Size = new System.Drawing.Size(84, 20);
+            this.scalingFactor.Size = new System.Drawing.Size(84, 22);
             this.scalingFactor.TabIndex = 27;
             this.scalingFactor.Value = new decimal(new int[] {
             1,
@@ -244,7 +244,7 @@
             // 
             // darkLabel4
             // 
-            this.darkLabel4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(123, 101);
             this.darkLabel4.Name = "darkLabel4";
@@ -256,7 +256,7 @@
             // 
             this.darkCheckBox1.Checked = true;
             this.darkCheckBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.darkCheckBox1.Location = new System.Drawing.Point(33, 76);
+            this.darkCheckBox1.Location = new System.Drawing.Point(15, 76);
             this.darkCheckBox1.Name = "darkCheckBox1";
             this.darkCheckBox1.Size = new System.Drawing.Size(277, 17);
             this.darkCheckBox1.TabIndex = 24;
@@ -264,9 +264,10 @@
             // 
             // FormTextureRemap
             // 
+            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(724, 697);
+            this.ClientSize = new System.Drawing.Size(703, 697);
             this.Controls.Add(this.scalingFactor);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
@@ -276,6 +277,7 @@
             this.Controls.Add(this.darkCheckBox1);
             this.Controls.Add(this.cbRestrictToSelectedRooms);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
             this.Name = "FormTextureRemap";
             this.ShowIcon = false;
