@@ -5,25 +5,25 @@ using DarkUI.Forms;
 
 namespace TombLib.Forms
 {
+    public enum PopupPosition
+    {
+        Center,
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight
+    }
+
+    public enum PopupType
+    {
+        None,
+        Info,
+        Warning,
+        Error
+    }
+
     public partial class PopUpInfo : DarkForm
     {
-        public enum PopupPosition
-        {
-            Center,
-            TopLeft,
-            TopRight,
-            BottomLeft,
-            BottomRight
-        }
-
-        public enum PopupType
-        {
-            None,
-            Info,
-            Warning,
-            Error
-        }
-
         private const float _shiftCoeff = 0.25f; // Intro animation push coefficient
 
         private readonly Color _warningColor = Color.FromArgb(255, 192, 128);
@@ -38,6 +38,7 @@ namespace TombLib.Forms
         private int _padding;
         private float _finalOpacity = 0.85f;
         private Control _parent;
+        private Point _parentPosition;
 
         public PopUpInfo()
         {
@@ -56,7 +57,7 @@ namespace TombLib.Forms
         }
         public void ShowError(Control parent, string message, string title = "Error")
         {
-            Show(parent, PopupPosition.BottomRight, message, title, PopupType.Error);
+            Show(parent, PopupPosition.Center, message, title, PopupType.Error);
         }
         public void ShowSimple(Control parent, string message)
         {
@@ -165,40 +166,21 @@ namespace TombLib.Forms
         private void UpdateTimer(object sender, EventArgs e)
         {
             _animProgress += 0.1f;
+            _animProgress = (float)Math.Round(_animProgress, 1, MidpointRounding.AwayFromZero);
+
+            var callbackControlLocation = _parent.PointToScreen(Point.Empty);
+            bool updateLocation = (_parentPosition != callbackControlLocation) ? true : false;
+            int currentShift = 0;
 
             if (_animProgress <= 1.0f)
             {
                 // Smoothly descend pop-up window from parent control using sine function
-                var callbackControlLocation = _parent.PointToScreen(Point.Empty);
                 var shiftDistance = Size.Height * _shiftCoeff;
-                int currentShift = (int)(shiftDistance - (shiftDistance * Math.Sin(_animProgress * Math.PI / 2)));
+                currentShift = (int)(shiftDistance - (shiftDistance * Math.Sin(_animProgress * Math.PI / 2)));
 
-                switch (_position)
-                {
-                    default:
-                    case PopupPosition.BottomLeft:
-                        Location = new Point(callbackControlLocation.X + _padding, callbackControlLocation.Y + _parent.Size.Height - Size.Height - _padding - currentShift);
-                        break;
-                    case PopupPosition.BottomRight:
-                        Location = new Point(callbackControlLocation.X + _parent.Size.Width - Size.Width - _padding, callbackControlLocation.Y + _parent.Size.Height - Size.Height - _padding - currentShift);
-                        break;
-                    case PopupPosition.TopLeft:
-                        Location = new Point(callbackControlLocation.X + _padding, callbackControlLocation.Y + _padding + currentShift);
-                        break;
-                    case PopupPosition.TopRight:
-                        Location = new Point(callbackControlLocation.X + _parent.Size.Width - Size.Width - _padding, callbackControlLocation.Y + _padding + currentShift);
-                        break;
-                    case PopupPosition.Center:
-                        Location = new Point(callbackControlLocation.X + callbackControlLocation.X / 2, callbackControlLocation.Y + callbackControlLocation.Y / 2 - (int)(Size.Height / 4 * Math.Sin(_animProgress * Math.PI / 2)));
-                        break;
-                }
+                updateLocation = true;  // Force location updating, as we are animating
+
                 Opacity = _animProgress * _finalOpacity;
-
-                if (_animProgress == 1.0f)
-                {
-                    _animProgress = 0.0f;
-                    _animTimer.Stop();
-                }
             }
             else
             {
@@ -216,8 +198,31 @@ namespace TombLib.Forms
                         Hide();
                     }
                 }
-                else if (Opacity < 1.0f *_finalOpacity)
-                    Opacity = 1.0f * _finalOpacity;
+            }
+
+            if (updateLocation)
+            {
+                _parentPosition = callbackControlLocation;
+
+                switch (_position)
+                {
+                    default:
+                    case PopupPosition.BottomLeft:
+                        Location = new Point(callbackControlLocation.X + _padding, callbackControlLocation.Y + _parent.Size.Height - Size.Height - _padding - currentShift);
+                        break;
+                    case PopupPosition.BottomRight:
+                        Location = new Point(callbackControlLocation.X + _parent.Size.Width - Size.Width - _padding, callbackControlLocation.Y + _parent.Size.Height - Size.Height - _padding - currentShift);
+                        break;
+                    case PopupPosition.TopLeft:
+                        Location = new Point(callbackControlLocation.X + _padding, callbackControlLocation.Y + _padding + currentShift);
+                        break;
+                    case PopupPosition.TopRight:
+                        Location = new Point(callbackControlLocation.X + _parent.Size.Width - Size.Width - _padding, callbackControlLocation.Y + _padding + currentShift);
+                        break;
+                    case PopupPosition.Center:
+                        Location = new Point(callbackControlLocation.X + _parent.Size.Width / 2 - Size.Width / 2, callbackControlLocation.Y + _parent.Size.Height / 2 - Size.Height / 2 + currentShift);
+                        break;
+                }
             }
         }
 

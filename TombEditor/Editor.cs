@@ -539,9 +539,9 @@ namespace TombEditor
         public class MessageEvent : IEditorEvent
         {
             public string Message { get; internal set; }
-            public PopUpInfo.PopupType Type { get; internal set; }
+            public PopupType Type { get; internal set; }
         }
-        public void SendMessage(string message = "", PopUpInfo.PopupType type = PopUpInfo.PopupType.None)
+        public void SendMessage(string message = "", PopupType type = PopupType.None)
         {
             RaiseEvent(new MessageEvent { Message = message, Type = type });
         }

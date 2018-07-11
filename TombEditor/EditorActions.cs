@@ -1415,7 +1415,7 @@ namespace TombEditor
             int remainingRoomCount = _editor.Level.Rooms.Count(r => r != null && !rooms.Contains(r) && !rooms.Contains(r.AlternateOpposite));
             if (remainingRoomCount <= 0)
             {
-                Editor.Instance.SendMessage("You must have at least one room in your level.", PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("You must have at least one room in your level.", PopupType.Error);
                 return;
             }
 
@@ -1453,7 +1453,7 @@ namespace TombEditor
             newArea = newArea.Inflate(1);
             if (newArea.Width + 1 > Room.MaxRoomDimensions || newArea.Height + 1 > Room.MaxRoomDimensions)
             {
-                Editor.Instance.SendMessage("The selected area exceeds the maximum room size.", PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("The selected area exceeds the maximum room size.", PopupType.Error);
                 return;
             }
             if (DarkMessageBox.Show(owner, "Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
@@ -1842,7 +1842,7 @@ namespace TombEditor
 
             if (cornerSelected)
             {
-                Editor.Instance.SendMessage("You have selected one of the four room's corners.", PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("You have selected one of the four room's corners.", PopupType.Error);
                 return;
             }
 
@@ -1933,7 +1933,7 @@ namespace TombEditor
             }
             if (candidates.Count != 1)
             {
-                Editor.Instance.SendMessage("There are no possible room candidates for a portal.", PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("There are no possible room candidates for a portal.", PopupType.Error);
                 return;
             }
 
@@ -2139,7 +2139,7 @@ namespace TombEditor
                 area.Y0 == -1 || area.Y1 == -1 ||
                 area.Y0 == room.NumZSectors || area.Y1 == room.NumZSectors)
             {
-                Editor.Instance.SendMessage("You can't select border walls when splitting a room.", PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("You can't select border walls when splitting a room.", PopupType.Error);
                 return;
             }
 
@@ -2191,7 +2191,7 @@ namespace TombEditor
         {
             if (_editor.SelectedRoom == null || !_editor.SelectedSectors.Valid)
             {
-                Editor.Instance.SendMessage("Please select a valid group of sectors.", PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("Please select a valid group of sectors.", PopupType.Error);
                 return false;
             }
             return true;
@@ -2263,7 +2263,7 @@ namespace TombEditor
                     TombLauncher.Launch(_editor.Level.Settings, owner);
             }
             else
-                Editor.Instance.SendMessage("No Lara found. Place Lara to play level.", PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("No Lara found. Place Lara to play level.", PopupType.Error);
 
         }
 
@@ -2442,7 +2442,7 @@ namespace TombEditor
         {
             if (!(instance is PositionBasedObjectInstance))
             {
-                Editor.Instance.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopUpInfo.PopupType.Info);
+                Editor.Instance.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
                 return;
             }
             Clipboard.SetDataObject(new ObjectClipboardData(_editor));
@@ -2457,7 +2457,7 @@ namespace TombEditor
         {
             if (!(instance is PositionBasedObjectInstance))
             {
-                Editor.Instance.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopUpInfo.PopupType.Info);
+                Editor.Instance.SendMessage("No object selected. \nYou have to select position-based object before you can copy it.", PopupType.Info);
                 return;
             }
             _editor.Action = new EditorActionPlace(false, (level, room) => (PositionBasedObjectInstance)instance.Clone());
@@ -2556,7 +2556,7 @@ namespace TombEditor
             var portal = _editor.SelectedObject as PortalInstance;
             if (_editor.SelectedRoom == null || portal == null)
             {
-                Editor.Instance.SendMessage("No portal selected.", PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("No portal selected.", PopupType.Error);
                 return;
             }
 
@@ -2583,7 +2583,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to save to \"" + filePath + "\".");
-                Editor.Instance.SendMessage("There was an error while saving project file. Exception: " + exc.Message, PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("There was an error while saving project file. Exception: " + exc.Message, PopupType.Error);
                 return false;
             }
 
@@ -2712,7 +2712,7 @@ namespace TombEditor
 
                             if (exporter.ExportToFile(model, saveFileDialog.FileName) /*&& RoomsImportExportXmlDatabase.WriteToFile(dbFile, db)*/)
                             {
-                                Editor.Instance.SendMessage("Room exported correctly.", PopUpInfo.PopupType.Info);
+                                Editor.Instance.SendMessage("Room exported correctly.", PopupType.Info);
                             }
                         }
                     }
@@ -2837,7 +2837,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc.Message);
-                Editor.Instance.SendMessage("Unable to import rooms from geometry.", PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("Unable to import rooms from geometry.", PopupType.Error);
             }
         }
 
@@ -2859,7 +2859,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to open \"" + fileName + "\"");
-                Editor.Instance.SendMessage("There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, PopUpInfo.PopupType.Error);
+                Editor.Instance.SendMessage("There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, PopupType.Error);
             }
             _editor.Level = newLevel;
         }
@@ -2935,7 +2935,7 @@ namespace TombEditor
                                     "\n" +
                                     "Press the middle mouse button to select multiple rooms or select connected rooms by double clicking.\n" +
                                     "The selection can be modified using Ctrl, Shift, Alt. To copy rooms, press Ctrl while moving.",
-                                    PopUpInfo.PopupType.Info);
+                                    PopupType.Info);
 
                 _editor.Configuration.Map2D_ShowFirstTimeHint = false;
                 _editor.ConfigurationChange();

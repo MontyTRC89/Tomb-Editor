@@ -144,16 +144,16 @@ namespace TombEditor.ToolWindows
 
                 switch(msg.Type)
                 {
-                    case PopUpInfo.PopupType.None:
+                    case PopupType.None:
                         popup.ShowSimple(this, msg.Message);
                         break;
-                    case PopUpInfo.PopupType.Info:
+                    case PopupType.Info:
                         popup.ShowInfo(this, msg.Message);
                         break;
-                    case PopUpInfo.PopupType.Warning:
+                    case PopupType.Warning:
                         popup.ShowWarning(this, msg.Message);
                         break;
-                    case PopUpInfo.PopupType.Error:
+                    case PopupType.Error:
                         popup.ShowError(this, msg.Message);
                         break;
                 }
