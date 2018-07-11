@@ -2227,6 +2227,12 @@ namespace TombEditor
         public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner)
         {
             Level level = _editor.Level;
+            if(level.Settings.Wads.All(wad => wad.Wad == null))
+            {
+                Editor.Instance.SendMessage("No wads loaded. Can't compile level without wads.", PopupType.Error);
+                return false;
+            }
+
             string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
 
             using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone,
