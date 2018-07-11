@@ -582,8 +582,8 @@
 		private DarkUI.Controls.DarkCheckBox autocompleteCheck;
 		private DarkUI.Controls.DarkCheckBox closeBracketsCheck;
 		private DarkUI.Controls.DarkCheckBox reindentCheck;
-		private DarkUI.Controls.DarkCheckBox showSpacesCheck;
 		private DarkUI.Controls.DarkCheckBox showNumbersCheck;
+		private DarkUI.Controls.DarkCheckBox showSpacesCheck;
 		private DarkUI.Controls.DarkCheckBox showToolbarCheck;
 		private DarkUI.Controls.DarkCheckBox toolTipCheck;
 		private DarkUI.Controls.DarkCheckBox wordWrapCheck;
