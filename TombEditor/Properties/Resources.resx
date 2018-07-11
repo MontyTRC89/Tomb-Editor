@@ -274,9 +274,6 @@
   <data name="objects_movie_projector_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_objects\objects_movie_projector-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="actions_RoomLower_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons_actions\actions_RoomLower-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="toolbox_Fill_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_toolbox\toolbox_Fill-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -327,9 +324,6 @@
   </data>
   <data name="sectortype_ClimbSouth_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_sectortype\sectortype_ClimbSouth_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="actions_RoomRaise_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons_actions\actions_RoomRaise-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="stones_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\stones-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -435,5 +429,11 @@
   </data>
   <data name="general_target-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_general\general_target-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_ArrowDown_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_ArrowDown-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="general_ArrowUp_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_general\general_ArrowUp-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

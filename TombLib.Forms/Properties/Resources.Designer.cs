@@ -73,6 +73,26 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_ArrowDown_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_ArrowDown_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_ArrowUp_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_ArrowUp_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_clipboard_16 {
             get {
                 object obj = ResourceManager.GetObject("general_clipboard-16", resourceCulture);
