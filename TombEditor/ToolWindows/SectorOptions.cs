@@ -4,6 +4,7 @@ using DarkUI.Forms;
 using NLog;
 using System;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
 
@@ -75,7 +76,7 @@ namespace TombEditor.ToolWindows
             }
             catch (Exception exc)
             {
-                DarkMessageBox.Show(this, "Unable to create portal: " + exc.Message, "Error", MessageBoxIcon.Error);
+                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "Unable to create portal: \n" + exc.Message, Type = PopUpInfo.PopupType.Error });
                 logger.Error(exc, "Portal creation failed.");
             }
         }
