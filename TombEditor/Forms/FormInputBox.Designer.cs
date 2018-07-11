@@ -97,6 +97,7 @@ namespace TombEditor.Forms
             this.Name = "FormInputBox";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sink";
             this.ResumeLayout(false);

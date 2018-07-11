@@ -65,7 +65,7 @@ namespace TombEditor.Forms
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
-            this.butCancel.Text = "Close";
+            this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
@@ -99,6 +99,7 @@ namespace TombEditor.Forms
             this.Name = "FormOperationDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "<Unknown>";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormImportPRJ_FormClosing);

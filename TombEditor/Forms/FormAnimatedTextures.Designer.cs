@@ -476,6 +476,7 @@ namespace TombEditor.Forms
             this.Name = "FormAnimatedTextures";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Animated textures";
             this.tableLayoutPanel1.ResumeLayout(false);

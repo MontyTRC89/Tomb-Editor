@@ -236,6 +236,7 @@ namespace TombEditor.Forms
             // 
             this.paramTriggerType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.paramTriggerType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.paramTriggerType.Level = null;
             this.paramTriggerType.Location = new System.Drawing.Point(82, 12);
             this.paramTriggerType.Name = "paramTriggerType";
@@ -247,6 +248,7 @@ namespace TombEditor.Forms
             // 
             this.paramTargetType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.paramTargetType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.paramTargetType.Level = null;
             this.paramTargetType.Location = new System.Drawing.Point(82, 38);
             this.paramTargetType.Name = "paramTargetType";
@@ -258,6 +260,7 @@ namespace TombEditor.Forms
             // 
             this.paramExtra.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.paramExtra.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.paramExtra.Level = null;
             this.paramExtra.Location = new System.Drawing.Point(82, 116);
             this.paramExtra.Name = "paramExtra";
@@ -269,6 +272,7 @@ namespace TombEditor.Forms
             // 
             this.paramTimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.paramTimer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.paramTimer.Level = null;
             this.paramTimer.Location = new System.Drawing.Point(82, 90);
             this.paramTimer.Name = "paramTimer";
@@ -280,6 +284,7 @@ namespace TombEditor.Forms
             // 
             this.paramTarget.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.paramTarget.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.paramTarget.Level = null;
             this.paramTarget.Location = new System.Drawing.Point(82, 64);
             this.paramTarget.Name = "paramTarget";
@@ -332,6 +337,7 @@ namespace TombEditor.Forms
             this.Name = "FormTrigger";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Trigger editor";
             this.scriptExportPanel.ResumeLayout(false);
