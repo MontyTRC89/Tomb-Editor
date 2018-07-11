@@ -62,6 +62,8 @@
 			this.toolStripSeparator_01 = new System.Windows.Forms.ToolStripSeparator();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator_02 = new System.Windows.Forms.ToolStripSeparator();
+			this.showStringTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator_17 = new System.Windows.Forms.ToolStripSeparator();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.lineNumberLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
@@ -88,7 +90,6 @@
 			this.prevBookmarkToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.refBrowserSplitter = new System.Windows.Forms.Splitter();
-			this.referenceBrowser = new ScriptEditor.ReferenceBrowser();
 			this.resetZoomButton = new DarkUI.Controls.DarkButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.selectedCharsLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -105,6 +106,7 @@
 			this.toolStripSeparator_13 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator_14 = new System.Windows.Forms.ToolStripSeparator();
 			this.zoomLabel = new DarkUI.Controls.DarkLabel();
+			this.referenceBrowser = new ScriptEditor.ReferenceBrowser();
 			((System.ComponentModel.ISupportInitialize)(this.textEditor)).BeginInit();
 			this.editorContextMenu.SuspendLayout();
 			this.menuStrip.SuspendLayout();
@@ -167,7 +169,7 @@
 			this.buildToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
 			this.buildToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
-			this.buildToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.buildToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.buildToolStripMenuItem.Text = "&Build Script";
 			// 
 			// changeToolStripButton
@@ -190,7 +192,7 @@
 			this.changeToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.changeToolStripMenuItem.Name = "changeToolStripMenuItem";
 			this.changeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.changeToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.changeToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.changeToolStripMenuItem.Text = "&Change Paths...";
 			this.changeToolStripMenuItem.Click += new System.EventHandler(this.File_Change_MenuItem_Click);
 			// 
@@ -334,7 +336,7 @@
 			this.documentMap.ForeColor = System.Drawing.Color.Gainsboro;
 			this.documentMap.Location = new System.Drawing.Point(672, 52);
 			this.documentMap.Name = "documentMap";
-			this.documentMap.Size = new System.Drawing.Size(128, 208);
+			this.documentMap.Size = new System.Drawing.Size(128, 207);
 			this.documentMap.TabIndex = 1;
 			this.documentMap.Target = this.textEditor;
 			this.documentMap.Text = "documentMap";
@@ -347,7 +349,7 @@
 			this.textEditor.AutoIndent = false;
 			this.textEditor.AutoIndentChars = false;
 			this.textEditor.AutoIndentExistingLines = false;
-			this.textEditor.AutoScrollMinSize = new System.Drawing.Size(38, 18);
+			this.textEditor.AutoScrollMinSize = new System.Drawing.Size(43, 18);
 			this.textEditor.BackBrush = null;
 			this.textEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
 			this.textEditor.BookmarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -367,6 +369,7 @@
 			this.textEditor.ForeColor = System.Drawing.SystemColors.ControlLight;
 			this.textEditor.IndentBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textEditor.IsReplaceMode = false;
+			this.textEditor.LeftPadding = 5;
 			this.textEditor.LineNumberColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(160)))), ((int)(((byte)(160)))));
 			this.textEditor.Location = new System.Drawing.Point(200, 52);
 			this.textEditor.Name = "textEditor";
@@ -376,7 +379,7 @@
 			this.textEditor.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(30)))), ((int)(((byte)(144)))), ((int)(((byte)(255)))));
 			this.textEditor.ServiceColors = null;
 			this.textEditor.ServiceLinesColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-			this.textEditor.Size = new System.Drawing.Size(472, 208);
+			this.textEditor.Size = new System.Drawing.Size(472, 207);
 			this.textEditor.TabIndex = 3;
 			this.textEditor.Zoom = 100;
 			this.textEditor.ToolTipNeeded += new System.EventHandler<FastColoredTextBoxNS.ToolTipNeededEventArgs>(this.textEditor_ToolTipNeeded);
@@ -571,7 +574,7 @@
 			this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.File_Exit_MenuItem_Click);
 			// 
@@ -584,6 +587,8 @@
             this.saveToolStripMenuItem,
             this.buildToolStripMenuItem,
             this.toolStripSeparator_02,
+            this.showStringTableToolStripMenuItem,
+            this.toolStripSeparator_17,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -596,7 +601,7 @@
 			this.toolStripSeparator_01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.toolStripSeparator_01.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
 			this.toolStripSeparator_01.Name = "toolStripSeparator_01";
-			this.toolStripSeparator_01.Size = new System.Drawing.Size(196, 6);
+			this.toolStripSeparator_01.Size = new System.Drawing.Size(212, 6);
 			// 
 			// saveToolStripMenuItem
 			// 
@@ -606,7 +611,7 @@
 			this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.saveToolStripMenuItem.Text = "&Save Script";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.File_Save_MenuItem_Click);
 			// 
@@ -616,7 +621,25 @@
 			this.toolStripSeparator_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.toolStripSeparator_02.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
 			this.toolStripSeparator_02.Name = "toolStripSeparator_02";
-			this.toolStripSeparator_02.Size = new System.Drawing.Size(196, 6);
+			this.toolStripSeparator_02.Size = new System.Drawing.Size(212, 6);
+			// 
+			// showStringTableToolStripMenuItem
+			// 
+			this.showStringTableToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.showStringTableToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.showStringTableToolStripMenuItem.Name = "showStringTableToolStripMenuItem";
+			this.showStringTableToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
+			this.showStringTableToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.showStringTableToolStripMenuItem.Text = "Show string table...";
+			this.showStringTableToolStripMenuItem.Click += new System.EventHandler(this.File_StringTable_MenuItem_Click);
+			// 
+			// toolStripSeparator_17
+			// 
+			this.toolStripSeparator_17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.toolStripSeparator_17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.toolStripSeparator_17.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+			this.toolStripSeparator_17.Name = "toolStripSeparator_17";
+			this.toolStripSeparator_17.Size = new System.Drawing.Size(212, 6);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -828,7 +851,7 @@
 			this.objectBrowser.Location = new System.Drawing.Point(0, 20);
 			this.objectBrowser.MaxDragChange = 20;
 			this.objectBrowser.Name = "objectBrowser";
-			this.objectBrowser.Size = new System.Drawing.Size(200, 188);
+			this.objectBrowser.Size = new System.Drawing.Size(200, 187);
 			this.objectBrowser.TabIndex = 6;
 			this.objectBrowser.Click += new System.EventHandler(this.objectBrowser_Click);
 			// 
@@ -839,7 +862,7 @@
 			this.objectBrowserBox.Dock = System.Windows.Forms.DockStyle.Left;
 			this.objectBrowserBox.Location = new System.Drawing.Point(0, 52);
 			this.objectBrowserBox.Name = "objectBrowserBox";
-			this.objectBrowserBox.Size = new System.Drawing.Size(200, 208);
+			this.objectBrowserBox.Size = new System.Drawing.Size(200, 207);
 			this.objectBrowserBox.TabIndex = 7;
 			this.objectBrowserBox.TabStop = false;
 			// 
@@ -861,7 +884,7 @@
 			this.objectBrowserSplitter.Location = new System.Drawing.Point(200, 52);
 			this.objectBrowserSplitter.MinSize = 100;
 			this.objectBrowserSplitter.Name = "objectBrowserSplitter";
-			this.objectBrowserSplitter.Size = new System.Drawing.Size(2, 208);
+			this.objectBrowserSplitter.Size = new System.Drawing.Size(3, 207);
 			this.objectBrowserSplitter.TabIndex = 12;
 			this.objectBrowserSplitter.TabStop = false;
 			// 
@@ -904,22 +927,12 @@
 			// refBrowserSplitter
 			// 
 			this.refBrowserSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.refBrowserSplitter.Location = new System.Drawing.Point(0, 260);
+			this.refBrowserSplitter.Location = new System.Drawing.Point(0, 259);
 			this.refBrowserSplitter.MinSize = 70;
 			this.refBrowserSplitter.Name = "refBrowserSplitter";
-			this.refBrowserSplitter.Size = new System.Drawing.Size(800, 2);
+			this.refBrowserSplitter.Size = new System.Drawing.Size(800, 3);
 			this.refBrowserSplitter.TabIndex = 13;
 			this.refBrowserSplitter.TabStop = false;
-			// 
-			// referenceBrowser
-			// 
-			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.referenceBrowser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.referenceBrowser.Location = new System.Drawing.Point(0, 262);
-			this.referenceBrowser.Name = "referenceBrowser";
-			this.referenceBrowser.Size = new System.Drawing.Size(800, 160);
-			this.referenceBrowser.TabIndex = 11;
 			// 
 			// resetZoomButton
 			// 
@@ -1106,6 +1119,16 @@
 			this.zoomLabel.TabIndex = 8;
 			this.zoomLabel.Text = "Zoom: 100%";
 			// 
+			// referenceBrowser
+			// 
+			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.referenceBrowser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.referenceBrowser.Location = new System.Drawing.Point(0, 262);
+			this.referenceBrowser.Name = "referenceBrowser";
+			this.referenceBrowser.Size = new System.Drawing.Size(800, 160);
+			this.referenceBrowser.TabIndex = 11;
+			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1125,6 +1148,7 @@
 			this.Controls.Add(this.referenceBrowser);
 			this.Controls.Add(this.statusStrip);
 			this.MainMenuStrip = this.menuStrip;
+			this.MinimumSize = new System.Drawing.Size(800, 450);
 			this.Name = "FormMain";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "ScriptEditor";
@@ -1207,6 +1231,7 @@
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showStringTableToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toggleBookmarkContextItem;
 		private System.Windows.Forms.ToolStripMenuItem toggleBookmarkToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
@@ -1231,6 +1256,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator_14;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator_15;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator_16;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator_17;
 		private System.Windows.Forms.ToolStripStatusLabel colNumberLabel;
 		private System.Windows.Forms.ToolStripStatusLabel lineNumberLabel;
 		private System.Windows.Forms.ToolStripStatusLabel selectedCharsLabel;
