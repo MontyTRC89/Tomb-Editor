@@ -82,6 +82,13 @@ namespace TombLib.Forms
 
         public void Show(Control parent, PopupPosition startPos, string message, string title = "", PopupType type = PopupType.Info, int timeout = 0, int padding = 10)
         {
+            // No message means kill current pop-up
+            if(message == "")
+            {
+                Hide();
+                return;
+            }
+
             // Setup
             _parent = parent;
             _position = startPos;
@@ -89,7 +96,7 @@ namespace TombLib.Forms
 
             // Reset sizes
             Size = MinimumSize;
-            MaximumSize = new Size((int)(parent.Size.Width / 2), parent.Size.Height / 4);
+            MaximumSize = new Size((int)(parent.Size.Width * 0.7f), parent.Size.Height / 4);
 
             // Hide header if not specified
             bool titleIsVisible = (type == PopupType.None || title != string.Empty);

@@ -372,7 +372,7 @@ namespace TombEditor.Forms
                         catch (Exception exc)
                         {
                             logger.Error(exc, "Unable to create portal");
-                            Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "Unable to create portal. \nException: " + exc.Message, Type = PopUpInfo.PopupType.Error });
+                            Editor.Instance.SendMessage("Unable to create portal. \nException: " + exc.Message, PopUpInfo.PopupType.Error);
                         }
                     break;
 
@@ -651,7 +651,7 @@ namespace TombEditor.Forms
         {
             if (_editor.Level == null || _editor.Level.Settings.Textures.Count == 0)
             {
-                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "No texture loaded. Nothing to convert.", Type = PopUpInfo.PopupType.Error });
+                Editor.Instance.SendMessage("No texture loaded. Nothing to convert.", PopUpInfo.PopupType.Error);
                 return;
             }
 
@@ -659,7 +659,7 @@ namespace TombEditor.Forms
             {
                 if (texture.LoadException != null)
                 {
-                    Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "The texture that should be converted to *.png could not be loaded. " + texture.LoadException?.Message, Type = PopUpInfo.PopupType.Error });
+                    Editor.Instance.SendMessage("The texture that should be converted to *.png could not be loaded. " + texture.LoadException?.Message, PopUpInfo.PopupType.Error);
                     return;
                 }
 
@@ -675,7 +675,7 @@ namespace TombEditor.Forms
                 }
                 texture.Image.Save(pngFilePath);
 
-                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", Type = PopUpInfo.PopupType.Info });
+                Editor.Instance.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopUpInfo.PopupType.Info);
                 texture.SetPath(_editor.Level.Settings, pngFilePath);
             }
             _editor.LoadedTexturesChange();
@@ -737,7 +737,7 @@ namespace TombEditor.Forms
                 catch (Exception exc)
                 {
                     logger.Error(exc, "Unable to create portal");
-                    Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "Unable to create portal. \nException: " + exc.Message, Type = PopUpInfo.PopupType.Error });
+                    Editor.Instance.SendMessage("Unable to create portal. \nException: " + exc.Message, PopUpInfo.PopupType.Error);
                 }
         }
 
@@ -1237,7 +1237,7 @@ namespace TombEditor.Forms
             catch (Exception exc)
             {
                 logger.Error(exc, "Error while starting Wad Tool.");
-                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "Error while starting Wad Tool.", Type = PopUpInfo.PopupType.Error });
+                Editor.Instance.SendMessage("Error while starting Wad Tool.", PopUpInfo.PopupType.Error);
             }
         }
 
@@ -1250,7 +1250,7 @@ namespace TombEditor.Forms
             catch (Exception exc)
             {
                 logger.Error(exc, "Error while starting Sound Tool.");
-                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "Error while starting Sound Tool.", Type = PopUpInfo.PopupType.Error });
+                Editor.Instance.SendMessage("Error while starting Sound Tool.", PopUpInfo.PopupType.Error);
             }
         }
 

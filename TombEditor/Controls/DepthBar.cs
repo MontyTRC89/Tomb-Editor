@@ -26,7 +26,7 @@ namespace TombEditor.Controls
 
         private const float _marginX = 10.0f;
         private const float _marginYUp = 32.0f;
-        private const float _marginYDown = 110.0f;
+        private const float _marginYDown = 32.0f;
         private const float _barWidth = 36.0f;
         private const int _heightStringCount = 16;
         private const float _heightStringLineLength = 4.0f;
