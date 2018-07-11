@@ -68,6 +68,7 @@ namespace ScriptEditor
 
 		private void File_Change_MenuItem_Click(object sender, EventArgs e) => ShowPathSelection();
 		private void File_Save_MenuItem_Click(object sender, EventArgs e) => SaveFile();
+		private void File_StringTable_MenuItem_Click(object sender, EventArgs e) => ShowStringTable();
 		private void File_Exit_MenuItem_Click(object sender, EventArgs e) => Close();
 
 		/* Edit menu */
@@ -117,22 +118,23 @@ namespace ScriptEditor
 
 		private void View_ObjectBrowser_MenuItem_Click(object sender, EventArgs e)
 		{
-			objectBrowser.Visible = !objectBrowser.Visible;
-			searchTextBox.Visible = !searchTextBox.Visible;
-			objectBrowserBox.Visible = !objectBrowserBox.Visible;
-			objectBrowserToolStripMenuItem.Checked = objectBrowserBox.Visible;
+			ToggleObjectBrowser(!objectBrowser.Visible);
+			Properties.Settings.Default.ObjBrowserVisible = objectBrowser.Visible;
+			Properties.Settings.Default.Save();
 		}
 
 		private void View_ReferenceBrowser_MenuItem_Click(object sender, EventArgs e)
 		{
-			referenceBrowser.Visible = !referenceBrowser.Visible;
-			referenceBrowserToolStripMenuItem.Checked = referenceBrowser.Visible;
+			ToggleReferenceBrowser(!referenceBrowser.Visible);
+			Properties.Settings.Default.RefBrowserVisible = referenceBrowser.Visible;
+			Properties.Settings.Default.Save();
 		}
 
 		private void View_DocumentMap_MenuItem_Click(object sender, EventArgs e)
 		{
-			documentMap.Visible = !documentMap.Visible;
-			documentMapToolStripMenuItem.Checked = documentMap.Visible;
+			ToggleDocumentMap(!documentMap.Visible);
+			Properties.Settings.Default.DocMapVisible = documentMap.Visible;
+			Properties.Settings.Default.Save();
 		}
 
 		/* Help menu */
@@ -245,13 +247,7 @@ namespace ScriptEditor
 
 		private void ToolStrip_AboutButton_Click(object sender, EventArgs e) => ShowAboutForm();
 
-		private void ToolStrip_StringTableButton_Click(object sender, EventArgs e)
-		{
-			using (FormStringTable form = new FormStringTable())
-			{
-				form.ShowDialog(this);
-			}
-		}
+		private void ToolStrip_StringTableButton_Click(object sender, EventArgs e) => ShowStringTable();
 
 		/* StatusStrip buttons */
 
@@ -304,8 +300,14 @@ namespace ScriptEditor
 			textEditor.Font = new Font(Properties.Settings.Default.FontFace, Convert.ToSingle(Properties.Settings.Default.FontSize));
 			textEditor.AutoCompleteBrackets = Properties.Settings.Default.CloseBrackets;
 			textEditor.WordWrap = Properties.Settings.Default.WordWrap;
+			textEditor.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
+
 			toolStrip.Visible = Properties.Settings.Default.ShowToolbar;
-			statusStrip.Visible = Properties.Settings.Default.ShowStatusbar;
+			showStringTableButton.Visible = toolStrip.Visible;
+
+			ToggleObjectBrowser(Properties.Settings.Default.ObjBrowserVisible);
+			ToggleReferenceBrowser(Properties.Settings.Default.RefBrowserVisible);
+			ToggleDocumentMap(Properties.Settings.Default.DocMapVisible);
 		}
 
 		private void GenerateAutocompleteMenu()
@@ -972,6 +974,36 @@ namespace ScriptEditor
 
 			// Disable the interface
 			ToggleInterface(false);
+		}
+
+		private void ShowStringTable()
+		{
+			using (FormStringTable form = new FormStringTable())
+			{
+				form.ShowDialog(this);
+			}
+		}
+
+		private void ToggleObjectBrowser(bool state)
+		{
+			objectBrowser.Visible = state;
+			searchTextBox.Visible = state;
+			objectBrowserBox.Visible = state;
+			objectBrowserSplitter.Visible = state;
+			objectBrowserToolStripMenuItem.Checked = state;
+		}
+
+		private void ToggleReferenceBrowser(bool state)
+		{
+			referenceBrowser.Visible = state;
+			refBrowserSplitter.Visible = state;
+			referenceBrowserToolStripMenuItem.Checked = state;
+		}
+
+		private void ToggleDocumentMap(bool state)
+		{
+			documentMap.Visible = state;
+			documentMapToolStripMenuItem.Checked = state;
 		}
 	}
 }
