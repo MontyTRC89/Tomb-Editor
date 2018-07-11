@@ -10,12 +10,12 @@ namespace ScriptEditor
 
 			string[] headers =
 			{
-				"[Language]",
-				"[Level]",
-				"[Options]",
-				"[PCExtensions]",
-				"[PSXExtensions]",
-				"[Title]"
+				"Language",
+				"Level",
+				"Options",
+				"PCExtensions",
+				"PSXExtensions",
+				"Title"
 			};
 
 			list.AddRange(headers);

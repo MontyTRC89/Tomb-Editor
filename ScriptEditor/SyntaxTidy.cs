@@ -5,7 +5,7 @@ namespace ScriptEditor
 {
 	public class SyntaxTidy
 	{
-		public static string[] ReindentLines(string editorContent)
+		public static List<string> ReindentLines(string editorContent)
 		{
 			editorContent = editorContent.Replace("=", " = ");
 			editorContent = editorContent.Replace(",", ", ");
@@ -30,7 +30,7 @@ namespace ScriptEditor
 			return TrimLines(editorContent);
 		}
 
-		public static string[] TrimLines(string editorContent)
+		public static List<string> TrimLines(string editorContent)
 		{
 			// Get every single line and create a list that will store them
 			string[] lines = editorContent.Replace("\r", "").Split('\n');
@@ -43,7 +43,7 @@ namespace ScriptEditor
 				trimmedText.Add(currentLineText.Trim());
 			}
 
-			return trimmedText.ToArray();
+			return trimmedText;
 		}
 	}
 }
