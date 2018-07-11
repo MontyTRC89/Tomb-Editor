@@ -15,7 +15,6 @@ namespace TombEditor.ToolWindows
     public partial class ItemBrowser : DarkToolWindow
     {
         private readonly Editor _editor;
-        private PopUpSearch searchPopUp;
 
         public ItemBrowser()
         {
@@ -114,9 +113,7 @@ namespace TombEditor.ToolWindows
 
         private void butSearch_Click(object sender, EventArgs e)
         {
-            if (searchPopUp != null && searchPopUp.Visible)
-                searchPopUp.Close();
-            searchPopUp = new PopUpSearch(comboItems);
+            var searchPopUp = new PopUpSearch(comboItems);
             searchPopUp.Show(this);
         }
 
