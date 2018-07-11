@@ -659,7 +659,7 @@ namespace TombEditor.Forms
             {
                 if (texture.LoadException != null)
                 {
-                    Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "The texture that should be converted to *.png could not be loaded. " + texture.LoadException.Message, Type = PopUpInfo.PopupType.Error });
+                    Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "The texture that should be converted to *.png could not be loaded. " + texture.LoadException?.Message, Type = PopUpInfo.PopupType.Error });
                     return;
                 }
 
@@ -670,12 +670,12 @@ namespace TombEditor.Forms
                 {
                     if (DarkMessageBox.Show(this,
                             "There is already a file at \"" + pngFilePath + "\". Continue and overwrite the file?",
-                            "File exist already", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                            "File already exists", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                         return;
                 }
                 texture.Image.Save(pngFilePath);
 
-                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\"." + texture.LoadException.Message, Type = PopUpInfo.PopupType.Info });
+                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", Type = PopUpInfo.PopupType.Info });
                 texture.SetPath(_editor.Level.Settings, pngFilePath);
             }
             _editor.LoadedTexturesChange();
