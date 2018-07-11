@@ -28,45 +28,11 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.refSelectionComboBox = new DarkUI.Controls.DarkComboBox();
-			this.refSearchTextBox = new DarkUI.Controls.DarkTextBox();
 			this.refDataGrid = new DarkUI.Controls.DarkDataGridView();
+			this.refSearchTextBox = new DarkUI.Controls.DarkTextBox();
+			this.refSelectionComboBox = new DarkUI.Controls.DarkComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.refDataGrid)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// refSelectionComboBox
-			// 
-			this.refSelectionComboBox.FormattingEnabled = true;
-			this.refSelectionComboBox.Items.AddRange(new object[] {
-            "_MNEMONIC CONSTANTS",
-            "DAMAGE ENEMY LIST",
-            "KEYBOARD SCANCODES LIST",
-            "OCB LIST",
-            "SCRIPT NEW COMMANDS",
-            "SCRIPT OLD COMMANDS",
-            "SLOT MOVEABLES INDICES LIST",
-            "SOUND SFX INDICES LIST",
-            "STATICS INDICES LIST",
-            "VARIABLE PLACEFOLDERS"});
-			this.refSelectionComboBox.Location = new System.Drawing.Point(4, 4);
-			this.refSelectionComboBox.Margin = new System.Windows.Forms.Padding(4);
-			this.refSelectionComboBox.Name = "refSelectionComboBox";
-			this.refSelectionComboBox.Size = new System.Drawing.Size(256, 21);
-			this.refSelectionComboBox.TabIndex = 2;
-			this.refSelectionComboBox.SelectedIndexChanged += new System.EventHandler(this.refSelectionComboBox_SelectedIndexChanged);
-			// 
-			// refSearchTextBox
-			// 
-			this.refSearchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.refSearchTextBox.Location = new System.Drawing.Point(267, 4);
-			this.refSearchTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 4, 5);
-			this.refSearchTextBox.Name = "refSearchTextBox";
-			this.refSearchTextBox.Size = new System.Drawing.Size(529, 20);
-			this.refSearchTextBox.TabIndex = 1;
-			this.refSearchTextBox.Text = "Search references...";
-			this.refSearchTextBox.GotFocus += new System.EventHandler(this.refSearchTextBox_GotFocus);
-			this.refSearchTextBox.LostFocus += new System.EventHandler(this.refSearchTextBox_LostFocus);
 			// 
 			// refDataGrid
 			// 
@@ -91,6 +57,40 @@
 			this.refDataGrid.Size = new System.Drawing.Size(800, 129);
 			this.refDataGrid.TabIndex = 3;
 			// 
+			// refSearchTextBox
+			// 
+			this.refSearchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.refSearchTextBox.Location = new System.Drawing.Point(267, 4);
+			this.refSearchTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 4, 5);
+			this.refSearchTextBox.Name = "refSearchTextBox";
+			this.refSearchTextBox.Size = new System.Drawing.Size(529, 20);
+			this.refSearchTextBox.TabIndex = 1;
+			this.refSearchTextBox.Text = "Search references...";
+			this.refSearchTextBox.GotFocus += new System.EventHandler(this.refSearchTextBox_GotFocus);
+			this.refSearchTextBox.LostFocus += new System.EventHandler(this.refSearchTextBox_LostFocus);
+			// 
+			// refSelectionComboBox
+			// 
+			this.refSelectionComboBox.FormattingEnabled = true;
+			this.refSelectionComboBox.Items.AddRange(new object[] {
+            "_MNEMONIC CONSTANTS",
+            "DAMAGE ENEMY LIST",
+            "KEYBOARD SCANCODES LIST",
+            "OCB LIST",
+            "SCRIPT NEW COMMANDS",
+            "SCRIPT OLD COMMANDS",
+            "SLOT MOVEABLES INDICES LIST",
+            "SOUND SFX INDICES LIST",
+            "STATICS INDICES LIST",
+            "VARIABLE PLACEFOLDERS"});
+			this.refSelectionComboBox.Location = new System.Drawing.Point(4, 4);
+			this.refSelectionComboBox.Margin = new System.Windows.Forms.Padding(4);
+			this.refSelectionComboBox.Name = "refSelectionComboBox";
+			this.refSelectionComboBox.Size = new System.Drawing.Size(256, 21);
+			this.refSelectionComboBox.TabIndex = 2;
+			this.refSelectionComboBox.SelectedIndexChanged += new System.EventHandler(this.refSelectionComboBox_SelectedIndexChanged);
+			// 
 			// ReferenceBrowser
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -109,8 +109,9 @@
 		}
 
 		#endregion
+
 		private DarkUI.Controls.DarkComboBox refSelectionComboBox;
-		private DarkUI.Controls.DarkTextBox refSearchTextBox;
 		private DarkUI.Controls.DarkDataGridView refDataGrid;
+		private DarkUI.Controls.DarkTextBox refSearchTextBox;
 	}
 }

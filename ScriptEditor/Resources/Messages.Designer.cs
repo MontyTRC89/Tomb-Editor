@@ -99,17 +99,6 @@ namespace ScriptEditor.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn&apos;t find required directory paths.
-        ///At this point you can only Import / Export files.
-        ///Would you like to export your current file?.
-        /// </summary>
-        internal static string SavingPathNotFound {
-            get {
-                return ResourceManager.GetString("SavingPathNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Do you want save changes to {0} ?.
         /// </summary>
         internal static string UnsavedChanges {
