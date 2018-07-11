@@ -43,7 +43,7 @@
             this.panelMessage.Location = new System.Drawing.Point(0, 21);
             this.panelMessage.Name = "panelMessage";
             this.panelMessage.Padding = new System.Windows.Forms.Padding(3);
-            this.panelMessage.Size = new System.Drawing.Size(228, 51);
+            this.panelMessage.Size = new System.Drawing.Size(50, 0);
             this.panelMessage.TabIndex = 1;
             // 
             // lblMessage
@@ -52,10 +52,9 @@
             this.lblMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblMessage.Location = new System.Drawing.Point(3, 3);
             this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(222, 45);
+            this.lblMessage.Size = new System.Drawing.Size(44, 0);
             this.lblMessage.TabIndex = 0;
-            this.lblMessage.Text = "As long as you are freak, you don\'t have to run from idiots As long as you are fr" +
-    "eak, you don\'t have to run from idiots";
+            this.lblMessage.Text = "Text";
             // 
             // panelTitle
             // 
@@ -64,19 +63,20 @@
             this.panelTitle.Location = new System.Drawing.Point(0, 0);
             this.panelTitle.Name = "panelTitle";
             this.panelTitle.Padding = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.panelTitle.Size = new System.Drawing.Size(228, 21);
+            this.panelTitle.Size = new System.Drawing.Size(50, 21);
             this.panelTitle.TabIndex = 0;
             // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.lblTitle.Location = new System.Drawing.Point(3, 3);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(136, 17);
+            this.lblTitle.Size = new System.Drawing.Size(32, 17);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Pop-up title (optional)";
+            this.lblTitle.Text = "Title";
             // 
             // PopUpInfo
             // 
@@ -84,14 +84,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(228, 72);
+            this.ClientSize = new System.Drawing.Size(50, 15);
             this.Controls.Add(this.panelMessage);
             this.Controls.Add(this.panelTitle);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(228, 30);
+            this.MinimumSize = new System.Drawing.Size(50, 15);
             this.Name = "PopUpInfo";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
