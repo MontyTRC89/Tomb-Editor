@@ -38,22 +38,22 @@
             // 
             this.butDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDown.Image = global::TombLib.Properties.Resources.general_ArrowDown_16;
             this.butDown.Location = new System.Drawing.Point(0, 90);
             this.butDown.Name = "butDown";
             this.butDown.Size = new System.Drawing.Size(24, 24);
             this.butDown.TabIndex = 1;
-            this.butDown.Text = "↓";
             this.butDown.Click += new System.EventHandler(this.butDown_Click);
             // 
             // butUp
             // 
             this.butUp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.butUp.Image = global::TombLib.Properties.Resources.general_ArrowUp_16;
             this.butUp.Location = new System.Drawing.Point(0, 60);
             this.butUp.Name = "butUp";
             this.butUp.Size = new System.Drawing.Size(24, 24);
             this.butUp.TabIndex = 1;
-            this.butUp.Text = "↑";
             this.butUp.Click += new System.EventHandler(this.butUp_Click);
             // 
             // butNew
