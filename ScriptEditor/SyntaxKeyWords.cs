@@ -8,7 +8,7 @@ namespace ScriptEditor
 		{
 			List<string> list = new List<string>();
 
-			string[] objects =
+			string[] headers =
 			{
 				"[Language]",
 				"[Level]",
@@ -18,17 +18,16 @@ namespace ScriptEditor
 				"[Title]"
 			};
 
-			list.AddRange(objects);
+			list.AddRange(headers);
 			return list;
 		}
 
-		public static List<string> KeyValues()
+		public static List<string> NewCommands()
 		{
 			List<string> list = new List<string>();
 
-			string[] keyValues =
+			string[] newCommands =
 			{
-				// New commands
 				"AddEffect",
 				"AnimationSlot",
 				"Animation",
@@ -40,7 +39,6 @@ namespace ScriptEditor
 				"CutScene",
 				"Damage",
 				"DefaultWindowsFont",
-				"DemoDisc",
 				"Demo",
 				"Detector",
 				"DiagnosticType",
@@ -49,7 +47,6 @@ namespace ScriptEditor
 				"Elevator",
 				"Enemy",
 				"Equipment",
-				"FMV",
 				"FogRange",
 				"ForceBumpMapping",
 				"ForceVolumetricFX",
@@ -84,11 +81,22 @@ namespace ScriptEditor
 				"Turbo",
 				"WindowsFont",
 				"WindowTitle",
-				"WorldFarView",
+				"WorldFarView"
+			};
 
-				// Old commands
+			list.AddRange(newCommands);
+			return list;
+		}
+
+		public static List<string> OldCommands()
+		{
+			List<string> list = new List<string>();
+
+			string[] oldCommands =
+			{
 				"AnimatingMIP",
 				"ColAddHorizon",
+				"DemoDisc",
 				"Examine",
 				"FlyCheat",
 				"FOG",
@@ -119,12 +127,12 @@ namespace ScriptEditor
 				"UVRotate",
 				"YoungLara",
 
-				// Other commands
 				"Cut",
 				"File",
+				"FMV"
 			};
 
-			list.AddRange(keyValues);
+			list.AddRange(oldCommands);
 			return list;
 		}
 

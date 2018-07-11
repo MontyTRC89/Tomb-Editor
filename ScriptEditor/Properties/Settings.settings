@@ -17,19 +17,19 @@
     <Setting Name="AutoSaveTime" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="CommentsColor" Type="System.Drawing.Color" Scope="User">
+    <Setting Name="CommentColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Green</Value>
     </Setting>
-    <Setting Name="ReferencesColor" Type="System.Drawing.Color" Scope="User">
+    <Setting Name="ReferenceColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Orchid</Value>
     </Setting>
-    <Setting Name="ValuesColor" Type="System.Drawing.Color" Scope="User">
+    <Setting Name="ValueColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">LightSalmon</Value>
     </Setting>
     <Setting Name="HeaderColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">SteelBlue</Value>
     </Setting>
-    <Setting Name="KeyValueColor" Type="System.Drawing.Color" Scope="User">
+    <Setting Name="NewCommandColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">MediumAquamarine</Value>
     </Setting>
     <Setting Name="UnknownColor" Type="System.Drawing.Color" Scope="User">
@@ -58,6 +58,9 @@
     </Setting>
     <Setting Name="ToolTips" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="OldCommandColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">SpringGreen</Value>
     </Setting>
   </Settings>
 </SettingsFile>

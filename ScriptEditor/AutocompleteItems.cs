@@ -9,7 +9,8 @@ namespace ScriptEditor
 		{
 			// Get key words
 			List<string> objects = SyntaxKeyWords.Headers();
-			List<string> keyValues = SyntaxKeyWords.KeyValues();
+			List<string> newCommands = SyntaxKeyWords.NewCommands();
+			List<string> oldCommands = SyntaxKeyWords.OldCommands();
 			List<string> unknown = SyntaxKeyWords.Unknown();
 
 			// Create the Autocomplete list
@@ -21,7 +22,12 @@ namespace ScriptEditor
 				items.Add(new AutocompleteItem(item));
 			}
 
-			foreach (var item in keyValues)
+			foreach (var item in newCommands)
+			{
+				items.Add(new AutocompleteItem(item));
+			}
+
+			foreach (var item in oldCommands)
 			{
 				items.Add(new AutocompleteItem(item));
 			}

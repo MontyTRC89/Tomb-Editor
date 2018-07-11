@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using TombLib;
+using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.Rendering;
@@ -531,6 +532,17 @@ namespace TombEditor
         public void SelectTextureAndCenterView(TextureArea texture)
         {
             RaiseEvent(new SelectTextureAndCenterViewEvent { Texture = texture });
+        }
+
+        // Send message
+        public class MessageEvent : IEditorEvent
+        {
+            public string Message { get; internal set; }
+            public PopUpInfo.PopupType Type { get; internal set; }
+        }
+        public void SendMessage(string message, PopUpInfo.PopupType type)
+        {
+            RaiseEvent(new MessageEvent { Message = message, Type = type });
         }
 
         // Change sector highlights
