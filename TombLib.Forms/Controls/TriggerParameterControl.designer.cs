@@ -90,7 +90,7 @@ namespace TombLib.Controls
             // 
             this.butView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butView.Image = global::TombLib.Properties.Resources.general_target_16;
-            this.butView.Location = new System.Drawing.Point(291, 0);
+            this.butView.Location = new System.Drawing.Point(292, 0);
             this.butView.Name = "butView";
             this.butView.Size = new System.Drawing.Size(23, 23);
             this.butView.TabIndex = 4;
@@ -103,9 +103,9 @@ namespace TombLib.Controls
             this.butReset.BackColor = System.Drawing.Color.Maroon;
             this.butReset.BackColorUseGeneric = false;
             this.butReset.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butReset.Location = new System.Drawing.Point(265, 0);
+            this.butReset.Location = new System.Drawing.Point(264, 0);
             this.butReset.Name = "butReset";
-            this.butReset.Size = new System.Drawing.Size(50, 23);
+            this.butReset.Size = new System.Drawing.Size(51, 23);
             this.butReset.TabIndex = 5;
             this.butReset.Text = "Reset";
             this.butReset.Visible = false;
@@ -115,7 +115,7 @@ namespace TombLib.Controls
             // 
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearch.Image = global::TombLib.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(265, 0);
+            this.butSearch.Location = new System.Drawing.Point(264, 0);
             this.butSearch.Name = "butSearch";
             this.butSearch.Size = new System.Drawing.Size(24, 23);
             this.butSearch.TabIndex = 3;
