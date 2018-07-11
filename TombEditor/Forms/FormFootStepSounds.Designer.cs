@@ -12,7 +12,7 @@ namespace TombEditor.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.textureMap = new FormFootStepSounds.PanelTextureMapForSounds();
+            this.textureMap = new TombEditor.Forms.FormFootStepSounds.PanelTextureMapForSounds();
             this.butAssignSound = new DarkUI.Controls.DarkButton();
             this.comboSounds = new DarkUI.Controls.DarkComboBox();
             this.butOk = new DarkUI.Controls.DarkButton();
@@ -30,10 +30,10 @@ namespace TombEditor.Forms
             // 
             // butAssignSound
             // 
-            this.butAssignSound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butAssignSound.Location = new System.Drawing.Point(183, 532);
+            this.butAssignSound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAssignSound.Location = new System.Drawing.Point(218, 533);
             this.butAssignSound.Name = "butAssignSound";
-            this.butAssignSound.Size = new System.Drawing.Size(113, 24);
+            this.butAssignSound.Size = new System.Drawing.Size(113, 23);
             this.butAssignSound.TabIndex = 2;
             this.butAssignSound.Text = "Assign sound";
             this.butAssignSound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -41,27 +41,27 @@ namespace TombEditor.Forms
             // 
             // comboSounds
             // 
-            this.comboSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.comboSounds.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboSounds.Location = new System.Drawing.Point(8, 533);
             this.comboSounds.Name = "comboSounds";
-            this.comboSounds.Size = new System.Drawing.Size(169, 23);
+            this.comboSounds.Size = new System.Drawing.Size(204, 23);
             this.comboSounds.Sorted = true;
             this.comboSounds.TabIndex = 1;
-            this.comboSounds.Text = null;
             // 
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butOk.Location = new System.Drawing.Point(303, 532);
+            this.butOk.Location = new System.Drawing.Point(337, 533);
             this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(114, 24);
+            this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 3;
-            this.butOk.Text = "Ok";
+            this.butOk.Text = "OK";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
-            // FormTextureSounds
+            // FormFootStepSounds
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -74,7 +74,7 @@ namespace TombEditor.Forms
             this.Controls.Add(this.textureMap);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MinimizeBox = false;
-            this.Name = "FormTextureSounds";
+            this.Name = "FormFootStepSounds";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

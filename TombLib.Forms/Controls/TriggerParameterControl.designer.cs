@@ -50,6 +50,7 @@ namespace TombLib.Controls
             // 
             this.label.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.label.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label.Location = new System.Drawing.Point(2, 2);
             this.label.Name = "label";
@@ -89,13 +90,13 @@ namespace TombLib.Controls
             this.combo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.combo.DropDownHeight = 500;
+            this.combo.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.combo.FormattingEnabled = true;
             this.combo.IntegralHeight = false;
             this.combo.Location = new System.Drawing.Point(0, 0);
             this.combo.Name = "combo";
-            this.combo.Size = new System.Drawing.Size(259, 21);
+            this.combo.Size = new System.Drawing.Size(259, 23);
             this.combo.TabIndex = 1;
-            this.combo.Text = null;
             this.combo.Visible = false;
             this.combo.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
             // 
@@ -104,6 +105,7 @@ namespace TombLib.Controls
             this.butReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butReset.BackColor = System.Drawing.Color.Maroon;
             this.butReset.BackColorUseGeneric = false;
+            this.butReset.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.butReset.Location = new System.Drawing.Point(265, 0);
             this.butReset.Name = "butReset";
             this.butReset.Size = new System.Drawing.Size(50, 23);
@@ -133,6 +135,7 @@ namespace TombLib.Controls
             this.Controls.Add(this.combo);
             this.Controls.Add(this.butReset);
             this.Controls.Add(this.butView);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MaximumSize = new System.Drawing.Size(30000, 23);
             this.MinimumSize = new System.Drawing.Size(100, 23);
             this.Name = "TriggerParameterControl";

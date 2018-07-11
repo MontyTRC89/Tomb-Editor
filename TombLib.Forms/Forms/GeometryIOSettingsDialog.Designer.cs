@@ -48,9 +48,9 @@
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(117, 300);
+            this.butOK.Location = new System.Drawing.Point(121, 300);
             this.butOK.Name = "butOK";
-            this.butOK.Size = new System.Drawing.Size(84, 23);
+            this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
             this.butOK.Text = "Ok";
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
@@ -60,7 +60,7 @@
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(207, 300);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(84, 23);
+            this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
             this.butCancel.Text = "Cancel";
             // 
@@ -205,7 +205,6 @@
             this.cmbPresetList.Name = "cmbPresetList";
             this.cmbPresetList.Size = new System.Drawing.Size(227, 23);
             this.cmbPresetList.TabIndex = 6;
-            this.cmbPresetList.Text = null;
             this.cmbPresetList.SelectedIndexChanged += new System.EventHandler(this.cmbPresetList_SelectedIndexChanged);
             // 
             // panelContents
@@ -237,7 +236,7 @@
             this.cbImportBakedLight.AutoSize = true;
             this.cbImportBakedLight.Location = new System.Drawing.Point(6, 21);
             this.cbImportBakedLight.Name = "cbImportBakedLight";
-            this.cbImportBakedLight.Size = new System.Drawing.Size(113, 17);
+            this.cbImportBakedLight.Size = new System.Drawing.Size(114, 17);
             this.cbImportBakedLight.TabIndex = 3;
             this.cbImportBakedLight.Text = "Vertex color light";
             // 
@@ -307,7 +306,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(298, 335);
+            this.ClientSize = new System.Drawing.Size(294, 329);
             this.Controls.Add(this.panelContents);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);

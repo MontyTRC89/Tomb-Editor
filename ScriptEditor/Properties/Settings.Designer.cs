@@ -218,12 +218,12 @@ namespace ScriptEditor.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowStatusbar {
+        public bool ShowLineNumbers {
             get {
-                return ((bool)(this["ShowStatusbar"]));
+                return ((bool)(this["ShowLineNumbers"]));
             }
             set {
-                this["ShowStatusbar"] = value;
+                this["ShowLineNumbers"] = value;
             }
         }
         
@@ -260,6 +260,42 @@ namespace ScriptEditor.Properties {
             }
             set {
                 this["OldCommandColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ObjBrowserVisible {
+            get {
+                return ((bool)(this["ObjBrowserVisible"]));
+            }
+            set {
+                this["ObjBrowserVisible"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool RefBrowserVisible {
+            get {
+                return ((bool)(this["RefBrowserVisible"]));
+            }
+            set {
+                this["RefBrowserVisible"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DocMapVisible {
+            get {
+                return ((bool)(this["DocMapVisible"]));
+            }
+            set {
+                this["DocMapVisible"] = value;
             }
         }
     }

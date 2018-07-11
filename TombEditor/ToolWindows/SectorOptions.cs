@@ -76,7 +76,7 @@ namespace TombEditor.ToolWindows
             }
             catch (Exception exc)
             {
-                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "Unable to create portal: \n" + exc.Message, Type = PopUpInfo.PopupType.Error });
+                Editor.Instance.SendMessage("Unable to create portal: \n" + exc.Message, PopupType.Error);
                 logger.Error(exc, "Portal creation failed.");
             }
         }

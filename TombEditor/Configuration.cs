@@ -71,6 +71,7 @@ namespace TombEditor
         public float Map2D_NavigationSpeedMouseZoom { get; set; } = 7.5f;
         public float Map2D_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float Map2D_NavigationSpeedKeyMove { get; set; } = 107.0f;
+        public bool Map2D_ShowFirstTimeHint { get; set; } = true;
 
         public float TextureMap_NavigationMinZoom { get; set; } = 0.02f;
         public float TextureMap_NavigationMaxZoom { get; set; } = 2000.0f;
