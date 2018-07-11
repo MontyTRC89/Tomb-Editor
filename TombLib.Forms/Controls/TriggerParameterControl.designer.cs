@@ -133,6 +133,7 @@ namespace TombLib.Controls
             this.combo.Name = "combo";
             this.combo.Size = new System.Drawing.Size(259, 23);
             this.combo.TabIndex = 0;
+            this.combo.TabStop = false;
             this.combo.Visible = false;
             this.combo.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
             // 
