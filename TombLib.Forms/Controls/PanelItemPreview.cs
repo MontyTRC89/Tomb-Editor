@@ -311,7 +311,7 @@ namespace TombLib.Controls
                 if ((ModifierKeys & Keys.Control) == Keys.Control)
                     Camera.Zoom(-deltaY * NavigationSpeedMouseZoom);
                 else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * NavigationSpeedMouseTranslate);
+                    Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * NavigationSpeedMouseTranslate);
                 else
                     Camera.Rotate(deltaX * NavigationSpeedMouseRotate,
                                   -deltaY * NavigationSpeedMouseRotate);
