@@ -159,6 +159,7 @@ namespace TombEditor
                     return;
                 var previous = _mode;
                 _mode = value;
+
                 RaiseEvent(new ModeChangedEvent { Previous = previous, Current = value });
             }
         }
@@ -540,7 +541,7 @@ namespace TombEditor
             public string Message { get; internal set; }
             public PopUpInfo.PopupType Type { get; internal set; }
         }
-        public void SendMessage(string message, PopUpInfo.PopupType type)
+        public void SendMessage(string message = "", PopUpInfo.PopupType type = PopUpInfo.PopupType.None)
         {
             RaiseEvent(new MessageEvent { Message = message, Type = type });
         }

@@ -81,16 +81,6 @@ namespace TombEditor.Controls
         private static readonly Pen _roomPortalPen = new Pen(Color.FromArgb(220, 7, 70, 70), 1) { DashStyle = DashStyle.Dot };
         private static readonly Pen _gridPenThin = new Pen(Color.LightGray, 1);
         private static readonly Pen _gridPenThick = new Pen(Color.LightGray, 3);
-        private static readonly Font _explanationStringFont = new Font("Segoe UI", 12.0f, FontStyle.Regular, GraphicsUnit.Pixel);
-        private static readonly StringFormat _explanationStringLayout = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far };
-        private static readonly Brush _explanationStringBrush = new SolidBrush(Color.Black);
-        private const string _explanationString =
-            "Double click or press Alt + left click on the map to add a depth probe.\n" +
-            "Double click or press Ctrl + left click on a depth probe to remove it.\n" +
-            "\n" +
-            "Press the middle mouse button to select multiple rooms or select connected rooms by double clicking.\n" +
-            "The selection can be modified using Ctrl, Shift, Alt. To copy rooms, press Ctrl while moving.";
-        private const float _explanationStringMargin = 4.0f;
         private const float _probeRadius = 18;
 
         private BaseContextMenu _currentContextMenu;
@@ -610,14 +600,6 @@ namespace TombEditor.Controls
             // Draw depth bar
             Vector2 cursorPos = FromVisualCoord(PointToClient(MousePosition));
             _depthBar.Draw(e, ClientSize, _editor.Level, cursorPos, GetRoomBrush);
-
-            // Draw explanation string
-            if (barArea.IntersectsWith(e.ClipRectangle))
-            {
-                RectangleF explanationStringArea = ClientRectangle;
-                explanationStringArea.Inflate(-_explanationStringMargin, -_explanationStringMargin);
-                e.Graphics.DrawString(_explanationString, _explanationStringFont, _explanationStringBrush, explanationStringArea, _explanationStringLayout);
-            }
 
             // Invalidation debugger
             //Random r = new Random();
