@@ -90,75 +90,8 @@ namespace ScriptEditor
 
 		/* Tools menu */
 
-		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e)
-		{
-			// Save set bookmarks to prevent a bug
-			int[] bookmarkLines = GetBookmarkedLines();
-			textEditor.Bookmarks.Clear();
-
-			// Get current scroll position
-			int scrollPosition = textEditor.VerticalScroll.Value;
-
-			// Reindent all lines
-			string[] tidiedlines = SyntaxTidy.ReindentLines(textEditor.Text);
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				if (textEditor.GetLineText(i) != tidiedlines[i])
-				{
-					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-					textEditor.InsertText(tidiedlines[i]);
-				}
-			}
-
-			// Go to last scroll position
-			textEditor.VerticalScroll.Value = scrollPosition;
-			textEditor.UpdateScrollbars();
-
-			// Add lost bookmarks
-			foreach (int line in bookmarkLines)
-			{
-				textEditor.BookmarkLine(line);
-			}
-
-			textEditor.Invalidate();
-		}
-
-		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e)
-		{
-			// Save set bookmarks to prevent a bug
-			int[] bookmarkLines = GetBookmarkedLines();
-			textEditor.Bookmarks.Clear();
-
-			// Get current scroll position
-			int scrollPosition = textEditor.VerticalScroll.Value;
-
-			// Trim whitespace on every line
-			string[] trimmedlines = SyntaxTidy.TrimLines(textEditor.Text);
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				if (textEditor.GetLineText(i) != trimmedlines[i])
-				{
-					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-					textEditor.InsertText(trimmedlines[i]);
-				}
-			}
-
-			// Go to last scroll position
-			textEditor.VerticalScroll.Value = scrollPosition;
-			textEditor.UpdateScrollbars();
-
-			// Add lost bookmarks
-			foreach (int line in bookmarkLines)
-			{
-				textEditor.BookmarkLine(line);
-			}
-
-			textEditor.Invalidate();
-		}
+		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e) => TidyScript();
+		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e) => TidyScript(true);
 
 		private void Tools_CommentLines_MenuItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
 		private void Tools_Uncomment_MenuItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
@@ -251,7 +184,7 @@ namespace ScriptEditor
 			// Update the label
 			zoomLabel.Text = "Zoom: " + textEditor.Zoom + "%";
 
-			resetZoomButton.Visible = textEditor.Zoom == 100;
+			resetZoomButton.Visible = textEditor.Zoom != 100;
 
 			// Limit the zoom
 			if (textEditor.Zoom > 500)
@@ -403,7 +336,7 @@ namespace ScriptEditor
 				}
 				else
 				{
-					ShowKeyValueToolTips(e);
+					ShowCommandToolTips(e);
 				}
 			}
 		}
@@ -413,45 +346,30 @@ namespace ScriptEditor
 			// ToolTip title with brackets added
 			e.ToolTipTitle = "[" + e.HoveredWord + "]";
 
-			// Get header key words
-			List<string> headers = SyntaxKeyWords.Headers();
-
 			// Get resources from the HeaderToolTips.resx file
 			ResourceManager headerToolTipResource = new ResourceManager(typeof(Resources.HeaderToolTips));
 			ResourceSet resourceSet = headerToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
-			foreach (string key in headers)
+			// Loop through resources
+			foreach (DictionaryEntry entry in resourceSet)
 			{
 				// Remove brackets
-				string headerKey = key.Trim(new char[] { '[', ']' });
+				string headerKey = entry.Key.ToString().Trim(new char[] { '[', ']' });
 
-				// If the hovered word doesn't match the "header key" without brackets
-				if (e.HoveredWord != headerKey)
+				// If the hovered word matches a "header key" without brackets
+				if (e.HoveredWord == headerKey)
 				{
-					continue;
-				}
-
-				// Loop through resources
-				foreach (DictionaryEntry entry in resourceSet)
-				{
-					// If the the "resource entry key" matches the "header key" without brackets
-					if (entry.Key.ToString() == headerKey)
-					{
-						e.ToolTipText = entry.Value.ToString();
-						return;
-					}
+					e.ToolTipText = entry.Value.ToString();
+					return;
 				}
 			}
 		}
 
-		private void ShowKeyValueToolTips(ToolTipNeededEventArgs e)
+		private void ShowCommandToolTips(ToolTipNeededEventArgs e)
 		{
-			// Get "key value" key words
-			List<string> keyValues = SyntaxKeyWords.KeyValues();
-
-			// Get resources from the KeyValueToolTips.resx file
-			ResourceManager keyValueToolTipResource = new ResourceManager(typeof(Resources.KeyValueToolTips));
-			ResourceSet resourceSet = keyValueToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+			// Get resources from the CommandToolTips.resx file
+			ResourceManager commandToolTipResource = new ResourceManager(typeof(Resources.CommandToolTips));
+			ResourceSet resourceSet = commandToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
 			// There are different definitions for the "Level" key, so handle them all!
 			if (e.HoveredWord == "Level")
@@ -462,23 +380,14 @@ namespace ScriptEditor
 			{
 				e.ToolTipTitle = e.HoveredWord;
 
-				foreach (string key in keyValues)
+				// Loop through resources
+				foreach (DictionaryEntry entry in resourceSet)
 				{
-					// If the hovered word doesn't match the "keyValue key"
-					if (e.HoveredWord != key)
+					// If the hovered word matches a "command key"
+					if (e.HoveredWord == entry.Key.ToString())
 					{
-						continue;
-					}
-
-					// Loop through resources
-					foreach (DictionaryEntry entry in resourceSet)
-					{
-						// If the the "resource entry key" matches the "keyValue key"
-						if (entry.Key.ToString() == key)
-						{
-							e.ToolTipText = entry.Value.ToString();
-							return;
-						}
+						e.ToolTipText = entry.Value.ToString();
+						return;
 					}
 				}
 			}
@@ -499,26 +408,26 @@ namespace ScriptEditor
 
 				if (textEditor.GetLineText(i).StartsWith("[PSXExtensions]"))
 				{
-					e.ToolTipTitle = "Level (PSXExtensions)";
-					e.ToolTipText = Resources.KeyValueToolTips.LevelPSX;
+					e.ToolTipTitle = "Level [PSXExtensions]";
+					e.ToolTipText = Resources.CommandToolTips.LevelPSX;
 					return;
 				}
 				else if (textEditor.GetLineText(i).StartsWith("[PCExtensions]"))
 				{
-					e.ToolTipTitle = "Level (PCExtensions)";
-					e.ToolTipText = Resources.KeyValueToolTips.LevelPC;
+					e.ToolTipTitle = "Level [PCExtensions]";
+					e.ToolTipText = Resources.CommandToolTips.LevelPC;
 					return;
 				}
 				else if (textEditor.GetLineText(i).StartsWith("[Title]"))
 				{
-					e.ToolTipTitle = "Level (Title)";
-					e.ToolTipText = Resources.KeyValueToolTips.LevelTitle;
+					e.ToolTipTitle = "Level [Title]";
+					e.ToolTipText = Resources.CommandToolTips.LevelTitle;
 					return;
 				}
 				else if (textEditor.GetLineText(i).StartsWith("[Level]"))
 				{
 					e.ToolTipTitle = "Level";
-					e.ToolTipText = Resources.KeyValueToolTips.LevelLevel;
+					e.ToolTipText = Resources.CommandToolTips.LevelLevel;
 					return;
 				}
 
@@ -533,7 +442,8 @@ namespace ScriptEditor
 		{
 			// Get key words
 			List<string> headers = SyntaxKeyWords.Headers();
-			List<string> keyValues = SyntaxKeyWords.KeyValues();
+			List<string> newCommands = SyntaxKeyWords.NewCommands();
+			List<string> oldCommands = SyntaxKeyWords.OldCommands();
 			List<string> unknown = SyntaxKeyWords.Unknown();
 
 			// Remove brackets from header key words
@@ -547,8 +457,8 @@ namespace ScriptEditor
 
 			// Clear styles
 			e.ChangedRange.ClearStyle(
-				SyntaxColors.Comments, SyntaxColors.Keys, SyntaxColors.Headers, SyntaxColors.References,
-				SyntaxColors.Regular, SyntaxColors.Unknown, SyntaxColors.Values);
+				SyntaxColors.Comments, SyntaxColors.Regular, SyntaxColors.References, SyntaxColors.Values,
+				SyntaxColors.Headers, SyntaxColors.NewCommands, SyntaxColors.OldCommands, SyntaxColors.Unknown);
 
 			// Apply styles (THE ORDER IS IMPORTANT!)
 			e.ChangedRange.SetStyle(SyntaxColors.Comments, @";.*$", RegexOptions.Multiline);
@@ -556,7 +466,8 @@ namespace ScriptEditor
 			e.ChangedRange.SetStyle(SyntaxColors.References, @"\$[a-fA-F0-9][a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?");
 			e.ChangedRange.SetStyle(SyntaxColors.Values, @"=\s?.*$", RegexOptions.Multiline);
 			e.ChangedRange.SetStyle(SyntaxColors.Headers, @"\[(" + headerString + @")\]");
-			e.ChangedRange.SetStyle(SyntaxColors.Keys, @"\b(" + string.Join("|", keyValues) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.NewCommands, @"\b(" + string.Join("|", newCommands) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.OldCommands, @"\b(" + string.Join("|", oldCommands) + ")");
 			e.ChangedRange.SetStyle(SyntaxColors.Unknown, @"\b(" + string.Join("|", unknown) + ")");
 		}
 
@@ -565,6 +476,71 @@ namespace ScriptEditor
 			lineNumberLabel.Text = "Line: " + (textEditor.Selection.Start.iLine + 1); // + 1 since it counts from 0.
 			colNumberLabel.Text = "Column: " + textEditor.Selection.Start.iChar;
 			selectedCharsLabel.Text = "Selected: " + textEditor.SelectedText.Length;
+		}
+
+		/* Syntax tidy methods */
+
+		private void TidyScript(bool trimOnly = false)
+		{
+			// Save set bookmarks to prevent a bug
+			int[] bookmarkLines = GetBookmarkedLines();
+			textEditor.Bookmarks.Clear();
+
+			// Get current scroll position
+			int scrollPosition = textEditor.VerticalScroll.Value;
+
+			if (trimOnly)
+			{
+				TrimWhitespace();
+			}
+			else
+			{
+				DoFullReindent();
+			}
+
+			// Go to last scroll position
+			textEditor.VerticalScroll.Value = scrollPosition;
+			textEditor.UpdateScrollbars();
+
+			// Add lost bookmarks
+			foreach (int line in bookmarkLines)
+			{
+				textEditor.BookmarkLine(line);
+			}
+
+			textEditor.Invalidate();
+		}
+
+		private void DoFullReindent()
+		{
+			// Reindent all lines
+			string[] tidiedlines = SyntaxTidy.ReindentLines(textEditor.Text);
+
+			// Scan all lines
+			for (int i = 0; i < textEditor.LinesCount; i++)
+			{
+				if (textEditor.GetLineText(i) != tidiedlines[i])
+				{
+					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+					textEditor.InsertText(tidiedlines[i]);
+				}
+			}
+		}
+
+		private void TrimWhitespace()
+		{
+			// Trim whitespace on every line
+			string[] trimmedlines = SyntaxTidy.TrimLines(textEditor.Text);
+
+			// Scan all lines
+			for (int i = 0; i < textEditor.LinesCount; i++)
+			{
+				if (textEditor.GetLineText(i) != trimmedlines[i])
+				{
+					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+					textEditor.InsertText(trimmedlines[i]);
+				}
+			}
 		}
 
 		/* Bookmark methods */
@@ -762,7 +738,7 @@ namespace ScriptEditor
 					}
 
 					// Open the script file if exists
-					if (Path.GetFileName(file).ToLower().Contains("script"))
+					if (Path.GetFileName(file).ToLower() == "script")
 					{
 						folderHasScriptFile = true;
 						OpenFile(file);
@@ -814,11 +790,91 @@ namespace ScriptEditor
 
 				// Update the object browser with levels (if they exist)
 				UpdateObjectBrowser(string.Empty);
+
+				int autoSaveTime = Properties.Settings.Default.AutoSaveTime;
+
+				if (autoSaveTime != 0)
+				{
+					HandleAutoSave(autoSaveTime);
+				}
 			}
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				UnloadCurrentFile();
+			}
+		}
+
+		private void HandleAutoSave(int autoSaveTime)
+		{
+			var saveTimer = new System.Timers.Timer();
+			saveTimer.Elapsed += saveTimer_Elapsed;
+
+			switch (autoSaveTime)
+			{
+				case 1:
+				{
+					saveTimer.Interval = 60 * 1000;
+					break;
+				}
+				case 3:
+				{
+					saveTimer.Interval = 3 * (60 * 1000);
+					break;
+				}
+				case 5:
+				{
+					saveTimer.Interval = 5 * (60 * 1000);
+					break;
+				}
+				case 10:
+				{
+					saveTimer.Interval = 10 * (60 * 1000);
+					break;
+				}
+				case 15:
+				{
+					saveTimer.Interval = 15 * (60 * 1000);
+					break;
+				}
+				case 30:
+				{
+					saveTimer.Interval = 30 * (60 * 1000);
+					break;
+				}
+			}
+
+			saveTimer.Enabled = true;
+		}
+
+		private void saveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			string currentFolder = Path.GetDirectoryName(_currentFilePath);
+			string currentFileName = Path.GetFileNameWithoutExtension(_currentFilePath);
+			string autosaveFilePath = currentFolder + "\\" + currentFileName + ".autosave";
+
+			try
+			{
+				File.WriteAllText(autosaveFilePath, textEditor.Text, Encoding.GetEncoding(1252));
+				autoSaveLabel.Invoke(new Action(() => autoSaveLabel_Show(true)));
+			}
+			catch (Exception)
+			{
+				autoSaveLabel.Invoke(new Action(() => autoSaveLabel_Show(false)));
+			}
+		}
+
+		private void autoSaveLabel_Show(bool success)
+		{
+			if (success)
+			{
+				string currentTime = DateTime.Now.TimeOfDay.ToString().Substring(0, 5);
+				autoSaveLabel.Text = "Autosave Completed! (" + currentTime + ")";
+				autoSaveLabel.Visible = true;
+			}
+			else
+			{
+				autoSaveLabel.Text = "ERROR: Autosave Failed!";
 			}
 		}
 
@@ -852,6 +908,11 @@ namespace ScriptEditor
 
 		private bool SaveFile()
 		{
+			if (Properties.Settings.Default.ReindentOnSave)
+			{
+				TidyScript();
+			}
+
 			try
 			{
 				// Save changes to file

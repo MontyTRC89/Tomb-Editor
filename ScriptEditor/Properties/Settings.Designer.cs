@@ -12,7 +12,7 @@ namespace ScriptEditor.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -86,36 +86,36 @@ namespace ScriptEditor.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Green")]
-        public global::System.Drawing.Color CommentsColor {
+        public global::System.Drawing.Color CommentColor {
             get {
-                return ((global::System.Drawing.Color)(this["CommentsColor"]));
+                return ((global::System.Drawing.Color)(this["CommentColor"]));
             }
             set {
-                this["CommentsColor"] = value;
+                this["CommentColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Orchid")]
-        public global::System.Drawing.Color ReferencesColor {
+        public global::System.Drawing.Color ReferenceColor {
             get {
-                return ((global::System.Drawing.Color)(this["ReferencesColor"]));
+                return ((global::System.Drawing.Color)(this["ReferenceColor"]));
             }
             set {
-                this["ReferencesColor"] = value;
+                this["ReferenceColor"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("LightSalmon")]
-        public global::System.Drawing.Color ValuesColor {
+        public global::System.Drawing.Color ValueColor {
             get {
-                return ((global::System.Drawing.Color)(this["ValuesColor"]));
+                return ((global::System.Drawing.Color)(this["ValueColor"]));
             }
             set {
-                this["ValuesColor"] = value;
+                this["ValueColor"] = value;
             }
         }
         
@@ -134,12 +134,12 @@ namespace ScriptEditor.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("MediumAquamarine")]
-        public global::System.Drawing.Color KeyValueColor {
+        public global::System.Drawing.Color NewCommandColor {
             get {
-                return ((global::System.Drawing.Color)(this["KeyValueColor"]));
+                return ((global::System.Drawing.Color)(this["NewCommandColor"]));
             }
             set {
-                this["KeyValueColor"] = value;
+                this["NewCommandColor"] = value;
             }
         }
         
@@ -248,6 +248,18 @@ namespace ScriptEditor.Properties {
             }
             set {
                 this["ToolTips"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("SpringGreen")]
+        public global::System.Drawing.Color OldCommandColor {
+            get {
+                return ((global::System.Drawing.Color)(this["OldCommandColor"]));
+            }
+            set {
+                this["OldCommandColor"] = value;
             }
         }
     }

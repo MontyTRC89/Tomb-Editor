@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Rendering;
+using TombLib.Forms;
 using TombLib.Utils;
 
 namespace TombEditor.ToolWindows
@@ -13,6 +14,7 @@ namespace TombEditor.ToolWindows
     public partial class MainView : DarkDocument
     {
         private readonly Editor _editor;
+        private readonly PopUpInfo popup = new PopUpInfo();
 
         public MainView()
         {
@@ -128,6 +130,27 @@ namespace TombEditor.ToolWindows
                 butOpacityNone.Checked = portal != null && portal.Opacity == PortalOpacity.None;
                 butOpacitySolidFaces.Checked = portal != null && portal.Opacity == PortalOpacity.SolidFaces;
                 butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
+            }
+
+            if (obj is Editor.MessageEvent)
+            {
+                var msg = (Editor.MessageEvent)obj;
+
+                switch(msg.Type)
+                {
+                    case PopUpInfo.PopupType.None:
+                        popup.ShowSimple(this, msg.Message);
+                        break;
+                    case PopUpInfo.PopupType.Info:
+                        popup.ShowInfo(this, msg.Message);
+                        break;
+                    case PopUpInfo.PopupType.Warning:
+                        popup.ShowWarning(this, msg.Message);
+                        break;
+                    case PopUpInfo.PopupType.Error:
+                        popup.ShowError(this, msg.Message);
+                        break;
+                }
             }
         }
 

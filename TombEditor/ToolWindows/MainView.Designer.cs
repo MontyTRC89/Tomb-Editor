@@ -33,6 +33,7 @@
             this.butDrawStatics = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawOther = new System.Windows.Forms.ToolStripMenuItem();
+            this.drawAllRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -57,7 +58,6 @@
             this.butCompileLevel = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
-            this.drawAllRoomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -316,6 +316,16 @@
             this.butDrawOther.Size = new System.Drawing.Size(207, 22);
             this.butDrawOther.Text = "Draw other objects";
             this.butDrawOther.Click += new System.EventHandler(this.butDrawOther_Click);
+            // 
+            // drawAllRoomsToolStripMenuItem
+            // 
+            this.drawAllRoomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.drawAllRoomsToolStripMenuItem.CheckOnClick = true;
+            this.drawAllRoomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.drawAllRoomsToolStripMenuItem.Name = "drawAllRoomsToolStripMenuItem";
+            this.drawAllRoomsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+            this.drawAllRoomsToolStripMenuItem.Text = "Draw all rooms";
+            this.drawAllRoomsToolStripMenuItem.Click += new System.EventHandler(this.drawAllRoomsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -596,16 +606,6 @@
             this.panel2DMap.Size = new System.Drawing.Size(833, 255);
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
-            // 
-            // drawAllRoomsToolStripMenuItem
-            // 
-            this.drawAllRoomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.drawAllRoomsToolStripMenuItem.CheckOnClick = true;
-            this.drawAllRoomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.drawAllRoomsToolStripMenuItem.Name = "drawAllRoomsToolStripMenuItem";
-            this.drawAllRoomsToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
-            this.drawAllRoomsToolStripMenuItem.Text = "Draw all rooms";
-            this.drawAllRoomsToolStripMenuItem.Click += new System.EventHandler(this.drawAllRoomsToolStripMenuItem_Click);
             // 
             // MainView
             // 

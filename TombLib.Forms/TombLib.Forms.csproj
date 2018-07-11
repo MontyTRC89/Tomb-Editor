@@ -142,11 +142,17 @@
     <Compile Include="Forms\ImportTr4WadDialog.Designer.cs">
       <DependentUpon>ImportTr4WadDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormPopUpSearch.cs">
+    <Compile Include="Forms\PopUpInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormPopUpSearch.Designer.cs">
-      <DependentUpon>FormPopUpSearch.cs</DependentUpon>
+    <Compile Include="Forms\PopUpInfo.Designer.cs">
+      <DependentUpon>PopUpInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PopUpSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PopUpSearch.Designer.cs">
+      <DependentUpon>PopUpSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\BrowseFolderDialog.cs" />
@@ -178,8 +184,11 @@
     <EmbeddedResource Include="Forms\FormInputBox.resx">
       <DependentUpon>FormInputBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormPopUpSearch.resx">
-      <DependentUpon>FormPopUpSearch.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\PopUpInfo.resx">
+      <DependentUpon>PopUpInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PopUpSearch.resx">
+      <DependentUpon>PopUpSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\GeometryIOSettingsDialog.resx">
       <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>

@@ -21,6 +21,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
 			this.aboutToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoSaveLabel = new DarkUI.Controls.DarkLabel();
 			this.buildToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.changeToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -134,6 +135,18 @@
 			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.aboutToolStripMenuItem.Text = "&About...";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.Help_About_MenuItem_Click);
+			// 
+			// autoSaveLabel
+			// 
+			this.autoSaveLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.autoSaveLabel.AutoSize = true;
+			this.autoSaveLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.autoSaveLabel.Location = new System.Drawing.Point(384, 430);
+			this.autoSaveLabel.Name = "autoSaveLabel";
+			this.autoSaveLabel.Size = new System.Drawing.Size(265, 13);
+			this.autoSaveLabel.TabIndex = 14;
+			this.autoSaveLabel.Text = "Autosave Completed! (CURRENT TIME GOES HERE)";
+			this.autoSaveLabel.Visible = false;
 			// 
 			// buildToolStripButton
 			// 
@@ -1098,6 +1111,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.autoSaveLabel);
 			this.Controls.Add(this.objectBrowserSplitter);
 			this.Controls.Add(this.showStringTableButton);
 			this.Controls.Add(this.resetZoomButton);
@@ -1138,6 +1152,7 @@
 		private DarkUI.Controls.DarkButton showStringTableButton;
 		private DarkUI.Controls.DarkContextMenu editorContextMenu;
 		private DarkUI.Controls.DarkGroupBox objectBrowserBox;
+		private DarkUI.Controls.DarkLabel autoSaveLabel;
 		private DarkUI.Controls.DarkLabel zoomLabel;
 		private DarkUI.Controls.DarkMenuStrip menuStrip;
 		private DarkUI.Controls.DarkStatusStrip statusStrip;
