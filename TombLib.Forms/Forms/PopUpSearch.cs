@@ -107,7 +107,7 @@ namespace TombLib.Forms
         {
             if (e.KeyCode == Keys.Enter) // Search function. TODO: Implement TRTombLevBauer's cool search!
             {
-                if (_searchItems.Count > 1)
+                if (txtSearchString.Text != String.Empty && _searchItems.Count > 1)
                 {
                     for (int i = _currentIndex+1; i <= _searchItems.Count; i++)
                     {

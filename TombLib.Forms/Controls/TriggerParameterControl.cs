@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.NG;
 using DarkUI.Config;
@@ -158,6 +159,7 @@ namespace TombLib.Controls
                         label.Text = "-";
                         label.BackColor = Colors.GreyBackground;
                         combo.Visible = false;
+                        butSearch.Visible = false;
                         numericUpDown.Visible = false;
                         label.Visible = true;
                         colorPreview.Visible = false;
@@ -167,6 +169,7 @@ namespace TombLib.Controls
                         label.BackColor = numericUpDown.BackColor;
                         label.Text = "";
                         combo.Visible = false;
+                        butSearch.Visible = false;
                         numericUpDown.Visible = true;
                         if (_parameter != null)
                             numericUpDown.Value = (_parameter as TriggerParameterUshort).Key;
@@ -192,6 +195,7 @@ namespace TombLib.Controls
                         if (combo.SelectedItem == null)
                             combo.Text = "";
                         combo.Visible = true;
+                        butSearch.Visible = true;
                         numericUpDown.Visible = false;
                         label.Visible = false;
                         SetupColorPreview(combo.SelectedItem?.ToString());
@@ -202,6 +206,7 @@ namespace TombLib.Controls
                     label.BackColor = Colors.GreyBackground;
                     label.Text = "Wrong parameter: " + (Parameter?.ToString() ?? "<null>");
                     combo.Visible = false;
+                    butSearch.Visible = false;
                     numericUpDown.Visible = false;
                     label.Visible = true;
                 }
@@ -269,6 +274,12 @@ namespace TombLib.Controls
         {
             get { return base.MaximumSize; }
             set { base.MaximumSize = value; }
+        }
+
+        private void butSearch_Click(object sender, EventArgs e)
+        {
+            var searchPopUp = new PopUpSearch(combo);
+            searchPopUp.Show(this);
         }
     }
 }
