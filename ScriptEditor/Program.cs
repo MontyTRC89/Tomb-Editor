@@ -17,8 +17,12 @@ namespace ScriptEditor
 			using (FormMain form = new FormMain())
 			{
 				form.Show();
+
 				if (args.Length > 1) // Open files on start
+				{
 					form.OpenFile(args[0]);
+				}
+
 				Application.Run(form);
 			}
 		}
