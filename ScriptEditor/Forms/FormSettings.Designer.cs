@@ -40,7 +40,7 @@
 			this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
 			this.toolTipCheck = new DarkUI.Controls.DarkCheckBox();
 			this.wordWrapCheck = new DarkUI.Controls.DarkCheckBox();
-			this.showStatusCheck = new DarkUI.Controls.DarkCheckBox();
+			this.showNumbersCheck = new DarkUI.Controls.DarkCheckBox();
 			this.reindentCheck = new DarkUI.Controls.DarkCheckBox();
 			this.showSpacesCheck = new DarkUI.Controls.DarkCheckBox();
 			this.showToolbarCheck = new DarkUI.Controls.DarkCheckBox();
@@ -179,7 +179,7 @@
 			this.darkGroupBox1.Controls.Add(this.toolTipCheck);
 			this.darkGroupBox1.Controls.Add(this.autocompleteCheck);
 			this.darkGroupBox1.Controls.Add(this.wordWrapCheck);
-			this.darkGroupBox1.Controls.Add(this.showStatusCheck);
+			this.darkGroupBox1.Controls.Add(this.showNumbersCheck);
 			this.darkGroupBox1.Controls.Add(this.reindentCheck);
 			this.darkGroupBox1.Controls.Add(this.closeBracketsCheck);
 			this.darkGroupBox1.Controls.Add(this.showSpacesCheck);
@@ -217,15 +217,15 @@
 			this.wordWrapCheck.TabIndex = 12;
 			this.wordWrapCheck.Text = "Word Wrap";
 			// 
-			// showStatusCheck
+			// showNumbersCheck
 			// 
-			this.showStatusCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.showStatusCheck.AutoSize = true;
-			this.showStatusCheck.Location = new System.Drawing.Point(6, 389);
-			this.showStatusCheck.Name = "showStatusCheck";
-			this.showStatusCheck.Size = new System.Drawing.Size(101, 17);
-			this.showStatusCheck.TabIndex = 11;
-			this.showStatusCheck.Text = "Show Statusbar";
+			this.showNumbersCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.showNumbersCheck.AutoSize = true;
+			this.showNumbersCheck.Location = new System.Drawing.Point(6, 389);
+			this.showNumbersCheck.Name = "showNumbersCheck";
+			this.showNumbersCheck.Size = new System.Drawing.Size(121, 17);
+			this.showNumbersCheck.TabIndex = 11;
+			this.showNumbersCheck.Text = "Show Line Numbers";
 			// 
 			// reindentCheck
 			// 
@@ -583,7 +583,7 @@
 		private DarkUI.Controls.DarkCheckBox closeBracketsCheck;
 		private DarkUI.Controls.DarkCheckBox reindentCheck;
 		private DarkUI.Controls.DarkCheckBox showSpacesCheck;
-		private DarkUI.Controls.DarkCheckBox showStatusCheck;
+		private DarkUI.Controls.DarkCheckBox showNumbersCheck;
 		private DarkUI.Controls.DarkCheckBox showToolbarCheck;
 		private DarkUI.Controls.DarkCheckBox toolTipCheck;
 		private DarkUI.Controls.DarkCheckBox wordWrapCheck;
