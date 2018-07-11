@@ -156,7 +156,7 @@ namespace TombEditor.Forms
             this.cbOneShot.Location = new System.Drawing.Point(82, 170);
             this.cbOneShot.Name = "cbOneShot";
             this.cbOneShot.Size = new System.Drawing.Size(75, 17);
-            this.cbOneShot.TabIndex = 13;
+            this.cbOneShot.TabIndex = 11;
             this.cbOneShot.Text = "One Shot";
             // 
             // butCancel
@@ -166,7 +166,7 @@ namespace TombEditor.Forms
             this.butCancel.Location = new System.Drawing.Point(589, 198);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
-            this.butCancel.TabIndex = 68;
+            this.butCancel.TabIndex = 16;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
@@ -177,7 +177,7 @@ namespace TombEditor.Forms
             this.butOK.Location = new System.Drawing.Point(503, 198);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
-            this.butOK.TabIndex = 67;
+            this.butOK.TabIndex = 15;
             this.butOK.Text = "OK";
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
@@ -195,17 +195,17 @@ namespace TombEditor.Forms
             // tbScript
             // 
             this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbScript.Location = new System.Drawing.Point(71, 0);
+            this.tbScript.Location = new System.Drawing.Point(42, 0);
             this.tbScript.Name = "tbScript";
             this.tbScript.ReadOnly = true;
-            this.tbScript.Size = new System.Drawing.Size(152, 22);
-            this.tbScript.TabIndex = 11;
+            this.tbScript.Size = new System.Drawing.Size(181, 22);
+            this.tbScript.TabIndex = 13;
             // 
             // labelScript
             // 
             this.labelScript.AutoSize = true;
             this.labelScript.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelScript.Location = new System.Drawing.Point(23, 2);
+            this.labelScript.Location = new System.Drawing.Point(3, 2);
             this.labelScript.Name = "labelScript";
             this.labelScript.Size = new System.Drawing.Size(39, 13);
             this.labelScript.TabIndex = 75;
@@ -224,6 +224,7 @@ namespace TombEditor.Forms
             // 
             // scriptExportPanel
             // 
+            this.scriptExportPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.scriptExportPanel.Controls.Add(this.tbScript);
             this.scriptExportPanel.Controls.Add(this.labelScript);
             this.scriptExportPanel.Controls.Add(this.butCopyToClipboard);
@@ -294,13 +295,14 @@ namespace TombEditor.Forms
             // 
             // cbRawMode
             // 
-            this.cbRawMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbRawMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cbRawMode.AutoSize = true;
-            this.cbRawMode.Location = new System.Drawing.Point(420, 175);
+            this.cbRawMode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbRawMode.Location = new System.Drawing.Point(474, 176);
             this.cbRawMode.Name = "cbRawMode";
-            this.cbRawMode.Size = new System.Drawing.Size(211, 17);
-            this.cbRawMode.TabIndex = 13;
-            this.cbRawMode.Text = "Raw Mode (Displays numeric values)";
+            this.cbRawMode.Size = new System.Drawing.Size(196, 17);
+            this.cbRawMode.TabIndex = 14;
+            this.cbRawMode.Text = "Raw mode (show numeric values)";
             this.cbRawMode.CheckedChanged += new System.EventHandler(this.cbRawMode_CheckedChanged);
             // 
             // FormTrigger
