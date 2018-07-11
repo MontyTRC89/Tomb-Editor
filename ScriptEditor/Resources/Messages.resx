@@ -131,11 +131,6 @@ Would you like to setup the paths now?</value>
   <data name="ResetSettings" xml:space="preserve">
     <value>Are you sure you want to reset all settings to default?</value>
   </data>
-  <data name="SavingPathNotFound" xml:space="preserve">
-    <value>Couldn't find required directory paths.
-At this point you can only Import / Export files.
-Would you like to export your current file?</value>
-  </data>
   <data name="UnsavedChanges" xml:space="preserve">
     <value>Do you want save changes to {0} ?</value>
   </data>

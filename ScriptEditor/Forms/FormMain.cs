@@ -26,6 +26,8 @@ namespace ScriptEditor
 		/// </summary>
 		private int _prevZoom = 100;
 
+		#region Constructors
+
 		public FormMain()
 		{
 			InitializeComponent();
@@ -50,7 +52,11 @@ namespace ScriptEditor
 			ApplyUserSettings();
 		}
 
-		/* Form actions */
+		#endregion Constructors
+
+		#region Form actions
+
+		private void FormMain_Shown(object sender, EventArgs e) => CheckRequiredPaths(); // Check if required paths are set
 
 		private void FormMain_Closing(object sender, FormClosingEventArgs e)
 		{
@@ -62,16 +68,18 @@ namespace ScriptEditor
 			}
 		}
 
-		private void FormMain_Shown(object sender, EventArgs e) => CheckRequiredPaths(); // Check if required paths are set
+		#endregion Form actions
 
-		/* File menu */
+		#region File menu
 
-		private void File_Change_MenuItem_Click(object sender, EventArgs e) => ShowPathSelection();
+		private void File_Change_MenuItem_Click(object sender, EventArgs e) => ShowPathSelectionForm();
 		private void File_Save_MenuItem_Click(object sender, EventArgs e) => SaveFile();
 		private void File_StringTable_MenuItem_Click(object sender, EventArgs e) => ShowStringTable();
 		private void File_Exit_MenuItem_Click(object sender, EventArgs e) => Close();
 
-		/* Edit menu */
+		#endregion File menu
+
+		#region Edit menu
 
 		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => HandleUndo();
 		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => HandleRedo();
@@ -89,7 +97,9 @@ namespace ScriptEditor
 			DoStatusCounting(); // So it updates the statusbar.
 		}
 
-		/* Tools menu */
+		#endregion Edit menu
+
+		#region Tools menu
 
 		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e) => TidyScript();
 		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e) => TidyScript(true);
@@ -114,7 +124,9 @@ namespace ScriptEditor
 			}
 		}
 
-		/* View menu */
+		#endregion Tools menu
+
+		#region View menu
 
 		private void View_ObjectBrowser_MenuItem_Click(object sender, EventArgs e)
 		{
@@ -137,11 +149,15 @@ namespace ScriptEditor
 			Properties.Settings.Default.Save();
 		}
 
-		/* Help menu */
+		#endregion View menu
+
+		#region Help menu
 
 		private void Help_About_MenuItem_Click(object sender, EventArgs e) => ShowAboutForm();
 
-		/* Editor events */
+		#endregion Help menu
+
+		#region Editor events
 
 		private void textEditor_TextChanged(object sender, TextChangedEventArgs e)
 		{
@@ -225,9 +241,11 @@ namespace ScriptEditor
 			}
 		}
 
-		/* ToolStrip buttons */
+		#endregion Editor events
 
-		private void ToolStrip_ChangeButton_Click(object sender, EventArgs e) => ShowPathSelection();
+		#region ToolStrip buttons
+
+		private void ToolStrip_ChangeButton_Click(object sender, EventArgs e) => ShowPathSelectionForm();
 		private void ToolStrip_SaveButton_Click(object sender, EventArgs e) => SaveFile();
 
 		private void ToolStrip_UndoButton_Click(object sender, EventArgs e) => HandleUndo();
@@ -249,7 +267,9 @@ namespace ScriptEditor
 
 		private void ToolStrip_StringTableButton_Click(object sender, EventArgs e) => ShowStringTable();
 
-		/* StatusStrip buttons */
+		#endregion ToolStrip buttons
+
+		#region StatusStrip buttons
 
 		private void StatusStrip_ResetZoomButton_Click(object sender, EventArgs e)
 		{
@@ -260,7 +280,9 @@ namespace ScriptEditor
 			resetZoomButton.Visible = false;
 		}
 
-		/* ContextMenu items */
+		#endregion StatusStrip buttons
+
+		#region ContextMenu items
 
 		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => textEditor.Cut();
 		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => textEditor.Copy();
@@ -271,7 +293,9 @@ namespace ScriptEditor
 
 		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => ToggleBookmark();
 
-		/* Application launch methods */
+		#endregion ContextMenu items
+
+		#region Application launch methods
 
 		private void CheckRequiredPaths()
 		{
@@ -285,7 +309,7 @@ namespace ScriptEditor
 				if (result == DialogResult.Yes)
 				{
 					// Show path selection dialog
-					ShowPathSelection();
+					ShowPathSelectionForm();
 				}
 			}
 			else
@@ -324,7 +348,9 @@ namespace ScriptEditor
 			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
 		}
 
-		/* ToolTips handling */
+		#endregion Application launch methods
+
+		#region ToolTips handling
 
 		private void HandleToolTips(ToolTipNeededEventArgs e)
 		{
@@ -435,7 +461,9 @@ namespace ScriptEditor
 			while (!textEditor.GetLineText(i + 1).StartsWith("["));
 		}
 
-		/* Styles and status */
+		#endregion ToolTips handling
+
+		#region Styles and status
 
 		private void DoSyntaxHighlighting(TextChangedEventArgs e)
 		{
@@ -462,7 +490,9 @@ namespace ScriptEditor
 			selectedCharsLabel.Text = "Selected: " + textEditor.SelectedText.Length;
 		}
 
-		/* Syntax tidy methods */
+		#endregion Styles and status
+
+		#region Syntax tidy methods
 
 		private void TidyScript(bool trimOnly = false)
 		{
@@ -510,7 +540,9 @@ namespace ScriptEditor
 			textEditor.Invalidate();
 		}
 
-		/* Bookmark methods */
+		#endregion Syntax tidy methods
+
+		#region Bookmark methods
 
 		private void ToggleBookmark()
 		{
@@ -557,7 +589,9 @@ namespace ScriptEditor
 			return lineNumbers.ToArray();
 		}
 
-		/* Object browser handling */
+		#endregion Bookmark methods
+
+		#region Object browser handling
 
 		private void searchTextBox_TextChanged(object sender, EventArgs e)
 		{
@@ -677,9 +711,11 @@ namespace ScriptEditor
 			}
 		}
 
-		/* File handling */
+		#endregion Object browser handling
 
-		private void ShowPathSelection()
+		#region File handling
+
+		private void ShowPathSelectionForm()
 		{
 			if (!IsFileSaved())
 			{
@@ -767,14 +803,12 @@ namespace ScriptEditor
 				// Update the object browser with levels (if they exist)
 				UpdateObjectBrowser(string.Empty);
 
-				int autoSaveTime = Properties.Settings.Default.AutoSaveTime;
-
-				if (autoSaveTime != 0)
+				if (Properties.Settings.Default.AutoSaveTime != 0)
 				{
-					var saveTimer = new System.Timers.Timer();
-					saveTimer.Elapsed += saveTimer_Elapsed;
-					saveTimer.Interval = autoSaveTime * (60 * 1000);
-					saveTimer.Enabled = true;
+					var autoSaveTimer = new System.Timers.Timer();
+					autoSaveTimer.Elapsed += autoSaveTimer_Elapsed;
+					autoSaveTimer.Interval = Properties.Settings.Default.AutoSaveTime * (60 * 1000);
+					autoSaveTimer.Enabled = true;
 				}
 			}
 			catch (Exception ex)
@@ -784,7 +818,7 @@ namespace ScriptEditor
 			}
 		}
 
-		private void saveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		private void autoSaveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
 		{
 			string currentFolder = Path.GetDirectoryName(_currentFilePath);
 			string currentFileName = Path.GetFileNameWithoutExtension(_currentFilePath);
@@ -816,7 +850,9 @@ namespace ScriptEditor
 			}
 		}
 
-		/* File saving */
+		#endregion File handling
+
+		#region File saving
 
 		private bool IsFileSaved()
 		{
@@ -877,6 +913,8 @@ namespace ScriptEditor
 
 			return true; // If saving was successful
 		}
+
+		#endregion File saving
 
 		// TODO: UNSORTED CODE STARTS HERE:
 
