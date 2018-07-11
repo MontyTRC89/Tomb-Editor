@@ -15,7 +15,7 @@ namespace TombEditor.ToolWindows
     public partial class ItemBrowser : DarkToolWindow
     {
         private readonly Editor _editor;
-        private FormPopUpSearch searchPopUp;
+        private PopUpSearch searchPopUp;
 
         public ItemBrowser()
         {
@@ -86,7 +86,7 @@ namespace TombEditor.ToolWindows
         {
             ItemType? result = _editor.ChosenItem;
             if (result == null)
-                DarkMessageBox.Show(this, "Select an item first", "Error", MessageBoxIcon.Error);
+                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "Select an item first.", Type = PopUpInfo.PopupType.Error });
             return result;
         }
 
@@ -107,16 +107,16 @@ namespace TombEditor.ToolWindows
 
             // Show result
             if (instance == null)
-                DarkMessageBox.Show(this, "No object of the selected item type found.", "No object found", MessageBoxIcon.Information);
+                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "No object of the selected item type found.", Type = PopUpInfo.PopupType.Info });
             else
                 _editor.ShowObject(instance);
         }
 
         private void butSearch_Click(object sender, EventArgs e)
         {
-            if (searchPopUp != null)
+            if (searchPopUp != null && searchPopUp.Visible)
                 searchPopUp.Close();
-            searchPopUp = new FormPopUpSearch(comboItems);
+            searchPopUp = new PopUpSearch(comboItems);
             searchPopUp.Show(this);
         }
 
@@ -128,7 +128,7 @@ namespace TombEditor.ToolWindows
 
             if (!currentItem.Value.IsStatic && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
             {
-                DarkMessageBox.Show(this, "You can't add moveables to a flipped room", "Error", MessageBoxIcon.Information);
+                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "You can't add moveables to a flipped room.", Type = PopUpInfo.PopupType.Info });
                 return;
             }
 
