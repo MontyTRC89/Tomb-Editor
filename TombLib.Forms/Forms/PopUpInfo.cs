@@ -57,7 +57,7 @@ namespace TombLib.Forms
         }
         public void ShowError(Control parent, string message, string title = "Error")
         {
-            Show(parent, PopupPosition.Center, message, title, PopupType.Error);
+            Show(parent, PopupPosition.BottomRight, message, title, PopupType.Error);
         }
         public void ShowSimple(Control parent, string message)
         {
