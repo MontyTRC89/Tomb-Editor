@@ -86,7 +86,7 @@ namespace TombEditor.ToolWindows
         {
             ItemType? result = _editor.ChosenItem;
             if (result == null)
-                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "Select an item first.", Type = PopUpInfo.PopupType.Error });
+                Editor.Instance.SendMessage("Select an item first.", PopupType.Error);
             return result;
         }
 
@@ -107,7 +107,7 @@ namespace TombEditor.ToolWindows
 
             // Show result
             if (instance == null)
-                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "No object of the selected item type found.", Type = PopUpInfo.PopupType.Info });
+                Editor.Instance.SendMessage("No object of the selected item type found.", PopupType.Info);
             else
                 _editor.ShowObject(instance);
         }
@@ -128,7 +128,7 @@ namespace TombEditor.ToolWindows
 
             if (!currentItem.Value.IsStatic && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
             {
-                Editor.Instance.RaiseEvent(new Editor.MessageEvent { Message = "You can't add moveables to a flipped room.", Type = PopUpInfo.PopupType.Info });
+                Editor.Instance.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
                 return;
             }
 

@@ -32,7 +32,7 @@ namespace ScriptEditor
 			toolTipCheck.Checked = Properties.Settings.Default.ToolTips;
 
 			showToolbarCheck.Checked = Properties.Settings.Default.ShowToolbar;
-			showStatusCheck.Checked = Properties.Settings.Default.ShowStatusbar;
+			showNumbersCheck.Checked = Properties.Settings.Default.ShowLineNumbers;
 
 			commentColorButton.BackColor = Properties.Settings.Default.CommentColor;
 			refColorButton.BackColor = Properties.Settings.Default.ReferenceColor;
@@ -68,7 +68,7 @@ namespace ScriptEditor
 			Properties.Settings.Default.ToolTips = toolTipCheck.Checked;
 
 			Properties.Settings.Default.ShowToolbar = showToolbarCheck.Checked;
-			Properties.Settings.Default.ShowStatusbar = showStatusCheck.Checked;
+			Properties.Settings.Default.ShowLineNumbers = showNumbersCheck.Checked;
 
 			Properties.Settings.Default.CommentColor = commentColorButton.BackColor;
 			Properties.Settings.Default.ReferenceColor = refColorButton.BackColor;
@@ -104,7 +104,7 @@ namespace ScriptEditor
 			toolTipCheck.Checked = true;
 
 			showToolbarCheck.Checked = true;
-			showStatusCheck.Checked = true;
+			showNumbersCheck.Checked = true;
 
 			commentColorButton.BackColor = Color.Green;
 			refColorButton.BackColor = Color.Orchid;

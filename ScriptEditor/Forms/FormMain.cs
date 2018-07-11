@@ -68,6 +68,7 @@ namespace ScriptEditor
 
 		private void File_Change_MenuItem_Click(object sender, EventArgs e) => ShowPathSelection();
 		private void File_Save_MenuItem_Click(object sender, EventArgs e) => SaveFile();
+		private void File_StringTable_MenuItem_Click(object sender, EventArgs e) => ShowStringTable();
 		private void File_Exit_MenuItem_Click(object sender, EventArgs e) => Close();
 
 		/* Edit menu */
@@ -117,22 +118,23 @@ namespace ScriptEditor
 
 		private void View_ObjectBrowser_MenuItem_Click(object sender, EventArgs e)
 		{
-			objectBrowser.Visible = !objectBrowser.Visible;
-			searchTextBox.Visible = !searchTextBox.Visible;
-			objectBrowserBox.Visible = !objectBrowserBox.Visible;
-			objectBrowserToolStripMenuItem.Checked = objectBrowserBox.Visible;
+			ToggleObjectBrowser(!objectBrowser.Visible);
+			Properties.Settings.Default.ObjBrowserVisible = objectBrowser.Visible;
+			Properties.Settings.Default.Save();
 		}
 
 		private void View_ReferenceBrowser_MenuItem_Click(object sender, EventArgs e)
 		{
-			referenceBrowser.Visible = !referenceBrowser.Visible;
-			referenceBrowserToolStripMenuItem.Checked = referenceBrowser.Visible;
+			ToggleReferenceBrowser(!referenceBrowser.Visible);
+			Properties.Settings.Default.RefBrowserVisible = referenceBrowser.Visible;
+			Properties.Settings.Default.Save();
 		}
 
 		private void View_DocumentMap_MenuItem_Click(object sender, EventArgs e)
 		{
-			documentMap.Visible = !documentMap.Visible;
-			documentMapToolStripMenuItem.Checked = documentMap.Visible;
+			ToggleDocumentMap(!documentMap.Visible);
+			Properties.Settings.Default.DocMapVisible = documentMap.Visible;
+			Properties.Settings.Default.Save();
 		}
 
 		/* Help menu */
@@ -245,13 +247,7 @@ namespace ScriptEditor
 
 		private void ToolStrip_AboutButton_Click(object sender, EventArgs e) => ShowAboutForm();
 
-		private void ToolStrip_StringTableButton_Click(object sender, EventArgs e)
-		{
-			using (FormStringTable form = new FormStringTable())
-			{
-				form.ShowDialog(this);
-			}
-		}
+		private void ToolStrip_StringTableButton_Click(object sender, EventArgs e) => ShowStringTable();
 
 		/* StatusStrip buttons */
 
@@ -304,8 +300,14 @@ namespace ScriptEditor
 			textEditor.Font = new Font(Properties.Settings.Default.FontFace, Convert.ToSingle(Properties.Settings.Default.FontSize));
 			textEditor.AutoCompleteBrackets = Properties.Settings.Default.CloseBrackets;
 			textEditor.WordWrap = Properties.Settings.Default.WordWrap;
+			textEditor.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
+
 			toolStrip.Visible = Properties.Settings.Default.ShowToolbar;
-			statusStrip.Visible = Properties.Settings.Default.ShowStatusbar;
+			showStringTableButton.Visible = toolStrip.Visible;
+
+			ToggleObjectBrowser(Properties.Settings.Default.ObjBrowserVisible);
+			ToggleReferenceBrowser(Properties.Settings.Default.RefBrowserVisible);
+			ToggleDocumentMap(Properties.Settings.Default.DocMapVisible);
 		}
 
 		private void GenerateAutocompleteMenu()
@@ -353,11 +355,8 @@ namespace ScriptEditor
 			// Loop through resources
 			foreach (DictionaryEntry entry in resourceSet)
 			{
-				// Remove brackets
-				string headerKey = entry.Key.ToString().Trim(new char[] { '[', ']' });
-
-				// If the hovered word matches a "header key" without brackets
-				if (e.HoveredWord == headerKey)
+				// If the hovered word matches a "header key"
+				if (e.HoveredWord == entry.Key.ToString())
 				{
 					e.ToolTipText = entry.Value.ToString();
 					return;
@@ -440,21 +439,6 @@ namespace ScriptEditor
 
 		private void DoSyntaxHighlighting(TextChangedEventArgs e)
 		{
-			// Get key words
-			List<string> headers = SyntaxKeyWords.Headers();
-			List<string> newCommands = SyntaxKeyWords.NewCommands();
-			List<string> oldCommands = SyntaxKeyWords.OldCommands();
-			List<string> unknown = SyntaxKeyWords.Unknown();
-
-			// Remove brackets from header key words
-			string headerString = string.Join("|", headers);
-			string[] charsToRemove = new string[] { "[", "]" };
-
-			foreach (string character in charsToRemove)
-			{
-				headerString = headerString.Replace(character, string.Empty);
-			}
-
 			// Clear styles
 			e.ChangedRange.ClearStyle(
 				SyntaxColors.Comments, SyntaxColors.Regular, SyntaxColors.References, SyntaxColors.Values,
@@ -465,10 +449,10 @@ namespace ScriptEditor
 			e.ChangedRange.SetStyle(SyntaxColors.Regular, @"[\[\],=]");
 			e.ChangedRange.SetStyle(SyntaxColors.References, @"\$[a-fA-F0-9][a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?");
 			e.ChangedRange.SetStyle(SyntaxColors.Values, @"=\s?.*$", RegexOptions.Multiline);
-			e.ChangedRange.SetStyle(SyntaxColors.Headers, @"\[(" + headerString + @")\]");
-			e.ChangedRange.SetStyle(SyntaxColors.NewCommands, @"\b(" + string.Join("|", newCommands) + ")");
-			e.ChangedRange.SetStyle(SyntaxColors.OldCommands, @"\b(" + string.Join("|", oldCommands) + ")");
-			e.ChangedRange.SetStyle(SyntaxColors.Unknown, @"\b(" + string.Join("|", unknown) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.Headers, @"\[(" + string.Join("|", SyntaxKeyWords.Headers()) + @")\]");
+			e.ChangedRange.SetStyle(SyntaxColors.NewCommands, @"\b(" + string.Join("|", SyntaxKeyWords.NewCommands()) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.OldCommands, @"\b(" + string.Join("|", SyntaxKeyWords.OldCommands()) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.Unknown, @"\b(" + string.Join("|", SyntaxKeyWords.Unknown()) + ")");
 		}
 
 		private void DoStatusCounting()
@@ -489,13 +473,28 @@ namespace ScriptEditor
 			// Get current scroll position
 			int scrollPosition = textEditor.VerticalScroll.Value;
 
+			List<string> tidiedlines = new List<string>();
+
 			if (trimOnly)
 			{
-				TrimWhitespace();
+				// Trim whitespace on every line
+				tidiedlines = SyntaxTidy.TrimLines(textEditor.Text);
 			}
 			else
 			{
-				DoFullReindent();
+				// Reindent all lines
+				tidiedlines = SyntaxTidy.ReindentLines(textEditor.Text);
+			}
+
+			// Scan all lines
+			for (int i = 0; i < textEditor.LinesCount; i++)
+			{
+				// If a line has changed
+				if (textEditor.GetLineText(i) != tidiedlines[i])
+				{
+					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+					textEditor.InsertText(tidiedlines[i]);
+				}
 			}
 
 			// Go to last scroll position
@@ -509,38 +508,6 @@ namespace ScriptEditor
 			}
 
 			textEditor.Invalidate();
-		}
-
-		private void DoFullReindent()
-		{
-			// Reindent all lines
-			string[] tidiedlines = SyntaxTidy.ReindentLines(textEditor.Text);
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				if (textEditor.GetLineText(i) != tidiedlines[i])
-				{
-					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-					textEditor.InsertText(tidiedlines[i]);
-				}
-			}
-		}
-
-		private void TrimWhitespace()
-		{
-			// Trim whitespace on every line
-			string[] trimmedlines = SyntaxTidy.TrimLines(textEditor.Text);
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				if (textEditor.GetLineText(i) != trimmedlines[i])
-				{
-					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-					textEditor.InsertText(trimmedlines[i]);
-				}
-			}
 		}
 
 		/* Bookmark methods */
@@ -634,6 +601,12 @@ namespace ScriptEditor
 				return;
 			}
 
+			// If the selected node is empty
+			if (objectBrowser.SelectedNodes[0].Text == string.Empty)
+			{
+				return;
+			}
+
 			// Scan all lines
 			for (int i = 0; i < textEditor.LinesCount; i++)
 			{
@@ -687,10 +660,13 @@ namespace ScriptEditor
 			// Loop through headers
 			foreach (string header in headers)
 			{
+				// Add brackets to the header
+				string fullHeader = "[" + header + "]";
+
 				// If there are any headers except "Level" headers
-				if (header != "[Level]" && textEditor.GetLineText(lineNumber).StartsWith(header))
+				if (fullHeader != "[Level]" && textEditor.GetLineText(lineNumber).StartsWith(fullHeader))
 				{
-					DarkTreeNode headerNode = new DarkTreeNode(header);
+					DarkTreeNode headerNode = new DarkTreeNode(fullHeader);
 
 					// If the header name matches the filter (It always does if there's nothing in the search bar)
 					if (headerNode.Text.ToLower().Contains(filter.ToLower()))
@@ -738,7 +714,7 @@ namespace ScriptEditor
 					}
 
 					// Open the script file if exists
-					if (Path.GetFileName(file).ToLower() == "script")
+					if (Path.GetFileName(file).ToLower() == "script.txt")
 					{
 						folderHasScriptFile = true;
 						OpenFile(file);
@@ -795,7 +771,10 @@ namespace ScriptEditor
 
 				if (autoSaveTime != 0)
 				{
-					HandleAutoSave(autoSaveTime);
+					var saveTimer = new System.Timers.Timer();
+					saveTimer.Elapsed += saveTimer_Elapsed;
+					saveTimer.Interval = autoSaveTime * (60 * 1000);
+					saveTimer.Enabled = true;
 				}
 			}
 			catch (Exception ex)
@@ -803,48 +782,6 @@ namespace ScriptEditor
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				UnloadCurrentFile();
 			}
-		}
-
-		private void HandleAutoSave(int autoSaveTime)
-		{
-			var saveTimer = new System.Timers.Timer();
-			saveTimer.Elapsed += saveTimer_Elapsed;
-
-			switch (autoSaveTime)
-			{
-				case 1:
-				{
-					saveTimer.Interval = 60 * 1000;
-					break;
-				}
-				case 3:
-				{
-					saveTimer.Interval = 3 * (60 * 1000);
-					break;
-				}
-				case 5:
-				{
-					saveTimer.Interval = 5 * (60 * 1000);
-					break;
-				}
-				case 10:
-				{
-					saveTimer.Interval = 10 * (60 * 1000);
-					break;
-				}
-				case 15:
-				{
-					saveTimer.Interval = 15 * (60 * 1000);
-					break;
-				}
-				case 30:
-				{
-					saveTimer.Interval = 30 * (60 * 1000);
-					break;
-				}
-			}
-
-			saveTimer.Enabled = true;
 		}
 
 		private void saveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -875,6 +812,7 @@ namespace ScriptEditor
 			else
 			{
 				autoSaveLabel.Text = "ERROR: Autosave Failed!";
+				autoSaveLabel.Visible = true;
 			}
 		}
 
@@ -1036,6 +974,36 @@ namespace ScriptEditor
 
 			// Disable the interface
 			ToggleInterface(false);
+		}
+
+		private void ShowStringTable()
+		{
+			using (FormStringTable form = new FormStringTable())
+			{
+				form.ShowDialog(this);
+			}
+		}
+
+		private void ToggleObjectBrowser(bool state)
+		{
+			objectBrowser.Visible = state;
+			searchTextBox.Visible = state;
+			objectBrowserBox.Visible = state;
+			objectBrowserSplitter.Visible = state;
+			objectBrowserToolStripMenuItem.Checked = state;
+		}
+
+		private void ToggleReferenceBrowser(bool state)
+		{
+			referenceBrowser.Visible = state;
+			refBrowserSplitter.Visible = state;
+			referenceBrowserToolStripMenuItem.Checked = state;
+		}
+
+		private void ToggleDocumentMap(bool state)
+		{
+			documentMap.Visible = state;
+			documentMapToolStripMenuItem.Checked = state;
 		}
 	}
 }

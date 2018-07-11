@@ -70,17 +70,16 @@ namespace TombEditor.Forms
             "29",
             "30",
             "31"});
-            this.comboStrength.Location = new System.Drawing.Point(113, 12);
+            this.comboStrength.Location = new System.Drawing.Point(108, 12);
             this.comboStrength.Name = "comboStrength";
-            this.comboStrength.Size = new System.Drawing.Size(86, 23);
+            this.comboStrength.Size = new System.Drawing.Size(67, 23);
             this.comboStrength.TabIndex = 22;
-            this.comboStrength.Text = null;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label5.Location = new System.Drawing.Point(18, 15);
+            this.label5.Location = new System.Drawing.Point(6, 15);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(96, 13);
             this.label5.TabIndex = 21;
@@ -89,9 +88,9 @@ namespace TombEditor.Forms
             // butCancel
             // 
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(113, 72);
+            this.butCancel.Location = new System.Drawing.Point(95, 47);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(86, 23);
+            this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -99,9 +98,9 @@ namespace TombEditor.Forms
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(21, 72);
+            this.butOK.Location = new System.Drawing.Point(9, 47);
             this.butOK.Name = "butOK";
-            this.butOK.Size = new System.Drawing.Size(86, 23);
+            this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
             this.butOK.Text = "OK";
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -113,7 +112,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(224, 109);
+            this.ClientSize = new System.Drawing.Size(183, 77);
             this.Controls.Add(this.comboStrength);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.butCancel);

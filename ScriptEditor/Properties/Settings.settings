@@ -50,7 +50,7 @@
     <Setting Name="ShowToolbar" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="ShowStatusbar" Type="System.Boolean" Scope="User">
+    <Setting Name="ShowLineNumbers" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Autocomplete" Type="System.Boolean" Scope="User">
@@ -61,6 +61,15 @@
     </Setting>
     <Setting Name="OldCommandColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">SpringGreen</Value>
+    </Setting>
+    <Setting Name="ObjBrowserVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="RefBrowserVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DocMapVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>
