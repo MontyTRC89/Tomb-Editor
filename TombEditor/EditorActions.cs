@@ -684,7 +684,7 @@ namespace TombEditor
         {
             ObjectClipboardData data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
             if (data == null)
-                MessageBox.Show("Clipboard contains no object data.");
+                Editor.Instance.SendMessage("Clipboard contains no object data.", PopupType.Error);
             else
                 PlaceObject(_editor.SelectedRoom, pos, data.MergeGetSingleObject(_editor));
         }

@@ -1035,7 +1035,7 @@ namespace TombEditor.Forms
                 {
                     var data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
                     if (data == null)
-                        MessageBox.Show("Clipboard contains no object data.");
+                        Editor.Instance.SendMessage("Clipboard contains no object data.", PopupType.Error);
                     else
                         _editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(_editor));
                 }
@@ -1043,7 +1043,7 @@ namespace TombEditor.Forms
                 {
                     var data = Clipboard.GetDataObject().GetData(typeof(SectorsClipboardData)) as SectorsClipboardData;
                     if (data == null)
-                        MessageBox.Show("Clipboard contains no sectors data.");
+                        Editor.Instance.SendMessage("Clipboard contains no sector data.", PopupType.Error);
                     else
                         EditorActions.TryPasteSectors(data, this);
                 }
@@ -1052,7 +1052,7 @@ namespace TombEditor.Forms
             {
                 var roomClipboardData = Clipboard.GetDataObject().GetData(typeof(RoomClipboardData)) as RoomClipboardData;
                 if (roomClipboardData == null)
-                    MessageBox.Show("Clipboard contains no room data.");
+                    Editor.Instance.SendMessage("Clipboard contains no room data.", PopupType.Error);
                 else
                     roomClipboardData.MergeInto(_editor, new VectorInt2());
             }
@@ -1218,8 +1218,7 @@ namespace TombEditor.Forms
                                     "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 EditorActions.ApplyCurrentAmbientLightToAllRooms();
-                MessageBox.Show(this, "Ambient light was applied to all rooms", "Apply ambient light",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Editor.Instance.SendMessage("Ambient light was applied to all rooms.", PopupType.Info);
             }
         }
 
