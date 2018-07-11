@@ -55,9 +55,9 @@ namespace TombLib.Forms
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Location = new System.Drawing.Point(566, 480);
+            this.butCancel.Location = new System.Drawing.Point(570, 480);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(84, 23);
+            this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 3;
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
@@ -65,9 +65,9 @@ namespace TombLib.Forms
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(476, 480);
+            this.butOK.Location = new System.Drawing.Point(484, 480);
             this.butOK.Name = "butOK";
-            this.butOK.Size = new System.Drawing.Size(84, 23);
+            this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 2;
             this.butOK.Text = "Ok";
             this.butOK.Click += new System.EventHandler(this.butOK_Click);

@@ -45,6 +45,14 @@
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.textureFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.textureFileDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.textureFileDataGridViewPreviewColumn = new System.Windows.Forms.DataGridViewImageColumn();
+            this.textureFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.textureFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.textureFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.textureFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.textureFileDataGridViewSizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.objectFileDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
@@ -115,14 +123,6 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.textureFileDataGridViewPreviewColumn = new System.Windows.Forms.DataGridViewImageColumn();
-            this.textureFileDataGridViewPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.textureFileDataGridViewSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.textureFileDataGridViewShowColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.textureFileDataGridViewMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.textureFileDataGridViewSizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -484,6 +484,75 @@
             this.textureFileDataGridView.TabIndex = 6;
             this.textureFileDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.textureFileDataGridView_CellContentClick);
             this.textureFileDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.textureFileDataGridView_CellFormatting);
+            // 
+            // textureFileDataGridViewPreviewColumn
+            // 
+            this.textureFileDataGridViewPreviewColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.textureFileDataGridViewPreviewColumn.HeaderText = "Preview";
+            this.textureFileDataGridViewPreviewColumn.Name = "textureFileDataGridViewPreviewColumn";
+            this.textureFileDataGridViewPreviewColumn.ReadOnly = true;
+            this.textureFileDataGridViewPreviewColumn.Width = 60;
+            // 
+            // textureFileDataGridViewPathColumn
+            // 
+            this.textureFileDataGridViewPathColumn.DataPropertyName = "Path";
+            this.textureFileDataGridViewPathColumn.HeaderText = "Path";
+            this.textureFileDataGridViewPathColumn.Name = "textureFileDataGridViewPathColumn";
+            this.textureFileDataGridViewPathColumn.Width = 200;
+            // 
+            // textureFileDataGridViewSearchColumn
+            // 
+            this.textureFileDataGridViewSearchColumn.HeaderText = "";
+            this.textureFileDataGridViewSearchColumn.Name = "textureFileDataGridViewSearchColumn";
+            this.textureFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.textureFileDataGridViewSearchColumn.Text = "Search";
+            this.textureFileDataGridViewSearchColumn.Width = 80;
+            // 
+            // textureFileDataGridViewShowColumn
+            // 
+            this.textureFileDataGridViewShowColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.textureFileDataGridViewShowColumn.FillWeight = 45F;
+            this.textureFileDataGridViewShowColumn.HeaderText = "Show";
+            this.textureFileDataGridViewShowColumn.Name = "textureFileDataGridViewShowColumn";
+            this.textureFileDataGridViewShowColumn.Text = "◀";
+            this.textureFileDataGridViewShowColumn.Width = 45;
+            // 
+            // textureFileDataGridViewMessageColumn
+            // 
+            this.textureFileDataGridViewMessageColumn.DataPropertyName = "Message";
+            this.textureFileDataGridViewMessageColumn.HeaderText = "Message";
+            this.textureFileDataGridViewMessageColumn.Name = "textureFileDataGridViewMessageColumn";
+            this.textureFileDataGridViewMessageColumn.ReadOnly = true;
+            this.textureFileDataGridViewMessageColumn.Width = 300;
+            // 
+            // textureFileDataGridViewSizeColumn
+            // 
+            this.textureFileDataGridViewSizeColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.textureFileDataGridViewSizeColumn.DataPropertyName = "Size";
+            this.textureFileDataGridViewSizeColumn.HeaderText = "Size";
+            this.textureFileDataGridViewSizeColumn.Name = "textureFileDataGridViewSizeColumn";
+            this.textureFileDataGridViewSizeColumn.ReadOnly = true;
+            this.textureFileDataGridViewSizeColumn.Width = 51;
+            // 
+            // textureFileDataGridViewReplaceMagentaWithTransparencyColumn
+            // 
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.DataPropertyName = "ReplaceMagentaWithTransparency";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.FalseValue = "false";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.HeaderText = "Convert magenta transparency";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Name = "textureFileDataGridViewReplaceMagentaWithTransparencyColumn";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.TrueValue = "true";
+            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Width = 169;
+            // 
+            // textureFileDataGridViewConvert512PixelsToDoubleRowsColumn
+            // 
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.DataPropertyName = "Convert512PixelsToDoubleRows";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.FalseValue = "false";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.HeaderText = "Convert 512 pixel columns";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Name = "textureFileDataGridViewConvert512PixelsToDoubleRowsColumn";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.TrueValue = "true";
+            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Width = 146;
             // 
             // darkLabel4
             // 
@@ -1222,7 +1291,7 @@
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 24);
             this.butOk.TabIndex = 3;
-            this.butOk.Text = "Ok";
+            this.butOk.Text = "OK";
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
             // butCancel
@@ -1241,75 +1310,6 @@
             // 
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
-            // 
-            // textureFileDataGridViewPreviewColumn
-            // 
-            this.textureFileDataGridViewPreviewColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.textureFileDataGridViewPreviewColumn.HeaderText = "Preview";
-            this.textureFileDataGridViewPreviewColumn.Name = "textureFileDataGridViewPreviewColumn";
-            this.textureFileDataGridViewPreviewColumn.ReadOnly = true;
-            this.textureFileDataGridViewPreviewColumn.Width = 60;
-            // 
-            // textureFileDataGridViewPathColumn
-            // 
-            this.textureFileDataGridViewPathColumn.DataPropertyName = "Path";
-            this.textureFileDataGridViewPathColumn.HeaderText = "Path";
-            this.textureFileDataGridViewPathColumn.Name = "textureFileDataGridViewPathColumn";
-            this.textureFileDataGridViewPathColumn.Width = 200;
-            // 
-            // textureFileDataGridViewSearchColumn
-            // 
-            this.textureFileDataGridViewSearchColumn.HeaderText = "";
-            this.textureFileDataGridViewSearchColumn.Name = "textureFileDataGridViewSearchColumn";
-            this.textureFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.textureFileDataGridViewSearchColumn.Text = "Search";
-            this.textureFileDataGridViewSearchColumn.Width = 80;
-            // 
-            // textureFileDataGridViewShowColumn
-            // 
-            this.textureFileDataGridViewShowColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.textureFileDataGridViewShowColumn.FillWeight = 45F;
-            this.textureFileDataGridViewShowColumn.HeaderText = "Show";
-            this.textureFileDataGridViewShowColumn.Name = "textureFileDataGridViewShowColumn";
-            this.textureFileDataGridViewShowColumn.Text = "◀";
-            this.textureFileDataGridViewShowColumn.Width = 45;
-            // 
-            // textureFileDataGridViewMessageColumn
-            // 
-            this.textureFileDataGridViewMessageColumn.DataPropertyName = "Message";
-            this.textureFileDataGridViewMessageColumn.HeaderText = "Message";
-            this.textureFileDataGridViewMessageColumn.Name = "textureFileDataGridViewMessageColumn";
-            this.textureFileDataGridViewMessageColumn.ReadOnly = true;
-            this.textureFileDataGridViewMessageColumn.Width = 300;
-            // 
-            // textureFileDataGridViewSizeColumn
-            // 
-            this.textureFileDataGridViewSizeColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.textureFileDataGridViewSizeColumn.DataPropertyName = "Size";
-            this.textureFileDataGridViewSizeColumn.HeaderText = "Size";
-            this.textureFileDataGridViewSizeColumn.Name = "textureFileDataGridViewSizeColumn";
-            this.textureFileDataGridViewSizeColumn.ReadOnly = true;
-            this.textureFileDataGridViewSizeColumn.Width = 51;
-            // 
-            // textureFileDataGridViewReplaceMagentaWithTransparencyColumn
-            // 
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.DataPropertyName = "ReplaceMagentaWithTransparency";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.FalseValue = "false";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.HeaderText = "Convert magenta transparency";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Name = "textureFileDataGridViewReplaceMagentaWithTransparencyColumn";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.TrueValue = "true";
-            this.textureFileDataGridViewReplaceMagentaWithTransparencyColumn.Width = 169;
-            // 
-            // textureFileDataGridViewConvert512PixelsToDoubleRowsColumn
-            // 
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.DataPropertyName = "Convert512PixelsToDoubleRows";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.FalseValue = "false";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.HeaderText = "Convert 512 pixel columns";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Name = "textureFileDataGridViewConvert512PixelsToDoubleRowsColumn";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.TrueValue = "true";
-            this.textureFileDataGridViewConvert512PixelsToDoubleRowsColumn.Width = 146;
             // 
             // FormLevelSettings
             // 

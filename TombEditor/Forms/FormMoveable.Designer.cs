@@ -46,9 +46,10 @@ namespace TombEditor.Forms
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(27, 211);
+            this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOK.Location = new System.Drawing.Point(39, 159);
             this.butOK.Name = "butOK";
-            this.butOK.Size = new System.Drawing.Size(86, 23);
+            this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
             this.butOK.Text = "OK";
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -56,10 +57,11 @@ namespace TombEditor.Forms
             // 
             // butCancel
             // 
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(119, 211);
+            this.butCancel.Location = new System.Drawing.Point(125, 159);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(86, 23);
+            this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -68,7 +70,7 @@ namespace TombEditor.Forms
             // cbInvisible
             // 
             this.cbInvisible.AutoSize = true;
-            this.cbInvisible.Location = new System.Drawing.Point(129, 12);
+            this.cbInvisible.Location = new System.Drawing.Point(76, 9);
             this.cbInvisible.Name = "cbInvisible";
             this.cbInvisible.Size = new System.Drawing.Size(68, 17);
             this.cbInvisible.TabIndex = 5;
@@ -77,7 +79,7 @@ namespace TombEditor.Forms
             // cbBit2
             // 
             this.cbBit2.AutoSize = true;
-            this.cbBit2.Location = new System.Drawing.Point(18, 35);
+            this.cbBit2.Location = new System.Drawing.Point(8, 32);
             this.cbBit2.Name = "cbBit2";
             this.cbBit2.Size = new System.Drawing.Size(49, 17);
             this.cbBit2.TabIndex = 6;
@@ -86,7 +88,7 @@ namespace TombEditor.Forms
             // cbClearBody
             // 
             this.cbClearBody.AutoSize = true;
-            this.cbClearBody.Location = new System.Drawing.Point(129, 35);
+            this.cbClearBody.Location = new System.Drawing.Point(76, 32);
             this.cbClearBody.Name = "cbClearBody";
             this.cbClearBody.Size = new System.Drawing.Size(81, 17);
             this.cbClearBody.TabIndex = 9;
@@ -95,7 +97,7 @@ namespace TombEditor.Forms
             // cbBit1
             // 
             this.cbBit1.AutoSize = true;
-            this.cbBit1.Location = new System.Drawing.Point(18, 12);
+            this.cbBit1.Location = new System.Drawing.Point(8, 9);
             this.cbBit1.Name = "cbBit1";
             this.cbBit1.Size = new System.Drawing.Size(49, 17);
             this.cbBit1.TabIndex = 10;
@@ -104,7 +106,7 @@ namespace TombEditor.Forms
             // cbBit3
             // 
             this.cbBit3.AutoSize = true;
-            this.cbBit3.Location = new System.Drawing.Point(18, 58);
+            this.cbBit3.Location = new System.Drawing.Point(8, 55);
             this.cbBit3.Name = "cbBit3";
             this.cbBit3.Size = new System.Drawing.Size(49, 17);
             this.cbBit3.TabIndex = 11;
@@ -113,7 +115,7 @@ namespace TombEditor.Forms
             // cbBit4
             // 
             this.cbBit4.AutoSize = true;
-            this.cbBit4.Location = new System.Drawing.Point(18, 82);
+            this.cbBit4.Location = new System.Drawing.Point(8, 79);
             this.cbBit4.Name = "cbBit4";
             this.cbBit4.Size = new System.Drawing.Size(49, 17);
             this.cbBit4.TabIndex = 12;
@@ -122,7 +124,7 @@ namespace TombEditor.Forms
             // cbBit5
             // 
             this.cbBit5.AutoSize = true;
-            this.cbBit5.Location = new System.Drawing.Point(18, 105);
+            this.cbBit5.Location = new System.Drawing.Point(8, 102);
             this.cbBit5.Name = "cbBit5";
             this.cbBit5.Size = new System.Drawing.Size(49, 17);
             this.cbBit5.TabIndex = 13;
@@ -130,16 +132,19 @@ namespace TombEditor.Forms
             // 
             // tbOCB
             // 
-            this.tbOCB.Location = new System.Drawing.Point(59, 160);
+            this.tbOCB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbOCB.Location = new System.Drawing.Point(39, 131);
             this.tbOCB.Name = "tbOCB";
-            this.tbOCB.Size = new System.Drawing.Size(146, 22);
+            this.tbOCB.Size = new System.Drawing.Size(166, 22);
             this.tbOCB.TabIndex = 15;
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label1.Location = new System.Drawing.Point(15, 163);
+            this.label1.Location = new System.Drawing.Point(5, 133);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(33, 13);
             this.label1.TabIndex = 14;
@@ -151,7 +156,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(231, 246);
+            this.ClientSize = new System.Drawing.Size(212, 189);
             this.Controls.Add(this.cbBit5);
             this.Controls.Add(this.tbOCB);
             this.Controls.Add(this.cbInvisible);

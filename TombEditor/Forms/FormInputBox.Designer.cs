@@ -42,18 +42,18 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelMessage.Location = new System.Drawing.Point(12, 9);
+            this.labelMessage.Location = new System.Drawing.Point(9, 9);
             this.labelMessage.Name = "labelMessage";
-            this.labelMessage.Size = new System.Drawing.Size(364, 61);
+            this.labelMessage.Size = new System.Drawing.Size(359, 75);
             this.labelMessage.TabIndex = 21;
             // 
             // butCancel
             // 
-            this.butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(201, 123);
+            this.butCancel.Location = new System.Drawing.Point(288, 115);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(86, 23);
+            this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 1;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -61,11 +61,11 @@ namespace TombEditor.Forms
             // 
             // butOK
             // 
-            this.butOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.butOK.Location = new System.Drawing.Point(109, 123);
+            this.butOK.Location = new System.Drawing.Point(202, 115);
             this.butOK.Name = "butOK";
-            this.butOK.Size = new System.Drawing.Size(86, 23);
+            this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 0;
             this.butOK.Text = "OK";
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -75,9 +75,9 @@ namespace TombEditor.Forms
             // 
             this.tbValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbValue.Location = new System.Drawing.Point(15, 93);
+            this.tbValue.Location = new System.Drawing.Point(9, 87);
             this.tbValue.Name = "tbValue";
-            this.tbValue.Size = new System.Drawing.Size(364, 22);
+            this.tbValue.Size = new System.Drawing.Size(359, 22);
             this.tbValue.TabIndex = 22;
             // 
             // FormInputBox
@@ -86,7 +86,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(393, 159);
+            this.ClientSize = new System.Drawing.Size(373, 144);
             this.Controls.Add(this.tbValue);
             this.Controls.Add(this.labelMessage);
             this.Controls.Add(this.butCancel);
