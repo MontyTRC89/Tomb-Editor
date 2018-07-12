@@ -315,8 +315,7 @@ namespace TombEditor.Forms
             _editor.ConfigurationChange();
         }
 
-
-        protected override bool ProcessDialogKey(Keys keyData)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             bool focused = IsFocused(MainView) || IsFocused(TexturePanel);
 
@@ -415,30 +414,96 @@ namespace TombEditor.Forms
                     break;
 
                 case Keys.Left: // Rotate objects with cones
-                    if (modifierKeys == Keys.Shift && _editor.SelectedObject != null && focused)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
-                    else if (modifierKeys == Keys.Control && _editor.SelectedObject is PositionBasedObjectInstance && focused)
-                        MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
+                    if(focused)
+                    {
+                        switch(modifierKeys)
+                        {
+                            case Keys.Shift:
+                                if (_editor.SelectedObject != null)
+                                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
+                                break;
+                            case Keys.Control:
+                                if (_editor.SelectedObject is PositionBasedObjectInstance)
+                                    MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
+                                break;
+                            case Keys.Alt:
+                                if (_editor.SelectedRoom != null)
+                                    MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(1, 0, 0));
+                                break;
+                        }
+                    }
                     break;
                 case Keys.Right: // Rotate objects with cones
-                    if (modifierKeys == Keys.Shift && _editor.SelectedObject != null && focused)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
-                    else if (modifierKeys == Keys.Control && _editor.SelectedObject is PositionBasedObjectInstance && focused)
-                        MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
+                    if (focused)
+                    {
+                        switch (modifierKeys)
+                        {
+                            case Keys.Shift:
+                                if (_editor.SelectedObject != null)
+                                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
+                                break;
+                            case Keys.Control:
+                                if (_editor.SelectedObject is PositionBasedObjectInstance)
+                                    MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
+                                break;
+                            case Keys.Alt:
+                                if (_editor.SelectedRoom != null)
+                                    MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(-1, 0, 0));
+                                break;
+                        }
+                    }
                     break;
 
                 case Keys.Up:// Rotate objects with cones
-                    if (modifierKeys == Keys.Shift && _editor.SelectedObject != null && focused)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
-                    else if (modifierKeys == Keys.Control && _editor.SelectedObject is PositionBasedObjectInstance && focused)
-                        MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
+                    if (focused)
+                    {
+                        switch (modifierKeys)
+                        {
+                            case Keys.Shift:
+                                if (_editor.SelectedObject != null)
+                                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
+                                break;
+                            case Keys.Control:
+                                if (_editor.SelectedObject is PositionBasedObjectInstance)
+                                    MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
+                                break;
+                            case Keys.Alt:
+                                if (_editor.SelectedRoom != null)
+                                    MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(0, 0, -1));
+                                break;
+                        }
+                    }
                     break;
 
                 case Keys.Down:// Rotate objects with cones
-                    if (modifierKeys == Keys.Shift && _editor.SelectedObject != null && focused)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
-                    else if (modifierKeys == Keys.Control && _editor.SelectedObject is PositionBasedObjectInstance && focused)
-                        MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
+                    if (focused)
+                    {
+                        switch (modifierKeys)
+                        {
+                            case Keys.Shift:
+                                if (_editor.SelectedObject != null)
+                                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
+                                break;
+                            case Keys.Control:
+                                if (_editor.SelectedObject is PositionBasedObjectInstance)
+                                    MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
+                                break;
+                            case Keys.Alt:
+                                if (_editor.SelectedRoom != null)
+                                    MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(0, 0, 1));
+                                break;
+                        }
+                    }
+                    break;
+
+                case Keys.PageDown:
+                    if (modifierKeys == Keys.Alt && _editor.SelectedRoom != null && focused)
+                        MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(0, -1, 0));
+                    break;
+
+                case Keys.PageUp:
+                    if (modifierKeys == Keys.Alt && _editor.SelectedRoom != null && focused)
+                        MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(0, 1, 0));
                     break;
 
                 case Keys.Q:
@@ -561,7 +626,7 @@ namespace TombEditor.Forms
             if (alt)
                 return true;
 
-            return base.ProcessDialogKey(keyData);
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private static bool IsFocused(Control control)

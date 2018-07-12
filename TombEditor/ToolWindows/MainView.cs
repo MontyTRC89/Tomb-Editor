@@ -3,7 +3,7 @@ using DarkUI.Docking;
 using System;
 using System.Numerics;
 using System.Windows.Forms;
-using TombLib.Graphics;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Forms;
@@ -56,6 +56,20 @@ namespace TombEditor.ToolWindows
                 EditorActions.MoveObjectRelative(instance, new Vector3(-pos.Z, pos.Y, pos.X), new Vector3(-precision.Z, precision.Y, precision.X), canGoOutsideRoom);
             else
                 EditorActions.MoveObjectRelative(instance, pos, precision, canGoOutsideRoom);
+        }
+        
+        public void MoveRoomRelative(Room room, VectorInt3 pos)
+        {
+            if (panel3D.Camera.RotationY < Math.PI * (1.0 / 4.0))
+                EditorActions.MoveRooms(pos, room.Versions);
+            else if (panel3D.Camera.RotationY < Math.PI * (3.0 / 4.0))
+                EditorActions.MoveRooms(new VectorInt3(pos.Z, pos.Y, -pos.X), room.Versions); // valid
+            else if (panel3D.Camera.RotationY < Math.PI * (5.0 / 4.0))
+                EditorActions.MoveRooms(new VectorInt3(-pos.X, pos.Y, -pos.Z), room.Versions); // valid
+            else if (panel3D.Camera.RotationY < Math.PI * (7.0 / 4.0))
+                EditorActions.MoveRooms(new VectorInt3(-pos.Z, pos.Y, pos.X), room.Versions);
+            else
+                EditorActions.MoveRooms(pos, room.Versions);
         }
 
         protected override void Dispose(bool disposing)
