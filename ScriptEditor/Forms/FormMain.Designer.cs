@@ -90,6 +90,7 @@
 			this.prevBookmarkToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.refBrowserSplitter = new System.Windows.Forms.Splitter();
+			this.referenceBrowser = new ScriptEditor.ReferenceBrowser();
 			this.resetZoomButton = new DarkUI.Controls.DarkButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.selectedCharsLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -106,7 +107,6 @@
 			this.toolStripSeparator_13 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator_14 = new System.Windows.Forms.ToolStripSeparator();
 			this.zoomLabel = new DarkUI.Controls.DarkLabel();
-			this.referenceBrowser = new ScriptEditor.ReferenceBrowser();
 			((System.ComponentModel.ISupportInitialize)(this.textEditor)).BeginInit();
 			this.editorContextMenu.SuspendLayout();
 			this.menuStrip.SuspendLayout();
@@ -934,6 +934,16 @@
 			this.refBrowserSplitter.TabIndex = 13;
 			this.refBrowserSplitter.TabStop = false;
 			// 
+			// referenceBrowser
+			// 
+			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.referenceBrowser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.referenceBrowser.Location = new System.Drawing.Point(0, 262);
+			this.referenceBrowser.Name = "referenceBrowser";
+			this.referenceBrowser.Size = new System.Drawing.Size(800, 160);
+			this.referenceBrowser.TabIndex = 11;
+			// 
 			// resetZoomButton
 			// 
 			this.resetZoomButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1118,16 +1128,6 @@
 			this.zoomLabel.Size = new System.Drawing.Size(66, 13);
 			this.zoomLabel.TabIndex = 8;
 			this.zoomLabel.Text = "Zoom: 100%";
-			// 
-			// referenceBrowser
-			// 
-			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.referenceBrowser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.referenceBrowser.Location = new System.Drawing.Point(0, 262);
-			this.referenceBrowser.Name = "referenceBrowser";
-			this.referenceBrowser.Size = new System.Drawing.Size(800, 160);
-			this.referenceBrowser.TabIndex = 11;
 			// 
 			// FormMain
 			// 
