@@ -7,21 +7,20 @@ namespace ScriptEditor
 {
 	public partial class FormSettings : DarkForm
 	{
+		/// <summary>
+		/// The number of critical settings changed
+		/// </summary>
+		public int gI_RestartItemCount = 0;
+
+		#region Constructors
+
 		public FormSettings()
 		{
 			InitializeComponent();
 
 			fontSizeNumeric.Value = Properties.Settings.Default.FontSize;
 			fontFaceCombo.SelectedItem = Properties.Settings.Default.FontFace;
-
-			if (Properties.Settings.Default.AutoSaveTime == 0)
-			{
-				autoSaveCombo.SelectedItem = "None";
-			}
-			else
-			{
-				autoSaveCombo.SelectedItem = Properties.Settings.Default.AutoSaveTime.ToString();
-			}
+			autosaveCombo.SelectedItem = Properties.Settings.Default.AutosaveTime == 0 ? "None" : Properties.Settings.Default.AutosaveTime.ToString();
 
 			reindentCheck.Checked = Properties.Settings.Default.ReindentOnSave;
 			closeBracketsCheck.Checked = Properties.Settings.Default.CloseBrackets;
@@ -45,18 +44,22 @@ namespace ScriptEditor
 			restartLabel.Visible = false;
 		}
 
+		#endregion Constructors
+
+		#region Buttons
+
 		private void applyButton_Click(object sender, EventArgs e)
 		{
 			Properties.Settings.Default.FontSize = fontSizeNumeric.Value;
 			Properties.Settings.Default.FontFace = fontFaceCombo.SelectedItem.ToString();
 
-			if (autoSaveCombo.SelectedItem.ToString() == "None")
+			if (autosaveCombo.SelectedItem.ToString() == "None")
 			{
-				Properties.Settings.Default.AutoSaveTime = 0;
+				Properties.Settings.Default.AutosaveTime = 0;
 			}
 			else
 			{
-				Properties.Settings.Default.AutoSaveTime = int.Parse(autoSaveCombo.SelectedItem.ToString());
+				Properties.Settings.Default.AutosaveTime = int.Parse(autosaveCombo.SelectedItem.ToString());
 			}
 
 			Properties.Settings.Default.ReindentOnSave = reindentCheck.Checked;
@@ -77,6 +80,7 @@ namespace ScriptEditor
 			Properties.Settings.Default.NewCommandColor = newColorButton.BackColor;
 			Properties.Settings.Default.OldCommandColor = oldColorButton.BackColor;
 			Properties.Settings.Default.UnknownColor = unknownColorButton.BackColor;
+
 			Properties.Settings.Default.Save();
 		}
 
@@ -93,7 +97,7 @@ namespace ScriptEditor
 
 			fontSizeNumeric.Value = 12;
 			fontFaceCombo.SelectedItem = "Consolas";
-			autoSaveCombo.SelectedItem = "None";
+			autosaveCombo.SelectedItem = "None";
 
 			reindentCheck.Checked = false;
 			closeBracketsCheck.Checked = true;
@@ -113,9 +117,11 @@ namespace ScriptEditor
 			newColorButton.BackColor = Color.SpringGreen;
 			oldColorButton.BackColor = Color.MediumAquamarine;
 			unknownColorButton.BackColor = Color.Red;
-
-			restartLabel.Visible = true;
 		}
+
+		#endregion Buttons
+
+		#region Color selection
 
 		private void commentColorButton_Click(object sender, EventArgs e)
 		{
@@ -124,7 +130,7 @@ namespace ScriptEditor
 			if (result == DialogResult.OK)
 			{
 				commentColorButton.BackColor = commentColorDialog.Color;
-				restartLabel.Visible = true;
+				CheckRestartRequirement(commentColorButton.BackColor, Properties.Settings.Default.CommentColor);
 			}
 		}
 
@@ -135,7 +141,7 @@ namespace ScriptEditor
 			if (result == DialogResult.OK)
 			{
 				refColorButton.BackColor = refColorDialog.Color;
-				restartLabel.Visible = true;
+				CheckRestartRequirement(refColorButton.BackColor, Properties.Settings.Default.ReferenceColor);
 			}
 		}
 
@@ -146,7 +152,7 @@ namespace ScriptEditor
 			if (result == DialogResult.OK)
 			{
 				valueColorButton.BackColor = valueColorDialog.Color;
-				restartLabel.Visible = true;
+				CheckRestartRequirement(valueColorButton.BackColor, Properties.Settings.Default.ValueColor);
 			}
 		}
 
@@ -157,7 +163,7 @@ namespace ScriptEditor
 			if (result == DialogResult.OK)
 			{
 				headerColorButton.BackColor = headerColorDialog.Color;
-				restartLabel.Visible = true;
+				CheckRestartRequirement(headerColorButton.BackColor, Properties.Settings.Default.HeaderColor);
 			}
 		}
 
@@ -168,7 +174,7 @@ namespace ScriptEditor
 			if (result == DialogResult.OK)
 			{
 				newColorButton.BackColor = newColorDialog.Color;
-				restartLabel.Visible = true;
+				CheckRestartRequirement(newColorButton.BackColor, Properties.Settings.Default.NewCommandColor);
 			}
 		}
 
@@ -179,7 +185,7 @@ namespace ScriptEditor
 			if (result == DialogResult.OK)
 			{
 				oldColorButton.BackColor = oldColorDialog.Color;
-				restartLabel.Visible = true;
+				CheckRestartRequirement(oldColorButton.BackColor, Properties.Settings.Default.OldCommandColor);
 			}
 		}
 
@@ -190,12 +196,45 @@ namespace ScriptEditor
 			if (result == DialogResult.OK)
 			{
 				unknownColorButton.BackColor = unknownColorDialog.Color;
-				restartLabel.Visible = true;
+				CheckRestartRequirement(unknownColorButton.BackColor, Properties.Settings.Default.UnknownColor);
 			}
 		}
 
-		private void autoSaveCombo_SelectedIndexChanged(object sender, EventArgs e) => restartLabel.Visible = true;
-		private void autocompleteCheck_CheckedChanged(object sender, EventArgs e) => restartLabel.Visible = true;
-		private void toolTipCheck_CheckedChanged(object sender, EventArgs e) => restartLabel.Visible = true;
+		#endregion Color selection
+
+		#region Critical settings where the app needs to restart
+
+		private void autosaveCombo_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			string settingValue = Properties.Settings.Default.AutosaveTime == 0 ? "None" : Properties.Settings.Default.AutosaveTime.ToString();
+			CheckRestartRequirement(autosaveCombo.SelectedItem.ToString(), settingValue);
+		}
+
+		private void showSpacesCheck_CheckedChanged(object sender, EventArgs e) => CheckRestartRequirement(showSpacesCheck.Checked, Properties.Settings.Default.ShowSpaces);
+		private void autocompleteCheck_CheckedChanged(object sender, EventArgs e) => CheckRestartRequirement(autocompleteCheck.Checked, Properties.Settings.Default.Autocomplete);
+		private void toolTipCheck_CheckedChanged(object sender, EventArgs e) => CheckRestartRequirement(toolTipCheck.Checked, Properties.Settings.Default.ToolTips);
+
+		private void CheckRestartRequirement(object currentState, object prevSetting)
+		{
+			if (currentState.ToString() != prevSetting.ToString())
+			{
+				gI_RestartItemCount++;
+				restartLabel.Visible = true;
+			}
+			else
+			{
+				if (gI_RestartItemCount != 0)
+				{
+					gI_RestartItemCount--;
+				}
+
+				if (gI_RestartItemCount == 0)
+				{
+					restartLabel.Visible = false;
+				}
+			}
+		}
+
+		#endregion Critical settings where the app needs to restart
 	}
 }
