@@ -19,12 +19,12 @@ namespace ScriptEditor
 		/// <summary>
 		/// Store the currently edited file name and path.
 		/// </summary>
-		private string _currentFilePath;
+		private string gS_CurrentFilePath;
 
 		/// <summary>
 		/// Store the previous zoom value to fix a strange bug.
 		/// </summary>
-		private int _prevZoom = 100;
+		private int gI_PrevZoom = 100;
 
 		#region Constructors
 
@@ -60,7 +60,7 @@ namespace ScriptEditor
 
 		private void FormMain_Closing(object sender, FormClosingEventArgs e)
 		{
-			// If the file has unsaved changes
+			// If the current file has unsaved changes
 			if (!IsFileSaved())
 			{
 				// Stop closing the form if saving failed or the user clicked "Cancel"
@@ -81,12 +81,12 @@ namespace ScriptEditor
 
 		#region Edit menu
 
-		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => HandleUndo();
-		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => HandleRedo();
+		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(0);
+		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(1);
 
-		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => textEditor.Cut();
-		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => textEditor.Copy();
-		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => textEditor.Paste();
+		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => CutToClipboard();
+		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => CopyToClipboard();
+		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => PasteFromClipboard();
 
 		private void Edit_Find_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowFindDialog();
 		private void Edit_Replace_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowReplaceDialog();
@@ -112,17 +112,7 @@ namespace ScriptEditor
 		private void Tools_PrevBookmark_MenuItem_Click(object sender, EventArgs e) => textEditor.GotoPrevBookmark(textEditor.Selection.Start.iLine);
 		private void Tools_ClearAllBookmarks_MenuItem_Click(object sender, EventArgs e) => ClearAllBookmarks();
 
-		private void Tools_Settings_MenuItem_Click(object sender, EventArgs e)
-		{
-			using (FormSettings form = new FormSettings())
-			{
-				// If the user pressed "Apply"
-				if (form.ShowDialog(this) == DialogResult.OK)
-				{
-					ApplyUserSettings();
-				}
-			}
-		}
+		private void Tools_Settings_MenuItem_Click(object sender, EventArgs e) => OpenSettingsForm();
 
 		#endregion Tools menu
 
@@ -166,6 +156,48 @@ namespace ScriptEditor
 			saveToolStripButton.Enabled = true;
 
 			DoSyntaxHighlighting(e);
+
+			// If "Show Spaces" is enabled and the text contains spaces
+			if (Properties.Settings.Default.ShowSpaces && textEditor.Text.Contains(" "))
+			{
+				// Cache caret position
+				Place caretPosition = textEditor.Selection.Start;
+
+				// Scan all lines
+				for (int i = 0; i < textEditor.LinesCount; i++)
+				{
+					// If a line contains whitespace
+					if (textEditor.GetLineText(i).Contains(" "))
+					{
+						textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+						textEditor.InsertText(textEditor.GetLineText(i).Replace(" ", "·"));
+					}
+				}
+
+				// Restore caret position
+				textEditor.Selection.Start = caretPosition;
+				textEditor.Invalidate();
+			}
+			else if (!Properties.Settings.Default.ShowSpaces && textEditor.Text.Contains("·")) // Too lazy to somehow merge these 2 "if" statements...
+			{
+				// Cache caret position
+				Place caretPosition = textEditor.Selection.Start;
+
+				// Scan all lines
+				for (int i = 0; i < textEditor.LinesCount; i++)
+				{
+					// If a line contains a "whitespace dot"
+					if (textEditor.GetLineText(i).Contains("·"))
+					{
+						textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+						textEditor.InsertText(textEditor.GetLineText(i).Replace("·", " "));
+					}
+				}
+
+				// Restore caret position
+				textEditor.Selection.Start = caretPosition;
+				textEditor.Invalidate();
+			}
 		}
 
 		private void textEditor_SelectionChanged(object sender, EventArgs e) => DoStatusCounting();
@@ -186,17 +218,17 @@ namespace ScriptEditor
 		private void textEditor_ZoomChanged(object sender, EventArgs e)
 		{
 			// If zoom increased
-			if (textEditor.Zoom > _prevZoom)
+			if (textEditor.Zoom > gI_PrevZoom)
 			{
-				_prevZoom += 5;
-				textEditor.Zoom = _prevZoom;
+				gI_PrevZoom += 5;
+				textEditor.Zoom = gI_PrevZoom;
 			}
 
 			// If zoom decreased
-			if (textEditor.Zoom < _prevZoom)
+			if (textEditor.Zoom < gI_PrevZoom)
 			{
-				_prevZoom -= 5;
-				textEditor.Zoom = _prevZoom;
+				gI_PrevZoom -= 5;
+				textEditor.Zoom = gI_PrevZoom;
 			}
 
 			// Update the label
@@ -206,10 +238,13 @@ namespace ScriptEditor
 
 			// Limit the zoom
 			if (textEditor.Zoom > 500)
+			{
 				textEditor.Zoom = 500;
-
-			if (textEditor.Zoom < 25)
+			}
+			else if (textEditor.Zoom < 25)
+			{
 				textEditor.Zoom = 25;
+			}
 		}
 
 		private void undoRedoState_Changed(object sender, EventArgs e)
@@ -248,12 +283,12 @@ namespace ScriptEditor
 		private void ToolStrip_ChangeButton_Click(object sender, EventArgs e) => ShowPathSelectionForm();
 		private void ToolStrip_SaveButton_Click(object sender, EventArgs e) => SaveFile();
 
-		private void ToolStrip_UndoButton_Click(object sender, EventArgs e) => HandleUndo();
-		private void ToolStrip_RedoButton_Click(object sender, EventArgs e) => HandleRedo();
+		private void ToolStrip_UndoButton_Click(object sender, EventArgs e) => HandleUndoRedo(0);
+		private void ToolStrip_RedoButton_Click(object sender, EventArgs e) => HandleUndoRedo(1);
 
-		private void ToolStrip_CutButton_Click(object sender, EventArgs e) => textEditor.Cut();
-		private void ToolStrip_CopyButton_Click(object sender, EventArgs e) => textEditor.Copy();
-		private void ToolStrip_PasteButton_Click(object sender, EventArgs e) => textEditor.Paste();
+		private void ToolStrip_CutButton_Click(object sender, EventArgs e) => CutToClipboard();
+		private void ToolStrip_CopyButton_Click(object sender, EventArgs e) => CopyToClipboard();
+		private void ToolStrip_PasteButton_Click(object sender, EventArgs e) => PasteFromClipboard();
 
 		private void ToolStrip_CommentButton_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
 		private void ToolStrip_UncommentButton_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
@@ -274,7 +309,7 @@ namespace ScriptEditor
 		private void StatusStrip_ResetZoomButton_Click(object sender, EventArgs e)
 		{
 			// Reset zoom values
-			_prevZoom = 100;
+			gI_PrevZoom = 100;
 			textEditor.Zoom = 100;
 
 			resetZoomButton.Visible = false;
@@ -284,9 +319,9 @@ namespace ScriptEditor
 
 		#region ContextMenu items
 
-		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => textEditor.Cut();
-		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => textEditor.Copy();
-		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => textEditor.Paste();
+		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => CutToClipboard();
+		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => CopyToClipboard();
+		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => PasteFromClipboard();
 
 		private void ContextMenu_CommentItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
 		private void ContextMenu_UncommentItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
@@ -300,8 +335,7 @@ namespace ScriptEditor
 		private void CheckRequiredPaths()
 		{
 			// If the required paths aren't defined yet (script folder and game folder)
-			if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ScriptPath)
-				|| string.IsNullOrWhiteSpace(Properties.Settings.Default.GamePath))
+			if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ScriptPath) || string.IsNullOrWhiteSpace(Properties.Settings.Default.GamePath))
 			{
 				DialogResult result = DarkMessageBox.Show(this, Resources.Messages.PathsNotFound,
 					"Paths not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
@@ -374,7 +408,7 @@ namespace ScriptEditor
 			// ToolTip title with brackets added
 			e.ToolTipTitle = "[" + e.HoveredWord + "]";
 
-			// Get resources from the HeaderToolTips.resx file
+			// Get resources from HeaderToolTips.resx
 			ResourceManager headerToolTipResource = new ResourceManager(typeof(Resources.HeaderToolTips));
 			ResourceSet resourceSet = headerToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
@@ -392,7 +426,7 @@ namespace ScriptEditor
 
 		private void ShowCommandToolTips(ToolTipNeededEventArgs e)
 		{
-			// Get resources from the CommandToolTips.resx file
+			// Get resources from CommandToolTips.resx
 			ResourceManager commandToolTipResource = new ResourceManager(typeof(Resources.CommandToolTips));
 			ResourceSet resourceSet = commandToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
@@ -473,6 +507,7 @@ namespace ScriptEditor
 				SyntaxColors.Headers, SyntaxColors.NewCommands, SyntaxColors.OldCommands, SyntaxColors.Unknown);
 
 			// Apply styles (THE ORDER IS IMPORTANT!)
+			e.ChangedRange.SetStyle(SyntaxColors.Whitespace, "·");
 			e.ChangedRange.SetStyle(SyntaxColors.Comments, @";.*$", RegexOptions.Multiline);
 			e.ChangedRange.SetStyle(SyntaxColors.Regular, @"[\[\],=]");
 			e.ChangedRange.SetStyle(SyntaxColors.References, @"\$[a-fA-F0-9][a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?");
@@ -500,34 +535,29 @@ namespace ScriptEditor
 			int[] bookmarkLines = GetBookmarkedLines();
 			textEditor.Bookmarks.Clear();
 
-			// Get current scroll position
+			// Store current scroll position
 			int scrollPosition = textEditor.VerticalScroll.Value;
 
-			List<string> tidiedlines = new List<string>();
+			bool areSpacesVisible = Properties.Settings.Default.ShowSpaces;
+			string editorContent = areSpacesVisible ? textEditor.Text.Replace("·", " ") : textEditor.Text;
 
-			if (trimOnly)
-			{
-				// Trim whitespace on every line
-				tidiedlines = SyntaxTidy.TrimLines(textEditor.Text);
-			}
-			else
-			{
-				// Reindent all lines
-				tidiedlines = SyntaxTidy.ReindentLines(textEditor.Text);
-			}
+			// Setup a list to store all tidied lines
+			List<string> tidiedlines = trimOnly ? SyntaxTidy.TrimLines(editorContent) : SyntaxTidy.ReindentLines(editorContent);
 
 			// Scan all lines
 			for (int i = 0; i < textEditor.LinesCount; i++)
 			{
+				string currentTidiedLine = areSpacesVisible ? tidiedlines[i].Replace(" ", "·") : tidiedlines[i];
+
 				// If a line has changed
-				if (textEditor.GetLineText(i) != tidiedlines[i])
+				if (textEditor.GetLineText(i) != currentTidiedLine)
 				{
 					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
 					textEditor.InsertText(tidiedlines[i]);
 				}
 			}
 
-			// Go to last scroll position
+			// Go to the last scroll position
 			textEditor.VerticalScroll.Value = scrollPosition;
 			textEditor.UpdateScrollbars();
 
@@ -644,8 +674,8 @@ namespace ScriptEditor
 			// Scan all lines
 			for (int i = 0; i < textEditor.LinesCount; i++)
 			{
-				// Find the line that contains the node text
-				if (textEditor.GetLineText(i).ToLower().Contains(objectBrowser.SelectedNodes[0].Text.ToLower()))
+				// Find the line which contains the node text
+				if (textEditor.GetLineText(i).ToLower().Replace("·", " ").Contains(objectBrowser.SelectedNodes[0].Text.ToLower()))
 				{
 					textEditor.Focus();
 					textEditor.Navigate(i); // Scroll to the line position
@@ -672,14 +702,16 @@ namespace ScriptEditor
 
 		private void AddObjectBrowserNodes(int lineNumber, string filter)
 		{
+			bool areSpacesVisible = Properties.Settings.Default.ShowSpaces;
+
 			// Regex rule to find lines that start with "Name = "
-			Regex rgx = new Regex(@"\bName\s?=\s?");
+			Regex rgx = areSpacesVisible ? new Regex(@"\bName·?=·?") : new Regex(@"\bName\s?=\s?");
 
 			// If we found a line that starts with our Regex rule ("Name = ")
 			if (rgx.IsMatch(textEditor.GetLineText(lineNumber)))
 			{
-				// Create a new node, remove "Name = " and trim it, so we only get the level name string
-				DarkTreeNode levelNode = new DarkTreeNode(rgx.Replace(textEditor.GetLineText(lineNumber), string.Empty).Trim());
+				// Create a new node, remove "Name = ", replace dots with spaces and trim it, so we only get the level name string
+				DarkTreeNode levelNode = new DarkTreeNode(rgx.Replace(textEditor.GetLineText(lineNumber), string.Empty).Replace("·", " ").Trim());
 
 				// If the level name matches the filter (It always does if there's nothing in the search bar)
 				if (levelNode.Text.ToLower().Contains(filter.ToLower()))
@@ -717,6 +749,7 @@ namespace ScriptEditor
 
 		private void ShowPathSelectionForm()
 		{
+			// If the current file has unsaved changes
 			if (!IsFileSaved())
 			{
 				return;
@@ -744,7 +777,7 @@ namespace ScriptEditor
 				foreach (string file in files)
 				{
 					// If the file is not a text file
-					if (!file.ToLower().Contains(".txt"))
+					if (!file.ToLower().EndsWith(".txt"))
 					{
 						continue;
 					}
@@ -790,11 +823,25 @@ namespace ScriptEditor
 		{
 			try
 			{
-				textEditor.OpenFile(filePath, Encoding.GetEncoding(1252));
-				ToggleInterface(true);
+				// "Copy" the file contents into a string
+				string fileContent = File.ReadAllText(filePath, Encoding.GetEncoding(1252));
+
+				// Replace all spaces with a dot if the user wants to have visible spaces
+				if (Properties.Settings.Default.ShowSpaces && fileContent.Contains(" "))
+				{
+					fileContent = fileContent.Replace(" ", "·");
+				}
+
+				// "Paste" the file contents into the textEditor
+				textEditor.Text = fileContent;
+
+				textEditor.IsChanged = false; // Opening the file has changed the text, so set it back to false
+				textEditor.ClearUndo();
+
+				ToggleInterface(true); // Enable the interface since we got a file we can edit
 
 				// Store the file (with it's path) and open it in the editor
-				_currentFilePath = filePath;
+				gS_CurrentFilePath = filePath;
 
 				// Disable "Save" buttons since we've just opened the file
 				saveToolStripMenuItem.Enabled = false;
@@ -803,50 +850,16 @@ namespace ScriptEditor
 				// Update the object browser with levels (if they exist)
 				UpdateObjectBrowser(string.Empty);
 
-				if (Properties.Settings.Default.AutoSaveTime != 0)
+				// If Autosave is enabled
+				if (Properties.Settings.Default.AutosaveTime != 0)
 				{
-					var autoSaveTimer = new System.Timers.Timer();
-					autoSaveTimer.Elapsed += autoSaveTimer_Elapsed;
-					autoSaveTimer.Interval = Properties.Settings.Default.AutoSaveTime * (60 * 1000);
-					autoSaveTimer.Enabled = true;
+					StartAutosaveTimer();
 				}
 			}
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				UnloadCurrentFile();
-			}
-		}
-
-		private void autoSaveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-		{
-			string currentFolder = Path.GetDirectoryName(_currentFilePath);
-			string currentFileName = Path.GetFileNameWithoutExtension(_currentFilePath);
-			string autosaveFilePath = currentFolder + "\\" + currentFileName + ".autosave";
-
-			try
-			{
-				File.WriteAllText(autosaveFilePath, textEditor.Text, Encoding.GetEncoding(1252));
-				autoSaveLabel.Invoke(new Action(() => autoSaveLabel_Show(true)));
-			}
-			catch (Exception)
-			{
-				autoSaveLabel.Invoke(new Action(() => autoSaveLabel_Show(false)));
-			}
-		}
-
-		private void autoSaveLabel_Show(bool success)
-		{
-			if (success)
-			{
-				string currentTime = DateTime.Now.TimeOfDay.ToString().Substring(0, 5);
-				autoSaveLabel.Text = "Autosave Completed! (" + currentTime + ")";
-				autoSaveLabel.Visible = true;
-			}
-			else
-			{
-				autoSaveLabel.Text = "ERROR: Autosave Failed!";
-				autoSaveLabel.Visible = true;
 			}
 		}
 
@@ -860,7 +873,7 @@ namespace ScriptEditor
 			if (textEditor.IsChanged)
 			{
 				DialogResult result = DarkMessageBox.Show(this,
-				string.Format(Resources.Messages.UnsavedChanges, Path.GetFileName(_currentFilePath)), "Unsaved changes!",
+				string.Format(Resources.Messages.UnsavedChanges, Path.GetFileName(gS_CurrentFilePath)), "Unsaved changes!",
 				MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
 				if (result == DialogResult.Yes)
@@ -882,6 +895,7 @@ namespace ScriptEditor
 
 		private bool SaveFile()
 		{
+			// If "Reindent on Save" is enabled
 			if (Properties.Settings.Default.ReindentOnSave)
 			{
 				TidyScript();
@@ -889,8 +903,11 @@ namespace ScriptEditor
 
 			try
 			{
-				// Save changes to file
-				textEditor.SaveToFile(_currentFilePath, Encoding.GetEncoding(1252));
+				// Replace the dots with spaces
+				string editorContent = textEditor.Text.Replace("·", " ");
+
+				// Save to file
+				File.WriteAllText(gS_CurrentFilePath, editorContent, Encoding.GetEncoding(1252));
 				textEditor.IsChanged = false;
 
 				// Disable "Save" buttons since we've just saved
@@ -914,6 +931,50 @@ namespace ScriptEditor
 			return true; // If saving was successful
 		}
 
+		private void StartAutosaveTimer()
+		{
+			var autosaveTimer = new System.Timers.Timer(); // I don't like vars but ¯\_(ツ)_/¯
+			autosaveTimer.Elapsed += autosaveTimer_Elapsed;
+			autosaveTimer.Interval = Properties.Settings.Default.AutosaveTime * (60 * 1000);
+			autosaveTimer.Enabled = true; // Start the timer
+		}
+
+		private void autosaveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			string currentFolder = Path.GetDirectoryName(gS_CurrentFilePath);
+			string currentFileName = Path.GetFileNameWithoutExtension(gS_CurrentFilePath);
+			string autosaveFilePath = currentFolder + "\\" + currentFileName + ".autosave";
+
+			try
+			{
+				// Replace the dots with spaces
+				string editorContent = textEditor.Text.Replace("·", " ");
+
+				// Save to file
+				File.WriteAllText(autosaveFilePath, editorContent, Encoding.GetEncoding(1252));
+				autosaveLabel.Invoke(new Action(() => autosaveLabel_Show(true)));
+			}
+			catch (Exception)
+			{
+				autosaveLabel.Invoke(new Action(() => autosaveLabel_Show(false)));
+			}
+		}
+
+		private void autosaveLabel_Show(bool success)
+		{
+			if (success)
+			{
+				string currentTime = DateTime.Now.TimeOfDay.ToString().Substring(0, 5);
+				autosaveLabel.Text = "Autosave Completed! (" + currentTime + ")";
+				autosaveLabel.Visible = true;
+			}
+			else
+			{
+				autosaveLabel.Text = "ERROR: Autosave Failed!";
+				autosaveLabel.Visible = true;
+			}
+		}
+
 		#endregion File saving
 
 		// TODO: UNSORTED CODE STARTS HERE:
@@ -926,11 +987,30 @@ namespace ScriptEditor
 			}
 		}
 
-		private void HandleUndo()
+		private void HandleUndoRedo(int index) // 0 - Undo, 1 - Redo
 		{
-			textEditor.Undo();
+			string editorContent = string.Empty;
 
-			if (textEditor.Text == File.ReadAllText(_currentFilePath))
+			// If "Show Spaces" is enabled
+			if (Properties.Settings.Default.ShowSpaces)
+			{
+				TriggerUndoRedo(index);
+
+				while (textEditor.Text.Contains(" "))
+				{
+					TriggerUndoRedo(index);
+				}
+
+				editorContent = textEditor.Text.Replace("·", " ");
+			}
+			else
+			{
+				TriggerUndoRedo(index);
+				editorContent = textEditor.Text;
+			}
+
+			// If the content is unchanged
+			if (editorContent == File.ReadAllText(gS_CurrentFilePath))
 			{
 				textEditor.IsChanged = false;
 				saveToolStripMenuItem.Enabled = false;
@@ -938,15 +1018,15 @@ namespace ScriptEditor
 			}
 		}
 
-		private void HandleRedo()
+		private void TriggerUndoRedo(int index)
 		{
-			textEditor.Redo();
-
-			if (textEditor.Text == File.ReadAllText(_currentFilePath))
+			if (index == 0)
 			{
-				textEditor.IsChanged = false;
-				saveToolStripMenuItem.Enabled = false;
-				saveToolStripButton.Enabled = false;
+				textEditor.Undo();
+			}
+			else if (index == 1)
+			{
+				textEditor.Redo();
 			}
 		}
 
@@ -1002,7 +1082,7 @@ namespace ScriptEditor
 		private void UnloadCurrentFile()
 		{
 			// Unload the file
-			_currentFilePath = string.Empty;
+			gS_CurrentFilePath = string.Empty;
 
 			// Clear the editor
 			textEditor.Clear();
@@ -1042,6 +1122,67 @@ namespace ScriptEditor
 		{
 			documentMap.Visible = state;
 			documentMapToolStripMenuItem.Checked = state;
+		}
+
+		private void OpenSettingsForm()
+		{
+			// Cache critical settings
+			int autosaveCache = Properties.Settings.Default.AutosaveTime;
+			bool showSpacesCache = Properties.Settings.Default.ShowSpaces;
+			bool autocompleteCache = Properties.Settings.Default.Autocomplete;
+			bool toolTipCache = Properties.Settings.Default.ToolTips;
+
+			using (FormSettings form = new FormSettings())
+			{
+				// If the user pressed "Apply"
+				if (form.ShowDialog(this) == DialogResult.OK)
+				{
+					ApplyUserSettings();
+
+					if (form.gI_RestartItemCount > 0) // GLOBALZZZ NUUUU THIZ IZ BED !!! Welp, find a better solution then. :P
+					{
+						// If the current file has unsaved changes
+						if (!IsFileSaved())
+						{
+							// Saving failed or the user clicked "Cancel"
+							// Therefore restore the previous critical settings
+							Properties.Settings.Default.AutosaveTime = autosaveCache;
+							Properties.Settings.Default.ShowSpaces = showSpacesCache;
+							Properties.Settings.Default.Autocomplete = autocompleteCache;
+							Properties.Settings.Default.ToolTips = toolTipCache;
+
+							Properties.Settings.Default.Save();
+							OpenSettingsForm();
+							return; // DO NOT CLOSE THE APP !!! (ﾉ°Д°)ﾉ︵﻿ ┻━┻
+						}
+
+						textEditor.IsChanged = false; // Prevent re-check of IsFileSaved()
+						Application.Restart();
+					}
+				}
+			}
+		}
+
+		private void CutToClipboard()
+		{
+			if (!string.IsNullOrEmpty(textEditor.SelectedText))
+			{
+				Clipboard.SetText(textEditor.SelectedText.Replace("·", " "));
+				textEditor.SelectedText = string.Empty;
+			}
+		}
+
+		private void CopyToClipboard()
+		{
+			if (!string.IsNullOrEmpty(textEditor.SelectedText))
+			{
+				Clipboard.SetText(textEditor.SelectedText.Replace("·", " "));
+			}
+		}
+
+		private void PasteFromClipboard()
+		{
+			textEditor.SelectedText = Clipboard.GetText();
 		}
 	}
 }

@@ -74,9 +74,9 @@
 			// 
 			this.refSelectionComboBox.FormattingEnabled = true;
 			this.refSelectionComboBox.Items.AddRange(new object[] {
-            "_MNEMONIC CONSTANTS",
-            "DAMAGE ENEMY LIST",
-            "KEYBOARD SCANCODES LIST",
+            "MnemonicConstants",
+            "DamageEnemyList",
+            "KeyboardScancodeList",
             "OCB LIST",
             "SCRIPT NEW COMMANDS",
             "SCRIPT OLD COMMANDS",
