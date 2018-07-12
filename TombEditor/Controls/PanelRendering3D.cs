@@ -483,7 +483,7 @@ namespace TombEditor.Controls
                 {
                     // Select or bookmark object
                     if (ModifierKeys.HasFlag(Keys.Shift))
-                        _editor.BookmarkedObject = ((PickingResultObject)newPicking).ObjectInstance;
+                        EditorActions.BookmarkObject(((PickingResultObject)newPicking).ObjectInstance);
                     else
                         _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
                 }
