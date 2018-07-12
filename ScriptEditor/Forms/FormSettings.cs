@@ -7,10 +7,14 @@ namespace ScriptEditor
 {
 	public partial class FormSettings : DarkForm
 	{
+		#region Global variables
+
 		/// <summary>
 		/// The number of critical settings changed
 		/// </summary>
 		public int gI_RestartItemCount = 0;
+
+		#endregion Global variables
 
 		#region Constructors
 

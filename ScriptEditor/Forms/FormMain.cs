@@ -16,15 +16,19 @@ namespace ScriptEditor
 {
 	public partial class FormMain : DarkForm
 	{
+		#region Global variables
+
 		/// <summary>
 		/// Store the currently edited file name and path.
 		/// </summary>
 		private string gS_CurrentFilePath;
 
 		/// <summary>
-		/// Store the previous zoom value to fix a strange bug.
+		/// Store the previous zoom value to fix a strange FCTB bug.
 		/// </summary>
 		private int gI_PrevZoom = 100;
+
+		#endregion Global variables
 
 		#region Constructors
 
@@ -32,7 +36,7 @@ namespace ScriptEditor
 		{
 			InitializeComponent();
 
-			// Disable the interface
+			// Disable the interface since no file has been loaded yet
 			ToggleInterface(false);
 
 			// If Autocomplete is enabled in the settings
@@ -70,82 +74,126 @@ namespace ScriptEditor
 
 		#endregion Form actions
 
-		#region File menu
+		#region Application launch methods
 
-		private void File_Change_MenuItem_Click(object sender, EventArgs e) => ShowPathSelectionForm();
-		private void File_Save_MenuItem_Click(object sender, EventArgs e) => SaveFile();
-		private void File_StringTable_MenuItem_Click(object sender, EventArgs e) => ShowStringTable();
-		private void File_Exit_MenuItem_Click(object sender, EventArgs e) => Close();
-
-		#endregion File menu
-
-		#region Edit menu
-
-		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(0);
-		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(1);
-
-		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => CutToClipboard();
-		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => CopyToClipboard();
-		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => PasteFromClipboard();
-
-		private void Edit_Find_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowFindDialog();
-		private void Edit_Replace_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowReplaceDialog();
-
-		private void Edit_SelectAll_MenuItem_Click(object sender, EventArgs e)
+		private void CheckRequiredPaths()
 		{
-			textEditor.SelectAll();
-			DoStatusCounting(); // So it updates the statusbar.
+			// If the required paths aren't defined yet (script folder and game folder)
+			if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ScriptPath) || string.IsNullOrWhiteSpace(Properties.Settings.Default.GamePath))
+			{
+				DialogResult result = DarkMessageBox.Show(this, Resources.Messages.PathsNotFound,
+					"Paths not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+
+				if (result == DialogResult.Yes)
+				{
+					// Show path selection dialog
+					ShowPathSelectionForm();
+				}
+			}
+			else
+			{
+				// Read all files from the script folder
+				ReadScriptFolder();
+			}
 		}
 
-		#endregion Edit menu
-
-		#region Tools menu
-
-		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e) => TidyScript();
-		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e) => TidyScript(true);
-
-		private void Tools_CommentLines_MenuItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
-		private void Tools_Uncomment_MenuItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
-
-		private void Tools_ToggleBookmark_MenuItem_Click(object sender, EventArgs e) => ToggleBookmark();
-		private void Tools_NextBookmark_MenuItem_Click(object sender, EventArgs e) => textEditor.GotoNextBookmark(textEditor.Selection.Start.iLine);
-		private void Tools_PrevBookmark_MenuItem_Click(object sender, EventArgs e) => textEditor.GotoPrevBookmark(textEditor.Selection.Start.iLine);
-		private void Tools_ClearAllBookmarks_MenuItem_Click(object sender, EventArgs e) => ClearAllBookmarks();
-
-		private void Tools_Settings_MenuItem_Click(object sender, EventArgs e) => OpenSettingsForm();
-
-		#endregion Tools menu
-
-		#region View menu
-
-		private void View_ObjectBrowser_MenuItem_Click(object sender, EventArgs e)
+		private void ApplyUserSettings()
 		{
-			ToggleObjectBrowser(!objectBrowser.Visible);
-			Properties.Settings.Default.ObjBrowserVisible = objectBrowser.Visible;
-			Properties.Settings.Default.Save();
+			textEditor.Font = new Font(Properties.Settings.Default.FontFace, Convert.ToSingle(Properties.Settings.Default.FontSize));
+			textEditor.AutoCompleteBrackets = Properties.Settings.Default.CloseBrackets;
+			textEditor.WordWrap = Properties.Settings.Default.WordWrap;
+			textEditor.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
+
+			toolStrip.Visible = Properties.Settings.Default.ShowToolbar;
+			showStringTableButton.Visible = toolStrip.Visible;
+
+			ToggleObjectBrowser(Properties.Settings.Default.ObjBrowserVisible);
+			ToggleReferenceBrowser(Properties.Settings.Default.RefBrowserVisible);
+			ToggleDocumentMap(Properties.Settings.Default.DocMapVisible);
 		}
 
-		private void View_ReferenceBrowser_MenuItem_Click(object sender, EventArgs e)
+		private void GenerateAutocompleteMenu()
 		{
-			ToggleReferenceBrowser(!referenceBrowser.Visible);
-			Properties.Settings.Default.RefBrowserVisible = referenceBrowser.Visible;
-			Properties.Settings.Default.Save();
+			AutocompleteMenu popupMenu = new AutocompleteMenu(textEditor)
+			{
+				AllowTabKey = true,
+				BackColor = Color.FromArgb(64, 73, 74),
+				ForeColor = Color.Gainsboro,
+				SearchPattern = @"[\w\.:=!<>\[\]]",
+				SelectedColor = Color.SteelBlue
+			};
+
+			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
 		}
 
-		private void View_DocumentMap_MenuItem_Click(object sender, EventArgs e)
+		#endregion Application launch methods
+
+		#region Interface methods
+
+		private void ToggleInterface(bool state)
 		{
-			ToggleDocumentMap(!documentMap.Visible);
-			Properties.Settings.Default.DocMapVisible = documentMap.Visible;
-			Properties.Settings.Default.Save();
+			// Toggle editor
+			textEditor.Enabled = state;
+
+			// Toggle "File" menu items
+			saveToolStripMenuItem.Enabled = state;
+			buildToolStripMenuItem.Enabled = state;
+
+			// Toggle "Edit" menu items
+			cutToolStripMenuItem.Enabled = state;
+			copyToolStripMenuItem.Enabled = state;
+			pasteToolStripMenuItem.Enabled = state;
+			findToolStripMenuItem.Enabled = state;
+			replaceToolStripMenuItem.Enabled = state;
+			selectAllToolStripMenuItem.Enabled = state;
+
+			// Toggle "Tools" menu items
+			reindentScriptToolStripMenuItem.Enabled = state;
+			trimWhitespaceToolStripMenuItem.Enabled = state;
+			commentToolStripMenuItem.Enabled = state;
+			uncommentToolStripMenuItem.Enabled = state;
+			toggleBookmarkToolStripMenuItem.Enabled = state;
+			nextBookmarkToolStripMenuItem.Enabled = state;
+			prevBookmarkToolStripMenuItem.Enabled = state;
+			clearBookmarksToolStripMenuItem.Enabled = state;
+
+			// Toggle ToolStrip buttons
+			saveToolStripButton.Enabled = state;
+			buildToolStripButton.Enabled = state;
+			cutToolStripButton.Enabled = state;
+			copyToolStripButton.Enabled = state;
+			pasteToolStripButton.Enabled = state;
+			commentToolStripButton.Enabled = state;
+			uncommentToolStripButton.Enabled = state;
+			toggleBookmarkToolStripButton.Enabled = state;
+			prevBookmarkToolStripButton.Enabled = state;
+			nextBookmarkToolStripButton.Enabled = state;
+			clearBookmarksToolStripButton.Enabled = state;
 		}
 
-		#endregion View menu
+		private void ToggleObjectBrowser(bool state)
+		{
+			objectBrowser.Visible = state;
+			searchTextBox.Visible = state;
+			objectBrowserBox.Visible = state;
+			objectBrowserSplitter.Visible = state;
+			objectBrowserToolStripMenuItem.Checked = state;
+		}
 
-		#region Help menu
+		private void ToggleReferenceBrowser(bool state)
+		{
+			referenceBrowser.Visible = state;
+			refBrowserSplitter.Visible = state;
+			referenceBrowserToolStripMenuItem.Checked = state;
+		}
 
-		private void Help_About_MenuItem_Click(object sender, EventArgs e) => ShowAboutForm();
+		private void ToggleDocumentMap(bool state)
+		{
+			documentMap.Visible = state;
+			documentMapToolStripMenuItem.Checked = state;
+		}
 
-		#endregion Help menu
+		#endregion Interface methods
 
 		#region Editor events
 
@@ -208,7 +256,7 @@ namespace ScriptEditor
 		private void textEditor_MouseDown(object sender, MouseEventArgs e)
 		{
 			// If the user right clicked somewhere in the editor and has nothing selected
-			if (e.Button == MouseButtons.Right && string.IsNullOrEmpty(textEditor.SelectedText))
+			if (e.Button == MouseButtons.Right && !textEditor.Selection.Contains(textEditor.PointToPlace(e.Location)))
 			{
 				// Move the caret to the new position
 				textEditor.Selection.Start = textEditor.PointToPlace(e.Location);
@@ -278,6 +326,96 @@ namespace ScriptEditor
 
 		#endregion Editor events
 
+		#region File menu items
+
+		private void File_Change_MenuItem_Click(object sender, EventArgs e) => ShowPathSelectionForm();
+		private void File_Save_MenuItem_Click(object sender, EventArgs e) => SaveFile();
+		private void File_StringTable_MenuItem_Click(object sender, EventArgs e) => ShowStringTable();
+		private void File_Exit_MenuItem_Click(object sender, EventArgs e) => Close();
+
+		#endregion File menu items
+
+		#region Edit menu items
+
+		private void Edit_Undo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(0);
+		private void Edit_Redo_MenuItem_Click(object sender, EventArgs e) => HandleUndoRedo(1);
+
+		private void Edit_Cut_MenuItem_Click(object sender, EventArgs e) => CutToClipboard();
+		private void Edit_Copy_MenuItem_Click(object sender, EventArgs e) => CopyToClipboard();
+		private void Edit_Paste_MenuItem_Click(object sender, EventArgs e) => PasteFromClipboard();
+
+		private void Edit_Find_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowFindDialog();
+		private void Edit_Replace_MenuItem_Click(object sender, EventArgs e) => textEditor.ShowReplaceDialog();
+
+		private void Edit_SelectAll_MenuItem_Click(object sender, EventArgs e)
+		{
+			textEditor.SelectAll();
+			DoStatusCounting(); // So it updates the statusbar.
+		}
+
+		#endregion Edit menu items
+
+		#region Tools menu items
+
+		private void Tools_ReindentScript_MenuItem_Click(object sender, EventArgs e) => TidyScript();
+		private void Tools_TrimWhitespace_MenuItem_Click(object sender, EventArgs e) => TidyScript(true);
+
+		private void Tools_CommentLines_MenuItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
+		private void Tools_Uncomment_MenuItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
+
+		private void Tools_ToggleBookmark_MenuItem_Click(object sender, EventArgs e) => ToggleBookmark();
+		private void Tools_NextBookmark_MenuItem_Click(object sender, EventArgs e) => textEditor.GotoNextBookmark(textEditor.Selection.Start.iLine);
+		private void Tools_PrevBookmark_MenuItem_Click(object sender, EventArgs e) => textEditor.GotoPrevBookmark(textEditor.Selection.Start.iLine);
+		private void Tools_ClearAllBookmarks_MenuItem_Click(object sender, EventArgs e) => ClearAllBookmarks();
+
+		private void Tools_Settings_MenuItem_Click(object sender, EventArgs e) => OpenSettingsForm();
+
+		#endregion Tools menu items
+
+		#region View menu items
+
+		private void View_ObjectBrowser_MenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleObjectBrowser(!objectBrowser.Visible);
+			Properties.Settings.Default.ObjBrowserVisible = objectBrowser.Visible;
+			Properties.Settings.Default.Save();
+		}
+
+		private void View_ReferenceBrowser_MenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleReferenceBrowser(!referenceBrowser.Visible);
+			Properties.Settings.Default.RefBrowserVisible = referenceBrowser.Visible;
+			Properties.Settings.Default.Save();
+		}
+
+		private void View_DocumentMap_MenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleDocumentMap(!documentMap.Visible);
+			Properties.Settings.Default.DocMapVisible = documentMap.Visible;
+			Properties.Settings.Default.Save();
+		}
+
+		#endregion View menu items
+
+		#region Help menu items
+
+		private void Help_About_MenuItem_Click(object sender, EventArgs e) => ShowAboutForm();
+
+		#endregion Help menu items
+
+		#region Context menu items
+
+		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => CutToClipboard();
+		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => CopyToClipboard();
+		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => PasteFromClipboard();
+
+		private void ContextMenu_CommentItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
+		private void ContextMenu_UncommentItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
+
+		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => ToggleBookmark();
+
+		#endregion Context menu items
+
 		#region ToolStrip buttons
 
 		private void ToolStrip_ChangeButton_Click(object sender, EventArgs e) => ShowPathSelectionForm();
@@ -317,72 +455,78 @@ namespace ScriptEditor
 
 		#endregion StatusStrip buttons
 
-		#region ContextMenu items
+		#region Undo / Redo methods
 
-		private void ContextMenu_CutItem_Click(object sender, EventArgs e) => CutToClipboard();
-		private void ContextMenu_CopyItem_Click(object sender, EventArgs e) => CopyToClipboard();
-		private void ContextMenu_PasteItem_Click(object sender, EventArgs e) => PasteFromClipboard();
-
-		private void ContextMenu_CommentItem_Click(object sender, EventArgs e) => textEditor.InsertLinePrefix(";");
-		private void ContextMenu_UncommentItem_Click(object sender, EventArgs e) => textEditor.RemoveLinePrefix(";");
-
-		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => ToggleBookmark();
-
-		#endregion ContextMenu items
-
-		#region Application launch methods
-
-		private void CheckRequiredPaths()
+		private void HandleUndoRedo(int index) // 0 - Undo, 1 - Redo
 		{
-			// If the required paths aren't defined yet (script folder and game folder)
-			if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ScriptPath) || string.IsNullOrWhiteSpace(Properties.Settings.Default.GamePath))
-			{
-				DialogResult result = DarkMessageBox.Show(this, Resources.Messages.PathsNotFound,
-					"Paths not found!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+			string editorContent = string.Empty;
 
-				if (result == DialogResult.Yes)
+			// If "Show Spaces" is enabled
+			if (Properties.Settings.Default.ShowSpaces)
+			{
+				TriggerUndoRedo(index);
+
+				while (textEditor.Text.Contains(" "))
 				{
-					// Show path selection dialog
-					ShowPathSelectionForm();
+					TriggerUndoRedo(index);
 				}
+
+				editorContent = textEditor.Text.Replace("·", " ");
 			}
 			else
 			{
-				// Read all files from the script folder
-				ReadScriptFolder();
+				TriggerUndoRedo(index);
+				editorContent = textEditor.Text;
+			}
+
+			// If the content is unchanged
+			if (editorContent == File.ReadAllText(gS_CurrentFilePath))
+			{
+				textEditor.IsChanged = false;
+				saveToolStripMenuItem.Enabled = false;
+				saveToolStripButton.Enabled = false;
 			}
 		}
 
-		public void ApplyUserSettings()
+		private void TriggerUndoRedo(int index)
 		{
-			textEditor.Font = new Font(Properties.Settings.Default.FontFace, Convert.ToSingle(Properties.Settings.Default.FontSize));
-			textEditor.AutoCompleteBrackets = Properties.Settings.Default.CloseBrackets;
-			textEditor.WordWrap = Properties.Settings.Default.WordWrap;
-			textEditor.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
-
-			toolStrip.Visible = Properties.Settings.Default.ShowToolbar;
-			showStringTableButton.Visible = toolStrip.Visible;
-
-			ToggleObjectBrowser(Properties.Settings.Default.ObjBrowserVisible);
-			ToggleReferenceBrowser(Properties.Settings.Default.RefBrowserVisible);
-			ToggleDocumentMap(Properties.Settings.Default.DocMapVisible);
-		}
-
-		private void GenerateAutocompleteMenu()
-		{
-			AutocompleteMenu popupMenu = new AutocompleteMenu(textEditor)
+			if (index == 0)
 			{
-				AllowTabKey = true,
-				BackColor = Color.FromArgb(64, 73, 74),
-				ForeColor = Color.Gainsboro,
-				SearchPattern = @"[\w\.:=!<>\[\]]",
-				SelectedColor = Color.SteelBlue
-			};
-
-			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
+				textEditor.Undo();
+			}
+			else if (index == 1)
+			{
+				textEditor.Redo();
+			}
 		}
 
-		#endregion Application launch methods
+		#endregion Undo / Redo methods
+
+		#region Clipboard methods
+
+		private void CutToClipboard()
+		{
+			if (!string.IsNullOrEmpty(textEditor.SelectedText))
+			{
+				Clipboard.SetText(textEditor.SelectedText.Replace("·", " "));
+				textEditor.SelectedText = string.Empty;
+			}
+		}
+
+		private void CopyToClipboard()
+		{
+			if (!string.IsNullOrEmpty(textEditor.SelectedText))
+			{
+				Clipboard.SetText(textEditor.SelectedText.Replace("·", " "));
+			}
+		}
+
+		private void PasteFromClipboard()
+		{
+			textEditor.SelectedText = Clipboard.GetText();
+		}
+
+		#endregion Clipboard methods
 
 		#region ToolTips handling
 
@@ -496,6 +640,138 @@ namespace ScriptEditor
 		}
 
 		#endregion ToolTips handling
+
+		#region Object browser handling
+
+		private void searchTextBox_TextChanged(object sender, EventArgs e)
+		{
+			if (string.IsNullOrWhiteSpace(searchTextBox.Text) || searchTextBox.Text == "Search...")
+			{
+				UpdateObjectBrowser(string.Empty);
+			}
+			else
+			{
+				UpdateObjectBrowser(searchTextBox.Text);
+			}
+		}
+
+		private void searchTextBox_GotFocus(object sender, EventArgs e)
+		{
+			if (searchTextBox.Text == "Search...")
+			{
+				searchTextBox.Text = string.Empty;
+			}
+		}
+
+		private void searchTextBox_LostFocus(object sender, EventArgs e)
+		{
+			if (searchTextBox.Text == string.Empty)
+			{
+				searchTextBox.Text = "Search...";
+			}
+		}
+
+		private void objectBrowser_Click(object sender, EventArgs e)
+		{
+			// If the user hasn't selected any nodes
+			if (objectBrowser.SelectedNodes.Count < 1)
+			{
+				return;
+			}
+
+			// If the selected node is a default item
+			if (objectBrowser.SelectedNodes[0] == objectBrowser.Nodes[0] || objectBrowser.SelectedNodes[0] == objectBrowser.Nodes[1])
+			{
+				return;
+			}
+
+			// If the selected node is empty
+			if (objectBrowser.SelectedNodes[0].Text == string.Empty)
+			{
+				return;
+			}
+
+			// Scan all lines
+			for (int i = 0; i < textEditor.LinesCount; i++)
+			{
+				// Find the line which contains the node text
+				if (textEditor.GetLineText(i).ToLower().Replace("·", " ").Contains(objectBrowser.SelectedNodes[0].Text.ToLower()))
+				{
+					textEditor.Focus();
+					textEditor.Navigate(i); // Scroll to the line position
+
+					// Select the line
+					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
+					return;
+				}
+			}
+		}
+
+		private void UpdateObjectBrowser(string filter)
+		{
+			ResetObjectBrowserNodes();
+
+			// Scan all lines
+			for (int i = 0; i < textEditor.LinesCount; i++)
+			{
+				AddObjectBrowserNodes(i, filter);
+			}
+
+			objectBrowser.Invalidate();
+		}
+
+		private void AddObjectBrowserNodes(int lineNumber, string filter)
+		{
+			bool areSpacesVisible = Properties.Settings.Default.ShowSpaces;
+
+			// Regex rule to find lines that start with "Name = "
+			Regex rgx = areSpacesVisible ? new Regex(@"\bName·?=·?") : new Regex(@"\bName\s?=\s?");
+
+			// If we found a line that starts with our Regex rule ("Name = ")
+			if (rgx.IsMatch(textEditor.GetLineText(lineNumber)))
+			{
+				// Create a new node, remove "Name = ", replace dots with spaces and trim it, so we only get the level name string
+				DarkTreeNode levelNode = new DarkTreeNode(rgx.Replace(textEditor.GetLineText(lineNumber), string.Empty).Replace("·", " ").Trim());
+
+				// If the level name matches the filter (It always does if there's nothing in the search bar)
+				if (levelNode.Text.ToLower().Contains(filter.ToLower()))
+				{
+					objectBrowser.Nodes[1].Nodes.Add(levelNode);
+				}
+			}
+
+			// Get header key words
+			List<string> headers = SyntaxKeyWords.Headers();
+
+			// Loop through headers
+			foreach (string header in headers)
+			{
+				// Add brackets to the header
+				string fullHeader = "[" + header + "]";
+
+				// If there are any headers except "Level" headers
+				if (fullHeader != "[Level]" && textEditor.GetLineText(lineNumber).StartsWith(fullHeader))
+				{
+					DarkTreeNode headerNode = new DarkTreeNode(fullHeader);
+
+					// If the header name matches the filter (It always does if there's nothing in the search bar)
+					if (headerNode.Text.ToLower().Contains(filter.ToLower()))
+					{
+						objectBrowser.Nodes[0].Nodes.Add(headerNode);
+					}
+				}
+			}
+		}
+
+		private void ResetObjectBrowserNodes()
+		{
+			objectBrowser.Nodes.Clear();
+			objectBrowser.Nodes.Add(new DarkTreeNode("Headers"));
+			objectBrowser.Nodes.Add(new DarkTreeNode("Levels"));
+			objectBrowser.Invalidate();
+		}
+
+		#endregion Object browser handling
 
 		#region Styles and status
 
@@ -621,130 +897,6 @@ namespace ScriptEditor
 
 		#endregion Bookmark methods
 
-		#region Object browser handling
-
-		private void searchTextBox_TextChanged(object sender, EventArgs e)
-		{
-			if (string.IsNullOrWhiteSpace(searchTextBox.Text) || searchTextBox.Text == "Search...")
-			{
-				UpdateObjectBrowser(string.Empty);
-			}
-			else
-			{
-				UpdateObjectBrowser(searchTextBox.Text);
-			}
-		}
-
-		private void searchTextBox_GotFocus(object sender, EventArgs e)
-		{
-			if (searchTextBox.Text == "Search...")
-			{
-				searchTextBox.Text = string.Empty;
-			}
-		}
-
-		private void searchTextBox_LostFocus(object sender, EventArgs e)
-		{
-			if (searchTextBox.Text == string.Empty)
-			{
-				searchTextBox.Text = "Search...";
-			}
-		}
-
-		private void objectBrowser_Click(object sender, EventArgs e)
-		{
-			// If the user hasn't selected any nodes
-			if (objectBrowser.SelectedNodes.Count < 1)
-			{
-				return;
-			}
-
-			// If the selected node is a default item
-			if (objectBrowser.SelectedNodes[0] == objectBrowser.Nodes[0] || objectBrowser.SelectedNodes[0] == objectBrowser.Nodes[1])
-			{
-				return;
-			}
-
-			// If the selected node is empty
-			if (objectBrowser.SelectedNodes[0].Text == string.Empty)
-			{
-				return;
-			}
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				// Find the line which contains the node text
-				if (textEditor.GetLineText(i).ToLower().Replace("·", " ").Contains(objectBrowser.SelectedNodes[0].Text.ToLower()))
-				{
-					textEditor.Focus();
-					textEditor.Navigate(i); // Scroll to the line position
-
-					// Select the line
-					textEditor.Selection = new Range(textEditor, 0, i, textEditor.GetLineText(i).Length, i);
-					return;
-				}
-			}
-		}
-
-		private void UpdateObjectBrowser(string filter)
-		{
-			ResetObjectBrowserNodes();
-
-			// Scan all lines
-			for (int i = 0; i < textEditor.LinesCount; i++)
-			{
-				AddObjectBrowserNodes(i, filter);
-			}
-
-			objectBrowser.Invalidate();
-		}
-
-		private void AddObjectBrowserNodes(int lineNumber, string filter)
-		{
-			bool areSpacesVisible = Properties.Settings.Default.ShowSpaces;
-
-			// Regex rule to find lines that start with "Name = "
-			Regex rgx = areSpacesVisible ? new Regex(@"\bName·?=·?") : new Regex(@"\bName\s?=\s?");
-
-			// If we found a line that starts with our Regex rule ("Name = ")
-			if (rgx.IsMatch(textEditor.GetLineText(lineNumber)))
-			{
-				// Create a new node, remove "Name = ", replace dots with spaces and trim it, so we only get the level name string
-				DarkTreeNode levelNode = new DarkTreeNode(rgx.Replace(textEditor.GetLineText(lineNumber), string.Empty).Replace("·", " ").Trim());
-
-				// If the level name matches the filter (It always does if there's nothing in the search bar)
-				if (levelNode.Text.ToLower().Contains(filter.ToLower()))
-				{
-					objectBrowser.Nodes[1].Nodes.Add(levelNode);
-				}
-			}
-
-			// Get header key words
-			List<string> headers = SyntaxKeyWords.Headers();
-
-			// Loop through headers
-			foreach (string header in headers)
-			{
-				// Add brackets to the header
-				string fullHeader = "[" + header + "]";
-
-				// If there are any headers except "Level" headers
-				if (fullHeader != "[Level]" && textEditor.GetLineText(lineNumber).StartsWith(fullHeader))
-				{
-					DarkTreeNode headerNode = new DarkTreeNode(fullHeader);
-
-					// If the header name matches the filter (It always does if there's nothing in the search bar)
-					if (headerNode.Text.ToLower().Contains(filter.ToLower()))
-					{
-						objectBrowser.Nodes[0].Nodes.Add(headerNode);
-					}
-				}
-			}
-		}
-
-		#endregion Object browser handling
-
 		#region File handling
 
 		private void ShowPathSelectionForm()
@@ -863,6 +1015,21 @@ namespace ScriptEditor
 			}
 		}
 
+		private void UnloadCurrentFile()
+		{
+			// Unload the file
+			gS_CurrentFilePath = string.Empty;
+
+			// Clear the editor
+			textEditor.Clear();
+			textEditor.IsChanged = false;
+
+			ResetObjectBrowserNodes();
+
+			// Disable the interface
+			ToggleInterface(false);
+		}
+
 		#endregion File handling
 
 		#region File saving
@@ -977,7 +1144,7 @@ namespace ScriptEditor
 
 		#endregion File saving
 
-		// TODO: UNSORTED CODE STARTS HERE:
+		#region Other forms
 
 		private void ShowAboutForm()
 		{
@@ -987,141 +1154,12 @@ namespace ScriptEditor
 			}
 		}
 
-		private void HandleUndoRedo(int index) // 0 - Undo, 1 - Redo
-		{
-			string editorContent = string.Empty;
-
-			// If "Show Spaces" is enabled
-			if (Properties.Settings.Default.ShowSpaces)
-			{
-				TriggerUndoRedo(index);
-
-				while (textEditor.Text.Contains(" "))
-				{
-					TriggerUndoRedo(index);
-				}
-
-				editorContent = textEditor.Text.Replace("·", " ");
-			}
-			else
-			{
-				TriggerUndoRedo(index);
-				editorContent = textEditor.Text;
-			}
-
-			// If the content is unchanged
-			if (editorContent == File.ReadAllText(gS_CurrentFilePath))
-			{
-				textEditor.IsChanged = false;
-				saveToolStripMenuItem.Enabled = false;
-				saveToolStripButton.Enabled = false;
-			}
-		}
-
-		private void TriggerUndoRedo(int index)
-		{
-			if (index == 0)
-			{
-				textEditor.Undo();
-			}
-			else if (index == 1)
-			{
-				textEditor.Redo();
-			}
-		}
-
-		private void ToggleInterface(bool state)
-		{
-			// Toggle editor
-			textEditor.Enabled = state;
-
-			// Toggle "File" menu items
-			saveToolStripMenuItem.Enabled = state;
-			buildToolStripMenuItem.Enabled = state;
-
-			// Toggle "Edit" menu items
-			cutToolStripMenuItem.Enabled = state;
-			copyToolStripMenuItem.Enabled = state;
-			pasteToolStripMenuItem.Enabled = state;
-			findToolStripMenuItem.Enabled = state;
-			replaceToolStripMenuItem.Enabled = state;
-			selectAllToolStripMenuItem.Enabled = state;
-
-			// Toggle "Tools" menu items
-			reindentScriptToolStripMenuItem.Enabled = state;
-			trimWhitespaceToolStripMenuItem.Enabled = state;
-			commentToolStripMenuItem.Enabled = state;
-			uncommentToolStripMenuItem.Enabled = state;
-			toggleBookmarkToolStripMenuItem.Enabled = state;
-			nextBookmarkToolStripMenuItem.Enabled = state;
-			prevBookmarkToolStripMenuItem.Enabled = state;
-			clearBookmarksToolStripMenuItem.Enabled = state;
-
-			// Toggle ToolStrip buttons
-			saveToolStripButton.Enabled = state;
-			buildToolStripButton.Enabled = state;
-			cutToolStripButton.Enabled = state;
-			copyToolStripButton.Enabled = state;
-			pasteToolStripButton.Enabled = state;
-			commentToolStripButton.Enabled = state;
-			uncommentToolStripButton.Enabled = state;
-			toggleBookmarkToolStripButton.Enabled = state;
-			prevBookmarkToolStripButton.Enabled = state;
-			nextBookmarkToolStripButton.Enabled = state;
-			clearBookmarksToolStripButton.Enabled = state;
-		}
-
-		private void ResetObjectBrowserNodes()
-		{
-			objectBrowser.Nodes.Clear();
-			objectBrowser.Nodes.Add(new DarkTreeNode("Headers"));
-			objectBrowser.Nodes.Add(new DarkTreeNode("Levels"));
-			objectBrowser.Invalidate();
-		}
-
-		private void UnloadCurrentFile()
-		{
-			// Unload the file
-			gS_CurrentFilePath = string.Empty;
-
-			// Clear the editor
-			textEditor.Clear();
-			textEditor.IsChanged = false;
-
-			ResetObjectBrowserNodes();
-
-			// Disable the interface
-			ToggleInterface(false);
-		}
-
 		private void ShowStringTable()
 		{
 			using (FormStringTable form = new FormStringTable())
 			{
 				form.ShowDialog(this);
 			}
-		}
-
-		private void ToggleObjectBrowser(bool state)
-		{
-			objectBrowser.Visible = state;
-			searchTextBox.Visible = state;
-			objectBrowserBox.Visible = state;
-			objectBrowserSplitter.Visible = state;
-			objectBrowserToolStripMenuItem.Checked = state;
-		}
-
-		private void ToggleReferenceBrowser(bool state)
-		{
-			referenceBrowser.Visible = state;
-			refBrowserSplitter.Visible = state;
-			referenceBrowserToolStripMenuItem.Checked = state;
-		}
-
-		private void ToggleDocumentMap(bool state)
-		{
-			documentMap.Visible = state;
-			documentMapToolStripMenuItem.Checked = state;
 		}
 
 		private void OpenSettingsForm()
@@ -1134,55 +1172,37 @@ namespace ScriptEditor
 
 			using (FormSettings form = new FormSettings())
 			{
-				// If the user pressed "Apply"
-				if (form.ShowDialog(this) == DialogResult.OK)
+				// If the user pressed "Cancel"
+				if (form.ShowDialog(this) == DialogResult.Cancel)
 				{
-					ApplyUserSettings();
+					return;
+				}
 
-					if (form.gI_RestartItemCount > 0) // GLOBALZZZ NUUUU THIZ IZ BED !!! Welp, find a better solution then. :P
+				ApplyUserSettings();
+
+				if (form.gI_RestartItemCount > 0) // GLOBALZZZ NUUUU THIZ IZ BED !!! Welp, find a better solution then. :P
+				{
+					// If the current file has unsaved changes
+					if (!IsFileSaved())
 					{
-						// If the current file has unsaved changes
-						if (!IsFileSaved())
-						{
-							// Saving failed or the user clicked "Cancel"
-							// Therefore restore the previous critical settings
-							Properties.Settings.Default.AutosaveTime = autosaveCache;
-							Properties.Settings.Default.ShowSpaces = showSpacesCache;
-							Properties.Settings.Default.Autocomplete = autocompleteCache;
-							Properties.Settings.Default.ToolTips = toolTipCache;
+						// Saving failed or the user clicked "Cancel"
+						// Therefore restore the previous critical settings
+						Properties.Settings.Default.AutosaveTime = autosaveCache;
+						Properties.Settings.Default.ShowSpaces = showSpacesCache;
+						Properties.Settings.Default.Autocomplete = autocompleteCache;
+						Properties.Settings.Default.ToolTips = toolTipCache;
 
-							Properties.Settings.Default.Save();
-							OpenSettingsForm();
-							return; // DO NOT CLOSE THE APP !!! (ﾉ°Д°)ﾉ︵﻿ ┻━┻
-						}
-
-						textEditor.IsChanged = false; // Prevent re-check of IsFileSaved()
-						Application.Restart();
+						Properties.Settings.Default.Save();
+						OpenSettingsForm();
+						return; // DO NOT CLOSE THE APP !!! (ﾉ°Д°)ﾉ︵﻿ ┻━┻
 					}
+
+					textEditor.IsChanged = false; // Prevent re-check of IsFileSaved()
+					Application.Restart();
 				}
 			}
 		}
 
-		private void CutToClipboard()
-		{
-			if (!string.IsNullOrEmpty(textEditor.SelectedText))
-			{
-				Clipboard.SetText(textEditor.SelectedText.Replace("·", " "));
-				textEditor.SelectedText = string.Empty;
-			}
-		}
-
-		private void CopyToClipboard()
-		{
-			if (!string.IsNullOrEmpty(textEditor.SelectedText))
-			{
-				Clipboard.SetText(textEditor.SelectedText.Replace("·", " "));
-			}
-		}
-
-		private void PasteFromClipboard()
-		{
-			textEditor.SelectedText = Clipboard.GetText();
-		}
+		#endregion Other forms
 	}
 }
