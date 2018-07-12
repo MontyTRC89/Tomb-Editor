@@ -2927,6 +2927,12 @@ namespace TombEditor
                 _editor.RoomGeometryChange(room);
         }
 
+        public static void BookmarkObject(ObjectInstance objectToBookmark)
+        {
+            _editor.BookmarkedObject = objectToBookmark;
+            Editor.Instance.SendMessage("Object bookmarked: " + _editor.BookmarkedObject, PopupType.Info);
+        }
+
         public static void SwitchMode(EditorMode mode)
         {
             if((mode == EditorMode.Map2D) != (_editor.Mode == EditorMode.Map2D))

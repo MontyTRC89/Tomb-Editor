@@ -1054,7 +1054,7 @@ namespace TombEditor.Forms
 
         private void bookmarkObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.BookmarkedObject = _editor.SelectedObject;
+            EditorActions.BookmarkObject(_editor.SelectedObject);
         }
 
         private void bookmarkRestoreObjectToolStripMenuItem_Click(object sender, EventArgs e)

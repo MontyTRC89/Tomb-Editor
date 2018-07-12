@@ -340,7 +340,7 @@
             this.copyToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
@@ -351,7 +351,7 @@
             this.pasteToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_clipboard_16;
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
@@ -362,7 +362,7 @@
             this.stampToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_rubber_stamp_16;
             this.stampToolStripMenuItem.Name = "stampToolStripMenuItem";
             this.stampToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-            this.stampToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.stampToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
             this.stampToolStripMenuItem.Text = "Stamp";
             this.stampToolStripMenuItem.Click += new System.EventHandler(this.stampToolStripMenuItem_Click);
             // 
@@ -373,7 +373,7 @@
             this.deleteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -383,7 +383,7 @@
             this.selectAllToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
             this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
             this.selectAllToolStripMenuItem.Text = "Select all sectors";
             this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
             // 
@@ -393,7 +393,7 @@
             this.toolStripMenuSeparator4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuSeparator4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuSeparator4.Name = "toolStripMenuSeparator4";
-            this.toolStripMenuSeparator4.Size = new System.Drawing.Size(308, 6);
+            this.toolStripMenuSeparator4.Size = new System.Drawing.Size(328, 6);
             // 
             // editObjectToolStripMenuItem
             // 
@@ -402,7 +402,7 @@
             this.editObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.editObjectToolStripMenuItem.Name = "editObjectToolStripMenuItem";
             this.editObjectToolStripMenuItem.ShortcutKeyDisplayString = "O";
-            this.editObjectToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.editObjectToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
             this.editObjectToolStripMenuItem.Text = "Edit object";
             this.editObjectToolStripMenuItem.Click += new System.EventHandler(this.editObjectToolStripMenuItem_Click);
             // 
@@ -413,7 +413,7 @@
             this.rotateToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.rotateToolStripMenuItem.Name = "rotateToolStripMenuItem";
             this.rotateToolStripMenuItem.ShortcutKeyDisplayString = "Shift+R";
-            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.rotateToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
             this.rotateToolStripMenuItem.Text = "Rotate";
             this.rotateToolStripMenuItem.Click += new System.EventHandler(this.rotateToolStripMenuItem_Click);
             // 
@@ -423,7 +423,7 @@
             this.toolStripSeparator4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(308, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(328, 6);
             // 
             // bookmarkObjectToolStripMenuItem
             // 
@@ -432,8 +432,8 @@
             this.bookmarkObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.bookmarkObjectToolStripMenuItem.Name = "bookmarkObjectToolStripMenuItem";
             this.bookmarkObjectToolStripMenuItem.ShortcutKeyDisplayString = "Shift+\"Left Click\"";
-            this.bookmarkObjectToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
-            this.bookmarkObjectToolStripMenuItem.Text = "Bookmark object selectin";
+            this.bookmarkObjectToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
+            this.bookmarkObjectToolStripMenuItem.Text = "Bookmark selected object";
             this.bookmarkObjectToolStripMenuItem.Click += new System.EventHandler(this.bookmarkObjectToolStripMenuItem_Click);
             // 
             // bookmarkRestoreObjectToolStripMenuItem
@@ -443,8 +443,8 @@
             this.bookmarkRestoreObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.bookmarkRestoreObjectToolStripMenuItem.Name = "bookmarkRestoreObjectToolStripMenuItem";
             this.bookmarkRestoreObjectToolStripMenuItem.ShortcutKeyDisplayString = "Shift+\"Add Trigger\"";
-            this.bookmarkRestoreObjectToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
-            this.bookmarkRestoreObjectToolStripMenuItem.Text = "Restore object selection";
+            this.bookmarkRestoreObjectToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
+            this.bookmarkRestoreObjectToolStripMenuItem.Text = "Restore bookmarked object";
             this.bookmarkRestoreObjectToolStripMenuItem.Click += new System.EventHandler(this.bookmarkRestoreObjectToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
@@ -453,7 +453,7 @@
             this.toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(308, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(328, 6);
             // 
             // searchToolStripMenuItem
             // 
@@ -462,7 +462,7 @@
             this.searchToolStripMenuItem.Image = global::TombEditor.Properties.Resources.general_search_16;
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
             this.searchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(311, 22);
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(331, 22);
             this.searchToolStripMenuItem.Text = "Search";
             this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
             // 
