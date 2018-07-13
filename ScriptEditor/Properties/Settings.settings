@@ -14,7 +14,7 @@
     <Setting Name="FontFace" Type="System.String" Scope="User">
       <Value Profile="(Default)">Consolas</Value>
     </Setting>
-    <Setting Name="AutoSaveTime" Type="System.Int32" Scope="User">
+    <Setting Name="AutosaveTime" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="CommentColor" Type="System.Drawing.Color" Scope="User">

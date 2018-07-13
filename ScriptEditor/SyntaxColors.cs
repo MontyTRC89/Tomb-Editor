@@ -5,6 +5,7 @@ namespace ScriptEditor
 {
 	public class SyntaxColors
 	{
+		public static TextStyle Whitespace = new TextStyle(new SolidBrush(Color.Gray), null, FontStyle.Regular);
 		public static TextStyle Comments = new TextStyle(new SolidBrush(Properties.Settings.Default.CommentColor), null, FontStyle.Regular);
 		public static TextStyle NewCommands = new TextStyle(new SolidBrush(Properties.Settings.Default.NewCommandColor), null, FontStyle.Regular);
 		public static TextStyle OldCommands = new TextStyle(new SolidBrush(Properties.Settings.Default.OldCommandColor), null, FontStyle.Regular);
