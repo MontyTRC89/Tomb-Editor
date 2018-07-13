@@ -9,7 +9,7 @@ namespace TombEditor.Controls.ContextMenus
         {
             Items.Add(new ToolStripMenuItem("Export rooms", Properties.Resources.general_Save_As_16, (o, e) =>
             {
-                EditorActions.ExportRooms(this, _editor.SelectedRooms);
+                EditorActions.ExportRooms(_editor.SelectedRooms, this);
             }));
             Items.Add(new ToolStripSeparator());
 

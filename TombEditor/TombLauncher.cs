@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -72,12 +73,12 @@ namespace TombEditor
                 logger.Warn(exc, "Trying to launch the game  '" + executablePath + "'.");
 
                 // Show message
-                string message = "Go to tools, level settings, game paths to set a valid executable path.";
+                string message = "\nGo to Tools -> Level Settings -> Game Paths to set a valid executable path.";
                 if (FileSystemUtils.IsFileNotFoundException(exc) || !File.Exists(executablePath))
                     message = "Unable to find '" + executablePath + "'. " + message;
                 else
                     message = "Unable to start '" + executablePath + "' because a " + exc.GetType().Name + " occurred (" + exc.Message + "). " + message;
-                DarkUI.Forms.DarkMessageBox.Show(owner, message, "Unable to start executable", MessageBoxIcon.Error);
+                Editor.Instance.SendMessage(message, PopupType.Error);
             }
         }
 

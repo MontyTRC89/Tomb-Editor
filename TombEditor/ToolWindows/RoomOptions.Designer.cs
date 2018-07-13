@@ -226,7 +226,7 @@
             // butRoomUp
             // 
             this.butRoomUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butRoomUp.Image = global::TombEditor.Properties.Resources.actions_RoomRaise_16;
+            this.butRoomUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
             this.butRoomUp.Location = new System.Drawing.Point(258, 57);
             this.butRoomUp.Name = "butRoomUp";
             this.butRoomUp.Size = new System.Drawing.Size(24, 23);
@@ -237,7 +237,7 @@
             // butRoomDown
             // 
             this.butRoomDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butRoomDown.Image = global::TombEditor.Properties.Resources.actions_RoomLower_16;
+            this.butRoomDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
             this.butRoomDown.Location = new System.Drawing.Point(258, 86);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Size = new System.Drawing.Size(24, 23);

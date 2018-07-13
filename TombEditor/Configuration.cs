@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -103,6 +105,8 @@ namespace TombEditor
         public int AutoSave_CleanupMaxAutoSaves { get; set; } = 10;
         public bool AutoSave_NamePutDateFirst { get; set; } = true;
         public string AutoSave_NameSeparator { get; set; } = " ";
+
+        public List<HotkeySet> Keyboard_Hotkeys { get; set; }
 
         public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
@@ -268,7 +272,7 @@ namespace TombEditor
             if (!File.Exists(path))
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
-                return new Configuration { FilePath = path };
+                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys() };
             }
 
             try
@@ -278,7 +282,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
-                return new Configuration { FilePath = path };
+                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys() };
             }
         }
     }

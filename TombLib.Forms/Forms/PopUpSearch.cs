@@ -107,28 +107,31 @@ namespace TombLib.Forms
         {
             if (e.KeyCode == Keys.Enter) // Search function. TODO: Implement TRTombLevBauer's cool search!
             {
-                if (_searchItems.Count > 1)
+                if (txtSearchString.Text != String.Empty && _searchItems.Count > 0)
                 {
-                    for (int i = _currentIndex+1; i <= _searchItems.Count; i++)
-                    {
-                        if (i == _searchItems.Count)
+                    if (_searchItems.Count == 1)
+                        _currentIndex = 0; // Point to only one existing entry
+                    else
+                        for (int i = _currentIndex+1; i <= _searchItems.Count; i++)
                         {
-                            if (_currentIndex == -1)
-                                break; // No match
-                            else
+                            if (i == _searchItems.Count)
                             {
-                                i = -1;
-                                _currentIndex = -1;
-                                continue; // Restart search
+                                if (_currentIndex == -1)
+                                    break; // No match
+                                else
+                                {
+                                    i = -1;
+                                    _currentIndex = -1;
+                                    continue; // Restart search
+                                }
+                            }
+
+                            if (_searchItems[i].IndexOf(txtSearchString.Text, StringComparison.OrdinalIgnoreCase) != -1)
+                            {
+                                _currentIndex = i;
+                                break;
                             }
                         }
-
-                        if (_searchItems[i].IndexOf(txtSearchString.Text, StringComparison.OrdinalIgnoreCase) != -1)
-                        {
-                            _currentIndex = i;
-                            break;
-                        }
-                    }
 
                     if (_currentIndex != -1)
                     {

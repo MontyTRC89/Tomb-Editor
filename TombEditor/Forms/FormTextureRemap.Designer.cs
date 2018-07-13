@@ -282,6 +282,7 @@
             this.Name = "FormTextureRemap";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Texture remapping assistant";
             this.sourcePanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);

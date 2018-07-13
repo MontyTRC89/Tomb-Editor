@@ -36,7 +36,7 @@ namespace TombEditor.Controls.ContextMenus
 
             Items.Add(new ToolStripMenuItem("Bookmark object", null, (o, e) =>
             {
-                _editor.BookmarkedObject = targetObject;
+                EditorActions.BookmarkObject(targetObject);
             }));
 
             if (targetObject is ImportedGeometryInstance)
