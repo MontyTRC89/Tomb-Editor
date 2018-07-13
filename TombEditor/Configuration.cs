@@ -272,7 +272,7 @@ namespace TombEditor
             if (!File.Exists(path))
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, new FileNotFoundException("File not found", path)));
-                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys() };
+                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout) };
             }
 
             try
@@ -282,7 +282,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + path + "\"", null, exc));
-                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys() };
+                return new Configuration { FilePath = path, Keyboard_Hotkeys = CommandHandler.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout) };
             }
         }
     }
