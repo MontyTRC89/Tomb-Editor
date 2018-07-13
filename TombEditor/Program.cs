@@ -42,7 +42,10 @@ namespace TombEditor
                 Editor.Instance = editor;
                 using (FormMain form = new FormMain(editor))
                 {
+                    Editor.Instance.CommandHandler = new CommandHandler(form, editor);
                     form.Show();
+                    form.GenerateMenus();
+
                     if (args.Length > 0) // Open files on start
                         if (args[0].EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
                             EditorActions.OpenLevelPrj(form, args[0]);

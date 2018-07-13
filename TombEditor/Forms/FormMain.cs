@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Docking;
 using DarkUI.Forms;
 using NLog;
-using TombLib;
 using TombLib.Forms;
-using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Script;
 using TombLib.Utils;
-using TombLib.Rendering;
 
 namespace TombEditor.Forms
 {
@@ -38,7 +33,6 @@ namespace TombEditor.Forms
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private bool _pressedMoveCameraKey;
         private readonly Editor _editor;
 
         public FormMain(Editor editor)
@@ -46,7 +40,7 @@ namespace TombEditor.Forms
             InitializeComponent();
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
-
+            
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
@@ -93,6 +87,46 @@ namespace TombEditor.Forms
             base.Dispose(disposing);
         }
 
+        public void GenerateMenus(bool onlyHotkeys = false)
+        {
+            GenerateMenusRecursive(menuStrip.Items, onlyHotkeys);
+        }
+
+        private void GenerateMenusRecursive(ToolStripItemCollection dropDownItems, bool onlyHotkeys = false)
+        {
+            foreach (object obj in dropDownItems)
+            {
+                ToolStripMenuItem subMenu = obj as ToolStripMenuItem;
+
+                if (subMenu != null)
+                {
+                    if (subMenu.HasDropDownItems)
+                        GenerateMenusRecursive(subMenu.DropDownItems, onlyHotkeys);
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(subMenu.Tag?.ToString()))
+                        {
+                            if(!onlyHotkeys)
+                            {
+                                var command = _editor.CommandHandler.Commands.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper());
+                                if (command != null)
+                                {
+                                    subMenu.Click += (sender, e) => { command.Command.Invoke(); };
+                                    subMenu.Text = command.FriendlyName;
+                                }
+                            }
+
+                            var firstAvailableHotkey = _editor.Configuration.Keyboard_Hotkeys?.FirstOrDefault(set => set.Name.ToUpper() == subMenu.Tag.ToString().ToUpper())?.Hotkeys.FirstOrDefault();
+                            if (firstAvailableHotkey != null)
+                                subMenu.ShortcutKeyDisplayString = CommandHandler.KeysToString((Keys)(firstAvailableHotkey));
+                            else
+                                subMenu.ShortcutKeyDisplayString = string.Empty;
+                        }
+                    }
+                }
+            }
+        }
+
         private DarkDockContent FindDockContentByKey(string key)
         {
             switch (key)
@@ -136,7 +170,6 @@ namespace TombEditor.Forms
                     ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
                 deleteToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject != null;
-                rotateToolStripMenuItem.Enabled = selectedObject is IRotateableY;
                 bookmarkObjectToolStripMenuItem.Enabled = selectedObject != null;
             }
             if (obj is Editor.SelectedSectorsChangedEvent)
@@ -243,6 +276,8 @@ namespace TombEditor.Forms
                     @event.Current.Window_Size != @event.Previous.Window_Size ||
                     @event.Current.Window_Layout != @event.Previous.Window_Layout)
                     LoadWindowLayout(_editor.Configuration);
+
+                GenerateMenus(true);
             }
 
             // Update texture controls
@@ -264,6 +299,10 @@ namespace TombEditor.Forms
                 var @event = (Editor.BookmarkedObjectChanged)obj;
                 bookmarkRestoreObjectToolStripMenuItem.Enabled = @event.Current != null;
             }
+
+            // Quit editor
+            if (obj is Editor.EditorQuitEvent)
+                Close();
         }
 
         private void ClipboardEvents_ClipboardChanged(object sender, EventArgs e)
@@ -317,313 +356,10 @@ namespace TombEditor.Forms
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            bool focused = IsFocused(MainView) || IsFocused(TexturePanel);
-
-            Keys modifierKeys = keyData & (Keys.Alt | Keys.Shift | Keys.Control);
-            bool shift = keyData.HasFlag(Keys.Shift);
-            bool alt = keyData.HasFlag(Keys.Alt);
-
-            switch (keyData & ~(Keys.Alt | Keys.Shift | Keys.Control))
-            {
-                case Keys.Escape: // End any action
-                    _editor.Action = null;
-                    _editor.SelectedSectors = SectorSelection.None;
-                    _editor.SelectedObject = null;
-                    _editor.SelectedRooms = new[] { _editor.SelectedRoom };
-                    break;
-
-                case Keys.F1: // 2D map mode
-                    if (modifierKeys == Keys.None)
-                        EditorActions.SwitchMode(EditorMode.Map2D);
-                    break;
-
-                case Keys.F2: // 3D geometry mode
-                    if (modifierKeys == Keys.None)
-                        EditorActions.SwitchMode(EditorMode.Geometry);
-                    break;
-
-                case Keys.F3: // 3D face texturing mode
-                    if (modifierKeys == Keys.None)
-                        EditorActions.SwitchMode(EditorMode.FaceEdit);
-                    break;
-
-                case Keys.F4: // 3D lighting mode
-                    if (modifierKeys == Keys.None)
-                        EditorActions.SwitchMode(EditorMode.Lighting);
-                    break;
-
-                case Keys.F6: // Reset 3D camera
-                    if (modifierKeys == Keys.None)
-                        _editor.ResetCamera();
-                    break;
-
-                case Keys.T: // Add trigger
-                    if (modifierKeys == Keys.None && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-                    break;
-
-                case Keys.P: // Add portal
-                    if (modifierKeys == Keys.None && _editor.SelectedSectors.Valid && focused)
-                        try
-                        {
-                            EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-                        }
-                        catch (Exception exc)
-                        {
-                            logger.Error(exc, "Unable to create portal");
-                            Editor.Instance.SendMessage("Unable to create portal. \nException: " + exc.Message, PopupType.Error);
-                        }
-                    break;
-
-                case Keys.O: // Show options dialog
-                    if (modifierKeys == Keys.None && _editor.SelectedObject != null && focused)
-                        EditorActions.EditObject(_editor.SelectedObject, this);
-                    break;
-
-                case Keys.NumPad1: // Switch additive blending
-                case Keys.D1:
-                    if (modifierKeys == Keys.Shift)
-                    {
-                        var texture = _editor.SelectedTexture;
-                        if (texture.BlendMode == BlendMode.Additive)
-                            texture.BlendMode = BlendMode.Normal;
-                        else
-                            texture.BlendMode = BlendMode.Additive;
-                        _editor.SelectedTexture = texture;
-                    }
-                    break;
-
-                case Keys.NumPad2: // Switch double sided
-                case Keys.D2:
-                    if (modifierKeys == Keys.Shift)
-                    {
-                        var texture = _editor.SelectedTexture;
-                        texture.DoubleSided = !texture.DoubleSided;
-                        _editor.SelectedTexture = texture;
-                    }
-                    break;
-
-                case Keys.NumPad3: // Switch to an invisible texture
-                case Keys.D3:
-                    if (modifierKeys == Keys.Shift)
-                    {
-                        var texture = _editor.SelectedTexture;
-                        texture.Texture = TextureInvisible.Instance;
-                        _editor.SelectedTexture = texture;
-                    }
-                    break;
-
-                case Keys.Left: // Rotate objects with cones
-                    if(focused)
-                    {
-                        switch(modifierKeys)
-                        {
-                            case Keys.Shift:
-                                if (_editor.SelectedObject != null)
-                                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
-                                break;
-                            case Keys.Control:
-                                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                                    MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
-                                break;
-                            case Keys.Alt:
-                                if (_editor.SelectedRoom != null)
-                                    MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(1, 0, 0));
-                                break;
-                        }
-                    }
-                    break;
-                case Keys.Right: // Rotate objects with cones
-                    if (focused)
-                    {
-                        switch (modifierKeys)
-                        {
-                            case Keys.Shift:
-                                if (_editor.SelectedObject != null)
-                                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
-                                break;
-                            case Keys.Control:
-                                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                                    MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
-                                break;
-                            case Keys.Alt:
-                                if (_editor.SelectedRoom != null)
-                                    MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(-1, 0, 0));
-                                break;
-                        }
-                    }
-                    break;
-
-                case Keys.Up:// Rotate objects with cones
-                    if (focused)
-                    {
-                        switch (modifierKeys)
-                        {
-                            case Keys.Shift:
-                                if (_editor.SelectedObject != null)
-                                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
-                                break;
-                            case Keys.Control:
-                                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                                    MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
-                                break;
-                            case Keys.Alt:
-                                if (_editor.SelectedRoom != null)
-                                    MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(0, 0, -1));
-                                break;
-                        }
-                    }
-                    break;
-
-                case Keys.Down:// Rotate objects with cones
-                    if (focused)
-                    {
-                        switch (modifierKeys)
-                        {
-                            case Keys.Shift:
-                                if (_editor.SelectedObject != null)
-                                    EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
-                                break;
-                            case Keys.Control:
-                                if (_editor.SelectedObject is PositionBasedObjectInstance)
-                                    MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
-                                break;
-                            case Keys.Alt:
-                                if (_editor.SelectedRoom != null)
-                                    MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(0, 0, 1));
-                                break;
-                        }
-                    }
-                    break;
-
-                case Keys.PageDown:
-                    if (modifierKeys == Keys.Alt && _editor.SelectedRoom != null && focused)
-                        MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(0, -1, 0));
-                    break;
-
-                case Keys.PageUp:
-                    if (modifierKeys == Keys.Alt && _editor.SelectedRoom != null && focused)
-                        MainView.MoveRoomRelative(_editor.SelectedRoom, new VectorInt3(0, 1, 0));
-                    break;
-
-                case Keys.Q:
-                    int qDirection = KeyboardLayoutDetector.KeyboardLayout == KeyboardLayout.Azerty ? -1 : 1;
-                    if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, (short)(qDirection * (shift ? 4 : 1)), alt);
-                    else if (_editor.SelectedObject is PositionBasedObjectInstance && focused)
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, qDirection * 256, 0), new Vector3(), true);
-                    break;
-
-                case Keys.A:
-                    int aDirection = KeyboardLayoutDetector.KeyboardLayout == KeyboardLayout.Azerty ? 1 : -1;
-                    if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Floor, (short)(aDirection * (shift ? 4 : 1)), alt);
-                    else if (_editor.SelectedObject is PositionBasedObjectInstance && focused)
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, -256, 0), new Vector3(), true);
-                    break;
-
-                case Keys.W:
-                    switch (KeyboardLayoutDetector.KeyboardLayout)
-                    {
-                        case KeyboardLayout.Azerty:
-                            _pressedMoveCameraKey = true;
-                            break;
-                        default:
-                            if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, (short)(shift ? 4 : 1), alt);
-                            break;
-                    }
-                    break;
-
-                case Keys.S:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, (short)-(shift ? 4 : 1), alt);
-                    break;
-
-                case Keys.E:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, (short)(shift ? 4 : 1), alt);
-                    break;
-
-                case Keys.D:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ed, (short)-(shift ? 4 : 1), alt);
-                    break;
-
-                case Keys.R: // Rotate object
-                    if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, (short)(shift ? 4 : 1), alt);
-                    else if (_editor.SelectedObject != null && focused)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, shift ? 5.0f : 45.0f);
-                    break;
-
-                case Keys.F:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Rf, (short)-(shift ? 4 : 1), alt);
-                    break;
-
-                case Keys.Y:
-                    switch (KeyboardLayoutDetector.KeyboardLayout)
-                    {
-                        case KeyboardLayout.Qwertz:
-                            _pressedMoveCameraKey = true;
-                            break;
-                        default:
-                            if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Floor, (short)(shift ? 4 : 1), alt, true);
-                            break;
-                    }
-                    break;
-
-                case Keys.Z:
-                    switch (KeyboardLayoutDetector.KeyboardLayout)
-                    {
-                        case KeyboardLayout.Qwertz:
-                            if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Floor, (short)(shift ? 4 : 1), alt, true);
-                            break;
-                        case KeyboardLayout.Azerty:
-                            if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
-                                EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, BlockVertical.Ceiling, (short)(shift ? 4 : 1), alt);
-                            break;
-                        default:
-                            _pressedMoveCameraKey = true;
-                            break;
-                    }
-                    break;
-
-                case Keys.H:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Floor, (short)-(shift ? 4 : 1), alt, true);
-                    break;
-                case Keys.U:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Ceiling, (short)(shift ? 4 : 1), alt, true);
-                    break;
-                case Keys.J:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, ArrowType.EntireFace, BlockVertical.Ceiling, (short)-(shift ? 4 : 1), alt, true);
-                    break;
-
-                case Keys.OemMinus: // US keyboard key in documentation
-                case Keys.Oemplus:
-                case Keys.Oem3: // US keyboard key for a texture triangle rotation
-                case Keys.Oem5: // German keyboard key for a texture triangle rotation
-                    if (ModifierKeys == Keys.None)
-                        EditorActions.RotateSelectedTexture();
-                    else if (ModifierKeys.HasFlag(Keys.Shift))
-                        EditorActions.MirrorSelectedTexture();
-                    break;
-            }
-
-            // Set camera relocation mode based on previous inputs
-            if (alt && _pressedMoveCameraKey)
-            {
-                _editor.Action = new EditorActionRelocateCamera();
-            }
+            _editor.CommandHandler.ProcessHotkeys(keyData, IsFocused(MainView) || IsFocused(TexturePanel));
 
             // Don't open menus with the alt key
-            if (alt)
+            if (keyData.HasFlag(Keys.Alt))
                 return true;
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -639,509 +375,12 @@ namespace TombEditor.Forms
             return false;
         }
 
-        protected override void OnKeyUp(KeyEventArgs e)
-        {
-            base.OnKeyUp(e);
-
-            // Get camera move key
-            bool keyCodeIsMoveCameraKey;
-            switch (KeyboardLayoutDetector.KeyboardLayout)
-            {
-                case KeyboardLayout.Qwertz:
-                    keyCodeIsMoveCameraKey = e.KeyCode == Keys.Y;
-                    break;
-                case KeyboardLayout.Azerty:
-                    keyCodeIsMoveCameraKey = e.KeyCode == Keys.W;
-                    break;
-                default:
-                    keyCodeIsMoveCameraKey = e.KeyCode == Keys.Z;
-                    break;
-            }
-
-            // Check camera move key state
-            if (e.KeyCode == Keys.Menu || keyCodeIsMoveCameraKey)
-                if (_editor.Action is EditorActionRelocateCamera)
-                    _editor.Action = null;
-            if (keyCodeIsMoveCameraKey)
-                _pressedMoveCameraKey = false;
-        }
-
         protected override void OnLostFocus(EventArgs e)
         {
             base.OnLostFocus(e);
 
-            _pressedMoveCameraKey = false;
             if (_editor.Action is IEditorActionDisableOnLostFocus)
                 _editor.Action = null;
-        }
-
-        private void addTextureToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.AddTexture(this);
-        }
-
-        private void removeTexturesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.RemoveTextures(this);
-        }
-
-        private void UnloadTexturesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.UnloadTextures(this);
-        }
-
-        private void reloadTexturesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (var texture in _editor.Level.Settings.Textures)
-                texture.Reload(_editor.Level.Settings);
-            _editor.LoadedTexturesChange();
-        }
-
-        private void textureFloorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Floor);
-        }
-
-        private void textureCeilingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Ceiling);
-        }
-
-        private void textureWallsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.TexturizeAll(_editor.SelectedRoom, _editor.SelectedSectors, _editor.SelectedTexture, BlockFaceType.Wall);
-        }
-
-        private void importConvertTexturesToPng_Click(object sender, EventArgs e)
-        {
-            if (_editor.Level == null || _editor.Level.Settings.Textures.Count == 0)
-            {
-                Editor.Instance.SendMessage("No texture loaded. Nothing to convert.", PopupType.Error);
-                return;
-            }
-
-            foreach (LevelTexture texture in _editor.Level.Settings.Textures)
-            {
-                if (texture.LoadException != null)
-                {
-                    Editor.Instance.SendMessage("The texture that should be converted to *.png could not be loaded. " + texture.LoadException?.Message, PopupType.Error);
-                    return;
-                }
-
-                string currentTexturePath = _editor.Level.Settings.MakeAbsolute(texture.Path);
-                string pngFilePath = Path.Combine(Path.GetDirectoryName(currentTexturePath), Path.GetFileNameWithoutExtension(currentTexturePath) + ".png");
-
-                if (File.Exists(pngFilePath))
-                {
-                    if (DarkMessageBox.Show(this,
-                            "There is already a file at \"" + pngFilePath + "\". Continue and overwrite the file?",
-                            "File already exists", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                        return;
-                }
-                texture.Image.Save(pngFilePath);
-
-                Editor.Instance.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopupType.Info);
-                texture.SetPath(_editor.Level.Settings, pngFilePath);
-            }
-            _editor.LoadedTexturesChange();
-        }
-
-        private void remapTextureToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (var form = new FormTextureRemap(_editor))
-                form.ShowDialog(this);
-        }
-
-        private void addWadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.AddWad(this);
-        }
-
-        private void removeWadsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.RemoveWads(this);
-        }
-
-        private void reloadWadsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ReloadWads(this);
-        }
-
-        private void addCameraToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new CameraInstance());
-        }
-
-        private void addImportedGeometryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
-        }
-
-        private void addFlybyCameraToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance());
-        }
-
-        private void addSinkToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new SinkInstance());
-        }
-
-        private void addSoundSourceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorActionPlace(false, (l, r) => new SoundSourceInstance());
-        }
-
-        private void addPortalToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.SelectedSectors.Valid)
-                try
-                {
-                    EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-                }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "Unable to create portal");
-                    Editor.Instance.SendMessage("Unable to create portal. \nException: " + exc.Message, PopupType.Error);
-                }
-        }
-
-        private void addTriggerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.SelectedSectors.Valid)
-                EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-        }
-
-        private void newLevelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.ContinueOnFileDrop(this, "New level"))
-                return;
-
-            _editor.Level = Level.CreateSimpleLevel();
-        }
-
-        private void saveLevelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.SaveLevel(this, false);
-        }
-
-        private void openLevelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.OpenLevel(this);
-        }
-
-        private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.OpenLevelPrj(this);
-        }
-
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.SaveLevel(this, true);
-        }
-
-        private void buildLevelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.BuildLevel(false, this);
-        }
-
-        private void buildLevelPlayToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.BuildLevelAndPlay(this);
-        }
-
-        private void animationRangesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (FormAnimatedTextures form = new FormAnimatedTextures(_editor, null))
-                form.ShowDialog(this);
-        }
-
-        private void smoothRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Floor);
-        }
-
-        private void smoothRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Floor);
-        }
-
-        private void smoothRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
-        }
-
-        private void smoothRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SmoothRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
-        }
-
-        private void sharpRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Floor);
-        }
-
-        private void sharpRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Floor);
-        }
-
-        private void sharpRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1, BlockVertical.Ceiling);
-        }
-
-        private void sharpRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.SharpRandom(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1, BlockVertical.Ceiling);
-        }
-
-        private void butFlattenFloor_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Floor);
-        }
-
-        private void butFlattenCeiling_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Ceiling);
-        }
-
-        private void flattenFloorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Floor);
-        }
-
-        private void flattenCeilingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.Flatten(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockVertical.Ceiling);
-        }
-
-        private void gridWallsIn3ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (EditorActions.CheckForRoomAndBlockSelection(this))
-                EditorActions.GridWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
-        private void gridWallsIn5ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-            EditorActions.GridWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, true);
-        }
-
-        private void wholeRoomUpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.MoveRooms(new VectorInt3(0, 1, 0), _editor.SelectedRoom.Versions);
-        }
-
-        private void wholeRoomDownToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.MoveRooms(new VectorInt3(0, -1, 0), _editor.SelectedRoom.Versions);
-        }
-
-        private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ItemBrowser.FindItem();
-        }
-
-        private void moveLaraToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection(this))
-                return;
-
-            EditorActions.MoveLara(this, _editor.SelectedSectors.Start);
-        }
-
-        private void duplicateRoomsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.DuplicateRooms(this);
-        }
-
-        private void deleteRoomsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.Mode == EditorMode.Map2D)
-                EditorActions.DeleteRooms(_editor.SelectedRooms, this);
-            else
-                EditorActions.DeleteRooms(new[] { _editor.SelectedRoom }, this);
-        }
-
-        private void selectConnectedRoomsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.SelectConnectedRooms();
-        }
-
-        private void rotateRoomsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.TransformRooms(new RectTransformation { QuadrantRotation = -1 }, this);
-        }
-
-        private void rotateRoomsCountercockwiseToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.TransformRooms(new RectTransformation { QuadrantRotation = 1 }, this);
-        }
-
-        private void mirrorRoomsOnXAxisToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.TransformRooms(new RectTransformation { MirrorX = true }, this);
-        }
-
-        private void mirrorRoomsOnZAxisToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.TransformRooms(new RectTransformation { MirrorX = true, QuadrantRotation = 2 }, this);
-        }
-
-        private void cropRoomToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-        }
-
-        private void splitRoomToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.SplitRoom(this);
-        }
-
-        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.Mode == EditorMode.Map2D)
-                _editor.SelectRooms(_editor.Level.Rooms.Where(room => room != null));
-            else
-                _editor.SelectedSectors = new SectorSelection { Area = _editor.SelectedRoom.LocalArea };
-        }
-
-        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.Mode == EditorMode.Map2D)
-                if (_editor.SelectedObject != null && (_editor.SelectedObject is PortalInstance || _editor.SelectedObject is TriggerInstance))
-                    EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
-                else
-                    EditorActions.DeleteRooms(_editor.SelectedRooms, this);
-            else
-            {
-                if (_editor.SelectedObject != null)
-                    EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
-            }
-        }
-
-        private void editObjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.SelectedObject != null)
-                EditorActions.EditObject(_editor.SelectedObject, this);
-        }
-
-        private void bookmarkObjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.BookmarkObject(_editor.SelectedObject);
-        }
-
-        private void bookmarkRestoreObjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _editor.SelectedObject = _editor.BookmarkedObject;
-        }
-
-        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FormSearch searchForm = new FormSearch(_editor);
-            searchForm.Show(this); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
-        }
-
-        private void rotateToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.SelectedObject != null)
-                EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 45);
-        }
-
-        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.Mode != EditorMode.Map2D)
-            {
-                if (_editor.SelectedObject != null)
-                    EditorActions.TryCopyObject(_editor.SelectedObject, this);
-                else if (_editor.SelectedSectors.Valid)
-                    EditorActions.TryCopySectors(_editor.SelectedSectors, this);
-            }
-            else
-                Clipboard.SetDataObject(new RoomClipboardData(_editor), true);
-        }
-
-        private void stampToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.TryStampObject(_editor.SelectedObject, this);
-        }
-
-        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_editor.Mode != EditorMode.Map2D)
-            {
-                if (Clipboard.ContainsData(typeof(ObjectClipboardData).FullName))
-                {
-                    var data = Clipboard.GetDataObject().GetData(typeof(ObjectClipboardData)) as ObjectClipboardData;
-                    if (data == null)
-                        Editor.Instance.SendMessage("Clipboard contains no object data.", PopupType.Error);
-                    else
-                        _editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(_editor));
-                }
-                else if (_editor.SelectedSectors.Valid && Clipboard.ContainsData(typeof(SectorsClipboardData).FullName))
-                {
-                    var data = Clipboard.GetDataObject().GetData(typeof(SectorsClipboardData)) as SectorsClipboardData;
-                    if (data == null)
-                        Editor.Instance.SendMessage("Clipboard contains no sector data.", PopupType.Error);
-                    else
-                        EditorActions.TryPasteSectors(data, this);
-                }
-            }
-            else
-            {
-                var roomClipboardData = Clipboard.GetDataObject().GetData(typeof(RoomClipboardData)) as RoomClipboardData;
-                if (roomClipboardData == null)
-                    Editor.Instance.SendMessage("Clipboard contains no room data.", PopupType.Error);
-                else
-                    roomClipboardData.MergeInto(_editor, new VectorInt2());
-            }
-        }
-
-        private void newRoomUpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, room => room.GetHighestCorner(), 12);
-        }
-
-        private void newRoomDownToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, room => room.GetLowestCorner() - 12, 12);
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void levelSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (FormLevelSettings form = new FormLevelSettings(_editor))
-                form.ShowDialog(this);
         }
 
         private void saveCurrentLayoutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1256,11 +495,6 @@ namespace TombEditor.Forms
             EditorActions.DragDropCommonFiles(e, this);
         }
 
-        private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ExportRooms(this, _editor.SelectedRooms);
-        }
-
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (FormAbout form = new FormAbout(Properties.Resources.misc_AboutScreen_800))
@@ -1276,48 +510,6 @@ namespace TombEditor.Forms
         {
             ToolBox_Show(floatingToolStripMenuItem.Checked);
         }
-
-        private void applyCurrentAmbientLightToAllRoomsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (DarkMessageBox.Show(this, "Do you really want to apply the ambient light of the current room to all rooms?",
-                                    "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                EditorActions.ApplyCurrentAmbientLightToAllRooms();
-                Editor.Instance.SendMessage("Ambient light was applied to all rooms.", PopupType.Info);
-            }
-        }
-
-        private void importRoomsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            EditorActions.ImportRooms(this);
-        }
-
-        private void wadToolToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process.Start("WadTool.exe");
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "Error while starting Wad Tool.");
-                Editor.Instance.SendMessage("Error while starting Wad Tool.", PopupType.Error);
-            }
-        }
-
-        private void soundToolToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process.Start("SoundTool.exe");
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "Error while starting Sound Tool.");
-                Editor.Instance.SendMessage("Error while starting Sound Tool.", PopupType.Error);
-            }
-        }
-
 
         // Only for debugging purposes...
 
