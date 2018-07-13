@@ -2991,5 +2991,52 @@ namespace TombEditor
         {
             _editor.Tool = tool;
         }
+
+        public static void SwitchToolOrdered(int toolIndex)
+        {
+            if (_editor.Mode == EditorMode.Map2D || toolIndex > (int)EditorToolType.Terrain ||
+                _editor.Mode != EditorMode.Geometry && toolIndex > 5)
+                return;
+            
+            EditorTool currentTool = _editor.Tool;
+            
+            switch (toolIndex)
+            {
+                case 0:
+                    currentTool.Tool = EditorToolType.Selection;
+                    break;
+                case 1:
+                    currentTool.Tool = EditorToolType.Brush;
+                    break;
+                case 2:
+                    if (_editor.Mode == EditorMode.Geometry)
+                        currentTool.Tool = EditorToolType.Shovel;
+                    else
+                        currentTool.Tool = EditorToolType.Pencil;
+                    break;
+                case 3:
+                    if (_editor.Mode == EditorMode.Geometry)
+                        currentTool.Tool = EditorToolType.Pencil;
+                    else
+                        currentTool.Tool = EditorToolType.Fill;
+                    break;
+                case 4:
+                    if (_editor.Mode == EditorMode.Geometry)
+                        currentTool.Tool = EditorToolType.Flatten;
+                    else
+                        currentTool.Tool = EditorToolType.Group;
+                    break;
+                case 5:
+                    if (_editor.Mode == EditorMode.Geometry)
+                        currentTool.Tool = EditorToolType.Smooth;
+                    else
+                        currentTool.TextureUVFixer = !currentTool.TextureUVFixer;
+                    break;
+                default:
+                    currentTool.Tool = (EditorToolType)(toolIndex + 3);
+                    break;
+            }
+            SwitchTool(currentTool);
+        }
     }
 }

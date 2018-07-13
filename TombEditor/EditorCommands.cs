@@ -1008,6 +1008,81 @@ namespace TombEditor
                     f.ShowDialog();
             });
 
+            AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(0);
+            });
+
+            AddCommand("SwitchTool2", "Switch tool 2", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(1);
+            });
+
+            AddCommand("SwitchTool3", "Switch tool 3", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(2);
+            });
+
+            AddCommand("SwitchTool4", "Switch tool 4", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(3);
+            });
+
+            AddCommand("SwitchTool5", "Switch tool 5", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(4);
+            });
+
+            AddCommand("SwitchTool6", "Switch tool 6", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(5);
+            });
+
+            AddCommand("SwitchTool7", "Switch tool 7", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(6);
+            });
+
+            AddCommand("SwitchTool8", "Switch tool 8", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(7);
+            });
+
+            AddCommand("SwitchTool9", "Switch tool 9", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(8);
+            });
+
+            AddCommand("SwitchTool10", "Switch tool 10", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(9);
+            });
+
+            AddCommand("SwitchTool11", "Switch tool 11", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(10);
+            });
+
+            AddCommand("SwitchTool12", "Switch tool 12", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(11);
+            });
+
+            AddCommand("SwitchTool13", "Switch tool 13", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(12);
+            });
+
+            AddCommand("SwitchTool14", "Switch tool 14", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(13);
+            });
+
+            AddCommand("SwitchTool15", "SwitchTool15", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(14);
+            });
+
             AddCommand("QuitEditor", "Quit editor", CommandType.General, delegate ()
             {
                 _editor.Quit();
@@ -1042,8 +1117,27 @@ namespace TombEditor
             return result;
         }
 
-        public static List<HotkeySet> GenerateDefaultHotkeys()
+        public static List<HotkeySet> GenerateDefaultHotkeys(KeyboardLayout layout)
         {
+            Keys Q = Keys.Q;
+            Keys A = Keys.A;
+            Keys W = Keys.W;
+            Keys Y = Keys.Y;
+            Keys Z = Keys.Z;
+
+            if(layout == KeyboardLayout.Azerty)
+            {
+                Q = Keys.A;
+                W = Keys.Z;
+                A = Keys.Q;
+                Z = Keys.W;
+            }
+            else if(layout == KeyboardLayout.Qwertz)
+            {
+                Y = Keys.Z;
+                Z = Keys.Y;
+            }
+
             return new List<HotkeySet>
             {
                 new HotkeySet { Name = "CancelAnyAction", Hotkeys = new List<uint> { (uint)(Keys.Escape) } },
@@ -1074,20 +1168,20 @@ namespace TombEditor
                 new HotkeySet { Name = "MoveRoomBack", Hotkeys = new List<uint> { (uint)(Keys.Down | Keys.Alt) } },
                 new HotkeySet { Name = "MoveRoomUp", Hotkeys = new List<uint> { (uint)(Keys.PageUp | Keys.Alt) } },
                 new HotkeySet { Name = "MoveRoomDown", Hotkeys = new List<uint> { (uint)(Keys.PageDown | Keys.Alt) } },
-                new HotkeySet { Name = "RaiseQA1Click", Hotkeys = new List<uint> { (uint)(Keys.Q) } },
-                new HotkeySet { Name = "RaiseQA4Click", Hotkeys = new List<uint> { (uint)(Keys.Q | Keys.Shift) } },
-                new HotkeySet { Name = "LowerQA1Click", Hotkeys = new List<uint> { (uint)(Keys.A) } },
-                new HotkeySet { Name = "LowerQA4Click", Hotkeys = new List<uint> { (uint)(Keys.A | Keys.Shift) } },
-                new HotkeySet { Name = "RaiseQA1ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.Q | Keys.Alt) } },
-                new HotkeySet { Name = "RaiseQA4ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.Q | Keys.Alt | Keys.Shift) } },
-                new HotkeySet { Name = "LowerQA1ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.A | Keys.Alt) } },
-                new HotkeySet { Name = "LowerQA4ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.A | Keys.Alt | Keys.Shift) } },
-                new HotkeySet { Name = "RaiseWS1Click", Hotkeys = new List<uint> { (uint)(Keys.W) } },
-                new HotkeySet { Name = "RaiseWS4Click", Hotkeys = new List<uint> { (uint)(Keys.W | Keys.Shift) } },
+                new HotkeySet { Name = "RaiseQA1Click", Hotkeys = new List<uint> { (uint)(Q) } },
+                new HotkeySet { Name = "RaiseQA4Click", Hotkeys = new List<uint> { (uint)(Q | Keys.Shift) } },
+                new HotkeySet { Name = "LowerQA1Click", Hotkeys = new List<uint> { (uint)(A) } },
+                new HotkeySet { Name = "LowerQA4Click", Hotkeys = new List<uint> { (uint)(A | Keys.Shift) } },
+                new HotkeySet { Name = "RaiseQA1ClickSmooth", Hotkeys = new List<uint> { (uint)(Q | Keys.Alt) } },
+                new HotkeySet { Name = "RaiseQA4ClickSmooth", Hotkeys = new List<uint> { (uint)(Q | Keys.Alt | Keys.Shift) } },
+                new HotkeySet { Name = "LowerQA1ClickSmooth", Hotkeys = new List<uint> { (uint)(A | Keys.Alt) } },
+                new HotkeySet { Name = "LowerQA4ClickSmooth", Hotkeys = new List<uint> { (uint)(A | Keys.Alt | Keys.Shift) } },
+                new HotkeySet { Name = "RaiseWS1Click", Hotkeys = new List<uint> { (uint)(W) } },
+                new HotkeySet { Name = "RaiseWS4Click", Hotkeys = new List<uint> { (uint)(W | Keys.Shift) } },
                 new HotkeySet { Name = "LowerWS1Click", Hotkeys = new List<uint> { (uint)(Keys.S) } },
                 new HotkeySet { Name = "LowerWS4Click", Hotkeys = new List<uint> { (uint)(Keys.S | Keys.Shift) } },
-                new HotkeySet { Name = "RaiseWS1ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.W | Keys.Alt) } },
-                new HotkeySet { Name = "RaiseWS4ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.W | Keys.Alt | Keys.Shift) } },
+                new HotkeySet { Name = "RaiseWS1ClickSmooth", Hotkeys = new List<uint> { (uint)(W | Keys.Alt) } },
+                new HotkeySet { Name = "RaiseWS4ClickSmooth", Hotkeys = new List<uint> { (uint)(W | Keys.Alt | Keys.Shift) } },
                 new HotkeySet { Name = "LowerWS1ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.S | Keys.Alt) } },
                 new HotkeySet { Name = "LowerWS4ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.S | Keys.Alt | Keys.Shift) } },
                 new HotkeySet { Name = "RaiseED1Click", Hotkeys = new List<uint> { (uint)(Keys.E) } },
@@ -1106,8 +1200,8 @@ namespace TombEditor
                 new HotkeySet { Name = "RaiseRF4ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.R | Keys.Alt | Keys.Shift) } },
                 new HotkeySet { Name = "LowerRF1ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.F | Keys.Alt) } },
                 new HotkeySet { Name = "LowerRF4ClickSmooth", Hotkeys = new List<uint> { (uint)(Keys.F | Keys.Alt | Keys.Shift) } },
-                new HotkeySet { Name = "RaiseYH1Click", Hotkeys = new List<uint> { (uint)(Keys.Y) } },
-                new HotkeySet { Name = "RaiseYH4Click", Hotkeys = new List<uint> { (uint)(Keys.Y | Keys.Shift) } },
+                new HotkeySet { Name = "RaiseYH1Click", Hotkeys = new List<uint> { (uint)(Y) } },
+                new HotkeySet { Name = "RaiseYH4Click", Hotkeys = new List<uint> { (uint)(Y | Keys.Shift) } },
                 new HotkeySet { Name = "LowerYH1Click", Hotkeys = new List<uint> { (uint)(Keys.H) } },
                 new HotkeySet { Name = "LowerYH4Click", Hotkeys = new List<uint> { (uint)(Keys.H | Keys.Shift) } },
                 new HotkeySet { Name = "RaiseUJ1Click", Hotkeys = new List<uint> { (uint)(Keys.U) } },
@@ -1128,7 +1222,7 @@ namespace TombEditor
                 new HotkeySet { Name = "Paste", Hotkeys = new List<uint> { (uint)(Keys.V | Keys.Control) } },
                 new HotkeySet { Name = "StampObject", Hotkeys = new List<uint> { (uint)(Keys.B | Keys.Control) } },
                 new HotkeySet { Name = "Delete", Hotkeys = new List<uint> { (uint)(Keys.Delete) } },
-                new HotkeySet { Name = "SelectAll", Hotkeys = new List<uint> { (uint)(Keys.A | Keys.Control) } },
+                new HotkeySet { Name = "SelectAll", Hotkeys = new List<uint> { (uint)(A | Keys.Control) } },
                 new HotkeySet { Name = "Search", Hotkeys = new List<uint> { (uint)(Keys.F | Keys.Control) } },
                 new HotkeySet { Name = "DeleteRooms", Hotkeys = new List<uint> { (uint)(Keys.D | Keys.Control | Keys.Shift | Keys.Alt) } },
                 new HotkeySet { Name = "DuplicateRooms", Hotkeys = new List<uint> { (uint)(Keys.U | Keys.Control | Keys.Shift | Keys.Alt) } },
@@ -1149,7 +1243,7 @@ namespace TombEditor
                 new HotkeySet { Name = "MoveLara", Hotkeys = new List<uint> { (uint)(Keys.M | Keys.Control) } },
                 new HotkeySet { Name = "TextureFloor", Hotkeys = new List<uint> { (uint)(Keys.T | Keys.Control | Keys.Alt) } },
                 new HotkeySet { Name = "TextureCeiling", Hotkeys = new List<uint> { (uint)(Keys.V | Keys.Control | Keys.Alt) } },
-                new HotkeySet { Name = "TextureWalls", Hotkeys = new List<uint> { (uint)(Keys.W | Keys.Control | Keys.Alt) } },
+                new HotkeySet { Name = "TextureWalls", Hotkeys = new List<uint> { (uint)(W | Keys.Control | Keys.Alt) } },
                 new HotkeySet { Name = "FlattenFloor", Hotkeys = new List<uint> { (uint)(Keys.E | Keys.Control | Keys.Alt) } },
                 new HotkeySet { Name = "FlattenCeiling", Hotkeys = new List<uint> { (uint)(Keys.F | Keys.Control | Keys.Alt) } },
                 new HotkeySet { Name = "GridWallsIn3", Hotkeys = new List<uint> { (uint)(Keys.D3 | Keys.Control) } },

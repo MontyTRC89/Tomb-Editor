@@ -94,7 +94,7 @@ namespace TombEditor.Forms
         private void butDefaults_Click(object sender, EventArgs e)
         {
             _currConfig.Clear();
-            _currConfig = CommandHandler.GenerateDefaultHotkeys();
+            _currConfig = CommandHandler.GenerateDefaultHotkeys(KeyboardLayoutDetector.KeyboardLayout);
             RedrawList();
         }
 
