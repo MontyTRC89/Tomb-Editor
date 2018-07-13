@@ -259,7 +259,7 @@ namespace ScriptEditor
 
 		private void textEditor_MouseDown(object sender, MouseEventArgs e)
 		{
-			// If the user right clicked somewhere in the editor and has nothing selected
+			// If the user right clicked somewhere in the editor and didn't click on the selection
 			if (e.Button == MouseButtons.Right && !textEditor.Selection.Contains(textEditor.PointToPlace(e.Location)))
 			{
 				// Move the caret to the new position
@@ -354,7 +354,7 @@ namespace ScriptEditor
 		private void Edit_SelectAll_MenuItem_Click(object sender, EventArgs e)
 		{
 			textEditor.SelectAll();
-			DoStatusCounting(); // So it updates the statusbar.
+			DoStatusCounting(); // So it updates the statusbar
 		}
 
 		#endregion Edit menu items
@@ -483,7 +483,7 @@ namespace ScriptEditor
 				editorContent = textEditor.Text;
 			}
 
-			// If the content is unchanged
+			// If the editor content is the same as the file content
 			if (editorContent == File.ReadAllText(gS_CurrentFilePath))
 			{
 				textEditor.IsChanged = false;
@@ -690,7 +690,7 @@ namespace ScriptEditor
 			}
 
 			// If the selected node is empty
-			if (objectBrowser.SelectedNodes[0].Text == string.Empty)
+			if (string.IsNullOrWhiteSpace(objectBrowser.SelectedNodes[0].Text))
 			{
 				return;
 			}
@@ -698,7 +698,7 @@ namespace ScriptEditor
 			// Scan all lines
 			for (int i = 0; i < textEditor.LinesCount; i++)
 			{
-				// Find the line which contains the node text
+				// Find the line that contains the node text
 				if (textEditor.GetLineText(i).ToLower().Replace("·", " ").Contains(objectBrowser.SelectedNodes[0].Text.ToLower()))
 				{
 					textEditor.Focus();
@@ -732,12 +732,6 @@ namespace ScriptEditor
 				AddObjectBrowserNodes(i, filter);
 			}
 
-			if (objectBrowser.Nodes.Count == 2)
-			{
-				objectBrowser.Nodes[0].Expanded = true;
-				objectBrowser.Nodes[1].Expanded = true;
-			}
-
 			// If all default nodes are set
 			if (objectBrowser.Nodes.Count == 2)
 			{
@@ -751,10 +745,14 @@ namespace ScriptEditor
 
 		private void AddObjectBrowserNodes(int lineNumber, string filter)
 		{
-			bool areSpacesVisible = Properties.Settings.Default.ShowSpaces;
+			AddLevelNodes(lineNumber, filter);
+			AddHeaderNodes(lineNumber, filter);
+		}
 
+		private void AddLevelNodes(int lineNumber, string filter)
+		{
 			// Regex rule to find lines that start with "Name = "
-			Regex rgx = areSpacesVisible ? new Regex(@"\bName·?=·?") : new Regex(@"\bName\s?=\s?");
+			Regex rgx = new Regex(@"\bName[\s·]?=[\s·]?");
 
 			// If we found a line that starts with our Regex rule ("Name = ")
 			if (rgx.IsMatch(textEditor.GetLineText(lineNumber)))
@@ -768,7 +766,10 @@ namespace ScriptEditor
 					objectBrowser.Nodes[1].Nodes.Add(levelNode);
 				}
 			}
+		}
 
+		private void AddHeaderNodes(int lineNumber, string filter)
+		{
 			// Get header key words
 			List<string> headers = SyntaxKeyWords.Headers();
 
@@ -838,9 +839,9 @@ namespace ScriptEditor
 			e.ChangedRange.SetStyle(SyntaxColors.References, @"\$[a-fA-F0-9][a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?[a-fA-F0-9]?");
 			e.ChangedRange.SetStyle(SyntaxColors.Values, @"=\s?.*$", RegexOptions.Multiline);
 			e.ChangedRange.SetStyle(SyntaxColors.Headers, @"\[(" + string.Join("|", SyntaxKeyWords.Headers()) + @")\]");
-			e.ChangedRange.SetStyle(SyntaxColors.NewCommands, @"\b(" + string.Join("|", SyntaxKeyWords.NewCommands()) + ")");
-			e.ChangedRange.SetStyle(SyntaxColors.OldCommands, @"\b(" + string.Join("|", SyntaxKeyWords.OldCommands()) + ")");
-			e.ChangedRange.SetStyle(SyntaxColors.Unknown, @"\b(" + string.Join("|", SyntaxKeyWords.Unknown()) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.NewCommands, @"\b(" + string.Join(@"[\s·]?=[\s·]?|", SyntaxKeyWords.NewCommands()) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.OldCommands, @"\b(" + string.Join(@"[\s·]?=[\s·]?|", SyntaxKeyWords.OldCommands()) + ")");
+			e.ChangedRange.SetStyle(SyntaxColors.Unknown, @"\b(" + string.Join(@"[\s·]?=[\s·]?|", SyntaxKeyWords.Unknown()) + ")");
 		}
 
 		private void DoStatusCounting()
@@ -856,17 +857,18 @@ namespace ScriptEditor
 
 		private void TidyScript(bool trimOnly = false)
 		{
+			// Start AutoUndo to allow the user to undo the tidying process using only a single stack
 			textEditor.BeginAutoUndo();
 
-			// Save set bookmarks to prevent a bug
+			// Save set bookmarks and remove them from the editor to prevent a bug
 			int[] bookmarkLines = GetBookmarkedLines();
 			textEditor.Bookmarks.Clear();
 
 			// Store current scroll position
 			int scrollPosition = textEditor.VerticalScroll.Value;
 
-			bool areSpacesVisible = Properties.Settings.Default.ShowSpaces;
-			string editorContent = areSpacesVisible ? textEditor.Text.Replace("·", " ") : textEditor.Text;
+			// Store the editor content in a string and replace the "whitespace dots" (if there are any) with whitespace
+			string editorContent = textEditor.Text.Replace("·", " ");
 
 			// Setup a list to store all tidied lines
 			List<string> tidiedlines = trimOnly ? SyntaxTidy.TrimLines(editorContent) : SyntaxTidy.ReindentLines(editorContent);
@@ -874,7 +876,8 @@ namespace ScriptEditor
 			// Scan all lines
 			for (int i = 0; i < textEditor.LinesCount; i++)
 			{
-				string currentTidiedLine = areSpacesVisible ? tidiedlines[i].Replace(" ", "·") : tidiedlines[i];
+				// Also check if the user has "Show Spaces" enabled
+				string currentTidiedLine = Properties.Settings.Default.ShowSpaces ? tidiedlines[i].Replace(" ", "·") : tidiedlines[i];
 
 				// If a line has changed
 				if (textEditor.GetLineText(i) != currentTidiedLine)
@@ -896,6 +899,7 @@ namespace ScriptEditor
 
 			textEditor.Invalidate();
 
+			// End AutoUndo to stop recording the actions and put them into a single stack
 			textEditor.EndAutoUndo();
 		}
 
@@ -952,30 +956,13 @@ namespace ScriptEditor
 
 		#region File handling
 
-		private void ShowPathSelectionForm()
-		{
-			// If the current file has unsaved changes
-			if (!IsFileSaved())
-			{
-				return;
-			}
-
-			using (FormSelectPaths form = new FormSelectPaths())
-			{
-				if (form.ShowDialog(this) == DialogResult.OK)
-				{
-					ReadScriptFolder();
-				}
-			}
-		}
-
 		public void ReadScriptFolder()
 		{
 			try
 			{
 				string path = Properties.Settings.Default.ScriptPath;
 
-				// Get files from selected directory
+				// Get files from the selected directory
 				string[] files = Directory.GetFiles(path);
 				bool folderHasScriptFile = false;
 
@@ -995,7 +982,7 @@ namespace ScriptEditor
 					}
 				}
 
-				// If no script file has been found
+				// If no script file was found
 				if (!folderHasScriptFile)
 				{
 					DialogResult result = DarkMessageBox.Show(this,
@@ -1004,7 +991,7 @@ namespace ScriptEditor
 
 					if (result == DialogResult.Yes)
 					{
-						// Create SCRIPT.txt from the template
+						// Create SCRIPT.txt from template
 						string filePath = path + "\\SCRIPT.txt";
 						File.Copy("ScriptTemplate.txt", filePath);
 
@@ -1153,7 +1140,7 @@ namespace ScriptEditor
 
 		private void StartAutosaveTimer()
 		{
-			var autosaveTimer = new System.Timers.Timer(); // I don't like vars but ¯\_(ツ)_/¯
+			var autosaveTimer = new System.Timers.Timer(); // I don't like using vars but ¯\_(ツ)_/¯
 			autosaveTimer.Elapsed += autosaveTimer_Elapsed;
 			autosaveTimer.Interval = Properties.Settings.Default.AutosaveTime * (60 * 1000);
 			autosaveTimer.Enabled = true; // Start the timer
@@ -1204,6 +1191,23 @@ namespace ScriptEditor
 			using (FormAbout form = new FormAbout())
 			{
 				form.ShowDialog(this);
+			}
+		}
+
+		private void ShowPathSelectionForm()
+		{
+			// If the current file has unsaved changes
+			if (!IsFileSaved())
+			{
+				return;
+			}
+
+			using (FormSelectPaths form = new FormSelectPaths())
+			{
+				if (form.ShowDialog(this) == DialogResult.OK)
+				{
+					ReadScriptFolder();
+				}
 			}
 		}
 
