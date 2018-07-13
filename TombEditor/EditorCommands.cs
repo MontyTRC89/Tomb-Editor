@@ -1008,6 +1008,81 @@ namespace TombEditor
                     f.ShowDialog();
             });
 
+            AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(0);
+            });
+
+            AddCommand("SwitchTool2", "Switch tool 2", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(1);
+            });
+
+            AddCommand("SwitchTool3", "Switch tool 3", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(2);
+            });
+
+            AddCommand("SwitchTool4", "Switch tool 4", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(3);
+            });
+
+            AddCommand("SwitchTool5", "Switch tool 5", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(4);
+            });
+
+            AddCommand("SwitchTool6", "Switch tool 6", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(5);
+            });
+
+            AddCommand("SwitchTool7", "Switch tool 7", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(6);
+            });
+
+            AddCommand("SwitchTool8", "Switch tool 8", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(7);
+            });
+
+            AddCommand("SwitchTool9", "Switch tool 9", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(8);
+            });
+
+            AddCommand("SwitchTool10", "Switch tool 10", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(9);
+            });
+
+            AddCommand("SwitchTool11", "Switch tool 11", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(10);
+            });
+
+            AddCommand("SwitchTool12", "Switch tool 12", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(11);
+            });
+
+            AddCommand("SwitchTool13", "Switch tool 13", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(12);
+            });
+
+            AddCommand("SwitchTool14", "Switch tool 14", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(13);
+            });
+
+            AddCommand("SwitchTool15", "SwitchTool15", CommandType.General, delegate ()
+            {
+                EditorActions.SwitchToolOrdered(14);
+            });
+
             AddCommand("QuitEditor", "Quit editor", CommandType.General, delegate ()
             {
                 _editor.Quit();
