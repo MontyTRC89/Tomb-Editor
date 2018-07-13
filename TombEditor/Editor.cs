@@ -44,6 +44,8 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        public CommandHandler CommandHandler;
+
         public event Action<IEditorEvent> EditorEventRaised;
 
         public void RaiseEvent(IEditorEvent eventObj)
@@ -545,6 +547,13 @@ namespace TombEditor
         {
             RaiseEvent(new MessageEvent { Message = message, Type = type });
         }
+
+        public class EditorQuitEvent : IEditorEvent { }
+        public void Quit()
+        {
+            RaiseEvent(new EditorQuitEvent());
+        }
+
 
         // Change sector highlights
         public SectorColoringManager SectorColoringManager { get; private set; }

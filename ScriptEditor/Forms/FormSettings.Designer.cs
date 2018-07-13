@@ -30,7 +30,7 @@
 		{
 			this.applyButton = new DarkUI.Controls.DarkButton();
 			this.autocompleteCheck = new DarkUI.Controls.DarkCheckBox();
-			this.autoSaveCombo = new DarkUI.Controls.DarkComboBox();
+			this.autosaveCombo = new DarkUI.Controls.DarkComboBox();
 			this.autoSaveLabel = new DarkUI.Controls.DarkLabel();
 			this.cancelButton = new DarkUI.Controls.DarkButton();
 			this.closeBracketsCheck = new DarkUI.Controls.DarkCheckBox();
@@ -98,10 +98,10 @@
 			this.autocompleteCheck.Text = "Enable Autocomplete";
 			this.autocompleteCheck.CheckedChanged += new System.EventHandler(this.autocompleteCheck_CheckedChanged);
 			// 
-			// autoSaveCombo
+			// autosaveCombo
 			// 
-			this.autoSaveCombo.FormattingEnabled = true;
-			this.autoSaveCombo.Items.AddRange(new object[] {
+			this.autosaveCombo.FormattingEnabled = true;
+			this.autosaveCombo.Items.AddRange(new object[] {
             "None",
             "1",
             "3",
@@ -109,11 +109,11 @@
             "10",
             "15",
             "30"});
-			this.autoSaveCombo.Location = new System.Drawing.Point(6, 131);
-			this.autoSaveCombo.Name = "autoSaveCombo";
-			this.autoSaveCombo.Size = new System.Drawing.Size(150, 21);
-			this.autoSaveCombo.TabIndex = 5;
-			this.autoSaveCombo.SelectedIndexChanged += new System.EventHandler(this.autoSaveCombo_SelectedIndexChanged);
+			this.autosaveCombo.Location = new System.Drawing.Point(6, 131);
+			this.autosaveCombo.Name = "autosaveCombo";
+			this.autosaveCombo.Size = new System.Drawing.Size(150, 21);
+			this.autosaveCombo.TabIndex = 5;
+			this.autosaveCombo.SelectedIndexChanged += new System.EventHandler(this.autosaveCombo_SelectedIndexChanged);
 			// 
 			// autoSaveLabel
 			// 
@@ -121,9 +121,9 @@
 			this.autoSaveLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.autoSaveLabel.Location = new System.Drawing.Point(6, 111);
 			this.autoSaveLabel.Name = "autoSaveLabel";
-			this.autoSaveLabel.Size = new System.Drawing.Size(85, 13);
+			this.autoSaveLabel.Size = new System.Drawing.Size(80, 13);
 			this.autoSaveLabel.TabIndex = 4;
-			this.autoSaveLabel.Text = "Auto Save (min):";
+			this.autoSaveLabel.Text = "Autosave (min):";
 			// 
 			// cancelButton
 			// 
@@ -185,7 +185,7 @@
 			this.darkGroupBox1.Controls.Add(this.showSpacesCheck);
 			this.darkGroupBox1.Controls.Add(this.showToolbarCheck);
 			this.darkGroupBox1.Controls.Add(this.darkGroupBox2);
-			this.darkGroupBox1.Controls.Add(this.autoSaveCombo);
+			this.darkGroupBox1.Controls.Add(this.autosaveCombo);
 			this.darkGroupBox1.Controls.Add(this.autoSaveLabel);
 			this.darkGroupBox1.Controls.Add(this.fontFaceCombo);
 			this.darkGroupBox1.Controls.Add(this.faceLabel);
@@ -244,6 +244,7 @@
 			this.showSpacesCheck.Size = new System.Drawing.Size(92, 17);
 			this.showSpacesCheck.TabIndex = 8;
 			this.showSpacesCheck.Text = "Show Spaces";
+			this.showSpacesCheck.CheckedChanged += new System.EventHandler(this.showSpacesCheck_CheckedChanged);
 			// 
 			// showToolbarCheck
 			// 
@@ -493,7 +494,7 @@
 			// 
 			this.restartLabel.AutoSize = true;
 			this.restartLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.restartLabel.Location = new System.Drawing.Point(227, 15);
+			this.restartLabel.Location = new System.Drawing.Point(224, 15);
 			this.restartLabel.Name = "restartLabel";
 			this.restartLabel.Size = new System.Drawing.Size(85, 13);
 			this.restartLabel.TabIndex = 3;
@@ -587,7 +588,7 @@
 		private DarkUI.Controls.DarkCheckBox showToolbarCheck;
 		private DarkUI.Controls.DarkCheckBox toolTipCheck;
 		private DarkUI.Controls.DarkCheckBox wordWrapCheck;
-		private DarkUI.Controls.DarkComboBox autoSaveCombo;
+		private DarkUI.Controls.DarkComboBox autosaveCombo;
 		private DarkUI.Controls.DarkComboBox fontFaceCombo;
 		private DarkUI.Controls.DarkGroupBox darkGroupBox1;
 		private DarkUI.Controls.DarkGroupBox darkGroupBox2;

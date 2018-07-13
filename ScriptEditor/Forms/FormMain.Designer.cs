@@ -21,7 +21,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
 			this.aboutToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.autoSaveLabel = new DarkUI.Controls.DarkLabel();
+			this.autosaveLabel = new DarkUI.Controls.DarkLabel();
 			this.buildToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.changeToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -90,6 +90,7 @@
 			this.prevBookmarkToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.refBrowserSplitter = new System.Windows.Forms.Splitter();
+			this.referenceBrowser = new ScriptEditor.ReferenceBrowser();
 			this.resetZoomButton = new DarkUI.Controls.DarkButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.selectedCharsLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -106,7 +107,6 @@
 			this.toolStripSeparator_13 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator_14 = new System.Windows.Forms.ToolStripSeparator();
 			this.zoomLabel = new DarkUI.Controls.DarkLabel();
-			this.referenceBrowser = new ScriptEditor.ReferenceBrowser();
 			((System.ComponentModel.ISupportInitialize)(this.textEditor)).BeginInit();
 			this.editorContextMenu.SuspendLayout();
 			this.menuStrip.SuspendLayout();
@@ -138,17 +138,17 @@
 			this.aboutToolStripMenuItem.Text = "&About...";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.Help_About_MenuItem_Click);
 			// 
-			// autoSaveLabel
+			// autosaveLabel
 			// 
-			this.autoSaveLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.autoSaveLabel.AutoSize = true;
-			this.autoSaveLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.autoSaveLabel.Location = new System.Drawing.Point(384, 430);
-			this.autoSaveLabel.Name = "autoSaveLabel";
-			this.autoSaveLabel.Size = new System.Drawing.Size(265, 13);
-			this.autoSaveLabel.TabIndex = 14;
-			this.autoSaveLabel.Text = "Autosave Completed! (CURRENT TIME GOES HERE)";
-			this.autoSaveLabel.Visible = false;
+			this.autosaveLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.autosaveLabel.AutoSize = true;
+			this.autosaveLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.autosaveLabel.Location = new System.Drawing.Point(384, 430);
+			this.autosaveLabel.Name = "autosaveLabel";
+			this.autosaveLabel.Size = new System.Drawing.Size(265, 13);
+			this.autosaveLabel.TabIndex = 14;
+			this.autosaveLabel.Text = "Autosave Completed! (CURRENT TIME GOES HERE)";
+			this.autosaveLabel.Visible = false;
 			// 
 			// buildToolStripButton
 			// 
@@ -934,6 +934,16 @@
 			this.refBrowserSplitter.TabIndex = 13;
 			this.refBrowserSplitter.TabStop = false;
 			// 
+			// referenceBrowser
+			// 
+			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.referenceBrowser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.referenceBrowser.Location = new System.Drawing.Point(0, 262);
+			this.referenceBrowser.Name = "referenceBrowser";
+			this.referenceBrowser.Size = new System.Drawing.Size(800, 160);
+			this.referenceBrowser.TabIndex = 11;
+			// 
 			// resetZoomButton
 			// 
 			this.resetZoomButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1119,22 +1129,12 @@
 			this.zoomLabel.TabIndex = 8;
 			this.zoomLabel.Text = "Zoom: 100%";
 			// 
-			// referenceBrowser
-			// 
-			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.referenceBrowser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.referenceBrowser.Location = new System.Drawing.Point(0, 262);
-			this.referenceBrowser.Name = "referenceBrowser";
-			this.referenceBrowser.Size = new System.Drawing.Size(800, 160);
-			this.referenceBrowser.TabIndex = 11;
-			// 
 			// FormMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
-			this.Controls.Add(this.autoSaveLabel);
+			this.Controls.Add(this.autosaveLabel);
 			this.Controls.Add(this.objectBrowserSplitter);
 			this.Controls.Add(this.showStringTableButton);
 			this.Controls.Add(this.resetZoomButton);
@@ -1176,7 +1176,7 @@
 		private DarkUI.Controls.DarkButton showStringTableButton;
 		private DarkUI.Controls.DarkContextMenu editorContextMenu;
 		private DarkUI.Controls.DarkGroupBox objectBrowserBox;
-		private DarkUI.Controls.DarkLabel autoSaveLabel;
+		private DarkUI.Controls.DarkLabel autosaveLabel;
 		private DarkUI.Controls.DarkLabel zoomLabel;
 		private DarkUI.Controls.DarkMenuStrip menuStrip;
 		private DarkUI.Controls.DarkStatusStrip statusStrip;

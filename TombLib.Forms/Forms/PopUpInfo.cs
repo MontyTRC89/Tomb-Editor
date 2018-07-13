@@ -5,7 +5,7 @@ using DarkUI.Forms;
 
 namespace TombLib.Forms
 {
-    public enum PopupPosition
+    public enum PopupAlignment
     {
         Center,
         TopLeft,
@@ -24,7 +24,9 @@ namespace TombLib.Forms
 
     public partial class PopUpInfo : DarkForm
     {
-        private const float _shiftCoeff = 0.25f; // Intro animation push coefficient
+        private const float _shiftCoeff = 0.25f;   // Intro animation push coefficient
+        private const float _finalOpacity = 0.85f; // Non-animated opacity
+        private const float _avgReadSpeed = 2.5f;  // Average reading speed
 
         private readonly Color _warningColor = Color.FromArgb(255, 192, 128);
         private readonly Color _errorColor = Color.FromArgb(255, 128, 128);
@@ -34,9 +36,8 @@ namespace TombLib.Forms
         private float _animProgress = 0.0f;
         private float _animTimeout = 1000.0f;
 
-        private PopupPosition _position;
+        private PopupAlignment _alignment;
         private int _padding;
-        private float _finalOpacity = 0.85f;
         private Control _parent;
         private Point _parentPosition;
 
@@ -49,19 +50,19 @@ namespace TombLib.Forms
         // Common message helpers
         public void ShowInfo(Control parent, string message, string title = "Information")
         {
-            Show(parent, PopupPosition.BottomRight, message, title, PopupType.Info);
+            Show(parent, PopupAlignment.BottomRight, message, title, PopupType.Info);
         }
         public void ShowWarning(Control parent, string message, string title = "Warning")
         {
-            Show(parent, PopupPosition.BottomRight, message, title, PopupType.Warning);
+            Show(parent, PopupAlignment.BottomRight, message, title, PopupType.Warning);
         }
         public void ShowError(Control parent, string message, string title = "Error")
         {
-            Show(parent, PopupPosition.BottomRight, message, title, PopupType.Error);
+            Show(parent, PopupAlignment.BottomRight, message, title, PopupType.Error);
         }
         public void ShowSimple(Control parent, string message)
         {
-            Show(parent, PopupPosition.BottomRight, message);
+            Show(parent, PopupAlignment.BottomRight, message);
         }
 
         public void Show(string message, PopupType type)
@@ -81,7 +82,7 @@ namespace TombLib.Forms
             }
         }
 
-        public void Show(Control parent, PopupPosition startPos, string message, string title = "", PopupType type = PopupType.Info, int timeout = 0, int padding = 10)
+        public void Show(Control parent, PopupAlignment alignment, string message, string title = "", PopupType type = PopupType.Info, int timeout = 0, int padding = 10)
         {
             // No message means kill current pop-up
             if(message == "")
@@ -90,9 +91,8 @@ namespace TombLib.Forms
                 return;
             }
 
-            // Setup
             _parent = parent;
-            _position = startPos;
+            _alignment = alignment;
             _padding = padding;
 
             // Reset sizes
@@ -149,7 +149,7 @@ namespace TombLib.Forms
                     while (index < message.Length && char.IsWhiteSpace(message[index]))
                         index++;
                 }
-                _animTimeout = wordCount * 2.5f;
+                _animTimeout = wordCount * _avgReadSpeed;
             }
 
             // Start intro animation
@@ -204,22 +204,22 @@ namespace TombLib.Forms
             {
                 _parentPosition = callbackControlLocation;
 
-                switch (_position)
+                switch (_alignment)
                 {
                     default:
-                    case PopupPosition.BottomLeft:
+                    case PopupAlignment.BottomLeft:
                         Location = new Point(callbackControlLocation.X + _padding, callbackControlLocation.Y + _parent.Size.Height - Size.Height - _padding - currentShift);
                         break;
-                    case PopupPosition.BottomRight:
+                    case PopupAlignment.BottomRight:
                         Location = new Point(callbackControlLocation.X + _parent.Size.Width - Size.Width - _padding, callbackControlLocation.Y + _parent.Size.Height - Size.Height - _padding - currentShift);
                         break;
-                    case PopupPosition.TopLeft:
+                    case PopupAlignment.TopLeft:
                         Location = new Point(callbackControlLocation.X + _padding, callbackControlLocation.Y + _padding + currentShift);
                         break;
-                    case PopupPosition.TopRight:
+                    case PopupAlignment.TopRight:
                         Location = new Point(callbackControlLocation.X + _parent.Size.Width - Size.Width - _padding, callbackControlLocation.Y + _padding + currentShift);
                         break;
-                    case PopupPosition.Center:
+                    case PopupAlignment.Center:
                         Location = new Point(callbackControlLocation.X + _parent.Size.Width / 2 - Size.Width / 2, callbackControlLocation.Y + _parent.Size.Height / 2 - Size.Height / 2 + currentShift);
                         break;
                 }

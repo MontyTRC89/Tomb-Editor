@@ -31,9 +31,10 @@ namespace TombLib.Controls
             this.colorPreview = new System.Windows.Forms.Panel();
             this.label = new DarkUI.Controls.DarkLabel();
             this.numericUpDown = new DarkUI.Controls.DarkNumericUpDown();
-            this.combo = new DarkUI.Controls.DarkComboBox();
-            this.butReset = new DarkUI.Controls.DarkButton();
             this.butView = new DarkUI.Controls.DarkButton();
+            this.butReset = new DarkUI.Controls.DarkButton();
+            this.butSearch = new DarkUI.Controls.DarkButton();
+            this.combo = new DarkUI.Controls.DarkComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -44,7 +45,7 @@ namespace TombLib.Controls
             this.colorPreview.Location = new System.Drawing.Point(187, 0);
             this.colorPreview.Name = "colorPreview";
             this.colorPreview.Size = new System.Drawing.Size(55, 23);
-            this.colorPreview.TabIndex = 4;
+            this.colorPreview.TabIndex = 1;
             // 
             // label
             // 
@@ -55,7 +56,7 @@ namespace TombLib.Controls
             this.label.Location = new System.Drawing.Point(2, 2);
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(240, 19);
-            this.label.TabIndex = 3;
+            this.label.TabIndex = 6;
             this.label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label.Visible = false;
             this.label.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label_MouseDown);
@@ -85,6 +86,41 @@ namespace TombLib.Controls
             this.numericUpDown.Visible = false;
             this.numericUpDown.ValueChanged += new System.EventHandler(this.numericUpDown_ValueChanged);
             // 
+            // butView
+            // 
+            this.butView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butView.Image = global::TombLib.Properties.Resources.general_target_16;
+            this.butView.Location = new System.Drawing.Point(292, 0);
+            this.butView.Name = "butView";
+            this.butView.Size = new System.Drawing.Size(23, 23);
+            this.butView.TabIndex = 4;
+            this.butView.Visible = false;
+            this.butView.Click += new System.EventHandler(this.butView_Click);
+            // 
+            // butReset
+            // 
+            this.butReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butReset.BackColor = System.Drawing.Color.Maroon;
+            this.butReset.BackColorUseGeneric = false;
+            this.butReset.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butReset.Location = new System.Drawing.Point(264, 0);
+            this.butReset.Name = "butReset";
+            this.butReset.Size = new System.Drawing.Size(51, 23);
+            this.butReset.TabIndex = 5;
+            this.butReset.Text = "Reset";
+            this.butReset.Visible = false;
+            this.butReset.Click += new System.EventHandler(this.butReset_Click);
+            // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Image = global::TombLib.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(264, 0);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Size = new System.Drawing.Size(24, 23);
+            this.butSearch.TabIndex = 3;
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
+            // 
             // combo
             // 
             this.combo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -96,39 +132,16 @@ namespace TombLib.Controls
             this.combo.Location = new System.Drawing.Point(0, 0);
             this.combo.Name = "combo";
             this.combo.Size = new System.Drawing.Size(259, 23);
-            this.combo.TabIndex = 1;
+            this.combo.TabIndex = 0;
+            this.combo.TabStop = false;
             this.combo.Visible = false;
             this.combo.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
-            // 
-            // butReset
-            // 
-            this.butReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butReset.BackColor = System.Drawing.Color.Maroon;
-            this.butReset.BackColorUseGeneric = false;
-            this.butReset.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butReset.Location = new System.Drawing.Point(265, 0);
-            this.butReset.Name = "butReset";
-            this.butReset.Size = new System.Drawing.Size(50, 23);
-            this.butReset.TabIndex = 0;
-            this.butReset.Text = "Reset";
-            this.butReset.Visible = false;
-            this.butReset.Click += new System.EventHandler(this.butReset_Click);
-            // 
-            // butView
-            // 
-            this.butView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butView.Location = new System.Drawing.Point(265, 0);
-            this.butView.Name = "butView";
-            this.butView.Size = new System.Drawing.Size(50, 23);
-            this.butView.TabIndex = 0;
-            this.butView.Text = "View";
-            this.butView.Visible = false;
-            this.butView.Click += new System.EventHandler(this.butView_Click);
             // 
             // TriggerParameterControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.butSearch);
             this.Controls.Add(this.colorPreview);
             this.Controls.Add(this.label);
             this.Controls.Add(this.numericUpDown);
@@ -151,7 +164,8 @@ namespace TombLib.Controls
         private DarkUI.Controls.DarkComboBox combo;
         private DarkUI.Controls.DarkLabel label;
         private DarkUI.Controls.DarkNumericUpDown numericUpDown;
-        private DarkUI.Controls.DarkButton butReset;
         private System.Windows.Forms.Panel colorPreview;
+        private DarkUI.Controls.DarkButton butSearch;
+        private DarkUI.Controls.DarkButton butReset;
     }
 }

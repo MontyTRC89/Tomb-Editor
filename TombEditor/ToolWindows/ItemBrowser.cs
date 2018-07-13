@@ -15,7 +15,6 @@ namespace TombEditor.ToolWindows
     public partial class ItemBrowser : DarkToolWindow
     {
         private readonly Editor _editor;
-        private PopUpSearch searchPopUp;
 
         public ItemBrowser()
         {
@@ -82,53 +81,21 @@ namespace TombEditor.ToolWindows
             }
         }
 
-        private ItemType? GetCurrentItemWithMessage()
-        {
-            ItemType? result = _editor.ChosenItem;
-            if (result == null)
-                Editor.Instance.SendMessage("Select an item first.", PopupType.Error);
-            return result;
-        }
-
-        public void FindItem()
-        {
-            ItemType? currentItem = GetCurrentItemWithMessage();
-            if (currentItem == null)
-                return;
-
-            // Search for matching objects after the previous one
-            ObjectInstance previousFind = _editor.SelectedObject;
-            ObjectInstance instance = _editor.Level.Rooms
-                .Where(room => room != null)
-                .SelectMany(room => room.Objects)
-                .FindFirstAfterWithWrapAround(
-                obj => previousFind == obj,
-                obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == currentItem.Value);
-
-            // Show result
-            if (instance == null)
-                Editor.Instance.SendMessage("No object of the selected item type found.", PopupType.Info);
-            else
-                _editor.ShowObject(instance);
-        }
-
         private void butSearch_Click(object sender, EventArgs e)
         {
-            if (searchPopUp != null && searchPopUp.Visible)
-                searchPopUp.Close();
-            searchPopUp = new PopUpSearch(comboItems);
+            var searchPopUp = new PopUpSearch(comboItems);
             searchPopUp.Show(this);
         }
 
         private void butAddItem_Click(object sender, EventArgs e)
         {
-            var currentItem = GetCurrentItemWithMessage();
+            var currentItem = EditorActions.GetCurrentItemWithMessage();
             if (currentItem == null)
                 return;
 
             if (!currentItem.Value.IsStatic && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
             {
-                Editor.Instance.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
+                _editor.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
                 return;
             }
 
@@ -152,7 +119,7 @@ namespace TombEditor.ToolWindows
 
         private void butFindItem_Click(object sender, EventArgs e)
         {
-            FindItem();
+            EditorActions.FindItem();
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)

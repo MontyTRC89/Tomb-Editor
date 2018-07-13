@@ -74,12 +74,12 @@ namespace ScriptEditor.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int AutoSaveTime {
+        public int AutosaveTime {
             get {
-                return ((int)(this["AutoSaveTime"]));
+                return ((int)(this["AutosaveTime"]));
             }
             set {
-                this["AutoSaveTime"] = value;
+                this["AutosaveTime"] = value;
             }
         }
         

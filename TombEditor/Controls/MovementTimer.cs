@@ -29,12 +29,7 @@ namespace TombEditor.Controls
 
         public bool Engage(Keys moveDirection)
         {
-            if (moveDirection == Keys.Up ||
-                moveDirection == Keys.Down ||
-                moveDirection == Keys.Left ||
-                moveDirection == Keys.Right ||
-                moveDirection == Keys.PageDown ||
-                moveDirection == Keys.PageUp)
+            if(HotkeySet.ReservedCameraKeys.Contains(moveDirection))
             {
                 if (_moveTimer.Enabled == false)
                     _moveTimer.Enabled = true;

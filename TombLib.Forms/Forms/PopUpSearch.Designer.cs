@@ -29,10 +29,11 @@
             this.txtSearchString.TextChanged += new System.EventHandler(this.txtSearchString_TextChanged);
             this.txtSearchString.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormPopUpSearch_KeyDown);
             // 
-            // FormPopUpSearch
+            // PopUpSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
             this.ClientSize = new System.Drawing.Size(180, 28);
             this.ControlBox = false;
             this.Controls.Add(this.txtSearchString);
@@ -43,7 +44,7 @@
             this.MaximumSize = new System.Drawing.Size(2000, 28);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(0, 28);
-            this.Name = "FormPopUpSearch";
+            this.Name = "PopUpSearch";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

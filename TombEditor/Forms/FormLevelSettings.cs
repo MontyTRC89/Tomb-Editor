@@ -466,11 +466,11 @@ namespace TombEditor.Forms
             // Hide version-specific controls
 
             bool currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TRNG);
-            GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
-            lblGameEnableQuickStartFeature1.Visible = currentVersionToCheck;
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
 
             currentVersionToCheck = (_levelSettings.GameVersion == GameVersion.TR5);
+            GameEnableQuickStartFeatureCheckBox.Visible = !currentVersionToCheck;
+            lblGameEnableQuickStartFeature1.Visible = !currentVersionToCheck;
             lblLaraType.Visible = currentVersionToCheck;
             comboLaraType.Visible = currentVersionToCheck;
             lblTr5Weather.Visible = currentVersionToCheck;

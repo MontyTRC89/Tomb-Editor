@@ -145,6 +145,13 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="EditorAction.cs" />
+    <Compile Include="EditorCommands.cs" />
+    <Compile Include="Forms\FormKeyboardLayout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormKeyboardLayout.Designer.cs">
+      <DependentUpon>FormKeyboardLayout.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormPreviewTexture.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -365,6 +372,9 @@
     <Compile Include="TexturePackerTest.cs" />
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormKeyboardLayout.resx">
+      <DependentUpon>FormKeyboardLayout.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormPreviewTexture.resx">
       <DependentUpon>FormPreviewTexture.cs</DependentUpon>
