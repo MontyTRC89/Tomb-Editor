@@ -36,17 +36,11 @@ namespace ScriptEditor
 		{
 			InitializeComponent();
 
-			// Disable the interface since no file has been loaded yet
-			ToggleInterface(false);
-
 			// If Autocomplete is enabled in the settings
 			if (Properties.Settings.Default.Autocomplete)
 			{
 				GenerateAutocompleteMenu();
 			}
-
-			// Apply saved user settings
-			ApplyUserSettings();
 		}
 
 		#endregion Constructors
@@ -55,7 +49,14 @@ namespace ScriptEditor
 
 		private void FormMain_Shown(object sender, EventArgs e)
 		{
-			CheckRequiredPaths(); // Check if required paths are set
+			// Apply saved user settings
+			ApplyUserSettings();
+
+			// Disable the interface since no file has been loaded yet
+			ToggleInterface(false);
+
+			// Check if required paths are set
+			CheckRequiredPaths();
 
 			// If all default nodes are set
 			if (objectBrowser.Nodes.Count == 2)
@@ -80,6 +81,35 @@ namespace ScriptEditor
 
 		#region Application launch methods
 
+		private void GenerateAutocompleteMenu()
+		{
+			AutocompleteMenu popupMenu = new AutocompleteMenu(textEditor)
+			{
+				AllowTabKey = true,
+				BackColor = Color.FromArgb(64, 73, 74),
+				ForeColor = Color.Gainsboro,
+				SearchPattern = @"[\w\.:=!<>\[\]]",
+				SelectedColor = Color.SteelBlue
+			};
+
+			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
+		}
+
+		private void ApplyUserSettings()
+		{
+			textEditor.Font = new Font(Properties.Settings.Default.FontFace, Convert.ToSingle(Properties.Settings.Default.FontSize));
+			textEditor.AutoCompleteBrackets = Properties.Settings.Default.CloseBrackets;
+			textEditor.WordWrap = Properties.Settings.Default.WordWrap;
+			textEditor.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
+
+			toolStrip.Visible = Properties.Settings.Default.ShowToolbar;
+			showStringTableButton.Visible = toolStrip.Visible;
+
+			ToggleObjectBrowser(Properties.Settings.Default.ObjBrowserVisible);
+			ToggleReferenceBrowser(Properties.Settings.Default.RefBrowserVisible);
+			ToggleDocumentMap(Properties.Settings.Default.DocMapVisible);
+		}
+
 		private void CheckRequiredPaths()
 		{
 			// If the required paths aren't defined yet (script folder and game folder)
@@ -99,35 +129,6 @@ namespace ScriptEditor
 				// Read all files from the script folder
 				ReadScriptFolder();
 			}
-		}
-
-		private void ApplyUserSettings()
-		{
-			textEditor.Font = new Font(Properties.Settings.Default.FontFace, Convert.ToSingle(Properties.Settings.Default.FontSize));
-			textEditor.AutoCompleteBrackets = Properties.Settings.Default.CloseBrackets;
-			textEditor.WordWrap = Properties.Settings.Default.WordWrap;
-			textEditor.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
-
-			toolStrip.Visible = Properties.Settings.Default.ShowToolbar;
-			showStringTableButton.Visible = toolStrip.Visible;
-
-			ToggleObjectBrowser(Properties.Settings.Default.ObjBrowserVisible);
-			ToggleReferenceBrowser(Properties.Settings.Default.RefBrowserVisible);
-			ToggleDocumentMap(Properties.Settings.Default.DocMapVisible);
-		}
-
-		private void GenerateAutocompleteMenu()
-		{
-			AutocompleteMenu popupMenu = new AutocompleteMenu(textEditor)
-			{
-				AllowTabKey = true,
-				BackColor = Color.FromArgb(64, 73, 74),
-				ForeColor = Color.Gainsboro,
-				SearchPattern = @"[\w\.:=!<>\[\]]",
-				SelectedColor = Color.SteelBlue
-			};
-
-			popupMenu.Items.SetAutocompleteItems(AutocompleteItems.GetItems());
 		}
 
 		#endregion Application launch methods
