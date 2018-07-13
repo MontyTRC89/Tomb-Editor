@@ -45,13 +45,6 @@ namespace ScriptEditor
 				GenerateAutocompleteMenu();
 			}
 
-			// Redraw (or in this case draw) the reference browser to fill it with stuff
-			ReferenceBrowser browser = new ReferenceBrowser();
-			browser.Invalidate();
-
-			// Add default items to the object browser
-			ResetObjectBrowserNodes();
-
 			// Apply saved user settings
 			ApplyUserSettings();
 		}
@@ -60,7 +53,18 @@ namespace ScriptEditor
 
 		#region Form actions
 
-		private void FormMain_Shown(object sender, EventArgs e) => CheckRequiredPaths(); // Check if required paths are set
+		private void FormMain_Shown(object sender, EventArgs e)
+		{
+			CheckRequiredPaths(); // Check if required paths are set
+
+			// If all default nodes are set
+			if (objectBrowser.Nodes.Count == 2)
+			{
+				// Force expanded nodes on launch
+				objectBrowser.Nodes[0].Expanded = true;
+				objectBrowser.Nodes[1].Expanded = true;
+			}
+		}
 
 		private void FormMain_Closing(object sender, FormClosingEventArgs e)
 		{
@@ -486,6 +490,23 @@ namespace ScriptEditor
 				saveToolStripMenuItem.Enabled = false;
 				saveToolStripButton.Enabled = false;
 			}
+
+			if (index == 0 && gI_StackIndex > 0)
+			{
+				gI_StackIndex--;
+
+				if (gI_StackIndex == 0)
+				{
+					textEditor.Text = gS_PreTidyContent;
+					gS_PreTidyContent = string.Empty;
+				}
+			}
+			else if (index == 1 && gI_StackIndex > 0)
+			{
+				gI_StackIndex++;
+			}
+
+			darkLabel1.Text = gI_StackIndex.ToString();
 		}
 
 		private void TriggerUndoRedo(int index)
@@ -709,12 +730,37 @@ namespace ScriptEditor
 
 		private void UpdateObjectBrowser(string filter)
 		{
+			bool headersNodeExpanded = false;
+			bool levelsNodeExpanded = false;
+
+			// If all default nodes are set
+			if (objectBrowser.Nodes.Count == 2)
+			{
+				// Cache the current expand state
+				headersNodeExpanded = objectBrowser.Nodes[0].Expanded;
+				levelsNodeExpanded = objectBrowser.Nodes[1].Expanded;
+			}
+
 			ResetObjectBrowserNodes();
 
 			// Scan all lines
 			for (int i = 0; i < textEditor.LinesCount; i++)
 			{
 				AddObjectBrowserNodes(i, filter);
+			}
+
+			if (objectBrowser.Nodes.Count == 2)
+			{
+				objectBrowser.Nodes[0].Expanded = true;
+				objectBrowser.Nodes[1].Expanded = true;
+			}
+
+			// If all default nodes are set
+			if (objectBrowser.Nodes.Count == 2)
+			{
+				// Set the previous expand state
+				objectBrowser.Nodes[0].Expanded = headersNodeExpanded;
+				objectBrowser.Nodes[1].Expanded = levelsNodeExpanded;
 			}
 
 			objectBrowser.Invalidate();
@@ -765,9 +811,29 @@ namespace ScriptEditor
 
 		private void ResetObjectBrowserNodes()
 		{
+			bool headersNodeExpanded = false;
+			bool levelsNodeExpanded = false;
+
+			// If all default nodes are set
+			if (objectBrowser.Nodes.Count == 2)
+			{
+				// Cache the current expand state
+				headersNodeExpanded = objectBrowser.Nodes[0].Expanded;
+				levelsNodeExpanded = objectBrowser.Nodes[1].Expanded;
+			}
+
 			objectBrowser.Nodes.Clear();
 			objectBrowser.Nodes.Add(new DarkTreeNode("Headers"));
 			objectBrowser.Nodes.Add(new DarkTreeNode("Levels"));
+
+			// If all default nodes are set
+			if (objectBrowser.Nodes.Count == 2)
+			{
+				// Set the previous expand state
+				objectBrowser.Nodes[0].Expanded = headersNodeExpanded;
+				objectBrowser.Nodes[1].Expanded = levelsNodeExpanded;
+			}
+
 			objectBrowser.Invalidate();
 		}
 
@@ -807,6 +873,8 @@ namespace ScriptEditor
 
 		private void TidyScript(bool trimOnly = false)
 		{
+			textEditor.BeginAutoUndo();
+
 			// Save set bookmarks to prevent a bug
 			int[] bookmarkLines = GetBookmarkedLines();
 			textEditor.Bookmarks.Clear();
@@ -844,6 +912,8 @@ namespace ScriptEditor
 			}
 
 			textEditor.Invalidate();
+
+			textEditor.EndAutoUndo();
 		}
 
 		#endregion Syntax tidy methods
