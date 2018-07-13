@@ -490,23 +490,6 @@ namespace ScriptEditor
 				saveToolStripMenuItem.Enabled = false;
 				saveToolStripButton.Enabled = false;
 			}
-
-			if (index == 0 && gI_StackIndex > 0)
-			{
-				gI_StackIndex--;
-
-				if (gI_StackIndex == 0)
-				{
-					textEditor.Text = gS_PreTidyContent;
-					gS_PreTidyContent = string.Empty;
-				}
-			}
-			else if (index == 1 && gI_StackIndex > 0)
-			{
-				gI_StackIndex++;
-			}
-
-			darkLabel1.Text = gI_StackIndex.ToString();
 		}
 
 		private void TriggerUndoRedo(int index)
