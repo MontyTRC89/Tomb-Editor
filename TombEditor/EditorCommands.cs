@@ -31,7 +31,7 @@ namespace TombEditor
     
     public class HotkeySet : ICloneable
     {
-        public static List<Keys> ReservedKeys = new List<Keys>
+        public static List<Keys> ReservedCameraKeys = new List<Keys>
         { Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.PageDown, Keys.PageUp };
 
         public string Name;
@@ -211,25 +211,25 @@ namespace TombEditor
             AddCommand("MoveObjectLeft", "Move object left (4 clicks)", CommandType.Objects, delegate ()
             {
                 if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
             });
 
             AddCommand("MoveObjectRight", "Move object right (4 clicks)", CommandType.Objects, delegate ()
             {
                 if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
             });
 
             AddCommand("MoveObjectForward", "Move object forward (4 clicks)", CommandType.Objects, delegate ()
             {
                 if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
             });
 
             AddCommand("MoveObjectBack", "Move object back (4 clicks)", CommandType.Objects, delegate ()
             {
                 if (_editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
             });
 
             AddCommand("MoveObjectUp", "Move object up", CommandType.Objects, delegate ()
@@ -831,7 +831,7 @@ namespace TombEditor
             {
                 if (_editor.Level == null || _editor.Level.Settings.Textures.Count == 0)
                 {
-                    Editor.Instance.SendMessage("No texture loaded. Nothing to convert.", PopupType.Error);
+                    _editor.SendMessage("No texture loaded. Nothing to convert.", PopupType.Error);
                     return;
                 }
 
@@ -839,7 +839,7 @@ namespace TombEditor
                 {
                     if (texture.LoadException != null)
                     {
-                        Editor.Instance.SendMessage("The texture that should be converted to *.png could not be loaded. " + texture.LoadException?.Message, PopupType.Error);
+                        _editor.SendMessage("The texture that should be converted to *.png could not be loaded. " + texture.LoadException?.Message, PopupType.Error);
                         return;
                     }
 
@@ -855,7 +855,7 @@ namespace TombEditor
                     }
                     texture.Image.Save(pngFilePath);
 
-                    Editor.Instance.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopupType.Info);
+                    _editor.SendMessage("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", PopupType.Info);
                     texture.SetPath(_editor.Level.Settings, pngFilePath);
                 }
                 _editor.LoadedTexturesChange();
@@ -985,7 +985,7 @@ namespace TombEditor
                 catch (Exception exc)
                 {
                     logger.Error(exc, "Error while starting Wad Tool.");
-                    Editor.Instance.SendMessage("Error while starting Wad Tool.", PopupType.Error);
+                    _editor.SendMessage("Error while starting Wad Tool.", PopupType.Error);
                 }
             });
 
@@ -998,7 +998,7 @@ namespace TombEditor
                 catch (Exception exc)
                 {
                     logger.Error(exc, "Error while starting Sound Tool.");
-                    Editor.Instance.SendMessage("Error while starting Sound Tool.", PopupType.Error);
+                    _editor.SendMessage("Error while starting Sound Tool.", PopupType.Error);
                 }
             });
 
@@ -1062,10 +1062,10 @@ namespace TombEditor
                 new HotkeySet { Name = "RotateObjectRight", Hotkeys = new List<uint> { (uint)(Keys.Right | Keys.Shift) } },
                 new HotkeySet { Name = "RotateObjectUp", Hotkeys = new List<uint> { (uint)(Keys.Up | Keys.Shift) } },
                 new HotkeySet { Name = "RotateObjectDown", Hotkeys = new List<uint> { (uint)(Keys.Down | Keys.Shift) } },
-                new HotkeySet { Name = "MoveObjectLeft", Hotkeys = new List<uint> { (uint)(Keys.Left) } },
-                new HotkeySet { Name = "MoveObjectRight", Hotkeys = new List<uint> { (uint)(Keys.Right) } },
-                new HotkeySet { Name = "MoveObjectForward", Hotkeys = new List<uint> { (uint)(Keys.Up) } },
-                new HotkeySet { Name = "MoveObjectBack", Hotkeys = new List<uint> { (uint)(Keys.Down) } },
+                new HotkeySet { Name = "MoveObjectLeft", Hotkeys = new List<uint> { (uint)(Keys.Left | Keys.Control) } },
+                new HotkeySet { Name = "MoveObjectRight", Hotkeys = new List<uint> { (uint)(Keys.Right | Keys.Control) } },
+                new HotkeySet { Name = "MoveObjectForward", Hotkeys = new List<uint> { (uint)(Keys.Up | Keys.Control) } },
+                new HotkeySet { Name = "MoveObjectBack", Hotkeys = new List<uint> { (uint)(Keys.Down | Keys.Control) } },
                 new HotkeySet { Name = "MoveObjectUp", Hotkeys = new List<uint> { (uint)(Keys.PageUp | Keys.Control) } },
                 new HotkeySet { Name = "MoveObjectDown", Hotkeys = new List<uint> { (uint)(Keys.PageDown | Keys.Control) } },
                 new HotkeySet { Name = "MoveRoomLeft", Hotkeys = new List<uint> { (uint)(Keys.Left | Keys.Alt) } },
