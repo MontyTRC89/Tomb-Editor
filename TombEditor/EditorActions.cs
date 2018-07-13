@@ -2603,12 +2603,42 @@ namespace TombEditor
             return true;
         }
 
-        public static void ExportCurrentRoom(IWin32Window owner)
+        public static ItemType? GetCurrentItemWithMessage()
         {
-            ExportRooms(owner, new[] { _editor.SelectedRoom });
+            ItemType? result = _editor.ChosenItem;
+            if (result == null)
+                Editor.Instance.SendMessage("Select an item first.", PopupType.Error);
+            return result;
         }
 
-        public static void ExportRooms(IWin32Window owner, IEnumerable<Room> rooms)
+        public static void FindItem()
+        {
+            ItemType? currentItem = GetCurrentItemWithMessage();
+            if (currentItem == null)
+                return;
+
+            // Search for matching objects after the previous one
+            ObjectInstance previousFind = _editor.SelectedObject;
+            ObjectInstance instance = _editor.Level.Rooms
+                .Where(room => room != null)
+                .SelectMany(room => room.Objects)
+                .FindFirstAfterWithWrapAround(
+                obj => previousFind == obj,
+                obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == currentItem.Value);
+
+            // Show result
+            if (instance == null)
+                Editor.Instance.SendMessage("No object of the selected item type found.", PopupType.Info);
+            else
+                _editor.ShowObject(instance);
+        }
+
+        public static void ExportCurrentRoom(IWin32Window owner)
+        {
+            ExportRooms(new[] { _editor.SelectedRoom }, owner);
+        }
+
+        public static void ExportRooms(IEnumerable<Room> rooms, IWin32Window owner)
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
